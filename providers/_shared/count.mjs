@@ -47,6 +47,7 @@
 
 import { guardCountCall, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
+import { floorOf } from "../../shared/register-floor.mjs";
 
 export const parseToolText = (r) => { try { return JSON.parse(r?.text ?? ""); } catch { return null; } };
 export const isToolError = (r) => !!(r?.isError) || (typeof r?.text === "string" && r.text.startsWith("ERROR"));
@@ -109,7 +110,10 @@ export function makeCountProbe(deps) {
     // ("a provider that cannot count must never read as zero") broken from the inside, by its own
     // comment. The number now has to BE a number; nothing else is an answer.
     if (!Number.isFinite(parsed.total_hits)) {
-      return { ok: false, total: null, probe: "cheap",
+      // A register's floor ("at least 10,000") is still no count, so the probe stays not-ok; the figure
+      // rides beside it for a caller that can carry one (enumerate.mjs's rescues: a crowd, never an error).
+      const floor = floorOf(parsed);
+      return { ok: false, total: null, probe: "cheap", ...(floor !== null ? { floor } : {}),
         reason: "the search response carried no usable total_hits, so nothing was counted — the number is UNKNOWN, which is not the same as none" };
     }
     // What the total counts rides with it when the register said (a provider's `total_counts`, see

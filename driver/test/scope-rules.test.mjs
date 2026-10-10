@@ -51,7 +51,7 @@ test("native-language routing: an investigation somebody ASKED for refuses a sco
   assert.match(fr[0], /native-script deepening routes on territory/);
   assert.match(fr[0], /scope \("France", "Germany"\)/,
     "QUOTED AS WRITTEN. It used to echo the canonical codes (\"FR\", \"DE\") — the codes are what ROUTE, and a "
-    + "requester who typed \"France\" was sent hunting for a value they never used (products.mjs:141). The lane "
+    + "requester who typed \"France\" was sent hunting for a value they never used (tally() in products.mjs). The lane "
     + "lookup still runs on the codes; only the sentence changed.");
   assert.match(fr[0], /run the standard preliminary without the deepening/, "the message offers the runnable alternative");
   // display names bridge to codes: the portal composer submits "China", the adapter table keys on CN

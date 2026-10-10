@@ -16,6 +16,8 @@ import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 import { buildAudit } from "../publish/xlsx.mjs";
 import { gateCouldNotEvaluate } from "../publish/index.mjs";
 import { plainDeferralReason } from "../deferral-row.mjs";
+import { coverageJudgmentRows } from "../pipeline.mjs";
+import { joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
 
 const LEFT_OPEN = plainDeferralReason("unfinished");
 const TIMED_OUT = plainDeferralReason("mechanical-fail:timeout");
@@ -98,4 +100,48 @@ test("THE CONTROL: a check that did fail keeps its own line on the Machine QC ro
   const qc = sheet("Summary").find((r) => /Machine QC/.test(r["Field"]));
   assert.match(qc["Value"], /1 machine check\(s\) failed at publish/);
   assert.match(qc["Value"], /The findings table does not add up to the headline figure\./);
+});
+
+// ── THE COVERAGE JUDGMENT'S SLICES, AS THE SUMMARY PRINTS THEM ─────────────────────────────────────
+//
+// The rows are the driver's: one per open slice of the coverage ledger, plus one for a planned search that
+// never ran and that no open row on its axis claims. Three things on them were the engine's own words on a
+// lawyer's Summary tab: the slice's identifier where the driver had already written its reader's name, a
+// "(no band block for: <qid>)" tail on the row that claims a search that never ran, and the orphan row's
+// qid and its "the funnel produced no band block" clause. Built through the production join, so each of
+// the three is the shape a run writes. Invented names.
+test("the Summary's coverage-judgment slices are named in the reader's words and carry no engine identifier", async (t) => {
+  const PLAN = { schema_version: 1, plan_version: 3, nice_classes: ["9"], regions: ["US"], provider: "corsearch", entries: [
+    { qid: "primary-sweep:wildcard:qzxv", nice_classes: ["9"], regions: ["US"], axis: "primary-sweep", predicate: "wildcard", term: "QZXV*", expected_kind: "enumerate" },
+    { qid: "incumbent-class:owner:qzxv-holdings", nice_classes: ["9"], regions: ["US"], axis: "incumbent-class", predicate: "owner", term: "Qzxv Holdings", expected_kind: "count" },
+    { qid: "transliteration-numeric:exact:kyuzixv", nice_classes: ["9"], regions: ["US"], axis: "transliteration-numeric", predicate: "exact", term: "KYUZIXV", expected_kind: "enumerate" },
+  ] };
+  // The owner count and the transliteration never ran. The owner axis has an open ledger row, which claims
+  // its missing search; the transliteration axis is clean, so its missing search is an orphan row.
+  const join_ = joinPlanToBands(PLAN, { "primary-sweep": [{ qid: "primary-sweep:wildcard:qzxv", state: "incomplete", records: [] }] });
+  const receipt = { plan_version: 3, ...join_, skeleton: deriveCoverageSkeleton(PLAN, join_) };
+  const ledger = [
+    { axis: "primary-sweep", unit: "primary-sweep / QZXV* wildcard, cl. 9, US", status: "coverage-limited", reason: "counted and not read in full" },
+    { axis: "incumbent-class", unit: "incumbent-class / owner probe, cl. 9, US", status: "deferred", reason: "the owner's portfolio was not counted this run" },
+    { axis: "transliteration-numeric", unit: "transliteration-numeric / all", status: "confirmed-clean", reason: "read in full" },
+  ];
+  const rows = coverageJudgmentRows(ledger, receipt, PLAN);
+  const out = tempBook(t, "audit.xlsx");
+  await buildAudit({ findings: [], coverage: [], coverageJudgment: { sufficient: true, reason: "the dangerous subset was read", rows } },
+    null, out, "QZXV", { title: "QZXV" });
+  const { sheet } = await workbookRows(out);
+  const summary = sheet("Summary");
+  const head = summary.findIndex((r) => /Coverage judgment — slices considered/.test(r["Field"]));
+  assert.ok(head >= 0, "no coverage-judgment slices on the Summary");
+  const slices = summary.slice(head + 1, head + 1 + rows.length);
+  assert.deepEqual(slices.map((r) => r["Field"].trim()), [
+    "main register sweep / QZXV* wildcard, cl. 9, US",
+    "owner portfolio sweep / owner probe, cl. 9, US",
+    "transliterations and numeric forms / exact: KYUZIXV [cl 9]",
+  ], "a slice is printed under the engine's identifier where the driver wrote the reader's name");
+  assert.equal(slices[1]["Value"], "deferred — the owner's portfolio was not counted this run",
+    "the row claiming a search that never ran carries the engine's qid");
+  assert.equal(slices[2]["Value"], "planned and not executed this run", "the orphan row carries the engine's own clause");
+  const engine = /\b(?:primary-sweep|incumbent-class|transliteration-numeric|saturation-probe)\b|band block|funnel/;
+  assert.ok(!summary.some((r) => engine.test(`${r["Field"]} ${r["Value"]}`)), "an engine identifier reached the Summary");
 });

@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# OpenSSF Scorecard: an outside measurement of how this repository is run — branch protection, pinned
+# dependencies, token permissions, code review and the rest — published where anyone can read it
+# (https://scorecard.dev). It also uploads its findings to this repository's code scanning page.
+#
+# WHY THIS FILE HAS SO LITTLE IN IT. Publishing a result needs the workflow to pass Scorecard's own
+# verification: read-only permissions at the top, no top-level `env` or `defaults`, a GitHub-hosted
+# Ubuntu runner, and only the four actions used below. A `run:` step or one more action makes the
+# publish refuse, so anything this repository wants to add belongs in another workflow.
+#
+# Every action is pinned to a commit, as everywhere else here: this job holds a token that can sign the
+# published result.
+name: Scorecard
+
+on:
+  # Branch protection is one of the things it measures, so a change to it re-measures.
+  branch_protection_rule:
+  schedule:
+    - cron: '27 4 * * 1'
+  push:
+    branches: [main]
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write   # upload the findings to the code scanning page
+      id-token: write          # sign the result published to scorecard.dev
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Measure
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+
+      - name: Keep the findings with the run
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 5
+
+      - name: Upload the findings to code scanning
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          sarif_file: results.sarif

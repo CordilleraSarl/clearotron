@@ -1,0 +1,78 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# The MCP Registry lists each stable release npm serves. Nothing here can publish to npm.
+#
+# The registry (registry.modelcontextprotocol.io) is where MCP clients look a server up. It holds
+# metadata only, about a package npm already serves, and a version's metadata can never change once it
+# is listed. So this does not react to a release. On a schedule, and when dispatched, it asks npm which
+# stables it serves and the registry which it lists, and lists what is missing, oldest first. A listing
+# that fails turns this run red and is asked again by the next one, so one failed attempt never leaves a
+# stable out for good. The release workflow never waits for this one, so nothing here can hold up or fail
+# a release to npm. Betas are never listed. `scripts/mcp-registry-listing.mjs` says how each version is
+# read and why.
+#
+# A WORKFLOW OF ITS OWN, BECAUSE NPM TRUSTS ONE FILE. npm's trusted publisher names release.yml, so
+# the OIDC token this job requests for the registry's GitHub login can never become an npm credential.
+# The release workflow's scheduled `entry` job keeps no token at all, as before.
+#
+# MAIN ONLY. The registry's GitHub login grants the namespace to the repository's owner, whichever branch
+# asks for it, so the job runs only on main in this repository.
+#
+# THE PUBLISHER IS PINNED BY VERSION AND CHECKSUM, and every action by commit, because they run beside
+# `id-token: write`. Raise the version and the checksum together, from the release's checksum file.
+name: MCP Registry
+
+on:
+  schedule:
+    - cron: '41 */6 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: mcp-registry
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '22.23.2'
+  MCP_PUBLISHER_VERSION: '1.8.1'
+  MCP_PUBLISHER_SHA256: 'a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc'
+
+jobs:
+  list:
+    name: List each stable npm serves in the MCP Registry
+    if: github.repository == 'CordilleraSarl/clearotron' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read     # check out the script that reads npm and the registry
+      id-token: write    # the registry's GitHub login, which grants this repository owner's namespace
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Which stables npm serves that the registry does not list
+        id: plan
+        run: node scripts/mcp-registry-listing.mjs plan
+
+      - name: The publisher, at its pinned version and checksum
+        if: steps.plan.outputs.count != '0'
+        run: |
+          curl -fsSL -o mcp-publisher.tar.gz \
+            "https://github.com/modelcontextprotocol/registry/releases/download/v${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          echo "${MCP_PUBLISHER_SHA256}  mcp-publisher.tar.gz" | sha256sum -c -
+          tar -xzf mcp-publisher.tar.gz mcp-publisher
+
+      - name: Log in to the registry as this repository's owner
+        if: steps.plan.outputs.count != '0'
+        run: ./mcp-publisher login github-oidc
+
+      - name: List each one, oldest first, and read it back
+        if: steps.plan.outputs.count != '0'
+        run: node scripts/mcp-registry-listing.mjs publish ./mcp-publisher

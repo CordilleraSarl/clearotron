@@ -126,6 +126,18 @@ test("confirmation: FULL-job binding (classes/goods/marks/selector), identity bi
   assert.notEqual(jobHashOf({ marks: [{ name: "a|b" }] }), jobHashOf({ marks: [{ name: "a" }, { name: "b" }] }));
 });
 
+// THE ONE-SHOT ID IS DRAWN FROM THE SECURE GENERATOR. It is the nonce in a token that admits a run, so it
+// comes from node's cryptographic source and never from `Math.random`. Two mints at one instant, for one
+// job and one person, are told apart by that draw alone.
+test("confirmation: the one-shot id is drawn from node's secure generator, never Math.random", () => {
+  const src = mintConfirmation.toString();
+  assert.match(src, /randomBytes\(/, "the one-shot id is no longer drawn from node's secure generator");
+  assert.doesNotMatch(src, /Math\.random/, "the one-shot id draws on Math.random, which is not a secure generator");
+  const base = { secret: "s", account: "a", email: "e@x.example", jobHash: "h", now: 1000 };
+  const jti = (t) => JSON.parse(Buffer.from(t.split(".")[0], "base64url").toString("utf8")).jti;
+  assert.notEqual(jti(mintConfirmation(base)), jti(mintConfirmation(base)), "two mints at one instant share an id");
+});
+
 // ── the service (offline fixture world) ────────────────────────────────────────────────────────────
 function world(opts = {}) {
   const poolRoot = tempDir("portal-poolfx-");

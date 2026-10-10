@@ -131,6 +131,8 @@ export function parseNamedBand(raw) {
         ...(Array.isArray(b.covered_by) && b.covered_by.length ? { covered_by: b.covered_by } : {}),
         // what the total counts, when the register said — carried like the counts it qualifies
         ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
+        // the register's floor when it answered "at least N": the total above stays null beside it
+        ...(Number.isFinite(b.total_floor) ? { total_floor: b.total_floor } : {}),
         // — THE REFUSAL STAMP SURVIVES THE PROJECTION. `execute-plan.mjs` writes an errored slice
         // as `{state:"incomplete", total_hits:0, fetched:0, error:true}` and says why in its own header:
         // "the error:true stamp (a provider error is never confusable with a sanctioned crowd)". The

@@ -130,7 +130,7 @@ test("nothing in the tree currently reports an INVOCATION under a result name", 
   const unfixed = RESULT_NOUN_FIELDS.filter((r) => r.verdict === "invocation");
   assert.deepEqual(unfixed.map(keyOf), [],
     `${unfixed.length} field(s) name a result and carry an invocation. Rename, or add a sibling that `
-    + `carries the result — the remedy repairs.mjs:724 uses, keeping the old key for existing readers.`);
+    + `carries the result — the remedy createRepairLedger() in repairs.mjs uses, keeping the old key for existing readers.`);
 });
 
 test("every row carries a verdict from the closed set, and every in-scope row says WHY", () => {

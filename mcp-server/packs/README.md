@@ -37,7 +37,7 @@ saying the same thing.
 
 The `SKILL.md` (and for ops, `COURIER.md`) is portable prompt text: paste it into Claude project
 instructions, a ChatGPT GPT/system prompt, or any agent's system context — or, in Claude Code, install
-the whole thing at once by opening this repository as a plugin (`.claude-plugin/plugin.json`).
+the whole thing at once as the plugin in `plugin/`, which carries copies of the three skills.
 `CONNECT.md` is for the human doing the wiring. `manifest.json` names the pack version, the files that
 stayed here, and the `skill.directory` its prompt text moved to, so an integrator can pin + diff
 upgrades.

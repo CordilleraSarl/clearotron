@@ -6,7 +6,7 @@
 // failure vocabulary are a closed partition. Arm 1 of that partition — "a validator can emit a token no
 // element declaration accounts for" — needs an inventory of what the validators can actually emit. This
 // module is that inventory, and it is the audit object: every entry names its emitting site, so a reader
-// checks a row by opening one file at one line.
+// checks a row by opening one file at one function.
 //
 // ── WHY THIS IS A CHECKED-IN CENSUS AND NOT A REGEX OVER `fail(` ────────────────────────────────────
 //
@@ -15,14 +15,14 @@
 // several times that, because EIGHT sites build the token dynamically and hand back a string the
 // extractor never sees:
 //
-//   D1 verify.mjs:940   fail(`connotation_${reason}:…`)      — reason iterates the table at line 894
+//   D1 verify.mjs connotationDispositionFail   fail(`connotation_${reason}:…`)   — reason is a member of CALL_REASON_SET
 //   D2 verify.mjs   fail(String(e.message))              — parseFindingsJson throws token-first
 //   D3 verify.mjs:1237   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
 //   D4 verify.mjs  parseCoverageLedgerJson, same shape
-//   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
-//   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
-//   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs disclosureTextByAxis
-//   D8 verify.mjs:2470 caseLawLedgerFail  fail(caseLawLedgerFail(…))  — token built in case-law-ledger.mjs:211 caseLawLedgerFail
+//   D5 verify.mjs validators.registerFindings  fail(`${unaccounted[0].token}:…`)  — token minted in a DATA ROW
+//   D6 verify.mjs validators.registerFindings  fail(`${violations[0].token}…`)  — findUnexecutedCleanClaims() in register-plan.mjs
+//   D7 verify.mjs validators.registerFindings  fail(`${v2[0].token}${detail}…`)  — findUnverifiedIncompleteCleanClaims() in register-plan.mjs
+//   D8 verify.mjs validators.caseLaw  fail(caseLawLedgerFail(…))  — token built in case-law-ledger.mjs:211 caseLawLedgerFail
 //
 // A partition built on the 60 tokens a regex CAN see would run green while blind to the rest, which is
 // worse than having no E2 at all: it certifies a partition it never checked. So the census is authored
@@ -40,7 +40,7 @@
 //
 // ── PER-STAGE, NEVER GLOBAL ─────────────────────────────────────────────────────────────────────────
 //
-// `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:123-133) and are
+// `too_short` and `missing` come from the shared helpers nonEmpty() and needs() in verify.mjs, and are
 // legitimately owned by DIFFERENT elements in matter-frame, clearance-variants and frame-diff. A global
 // token→element map sees several owners for one token and "fixes" a partition that was never violated.
 // Every row therefore carries `stages`, and the partition is computed per (token, stage) pair.
@@ -58,58 +58,58 @@ const CL = ["common-law", "common-law-half"];
  * The census. One row per emitting site-group:
  *   token   — the literal token, or the family prefix when `family` is set
  *   stages  — the stages that can emit it (per-stage, never global)
- *   site    — file:line of the emitter, so a row is checkable by opening it
+ *   site    — the emitter's file and the symbol(s) that raise the token, so a row is checkable by opening it
  *   family  — when set, `token` is a prefix and this names where the family is minted
  *   dynamic — the D-number of the dynamic site, when the token is built rather than written
  */
 export const VOCABULARY = [
   // ── the shared helpers: one token, many stages, different owners per stage ─────────────────────────
-  { token: "too_short", stages: ALL_STAGES.filter((s) => !["blind-frame", "doubt-closure", "narrative-refutation"].includes(s)), site: "driver/verify.mjs:139 nonEmpty" },
-  { token: "missing", stages: ["matter-frame", "clearance-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs, in needs()" },
+  { token: "too_short", stages: ALL_STAGES.filter((s) => !["blind-frame", "doubt-closure", "narrative-refutation"].includes(s)), site: "driver/verify.mjs nonEmpty" },
+  { token: "missing", stages: ["matter-frame", "clearance-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs needs, needsSectionsLabeled" },
 
   // ── common-law / common-law-half ───────────────────────────────────────────────────────────────────
-  { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs" },
-  { token: "grid_spec_unreadable", stages: CL, site: "driver/verify.mjs:257" },
-  { token: "grid_ledger_missing", stages: CL, site: "driver/verify.mjs commonLawMeaningSeat" },
-  { token: "grid_ledger_unparseable", stages: CL, site: "driver/verify.mjs:266" },
-  { token: "connotation_query_unrecorded", stages: ["common-law-half"], site: "driver/verify.mjs" },
-  { token: "profile_unparseable", stages: ["common-law"], site: "driver/verify.mjs" },
-  { token: "grid_join_missing", stages: CL, site: "driver/verify.mjs:318" },
-  { token: "platform_identity_error", stages: CL, site: "driver/verify.mjs:323" },
-  { token: "platforms_missing", stages: CL, site: "driver/verify.mjs:334" },
-  { token: "connotation_search_missing", stages: ["common-law"], site: "driver/verify.mjs" },
-  { token: "receipts_short", stages: ["common-law"], site: "driver/verify.mjs" },
-  { token: "half_path_unrecognized", stages: ["common-law-half"], site: "driver/verify.mjs:395" },
-  { token: "no_coverage_status_row", stages: [...CL, "register-digest"], site: "driver/verify.mjs:452 commonLawMeaningSeat, 1416" },
+  { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs declaredUnavailableGate" },
+  { token: "grid_spec_unreadable", stages: CL, site: "driver/verify.mjs commonLawMeaningSeat, commonLawEvidence, commonLawHalfEvidence" },
+  { token: "grid_ledger_missing", stages: CL, site: "driver/verify.mjs commonLawMeaningSeat, commonLawEvidence, commonLawHalfEvidence" },
+  { token: "grid_ledger_unparseable", stages: CL, site: "driver/verify.mjs commonLawMeaningSeat, commonLawEvidence, commonLawHalfEvidence" },
+  { token: "connotation_query_unrecorded", stages: ["common-law-half"], site: "driver/verify.mjs commonLawMeaningSeat" },
+  { token: "profile_unparseable", stages: ["common-law"], site: "driver/verify.mjs commonLawEvidence" },
+  { token: "grid_join_missing", stages: CL, site: "driver/verify.mjs commonLawEvidence, commonLawHalfEvidence" },
+  { token: "platform_identity_error", stages: CL, site: "driver/verify.mjs commonLawEvidence, commonLawHalfEvidence" },
+  { token: "platforms_missing", stages: CL, site: "driver/verify.mjs commonLawEvidence, commonLawHalfEvidence" },
+  { token: "connotation_search_missing", stages: ["common-law"], site: "driver/verify.mjs commonLawEvidence" },
+  { token: "receipts_short", stages: ["common-law"], site: "driver/verify.mjs commonLawEvidence" },
+  { token: "half_path_unrecognized", stages: ["common-law-half"], site: "driver/verify.mjs commonLawHalfEvidence" },
+  { token: "no_coverage_status_row", stages: [...CL, "register-digest"], site: "driver/verify.mjs validators.registerFindings" },
   // B — `connotation_form_unparseable` and `connotation_form_untouched` are GONE: they
   // were states only a hand-authored document could be in, and the form path is deleted (ruling
   // 2026-08-17). Their subject matter is carried by the call tokens under the D1 family row below.
-  { token: "connotation_form_damaged", stages: CL, site: "driver/verify.mjs" },
-  { token: "connotation_", stages: CL, site: "driver/verify.mjs", family: "driver/connotation-search.mjs CONNOTATION_FORM_REASONS", dynamic: "D1" },
-  { token: "connotation_quote_unbound", stages: CL, site: "driver/verify.mjs" },
+  { token: "connotation_form_damaged", stages: CL, site: "driver/verify.mjs connotationDispositionFail" },
+  { token: "connotation_", stages: CL, site: "driver/verify.mjs connotationDispositionFail", family: "driver/connotation-search.mjs CONNOTATION_FORM_REASONS", dynamic: "D1" },
+  { token: "connotation_quote_unbound", stages: CL, site: "driver/verify.mjs connotationDispositionFail" },
 
   // ── synthesis ──────────────────────────────────────────────────────────────────────────────────────
-  { token: "framework_manifest_unreadable", stages: ["synthesis"], site: "driver/verify.mjs:691" },
-  { token: "framework_manifest_missing_for_v4", stages: ["synthesis"], site: "driver/verify.mjs:706" },
-  { token: "framework_method_unreadable", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "finding_use_check_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "finding_own_rights_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "finding_use_check_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "intake_ask_unanswered", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "ratified_form_unread", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "coverage_recommendation", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "coverage_gap_unexplained", stages: ["synthesis"], site: "driver/verify.mjs" },
-  { token: "finding", stages: ["synthesis"], site: "driver/verify.mjs", family: "driver/findings-model.mjs (token-first throws; `finding_*` and `findings_*`)", dynamic: "D2" },
+  { token: "framework_manifest_unreadable", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling, checkClientSummaryJoin" },
+  { token: "framework_manifest_missing_for_v4", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling, checkClientSummaryJoin" },
+  { token: "framework_method_unreadable", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling" },
+  { token: "finding_use_check_source_missing", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling" },
+  { token: "finding_own_rights_source_missing", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling" },
+  { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling" },
+  { token: "finding_use_check_missing", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling" },
+  { token: "intake_ask_unanswered", stages: ["synthesis"], site: "driver/verify.mjs validators.narrative" },
+  { token: "ratified_form_unread", stages: ["synthesis"], site: "driver/verify.mjs validators.narrative" },
+  { token: "coverage_recommendation", stages: ["synthesis"], site: "driver/verify.mjs validators.narrative" },
+  { token: "coverage_gap_unexplained", stages: ["synthesis"], site: "driver/verify.mjs validators.narrative" },
+  { token: "finding", stages: ["synthesis"], site: "driver/verify.mjs checkFindingsSibling", family: "driver/findings-model.mjs (token-first throws; `finding_*` and `findings_*`)", dynamic: "D2" },
 
   // ── register-digest ────────────────────────────────────────────────────────────────────────────────
   // The per-record accounting family, raised at the EXIT as well as at the call. The call-time refusal
   // is scoped to the batch it judges, which is what lets a dense band be recorded at all; the exit gate
   // is where that is paid for, because once any batch is accepted a document exists and half a band is
   // the same SHAPE as a whole one. All three are armed by the era stamp, so an archived run raises none.
-  { token: "registerdigest_unaccounted_records", stages: ["register-digest"], site: "driver/verify.mjs, and driver/register-digest-record.mjs at the call" },
-  { token: "registerdigest_accounting_unreadable", stages: ["register-digest"], site: "driver/verify.mjs — driver-written, not a model defect" },
-  { token: "registerdigest_model_missing", stages: ["register-digest"], site: "driver/verify.mjs — driver-written, not a model defect" },
+  { token: "registerdigest_unaccounted_records", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings, and driver/register-digest-record.mjs acceptRegisterDigest at the call" },
+  { token: "registerdigest_accounting_unreadable", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings — driver-written, not a model defect" },
+  { token: "registerdigest_model_missing", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings — driver-written, not a model defect" },
   // ── THE TYPED TRANSPORT'S OWN FAMILY (conversion 11) ──────────────────────────────────────────────
   //
   // These are raised by `register-digest-record.mjs` at the ACCEPTANCE BOUNDARY, not by verify.mjs, and
@@ -118,50 +118,50 @@ export const VOCABULARY = [
   // them, and nothing here changes behaviour. What changes is that the census can now see the family,
   // which is the point of listing the module: a family the tripwire cannot read can grow a member no
   // row covers, and nobody finds out.
-  { token: "registerdigest_uri_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs — every row joins to a band record by its uri" },
-  { token: "registerdigest_uri_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a uri this run's band does not carry" },
-  { token: "registerdigest_flag_reason_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs — the judgment the row exists to carry" },
-  { token: "registerdigest_verify_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs — one bare token of yes/no" },
-  { token: "registerdigest_drop_reason_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a drop with no stated reason is a silent recall loss" },
-  { token: "registerdigest_drop_ground_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs — the closed ground token" },
-  { token: "registerdigest_drop_ground_contradicted", stages: ["register-digest"], site: "driver/register-digest-record.mjs — the ground contradicts this run's own screen verdict" },
-  { token: "registerdigest_instructed_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs — every instructed check carries ask AND answer" },
-  { token: "registerdigest_adjudication_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs — one bare token of ADOPTED/OVERRODE" },
-  { token: "registerdigest_adjudication_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs — an override quotes the reason it contradicts" },
-  { token: "registerdigest_nothing_judged", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a digest that ends no record has not read the band" },
+  { token: "registerdigest_uri_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — every row joins to a band record by its uri" },
+  { token: "registerdigest_uri_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a uri this run's band does not carry" },
+  { token: "registerdigest_flag_reason_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — the judgment the row exists to carry" },
+  { token: "registerdigest_verify_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — one bare token of yes/no" },
+  { token: "registerdigest_drop_reason_missing", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a drop with no stated reason is a silent recall loss" },
+  { token: "registerdigest_drop_ground_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — the closed ground token" },
+  { token: "registerdigest_drop_ground_contradicted", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — the ground contradicts this run's own screen verdict" },
+  { token: "registerdigest_instructed_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — every instructed check carries ask AND answer" },
+  { token: "registerdigest_adjudication_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — one bare token of ADOPTED/OVERRODE" },
+  { token: "registerdigest_adjudication_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — an override quotes the reason it contradicts" },
+  { token: "registerdigest_nothing_judged", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a digest that ends no record has not read the band" },
   // The batching members, added with the batched accounting itself.
-  { token: "registerdigest_batch_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a batch number this run's split does not hold" },
-  { token: "registerdigest_double_counted", stages: ["register-digest"], site: "driver/register-digest-record.mjs — a record ended under one batch cannot be ended under another" },
-  { token: "registerdigest_model_write_failed", stages: ["register-digest"], site: "driver/register-digest-record.mjs — driver-written: the accumulator was lost mid-batch" },
-  { token: "coverage_form_damaged", stages: ["register-digest"], site: "driver/verify.mjs" },
-  { token: "coverage_form_engine_vocabulary", stages: ["register-digest"], site: "driver/verify.mjs" },
-  { token: "coverage_form_axis_invalid", stages: ["register-digest"], site: "driver/verify.mjs" },
-  { token: "coverage_no_status", stages: ["register-digest"], site: "driver/verify.mjs" },
-  { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs" },
-  { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs" },
+  { token: "registerdigest_batch_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a batch number this run's split does not hold" },
+  { token: "registerdigest_double_counted", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a record ended under one batch cannot be ended under another" },
+  { token: "registerdigest_model_write_failed", stages: ["register-digest"], site: "driver/register-digest-record.mjs recordRegisterDigest — driver-written: the accumulator was lost mid-batch" },
+  { token: "coverage_form_damaged", stages: ["register-digest"], site: "driver/verify.mjs coverageFormFail" },
+  { token: "coverage_form_engine_vocabulary", stages: ["register-digest"], site: "driver/verify.mjs coverageFormFail" },
+  { token: "coverage_form_axis_invalid", stages: ["register-digest"], site: "driver/verify.mjs coverageFormFail" },
+  { token: "coverage_no_status", stages: ["register-digest"], site: "driver/verify.mjs coverageFormFail" },
+  { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings" },
+  { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings" },
   { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings" },
-  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs coverageFormFail", family: "driver/register-plan.mjs PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
-  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs validatePlanFeasibility", dynamic: "D6" },
-  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs searchedJurisdictionsFromPlan", dynamic: "D6" },
-  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs disclosureTextByAxis", dynamic: "D7" },
-  { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs" },
-  { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs (parseCoverageLedgerJson token-first throws)", dynamic: "D4" },
-  { token: "coverage_key_unknown", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
-  { token: "coverage_axis_", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
-  { token: "coverage_status_invalid", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
-  { token: "coverage_classes_invalid", stages: ["register-digest"], site: "driver/verify.mjs", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
-  { token: "plan_execution_unreadable", stages: ["register-digest", "narrative-refutation"], site: "driver/verify.mjs:1496 rowLabel, 1712" },
+  { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/register-plan.mjs findUnaccountedDeferredSlices — token on a data row", dynamic: "D5" },
+  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/register-plan.mjs findUnexecutedCleanClaims", dynamic: "D6" },
+  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/register-plan.mjs findUnexecutedCleanClaims", dynamic: "D6" },
+  { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/register-plan.mjs findUnverifiedIncompleteCleanClaims", dynamic: "D7" },
+  { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings" },
+  { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/coverage-ledger.mjs parseCoverageLedgerJson (token-first throws)", dynamic: "D4" },
+  { token: "coverage_key_unknown", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/coverage-ledger.mjs parseCoverageLedgerJson", dynamic: "D4" },
+  { token: "coverage_axis_", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/coverage-ledger.mjs parseCoverageLedgerJson", dynamic: "D4" },
+  { token: "coverage_status_invalid", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/coverage-ledger.mjs parseCoverageLedgerJson", dynamic: "D4" },
+  { token: "coverage_classes_invalid", stages: ["register-digest"], site: "driver/verify.mjs validators.registerFindings", family: "driver/coverage-ledger.mjs parseCoverageLedgerJson", dynamic: "D4" },
+  { token: "plan_execution_unreadable", stages: ["register-digest", "narrative-refutation"], site: "driver/verify.mjs validators.registerFindings, validators.seniorEyeReview" },
 
   // ── matter-frame / clearance-variants / blind-frame / frame-diff ──────────────────────────────────────
-  { token: "stagecontracts_invalid", stages: ["matter-frame", "clearance-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539 coverageEntryList, 1170, 1366, 1677" },
-  { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs" },
-  { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1119" },
-  { token: "variantmodel_romanization_missing", stages: ["clearance-variants"], site: "driver/verify.mjs" },
-  { token: "variantmodel_family_incomplete", stages: ["clearance-variants"], site: "driver/verify.mjs" },
-  { token: "variantmodel_term_markup", stages: ["clearance-variants"], site: "driver/verify.mjs" },
-  { token: "variantmodel_missing", stages: ["clearance-variants"], site: "driver/verify.mjs:1171 checkFindingsSibling, 1230 checkJson" },
+  { token: "stagecontracts_invalid", stages: ["matter-frame", "clearance-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs validators.matterContext, validators.variantManifest, validators.placement, validators.caseLaw" },
+  { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs validators.matterContext" },
+  { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs validators.matterContext" },
+  { token: "variantmodel_romanization_missing", stages: ["clearance-variants"], site: "driver/verify.mjs validators.variantManifest" },
+  { token: "variantmodel_family_incomplete", stages: ["clearance-variants"], site: "driver/verify.mjs validators.variantManifest" },
+  { token: "variantmodel_term_markup", stages: ["clearance-variants"], site: "driver/verify.mjs validators.variantManifest" },
+  { token: "variantmodel_missing", stages: ["clearance-variants"], site: "driver/verify.mjs validators.variantManifest" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
-  // through checkSiblingJson (verify.mjs:1250) → checkJson (:742), so the WHOLE variantmodel_* family
+  // through checkSiblingJson() → checkJson() in verify.mjs, so the WHOLE variantmodel_* family
   // reaches clearance-variants, not just the four literal tokens above.
   // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptClearanceVariants` raises
   // `variantmodel_scope_layer_invalid`, `_scope_status_invalid`, `_scope_item_missing` and `_scope_pipe`
@@ -173,8 +173,8 @@ export const VOCABULARY = [
   // `fail(` / `throw new Error(` / `=>` string literals, and every record module returns
   // `{ok: false, reason}` instead — measured, all four extract ZERO tokens. So this row is authored, not
   // extracted, and nothing re-derives it if the module grows a member. Filed as.
-  { token: "variantmodel_", stages: ["clearance-variants"], site: "driver/verify.mjs:1171 checkFindingsSibling → 742 (JSON family); driver/clearance-variants-record.mjs acceptClearanceVariants (scope-ledger transport family)", family: "driver/variant-manifest-model.mjs (token-first throws) + driver/clearance-variants-record.mjs", dynamic: "D3" },
-  { token: "blindframe_", stages: ["blind-frame"], site: "driver/verify.mjs blindFrame → checkJson", family: "driver/blind-frame-model.mjs", dynamic: "D3" },
+  { token: "variantmodel_", stages: ["clearance-variants"], site: "driver/verify.mjs validators.variantManifest → checkSiblingJson → checkJson (JSON family); driver/clearance-variants-record.mjs acceptClearanceVariants (scope-ledger transport family)", family: "driver/variant-manifest-model.mjs (token-first throws) + driver/clearance-variants-record.mjs", dynamic: "D3" },
+  { token: "blindframe_", stages: ["blind-frame"], site: "driver/verify.mjs validators.blindFrame → checkJson", family: "driver/blind-frame-model.mjs parseBlindFrameModel", dynamic: "D3" },
   // — THE SKEPTIC TRANSPORT FAMILY, WHICH HAD NO ROW AT ALL. Nine tokens minted by acceptSkeptic
   // and not one of them was covered here: the conversion that moved them to the acceptance boundary moved
   // them out of a census that could not read that boundary, so nothing went red. Two of the nine are
@@ -196,31 +196,31 @@ export const VOCABULARY = [
   // the frame never reaches disk. They are declared here for the same reason the two families below are —
   // verify.mjs reaches the module, so a family that could grow a member no row covers must be readable.
   { token: "matterframe_", stages: ["matter-frame"], site: "driver/matter-frame-record.mjs acceptMatterFrame", family: "driver/matter-frame-record.mjs", dynamic: "D3" },
-  { token: "framediff_model_missing", stages: ["frame-diff"], site: "driver/verify.mjs" },
-  { token: "framediff_", stages: ["frame-diff"], site: "driver/verify.mjs:1224 checkFindingsSibling → 742", family: "driver/frame-diff-model.mjs", dynamic: "D3" },
+  { token: "framediff_model_missing", stages: ["frame-diff"], site: "driver/verify.mjs validators.frameDiff" },
+  { token: "framediff_", stages: ["frame-diff"], site: "driver/verify.mjs validators.frameDiff → checkSiblingJson → checkJson", family: "driver/frame-diff-model.mjs", dynamic: "D3" },
 
   // ── register-unit ──────────────────────────────────────────────────────────────────────────────────
-  { token: "declared_not_executed", stages: ["register-unit"], site: "driver/verify.mjs" },
-  { token: "tool_timeout", stages: ["register-unit"], site: "driver/verify.mjs:1788" },
-  { token: "named_band_missing", stages: ["register-unit"], site: "driver/verify.mjs" },
-  { token: "named_band_invalid", stages: ["register-unit"], site: "driver/verify.mjs" },
-  { token: "named_band_collapsed", stages: ["register-unit"], site: "driver/verify.mjs" },
-  { token: "band_block_unplanned", stages: ["register-unit"], site: "driver/verify.mjs" },
+  { token: "declared_not_executed", stages: ["register-unit"], site: "driver/verify.mjs validators.registerUnit" },
+  { token: "tool_timeout", stages: ["register-unit"], site: "driver/verify.mjs validators.registerUnit" },
+  { token: "named_band_missing", stages: ["register-unit"], site: "driver/verify.mjs validators.registerUnit" },
+  { token: "named_band_invalid", stages: ["register-unit"], site: "driver/verify.mjs validators.registerUnit" },
+  { token: "named_band_collapsed", stages: ["register-unit"], site: "driver/verify.mjs validators.registerUnit" },
+  { token: "band_block_unplanned", stages: ["register-unit"], site: "driver/verify.mjs validators.registerUnit" },
   { token: "named_band_", stages: ["register-unit"], site: "driver/verify.mjs validators.registerUnit", family: "driver/named-band.mjs", dynamic: "D3" },
 
   // ── placement-inquiry ──────────────────────────────────────────────────────────────────────────────
-  { token: "placementmodel_missing", stages: ["placement-inquiry"], site: "driver/verify.mjs:1352 connotationViolations, 1379" },
+  { token: "placementmodel_missing", stages: ["placement-inquiry"], site: "driver/verify.mjs validators.placement" },
   { token: "placement_unjudged", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
   { token: "placement_register_unrendered", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
   { token: "placement_form_unreadable", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
-  { token: "placement", stages: ["placement-inquiry"], site: "driver/verify.mjs:1352 connotationViolations → 742", family: "driver/placement-model.mjs (`placement_*` and `placements_*`)", dynamic: "D3" },
+  { token: "placement", stages: ["placement-inquiry"], site: "driver/verify.mjs validators.placement → checkSiblingJson → checkJson", family: "driver/placement-model.mjs (`placement_*` and `placements_*`)", dynamic: "D3" },
 
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
   { token: "caselaw_ledger_missing", stages: ["case-law"], site: "driver/verify.mjs validators.caseLaw" },
-  { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs" },
-  { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs:2425 caseLawLedgerFail", family: "driver/case-law-ledger.mjs caseLawLedgerFail (census reasons)", dynamic: "D8" },
-  { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
-  { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
+  { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs validators.caseLaw" },
+  { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs validators.caseLaw", family: "driver/case-law-ledger.mjs caseLawLedgerFail (census reasons)", dynamic: "D8" },
+  { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs validators.seniorEyeReview" },
+  { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs validators.seniorEyeReview" },
 
   // ── delivery ───────────────────────────────────────────────────────────────────────────────────────
   // EMPTY SINCE, and that is the finding rather than an omission: the only delivery-side token was
@@ -228,7 +228,7 @@ export const VOCABULARY = [
   // its own send. Delivery is code and a packet now, so there is no stage to emit a delivery token.
 
   // ── the gateway wrapper, emittable by EVERY stage and not in verify.mjs at all ─────────────────────
-  { token: "missing_file", stages: ALL_STAGES, site: "driver/gateway.mjs" },
+  { token: "missing_file", stages: ALL_STAGES, site: "driver/gateway.mjs judgeArtifacts" },
 ];
 
 /**
@@ -266,7 +266,8 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "stagecontracts_invalid",
     stages: ["matter-frame", "clearance-variants", "placement-inquiry", "case-law"],
-    reason: "The artifact is DRIVER-written (pipeline.mjs recordStageContract → _driver/stage-contracts.json). A corrupt one is a code or filesystem fault, and verify.mjs:1095 says so in its own comment. Pinning it on a model element would be the exact inversion #850 forbids — a mechanical failure wearing a model's name.",
+    symbol: { file: "driver/verify.mjs", names: ["matterContext"] },
+    reason: "The artifact is DRIVER-written (pipeline.mjs recordStageContract → _driver/stage-contracts.json). A corrupt one is a code or filesystem fault, and `validators.matterContext` in verify.mjs says so in its own comment. Pinning it on a model element would be the exact inversion #850 forbids — a mechanical failure wearing a model's name.",
   },
   // `tool_timeout` was on this list and has been REMOVED: register-unit's tool-written "execute the
   // frozen plan — ONE register_execute_plan call" element declares it, so the token does have an element
@@ -276,17 +277,20 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "missing_file",
     stages: ALL_STAGES,
-    reason: "The gateway's own pre-validation check (gateway.mjs:1037): the declared output does not exist. It speaks about the DISPATCH, not about any element within the output — every stage can emit it and no element owns it.",
+    symbol: { file: "driver/gateway.mjs", names: ["judgeArtifacts"] },
+    reason: "The gateway's own pre-validation check (judgeArtifacts, inside runStageLadder() in gateway.mjs): the declared output does not exist. It speaks about the DISPATCH, not about any element within the output — every stage can emit it and no element owns it.",
   },
   {
     token: "profile_unparseable",
     stages: ["common-law"],
-    reason: "The run's profile is config the driver loaded before the stage ran (verify.mjs:301 COMMONLAW_UNAVAILABLE_RE). A corrupt profile is a config fault; no element of the common-law contract is about it.",
+    symbol: { file: "driver/verify.mjs", names: ["readRunProfile"] },
+    reason: "The run's profile is config the driver loaded before the stage ran (readRunProfile() in verify.mjs). A corrupt profile is a config fault; no element of the common-law contract is about it.",
   },
   {
     token: "framework_manifest_unreadable",
     stages: ["synthesis"],
-    reason: "The rating framework manifest is driver-loaded config (verify.mjs:691). Unreadable = a config/deploy fault, not a defect in anything synthesis was asked to author.",
+    symbol: { file: "driver/verify.mjs", names: ["readRunFramework"] },
+    reason: "The rating framework manifest is driver-loaded config (readRunFramework() in verify.mjs). Unreadable = a config/deploy fault, not a defect in anything synthesis was asked to author.",
   },
   {
     token: "framework_method_unreadable",
@@ -303,12 +307,14 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "plan_execution_unreadable",
     stages: ["register-digest", "narrative-refutation"],
-    reason: "The plan-execution receipt is written by the register tool lane, not by either stage (verify.mjs:1496 rowLabel, 1712). Unreadable is a tool/driver fault; both stages are only READERS of it.",
+    symbol: { file: "driver/verify.mjs", names: ["registerFindings", "seniorEyeReview"] },
+    reason: "The plan-execution receipt is written by the register tool lane, not by either stage (`validators.registerFindings` and `validators.seniorEyeReview` in verify.mjs). Unreadable is a tool/driver fault; both stages are only READERS of it.",
   },
   {
     token: "grid_spec_unreadable",
     stages: ["common-law", "common-law-half"],
-    reason: "The grid spec is driver-written (_driver/grid-spec.half-<h>.json), and verify.mjs:257-258 makes the ruling in its own failure string: \"(driver-written — this is a bug, not a model defect)\". Corrupt or absent, it is a driver fault.",
+    symbol: { file: "driver/verify.mjs", names: ["commonLawHalfEvidence"] },
+    reason: "The grid spec is driver-written (_driver/grid-spec.half-<h>.json), and commonLawHalfEvidence() in verify.mjs makes the ruling in its own failure string: \"(driver-written — this is a bug, not a model defect)\". Corrupt or absent, it is a driver fault.",
   },
   {
     token: "coverage_form_missing",
@@ -318,20 +324,22 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "coverage_form_empty",
     stages: ["register-digest"],
-    reason: "verify.mjs:1449 connotationDispositionFail, same artifact and same verdict in its own string: a form that parsed and carries no rows is \"(driver-written — this is a bug, not a model defect)\".",
+    symbol: { file: "driver/verify.mjs", names: ["registerFindings"] },
+    reason: "`validators.registerFindings` in verify.mjs, same artifact and same verdict in its own string: a form that parsed and carries no rows is \"(driver-written — this is a bug, not a model defect)\".",
   },
   {
     token: "half_path_unrecognized",
     stages: ["common-law-half"],
-    reason: "verify.mjs:395 fires when the seat's own output path does not match common-law-findings.half-<seat>.md. The DRIVER names that path when it spawns the seat, so an unrecognised one is a driver fault and no element of the half's contract is about it.",
+    symbol: { file: "driver/verify.mjs", names: ["commonLawHalfEvidence"] },
+    reason: "commonLawHalfEvidence() in verify.mjs fires when the seat's own output path does not match common-law-findings.half-<seat>.md. The DRIVER names that path when it spawns the seat, so an unrecognised one is a driver fault and no element of the half's contract is about it.",
   },
 ];
 
 /**
  * STAGE-UNREACHABLE VALIDATORS — not exemptions, a SCOPE statement.
  *
- * verify.mjs wires four validators no STAGES entry reaches: findings(1661), report(1719), audit(1728),
- * clientSummary(1736). They are NOT dead code — replay-archive.mjs:128 replayRun and check() in mcp-server/lib/coverage.mjs
+ * verify.mjs wires four validators no STAGES entry reaches: findings, report, audit,
+ * clientSummary. They are NOT dead code — replay-archive.mjs:128 replayRun and check() in mcp-server/lib/coverage.mjs
  * index validators[key] dynamically and the MCP server declares `audit` required — but no stage dispatches
  * them, so their tokens are unaccountable BY CONSTRUCTION with respect to a stage partition. The
  * client-summary STAGE was deleted 2026-08-01 (no line to cite: the stage is gone) and its validator outlived it.
@@ -349,7 +357,7 @@ export const STAGE_UNREACHABLE_VALIDATORS = [
 /**
  * `symbol:` — THE ROT-RESISTANT HALF OF A CITATION.
  *
- * Every row in these tables carries a `site:`, and a `site:` is a line number. Measured on 9d6ea0f1
+ * Every row in these tables carries a `site:`, and a `site:` was a line number. Measured on 9d6ea0f1
  * across VOCABULARY, ARM1_EXEMPTIONS, TRIPWIRE_OUT_OF_SCOPE and STAGE_UNREACHABLE_VALIDATORS:
  *
  *   90 parseable file:line refs
@@ -375,6 +383,9 @@ export const STAGE_UNREACHABLE_VALIDATORS = [
  *
  * So the arm covers what is anchored, and coverage grows as migration reaches these rows. That is a
  * smaller claim than "the citations are checked", and it is the true one.
+ *
+ * Since then every VOCABULARY `site:` has been rewritten to name the function or validator that raises
+ * its token, with no line number, so an insertion above it can no longer move it.
  */
 
 /**
@@ -396,18 +407,18 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   {
     token: "no_citations",
     symbol: { file: "driver/case-law-ledger.mjs", names: ["findCaseLawLedgerViolations", "CASE_LAW_ADVISORY_REASONS", "isCaseLawBlocking"] },
-    site: "driver/case-law-ledger.mjs:195 no_citations, where it is minted; :65 CASE_LAW_ADVISORY_REASONS, :67 isCaseLawBlocking",
-    reason: "ADVISORY, and filtered before the token is built. caseLawLedgerFail() in case-law-ledger.mjs keeps only blocking violations (:196), and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
+    site: "driver/case-law-ledger.mjs findCaseLawLedgerViolations, where `no_citations` is minted; CASE_LAW_ADVISORY_REASONS, isCaseLawBlocking",
+    reason: "ADVISORY, and filtered before the token is built. caseLawLedgerFail() in case-law-ledger.mjs keeps only blocking violations, and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
   },
   {
     token: "accepted_not_folded",
     symbol: { file: "driver/disposition-call.mjs", names: ["CALL_DROPS"] },
-    site: "driver/disposition-tool.mjs:378 recordDispositions — where the token is minted, driver/disposition-call.mjs:192 CALL_DROPS",
+    site: "driver/disposition-tool.mjs recordDispositions — where the token is minted, driver/disposition-call.mjs CALL_DROPS",
     reason: "A DRIVER-FAULT journal code, and the fault is ours. It records that the tool accepted a row the accumulator then did not carry; it is written to the call verdict ledger and reaches a seat only inside a sentence that orders the seat NOT to act (`your answer was valid and this is ours to fix`). A stage refusal built on it would be the driver failing a seat for the driver's own defect, so no stage can emit it by construction rather than by omission.",
   },
   {
     prefix: "client_",
-    site: "driver/verify.mjs:1775-1807",
+    site: "driver/verify.mjs checkClientSummaryJoin, reached only through validators.clientSummary",
     reason: "Emitted only by validators.clientSummary, which no STAGES entry reaches — the client-summary STAGE was deleted 2026-08-01 (no line to cite: the stage is gone) and its validator outlived it. See STAGE_UNREACHABLE_VALIDATORS.",
   },
   {
@@ -449,8 +460,8 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
  *
  * `mints` is the line that WRITES the code, never the line that mentions it. The census's own citation
  * cannot be used here: it records the first line a pattern matched, and for `no_status` that was the
- * JSDoc `@returns` annotation at coverage-form.mjs:810, seventeen lines above the mint. A ruling written
- * from a doc comment is a ruling about a sentence.
+ * JSDoc `@returns` annotation of findCoverageFormViolations() in coverage-form.mjs, seventeen lines
+ * above the mint. A ruling written from a doc comment is a ruling about a sentence.
  *
  * @type {ReadonlyArray<{code:string, mints:string[], rollsUpTo:string[], why:string}>}
  */
@@ -470,24 +481,25 @@ export const INNER_CODES = Object.freeze([
   { code: "call_partial", mints: ["driver/connotation-search.mjs:1984"], rollsUpTo: ["connotation_call_partial"],
     why: "As call_never_made — same table, same projection. This is the pair #1211 cites as its worked example: the composite is covered, the bare form reaches no stage." },
   { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2115"], rollsUpTo: ["connotation_quote_unbound"],
-    why: "The ruled-but-unbound row. Projected at verify.mjs:1450 unbound, and reported only once nothing is unruled." },
+    why: "The ruled-but-unbound row. Projected as `unbound` in connotationDispositionFail() in verify.mjs, and reported only once nothing is unruled." },
   { code: "token_absent", mints: ["driver/connotation-search.mjs:2142"], rollsUpTo: ["connotation_token_absent"],
-    why: "#592 split this out of no_ruling. Row-level only — repairs.mjs:352 says so in as many words: `never a top-level token`." },
+    why: "#592 split this out of no_ruling. Row-level only — PROGRESS_TOKENS declared in repairs.mjs says so in as many words: `never a top-level token`." },
   { code: "cite_absent", mints: ["driver/connotation-search.mjs:2151"], rollsUpTo: ["connotation_cite_absent"],
-    why: "#592, as token_absent. repairs.mjs:353: `row-level only — never a top-level token`." },
+    why: "#592, as token_absent. PROGRESS_TOKENS declared in repairs.mjs: `row-level only — never a top-level token`." },
   { code: "no_ruling", mints: ["driver/connotation-search.mjs:2158"], rollsUpTo: ["connotation_no_ruling"],
     why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token at repairs.mjs:308 and in stages.mjs's E1 rows, always namespaced." },
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
-  // verify.mjs:912-913 states the ruling: a sweep that did not RUN is a canonical-only decision with its
-  // own token and its own remedy, so the projector beside verify.mjs's CORRECTIONS_SECTION_RE deliberately does not handle it.
+  // verify.mjs's block headed "the meaning-sweep failure tokens" states the ruling: a sweep that did not
+  // RUN is a canonical-only decision with its own token and its own remedy, so the projector,
+  // connotationDispositionFail() in verify.mjs, deliberately does not handle it.
   { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:1999"], rollsUpTo: ["connotation_search_missing"],
     why: "RENAMED, not namespaced: verify.mjs emits `connotation_search_missing`. It is excluded from CONNOTATION_FORM_REASONS at connotation-search.mjs for exactly this reason." },
 
   // ── case-law-ledger.mjs — ONE token, the codes as census payload ─────────────────────────────────
   //
-  // caseLawLedgerFail() in case-law-ledger.mjs (:195) returns `caselaw_ledger:<census>;<detail>`, and
+  // caseLawLedgerFail() in case-law-ledger.mjs returns `caselaw_ledger:<census>;<detail>`, and
   // `normalizeFailToken` cuts at the first colon — so the token is `caselaw_ledger` and every code below
   // lives in the payload. The `caselaw_ledger` row already carries `family:
   // "driver/case-law-ledger.mjs caseLawLedgerFail (census reasons)"`, which is this ruling written down before the
@@ -517,21 +529,22 @@ export const INNER_CODES = Object.freeze([
   // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
   { code: "no_status", mints: ["driver/coverage-form.mjs:894"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
-    why: "Two composites, split on the record's `cause`: `checkFindingsSibling()` in verify.mjs for cause `axis_invalid`, `dispositionForm()` there for the rest. NOT the `@returns` annotation above `COVERAGE_CAUSES` in coverage-form.mjs — that is the annotation, not the mint." },
+    why: "Two composites, split on the record's `cause`: coverageFormFail() in verify.mjs for cause `axis_invalid`, and the same function for the rest. NOT the `@returns` annotation of findCoverageFormViolations() in coverage-form.mjs — that is the annotation, not the mint." },
   { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:884"], rollsUpTo: ["coverage_form_engine_vocabulary"],
-    why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced at verify.mjs:1165; the bare code names a row, never a stage." },
+    why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced by coverageFormFail() in verify.mjs; the bare code names a row, never a stage." },
 
   // ── ONE CODE, TWO MODULES ────────────────────────────────────────────────────────────────────────
   //
   // `form_damaged` is minted in connotation-search.mjs AND coverage-form.mjs and becomes a different
   // token in each lane. The static census records the FIRST site it matched and no more, so its own
   // citation names one of the three mints — which is why `mints` is a list, and why a ruling copied from
-  // the census output would have been half a ruling. verify.mjs:1075 parseCorrectionKinds already states the rule this row
-  // records: `coverage_form_damaged`, never a bare `form_damaged`.
+  // the census output would have been half a ruling. verify.mjs's block headed "the register coverage-form
+  // failure tokens" already states the rule this row records: `coverage_form_damaged`, never a bare
+  // `form_damaged`.
   { code: "form_damaged",
     mints: ["driver/connotation-search.mjs:2004", "driver/connotation-search.mjs:2080", "driver/coverage-form.mjs:876"],
     rollsUpTo: ["connotation_form_damaged", "coverage_form_damaged"],
-    why: "Minted in two lanes and namespaced per lane: verify.mjs:1019 parseCorrections for the meaning sweep, verify.mjs:1119 findReviewerCoherenceFlags for the register digest. The namespacing is what keeps them apart — see verify.mjs:1075 parseCorrectionKinds." },
+    why: "Minted in two lanes and namespaced per lane: connotationDispositionFail() in verify.mjs for the meaning sweep, coverageFormFail() in verify.mjs for the register digest. The namespacing is what keeps them apart — see verify.mjs's block headed \"the register coverage-form failure tokens\"." },
 ]);
 
 /**

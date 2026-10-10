@@ -21,9 +21,9 @@ It reads run directories off your disk. So:
 
 - **It shows you runs you have already produced.** `CLEAROTRON_WORK_DIR` is where the engine writes
   them, and that is the one variable the server needs.
-- **`npx clearotron demo` runs are not visible to it.** The demo publishes a *report* into a pool; it does not
-  create a run directory. There is nothing dishonest happening if `list_runs` comes back empty — you have
-  no runs yet.
+- **With no install, it shows you the demo.** `npx clearotron mcp` starts this server from the npm package.
+  On a machine with no install it answers from the four sample runs `npx clearotron demo` replays, and every
+  row says it is the demo. On a machine with an install it reads that install's runs.
 - **Nothing here spends money on its own,** with two exceptions that are gated and named: `start_run`
   enqueues a real clearance, and `what_if_run` re-runs one pipeline stage. Both are refused by default on
   a sensible allowlist — see "Hold two tools back" below.
@@ -50,6 +50,12 @@ claude mcp add trademark-artifacts --scope user \
 ```
 
 Check it: `claude mcp list` prints `trademark-artifacts: … - √ Connected`.
+
+With no clone, start it from the npm package instead, naming the version:
+
+```sh
+claude mcp add trademark-artifacts --scope user -- npx -y clearotron@<version> mcp
+```
 
 `--scope user` makes it available in every project, not only the directory you ran it in. In Windows
 PowerShell 5.1, write the separator as `"--"`: that shell drops a bare `--`. Remove it with

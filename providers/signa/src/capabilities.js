@@ -138,6 +138,18 @@ export const CAPABILITIES = Object.freeze({
   // So the planner stacks an exact spelling band at this width, and the kernel sends each stack as one
   // request (`namesChunkFor` in core.js); every other predicate stays at `maxOrWidth`.
   exactOrWidth: 100,
+  // ── THE SOUND-ALIKE BAND TAKES A LIST TOO, UP TO 10 SPELLINGS AND 30 WORDS ─────────────────────────
+  //
+  // The register takes up to 10 spellings, and 30 words in all, when a channel other than `identical`
+  // and `lookalike` is asked. On the sound-alike channels (`identical`, `phonetic`) it answers a list of
+  // 10 with the same records, by id, as one search per spelling, and each record's `match.terms` names the
+  // spellings that found it alone (ruled 2026-10-09).
+  //
+  // The typo channels (`identical`, `fuzzy`, `embedded`, `lookalike`) stay one spelling per request. The
+  // register refuses some typo lists of 10 as "too complex to run" where each spelling alone answers, and
+  // which lists it refuses depends on the spellings, so no fixed width is safe there.
+  phoneticOrWidth: 10,
+  listWordBudget: 30,
   // filters.nice_classes[] is a top-level OR filter — one call, no fan-out.
   classFilter: "native",
   // ── THE GOODS-AND-SERVICES TEXT FILTER ──────────────────────────────────────────────────────────
@@ -410,6 +422,9 @@ export const CAPABILITIES = Object.freeze({
     pageGuard: 60,
     ceilingDefault: 600,
     namesChunkDefault: 1,
+    // A ranked list the register will not run (HTTP 400, "The search query is too complex to run."). Which
+    // lists it refuses depends on the spellings, so a refused one is asked again one spelling at a time.
+    listRefusal: /too complex to run/i,
     providerWindow: "cursor window; exact total via options.include_total (approximate totals saturate at 10000 and are reported UNKNOWN, never as a count)",
   }),
 });

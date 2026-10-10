@@ -427,6 +427,16 @@ export function codexToolCallsByName(ev) {
 }
 
 /**
+ * The commands codex ran this turn: its `command_execution` items, counted once per item id, a failed one
+ * included, since a command that exited non-zero still ran. A NUMBER is a measurement (0: none ran). PURE.
+ */
+export function codexCommandCalls(ev) {
+  let n = 0;
+  for (const name of ev?.toolItems?.values() ?? []) if (name === "command_execution") n += 1;
+  return n;
+}
+
+/**
  * The tool-server calls of this turn that came back as an error, by tool name, in the shape
  * anthropic-agent records: a call that reached its server and `failed` there, which codex writes with no
  * `error.message` (a call codex refused itself carries one, and `toolCallsRefused` counts those). Counted
@@ -653,10 +663,10 @@ function settleTuple({ r, ev, resumeRef }) {
     // still cannot report a whole-turn tool count, so `toolCalls` stays null, which is the house rule
     // for "this engine does not report" rather than "it called nothing".
     ...mcpToolGauge(ev),
-    // The refused count under the name the attempt row reads on both engines. Codex keeps its shell, and this
-    // adapter reads its commands only for failures (below), so it reports no command-tool count: null, never zero.
+    // The refused count under the name the attempt row reads on both engines. Codex keeps its shell, and every
+    // command it runs is a `command_execution` item: counted once per item id, failed ones included.
     toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
-    commandToolCalls: null,
+    commandToolCalls: codexCommandCalls(ev),
     // The per-name split of the calls codex reports (see codexToolCallsByName), what the session went
     // through (session-record.mjs: every turn ending and stream error, in order), and the raw stream.
     toolCallsByName: codexToolCallsByName(ev), toolCallsErroredByName: codexToolServerErrors(ev),

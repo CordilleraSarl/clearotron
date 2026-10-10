@@ -16,7 +16,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, chmodSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { appendAudit, readConnections, auditPaths, LEGACY_AUDIT_PATH, UNNAMED_DOOR } from "../lib/audit.mjs";
@@ -68,16 +68,19 @@ test("an unreadable log is a could-not-look that says so, and never throws", () 
   // Best-effort is the contract: this is called on a page load and a permissions problem on one box
   // must not 500 every report on it. But it must not go quiet either — the note is what makes an
   // operator able to find out why every reader is being offered setup.
+  //
+  // BUILT AS A DIRECTORY, NOT AS A MODE-000 FILE. Root reads a mode-000 file, so under root that fixture
+  // was readable and this arm failed without measuring anything. A directory at the log's path exists,
+  // opens, and fails every read, for root as for anyone. The reader handles every failure except a
+  // missing file in one place, so this is the same could-not-look a permission error produces.
   const dir = scratch();
   const path = join(dir, "locked.jsonl");
-  writeFileSync(path, line({ email: "reader@example.test" }));
-  chmodSync(path, 0o000);
+  mkdirSync(path);
   try {
     const seen = readConnections({ paths: [path] });
     assert.equal(seen.available, false, "unreadable is not 'nobody connected'");
-    assert.ok(seen.note, "and the reason is carried, not swallowed");
+    assert.match(seen.note ?? "", /EISDIR/, "and the reason is carried, not swallowed");
   } finally {
-    chmodSync(path, 0o600);
     rmSync(dir, { recursive: true, force: true });
   }
 });

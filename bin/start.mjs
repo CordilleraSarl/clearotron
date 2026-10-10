@@ -2445,6 +2445,18 @@ if (isMain) {
   const clientDoor = adoptedClientDoor
     ? null
     : start("the client door", "mcp-server/http-server-client.mjs", envs.client, { fatal: false });
+  // ── THE BANNER NAMES THIS DOOR ONLY ONCE IT ANSWERS ─────────────────────────────────────────────────
+  //
+  // The engine door and the portal are each awaited above before anything is printed. This door was
+  // not: the banner below was composed the moment it was spawned, while it was still loading, and
+  // announced an address that refused connections. Measured 2026-10-09, in a container with no network
+  // running as root and on a host as a normal user: a request sent as the banner printed got no
+  // connection, and the door's first answer came about half a second later. Its own output said nothing
+  // was wrong, because nothing was; it had not finished starting.
+  //
+  // Same probe and same budget as the other two, and non-fatal like the door itself. A door that exits,
+  // or does not answer within the budget, takes the NOT RUNNING branch below and the portal keeps serving.
+  const clientDoorAnswered = clientDoor ? await healthy(`http://${HOST}:${ports.client}/healthz`, clientDoor) : false;
 
   // ── 6. one URL ─────────────────────────────────────────────────────────────────────────────────────
 
@@ -2471,7 +2483,8 @@ if (isMain) {
   // AN ADOPTED DOOR IS RUNNING. Without this the banner reported "NOT RUNNING …
   // its output above says why" about a door that is up and serving, and pointed the reader at output
   // that does not exist — the one sentence on this screen a reader would act on, and false.
-  const doorRunning = adoptedClientDoor || clientDoor?.child?.exitCode === null;
+  // AND A SPAWNED DOOR IS RUNNING ONLY ONCE IT HAS ANSWERED: alive is not listening (see the probe above).
+  const doorRunning = adoptedClientDoor || (clientDoor?.child?.exitCode === null && clientDoorAnswered);
   if (doorRunning) {
     say(`  Client door  http://${HOST}:${ports.client}/mcp   — a client's assistant connects here.`);
     if (adoptedClientDoor)

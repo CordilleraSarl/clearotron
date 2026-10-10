@@ -6,19 +6,20 @@
 // channels the request names, and says on each record which spellings found it. On the exact channels it
 // takes up to 100 spellings, and measured against one search per spelling it returned the same records.
 // So an exact spelling band no longer costs one request per spelling: the kernel sends each stack of up to
-// 100 as one request. Every other band — sound-alike, wildcard, owner — stays at one term per request.
+// 100 as one request. The sound-alike band followed (ruled 2026-10-09): up to 10 spellings and 30 words per
+// request. Every other band (typo, starts-with, wildcard, owner) stays at one term per request.
 //
 // No vendor measurements and no mark live here; the server is local and its bodies are invented.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const TMP = mkdtempSync(join(tmpdir(), "signa-list-"));
 process.env.CLEAROTRON_REGISTER_CALL_LOG = join(TMP, "calls.jsonl");
-const { doEnumerate, namesChunkFor } = await import("../src/core.js");
+const { doEnumerate, doExecutePlan, namesChunkFor, buildSearchRequest } = await import("../src/core.js");
 after(() => rmSync(TMP, { recursive: true, force: true }));
 
 const spellings = (n) => Array.from({ length: n }, (_, i) => `ZYTHERM${String.fromCharCode(65 + (i % 26))}${Math.floor(i / 26)}`);
@@ -67,13 +68,147 @@ test("250 exact spellings go as 100, 100 and 50", async () => {
   } finally { await reg.close(); }
 });
 
-test("CONTROL: a sound-alike band stays one term per request", async () => {
+test("a sound-alike band goes as lists of 10 on the sound-alike channels", async () => {
   const reg = await register();
   try {
-    await doEnumerate("k", reg.base, { names: spellings(3), match_mode: "phonetic" }, null);
-    assert.equal(reg.seen.length, 3);
-    assert.ok(reg.seen.every((b) => typeof b.q === "string"));
+    const names = spellings(12);
+    const out = JSON.parse((await doEnumerate("k", reg.base, { names, match_mode: "phonetic", nice_classes: [9] }, null)).text);
+    assert.deepEqual(reg.seen.map((b) => b.q), [names.slice(0, 10), names.slice(10)]);
+    assert.ok(reg.seen.every((b) => b.similarity.join() === "identical,phonetic"));
+    assert.equal(out.state, "enumerated");
+    assert.equal(out.records.length, 12);
   } finally { await reg.close(); }
+});
+
+test("a list the register refuses as too complex is asked again one spelling at a time, never left unsearched", async () => {
+  // Which lists the register refuses depends on the spellings, so a refused list costs one free refusal and
+  // then the searches one spelling at a time would have made: the band is answered either way.
+  const seen = [];
+  const server = createServer((req, res) => {
+    let raw = "";
+    req.on("data", (c) => { raw += c; });
+    req.on("end", () => {
+      const body = JSON.parse(raw || "{}");
+      seen.push(body);
+      if (Array.isArray(body.q)) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: { detail: "The search query is too complex to run." } }));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ object: "list", has_more: false,
+        data: [{ id: `tm_${body.q}`, jurisdiction_code: "US", mark_text: body.q, status: { primary: "active" } }],
+        pagination: { cursor: null, total_count: 1, total_count_approximate: false }, search_meta: { similarity_applied: body.similarity ?? [] } }));
+    });
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  try {
+    const names = spellings(3);
+    const out = JSON.parse((await doEnumerate("k", `http://127.0.0.1:${server.address().port}`, { names, match_mode: "phonetic", nice_classes: [9] }, null)).text);
+    assert.deepEqual(seen.map((b) => b.q), [names, ...names], "the refused list was not asked again one spelling at a time");
+    assert.equal(out.state, "enumerated", `the band was left unsearched: ${out.reason ?? ""}`);
+    assert.equal(out.records.length, 3);
+  } finally { await new Promise((r) => server.close(r)); }
+});
+
+test("CONTROL: a typo band and a starts-with band stay one term per request", async () => {
+  for (const shape of [{ strategies: ["fuzzy"] }, { match_mode: "prefix" }]) {
+    const reg = await register();
+    try {
+      await doEnumerate("k", reg.base, { names: spellings(3), ...shape }, null);
+      assert.equal(reg.seen.length, 3, `${JSON.stringify(shape)} went as a list`);
+      assert.ok(reg.seen.every((b) => typeof b.q === "string"));
+    } finally { await reg.close(); }
+  }
+});
+
+test("a list keeps to the register's 30 words: ten three-word spellings are one list, ten four-word ones are not", () => {
+  const words = (n) => (t) => Array.from({ length: n }, (_, k) => `${t}${k}`).join(" ");
+  assert.equal(namesChunkFor({ names: spellings(10).map(words(3)), match_mode: "phonetic" }), 10);
+  assert.equal(namesChunkFor({ names: spellings(10).map(words(4)), match_mode: "phonetic" }), 7);
+  assert.equal(namesChunkFor({ names: spellings(30), match_mode: "phonetic" }), 10);
+});
+
+test("the request builder refuses a list outside the shapes the register answers term for term", () => {
+  assert.throws(() => buildSearchRequest({ query: spellings(11), strategies: ["phonetic"] }), /Send one term per request/);
+  assert.throws(() => buildSearchRequest({ query: spellings(3), strategies: ["fuzzy"] }), /Send one term per request/);
+  assert.throws(() => buildSearchRequest({ query: spellings(3), strategies: ["prefix"] }), /Send one term per request/);
+  assert.deepEqual(buildSearchRequest({ query: spellings(10), strategies: ["phonetic"] }).q, spellings(10));
+});
+
+test("through the plan executor, a crowded list's per-spelling counts each ask one spelling", async () => {
+  // The executor shapes the request once and the kernel shapes it again for every count. A list written by
+  // the first pass used to survive the second, so each spelling was "counted" by sending the whole list,
+  // and every spelling was recorded with the list's total.
+  const seen = [];
+  const server = createServer((req, res) => {
+    let raw = "";
+    req.on("data", (c) => { raw += c; });
+    req.on("end", () => {
+      const body = JSON.parse(raw || "{}");
+      seen.push(body);
+      const total = Array.isArray(body.q) ? 5000 : body.q === "ZYTHERMB" ? 7 : 0;
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ object: "list", has_more: total > 0, data: [],
+        pagination: { cursor: null, total_count: total, total_count_approximate: false }, search_meta: { similarity_applied: body.similarity ?? [] } }));
+    });
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  const dir = mkdtempSync(join(TMP, "plan-"));
+  try {
+    const names = ["ZYTHERMA", "ZYTHERMB", "ZYTHERMC"];
+    writeFileSync(join(dir, "plan.json"), JSON.stringify({ regions: ["US"], entries: [{ qid: "q-stack", axis: "primary-sweep",
+      predicate: "exact", terms: names, nice_classes: ["9"], regions: ["US"], expected_kind: "enumerate" }] }));
+    await doExecutePlan({ apiKey: "k", base: `http://127.0.0.1:${server.address().port}` },
+      { plan_path: join(dir, "plan.json"), axis: "primary-sweep", output_path: join(dir, "band.json") }, null);
+    assert.deepEqual(seen.map((b) => b.q), [names, ...names], "a spelling's count sent the whole list");
+    const band = JSON.parse(readFileSync(join(dir, "band.json"), "utf8"));
+    assert.deepEqual(band.find((b) => b.qid === "q-stack").term_counts, {
+      ZYTHERMA: { total_hits: 0, disposition: "verified-zero" },
+      ZYTHERMB: { total_hits: 7, disposition: "unenumerated" },
+      ZYTHERMC: { total_hits: 0, disposition: "verified-zero" },
+    });
+  } finally { await new Promise((r) => server.close(r)); }
+});
+
+test("through the plan executor, a list the register floors is counted spelling by spelling, a spelling's own floor kept", async () => {
+  // The register answers the whole list "at least 10,000" and one spelling the same way; the other two
+  // count. The list is a crowd with a null total and the register's figure, and each spelling is asked
+  // alone: the floored one is itself a crowd with its figure, never an error and never a 0.
+  const seen = [];
+  const server = createServer((req, res) => {
+    let raw = "";
+    req.on("data", (c) => { raw += c; });
+    req.on("end", () => {
+      const body = JSON.parse(raw || "{}");
+      seen.push(body);
+      const floored = Array.isArray(body.q) || body.q === "ZYTHERMA";
+      const total = floored ? 10000 : body.q === "ZYTHERMB" ? 7 : 0;
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ object: "list", has_more: total > 0, data: [],
+        pagination: { cursor: null, total_count: total, total_count_approximate: floored },
+        search_meta: { similarity_applied: body.similarity ?? [] } }));
+    });
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  const dir = mkdtempSync(join(TMP, "plan-floor-"));
+  try {
+    const names = ["ZYTHERMA", "ZYTHERMB", "ZYTHERMC"];
+    writeFileSync(join(dir, "plan.json"), JSON.stringify({ regions: ["US"], entries: [{ qid: "q-floor", axis: "primary-sweep",
+      predicate: "exact", terms: names, nice_classes: ["9"], regions: ["US"], expected_kind: "enumerate" }] }));
+    await doExecutePlan({ apiKey: "k", base: `http://127.0.0.1:${server.address().port}` },
+      { plan_path: join(dir, "plan.json"), axis: "primary-sweep", output_path: join(dir, "band.json") }, null);
+    assert.deepEqual(seen.map((b) => b.q), [names, ...names], "a spelling's count did not ask that spelling alone");
+    const block = JSON.parse(readFileSync(join(dir, "band.json"), "utf8")).find((b) => b.qid === "q-floor");
+    assert.equal(block.total_hits, null);
+    assert.equal(block.total_floor, 10000);
+    assert.notEqual(block.error, true);
+    assert.deepEqual(block.term_counts, {
+      ZYTHERMA: { total_hits: null, total_floor: 10000, disposition: "crowd" },
+      ZYTHERMB: { total_hits: 7, disposition: "unenumerated" },
+      ZYTHERMC: { total_hits: 0, disposition: "verified-zero" },
+    });
+  } finally { await new Promise((r) => server.close(r)); }
 });
 
 test("a crowded list falls back to one count per spelling, so a rare spelling is not lost in the crowd", async () => {
@@ -93,5 +228,5 @@ test("the list width respects the register's body limit, and a short spelling ke
   assert.ok(namesChunkFor({ names: ["X".repeat(190), "ZYTHERMO"], match_mode: "exact" }) < 100, "long spellings must not overflow the body");
   assert.equal(namesChunkFor({ names: ["Q", "ZYTHERMO"], match_mode: "exact" }), null, "a spelling below the ranked floor cannot ride a ranked list");
   assert.equal(namesChunkFor({ names: spellings(5), match_mode: "exact", owner: "AN INVENTED HOLDER" }), null);
-  assert.equal(namesChunkFor({ names: spellings(5), match_mode: "phonetic" }), null);
+  assert.equal(namesChunkFor({ names: spellings(5), match_mode: "prefix" }), null);
 });

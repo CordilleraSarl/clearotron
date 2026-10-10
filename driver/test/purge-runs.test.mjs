@@ -352,7 +352,8 @@ test("--delete-owed-notices is what removes it, and the receipt records that it 
 });
 
 test("an outbox that cannot be READ refuses too — a blind check is not a passed one", {
-  skip: process.platform === "win32" && "mode bits: the arm makes the outbox unreadable with chmod 000, and chmod on Windows cannot take read access from a folder",
+  skip: (process.platform === "win32" && "mode bits: the arm makes the outbox unreadable with chmod 000, and chmod on Windows cannot take read access from a folder")
+    || (process.getuid?.() === 0 && "root reads through a mode-000 folder — the unreadable outbox cannot be built, so the refusal on a could-not-look is not driven here"),
 }, () => {
   const env = pool([["alpha", "acme"]]);
   const ob = outbox(env, []);
@@ -379,7 +380,8 @@ test("an outbox that was never created is EMPTY, not unknown — or every fresh 
 });
 
 test("a receipt that cannot be written STOPS the delete", {
-  skip: process.platform === "win32" && "mode bits: the arm makes the pool root unwritable with chmod 555, and chmod on Windows does not make a folder read-only",
+  skip: (process.platform === "win32" && "mode bits: the arm makes the pool root unwritable with chmod 555, and chmod on Windows does not make a folder read-only")
+    || (process.getuid?.() === 0 && "root writes through a mode-555 folder — the unwritable receipt cannot be built, so the stop before the delete is not driven here"),
 }, () => {
   // Otherwise the record is decorative: the one tool that removes bytes would carry on removing them
   // with no way to reconstruct what went, which is the state this was filed about.

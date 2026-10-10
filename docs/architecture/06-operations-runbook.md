@@ -301,9 +301,10 @@ node mcp-server/mint-token.mjs --scope ops --sub <principal-name> \
 - The token is printed once and stored nowhere. Losing it means minting another.
 
 **Revoking one.** Every mint prints a `jti`. Write that line into the file named by
-`TRADEMARK_MCP_TOKEN_DENYLIST` (one `jti` per line, `#` comments allowed) and the next verification
-refuses the token. A **missing** denylist file means nothing is revoked, never everything — a denylist
-must not be able to take all authentication down.
+`TRADEMARK_MCP_TOKEN_DENYLIST`, or into `~/.config/clearotron/token-denylist` when the setting is unset
+(one `jti` per line, `#` comments allowed), and the next verification refuses the token. A named list
+that is missing or unreadable refuses every key, and so does a default list that exists but cannot be
+read. An absent default list means nothing has been revoked.
 
 **Rotating the signing secret.** Verification accepts `TRADEMARK_MCP_TOKEN_SECRET` or
 `TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS`; minting always signs with the current one. Move the old value

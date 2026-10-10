@@ -143,7 +143,7 @@ export function undispatchableThrow(offenders) {
  * Every FIRING directive in a frame-diff document that cannot be dispatched — read LENIENTLY, from
  * raw text or an already-parsed object. This is the enumeration the gateway hint and the pipeline's
  * exhausted-ladder disclosure both run against the artifact ON DISK, because the fail string they
- * would otherwise scrape is cut at 160 characters (verify.mjs:381 commonLawMeaningSeat) and cannot carry more than the
+ * would otherwise scrape is cut at 160 characters (checkJson() in verify.mjs) and cannot carry more than the
  * first offender. Lenient on purpose: the artifact reaching these two callers has ALREADY failed
  * validation, so it may also carry an unknown key or a bad gap flag — refusing to enumerate then
  * would lose exactly the disclosures this exists to keep. Returns [{item, layer, severity, why}].

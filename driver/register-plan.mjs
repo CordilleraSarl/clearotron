@@ -375,6 +375,11 @@ export const planExactOrWidth = (capabilities) =>
   Number.isFinite(capabilities?.exactOrWidth) && capabilities.exactOrWidth >= 1
     ? Math.floor(capabilities.exactOrWidth) : planMaxOrWidth(capabilities);
 
+/** The OR-stack width for a SOUND-ALIKE band, by the same rule: `phoneticOrWidth` where a provider declares one. */
+export const planPhoneticOrWidth = (capabilities) =>
+  Number.isFinite(capabilities?.phoneticOrWidth) && capabilities.phoneticOrWidth >= 1
+    ? Math.floor(capabilities.phoneticOrWidth) : planMaxOrWidth(capabilities);
+
 // The plan emits ONE `wildcard` predicate; the provider contract splits it into three sub-capabilities.
 // Mirrors the executor's planPredicateParams anchoring exactly (trailing * → prefix/starts-with,
 // leading * → suffix/ends-with, both/neither → infix over the raw pattern).
@@ -2190,7 +2195,9 @@ export function validatePlanFeasibility(plan, { capabilities = null, maxOrWidth 
     if (!PLAN_PREDICATES.includes(e?.predicate)) add("unexecutable", `unknown predicate "${e?.predicate}"`);
     const names = Array.isArray(e?.terms) ? e.terms : e?.term != null ? [e.term] : [];
     if (!names.length || names.some((t) => !String(t ?? "").trim())) add("unexecutable", "empty term(s)");
-    const width = e?.predicate === "exact" && capabilities ? Math.max(maxOrWidth, planExactOrWidth(capabilities)) : maxOrWidth;
+    const width = !capabilities ? maxOrWidth
+      : e?.predicate === "exact" ? Math.max(maxOrWidth, planExactOrWidth(capabilities))
+        : e?.predicate === "phonetic" ? Math.max(maxOrWidth, planPhoneticOrWidth(capabilities)) : maxOrWidth;
     if (Array.isArray(e?.terms) && e.terms.length > width) add("repairable", `OR-stack of ${e.terms.length} names exceeds the executor bound (${width}) — the executor runs it chunked`);
     for (const t of names) if (String(t).length > maxNameLength) add("repairable", `name exceeds ${maxNameLength} chars ("${String(t).slice(0, 40)}…") — provider-side truncation risk only`);
     if ((e?.nice_classes ?? []).some((c) => !Number.isFinite(Number(c)))) add("unexecutable", "non-numeric nice_class");
@@ -2433,6 +2440,8 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       // WHAT THE TOTAL COUNTS, when the register said: `records`, one per country a mark covers. Every
       // reader of this row reads the count as the register's own number (ruled 2026-10-02).
       ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
+      // The register's floor when it answered "at least N" instead of a count: total_hits stays null beside it.
+      ...(Number.isFinite(b.total_floor) ? { total_floor: b.total_floor } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));
@@ -2831,8 +2840,10 @@ export function openBlocksByAxis(skeleton, bandBlocksByAxis, plan) {
       // under the deleted prose join (the qid, or this number standalone). Both are now written INTO the
       // form's row by the driver, so the equivalence the join had to test for is structural — see
       // coverage-form.mjs. The field stays because the row, the render and the failure token all carry it.
+      // A null total stays off the row: `Number(null)` is 0, which printed "(0 counted)" for a register's floor
+      // ("at least 10,000") and for a count the register refused to give.
       unverified.push({ qid: e.qid,
-        ...(Number.isInteger(Number(b.total_hits)) ? { total_hits: Number(b.total_hits) } : {}),
+        ...(b.total_hits != null && Number.isInteger(Number(b.total_hits)) ? { total_hits: Number(b.total_hits) } : {}),
         ...(unaccounted.length ? { unaccounted: unaccounted.slice(0, 8) } : {}),
         ...(unaccountedClasses.length ? { unaccounted_classes: unaccountedClasses.slice(0, 8) } : {}) });
     }

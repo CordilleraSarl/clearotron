@@ -151,7 +151,7 @@ const BLOCKING_REVIEW = [
 ].join("\n");
 
 test("the grounds a BLOCKING sidecar lacked were already parsed by a function the pipeline imports", () => {
-  // The whole of this fix. `parseCorrections` is imported at pipeline.mjs:33 and is what the corrective
+  // The whole of this fix. `parseCorrections` is imported by pipeline.mjs and is what the corrective
   // pass is handed; it walks the same lines `countCitedDefects` counts. Nothing needed extracting — the
   // two halves were simply never joined, which is this family's mechanism stated in one sentence.
   const cited = parseCorrections(BLOCKING_REVIEW).map((r) => r.text).filter(Boolean);

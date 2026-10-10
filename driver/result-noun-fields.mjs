@@ -44,7 +44,7 @@
 // `verdict` is one of:
 //   "result"      — the value states what happened. The name is honest.
 //   "invocation"  — the value states that something was CALLED. Fix by renaming, or by adding a sibling
-//                   that carries the result (the remedy `repairs.mjs:724` already uses, keeping
+//                   that carries the result (the remedy createRepairLedger() in repairs.mjs already uses, keeping
 //                   `outcome` for existing readers beside `dispatch` and `verdict`).
 //   "out-of-scope" — never reaches `_driver/*.json` or `run.jsonl`; `atWriteSite` is 0.
 

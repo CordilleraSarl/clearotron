@@ -425,7 +425,8 @@ export function registerCanCountFor(snapshot) {
  *
  * The trap is `covered ?? []`, which turns both "unrestricted" and "unknown" into "nothing" and offers
  * a client zero territories on a production deployment. It is written down at
- * providers/corsearch/src/capabilities.js:66-68 as well: "Never read as 'covers nothing'".
+ * the `covered` entry of CAPABILITIES in providers/corsearch/src/capabilities.js as well: "Never read as
+ * 'covers nothing'".
  */
 export function registerTerritoriesFor(snapshot) {
   if (!snapshot?.register || !("territories" in snapshot.register)) return undefined;
