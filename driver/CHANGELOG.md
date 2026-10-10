@@ -1,5 +1,16 @@
 # clearotron-driver
 
+## 0.4.1-beta.1
+
+### Patch Changes
+
+- Fixed: A report repaired just before delivery keeps its coverage notes, such as a script that was not searched, in the report and the audit workbook.
+- Fixed: A search too broad for the register to count is no longer reported as one that could not be run. The report shows it as too large to read, with the register's own figure.
+- Fixed: On Signa, a crowded search over several spellings now counts each spelling alone, so a rare spelling is no longer reported as crowded.
+- New: `npx clearotron mcp` starts Clearotron's MCP server for an assistant; with no install it answers from the demo's sample runs, and says so.
+- Fixed: The address `clearotron start` and `clearotron demo` print for a client's assistant now answers as soon as it is printed.
+- Fixed: The audit workbook's coverage summary names each area in words, not the engine's identifiers.
+
 ## 0.4.1-beta.0
 
 ### Patch Changes
