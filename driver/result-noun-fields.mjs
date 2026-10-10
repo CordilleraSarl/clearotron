@@ -62,8 +62,8 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   { file: "driver/pipeline-knockout.mjs", noun: "recovered", sites: 1, atWriteSite: 1, verdict: "result",
     why: "written after the chunk files were actually removed" },
   { file: "driver/pipeline-knockout.mjs", noun: "outcome", sites: 3, atWriteSite: 3, verdict: "result",
-    why: "the reviewing pass's own verdict on itself, read at each writing site: `nothing-flagged` after "
-      + "the measurement came back empty, `applied` after the rewrite passed the merged gate and was "
+    why: "the reviewing pass's own verdict on itself, read at each writing site: `nothing-flagged` when "
+      + "the record had no line a reader meets first, `applied` after the rewrite passed the merged gate and was "
       + "written, and the `keep()` forms after the artifact or the gate refused it. Every one is a fact "
       + "about what already happened to the record, never the return of the call being logged" },
   { file: "driver/pipeline.mjs", noun: "closed", sites: 6, atWriteSite: 4, verdict: "result",

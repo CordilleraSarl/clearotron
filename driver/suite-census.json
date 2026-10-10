@@ -195,6 +195,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-clean-knockout-hands-the-reviewer-its-first-read-lines.test.mjs": {
+          "tests": 6,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
           "tests": 5,
           "asserts": 18,

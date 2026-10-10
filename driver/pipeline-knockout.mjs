@@ -57,7 +57,7 @@ import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
-import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
+import { reviewDispatch, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
 import { writeRunStatus, readRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
@@ -188,22 +188,24 @@ export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for
  * pass is presentation. A refusal is never a pass, and "no report" is a product failure — so the last
  * thing added to the delivery path is the last thing that should be able to stop it.
  *
- * THE EMPTY CASE IS NOT A FAILURE AND IS NOT SILENT. A batch whose default-visible lines are all already
- * plain has nothing to dispatch, and paying for a turn to be told so is waste. It is logged with the
- * count, so "nothing was flagged" and "the pass never ran" are different rows in the journal rather than
- * one absent one.
+ * EVERY KNOCKOUT IS REVIEWED, by the owner's ruling of 2026-10-10. The reviewer's first question is the
+ * client's, and a record whose wording the driver's read flagged nowhere still gets it: the reviewer is
+ * handed the lines a reader meets first, with their addresses, and rewrites toward the client's question
+ * or declines at one of them. Only a record with no such line at all is not dispatched. That is logged
+ * with its counts, so "there was nothing to read" and "the pass never ran" are different rows in the
+ * journal rather than one absent one.
  */
 async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
-  const about = reviewAbout(merged, plan);
-  const evidence = reviewEvidence(merged, about);
-  if (!evidence.rows.length) {
-    runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0,
+  const d = reviewDispatch(merged, plan);
+  const { about } = d;
+  if (!d.dispatch) {
+    runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0, listed: 0,
       marks: merged.marks.length, excludedMarks: about.marks.length, excludedOwners: about.owners.length });
     return merged;
   }
 
   const keep = (outcome, detail) => {
-    runLog(run.runDir, { event: "knockout-review", outcome, flagged: evidence.rows.length, applied: 0,
+    runLog(run.runDir, { event: "knockout-review", outcome, flagged: d.flagged, listed: d.listed, applied: 0,
       delivered: "the rated record, unrewritten", ...detail });
     note(`reviewing pass: ${outcome} — the rated record ships unrewritten`);
     return merged;
@@ -211,7 +213,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
 
   try {
     await koStage("knockout-review", ctx, {
-      msgCtx: { evidenceLines: reviewEvidenceLines(evidence), exclusionNote: evidence.exclusionNote },
+      msgCtx: d.msgCtx,
     });
   } catch (e) {
     return keep("stage-failed", { reason: String(e?.message ?? e).slice(0, 200) });
@@ -228,7 +230,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
   if (!mv.ok) return keep("rewrite-refused-by-the-merged-gate", { failures: mv.failures.slice(0, 5) });
 
   atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n");
-  runLog(run.runDir, { event: "knockout-review", outcome: "applied", flagged: evidence.rows.length,
+  runLog(run.runDir, { event: "knockout-review", outcome: "applied", flagged: d.flagged, listed: d.listed,
     applied: receipt.applied, declined: receipt.declined,
     unresolved: receipt.unresolved.length, refused: receipt.refused.length,
     excludedMarks: about.marks.length, excludedOwners: about.owners.length });

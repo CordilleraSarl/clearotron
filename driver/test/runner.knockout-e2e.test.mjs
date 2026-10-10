@@ -320,9 +320,9 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   // would report walls for work no dispatch did. Naming them here so a future reader does not read
   // "2" as partial coverage.
   // knockout-review joins as the third DISPATCHED stage. It is unfanned, so its row carries no ordinal
-  // suffix, and it appears here on a run whose record flagged at least one default-visible line — a
-  // batch that flagged none logs `knockout-review outcome:nothing-flagged` and emits no stage row,
-  // which is the correct difference between "the pass had nothing to do" and "the pass never ran".
+  // suffix, and it appears on every knockout: a record flagged nowhere hands the reviewer its first-read
+  // lines instead (owner ruling 2026-10-10). Only a record with no such line logs
+  // `knockout-review outcome:nothing-flagged` and emits no stage row.
   assert.deepEqual(stageRows.map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-frame", "knockout-review"],
     `the knockout lane must emit one completion row per DISPATCHED stage (event census: ${
       [...new Set(journal.map((e) => e.event))].sort().join(", ")})`);
