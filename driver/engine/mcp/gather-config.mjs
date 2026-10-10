@@ -849,6 +849,10 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis }) {
   // the server per turn so the acceptance boundary can refuse a payload naming any other index, which
   // turns O3c's measured 224/0 habit into a structure. Absent for every non-fan-out stage.
   if (recordAxis) e.CLEAROTRON_RECORD_AXIS = String(recordAxis);
+  // — THE RUN'S REGISTER, so a recording tool gates a record link at the call as verify.mjs gates the
+  // saved file (record-origins.mjs). Handed over explicitly: Codex gives a server only its own `env` and
+  // the names it forwards, so a value left to inheritance reaches a Claude server and never a Codex one.
+  if (process.env.CLEAROTRON_DATABASE) e.CLEAROTRON_DATABASE = process.env.CLEAROTRON_DATABASE;
   // — the ledger paths are RESOLVED HERE and handed to the child explicitly, not forwarded as raw
   // env. Two reasons, and the second is the one that kept this rename parked for months:
   //   · the old line was `if (process.env[v]) e[v] = …`, and NO box sets those vars — prod, test and dev
