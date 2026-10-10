@@ -883,6 +883,11 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
     f.source.resolved_link = baseFinding.source.resolved_link ? `https://tm.corsearch.com${f.owner.registrations[0].uri}` : "";
     return f;
   })];
+  // MOCK_FOREIGN_LINK — a seat that copies an office's own page into every register link, and keeps doing
+  // it on every attempt (the R2 shape on 0.4.1-beta.1). Never heals: only the driver's salvage can deliver.
+  if (process.env.MOCK_FOREIGN_LINK) {
+    for (const f of findings) f.source.resolved_link = `https://www.swissreg.ch/database-client/register/detail/trademark/${f.ordinal}`;
+  }
   return JSON.stringify({
     schema_version: FINDINGS_SCHEMA_VERSION,
     rated_under_framework: fwKey,

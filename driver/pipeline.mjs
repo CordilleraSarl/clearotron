@@ -45,7 +45,7 @@ import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus,
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
-import { recordOriginsFor } from "./record-origins.mjs";
+import { recordOriginsFor, activeRecordOrigins } from "./record-origins.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
@@ -163,7 +163,7 @@ import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the str
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
 import { plainRegisterFlags } from "./plain-register.mjs";
-import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups } from "./findings-model.mjs";
+import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
@@ -5035,7 +5035,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
 // a top-level defect, or nothing salvageable — fails the run exactly as before. One bad object never silently
 // suppresses a real conflict, and never silently kills a ~$40 run.
 async function quarantineSynth(r, ctx, name) {
-  if (r.ok) return r;
+  if (r.ok) return r; if (foreignRecordLinksBlanked(r, ctx, name)) return { ...r, ok: true, fail: undefined, repaired: "foreign-record-links-blanked" };
   // A6: a max_tokens-named content fault wraps the underlying validator token — strip the wrapper so a
   // per-finding shape defect on a ceiling-cut turn still reaches the lenient-salvage lane.
   const fail = String(r.fail || "").replace(/^max_tokens_no_output:/, "");
@@ -16992,4 +16992,36 @@ function orphanAreaLabel(qid, axis, plan) {
  */
 export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
   return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);
+}
+
+// ── THE SALVAGE FOR A FOREIGN RECORD LINK: BLANK IT, RE-CHECK, DELIVER ──────────────────────────────────
+//
+// A seat that writes an office's page, or another register's, into a record link is refused by the
+// findings gate (`finding_record_url_foreign_host`). The salvage lane below takes that token, because it is
+// a `finding_…` token, but its lenient re-parse does not judge hosts, so it found nothing to repair and
+// failed the run: R2 on 0.4.1-beta.1 delivered no report over eleven copied office links. Here the driver
+// blanks every foreign link itself (blankForeignRecordLinks says how), keeps what it changed beside the run,
+// and re-checks the file with the stage's own validator. A pass delivers; anything still refused falls
+// through to the lanes below exactly as before, with fewer defects in the file.
+function foreignRecordLinksBlanked(r, ctx, name) {
+  const fail = String(r?.fail || "").replace(/^max_tokens_no_output:/, "");
+  if (!/finding_record_url_foreign_host/.test(fail) || !existsSync(ctx.paths.findings)) return false;
+  let doc;
+  try { doc = JSON.parse(readFileSync(ctx.paths.findings, "utf8")); } catch { return false; }
+  const { doc: repaired, blanked, kept } = blankForeignRecordLinks(doc, activeRecordOrigins());
+  if (!blanked.length) return false;
+  try {
+    writeFileSync(driverDir(ctx.paths.runDir, "foreign-record-links.json"),
+      JSON.stringify({ stage: name, fail: fail.slice(0, 300), blanked, kept }, null, 2) + "\n");
+  } catch { /* the sidecar is forensics; the run log row below is the record */ }
+  atomicWrite(ctx.paths.findings, JSON.stringify(repaired, null, 2) + "\n");
+  runLog(ctx.paths.runDir, { event: "foreign-record-links-blanked", stage: name, blanked: blanked.length, kept: kept.length,
+    ordinals: [...new Set(blanked.map((b) => b.ordinal))] });
+  note(`[${name}] ${blanked.length} record link(s) on a host this register does not publish were blanked by the driver; the originals are in _driver/foreign-record-links.json`);
+  const def = STAGES[name];
+  const out = def?.out ? def.out(ctx.paths, ctx.axis) : null;
+  const v = out && existsSync(out) && def.validate ? def.validate(out, readFileSync(out, "utf8")) : null;
+  if (v?.ok) return true;
+  runLog(ctx.paths.runDir, { event: "foreign-record-links-recheck", stage: name, ok: false, fail: String(v?.reason ?? "no validator").slice(0, 200) });
+  return false;
 }
