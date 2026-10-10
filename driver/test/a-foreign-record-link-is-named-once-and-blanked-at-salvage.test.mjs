@@ -7,9 +7,13 @@
 // own page, which Signa's records carry, into `source.resolved_link` on eleven findings. Signa publishes no
 // page per record, so the findings gate refused every one. It named one finding per refusal, so each
 // attempt fixed one and the attempts ran out. Then the salvage lane took the refusal and found nothing it
-// could repair. These arms hold both halves:
-//   · one refusal carries every offending ordinal in its token, and the gate's own sentence after it;
-//   · salvage blanks a foreign link, re-checks with the stage's own gate, and the run delivers.
+// could repair. These arms hold every layer:
+//   · one refusal carries every offending ordinal in its token, the gate's own sentence after it, and the
+//     corrective message hands the seat every ordinal;
+//   · the synthesis call refuses the run's first offending call and accepts a repeat with the links blanked,
+//     and the server is handed the run's register under both engines, so the call can gate at all;
+//   · salvage blanks a foreign link written without the transport, re-checks with the stage's own gate, and
+//     the run delivers.
 // The mock run's register is corsearch (scripts/test-run.mjs declares it for every suite), so an office
 // page on another host is foreign there exactly as it is on Signa.
 import { test } from "node:test";
@@ -19,6 +23,11 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseFindingsJson, blankForeignRecordLinks } from "../findings-model.mjs";
+import { blankOnRepeat } from "../foreign-record-links.mjs";
+import { correctiveMessage, correctionHint } from "../gateway.mjs";
+import { buildGatherMcpConfig } from "../engine/mcp/gather-config.mjs";
+import { renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
+import { refusalsFor } from "../synthesis-record.mjs";
 import { recordOriginsFor } from "../record-origins.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
@@ -79,6 +88,41 @@ test("salvage blanks a foreign link, keeps the record's identity, and the result
   assert.equal(opaque.kept.length, 1, "a foreign uri with no record path in it is reported, never guessed at");
 });
 
+test("the seat's corrective message carries every ordinal, after the verifier's cut", () => {
+  const eleven = Array.from({ length: 11 }, (_, i) => finding(i + 1, { source: { source_type: "register-vendor", resolved_link: OFFICE(i + 1) } }));
+  let reason = null;
+  try { parseFindingsJson(doc(eleven), { recordOrigins: NO_PAGES }); } catch (e) { reason = String(e.message).replace(/\s+/g, " ").slice(0, 160); }
+  const lastFail = `invalid_file:clearance-search/tmpqzxv/2026-10-10-quiet-lark/findings.json:${reason}`;
+  const all = "finding_record_url_foreign_host:1,2,3,4,5,6,7,8,9,10,11";
+  assert.ok(correctionHint(lastFail).includes(all), "the hint keeps the token whole");
+  assert.ok(correctiveMessage("BASE", 2, lastFail, "/run/narrative.md").includes(all), "the seat is told every finding, not the first");
+});
+
+test("the call refuses the run's first offending call, and accepts a repeat with the links blanked", () => {
+  const call = { findings: JSON.parse(doc([finding(1, { source: { source_type: "register-vendor", resolved_link: OFFICE(1) } })])), narrative: {} };
+  const first = blankOnRepeat(call, NO_PAGES, false);
+  assert.equal(first.call, call, "the first offending call is passed through untouched, for the gate to refuse");
+  assert.deepEqual(first.blanked, []);
+  const repeat = blankOnRepeat(call, NO_PAGES, true);
+  assert.equal(repeat.call.findings.findings[0].source.resolved_link, "");
+  assert.equal(call.findings.findings[0].source.resolved_link, OFFICE(1), "the seat's own call was edited in place");
+  assert.deepEqual(blankOnRepeat(call, null, true).blanked, [], "with no register named there is nothing to gate");
+});
+
+test("every local server is handed the run's register, under Claude and under Codex", () => {
+  const was = process.env.CLEAROTRON_DATABASE;
+  process.env.CLEAROTRON_DATABASE = "signa";
+  try {
+    const cfg = buildGatherMcpConfig(["recording-synthesis"], { sessionKey: "k", agent: "a", runDir: "/tmp/qzxv-run" });
+    assert.equal(cfg.mcpServers["recording-synthesis"].env.CLEAROTRON_DATABASE, "signa", "the recording server cannot gate a record link");
+    const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: ["mcp__recording-synthesis__record_synthesis"] });
+    const block = toml.slice(toml.indexOf("recording-synthesis"));
+    assert.match(block, /CLEAROTRON_DATABASE = "signa"/, "a Codex recording server never sees the register");
+  } finally {
+    if (was === undefined) delete process.env.CLEAROTRON_DATABASE; else process.env.CLEAROTRON_DATABASE = was;
+  }
+});
+
 // ── THE RUN ─────────────────────────────────────────────────────────────────────────────────────────
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CLAUDE = join(HERE, "mock-claude.mjs");
@@ -94,30 +138,45 @@ process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
-test("a seat that keeps writing office links into record links still delivers: salvage blanks them", async () => {
-  assert.ok(recordOriginsFor(process.env.CLEAROTRON_DATABASE ?? "").length > 0 || process.env.CLEAROTRON_DATABASE,
-    "precondition: the suite names a register, so the host gate is live");
+const runWith = async (knob, ref) => {
   const PL = await import("../pipeline.mjs");
   process.env.MOCK_VERDICT = "CLEAR";
   process.env.MOCK_SKEPTIC = "no flags surfaced";
   process.env.MOCK_FINDINGS_N = "3";
-  process.env.MOCK_FOREIGN_LINK = "1";
+  process.env.MOCK_FOREIGN_LINK = knob;
   try {
-    const job = { id: "job-TMPFLINK", msgId: "<tmpflink@x>", forwarder: "jordan", forwarderDomain: "example.com",
-      ref: "TMPFLINK", markName: "MARK TMPFLINK", classes: [9], provider: "corsearch" };
+    const job = { id: `job-${ref}`, msgId: `<${ref.toLowerCase()}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
+      ref, markName: `MARK ${ref}`, classes: [9], provider: "corsearch" };
     const res = await PL.pipeline(job);
-    assert.equal(res.ok, true, `the run did not deliver: ${JSON.stringify(res).slice(0, 400)}`);
-    const events = readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
-    const blanked = events.find((e) => e.event === "foreign-record-links-blanked");
-    assert.ok(blanked, "no row records that the driver blanked the links");
-    assert.deepEqual(blanked.ordinals, [1, 2, 3]);
-    assert.ok(!events.some((e) => e.event === "salvage-lane-no-target"), "the salvage lane still admitted a failure it could not repair");
-    const delivered = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
-    for (const f of delivered.findings) assert.equal(f.source.resolved_link, "", `finding ${f.ordinal} still carries a foreign link`);
-    const kept = JSON.parse(readFileSync(driverDir(res.runDir, "foreign-record-links.json"), "utf8"));
-    assert.deepEqual(kept.blanked.map((b) => b.was), [OFFICE(1), OFFICE(2), OFFICE(3)], "the originals are not kept beside the run");
-    assert.ok(existsSync(join(ROOT, "pool")), "nothing was published");
+    const events = existsSync(driverDir(res.runDir ?? "/nonexistent", "run.jsonl"))
+      ? readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)) : [];
+    return { res, events };
   } finally {
     for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FINDINGS_N", "MOCK_FOREIGN_LINK"]) delete process.env[k];
   }
+};
+
+test("a seat that keeps sending office links is refused once, naming every finding, then delivers blanked", async () => {
+  assert.ok(process.env.CLEAROTRON_DATABASE, "precondition: the suite names a register, so the host gate is live");
+  const { res, events } = await runWith("call", "TMPFLCALL");
+  assert.equal(res.ok, true, `the run did not deliver: ${JSON.stringify(res).slice(0, 400)}`);
+  const refused = refusalsFor(res.runDir).map((r) => String(r.reason));
+  assert.ok(refused.some((r) => r.includes("finding_record_url_foreign_host:1,2,3")), `the first call was not refused naming every finding: ${refused}`);
+  const blanked = events.filter((e) => e.event === "foreign-record-links-blanked");
+  assert.deepEqual(blanked.map((e) => [e.layer, e.ordinals]), [["call", [1, 2, 3]]], "the repeat was not accepted blanked at the call");
+  assert.ok(!events.some((e) => e.event === "salvage-lane-no-target"));
+  const delivered = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+  for (const f of delivered.findings) assert.equal(f.source.resolved_link, "", `finding ${f.ordinal} still carries a foreign link`);
+  const kept = JSON.parse(readFileSync(driverDir(res.runDir, "foreign-record-links.json"), "utf8"));
+  assert.deepEqual(kept.blanked.map((b) => b.was), [OFFICE(1), OFFICE(2), OFFICE(3)], "the originals are not kept beside the run");
+});
+
+test("links written to the file without the transport are blanked by salvage, and the run delivers", async () => {
+  const { res, events } = await runWith("file", "TMPFLFILE");
+  assert.equal(res.ok, true, `the run did not deliver: ${JSON.stringify(res).slice(0, 400)}`);
+  const blanked = events.filter((e) => e.event === "foreign-record-links-blanked");
+  assert.deepEqual(blanked.map((e) => e.layer), ["salvage"], "salvage did not blank the links the file carried");
+  assert.ok(!events.some((e) => e.event === "salvage-lane-no-target"), "the salvage lane still admitted a failure it could not repair");
+  const delivered = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+  for (const f of delivered.findings) assert.equal(f.source.resolved_link, "", `finding ${f.ordinal} still carries a foreign link`);
 });

@@ -45,7 +45,7 @@ import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus,
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
-import { recordOriginsFor, activeRecordOrigins } from "./record-origins.mjs";
+import { recordOriginsFor, activeRecordOrigins } from "./record-origins.mjs"; import { recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
@@ -17003,20 +17003,15 @@ export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scop
 // blanks every foreign link itself (blankForeignRecordLinks says how), keeps what it changed beside the run,
 // and re-checks the file with the stage's own validator. A pass delivers; anything still refused falls
 // through to the lanes below exactly as before, with fewer defects in the file.
-function foreignRecordLinksBlanked(r, ctx, name) {
+export function foreignRecordLinksBlanked(r, ctx, name) {   // exported for its test
   const fail = String(r?.fail || "").replace(/^max_tokens_no_output:/, "");
-  if (!/finding_record_url_foreign_host/.test(fail) || !existsSync(ctx.paths.findings)) return false;
+  if (!fail.includes(FOREIGN_HOST_TOKEN) || !existsSync(ctx.paths.findings)) return false;
   let doc;
   try { doc = JSON.parse(readFileSync(ctx.paths.findings, "utf8")); } catch { return false; }
   const { doc: repaired, blanked, kept } = blankForeignRecordLinks(doc, activeRecordOrigins());
   if (!blanked.length) return false;
-  try {
-    writeFileSync(driverDir(ctx.paths.runDir, "foreign-record-links.json"),
-      JSON.stringify({ stage: name, fail: fail.slice(0, 300), blanked, kept }, null, 2) + "\n");
-  } catch { /* the sidecar is forensics; the run log row below is the record */ }
   atomicWrite(ctx.paths.findings, JSON.stringify(repaired, null, 2) + "\n");
-  runLog(ctx.paths.runDir, { event: "foreign-record-links-blanked", stage: name, blanked: blanked.length, kept: kept.length,
-    ordinals: [...new Set(blanked.map((b) => b.ordinal))] });
+  recordBlanking(ctx.paths.runDir, { stage: name, layer: "salvage", blanked, kept, fail });
   note(`[${name}] ${blanked.length} record link(s) on a host this register does not publish were blanked by the driver; the originals are in _driver/foreign-record-links.json`);
   const def = STAGES[name];
   const out = def?.out ? def.out(ctx.paths, ctx.axis) : null;
