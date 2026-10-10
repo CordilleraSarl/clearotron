@@ -344,7 +344,7 @@ export const CASE_LAW_NOT_A_REQUEST = Object.freeze({
 /**
  * `searchLevel` — THE SELECTOR ITSELF, AND THE ONE FIELD DELETED WITHOUT REFUSING.
  *
- * `search-policy.mjs:22` says the wire field is "DELETED — not deprecated, not hidden behind the product
+ * `search-policy.mjs` says the wire field is "DELETED — not deprecated, not hidden behind the product
  * name." The code made it deprecated: nothing on any door read it, nothing refused it, and there is no
  * generic unknown-field rejection — so a request naming a depth was accepted, the field dropped, and the
  * run went out at whatever product the SCOPE happened to imply.

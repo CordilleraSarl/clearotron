@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "trademark-artifacts": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/scripts/npx.mjs",
+        "-y",
+        "clearotron@0.4.1",
+        "mcp"
+      ]
+    }
+  }
+}

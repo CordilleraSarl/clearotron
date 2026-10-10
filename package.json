@@ -1,5 +1,6 @@
 {
   "name": "clearotron",
+  "mcpName": "io.github.CordilleraSarl/clearotron",
   "type": "module",
   "version": "0.4.1-beta.0",
   "license": "AGPL-3.0-only",
@@ -64,7 +65,7 @@
     "sync:uspto": "node bin/uspto-sync.mjs",
     "bench:uspto": "node providers/uspto-local/bench/bench.mjs",
     "verify:uspto": "node providers/uspto-local/bin/verify-index.mjs",
-    "lint:driver": "eslint --no-error-on-unmatched-pattern --max-warnings 0 --config eslint.driver.config.mjs \"driver/**/*.mjs\" \"bin/**/*.mjs\" \"shared/**/*.mjs\" \"mcp-server/**/*.mjs\" \"scripts/**/*.mjs\" \"cut/**/*.mjs\"",
+    "lint:driver": "eslint --no-error-on-unmatched-pattern --max-warnings 0 --config eslint.driver.config.mjs \"driver/**/*.mjs\" \"bin/**/*.mjs\" \"shared/**/*.mjs\" \"mcp-server/**/*.mjs\" \"scripts/**/*.mjs\" \"cut/**/*.mjs\" \"plugin/**/*.mjs\"",
     "doctrine-report": "node scripts/doctrine-report.mjs",
     "notices": "node scripts/third-party-notices.mjs",
     "notices:check": "node scripts/third-party-notices.mjs --check",

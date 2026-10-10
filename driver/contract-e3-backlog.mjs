@@ -106,11 +106,11 @@ export const E3_BACKLOG = [
   // Two `literal-json-skeleton` and two `exactly-these-keys`, all four stamped "NOTHING ON THE PLAN
   // REMOVES THIS". The conversion removed them:
   //
-  //   stages.mjs:926            the dispatch dictated variant-manifest.json key by key and enum by enum;
+  //   stages.mjs (message)      the dispatch dictated variant-manifest.json key by key and enum by enum;
   //                             `record_clearance_variants`'s schema IS that shape now, so the key-set and
   //                             enum families are unreachable from a typed call rather than caught after
   //                             the file is written.
-  //   stages.mjs:774-808        the same skeleton's category enum, same fate.
+  //   stages.mjs (message)      the same skeleton's category enum, same fate.
   //   clearance-variants SKILL.md  the `### Scope ledger` markdown table and its column contract. The rows
   //                             arrive typed; the driver renders the table AND serialises
   //                             scope-ledger.json from them through one shared function.
@@ -152,7 +152,7 @@ export const E3_BACKLOG = [
     where: "driver/skills/blind-frame/SKILL.md:62-83",
     surface: "skill-file",
     evidence: "A JSON OBJECT with EXACTLY these keys:\\n```json\\n{\\n \"schema_version\": 1,\\n \"dominant_element\": \"the spine, verbatim\",\\n \"variants\": [{\"value\": \"KORPHI\", \"direction\": \"drop\", \"rationale\": \"…\"}],\\n \"fields\": […],\\n \"sources\": […],\\n \"ranking_basis\": \"goods-overlap\"\\n}\\n``` … `direction` is EXACTLY on",
-    reparsedBy: "driver/verify.mjs validators.blindFrame — emits invalid_file:…:blindframe_* on an off-enum or missing key (stages.mjs:952-957 doc block)",
+    reparsedBy: "driver/verify.mjs validators.blindFrame — emits invalid_file:…:blindframe_* on an off-enum or missing key (the blind-frame stage's doc block in stages.mjs)",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   // ── DISCHARGED 2026-08-17 by, and the row said this could not happen ──────────────────────────
@@ -180,8 +180,8 @@ export const E3_BACKLOG = [
   {
     stage: "common-law-half",
     kind: "dictated-line-shape",
-    // CONSOLIDATED 2026-08-16 from THREE rows (common-law stages.mjs:1031, common-law-half :1112 and
-    // :1146). Those three existed because the dictation was AUTHORED at three sites in stages.mjs. M1 made
+    // CONSOLIDATED 2026-08-16 from THREE rows (one in common-law's message in stages.mjs, two in
+    // common-law-half's). Those three existed because the dictation was AUTHORED at three sites in stages.mjs. M1 made
     // it one: authored once in renderConnotationObligations, and reaching the seat through the perplexity
     // MCP server (`tellObligations` in driver/engine/mcp/perplexity-server.mjs) rather than a stage message. Three rows
     // pointing at one block would fabricate two authored sites the surface does not have.
@@ -295,7 +295,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:2351-2353",
     surface: "stage-message",
     evidence: "PLACEMENT FORM (MANDATORY): record every placement in <path> — {\"rows\":[…]} … · A REGISTER candidate: {\"select\":\"<one record URI it holds>\",\"tier\":\"…\",\"reason\":\"…\"} (+ optional \"borderline\":true) … · A COMMON-LAW candidate …: {\"kind\":\"seat\",\"mark\",\"owner\",\"jurisdiction\",\"records\":[],\"tier\",\"reason\"}",
-    reparsedBy: "driver/placement-form.mjs (SELECT_ROW_FIELDS at placement-form.mjs:93, the seat-row contract at 97-105, formRowKey/rowIsSettled/renderEntry at 117-141) via validators.placement. The same field list is ALSO carried in the driver-written form's own seat_row_contract, so the shape exists twice",
+    reparsedBy: "driver/placement-form.mjs (SELECT_ROW_FIELDS at placement-form.mjs:93, the seat-row contract SEAT_ROW_CONTRACT, formRowKey/rowIsSettled/renderEntry) via validators.placement. The same field list is ALSO carried in the driver-written form's own seat_row_contract, so the shape exists twice",
     removedByMove: "M1 removes the opaque `select` URI (ordinal selection) — it does not remove the JSON skeleton, the retract shape, or the kind:\"seat\" row",
   },
   {
@@ -313,7 +313,7 @@ export const E3_BACKLOG = [
     where: "driver/skills/placement-inquiry/SKILL.md:58-66",
     surface: "skill-file",
     evidence: "**2. The structured mirror** `…/placements.json` … `{\"schema_version\":1,\"placements\":[...]}`, ONE object per placed candidate, keys EXACTLY `{\"mark\",\"owner\",\"jurisdiction\",\"records\",\"tier\",\"reason\"}` plus the optional `\"borderline\"` … `tier` — EXACTLY one of `headline-candidate` / `sheet-2` / `watch",
-    reparsedBy: "driver/placement-model.mjs. AND IT IS STALE: #562 made placements.json driver-rendered, and stages.mjs:2409 says \"DO NOT WRITE placements.json (the driver renders it from this form)\" — the skill file the stage is ordered to \"read and follow exactly\" dictates the key set of a file the message forbids it to write. Two contracts in one dispatch",
+    reparsedBy: "driver/placement-model.mjs. AND IT IS STALE: #562 made placements.json driver-rendered, and placement-inquiry's message in stages.mjs says \"DO NOT WRITE placements.json (the driver renders it from this form)\" — the skill file the stage is ordered to \"read and follow exactly\" dictates the key set of a file the message forbids it to write. Two contracts in one dispatch",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -322,13 +322,14 @@ export const E3_BACKLOG = [
     where: "driver/skills/placement-inquiry/SKILL.md:42",
     surface: "skill-file",
     evidence: "Use these section headings, in this order: **Band reconciliation** …, the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** …, and **O",
-    reparsedBy: "driver/pipeline.mjs — the PLACEMENT RULINGS TAIL block handed to register-digest is lifted from these named sections (stages.mjs:2561 references it); driver/skills/clearance-register/digest.md:342-352 re-parses the Disagreements section into its own table",
+    reparsedBy: "driver/pipeline.mjs — the PLACEMENT RULINGS TAIL block handed to register-digest is lifted from these named sections (register-digest's message in stages.mjs references it); driver/skills/clearance-register/digest.md:342-352 re-parses the Disagreements section into its own table",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   // RETIRED 2026-08-16 — register-digest's no-form arm. M6 DELETED THE DICTATION ON 2026-08-14 AND THIS
   // ROW OUTLIVED IT BY TWO DAYS. Verified at source rather than from the epitaph: the arm is absent from
   // the composed message, `git grep "NO coverage form"` on origin/main returns exactly ONE hit and it is
-  // the COMMENT recording the deletion (stages.mjs:2195), and skill-contract-enumerations.test.mjs
+  // the COMMENT recording the deletion ("A NO-FORM arm stood here until M6", in register-digest's message in
+  // stages.mjs), and skill-contract-enumerations.test.mjs
   // composes the dispatch under both stamp states and asserts the two texts are equal.
   //
   // The surviving prose arms in verify.mjs are NOT dead code and must not be tidied away with it: they
@@ -447,7 +448,7 @@ export const E3_BACKLOG = [
     where: "driver/skills/frame-diff/SKILL.md:44-48",
     surface: "skill-file",
     evidence: "A directive may carry a structured `remedy`:\\n```json\\n\"remedy\": { \"terms\": [\"TROPICAL WAVO\", \"ISLAND WAVO\"], \"nice_classes\": [\"5\", \"32\"], \"regions\": [] }\\n```",
-    reparsedBy: "driver/pipeline.mjs runSupplementalSweeps — the remedy lint refuses a label-shaped term; stages.mjs:2827 restates the same shape in the message (\"THE ASK CONTRACT, stated at BOTH levels\")",
+    reparsedBy: "driver/pipeline.mjs runSupplementalSweeps — the remedy lint refuses a label-shaped term; frame-diff's message in stages.mjs restates the same shape (\"THE ASK CONTRACT, stated at BOTH levels\")",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -524,7 +525,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3283",
     surface: "stage-message",
     evidence: "use_check = {\"source\",\"quality\"}: … quality: OPTIONAL, EXACTLY one of owner-site / independent / register-mirror … own_rights = {\"source\"}",
-    reparsedBy: "driver/verify.mjs:988 checkFindingsSibling (finding_use_check_missing); driver/own-rights.mjs:19-22",
+    reparsedBy: "driver/verify.mjs checkFindingsSibling (finding_use_check_missing); driver/own-rights.mjs:19-22",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -593,7 +594,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3115 (restated at driver/skills/clearance-search/synthesis-rules.md:428)",
     surface: "stage-message",
     evidence: "END that finding's actual-use line with a literal \"- **Use-check source:** <result URL | \"perplexity_research — no result\">\" line",
-    reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal at driver/gateway.mjs:2153",
+    reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal in correctionHint() in gateway.mjs",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -602,7 +603,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3128 (restated at driver/skills/clearance-search/synthesis-rules.md:475)",
     surface: "stage-message",
     evidence: "END that finding's reasoning with a literal \"- **Own-rights source:** <record URI(s) | \"no applicant-owned registrations in the searched register material\">\" line",
-    reparsedBy: "driver/own-rights.mjs:19-22 — \"This module only requires the 'Own-rights source:' line to exist\"; repair hint at driver/gateway.mjs:2370 (the `own_rights_missing` branch; re-verified 2026-08-29 — the old :1736 predated this branch and pointed into the A4 repeat-signature block)",
+    reparsedBy: "driver/own-rights.mjs, in its header — \"This module only requires the 'Own-rights source:' line to exist\"; repair hint in correctionHint() in gateway.mjs (the `own_rights_missing` branch; re-verified 2026-08-29 — the old :1736 predated this branch and pointed into the A4 repeat-signature block)",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -629,7 +630,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3502",
     surface: "stage-message",
     evidence: "ALSO write the RETRIEVAL RECORD to <path> — a JSON OBJECT with EXACTLY these keys: {\"schema_version\":2,\"queries\":[{\"query\":\"<the search you dispatched, verbatim>\",\"jurisdiction\":\"…\",\"results\":<how many hits it returned, or null when the query never reached a source — never 0 for a query you could not send>}, …],\"citations\":[{\"proceeding\":\"…\",\"forum\":\"…\",\"jurisdiction\":\"…\",\"decided\":\"…\"",
-    reparsedBy: "driver/verify.mjs validators.caseLaw — the ledger arm, armed by the stage-contract marker `citations` (stages.mjs:1822)",
+    reparsedBy: "driver/verify.mjs validators.caseLaw — the ledger arm, armed by the stage-contract marker `citations` (the case-law stage's `contract: { citations: 1 }` in stages.mjs)",
     removedByMove: "M5 moves `queries[]` to the call log (and is itself blocked: tool-calls.jsonl records no arguments); the envelope, schema_version, `read` enum and `citations[]` skeleton survive M5 entirely",
   },
   {
@@ -638,7 +639,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3510",
     surface: "stage-message",
     evidence: "EVERY \"Grounded profile\" section MUST start its body with the line \"- ord: <N>\" naming which finding it grounds (use the ordinal from this list; a profile that grounds no listed finding omits the line)",
-    reparsedBy: "driver/publish/parse.mjs:339, parseCaseLawProfiles() in parse.mjs (\"the optional '- ord: <N>' first body line … gives an EXACT join\"); driver/findings-model.mjs:274 /^-\\s*ord:\\s*(\\d+)\\s*$/m; driver/publish/index.mjs:778 runOrigins",
+    reparsedBy: "driver/publish/parse.mjs:339, parseCaseLawProfiles() in parse.mjs (\"the optional '- ord: <N>' first body line … gives an EXACT join\"); driver/findings-model.mjs:274 /^-\\s*ord:\\s*(\\d+)\\s*$/m; driver/publish/index.mjs publishReport (joinCaseLawProfiles)",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -697,7 +698,7 @@ export const E3_BACKLOG = [
     // `[on: -]` case went from a value to an ABSENCE — you omit the field — which is the one part a
     // reader could get wrong from the old wording, since there is no value meaning "no finding".
     evidence: "**AND EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT** — the `on` field, an array of ordinals. Same rule as `kind`: you send the values, the driver renders the token.",
-    reparsedBy: "driver/verify.mjs:864 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message at stages.mjs:1844-1877 never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
+    reparsedBy: "driver/verify.mjs:864 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message (narrative-refutation's, in stages.mjs) never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {

@@ -445,7 +445,7 @@ export function attemptOk(fail, turn) {
 export function streamMeta(runDir, stream) {
   if (!stream || typeof stream !== "object" || !stream.file) return null;
   const dir = String(runDir ?? "");
-  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "") : String(stream.file);
+  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "").replace(/\\/g, "/") : String(stream.file);   // forward slashes, as every record path is, on Windows too
   return { file, present: stream.present === true, bytes: Number.isFinite(stream.bytes) ? stream.bytes : null,
     ...(stream.reason ? { reason: stream.reason } : {}) };
 }
@@ -3192,8 +3192,8 @@ export function isFormClassFail(fail) {
   return FORM_CLASS_RE.test(fail ?? "");
 }
 // How many in-dispatch repairs one stage run may buy. TWO, and the number has a cause: parseFrameDiff
-// is FAIL-FAST — it throws on the first bad severity (frame-diff-model.mjs:66 parseFrameDiff) before it ever collects
-// the undispatchable directives (:100) — so ONE artifact carrying both defects surfaces them
+// is FAIL-FAST — it throws on the first bad severity (parseFrameDiff() in frame-diff-model.mjs) before it ever collects
+// the undispatchable directives — so ONE artifact carrying both defects surfaces them
 // SEQUENTIALLY. That is exactly what the 08-02 frame-diff ladder did (severity on a1, undispatchable
 // on a2), and a cap of 1 would have handed the second one straight back to the ladder. The codebase
 // already learned this lesson once at directive granularity: undispatchableThrow batches ALL offenders
@@ -3682,7 +3682,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
  * THE COUNTS A TEST ROUND READS PER STAGE, on both engines, spread into `toolGauge`. `toolCallsRefused`:
  * calls the program refused (Claude's own denials; Codex's tool-server calls refused before reaching their
  * server). `commandToolCalls`: calls to a tool that runs a command, which no Claude stage is offered, so
- * zero is the expected reading; Codex keeps its shell and reports null. `mcpToolCalls`: the tool-server
+ * zero is the expected reading there; Codex keeps its shell and counts the commands it ran. `mcpToolCalls`: the tool-server
  * calls Codex completed, its only count of calls made, since its `toolCalls` stays null.
  * `toolCallsErroredByName`: the tool-server calls that came back as an error, by tool name, so a stage that
  * had a call refused and made it again says so where its row otherwise reads ok on one attempt. Null, as in

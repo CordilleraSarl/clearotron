@@ -233,6 +233,15 @@ const UNDECLARED = {
   synthesis: (P) => [
     { path: P.enforcerSignals, kind: "conditional",
       why: "named in the prompt only when ctx.enforcerSignals > 0; aim-attention telemetry, deliberately outside the freshness map" },
+    // The job's own scope. The prompt never names it, so nothing declared it, and the sandbox rebuilt the
+    // declination spec without it: no marks and no classes, so both of the tool's refusals were off in every
+    // synthesis arm while the canonical pass had them on.
+    { path: P.instructedScope, kind: "driver-side",
+      why: "prepareDeclinationSpec writes the declination spec's scope from it; without it the tool's refusals rest on nothing and accept what the canonical pass refused" },
+    // The Chinese-evidence flags, named in the prompt only when ctx.jxAim is set (stages.mjs synthesis
+    // message). Undeclared, an arm on a run that had them dispatched without the block.
+    { path: driverDir(P.runDir, "jx", "aim-attention.json"), kind: "conditional",
+      why: "named in the prompt only when ctx.jxAim > 0 — the zh lane's aim-attention flags; aim-attention only, deliberately outside the freshness map" },
   ],
 };
 

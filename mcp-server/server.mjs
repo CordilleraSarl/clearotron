@@ -26,13 +26,14 @@ import {
   ListResourcesRequestSchema, ReadResourceRequestSchema, ListResourceTemplatesRequestSchema,
   ListPromptsRequestSchema, GetPromptRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
 import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
+import { demoMode } from "./demo-mode.mjs";
 import { PRODUCTS } from "../driver/products.mjs";
 
 // The offering writes its own schema prose. A hand-typed "up to 20 names" beside a wall that refuses at
@@ -178,6 +179,17 @@ function getStages(runDir) {
   return { stages, failover };
 }
 
+// THE DEMO SAYS IT IS THE DEMO, on every row, in the demo's own two sentences (bin/example.mjs prints both
+// before anything else). `clearotron mcp` serves the demo's sample runs where a machine has no install,
+// and an assistant reading a row must not take a sample for one of the person's own searches.
+export const DEMO_LABEL = "Real engine output for the fictional mark VENQORI, captured against Clarivate Compumark. "
+  + "It is an example, not advice.";
+
+/** The code a folder's read fails with, or null where it reads. */
+function readError(dir) {
+  try { readdirSync(dir); return null; } catch (e) { return e?.code ?? "unreadable"; }
+}
+
 function runSummary(run) {
   const s = run.status ?? {};
   // WHO THE SEARCH WAS FOR, on every row. A session that holds several clients was handed eight rows
@@ -188,6 +200,7 @@ function runSummary(run) {
   // field is what made the list unanswerable in the first place.
   const facts = runProfileFacts(run);
   return {
+    ...(demoMode.on ? { demo: DEMO_LABEL } : {}),
     runId: run.runId, slug: run.slug, codename: run.codename, date: run.date, agent: run.agent,
     client: facts.known
       ? { key: facts.account, name: facts.clientName }
@@ -272,6 +285,7 @@ const tools = {
     const unreadable = unreadableRunsReason({
       workSet: !!config.envValue("CLEAROTRON_WORK_DIR"), workRoot: config.workspaceRoot,
       workExists: existsSync(config.workspaceRoot), poolSet: !!config.poolRootOrNull,
+      workReadError: readError(config.workspaceRoot),
     });
     if (unreadable) throw new Error(unreadable);
     let out = enumerateRuns({ agent, state, slug, mark }).map(runSummary);
@@ -1102,7 +1116,7 @@ export function makeServer({ scope = null, local = null, readonly = false } = {}
   // pack was previously a file no connecting client ever saw. Guidance only; never a substitute for the
   // authorize()/scrub gates. Staff and ops get no instructions (see lib/instructions.mjs).
   const server = new Server(
-    { name: NS, version: "0.1.0" },
+    { name: NS, version: productIdentity().version ?? "unknown" },   // the package's own version, the one server_info reports
     // `prompts` is declared for every kind; promptsFor() returns [] for the audiences that get none, so
     // an ops client sees an empty list rather than a protocol error on a capability we did not announce.
     { capabilities: { tools: {}, resources: {}, prompts: {} }, instructions: instructionsFor(eff) },

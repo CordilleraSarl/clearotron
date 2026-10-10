@@ -560,9 +560,10 @@ export const KO_STAGES = {
     // be composed by anything except the production call site, which is how a dispatch goes unexamined
     // — and the promise has to branch. A stage message that says "the lines are below" and then lists
     // none has handed the seat an absence dressed as a pass, which is the reading this whole rule
-    // exists to stop. The driver does not dispatch on an empty measurement; the branch is here because
-    // "it cannot happen" is not a property a message should depend on.
-    message: ({ K, evidenceLines = [], exclusionNote = "" }) => lines(
+    // exists to stop. A record the driver's read flags nowhere is handed its first-read lines instead,
+    // by the owner's ruling of 2026-10-10, so both branches have rows under them; a record with no such
+    // line is not dispatched at all.
+    message: ({ K, evidenceLines = [], firstReadLines = [], exclusionNote = "" }) => lines(
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
       reads(["skills/clearance-search/report-prose.md"]),
@@ -571,8 +572,8 @@ export const KO_STAGES = {
       `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,
       evidenceLines.length
         ? `THE DRIVER MEASURED THESE LINES. Each row is the line, the ADDRESS that names it, and what a deterministic read found. THIS IS EVIDENCE, NOT A VERDICT: judge each in context and pass over any where the word is the subject rather than the profession's shorthand. ${exclusionNote}`
-        : `THE DRIVER'S READ FLAGGED NO LINE ON THIS RECORD, so there is no table below and nothing here is evidence of a fault. Read the record yourself against the rule above; if it is already plain, send one \`declined\` row saying so rather than inventing a rewrite to fill the call.`,
-      ...evidenceLines,
+        : `THE DRIVER'S READ FLAGGED NO LINE ON THIS RECORD, so nothing below is evidence of a fault. These are the lines a reader meets first, each with the ADDRESS that names it. Rewrite one only where it would answer the client's question more plainly; if every line already does, send one \`declined\` row at one of these addresses saying so, rather than inventing a rewrite to fill the call.`,
+      ...(evidenceLines.length ? evidenceLines : firstReadLines),
       // ── THE DICTATION NAMES THE FIELD, NOT AN EFFECT ────────────────────────────────
       //
       // "Make the report plainer" is read and not applied, and nothing refuses — it simply does not

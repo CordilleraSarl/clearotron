@@ -3017,10 +3017,12 @@ test("a push opens no version pull request, and still asks whether it cut a vers
 // which hands a fork's pull request a token that can write to this repository. Read from the pinned
 // action's source: it commits the signature file (contents), comments on the pull request (pull-requests)
 // and re-runs its own check once the author signs (actions). It sets no commit status; `statuses: write`
-// was granted anyway, with a comment claiming two scopes over a block of four.
+// was granted anyway, with a comment claiming two scopes over a block of four. The scopes sit on the one
+// job, and the workflow's top grants nothing, so a job added later starts with no write access at all.
 test("the CLA workflow's write token carries exactly the three scopes its pinned action calls", () => {
   const cla = read(".github/workflows/cla.yml");
-  const block = /^permissions:\n((?: {2}[a-z-]+: \S+.*\n)+)/m.exec(cla)?.[1] ?? "";
+  assert.match(cla, /^permissions: \{\}$/m, "cla.yml grants permissions at the top again; they belong on the job that needs them");
+  const block = /^ {4}permissions:\n((?: {6}[a-z-]+: \S+.*\n)+)/m.exec(cla)?.[1] ?? "";
   const scopes = block.split("\n").filter(Boolean).map((l) => l.trim().replace(/\s*#.*$/, "")).sort();
   assert.deepEqual(scopes, ["actions: write", "contents: write", "pull-requests: write"],
     "cla.yml's token no longer matches what the pinned action calls; read the action's source at its SHA before changing either");

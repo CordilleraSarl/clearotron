@@ -80,13 +80,16 @@ test("a deterministic match carries no channels, because sending both is refused
   for (const name of RETIRED) assert.equal(name in body, false);
 });
 
-test("a LIST in the term field is sent only as exact spellings on the exact channels", () => {
-  // A list ranks all its terms together. The register answers it term for term only on the exact
-  // channels, and only up to its list width, so that is the one list sent; every other list is refused.
-  const ok = buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], strategies: ["exact"] });
-  assert.deepEqual(ok.q, ["ZYTHERMO", "ZYTHERMA"]);
-  assert.deepEqual(ok.similarity, CHANNELS.exact);
-  for (const strategies of [["phonetic"], ["fuzzy"], ["prefix"], ["exact", "phonetic"]])
+test("a LIST in the term field is sent only on the channel sets the register answers term for term", () => {
+  // A list ranks all its terms together. The register answers it term for term on the exact channels and
+  // the sound-alike channels, each up to its list width (ruled 2026-10-09 for the second); every other list
+  // is refused.
+  for (const strategies of [["exact"], ["phonetic"]]) {
+    const ok = buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], strategies });
+    assert.deepEqual(ok.q, ["ZYTHERMO", "ZYTHERMA"]);
+    assert.deepEqual(ok.similarity, CHANNELS[strategies[0]]);
+  }
+  for (const strategies of [["fuzzy"], ["prefix"], ["exact", "phonetic"]])
     assert.throws(() => buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], strategies }), /list/i,
       `a ${strategies.join("+")} list reached the wire`);
   assert.throws(() => buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], match: "contains" }), /list/i);

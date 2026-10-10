@@ -57,6 +57,31 @@ const compactProposal = (p) => ({
 const inPriority = (p, prio) =>
   (Array.isArray(p?.nice_classes) ? p.nice_classes : []).some((c) => prio.has(String(c).trim()));
 
+// A SOUND-ALIKE BATCH GOES AS LISTS where the register takes one (`phoneticOrWidth`, ruled 2026-10-09): up to
+// that many spellings per question, within its word budget, each long enough for the ranked search. A
+// spelling below that floor is its own question, as every name of a batch was before. Each list is one
+// question with one receipt row, so a list that crowds or fails takes no other list down with it. PURE.
+function splitBatch(p, names, capabilities) {
+  const { terms: _batch, ...rest } = p;
+  const single = (t) => ({ ...rest, term: t });
+  const width = Math.floor(Number(capabilities?.phoneticOrWidth));
+  if (String(p?.predicate ?? "") !== "phonetic" || !(width >= 2)) return names.map(single);
+  const floor = Number(capabilities?.rankedMinLength) || 0;
+  const budget = Number(capabilities?.listWordBudget) || Infinity;
+  const words = (t) => t.split(/\s+/).filter(Boolean).length;
+  const folded = (t) => [...t.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, "")].length;
+  const out = [];
+  let list = [];
+  const close = () => { if (list.length) out.push(list.length === 1 ? single(list[0]) : { ...rest, terms: list }); list = []; };
+  for (const t of names) {
+    if (folded(t) < floor) { out.push(single(t)); continue; }
+    if (list.length >= width || list.reduce((n, x) => n + words(x), 0) + words(t) > budget) close();
+    list.push(t);
+  }
+  close();
+  return out;
+}
+
 export function mintSupplementalEntries(axis, proposals, { existingQids = new Set(), perCall = Infinity, axisMax = Infinity, existingCount = 0, capabilities = null, priorityClasses = [] } = {}) {
   const minted = [], reused = [], rejected = [], enriched = [], narrowed = [];
   let budget = Math.max(0, axisMax - existingCount);
@@ -82,7 +107,7 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     const names = perName && Array.isArray(p?.terms) ? p.terms.map((t) => String(t ?? "").trim()).filter(Boolean) : [];
     const splitOf = names.length > 1 && names.length <= PLAN_MAX_OR_WIDTH
       ? fingerprint({ axis, predicate: String(p?.predicate ?? "default"), names: [...names].sort(), i }) : null;
-    const byName = splitOf ? names.map((t) => { const { terms: _batch, ...rest } = p; return { ...rest, term: t }; }) : [p ?? {}];
+    const byName = splitOf ? splitBatch(p, names, capabilities) : [p ?? {}];
     return byName.flatMap((q) => {
       const words = perWord && Array.isArray(q?.goods_words) ? q.goods_words.map((w) => String(w ?? "").trim()).filter(Boolean) : [];
       return words.length > 1

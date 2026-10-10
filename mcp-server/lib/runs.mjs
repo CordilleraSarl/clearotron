@@ -58,7 +58,13 @@ export function tierFromRecord(runDir) {
   } catch { return null; }
 }
 
-export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet }) {
+export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet, workReadError = null }) {
+  // A work folder that was named and is not there, or cannot be read, is said, never listed as empty.
+  if (workSet && workReadError) {
+    return `no searches can be read here: CLEAROTRON_WORK_DIR is ${workRoot}, which `
+      + (workReadError === "ENOENT" ? "does not exist. " : `cannot be read (${workReadError}). `)
+      + "`npx clearotron doctor` prints where an install keeps them.";
+  }
   if (workSet || workExists || poolSet) return null;
   return `no searches can be read here: CLEAROTRON_WORK_DIR is unset and ${workRoot} does not exist, `
     + "and CLEAROTRON_REPORTS_DIR is unset. Set them to the install's directories — `npx clearotron doctor` "

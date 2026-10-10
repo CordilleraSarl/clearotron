@@ -128,7 +128,8 @@ test("a usable credential is still reported as enrolled", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("a credential that CANNOT BE READ reaches the stage as a could-not-look", () => {
+test("a credential that CANNOT BE READ reaches the stage as a could-not-look",
+  { skip: process.getuid?.() === 0 && "root reads a mode-000 file — the unreadable credential cannot be built, so the sentence the stage gets for it is not checked here" }, () => {
   // THE OWNER'S RULING, 2026-09-05, driven at the surface it was made about. The four states landed in
   // this issue and `doctor` honoured them; the sentence handed to the stage did not, because the caller
   // flattened them into one boolean first. An unreadable credential was described to the stage as one

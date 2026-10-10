@@ -574,7 +574,7 @@ function coverageJudgmentSummaryRows(cj) {
   const rows = Array.isArray(cj?.rows) ? cj.rows : [];
   if (!rows.length) return [];
   return [{ Field: '', Value: '' }, { Field: 'Coverage judgment — slices considered', Value: '', _head: true },
-    ...rows.map((r) => ({ Field: `   ${plainNote(r.area)}`, Value: plainNote(r.note) }))];
+    ...rows.map((r) => ({ Field: `   ${plainNote(r.areaLabel || r.area)}`, Value: plainNote(r.note) }))];
 }
 function correctionsSummaryRows(c) {
   const entries = Array.isArray(c?.entries) ? c.entries : [];

@@ -5,7 +5,7 @@
 //
 // pins, per stage, whether `--allowedTools` / `--mcp-config` / `--strict-mcp-config` are passed and
 // how many tool groups resolved. It says nothing about WHICH tools a granted server exposes, and the two
-// halves of `allowedToolsFor` (gather-config.mjs:293-302) behave in opposite ways:
+// halves of allowedToolsFor() in gather-config.mjs behave in opposite ways:
 //
 //   LOCAL servers   →  `mcp__<key>__<tool>` for each name in the grant table.  ENUMERATED.
 //                      A tool added to the server MODULE grants nothing until the table names it.
@@ -272,7 +272,7 @@ test("no stage holds a bridge without this file naming it", () => {
   // `register-unit` is the one, and the reason is not the env var being unset: `requireRegisterProvider`
   // reads a config object that snapshots the environment at MODULE LOAD, so setting it above cannot
   // reach it. That is safe here for a stated structural reason — `resolveGroup("register")` returns
-  // `{local:["register"], bridges:[]}` (gather-config.mjs:148), so a register group can never produce a
+  // `{local:["register"], bridges:[]}` (resolveGroup() in gather-config.mjs), so a register group can never produce a
   // wildcard, which is the only thing this test asks about. If a register group ever gains a bridge,
   // this exemption is wrong and the comment is where a reader finds that out.
   // SUBSET, not equality — and the direction matters. `register-unit` resolves only when the process was

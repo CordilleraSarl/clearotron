@@ -16,7 +16,7 @@ carries no `report.md` at all, because for that lane the markdown is an output o
 an input to it.
 
 Each directory is named by the product that produced it — the id in the run's own frozen search policy,
-not a label chosen afterwards. `clearotron demo` replays the first; `clearotron demo --product <id>`
+not a label chosen afterwards. `clearotron demo` replays all four; `clearotron demo --product <id>`
 replays a named one; `clearotron demo --run-dir <dir>` replays any frozen run from anywhere.
 
 ## The marks are invented; the data behind them is real

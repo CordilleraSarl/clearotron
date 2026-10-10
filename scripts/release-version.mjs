@@ -42,6 +42,35 @@ export function alreadyOut({ version, tags = [], published = false }) {
   return where;
 }
 
+// ── THE PLUGIN FOLDER FOLLOWS A STABLE, AND ONLY A STABLE ─────────────────────────────────────────────
+//
+// `plugin/` is what Claude's plugin directory installs, and it starts the server from npm at one exact
+// version: the one `"clearotron@X.Y.Z"` argument in its `.mcp.json`, beside the same number in its
+// manifest. A stable cut moves both in the version commit. A beta moves neither, so between stables the
+// folder names the last stable. The pin is found by its prefix, never by its place in the argument list,
+// and a file without exactly one match refuses the cut before anything is stamped.
+export const PLUGIN_SERVER = join("plugin", ".mcp.json");
+export const PLUGIN_MANIFEST = join("plugin", ".claude-plugin", "plugin.json");
+const PIN = /"clearotron@[^"]*"/g;
+const MANIFEST_VERSION = /^ {2}"version": "[^"]*"/gm;
+export const isStableVersion = (v) => /^\d+\.\d+\.\d+$/.test(v);
+
+/** PURE. Both plugin files at `version`, or why they cannot be moved. Nothing else in either changes. */
+export function pluginAtVersion({ server, manifest }, version) {
+  const pins = server.match(PIN) ?? [];
+  if (pins.length !== 1) return { refused: `${PLUGIN_SERVER} carries ${pins.length} "clearotron@" arguments, not one` };
+  const versions = manifest.match(MANIFEST_VERSION) ?? [];
+  if (versions.length !== 1) return { refused: `${PLUGIN_MANIFEST} carries ${versions.length} top-level versions, not one` };
+  const next = {
+    server: server.replace(PIN, `"clearotron@${version}"`),
+    manifest: manifest.replace(MANIFEST_VERSION, `  "version": "${version}"`),
+  };
+  for (const [file, text] of [[PLUGIN_SERVER, next.server], [PLUGIN_MANIFEST, next.manifest]]) {
+    try { JSON.parse(text); } catch (e) { return { refused: `${file} is not JSON after the move: ${e.message}` }; }
+  }
+  return next;
+}
+
 // ── THE CHANNEL DECIDES THE MODE, AND IT HAS TO BE DECIDED HERE ───────────────────────────────────
 //
 // `changeset version` computes a pre-release number or a stable one depending on whether the tree is in
@@ -343,12 +372,27 @@ function main() {
     process.exitCode = 1;
     return;
   }
+  let plugin = null;
+  if (isStableVersion(version)) {
+    const read = (p) => (existsSync(join(ROOT, p)) ? readFileSync(join(ROOT, p), "utf8") : "");
+    plugin = pluginAtVersion({ server: read(PLUGIN_SERVER), manifest: read(PLUGIN_MANIFEST) }, version);
+    if (plugin.refused) {
+      console.error(`release-version: the plugin folder cannot follow ${version}: ${plugin.refused}. Refusing before anything is stamped.`);
+      process.exitCode = 1;
+      return;
+    }
+  }
   const pkgPath = join(ROOT, "package.json");
   const pkg = readJson(pkgPath);
   const was = pkg.version;
   pkg.version = version;
   writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
   console.log(`release-version: clearotron ${was} -> ${version} (carried from the fixed group)`);
+  if (plugin) {
+    writeFileSync(join(ROOT, PLUGIN_SERVER), plugin.server);
+    writeFileSync(join(ROOT, PLUGIN_MANIFEST), plugin.manifest);
+    console.log(`release-version: the plugin folder starts clearotron@${version}, and its manifest says ${version}`);
+  }
 
   // AND THE LOCKFILE, WHICH NOTHING ELSE IN THIS CUT TOUCHES. `changeset version` rewrites the
   // workspace manifests and the block above rewrites the root's; `package-lock.json` records the same

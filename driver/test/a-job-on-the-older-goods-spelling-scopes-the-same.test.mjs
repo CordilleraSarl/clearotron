@@ -74,6 +74,17 @@ test("nothing else about the scope moved", () => {
   }
 });
 
+test("a job that names its mark only as markName scopes it as a one-mark list", () => {
+  // The declination tool's identical-mark refusal reads the instructed marks as a list, and a bare string
+  // there read as no mark at all. Every spelling the intake gate accepts as naming the mark lands as a list.
+  assert.deepEqual(instructedScopeOf(JOB).marks, ["INVENTEDMARK"], "a markName-only job scoped its mark as a bare string");
+  assert.deepEqual(instructedScopeOf({ name: "INVENTEDMARK" }).marks, ["INVENTEDMARK"], "the older `name` spelling must scope the same");
+  assert.deepEqual(instructedScopeOf({ ...JOB, marks: [] }).marks, ["INVENTEDMARK"],
+    "an empty mark list falls back to the mark name, as the intake gate does");
+  assert.deepEqual(instructedScopeOf({ ...JOB, marks: [{ name: "A" }] }).marks, ["A"], "a list that names a mark is read as it stands");
+  assert.equal(instructedScopeOf({}).marks, null, "a job naming no mark scopes null, never a list holding nothing");
+});
+
 // ── AND THE SCOPE FILE IS NOT THE ONLY READER ─────────────────────────────────────────────────────
 //
 // Fixing the scope stamp alone moved the seam instead of closing it: the clearance and knockout
