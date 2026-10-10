@@ -86,7 +86,7 @@ export const COUNTED_EVENTS = {
   "record-carry-failed": FAILED, "record-discard-failed": FAILED, "register-digest-facts-failed": FAILED,
   "register-plan-infeasible": FAILED, "register-positions-failed": FAILED, "register-presence-failed": FAILED,
   "remedy-accounting-failed": FAILED, "report-cards-rate-limited": FAILED, "restamp-miss": FAILED,
-  "reviewer-degenerate": FAILED, "salvage-lane-no-target": FAILED, "searched-jurisdictions-unresolved": FAILED,
+  "reviewer-degenerate": FAILED, "salvage-lane-no-target": FAILED, "searched-jurisdictions-unresolved": FAILED, "foreign-record-links-recheck": FAILED,
   "skeptic-skipped": FAILED, "stage-input-over-ceiling": FAILED, "status-write-failed": FAILED,
   "stale-repair-entry-done": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : Number(e.failed)) > 0 },
   // written only where the step threw
@@ -138,7 +138,7 @@ export const COUNTED_EVENTS = {
   "commonlaw-channels-unstated": REPAIR, "commonlaw-channels-unusable": REPAIR,
   "corrective-unnamed-removal-repaired": REPAIR, "coverage-floor-clamp": REPAIR, "jx-receipt-repaired": REPAIR,
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
-  "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR,
+  "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR, "foreign-record-links-blanked": REPAIR,
   "verdict-hardened-by-repair": REPAIR, "verdict-rederive-repair": REPAIR,
   "common-law-half-quarantined": QUARANTINE, "coverage-ledger-quarantined": QUARANTINE,
   "findings-actions-quarantined": QUARANTINE, "named-band-state-quarantined": QUARANTINE, "quarantine": QUARANTINE,
