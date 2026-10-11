@@ -335,7 +335,20 @@ jobs:
           Get-Content $log | Select-String -Pattern '^(# (tests|pass|fail|skipped|cancelled) |  (FAILED|ok) )' | ForEach-Object { $_.Line }
           $skipped = Select-String -Path $log -SimpleMatch '[repo-guard] SKIPPED'
           if ($skipped) { $skipped | ForEach-Object { $_.Line }; throw "a repository guard SKIPPED on a runner that has a checkout, so its green means nothing" }
-          if ($status -ne 0) { Select-String -Path $log -Pattern '^not ok' | ForEach-Object { $_.Line }; throw "this shard exited $status" }
+          # Each failing test with its assertion message, which TAP writes under `error:`: a test name says
+          # where it failed and only the message says why, and the uploaded log is gone in a week.
+          if ($status -ne 0) {
+            Select-String -Path $log -Pattern '^not ok' -Context 0,14 | ForEach-Object {
+              $_.Line
+              $inError = $false
+              foreach ($l in $_.Context.PostContext) {
+                if ($l -match '^  error: ') { $inError = $true; $l; continue }
+                if ($inError -and $l -match '^    ') { $l; continue }
+                if ($inError) { break }
+              }
+            }
+            throw "this shard exited $status"
+          }
 
       - if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7

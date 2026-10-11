@@ -593,6 +593,8 @@ export const anthropicAgentEngine = {
       let lastMove = Date.now();
       let lastProgress = Date.now();            // honest-progress clock: token movement / agent-loop steps / artifact writes ONLY
       let firstOutputAt = null;                 // #1692/#1813 — first byte of the PROTOCOL (stdout only); until then every clock below is timing STARTUP
+      let atKill = null;                        // what the watchdog had seen when it decided to kill — recording only, see killDecision
+      let silentIdleMs = null;                  // the no-progress clock at the watchdog's last look before the child spoke — recording only
       const GRACE = spawnGraceMs();             // one source of the grace: common.mjs, where #1703 set it
       let sawAnyEvent = false;                  // ANY parseable stream event (incl. system:init) — false on close = the CLI died before streaming (startup-class failure)
       let rateLimitEvent = null;   // a 429 session-cap rejection rides a `rate_limit_event` (status:"rejected" + resetsAt)
@@ -957,6 +959,7 @@ export const anthropicAgentEngine = {
         ? (sig) => { const n = killWindowsTreeNow({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
         : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
       const killTree = () => {
+        atKill ??= { ms: Date.now() - t0, spoken: firstOutputAt !== null, toolCalls };
         if (escalation) return;   // the watchdog polls — arm the escalation exactly once
         groupKill("SIGTERM");
         escalation = setTimeout(() => groupKill("SIGKILL"), killEscalateMs());
@@ -1009,6 +1012,7 @@ export const anthropicAgentEngine = {
         // was recorded as a no-progress stall against a turn that had not yet been given a chance to
         // progress. A child that never speaks AT ALL is still bounded: the byte-stall fires at max(STALL, GRACE).
         const started = firstOutputAt !== null;
+        if (!started) silentIdleMs = progIdle;
         if (idle >= (started ? STALL : Math.max(STALL, GRACE))) { stallKill = true; killed = true; killTree(); }
         // No observable progress (tokens/agent-loop/artifact) for NOPROG while bytes kept the pipe warm:
         // kill it NOW, well below the wall, and record it as a STALL — never let the ceiling raise turn
@@ -1220,6 +1224,16 @@ export const anthropicAgentEngine = {
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.
           firstByteMs: firstOutputAt === null ? null : Math.round(firstOutputAt - t0),
+          // WHICH SIDE OF THE KILL a byte or a tool ask fell on. RECORDING ONLY, like firstByteMs. The
+          // totals above keep counting after the decision, because what a dying child already wrote is
+          // still read (streamed usage depends on it). On Windows the kill blocks this process while it
+          // lists and ends the tree, measured at one to three seconds on the hosted runner, which is long
+          // enough for a booting child to speak and open a tool ask that is read only afterwards.
+          // `killDecision` is what the watchdog had seen when it decided: ms from spawn, whether the child
+          // had spoken, and the tool asks read by then; null when nothing was killed. `silentIdleMs` is how
+          // long the no-progress clock had run at the watchdog's last look before the child spoke; null
+          // when it never looked at a silent child.
+          killDecision: atKill, silentIdleMs,
           // WHICH CLOCK RAN OUT, and WHAT the wait was made of.
           //
           // The hard wall measures ELAPSED, and elapsed includes time the model spent waiting on tools
