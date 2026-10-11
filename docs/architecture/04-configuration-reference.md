@@ -292,7 +292,7 @@ of truncations.
 
 | Var | Default | Meaning |
 |---|---|---|
-| `CLEAROTRON_BAND_RESPONSE_CHARS` | the shape-part size | Characters per band-server response. Floor 4096; defaults to whatever the shape part is set to, so raising one raises both unless this is set too. |
+| `CLEAROTRON_BAND_RESPONSE_CHARS` | the shape-part size, 70,000; 32,000 on the OpenAI engine | Characters per band-server response. Floor 4096. On the OpenAI engine it is at most 32,000, because Codex removes the middle of any tool answer longer than about 39,000 bytes before the model reads it; a smaller value set here still applies. |
 
 ### Surfaces beside the driver — portal, demo, e2e harness
 

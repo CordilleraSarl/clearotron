@@ -9,6 +9,7 @@ import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import {
   renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD, FENCE_PROFILE, TOOL_SERVER_SETTINGS,
+  CODEX_BAND_ANSWER_CHARS, codexBandAnswerChars,
 } from "../engine/mcp/codex-config.mjs";
 
 // Neutral register namespace (the real gather-config emits server key `register` + `register_*` tools —
@@ -152,6 +153,24 @@ test("renderCodexConfigToml: the approval rides the servers a real stage is gran
   assert.ok(blocks.some((b) => b.startsWith("[mcp_servers.register]")), `no register server in:\n${toml}`);
   for (const b of blocks)
     assert.match(b, /^default_tools_approval_mode = "approve"$/m, `no approval line in:\n${b}`);
+});
+
+// Codex cuts the middle out of a tool answer over about 39,000 bytes, so the band server is told to answer
+// under it there; an install's own smaller size still wins, and no other server is told anything.
+test("renderCodexConfigToml: the band server a real stage is granted answers under codex's cut", async () => {
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
+  const groups = toolGroupsForStage("placement-inquiry");
+  const cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/tmp/run-x" });
+  const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: allowedToolsFor(groups), bandAnswerChars: codexBandAnswerChars({}) });
+  const band = serverBlocks(toml).find((b) => b.startsWith("[mcp_servers.band]"));
+  assert.ok(band, `no band server in:\n${toml}`);
+  assert.match(band, /^env = \{ .*CLEAROTRON_BAND_RUN_DIR = "\/tmp\/run-x".*, CLEAROTRON_BAND_RESPONSE_CHARS = "32000" \}$/m, band);
+  const other = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, bandAnswerChars: 32000 });
+  assert.doesNotMatch(other, /CLEAROTRON_BAND_RESPONSE_CHARS = /, "a server other than the band was told the band's size");
+  assert.equal(CODEX_BAND_ANSWER_CHARS, 32000);
+  assert.equal(codexBandAnswerChars({}), 32000);
+  assert.equal(codexBandAnswerChars({ CLEAROTRON_BAND_RESPONSE_CHARS: "20000" }), 20000);
+  assert.equal(codexBandAnswerChars({ CLEAROTRON_BAND_RESPONSE_CHARS: "70000" }), 32000);
 });
 
 test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and neither --sandbox nor an approval flag rides the command line", async () => {

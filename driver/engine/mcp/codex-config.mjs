@@ -50,6 +50,21 @@ export const TOOL_SERVER_SETTINGS = Object.freeze([
   "OAUTH_BRIDGE_CREDS_DIR", "OAUTH_BRIDGE_CLIENT_NAME",
 ]);
 
+// CODEX CUTS A LONG TOOL ANSWER IN THE MIDDLE. It keeps 10,000 tokens of any tool answer, from its start
+// and its end, counting 4 bytes a token, and puts "…N tokens truncated…" between them. Measured in
+// testing, 2026-10-11, on codex 0.162.0 with gpt-6.1-sol and a one-tool probe whose answer carried marker
+// records at its start, middle and end: at 42,560 characters the model saw the start and the end only; at
+// 39,428 it saw all three, 68 tokens short. The band server sizes its answers for Claude's limit (70,000
+// characters, under 25,000 tokens), so on this engine a full band page reached the model with about 40% of
+// its records gone while the offset of the next page, at the top, survived. The vendor's settings for a
+// larger budget (`tool_output_token_limit`, a tool's `output_token_limit`) changed nothing on that
+// version, written in this file or given on the command line. So here the band server answers under the
+// cut: 32,000 characters leaves room for the engine's own wrapping (about 840 bytes) and for text that
+// takes more than one byte a character. An install's own smaller size still wins.
+export const CODEX_BAND_ANSWER_CHARS = 32000;
+export const codexBandAnswerChars = (env = process.env) =>
+  Math.min(CODEX_BAND_ANSWER_CHARS, Number(env.CLEAROTRON_BAND_RESPONSE_CHARS) || CODEX_BAND_ANSWER_CHARS);
+
 // ── TOML value escaping (basic strings) ──────────────────────────────────────────────────────────────
 // One encoder for every TOML block the product writes; re-exported so this module's callers keep their import.
 export { tomlString };
@@ -121,7 +136,7 @@ export function webFetchRequested(allowedTools) {
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
 export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS], toolTimeoutSec, fence = null, withheldFromCommands = [],
-  platform = process.platform } = {}) {
+  platform = process.platform, bandAnswerChars = codexBandAnswerChars() } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
@@ -167,7 +182,9 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     lines.push("");
   };
 
-  for (const [name, s] of Object.entries(servers)) emitServer(name, { ...s, enabledTools: enabled[name] }, { forwardCreds: true });
+  // The band server answers under codex's cut (CODEX_BAND_ANSWER_CHARS, above); `env` wins over a forwarded name.
+  for (const [name, s] of Object.entries(servers)) emitServer(name, { ...s, enabledTools: enabled[name],
+    ...(name === "band" ? { env: { ...s.env, CLEAROTRON_BAND_RESPONSE_CHARS: String(bandAnswerChars) } } : {}) }, { forwardCreds: true });
 
   // WebFetch → the engine-local fetch server (codex has no built-in). Needs no creds (no env_vars).
   if (webFetchRequested(allowedTools))

@@ -1366,8 +1366,8 @@
           "todos": 0
         },
         "a-seat-reads-the-band-page-by-page.test.mjs": {
-          "tests": 2,
-          "asserts": 15,
+          "tests": 3,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -3094,8 +3094,8 @@
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
-          "tests": 20,
-          "asserts": 70,
+          "tests": 21,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
