@@ -293,7 +293,8 @@ test("band_lookup caps returned rows but reports the full match count", async ()
   const out = JSON.parse(textOf(r, 2));
   assert.equal(out.matched, 30);
   assert.equal(out.returned, 5);
-  assert.match(out.note, /narrow the filters/);
+  assert.equal(out.next_offset, 5);
+  assert.match(out.note, /call again with offset: 5 for the next page/);
 });
 
 test("guards: missing band and unknown tier fail clean; a missing shape file names the driver defect", async () => {

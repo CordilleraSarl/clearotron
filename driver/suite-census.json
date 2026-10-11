@@ -1365,6 +1365,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-seat-reads-the-band-page-by-page.test.mjs": {
+          "tests": 2,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-secret-file-is-compared-not-printed.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -2021,7 +2027,7 @@
         },
         "band-server.test.mjs": {
           "tests": 24,
-          "asserts": 126,
+          "asserts": 127,
           "skips": 0,
           "todos": 0
         },

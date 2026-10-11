@@ -240,6 +240,11 @@ function bandLookup(params = {}) {
   try { band = loadJson(bandPath()); } catch (e) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: `ERROR: band unreadable (${e.message}) — a driver-side defect; report it, never hand-repair the band.` }; }
   const { record_id, owner, nice_class, tier, qid, query, text, status, live_only = false } = params;
   const limit = Math.max(1, Math.min(Number(params.limit) || 20, 100));
+  // PAGING. A large band is read page by page from `offset`, in the band's own order, and a capped answer
+  // names the next offset. Without it the only way to see every record was to slice the band by owner or
+  // text fragments, and a seat told to judge the complete band read it many times over (1,423 records,
+  // 2,287 lookups, 65.8 MB, until the engine's output cap stopped the turn).
+  const offset = Math.max(0, Math.floor(Number(params.offset) || 0));
   if (tier && !SHAPE_TIERS.includes(tier)) return { isError: true, text: `ERROR: tier must be one of ${SHAPE_TIERS.join(" | ")}.` };
 
   // tier filtering classifies against the SHAPE's own frozen targets — same classifier, same result.
@@ -270,7 +275,7 @@ function bandLookup(params = {}) {
     if (text && !norm(r?.mark_text).includes(norm(text))) continue;
     if (prepared && classifyRecord(r?.mark_text, prepared).tier !== tier) continue;
     matched++;
-    if (hits.length < limit) hits.push(project(r));
+    if (matched > offset && hits.length < limit) hits.push(project(r));
   }
   // matching crowd descriptors ride along (a lookup that lands in an un-enumerated zone must SEE that).
   const crowds = (Array.isArray(band?.crowds) ? band.crowds : []).filter((c) => {
@@ -301,9 +306,10 @@ function bandLookup(params = {}) {
   // The full `matched` count always ships, and the note says exactly how many records were withheld.
   let byteCapped = 0;
   const body = () => JSON.stringify({
-    matched, returned: hits.length,
-    ...(matched > hits.length ? { note: `capped at ${hits.length} — narrow the filters${byteCapped ? "" : " (or raise limit ≤100)"} to see the rest; the count above is the full match` } : {}),
-    ...(byteCapped ? { byte_cap_note: `${byteCapped} matched record(s) withheld to fit one tool response — narrow the filters (owner / nice_class / tier / qid) and look them up in smaller slices` } : {}),
+    matched, returned: hits.length, ...(offset ? { offset } : {}),
+    ...(matched > offset + hits.length ? { next_offset: offset + hits.length } : {}),
+    ...(matched > offset + hits.length ? { note: `capped at ${hits.length} — call again with offset: ${offset + hits.length} for the next page; the count above is the full match` } : {}),
+    ...(byteCapped ? { byte_cap_note: `${byteCapped} matched record(s) withheld to fit one tool response — call again with offset: ${offset + hits.length} for the rest` } : {}),
     records: hits,
     ...(crowds.length ? { matching_crowds: crowds, crowd_note: "these matching slices were NOT enumerated — records under them may exist that no lookup can return; weigh the descriptor, never treat this result as their clean"
       + (refusedCrowds ? ` — and ${refusedCrowds} of them was/were NEVER ANSWERED at all (see "refusal"): no count exists for those, so they are unsearched rather than empty, and nothing about them can be read off a zero` : "")
@@ -405,11 +411,11 @@ serve({
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, limit (default 20, max 100). Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, limit (default 20, max 100), offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page). Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
-        status: { type: "string" }, live_only: { type: "boolean" }, limit: { type: "number" },
+        status: { type: "string" }, live_only: { type: "boolean" }, limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandLookup,
