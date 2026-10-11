@@ -23,6 +23,7 @@ import { dirname, join } from "node:path";
 import { createInterface } from "node:readline";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { codexBandAnswerChars, codexToolAnswerBytes } from "../engine/mcp/codex-config.mjs";
+import { claudeToolAnswerBytes } from "../engine/mcp/gather-config.mjs";
 import { quotedBytes } from "../../shared/answer-parts.mjs";
 
 const SERVER = join(dirname(fileURLToPath(import.meta.url)), "..", "engine", "mcp", "band-server.mjs");
@@ -50,10 +51,9 @@ function seedBand() {
 }
 
 /** The server as a seat meets it: one request, its answer, then the next request. */
-async function session(runDir, answerChars = null) {
+async function session(runDir, sizes = {}) {
   const child = spawn(process.execPath, [SERVER], { stdio: ["pipe", "pipe", "pipe"],
-    env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDir, CLEAROTRON_GATHER_SESSION_KEY: "clearotron-x-y-placement-inquiry",
-      ...(answerChars ? { CLEAROTRON_BAND_RESPONSE_CHARS: String(answerChars) } : {}) } });
+    env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDir, CLEAROTRON_GATHER_SESSION_KEY: "clearotron-x-y-placement-inquiry", ...sizes } });
   const pending = new Map();
   createInterface({ input: child.stdout }).on("line", (line) => {
     try { const m = JSON.parse(line); if (m.id != null && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } } catch { /* not a message */ }
@@ -99,7 +99,7 @@ async function readWhole(s) {
   return { calls, longest, printed };
 }
 
-test("on Claude's answer size, a seat following the offset each answer names reads every record once, in about fifty calls", async (t) => {
+test("given no answer size, a seat following the offset each answer names reads every record once, in about fifty calls", async (t) => {
   const runDir = seedBand();
   const s = await session(runDir);
   try {
@@ -110,10 +110,27 @@ test("on Claude's answer size, a seat following the offset each answer names rea
   } finally { s.close(); rmSync(runDir, { recursive: true, force: true }); }
 });
 
+// Claude Code puts an answer past 50,000 characters into a file the model must read for itself, so Claude
+// is given an answer size under that (gather-config.mjs), and the band answers in five sixths of it.
+test("on Claude's answer size, every page arrives inline, under the size as printed, and every record still once", async (t) => {
+  const runDir = seedBand();
+  const size = claudeToolAnswerBytes({});
+  const s = await session(runDir, { CLEAROTRON_TOOL_ANSWER_BYTES: String(size) });
+  try {
+    const { calls, longest, printed } = await readWhole(s);
+    assert.ok(longest < 50000, `a page ran to ${longest} characters, where Claude Code would save it to a file`);
+    assert.equal(Math.floor(size / 1.2), 37500);
+    assert.ok(longest <= 37500, `a page ran to ${longest} characters, over five sixths of the answer size`);
+    assert.ok(printed <= size, `a page printed as ${printed} bytes would be split again into parts`);
+    assert.ok(calls >= 60 && calls <= 110, `the band took ${calls} calls`);
+    t.diagnostic(`${RECORDS} records read in ${calls} calls, longest page ${longest} characters`);
+  } finally { s.close(); rmSync(runDir, { recursive: true, force: true }); }
+});
+
 test("on codex's answer size, every page fits under its cut and every record still arrives once", async (t) => {
   const runDir = seedBand();
   const size = codexBandAnswerChars({});
-  const s = await session(runDir, size);
+  const s = await session(runDir, { CLEAROTRON_BAND_RESPONSE_CHARS: String(size), CLEAROTRON_TOOL_ANSWER_BYTES: String(codexToolAnswerBytes({})) });
   try {
     const { calls, longest, printed } = await readWhole(s);
     assert.ok(longest <= size, `a page ran to ${longest} characters, over the ${size} codex is given`);

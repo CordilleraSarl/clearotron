@@ -20,6 +20,7 @@ import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync } from
 import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
+import { answerBudget } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
@@ -107,7 +108,11 @@ const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever 
 // per-tool-output token cap and error the call — killing the reading path exactly where the record
 // volume is highest. band_lookup TRIMS records (the full match count always survives, with an
 // honest note); band_record serves PARTS like band_shape (a record is a document — never trimmed).
-const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONSE_CHARS) || SHAPE_PART_CHARS);
+// Given an answer size and no band size of its own, the band answers in five sixths of it: the rest is room
+// for the quotes and line breaks a printout adds (up to 13% on band answers) and for a banner, so a band
+// answer is never split a second time (shared/answer-parts.mjs). 37,500 on Claude, 30,000 on codex.
+const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONSE_CHARS)
+  || (answerBudget() ? Math.floor(answerBudget() / 1.2) : SHAPE_PART_CHARS));
 
 // The shape is split at the smaller of its own part size and the answer size, because codex cuts the
 // middle out of a read over about 39,000 bytes and is given a smaller answer size for that

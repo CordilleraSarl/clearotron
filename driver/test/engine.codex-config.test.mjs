@@ -191,6 +191,23 @@ test("renderCodexConfigToml: every server, the bridges and the page fetcher incl
   assert.equal(codexToolAnswerBytes({ CLEAROTRON_TOOL_ANSWER_BYTES: "90000" }), 36000);
 });
 
+// Claude is given its own answer size the same way, in each server's own entry (gather-config.mjs), and the
+// codex render writes the smaller codex size over it.
+test("buildGatherMcpConfig: in a run every server, the bridges included, is given Claude's answer size; codex writes its own over it", async () => {
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, CLAUDE_TOOL_ANSWER_BYTES, claudeToolAnswerBytes } = await import("../engine/mcp/gather-config.mjs");
+  for (const stage of ["register-unit:identical", "placement-inquiry", "case-law", "synthesis"]) {
+    const groups = toolGroupsForStage(stage);
+    const cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/tmp/run-x" });
+    for (const [name, s] of Object.entries(cfg.mcpServers)) assert.equal(s.env?.CLEAROTRON_TOOL_ANSWER_BYTES, "45000", `${stage}/${name}`);
+    const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: allowedToolsFor(groups), toolAnswerBytes: 36000 });
+    assert.doesNotMatch(toml, /CLEAROTRON_TOOL_ANSWER_BYTES = "45000"/, `${stage}: Claude's size reached codex`);
+  }
+  assert.equal(CLAUDE_TOOL_ANSWER_BYTES, 45000);
+  assert.ok(CLAUDE_TOOL_ANSWER_BYTES < 50000, "under the 50,000 characters past which Claude Code saves an answer to a file");
+  assert.equal(claudeToolAnswerBytes({ CLEAROTRON_TOOL_ANSWER_BYTES: "20000" }), 20000);
+  assert.equal(claudeToolAnswerBytes({ CLEAROTRON_TOOL_ANSWER_BYTES: "90000" }), 45000);
+});
+
 test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and neither --sandbox nor an approval flag rides the command line", async () => {
   const { buildCodexArgs } = await import("../engine/openai-agent.mjs");
   const before = process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS;

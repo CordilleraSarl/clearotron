@@ -834,9 +834,21 @@ function resolveGroup(group) {
   }
 }
 
+// CLAUDE'S ANSWER SIZE. Claude Code replaces a tool answer longer than 50,000 characters, or 25,000 tokens,
+// with a message naming a file it saved the answer to, and the model must read that file itself, the
+// first read refused when the file is past 25,000 tokens (the vendor's MCP page; measured in testing,
+// 2026-10-11, on 2.1.286 and 2.1.295: 49,159 characters arrived whole, 51,189 were replaced). So every
+// server is given this size, and a longer answer comes in the parts shared/answer-parts.mjs serves, the
+// banners the same on both engines. 45,000 bytes counted as a quoted string is under 50,000 characters, and
+// under 25,000 tokens for any text a register or a search returns. The codex config writes its own, smaller
+// size over this one (codex-config.mjs). An install's own smaller size still wins.
+export const CLAUDE_TOOL_ANSWER_BYTES = 45000;
+export const claudeToolAnswerBytes = (env = process.env) =>
+  Math.min(CLAUDE_TOOL_ANSWER_BYTES, Number(env.CLEAROTRON_TOOL_ANSWER_BYTES) || CLAUDE_TOOL_ANSWER_BYTES);
+
 // The mcp-config server env carries ONLY the per-run, non-secret values (session key + ledger paths +
-// agent + the run dir the band tools serve). Creds (CORSEARCH_SESSION_KEY / PERPLEXITY_API_KEY /
-// EUIPO_*) are inherited from the engine env.
+// agent + the run dir the band tools serve, and the answer size above). Creds (CORSEARCH_SESSION_KEY /
+// PERPLEXITY_API_KEY / EUIPO_*) are inherited from the engine env.
 function serverEnv({ sessionKey, agent, runDir, recordAxis }) {
   const e = {};
   // — see buildGatherMcpConfig: a register server without a run is refused there, so by the time
@@ -881,6 +893,7 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis }) {
   if (runDir) e.CLEAROTRON_REGISTER_RECORD_LOG = runRecordLogPath(runDir);
   for (const v of ["CLEAROTRON_GATHER_SESSION_ID", "EUIPO_ENVIRONMENT"])
     if (process.env[v]) e[v] = process.env[v];
+  e.CLEAROTRON_TOOL_ANSWER_BYTES = String(claudeToolAnswerBytes());   // CLAUDE_TOOL_ANSWER_BYTES, above
   return e;
 }
 
@@ -935,6 +948,8 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
   if (runDir) auditEnv.CLEAROTRON_BAND_RUN_DIR = runDir;
   if (sessionKey) auditEnv.CLEAROTRON_GATHER_SESSION_KEY = sessionKey;
   if (agent) auditEnv.CLEAROTRON_GATHER_AGENT = agent;
+  // In a run, a fourth: the answer size, because a case-law answer is served in parts like any other.
+  if (Object.keys(auditEnv).length) auditEnv.CLEAROTRON_TOOL_ANSWER_BYTES = String(claudeToolAnswerBytes());
   for (const k of bridgeKeys) mcpServers[k] = { command: NODE, args: [BRIDGE, "--server", k], connectionTimeoutMs: 60000, ...(Object.keys(auditEnv).length ? { env: auditEnv } : {}) };
   return Object.keys(mcpServers).length ? { mcpServers } : null;
 }

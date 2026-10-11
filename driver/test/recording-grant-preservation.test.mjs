@@ -118,10 +118,12 @@ function surfaceFor(stage) {
 
 const ENV = '"env":{"CLEAROTRON_GATHER_SESSION_KEY":"SK","CLEAROTRON_GATHER_AGENT":"AG","CLEAROTRON_BAND_RUN_DIR":"/RUN"'
   + ',"CLEAROTRON_DATABASE":"<REGISTER>"'
-  + ',"CLEAROTRON_REGISTER_CALL_LOG":"<CALL_LOG>","CLEAROTRON_REGISTER_RECORD_LOG":"/RUN/_driver/register-record-bodies.jsonl"}';
+  + ',"CLEAROTRON_REGISTER_CALL_LOG":"<CALL_LOG>","CLEAROTRON_REGISTER_RECORD_LOG":"/RUN/_driver/register-record-bodies.jsonl"'
+  // Every server's answer size, so a long answer comes in parts (gather-config CLAUDE_TOOL_ANSWER_BYTES).
+  + ',"CLEAROTRON_TOOL_ANSWER_BYTES":"45000"}';
 const local = (key, script) => `"${key}":{"command":"<NODE>","args":["<MCP>/${script}"],${ENV}}`;
 const bridge = (key) => `"${key}":{"command":"<NODE>","args":["<BRIDGE>","--server","${key}"],"connectionTimeoutMs":60000`
-  + ',"env":{"CLEAROTRON_BAND_RUN_DIR":"/RUN","CLEAROTRON_GATHER_SESSION_KEY":"SK","CLEAROTRON_GATHER_AGENT":"AG"}}';
+  + ',"env":{"CLEAROTRON_BAND_RUN_DIR":"/RUN","CLEAROTRON_GATHER_SESSION_KEY":"SK","CLEAROTRON_GATHER_AGENT":"AG","CLEAROTRON_TOOL_ANSWER_BYTES":"45000"}}';
 
 // ONE REPRESENTATIVE STAGE PER GROUP, and the two shared structures the collapse edits are in here for
 // the same reason: `resolveGroup` is one switch and `LOCAL` is one object, so a change meant for the two
