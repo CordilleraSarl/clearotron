@@ -98,7 +98,8 @@ const loadJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 // contract is honest and explicit: an over-size shape announces "part N/M" and names the next call;
 // the common single-part case is served verbatim with no banner. The part size was a test seam with a
 // floor under it so a misconfiguration could never shred the shape into confetti; step 3 deleted
-// the knob, and a constant cannot be misconfigured.
+// the knob, and a constant cannot be misconfigured. A smaller answer size still lowers it
+// (SHAPE_PART_SERVED, below), never under the answer size's own floor.
 const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever set it
 
 // PR-11 — the SAME transport cap bounds the other two tools (they were shipped unbounded): a
@@ -107,6 +108,14 @@ const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever 
 // volume is highest. band_lookup TRIMS records (the full match count always survives, with an
 // honest note); band_record serves PARTS like band_shape (a record is a document — never trimmed).
 const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONSE_CHARS) || SHAPE_PART_CHARS);
+
+// The shape is split at the smaller of its own part size and the answer size, because codex cuts the
+// middle out of any tool answer over about 39,000 bytes and is given a smaller answer size for that
+// (engine/mcp/codex-config.mjs, CODEX_BAND_ANSWER_CHARS). Measured in testing, 2026-10-11: before this,
+// a GPT model read one band's shape in 70,000-character parts, and in one attempt four of its five
+// shape reads ran past the cut and reached it without their middle rows. Never larger than the constant,
+// so a larger answer size cannot push a part past Claude's limit; with no size set, nothing changes.
+const SHAPE_PART_SERVED = Math.min(SHAPE_PART_CHARS, RESPONSE_CHARS);
 
 /** Split text into parts of ≤ budget chars, cutting only at line boundaries (an over-budget single
  *  line still ships whole — never cut mid-line). Concatenating the parts with "\n" restores the
@@ -216,7 +225,7 @@ function bandShape(params) {
   if (!RUN_DIR) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." }; }
   if (!existsSync(p)) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: `ERROR: ${p} not found — the driver derives it after the register fan-in; if the band exists but the shape does not, report this as a driver defect (do NOT slice the raw band instead).` }; }
   const text = readFileSync(p, "utf8");
-  const parts = splitAtLines(text, SHAPE_PART_CHARS);
+  const parts = splitAtLines(text, SHAPE_PART_SERVED);
   const total = parts.length;
   if (total === 1) {                                    // the common case — served verbatim, no banner
     logRead("band_shape", { format }, { ok: true, bytes: text.length });

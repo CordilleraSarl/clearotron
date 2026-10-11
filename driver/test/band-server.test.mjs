@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { buildBandShape } from "../band-shape.mjs";
+import { codexBandAnswerChars } from "../engine/mcp/codex-config.mjs";
 import { foldsCase } from "./platform-caps.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -434,6 +435,40 @@ test("band_shape: an out-of-range part clamps instead of erroring (the model can
   const { runDir } = seedCrowdedRun(1200);
   const r = await mcpSession([INIT, call(2, "band_shape", { part: 99 })], ENV(runDir));
   assert.match(textOf(r, 2), /the shape is complete once parts/, "part 99 clamps to the last part");
+});
+
+// Codex cuts the middle out of any tool answer over about 39,000 bytes, and there the band server is
+// given a smaller answer size (engine/mcp/codex-config.mjs). The shape's parts follow it, still restore the
+// artifact byte for byte, and with no size given they are what they were.
+async function shapeParts(runDir, env) {
+  const first = textOf(await mcpSession([INIT, call(2, "band_shape")], env), 2);
+  const m = first.match(/^\[band_shape part 1\/(\d+)/);
+  if (!m) return [first];
+  const total = Number(m[1]);
+  const rest = await mcpSession([INIT, ...Array.from({ length: total }, (_, i) => call(2 + i, "band_shape", { part: i + 1 }))], env);
+  return Array.from({ length: total }, (_, i) => textOf(rest, 2 + i));
+}
+
+test("band_shape: given codex's answer size, every part fits under its cut and the parts still restore the shape", async () => {
+  const { runDir, md } = seedCrowdedRun();
+  const size = codexBandAnswerChars({});
+  const parts = await shapeParts(runDir, { ...ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(size) });
+  for (const p of parts) assert.ok(Buffer.byteLength(p) < 39_000, `a part ran to ${Buffer.byteLength(p)} bytes, past codex's cut`);
+  const body = (p) => p.split("\n").slice(1, -1).join("\n");
+  assert.equal(parts.map(body).join("\n"), md, "concatenated parts === band-shape.md");
+  const unchanged = await shapeParts(runDir, ENV(runDir));
+  assert.ok(parts.length > unchanged.length, `${parts.length} parts at codex's size against ${unchanged.length} with none given`);
+  assert.ok(unchanged[0].length > 60_000, "with no size given, a part is as long as it was");
+});
+
+test("band_shape: a shape that fits one Claude answer but not codex's is split for codex and served whole otherwise", async () => {
+  const { runDir, md } = seedCrowdedRun(400);
+  assert.ok(md.length > 39_000 && md.length < 70_000, `the fixture sits between the two sizes (${md.length} characters)`);
+  assert.deepEqual(await shapeParts(runDir, ENV(runDir)), [md], "with no size given, the shape is served verbatim, no banner");
+  const parts = await shapeParts(runDir, { ...ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(codexBandAnswerChars({})) });
+  assert.ok(parts.length >= 2, "at codex's size the same shape is served in parts");
+  assert.match(parts[0], /^\[band_shape part 1\/\d+/);
+  assert.ok(parts.every((p) => Buffer.byteLength(p) < 39_000));
 });
 
 // ── PR-11: the OTHER two tools honour the same transport cap ─────────────────────────────────────────
