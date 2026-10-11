@@ -16,8 +16,8 @@
 // extractor never sees:
 //
 //   D1 verify.mjs connotationDispositionFail   fail(`connotation_${reason}:…`)   — reason is a member of CALL_REASON_SET
-//   D2 verify.mjs   fail(String(e.message))              — parseFindingsJson throws token-first
-//   D3 verify.mjs:1237   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
+//   D2 verify.mjs checkFindingsSibling  fail(String(e.message)…)  — parseFindingsJson throws token-first
+//   D3 verify.mjs:1240   checkJson: fail(String(e.message)…)   — FIVE parsers reach this one site
 //   D4 verify.mjs  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs validators.registerFindings  fail(`${unaccounted[0].token}:…`)  — token minted in a DATA ROW
 //   D6 verify.mjs validators.registerFindings  fail(`${violations[0].token}…`)  — findUnexecutedCleanClaims() in register-plan.mjs
