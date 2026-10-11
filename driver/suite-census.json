@@ -3083,8 +3083,8 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 70,
-          "asserts": 260,
-          "skips": 1,
+          "asserts": 262,
+          "skips": 2,
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
