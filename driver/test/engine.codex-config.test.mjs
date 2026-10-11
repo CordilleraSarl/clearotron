@@ -9,7 +9,7 @@ import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import {
   renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD, FENCE_PROFILE, TOOL_SERVER_SETTINGS,
-  CODEX_BAND_ANSWER_CHARS, codexBandAnswerChars,
+  CODEX_BAND_ANSWER_CHARS, codexBandAnswerChars, CODEX_TOOL_ANSWER_BYTES, codexToolAnswerBytes,
 } from "../engine/mcp/codex-config.mjs";
 
 // Neutral register namespace (the real gather-config emits server key `register` + `register_*` tools —
@@ -42,7 +42,7 @@ test("renderCodexConfigToml: emits [mcp_servers.*] with command/args/env + per-s
   assert.match(toml, /\[mcp_servers\.register\]/);
   assert.match(toml, /command = "\/usr\/bin\/node"/);
   assert.match(toml, /args = \["\/srv\/register-server\.mjs"\]/);
-  assert.match(toml, /env = \{ CLEAROTRON_GATHER_SESSION_KEY = "sess-1", CLEAROTRON_GATHER_AGENT = "mailagent" \}/);
+  assert.match(toml, /env = \{ CLEAROTRON_GATHER_SESSION_KEY = "sess-1", CLEAROTRON_GATHER_AGENT = "mailagent", CLEAROTRON_TOOL_ANSWER_BYTES = "36000" \}/);
   assert.match(toml, /enabled_tools = \["register_search", "register_record_fetch"\]/);
   assert.match(toml, /\[mcp_servers\.courtlistener\]/);
   assert.match(toml, /startup_timeout_sec = 60/);
@@ -164,13 +164,31 @@ test("renderCodexConfigToml: the band server a real stage is granted answers und
   const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: allowedToolsFor(groups), bandAnswerChars: codexBandAnswerChars({}) });
   const band = serverBlocks(toml).find((b) => b.startsWith("[mcp_servers.band]"));
   assert.ok(band, `no band server in:\n${toml}`);
-  assert.match(band, /^env = \{ .*CLEAROTRON_BAND_RUN_DIR = "\/tmp\/run-x".*, CLEAROTRON_BAND_RESPONSE_CHARS = "32000" \}$/m, band);
-  const other = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, bandAnswerChars: 32000 });
+  assert.match(band, /^env = \{ .*CLEAROTRON_BAND_RUN_DIR = "\/tmp\/run-x".*, CLEAROTRON_BAND_RESPONSE_CHARS = "30000" \}$/m, band);
+  const other = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, bandAnswerChars: 30000 });
   assert.doesNotMatch(other, /CLEAROTRON_BAND_RESPONSE_CHARS = /, "a server other than the band was told the band's size");
-  assert.equal(CODEX_BAND_ANSWER_CHARS, 32000);
-  assert.equal(codexBandAnswerChars({}), 32000);
+  assert.equal(CODEX_BAND_ANSWER_CHARS, 30000);
+  assert.equal(codexBandAnswerChars({}), 30000);
   assert.equal(codexBandAnswerChars({ CLEAROTRON_BAND_RESPONSE_CHARS: "20000" }), 20000);
-  assert.equal(codexBandAnswerChars({ CLEAROTRON_BAND_RESPONSE_CHARS: "70000" }), 32000);
+  assert.equal(codexBandAnswerChars({ CLEAROTRON_BAND_RESPONSE_CHARS: "70000" }), 30000);
+});
+
+// Every answer is served in parts under codex's cut (shared/answer-parts.mjs), so every server is given the
+// size: the register, the case-law bridges, the band and the page fetcher alike.
+test("renderCodexConfigToml: every server, the bridges and the page fetcher included, is given the answer size", async () => {
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
+  for (const stage of ["register-unit:identical", "placement-inquiry", "case-law", "synthesis"]) {
+    const groups = toolGroupsForStage(stage);
+    const cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/tmp/run-x" });
+    const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: `${allowedToolsFor(groups)} WebFetch`, toolAnswerBytes: codexToolAnswerBytes({}) });
+    const blocks = serverBlocks(toml);
+    assert.ok(blocks.length >= 2, `${stage}: servers in:\n${toml}`);
+    for (const b of blocks) assert.match(b, /^env = \{ .*CLEAROTRON_TOOL_ANSWER_BYTES = "36000"/m, `${stage}: no answer size in:\n${b}`);
+  }
+  assert.equal(CODEX_TOOL_ANSWER_BYTES, 36000);
+  assert.ok(CODEX_TOOL_ANSWER_BYTES < 39000, "under the cut, with room for the engine's own wrapping");
+  assert.equal(codexToolAnswerBytes({ CLEAROTRON_TOOL_ANSWER_BYTES: "20000" }), 20000);
+  assert.equal(codexToolAnswerBytes({ CLEAROTRON_TOOL_ANSWER_BYTES: "90000" }), 36000);
 });
 
 test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and neither --sandbox nor an approval flag rides the command line", async () => {

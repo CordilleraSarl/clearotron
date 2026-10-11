@@ -292,7 +292,8 @@ of truncations.
 
 | Var | Default | Meaning |
 |---|---|---|
-| `CLEAROTRON_BAND_RESPONSE_CHARS` | the shape-part size, 70,000; 32,000 on the OpenAI engine | Characters per band-server response, the band summary's parts included; a summary part is never longer than 70,000 whatever this says. Floor 4096. On the OpenAI engine it is at most 32,000, because Codex removes the middle of any tool answer longer than about 39,000 bytes before the model reads it; a smaller value set here still applies. |
+| `CLEAROTRON_BAND_RESPONSE_CHARS` | the shape-part size, 70,000; 30,000 on the OpenAI engine | Characters per band-server response, the band summary's parts included; a summary part is never longer than 70,000 whatever this says. Floor 4096. On the OpenAI engine it is at most 30,000, because Codex removes the middle of a tool read longer than about 39,000 bytes before the model sees it; a smaller value set here still applies. |
+| `CLEAROTRON_TOOL_ANSWER_BYTES` | none; 36,000 on the OpenAI engine | Bytes per tool answer from every local tool server and the case-law bridge, counted as a quoted string (a quote or line break counts two). A longer answer is served in parts, each naming the next, and the tool runs once: a later part is read from the answer the server holds. Codex removes the middle of a tool read longer than about 39,000 bytes, so the OpenAI engine sets it for every server; a smaller value set here still applies there. Unset, every answer is served whole, as before. Floor 8192. |
 
 ### Surfaces beside the driver — portal, demo, e2e harness
 

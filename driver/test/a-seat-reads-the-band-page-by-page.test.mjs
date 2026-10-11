@@ -22,7 +22,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { createInterface } from "node:readline";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { codexBandAnswerChars } from "../engine/mcp/codex-config.mjs";
+import { codexBandAnswerChars, codexToolAnswerBytes } from "../engine/mcp/codex-config.mjs";
+import { quotedBytes } from "../../shared/answer-parts.mjs";
 
 const SERVER = join(dirname(fileURLToPath(import.meta.url)), "..", "engine", "mcp", "band-server.mjs");
 const RECORDS = 1400;
@@ -73,11 +74,12 @@ async function session(runDir, answerChars = null) {
 /** Follow only the offset each capped answer names; what arrived, in how many calls, and the longest page. */
 async function readWhole(s) {
   const seen = [];
-  let offset = 0, calls = 0, longest = 0, answer;
+  let offset = 0, calls = 0, longest = 0, printed = 0, answer;
   do {
     const text = await s.raw({ limit: 100, offset });
     calls++;
     longest = Math.max(longest, text.length);
+    printed = Math.max(printed, quotedBytes(text));
     answer = JSON.parse(text);
     assert.equal(answer.matched, RECORDS, "the full match count rides on every page");
     for (const r of answer.records) seen.push(r.record_id);
@@ -94,7 +96,7 @@ async function readWhole(s) {
   } while (answer.next_offset !== undefined);
   assert.equal(seen.length, RECORDS, "a record was skipped or returned twice");
   assert.equal(new Set(seen).size, RECORDS, "a record came back twice");
-  return { calls, longest };
+  return { calls, longest, printed };
 }
 
 test("on Claude's answer size, a seat following the offset each answer names reads every record once, in about fifty calls", async (t) => {
@@ -113,9 +115,9 @@ test("on codex's answer size, every page fits under its cut and every record sti
   const size = codexBandAnswerChars({});
   const s = await session(runDir, size);
   try {
-    const { calls, longest } = await readWhole(s);
-    assert.ok(size < 39000, "codex cuts the middle out of an answer over about 39,000 bytes");
+    const { calls, longest, printed } = await readWhole(s);
     assert.ok(longest <= size, `a page ran to ${longest} characters, over the ${size} codex is given`);
+    assert.ok(printed <= codexToolAnswerBytes({}), `a page printed as ${printed} bytes would be split again into parts`);
     assert.ok(calls >= 80 && calls <= 130, `the band took ${calls} calls`);
     t.diagnostic(`${RECORDS} records read in ${calls} calls, longest page ${longest} characters`);
   } finally { s.close(); rmSync(runDir, { recursive: true, force: true }); }

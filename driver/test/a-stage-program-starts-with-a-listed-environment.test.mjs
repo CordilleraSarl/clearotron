@@ -225,6 +225,7 @@ const NOT_PASSED = Object.freeze(Object.fromEntries([
   "INVOCATION_ID",
 ].map((n) => [n, NOT_A_TOOL_SETTING]).concat([
   ["CLEAROTRON_SUITE_TELEMETRY_DIR", "the driver resolves the ledgers under it and hands each server the resolved path by name"],
+  ["CLEAROTRON_TOOL_ANSWER_BYTES", "the OpenAI engine writes it into every server's own entry (codex-config.mjs); on Claude no size is set and every answer is served whole, as before"],
 ], ["ANTHROPIC_BASE_URL", "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX"].map((n) => [n,
   "a cloud's setting, read by auth.mjs, which the servers import for its tables; the program has it only under cloud billing, and no tool needs it"]),
 ["CLEAROTRON_SIGNA_ANSWER_MEMORY", "CLEAROTRON_CLARIVATE_ANSWER_MEMORY"].map((n) => [n,

@@ -110,10 +110,10 @@ const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever 
 const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONSE_CHARS) || SHAPE_PART_CHARS);
 
 // The shape is split at the smaller of its own part size and the answer size, because codex cuts the
-// middle out of any tool answer over about 39,000 bytes and is given a smaller answer size for that
-// (engine/mcp/codex-config.mjs, CODEX_BAND_ANSWER_CHARS). Measured in testing, 2026-10-11: before this,
-// a GPT model read one band's shape in 70,000-character parts, and in one attempt four of its five
-// shape reads ran past the cut and reached it without their middle rows. Never larger than the constant,
+// middle out of a read over about 39,000 bytes and is given a smaller answer size for that
+// (engine/mcp/codex-config.mjs, CODEX_BAND_ANSWER_CHARS). Measured in testing, 2026-10-11: a GPT model that
+// printed a 70,269-character shape part to read it named 11 of its 24 marker rows, and in one attempt of a
+// real run four of five shape reads were that long. Never larger than the constant,
 // so a larger answer size cannot push a part past Claude's limit; with no size set, nothing changes.
 const SHAPE_PART_SERVED = Math.min(SHAPE_PART_CHARS, RESPONSE_CHARS);
 

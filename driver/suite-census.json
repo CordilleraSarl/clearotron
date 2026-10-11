@@ -766,8 +766,8 @@
           "todos": 0
         },
         "a-large-grid-is-served-in-parts-under-the-tool-cap.test.mjs": {
-          "tests": 4,
-          "asserts": 19,
+          "tests": 5,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -792,6 +792,18 @@
         "a-local-install-hands-its-stores-to-every-reader.test.mjs": {
           "tests": 1,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-long-answer-reaches-a-gpt-model-in-parts.test.mjs": {
+          "tests": 5,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-long-case-law-answer-reaches-a-gpt-model-in-parts.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -3094,8 +3106,8 @@
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
-          "tests": 21,
-          "asserts": 77,
+          "tests": 22,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
