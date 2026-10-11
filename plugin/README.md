@@ -7,7 +7,8 @@ skills that teach an assistant to use it well.
 
 `npx -y clearotron@<version> mcp`, the version this folder's `.mcp.json` names: Clearotron's MCP server,
 over stdio, on your own machine. The first start downloads that exact version of the `clearotron` package
-from npm, with its dependencies.
+from npm, with its dependencies. On Windows the first start downloads the package and can take a minute;
+if Claude reports a timeout, start it again.
 
 ## What it reads
 
