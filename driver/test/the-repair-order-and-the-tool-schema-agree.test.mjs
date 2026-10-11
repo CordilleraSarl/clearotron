@@ -223,7 +223,7 @@ test("a patch call survives recordSynthesis end to end and lands every finding o
     disposition: "off-field", off_field_ground: "different-field",
     meters: { mark_similarity: meter("low"), goods_proximity: meter("low"), use: meter("unknown"), enforcer: meter("unknown") },
     quadrant: { x: 1, y: 1 },
-    source: { source_type: "register-euipo", resolved_link: "https://example.invalid/r" },
+    source: { source_type: "register-euipo", resolved_link: "" },   // no fetched record; a placeholder host is what the record-link gate refuses
     legal_position: "No shared dominant element and no proximity under the framework definitions.",
     practical_position: "No commercial overlap in the searched channels and no enforcement history.",
     net: "No conflict, because the goods sit in an unrelated field.",

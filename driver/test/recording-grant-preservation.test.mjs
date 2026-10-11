@@ -86,6 +86,9 @@ const SUBSTITUTIONS = [
   [MCP_DIR, "<MCP>"],
   [ledgerPath("call"), "<CALL_LOG>"],
   [process.execPath, "<NODE>"],
+  // The run's register, handed to every local server so a recording tool can gate a record link at the
+  // call (gather-config serverEnv). Its value is the suite's declared register, so it pins as a name.
+  [`"CLEAROTRON_DATABASE":"${process.env.CLEAROTRON_DATABASE}"`, '"CLEAROTRON_DATABASE":"<REGISTER>"'],
 ];
 
 // ONE SEPARATOR. On Windows every path in the config is native, and JSON doubles its backslashes, so a
@@ -114,6 +117,7 @@ function surfaceFor(stage) {
 }
 
 const ENV = '"env":{"CLEAROTRON_GATHER_SESSION_KEY":"SK","CLEAROTRON_GATHER_AGENT":"AG","CLEAROTRON_BAND_RUN_DIR":"/RUN"'
+  + ',"CLEAROTRON_DATABASE":"<REGISTER>"'
   + ',"CLEAROTRON_REGISTER_CALL_LOG":"<CALL_LOG>","CLEAROTRON_REGISTER_RECORD_LOG":"/RUN/_driver/register-record-bodies.jsonl"}';
 const local = (key, script) => `"${key}":{"command":"<NODE>","args":["<MCP>/${script}"],${ENV}}`;
 const bridge = (key) => `"${key}":{"command":"<NODE>","args":["<BRIDGE>","--server","${key}"],"connectionTimeoutMs":60000`

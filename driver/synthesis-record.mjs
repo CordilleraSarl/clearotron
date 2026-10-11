@@ -53,7 +53,7 @@ import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
 import { findingUris } from "./record-carry.mjs";   // one derivation of "which records did the findings name", called not copied
 import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam is passed, the saved record is folded again
-
+import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
 
@@ -269,7 +269,7 @@ export function withoutWithheldRows(rows, ledger) {
   return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
 }
 
-export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null } = {}) {
+export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, recordOrigins = null } = {}) {
   const doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
     return { ok: false, reason: "synthesis_findings_missing: `findings` must be the findings document object { schema_version, rated_under_framework, findings, coverage, … } — this is the record the report and the workbook are built from, and there is no path that renders without it" };
@@ -383,7 +383,7 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   // own file gone wrong, and the seat cannot fix it — so it is refused by name, never read as "no method".
   if (methodInvalid) return { ok: false, reason: `framework_method_unreadable: _driver/${FROZEN_METHOD_FILE} does not read back (${String(methodInvalid).slice(0, 160)}) — a driver fault, not the writer's` };
   let parsedDoc;
-  try { parsedDoc = parseFindingsJson(findings, manifest ? { manifest, ...(method !== undefined ? { method } : {}) } : {}); }
+  try { parsedDoc = parseFindingsJson(findings, { ...(manifest ? { manifest, ...(method !== undefined ? { method } : {}) } : {}), ...(Array.isArray(recordOrigins) ? { recordOrigins } : {}) }); }
   catch (e) {
     return { ok: false, reason: `synthesis_findings_invalid: ${String(e?.message ?? e).slice(0, 300)}` };
   }
@@ -608,7 +608,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const auto = driverReadsFor(dir0);
   const { asks = auto.asks, ledger = auto.ledger, manifest = auto.manifest,
     method = auto.method, methodInvalid = auto.methodInvalid ?? null,
-    owed = auto.owed, declined = auto.declined,
+    owed = auto.owed, declined = auto.declined, recordOrigins = undefined,
     now = () => new Date().toISOString() } = opts;
   const { dir, payload, accepted, refusals } = synthesisCallPaths(dir0);
   // Its sibling rule — ONE FILE PER CALL, refusals included. This used to
@@ -644,7 +644,16 @@ export function recordSynthesis(runDir, received, opts = {}) {
     call = merged.merged;
   }
 
-  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined });
+  // A RECORD LINK ON A HOST THIS REGISTER DOES NOT PUBLISH is gated here as verify.mjs gates the saved
+  // file. The run's first such call is refused, naming every finding, so the seat can fix them in this
+  // turn; a repeat is accepted with those links blanked and the originals kept (foreign-record-links.mjs).
+  const origins = recordOriginsOr(recordOrigins);
+  const repeat = blankOnRepeat(call, origins, refusalsFor(dir0).some((r) => String(r?.reason ?? "").includes(FOREIGN_HOST_TOKEN)));
+  if (repeat.blanked.length) {
+    call = repeat.call;
+    recordBlanking(dir0, { stage: "synthesis", layer: "call", blanked: repeat.blanked, kept: repeat.kept });
+  }
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: origins });
   if (!v.ok) {
     noteRefusal(v.reason);
     return { written: null, refused: v.reason,

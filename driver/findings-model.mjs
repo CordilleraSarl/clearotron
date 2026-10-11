@@ -858,7 +858,7 @@ export function parseFindingsJson(raw, opts = {}) {
     method: "method" in opts ? (opts.method ?? null) : undefined,
     // — null means the caller named no provider, and the record-URL gate stays inactive. An empty
     // ARRAY is a real answer ("this provider publishes no per-record page") and is not the same thing.
-    recordOrigins: Array.isArray(opts.recordOrigins) ? opts.recordOrigins : null };
+    recordOrigins: Array.isArray(opts.recordOrigins) ? opts.recordOrigins : null, foreignLinks: Array.isArray(opts.recordOrigins) ? [] : null };
   onlyKeys(doc, topKeysFor(mode), (k) => `findings_key_unknown:${short(k)}`);
   if (mode.v4) {
     if (typeof doc.rated_under_framework !== "string" || !doc.rated_under_framework.trim())
@@ -879,7 +879,7 @@ export function parseFindingsJson(raw, opts = {}) {
     throw new Error("findings_empty: the record carries no findings AND no coverage areas — at least one is required");
 
   const seenOrdinals = new Set();
-  const outFindings = findings.map((f, idx) => validateFinding(f, idx, seenOrdinals, mode));
+  const outFindings = findings.map((f, idx) => validateFinding(f, idx, seenOrdinals, mode)); throwForeignLinks(mode);
   const outCoverage = coverage.map((c) => validateCoverage(c));
   const outContextNotes = contextNotes.map((n) => validateContextNote(n));
   const outActions = validateActionsList(doc.actions, outFindings);
@@ -1381,10 +1381,10 @@ function validateFinding(f, idx, seenOrdinals, mode = { v4: false, manifest: nul
   if (f.withdrawn_reason != null && f.disposition !== "withdrawn")
     throw new Error(`finding_withdrawn_reason_orphan:${ord} (withdrawn_reason is only valid when disposition is "withdrawn")`);
 
-  validateOwner(f.owner, ord, mode?.recordOrigins ?? null);
+  validateOwner(f.owner, ord, mode?.recordOrigins ?? null, mode?.foreignLinks ?? null);
   validateMeters(f.meters);
   validateQuadrant(f.quadrant);
-  validateSource(f.source, ord, mode?.recordOrigins ?? null);
+  validateSource(f.source, ord, mode?.recordOrigins ?? null, mode?.foreignLinks ?? null);
 
   // Instance #5 — per-finding use-check / own-rights cite. SHAPE-ONLY here (present ⇒ a { source } object
   // whose source is a string). The composite>=3 NON-EMPTY-source enforcement lives in verify.mjs
@@ -1969,13 +1969,13 @@ export function isDeadRecordLink(value) {
   return t === "" || t.startsWith("#") || t.startsWith("/");
 }
 
-function checkRecordUrlHost(value, origins, ord, what) {
+function checkRecordUrlHost(value, origins, ord, what, collect = null) {
   if (origins == null) return;                        // gate inactive — see the header
   const origin = recordUrlOrigin(value);
-  if (origin == null) return;
-  if (origins.includes(origin)) return;
+  if (origin == null || origins.includes(origin)) return;
+  if (collect) { collect.push({ ord, what, value }); return; }   // the strict parse names EVERY offender in one refusal
   throw new Error(
-    `finding_record_url_foreign_host:${ord} (${what} points at ${origin}, which is not a register this run searched — `
+    `finding_record_url_foreign_host:${Array.isArray(ord) ? ord.join(",") : ord} (${what} points at ${origin}, which is not a register this run searched — `
     + (origins.length
       ? `this provider's record host is ${origins.join(" or ")}. Compose the URL from the record's own uri and THIS provider's base host, per providers/<name>.md.`
       : "this provider publishes no per-record page at all — cite the office register in the text and leave the URL as the record's own uri path.")
@@ -1983,7 +1983,7 @@ function checkRecordUrlHost(value, origins, ord, what) {
   );
 }
 
-function validateOwner(owner, ord, origins = null) {
+function validateOwner(owner, ord, origins = null, collect = null) {
   if (!isPlainObject(owner)) throw new Error(`finding_owner_invalid:${ord} (owner must be an object { name, country, registrations })`);
   onlyKeys(owner, OWNER_KEYS, (k) => `finding_owner_key_unknown:${short(k)}`);
   if (typeof owner.name !== "string" || !owner.name.trim()) throw new Error(`finding_owner_invalid:${ord} (owner.name must be a non-empty string)`);
@@ -1999,7 +1999,7 @@ function validateOwner(owner, ord, origins = null) {
     if (!isPlainObject(r)) throw new Error(`finding_registration_invalid:${ord} (each registration must be a plain object)`);
     onlyKeys(r, REGISTRATION_KEYS, (k) => `finding_registration_key_unknown:${short(k)}`);
     if (typeof r.uri !== "string" || !r.uri.trim()) throw new Error(`finding_registration_invalid:${short(r.uri)} (registration.uri must be a non-empty string)`);
-    checkRecordUrlHost(r.uri, origins, ord, `registration.uri "${short(r.uri)}"`);
+    checkRecordUrlHost(r.uri, origins, ord, `registration.uri "${short(r.uri)}"`, collect);
     if (r.classes != null && !(Array.isArray(r.classes) && r.classes.every((c) => typeof c === "string")))
       throw new Error(`finding_registration_invalid:${short(r.uri)} (registration.classes must be an array of strings)`);
   }
@@ -2042,7 +2042,7 @@ function validateQuadrant(q) {
   }
 }
 
-function validateSource(source, ord, origins = null) {
+function validateSource(source, ord, origins = null, collect = null) {
   if (!isPlainObject(source)) throw new Error(`finding_source_invalid:${ord} (source must be { source_type, resolved_link })`);
   onlyKeys(source, SOURCE_KEYS, (k) => `finding_source_key_unknown:${short(k)}`);
   if (!SOURCE_TYPES.includes(source.source_type))
@@ -2061,7 +2061,7 @@ function validateSource(source, ord, origins = null) {
         + "dead anchor in the report. Give the record's real URL, or — if this provider publishes no "
         + 'per-record page — leave it "" and cite the office register in the text.)',
       );
-    checkRecordUrlHost(source.resolved_link, origins, ord, "source.resolved_link");
+    checkRecordUrlHost(source.resolved_link, origins, ord, "source.resolved_link", collect);
   }
 }
 
@@ -2570,4 +2570,71 @@ export function knockoutFindingRange(mark) {
   const markName = String(mark?.name ?? "").trim();
   if (!ords.length || !markName) return "";
   return ords.length === 1 ? `${markName} #${ords[0]}` : `${markName} #${ords[0]}–#${ords[ords.length - 1]}`;
+}
+
+/**
+ * ONE REFUSAL FOR EVERY FOREIGN RECORD LINK the strict parse collected.
+ *
+ * The gate used to throw at the first offending link, so each refusal named one finding and a corrective
+ * attempt fixed one. A seat that had copied an office's page into eleven findings ran out of attempts at
+ * the third. The token now carries every offending ordinal; the sentence after it is the gate's own,
+ * unchanged, about the first offender.
+ */
+function throwForeignLinks(mode) {
+  const found = mode?.foreignLinks ?? [];
+  if (!found.length) return;
+  const ords = [...new Set(found.map((f) => f.ord))];
+  checkRecordUrlHost(found[0].value, mode.recordOrigins, ords.length === 1 ? ords[0] : ords, found[0].what);
+}
+
+/** The canonical record path inside an absolute URL (`/mark/<cc>/<rest>`), or null. PURE. */
+function canonicalRecordPath(value) {
+  try {
+    const path = new URL(String(value)).pathname;
+    return /^\/mark\/[a-z]{2}\/[^/]+/i.test(path) ? path : null;
+  } catch { return null; }
+}
+
+/**
+ * THE SALVAGE FOR A FOREIGN RECORD LINK: blank it, and deliver. PURE.
+ *
+ * A record link on a host the run's register does not publish is refused by the gate above. When a seat
+ * keeps writing one, the report still goes out: a register-sourced `resolved_link` on a foreign host
+ * becomes `""`, the value the findings model already reads as "this register publishes no page for the
+ * record", and publish still links a register that publishes no pages to the office's own page from the
+ * record itself. A `registration.uri` written as a foreign URL keeps the record's canonical path when
+ * the URL carries one, since the path is the record's identity. One that does not is left as written and
+ * returned in `kept`, because no identity can be read from it.
+ *
+ * `origins` is the gate's own list (recordOriginsFor); null turns this off, as it turns the gate off.
+ * Returns the repaired document, every value it changed (`blanked`, with what it was), and `kept`.
+ */
+export function blankForeignRecordLinks(doc, origins) {
+  const blanked = [], kept = [];
+  if (origins == null || !isPlainObject(doc) || !Array.isArray(doc.findings)) return { doc, blanked, kept };
+  const foreign = (value) => { const o = recordUrlOrigin(value); return o != null && !origins.includes(o); };
+  const findings = doc.findings.map((f) => {
+    if (!isPlainObject(f)) return f;
+    let out = f;
+    const s = f.source;
+    if (isPlainObject(s) && String(s.source_type ?? "").startsWith("register") && typeof s.resolved_link === "string" && foreign(s.resolved_link)) {
+      out = { ...out, source: { ...s, resolved_link: "" } };
+      blanked.push({ ordinal: f.ordinal ?? null, field: "source.resolved_link", was: s.resolved_link, now: "" });
+    }
+    const regs = isPlainObject(f.owner) && Array.isArray(f.owner.registrations) ? f.owner.registrations : null;
+    if (regs) {
+      let changed = false;
+      const next = regs.map((r, index) => {
+        if (!isPlainObject(r) || typeof r.uri !== "string" || !foreign(r.uri)) return r;
+        const path = canonicalRecordPath(r.uri);
+        if (!path) { kept.push({ ordinal: f.ordinal ?? null, field: "registration.uri", index, was: r.uri }); return r; }
+        changed = true;
+        blanked.push({ ordinal: f.ordinal ?? null, field: "registration.uri", index, was: r.uri, now: path });
+        return { ...r, uri: path };
+      });
+      if (changed) out = { ...out, owner: { ...out.owner, registrations: next } };
+    }
+    return out;
+  });
+  return { doc: { ...doc, findings }, blanked, kept };
 }
