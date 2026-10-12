@@ -370,6 +370,14 @@ export function runDirGrant({ runDir, dispatch, seatWrites = null } = {}) {
  * shell the program offered them anyway.
  */
 export const COMMAND_TOOLS = Object.freeze(["Bash", "PowerShell", "Monitor"]);
+/**
+ * The program's own web search, removed from every stage by the same name-removal. The engine's web search
+ * is its own: the common-law sweep, which keeps a record of every result. The program's was never granted,
+ * and every attempt a stage made at it was refused, a turn spent for nothing (observed in testing,
+ * 2026-10-02 and 2026-10-03: 48 attempts in five runs, all refused). Removed, the model is never offered it.
+ * The codex engine turns its own off the same way (`web_search`, codex-config.mjs).
+ */
+export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
@@ -399,7 +407,7 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   // through Bash on a login with no rule allowing it. A bare name here "removes the matching tools from
   // Claude's context" (the vendor's CLI reference, `--disallowedTools`), on every call, the resumed one
   // included, so the model is never offered them. See COMMAND_TOOLS for the three names.
-  args.push("--disallowedTools", COMMAND_TOOLS.join(" "));
+  args.push("--disallowedTools", [...COMMAND_TOOLS, ...OWN_SEARCH_TOOLS].join(" "));
   const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
   if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
   // FILE ACCESS: claude's Read/Write/Edit tools are confined to cwd + --add-dir roots even under

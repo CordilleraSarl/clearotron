@@ -341,7 +341,7 @@ const onWindows = process.platform === "win32";
 const HOME_NAME = onWindows ? "USERPROFILE" : "HOME";
 const startedWith = (names, k) => (onWindows ? names.some((n) => n.toUpperCase() === k) : names.includes(k));
 
-test("claude is started with the list: no signing key, and no command tool offered", async () => {
+test("claude is started with the list: no signing key, and no command tool or own web search offered", async () => {
   const { anthropicAgentEngine } = await import("../engine/anthropic-agent.mjs");
   const dir = mkdtempSync(join(tmpdir(), "listed-env-claude-"));
   const log = join(dir, "calls.jsonl");
@@ -354,7 +354,7 @@ test("claude is started with the list: no signing key, and no command tool offer
     for (const k of ["PATH", HOME_NAME, "MOCK_CLAUDE_CALL_LOG"]) assert.ok(startedWith(call.envNames, k), `claude was started without ${k}`);
     const at = call.argv.indexOf("--disallowedTools");
     assert.ok(at > 0, `no --disallowedTools on: ${call.argv.join(" ")}`);
-    assert.deepEqual(call.argv[at + 1].split(/[\s,]+/).sort(), ["Bash", "Monitor", "PowerShell"]);
+    assert.deepEqual(call.argv[at + 1].split(/[\s,]+/).sort(), ["Bash", "Monitor", "PowerShell", "WebSearch"]);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

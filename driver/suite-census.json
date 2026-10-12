@@ -3849,6 +3849,12 @@
           "skips": 0,
           "todos": 0
         },
+        "no-stage-is-offered-the-engines-own-web-search.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "no-test-account-reaches-the-package.test.mjs": {
           "tests": 17,
           "asserts": 31,
