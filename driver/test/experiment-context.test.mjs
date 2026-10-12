@@ -250,7 +250,7 @@ test("a placement arm derives its floor duty and its owners' fates in the sandbo
   console.log(`      placement-inquiry: floor duty computable ${artifact.computable}, ${artifact.owners?.lines ?? "no"} line(s) with a counted fate`);
   if (artifact.computable === true) {
     const shape = JSON.parse(readFileSync(join(ex.shadowDir, "_driver", "band-shape.json"), "utf8"));
-    const listed = ["a", "b", "c", "d", "rest", "unresolved"].reduce((n, g) => n + shape.groups[g].lines, 0);
+    const listed = ["a", "b", "c", "d", "rest", "no_goods"].reduce((n, g) => n + shape.groups[g].lines, 0);
     assert.equal(artifact.owners?.lines, listed, "every line the shape groups has a fate counted, placed or not");
   } else {
     assert.ok(artifact.reason, "an artifact that could not be computed says why, rather than counting zeros");

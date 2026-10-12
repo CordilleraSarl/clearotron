@@ -86,9 +86,10 @@ test("a repair that sends only part of the call does not delete the goods words"
   // The seat sends the corrected part; everything else must survive. A loss here reads as "this
   // matter has no goods" rather than as a partial call, which is the quiet direction.
   const { mergeClearanceVariantsCall } = await import("../clearance-variants-record.mjs");
-  const stored = { goods_words: ["headphones"], watchlist_owners: ["An Owner"] };
+  const stored = { goods_words: ["headphones"], product_words: ["headphone"], watchlist_owners: ["An Owner"] };
   const merged = mergeClearanceVariantsCall(stored, { mark: "INVENTEDMARK" });
   assert.deepEqual(merged.goods_words, ["headphones"], "a partial repair deleted the goods words");
+  assert.deepEqual(merged.product_words, ["headphone"], "a partial repair deleted the product words");
 });
 
 test("the tool the model hands the manifest back through has a slot for the words", () => {
