@@ -115,6 +115,17 @@ test("a word given in the plural and its singular match each other as stems", ()
   assert.equal(goodsWordCounter(["game consoles"], { stems: true })(g("game console")), 1);
 });
 
+test("a class written only in a language the engine cannot read leaves a zero match unknown", async () => {
+  const { goodsWordsMatched } = await import("../record-goods.mjs");
+  const count = goodsWordCounter(["video game"], { stems: true }), words = goodsWordsMatched(["video game"], { stems: true });
+  const mixed = recordGoods({ goodsServices: [{ classes: [9], language: "de", description: "Videospiele" }, { classes: [35], language: "en", description: "retail services" }] });
+  assert.deepEqual([count(mixed), words(mixed)], [null, null], "class 9 is German only: the English class 35 cannot say the goods are not the client's");
+  const both = recordGoods({ goodsServices: [{ classes: [9], language: "de", description: "Druckerpatronen" }, { classes: [9], language: "en", description: "printer cartridges" }] });
+  assert.deepEqual([count(both), words(both)], [0, []], "a class read in English beside its other languages is a known zero");
+  const hit = recordGoods({ goodsServices: [{ classes: [9], language: "de", description: "Spielkonsolen" }, { classes: [28], language: "en", description: "video games" }] });
+  assert.deepEqual([count(hit), words(hit)], [1, ["video game"]], "a word matched in English is known, whatever else is unread");
+});
+
 test("goods with no English the engine can use are unknown to the goods test, never a mismatch", () => {
   const word = goodsWordCounter(["video game"], { stems: true });
   assert.equal(word(recordGoods({ goodsServices: [{ classes: [9], language: "de", description: "Videospiele; Spielkonsolen" }] })), null, "German only, no translation");

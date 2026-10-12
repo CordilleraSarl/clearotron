@@ -254,7 +254,7 @@ test("the shape says which words its goods test read, and says so when it fell b
     const none = shapeFor({});
     assert.equal(none.test.source, "none");
     assert.match(none.md, /No goods words were given, so no record was tested on its goods\./);
-    assert.match(none.md, /\*\*Not tested on goods: 1 records in 1 lines from 1 owners\*\* — no goods words were given/, "with no words the line is listed apart for that reason, not for goods the record lacks");
+    assert.match(none.md, /\*\*Not tested on goods: 1 records in 1 lines from 1 owners\.\*\* No goods words were given/, "with no words the line is listed apart for that reason, not for goods the record lacks");
     assert.doesNotMatch(none.md, /No goods on file/);
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
@@ -266,6 +266,22 @@ test("a goods word is never the start of a longer one, so cards and carpets do n
   const goods = { of: (r) => [{ classes: ["9"], text: text[r.record_id] }], hits: goodsWordCounter(["car"], { stems: true }), matched: goodsWordsMatched(["car"], { stems: true }) };
   const g = bandGroups(recs, { classify, inScope, goods });
   assert.deepEqual([g.by_group.a.records, g.by_group.b.records], [600, 450]);
+});
+
+test("the lines the goods test could not place are read by the size rule, paged like a group, and say whether goods are on file", () => {
+  const bodies = { u1: [{ classes: ["9"], text: "Videospiele", en: false }] };
+  const goods = { of: (r) => bodies[r.record_id.split("/").pop()] ?? null, hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const small = buildBandShape({ enumerated: [rec("u1", "QZORVAK", "Alpha GmbH", ["9"]), rec("u2", "QZORVAK", "Beta Ltd", ["9"])] },
+    { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, goodsTest: { source: "product_words", words: ["joysticks"] } }).md;
+  assert.ok(small.includes("**Goods the test could not read: 2 records in 2 lines from 2 owners.** Fifty? Read them all."));
+  assert.ok(small.includes('give its fate by name, on the ground that its goods are unknown. No group row covers these lines.'));
+  assert.match(small, /\| QZORVAK \| Alpha GmbH \| 9 \| 1 of 1 \| EU \| on file, not readable \| yes \| /);
+  assert.match(small, /\| QZORVAK \| Beta Ltd \| 9 \| 1 of 1 \| EU \| no goods on file \| yes \| /);
+  const many = Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(`m${i}`, "QZORVAK", `Owner ${i} Ltd`, ["9"]));
+  const crowded = buildBandShape({ enumerated: many }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, caps: { owners: 5 },
+    goodsTest: { source: "product_words", words: ["joysticks"] } });
+  assert.ok(crowded.md.includes(`A thousand or more: the first 5 lines are below; page every other line with band_lookup {"group":"no_goods"}.`));
+  assert.equal((crowded.md.match(/\| no goods on file \| yes \|/g) ?? []).length, 5, "a crowded list shows its first page");
 });
 
 test("a mark whose goods carry no English is listed apart and opened, never sent to the rest", async () => {

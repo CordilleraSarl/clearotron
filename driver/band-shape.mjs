@@ -706,7 +706,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     // A floor is never counted in the rest (ruled 2026-10-12): held only outside the order's territories, it
     // is still listed, in (a) or (b), where the step reads it and may set it aside by name on its territory.
     const group = outside && !floor ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
-    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, territories: ts, inMarket: ts.some((t) => market.has(t)) };
+    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, onFile: Boolean(g), territories: ts, inMarket: ts.some((t) => market.has(t)) };
     const keys = typeof keysOf === "function" ? keysOf(r) : null;
     const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
     const key = keys?.line ?? `line:${ownerKey}|${normMark(r?.mark_text) || String(r?.record_id ?? "").trim().toLowerCase()}`;
@@ -739,6 +739,8 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
       classes: [...new Set(l.recs.flatMap((x) => classesOf(x.r)))].sort((p, q) => Number(p) - Number(q) || p.localeCompare(q)),
       record_id: best.r?.record_id ?? null,
       floors: l.recs.filter((x) => x.floor).length,
+      // Whether `band_record` can open the goods that put the line in its group; read where they cannot be read.
+      ...(known ? {} : { goods_on_file: inGroup.some((x) => x.onFile) }),
     };
     // A line placed in (a), (c) or (d) by the goods test, whose records carry no goods the engine can read,
     // cannot be judged from the line: it is listed apart, opened before a fate, and no group row covers it.
@@ -1054,7 +1056,8 @@ function renderGroupsMd(md, groups, rows = []) {
   if (groups.territories?.length) md.push(`The list holds the order's territories: ${groups.territories.join(", ")}.`, "");
   if (groups.markets?.length) md.push(`The client's markets: ${groups.markets.join(", ")}.`, "");
   const total = groups.goods_words_total || 0;
-  const words = (l) => (l.goods_words == null ? "—" : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`);
+  const unread = (l) => (tested.source === "none" ? "—" : l.goods_on_file ? "on file, not readable" : "no goods on file");
+  const words = (l) => (l.goods_words == null ? unread(l) : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`);
   const count = (grp) => `${fmtN(grp.records)} records in ${fmtN(grp.lines)} lines from ${fmtN(grp.owners)} owners`;
   const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(l.territories.join(","))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
   const head = ["| mark | owner | classes | live | territories | goods words | floor | record |", "|---|---|---|---|---|---|---|---|"];
@@ -1077,11 +1080,18 @@ function renderGroupsMd(md, groups, rows = []) {
   const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories` : "";
   md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Write down what you set aside and why: one row, with this count.`);
   if (groups.no_goods.lines) {
+    // The lines the goods test could not place: listed, read by the same size rule and paged like a group,
+    // and each given its own fate. A line with goods on file is opened first; one with none cannot be.
+    const ng = groups.no_goods;
+    const crowded = ng.records >= groups.crowded_at;
+    const size = crowded
+      ? `A thousand or more: the first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall("no_goods")}.`
+      : ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.";
     md.push("", tested.source === "none"
-      ? `**Not tested on goods: ${count(groups.no_goods)}** — no goods words were given, so the goods test could not place them. Open a record before a fate; no group row covers them.`
-      : `**No goods on file: ${count(groups.no_goods)}** — their records carry no goods the engine can read, so the goods test could not place them. Open a record before a fate; no group row covers them.`, "");
+      ? `**Not tested on goods: ${count(ng)}.** No goods words were given, so the goods test could not place them. ${size} Each is placed or set aside by name; no group row covers them.`
+      : `**Goods the test could not read: ${count(ng)}.** ${size} A line marked "on file, not readable" has goods on file: open one of its records with band_record before its fate. A line marked "no goods on file" has nothing to open: give its fate by name, on the ground that its goods are unknown. No group row covers these lines.`, "");
     md.push(...head);
-    for (const l of groups.no_goods.list) { rows.push([md.length, l.key]); md.push(row(l)); }
+    for (const l of crowded ? ng.list.slice(0, groups.first_page) : ng.list) { rows.push([md.length, l.key]); md.push(row(l)); }
   }
 }
 

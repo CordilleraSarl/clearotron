@@ -380,7 +380,7 @@ test("band_lookup: a single-slice record serialises exactly as before; a multi-s
 // cap and the tool call would ERROR in the engine. band_shape therefore serves parts, split at line
 // boundaries, with an explicit part-N/M continuation contract; concatenating the parts restores the
 // artifact byte-for-byte, so the floors stay complete across parts.
-function seedCrowdedRun(floorCount = 2500) {
+function seedCrowdedRun(floorCount = 999) {   // under a thousand: the list is printed whole, so the shape runs to parts
   const runDir = mkdtempSync(join(tmpdir(), "band-server-crowded-"));
   mkdirSync(driverDir(runDir), { recursive: true });
   const enumerated = [];
@@ -402,7 +402,7 @@ function seedCrowdedRun(floorCount = 2500) {
 
 test("band_shape: a floors-heavy shape serves in parts, each under the MCP token cap, concatenation byte-identical", async () => {
   const { runDir, md } = seedCrowdedRun();
-  assert.ok(md.length > 140_000, `fixture is genuinely over one MCP response (${md.length} bytes)`);
+  assert.ok(md.length > 70_000, `fixture is genuinely over one part (${md.length} characters)`);
 
   // First call announces the parts contract.
   const first = await mcpSession([INIT, call(2, "band_shape")], ENV(runDir));
@@ -433,7 +433,7 @@ test("band_shape: a floors-heavy shape serves in parts, each under the MCP token
 });
 
 test("band_shape: an out-of-range part clamps instead of erroring (the model can always finish the read)", async () => {
-  const { runDir } = seedCrowdedRun(1200);
+  const { runDir } = seedCrowdedRun(999);
   const r = await mcpSession([INIT, call(2, "band_shape", { part: 99 })], ENV(runDir));
   assert.match(textOf(r, 2), /the shape is complete once parts/, "part 99 clamps to the last part");
 });

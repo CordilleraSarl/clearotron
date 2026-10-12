@@ -158,8 +158,26 @@ export function goodsWordCounter(words, { stems = false } = {}) {
     const readable = (goods ?? []).filter((g) => g.en !== false);
     if (!res.length || !readable.length) return null;
     const text = fold(readable.map((g) => (g.alt ? `${g.text}\n${g.alt}` : g.text)).join("\n"));
-    return res.filter((re) => re.test(text)).length;
+    const n = res.filter((re) => re.test(text)).length;
+    return n === 0 && classUnread(goods) ? null : n;
   };
+}
+
+/**
+ * Does a class of these goods have no statement the engine can read? A record whose readable statements match
+ * no word, while one of its classes is written only in a language the engine cannot use, is unknown to the
+ * goods test, not a mismatch. A class with an English statement beside its other languages is read. PURE.
+ */
+export function classUnread(goods) {
+  const read = new Set(), unread = new Set();
+  let readNone = false, unreadNone = false;
+  for (const g of goods ?? []) {
+    const cls = Array.isArray(g?.classes) ? g.classes : [];
+    if (g?.en === false) { if (cls.length) for (const c of cls) unread.add(c); else unreadNone = true; }
+    else if (cls.length) for (const c of cls) read.add(c);
+    else readNone = true;
+  }
+  return [...unread].some((c) => !read.has(c)) || (unreadNone && !readNone);
 }
 
 /**
@@ -172,7 +190,8 @@ export function goodsWordsMatched(words, { stems = false } = {}) {
   const tests = list.map((w) => [w, goodsWordCounter([w], { stems })]);
   return (goods) => {
     if (!list.length || !(goods ?? []).some((g) => g.en !== false)) return null;
-    return tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
+    const hit = tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
+    return hit.length === 0 && classUnread(goods) ? null : hit;
   };
 }
 

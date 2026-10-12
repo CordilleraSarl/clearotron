@@ -133,6 +133,20 @@ test("band_lookup's class filter reads class 09 as class 9", async () => {
   assert.equal(page.matched, 1);
 });
 
+test("band_lookup pages the lines the goods test could not place, and logs them read", async () => {
+  const band = { enumerated: Array.from({ length: 30 }, (_, i) => ({ record_id: `/mark/eu/q${i}`, mark_text: "QZORVAK", owner_name: `Owner Q${i} Ltd`, classes: ["9"], status: "registered", jurisdictions: ["EU"] })), crowds: [] };
+  const goods = { of: () => null, hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1 });
+  assert.equal(shape.groups.no_goods.lines, 30, "guard: no goods on file for any record");
+  const runDir = mkdtempSync(join(tmpdir(), "no-goods-page-"));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify(band));
+  writeFileSync(driverDir(runDir, "band-shape.json"), JSON.stringify(shape));
+  const page = await lookup(runDir, { group: "no_goods", limit: 10 });
+  assert.deepEqual([page.group, page.lines_total, page.returned, page.lines[0].goods_on_file], ["no_goods", 30, 10, false]);
+  assert.equal(readServed(runDir).lines.size, 10, "the page's lines are read");
+});
+
 test("a group's row answers a floor only in a group of a thousand records or more", async () => {
   const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
   const { reconcileFloorDuty } = await import("../floor-duty.mjs");
