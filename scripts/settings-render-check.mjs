@@ -397,7 +397,9 @@ for (const theme of ['light', 'dark']) {
   // ── Installation settings
   console.log('\nInstallation settings:')
   loads.length = 0
-  if (await open('/portal/admin/config', "document.querySelectorAll('.cfg-row').length >= 10", 'Installation settings drew its rows')) {
+  // Nine rows: sign-in, the engine, and seven providers. The engine's own web search had a tenth; it is off on
+  // both engines and has no row.
+  if (await open('/portal/admin/config', "document.querySelectorAll('.cfg-row').length >= 9", 'Installation settings drew its rows')) {
     await setTheme(theme)
     const s = (await evalIn(settingsProbe)) ?? {}
     out[`settings-${theme}`] = s
@@ -410,7 +412,7 @@ for (const theme of ['light', 'dark']) {
       `the sign-in row reads "${SPEC.signInName} · Configured" (saw ${JSON.stringify(si)})`)
     ok(si && same(si.mono, [`auth-proxy · issuer ${ISSUER}`]), `the mode and issuer are the row's quiet mono line (saw ${JSON.stringify(si?.mono)})`)
     const rights = [...s.signIn, ...s.engine, ...s.categories.flatMap((c) => c.rows)].map((r) => r.stateRight)
-    ok(rights.length >= 10 && new Set(rights).size === 1, `every state lines up in one column (right edges ${JSON.stringify([...new Set(rights)])})`)
+    ok(rights.length >= 9 && new Set(rights).size === 1, `every state lines up in one column (right edges ${JSON.stringify([...new Set(rights)])})`)
     ok(s.engine.length === 1 && s.engine[0].name === 'Anthropic' && s.engine[0].state === 'Subscription',
       `Engine carries the engine row alone (saw ${JSON.stringify(s.engine)})`)
     ok(!s.engine.some((r) => /web search/i.test(r.name)), "the engine's own web search, off on both engines, has no row under Engine")
