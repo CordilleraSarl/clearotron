@@ -18,18 +18,20 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { candidateParts, candidatesForJudgment } from "../../providers/perplexity/src/core.js";
+import { codexToolAnswerBytes } from "../engine/mcp/codex-config.mjs";
+import { quotedBytes } from "../../shared/answer-parts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SERVER = join(HERE, "..", "engine", "mcp", "perplexity-server.mjs");
 
-async function callTool(args) {
+async function callTool(args, env = {}) {
   const requests = [
     { jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18" } },
     { jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "perplexity_research", arguments: args } },
   ];
   return await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [SERVER], { stdio: ["pipe", "pipe", "pipe"],
-      env: { ...process.env, PERPLEXITY_API_KEY: "placeholder-not-a-key" } });
+      env: { ...process.env, PERPLEXITY_API_KEY: "placeholder-not-a-key", ...env } });
     let buf = "", text = null;
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve(text ?? ""); };
     const timer = setTimeout(done, 15000);
@@ -91,6 +93,28 @@ test("a grid past the cap is served in parts, each under it, and together they a
     const served = replies.flatMap(cellsIn).map((c) => `${c.term}|${c.platform}|${c.candidates.length}`);
     assert.deepEqual(served, g.cells.map((c) => `${c.term}|${c.platform}|${c.candidates.length}`),
       "the parts lost, repeated or reordered a cell");
+  } finally { rmSync(g.root, { recursive: true, force: true }); }
+});
+
+// On codex every server is given an answer size under that engine's cut on one answer (it removes the
+// middle of anything longer; shared/answer-parts.mjs). The grid's parts follow it, so each reply fits as a
+// whole and none is split a second time.
+test("given codex's answer size, every part of the grid fits under it, whole, and together they are every candidate once", async () => {
+  const terms = Array.from({ length: 12 }, (_, i) => `LANTERNWICK${String.fromCharCode(65 + i)}`);
+  const g = recordedGrid({ terms, perCell: 25 });
+  const env = { CLEAROTRON_TOOL_ANSWER_BYTES: String(codexToolAnswerBytes({})) };
+  try {
+    const first = await callTool({ task: "grid", grid_spec_path: g.specPath }, env);
+    const total = Number(first.match(/\[perplexity_research part 1\/(\d+) — /)?.[1]);
+    assert.ok(total >= 4, `served in ${total} parts`);
+    const replies = [first];
+    for (let p = 2; p <= total; p++) replies.push(await callTool({ task: "grid", grid_spec_path: g.specPath, part: p }, env));
+    for (const r of replies) {
+      assert.ok(quotedBytes(r) <= codexToolAnswerBytes({}), `a part is ${quotedBytes(r)} bytes as printed, past the answer size`);
+      assert.doesNotMatch(r, /answer part \d+\/\d+ — /, "a part of the grid was split again");
+    }
+    const served = replies.flatMap(cellsIn).map((c) => `${c.term}|${c.platform}|${c.candidates.length}`);
+    assert.deepEqual(served, g.cells.map((c) => `${c.term}|${c.platform}|${c.candidates.length}`));
   } finally { rmSync(g.root, { recursive: true, force: true }); }
 });
 

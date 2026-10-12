@@ -222,7 +222,7 @@ export const NOT_COUNTED_EVENTS = {
     "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3",
   ],
   "read from its own record: the stage records, the dispatch records and the tool-call log": [
-    "attempt", "stage", "settled", "started",
+    "answer-part", "attempt", "stage", "settled", "started",
   ],
   "the portal's, the profile store's or the config store's audit log, never a run log": [
     "compose-read", "demo-order", "family-group", "family-ungroup", "other", "person-add", "person-change",

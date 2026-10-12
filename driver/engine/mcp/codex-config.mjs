@@ -50,6 +50,30 @@ export const TOOL_SERVER_SETTINGS = Object.freeze([
   "OAUTH_BRIDGE_CREDS_DIR", "OAUTH_BRIDGE_CLIENT_NAME",
 ]);
 
+// CODEX CUTS THE MIDDLE OUT OF A LONG READ. It shows a model at most 10,000 tokens of the text a tool call
+// puts in front of it, from its start and its end, counting 4 bytes a token, with "…N tokens truncated…"
+// between them. For the GPT models, which call tools only from code (5.6 and 6.x), that text is what the
+// code prints, and a quoted print adds a byte for each quote and line break: up to 13% on real band answers.
+// Measured in testing, 2026-10-11, on codex 0.162.0 with gpt-6.1-sol: a model that printed a 68,752-character
+// band page to read it named 14 of its 30 records, and at 32,000 characters it named every one. The band
+// server sizes its answers for Claude's limit (70,000 characters, under 25,000 tokens). The vendor's settings
+// for a larger budget (`tool_output_token_limit`, a tool's `output_token_limit`) changed nothing on that
+// version, written in this file or given on the command line. So here the band server answers in 30,000
+// characters: printed with its escapes and banner it stays under the general answer size below, and so under
+// the cut. An install's own smaller size still wins.
+export const CODEX_BAND_ANSWER_CHARS = 30000;
+export const codexBandAnswerChars = (env = process.env) =>
+  Math.min(CODEX_BAND_ANSWER_CHARS, Number(env.CLEAROTRON_BAND_RESPONSE_CHARS) || CODEX_BAND_ANSWER_CHARS);
+
+// AND EVERY OTHER ANSWER: each server here, the case-law bridges and the page fetcher included, is given an
+// answer size, and an answer longer than that, counted as a quoted string, is served in parts, the tool
+// running once (shared/answer-parts.mjs). 36,000 bytes leaves room under the cut for the engine's own
+// wrapping (about 840 bytes); the band server's own answers stay under it and are never split again. An
+// install's own smaller size still wins.
+export const CODEX_TOOL_ANSWER_BYTES = 36000;
+export const codexToolAnswerBytes = (env = process.env) =>
+  Math.min(CODEX_TOOL_ANSWER_BYTES, Number(env.CLEAROTRON_TOOL_ANSWER_BYTES) || CODEX_TOOL_ANSWER_BYTES);
+
 // ── TOML value escaping (basic strings) ──────────────────────────────────────────────────────────────
 // One encoder for every TOML block the product writes; re-exported so this module's callers keep their import.
 export { tomlString };
@@ -121,7 +145,7 @@ export function webFetchRequested(allowedTools) {
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
 export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS], toolTimeoutSec, fence = null, withheldFromCommands = [],
-  platform = process.platform } = {}) {
+  platform = process.platform, bandAnswerChars = codexBandAnswerChars(), toolAnswerBytes = codexToolAnswerBytes() } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
@@ -175,11 +199,15 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     lines.push("");
   };
 
-  for (const [name, s] of Object.entries(servers)) emitServer(name, { ...s, enabledTools: enabled[name] }, { forwardCreds: true });
+  // Every server answers under codex's cut, the band server in its own way too (CODEX_TOOL_ANSWER_BYTES,
+  // CODEX_BAND_ANSWER_CHARS, above); `env` wins over a forwarded name.
+  const answers = { CLEAROTRON_TOOL_ANSWER_BYTES: String(toolAnswerBytes) };
+  for (const [name, s] of Object.entries(servers)) emitServer(name, { ...s, enabledTools: enabled[name],
+    env: { ...s.env, ...answers, ...(name === "band" ? { CLEAROTRON_BAND_RESPONSE_CHARS: String(bandAnswerChars) } : {}) } }, { forwardCreds: true });
 
   // WebFetch → the engine-local fetch server (codex has no built-in). Needs no creds (no env_vars).
   if (webFetchRequested(allowedTools))
-    emitServer("fetch", { command: nodeBin, args: [FETCH_SERVER], env: {}, enabledTools: ["fetch_url"] }, { forwardCreds: false });
+    emitServer("fetch", { command: nodeBin, args: [FETCH_SERVER], env: { ...answers }, enabledTools: ["fetch_url"] }, { forwardCreds: false });
 
   if (fence) lines.push(...fenceToml(fence));
   // ON WINDOWS, CODEX'S SANDBOX IS ON ONLY WHEN THIS NAMES IT. With no `[windows] sandbox` and no feature
