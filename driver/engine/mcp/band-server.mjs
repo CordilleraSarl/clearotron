@@ -237,6 +237,28 @@ function resolveRecordFile(dir, uri) {
   return { miss: "not-fetched", files };
 }
 
+// WHAT A PART OF THE SHAPE HOLDS. A group's row is checked against the lines the step READ, so each md part
+// served logs the listed lines printed in it, found through the md line the shape's data records for each
+// (`md_lines`), and which parts hold each group, so a refusal can name the parts left unread. The json form
+// is the machine shape: reading it serves no line. A shape with no recorded lines logs none.
+function linesByPart(parts) {
+  let shape = null;
+  try { shape = loadJson(shapeJsonPath()); } catch { shape = null; }
+  const at = shape?.md_lines && typeof shape.md_lines === "object" ? shape.md_lines : {};
+  const ends = [];
+  let line = 0;
+  for (const p of parts) { line += p.split("\n").length; ends.push(line - 1); }
+  const partOf = (n) => ends.findIndex((end) => n <= end);
+  const keys = parts.map(() => []);
+  for (const [key, n] of Object.entries(at)) { const i = partOf(n); if (i >= 0) keys[i].push(key); }
+  const groupParts = {};
+  for (const g of ["a", "b", "c", "d", "no_goods"]) {
+    const ps = new Set((shape?.groups?.[g]?.list ?? []).map((l) => at[l.key]).filter((n) => n != null).map((n) => partOf(n) + 1));
+    if (ps.size) groupParts[g] = [...ps].sort((x, y) => x - y);
+  }
+  return { keys, groupParts };
+}
+
 function bandShape(params) {
   const format = params?.format === "json" ? "json" : "md";
   const p = format === "json" ? shapeJsonPath() : shapeMdPath();
@@ -245,12 +267,14 @@ function bandShape(params) {
   const text = readFileSync(p, "utf8");
   const parts = splitAtLines(text, SHAPE_PART_SERVED);
   const total = parts.length;
+  const read = format === "md" ? linesByPart(parts) : null;
   if (total === 1) {                                    // the common case — served verbatim, no banner
-    logRead("band_shape", { format }, { ok: true, bytes: text.length });
+    logRead("band_shape", { format }, { ok: true, bytes: text.length, ...(read ? { part: 1, parts: 1, served_lines: read.keys[0], group_parts: read.groupParts } : {}) });
     return text;
   }
   const part = Math.min(Math.max(1, Math.floor(Number(params?.part)) || 1), total);
-  logRead("band_shape", { format, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length });
+  logRead("band_shape", { format, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length,
+    ...(read ? { served_lines: read.keys[part - 1], group_parts: read.groupParts } : {}) });
   const head = `[band_shape part ${part}/${total} — this shape exceeds one tool response, so it is served in ${total} parts` +
     ` split at line boundaries (every floor row is intact). The shape is COMPLETE only once ALL ${total} parts are read` +
     `${format === "json" ? "; concatenate the parts before parsing the JSON" : ""} — never reason from a partial shape.]`;
@@ -286,7 +310,7 @@ const withGoods = (r) => {
 
 // A GROUP, PAGED AS THE SHAPE LISTS IT. The shape lists a group of a thousand records or more by its first
 // page; the rest of its lines are served here, one compact line per mark of an owner, in the group's own
-// order. A group's row covers only lines that were served (placement-union.mjs), so the step can always
+// order. A group's row is refused until every line was read (placement-union.mjs), so the step can always
 // reach every line it is asked to answer for. Each answer logs the lines it served.
 const GROUP_LINE_LIMIT = 200;
 function groupLookup(params) {

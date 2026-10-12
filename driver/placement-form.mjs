@@ -137,8 +137,8 @@ export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.
 export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
 export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
   when: "a group the shape lists, (a) to (d), or the rest it counts: one row sets aside every line in it that "
-    + "you were served and neither place nor set aside by name. It covers a floor only in a group of a "
-    + "thousand records or more; below that, each floor is placed or set aside by name.",
+    + "you have read and neither place nor set aside by name. It covers a floor only in group (b) of a "
+    + "thousand records or more; any other floor is placed or set aside by name.",
   fields: SET_ASIDE_GROUP_FIELDS,
   set_aside_group: `the group's letter as the shape gives it, or "rest": one of ${BAND_GROUPS.join(", ")}.`,
   count: "the group's record count: the N the shape gives beside it.",
@@ -147,7 +147,7 @@ export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
   latest: "A later row for the same group replaces the earlier one. To remove one, hand back "
     + "{\"retract\":\"group:<letter or rest>\"}.",
   unresolved: "A group the shape does not list, a count that does not match the shape's, a row with no "
-    + "ground, or a group with lines you were not yet served, is reported back to you.",
+    + "ground, or a group with lines you have not read, is reported back to you with how to read them.",
   said_back: "The driver writes back `covers_lines`, the lines the row covers, and `floors_not_covered`, one "
     + "record id for each line of the group holding a floor the row does not cover: place each or set it "
     + "aside by name.",
@@ -175,18 +175,14 @@ export function groupOfKeys(groups) {
 }
 
 /**
- * The lines of a group the step was shown: every line of a group the shape lists whole, the first page of a
- * group it lists by its first page, and every line a band lookup served, by the group's own page or by a
- * record of the line looked up or opened. A group's row covers these and no others. PURE.
+ * The lines of a group the step READ, from the reading log: every line printed in a part of the shape it was
+ * served, every line of a group's page, and every line with a record a lookup returned or opened. A line
+ * printed in a part the step never asked for was not read. A group's row is refused until every one of its
+ * lines is here. PURE.
  */
 export function servedLines(groups, served, index) {
   const out = new Set();
   if (!groups || typeof groups !== "object") return out;
-  for (const g of ["a", "b", "c", "d"]) {
-    const list = Array.isArray(groups[g]?.list) ? groups[g].list : [];
-    const shown = groups[g]?.records >= (groups.crowded_at ?? Infinity) ? list.slice(0, groups.first_page ?? 0) : list;
-    for (const l of shown) if (l?.key) out.add(l.key);
-  }
   for (const k of served?.lines ?? []) out.add(k);
   for (const id of served?.records ?? []) { const k = lineKey(index?.resolve?.(id)); if (k) out.add(k); }
   return out;
@@ -315,7 +311,7 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "attempt's work survive. Candidates the register does not hold are yours to write in full — see "
   + "`seat_row_contract`. A line the shape lists, one mark of one owner, whose records you do not carry "
   + "gets one ground — see `set_aside_row_contract`. A group the shape lists, or the rest it counts, gets "
-  + "one row for the lines you were served and neither place nor set aside by name — see "
+  + "one row for the lines you have read and neither place nor set aside by name — see "
   + "`set_aside_group_contract`.";
 
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */

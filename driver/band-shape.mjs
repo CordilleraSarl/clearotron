@@ -940,7 +940,9 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     } } : {}),
   };
 
-  return { shape, md: renderBandShapeMd(shape, { positions }) };
+  const { md, lines } = bandShapeMdLines(shape, { positions });
+  shape.md_lines = lines;
+  return { shape, md };
 }
 
 const fmtN = (n) => Number(n ?? 0).toLocaleString("en-US");
@@ -1003,7 +1005,7 @@ const floorLineCount = (groups) => ["a", "b", "c", "d", "no_goods"].reduce((n, g
 /** The lookup that pages a group, as the shape and the form's refusal both name it, so the two cannot drift. */
 export const groupPageCall = (g) => `band_lookup {"group":"${g}"}`;
 
-function renderGroupsMd(md, groups) {
+function renderGroupsMd(md, groups, rows = []) {
   md.push("", "## The band in the lawyer's order — for the client's goods first", "");
   if (groups.dominant_term && groups.manifest_dominant && normKey(groups.dominant_term) !== normKey(groups.manifest_dominant))
     md.push(`Sorted on «${cell(groups.dominant_term)}», the word the register's goods-narrowed search asked for (the variants stage named «${cell(groups.manifest_dominant)}»).`, "");
@@ -1031,30 +1033,40 @@ function renderGroupsMd(md, groups) {
     md.push(crowded && g === "a"
       ? `${count(grp)}. These are the identical and live marks for the client's goods: read every line. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)}. Every floor here is placed or set aside by name; this group's row covers only its other lines.`
       : crowded
-      ? `${count(grp)}. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)} before this group's row, which covers only the lines you were served.`
+      ? `${count(grp)}. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)}: this group's row is refused until every line was read.`
       : grp.lines <= READ_ALL_LINES
         ? `${count(grp)}. Fifty? Read them all.`
         : `${count(grp)}. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.`, "");
     md.push(...head);
-    for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) md.push(row(l));
+    for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) { rows.push([md.length, l.key]); md.push(row(l)); }
     md.push("");
   }
   const floorsOutside = groups.rest.floor_lines ? `, ${fmtN(groups.rest.floor_lines)} of those identical marks live in an ordered class, listed below` : "";
   const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories${floorsOutside}` : "";
   md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Write down what you set aside and why: one row, with this count.`);
   // A floor the order's territories leave in the rest is listed, so every floor is a line the step has seen.
-  if (groups.rest.floor_list?.length) { md.push("", ...head); for (const l of groups.rest.floor_list) md.push(row(l)); }
+  if (groups.rest.floor_list?.length) { md.push("", ...head); for (const l of groups.rest.floor_list) { rows.push([md.length, l.key]); md.push(row(l)); } }
   if (groups.no_goods.lines) {
     md.push("", tested.source === "none"
       ? `**Not tested on goods: ${count(groups.no_goods)}** — no goods words were given, so the goods test could not place them. Open a record before a fate; no group row covers them.`
       : `**No goods on file: ${count(groups.no_goods)}** — their records carry no goods the engine can read, so the goods test could not place them. Open a record before a fate; no group row covers them.`, "");
     md.push(...head);
-    for (const l of groups.no_goods.list) md.push(row(l));
+    for (const l of groups.no_goods.list) { rows.push([md.length, l.key]); md.push(row(l)); }
   }
 }
 
 export function renderBandShapeMd(shape, { positions = null } = {}) {
-  const md = [];
+  return bandShapeMdLines(shape, { positions }).md;
+}
+
+/**
+ * The readable shape, and the md line each listed line is printed on: `{ md, lines: {lineKey: lineNumber} }`,
+ * 0-based over `md.split("\n")`. The band server reads `lines` from the shape's data to log which lines a
+ * part it serves holds, so a group's row is checked against what the step read, not against what was
+ * printed. PURE.
+ */
+export function bandShapeMdLines(shape, { positions = null } = {}) {
+  const md = [], rows = [];
   md.push("# Band shape — the register band, mechanically mapped");
   md.push("");
   md.push("Deterministic projection of the complete merged register band (code-derived after every band");
@@ -1081,7 +1093,7 @@ export function renderBandShapeMd(shape, { positions = null } = {}) {
     ? `**Floors: ${fmtN(floors.length)} records${floorLines != null ? ` in ${fmtN(floorLines)} lines` : ""}** — every live in-class identical or near-identical record, each marked on its line in the band below.`
     : "**Floors:** none — no live in-class record classified identical or near-identical to any target.");
 
-  if (shape.groups) renderGroupsMd(md, shape.groups);
+  if (shape.groups) renderGroupsMd(md, shape.groups, rows);
 
   topTable(md, "By Nice class", ["class", "records"], shape.by_class);
   topTable(md, "By status", ["status", "records"], shape.by_status);
@@ -1171,5 +1183,12 @@ export function renderBandShapeMd(shape, { positions = null } = {}) {
     if ((b.records ?? b.sample ?? b.zones ?? []).length > 20) md.push(`  - … and ${fmtN((b.records ?? b.sample ?? b.zones).length - 20)} more (band-shape.json carries all)`);
   }
   md.push("");
-  return md.join("\n");
+  // A pushed element may hold line breaks of its own, so each row's line number counts the breaks before it.
+  const lines = {};
+  let at = 0, line = 0;
+  for (const [index, key] of rows) {
+    for (; at < index; at++) line += 1 + (md[at].match(/\n/g)?.length ?? 0);
+    if (key != null) lines[key] = line;
+  }
+  return { md: md.join("\n"), lines };
 }

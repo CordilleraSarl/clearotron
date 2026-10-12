@@ -20,6 +20,7 @@ import { buildBandShape, deriveRegisterPositions, CROWDED_GROUP_RECORDS } from "
 import { setAsideKeysOf } from "../placement-form.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
+import { readServed } from "../placement-form-io.mjs";
 
 const rec = (i) => ({ record_id: `/mark/eu/c${i}`, mark_text: "QZORVAK", owner_name: `Owner ${String(i).padStart(4, "0")} Ltd`, classes: ["9"], status: "registered", jurisdictions: ["EU"] });
 function crowded() {
@@ -37,7 +38,7 @@ test("a crowded group's row is refused while any of its lines is unserved, and t
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS, "guard: (b) is listed by its first page");
   const shownOnly = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(), records: new Set() } });
   assert.deepEqual(shownOnly.form.set_aside_groups, []);
-  assert.match(shownOnly.form.set_aside_group_refused[0].why, /5 of 1000 lines of group b were served: page the rest with band_lookup \{"group":"b"\}/);
+  assert.match(shownOnly.form.set_aside_group_refused[0].why, /0 of 1000 lines of group b were read: page it with band_lookup \{"group":"b"\}, before its row/, "a crowded group is paged: its printed first page alone serves none of it");
   const paged = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(shape.groups.b.list.map((l) => l.key)), records: new Set() } });
   assert.deepEqual(paged.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["b", CROWDED_GROUP_RECORDS]]);
 });
@@ -53,7 +54,7 @@ test("group (a) is held to the same rule: its row over lines never served is ref
   const row = { set_aside_group: "a", count: CROWDED_GROUP_RECORDS, ground: "a crowded field; none trades where the client trades" };
   const shown = unionPlacementForm(null, { rows: [row] }, { ...input, served: { lines: new Set(), records: new Set() } });
   assert.deepEqual(shown.form.set_aside_groups, [], "the row covered (a)'s lines past the first page unseen");
-  assert.match(shown.form.set_aside_group_refused[0].why, /5 of 1000 lines of group a were served/);
+  assert.match(shown.form.set_aside_group_refused[0].why, /0 of 1000 lines of group a were read/);
 });
 
 test("a row on (a) never answers a floor, however many records (a) holds; only a crowded (b)'s row may", async () => {
@@ -88,9 +89,9 @@ test("a line is served when a lookup returned or opened one of its records", () 
 });
 
 const MCP = join(dirname(fileURLToPath(import.meta.url)), "..", "engine", "mcp");
-async function lookup(runDir, args) {
+async function lookup(runDir, args, name = "band_lookup", env = {}) {
   return await new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [join(MCP, "band-server.mjs")], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDir } });
+    const child = spawn(process.execPath, [join(MCP, "band-server.mjs")], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDir, ...env } });
     child.stdout.setEncoding("utf8");   // a character split across two chunks decodes whole
     let buf = "";
     const timer = setTimeout(() => { child.kill("SIGKILL"); resolve(null); }, 8000);
@@ -98,12 +99,12 @@ async function lookup(runDir, args) {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {
         const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
-        try { const m = JSON.parse(line); if (m.id === 2) { clearTimeout(timer); child.kill("SIGKILL"); resolve(JSON.parse(m.result.content[0].text)); } } catch { /* not ours */ }
+        try { const m = JSON.parse(line); if (m.id === 2) { clearTimeout(timer); child.kill("SIGKILL"); const t = m.result.content[0].text; resolve(name === "band_lookup" ? JSON.parse(t) : t); } } catch { /* not ours */ }
       }
     });
     child.on("error", reject);
     child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18" } }) + "\n");
-    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "band_lookup", arguments: args } }) + "\n");
+    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/call", params: { name, arguments: args } }) + "\n");
   });
 }
 
@@ -150,4 +151,40 @@ test("a ground by name covers the named mark only, never the owner's other marks
   const groundOf = setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors);
   assert.equal(groundOf("/mark/eu/n1").by, "name");
   assert.equal(groundOf("/mark/jp/n2"), null, "the owner's other mark keeps its own fate to be given");
+});
+
+test("a line printed in a part of the shape the step never read is not served, and the refusal names the part", async () => {
+  // Three hundred live marks of other owners in the ordered class, for the client's goods: one long (d).
+  const band = { enumerated: Array.from({ length: 300 }, (_, i) => ({ record_id: `/mark/eu/d${i}`, mark_text: `PLOVENTAR ${i}`, owner_name: `Owner D${i} AG`,
+    classes: ["9"], status: "registered", jurisdictions: ["EU"] })), crowds: [] };
+  const positions = deriveRegisterPositions(band.enumerated);
+  const goods = { of: () => [{ classes: ["9"], text: "joysticks" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape, md } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1, keysOf: setAsideKeysOf(positions.positions) });
+  assert.equal(shape.groups.d.lines, 300, "guard: (d) is listed whole, three hundred lines");
+  const runDir = mkdtempSync(join(tmpdir(), "parts-read-"));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify(band));
+  writeFileSync(driverDir(runDir, "band-shape.json"), JSON.stringify(shape));
+  writeFileSync(join(runDir, "band-shape.md"), md);
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
+  const ROW_D = { set_aside_group: "d", count: 300, ground: "similar to none of the mark's forms" };
+
+  const unread = unionPlacementForm(null, { rows: [ROW_D] }, { ...input, served: readServed(runDir) });
+  assert.match(unread.form.set_aside_group_refused[0].why, /^0 of 300 lines of group d were read: read the parts of band_shape that print it, or page it with band_lookup \{"group":"d"\}, before its row$/,
+    "an empty reading log serves nothing, however much the shape printed");
+
+  const SMALL = { CLEAROTRON_BAND_RESPONSE_CHARS: "8000" };
+  const first = await lookup(runDir, {}, "band_shape", SMALL);
+  const total = Number(first.match(/^\[band_shape part 1\/(\d+)/)[1]);
+  const served1 = readServed(runDir);
+  const dParts = served1.group_parts.d;
+  assert.ok(dParts.length > 1 && dParts.includes(total), "guard: (d) runs over several parts, to the last");
+  const partial = unionPlacementForm(null, { rows: [ROW_D] }, { ...input, served: served1 });
+  const left = dParts.filter((p) => p !== 1);
+  assert.match(partial.form.set_aside_group_refused[0].why,
+    new RegExp(`lines of group d were read: read band_shape ${left.map((p) => `part ${p}`).join(" and ")}, or page it with band_lookup \\{"group":"d"\\}, before its row$`), "the refusal names the parts left unread");
+
+  for (let p = 2; p <= total; p++) await lookup(runDir, { part: p }, "band_shape", SMALL);
+  const all = unionPlacementForm(null, { rows: [ROW_D] }, { ...input, served: readServed(runDir) });
+  assert.deepEqual(all.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["d", 300]], "every part read: the row is taken");
 });

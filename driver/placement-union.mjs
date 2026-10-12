@@ -177,6 +177,15 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const r of (submittedRows ?? [])) if (isSetAsideRow(r)) { consumed.add(r); takeSetAside(r); }
   for (const [k, e] of setAside) if (retracted.has(e.set_aside) || retracted.has(e.set_aside.toUpperCase())) setAside.delete(k);
 
+  // A ROW OVER LINES NOT READ is refused with how to read them: the parts of the shape that print them and were
+  // not read, or the group's own pages, which serve every line, the crowded group's unprinted ones included.
+  const unreadGroup = (g, seen, total, shown, gs, served) => {
+    const crowded = (shown?.records ?? 0) >= (gs?.crowded_at ?? Infinity);
+    const inParts = served?.group_parts?.[g];
+    const partsLeft = Array.isArray(inParts) ? inParts.filter((p) => !served?.parts_read?.has?.(p)) : null;
+    const parts = crowded ? null : partsLeft == null ? "read the parts of band_shape that print it" : partsLeft.length ? `read band_shape ${partsLeft.map((p) => `part ${p}`).join(" and ")}` : null;
+    return `${seen} of ${total} lines of group ${g} were read: ${[parts, `page it with ${groupPageCall(g)}`].filter(Boolean).join(", or ")}, before its row`;
+  };
   // ONE ROW PER GROUP (placement-form.mjs, SET_ASIDE_GROUP_CONTRACT), kept the way an owner's set-aside is:
   // prior first, a later row for the same group replaces the earlier one, and `group:<name>` retracts it.
   // Its count must be the shape's own, so the row is about the pile the step was shown. A group the shape
@@ -199,7 +208,7 @@ export function unionPlacementForm(prior, submitted, input) {
     if (g !== "rest") {
       const list = Array.isArray(shown.list) ? shown.list : [];
       const seen = list.filter((l) => servedSet.has(l.key)).length;
-      if (seen < list.length) { refuse(`${seen} of ${list.length} lines of group ${g} were served: page the rest with ${groupPageCall(g)} before its row`); return; }
+      if (seen < list.length) { refuse(unreadGroup(g, seen, list.length, shown, groups, input?.served)); return; }
     }
     setAsideGroups.delete(g);
     setAsideGroups.set(g, { set_aside_group: g, count: shown.records, ground });

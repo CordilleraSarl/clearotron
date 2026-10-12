@@ -69,7 +69,8 @@ export function readPlacementFormInput(runDir) {
  * read where the row is checked. A log that cannot be read serves nothing beyond what the shape rendered.
  */
 export function readServed(runDir) {
-  const lines = new Set(), records = new Set();
+  const lines = new Set(), records = new Set(), partsRead = new Set();
+  let groupParts = null;
   let text = "";
   try { text = readFileSync(driverDir(runDir, "reading-log.jsonl"), "utf8"); } catch { text = ""; }
   for (const row of text.split("\n")) {
@@ -79,8 +80,12 @@ export function readServed(runDir) {
     for (const k of Array.isArray(e.served_lines) ? e.served_lines : []) lines.add(k);
     for (const id of Array.isArray(e.served) ? e.served : []) records.add(String(id));
     if (e.tool === "band_record" && e.args?.record_id) records.add(String(e.args.record_id));
+    if (e.tool === "band_shape" && e.group_parts && typeof e.group_parts === "object") {
+      groupParts = e.group_parts;
+      partsRead.add(Number(e.args?.part ?? e.part ?? 1));
+    }
   }
-  return { lines, records };
+  return { lines, records, parts_read: partsRead, group_parts: groupParts };
 }
 
 /** Read the DRIVER'S copy. Three states, and they are not the same fact — see verify.mjs. */

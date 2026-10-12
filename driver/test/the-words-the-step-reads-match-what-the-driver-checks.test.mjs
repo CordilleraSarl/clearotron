@@ -29,13 +29,15 @@ function shapeOf(records) {
   const goods = { of: () => [{ classes: ["9"], text: "printers" }], hits: goodsWordCounter(["joystick"], { stems: true }), matched: goodsWordsMatched(["joystick"], { stems: true }) };
   const { shape, md } = buildBandShape({ enumerated: records, crowds: [] }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
     keysOf: setAsideKeysOf(positions.positions), caps: { owners: 5 } });
-  return { shape, md, input: { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups } };
+  const read = ["a", "b", "c", "d", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
+  return { shape, md, input: { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups,
+    served: { lines: new Set(read), records: new Set() } } };
 }
 
 test("a crowded group's sentence names the lookup the driver's refusal names, and the manual and the dictation say to page it", () => {
   const { shape, md, input } = shapeOf(Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(`c${i}`, "QZORVAK", `Owner ${String(i).padStart(4, "0")} Ltd`)));
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS, "guard: (b) is crowded");
-  assert.ok(md.includes(`page every other line with ${groupPageCall("b")} before this group's row`), "the shape says how to page the group");
+  assert.ok(md.includes(`page every other line with ${groupPageCall("b")}: this group's row is refused until every line was read.`), "the shape says how to page the group");
   assert.doesNotMatch(md, /open by owner name only those your judgment needs/);
   const refused = unionPlacementForm(null, { rows: [{ set_aside_group: "b", count: CROWDED_GROUP_RECORDS, ground: "identical in class, for printers" }] }, { ...input, served: { lines: new Set(), records: new Set() } });
   assert.ok(refused.form.set_aside_group_refused[0].why.includes(groupPageCall("b")), "the refusal names the same call");
@@ -46,10 +48,12 @@ test("a crowded group's sentence names the lookup the driver's refusal names, an
 test("no sentence the step reads lets a group's row answer a floor below a thousand records", () => {
   assert.equal(CROWDED_GROUP_RECORDS, 1000, "the words say a thousand: they move with the number or not at all");
   assert.doesNotMatch(MANUAL, /by name or by its group's row/);
-  assert.match(MANUAL, /a group's row covers a floor only in a group of a thousand records or more/);
+  assert.match(MANUAL, /only group \(b\)'s row, in a crowd of a thousand records or more, covers a floor/);
+  assert.match(MANUAL, /A group's row is refused until every line of the group was read/);
+  assert.doesNotMatch(MANUAL, /you were served|covers only the lines/, "the manual still says a row covers a subset of a group");
   assert.match(MANUAL, /left to the group's row with the reason, except a floor, which is placed or set aside by name/);
-  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in a group of a thousand records or more/);
-  assert.match(DICTATION, /A floor is placed or set aside by name; only a group of a thousand records or more may leave it to its row/);
+  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in group \(b\) of a thousand records or more/);
+  assert.match(DICTATION, /A floor is placed or set aside by name; only group \(b\), in a crowd of a thousand records or more, may leave it to its row/);
 });
 
 test("no sentence the step reads lets a name cover an owner's other marks", () => {
