@@ -21,6 +21,17 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { foldDiacritics } from "./form-neighbourhood.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
+import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
+
+/**
+ * The registers whose language is English (ruled 2026-10-12): there, a goods statement with no language tag
+ * is read as English. Everywhere else an untagged statement is unknown to the goods test, and Canada, with two
+ * languages, is unknown too.
+ */
+export const ENGLISH_REGISTERS = new Set(["US", "GB", "IE", "AU", "NZ"]);
+const registerOf = (uri) => canonicalJurisdictionCode(String(normalizeRecordUri(uri) ?? "").match(/^\/mark\/([a-z0-9]+)\//i)?.[1]?.toUpperCase() ?? "");
+/** Is an untagged statement on this record read as English? Only on an English-language register. PURE. */
+export const untaggedIsEnglish = (uri) => ENGLISH_REGISTERS.has(registerOf(uri));
 
 /** A Nice class as the engine compares it: "09", 9 and " 9 " are all "9". Anything else is "". */
 export const niceClass = (c) => {
@@ -44,7 +55,7 @@ const textOf = (v) => (typeof v === "string" ? v
  *   · anything else carrying goodsAndServices: read generically, class where one is named.
  * English is preferred where a statement offers it; otherwise the statement's own text.
  */
-export function recordGoods(body) {
+export function recordGoods(body, { english = true } = {}) {
   const b = Array.isArray(body) ? body[0] : body;
   if (!b || typeof b !== "object") return [];
   const out = [];
@@ -57,26 +68,28 @@ export function recordGoods(body) {
   const tagged = (lang) => String(lang ?? "").trim() !== "";
   if (Array.isArray(b.goodsServices)) {
     for (const g of b.goodsServices) {
-      // English as written, else the translation, tagged English or untagged; else the original, unread.
-      if (isEnglish(g?.language) || (!tagged(g?.language) && !g?.translation)) push(g?.classes, textOf(g?.description), null, true);
-      else if (g?.translation && (isEnglish(g?.translation_language) || !tagged(g?.translation_language))) push(g?.classes, textOf(g.translation), textOf(g?.description), true);
+      // English as written; untagged, English only on an English-language register; else the translation,
+      // tagged English, or untagged on such a register; else the original, unread.
+      if (isEnglish(g?.language)) push(g?.classes, textOf(g?.description), null, true);
+      else if (!tagged(g?.language) && !g?.translation) push(g?.classes, textOf(g?.description), null, english);
+      else if (g?.translation && (isEnglish(g?.translation_language) || (!tagged(g?.translation_language) && english))) push(g?.classes, textOf(g.translation), textOf(g?.description), true);
       else push(g?.classes, textOf(g?.description ?? g?.translation), null, false);
     }
   }
   if (out.length === 0 && Array.isArray(b?._raw?.classifications)) {
-    for (const c of b._raw.classifications) push([c?.nice_class], c?.goods_services_text, null, !tagged(c?.goods_services_language) || isEnglish(c?.goods_services_language));
+    for (const c of b._raw.classifications) push([c?.nice_class], c?.goods_services_text, null, isEnglish(c?.goods_services_language) || (!tagged(c?.goods_services_language) && english));
   }
   if (out.length === 0 && b.goodsAndServices != null) {
     const gs = b.goodsAndServices;
-    if (typeof gs === "string") push([], gs);
+    if (typeof gs === "string") push([], gs, null, english);
     else if (Array.isArray(gs)) {
       for (const g of gs) {
-        if (typeof g === "string") { push([], g); continue; }
+        if (typeof g === "string") { push([], g, null, english); continue; }
         const d = g?.description;
         const en = Array.isArray(d) ? d.find((x) => isEnglish(x?.language)) : null;
         const chosen = Array.isArray(d) ? (en ?? d[0]) : d;
         push([g?.classNumber ?? g?.class ?? g?.niceClass ?? g?.nice_class], textOf(chosen ?? g?.text ?? g?.goods), null,
-          !Array.isArray(d) || Boolean(en) || !tagged(d[0]?.language));
+          Boolean(en) || (Array.isArray(d) ? !tagged(d[0]?.language) && english : english));
       }
     }
   }
@@ -93,7 +106,7 @@ export function bandGoodsIndex(runDir) {
   const take = (uri, body) => {
     const key = normalizeRecordUri(uri);
     if (!key) return;
-    const goods = recordGoods(body);
+    const goods = recordGoods(body, { english: untaggedIsEnglish(key) });
     if (goods.length) index.set(key, goods);
   };
   const ledger = driverDir(runDir, "register-record-bodies.jsonl");
@@ -132,12 +145,15 @@ export function goodsWordForms(word) {
   const w = fold(word).trim();
   const singulars = new Set([w]);
   if (/\p{L}{2,}ies$/u.test(w)) singulars.add(`${w.slice(0, -3)}y`);
-  if (/(?:s|x|z|ch|sh)es$/u.test(w)) singulars.add(w.slice(0, -2));
+  if (/(?:s|x|z|ch|sh|o)es$/u.test(w)) singulars.add(w.slice(0, -2));             // boxes, tomatoes
+  if (/\p{L}{2,}ves$/u.test(w)) { singulars.add(`${w.slice(0, -3)}f`); singulars.add(`${w.slice(0, -3)}fe`); }   // shelves, knives
   if (/\p{L}{2,}[^sui]s$/u.test(w)) singulars.add(w.slice(0, -1));
   const forms = new Set(singulars);
   for (const f of singulars) {
     forms.add(/(?:s|x|z|ch|sh)$/u.test(f) ? `${f}es` : `${f}s`);
+    if (/[^aeiou]o$/u.test(f)) forms.add(`${f}es`);
     if (/[^aeiou]y$/u.test(f)) forms.add(`${f.slice(0, -1)}ies`);
+    if (/\p{L}fe?$/u.test(f)) forms.add(`${f.replace(/fe?$/u, "")}ves`);
   }
   return [...forms].sort((x, y) => y.length - x.length);
 }
@@ -150,7 +166,8 @@ export function goodsWordForms(word) {
  * start of a longer word. PURE.
  */
 export function goodsWordCounter(words, { stems = false } = {}) {
-  const phrase = (w) => w.split(/\s+/).map((x) => (stems ? `(?:${goodsWordForms(x).map(escape).join("|")})` : escape(x))).join("\\s+");
+  // A phrase's words are separated by spaces or hyphens alike: "mobile phone" is "mobile-phone".
+  const phrase = (w) => w.split(/[\s-]+/).filter(Boolean).map((x) => (stems ? `(?:${goodsWordForms(x).map(escape).join("|")})` : escape(x))).join("[\\s-]+");
   const res = (Array.isArray(words) ? words : [words])
     .map((w) => fold(w).trim()).filter(Boolean)
     .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${phrase(w)}($|[^\\p{L}\\p{N}])`, "u"));

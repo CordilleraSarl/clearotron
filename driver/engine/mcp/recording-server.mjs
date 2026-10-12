@@ -519,7 +519,7 @@ serve({
         product_words: { type: "array", items: { type: "string" },
           description:
             "The words from the client's own goods and services wording that name the client's own product " +
-            "or service, as a specification would write them, each as the stem that matches its forms. A " +
+            "or service, as a specification would write them, each as a whole word, in the singular; the engine matches the plural too. A " +
             "category word on its own (software, services, preparations, research) is not one. They decide " +
             "which registered marks are for the client's particular goods; the synonyms in goods_words stay " +
             "for the register search only.",

@@ -27,7 +27,7 @@ import { normalizeElement, editNeighbourhood, consonantSkeleton, confusableSkele
 import { doubleMetaphone } from "./phonetic-key.mjs";
 import { probeOrder } from "./order-probe.mjs";   // item 11 — inert unless CLEAROTRON_ORDER_PROBE_SEED is set
 import { normKey } from "./placement-diff.mjs";
-import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // — one spelling per register: a band's "EM" and a market's "EU" are one office
+import { canonicalJurisdictionCode, KNOWN_JURISDICTION_CODES } from "./jurisdiction-codes.mjs";   // — one spelling per register: a band's "EM" and a market's "EU" are one office
 import { bindingLayersFor } from "./binding-layers.mjs";
 import { territoryKey } from "./territory-tiers.mjs";   // — a territory written as a name reads as its code   // — the registers that bind an ordered territory: its own, the EU's for a member, every member's for the EU, Benelux, Madrid   // — the set-aside key's owner fold: an owner is grouped the way a set-aside row covers it
 
@@ -597,7 +597,7 @@ const TIER_RANK = { identical: 0, "near-identical": 1, "same-family": 2, other: 
  * One record's group. PURE. `hits` is how many of the client's goods words its goods contain, or null
  * when the run holds no goods for it: unknown passes the goods test, so a record is never set aside for
  * what the run does not hold.
- *   (a) identical or near-identical to a target, for the client's goods;
+ *   (a) identical or near-identical to a target, live in the ordered classes, for the client's goods;
  *   (b) identical or near-identical to a target, in the ordered classes;
  *   (c) the same family as a target, or carrying the searched dominant word, for the client's goods;
  *   (d) every other live mark in the ordered classes, for the client's goods;
@@ -606,7 +606,9 @@ const TIER_RANK = { identical: 0, "near-identical": 1, "same-family": 2, other: 
 export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
   const ident = tier === "identical" || tier === "near-identical";
   const forGoods = hits !== 0;
-  if (ident && forGoods) return "a";
+  // (a) reads the goods of live records in the ordered classes only (ruled 2026-10-12): a dead or
+  // out-of-class record's goods never put a mark in (a).
+  if (ident && live && inScope && forGoods) return "a";
   if (ident && inScope) return "b";
   if ((tier === "same-family" || dominant) && forGoods) return "c";
   if (live && inScope && forGoods) return "d";
@@ -678,10 +680,14 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
   const fold = (x) => foldDiacritics(String(x ?? "")).toLowerCase();
   const dom = fold(dominantTerm).trim();
   const domRe = dom ? new RegExp(`(^|[^\\p{L}\\p{N}])${dom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^\\p{L}\\p{N}])`, "u") : null;
+  const domPrep = prepareDominantElement(dominantTerm);   // the composites' own ladder, for a word fused into a longer one
   // A territory or register as written, a code or a name, read as its code: "Switzerland" and "CH" are one.
   const code = (t) => canonicalJurisdictionCode(territoryKey(String(t ?? "").trim()) || String(t ?? "").trim().toUpperCase());
   const ordered = new Set((territories ?? []).map(code).filter(Boolean));
-  const offices = bindingOffices(ordered, code);
+  // An ordered territory the engine cannot read binds no register it knows; cutting on the others would drop
+  // records inside it unseen. So it is reported, and the list holds every register.
+  const unreadTerritories = [...ordered].filter((t) => !KNOWN_JURISDICTION_CODES.has(t));
+  const offices = unreadTerritories.length ? new Set() : bindingOffices(ordered, code);
   // The client's markets, read the same way; a market of the EU holds a member's register too.
   const marketsGiven = [...new Set((markets ?? []).map(code).filter(Boolean))];
   const market = bindingOffices(new Set(marketsGiven), code);
@@ -701,7 +707,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     const live = isLiveRecord(r), s = inScope(r);
     const ts = territoriesOf(r);
     const outside = !inOrder(ts);
-    const dominant = Boolean(domRe && domRe.test(fold(r?.mark_text)));
+    const dominant = Boolean(domRe && domRe.test(fold(r?.mark_text))) || dominantElementBasis(r?.mark_text, domPrep) === "concatenation";
     const floor = (tier === "identical" || tier === "near-identical") && live && s;   // the floors' own test
     // A floor is never counted in the rest (ruled 2026-10-12): held only outside the order's territories, it
     // is still listed, in (a) or (b), where the step reads it and may set it aside by name on its territory.
@@ -737,10 +743,12 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
       in_market: l.recs.some((x) => x.inMarket), in_scope: l.recs.some((x) => x.inScope),
       territories: [...new Set(l.recs.flatMap((x) => x.territories))].sort(),
       classes: [...new Set(l.recs.flatMap((x) => classesOf(x.r)))].sort((p, q) => Number(p) - Number(q) || p.localeCompare(q)),
-      record_id: best.r?.record_id ?? null,
+      // A line the goods test could not place shows a record whose goods are on file where it has one, so
+      // `band_record` opens the record the line names; `goods_on_file` says so of that record.
+      record_id: (known ? best : (inGroup.find((x) => x.onFile) ?? best)).r?.record_id ?? null,
       floors: l.recs.filter((x) => x.floor).length,
-      // Whether `band_record` can open the goods that put the line in its group; read where they cannot be read.
       ...(known ? {} : { goods_on_file: inGroup.some((x) => x.onFile) }),
+      ...(offices.size && l.recs.every((x) => x.outside) ? { outside: true } : {}),
     };
     // A line placed in (a), (c) or (d) by the goods test, whose records carry no goods the engine can read,
     // cannot be judged from the line: it is listed apart, opened before a fate, and no group row covers it.
@@ -757,8 +765,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     || (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || Number(y.in_market) - Number(x.in_market) || y.records - x.records || byName(x, y);
   for (const g of ["a", "b", "c", "d"]) byGroup[g].lines.sort(herOrder);
   byGroup.rest.lines.sort(byName);
-  noGoods.sort(herOrder);
-  return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), markets: marketsGiven, territories: [...ordered],
+  // The lines the goods test could not place run by live records in the ordered classes, then records.
+  noGoods.sort((x, y) => y.live_in_scope - x.live_in_scope || y.records - x.records || byName(x, y));
+  return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), markets: marketsGiven, territories: [...ordered], territories_unread: unreadTerritories,
     outside: { lines: outsideLines, records: outsideRecords }, by_group: byGroup, no_goods: noGoods };
 }
 
@@ -844,7 +853,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const rest = grouped.by_group.rest.lines;
   const groups = {
     dominant_term: grouped.dominant_term, manifest_dominant: manifestDominant || null, goods_on_file: grouped.goods_on_file,
-    markets: grouped.markets, territories: grouped.territories, outside: grouped.outside,
+    markets: grouped.markets, territories: grouped.territories, territories_unread: grouped.territories_unread, outside: grouped.outside,
     goods_words_total: goodsWordCount || 0, goods_test: goodsTest ?? { source: goods ? "goods_words" : "none", words: [] },
     crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
@@ -1028,7 +1037,7 @@ export const floorMarkKey = (s) => normMark(s);
 // whether it holds a floor. Each list carries the method's size sentence for its own length: read them all;
 // read the near ones first and list the rest; or, at a thousand records or more, the count and the first page.
 const GROUP_HEADINGS = {
-  a: "(a) Identical or near-identical to the mark or one of its forms, for the client's goods",
+  a: "(a) Identical or near-identical to the mark or one of its forms, live in the ordered classes, for the client's goods",
   b: "(b) Identical or near-identical to the mark or one of its forms, in the ordered classes",
   c: "(c) The same family as the mark, or carrying the searched word, for the client's goods",
   d: "(d) Every other live mark in the ordered classes, for the client's goods",
@@ -1052,26 +1061,39 @@ function renderGroupsMd(md, groups, rows = []) {
     : tested.source === "goods_words"
       ? `No product words were given, so the goods test reads each record's goods for the words the register search was narrowed by${named}. They include words other filings use for the same goods, so "for the client's goods" below is wider than the client's own product.`
       : "No goods words were given, so no record was tested on its goods.", "");
-  if (groups.territories?.length) md.push(`The list holds the order's territories: ${groups.territories.join(", ")}.`, "");
+  if (groups.territories_unread?.length)
+    md.push(`The order names ${groups.territories_unread.map((t) => `«${cell(t)}»`).join(", ")}, which the engine cannot read as a territory, so the list holds every register.`, "");
+  else if (groups.territories?.length) md.push(`The list holds the order's territories: ${groups.territories.join(", ")}.`, "");
   if (groups.markets?.length) md.push(`The client's markets: ${groups.markets.join(", ")}.`, "");
   const total = groups.goods_words_total || 0;
+  const word = groups.dominant_term || groups.manifest_dominant;
+  const carrying = word ? `carrying «${cell(word)}»` : "carrying the searched word";
+  const heading = (g) => (g === "c" ? `(c) The same family as the mark, or ${carrying}, for the client's goods` : GROUP_HEADINGS[g]);
   const unread = (l) => (tested.source === "none" ? "—" : l.goods_on_file ? "on file, not readable" : "no goods on file");
   const words = (l) => (l.goods_words == null ? unread(l) : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`);
   const count = (grp) => `${fmtN(grp.records)} records in ${fmtN(grp.lines)} lines from ${fmtN(grp.owners)} owners`;
-  const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(l.territories.join(","))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
+  const where = (l) => `${l.territories.join(",")}${l.outside ? " (outside the order)" : ""}`;
+  const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(where(l))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
   const head = ["| mark | owner | classes | live | territories | goods words | floor | record |", "|---|---|---|---|---|---|---|---|"];
+  // A crowded group's own words for what it holds, in the crowded-field method's sentence (ruled 2026-10-12).
+  const crowd = { b: "identical marks in the ordered classes for other goods than the client's",
+    c: `marks of the same family as the mark, or ${carrying}, for the client's goods`, d: "other marks in the ordered classes for the client's goods" };
+  const firstPage = `The first ${fmtN(groups.first_page)} lines are below`;
   for (const g of ["a", "b", "c", "d"]) {
     const grp = groups[g];
-    md.push(`### ${GROUP_HEADINGS[g]}`, "");
+    md.push(`### ${heading(g)}`, "");
     if (!grp.lines) { md.push("(none)", ""); continue; }
     const crowded = grp.records >= groups.crowded_at;
-    md.push(crowded && g === "a"
-      ? `${count(grp)}. These are the identical and live marks for the client's goods: read every line. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)}. Every floor here is placed or set aside by name; this group's row covers only its other lines.`
+    const readA = "These are the identical and near-identical marks live in the ordered classes for the client's goods: read every line.";
+    md.push(g === "a"
+      ? (crowded
+        ? `${count(grp)}. ${readA} ${firstPage}; page every other line with ${groupPageCall(g)}. Every floor here is placed or set aside by name; this group's row covers only its other lines.`
+        : grp.lines <= READ_ALL_LINES ? `${count(grp)}. Fifty? Read them all.` : `${count(grp)}. ${readA}`)
       : crowded
-      ? `${count(grp)}. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)}: this group's row is refused until every line was read.`
-      : grp.lines <= READ_ALL_LINES
-        ? `${count(grp)}. Fifty? Read them all.`
-        : `${count(grp)}. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.`, "");
+        ? `${count(grp)}. A thousand or more? The field is crowded. These are ${crowd[g]}. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. ${firstPage}; page with ${groupPageCall(g)} only where a line needs reading.`
+        : grp.lines <= READ_ALL_LINES
+          ? `${count(grp)}. Fifty? Read them all.`
+          : `${count(grp)}. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.`, "");
     md.push(...head);
     for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) { rows.push([md.length, l.key]); md.push(row(l)); }
     md.push("");
@@ -1079,16 +1101,18 @@ function renderGroupsMd(md, groups, rows = []) {
   const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories` : "";
   md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Write down what you set aside and why: one row, with this count.`);
   if (groups.no_goods.lines) {
-    // The lines the goods test could not place: listed, read by the same size rule and paged like a group,
-    // and each given its own fate. A line with goods on file is opened first; one with none cannot be.
+    // The lines the goods test could not place, read by the same size rule (ruled 2026-10-12): under a thousand
+    // records, a fate per line by name, opened where goods are on file; at a thousand or more, the first page,
+    // and one row on the rest whose goods are unreadable in a crowded field. A floor is never set aside on
+    // its goods, so a floor here is placed or set aside on its status or territory.
     const ng = groups.no_goods;
     const crowded = ng.records >= groups.crowded_at;
-    const size = crowded
-      ? `A thousand or more: the first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall("no_goods")}.`
-      : ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.";
-    md.push("", tested.source === "none"
-      ? `**Not tested on goods: ${count(ng)}.** No goods words were given, so the goods test could not place them. ${size} Each is placed or set aside by name; no group row covers them.`
-      : `**Goods the test could not read: ${count(ng)}.** ${size} A line marked "on file, not readable" has goods on file: open one of its records with band_record before its fate. A line marked "no goods on file" has nothing to open: give its fate by name, on the ground that its goods are unknown. No group row covers these lines.`, "");
+    const lead = tested.source === "none"
+      ? `**Not tested on goods: ${count(ng)}.** No goods words were given, so the goods test could not place them.`
+      : `**Goods the test could not read: ${count(ng)}.**`;
+    md.push("", crowded
+      ? `${lead} A thousand or more? ${firstPage}, the live ones in the ordered classes first. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded.`
+      : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} Each line takes its own fate by name; no group row covers these lines.${tested.source === "none" ? "" : ' A line marked "on file, not readable" has goods on file: open its record with band_record before its fate. A line marked "no goods on file" has nothing to open.'} A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.`, "");
     md.push(...head);
     for (const l of crowded ? ng.list.slice(0, groups.first_page) : ng.list) { rows.push([md.length, l.key]); md.push(row(l)); }
   }

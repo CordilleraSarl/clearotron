@@ -34,42 +34,45 @@ function shapeOf(records) {
     served: { lines: new Set(read), records: new Set() } } };
 }
 
-test("a crowded group's sentence names the lookup the driver's refusal names, and the manual and the dictation say to page it", () => {
+test("a crowd outside (a) stands on its first page and the count, and the shape, the manual, the dictation and the refusal say so alike", () => {
   const { shape, md, input } = shapeOf(Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(`c${i}`, "QZORVAK", `Owner ${String(i).padStart(4, "0")} Ltd`)));
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS, "guard: (b) is crowded");
-  assert.ok(md.includes(`page every other line with ${groupPageCall("b")}: this group's row is refused until every line was read.`), "the shape says how to page the group");
-  assert.doesNotMatch(md, /open by owner name only those your judgment needs/);
+  assert.ok(md.includes(`set the rest aside in this group's one row with the count: the client is told the field is crowded. The first 5 lines are below; page with ${groupPageCall("b")} only where a line needs reading.`));
+  assert.doesNotMatch(md, /refused until every line was read|page every other line with band_lookup \{"group":"b"\}/, "the shape still makes paging a crowd a precondition");
   const refused = unionPlacementForm(null, { rows: [{ set_aside_group: "b", count: CROWDED_GROUP_RECORDS, ground: "identical in class, for printers" }] }, { ...input, served: { lines: new Set(), records: new Set() } });
-  assert.ok(refused.form.set_aside_group_refused[0].why.includes(groupPageCall("b")), "the refusal names the same call");
-  assert.ok(MANUAL.includes("page every line with `band_lookup`'s `group` filter before the group's row"), "the manual says how to page a group");
-  assert.ok(DICTATION.includes("Page a group the shape shows by its first page with band_lookup's group filter before its row."), "the dictation says it too");
+  assert.match(refused.form.set_aside_group_refused[0].why, /lines on group b's first page were read/, "the refusal asks for the first page only");
+  assert.ok(refused.form.set_aside_group_refused[0].why.includes(groupPageCall("b")), "and names the same call");
+  assert.ok(MANUAL.includes("A crowd of a thousand or more outside (a) stands on its first page read and the count."));
+  assert.ok(DICTATION.includes("a crowd of a thousand or more outside (a) stands on its first page read and the count"));
+  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /in a crowd of a thousand or more outside \(a\), it stands on the first page read and the count/);
 });
 
 test("no sentence the step reads lets a group's row answer a floor below a thousand records", () => {
   assert.equal(CROWDED_GROUP_RECORDS, 1000, "the words say a thousand: they move with the number or not at all");
   assert.doesNotMatch(MANUAL, /by name or by its group's row/);
-  assert.match(MANUAL, /only group \(b\)'s row, in a crowd of a thousand records or more, covers a floor/);
+  assert.match(MANUAL, /only a crowd's row of a thousand records or more, in \(b\) or among the lines the goods test could not place, covers a floor/);
   assert.match(MANUAL, /A group's row is refused until every line of the group was read/);
   assert.doesNotMatch(MANUAL, /you were served|covers only the lines/, "the manual still says a row covers a subset of a group");
   assert.match(MANUAL, /left to the group's row with the reason, except a floor, which is placed or set aside by name/);
-  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in group \(b\) of a thousand records or more/);
-  assert.match(DICTATION, /A floor is placed or set aside by name; only group \(b\), in a crowd of a thousand records or more, may leave it to its row/);
+  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in such a crowd in \(b\), or among the lines the goods test could not place/);
+  assert.match(DICTATION, /A floor is placed, sheet-2 at the least, or set aside by name on its status or its territory; only a crowd's row in \(b\), or in those lines, may leave it to the row/);
 });
 
 test("no sentence the step reads lets a name cover an owner's other marks", () => {
   for (const [where, text] of [["manual", MANUAL], ["dictation", DICTATION], ["form", CONTRACTS]])
     assert.doesNotMatch(text, /every record of that owner|owner's set|as a set and do not carry|several lines|more than one line/, `the ${where} still sets an owner's marks aside by one name`);
   assert.match(SET_ASIDE_ROW_CONTRACT.set_aside, /never another mark of the owner/);
-  assert.match(SET_ASIDE_ROW_CONTRACT.on, /one of goods, status or territory\. A floor is never set aside on its owner, its customers or its field/);
-  assert.match(MANUAL, /set aside by name on a ground about the mark, its goods, its status or its territory \(the row's `on`\)/);
-  assert.match(DICTATION, /sets a floor aside only on a ground about the mark, its goods, its status or its territory, said in "on"/);
+  assert.match(SET_ASIDE_ROW_CONTRACT.on, /status or territory\. A floor is never set aside on its goods, which decide its group, nor on its owner, its customers or its field/);
+  assert.match(MANUAL, /set aside by name on its status or its territory \(the row's `on`\), never on its goods or its owner's customers or field/);
+  assert.match(DICTATION, /sets a floor aside only on its status or its territory, said in "on", never on its goods or its owner's customers or field/);
+  assert.match(MANUAL, /never an identical mark live in an ordered or frame-added class\. For each:/, "the out-of-scope section names the exception");
 });
 
 test("a group's row says back the lines holding a floor it leaves to be placed or named", () => {
   const { input } = shapeOf([rec("b1", "QZORVAK", "Beta GmbH"), rec("b2", "Qzorvak", "Gamma SA"), rec("b3", "QZORVAK", "Delta AG", { status: "expired" })]);
   assert.deepEqual(input.groups.b.list.map((l) => l.floors).sort(), [0, 1, 1], "guard: two of (b)'s three lines hold a floor");
   const u = unionPlacementForm(null, { rows: [
-    { set_aside: "/mark/eu/b2", ground: "registered for printers only", on: "goods" },
+    { set_aside: "/mark/eu/b2", ground: "the registration was cancelled", on: "status" },
     { set_aside_group: "b", count: 3, ground: "identical in class, for printers" },
   ] }, input);
   const b = u.form.set_aside_groups.find((g) => g.set_aside_group === "b");
@@ -86,19 +89,18 @@ test("nothing the step reads promises the floors listed a second time, one per r
   assert.match(MANUAL, /every live in-class identical\/near-identical record, each marked on its line in the band/);
 });
 
-test("the four places that ask for the shape read whole say one thing, and none promises more than the shape holds", async () => {
+test("nothing the step reads orders the shape read whole; a part says only that the groups continue", async () => {
   const { BAND_READING_CONTRACT } = await import("../stages.mjs");
   const SERVER = readFileSync(new URL("../engine/mcp/band-server.mjs", import.meta.url), "utf8");
-  const ONE = "read every part, since the band's groups, in the lawyer's order, run through them";
-  for (const [where, text] of [["reading contract", BAND_READING_CONTRACT], ["manual", MANUAL], ["band_shape description", SERVER]])
-    assert.ok(text.includes(ONE), `the ${where} does not say it`);
-  assert.ok(SERVER.includes("Read every part:` +\n    ` the band's groups, in the lawyer's order, run through them, and every floor in them has a fate on the form"), "the parts banner says it");
   const SHAPE_TOOL = SERVER.slice(SERVER.indexOf("function bandShape("), SERVER.indexOf("\n}\n", SERVER.indexOf("function bandShape("))) + SERVER.match(/description: "The deterministic shape[^"]*"/)[0];
   for (const [where, text] of [["reading contract", BAND_READING_CONTRACT], ["manual", MANUAL], ["band_shape tool", SHAPE_TOOL]])
-    assert.doesNotMatch(text, /read ALL parts|COMPLETE only once|no lookup pattern excuses|a partial shape is never the shape/, `the ${where} still says it the old way`);
+    assert.doesNotMatch(text, /read every part|read ALL parts|COMPLETE only once|complete once parts|no lookup pattern excuses|a partial shape is never the shape/, `the ${where} still orders a whole read`);
+  assert.ok(SHAPE_TOOL.includes("Read each group by the size sentence at its head; the next part continues the groups."), "the banner says what a part is");
+  assert.ok(SHAPE_TOOL.includes("A large shape is served in parts, each naming the next call."), "the description says only that");
   assert.doesNotMatch(MANUAL, /\bher\b/, "the manual points at a person it never names");
   assert.match(MANUAL, /read its goods in `band_record`, unless its goods words already show the ground/);
 });
+
 
 test("the fallback names its words as the register search's, and (c)'s heading names the searched word it holds", () => {
   const { md } = buildBandShape({ enumerated: [rec("x1", "QZORVAK", "Alpha Ltd")], crowds: [] }, { targets: ["Qzorvak"], inScopeClasses: ["9"],
@@ -106,4 +108,14 @@ test("the fallback names its words as the register search's, and (c)'s heading n
   assert.ok(md.includes("No product words were given, so the goods test reads each record's goods for the words the register search was narrowed by: «joysticks». They include words other filings use for the same goods, so \"for the client's goods\" below is wider than the client's own product."));
   assert.doesNotMatch(md, /class words/);
   assert.ok(md.includes("### (c) The same family as the mark, or carrying the searched word, for the client's goods"));
+});
+
+test("the three places that ask for product words ask for whole words in the singular, never a stem", () => {
+  const RECORDING = readFileSync(new URL("../engine/mcp/recording-server.mjs", import.meta.url), "utf8");
+  const STAGES = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
+  const VARIANTS = readFileSync(new URL("../skills/clearance-variants/SKILL.md", import.meta.url), "utf8");
+  for (const [where, text] of [["recording tool", RECORDING], ["dictation", STAGES], ["variants manual", VARIANTS]]) {
+    assert.doesNotMatch(text, /the stem that matches/, `the ${where} still asks for a stem`);
+    assert.ok(text.includes("in the singular; the engine matches the plural too"), `the ${where} does not ask for the singular`);
+  }
 });

@@ -126,6 +126,34 @@ test("a class written only in a language the engine cannot read leaves a zero ma
   assert.deepEqual([count(hit), words(hit)], [1, ["video game"]], "a word matched in English is known, whatever else is unread");
 });
 
+test("an untagged statement is English only on an English-language register; elsewhere, Canada included, it is unknown", async () => {
+  const { bandGoodsIndex, goodsFor, untaggedIsEnglish } = await import("../record-goods.mjs");
+  const { mkdtempSync, mkdirSync, writeFileSync, rmSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { driverDir } = await import("../../shared/driver-dir.mjs");
+  assert.deepEqual(["/mark/us/1", "/mark/gb/1", "/mark/uk/1", "/mark/ca/1", "/mark/fr/1", "/mark/eu/1"].map(untaggedIsEnglish), [true, true, true, false, false, false]);
+  const runDir = mkdtempSync(join(tmpdir(), "untagged-"));
+  try {
+    mkdirSync(driverDir(runDir), { recursive: true });
+    const body = (text) => ({ goodsServices: [{ classes: [28], description: text }] });
+    writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), [
+      { target: "/mark/us/u1", body: body("toys and games") }, { target: "/mark/fr/f1", body: body("jeux et jouets") },
+      { target: "/mark/ca/c1", body: body("jouets; toys") }, { target: "/mark/fr/t1", body: { goodsServices: [{ classes: [28], language: "en", description: "toys" }] } },
+    ].map((r) => JSON.stringify(r)).join("\n") + "\n");
+    const index = bandGoodsIndex(runDir), toys = goodsWordCounter(["toy"], { stems: true });
+    const count = (id) => toys(goodsFor(index, { record_id: id }));
+    assert.deepEqual([count("/mark/us/u1"), count("/mark/fr/f1"), count("/mark/ca/c1"), count("/mark/fr/t1")], [1, null, null, 1],
+      "untagged: read on the US register; unknown, never a zero, in France and Canada; a tag reads anywhere");
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+test("plurals in -oes and -ves, and a hyphen in a phrase, match their other forms", () => {
+  const c = (w, t) => goodsWordCounter([w], { stems: true })([{ classes: ["9"], text: t }]);
+  for (const [w, t] of [["tomato", "tomatoes"], ["tomatoes", "tomato"], ["knife", "knives"], ["knives", "knife"], ["shelf", "shelves"], ["shelves", "shelf"],
+    ["mobile phone", "mobile-phone"], ["mobile-phone", "mobile phones"]]) assert.equal(c(w, t), 1, `"${w}" missed "${t}"`);
+});
+
 test("goods with no English the engine can use are unknown to the goods test, never a mismatch", () => {
   const word = goodsWordCounter(["video game"], { stems: true });
   assert.equal(word(recordGoods({ goodsServices: [{ classes: [9], language: "de", description: "Videospiele; Spielkonsolen" }] })), null, "German only, no translation");

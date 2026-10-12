@@ -424,7 +424,7 @@ test("band_shape: a floors-heavy shape serves in parts, each under the MCP token
   // the floors stay COMPLETE across parts because the split never cuts a line.
   const body = (p) => p.split("\n").slice(1, -1).join("\n");
   assert.equal(parts.map(body).join("\n"), md, "concatenated parts === band-shape.md (nothing lost, nothing invented)");
-  assert.match(parts[total - 1], /the shape is complete once parts 1\.\.\d+ are all read/);
+  assert.match(parts[total - 1], /\[end of the shape\]$/);
 
   const log = readLog(runDir);
   const shapeCalls = log.filter((l) => l.tool === "band_shape");
@@ -435,7 +435,7 @@ test("band_shape: a floors-heavy shape serves in parts, each under the MCP token
 test("band_shape: an out-of-range part clamps instead of erroring (the model can always finish the read)", async () => {
   const { runDir } = seedCrowdedRun(999);
   const r = await mcpSession([INIT, call(2, "band_shape", { part: 99 })], ENV(runDir));
-  assert.match(textOf(r, 2), /the shape is complete once parts/, "part 99 clamps to the last part");
+  assert.match(textOf(r, 2), /\[end of the shape\]$/, "part 99 clamps to the last part");
 });
 
 // Codex cuts the middle out of any tool answer over about 39,000 bytes, and there the band server is

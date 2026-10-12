@@ -111,8 +111,15 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
 // mark of one owner, that are not placed: an owner-wide ground set the owner's other marks aside unseen
 // (ruled 2026-10-12). It is not a candidate, it renders into no placement, and nothing bounds how many there are.
 export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground", "on"];
-/** What a ground setting a floor aside by name may be about: the mark, never its owner (ruled 2026-10-12). */
-export const FLOOR_GROUND_ON = Object.freeze(["goods", "status", "territory"]);
+/**
+ * What a ground setting a floor aside by name may be about (ruled 2026-10-12): its status or its territory.
+ * Never its goods, which decide whether it sits in (a) or (b), and in a crowd (b)'s row is the goods ground;
+ * never its owner's customers or field, whatever `on` says, so the form reads the ground's words too.
+ */
+export const FLOOR_GROUND_ON = Object.freeze(["status", "territory"]);
+export const FLOOR_GROUND_REFUSED = /\b(?:customers?|consumers?|clientele|users?|audiences?|buyers?|purchasers?|channels?|markets?|marketplaces?|sectors?|fields?|industr(?:y|ies)|trad(?:e|es|ing)(?!\s*-?\s*marks?)|distribution|retail(?:ers?)?|sells?|sold|selling|b2b|b2c|off[- ]field)\b/i;
+/** The lists a group row may name: the shape's groups, the rest, and the lines the goods test could not place. */
+export const ROW_GROUPS = Object.freeze([...BAND_GROUPS, "no_goods"]);
 export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
   when: "a line the shape lists, one mark of one owner, whose records you do not carry. One row gives that "
     + "line its ground.",
@@ -123,13 +130,14 @@ export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
     + "own position only.",
   ground: "why this line's records are not carried, in a lawyer's words.",
   on: "where the line holds a floor, a live identical or near-identical mark in an ordered class: what the "
-    + "ground is about, one of goods, status or territory. A floor is never set aside on its owner, its "
-    + "customers or its field.",
+    + "ground is about, status or territory. A floor is never set aside on its goods, which decide its group, "
+    + "nor on its owner, its customers or its field; a ground in those terms is refused.",
   not_a_candidate: "It places nothing. A record of the same line you do place stays placed.",
   latest: "A later row for the same line replaces the earlier ground. To remove one, hand back "
     + "{\"retract\":\"<its set_aside id>\"}.",
   unresolved: "A `set_aside` the band does not hold, one with no ground, or a floor's row whose `on` is not "
-    + "goods, status or territory, is reported back to you by id.",
+    + "status or territory or whose ground speaks of customers, channels, markets or field, is reported back "
+    + "to you by id.",
 });
 
 /** Is this submitted row an owner's set-aside? PURE. */
@@ -142,18 +150,22 @@ export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.
 // 2026-10-12, (a) included).
 export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
 export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
-  when: "a group the shape lists, (a) to (d), or the rest it counts: one row sets aside every line in it that "
-    + "you have read and neither place nor set aside by name. It covers a floor only in group (b) of a "
-    + "thousand records or more; any other floor is placed or set aside by name.",
+  when: "a group the shape lists, (a) to (d), the rest it counts, or, at a thousand records or more, the lines "
+    + "the goods test could not place: one row sets aside every line in it that you neither place nor set aside "
+    + "by name. Below a thousand records, and in (a) at any size, it waits until you have read every line; in a "
+    + "crowd of a thousand or more outside (a), it stands on the first page read and the count. It covers a "
+    + "floor only in such a crowd in (b), or among the lines the goods test could not place; any other floor is "
+    + "placed or set aside by name.",
   fields: SET_ASIDE_GROUP_FIELDS,
-  set_aside_group: `the group's letter as the shape gives it, or "rest": one of ${BAND_GROUPS.join(", ")}.`,
+  set_aside_group: `the group's letter as the shape gives it, "rest", or "no_goods" at a thousand records or more: one of ${ROW_GROUPS.join(", ")}.`,
   count: "the group's record count: the N the shape gives beside it.",
   ground: "why none of the lines this row covers is raised with the client, in a lawyer's words.",
   not_a_candidate: "It places nothing. A line in the group that you place or set aside by name keeps that.",
   latest: "A later row for the same group replaces the earlier one. To remove one, hand back "
-    + "{\"retract\":\"group:<letter or rest>\"}.",
+    + "{\"retract\":\"group:<letter, rest or no_goods>\"}.",
   unresolved: "A group the shape does not list, a count that does not match the shape's, a row with no "
-    + "ground, or a group with lines you have not read, is reported back to you with how to read them.",
+    + "ground, a no_goods row under a thousand records, or a group with lines you have not read (its first "
+    + "page, in a crowd outside (a)), is reported back to you with how to read them.",
   said_back: "The driver writes back `covers_lines`, the lines the row covers, and `floors_not_covered`, one "
     + "record id for each line of the group holding a floor the row does not cover: place each or set it "
     + "aside by name.",
@@ -165,7 +177,8 @@ export const isSetAsideGroupRow = (row) => typeof row?.set_aside_group === "stri
 /** A group name as written ("b", "(b)", "B", "group b", "rest") to the shape's own, or null. PURE. */
 export function groupName(written) {
   const g = String(written ?? "").trim().toLowerCase().replace(/^group\s+/, "").replace(/^\((.*)\)$/, "$1").trim();
-  return BAND_GROUPS.includes(g) ? g : null;
+  const name = g.replace(/[\s-]+/g, "_");
+  return ROW_GROUPS.includes(name) ? name : null;
 }
 
 /**
@@ -177,6 +190,7 @@ export function groupOfKeys(groups) {
   if (!groups || typeof groups !== "object") return out;
   for (const g of ["a", "b", "c", "d"]) for (const l of Array.isArray(groups[g]?.list) ? groups[g].list : []) if (l?.key) out.set(l.key, g);
   for (const l of Array.isArray(groups.rest?.list) ? groups.rest.list : []) if (l?.key) out.set(l.key, "rest");
+  for (const l of Array.isArray(groups.no_goods?.list) ? groups.no_goods.list : []) if (l?.key) out.set(l.key, "no_goods");
   return out;
 }
 
@@ -195,13 +209,14 @@ export function servedLines(groups, served, index) {
 }
 
 /**
- * May a group's row answer for a floor in it? Only in group (b) of a thousand records or more: the crowd of
- * identical marks in the ordered classes whose goods are not the client's, the crowded-field method's "do not
- * write up the rest" (ruled 2026-10-12). Never in (a): (a) is the identical and live marks for the client's
- * goods, which that method reads, so every floor in (a) is placed or set aside by name at any size. ONE
- * predicate, read by the grounds, the fate count and so the floor duty, so the three cannot drift apart. PURE.
+ * May a group's row answer for a floor in it? Only in a crowd of a thousand records or more in (b), the
+ * identical marks in the ordered classes whose goods are not the client's, or among the lines the goods test
+ * could not place: the crowded-field method's "do not write up the rest" (ruled 2026-10-12). Never in (a): (a)
+ * is the identical and live marks for the client's goods, which that method reads, so every floor in (a) is
+ * placed or set aside by name at any size. ONE predicate, read by the grounds, the fate count and so the floor
+ * duty, so the three cannot drift apart. PURE.
  */
-export const groupRowCoversFloors = (groups, g) => g === "b" && (groups?.b?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
+export const groupRowCoversFloors = (groups, g) => (g === "b" || g === "no_goods") && (groups?.[g]?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
 
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run
@@ -295,7 +310,8 @@ export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}
     const c = zero();
     for (const l of lines) {
       const byName = named.has(l.key);
-      const rowMay = list !== "no_goods" && grouped.has(list) && (!(l.floors > 0) || groupRowCoversFloors(groups, list));
+      const rowMay = (list !== "no_goods" || (groups.no_goods?.records ?? 0) >= (groups.crowded_at ?? Infinity))
+        && grouped.has(list) && (!(l.floors > 0) || groupRowCoversFloors(groups, list));
       const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : rowMay ? "by_group" : "unfated";
       c.lines++; c[fate]++; totals.lines++; totals[fate]++;
       if (fate === "unfated") unfated_lines.push({ list, key: l.key });

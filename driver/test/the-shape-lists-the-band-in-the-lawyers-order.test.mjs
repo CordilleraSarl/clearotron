@@ -26,7 +26,9 @@ const goodsReader = (byId) => ({
 });
 
 test("one record's group follows the ruled order, and goods the run does not hold pass the goods test", () => {
-  assert.equal(recordGroup({ tier: "identical", live: false, inScope: false, hits: 1 }), "a", "identical for the goods: (a), live or not, in class or not");
+  assert.equal(recordGroup({ tier: "identical", live: true, inScope: true, hits: 1 }), "a", "identical, live in the ordered classes, for the goods: (a)");
+  assert.equal(recordGroup({ tier: "identical", live: false, inScope: true, hits: 1 }), "b", "a dead identical mark in class is (b): a dead record's goods never put a mark in (a)");
+  assert.equal(recordGroup({ tier: "identical", live: true, inScope: false, hits: 1, dominant: true }), "c", "out of class, its goods put it in (c) by the word it carries, never in (a)");
   assert.equal(recordGroup({ tier: "near-identical", live: true, inScope: true, hits: 0 }), "b", "identical in the ordered classes, goods unrelated: (b)");
   assert.equal(recordGroup({ tier: "same-family", live: true, inScope: false, hits: 2 }), "c");
   assert.equal(recordGroup({ tier: "other", live: true, inScope: false, hits: 1, dominant: true }), "c", "the searched dominant word for the goods: (c)");
@@ -42,12 +44,12 @@ test("one record's group follows the ruled order, and goods the run does not hol
 
 test("each mark of an owner is its own line in its own group, so a second mark is never hidden behind the first", () => {
   const records = [
-    rec("a1", "QZORVAK", "Alpha Ltd", ["25"]),                    // identical, for the goods → (a)
+    rec("a1", "QZORVAK", "Alpha Ltd", ["9"]),                     // identical, live in class, for the goods → (a)
     rec("a2", "Plimbo", "Alpha Ltd", ["9"]),                      // the same owner's other mark: live, in class, for the goods → (d)
     rec("b1", "Qzorvak", "Beta GmbH", ["9"]),                     // identical, in class, goods unrelated → (b)
     rec("r1", "Drellux", "Delta AG", ["9"]),                      // in class, goods unrelated → the rest
   ];
-  const goods = goodsReader({ a1: [{ classes: ["25"], text: "joysticks" }], a2: [{ classes: ["9"], text: "game controllers" }],
+  const goods = goodsReader({ a1: [{ classes: ["9"], text: "joysticks" }], a2: [{ classes: ["9"], text: "game controllers" }],
     b1: [{ classes: ["9"], text: "printers" }], r1: [{ classes: ["9"], text: "printers" }] });
   const g = bandGroups(records, { classify, inScope, goods });
   assert.deepEqual(g.by_group.a.lines.map((l) => [l.owner_name, l.mark]), [["Alpha Ltd", "QZORVAK"]]);
@@ -76,8 +78,11 @@ test("inside a group the lines run by the client's goods on a live record in cla
     m3: [{ classes: ["9"], text: "joysticks" }], m3b: [{ classes: ["28"], text: "toys" }], m4: [{ classes: ["9"], text: "joysticks" }],
     m5: [{ classes: ["9"], text: "joysticks and game controllers" }] });
   const g = bandGroups(records, { classify, inScope, goods, markets: ["CH"] });
-  assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name), ["Gamma SA", "Delta AG", "Beta GmbH", "Alpha Ltd", "Epsilon Oy"]);
-  assert.deepEqual(g.by_group.a.lines.map((l) => l.goods_words), [["joysticks"], ["joysticks"], ["joysticks"], ["game controllers", "joysticks"], ["game controllers", "joysticks"]]);
+  assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name), ["Gamma SA", "Delta AG", "Beta GmbH"]);
+  assert.deepEqual(g.by_group.a.lines.map((l) => l.goods_words), [["joysticks"], ["joysticks"], ["joysticks"]]);
+  assert.ok(!g.by_group.a.lines.some((l) => ["Alpha Ltd", "Epsilon Oy"].includes(l.owner_name)),
+    "goods held only out of class, or only on a dead record, never put a mark in (a)");
+  assert.deepEqual(g.by_group.b.lines.map((l) => l.owner_name), ["Epsilon Oy"], "a dead identical mark in class is (b)");
 });
 
 test("a line the goods test placed while its records carry no goods on file is listed apart, and no other line is", () => {
@@ -98,7 +103,7 @@ test("the readable section states each group's count in lines, carries goods wor
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS);
   assert.equal(shape.groups.b.list.length, CROWDED_GROUP_RECORDS, "the machine shape keeps every line");
   const section = md.slice(md.indexOf("## The band in the lawyer's order"), md.indexOf("### By Nice class"));
-  assert.ok(section.includes("1,000 records in 1,000 lines from 1,000 owners. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. The first 5 lines are below; page every other line with band_lookup {\"group\":\"b\"}: this group's row is refused until every line was read."), "her crowded sentence, and how to page the group");
+  assert.ok(section.includes("1,000 records in 1,000 lines from 1,000 owners. A thousand or more? The field is crowded. These are identical marks in the ordered classes for other goods than the client's. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. The first 5 lines are below; page with band_lookup {\"group\":\"b\"} only where a line needs reading."), "the crowded sentence, in (b)'s own words");
   assert.equal((section.match(/\| Qzorvak \| Owner \d{4} Ltd \|/g) ?? []).length, 5, "the readable mirror shows (b)'s first page only");
   assert.equal((section.match(/\| QZORVAK \| Theta \d Ltd \|/g) ?? []).length, 7, "a group under a thousand is listed whole");
   assert.match(section, /7 records in 7 lines from 7 owners\./);
@@ -123,7 +128,7 @@ test("the served shape marks each floor on its line and lists none a second time
   assert.match(md, /\| Drellux \| Gamma SA \| 9 \| 1 of 1 \| EU \| 1 of 1: joysticks \| no \| /, "a line holding no floor says so");
 });
 
-// The territory arms use expired identical marks: a floor, live, is never cut by territory (the next arm).
+// The territory arms use expired identical marks, which sit in (b): a floor, live, is never cut by territory.
 const lapsed = (id, owner, jurisdictions) => rec(id, "QZORVAK", owner, ["9"], { jurisdictions, status: "expired" });
 
 test("the list holds every register that binds the order's territories; a line held only outside them goes to the rest", () => {
@@ -136,10 +141,10 @@ test("the list holds every register that binds the order's territories; a line h
   ];
   const goods = goodsReader(Object.fromEntries(records.map((r) => [r.record_id.split("/").pop(), [{ classes: ["9"], text: "joysticks" }]])));
   const g = bandGroups(records, { classify, inScope, goods, territories: ["EU", "CH"] });
-  assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Beta GmbH", "Delta AG", "Gamma SA"]);
+  assert.deepEqual(g.by_group.b.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Beta GmbH", "Delta AG", "Gamma SA"]);
   assert.deepEqual(g.by_group.rest.lines.map((l) => [l.owner_name, l.outside]), [["Epsilon KK", true]]);
   assert.deepEqual(g.outside, { lines: 1, records: 1 });
-  assert.deepEqual(bandGroups(records, { classify, inScope, goods }).by_group.a.lines.length, 5, "a worldwide order lists the world");
+  assert.deepEqual(bandGroups(records, { classify, inScope, goods }).by_group.b.lines.length, 5, "a worldwide order lists the world");
   const { shape, md } = buildBandShape({ enumerated: records }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, territories: ["EU", "CH"] });
   assert.equal(shape.groups.rest.list[0].record_id, "/mark/eu/t5");
   assert.ok(md.includes("**The rest: 1 records in 1 lines from 1 owners, 1 lines of them held only outside the ordered territories** — every record in none of (a) to (d) above."));
@@ -159,16 +164,16 @@ test("membership binds both ways: the EU register for a member's order, Benelux 
   const goods = goodsReader({ m1: [{ classes: ["9"], text: "joysticks" }], m2: [{ classes: ["9"], text: "joysticks" }], m3: [{ classes: ["9"], text: "joysticks" }], m4: [{ classes: ["9"], text: "joysticks" }] });
   const recs = [lapsed("m1", "Alpha Ltd", "EM"), lapsed("m2", "Beta BV", "BX"), lapsed("m3", "Gamma SA", "IB"), lapsed("m4", "Delta Inc", "US")];
   const inDE = bandGroups(recs, { classify, inScope, goods, territories: ["DE"] });
-  assert.deepEqual(inDE.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Gamma SA"], "an EU mark and an international one bind Germany");
+  assert.deepEqual(inDE.by_group.b.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Gamma SA"], "an EU mark and an international one bind Germany");
   const inNL = bandGroups(recs, { classify, inScope, goods, territories: ["NL"] });
-  assert.ok(inNL.by_group.a.lines.some((l) => l.owner_name === "Beta BV"), "Benelux is the Netherlands' national register");
+  assert.ok(inNL.by_group.b.lines.some((l) => l.owner_name === "Beta BV"), "Benelux is the Netherlands' national register");
 });
 
 test("Benelux binds its three and sits in the EU; a register is read by its code field or its name, never by other keys", () => {
   const goods = goodsReader(Object.fromEntries(["n1", "n2", "n3", "n4", "n5"].map((k) => [k, [{ classes: ["9"], text: "joysticks" }]])));
   const recs = [lapsed("n1", "Alpha BV", "NL"), lapsed("n2", "Beta SA", "EM"), lapsed("n3", "Gamma Ltd", [{ name: "Gamma", type: "word" }]),
     lapsed("n4", "Delta Co", "CHINA"), lapsed("n5", "Eta Inc", { US: "registered" })];
-  const listed = (ts) => bandGroups(recs, { classify, inScope, goods, territories: ts }).by_group.a.lines.map((l) => l.owner_name).sort();
+  const listed = (ts) => bandGroups(recs, { classify, inScope, goods, territories: ts }).by_group.b.lines.map((l) => l.owner_name).sort();
   assert.ok(listed(["NL"]).includes("Alpha BV"), "a record coded NL is inside an NL order");
   assert.ok(listed(["EU"]).includes("Alpha BV"), "and inside an EU order");
   assert.ok(listed(["BX"]).includes("Beta SA"), "the EU register binds a Benelux order");
@@ -200,7 +205,7 @@ test("an order written in names reads as its codes, and a register given as obje
     lapsed("o2", "Beta AG", { CH: "registered", US: "pending" }),
     lapsed("o3", "Gamma SA", [{ unknown_shape: true }])];
   const g = bandGroups(recs, { classify, inScope, goods, territories: ["CH"] });
-  assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Beta AG", "Gamma SA"], "a register it cannot read keeps the record in");
+  assert.deepEqual(g.by_group.b.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Beta AG", "Gamma SA"], "a register it cannot read keeps the record in");
 });
 
 test("the groups key on the client's product words when the variants stage names them, and on the goods words when it does not", async () => {
@@ -274,14 +279,44 @@ test("the lines the goods test could not place are read by the size rule, paged 
   const small = buildBandShape({ enumerated: [rec("u1", "QZORVAK", "Alpha GmbH", ["9"]), rec("u2", "QZORVAK", "Beta Ltd", ["9"])] },
     { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, goodsTest: { source: "product_words", words: ["joysticks"] } }).md;
   assert.ok(small.includes("**Goods the test could not read: 2 records in 2 lines from 2 owners.** Fifty? Read them all."));
-  assert.ok(small.includes('give its fate by name, on the ground that its goods are unknown. No group row covers these lines.'));
+  assert.ok(small.includes("Each line takes its own fate by name; no group row covers these lines."));
+  assert.ok(small.includes("A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown."));
   assert.match(small, /\| QZORVAK \| Alpha GmbH \| 9 \| 1 of 1 \| EU \| on file, not readable \| yes \| /);
   assert.match(small, /\| QZORVAK \| Beta Ltd \| 9 \| 1 of 1 \| EU \| no goods on file \| yes \| /);
   const many = Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(`m${i}`, "QZORVAK", `Owner ${i} Ltd`, ["9"]));
   const crowded = buildBandShape({ enumerated: many }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, caps: { owners: 5 },
     goodsTest: { source: "product_words", words: ["joysticks"] } });
-  assert.ok(crowded.md.includes(`A thousand or more: the first 5 lines are below; page every other line with band_lookup {"group":"no_goods"}.`));
+  assert.ok(crowded.md.includes("A thousand or more? The first 5 lines are below, the live ones in the ordered classes first. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded."));
   assert.equal((crowded.md.match(/\| no goods on file \| yes \|/g) ?? []).length, 5, "a crowded list shows its first page");
+});
+
+test("(c) names the word it holds, a fused word reaches it, and (a) past fifty lines is read whole", () => {
+  const recs = [rec("w1", "PREQZORVAK", "Alpha Ltd", ["9"]), ...Array.from({ length: 51 }, (_, i) => rec(`z${i}`, "QZORVAK", `Owner ${i} Ltd`, ["9"]))];
+  const goods = goodsReader(Object.fromEntries(recs.map((r) => [r.record_id.split("/").pop(), [{ classes: ["9"], text: "joysticks" }]])));
+  const g = bandGroups(recs, { classify, inScope, goods, dominantTerm: "Qzorvak" });
+  assert.deepEqual(g.by_group.c.lines.map((l) => l.mark), ["PREQZORVAK"], "the dominant word fused into a longer word reaches (c)");
+  const { md } = buildBandShape({ enumerated: recs }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 2, dominantTerm: "Qzorvak" });
+  assert.ok(md.includes("### (c) The same family as the mark, or carrying «Qzorvak», for the client's goods"));
+  assert.ok(md.includes("51 records in 51 lines from 51 owners. These are the identical and near-identical marks live in the ordered classes for the client's goods: read every line."));
+  assert.doesNotMatch(md.slice(md.indexOf("### (a)"), md.indexOf("### (b)")), /read the near ones first/);
+});
+
+test("a floor held outside the order says so on its line, an unread order territory is reported, and a no-goods line shows a record on file", () => {
+  const outside = bandGroups([rec("o1", "QZORVAK", "Zeta KK", ["9"], { jurisdictions: "JP" })], { classify, inScope,
+    goods: goodsReader({ o1: [{ classes: ["9"], text: "joysticks" }] }), territories: ["EU"] });
+  assert.equal(outside.by_group.a.lines[0].outside, true);
+  const { md } = buildBandShape({ enumerated: [rec("o1", "QZORVAK", "Zeta KK", ["9"], { jurisdictions: "JP" })] },
+    { targets: ["Qzorvak"], inScopeClasses: ["9"], goods: goodsReader({ o1: [{ classes: ["9"], text: "joysticks" }] }), goodsWordCount: 2, territories: ["EU"] });
+  assert.match(md, /\| QZORVAK \| Zeta KK \| 9 \| 1 of 1 \| JP \(outside the order\) \|/);
+  const unread = buildBandShape({ enumerated: [lapsed("s1", "Beta AB", "SE")] }, { targets: ["Qzorvak"], inScopeClasses: ["9"],
+    goods: goodsReader({ s1: [{ classes: ["9"], text: "joysticks" }] }), goodsWordCount: 2, territories: ["Atlantis", "CH"] });
+  assert.ok(unread.md.includes("The order names «ATLANTIS», which the engine cannot read as a territory, so the list holds every register."));
+  assert.deepEqual([unread.shape.groups.b.lines, unread.shape.groups.rest.lines], [1, 0], "a Swedish record is not cut on an order the engine cannot read");
+  const bodies = { n1: null, n2: [{ classes: ["9"], text: "Videospiele", en: false }] };
+  const ng = bandGroups([rec("n1", "QZORVAK", "Eta AG", ["9"]), rec("n2", "QZORVAK", "Eta AG", ["9"])], { classify, inScope,
+    goods: { of: (r) => bodies[r.record_id.split("/").pop()] ?? null, hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) },
+    keysOf: () => ({ line: "line:eta", owner: "owner:eta" }) });
+  assert.deepEqual([ng.no_goods[0].record_id, ng.no_goods[0].goods_on_file], ["/mark/eu/n2", true], "the line shows the record band_record can open");
 });
 
 test("a mark whose goods carry no English is listed apart and opened, never sent to the rest", async () => {

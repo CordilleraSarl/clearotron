@@ -50,7 +50,7 @@ function seedRun() {
   mkdirSync(driverDir(runDir), { recursive: true });
   const rec = (id, owner, classes) => ({ record_id: `/mark/eu/${id}`, mark_text: "QZORVAK", classes, status: "Registered", owner_name: owner });
   const band = { enumerated: [rec("g1", "Alpha Ltd", [9]), rec("g2", "Beta GmbH", [9]), rec("g3", "Gamma SA", [9]), rec("g4", "Delta AG", [9, 25]),
-    { ...rec("g5", "Epsilon Oy", [9]), goods: "joysticks for consoles" }], crowds: [] };
+    { ...rec("g5", "Epsilon Oy", [9]), record_id: "/mark/us/g5", goods: "joysticks for consoles" }], crowds: [] };   // untagged: read as English on the US register
   writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify(band));
   const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], goodsTest: { source: "product_words", words: ["joystick", "game controller"] } });
   writeFileSync(driverDir(runDir, "band-shape.json"), JSON.stringify(shape));
@@ -73,14 +73,14 @@ test("each record carries the goods words the shape tests, k of N, and never the
   assert.equal(byId["/mark/eu/g2"].goods_words, "0 of 2");
   assert.equal(byId["/mark/eu/g3"].goods_words, null, "a record with no body on file has no goods to test, said as null");
   assert.equal(byId["/mark/eu/g4"].goods_words, "1 of 2: joystick", "the whole text is tested, however long");
-  assert.equal(byId["/mark/eu/g5"].goods_words, "1 of 2: joystick", "a row's own goods stand in where the run holds no body");
+  assert.equal(byId["/mark/us/g5"].goods_words, "1 of 2: joystick", "a row's own goods stand in where the run holds no body");
   for (const x of Object.values(byId)) assert.equal(x.goods, undefined, "no goods text on a lookup row");
 });
 
 test("the goods filter keeps records whose goods hold any of the words, and records with no goods on file", async () => {
   const runDir = seedRun();
   const r = await session([INIT, call(2, { goods: ["joysticks", "game controllers"] }), call(3, { goods: "printers" })], { CLEAROTRON_BAND_RUN_DIR: runDir });
-  assert.deepEqual(body(r, 2).records.map((x) => x.record_id).sort(), ["/mark/eu/g1", "/mark/eu/g3", "/mark/eu/g4", "/mark/eu/g5"],
+  assert.deepEqual(body(r, 2).records.map((x) => x.record_id).sort(), ["/mark/eu/g1", "/mark/eu/g3", "/mark/eu/g4", "/mark/us/g5"],
     "g4's joysticks sit past the row's cut and still match: the test reads the whole text");
   assert.deepEqual(body(r, 3).records.map((x) => x.record_id).sort(), ["/mark/eu/g2", "/mark/eu/g3", "/mark/eu/g4"],
     "one word as a string works as a list of one, singular or plural: printers finds g4's printer cartridges");

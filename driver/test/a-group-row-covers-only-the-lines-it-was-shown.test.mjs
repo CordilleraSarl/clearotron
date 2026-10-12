@@ -33,14 +33,15 @@ function crowded() {
 }
 const ROW = { set_aside_group: "b", count: CROWDED_GROUP_RECORDS, ground: "identical marks in the class, for goods unrelated to the client's" };
 
-test("a crowded group's row is refused while any of its lines is unserved, and taken once every line was served", () => {
+test("a crowded (b)'s row stands on its first page read and the count: refused while that page is unread, then taken over every line", () => {
   const { shape, input } = crowded();
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS, "guard: (b) is listed by its first page");
-  const shownOnly = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(), records: new Set() } });
-  assert.deepEqual(shownOnly.form.set_aside_groups, []);
-  assert.match(shownOnly.form.set_aside_group_refused[0].why, /0 of 1000 lines of group b were read: page it with band_lookup \{"group":"b"\}, before its row/, "a crowded group is paged: its printed first page alone serves none of it");
-  const paged = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(shape.groups.b.list.map((l) => l.key)), records: new Set() } });
-  assert.deepEqual(paged.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["b", CROWDED_GROUP_RECORDS]]);
+  const unread = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(), records: new Set() } });
+  assert.deepEqual(unread.form.set_aside_groups, []);
+  assert.match(unread.form.set_aside_group_refused[0].why, /^0 of the 5 lines on group b's first page were read: read the parts of band_shape that print it, or page it with band_lookup \{"group":"b"\}, before its row$/);
+  const firstPage = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(shape.groups.b.list.slice(0, 5).map((l) => l.key)), records: new Set() } });
+  assert.deepEqual(firstPage.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["b", CROWDED_GROUP_RECORDS]],
+    "the first page read and the count: the row covers the crowd, paging never required");
 });
 
 test("group (a) is held to the same rule: its row over lines never served is refused", () => {
@@ -67,7 +68,7 @@ test("a row on (a) never answers a floor, however many records (a) holds; only a
     keysOf: setAsideKeysOf(positions.positions), caps: { owners: 5 } });
   assert.equal(shape.groups.a.records, CROWDED_GROUP_RECORDS, "guard: (a) holds a thousand floors");
   const sectionA = md.slice(md.indexOf("### (a)"), md.indexOf("### (b)"));
-  assert.match(sectionA, /These are the identical and live marks for the client's goods: read every line\./);
+  assert.match(sectionA, /These are the identical and near-identical marks live in the ordered classes for the client's goods: read every line\./);
   assert.doesNotMatch(sectionA, /do not write up the rest/, "(a) is read, never left unwritten");
   const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
   const served = { lines: new Set(shape.groups.a.list.map((l) => l.key)), records: new Set() };
@@ -79,12 +80,19 @@ test("a row on (a) never answers a floor, however many records (a) holds; only a
 });
 
 test("a line is served when a lookup returned or opened one of its records", () => {
-  const { shape, input } = crowded();
-  const keys = new Set(shape.groups.b.list.slice(0, 999).map((l) => l.key));
-  const last = shape.groups.b.list[999];
-  const short = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: keys, records: new Set() } });
-  assert.match(short.form.set_aside_group_refused[0].why, /999 of 1000/);
-  const opened = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: keys, records: new Set([last.record_id]) } });
+  // (a) needs every line at any size, so a crowded (a) shows it.
+  const band = { enumerated: Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(i)), crowds: [] };
+  const positions = deriveRegisterPositions(band.enumerated);
+  const goods = { of: () => [{ classes: ["9"], text: "joysticks" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
+    keysOf: setAsideKeysOf(positions.positions), caps: { owners: 5 } });
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
+  const ROW_A = { set_aside_group: "a", count: CROWDED_GROUP_RECORDS, ground: "every floor here is placed or named" };
+  const keys = new Set(shape.groups.a.list.slice(0, 999).map((l) => l.key));
+  const last = shape.groups.a.list[999];
+  const short = unionPlacementForm(null, { rows: [ROW_A] }, { ...input, served: { lines: keys, records: new Set() } });
+  assert.match(short.form.set_aside_group_refused[0].why, /^999 of 1000 lines of group a were read: page it with band_lookup \{"group":"a"\}, before its row$/);
+  const opened = unionPlacementForm(null, { rows: [ROW_A] }, { ...input, served: { lines: keys, records: new Set([last.record_id]) } });
   assert.equal(opened.form.set_aside_groups.length, 1, "the last line's record was opened, so the line was served");
 });
 
@@ -171,7 +179,7 @@ test("a ground by name covers the named mark only, never the owner's other marks
     keysOf: setAsideKeysOf(positions.positions), territories: ["EU"] });
   assert.equal(shape.groups.rest.list.length, 1, "guard: Alpha's Japanese mark is held only outside the EU order");
   const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
-  const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/n1", ground: "registered for toys, not the client's goods", on: "goods" }] }, input);
+  const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/n1", ground: "the registration lapsed and was not renewed", on: "status" }] }, input);
   const groundOf = setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors);
   assert.equal(groundOf("/mark/eu/n1").by, "name");
   assert.equal(groundOf("/mark/jp/n2"), null, "the owner's other mark keeps its own fate to be given");
@@ -243,4 +251,27 @@ test("only placement's own reads serve a line: what another stage read does not 
     entry(null, ["line:untagged-read"]),
   ].join("\n") + "\n");
   assert.deepEqual([...readServed(runDir).lines].sort(), ["line:placement-read", "line:untagged-read"]);
+});
+
+test("a crowded list of lines the goods test could not place takes one row on its first page and the count; a short one takes none", async () => {
+  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
+  const { reconcileFloorDuty } = await import("../floor-duty.mjs");
+  const make = (n) => {
+    const band = { enumerated: Array.from({ length: n }, (_, i) => rec(i)), crowds: [] };
+    const positions = deriveRegisterPositions(band.enumerated);
+    const goods = { of: () => null, hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+    const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1, keysOf: setAsideKeysOf(positions.positions), caps: { owners: 5 } });
+    return { shape, input: { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups } };
+  };
+  const ROW_NG = (n) => ({ set_aside_group: "no_goods", count: n, ground: "goods unreadable, crowded" });
+  const big = make(CROWDED_GROUP_RECORDS);
+  assert.equal(big.shape.groups.no_goods.records, CROWDED_GROUP_RECORDS, "guard: no goods on file anywhere");
+  const firstPage = new Set(big.shape.groups.no_goods.list.slice(0, 5).map((l) => l.key));
+  const u = unionPlacementForm(null, { rows: [ROW_NG(CROWDED_GROUP_RECORDS)] }, { ...big.input, served: { lines: firstPage, records: new Set() } });
+  assert.deepEqual(u.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["no_goods", CROWDED_GROUP_RECORDS]]);
+  const duty = reconcileFloorDuty({ floors: big.input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(big.input), big.input.groups, big.input.floors) });
+  assert.equal(duty.undischarged_by_seat, 0, "the crowd's one row answers its floors, as (b)'s does");
+  const small = make(30);
+  const v = unionPlacementForm(null, { rows: [ROW_NG(30)] }, { ...small.input, served: { lines: new Set(small.shape.groups.no_goods.list.map((l) => l.key)), records: new Set() } });
+  assert.match(v.form.set_aside_group_refused[0].why, /take a row only at a thousand records or more/);
 });
