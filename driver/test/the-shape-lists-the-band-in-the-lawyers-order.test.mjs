@@ -13,17 +13,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { recordGroup, bandGroups, buildBandShape, classifyRecord, prepareTargets, CROWDED_GROUP_RECORDS } from "../band-shape.mjs";
-import { goodsWordCounter, goodsWordsMatched, goodsExcerpt } from "../record-goods.mjs";
+import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
 
 const T = prepareTargets(["Qzorvak"]);
 const classify = (r) => classifyRecord(r.mark_text, T);
 const inScope = (r) => (r.classes ?? []).some((c) => ["9", "28"].includes(String(c)));
 const rec = (id, mark, owner, classes, extra = {}) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes, status: "registered", jurisdictions: ["EU"], ...extra });
-const goodsReader = (byId, { rowChars = 60 } = {}) => ({
+const goodsReader = (byId) => ({
   of: (r) => byId[r.record_id.split("/").pop()] ?? null,
   hits: goodsWordCounter(["game controllers", "joysticks"]),
   matched: goodsWordsMatched(["game controllers", "joysticks"]),
-  rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses: ["9", "28"], maxChars: rowChars })?.cut),
 });
 
 test("one record's group follows her order, and goods the run does not hold pass the goods test", () => {

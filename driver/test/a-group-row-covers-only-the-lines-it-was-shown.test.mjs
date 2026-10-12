@@ -97,3 +97,21 @@ test("a group's row answers a floor only in a group of a thousand records or mor
   assert.equal(input.floors.length, CROWDED_GROUP_RECORDS, "guard: every line of the crowded (b) is a floor");
   assert.equal(duty.undischarged_by_seat, 0, "a crowded group's row is her crowd block: it answers its floors");
 });
+
+test("a ground by name covers the named mark only, never the owner's other marks in the rest", async () => {
+  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
+  const band = { enumerated: [
+    { record_id: "/mark/eu/n1", mark_text: "QZORVAK", owner_name: "Alpha Ltd", classes: ["9"], status: "registered", jurisdictions: ["EU"] },
+    { record_id: "/mark/jp/n2", mark_text: "QZORVAK PRO", owner_name: "Alpha Ltd", classes: ["9"], status: "registered", jurisdictions: ["JP"] },
+  ], crowds: [] };
+  const positions = deriveRegisterPositions(band.enumerated);
+  const goods = { of: () => [{ classes: ["9"], text: "joysticks" }], hits: goodsWordCounter(["joystick"], { stems: true }), matched: goodsWordsMatched(["joystick"], { stems: true }) };
+  const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
+    keysOf: setAsideKeysOf(positions.positions), territories: ["EU"] });
+  assert.equal(shape.groups.rest.list.length, 1, "guard: Alpha's Japanese mark is held only outside the EU order");
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
+  const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/n1", ground: "a toy shop with no online trade" }] }, input);
+  const groundOf = setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors);
+  assert.equal(groundOf("/mark/eu/n1").by, "name");
+  assert.equal(groundOf("/mark/jp/n2"), null, "the owner's other mark keeps its own fate to be given");
+});

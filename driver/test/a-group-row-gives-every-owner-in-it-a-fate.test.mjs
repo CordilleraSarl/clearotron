@@ -5,10 +5,11 @@
 //
 // A line the shape lists, one mark of one owner, is placed, set aside by name, or covered by its group's one
 // row, which says why everything in the group the step neither placed nor named is not raised with the
-// client: her "read the near ones first, list the rest". A ground by name covers the named line only where
-// the shape lists its owner on several lines, so one mark's ground never sets another mark aside unseen. These arms pin the row the union keeps and the ones it reports back, the
-// ground each record leaves with, the fate count by list, and the floors a group row answers. The shape is
-// built by the product from an invented band, so every key is the one a set-aside row reaches.
+// client: her "read the near ones first, list the rest". A ground by name covers the named line only, one
+// mark of its owner, so one mark's ground never sets another mark aside unseen. These arms pin the row the
+// union keeps and the ones it reports back, the ground each record leaves with, the fate count by list, and
+// the floors a group row answers. The shape is built by the product from an invented band, so every key is
+// the one a set-aside row reaches.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildBandShape, deriveRegisterPositions } from "../band-shape.mjs";
@@ -74,7 +75,7 @@ test("a group row with the shape's count is kept and says how many lines it cove
   assert.deepEqual(gone.form.set_aside_groups.map((g) => g.set_aside_group), ["a"], "`group:b` retracts (b)'s row only");
 });
 
-test("a ground by name covers the named line where the owner has several lines, and the owner's set where it has one", () => {
+test("a ground by name covers the named line only, whatever else its owner holds", () => {
   const { input } = fixture();
   const u = unionPlacementForm(null, { rows: [
     { set_aside: "/mark/eu/a2", ground: "a different product, sold only to farmers" },
@@ -86,7 +87,7 @@ test("a ground by name covers the named line where the owner has several lines, 
   assert.equal(groundOf("/mark/eu/a2").by, "name");
   assert.equal(groundOf("/mark/eu/a1"), null, "Alpha's (a) line is not set aside by a ground written about its other mark");
   assert.equal(groundOf("/mark/eu/a3").group, "rest", "Alpha's dead mark falls to the rest's row, not to the named line");
-  assert.equal(groundOf("/mark/eu/b2").by, "name", "a one-line owner named covers its set");
+  assert.equal(groundOf("/mark/eu/b2").by, "name", "the named line leaves with its own ground");
   assert.equal(groundOf("/mark/eu/b1"), null, "b1 is a floor in a group below a thousand records: (b)'s row does not answer it");
   assert.equal(groundOf("/mark/eu/u1"), null, "no group row covers a line with no goods on file");
 });

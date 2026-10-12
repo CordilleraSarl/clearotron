@@ -25,7 +25,7 @@
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
-  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, lineKey, servedLines,
+  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, namedKey, lineKey, servedLines,
   groupRowCoversFloors } from "./placement-form.mjs";
 import { BAND_GROUPS } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
@@ -157,7 +157,6 @@ export function unionPlacementForm(prior, submitted, input) {
   // ground, is reported back by id, never dropped in silence.
   // A ground by name covers the named line where the shape lists its owner on several, else the owner's set.
   const groups = input?.groups ?? null;
-  const multi = multiLineOwners(groups);
   const setAside = new Map();
   const setAsideRefused = [];
   const takeSetAside = (row) => {
@@ -167,7 +166,7 @@ export function unionPlacementForm(prior, submitted, input) {
     const refuse = (why) => { if (!setAsideRefused.some((x) => x.set_aside === id && x.why === why)) setAsideRefused.push({ set_aside: id, why }); };
     if (!canonical) { refuse("the band holds no record with this id"); return; }
     if (!ground) { refuse("no ground"); return; }
-    const key = namedKey(canonical, multi);
+    const key = namedKey(canonical);
     setAside.delete(key);
     setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground });
   };
@@ -211,12 +210,9 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const g of [...setAsideGroups.keys()]) if (retracted.has(`group:${g}`) || retracted.has(`group:${g}`.toUpperCase())) setAsideGroups.delete(g);
   // WHAT EACH ROW COVERS, said back to the step: the group's lines it neither selected nor set aside by name.
   const placedLines = new Set(selections.map((row) => lineKey(row)).filter(Boolean));
-  const ownerOfLine = new Map();
-  for (const g of ["a", "b", "c", "d", "rest"]) for (const l of Array.isArray(groups?.[g]?.list) ? groups[g].list : []) ownerOfLine.set(l.key, l.owner_key);
   const covers = new Map();
   for (const [key, g] of groupOfKeys(groups)) {
-    const owner = ownerOfLine.get(key);
-    const named = setAside.has(key) || (!multi.has(owner) && setAside.has(owner));
+    const named = setAside.has(key);
     const line = (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).find((l) => l.key === key);
     const floorHeld = (line?.floors ?? 0) > 0 && !groupRowCoversFloors(groups, g);
     if (setAsideGroups.has(g) && !placedLines.has(key) && !named && !floorHeld) covers.set(g, (covers.get(g) ?? 0) + 1);

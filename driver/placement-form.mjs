@@ -157,12 +157,6 @@ export function groupName(written) {
   return BAND_GROUPS.includes(g) ? g : null;
 }
 
-/** The shape's listed lines, (a) to (d) and goods cut, each `{key, owner_key}`. PURE. */
-const listedLines = (groups) => (groups && typeof groups === "object"
-  ? [...["a", "b", "c", "d"].flatMap((g) => (Array.isArray(groups[g]?.list) ? groups[g].list : [])),
-    ...(Array.isArray(groups.no_goods?.list) ? groups.no_goods.list : [])]
-  : []);
-
 /**
  * Which group each line sits in, by position key: the shape's lists (a) to (d) and the rest. A line the
  * shape lists as goods cut is in no group, so no group row covers it. PURE.
@@ -200,13 +194,6 @@ export function servedLines(groups, served, index) {
  */
 export const groupRowCoversFloors = (groups, g) => (groups?.[g]?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
 
-/** Owners the shape lists on more than one line: a ground by name for one of them covers that line only. PURE. */
-export function multiLineOwners(groups) {
-  const n = new Map();
-  for (const l of listedLines(groups)) if (l?.owner_key) n.set(l.owner_key, (n.get(l.owner_key) ?? 0) + 1);
-  return new Set([...n].filter(([, c]) => c > 1).map(([k]) => k));
-}
-
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run
  * join folds it. A record that names no owner is its own position, never one set with every other
@@ -225,14 +212,11 @@ export const lineKey = (canonical) => {
 };
 
 /**
- * The key a ground by name covers: the named line, where the shape lists its owner on several lines,
- * else the owner's whole set (ruled 2026-10-12: her unit is the mark, and a ground written about one mark
- * of an owner set its other marks aside unseen). PURE.
+ * The key a ground by name covers: the named line, one mark of its owner, and never the owner's other
+ * marks (ruled 2026-10-13). Keyed by the owner's set while the owner had one listed line, a ground written
+ * about that line reached the owner's marks in the rest, a floor among them. PURE.
  */
-export const namedKey = (canonical, multi) => {
-  const owner = setAsideKey(canonical);
-  return owner && multi?.has(owner) ? lineKey(canonical) : owner;
-};
+export const namedKey = (canonical) => lineKey(canonical);
 
 /**
  * Both keys of any band record, read the way a set-aside row reads them, through the positions fold: its
@@ -263,7 +247,6 @@ export function setAsideGrounds(entries, index, groups = null, floors = null) {
     if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && e?.ground) byGroup.set(g, e); }
     else if (e?.key && e?.ground) byKey.set(e.key, e);
   }
-  const multi = multiLineOwners(groups);
   const groupOf = byGroup.size ? groupOfKeys(groups) : new Map();
   const floorUris = new Set((Array.isArray(floors) ? floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
   return (uri) => {
@@ -271,7 +254,7 @@ export function setAsideGrounds(entries, index, groups = null, floors = null) {
     const canonical = index.resolve(uri);
     const owner = setAsideKey(canonical), line = lineKey(canonical);
     if (!owner) return null;
-    const named = (line && byKey.get(line)) ?? (multi.has(owner) ? null : byKey.get(owner));
+    const named = line ? byKey.get(line) : null;
     if (named) return { ...named, by: "name" };
     const group = line ? groupOf.get(line) : null, row = group ? byGroup.get(group) : null;
     if (row && floorUris.has(normalizeRecordUri(uri) || String(uri ?? "")) && !groupRowCoversFloors(groups, group)) return null;
@@ -287,7 +270,6 @@ export function setAsideGrounds(entries, index, groups = null, floors = null) {
  */
 export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}) {
   if (!groups || typeof groups !== "object" || !index?.resolve) return null;
-  const multi = multiLineOwners(groups);
   const placed = new Set([...placedUris].map((u) => lineKey(index.resolve(u))).filter(Boolean));
   const named = new Set(), grouped = new Set();
   for (const e of Array.isArray(entries) ? entries : []) {
@@ -303,7 +285,7 @@ export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}
   for (const [list, lines] of Object.entries(lists)) {
     const c = zero();
     for (const l of lines) {
-      const byName = named.has(l.key) || (!multi.has(l.owner_key) && named.has(l.owner_key));
+      const byName = named.has(l.key);
       const rowMay = list !== "no_goods" && grouped.has(list) && (!(l.floors > 0) || groupRowCoversFloors(groups, list));
       const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : rowMay ? "by_group" : "unfated";
       c.lines++; c[fate]++; totals.lines++; totals[fate]++;
