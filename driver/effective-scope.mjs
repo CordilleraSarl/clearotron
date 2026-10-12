@@ -179,6 +179,15 @@ export function clientMarkets(job, profile) {
 }
 
 /**
+ * THE ORDER'S TERRITORIES, as the band shape scopes its lists (ruled 2026-10-13): the countries a
+ * territorial order names, or the account's defaults filling an absent one; empty for a worldwide order.
+ * A ladder that cannot read the order leaves the lists unscoped rather than the band without a shape. PURE.
+ */
+export function orderTerritories(job, profile) {
+  try { return narrowingMarkets(job, profile).scope; } catch { return []; }
+}
+
+/**
  * THE NARROWING ORDER, as the register reading step is told it (ruled 2026-09-26): goods and class
  * first, then the markets in turn, with the markets the driver knows filled in. One line. PURE.
  */

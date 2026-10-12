@@ -134,16 +134,17 @@ export function goodsWordCounter(words) {
 }
 
 /**
- * The goods test as a score, for the order inside a group: one for each goods word the record's goods hold,
- * and one more for each of those words the client's own goods wording carries (the order's wording, where
- * the variants stage starts its list), so the client's own product term counts double. Null when the record
- * has no goods on file or there are no words. PURE.
+ * Which of the client's goods words a record's goods hold, as the words themselves, in the list's order;
+ * null when the record has no goods on file or there are no words. A shape line shows them as "k of N:
+ * the words", which is the goods ground made visible on the line. PURE.
  */
-export function goodsWordScore(words, ownWording = "") {
+export function goodsWordsMatched(words) {
   const list = (Array.isArray(words) ? words : [words]).map((w) => String(w ?? "").trim()).filter(Boolean);
-  const own = goodsWordCounter(list.filter((w) => goodsWordCounter([w])([{ classes: [], text: String(ownWording ?? "") }]) === 1));
-  const all = goodsWordCounter(list);
-  return (goods) => { const n = all(goods); return n == null ? null : n + (own(goods) ?? 0); };
+  const tests = list.map((w) => [w, goodsWordCounter([w])]);
+  return (goods) => {
+    if (!list.length || !goods || !goods.length) return null;
+    return tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
+  };
 }
 
 /** The same test as true or false: any word present, none present, or null when it cannot be told. PURE. */
@@ -184,19 +185,18 @@ export function instructedOrder(P, job = null) {
   return order;
 }
 
-// How much of a record's goods is shown: on a line of the shape, and on a row `band_lookup` serves.
-export const GOODS_LINE_CHARS = 400;
+// How much of a record's goods a row `band_lookup` serves. A shape line carries the words matched, not the text.
 export const GOODS_ROW_CHARS = 1500;
 
 /**
  * What the band shape needs to sort the band by the client's goods: the goods reader over this run's own
- * records, the client's goods words from the variants stage (the order's own wording counted double), and
+ * records, the client's goods words from the variants stage, and
  * the word the register's goods-narrowed search asked for beside the one the variants stage named. The
  * client's markets come from the caller: this module is loaded by the band tool server, which reads no
  * account settings. IMPURE (reads the run). Any part that cannot be read is simply absent, and the shape
  * sorts without it.
  */
-export function bandShapeGoods(P, inScopeClasses = [], { job = null, rowChars = GOODS_ROW_CHARS, lineChars = GOODS_LINE_CHARS } = {}) {
+export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CHARS } = {}) {
   let model = null;
   try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
   let searched = "";
@@ -206,14 +206,15 @@ export function bandShapeGoods(P, inScopeClasses = [], { job = null, rowChars = 
   } catch { searched = ""; }
   const manifestDominant = String(model?.dominant_element ?? "");
   const index = bandGoodsIndex(P.runDir);
-  const words = Array.isArray(model?.goods_words) ? model.goods_words : [];
+  // The particular goods when the variants stage names them, else the goods words (ruled 2026-10-13).
+  const words = Array.isArray(model?.product_words) && model.product_words.length ? model.product_words
+    : Array.isArray(model?.goods_words) ? model.goods_words : [];
   const hits = goodsWordCounter(words);
   const goods = index.size ? {
     of: (r) => goodsFor(index, r),
     hits,
-    score: goodsWordScore(words, job?.goods ?? ""),
-    line: (g) => goodsExcerpt(g, { inScopeClasses, maxChars: lineChars }),
+    matched: goodsWordsMatched(words),
     rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses, maxChars: rowChars })?.cut),
   } : null;
-  return { goods, dominantTerm: searched || manifestDominant, manifestDominant };
+  return { goods, goodsWordCount: words.length, dominantTerm: searched || manifestDominant, manifestDominant };
 }

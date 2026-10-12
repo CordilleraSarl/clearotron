@@ -45,7 +45,7 @@ export const VARIANT_CATEGORIES = ["core", "phonetic", "visual", "transliteratio
   "exact-phrase", "exact-element", "plural-root", "formative-family"];
 
 const short = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
-const MODEL_KEYS = ["schema_version", "mark", "dominant_element", "elements", "variants", "incumbent_classes", "watchlist_owners", "goods_words", "search_floor"];
+const MODEL_KEYS = ["schema_version", "mark", "dominant_element", "elements", "variants", "incumbent_classes", "watchlist_owners", "goods_words", "product_words", "search_floor"];
 // The watchlist-owner seeds the register plan's OWNER LANE compiles from (F2, 2026-07-29): the
 // Step-5 watchlists a run must COVER on the register (aggressive_enforcers ∪ competitors ∪ the
 // matter-context watchlist-owner seeds; never the client). Bounded so a runaway list fails the
@@ -212,6 +212,30 @@ export function parseVariantManifestModel(raw) {
       throw new Error(`variantmodel_goods_words_invalid (${goods_words.length} words exceed the ${GOODS_WORDS_MAX}-word bound — keep the client's own wording and the words a filing would use for the same goods)`);
   }
 
+  // ── THE CLIENT'S PRODUCT, AS WORDS: the particular goods (ruled 2026-10-13) ───────────────────────
+  //
+  // The goods words narrow the register search and so carry the words other filings use for the same
+  // class; the particular goods are narrower, the words that name what the client makes. The band shape
+  // groups on these when they are given, and on the goods words when they are not. Same form as the goods
+  // words, and the same difference between an absent key and an empty list.
+  let product_words = null;
+  if (m.product_words != null) {
+    product_words = [];
+    if (!Array.isArray(m.product_words) || !m.product_words.every((w) => typeof w === "string"))
+      throw new Error("variantmodel_product_words_invalid (an array of strings, or omitted)");
+    const seen = new Set();
+    for (const raw of m.product_words) {
+      const w = String(raw).replace(/\s+/g, " ").trim();
+      if (!w) throw new Error("variantmodel_product_words_invalid (every product word is a non-empty string)");
+      if (/[*?]/.test(w)) throw new Error(`variantmodel_product_words_invalid ("${w}" carries a wildcard)`);
+      if (seen.has(w.toLowerCase())) continue;
+      seen.add(w.toLowerCase());
+      product_words.push(w);
+    }
+    if (product_words.length > GOODS_WORDS_MAX)
+      throw new Error(`variantmodel_product_words_invalid (${product_words.length} words exceed the ${GOODS_WORDS_MAX}-word bound)`);
+  }
+
   // ── — THE SEARCH FLOOR, AS A TYPED DESIGNATION ────────────────────────────────────────────────
   //
   // The axes this mark's search floor obliges: work a `coverage-limited` row may not demote. It replaces
@@ -257,6 +281,7 @@ export function parseVariantManifestModel(raw) {
     incumbent_classes,
     watchlist_owners,
     goods_words,
+    product_words,
     search_floor,
   };
 }

@@ -25,8 +25,8 @@
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
-  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, positionKey,
-  ROWED_GROUPS } from "./placement-form.mjs";
+  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, lineKey } from "./placement-form.mjs";
+import { BAND_GROUPS } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
 /**
@@ -187,8 +187,7 @@ export function unionPlacementForm(prior, submitted, input) {
     const written = String(row.set_aside_group).trim();
     const refuse = (why) => { if (!groupRefused.some((x) => x.set_aside_group === written && x.why === why)) groupRefused.push({ set_aside_group: written, why }); };
     const g = groupName(written);
-    if (g === "a") { refuse("group (a) takes no group row: place or set aside by name every line in it"); return; }
-    if (!g) { refuse(`not one of the groups that take a row (${ROWED_GROUPS.join(", ")})`); return; }
+    if (!g) { refuse(`not one of the shape's groups (${BAND_GROUPS.join(", ")})`); return; }
     const shown = groups?.[g];
     if (!(shown?.lines > 0)) { refuse("the band shape lists no line in this group"); return; }
     const ground = typeof row.ground === "string" ? row.ground.trim() : "";
@@ -202,7 +201,7 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const r of (submittedRows ?? [])) if (isSetAsideGroupRow(r)) { consumed.add(r); takeGroup(r); }
   for (const g of [...setAsideGroups.keys()]) if (retracted.has(`group:${g}`) || retracted.has(`group:${g}`.toUpperCase())) setAsideGroups.delete(g);
   // WHAT EACH ROW COVERS, said back to the step: the group's lines it neither selected nor set aside by name.
-  const placedLines = new Set(selections.map((row) => positionKey(row)).filter(Boolean));
+  const placedLines = new Set(selections.map((row) => lineKey(row)).filter(Boolean));
   const ownerOfLine = new Map();
   for (const g of ["a", "b", "c", "d", "rest"]) for (const l of Array.isArray(groups?.[g]?.list) ? groups[g].list : []) ownerOfLine.set(l.key, l.owner_key);
   const covers = new Map();

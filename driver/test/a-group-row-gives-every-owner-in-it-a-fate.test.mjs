@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A LISTED LINE GETS A FATE, NOT A ROW, AND GROUP (a) IS READ WHOLE.
+// A LISTED LINE GETS A FATE, NOT A ROW.
 //
-// A line the shape lists, one mark of one owner, is placed, set aside by name, or, in (b) to (d), covered by
-// its group's one row, which says why everything in the group the step neither placed nor named is not
-// raised with the client. Group (a) takes no such row: it is the list her rule says to read. A ground by name
-// covers the named line only where the shape lists its owner on several lines, so one mark's ground never
-// sets another mark aside unseen. These arms pin the row the union keeps and the ones it reports back, the
+// A line the shape lists, one mark of one owner, is placed, set aside by name, or covered by its group's one
+// row, which says why everything in the group the step neither placed nor named is not raised with the
+// client: her "read the near ones first, list the rest". A ground by name covers the named line only where
+// the shape lists its owner on several lines, so one mark's ground never sets another mark aside unseen. These arms pin the row the union keeps and the ones it reports back, the
 // ground each record leaves with, the fate count by list, and the floors a group row answers. The shape is
 // built by the product from an invented band, so every key is the one a set-aside row reaches.
 import { test } from "node:test";
@@ -52,7 +51,7 @@ test("the form carries the group row's contract, and the shape's lines are what 
   assert.deepEqual([shape.groups.rest.lines, shape.groups.unresolved.lines], [3, 1]);
 });
 
-test("group (a) takes no row; a (b) row with the shape's count is kept and says how many lines it covers", () => {
+test("a group row with the shape's count is kept and says how many lines it covers, and a wrong one is reported back", () => {
   const { input } = fixture();
   const u = unionPlacementForm(null, { rows: [
     { select: "/mark/eu/b1", tier: "watchlist-annex", reason: "identical in class; the owner's goods are printers, far from the client's" },
@@ -62,17 +61,19 @@ test("group (a) takes no row; a (b) row with the shape's count is kept and says 
     { set_aside_group: "c", count: 0, ground: "nothing here" },
     { set_aside_group: "e", count: 1, ground: "no such group" },
   ] }, input);
-  assert.deepEqual(u.form.set_aside_groups.map((g) => [g.set_aside_group, g.count, g.covers_lines]), [["b", 2, 1]], "(b) covers Gamma's line only: Beta's is selected");
+  assert.deepEqual(u.form.set_aside_groups.map((g) => [g.set_aside_group, g.count, g.covers_lines]), [["a", 1, 1], ["b", 2, 1]],
+    "(a)'s row covers its one line; (b)'s covers Gamma's line only, since Beta's is selected");
   const why = Object.fromEntries(u.form.set_aside_group_refused.map((x) => [x.set_aside_group, x.why]));
-  assert.match(why.a, /group \(a\) takes no group row: place or set aside by name every line in it/);
+  assert.equal(why.a, undefined, "group (a) takes its row like the others");
   assert.match(why.rest, /count 99 is not the shape's 3/);
   assert.match(why.c, /lists no line in this group/);
   assert.ok(why.e, "an unknown group is reported back");
   assert.equal(u.form.rows.length, 1, "a group row is never a candidate");
   const next = unionPlacementForm(parsePlacementForm(JSON.stringify(u.form)), { rows: [{ set_aside_group: "b", count: 2, ground: "a second ground" }] }, input);
-  assert.deepEqual(next.form.set_aside_groups.map((g) => g.ground), ["a second ground"]);
+  assert.deepEqual(next.form.set_aside_groups.map((g) => [g.set_aside_group, g.ground]),
+    [["a", "none trades where the client trades"], ["b", "a second ground"]], "a later row replaces its own group's, and leaves the others");
   const gone = unionPlacementForm(parsePlacementForm(JSON.stringify(next.form)), { rows: [{ retract: "group:b" }] }, input);
-  assert.deepEqual(gone.form.set_aside_groups, []);
+  assert.deepEqual(gone.form.set_aside_groups.map((g) => g.set_aside_group), ["a"], "`group:b` retracts (b)'s row only");
 });
 
 test("a ground by name covers the named line where the owner has several lines, and the owner's set where it has one", () => {
@@ -92,7 +93,7 @@ test("a ground by name covers the named line where the owner has several lines, 
   assert.equal(groundOf("/mark/eu/u1"), null, "the rest's row does not cover a line whose goods were cut on the row");
 });
 
-test("every line's fate is counted by the list the shape put it in, and only placement or a name answers a floor in (a)", () => {
+test("every line's fate is counted by the list the shape put it in, and a group row answers its floors", () => {
   const { input } = fixture();
   const u = unionPlacementForm(null, { rows: [
     { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
@@ -111,5 +112,5 @@ test("every line's fate is counted by the list the shape put it in, and only pla
   assert.deepEqual([duty.totals.floors, duty.totals.accounted, duty.undischarged_by_seat], [3, 3, 0]);
   assert.equal(duty.by_tier[SET_ASIDE_TIER], 2, "the two (b) floors are answered by the group's row");
   const unplaced = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups) });
-  assert.equal(unplaced.undischarged_by_seat, 1, "(a)'s floor, neither placed nor named, has no fate: no row of (a) exists to cover it");
+  assert.equal(unplaced.undischarged_by_seat, 1, "(a)'s floor, neither placed nor named, has no fate when no row of (a) was written");
 });

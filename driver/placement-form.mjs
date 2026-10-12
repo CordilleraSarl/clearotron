@@ -57,7 +57,7 @@ import { shortId } from "./connotation-search.mjs";
 import { normKey } from "./placement-diff.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { PLACEMENT_TIERS, validatePlacement } from "./placement-model.mjs";
-import { BAND_GROUPS } from "./band-shape.mjs";   // — the shape's groups, which a group row names
+import { BAND_GROUPS, floorMarkKey } from "./band-shape.mjs";   // — the shape's groups, which a group row names
 
 export const PLACEMENT_FORM_NAME = "placement-form.json";
 
@@ -128,27 +128,24 @@ export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
 /** Is this submitted row an owner's set-aside? PURE. */
 export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.set_aside.trim() !== "";
 
-// ONE ROW PER GROUP, (b) TO (d) AND THE REST. The band shape lists the band in the lawyer's order, one line
-// per mark of an owner, and counts the rest. A listed line gets a fate, not a row: it is placed, or set
-// aside by name, or covered by its group's one row, which states why everything in the group the step
-// neither placed nor named is not raised with the client. Group (a) takes no such row (ruled 2026-10-12):
-// it is the list her rule says to read, and every line in it is placed or set aside by name. These words
-// await the owner's reading of their before and after.
+// ONE ROW PER GROUP. The band shape lists the band in the lawyer's order, one line per mark of an owner,
+// and counts the rest. A listed line gets a fate, not a row: it is placed, or set aside by name, or covered
+// by its group's one row, which states why everything in the group the step neither placed nor named is not
+// raised with the client: her "read the near ones first, list the rest" (ruled 2026-10-12, (a) included).
+// These words await the owner's reading of their before and after.
 export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
-export const ROWED_GROUPS = Object.freeze(BAND_GROUPS.filter((g) => g !== "a"));
 export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
-  when: "a group the shape lists, (b) to (d), or the rest it counts: one row sets aside every line in it that "
-    + "you neither place nor set aside by name. Group (a) takes no group row: every line in it is placed or set "
-    + "aside by name.",
+  when: "a group the shape lists, (a) to (d), or the rest it counts: one row sets aside every line in it that "
+    + "you neither place nor set aside by name.",
   fields: SET_ASIDE_GROUP_FIELDS,
-  set_aside_group: `the group's letter as the shape gives it, or "rest": one of ${ROWED_GROUPS.join(", ")}.`,
+  set_aside_group: `the group's letter as the shape gives it, or "rest": one of ${BAND_GROUPS.join(", ")}.`,
   count: "the group's record count: the N the shape gives beside it.",
   ground: "why none of the lines this row covers is raised with the client, in a lawyer's words.",
   not_a_candidate: "It places nothing. A line in the group that you place or set aside by name keeps that.",
   latest: "A later row for the same group replaces the earlier one. To remove one, hand back "
     + "{\"retract\":\"group:<letter or rest>\"}.",
-  unresolved: "Group (a), a group the shape does not list, a count that does not match the shape's, or a row "
-    + "with no ground, is reported back to you.",
+  unresolved: "A group the shape does not list, a count that does not match the shape's, or a row with no "
+    + "ground, is reported back to you.",
 });
 
 /** Is this submitted row a group's set-aside? PURE. */
@@ -196,8 +193,11 @@ export function setAsideKey(canonical) {
   return owner ? `owner:${owner}` : `position:${formRowKey(canonical)}`;
 }
 
-/** A line's own key: one mark of one owner across its territories, as the positions fold collapses it. PURE. */
-export const positionKey = (canonical) => (canonical?.row_id ? `pos:${canonical.row_id}` : null);
+/** A line's own key: one mark of one owner, across every right and territory it is held in. PURE. */
+export const lineKey = (canonical) => {
+  const owner = setAsideKey(canonical);
+  return owner ? `line:${owner}|${floorMarkKey(canonical?.mark) || (canonical?.records ?? []).join(",")}` : null;
+};
 
 /**
  * The key a ground by name covers: the named line, where the shape lists its owner on several lines,
@@ -206,7 +206,7 @@ export const positionKey = (canonical) => (canonical?.row_id ? `pos:${canonical.
  */
 export const namedKey = (canonical, multi) => {
   const owner = setAsideKey(canonical);
-  return owner && multi?.has(owner) ? positionKey(canonical) : owner;
+  return owner && multi?.has(owner) ? lineKey(canonical) : owner;
 };
 
 /**
@@ -220,9 +220,9 @@ export function setAsideKeysOf(positions) {
   return (record) => {
     const canonical = index.resolve(record?.record_id) ?? (() => {
       const id = normalizeRecordUri(record?.record_id) || String(record?.record_id ?? "");
-      return id ? { row_id: shortId("PR", `register:${id}`), owner: record?.owner_name ?? null, records: [id], kind: "register" } : null;
+      return id ? { row_id: shortId("PR", `register:${id}`), mark: record?.mark_text ?? null, owner: record?.owner_name ?? null, records: [id], kind: "register" } : null;
     })();
-    return canonical ? { position: positionKey(canonical), owner: setAsideKey(canonical) } : null;
+    return canonical ? { line: lineKey(canonical), owner: setAsideKey(canonical) } : null;
   };
 }
 
@@ -235,7 +235,7 @@ export function setAsideKeysOf(positions) {
 export function setAsideGrounds(entries, index, groups = null) {
   const byKey = new Map(), byGroup = new Map();
   for (const e of Array.isArray(entries) ? entries : []) {
-    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && g !== "a" && e?.ground) byGroup.set(g, e); }
+    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && e?.ground) byGroup.set(g, e); }
     else if (e?.key && e?.ground) byKey.set(e.key, e);
   }
   const multi = multiLineOwners(groups);
@@ -243,12 +243,12 @@ export function setAsideGrounds(entries, index, groups = null) {
   return (uri) => {
     if ((!byKey.size && !byGroup.size) || !index?.resolve) return null;
     const canonical = index.resolve(uri);
-    const owner = setAsideKey(canonical), position = positionKey(canonical);
+    const owner = setAsideKey(canonical), line = lineKey(canonical);
     if (!owner) return null;
-    const named = (position && byKey.get(position)) ?? (multi.has(owner) ? null : byKey.get(owner));
+    const named = (line && byKey.get(line)) ?? (multi.has(owner) ? null : byKey.get(owner));
     if (named) return { ...named, by: "name" };
-    const group = position ? groupOf.get(position) : null, row = group ? byGroup.get(group) : null;
-    return row ? { set_aside: null, key: position, owner: null, ground: row.ground, by: "group", group } : null;
+    const group = line ? groupOf.get(line) : null, row = group ? byGroup.get(group) : null;
+    return row ? { set_aside: null, key: line, owner: null, ground: row.ground, by: "group", group } : null;
   };
 }
 
@@ -256,15 +256,15 @@ export function setAsideGrounds(entries, index, groups = null) {
  * EVERY LINE'S FATE AT PLACEMENT, counted by the list the shape put it in: placed (a record of its mark is
  * in a placement), set aside by name, covered by its group's row, or no fate. A line is one mark of one
  * owner; an owner counts as fated when every one of its lines is. The goods-cut lines are their own list,
- * which no group row covers, and group (a) takes no row. Counts, plus the keys left with no fate. PURE.
+ * which no group row covers. Counts, plus the keys left with no fate. PURE.
  */
 export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}) {
   if (!groups || typeof groups !== "object" || !index?.resolve) return null;
   const multi = multiLineOwners(groups);
-  const placed = new Set([...placedUris].map((u) => positionKey(index.resolve(u))).filter(Boolean));
+  const placed = new Set([...placedUris].map((u) => lineKey(index.resolve(u))).filter(Boolean));
   const named = new Set(), grouped = new Set();
   for (const e of Array.isArray(entries) ? entries : []) {
-    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && g !== "a" && String(e?.ground ?? "").trim()) grouped.add(g); }
+    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && String(e?.ground ?? "").trim()) grouped.add(g); }
     else if (e?.key && String(e?.ground ?? "").trim()) named.add(e.key);
   }
   const lists = {};
@@ -297,8 +297,8 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "you tier once stays tiered even if a later attempt never sees it, which is what makes a killed "
   + "attempt's work survive. Candidates the register does not hold are yours to write in full — see "
   + "`seat_row_contract`. An owner whose records you judge as a set and do not carry gets one ground for "
-  + "the set — see `set_aside_row_contract`. A group the shape lists, (b) to (d), or the rest it counts, gets "
-  + "one row for what you neither place nor set aside by name — see `set_aside_group_contract`; group (a) takes none.";
+  + "the set — see `set_aside_row_contract`. A group the shape lists, or the rest it counts, gets one row "
+  + "for what you neither place nor set aside by name — see `set_aside_group_contract`.";
 
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */
 export function formRowKey(row) {
