@@ -124,17 +124,36 @@ const fold = (s) => foldDiacritics(String(s ?? "")).toLowerCase();
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /**
+ * The forms of one goods word: as given, its singular where it is given as a plural, and the plural of each,
+ * with the endings s, es and ies. Every form is a whole word, so "car" is never "cards". A word that ends in
+ * s without being a plural ("apparatus", "status", "glass") keeps its own spelling. PURE.
+ */
+export function goodsWordForms(word) {
+  const w = fold(word).trim();
+  const singulars = new Set([w]);
+  if (/\p{L}{2,}ies$/u.test(w)) singulars.add(`${w.slice(0, -3)}y`);
+  if (/(?:s|x|z|ch|sh)es$/u.test(w)) singulars.add(w.slice(0, -2));
+  if (/\p{L}{2,}[^sui]s$/u.test(w)) singulars.add(w.slice(0, -1));
+  const forms = new Set(singulars);
+  for (const f of singulars) {
+    forms.add(/(?:s|x|z|ch|sh)$/u.test(f) ? `${f}es` : `${f}s`);
+    if (/[^aeiou]y$/u.test(f)) forms.add(`${f.slice(0, -1)}ies`);
+  }
+  return [...forms].sort((x, y) => y.length - x.length);
+}
+
+/**
  * A counter for a list of goods words: how many of the words or phrases appear whole in the goods, or null
  * when the record has no goods on file, or when there are no words to look for. Case and diacritics are
- * folded, and the original wording is read beside its English translation. With `stems`, a word matches
- * its forms: its last word may run on (a product word is given as a stem, ruled 2026-10-12). PURE.
+ * folded, and the original wording is read beside its English translation. With `stems`, each word of a
+ * word or phrase matches its singular and plural forms (`goodsWordForms`), at word boundaries, never as the
+ * start of a longer word. PURE.
  */
 export function goodsWordCounter(words, { stems = false } = {}) {
+  const phrase = (w) => w.split(/\s+/).map((x) => (stems ? `(?:${goodsWordForms(x).map(escape).join("|")})` : escape(x))).join("\\s+");
   const res = (Array.isArray(words) ? words : [words])
     .map((w) => fold(w).trim()).filter(Boolean)
-    // A stem is the word without its plural ending, so "video games" and "video game" match each other.
-    .map((w) => (stems ? w.replace(/(\p{L}{3,})s$/u, "$1") : w))
-    .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(w).replace(/\s+/g, "\\s+")}${stems ? "[\\p{L}\\p{N}]*" : ""}($|[^\\p{L}\\p{N}])`, "u"));
+    .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${phrase(w)}($|[^\\p{L}\\p{N}])`, "u"));
   return (goods) => {
     const readable = (goods ?? []).filter((g) => g.en !== false);
     if (!res.length || !readable.length) return null;

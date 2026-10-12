@@ -91,12 +91,21 @@ test("the shape reads the order's goods and markets from the run's instructed sc
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("a product word is a stem: it matches its forms, on the English text and on the original beside it", () => {
+test("a goods word matches its own forms, whole, on the English text and on the original beside it", () => {
   const g = [{ classes: ["10"], text: "medical device for diagnosing", alt: "dispositif médical de diagnostic" }];
-  assert.equal(goodsWordCounter(["diagnos"], { stems: true })(g), 1, "a stem matches the forms that begin with it");
-  assert.equal(goodsWordCounter(["diagnos"])(g), 0, "a goods word without stems matches only the whole word");
+  assert.equal(goodsWordCounter(["diagnosing"], { stems: true })(g), 1);
+  assert.equal(goodsWordCounter(["diagnos"], { stems: true })(g), 0, "a cut word is the start of longer words, and matches none of them");
   assert.equal(goodsWordCounter(["dispositif"])(g), 1, "the original wording is read beside its translation");
-  assert.equal(goodsWordCounter(["agnos"], { stems: true })(g), 0, "a stem begins at a word's start");
+  assert.equal(goodsWordCounter(["agnos"], { stems: true })(g), 0, "a word begins at a word's start");
+});
+
+test("a word's forms are its singular and plural, never a longer word, and a word ending in s keeps its spelling", () => {
+  const c = (w, t) => goodsWordCounter([w], { stems: true })([{ classes: ["9"], text: t }]);
+  for (const [w, t] of [["car", "smart cards"], ["car", "carpets cleaning machines"], ["pen", "pending"], ["tea", "teaching"], ["game", "gaming"]])
+    assert.equal(c(w, t), 0, `"${w}" matched "${t}"`);
+  for (const [w, t] of [["car", "car navigation apparatus"], ["boxes", "box"], ["box", "boxes"], ["accessories", "accessory"], ["accessory", "accessories"],
+    ["apparatus", "apparatus"], ["status", "status"], ["glass", "glasses"], ["glasses", "glass"], ["games consoles", "game console"], ["game consoles", "games consoles"]])
+    assert.equal(c(w, t), 1, `"${w}" missed "${t}"`);
 });
 
 test("a word given in the plural and its singular match each other as stems", () => {

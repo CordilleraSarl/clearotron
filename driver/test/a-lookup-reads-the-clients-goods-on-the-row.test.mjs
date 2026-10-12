@@ -82,13 +82,14 @@ test("the goods filter keeps records whose goods hold any of the words, and reco
   const r = await session([INIT, call(2, { goods: ["joysticks", "game controllers"] }), call(3, { goods: "printers" })], { CLEAROTRON_BAND_RUN_DIR: runDir });
   assert.deepEqual(body(r, 2).records.map((x) => x.record_id).sort(), ["/mark/eu/g1", "/mark/eu/g3", "/mark/eu/g4", "/mark/eu/g5"],
     "g4's joysticks sit past the row's cut and still match: the test reads the whole text");
-  assert.deepEqual(body(r, 3).records.map((x) => x.record_id).sort(), ["/mark/eu/g2", "/mark/eu/g3"], "one word as a string works as a list of one");
+  assert.deepEqual(body(r, 3).records.map((x) => x.record_id).sort(), ["/mark/eu/g2", "/mark/eu/g3", "/mark/eu/g4"],
+    "one word as a string works as a list of one, singular or plural: printers finds g4's printer cartridges");
 });
 
 test("the tool says what the goods filter does and what the served goods mean", async () => {
   const r = await session([INIT, { jsonrpc: "2.0", id: 2, method: "tools/list" }], { CLEAROTRON_BAND_RUN_DIR: mkdtempSync(join(tmpdir(), "lookup-goods-list-")) });
   const lookup = (r[2]?.result?.tools ?? []).find((t) => t.name === "band_lookup");
-  assert.ok(lookup.description.includes("goods (words: records whose goods contain any of them, whole words; a record with no goods on file matches too)"));
+  assert.ok(lookup.description.includes("goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too)"));
   assert.ok(lookup.description.includes("`goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record"));
   assert.ok(lookup.description.includes("group (a, b, c or d: that group's lines in the shape's order, one per mark of an owner)"));
   assert.ok(lookup.inputSchema.properties.goods, "the filter is in the schema");

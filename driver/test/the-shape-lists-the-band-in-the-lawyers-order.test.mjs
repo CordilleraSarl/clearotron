@@ -259,6 +259,15 @@ test("the shape says which words its goods test read, and says so when it fell b
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
+test("a goods word is never the start of a longer one, so cards and carpets do not join a group for cars", () => {
+  // The build audit's probe: 600 identical live marks for car navigation, 450 for smart cards and carpet cleaning.
+  const recs = Array.from({ length: 1050 }, (_, i) => rec(`v${i}`, "QZORVAK", `Owner ${i} Ltd`, ["9"]));
+  const text = Object.fromEntries(recs.map((r, i) => [r.record_id, i < 600 ? "car navigation apparatus" : "smart cards; carpets cleaning machines"]));
+  const goods = { of: (r) => [{ classes: ["9"], text: text[r.record_id] }], hits: goodsWordCounter(["car"], { stems: true }), matched: goodsWordsMatched(["car"], { stems: true }) };
+  const g = bandGroups(recs, { classify, inScope, goods });
+  assert.deepEqual([g.by_group.a.records, g.by_group.b.records], [600, 450]);
+});
+
 test("a mark whose goods carry no English is listed apart and opened, never sent to the rest", async () => {
   const { recordGoods } = await import("../record-goods.mjs");
   const bodies = { f1: { goodsServices: [{ classes: [9], language: "de", description: "Videospiele; Spielkonsolen" }] } };
