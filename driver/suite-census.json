@@ -6568,8 +6568,8 @@
           "todos": 0
         },
         "the-words-the-step-reads-match-what-the-driver-checks.test.mjs": {
-          "tests": 8,
-          "asserts": 39,
+          "tests": 9,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
