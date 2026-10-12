@@ -3,11 +3,12 @@
 //
 // release-bench-replay-check.mjs — a cut waits while a moved engine pin has no passing bench replay.
 //
-//   node scripts/release-bench-replay-check.mjs [--since <tag>]    # reads REPO and GH_TOKEN
+//   node scripts/release-bench-replay-check.mjs [--since <tag>] [--head <ref>]    # reads REPO and GH_TOKEN
 //
 // The push workflow asks for a replay of saved cases whenever a push moves the engine pins
 // (bench-replay-request.mjs); the machine holding the cases answers with a `bench replay` status, pass or
-// flag. This is where that answer is read: before a beta or a stable is cut from HEAD.
+// flag. This is where that answer is read: before a beta or a stable is cut from HEAD, or from `--head`
+// when the checkout is not on the commit being cut (the dispatcher reads origin/main from its own checkout).
 //
 // WHAT IT COMPARES. The pins at HEAD against the pins at the last version cut (`--since`, by default the
 // newest `v*` tag HEAD contains), both judged by THIS checkout's rule. Equal pins: nothing to read. Moved
@@ -59,9 +60,13 @@ if (isEntrypoint(import.meta.url)) {
   const args = process.argv.slice(2);
   try {
     if (!REPO || !GH_TOKEN) throw new Error("REPO and GH_TOKEN are required");
-    if (args.length && !(args.length === 2 && args[0] === "--since")) throw new Error("usage: [--since <tag>]");
-    const since = args[1] ?? git(["describe", "--tags", "--abbrev=0", "--match", "v*", "HEAD"]);
-    const head = git(["rev-parse", "HEAD"]);
+    const opt = {};
+    for (let i = 0; i < args.length; i += 2) {
+      if (!["--since", "--head"].includes(args[i]) || args[i + 1] === undefined) throw new Error("usage: [--since <tag>] [--head <ref>]");
+      opt[args[i].slice(2)] = args[i + 1];
+    }
+    const head = git(["rev-parse", `${opt.head ?? "HEAD"}^{commit}`]);
+    const since = opt.since ?? git(["describe", "--tags", "--abbrev=0", "--match", "v*", head]);
     const api = async (path) => {
       const r = await fetch(`https://api.github.com/repos/${REPO}/${path}`,
         { headers: { authorization: `Bearer ${GH_TOKEN}`, accept: "application/vnd.github+json" } });
