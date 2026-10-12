@@ -303,6 +303,9 @@ export const CONTEXT_DERIVATIONS = [
       { path: P.variantManifestModel, why: "targets: the mark, its dominant element, distinctive elements and variants" },
       { path: P.crowdContext, why: "the crowd join the shape's crowd descriptors carry" },
       { path: join(P.runDir, "_records"), dir: true, why: "recordDetailIndex — registration/application numbers, IR↔base linkage, Madrid designations; no search row carries them" },
+      { path: driverDir(P.runDir, "register-record-bodies.jsonl"), why: "record-goods.mjs bandGoodsIndex: each record's goods, which the groups test against the client's goods words" },
+      { path: P.registerPlan, why: "record-goods.mjs bandShapeGoods: the word the register's goods-narrowed search asked for, which the shape sorts on" },
+      { path: driverDir(P.runDir, "matter-frame-calls", "accepted.json"), why: "withFrameClasses: the classes the frame added for the client's own goods join the in-scope set and the floors" },
     ],
   },
   {
