@@ -24,7 +24,7 @@ import { answerBudget } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
-import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsExcerpt, GOODS_ROW_CHARS } from "../../record-goods.mjs";
+import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched } from "../../record-goods.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
@@ -248,25 +248,28 @@ function bandShape(params) {
   return head + "\n" + parts[part - 1] + tail;
 }
 
-// THE GOODS ON THE ROW. The crowded-field method reads identical marks for the client's particular goods
-// first, and a band row carries no goods; every record's goods are in the bodies the register already
-// logged to this run, so they are read once per server and served on every record (record-goods.mjs).
-// Each record carries the goods text, the ordered classes first, and whether the part a goods ground is
-// read from was cut on the row. The goods filter tests the whole text, never the cut row.
+// THE GOODS ON THE ROW, AS THE SHAPE TESTS THEM. Each record served carries the goods words its goods
+// hold, "k of N: the words", tested on the same words and stems the shape grouped on (its `goods_test`),
+// from the records the register already logged to this run (record-goods.mjs). The goods text is one
+// `band_record` away; a row never carries it. A record whose goods cannot be read says so with null.
 let goodsCache = null;
 const goodsIndex = () => (goodsCache ??= bandGoodsIndex(RUN_DIR));
-let scopeCache = null;
-const orderedClasses = () => {
-  if (scopeCache) return scopeCache;
-  try { scopeCache = loadJson(shapeJsonPath()).in_scope_classes ?? []; } catch { scopeCache = []; }
-  return scopeCache;
+let testCache = null;
+const shapeGoodsTest = () => {
+  if (testCache) return testCache;
+  let words = [];
+  try { words = loadJson(shapeJsonPath()).groups?.goods_test?.words ?? []; } catch { words = []; }
+  testCache = { words, matched: goodsWordsMatched(words, { stems: true }) };
+  return testCache;
 };
 // The record's body first; a row that carries goods of its own stands in where the run holds no body.
 const goodsOfRow = (r) => goodsFor(goodsIndex(), r)
   ?? (typeof r?.goods === "string" && r.goods.trim() ? [{ classes: [], text: r.goods.trim() }] : null);
 const withGoods = (r) => {
-  const ex = goodsExcerpt(goodsOfRow(r), { inScopeClasses: orderedClasses(), maxChars: GOODS_ROW_CHARS });
-  return { ...project(r), goods: ex ? ex.text : null, goods_cut: ex ? ex.cut : false };
+  const { words, matched } = shapeGoodsTest();
+  const m = words.length ? matched(goodsOfRow(r)) : null;
+  const { goods: _text, ...row } = project(r);   // a row's own goods text stands in for the test, and is not served
+  return { ...row, goods_words: m == null ? null : `${m.length} of ${words.length}${m.length ? `: ${m.join(", ")}` : ""}` };
 };
 
 // A GROUP, PAGED AS THE SHAPE LISTS IT. The shape lists a group of a thousand records or more by its first
@@ -484,7 +487,7 @@ serve({
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, whole words; a record with no goods on file matches too), limit (default 20, max 100), offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page). On each record served, `goods` is the record's goods, the ordered classes first; `goods_cut` true means the part a goods ground is read from was cut, so open the record before setting it aside on goods. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, whole words; a record with no goods on file matches too), group (a, b, c or d: that group's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },

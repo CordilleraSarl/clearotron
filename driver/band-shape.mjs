@@ -740,7 +740,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
  *                             (charter P2d); the band itself stays per-registration
  * @returns { shape, md }      deterministic — same band + inputs ⇒ same bytes (no timestamps)
  */
-export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, goodsWordCount = 0, dominantTerm = "", manifestDominant = "", keysOf = null, markets = [], territories = [] } = {}) {
+export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, goodsTest = null, goodsWordCount = 0, dominantTerm = "", manifestDominant = "", keysOf = null, markets = [], territories = [] } = {}) {
   const prepared = prepareTargets(Array.isArray(targets) && targets.every(isPrepared) ? targets.map((t) => t.text) : targets);
   const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
   const crowds = Array.isArray(band?.crowds) ? band.crowds : [];
@@ -808,7 +808,8 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const groups = {
     dominant_term: grouped.dominant_term, manifest_dominant: manifestDominant || null, goods_on_file: grouped.goods_on_file,
     markets: grouped.markets, territories: grouped.territories, outside: grouped.outside,
-    goods_words_total: goodsWordCount || 0, crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
+    goods_words_total: goodsWordCount || 0, goods_test: goodsTest ?? { source: goods ? "goods_words" : "none", words: [] },
+    crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
     rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest),
       list: rest.map(({ key, owner_key }) => ({ key, owner_key })) },

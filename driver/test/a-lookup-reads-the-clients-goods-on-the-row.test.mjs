@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A LOOKUP READS THE CLIENT'S GOODS ON THE ROW.
+// A LOOKUP READS THE CLIENT'S GOODS ON THE ROW, AS THE SHAPE TESTS THEM.
 //
 // The crowded-field method reads identical marks for the client's particular goods first, and a band row
-// carried no goods, so the only way to read them was to open records one by one. `band_lookup` now serves
-// each record's goods from the records the run already holds, the ordered classes first, says when the
-// part a goods ground is read from was cut, and filters on the client's goods words, a record with no
-// goods on file matching too. Every mark, owner and goods line is invented.
+// carried no goods. `band_lookup` now gives each record the client's goods words its goods hold, tested on
+// the same words and stems the shape grouped on, from the records the run already holds; the goods text
+// stays one `band_record` away. It also filters on goods words, a record with no goods on file matching
+// too. Every mark, owner and goods line is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -17,7 +17,6 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { buildBandShape } from "../band-shape.mjs";
-import { GOODS_ROW_CHARS } from "../record-goods.mjs";
 
 const MCP = join(dirname(fileURLToPath(import.meta.url)), "..", "engine", "mcp");
 
@@ -52,7 +51,7 @@ function seedRun() {
   const band = { enumerated: [rec("g1", "Alpha Ltd", [9]), rec("g2", "Beta GmbH", [9]), rec("g3", "Gamma SA", [9]), rec("g4", "Delta AG", [9, 25]),
     { ...rec("g5", "Epsilon Oy", [9]), goods: "joysticks for consoles" }], crowds: [] };
   writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify(band));
-  const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"] });
+  const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], goodsTest: { source: "product_words", words: ["joystick", "game controller"] } });
   writeFileSync(driverDir(runDir, "band-shape.json"), JSON.stringify(shape));
   const bodyOf = (statements) => ({ goodsServices: statements.map(([c, t]) => ({ classes: [c], language: "en", description: t })) });
   const ledger = [
@@ -65,17 +64,16 @@ function seedRun() {
   return runDir;
 }
 
-test("each record carries its goods, the ordered classes first, and says when the part a goods ground needs was cut", async () => {
+test("each record carries the goods words the shape tests, k of N, and never the goods text", async () => {
   const runDir = seedRun();
   const r = await session([INIT, call(2, { limit: 10 })], { CLEAROTRON_BAND_RUN_DIR: runDir });
   const byId = Object.fromEntries(body(r, 2).records.map((x) => [x.record_id, x]));
-  assert.equal(byId["/mark/eu/g1"].goods, "[9] game controllers and joysticks");
-  assert.equal(byId["/mark/eu/g1"].goods_cut, false);
-  assert.equal(byId["/mark/eu/g3"].goods, null, "a record with no body on file has no goods, said as null");
-  assert.ok(byId["/mark/eu/g4"].goods.startsWith("[9] printer cartridges"), "the ordered class comes first");
-  assert.equal(byId["/mark/eu/g4"].goods.length, GOODS_ROW_CHARS);
-  assert.equal(byId["/mark/eu/g4"].goods_cut, true);
-  assert.equal(byId["/mark/eu/g5"].goods, "joysticks for consoles", "a row's own goods stand in where the run holds no body");
+  assert.equal(byId["/mark/eu/g1"].goods_words, "2 of 2: joystick, game controller", "stems: joysticks and game controllers match");
+  assert.equal(byId["/mark/eu/g2"].goods_words, "0 of 2");
+  assert.equal(byId["/mark/eu/g3"].goods_words, null, "a record with no body on file has no goods to test, said as null");
+  assert.equal(byId["/mark/eu/g4"].goods_words, "1 of 2: joystick", "the whole text is tested, however long");
+  assert.equal(byId["/mark/eu/g5"].goods_words, "1 of 2: joystick", "a row's own goods stand in where the run holds no body");
+  for (const x of Object.values(byId)) assert.equal(x.goods, undefined, "no goods text on a lookup row");
 });
 
 test("the goods filter keeps records whose goods hold any of the words, and records with no goods on file", async () => {
@@ -90,6 +88,7 @@ test("the tool says what the goods filter does and what the served goods mean", 
   const r = await session([INIT, { jsonrpc: "2.0", id: 2, method: "tools/list" }], { CLEAROTRON_BAND_RUN_DIR: mkdtempSync(join(tmpdir(), "lookup-goods-list-")) });
   const lookup = (r[2]?.result?.tools ?? []).find((t) => t.name === "band_lookup");
   assert.ok(lookup.description.includes("goods (words: records whose goods contain any of them, whole words; a record with no goods on file matches too)"));
-  assert.ok(lookup.description.includes("`goods` is the record's goods, the ordered classes first; `goods_cut` true means the part a goods ground is read from was cut, so open the record before setting it aside on goods"));
+  assert.ok(lookup.description.includes("`goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record"));
+  assert.ok(lookup.description.includes("group (a, b, c or d: that group's lines in the shape's order, one per mark of an owner)"));
   assert.ok(lookup.inputSchema.properties.goods, "the filter is in the schema");
 });

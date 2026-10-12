@@ -164,24 +164,6 @@ export function goodsWordMatcher(words) {
 }
 
 /**
- * The goods a reader is shown for one record: the statements in the in-scope classes first (all of them
- * when no scope is set or the statement names no class), then the rest, cut at `maxChars`. Returns
- * { text, chars, cut } or null when the run holds no goods. `chars` is the full length before the cut;
- * `cut` says the part a goods ground is read from did not fit, so the record must be opened for one: the
- * in-scope statements, or every statement when the record has none in scope. PURE.
- */
-export function goodsExcerpt(goods, { inScopeClasses = [], maxChars = 400 } = {}) {
-  if (!goods || !goods.length) return null;
-  const scope = new Set((inScopeClasses ?? []).map(niceClass).filter(Boolean));
-  const inScope = (g) => scope.size === 0 || g.classes.length === 0 || g.classes.some((c) => scope.has(c));
-  const line = (g) => (g.classes.length ? `[${g.classes.join(",")}] ${g.text}` : g.text);
-  const inScopePart = goods.filter(inScope).map(line).join(" | ");
-  const full = [...goods.filter(inScope), ...goods.filter((g) => !inScope(g))].map(line).join(" | ");
-  return { text: full.length > maxChars ? full.slice(0, maxChars) : full, chars: full.length,
-    cut: (inScopePart || full).length > maxChars };
-}
-
-/**
  * The order as the band shape reads it: the job, with the goods wording, territories and geography taken
  * from the run's own instructed scope, written from the order at intake before any model reads it. A
  * stage replayed from a job rebuilt out of the run's status carries none of those three, so reading them
@@ -195,18 +177,15 @@ export function instructedOrder(P, job = null) {
   return order;
 }
 
-// How much of a record's goods a row `band_lookup` serves. A shape line carries the words matched, not the text.
-export const GOODS_ROW_CHARS = 1500;
-
 /**
  * What the band shape needs to sort the band by the client's goods: the goods reader over this run's own
- * records, the client's goods words from the variants stage, and
- * the word the register's goods-narrowed search asked for beside the one the variants stage named. The
- * client's markets come from the caller: this module is loaded by the band tool server, which reads no
- * account settings. IMPURE (reads the run). Any part that cannot be read is simply absent, and the shape
- * sorts without it.
+ * records; the goods test, which is the client's product words when the variants stage names them and the
+ * goods words otherwise, matched as stems and saying which it is; and the word the register's goods-narrowed
+ * search asked for beside the one the variants stage named. The client's markets come from the caller:
+ * this module is loaded by the band tool server, which reads no account settings. IMPURE (reads the run).
+ * Any part that cannot be read is simply absent, and the shape sorts without it.
  */
-export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CHARS } = {}) {
+export function bandShapeGoods(P) {
   let model = null;
   try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
   let searched = "";
@@ -221,11 +200,7 @@ export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CH
   const words = product ? model.product_words : Array.isArray(model?.goods_words) ? model.goods_words : [];
   const stems = true;   // the word list the shape groups on is matched as stems, whichever source it came from
   const hits = goodsWordCounter(words, { stems });
-  const goods = index.size ? {
-    of: (r) => goodsFor(index, r),
-    hits,
-    matched: goodsWordsMatched(words, { stems }),
-    rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses, maxChars: rowChars })?.cut),
-  } : null;
-  return { goods, goodsWordCount: words.length, dominantTerm: searched || manifestDominant, manifestDominant };
+  const goods = index.size ? { of: (r) => goodsFor(index, r), hits, matched: goodsWordsMatched(words, { stems }) } : null;
+  const goodsTest = { source: product ? "product_words" : words.length ? "goods_words" : "none", words };
+  return { goods, goodsTest, goodsWordCount: words.length, dominantTerm: searched || manifestDominant, manifestDominant };
 }
