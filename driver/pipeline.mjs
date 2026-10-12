@@ -102,7 +102,7 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
+import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
@@ -939,9 +939,9 @@ function deriveBandShape(ctx, band) {
     let crowdContext = null;
     try { if (existsSync(P.crowdContext)) crowdContext = JSON.parse(readFileSync(P.crowdContext, "utf8")); }
     catch { /* evidence artifact unreadable — the shape's crowds simply carry no join */ }
-    let inScopeClasses = [];
-    try { inScopeClasses = inScopeClassList(ctx.job, ctx.profile).map(String); }
-    catch { inScopeClasses = (ctx.job?.classes ?? []).map(String); }
+    // The instructed classes and those the frame added for the client's own goods (decision 18, ruled 2026-09-21): a live identical record in either is a floor.
+    let inScopeClasses = []; try { inScopeClasses = inScopeClassList(ctx.job, ctx.profile).map(String); } catch { inScopeClasses = (ctx.job?.classes ?? []).map(String); }
+    inScopeClasses = withFrameClasses(inScopeClasses, P.runDir);
     // P2-A (charter P2d) — the exact-identity POSITIONS projection rides every shape derivation, so
     // the identity collapse exists BEFORE any digest reads the band. The detail index (registration
     // numbers, IR-base linkage, Madrid designations) comes from _records/ — the fields search rows
@@ -2406,7 +2406,7 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     const proposed = frameHouseElementCandidate(P.runDir);
     if (!proposed) return;   // the ordinary case: the frame proposed nothing and there is no question
 
-    const classes = [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])];
+    const classes = withFrameClasses(inScopeClassList(ctx.job, ctx.profile), P.runDir);
     // THE CLIENT'S OWN NAMES. The profile's trading names are the curated list; the matter's customer is
     // the free-text one. Both, because a profile may be absent on a one-off matter and a customer string
     // may be a person where the filings are held by a company.

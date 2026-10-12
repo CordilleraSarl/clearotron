@@ -30,7 +30,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import {
   acceptMatterFrame, renderMatterFrame, recordMatterFrame, matterFrameWasRecorded,
   matterFrameCallPaths, MATTER_CONTEXT_FILE, SCOPE_BASES, INTAKE_ASK_OWNERS,
-  mergeMatterFrameCall, frameIdentifiedClasses, MEANING_ANGLE_MAX_CHARS,
+  mergeMatterFrameCall, frameIdentifiedClasses, withFrameClasses, MEANING_ANGLE_MAX_CHARS,
 } from "../matter-frame-record.mjs";
 import { channelsDiagnosis, channelsFromMatterContext } from "../scope-ledger.mjs";
 import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone } from "../connotation-search.mjs";
@@ -376,6 +376,20 @@ test("the compile reads the identified classes off the run, and an absent frame 
   const bare = mkdtempSync(join(tmpdir(), "frame-classes-bare-"));
   recordMatterFrame(bare, PARAMS, { instructedScope: SCOPE });
   assert.deepEqual(frameIdentifiedClasses(bare), []);
+});
+
+test("the field is read in the instructed classes and the frame's, so an identical mark in an added class is a floor too", () => {
+  // The band shape and the house-element check both read scope through this one union. A shape that read
+  // the instructed classes alone would leave a live identical mark in a class the frame added for the
+  // client's own goods off the floor list, unread and with no duty on it.
+  const runDir = mkdtempSync(join(tmpdir(), "frame-scope-"));
+  assert.deepEqual(withFrameClasses([32, "33"], runDir), ["32", "33"], "no frame yet: the instructed classes, as strings, unchanged");
+  recordMatterFrame(runDir, { ...PARAMS, identified_classes: [
+    { class: "33", reason: "already instructed: one entry, not two" },
+    { class: "43", reason: "the bar the drinks are served in" },
+  ] }, { instructedScope: SCOPE });
+  assert.deepEqual(withFrameClasses([32, "33"], runDir), ["32", "33", "43"], "instructed first, then the frame's, each once");
+  assert.deepEqual(withFrameClasses(undefined, runDir), ["33", "43"], "no instructed list: the frame's classes alone");
 });
 
 test("the plan compile actually calls it — the wiring, not the helper", () => {
