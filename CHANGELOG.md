@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.1-beta.3
+
+### Fixed
+
+- A crowded clearance on the Codex engine no longer stops before its report.
+
 ## 0.4.1-beta.2
 
 ### Fixed
