@@ -21,7 +21,6 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { foldDiacritics } from "./form-neighbourhood.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
-import { clientMarkets } from "./effective-scope.mjs";
 
 /** A Nice class as the engine compares it: "09", 9 and " 9 " are all "9". Anything else is "". */
 export const niceClass = (c) => {
@@ -177,11 +176,13 @@ export const GOODS_ROW_CHARS = 1500;
 
 /**
  * What the band shape needs to sort the band by the client's goods: the goods reader over this run's own
- * records, the client's goods words from the variants stage, and the word the register's goods-narrowed
- * search asked for beside the one the variants stage named. IMPURE (reads the run). Any part that cannot
- * be read is simply absent, and the shape sorts without it.
+ * records, the client's goods words from the variants stage (the order's own wording counted double), and
+ * the word the register's goods-narrowed search asked for beside the one the variants stage named. The
+ * client's markets come from the caller: this module is loaded by the band tool server, which reads no
+ * account settings. IMPURE (reads the run). Any part that cannot be read is simply absent, and the shape
+ * sorts without it.
  */
-export function bandShapeGoods(P, inScopeClasses = [], { job = null, profile = null, rowChars = GOODS_ROW_CHARS, lineChars = GOODS_LINE_CHARS } = {}) {
+export function bandShapeGoods(P, inScopeClasses = [], { job = null, rowChars = GOODS_ROW_CHARS, lineChars = GOODS_LINE_CHARS } = {}) {
   let model = null;
   try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
   let searched = "";
@@ -200,7 +201,5 @@ export function bandShapeGoods(P, inScopeClasses = [], { job = null, profile = n
     line: (g) => goodsExcerpt(g, { inScopeClasses, maxChars: lineChars }),
     rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses, maxChars: rowChars })?.cut),
   } : null;
-  let markets = [];
-  try { markets = clientMarkets(job, profile); } catch { markets = []; }
-  return { goods, dominantTerm: searched || manifestDominant, manifestDominant, markets };
+  return { goods, dominantTerm: searched || manifestDominant, manifestDominant };
 }

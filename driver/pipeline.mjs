@@ -87,7 +87,7 @@ import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driv
 // CLIENT REPORT through the script-scope coverage row, which is why it is imported rather than typed:
 // the row used to name "Depth 5 (clearance-jx)" — a retired key on a retired ladder — as its remedy.
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
-import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
+import { resolveTerritories, defaultTerritoryState, clientMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
 import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
@@ -959,7 +959,7 @@ function deriveBandShape(ctx, band) {
       runLog(P.runDir, { event: "register-positions-failed", fail: String(e?.message ?? e).slice(0, 160) });
       note(`register-positions derivation failed (non-fatal — the per-registration band stands): ${String(e?.message ?? e).slice(0, 100)}`);
     }
-    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...bandShapeGoods(P, inScopeClasses, { job: ctx.job, profile: ctx.profile }), keysOf: setAsideKeysOf(positions?.positions ?? null) });
+    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...bandShapeGoods(P, inScopeClasses, { job: ctx.job }), markets: clientMarkets(ctx.job, ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null) });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");

@@ -169,9 +169,13 @@ export function narrowingMarkets(job, profile) {
  * them, compared with a record's own jurisdictions. PURE.
  */
 export function clientMarkets(job, profile) {
-  const { scope } = narrowingMarkets(job, profile);
-  const defaults = defaultTerritoryState(profile).kept;
-  return [...new Set([...scope, ...(defaults.length ? defaults : MAJOR_MARKETS)].map((t) => String(t).trim().toUpperCase()).filter(Boolean))];
+  // A sort key, not a scope: an order the ladder cannot read leaves the sort without markets rather than
+  // the band without a shape.
+  try {
+    const { scope } = narrowingMarkets(job, profile);
+    const defaults = defaultTerritoryState(profile).kept;
+    return [...new Set([...scope, ...(defaults.length ? defaults : MAJOR_MARKETS)].map((t) => String(t).trim().toUpperCase()).filter(Boolean))];
+  } catch { return []; }
 }
 
 /**
