@@ -9,6 +9,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decide, pinsAt, CONTEXT, PIN_FILES } from "../../scripts/bench-replay-request.mjs";
@@ -139,4 +140,15 @@ test("the release workflow reads it on every cut, before the notes are consumed"
   assert.ok(step > 0, "the step exists");
   assert.ok(step < release.indexOf("changesets/action"), "it runs before the version step consumes the notes");
   assert.match(release.slice(step, step + 400), /run: node scripts\/release-bench-replay-check\.mjs/);
+});
+
+test("the read judges the commit it is given, so a dispatcher can read main from any checkout", () => {
+  const run = (args) => spawnSync(process.execPath, [join(ROOT, "scripts", "release-bench-replay-check.mjs"), ...args],
+    { cwd: ROOT, encoding: "utf8", env: { ...process.env, REPO: "an/offline-run", GH_TOKEN: "unused-when-no-pin-moved" } });
+  const same = run(["--since", "HEAD", "--head", "HEAD"]);
+  assert.equal(same.status, 0, same.stderr);
+  assert.match(same.stdout, /no engine pin moved since HEAD/);
+  const bad = run(["--head"]);
+  assert.equal(bad.status, 2, "a flag without its value is could-not-look, not a pass");
+  assert.equal(bad.stdout, "");
 });
