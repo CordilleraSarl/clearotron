@@ -1489,7 +1489,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         const no = (cause, reason) => { if (why) Object.assign(why, { file: rel(f), cause, ...(reason ? { reason } : {}) }); return false; };
         if (now === null) return no("absent");
         if (now === preArtifact.get(f)) return no("not-written-by-this-attempt");
-        if (validate) { const v = validate(f, readFileSync(f, "utf8")); if (!v.ok) return no("invalid", v.reason ? String(v.reason) : undefined); }
+        // A said-back refusal is a duty the artifact leaves open, not an invalid artifact: it never stops a rescue.
+        if (validate) { const v = validate(f, readFileSync(f, "utf8")); if (!v.ok && !SAID_BACK_REASON_RE.test(String(v.reason ?? ""))) return no("invalid", v.reason ? String(v.reason) : undefined); }
         return true;
       });
     };
@@ -2117,6 +2118,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // nothing about a cold break. It makes the population countable, which is what a later ruling on
       // that question would need and could not have had.
       if (!cutFired) recordAttemptPrevented("ladder-break:identical-signature", "#460");
+      // A said-back refusal the step left as it was: the pass stands, below, with what it left open recorded.
+      if (SAID_BACK_OPEN_RE.test(fail)) break;
       return { ok: false, attempts: attempt, fail, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], identicalSignature: true, warmEscalated: warmEscalatedAt > 0 || undefined, quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
     }
 
@@ -2182,6 +2185,15 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         note(`[${name}] timeout → one extended retry at ${effTimeout}s`);
       }
     }
+  }
+  // A SAID-BACK REFUSAL NEVER WITHHOLDS THE REPORT (reports always ship, ruled 2026-08-27). The placement form's
+  // refusals refuse the pass so that a corrective turn carries them to the step, which is the only way back to it
+  // within a pass (verify.mjs, placementSaidBackVerdict). They are the stage's last check, so a pass whose attempts
+  // run out on one has passed every other: its artifact stands, and what it left open is recorded, by the floor
+  // duty and by the delivery clamp that names it.
+  if (SAID_BACK_OPEN_RE.test(lastFail ?? "")) {
+    note(`[${name}] ${abbrev(String(lastFail), 160)} — still open when the attempts ran out: the pass stands, and the floor duty records what it left open`);
+    return { ok: true, json: lastJson, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(lastJson), sessionKey: lastKey, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads: lastReads, readsTruncated: lastReadsTruncated, warm: lastWarm, wrote: lastWrote, formRepairs: formRepairsUsed, saidBackOpen: lastFail };
   }
   // sessionKey on FAILURE = the last attempted key (lastKey) — callers that recover terminally (e.g. the
   // WS-A coverage-ledger quarantine) need a session to attribute/resume; it is best-effort, not a winner.
@@ -3306,6 +3318,10 @@ const MAX_FORM_REPAIRS = 2;
 // form, and the ladder spends its attempts on a file the validator never re-reads. Binding to the list
 // is what did one level up, for the same reason. The RE is built from a string for that one splice;
 // nothing else in it changed, and it carries no backslash escapes for the string form to mangle.
+/** The placement form's said-back refusals: corrective while attempts remain, never the reason a pass fails. */
+const SAID_BACK_TOKEN_SRC = "placement_(?:floors_without_fate|refused)=";
+const SAID_BACK_REASON_RE = new RegExp(`^${SAID_BACK_TOKEN_SRC}`);
+const SAID_BACK_OPEN_RE = new RegExp(`^invalid_file:.*?:${SAID_BACK_TOKEN_SRC}`);
 const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|blindframe_[a-z_]+|framediff_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
 
 // — `tool_timeout` IS ON THAT LIST TO KEEP ROUTING WHERE IT ALREADY IS, not to add a lane.

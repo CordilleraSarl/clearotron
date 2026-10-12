@@ -117,11 +117,10 @@ test("a floor row whose tier the form refused is not read as placed: its group's
   const b = r.form().set_aside_groups.find((g) => g.set_aside_group === "b");
   assert.deepEqual(b?.floors_not_covered, ["/mark/eu/b1"], "the refused row's line was counted as placed, so its floor was never said back");
   assert.deepEqual(r.form().floors_without_fate?.map((e) => e.floors), [["/mark/eu/b1"]]);
-  // The row is left without a tier, so the pass refuses it as unfinished, and says why its tier was refused.
+  // The step judged the row and the form refused its tier: the floor is said back, with why the tier was refused.
   assert.equal(v.ok, false);
-  assert.match(v.reason, /^placement_unjudged=1: /);
-  assert.match(v.reason, /The form also refused, each for the reason given: the tier on \/mark\/eu\/b1 \(an identical mark live in an ordered or frame-added class is never out-of-scope-filtered/,
-    "the step was told only that a tier is owed from a closed set it had already used");
+  assert.match(v.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /, "the refused tier was read as a row left unfinished");
+  assert.match(v.reason, /The form also refused, each for the reason given: the tier on \/mark\/eu\/b1 \(an identical mark live in an ordered or frame-added class is never out-of-scope-filtered/);
 });
 
 test("a set-aside the form refuses is said back in the pass with its reason", (t) => {

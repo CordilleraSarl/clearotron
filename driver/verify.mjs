@@ -2666,9 +2666,12 @@ function placementAccountVerdict(dir) {
   if (rows === null) return fail(`placement_form_unreadable (the driver's placement form ${error})`);
   const a = placementRenderAccount(rows);
   const saidBack = placementSaidBackArmed(dir) ? formRefusals(raw) : null;
-  if (a.unjudged.length) {
-    const named = a.unjudged.slice(0, 8).map((u) => `${u.row_id ?? u.select ?? "?"} (${u.cause})`).join(", ");
-    return fail(`placement_unjudged=${a.unjudged.length}: ${named}${a.unjudged.length > 8 ? ", …" : ""} — each of these rows is `
+  // A row whose tier the form refused was judged, and the refusal is said back with its reason below: it is not
+  // a row left unfinished, which fails the pass when the attempts run out.
+  const unjudged = saidBack ? a.unjudged.filter((u) => !saidBack.tierRefused.has(u.select)) : a.unjudged;
+  if (unjudged.length) {
+    const named = unjudged.slice(0, 8).map((u) => `${u.row_id ?? u.select ?? "?"} (${u.cause})`).join(", ");
+    return fail(`placement_unjudged=${unjudged.length}: ${named}${unjudged.length > 8 ? ", …" : ""} — each of these rows is `
       + "in placement-form.json and its own judgement will not render: a selected row owes a `tier` from the closed set and a `reason` "
       + "stating the ground; a row you wrote in full owes mark, owner and jurisdiction too. Finish these rows in the form; "
       + `every other row stands.${saidBack?.also ?? ""}`);
@@ -2712,7 +2715,8 @@ function formRefusals(raw) {
     ...list("set_aside_group_refused").map((x) => `the row on group ${x?.set_aside_group} (${x?.why})`),
   ];
   const floors = list("floors_without_fate").flatMap((e) => (Array.isArray(e?.floors) ? e.floors : []).map((id) => `${id}${e?.group ? ` in (${e.group})` : ""}`));
-  return { refused, floors, also: refused.length ? ` The form also refused, each for the reason given: ${capped(refused)}.` : "" };
+  return { refused, floors, also: refused.length ? ` The form also refused, each for the reason given: ${capped(refused)}.` : "",
+    tierRefused: new Set(list("tier_refused").map((x) => x?.select).filter(Boolean)) };
 }
 function placementSaidBackVerdict({ refused, floors, also }) {
   if (floors.length)
