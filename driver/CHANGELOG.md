@@ -1,5 +1,11 @@
 # clearotron-driver
 
+## 0.4.1-beta.3
+
+### Patch Changes
+
+- Fixed: A crowded clearance on the Codex engine no longer stops before its report.
+
 ## 0.4.1-beta.2
 
 ### Patch Changes
