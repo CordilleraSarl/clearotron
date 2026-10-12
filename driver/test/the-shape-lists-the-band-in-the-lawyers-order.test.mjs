@@ -111,19 +111,41 @@ test("the readable section states each group's count in lines, carries goods wor
   assert.ok(md.indexOf("## The band in the lawyer's order") > md.indexOf("## Floors"), "the groups follow the floors");
 });
 
-test("the list holds the order's territories: a line held only outside them goes to the rest, counted with that reason", () => {
+test("the list holds every register that binds the order's territories; a line held only outside them goes to the rest", () => {
   const records = [
     rec("t1", "QZORVAK", "Alpha Ltd", ["9"], { jurisdictions: "EM" }),       // the EU register, spelt as one register writes it
-    rec("t2", "QZORVAK", "Beta GmbH", ["9"], { jurisdictions: "DE" }),       // a national record outside an EU and CH order
-    rec("t3", "QZORVAK", "Gamma SA", ["9"], { jurisdictions: "WO" }),        // the international register stays in
+    rec("t2", "QZORVAK", "Beta GmbH", ["9"], { jurisdictions: "DE" }),       // a member's national register binds inside an EU order
+    rec("t3", "QZORVAK", "Gamma SA", ["9"], { jurisdictions: "WO" }),        // Madrid binds every ordered territory
     rec("t4", "QZORVAK", "Delta AG", ["9"], { jurisdictions: [] }),          // a record naming no register stays in
+    rec("t5", "QZORVAK", "Epsilon KK", ["9"], { jurisdictions: "JP" }),      // outside an EU and CH order
   ];
   const goods = goodsReader(Object.fromEntries(records.map((r) => [r.record_id.split("/").pop(), [{ classes: ["9"], text: "joysticks" }]])));
   const g = bandGroups(records, { classify, inScope, goods, territories: ["EU", "CH"] });
-  assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Delta AG", "Gamma SA"]);
-  assert.deepEqual(g.by_group.rest.lines.map((l) => [l.owner_name, l.outside]), [["Beta GmbH", true]]);
+  assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Beta GmbH", "Delta AG", "Gamma SA"]);
+  assert.deepEqual(g.by_group.rest.lines.map((l) => [l.owner_name, l.outside]), [["Epsilon KK", true]]);
   assert.deepEqual(g.outside, { lines: 1, records: 1 });
-  assert.deepEqual(bandGroups(records, { classify, inScope, goods }).by_group.a.lines.length, 4, "a worldwide order lists the world");
+  assert.deepEqual(bandGroups(records, { classify, inScope, goods }).by_group.a.lines.length, 5, "a worldwide order lists the world");
+});
+
+test("membership binds both ways: the EU register for a member's order, Benelux for its three, the International Bureau for any", () => {
+  const goods = goodsReader({ m1: [{ classes: ["9"], text: "joysticks" }], m2: [{ classes: ["9"], text: "joysticks" }], m3: [{ classes: ["9"], text: "joysticks" }], m4: [{ classes: ["9"], text: "joysticks" }] });
+  const recs = [rec("m1", "QZORVAK", "Alpha Ltd", ["9"], { jurisdictions: "EM" }), rec("m2", "QZORVAK", "Beta BV", ["9"], { jurisdictions: "BX" }),
+    rec("m3", "QZORVAK", "Gamma SA", ["9"], { jurisdictions: "IB" }), rec("m4", "QZORVAK", "Delta Inc", ["9"], { jurisdictions: "US" })];
+  const inDE = bandGroups(recs, { classify, inScope, goods, territories: ["DE"] });
+  assert.deepEqual(inDE.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Gamma SA"], "an EU mark and an international one bind Germany");
+  const inNL = bandGroups(recs, { classify, inScope, goods, territories: ["NL"] });
+  assert.ok(inNL.by_group.a.lines.some((l) => l.owner_name === "Beta BV"), "Benelux is the Netherlands' national register");
+});
+
+test("an order written in names reads as its codes, and a register given as objects or a map is read", async () => {
+  const { orderTerritories } = await import("../effective-scope.mjs");
+  assert.deepEqual(orderTerritories({ jurisdictions: ["Switzerland"], geography: { mode: "named" } }, null), ["CH"]);
+  const goods = goodsReader({ o1: [{ classes: ["9"], text: "joysticks" }], o2: [{ classes: ["9"], text: "joysticks" }], o3: [{ classes: ["9"], text: "joysticks" }] });
+  const recs = [rec("o1", "QZORVAK", "Alpha Ltd", ["9"], { jurisdictions: [{ jurisdiction: "CH", status: "registered" }] }),
+    rec("o2", "QZORVAK", "Beta AG", ["9"], { jurisdictions: { CH: "registered", US: "pending" } }),
+    rec("o3", "QZORVAK", "Gamma SA", ["9"], { jurisdictions: [{ unknown_shape: true }] })];
+  const g = bandGroups(recs, { classify, inScope, goods, territories: ["CH"] });
+  assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Beta AG", "Gamma SA"], "a register it cannot read keeps the record in");
 });
 
 test("the groups key on the client's product words when the variants stage names them, and on the goods words when it does not", async () => {

@@ -27,7 +27,8 @@ import { normalizeElement, editNeighbourhood, consonantSkeleton, confusableSkele
 import { doubleMetaphone } from "./phonetic-key.mjs";
 import { probeOrder } from "./order-probe.mjs";   // item 11 — inert unless CLEAROTRON_ORDER_PROBE_SEED is set
 import { normKey } from "./placement-diff.mjs";
-import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // — one spelling per register: a band's "EM" and a market's "EU" are one office   // — the set-aside key's owner fold: an owner is grouped the way a set-aside row covers it
+import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // — one spelling per register: a band's "EM" and a market's "EU" are one office
+import { bindingLayersFor } from "./binding-layers.mjs";   // — the registers that bind an ordered territory: its own, the EU's for a member, every member's for the EU, Benelux, Madrid   // — the set-aside key's owner fold: an owner is grouped the way a set-aside row covers it
 
 export const BAND_SHAPE_SCHEMA_VERSION = 1;
 
@@ -615,8 +616,10 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  * same owner, and a ground written about the shown mark set the other aside unseen.
  *
  * THE LIST IS THE ORDER'S SCOPE (ruled 2026-10-13). A worldwide order lists the world; an order naming its
- * territories lists those, and a line held only outside them goes to the rest, counted with that reason
- * and still open to a lookup. A record in no named register, or in the international register, stays in.
+ * territories lists every register that binds them (`bindingLayersFor`): a member state's own register,
+ * the EU's and Madrid's for it, every member's for an EU order, Benelux for its three. A line held only in
+ * registers outside them goes to the rest, counted with that reason and still open to a lookup. A record
+ * whose register cannot be read stays in.
  *
  * "FOR THE CLIENT'S GOODS" MEANS THE PARTICULAR GOODS: the words that name the client's product, never
  * the class words the variants stage adds for the register search. `goods.hits` and `goods.matched`
@@ -639,7 +642,7 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  * @param dominantTerm  the word the register's goods-narrowed search asked for, or ""
  * @param keysOf     record → { line, owner }, or null
  * @param markets    the client's markets, as territory codes
- * @param territories  the order's territories, as codes; empty for a worldwide order
+ * @param territories  the order's territories, as codes (effective-scope.mjs `orderTerritories`); empty for a worldwide order
  */
 export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", keysOf = null, markets = [], territories = [] } = {}) {
   const fold = (x) => foldDiacritics(String(x ?? "")).toLowerCase();
@@ -648,8 +651,15 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
   const code = (t) => canonicalJurisdictionCode(String(t ?? "").trim().toUpperCase());
   const market = new Set((markets ?? []).map(code).filter(Boolean));
   const ordered = new Set((territories ?? []).map(code).filter(Boolean));
-  const territoriesOf = (r) => (Array.isArray(r?.jurisdictions) ? r.jurisdictions : r?.jurisdictions != null ? [r.jurisdictions] : []).map(code).filter(Boolean);
-  const inOrder = (ts) => !ordered.size || !ts.length || ts.some((t) => t === "WO" || ordered.has(t));
+  const offices = new Set([...ordered].flatMap((t) => { try { return bindingLayersFor(t).map((l) => code(l.office)); } catch { return [t]; } }));
+  if (offices.has("WO")) offices.add("IB");   // the International Bureau is the Madrid register by another name
+  // A register as a provider writes it: a code, a list of codes, a list of {jurisdiction, …} or a map keyed
+  // by code. What cannot be read gives no code, and a record with none stays in.
+  const raw = (j) => (j == null ? [] : Array.isArray(j) ? j.flatMap(raw) : typeof j === "object"
+    ? ((j.jurisdiction ?? j.code ?? j.office ?? j.country) != null ? raw(j.jurisdiction ?? j.code ?? j.office ?? j.country) : Object.keys(j))
+    : [j]);
+  const territoriesOf = (r) => raw(r?.jurisdictions).map(code).filter((t) => /^[A-Z]{2,5}$/.test(t));
+  const inOrder = (ts) => !offices.size || !ts.length || ts.some((t) => offices.has(t));
   const lines = new Map();
   for (const r of Array.isArray(records) ? records : []) {
     const { tier } = classify(r);

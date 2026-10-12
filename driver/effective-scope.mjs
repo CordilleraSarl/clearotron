@@ -34,7 +34,7 @@
 // those origins rather than re-deriving them, so it cannot disagree about which layer supplied a value.
 
 import { withRunPlatforms, derivedFloor } from "./profiles.mjs";
-import { recognizedTerritories } from "./territory-tiers.mjs";   // — a staff free-text field must not reach a prompt unchecked
+import { recognizedTerritories, territoryKey } from "./territory-tiers.mjs";   // — a staff free-text field must not reach a prompt unchecked
 
 /**
  * Human-readable provenance, shown to clients.
@@ -184,7 +184,9 @@ export function clientMarkets(job, profile) {
  * A ladder that cannot read the order leaves the lists unscoped rather than the band without a shape. PURE.
  */
 export function orderTerritories(job, profile) {
-  try { return narrowingMarkets(job, profile).scope; } catch { return []; }
+  // Folded as the territory vocabulary folds them: an order that names "Switzerland" is CH, never a name
+  // that matches no register.
+  try { return [...new Set(narrowingMarkets(job, profile).scope.map((t) => territoryKey(t)).filter(Boolean))]; } catch { return []; }
 }
 
 /**
