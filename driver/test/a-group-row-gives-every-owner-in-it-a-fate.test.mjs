@@ -59,8 +59,8 @@ test("a group row with the shape's count is kept and says how many lines it cove
     { set_aside_group: "c", count: 0, ground: "nothing here" },
     { set_aside_group: "e", count: 1, ground: "no such group" },
   ] }, input);
-  assert.deepEqual(u.form.set_aside_groups.map((g) => [g.set_aside_group, g.count, g.covers_lines]), [["a", 1, 1], ["b", 2, 1]],
-    "(a)'s row covers its one line; (b)'s covers Gamma's line only, since Beta's is selected");
+  assert.deepEqual(u.form.set_aside_groups.map((g) => [g.set_aside_group, g.count, g.covers_lines]), [["a", 1, 0], ["b", 2, 0]],
+    "both rows are taken, and neither covers a line holding a floor in a group below a thousand records");
   const why = Object.fromEntries(u.form.set_aside_group_refused.map((x) => [x.set_aside_group, x.why]));
   assert.equal(why.a, undefined, "group (a) takes its row like the others");
   assert.match(why.rest, /count 99 is not the shape's 3/);
@@ -82,16 +82,16 @@ test("a ground by name covers the named line where the owner has several lines, 
     { set_aside_group: "b", count: 2, ground: "identical in class, for unrelated goods" },
     { set_aside_group: "rest", count: 3, ground: "similar to none of the mark's forms, or not live" },
   ] }, input);
-  const groundOf = setAsideGrounds(parsed(u), buildSelectionIndex(input), input.groups);
+  const groundOf = setAsideGrounds(parsed(u), buildSelectionIndex(input), input.groups, input.floors);
   assert.equal(groundOf("/mark/eu/a2").by, "name");
   assert.equal(groundOf("/mark/eu/a1"), null, "Alpha's (a) line is not set aside by a ground written about its other mark");
   assert.equal(groundOf("/mark/eu/a3").group, "rest", "Alpha's dead mark falls to the rest's row, not to the named line");
   assert.equal(groundOf("/mark/eu/b2").by, "name", "a one-line owner named covers its set");
-  assert.deepEqual([groundOf("/mark/eu/b1").by, groundOf("/mark/eu/b1").group], ["group", "b"]);
+  assert.equal(groundOf("/mark/eu/b1"), null, "b1 is a floor in a group below a thousand records: (b)'s row does not answer it");
   assert.equal(groundOf("/mark/eu/u1"), null, "no group row covers a line with no goods on file");
 });
 
-test("every line's fate is counted by the list the shape put it in, and a group row answers its floors", () => {
+test("every line's fate is counted by the list the shape put it in, and a small group's row answers none of its floors", () => {
   const { input } = fixture();
   const u = unionPlacementForm(null, { rows: [
     { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
@@ -102,13 +102,14 @@ test("every line's fate is counted by the list the shape put it in, and a group 
   const index = buildSelectionIndex(input);
   const fates = ownerFates({ groups: input.groups, entries: parsed(u), index, placedUris: ["/mark/eu/a1"] });
   assert.deepEqual({ lines: fates.lines, placed: fates.placed, by_name: fates.by_name, by_group: fates.by_group, unfated: fates.unfated },
-    { lines: 8, placed: 1, by_name: 1, by_group: 5, unfated: 1 });
-  assert.deepEqual([fates.owners, fates.owners_fated], [6, 5], "Zeta's line, with no goods on file, is the one line without a fate");
-  assert.deepEqual(fates.unfated_lines.map((x) => x.list), ["no_goods"]);
+    { lines: 8, placed: 1, by_name: 1, by_group: 3, unfated: 3 }, "(b)'s two lines hold floors, so its row of two records answers neither");
+  assert.deepEqual([fates.owners, fates.owners_fated], [6, 3]);
+  assert.deepEqual(fates.unfated_lines.map((x) => x.list).sort(), ["b", "b", "no_goods"]);
   const duty = reconcileFloorDuty({ floors: input.floors, placements: [{ records: ["/mark/eu/a1"], tier: "headline-candidate", reason: "identical, live" }],
-    setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups) });
-  assert.deepEqual([duty.totals.floors, duty.totals.accounted, duty.undischarged_by_seat], [4, 3, 1], "Zeta's floor waits for its record to be opened");
-  assert.equal(duty.by_tier[SET_ASIDE_TIER], 2, "the two (b) floors are answered by the group's row");
-  const unplaced = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups) });
-  assert.equal(unplaced.undischarged_by_seat, 2, "(a)'s floor, neither placed nor named, has no fate when no row of (a) was written");
+    setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups, input.floors) });
+  assert.deepEqual([duty.totals.floors, duty.totals.accounted, duty.undischarged_by_seat], [4, 1, 3],
+    "below a thousand records a floor is placed or named: (b)'s row answers neither of its floors, and Zeta's waits to be opened");
+  assert.equal(duty.by_tier[SET_ASIDE_TIER], undefined);
+  const unplaced = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups, input.floors) });
+  assert.equal(unplaced.undischarged_by_seat, 4, "nothing placed: every floor is still owed");
 });

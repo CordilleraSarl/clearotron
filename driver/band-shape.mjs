@@ -661,7 +661,8 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     const outside = !inOrder(ts);
     const dominant = Boolean(domRe && domRe.test(fold(r?.mark_text)));
     const group = outside ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
-    const rec = { r, tier, hits, words, live, inScope: s, group, outside, territories: ts, inMarket: ts.some((t) => market.has(t)) };
+    const floor = (tier === "identical" || tier === "near-identical") && live && s;   // the floors' own test
+    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, territories: ts, inMarket: ts.some((t) => market.has(t)) };
     const keys = typeof keysOf === "function" ? keysOf(r) : null;
     const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
     const key = keys?.line ?? `line:${ownerKey}|${normMark(r?.mark_text) || String(r?.record_id ?? "").trim().toLowerCase()}`;
@@ -691,6 +692,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
       territories: [...new Set(l.recs.flatMap((x) => x.territories))].sort(),
       classes: [...new Set(l.recs.flatMap((x) => classesOf(x.r)))].sort((p, q) => Number(p) - Number(q) || p.localeCompare(q)),
       record_id: best.r?.record_id ?? null,
+      floors: l.recs.filter((x) => x.floor).length,
     };
     // A line placed in (a), (c) or (d) by the goods test, whose records carry no goods the engine can read,
     // cannot be judged from the line: it is listed apart, opened before a fate, and no group row covers it.

@@ -3009,7 +3009,7 @@ function placementSetAsideGrounds(P) {
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
-    return setAsideGrounds(form.set_aside, buildSelectionIndex(input), input.groups);
+    return setAsideGrounds(form.set_aside, buildSelectionIndex(input), input.groups, input.floors);
   } catch { return () => null; }
 }
 

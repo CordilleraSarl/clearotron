@@ -193,6 +193,13 @@ export function servedLines(groups, served, index) {
   return out;
 }
 
+/**
+ * May a group's row answer for a floor in it? Only in a group of a thousand records or more, her "do not
+ * write up the rest" (ruled 2026-10-13). Below that, a floor is placed or set aside by name. ONE predicate,
+ * read by the grounds, the fate count and so the floor duty, so the three cannot drift apart. PURE.
+ */
+export const groupRowCoversFloors = (groups, g) => (groups?.[g]?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
+
 /** Owners the shape lists on more than one line: a ground by name for one of them covers that line only. PURE. */
 export function multiLineOwners(groups) {
   const n = new Map();
@@ -250,7 +257,7 @@ export function setAsideKeysOf(positions) {
  * through, so the owner is read one way at both ends. A ground by name wins over the owner's group row;
  * `groups` is the band shape's, which says which group each owner sits in. PURE; never throws.
  */
-export function setAsideGrounds(entries, index, groups = null) {
+export function setAsideGrounds(entries, index, groups = null, floors = null) {
   const byKey = new Map(), byGroup = new Map();
   for (const e of Array.isArray(entries) ? entries : []) {
     if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && e?.ground) byGroup.set(g, e); }
@@ -258,6 +265,7 @@ export function setAsideGrounds(entries, index, groups = null) {
   }
   const multi = multiLineOwners(groups);
   const groupOf = byGroup.size ? groupOfKeys(groups) : new Map();
+  const floorUris = new Set((Array.isArray(floors) ? floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
   return (uri) => {
     if ((!byKey.size && !byGroup.size) || !index?.resolve) return null;
     const canonical = index.resolve(uri);
@@ -266,6 +274,7 @@ export function setAsideGrounds(entries, index, groups = null) {
     const named = (line && byKey.get(line)) ?? (multi.has(owner) ? null : byKey.get(owner));
     if (named) return { ...named, by: "name" };
     const group = line ? groupOf.get(line) : null, row = group ? byGroup.get(group) : null;
+    if (row && floorUris.has(normalizeRecordUri(uri) || String(uri ?? "")) && !groupRowCoversFloors(groups, group)) return null;
     return row ? { set_aside: null, key: line, owner: null, ground: row.ground, by: "group", group } : null;
   };
 }
@@ -295,7 +304,8 @@ export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}
     const c = zero();
     for (const l of lines) {
       const byName = named.has(l.key) || (!multi.has(l.owner_key) && named.has(l.owner_key));
-      const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : (list !== "no_goods" && grouped.has(list)) ? "by_group" : "unfated";
+      const rowMay = list !== "no_goods" && grouped.has(list) && (!(l.floors > 0) || groupRowCoversFloors(groups, list));
+      const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : rowMay ? "by_group" : "unfated";
       c.lines++; c[fate]++; totals.lines++; totals[fate]++;
       if (fate === "unfated") unfated_lines.push({ list, key: l.key });
       ownerFated.set(l.owner_key, (ownerFated.get(l.owner_key) ?? true) && fate !== "unfated");

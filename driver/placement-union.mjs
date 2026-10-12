@@ -25,7 +25,8 @@
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
-  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, lineKey, servedLines } from "./placement-form.mjs";
+  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, lineKey, servedLines,
+  groupRowCoversFloors } from "./placement-form.mjs";
 import { BAND_GROUPS } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
@@ -216,7 +217,9 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const [key, g] of groupOfKeys(groups)) {
     const owner = ownerOfLine.get(key);
     const named = setAside.has(key) || (!multi.has(owner) && setAside.has(owner));
-    if (setAsideGroups.has(g) && !placedLines.has(key) && !named) covers.set(g, (covers.get(g) ?? 0) + 1);
+    const line = (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).find((l) => l.key === key);
+    const floorHeld = (line?.floors ?? 0) > 0 && !groupRowCoversFloors(groups, g);
+    if (setAsideGroups.has(g) && !placedLines.has(key) && !named && !floorHeld) covers.set(g, (covers.get(g) ?? 0) + 1);
   }
   for (const [g, e] of setAsideGroups) e.covers_lines = covers.get(g) ?? 0;
 
