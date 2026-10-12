@@ -156,7 +156,7 @@ test("a group's row answers a floor only in a group of a thousand records or mor
   const entries = parsePlacementForm(JSON.stringify(u.form)).set_aside;
   const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(entries, buildSelectionIndex(input), input.groups, input.floors) });
   assert.equal(input.floors.length, CROWDED_GROUP_RECORDS, "guard: every line of the crowded (b) is a floor");
-  assert.equal(duty.undischarged_by_seat, 0, "a crowded group's row is her crowd block: it answers its floors");
+  assert.equal(duty.undischarged_by_seat, 0, "a crowded group's row is the crowded field's block: it answers its floors");
 });
 
 test("a ground by name covers the named mark only, never the owner's other marks in the rest", async () => {

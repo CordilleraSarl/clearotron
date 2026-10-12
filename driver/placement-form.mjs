@@ -138,8 +138,8 @@ export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.
 // ONE ROW PER GROUP. The band shape lists the band in the lawyer's order, one line per mark of an owner,
 // and counts the rest. A listed line gets a fate, not a row: it is placed, or set aside by name, or covered
 // by its group's one row, which states why everything in the group the step neither placed nor named is not
-// raised with the client: her "read the near ones first, list the rest" (ruled 2026-10-12, (a) included).
-// These words await the owner's reading of their before and after.
+// raised with the client: the crowded-field method's "read the near ones first, list the rest" (ruled
+// 2026-10-12, (a) included).
 export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
 export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
   when: "a group the shape lists, (a) to (d), or the rest it counts: one row sets aside every line in it that "
@@ -169,8 +169,8 @@ export function groupName(written) {
 }
 
 /**
- * Which group each line sits in, by position key: the shape's lists (a) to (d) and the rest. A line the
- * shape lists as goods cut is in no group, so no group row covers it. PURE.
+ * Which group each line sits in, by position key: the shape's lists (a) to (d) and the rest. A line the goods
+ * test could not place is in no group, so no group row covers it. PURE.
  */
 export function groupOfKeys(groups) {
   const out = new Map();

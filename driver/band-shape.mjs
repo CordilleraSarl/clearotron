@@ -5,8 +5,8 @@
 // The 2026-07-28 postmortem's lesson: the merged band is megabytes (median 5.2MB across the archive; Read hard-refuses
 // >256KB), so judgment never read it whole — every stage sliced it with improvised, unreviewed shell
 // (digest#2: 71 ad-hoc Bash calls). This module is the reading layer's frozen-plan equivalent: a PURE,
-// deterministic projection of the band that fits in one Read (<256KB by construction for everything
-// except the unconditional floors), derived by the driver after EVERY named-band re-merge.
+// deterministic projection of the band, served in parts once it outgrows one answer (the groups section grows
+// with the band; the parts banner says how many), derived by the driver after EVERY named-band re-merge.
 //
 // What it is NOT: a relevance/sufficiency/materiality judgment. Tiers are MECHANICAL string classes
 // (the same pure utils the form floor is built from — normalizers + doubleMetaphone); whether a
@@ -580,7 +580,7 @@ const floorRow = (r, cls) => ({
 
 // ── THE BAND IN THE LAWYER'S ORDER ──────────────────────────────────────────────────────────────────
 //
-// Her method for a crowded field, as the owner ruled it (2026-09-21): identical marks in the class;
+// The crowded-field method, as ruled 2026-09-21: identical marks in the class;
 // identical marks for the particular goods; the dominant word for the particular goods; then the rest,
 // counted, with its rule. "Fifty? Read them all. A few hundred? Sort by the client's goods and markets,
 // read the near ones first, list the rest. A thousand or more? The field is crowded: read the identical
@@ -589,7 +589,7 @@ const floorRow = (r, cls) => ({
 // Code sorts on fields the records carry: the mark's tier against the targets, a goods-word match, class
 // and status. It judges nothing.
 export const BAND_GROUPS = ["a", "b", "c", "d", "rest"];
-// Her "a thousand or more": a group this size is served as its count and its first page.
+// The method's "a thousand or more": a group this size is served as its count and its first page.
 export const CROWDED_GROUP_RECORDS = 1000;
 const TIER_RANK = { identical: 0, "near-identical": 1, "same-family": 2, other: 3, unclassifiable: 4 };
 
@@ -614,7 +614,7 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
 }
 
 /**
- * The band in her order: ONE LINE PER MARK OF AN OWNER, in one collated list per group. PURE. Her unit is
+ * The band in the ruled order: ONE LINE PER MARK OF AN OWNER, in one collated list per group. PURE. The unit is
  * the mark, not the owner: an owner shown on one line under its closest mark hid a different mark of the
  * same owner, and a ground written about the shown mark set the other aside unseen.
  *
@@ -992,7 +992,7 @@ function topTable(md, title, cols, entries, cap = 30) {
   if (rows.length > cap) md.push(`| … ${fmtN(rows.length - cap)} more (full detail in band-shape.json) | |`);
 }
 
-/** The readable mirror — small enough to Read whole; the floors section is complete by contract. PURE. */
+/** The readable mirror, served in parts when large; each floor is marked on its line, and the data keeps them all. PURE. */
 /**
  * §8 — mark → the sharpest floor tier that mark holds, for the write-up-form predicate.
  *
@@ -1024,14 +1024,13 @@ export function floorTierByMark(shape) {
 /** The same normalisation the floors were built with, so a caller cannot key the map differently. */
 export const floorMarkKey = (s) => normMark(s);
 
-// The group section's words await the owner's reading of their before and after. One line per mark of an
-// owner, about 150 characters: the goods words it matched, never the goods text. Each list carries her size
-// sentence for its own length: read them all; read the near ones first and list the rest; or, at a thousand
-// records or more, the count and the first page.
+// One line per mark of an owner, about 150 characters: the goods words it matched, never the goods text, and
+// whether it holds a floor. Each list carries the method's size sentence for its own length: read them all;
+// read the near ones first and list the rest; or, at a thousand records or more, the count and the first page.
 const GROUP_HEADINGS = {
   a: "(a) Identical or near-identical to the mark or one of its forms, for the client's goods",
   b: "(b) Identical or near-identical to the mark or one of its forms, in the ordered classes",
-  c: "(c) The same family as the mark, for the client's goods",
+  c: "(c) The same family as the mark, or carrying the searched word, for the client's goods",
   d: "(d) Every other live mark in the ordered classes, for the client's goods",
 };
 export const READ_ALL_LINES = 50;
@@ -1045,13 +1044,13 @@ function renderGroupsMd(md, groups, rows = []) {
   if (groups.dominant_term && groups.manifest_dominant && normKey(groups.dominant_term) !== normKey(groups.manifest_dominant))
     md.push(`Sorted on «${cell(groups.dominant_term)}», the word the register's goods-narrowed search asked for (the variants stage named «${cell(groups.manifest_dominant)}»).`, "");
   // The words the goods test read, and where they came from: the client's product words, or, where the
-  // variants stage named none, the class words of the register search. A fallback is said, never silent.
+  // variants stage named none, the words the register search was narrowed by. A fallback is said, never silent.
   const tested = groups.goods_test ?? { source: "none", words: [] };
   const named = tested.words?.length ? `: ${tested.words.map((w) => `«${cell(w)}»`).join(", ")}` : "";
   md.push(tested.source === "product_words"
     ? `The goods test reads each record's goods for the client's product words${named}.`
     : tested.source === "goods_words"
-      ? `No product words were given, so the goods test reads each record's goods for the class words of the register search${named}. They name the classes, not the client's product, so "for the client's goods" below means a record's goods hold one of them.`
+      ? `No product words were given, so the goods test reads each record's goods for the words the register search was narrowed by${named}. They include words other filings use for the same goods, so "for the client's goods" below is wider than the client's own product.`
       : "No goods words were given, so no record was tested on its goods.", "");
   if (groups.territories?.length) md.push(`The list holds the order's territories: ${groups.territories.join(", ")}.`, "");
   if (groups.markets?.length) md.push(`The client's markets: ${groups.markets.join(", ")}.`, "");
@@ -1123,7 +1122,7 @@ export function bandShapeMdLines(shape, { positions = null } = {}) {
   md.push("|---|---|");
   for (const t of SHAPE_TIERS) md.push(`| ${t} | ${fmtN(shape.totals.by_tier[t])} |`);
 
-  // THE FLOORS ARE MARKED ON THEIR LINES, NOT LISTED A SECOND TIME (ruled 2026-10-12). The band in her order
+  // THE FLOORS ARE MARKED ON THEIR LINES, NOT LISTED A SECOND TIME (ruled 2026-10-12). The band in the ruled order
   // carries every floor as a line, and a per-record list of the same records was most of a crowded shape the
   // step had to read whole before it could act. The shape's data keeps every floor for the floor duty, and
   // `band_lookup` returns any floor record on request.

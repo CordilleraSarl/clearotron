@@ -3,7 +3,7 @@
 //
 // THE SHAPE LISTS THE BAND IN THE LAWYER'S ORDER, ONE LINE PER MARK OF AN OWNER, AND COUNTS THE REST.
 //
-// Her method for a crowded field: identical marks for the client's goods; identical marks in the ordered
+// The crowded-field method: identical marks for the client's goods; identical marks in the ordered
 // classes; the same family for the client's goods; every other live mark in the ordered classes for the
 // client's goods; the rest counted with its rule. These arms pin the record rule, the line per position,
 // the order inside a group as ruled (the client's goods on a live record in the ordered classes, then live
@@ -25,7 +25,7 @@ const goodsReader = (byId) => ({
   matched: goodsWordsMatched(["game controllers", "joysticks"]),
 });
 
-test("one record's group follows her order, and goods the run does not hold pass the goods test", () => {
+test("one record's group follows the ruled order, and goods the run does not hold pass the goods test", () => {
   assert.equal(recordGroup({ tier: "identical", live: false, inScope: false, hits: 1 }), "a", "identical for the goods: (a), live or not, in class or not");
   assert.equal(recordGroup({ tier: "near-identical", live: true, inScope: true, hits: 0 }), "b", "identical in the ordered classes, goods unrelated: (b)");
   assert.equal(recordGroup({ tier: "same-family", live: true, inScope: false, hits: 2 }), "c");
@@ -250,7 +250,7 @@ test("the shape says which words its goods test read, and says so when it fell b
     assert.match(product.md, /The goods test reads each record's goods for the client's product words: «joystick»\./);
     const fallback = shapeFor({ goods_words: ["computer peripherals", "joysticks"] });
     assert.deepEqual(fallback.test, { source: "goods_words", words: ["computer peripherals", "joysticks"] });
-    assert.match(fallback.md, /No product words were given, so the goods test reads each record's goods for the class words of the register search: «computer peripherals», «joysticks»\. They name the classes, not the client's product/);
+    assert.match(fallback.md, /No product words were given, so the goods test reads each record's goods for the words the register search was narrowed by: «computer peripherals», «joysticks»\. They include words other filings use for the same goods/);
     const none = shapeFor({});
     assert.equal(none.test.source, "none");
     assert.match(none.md, /No goods words were given, so no record was tested on its goods\./);

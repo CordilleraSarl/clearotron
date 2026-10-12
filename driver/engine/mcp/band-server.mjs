@@ -275,9 +275,9 @@ function bandShape(params) {
   const part = Math.min(Math.max(1, Math.floor(Number(params?.part)) || 1), total);
   logRead("band_shape", { format, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length,
     ...(read ? { served_lines: read.keys[part - 1], group_parts: read.groupParts } : {}) });
-  const head = `[band_shape part ${part}/${total} — this shape exceeds one tool response, so it is served in ${total} parts` +
-    ` split at line boundaries (every floor row is intact). The shape is COMPLETE only once ALL ${total} parts are read` +
-    `${format === "json" ? "; concatenate the parts before parsing the JSON" : ""} — never reason from a partial shape.]`;
+  const head = `[band_shape part ${part}/${total} — the shape is served in ${total} parts, split between lines. Read every part:` +
+    ` the band's groups, in the lawyer's order, run through them, and every floor in them has a fate on the form` +
+    `${format === "json" ? "; concatenate the parts before parsing the JSON" : ""}.]`;
   const tail = part < total
     ? `\n[end of part ${part}/${total} — call band_shape again with {"part": ${part + 1}} for the next part]`
     : `\n[end of part ${total}/${total} — the shape is complete once parts 1..${total} are all read]`;
@@ -517,7 +517,7 @@ serve({
   tools: [
     {
       name: "band_shape",
-      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the floors (every live in-class identical/near-identical record), each marked on its line in the band in the lawyer's order, class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. Read this FIRST, then pull what it names via band_lookup/band_record. A large shape is served in PARTS (the response labels itself part N/M and names the next call — read ALL parts; the shape is complete only then, and a partial read is never the shape). Every call is logged to the run's reading audit.",
+      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the floors (every live in-class identical/near-identical record), each marked on its line in the band in the lawyer's order, class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. Read this FIRST, then pull what it names via band_lookup/band_record. A large shape is served in parts, each naming the next call: read every part, since the band's groups, in the lawyer's order, run through them, and every floor in them has a fate on the form. Every call is logged to the run's reading audit.",
       inputSchema: { type: "object", properties: { format: { type: "string", enum: ["md", "json"], description: "md (default, readable) or json (machine shape)" }, part: { type: "number", description: "1-based part number when the shape is served in parts (default 1)" } } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandShape,

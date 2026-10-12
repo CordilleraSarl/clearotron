@@ -5,7 +5,7 @@
 //
 // A line the shape lists, one mark of one owner, is placed, set aside by name, or covered by its group's one
 // row, which says why everything in the group the step neither placed nor named is not raised with the
-// client: her "read the near ones first, list the rest". A ground by name covers the named line only, one
+// client: the crowded-field method's "read the near ones first, list the rest". A ground by name covers the named line only, one
 // mark of its owner, so one mark's ground never sets another mark aside unseen. These arms pin the row the
 // union keeps and the ones it reports back, the ground each record leaves with, the fate count by list, and
 // the floors a group row answers. The shape is built by the product from an invented band, so every key is

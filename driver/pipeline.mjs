@@ -970,7 +970,7 @@ function deriveBandShape(ctx, band) {
       blind_spots: shape.blind_spots.map((b) => ({ kind: b.kind, count: b.count })) });
     // The goods test falls back where the variants stage named no product words; the run says so.
     if (tested.source !== "product_words")
-      note(`band shape: no product words named — the goods test reads ${tested.source === "goods_words" ? "the class words of the register search" : "no words, so every line it would place is listed as not tested on goods"}`);
+      note(`band shape: no product words named — the goods test reads ${tested.source === "goods_words" ? "the words the register search was narrowed by" : "no words, so every line it would place is listed as not tested on goods"}`);
   } catch (e) {
     runLog(P.runDir, { event: "band-shape-failed", fail: String(e?.message ?? e).slice(0, 200) });
     note(`band-shape derivation failed (non-fatal — judgment still holds band_lookup over the band; machine checks read the complete band): ${String(e?.message ?? e).slice(0, 120)}`);

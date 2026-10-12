@@ -85,3 +85,25 @@ test("nothing the step reads promises the floors listed a second time, one per r
     assert.doesNotMatch(text, /listed individually|Every floor row must be weighed|complete floors list|floors-heavy shape/, `the ${where} still promises a per-record floors list`);
   assert.match(MANUAL, /every live in-class identical\/near-identical record, each marked on its line in the band/);
 });
+
+test("the four places that ask for the shape read whole say one thing, and none promises more than the shape holds", async () => {
+  const { BAND_READING_CONTRACT } = await import("../stages.mjs");
+  const SERVER = readFileSync(new URL("../engine/mcp/band-server.mjs", import.meta.url), "utf8");
+  const ONE = "read every part, since the band's groups, in the lawyer's order, run through them";
+  for (const [where, text] of [["reading contract", BAND_READING_CONTRACT], ["manual", MANUAL], ["band_shape description", SERVER]])
+    assert.ok(text.includes(ONE), `the ${where} does not say it`);
+  assert.ok(SERVER.includes("Read every part:` +\n    ` the band's groups, in the lawyer's order, run through them, and every floor in them has a fate on the form"), "the parts banner says it");
+  const SHAPE_TOOL = SERVER.slice(SERVER.indexOf("function bandShape("), SERVER.indexOf("\n}\n", SERVER.indexOf("function bandShape("))) + SERVER.match(/description: "The deterministic shape[^"]*"/)[0];
+  for (const [where, text] of [["reading contract", BAND_READING_CONTRACT], ["manual", MANUAL], ["band_shape tool", SHAPE_TOOL]])
+    assert.doesNotMatch(text, /read ALL parts|COMPLETE only once|no lookup pattern excuses|a partial shape is never the shape/, `the ${where} still says it the old way`);
+  assert.doesNotMatch(MANUAL, /\bher\b/, "the manual points at a person it never names");
+  assert.match(MANUAL, /read its goods in `band_record`, unless its goods words already show the ground/);
+});
+
+test("the fallback names its words as the register search's, and (c)'s heading names the searched word it holds", () => {
+  const { md } = buildBandShape({ enumerated: [rec("x1", "QZORVAK", "Alpha Ltd")], crowds: [] }, { targets: ["Qzorvak"], inScopeClasses: ["9"],
+    goodsTest: { source: "goods_words", words: ["joysticks"] } });
+  assert.ok(md.includes("No product words were given, so the goods test reads each record's goods for the words the register search was narrowed by: «joysticks». They include words other filings use for the same goods, so \"for the client's goods\" below is wider than the client's own product."));
+  assert.doesNotMatch(md, /class words/);
+  assert.ok(md.includes("### (c) The same family as the mark, or carrying the searched word, for the client's goods"));
+});
