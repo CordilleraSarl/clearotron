@@ -20,6 +20,7 @@ import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync } from
 import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
+import { answerBudget } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
@@ -98,7 +99,8 @@ const loadJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 // contract is honest and explicit: an over-size shape announces "part N/M" and names the next call;
 // the common single-part case is served verbatim with no banner. The part size was a test seam with a
 // floor under it so a misconfiguration could never shred the shape into confetti; step 3 deleted
-// the knob, and a constant cannot be misconfigured.
+// the knob, and a constant cannot be misconfigured. A smaller answer size still lowers it
+// (SHAPE_PART_SERVED, below), never under the answer size's own floor.
 const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever set it
 
 // PR-11 — the SAME transport cap bounds the other two tools (they were shipped unbounded): a
@@ -106,7 +108,19 @@ const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever 
 // per-tool-output token cap and error the call — killing the reading path exactly where the record
 // volume is highest. band_lookup TRIMS records (the full match count always survives, with an
 // honest note); band_record serves PARTS like band_shape (a record is a document — never trimmed).
-const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONSE_CHARS) || SHAPE_PART_CHARS);
+// Given an answer size and no band size of its own, the band answers in five sixths of it: the rest is room
+// for the quotes and line breaks a printout adds (up to 13% on band answers) and for a banner, so a band
+// answer is never split a second time (shared/answer-parts.mjs). 37,500 on Claude, 30,000 on codex.
+const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONSE_CHARS)
+  || (answerBudget() ? Math.floor(answerBudget() / 1.2) : SHAPE_PART_CHARS));
+
+// The shape is split at the smaller of its own part size and the answer size, because codex cuts the
+// middle out of a read over about 39,000 bytes and is given a smaller answer size for that
+// (engine/mcp/codex-config.mjs, CODEX_BAND_ANSWER_CHARS). Measured in testing, 2026-10-11: a GPT model that
+// printed a 70,269-character shape part to read it named 11 of its 24 marker rows, and in one attempt of a
+// real run four of five shape reads were that long. Never larger than the constant,
+// so a larger answer size cannot push a part past Claude's limit; with no size set, nothing changes.
+const SHAPE_PART_SERVED = Math.min(SHAPE_PART_CHARS, RESPONSE_CHARS);
 
 /** Split text into parts of ≤ budget chars, cutting only at line boundaries (an over-budget single
  *  line still ships whole — never cut mid-line). Concatenating the parts with "\n" restores the
@@ -216,7 +230,7 @@ function bandShape(params) {
   if (!RUN_DIR) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." }; }
   if (!existsSync(p)) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: `ERROR: ${p} not found — the driver derives it after the register fan-in; if the band exists but the shape does not, report this as a driver defect (do NOT slice the raw band instead).` }; }
   const text = readFileSync(p, "utf8");
-  const parts = splitAtLines(text, SHAPE_PART_CHARS);
+  const parts = splitAtLines(text, SHAPE_PART_SERVED);
   const total = parts.length;
   if (total === 1) {                                    // the common case — served verbatim, no banner
     logRead("band_shape", { format }, { ok: true, bytes: text.length });
@@ -240,6 +254,11 @@ function bandLookup(params = {}) {
   try { band = loadJson(bandPath()); } catch (e) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: `ERROR: band unreadable (${e.message}) — a driver-side defect; report it, never hand-repair the band.` }; }
   const { record_id, owner, nice_class, tier, qid, query, text, status, live_only = false } = params;
   const limit = Math.max(1, Math.min(Number(params.limit) || 20, 100));
+  // PAGING. A large band is read page by page from `offset`, in the band's own order, and a capped answer
+  // names the next offset. Without it the only way to see every record was to slice the band by owner or
+  // text fragments, and a seat told to judge the complete band read it many times over (1,423 records,
+  // 2,287 lookups, 65.8 MB, until the engine's output cap stopped the turn).
+  const offset = Math.max(0, Math.floor(Number(params.offset) || 0));
   if (tier && !SHAPE_TIERS.includes(tier)) return { isError: true, text: `ERROR: tier must be one of ${SHAPE_TIERS.join(" | ")}.` };
 
   // tier filtering classifies against the SHAPE's own frozen targets — same classifier, same result.
@@ -270,7 +289,7 @@ function bandLookup(params = {}) {
     if (text && !norm(r?.mark_text).includes(norm(text))) continue;
     if (prepared && classifyRecord(r?.mark_text, prepared).tier !== tier) continue;
     matched++;
-    if (hits.length < limit) hits.push(project(r));
+    if (matched > offset && hits.length < limit) hits.push(project(r));
   }
   // matching crowd descriptors ride along (a lookup that lands in an un-enumerated zone must SEE that).
   const crowds = (Array.isArray(band?.crowds) ? band.crowds : []).filter((c) => {
@@ -301,9 +320,10 @@ function bandLookup(params = {}) {
   // The full `matched` count always ships, and the note says exactly how many records were withheld.
   let byteCapped = 0;
   const body = () => JSON.stringify({
-    matched, returned: hits.length,
-    ...(matched > hits.length ? { note: `capped at ${hits.length} — narrow the filters${byteCapped ? "" : " (or raise limit ≤100)"} to see the rest; the count above is the full match` } : {}),
-    ...(byteCapped ? { byte_cap_note: `${byteCapped} matched record(s) withheld to fit one tool response — narrow the filters (owner / nice_class / tier / qid) and look them up in smaller slices` } : {}),
+    matched, returned: hits.length, ...(offset ? { offset } : {}),
+    ...(matched > offset + hits.length ? { next_offset: offset + hits.length } : {}),
+    ...(matched > offset + hits.length ? { note: `capped at ${hits.length} — call again with offset: ${offset + hits.length} for the next page; the count above is the full match` } : {}),
+    ...(byteCapped ? { byte_cap_note: `${byteCapped} matched record(s) withheld to fit one tool response — call again with offset: ${offset + hits.length} for the rest` } : {}),
     records: hits,
     ...(crowds.length ? { matching_crowds: crowds, crowd_note: "these matching slices were NOT enumerated — records under them may exist that no lookup can return; weigh the descriptor, never treat this result as their clean"
       + (refusedCrowds ? ` — and ${refusedCrowds} of them was/were NEVER ANSWERED at all (see "refusal"): no count exists for those, so they are unsearched rather than empty, and nothing about them can be read off a zero` : "")
@@ -405,11 +425,11 @@ serve({
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, limit (default 20, max 100). Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, limit (default 20, max 100), offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page). Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
-        status: { type: "string" }, live_only: { type: "boolean" }, limit: { type: "number" },
+        status: { type: "string" }, live_only: { type: "boolean" }, limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandLookup,
