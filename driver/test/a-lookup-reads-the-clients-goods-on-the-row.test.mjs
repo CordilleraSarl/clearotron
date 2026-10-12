@@ -91,6 +91,6 @@ test("the tool says what the goods filter does and what the served goods mean", 
   const lookup = (r[2]?.result?.tools ?? []).find((t) => t.name === "band_lookup");
   assert.ok(lookup.description.includes("goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too)"));
   assert.ok(lookup.description.includes("`goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record"));
-  assert.ok(lookup.description.includes("group (a, b, c, d or no_goods: that list's lines in the shape's order, one per mark of an owner)"));
+  assert.ok(lookup.description.includes("group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner)"));
   assert.ok(lookup.inputSchema.properties.goods, "the filter is in the schema");
 });

@@ -233,7 +233,9 @@ test("the rest's row never answers a floor: one held outside the order's territo
   const { shape } = buildBandShape({ enumerated, crowds: [] }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
     keysOf: setAsideKeysOf(positions.positions), territories: ["EU"] });
   assert.deepEqual([shape.groups.rest.records, shape.groups.b.lines], [CROWDED_GROUP_RECORDS, 1], "the floor is listed in (b); the rest is the thousand others");
-  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups, served: { lines: new Set(), records: new Set() } };
+  // The step read the rest's first page, which the shape prints: a crowded rest's row stands on it and the count.
+  const firstPage = new Set(shape.groups.rest.list.slice(0, shape.groups.first_page).map((l) => l.key));
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups, served: { lines: firstPage, records: new Set() } };
   const u = unionPlacementForm(null, { rows: [{ set_aside_group: "rest", count: CROWDED_GROUP_RECORDS, ground: "held only outside the order's territories" }] }, input);
   assert.equal(u.form.set_aside_groups.length, 1, "guard: the rest's row is taken");
   const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors) });

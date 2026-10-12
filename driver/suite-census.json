@@ -1018,8 +1018,8 @@
           "todos": 0
         },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
-          "tests": 7,
-          "asserts": 17,
+          "tests": 8,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -6351,6 +6351,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-rest-is-listed-by-the-size-rule.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "the-retired-azure-settings-are-read-by-nothing.test.mjs": {
           "tests": 3,
           "asserts": 14,
@@ -6888,6 +6894,12 @@
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 15,
           "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "what-the-form-refuses-reaches-the-step-in-the-pass.test.mjs": {
+          "tests": 7,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },

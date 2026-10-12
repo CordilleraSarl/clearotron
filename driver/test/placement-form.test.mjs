@@ -112,7 +112,7 @@ test("removal is EXPLICIT, and it is the only way a row leaves the form", () => 
 test("a selection the fold does not hold is REPORTED BY ID, never silently dropped", () => {
   const u = unionPlacementForm(null, [{ select: "/mark/xx/NOPE", tier: "watchlist-annex", reason: "typo" }], INPUT);
   assert.equal(u.unresolved, 1);
-  assert.deepEqual(u.form.unresolved, [{ select: "/mark/xx/NOPE", tier: "watchlist-annex" }]);
+  assert.deepEqual(u.form.unresolved, [{ select: "/mark/xx/NOPE", tier: "watchlist-annex", why: "the band holds no record with this id" }]);
   assert.equal(u.total, 0, "and it mints no row — an id that resolves to nothing has no candidate behind it");
 });
 

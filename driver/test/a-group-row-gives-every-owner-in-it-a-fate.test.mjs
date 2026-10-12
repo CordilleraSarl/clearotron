@@ -40,7 +40,7 @@ function fixture() {
   const { shape } = buildBandShape({ enumerated: BAND }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods,
     keysOf: setAsideKeysOf(positions.positions), markets: ["EU"] });
   // The step read the whole shape: every listed line is in its reading log.
-  const read = ["a", "b", "c", "d", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
+  const read = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
   return { input: { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups,
     served: { lines: new Set(read), records: new Set() } }, shape };
 }

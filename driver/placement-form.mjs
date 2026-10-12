@@ -144,13 +144,13 @@ export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
 export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.set_aside.trim() !== "";
 
 // ONE ROW PER GROUP. The band shape lists the band in the lawyer's order, one line per mark of an owner,
-// and counts the rest. A listed line gets a fate, not a row: it is placed, or set aside by name, or covered
+// the rest last. A listed line gets a fate, not a row: it is placed, or set aside by name, or covered
 // by its group's one row, which states why everything in the group the step neither placed nor named is not
 // raised with the client: the crowded-field method's "read the near ones first, list the rest" (ruled
 // 2026-10-12, (a) included).
 export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
 export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
-  when: "a group the shape lists, (a) to (d), the rest it counts, or, at a thousand records or more, the lines "
+  when: "a group the shape lists, (a) to (d), the rest, or, at a thousand records or more, the lines "
     + "the goods test could not place: one row sets aside every line in it that you neither place nor set aside "
     + "by name. Below a thousand records, and in (a) at any size, it waits until you have read every line; in a "
     + "crowd of a thousand or more outside (a), it stands on the first page read and the count. It covers a "
@@ -332,7 +332,7 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "you tier once stays tiered even if a later attempt never sees it, which is what makes a killed "
   + "attempt's work survive. Candidates the register does not hold are yours to write in full — see "
   + "`seat_row_contract`. A line the shape lists, one mark of one owner, whose records you do not carry "
-  + "gets one ground — see `set_aside_row_contract`. A group the shape lists, or the rest it counts, gets "
+  + "gets one ground — see `set_aside_row_contract`. A group the shape lists, or the rest, gets "
   + "one row for the lines you have read and neither place nor set aside by name — see "
   + "`set_aside_group_contract`.";
 
@@ -360,12 +360,19 @@ export function rowIsSettled(row, canonical) {
   } catch { return false; }
 }
 
+/**
+ * The owner a register record that names none is placed under (ruled 2026-10-12). Such a record is still a
+ * floor when its mark is, and the step's placement of it stands: the render carries this in place of the
+ * owner and never refuses a placement on that field. A row the step wrote in full names its own owner.
+ */
+export const OWNER_NOT_STATED = "not stated on the register";
+
 /** The `placements.json` entry a settled row renders to. Driver facts from `canonical`, judgment from `row`. */
 export function renderEntry(canonical, row) {
   const f = seatFields(row ?? {});
   const e = {
     mark: canonical?.mark ?? null,
-    owner: canonical?.owner ?? null,
+    owner: canonical?.kind === "register" ? (String(canonical?.owner ?? "").trim() || OWNER_NOT_STATED) : (canonical?.owner ?? null),
     jurisdiction: canonical?.jurisdiction ?? "",
     records: Array.isArray(canonical?.records) ? canonical.records : [],
     tier: f.tier,
@@ -433,9 +440,10 @@ export function seatRefusal(row) {
 }
 
 /**
- * The register's part of a register row, refused — or null. A fact the register did not supply (no owner on
- * the record) is not something a corrective turn can repair: the seat is told not to type these fields and
- * anything it types is ignored. Null on a seat row. PURE; never throws.
+ * The register's part of a register row, refused — or null. A fact the register did not supply is not
+ * something a corrective turn can repair: the seat is told not to type these fields and anything it types is
+ * ignored. A record that names no owner is not refused here: it renders under OWNER_NOT_STATED. Null on a
+ * seat row. PURE; never throws.
  */
 export function registerFactRefusal(row) {
   if (row?.kind !== "register") return null;
@@ -453,9 +461,8 @@ export function registerFactRefusal(row) {
  *   register_selected   register candidates the seat selected.
  *   register_rendered   of those, how many reach placements.json.
  *   register_facts      rows judged by the seat and still refused on a fact the register did not supply,
- *                       counted by cause. A register that publishes no owner for a record is a real and
- *                       ordinary case (measured: single records at offices that do not publish one), so a
- *                       handful are recorded, not refused.
+ *                       counted by cause. No owner on the record is no longer one of them: such a
+ *                       record renders under OWNER_NOT_STATED, as the step placed it.
  *
  * `register_selected > 0 && register_rendered === 0` is the other refusal: a pass that tiered register
  * candidates and delivered none of them has not made a judgement about the register, it has lost one. That

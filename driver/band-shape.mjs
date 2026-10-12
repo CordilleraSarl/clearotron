@@ -650,9 +650,10 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  * @param territories  the order's territories, as codes (effective-scope.mjs `orderTerritories`); empty for a worldwide order
  */
 /**
- * THE REST NEVER HOLDS A FLOOR. The rest is counted, not listed, and set aside in one row, so a floor in it
- * would leave unread. The group rule puts every floor in (a) or (b); a rest holding one is a defect here, and
- * the shape is refused rather than served with a floor no one will read. PURE (throws).
+ * THE REST NEVER HOLDS A FLOOR. The rest is set aside in one row, at a thousand records or more on its first
+ * page and its count, so a floor in it could leave unread. The group rule puts every floor in (a) or (b); a
+ * rest holding one is a defect here, and the shape is refused rather than served with a floor no one will
+ * read. PURE (throws).
  */
 export function assertRestHoldsNoFloor(restLines) {
   const stray = (restLines ?? []).find((l) => l?.floors > 0);
@@ -764,7 +765,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
   const herOrder = (x, y) => Number(y.goods_live_in_scope) - Number(x.goods_live_in_scope) || y.live_in_scope - x.live_in_scope
     || (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || Number(y.in_market) - Number(x.in_market) || y.records - x.records || byName(x, y);
   for (const g of ["a", "b", "c", "d"]) byGroup[g].lines.sort(herOrder);
-  byGroup.rest.lines.sort(byName);
+  // The rest runs by the client's goods words, then by live records (ruled 2026-10-12): listed whole under a
+  // thousand records, by its first page at a thousand or more, like any group.
+  byGroup.rest.lines.sort((x, y) => (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || y.live - x.live || byName(x, y));
   // The lines the goods test could not place run floors first, then by live records in the ordered classes,
   // then records: a floor here takes its own fate, so the floors lead the first page.
   noGoods.sort((x, y) => Number(y.floors > 0) - Number(x.floors > 0) || y.live_in_scope - x.live_in_scope || y.records - x.records || byName(x, y));
@@ -858,8 +861,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     goods_words_total: goodsWordCount || 0, goods_test: goodsTest ?? { source: goods ? "goods_words" : "none", words: [] },
     crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
-    rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest),
-      list: rest.map(({ key, owner_key, record_id, floors }) => ({ key, owner_key, record_id, floors })) },
+    rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest), list: rest },
     no_goods: { records: grouped.no_goods.reduce((n, l) => n + l.records, 0), lines: grouped.no_goods.length,
       owners: ownersIn(grouped.no_goods), list: grouped.no_goods },
   };
@@ -1100,7 +1102,18 @@ function renderGroupsMd(md, groups, rows = []) {
     md.push("");
   }
   const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories` : "";
-  md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Write down what you set aside and why: one row, with this count.`);
+  // The rest is read by the size rule too: listed under a thousand records, by its first page at a thousand or
+  // more, where its one row stands on that page read and the count.
+  const rest = groups.rest;
+  const restCrowded = rest.records >= groups.crowded_at;
+  md.push(`**The rest: ${count(rest)}${outside}** — every record in none of (a) to (d) above. ${!rest.lines ? "Write down what you set aside and why: one row, with this count."
+    : restCrowded
+      ? `A thousand or more? The field is crowded. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. ${firstPage}; page with ${groupPageCall("rest")} only where a line needs reading.`
+      : `${rest.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest."} Write down what you set aside and why: one row, with this count.`}`);
+  if (rest.lines) {
+    md.push("", ...head);
+    for (const l of restCrowded ? rest.list.slice(0, groups.first_page) : rest.list) { rows.push([md.length, l.key]); md.push(row(l)); }
+  }
   if (groups.no_goods.lines) {
     // The lines the goods test could not place, read by the same size rule (ruled 2026-10-12): under a thousand
     // records, a fate per line by name, opened where goods are on file; at a thousand or more, the first page,

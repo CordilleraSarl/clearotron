@@ -2665,12 +2665,13 @@ function placementAccountVerdict(dir) {
   const { rows, error } = parsePlacementForm(raw);
   if (rows === null) return fail(`placement_form_unreadable (the driver's placement form ${error})`);
   const a = placementRenderAccount(rows);
+  const saidBack = placementSaidBackArmed(dir) ? formRefusals(raw) : null;
   if (a.unjudged.length) {
     const named = a.unjudged.slice(0, 8).map((u) => `${u.row_id ?? u.select ?? "?"} (${u.cause})`).join(", ");
     return fail(`placement_unjudged=${a.unjudged.length}: ${named}${a.unjudged.length > 8 ? ", …" : ""} — each of these rows is `
       + "in placement-form.json and its own judgement will not render: a selected row owes a `tier` from the closed set and a `reason` "
       + "stating the ground; a row you wrote in full owes mark, owner and jurisdiction too. Finish these rows in the form; "
-      + "every other row stands.");
+      + `every other row stands.${saidBack?.also ?? ""}`);
   }
   if (a.register_selected > 0 && a.register_rendered === 0) {
     const causes = Object.entries(a.register_facts).map(([t, n]) => `${t} ×${n}`).join(", ") || "no cause recorded";
@@ -2678,6 +2679,50 @@ function placementAccountVerdict(dir) {
       + `is refused on a fact the driver copies from the register's own records (${causes}) — not one reaches placements.json. `
       + "This is not a judgement the seat can repair: those fields are machine-copied and anything typed into them is ignored.");
   }
+  return saidBack ? placementSaidBackVerdict(saidBack) : ok();
+}
+
+// ── WHAT THE FORM REFUSED IS SAID BACK IN THE PASS, AND A FLOOR WITHOUT A FATE IS REFUSED AT ITS END ────────
+//
+// THE DEFECT, measured on the third replay (2026-10-12). Every placement pass ran one attempt. The union wrote
+// its refusals onto the form when the judgement ran, after the step's turn had ended, and the pass was accepted,
+// so no step ever read them: two selects typed with another record's suffix, four set-asides refused by name,
+// and floor lines left with no fate, 134 floors on one engine. The judgement is the only way back to the step
+// within a pass, so the form's refusals become the pass's: each is said back with its reason in the corrective
+// turn. The lists the form refuses are rebuilt from each submission, so a refusal the step drops or corrects is
+// said back once; a floor below a thousand records with no fate is counted from the form's own state, so it is
+// refused at every judgement until it has one (ruled 2026-10-12).
+//
+// ARMED ON ITS OWN STAMP KEY (`placementSaidBack: 1`), so an archived run replays to the verdict it was minted under.
+function placementSaidBackArmed(dir) {
+  try {
+    return JSON.parse(readFileSync(driverDir(dir, "stage-contracts.json"), "utf8"))?.["placement-inquiry"]?.placementSaidBack === 1;
+  } catch { return false; }
+}
+const capped = (items) => `${items.slice(0, 8).join("; ")}${items.length > 8 ? "; …" : ""}`;
+/** The form's refusals and its floors without a fate, as the step is told them. PURE. */
+function formRefusals(raw) {
+  let doc;
+  try { doc = JSON.parse(raw); } catch { doc = null; }   // the account above already parsed this same text
+  const list = (k) => (Array.isArray(doc?.[k]) ? doc[k] : []);
+  const refused = [
+    ...list("unresolved").map((x) => `select ${x?.select} (${x?.why ?? "the band holds no record with this id"})`),
+    ...list("tier_refused").map((x) => `the tier on ${x?.select} (${x?.why})`),
+    ...list("set_aside_refused").map((x) => `the row setting aside ${x?.set_aside} (${x?.why})`),
+    ...list("set_aside_group_refused").map((x) => `the row on group ${x?.set_aside_group} (${x?.why})`),
+  ];
+  const floors = list("floors_without_fate").flatMap((e) => (Array.isArray(e?.floors) ? e.floors : []).map((id) => `${id}${e?.group ? ` in (${e.group})` : ""}`));
+  return { refused, floors, also: refused.length ? ` The form also refused, each for the reason given: ${capped(refused)}.` : "" };
+}
+function placementSaidBackVerdict({ refused, floors, also }) {
+  if (floors.length)
+    return fail(`placement_floors_without_fate=${floors.length}: ${capped(floors)} — each is a floor, a live identical or `
+      + "near-identical mark in an ordered class, in a group under a thousand records, and the form gives it no fate. "
+      + "Place it by selecting that record, sheet-2 at the least, or set its line aside by name on its status or its "
+      + `territory. Only these are owed; every other row stands.${also}`);
+  if (refused.length)
+    return fail(`placement_refused=${refused.length}: ${capped(refused)} — the form refused each of these for the reason given `
+      + "with it, and nothing else on the form moved. Send each again corrected, or leave it out; every other row stands.");
   return ok();
 }
 

@@ -252,7 +252,7 @@ function linesByPart(parts) {
   const keys = parts.map(() => []);
   for (const [key, n] of Object.entries(at)) { const i = partOf(n); if (i >= 0) keys[i].push(key); }
   const groupParts = {};
-  for (const g of ["a", "b", "c", "d", "no_goods"]) {
+  for (const g of ["a", "b", "c", "d", "rest", "no_goods"]) {
     const ps = new Set((shape?.groups?.[g]?.list ?? []).map((l) => at[l.key]).filter((n) => n != null).map((n) => partOf(n) + 1));
     if (ps.size) groupParts[g] = [...ps].sort((x, y) => x - y);
   }
@@ -317,7 +317,7 @@ function groupLookup(params) {
   const g = String(params.group ?? "").trim().toLowerCase();
   let groups;
   try { groups = loadJson(shapeJsonPath()).groups; } catch { groups = null; }
-  if (!groups?.[g]?.list) { logRead("band_lookup", params, { ok: false, reason: "no-group" }); return { isError: true, text: `ERROR: the band shape lists no group "${g}" — one of a, b, c, d, no_goods.` }; }
+  if (!groups?.[g]?.list) { logRead("band_lookup", params, { ok: false, reason: "no-group" }); return { isError: true, text: `ERROR: the band shape lists no group "${g}" — one of a, b, c, d, rest, no_goods.` }; }
   const lines = groups[g].list;
   const total = groups.goods_words_total || 0;
   const limit = Math.max(1, Math.min(Number(params.limit) || GROUP_LINE_LIMIT, GROUP_LINE_LIMIT));
@@ -523,12 +523,12 @@ serve({
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
         status: { type: "string" }, live_only: { type: "boolean" }, goods: { type: "array", items: { type: "string" } },
-        group: { type: "string", enum: ["a", "b", "c", "d", "no_goods"] },
+        group: { type: "string", enum: ["a", "b", "c", "d", "rest", "no_goods"] },
         limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
