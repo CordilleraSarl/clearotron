@@ -57,6 +57,7 @@ import { shortId } from "./connotation-search.mjs";
 import { normKey } from "./placement-diff.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { PLACEMENT_TIERS, validatePlacement } from "./placement-model.mjs";
+import { BAND_GROUPS } from "./band-shape.mjs";   // — the shape's groups, which a group row names
 
 export const PLACEMENT_FORM_NAME = "placement-form.json";
 
@@ -110,14 +111,14 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
 // one ground. It is not a candidate, it renders into no placement, and nothing bounds how many there are.
 export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground"];
 export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
-  when: "an owner whose records you judge as a set and do not carry. A record you do not carry is given a "
-    + "ground; no record leaves without one. One row gives that owner's set its ground.",
+  when: "an owner the shape lists, whose records you judge as a set and do not carry. One row gives that "
+    + "owner's set its ground.",
   fields: SET_ASIDE_ROW_FIELDS,
   set_aside: "one record id of that owner, from the band. The driver finds the owner on the register's own "
     + "projection; the ground covers every record of that owner the form does not place. A record that names "
     + "no owner stands for its own position only.",
   ground: "why this owner's records are not carried, in a lawyer's words.",
-  not_a_candidate: "It places nothing and has no bound. A record of the same owner you do place stays placed.",
+  not_a_candidate: "It places nothing. A record of the same owner you do place stays placed.",
   latest: "A later row for the same owner replaces the earlier ground. To remove one, hand back "
     + "{\"retract\":\"<its set_aside id>\"}.",
   unresolved: "A `set_aside` the band does not hold, or one with no ground, is reported back to you by id.",
@@ -125,6 +126,47 @@ export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
 
 /** Is this submitted row an owner's set-aside? PURE. */
 export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.set_aside.trim() !== "";
+
+// ONE ROW PER GROUP. The band shape lists the band in the lawyer's order, (a) to (d), and counts the rest.
+// A listed owner gets a fate, not a row: it is placed, or set aside by name, or covered by its group's one
+// row, which states why everything in the group the step neither placed nor named is not raised with the
+// client. The driver records that fate on every owner the row covers. These words await the owner's
+// reading of their before and after.
+export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
+export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
+  when: "a group the shape lists, (a) to (d), or the rest it counts: one row sets aside every owner in it that "
+    + "you neither place nor set aside by name.",
+  fields: SET_ASIDE_GROUP_FIELDS,
+  set_aside_group: `the group's letter as the shape gives it, or "rest": one of ${BAND_GROUPS.join(", ")}.`,
+  count: "the group's record count: the N the shape gives beside it.",
+  ground: "why none of the owners this row covers is raised with the client, in a lawyer's words.",
+  not_a_candidate: "It places nothing. An owner in the group that you place or set aside by name keeps that.",
+  latest: "A later row for the same group replaces the earlier one. To remove one, hand back "
+    + "{\"retract\":\"group:<letter or rest>\"}.",
+  unresolved: "A group the shape does not list, a count that does not match the shape's, or a row with no "
+    + "ground, is reported back to you.",
+});
+
+/** Is this submitted row a group's set-aside? PURE. */
+export const isSetAsideGroupRow = (row) => typeof row?.set_aside_group === "string" && row.set_aside_group.trim() !== "";
+
+/** A group name as written ("b", "(b)", "B", "group b", "rest") to the shape's own, or null. PURE. */
+export function groupName(written) {
+  const g = String(written ?? "").trim().toLowerCase().replace(/^group\s+/, "").replace(/^\((.*)\)$/, "$1").trim();
+  return BAND_GROUPS.includes(g) ? g : null;
+}
+
+/**
+ * Which group each owner sits in, by set-aside key: the shape's lists (a) to (d) and the rest. An owner the
+ * shape lists as goods cut is in no group, so no group row covers it. PURE.
+ */
+export function groupOfKeys(groups) {
+  const out = new Map();
+  if (!groups || typeof groups !== "object") return out;
+  for (const g of ["a", "b", "c", "d"]) for (const o of Array.isArray(groups[g]?.list) ? groups[g].list : []) if (o?.key) out.set(o.key, g);
+  for (const k of Array.isArray(groups.rest?.keys) ? groups.rest.keys : []) if (k) out.set(k, "rest");
+  return out;
+}
 
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run
@@ -138,17 +180,76 @@ export function setAsideKey(canonical) {
 }
 
 /**
- * The ground a record leaves the picking step with, if its owner's set was set aside: record uri →
- * {set_aside, owner, ground} or null. Resolved through the same selection index a `select` resolves
- * through, so the owner is read one way at both ends. PURE; never throws.
+ * The set-aside key of any band record, read the way a set-aside row reads it: through the positions fold.
+ * The band shape groups owners on this key, so a group row covers exactly the owners a row naming one of
+ * their records would. A record no position covers keys on its own owner, as the index's floor fallback
+ * does. PURE.
  */
-export function setAsideGrounds(entries, index) {
-  const byKey = new Map();
-  for (const e of Array.isArray(entries) ? entries : []) if (e?.key && e?.ground) byKey.set(e.key, e);
-  return (uri) => {
-    if (!byKey.size || !index?.resolve) return null;
-    return byKey.get(setAsideKey(index.resolve(uri))) ?? null;
+export function setAsideKeyOf(positions) {
+  const index = buildSelectionIndex({ floors: [], positions });
+  return (record) => {
+    const canonical = index.resolve(record?.record_id);
+    if (canonical) return setAsideKey(canonical);
+    const owner = normKey(record?.owner_name);
+    return owner ? `owner:${owner}` : null;
   };
+}
+
+/**
+ * The ground a record leaves the picking step with, if its owner's set was set aside: record uri →
+ * {set_aside, owner, ground, by} or null. Resolved through the same selection index a `select` resolves
+ * through, so the owner is read one way at both ends. A ground by name wins over the owner's group row;
+ * `groups` is the band shape's, which says which group each owner sits in. PURE; never throws.
+ */
+export function setAsideGrounds(entries, index, groups = null) {
+  const byKey = new Map(), byGroup = new Map();
+  for (const e of Array.isArray(entries) ? entries : []) {
+    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && e?.ground) byGroup.set(g, e); }
+    else if (e?.key && e?.ground) byKey.set(e.key, e);
+  }
+  const groupOf = byGroup.size ? groupOfKeys(groups) : new Map();
+  return (uri) => {
+    if ((!byKey.size && !byGroup.size) || !index?.resolve) return null;
+    const key = setAsideKey(index.resolve(uri));
+    if (!key) return null;
+    const named = byKey.get(key);
+    if (named) return { ...named, by: "name" };
+    const group = groupOf.get(key), row = group ? byGroup.get(group) : null;
+    return row ? { set_aside: null, key, owner: null, ground: row.ground, by: "group", group } : null;
+  };
+}
+
+/**
+ * EVERY OWNER'S FATE AT PLACEMENT, counted by the list the shape put it in: placed (any of its records is in
+ * a placement), set aside by name, covered by its group's row, or no fate. The shape's goods-cut owners are
+ * their own list, which no group row covers. Keys are the set-aside key, so an owner is counted the way a
+ * row reaches it. Counts only, plus the keys left with no fate. PURE.
+ */
+export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}) {
+  if (!groups || typeof groups !== "object" || !index?.resolve) return null;
+  const keyOf = (uri) => setAsideKey(index.resolve(uri));
+  const placed = new Set([...placedUris].map(keyOf).filter(Boolean));
+  const named = new Set(), grouped = new Set();
+  for (const e of Array.isArray(entries) ? entries : []) {
+    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && String(e?.ground ?? "").trim()) grouped.add(g); }
+    else if (e?.key && String(e?.ground ?? "").trim()) named.add(e.key);
+  }
+  const lists = {};
+  for (const g of ["a", "b", "c", "d"]) lists[g] = (Array.isArray(groups[g]?.list) ? groups[g].list : []).map((o) => o?.key).filter(Boolean);
+  lists.rest = (Array.isArray(groups.rest?.keys) ? groups.rest.keys : []).filter(Boolean);
+  lists.unresolved = (Array.isArray(groups.unresolved?.list) ? groups.unresolved.list : []).map((o) => o?.key).filter(Boolean);
+  const zero = () => ({ owners: 0, placed: 0, by_name: 0, by_group: 0, unfated: 0 });
+  const totals = zero(), by_list = {}, unfated = [];
+  for (const [list, keys] of Object.entries(lists)) {
+    const c = zero();
+    for (const k of keys) {
+      const fate = placed.has(k) ? "placed" : named.has(k) ? "by_name" : (list !== "unresolved" && grouped.has(list)) ? "by_group" : "unfated";
+      c.owners++; c[fate]++; totals.owners++; totals[fate]++;
+      if (fate === "unfated") unfated.push({ list, key: k });
+    }
+    by_list[list] = c;
+  }
+  return { ...totals, by_list, unfated };
 }
 
 const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver COPIES. For each "
@@ -160,7 +261,8 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "you tier once stays tiered even if a later attempt never sees it, which is what makes a killed "
   + "attempt's work survive. Candidates the register does not hold are yours to write in full — see "
   + "`seat_row_contract`. An owner whose records you judge as a set and do not carry gets one ground for "
-  + "the set — see `set_aside_row_contract`.";
+  + "the set — see `set_aside_row_contract`. A group the shape lists, or the rest it counts, gets one row "
+  + "for what you neither place nor set aside by name — see `set_aside_group_contract`.";
 
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */
 export function formRowKey(row) {
@@ -416,7 +518,10 @@ export function parsePlacementForm(raw) {
   catch (e) { return { rows: null, error: `is not valid JSON (${String(e?.message ?? e).slice(0, 80)})` }; }
   const rows = Array.isArray(doc) ? doc : doc?.rows;
   if (!Array.isArray(rows)) return { rows: null, error: "carries no rows[] array" };
-  return { rows, set_aside: Array.isArray(doc?.set_aside) ? doc.set_aside : [], error: null };
+  // The group rows ride the set-aside list on the way in, so every reader of that list sees both kinds and
+  // tells them apart by their fields; the union writes them back to their own list.
+  return { rows, set_aside: [...(Array.isArray(doc?.set_aside) ? doc.set_aside : []),
+    ...(Array.isArray(doc?.set_aside_groups) ? doc.set_aside_groups : [])], error: null };
 }
 
 /**
@@ -430,7 +535,8 @@ export function parsePlacementForm(raw) {
 export function buildPlacementForm(input) {
   const { derived_from } = buildSelectionIndex(input);
   return { _provenance: PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
-    seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT, generated_from: derived_from, rows: [] };
+    seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT,
+    set_aside_group_contract: SET_ASIDE_GROUP_CONTRACT, generated_from: derived_from, rows: [] };
 }
 
 export { PROVENANCE as PLACEMENT_FORM_PROVENANCE };

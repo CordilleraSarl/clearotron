@@ -13,7 +13,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { niceClass, recordGoods, bandGoodsIndex, goodsFor, goodsWordMatcher, goodsExcerpt } from "../record-goods.mjs";
+import { niceClass, recordGoods, bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordMatcher, goodsExcerpt } from "../record-goods.mjs";
 
 test("a class is compared as a number: 09, 9 and ' 9 ' are one class, and nothing else is a class", () => {
   assert.equal(niceClass("09"), "9");
@@ -57,6 +57,13 @@ test("the index reads the record ledger and _records, a record's later copy winn
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
+test("a goods word is counted whole, and with no words to look for every record's goods are unknown", () => {
+  const count = goodsWordCounter(["water", "juice"]);
+  assert.equal(count([{ classes: ["32"], text: "water and juice" }]), 2);
+  assert.equal(count([{ classes: ["32"], text: "wine" }]), 0);
+  assert.equal(goodsWordCounter([])([{ classes: ["32"], text: "water" }]), null, "no goods words: the test cannot be made, so it is not a mismatch");
+});
+
 test("a goods word matches whole, folding case and accents, and unknown goods answer null rather than false", () => {
   const m = goodsWordMatcher(["water", "Energy drinks", "café"]);
   assert.equal(m([{ classes: ["32"], text: "Mineral WATER and juices" }]), true);
@@ -69,10 +76,14 @@ test("a goods word matches whole, folding case and accents, and unknown goods an
 
 test("the excerpt shows the ordered classes' goods first, cut at its size, with the full length beside it", () => {
   const goods = [{ classes: ["25"], text: "clothing" }, { classes: ["32"], text: "mineral water and juices" }, { classes: [], text: "unclassed" }];
-  assert.deepEqual(goodsExcerpt(goods, { inScopeClasses: ["32"], maxChars: 400 }), { text: "[32] mineral water and juices | unclassed | [25] clothing", chars: 57 });
+  assert.deepEqual(goodsExcerpt(goods, { inScopeClasses: ["32"], maxChars: 400 }), { text: "[32] mineral water and juices | unclassed | [25] clothing", chars: 57, cut: false });
   const cut = goodsExcerpt(goods, { inScopeClasses: ["32"], maxChars: 10 });
   assert.equal(cut.text, "[32] miner");
   assert.equal(cut.chars, 57);
+  assert.equal(cut.cut, true, "the in-scope statements did not fit: a goods ground needs the record opened");
+  assert.equal(goodsExcerpt(goods, { inScopeClasses: ["32"], maxChars: 41 }).cut, false, "the in-scope part fits; only other classes are cut");
+  assert.equal(goodsExcerpt([{ classes: ["25"], text: "clothing and hats" }], { inScopeClasses: ["32"], maxChars: 10 }).cut, true,
+    "with nothing in scope, the whole text is what a goods ground is read from");
   assert.equal(goodsExcerpt(null), null);
   assert.equal(goodsExcerpt(goods, { inScopeClasses: [] }).text.startsWith("[25] clothing"), true, "with no scope every statement is in scope, in its own order");
 });

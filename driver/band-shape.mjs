@@ -26,6 +26,7 @@
 import { normalizeElement, editNeighbourhood, consonantSkeleton, confusableSkeleton, foldDiacritics } from "./form-neighbourhood.mjs";
 import { doubleMetaphone } from "./phonetic-key.mjs";
 import { probeOrder } from "./order-probe.mjs";   // item 11 — inert unless CLEAROTRON_ORDER_PROBE_SEED is set
+import { normKey } from "./placement-diff.mjs";   // — the set-aside key's owner fold: an owner is grouped the way a set-aside row covers it
 
 export const BAND_SHAPE_SCHEMA_VERSION = 1;
 
@@ -572,6 +573,127 @@ const floorRow = (r, cls) => ({
   _query: r._query ?? null,
 });
 
+// ── THE BAND IN THE LAWYER'S ORDER ──────────────────────────────────────────────────────────────────
+//
+// Her method for a crowded field, as the owner ruled it (2026-09-21): identical marks in the class;
+// identical marks for the particular goods; the dominant word for the particular goods; then the rest,
+// counted, with its rule. "Fifty? Read them all. A few hundred? Sort by the client's goods and markets,
+// read the near ones first, list the rest. A thousand or more? The field is crowded: read the identical
+// and live ones for the client's goods, tell the client it is crowded, and do not write up the rest."
+//
+// Code sorts on fields the records carry: the mark's tier against the targets, a goods-word match, class
+// and status. It judges nothing.
+export const BAND_GROUPS = ["a", "b", "c", "d", "rest"];
+// Her "a thousand or more": a group this size is served as its count and its first page.
+export const CROWDED_GROUP_RECORDS = 1000;
+const TIER_RANK = { identical: 0, "near-identical": 1, "same-family": 2, other: 3, unclassifiable: 4 };
+
+/**
+ * One record's group. PURE. `hits` is how many of the client's goods words its goods contain, or null
+ * when the run holds no goods for it: unknown passes the goods test, so a record is never set aside for
+ * what the run does not hold.
+ *   (a) identical or near-identical to a target, for the client's goods;
+ *   (b) identical or near-identical to a target, in the ordered classes;
+ *   (c) the same family as a target, or carrying the searched dominant word, for the client's goods;
+ *   (d) every other live mark in the ordered classes, for the client's goods;
+ *   the rest: everything else.
+ */
+export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
+  const ident = tier === "identical" || tier === "near-identical";
+  const forGoods = hits !== 0;
+  if (ident && forGoods) return "a";
+  if (ident && inScope) return "b";
+  if ((tier === "same-family" || dominant) && forGoods) return "c";
+  if (live && inScope && forGoods) return "d";
+  return "rest";
+}
+
+/**
+ * The band in her order, BY OWNER. PURE.
+ *
+ * ONE OWNER, ONE GROUP. An owner sits in the best group any of its records reaches, because a set-aside
+ * covers an owner's whole set: grouped by record, a row setting the rest aside would also cover the
+ * floors of an owner listed in (a). `ownerKeyOf` is the set-aside row's own key, read through the
+ * positions fold, so a group covers exactly the owners a row naming one of its records would: measured
+ * 2026-10-12, the band row's owner folds to a different key on 522 of 5,220 records of one saved band.
+ * Without it, owners fold on the band row's owner name; a record that names no owner is its own entry.
+ *
+ * THE REST IS SET ASIDE BY RULE, so it holds only owners whose every record the rule settles from what
+ * the row shows. A record that is in the rest only because its goods miss the client's words, and whose
+ * goods are cut on the row, is UNRESOLVED: its owner is listed for the model and no group row covers it.
+ *
+ * @param records    the band's enumerated records
+ * @param classify   record → { tier, target } (the shape's own classifier over its targets)
+ * @param inScope    record → boolean (the shape's own class test)
+ * @param goods      { of(record) → goods|null, hits(goods) → n|null, line(goods) → {text, chars, cut}|null,
+ *                     rowCut(goods) → boolean } or null when the run holds no goods reader
+ * @param dominantTerm  the word the register's goods-narrowed search asked for, or ""
+ */
+export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", ownerKeyOf = null } = {}) {
+  const fold = (x) => foldDiacritics(String(x ?? "")).toLowerCase();
+  const dom = fold(dominantTerm).trim();
+  const domRe = dom ? new RegExp(`(^|[^\\p{L}\\p{N}])${dom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^\\p{L}\\p{N}])`, "u") : null;
+  const owners = new Map();
+  for (const r of Array.isArray(records) ? records : []) {
+    const { tier } = classify(r);
+    const g = goods ? goods.of(r) : null;
+    const hits = goods && g ? goods.hits(g) : null;
+    const live = isLiveRecord(r), s = inScope(r);
+    const dominant = Boolean(domRe && domRe.test(fold(r?.mark_text)));
+    const group = recordGroup({ tier, live, inScope: s, hits, dominant });
+    const ident = tier === "identical" || tier === "near-identical";
+    // In the rest on goods alone: it would sit in a group were its goods for the client's.
+    const onGoods = group === "rest" && hits === 0 && (ident || tier === "same-family" || dominant || (live && s));
+    const rec = { r, tier, hits, live, inScope: s, group, unresolved: onGoods && Boolean(goods && g && goods.rowCut(g)) };
+    const ownerKey = normKey(r?.owner_name);
+    const key = (typeof ownerKeyOf === "function" ? ownerKeyOf(r) : null)
+      ?? (ownerKey ? `owner:${ownerKey}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
+    const o = owners.get(key) ?? { key, owner_name: String(r?.owner_name ?? "").trim() || null, recs: [] };
+    o.recs.push(rec);
+    owners.set(key, o);
+  }
+  const rank = (g) => BAND_GROUPS.indexOf(g);
+  const hitsRank = (h) => (h == null ? -1 : h);
+  const better = (x, y) => TIER_RANK[x.tier] - TIER_RANK[y.tier] || hitsRank(y.hits) - hitsRank(x.hits)
+    || Number(y.live) - Number(x.live) || String(x.r?.record_id ?? "").localeCompare(String(y.r?.record_id ?? ""));
+  // `records` counts the records that reach the group, the pile her sizes are about; `set_records` counts
+  // the owners' whole sets, which is what a set-aside of those owners covers.
+  const byGroup = Object.fromEntries(BAND_GROUPS.map((g) => [g, { records: 0, set_records: 0, owners: [] }]));
+  const unresolved = [];
+  for (const o of owners.values()) {
+    const group = BAND_GROUPS[Math.min(...o.recs.map((x) => rank(x.group)))];
+    const inGroup = o.recs.filter((x) => x.group === group).sort(better);
+    const best = inGroup[0];
+    const known = o.recs.map((x) => x.hits).filter((h) => h != null);
+    const g = goods ? goods.of(best.r) : null;
+    const line = group === "d" && goods && g ? goods.line(g) : null;
+    const row = {
+      key: o.key, owner_name: o.owner_name, group,
+      records: o.recs.length, group_records: inGroup.length, live: o.recs.filter((x) => x.live).length,
+      best_tier: best.tier, goods_hits: known.length ? Math.max(...known) : null,
+      in_scope: o.recs.some((x) => x.inScope),
+      marks: [...new Set(inGroup.map((x) => String(x.r?.mark_text ?? "").trim()).filter(Boolean))].slice(0, 3),
+      classes: [...new Set(inGroup.flatMap((x) => classesOf(x.r)))].sort((p, q) => Number(p) - Number(q) || p.localeCompare(q)),
+      record_id: best.r?.record_id ?? null,
+      ...(line ? { goods: line.text, goods_cut: line.cut } : {}),
+      record_ids: o.recs.map((x) => x.r?.record_id ?? null).filter(Boolean),
+    };
+    if (group === "rest" && o.recs.some((x) => x.unresolved)) { unresolved.push(row); continue; }
+    byGroup[group].records += inGroup.length;
+    byGroup[group].set_records += o.recs.length;
+    byGroup[group].owners.push(row);
+  }
+  const byName = (x, y) => String(x.owner_name ?? x.key).localeCompare(String(y.owner_name ?? y.key));
+  const listed = (x, y) => TIER_RANK[x.best_tier] - TIER_RANK[y.best_tier] || hitsRank(y.goods_hits) - hitsRank(x.goods_hits)
+    || y.live - x.live || Number(y.in_scope) - Number(x.in_scope) || y.records - x.records || byName(x, y);
+  const byGoods = (x, y) => hitsRank(y.goods_hits) - hitsRank(x.goods_hits) || y.live - x.live || y.records - x.records || byName(x, y);
+  for (const g of ["a", "b", "c"]) byGroup[g].owners.sort(listed);
+  byGroup.d.owners.sort(byGoods);
+  byGroup.rest.owners.sort(byName);
+  unresolved.sort(byGoods);
+  return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), by_group: byGroup, unresolved };
+}
+
 /**
  * Build the deterministic band shape + its readable markdown mirror.
  *
@@ -587,7 +709,7 @@ const floorRow = (r, cls) => ({
  *                             (charter P2d); the band itself stays per-registration
  * @returns { shape, md }      deterministic — same band + inputs ⇒ same bytes (no timestamps)
  */
-export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null } = {}) {
+export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, dominantTerm = "", manifestDominant = "", ownerKeyOf = null } = {}) {
   const prepared = prepareTargets(Array.isArray(targets) && targets.every(isPrepared) ? targets.map((t) => t.text) : targets);
   const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
   const crowds = Array.isArray(band?.crowds) ? band.crowds : [];
@@ -606,8 +728,10 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const unclassifiable = [];
   const scriptGaps = new Map();                  // script(s) key → { count, sample[] }
 
+  const classified = new Map();
   for (const r of records) {
     const cls = classifyRecord(r?.mark_text, prepared);
+    classified.set(r, cls);
     byTier[cls.tier]++;
     for (const c of classesOf(r)) inc(byClass, c);
     inc(byStatus, String(r?.status ?? r?.screen?.status ?? "unknown").trim().toLowerCase() || "unknown");
@@ -643,6 +767,18 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const floorsOrdered = probeOrder(floors, "floors");
 
   const ownerCap = Number.isFinite(caps.owners) ? caps.owners : 40;
+  const grouped = bandGroups(records, { classify: (r) => classified.get(r), inScope, goods, dominantTerm, ownerKeyOf });
+  const groupOf = (g) => ({ records: grouped.by_group[g].records, set_records: grouped.by_group[g].set_records,
+    owners: grouped.by_group[g].owners.length, list: grouped.by_group[g].owners.map(({ record_ids, ...row }) => row) });
+  const groups = {
+    dominant_term: grouped.dominant_term, manifest_dominant: manifestDominant || null, goods_on_file: grouped.goods_on_file,
+    crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
+    a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
+    rest: { records: grouped.by_group.rest.set_records, owners: grouped.by_group.rest.owners.length,
+      keys: grouped.by_group.rest.owners.map((o) => o.key) },
+    unresolved: { records: grouped.unresolved.reduce((n, o) => n + o.records, 0), owners: grouped.unresolved.length,
+      list: grouped.unresolved.map(({ record_ids, ...row }) => row) },
+  };
   const concentrations = [...owners.entries()]
     .map(([owner_name, v]) => ({ owner_name, records: v.records, live: v.live }))
     .sort((a, b) => b.records - a.records || a.owner_name.localeCompare(b.owner_name))
@@ -741,6 +877,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     in_scope_classes: [...scope].sort(),
     totals: { records: records.length, crowds: crowds.length, by_tier: byTier },
     floors: { in_class_identical_or_near: floorsOrdered },
+    groups,
     by_class: byClass,
     by_status: byStatus,
     by_registry: byRegistry,
@@ -811,6 +948,46 @@ export function floorTierByMark(shape) {
 /** The same normalisation the floors were built with, so a caller cannot key the map differently. */
 export const floorMarkKey = (s) => normMark(s);
 
+// The group section's words await the owner's reading of their before and after; they render only
+// what the shape computed, and a group of a thousand records or more shows its count and first page.
+const GROUP_HEADINGS = {
+  a: "(a) Identical or near-identical to the mark or one of its forms, for the client's goods",
+  b: "(b) Identical or near-identical to the mark or one of its forms, in the ordered classes",
+  c: "(c) The same family as the mark, for the client's goods",
+  d: "(d) Every other live mark in the ordered classes, for the client's goods",
+};
+
+function renderGroupsMd(md, groups) {
+  md.push("", "## The band in the lawyer's order — for the client's goods first", "");
+  if (groups.dominant_term && groups.manifest_dominant && normKey(groups.dominant_term) !== normKey(groups.manifest_dominant))
+    md.push(`Sorted on «${cell(groups.dominant_term)}», the word the register's goods-narrowed search asked for (the variants stage named «${cell(groups.manifest_dominant)}»).`, "");
+  const goodsWords = (o) => (o.goods_hits == null ? "—" : fmtN(o.goods_hits));
+  for (const g of ["a", "b", "c", "d"]) {
+    const grp = groups[g];
+    md.push(`### ${GROUP_HEADINGS[g]}`, "");
+    if (!grp.owners) { md.push("(none)", ""); continue; }
+    const crowded = grp.records >= groups.crowded_at;
+    md.push(crowded
+      ? `${fmtN(grp.records)} records from ${fmtN(grp.owners)} owners: a thousand or more, the field is crowded. The first page is below; open by owner name only those your judgment needs.`
+      : `${fmtN(grp.records)} records from ${fmtN(grp.owners)} owners.`, "");
+    const rows = crowded ? grp.list.slice(0, groups.first_page) : grp.list;
+    if (g === "d") {
+      md.push("| owner | records | live | marks | classes | goods words | goods | record |", "|---|---|---|---|---|---|---|---|");
+      for (const o of rows) md.push(`| ${cell(o.owner_name)} | ${fmtN(o.records)} | ${fmtN(o.live)} | ${cell(o.marks.join("; "))} | ${cell(o.classes.join(","))} | ${goodsWords(o)} | ${cell(o.goods)}${o.goods_cut ? " (goods cut)" : ""} | ${cell(o.record_id)} |`);
+    } else {
+      md.push("| owner | records | live | tier | marks | classes | goods words | record |", "|---|---|---|---|---|---|---|---|");
+      for (const o of rows) md.push(`| ${cell(o.owner_name)} | ${fmtN(o.records)} | ${fmtN(o.live)} | ${o.best_tier} | ${cell(o.marks.join("; "))} | ${cell(o.classes.join(","))} | ${goodsWords(o)} | ${cell(o.record_id)} |`);
+    }
+    md.push("");
+  }
+  md.push(`**The rest: ${fmtN(groups.rest.records)} records from ${fmtN(groups.rest.owners)} owners** — every record in none of (a) to (d) above, apart from the goods-cut owners below. Set them aside in one row with this count.`);
+  if (groups.unresolved.owners) {
+    md.push("", `**Goods cut: ${fmtN(groups.unresolved.records)} records from ${fmtN(groups.unresolved.owners)} owners** would be in the rest, but their goods are cut on the row. Open a record before setting its owner aside on goods.`, "");
+    md.push("| owner | records | live | tier | marks | classes | record |", "|---|---|---|---|---|---|---|");
+    for (const o of groups.unresolved.list) md.push(`| ${cell(o.owner_name)} | ${fmtN(o.records)} | ${fmtN(o.live)} | ${o.best_tier} | ${cell(o.marks.join("; "))} | ${cell(o.classes.join(","))} | ${cell(o.record_id)} |`);
+  }
+}
+
 export function renderBandShapeMd(shape, { positions = null } = {}) {
   const md = [];
   md.push("# Band shape — the register band, mechanically mapped");
@@ -840,6 +1017,8 @@ export function renderBandShapeMd(shape, { positions = null } = {}) {
       md.push(`| ${cell(f.mark_text)} | ${f.tier} | ${cell(f.matched_target)} | ${cell(f.classes.join(","))} | ${cell(f.status)} | ${cell(f.owner_name)} | ${cell(f.registry)} | ${cell(f.record_id)} |`);
     }
   }
+
+  if (shape.groups) renderGroupsMd(md, shape.groups);
 
   topTable(md, "By Nice class", ["class", "records"], shape.by_class);
   topTable(md, "By status", ["status", "records"], shape.by_status);

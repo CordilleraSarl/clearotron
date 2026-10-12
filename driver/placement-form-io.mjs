@@ -57,6 +57,8 @@ export function readPlacementFormInput(runDir) {
   return {
     floors: Array.isArray(shape?.floors?.in_class_identical_or_near) ? shape.floors.in_class_identical_or_near : null,
     positions: Array.isArray(pos?.positions) ? pos.positions : null,
+    // The shape's groups, which a group row names and is checked against; null on a shape that has none.
+    groups: shape?.groups && typeof shape.groups === "object" ? shape.groups : null,
   };
 }
 

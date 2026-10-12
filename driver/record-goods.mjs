@@ -20,6 +20,7 @@ import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { foldDiacritics } from "./form-neighbourhood.mjs";
+import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
 
 /** A Nice class as the engine compares it: "09", 9 and " 9 " are all "9". Anything else is "". */
 export const niceClass = (c) => {
@@ -117,30 +118,71 @@ const fold = (s) => foldDiacritics(String(s ?? "")).toLowerCase();
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /**
- * A matcher for a list of goods words: true when any word or phrase appears whole in the goods, false when
- * none does, null when the record has no goods on file. Case and diacritics are folded. PURE.
+ * A counter for a list of goods words: how many of the words or phrases appear whole in the goods, or null
+ * when the record has no goods on file, or when there are no words to look for. Case and diacritics are
+ * folded. PURE.
  */
-export function goodsWordMatcher(words) {
+export function goodsWordCounter(words) {
   const res = (Array.isArray(words) ? words : [words])
     .map((w) => fold(w).trim()).filter(Boolean)
     .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(w).replace(/\s+/g, "\\s+")}($|[^\\p{L}\\p{N}])`, "u"));
   return (goods) => {
-    if (!goods || !goods.length) return null;
+    if (!res.length || !goods || !goods.length) return null;
     const text = fold(goods.map((g) => g.text).join("\n"));
-    return res.some((re) => re.test(text));
+    return res.filter((re) => re.test(text)).length;
   };
+}
+
+/** The same test as true or false: any word present, none present, or null when it cannot be told. PURE. */
+export function goodsWordMatcher(words) {
+  const count = goodsWordCounter(words);
+  return (goods) => { const n = count(goods); return n == null ? null : n > 0; };
 }
 
 /**
  * The goods a reader is shown for one record: the statements in the in-scope classes first (all of them
  * when no scope is set or the statement names no class), then the rest, cut at `maxChars`. Returns
- * { text, chars } where chars is the full length before the cut, or null when the run holds no goods. PURE.
+ * { text, chars, cut } or null when the run holds no goods. `chars` is the full length before the cut;
+ * `cut` says the part a goods ground is read from did not fit, so the record must be opened for one: the
+ * in-scope statements, or every statement when the record has none in scope. PURE.
  */
 export function goodsExcerpt(goods, { inScopeClasses = [], maxChars = 400 } = {}) {
   if (!goods || !goods.length) return null;
   const scope = new Set((inScopeClasses ?? []).map(niceClass).filter(Boolean));
   const inScope = (g) => scope.size === 0 || g.classes.length === 0 || g.classes.some((c) => scope.has(c));
-  const ordered = [...goods.filter(inScope), ...goods.filter((g) => !inScope(g))];
-  const full = ordered.map((g) => (g.classes.length ? `[${g.classes.join(",")}] ${g.text}` : g.text)).join(" | ");
-  return { text: full.length > maxChars ? full.slice(0, maxChars) : full, chars: full.length };
+  const line = (g) => (g.classes.length ? `[${g.classes.join(",")}] ${g.text}` : g.text);
+  const inScopePart = goods.filter(inScope).map(line).join(" | ");
+  const full = [...goods.filter(inScope), ...goods.filter((g) => !inScope(g))].map(line).join(" | ");
+  return { text: full.length > maxChars ? full.slice(0, maxChars) : full, chars: full.length,
+    cut: (inScopePart || full).length > maxChars };
+}
+
+// How much of a record's goods is shown: on a line of the shape, and on a row `band_lookup` serves.
+export const GOODS_LINE_CHARS = 400;
+export const GOODS_ROW_CHARS = 1500;
+
+/**
+ * What the band shape needs to sort the band by the client's goods: the goods reader over this run's own
+ * records, the client's goods words from the variants stage, and the word the register's goods-narrowed
+ * search asked for beside the one the variants stage named. IMPURE (reads the run). Any part that cannot
+ * be read is simply absent, and the shape sorts without it.
+ */
+export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CHARS, lineChars = GOODS_LINE_CHARS } = {}) {
+  let model = null;
+  try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
+  let searched = "";
+  try {
+    const plan = JSON.parse(readFileSync(P.registerPlan, "utf8"));
+    searched = String((plan?.entries ?? []).find((e) => /\+goods($|-)/.test(String(e?.qid ?? "")))?.term ?? "");
+  } catch { searched = ""; }
+  const manifestDominant = String(model?.dominant_element ?? "");
+  const index = bandGoodsIndex(P.runDir);
+  const hits = goodsWordCounter(Array.isArray(model?.goods_words) ? model.goods_words : []);
+  const goods = index.size ? {
+    of: (r) => goodsFor(index, r),
+    hits,
+    line: (g) => goodsExcerpt(g, { inScopeClasses, maxChars: lineChars }),
+    rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses, maxChars: rowChars })?.cut),
+  } : null;
+  return { goods, dominantTerm: searched || manifestDominant, manifestDominant };
 }

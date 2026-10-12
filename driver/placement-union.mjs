@@ -24,7 +24,9 @@
 
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
-  SET_ASIDE_ROW_CONTRACT, isSetAsideRow, setAsideKey } from "./placement-form.mjs";
+  SET_ASIDE_ROW_CONTRACT, isSetAsideRow, setAsideKey,
+  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys } from "./placement-form.mjs";
+import { BAND_GROUPS } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
 /**
@@ -172,11 +174,46 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const r of (submittedRows ?? [])) if (isSetAsideRow(r)) { consumed.add(r); takeSetAside(r); }
   for (const [k, e] of setAside) if (retracted.has(e.set_aside) || retracted.has(e.set_aside.toUpperCase())) setAside.delete(k);
 
+  // ONE ROW PER GROUP (placement-form.mjs, SET_ASIDE_GROUP_CONTRACT), kept the way an owner's set-aside is:
+  // prior first, a later row for the same group replaces the earlier one, and `group:<name>` retracts it.
+  // Its count must be the shape's own, so the row is about the pile the step was shown. A group the shape
+  // does not list, a count that is not the shape's, or a row with no ground is reported back, never dropped.
+  const groups = input?.groups ?? null;
+  const setAsideGroups = new Map();
+  const groupRefused = [];
+  const takeGroup = (row) => {
+    const written = String(row.set_aside_group).trim();
+    const refuse = (why) => { if (!groupRefused.some((x) => x.set_aside_group === written && x.why === why)) groupRefused.push({ set_aside_group: written, why }); };
+    const g = groupName(written);
+    if (!g) { refuse(`not one of the shape's groups (${BAND_GROUPS.join(", ")})`); return; }
+    const shown = groups?.[g];
+    if (!(shown?.owners > 0)) { refuse("the band shape lists no owner in this group"); return; }
+    const ground = typeof row.ground === "string" ? row.ground.trim() : "";
+    if (!ground) { refuse("no ground"); return; }
+    if (Number(row.count) !== shown.records) { refuse(`count ${row.count ?? "(none)"} is not the shape's ${shown.records}`); return; }
+    setAsideGroups.delete(g);
+    setAsideGroups.set(g, { set_aside_group: g, count: shown.records, ground });
+  };
+  for (const e of (Array.isArray(prior?.set_aside) ? prior.set_aside : [])) if (isSetAsideGroupRow(e)) takeGroup(e);
+  for (const e of (Array.isArray(submitted?.set_aside) ? submitted.set_aside : [])) if (isSetAsideGroupRow(e)) takeGroup(e);
+  for (const r of (submittedRows ?? [])) if (isSetAsideGroupRow(r)) { consumed.add(r); takeGroup(r); }
+  for (const g of [...setAsideGroups.keys()]) if (retracted.has(`group:${g}`) || retracted.has(`group:${g}`.toUpperCase())) setAsideGroups.delete(g);
+  // WHAT EACH ROW COVERS, said back to the step: the group's owners it neither selected nor set aside by name.
+  const placedKeys = new Set(selections.map((row) => setAsideKey(row)).filter(Boolean));
+  const covers = new Map();
+  for (const [key, g] of groupOfKeys(groups)) {
+    if (setAsideGroups.has(g) && !placedKeys.has(key) && !setAside.has(key)) covers.set(g, (covers.get(g) ?? 0) + 1);
+  }
+  for (const [g, e] of setAsideGroups) e.covers_owners = covers.get(g) ?? 0;
+
   const form = { _provenance: PLACEMENT_FORM_PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
     seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT,
-    generated_from: { ...index.derived_from, selected: selections.length, unresolved: unresolved.length, set_aside: setAside.size },
+    set_aside_group_contract: SET_ASIDE_GROUP_CONTRACT,
+    generated_from: { ...index.derived_from, selected: selections.length, unresolved: unresolved.length, set_aside: setAside.size,
+      set_aside_groups: setAsideGroups.size },
     ...(unresolved.length ? { unresolved } : {}), ...(setAsideRefused.length ? { set_aside_refused: setAsideRefused } : {}),
-    set_aside: [...setAside.values()], rows: selections };
+    ...(groupRefused.length ? { set_aside_group_refused: groupRefused } : {}),
+    set_aside: [...setAside.values()], set_aside_groups: [...setAsideGroups.values()], rows: selections };
 
   // THE TWO SIDES ARE MATCHED DIFFERENTLY, and the asymmetry is the point.
   //
@@ -225,7 +262,7 @@ export function unionPlacementForm(prior, submitted, input) {
     if (rowIsSettled(r, r)) settled += 1;
   }
   return { form, total: form.rows.length, settled, outstanding: form.rows.length - settled,
-    carried, seat_rows: carriedSeat.length, unresolved: unresolved.length, set_aside: setAside.size };
+    carried, seat_rows: carriedSeat.length, unresolved: unresolved.length, set_aside: setAside.size, set_aside_groups: setAsideGroups.size };
 }
 
 /** How many rows of an already-unioned form the render would still omit. PURE. */

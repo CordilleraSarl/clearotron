@@ -78,7 +78,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, setAsideKeyOf, ownerFates } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -103,6 +103,7 @@ import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
+import { bandShapeGoods } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
@@ -958,7 +959,7 @@ function deriveBandShape(ctx, band) {
       runLog(P.runDir, { event: "register-positions-failed", fail: String(e?.message ?? e).slice(0, 160) });
       note(`register-positions derivation failed (non-fatal — the per-registration band stands): ${String(e?.message ?? e).slice(0, 100)}`);
     }
-    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions });
+    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...bandShapeGoods(P, inScopeClasses), ownerKeyOf: setAsideKeyOf(positions?.positions ?? null) });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");
@@ -2856,6 +2857,7 @@ export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — dri
     try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
     catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
     const artifact = reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) });
+    artifact.owners = placementOwnerFates(P, placements);
     // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
@@ -3001,13 +3003,24 @@ function recordPlacementSeam(ctx, r, trigger = null) {
   });
 }
 
-/** The set-aside grounds the placement form holds, as uri → entry, through the form's own selection index. */
+/** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
 function placementSetAsideGrounds(P) {
   try {
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return () => null;
-    return setAsideGrounds(form.set_aside, buildSelectionIndex(readPlacementFormInput(P.runDir)));
+    const input = readPlacementFormInput(P.runDir);
+    return setAsideGrounds(form.set_aside, buildSelectionIndex(input), input.groups);
   } catch { return () => null; }
+}
+
+/** Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`); null when the shape has no groups. */
+function placementOwnerFates(P, placements) {
+  try {
+    const input = readPlacementFormInput(P.runDir);
+    if (!input.groups) return null;
+    return ownerFates({ groups: input.groups, entries: readPlacementForm(P.runDir).set_aside, index: buildSelectionIndex(input),
+      placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
+  } catch { return null; }
 }
 
 /**
@@ -3019,7 +3032,8 @@ export function placementSeamReason(groundOf) {   // @internal
   return (_rec, uri) => {
     const g = typeof groundOf === "function" ? groundOf(uri) : null;
     if (g) return { reason: "placement:set-aside", reason_source: "step-stated",
-      detail: `placement-inquiry set aside this owner's records as a set: ${g.ground}` };
+      detail: g.by === "group" ? `placement-inquiry set aside this owner's records with group ${g.group}: ${g.ground}`
+        : `placement-inquiry set aside this owner's records as a set: ${g.ground}` };
     return { reason: "placement:not-selected", reason_source: "step-silent",
       detail: "placement-inquiry completed this pass and named no placement for this record; the decision not to carry it was made and no ground for this record was recorded" };
   };
