@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Installation settings: one heading per provider category, the engine's own web search under Engine, and
+// Installation settings: one heading per provider category, no row for the engine's own web search, and
 // no administrator detail anywhere a reader of the page can see it.
 //
 // THE FIXTURE IS THE SERVER'S OWN OUTPUT. The rows come from the driver's inventory functions run against
@@ -134,11 +134,9 @@ test('Providers: four categories, each named once as a heading and never on a ro
   assert.ok(!cats.flatMap((c) => c.rows).some((r) => /web search/i.test(r.name)), 'the engine\'s web search is still listed as a provider')
 })
 
-test('Engine: the engine\'s own web search, in the page\'s words', async () => {
+test('Engine: no row for the engine\'s own web search, which is off on both engines', async () => {
   const { view } = await servedPage()
-  assert.deepEqual(engineCapabilityRows(view.providers ?? []).map((r) => [r.name, r.mono, r.state, r.note]), [
-    ['The engine’s own web search', 'provided by the engine', 'Available', 'The model searches the web itself during a run.'],
-  ])
+  assert.deepEqual(engineCapabilityRows(view.providers ?? []), [])
 })
 
 test('Sign-in: one row, the state in its own cell, the mode and issuer beneath', async () => {

@@ -499,29 +499,21 @@ export function caseLawInventory(env = process.env) {
     remedy: null,
   });
 
-  // ── THE TWO THE REPORT NAMED AND THIS BUILD DOES NOT SHIP ────────────────────────────────────────
+  // ── THE ONE THE REPORT NAMED AND THIS BUILD DOES NOT SHIP ────────────────────────────────────────
   //
-  // "no EUIPO Boards-of-Appeal source" and "WebSearch unavailable this session" were the other two gaps
-  // in the same report, and the issue asks for the same treatment. They get it, and the treatment is to
-  // say what is TRUE of each rather than to invent a switch:
+  // "no EUIPO Boards-of-Appeal source" was another gap in the same report, and the treatment is to say
+  // what is TRUE of it rather than to invent a switch: the Boards of Appeal have no adapter in this build.
+  // That is a release fact, not a setting, and an operator can do nothing about it — which is precisely
+  // what they need to be told before they spend two hours discovering it from a report.
   //
-  //   · the Boards of Appeal have no adapter in this build. That is a release fact, not a setting, and
-  //     an operator can do nothing about it — which is precisely what they need to be told before they
-  //     spend two hours discovering it from a report.
-  //   · WebSearch is the engine's own tool. Whether it answers is decided per session by the engine, so
-  //     no deployment check can promise it. Recorded as a capability with a stated limit rather than as
-  //     a green tick this file cannot honestly give.
+  // The engine's own web search had a row here too. It is off on both engines now (OWN_SEARCH_TOOLS in
+  // engine/anthropic-agent.mjs, `web_search` in engine/mcp/codex-config.mjs), so it has none: the open-web
+  // row a run actually uses is the research provider's, above.
   rows.push({
     key: "caselaw", label: "Case law and oppositions", provider: "euipo-boards-of-appeal",
     providerLabel: "EUIPO Boards of Appeal", known: false, enrolment: "absent", configured: false, missing: [],
     remedy: "Not part of this build. There is no adapter for it, so no setting turns it on and a report "
       + "covering the EU discloses it as a gap. Nothing to fix on this box.",
-  });
-  rows.push({
-    key: "web", label: "Open-web search", provider: "engine-websearch",
-    providerLabel: "The engine's own web search", known: true, enrolment: "built-in", configured: true, missing: [],
-    remedy: "Provided by the engine, not by this deployment, and it can be unavailable for a single "
-      + "session. A run that loses it discloses the gap rather than reporting a clean sweep.",
   });
   return rows;
 }

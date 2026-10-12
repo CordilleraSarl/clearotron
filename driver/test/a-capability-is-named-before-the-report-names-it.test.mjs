@@ -129,7 +129,7 @@ test("arm 5 — the other three gaps from the same report get the same treatment
   // or does not, and each was first mentioned in the output.
   const rows = caseLawInventory(withCreds([]));
   const providers = rows.map((r) => r.provider);
-  for (const expected of ["eur-lex", "euipo-boards-of-appeal", "engine-websearch"]) {
+  for (const expected of ["eur-lex", "euipo-boards-of-appeal"]) {
     assert.ok(providers.includes(expected), `${expected} was named in the report and is listed nowhere before it`);
   }
   // AND EACH SAYS WHAT IS TRUE OF IT rather than inventing a switch. The Boards of Appeal have no
@@ -137,9 +137,9 @@ test("arm 5 — the other three gaps from the same report get the same treatment
   const boa = rows.find((r) => r.provider === "euipo-boards-of-appeal");
   assert.equal(boa.known, false, "a capability this build does not ship is listed as one it does");
   assert.match(boa.remedy, /Nothing to fix on this box/, "the row implies a setting that does not exist");
-  // WebSearch is the engine's, and can be gone for one session — so no deployment check may promise it.
-  const web = rows.find((r) => r.provider === "engine-websearch");
-  assert.match(web.remedy, /unavailable for a single session/, "the row promises a lane it cannot promise");
+  // WebSearch was the engine's own. It is off on both engines now, so no row lists it as something a
+  // run has, and none lists it as a gap either.
+  assert.ok(!providers.includes("engine-websearch"), "the engine's own web search is listed, and it is off on both engines");
 });
 
 test("arm 6 — doctor and install both name it, and install still collects nothing", () => {

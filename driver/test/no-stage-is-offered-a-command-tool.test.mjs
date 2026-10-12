@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, PER_AXIS_STAGES, PER_CHUNK_STAGES } from "../engine/mcp/gather-config.mjs";
-import { buildClaudeArgs, COMMAND_TOOLS } from "../engine/anthropic-agent.mjs";
+import { buildClaudeArgs, COMMAND_TOOLS, OWN_SEARCH_TOOLS } from "../engine/anthropic-agent.mjs";
 import { probeToolConfig } from "../engine/probe.mjs";
 import { STAGES } from "../stages.mjs";
 import { KO_STAGES } from "../stages-knockout.mjs";
@@ -29,7 +29,8 @@ test("the command tools are the vendor's three, by the names its tools reference
   assert.deepEqual([...COMMAND_TOOLS].sort(), ["Bash", "Monitor", "PowerShell"]);
 });
 
-/** The removal on one argv: one `--disallowedTools`, naming every command tool and nothing else. */
+/** The removal on one argv: one `--disallowedTools`, naming every command tool and, beside them, the
+ *  program's own web search (no-stage-is-offered-the-engines-own-web-search.test.mjs), and nothing else. */
 function removed(args) {
   const at = args.indexOf("--disallowedTools");
   if (at < 0 || args.indexOf("--disallowedTools", at + 1) >= 0) return null;
@@ -61,7 +62,7 @@ test("every stage's argv removes every command tool, fresh and resumed", () => {
   for (const stage of names) {
     for (const resumeRef of [null, "sess-1"]) {
       const got = removed(argvFor(stage, { resumeRef }));
-      if (JSON.stringify(got) !== JSON.stringify([...COMMAND_TOOLS].sort())) lacking.push(`${stage}${resumeRef ? " (resumed)" : ""}: ${JSON.stringify(got)}`);
+      if (JSON.stringify(got) !== JSON.stringify([...COMMAND_TOOLS, ...OWN_SEARCH_TOOLS].sort())) lacking.push(`${stage}${resumeRef ? " (resumed)" : ""}: ${JSON.stringify(got)}`);
     }
   }
   assert.deepEqual(lacking, [], "stages whose argv does not remove the command tools");
@@ -69,7 +70,7 @@ test("every stage's argv removes every command tool, fresh and resumed", () => {
 
 test("the engine probe's turn removes them too, so the check runs with the settings a search runs with", () => {
   const { args } = buildClaudeArgs({ message: "x", model: "haiku", thinking: "low", ...probeToolConfig("probe-word") });
-  assert.deepEqual(removed(args), [...COMMAND_TOOLS].sort());
+  assert.deepEqual(removed(args), [...COMMAND_TOOLS, ...OWN_SEARCH_TOOLS].sort());
 });
 
 test("the removal sits beside the grant and does not change it", () => {
