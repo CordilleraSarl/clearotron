@@ -112,3 +112,10 @@ test("a product word is a stem: it matches its forms, on the English text and on
   assert.equal(goodsWordCounter(["dispositif"])(g), 1, "the original wording is read beside its translation");
   assert.equal(goodsWordCounter(["agnos"], { stems: true })(g), 0, "a stem begins at a word's start");
 });
+
+test("a word given in the plural and its singular match each other as stems", () => {
+  const g = (t) => [{ classes: ["9"], text: t }];
+  assert.equal(goodsWordCounter(["video games"], { stems: true })(g("a video game for consoles")), 1);
+  assert.equal(goodsWordCounter(["video game"], { stems: true })(g("video games")), 1);
+  assert.equal(goodsWordCounter(["game consoles"], { stems: true })(g("game console")), 1);
+});

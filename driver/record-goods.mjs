@@ -126,6 +126,8 @@ const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export function goodsWordCounter(words, { stems = false } = {}) {
   const res = (Array.isArray(words) ? words : [words])
     .map((w) => fold(w).trim()).filter(Boolean)
+    // A stem is the word without its plural ending, so "video games" and "video game" match each other.
+    .map((w) => (stems ? w.replace(/(\p{L}{3,})s$/u, "$1") : w))
     .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(w).replace(/\s+/g, "\\s+")}${stems ? "[\\p{L}\\p{N}]*" : ""}($|[^\\p{L}\\p{N}])`, "u"));
   return (goods) => {
     if (!res.length || !goods || !goods.length) return null;
@@ -210,7 +212,7 @@ export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CH
   // The particular goods when the variants stage names them, as stems, else the goods words (ruled 2026-10-13).
   const product = Array.isArray(model?.product_words) && model.product_words.length;
   const words = product ? model.product_words : Array.isArray(model?.goods_words) ? model.goods_words : [];
-  const stems = Boolean(product);
+  const stems = true;   // the word list the shape groups on is matched as stems, whichever source it came from
   const hits = goodsWordCounter(words, { stems });
   const goods = index.size ? {
     of: (r) => goodsFor(index, r),
