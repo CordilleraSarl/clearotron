@@ -40,8 +40,8 @@
           "todos": 0
         },
         "a-band-record-carries-its-goods-from-the-records-on-file.test.mjs": {
-          "tests": 5,
-          "asserts": 28,
+          "tests": 6,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },

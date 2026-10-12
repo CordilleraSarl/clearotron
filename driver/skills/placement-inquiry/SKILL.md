@@ -1,6 +1,6 @@
 ---
 name: placement-inquiry
-description: Per-candidate structured inquiry that consumes matter-context.md and the COMPLETE NAMED BAND (read through the band tools — band_shape / band_lookup / band_record over the funnel's full enumerated records + crowd descriptors), and produces placement recommendations for each register or common-law finding before tiering. Produces placement-recommendations.md naming each candidate's placement (headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered) with written reasoning per the inquiry framework, PLUS the structured mirror placements.json (one {mark, owner, jurisdiction, records, tier, reason} entry per candidate, plus the optional borderline declaration — the reason is the stated reasoning downstream argues with), PLUS a per-crowd-descriptor materiality call (cleared / material-gap → CONDITIONAL) that feeds the synthesis coverage_judgment contract. Catches commercial-relevance failures before rating logic runs, so candidates with class-match but no customer overlap get placed correctly rather than mechanically tiered. Invoke after register-unit and common-law workers return, before the digest worker spawns.
+description: Per-candidate structured inquiry that consumes matter-context.md and the named band (read through the band tools — band_shape first, then band_lookup / band_record for what the reasoning needs), and produces placement recommendations for each register or common-law finding before tiering. Produces placement-recommendations.md naming each candidate's placement (headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered) with written reasoning per the inquiry framework, PLUS the structured mirror placements.json (one {mark, owner, jurisdiction, records, tier, reason} entry per candidate, plus the optional borderline declaration — the reason is the stated reasoning downstream argues with), PLUS a per-crowd-descriptor materiality call (cleared / material-gap → CONDITIONAL) that feeds the synthesis coverage_judgment contract. Catches commercial-relevance failures before rating logic runs, so candidates with class-match but no customer overlap get placed correctly rather than mechanically tiered. Invoke after register-unit and common-law workers return, before the digest worker spawns.
 ---
 
 ## Purpose
@@ -11,15 +11,15 @@ This is structured inquiry per candidate. Not classification by rule. Not numeri
 
 ## Two layers — you are JUDGMENT, the funnel is the machine
 
-You read the **complete named band** the funnel handed up; the funnel decided *nothing* about relevance, sufficiency, or materiality. That is your job, and it now runs over **everything that was found**, not a pre-pruned digest. The hard boundary cuts both ways:
+The funnel hands you the named band unjudged; it decided *nothing* about relevance, sufficiency, or materiality. That is your job. **At every step: look at what you have before you work on it.** The hard boundary cuts both ways:
 
-- **The funnel never self-accepted a search as "good enough."** Every search it ran resolved to exactly one of two states: `enumerated` (paged to completion — every named record is in front of you) or `incomplete` (a crowd / unreachable slice it could not exhaust — handed to you as a **descriptor**: count + sample + reason, never a clean negative). There is no third "coverage-limited and move on" state anywhere upstream.
+- **The funnel never self-accepted a search as "good enough."** Every search it ran resolved to exactly one of two states: `enumerated` (paged to completion — every named record is in the band) or `incomplete` (a crowd / unreachable slice it could not exhaust — handed to you as a **descriptor**: count + sample + reason, never a clean negative). There is no third "coverage-limited and move on" state anywhere upstream.
 - **So sufficiency is now yours alone.** You decide whether you have seen enough of the dangerous category to sign. The funnel never self-accepted a `coverage-limited` clean and you must never re-invent one. An incomplete search you deem material is a **material gap** you name specifically — the run ships **CONDITIONAL** with that gap as an explicit open item, never a clean with fine print.
-- **Do not push relevance or sufficiency back into the funnel.** The unit hands you the complete band; you judge it. You never tell it to sample, narrow-for-tractability, or top-N.
+- **Do not push relevance or sufficiency back into the funnel.** The funnel's work ends at handing you the band; what in it matters is yours to judge. You never tell it to sample, narrow-for-tractability, or top-N.
 
 ## When invoked
 
-After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`clearance-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the complete named band (through the band tools) + the common-law findings.
+After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`clearance-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the band shape, then the records its order and your judgment call for (through the band tools) + the common-law findings.
 
 ## Model
 
@@ -28,8 +28,8 @@ Inherits the orchestrator's tier when invoked inline. No `sessions_spawn` — th
 ## Inputs you receive
 
 - `matter-context.md` from `matter-frame` at `studio/clearance-search/<slug>/<date>/matter-context.md` (the strategic foundation — read it once, reference it throughout)
-- **The complete named band** — read through the **band tools** (every call lands in the run's reading audit; never slice band files with shell). `band_shape` first: the deterministic shape of the complete merged band — totals, mechanical similarity tiers, **THE FLOORS** (every live in-class identical/near-identical record, listed individually and unconditionally — **every floor row must come back on your form, by record id.** Either you place it, or you select it with `tier: "out-of-scope-filtered"` and one line in `reason` saying why it is not a candidate. Discussing a floor in your prose is NOT accounting for it: the row is what the driver can check, and a floor you leave off the form is recorded as unanswered whatever the prose says. This is the one duty with no cap — see **Length target**, which bounds the general band and not this), census, owner concentrations, crowd descriptors, blind spots. A floors-heavy shape is served in PARTS (the response labels itself part N/M and names the next call) — read every part; a partial shape is never the shape. Then `band_lookup` / `band_record` for the records your inquiry needs. This is the funnel's real output, lifted across the firewall:
-  - **enumerated records** — every named record the funnel paged to completion, each carrying `record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict` (+ `_query` provenance). Apply the relevance / off-field gate over **this complete set** (work through the shape's totals slice by slice) — nothing was pre-sampled, so your gate is the *only* gate.
+- **The named band** — read through the **band tools** (every call lands in the run's reading audit; never slice band files with shell). `band_shape` first: the deterministic shape of the merged band — totals, mechanical similarity tiers, **THE FLOORS** (every live in-class identical/near-identical record, listed individually and unconditionally — **every floor has a fate on the form: placed by record id, or covered by its owner's set-aside, by name or by group.** Discussing a floor in your prose is NOT accounting for it: the form is what the driver can check, and a floor with no fate on it is recorded as unanswered whatever the prose says. This is the one duty with no cap — see **Length target**, which bounds the general band and not this), census, owner concentrations, crowd descriptors, blind spots. A floors-heavy shape is served in PARTS (the response labels itself part N/M and names the next call) — read every part; a partial shape is never the shape. Then `band_lookup` / `band_record` for the records your inquiry needs. This is the funnel's real output, lifted across the firewall:
+  - **enumerated records** — every named record the funnel paged to completion, each carrying `record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict` (+ `_query` provenance). Nothing was pre-sampled, so your gate is the *only* gate. Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. Count each group the shape lists on its own, and apply this to each by its own count. The shape lists the band in this order: (a) identical or near-identical to the mark or one of its forms, for the client's goods; (b) the same, in the ordered classes; (c) the same family as the mark, for the client's goods; (d) every other live mark in the ordered classes, for the client's goods; then the rest, counted. The ordered classes are the instructed ones and any class the frame added.
   - **`incomplete` crowd descriptors** — a query the funnel could NOT enumerate (genuinely too large, provider cap, budget): `query, total_hits, fetched, reason`. These are NOT findings and NOT clean negatives — they are signals you must rule on (cleared / material-gap; see "Crowd-descriptor materiality" below). They ride along on matching lookups too, so a counted-only zone can never read as a clean.
   - The unit's compact prose digest (`register-units/<axis>.md`) still exists for the audit trail; the **band is the material you judge.** Where they disagree, the band wins — it is the complete record, the prose is a summary.
 - The common-law-findings file at `studio/clearance-search/<slug>/<date>/common-law-findings.md` (common-law candidate inventory)
@@ -78,9 +78,9 @@ Expanded, the way you would put it to yourself before signing: would the senior 
 
 Two things the question deliberately is **not**. It is not "does this warrant the client narrative" — narrative-worthiness is relative to the rest of the band, so it moves whenever the band's composition moves, and the same record placed twice lands in two tiers. And it is not a risk tier: you are told below not to tier risk numerically, that is the digest's job, and a boundary you can only decide by computing the thing you are forbidden to compute is a boundary that falls back to feel. Ask what the conflict *does to the advice*, and write the answer down.
 
-Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. A record you do not carry is given a ground; no record leaves without one.
+Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. Carry forward only what a lawyer would raise with the client. Write down what you set aside and why.
 
-In the placement form that ground is one set-aside row per owner's set, naming one record of that owner; the form's `set_aside_row_contract` gives its fields. It is not a candidate, and the length target below does not count it.
+In the placement form an owner the shape lists gets a fate, not a row: you place it; or you set it aside by name, in one row naming one of its records (the form's `set_aside_row_contract`); or its group's one row covers it, saying why everything in that group you neither placed nor named is not raised with the client (the form's `set_aside_group_contract`). The rest the shape counts is one such row. Neither kind is a candidate, and the length target below does not count them.
 
 ### Headline candidates
 
@@ -115,12 +115,12 @@ Candidates the matter-context already classified off-field (or that the inquiry 
 
 When your placement deviates from a strict reading of the candidate's class-match or differs from matter-context's framing, surface the deviation explicitly in this section with the reasoning. The digest worker and `narrative-refutation` can override with informed counter-reasoning if appropriate.
 
-### Band reconciliation — form the expectation for THIS mark, then check the complete band against it
+### Band reconciliation — form the expectation for THIS mark, then check the band against it
 
 Before placing individual candidates, step back and reason about the band **as a whole**, the way a senior lawyer reads a search result before drafting. Write a short reconciliation (3-8 lines) at the top of the file:
 
 - **What did I expect to see for THIS mark?** Given the archetype + risk theory (from `matter-context` / the manifest): a coined word in an empty class should return little; a saturated everyday word in a crowded class should return a wall of names; a famous-element-masked mark should surface the famous owner.
-- **Does the complete band match that expectation?** Reconcile, and name the mismatches explicitly. The traps to catch (these are reasoning prompts, not a checklist to mechanise):
+- **Does the band match that expectation?** Reconcile, and name the mismatches explicitly. The traps to catch (these are reasoning prompts, not a checklist to mechanise):
   - **A saturated field with zero named exact-owner records is not a clearance** — it is a search that hasn't reached the dangerous category yet. If the band shows a high-count crowd descriptor on the dominant element but *no* `enumerated` block for the exact-in-class-live name-list, that exact slice is **unsearched, not clean** — rule it a **material gap** (see below) → the run ships CONDITIONAL, never a clean negative.
   - **Is anything famous missing?** If the mark is one keystroke / a homophone from a famous mark that covers the target goods or an adjacent field and that owner does **not** appear in the band, that is a recall gap — name it a material gap (famous owner / exact neighbour, in-scope classes, not enumerated) rather than concluding it isn't there.
   - **My headline candidate is a commercial partner.** If the highest-risk record by class/proximity is a known partner / licensor / the applicant's own group, that cannot be the top risk *by default* — partner-relationship is optics, an either-way practical factor, not a legal-risk multiplier (see synthesis "Optics is annotation"). Flag it here so the digest/synthesis does not lead the report with the partner; the legal read on the partner's mark still stands, the **prioritisation** does not.
@@ -151,7 +151,7 @@ The test: **"is the uncertainty about whether I LOOKED, or about what the COMPLE
 
 ## Structured inquiry per candidate
 
-For each candidate you are placing (work through the shape's totals via `band_lookup` — **floors first, and every floor accounted for**), answer briefly:
+For each candidate you are placing (look up by owner name, from the shape's groups (a) to (d), the owners your judgment needs — **floors first, and every floor accounted for**), answer briefly:
 
 1. **What does the applicant actually do?** Concrete business activity, not just Nice class summary.
 2. **Who is their customer?** End-users; decision-makers if distinct.
@@ -198,7 +198,7 @@ The inquiry above is primary. The patterns below describe how the inquiry's answ
 - **Don't promote without attribution.** No common-law title goes to headline without a confirmed developer/publisher.
 - **Don't accept an incomplete search as a clean field.** A crowd descriptor is never a placement — it is a coverage call (cleared / material-gap). A saturated dominant element with no enumerated exact-in-class-live slice is an unsearched dangerous category, not a clearance.
 - **Don't bury a material gap as fine print, and don't suppress a genuine open judgment.** Incomplete-and-material → a named material gap (→ CONDITIONAL); the search-is-complete-but-arguable → surfaced open question that ships. Keep them apart.
-- **Don't push relevance or sufficiency back into the funnel.** No "sample this", "narrow to tractable", "top-N". The unit hands you the complete band; you judge it.
+- **Don't push relevance or sufficiency back into the funnel.** No "sample this", "narrow to tractable", "top-N". The funnel's work ends at handing you the band; what in it matters is yours to judge.
 
 ## Length target
 
