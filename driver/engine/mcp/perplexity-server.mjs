@@ -10,6 +10,7 @@ import { dirname, basename } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
 import { serve } from "./stdio-server.mjs";
+import { answerBudget } from "../../../shared/answer-parts.mjs";
 import {
   isKnownPreset, questionPresetFor, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
   validateGridSpec, buildGridProgramTask, captureGridFromResponse, requiredLedgerRefusal,
@@ -194,7 +195,10 @@ function tellObligations(spec, ledgerJson) {
 // and a grid's candidates grow with its results per cell. So they are served in parts, split between
 // cells, as band_shape serves an oversize shape, with the same part size. A later part is read from the
 // saved ledger: nothing is searched again.
-const GRID_PART_CHARS = 70000;
+// Smaller when this server was given an answer size (codex cuts the middle out of a longer read;
+// shared/answer-parts.mjs): three quarters of it, which leaves room for the rest of the reply and for the
+// quotes and line breaks a printout adds, so a part of the grid is never split again on its way to the model.
+const GRID_PART_CHARS = answerBudget() ? Math.min(70000, Math.floor(answerBudget() * 0.75)) : 70000;
 
 // `reserve` is what part 1's reply also carries (the meaning obligations): part 1 is that much smaller,
 // and every call passes the same reserve for the same ledger, so every call splits it the same way.

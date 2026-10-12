@@ -30,6 +30,7 @@ import { appendFileSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { answerBudget, answerPieces, servedPart, partNotHeld, takePart, heldAnswers, withAnswerPart } from "../../shared/answer-parts.mjs";
 import { RefreshLock } from "./refresh-lock.mjs";
 import { exitOnStdinClose } from "./stdin-guard.mjs";
 
@@ -327,6 +328,19 @@ async function main() {
     { capabilities: { tools: {} } },
   );
 
+  // A LONG ANSWER IS SERVED IN PARTS when the bridge was given an answer size (shared/answer-parts.mjs). An
+  // answer made of text alone is split; one carrying anything else is passed on as it came.
+  const budget = answerBudget();
+  const held = heldAnswers();
+  const partedResult = (tool, args, res) => {
+    const blocks = Array.isArray(res?.content) ? res.content : [];
+    if (!blocks.length || !blocks.every((c) => c?.type === "text")) return res;
+    const pieces = answerPieces(blocks.map((c) => String(c.text ?? "")).join("\n"), budget, tool);
+    if (pieces.length === 1) return res;
+    held.hold(tool, args, pieces);
+    return { content: [{ type: "text", text: servedPart(tool, pieces, 1) }] };
+  };
+
   downstream.setRequestHandler(ListToolsRequestSchema, async () => {
     const upstreamResp = await upstream.listTools();
     const upstreamTools = upstreamResp?.tools ?? [];
@@ -339,7 +353,7 @@ async function main() {
         `[oauth-bridge:${serverName}] filtered ${dropped.length} unlisted upstream tool(s) from ListTools: ${dropped.join(", ")}\n`,
       );
     }
-    return { ...upstreamResp, tools };
+    return { ...upstreamResp, tools: budget ? tools.map((t) => ({ ...t, inputSchema: withAnswerPart(t.inputSchema) })) : tools };
   });
 
   downstream.setRequestHandler(CallToolRequestSchema, async (req) => {
@@ -353,12 +367,20 @@ async function main() {
         `Tool "${name}" is not in the bridge allowlist for ${serverName}. To enable it, add the unprefixed upstream name to ALLOWED_TOOLS in bridge.mjs and restart.`,
       );
     }
+    // A later part of a held answer is read from it; the upstream server is not asked again.
+    const { args, part } = budget ? takePart(req.params.arguments) : { args: req.params.arguments, part: null };
+    const kept = part ? held.get(name, args) : null;
+    if (part && (kept || part > 1)) {
+      logCall(serverName, name, args, kept ? { ok: true, answer_part: part, of: kept.length } : { ok: false, answer_part: part, held: false });
+      return kept ? { content: [{ type: "text", text: servedPart(name, kept, part) }] }
+        : { isError: true, content: [{ type: "text", text: partNotHeld(name, part) }] };
+    }
     try {
-      const res = await upstream.callTool({ name, arguments: req.params.arguments });
+      const res = await upstream.callTool({ name, arguments: args });
       const refused = toolError(res);
       if (refused === null) logCall(serverName, name, req.params.arguments, { ok: true, bytes: resultBytes(res) });
       else logCall(serverName, name, req.params.arguments, { ok: false, error: refused });
-      return res;
+      return budget && refused === null ? partedResult(name, args, res) : res;
     } catch (err) {
       // A FAILED CALL IS LOGGED TOO, and it is the half that matters: without it, "the search ran and
       // found nothing" and "the search errored" leave the same trace — the ambiguity is about.

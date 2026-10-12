@@ -292,7 +292,8 @@ of truncations.
 
 | Var | Default | Meaning |
 |---|---|---|
-| `CLEAROTRON_BAND_RESPONSE_CHARS` | the shape-part size | Characters per band-server response. Floor 4096; defaults to whatever the shape part is set to, so raising one raises both unless this is set too. |
+| `CLEAROTRON_BAND_RESPONSE_CHARS` | five sixths of `CLEAROTRON_TOOL_ANSWER_BYTES`: 37,500 on the Claude engine, 30,000 on the OpenAI engine; 70,000 with no answer size | Characters per band-server response, the band summary's parts included; a summary part is never longer than 70,000 whatever this says. Floor 4096. The sixth left over is room for the quotes and line breaks a printout adds and for a banner, so a band answer is never split again into answer parts. On the OpenAI engine it is at most 30,000; a smaller value set here still applies. |
+| `CLEAROTRON_TOOL_ANSWER_BYTES` | 45,000 on the Claude engine, 36,000 on the OpenAI engine | Bytes per tool answer from every local tool server and the case-law bridge, counted as a quoted string (a quote or line break counts two). A longer answer is served in parts, each naming the next, and the tool runs once: a later part is read from the answer the server holds. Each engine writes its size into every server's entry: Claude Code saves an answer longer than 50,000 characters to a file the model must read for itself, and Codex removes the middle of a tool read longer than about 39,000 bytes. A smaller value set here still applies on both. A server started outside a stage, with no size, serves every answer whole. Floor 8192. |
 
 ### Surfaces beside the driver — portal, demo, e2e harness
 
