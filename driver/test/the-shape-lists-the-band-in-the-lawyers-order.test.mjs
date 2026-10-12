@@ -301,6 +301,14 @@ test("(c) names the word it holds, a fused word reaches it, and (a) past fifty l
   assert.doesNotMatch(md.slice(md.indexOf("### (a)"), md.indexOf("### (b)")), /read the near ones first/);
 });
 
+test("a crowded (c) says what it holds in the ruled words", () => {
+  const recs = Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(`f${i}`, "PREQZORVAK", `Owner ${i} Ltd`, ["9"]));
+  const goods = goodsReader(Object.fromEntries(recs.map((r) => [r.record_id.split("/").pop(), [{ classes: ["9"], text: "joysticks" }]])));
+  const { shape, md } = buildBandShape({ enumerated: recs }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 2, dominantTerm: "Qzorvak", caps: { owners: 5 } });
+  assert.equal(shape.groups.c.records, CROWDED_GROUP_RECORDS, "guard: (c) is crowded");
+  assert.ok(md.includes("A thousand or more? The field is crowded. These are marks of the same family as the mark, or carrying the searched word, for the client's goods. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded."));
+});
+
 test("a floor held outside the order says so on its line, an unread order territory is reported, and a no-goods line shows a record on file", () => {
   const outside = bandGroups([rec("o1", "QZORVAK", "Zeta KK", ["9"], { jurisdictions: "JP" })], { classify, inScope,
     goods: goodsReader({ o1: [{ classes: ["9"], text: "joysticks" }] }), territories: ["EU"] });

@@ -132,7 +132,10 @@ test("an untagged statement is English only on an English-language register; els
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
   const { driverDir } = await import("../../shared/driver-dir.mjs");
-  assert.deepEqual(["/mark/us/1", "/mark/gb/1", "/mark/uk/1", "/mark/ca/1", "/mark/fr/1", "/mark/eu/1"].map(untaggedIsEnglish), [true, true, true, false, false, false]);
+  assert.deepEqual(["/mark/us/1", "/mark/gb/1", "/mark/uk/1", "/mark/ie/1", "/mark/au/1", "/mark/nz/1", "/mark/sg/1", "/mark/in/1", "/mark/za/1"].map(untaggedIsEnglish),
+    [true, true, true, true, true, true, true, true, true], "the English-language registers, as ruled");
+  assert.deepEqual(["/mark/ca/1", "/mark/hk/1", "/mark/fr/1", "/mark/eu/1", "/mark/wo/1"].map(untaggedIsEnglish), [false, false, false, false, false],
+    "two languages, or another language: unknown when untagged");
   const runDir = mkdtempSync(join(tmpdir(), "untagged-"));
   try {
     mkdirSync(driverDir(runDir), { recursive: true });

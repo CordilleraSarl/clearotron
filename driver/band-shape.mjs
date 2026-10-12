@@ -1077,7 +1077,7 @@ function renderGroupsMd(md, groups, rows = []) {
   const head = ["| mark | owner | classes | live | territories | goods words | floor | record |", "|---|---|---|---|---|---|---|---|"];
   // A crowded group's own words for what it holds, in the crowded-field method's sentence (ruled 2026-10-12).
   const crowd = { b: "identical marks in the ordered classes for other goods than the client's",
-    c: `marks of the same family as the mark, or ${carrying}, for the client's goods`, d: "other marks in the ordered classes for the client's goods" };
+    c: "marks of the same family as the mark, or carrying the searched word, for the client's goods", d: "other marks in the ordered classes for the client's goods" };
   const firstPage = `The first ${fmtN(groups.first_page)} lines are below`;
   for (const g of ["a", "b", "c", "d"]) {
     const grp = groups[g];

@@ -25,10 +25,10 @@ import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
 
 /**
  * The registers whose language is English (ruled 2026-10-12): there, a goods statement with no language tag
- * is read as English. Everywhere else an untagged statement is unknown to the goods test, and Canada, with two
- * languages, is unknown too.
+ * is read as English. Everywhere else an untagged statement is unknown to the goods test; Canada and Hong Kong,
+ * with two languages each, are unknown too. The list is data, and grows with evidence.
  */
-export const ENGLISH_REGISTERS = new Set(["US", "GB", "IE", "AU", "NZ"]);
+export const ENGLISH_REGISTERS = new Set(["US", "GB", "IE", "AU", "NZ", "SG", "IN", "ZA"]);
 const registerOf = (uri) => canonicalJurisdictionCode(String(normalizeRecordUri(uri) ?? "").match(/^\/mark\/([a-z0-9]+)\//i)?.[1]?.toUpperCase() ?? "");
 /** Is an untagged statement on this record read as English? Only on an English-language register. PURE. */
 export const untaggedIsEnglish = (uri) => ENGLISH_REGISTERS.has(registerOf(uri));
