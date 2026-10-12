@@ -28,7 +28,8 @@ import { doubleMetaphone } from "./phonetic-key.mjs";
 import { probeOrder } from "./order-probe.mjs";   // item 11 — inert unless CLEAROTRON_ORDER_PROBE_SEED is set
 import { normKey } from "./placement-diff.mjs";
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // — one spelling per register: a band's "EM" and a market's "EU" are one office
-import { bindingLayersFor } from "./binding-layers.mjs";   // — the registers that bind an ordered territory: its own, the EU's for a member, every member's for the EU, Benelux, Madrid   // — the set-aside key's owner fold: an owner is grouped the way a set-aside row covers it
+import { bindingLayersFor } from "./binding-layers.mjs";
+import { territoryKey } from "./territory-tiers.mjs";   // — a territory written as a name reads as its code   // — the registers that bind an ordered territory: its own, the EU's for a member, every member's for the EU, Benelux, Madrid   // — the set-aside key's owner fold: an owner is grouped the way a set-aside row covers it
 
 export const BAND_SHAPE_SCHEMA_VERSION = 1;
 
@@ -261,7 +262,7 @@ export function dominantElementBasis(markText, prep) {
 export function dominantElementComposites(band, { dominantElement, inScopeClasses = [] } = {}) {
   const prep = prepareDominantElement(dominantElement);
   if (!prep) return null;                         // no comparable dominant element ⇒ not computable
-  const scope = new Set((inScopeClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
+  const scope = new Set((inScopeClasses ?? []).map(niceClassKey).filter(Boolean));
   const inScope = (r) => {
     const cls = classesOf(r);
     if (!scope.size) return true;
@@ -534,7 +535,9 @@ export function deriveRegisterPositions(records, detailByUri = new Map()) {
 }
 
 const inc = (obj, key, by = 1) => { const k = String(key); obj[k] = (obj[k] ?? 0) + by; };
-const classesOf = (r) => (Array.isArray(r?.classes) ? r.classes : r?.classes != null ? [r.classes] : []).map((c) => String(c).trim()).filter(Boolean);
+/** A Nice class as one spelling: "09", "9" and 9 are class 9. PURE. */
+export const niceClassKey = (c) => { const t = String(c ?? "").trim(); return /^\d+$/.test(t) ? String(Number(t)) : t; };
+const classesOf = (r) => (Array.isArray(r?.classes) ? r.classes : r?.classes != null ? [r.classes] : []).map(niceClassKey).filter(Boolean);
 const registryOf = (r) => String(r?.screen?.registry ?? (Array.isArray(r?.jurisdictions) ? r.jurisdictions[0] : r?.jurisdictions) ?? "").trim() || "unknown";
 const yearOf = (r) => {
   const m = String(r?.application_date ?? r?.screen?.applicationDate ?? "").match(/\b(19|20)\d{2}\b/);
@@ -654,19 +657,38 @@ export function assertRestHoldsNoFloor(restLines) {
   if (stray) throw new Error(`band shape: the rest holds a floor (${stray.record_id ?? stray.key}); a floor is listed in (a) or (b), never counted in the rest`);
 }
 
+/**
+ * Every register that binds any of these territories: each territory's own, the EU's for a member, every
+ * member's for the EU, Benelux's for its three, Madrid's for all. The Benelux register is written BX or as any
+ * of its three members' codes, binds all three, and sits inside the EU. PURE.
+ */
+const BENELUX = ["BX", "NL", "BE", "LU"];
+function bindingOffices(territories, code) {
+  const out = new Set();
+  for (const t of territories) {
+    out.add(t);
+    try { for (const l of bindingLayersFor(t)) out.add(code(l.office)); } catch { /* an unknown code binds itself */ }
+  }
+  if (out.has("WO")) out.add("IB");   // the International Bureau is the Madrid register by another name
+  if (BENELUX.some((c) => out.has(c))) { for (const c of BENELUX) out.add(c); out.add("EU"); out.add("WO"); out.add("IB"); }
+  return out;
+}
+
 export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", keysOf = null, markets = [], territories = [] } = {}) {
   const fold = (x) => foldDiacritics(String(x ?? "")).toLowerCase();
   const dom = fold(dominantTerm).trim();
   const domRe = dom ? new RegExp(`(^|[^\\p{L}\\p{N}])${dom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^\\p{L}\\p{N}])`, "u") : null;
-  const code = (t) => canonicalJurisdictionCode(String(t ?? "").trim().toUpperCase());
-  const market = new Set((markets ?? []).map(code).filter(Boolean));
+  // A territory or register as written, a code or a name, read as its code: "Switzerland" and "CH" are one.
+  const code = (t) => canonicalJurisdictionCode(territoryKey(String(t ?? "").trim()) || String(t ?? "").trim().toUpperCase());
   const ordered = new Set((territories ?? []).map(code).filter(Boolean));
-  const offices = new Set([...ordered].flatMap((t) => { try { return bindingLayersFor(t).map((l) => code(l.office)); } catch { return [t]; } }));
-  if (offices.has("WO")) offices.add("IB");   // the International Bureau is the Madrid register by another name
-  // A register as a provider writes it: a code, a list of codes, a list of {jurisdiction, …} or a map keyed
-  // by code. What cannot be read gives no code, and a record with none stays in.
+  const offices = bindingOffices(ordered, code);
+  // The client's markets, read the same way; a market of the EU holds a member's register too.
+  const marketsGiven = [...new Set((markets ?? []).map(code).filter(Boolean))];
+  const market = bindingOffices(new Set(marketsGiven), code);
+  // A register as a provider writes it: a code, a list of codes, or a list of {jurisdiction, …}, read by its
+  // code field alone. What cannot be read gives no code, and a record with none stays in.
   const raw = (j) => (j == null ? [] : Array.isArray(j) ? j.flatMap(raw) : typeof j === "object"
-    ? ((j.jurisdiction ?? j.code ?? j.office ?? j.country) != null ? raw(j.jurisdiction ?? j.code ?? j.office ?? j.country) : Object.keys(j))
+    ? ((j.jurisdiction ?? j.code ?? j.office ?? j.country) != null ? raw(j.jurisdiction ?? j.code ?? j.office ?? j.country) : [])
     : [j]);
   const territoriesOf = (r) => raw(r?.jurisdictions).map(code).filter((t) => /^[A-Z]{2,5}$/.test(t));
   const inOrder = (ts) => !offices.size || !ts.length || ts.some((t) => offices.has(t));
@@ -734,7 +756,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
   for (const g of ["a", "b", "c", "d"]) byGroup[g].lines.sort(herOrder);
   byGroup.rest.lines.sort(byName);
   noGoods.sort(herOrder);
-  return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), markets: [...market], territories: [...ordered],
+  return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), markets: marketsGiven, territories: [...ordered],
     outside: { lines: outsideLines, records: outsideRecords }, by_group: byGroup, no_goods: noGoods };
 }
 
@@ -757,7 +779,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const prepared = prepareTargets(Array.isArray(targets) && targets.every(isPrepared) ? targets.map((t) => t.text) : targets);
   const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
   const crowds = Array.isArray(band?.crowds) ? band.crowds : [];
-  const scope = new Set((inScopeClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
+  const scope = new Set((inScopeClasses ?? []).map(niceClassKey).filter(Boolean));
   const inScope = (r) => {
     const cls = classesOf(r);
     if (!scope.size) return true;               // no instructed classes ⇒ everything is in scope

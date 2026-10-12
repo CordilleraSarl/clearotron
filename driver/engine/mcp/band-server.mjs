@@ -21,7 +21,7 @@ import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
 import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
-import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord } from "../../band-shape.mjs";
+import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
 import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched } from "../../record-goods.mjs";
@@ -371,8 +371,8 @@ function bandLookup(params = {}) {
     if (record_id && norm(r?.record_id) !== norm(record_id)) continue;
     if (owner && !norm(r?.owner_name).includes(norm(owner))) continue;
     if (nice_class != null) {
-      const cls = (Array.isArray(r?.classes) ? r.classes : [r?.classes]).map((c) => String(c ?? "").trim());
-      if (!cls.includes(String(nice_class).trim())) continue;
+      const cls = (Array.isArray(r?.classes) ? r.classes : [r?.classes]).map(niceClassKey);   // "09" is class 9
+      if (!cls.includes(niceClassKey(nice_class))) continue;
     }
     if (status && !norm(r?.status ?? r?.screen?.status).includes(norm(status))) continue;
     if (live_only === true && !isLiveRecord(r)) continue;

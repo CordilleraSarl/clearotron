@@ -174,7 +174,7 @@ export function clientMarkets(job, profile) {
   try {
     const { scope } = narrowingMarkets(job, profile);
     const defaults = defaultTerritoryState(profile).kept;
-    return [...new Set([...scope, ...(defaults.length ? defaults : MAJOR_MARKETS)].map((t) => String(t).trim().toUpperCase()).filter(Boolean))];
+    return [...new Set([...scope, ...(defaults.length ? defaults : MAJOR_MARKETS)].map((t) => territoryKey(t)).filter(Boolean))];
   } catch { return []; }
 }
 

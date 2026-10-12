@@ -164,6 +164,34 @@ test("membership binds both ways: the EU register for a member's order, Benelux 
   assert.ok(inNL.by_group.a.lines.some((l) => l.owner_name === "Beta BV"), "Benelux is the Netherlands' national register");
 });
 
+test("Benelux binds its three and sits in the EU; a register is read by its code field or its name, never by other keys", () => {
+  const goods = goodsReader(Object.fromEntries(["n1", "n2", "n3", "n4", "n5"].map((k) => [k, [{ classes: ["9"], text: "joysticks" }]])));
+  const recs = [lapsed("n1", "Alpha BV", "NL"), lapsed("n2", "Beta SA", "EM"), lapsed("n3", "Gamma Ltd", [{ name: "Gamma", type: "word" }]),
+    lapsed("n4", "Delta Co", "CHINA"), lapsed("n5", "Eta Inc", { US: "registered" })];
+  const listed = (ts) => bandGroups(recs, { classify, inScope, goods, territories: ts }).by_group.a.lines.map((l) => l.owner_name).sort();
+  assert.ok(listed(["NL"]).includes("Alpha BV"), "a record coded NL is inside an NL order");
+  assert.ok(listed(["EU"]).includes("Alpha BV"), "and inside an EU order");
+  assert.ok(listed(["BX"]).includes("Beta SA"), "the EU register binds a Benelux order");
+  assert.ok(listed(["JP"]).includes("Gamma Ltd"), "an object with no code field gives no code, so the record stays in");
+  assert.ok(listed(["CN"]).includes("Delta Co"), "a register written as a name reads as its code");
+  assert.ok(listed(["CH"]).includes("Eta Inc"), "a map is not read as codes: the record stays in");
+});
+
+test("class 09 is class 9, in the scope and the floors", () => {
+  const goods = goodsReader({ z1: [{ classes: ["9"], text: "joysticks" }] });
+  const { shape } = buildBandShape({ enumerated: [rec("z1", "QZORVAK", "Alpha Ltd", ["09"])] }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1 });
+  assert.equal(shape.floors.in_class_identical_or_near.length, 1, "a live identical mark in class 09 is a floor of a class-9 order");
+  assert.deepEqual(shape.groups.a.list.map((l) => l.classes), [["9"]]);
+});
+
+test("markets written as names read as codes, and a market of the EU holds a member's register", async () => {
+  const { clientMarkets } = await import("../effective-scope.mjs");
+  assert.ok(clientMarkets({ jurisdictions: ["Switzerland"], geography: { mode: "named" } }, null).includes("CH"));
+  const goods = goodsReader({ k1: [{ classes: ["9"], text: "joysticks" }] });
+  const g = bandGroups([rec("k1", "QZORVAK", "Alpha GmbH", ["9"], { jurisdictions: "DE" })], { classify, inScope, goods, markets: ["European Union"] });
+  assert.deepEqual([g.markets, g.by_group.a.lines[0].in_market], [["EU"], true]);
+});
+
 test("an order written in names reads as its codes, and a register given as objects or a map is read", async () => {
   const { orderTerritories } = await import("../effective-scope.mjs");
   assert.deepEqual(orderTerritories({ jurisdictions: ["Switzerland"], geography: { mode: "named" } }, null), ["CH"]);

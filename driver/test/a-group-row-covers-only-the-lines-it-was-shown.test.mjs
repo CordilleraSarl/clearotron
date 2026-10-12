@@ -123,6 +123,16 @@ test("band_lookup pages a group as the shape lists it, and the reading log recor
   assert.deepEqual(log.at(-1).served_lines, shape.groups.b.list.slice(5, 8).map((l) => l.key));
 });
 
+test("band_lookup's class filter reads class 09 as class 9", async () => {
+  const band = { enumerated: [{ record_id: "/mark/eu/z9", mark_text: "QZORVAK", owner_name: "Alpha Ltd", classes: ["09"], status: "registered", jurisdictions: ["EU"] }], crowds: [] };
+  const runDir = mkdtempSync(join(tmpdir(), "class-09-"));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify(band));
+  writeFileSync(driverDir(runDir, "band-shape.json"), JSON.stringify(buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"] }).shape));
+  const page = await lookup(runDir, { nice_class: "9" });
+  assert.equal(page.matched, 1);
+});
+
 test("a group's row answers a floor only in a group of a thousand records or more", async () => {
   const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
   const { reconcileFloorDuty } = await import("../floor-duty.mjs");
