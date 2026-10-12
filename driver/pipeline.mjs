@@ -103,7 +103,7 @@ import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
-import { bandShapeGoods } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
+import { bandShapeGoods, instructedOrder } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
@@ -959,7 +959,7 @@ function deriveBandShape(ctx, band) {
       runLog(P.runDir, { event: "register-positions-failed", fail: String(e?.message ?? e).slice(0, 160) });
       note(`register-positions derivation failed (non-fatal — the per-registration band stands): ${String(e?.message ?? e).slice(0, 100)}`);
     }
-    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...bandShapeGoods(P, inScopeClasses, { job: ctx.job }), markets: clientMarkets(ctx.job, ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null) });
+    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...bandShapeGoods(P, inScopeClasses, { job: instructedOrder(P, ctx.job) }), markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null) });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");

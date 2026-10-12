@@ -170,6 +170,20 @@ export function goodsExcerpt(goods, { inScopeClasses = [], maxChars = 400 } = {}
     cut: (inScopePart || full).length > maxChars };
 }
 
+/**
+ * The order as the band shape reads it: the job, with the goods wording, territories and geography taken
+ * from the run's own instructed scope, written from the order at intake before any model reads it. A
+ * stage replayed from a job rebuilt out of the run's status carries none of those three, so reading them
+ * from the job alone would sort a replay's shape differently from the run's. IMPURE (reads the run).
+ */
+export function instructedOrder(P, job = null) {
+  let scope = null;
+  try { scope = JSON.parse(readFileSync(P.instructedScope, "utf8")); } catch { scope = null; }
+  const order = { ...(job ?? {}) };
+  for (const k of ["goods", "jurisdictions", "geography"]) if (scope?.[k] != null) order[k] = scope[k];
+  return order;
+}
+
 // How much of a record's goods is shown: on a line of the shape, and on a row `band_lookup` serves.
 export const GOODS_LINE_CHARS = 400;
 export const GOODS_ROW_CHARS = 1500;

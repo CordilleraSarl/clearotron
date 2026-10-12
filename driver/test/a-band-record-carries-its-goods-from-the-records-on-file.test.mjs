@@ -13,7 +13,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { niceClass, recordGoods, bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordMatcher, goodsExcerpt } from "../record-goods.mjs";
+import { niceClass, recordGoods, bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordMatcher, goodsExcerpt, instructedOrder } from "../record-goods.mjs";
 
 test("a class is compared as a number: 09, 9 and ' 9 ' are one class, and nothing else is a class", () => {
   assert.equal(niceClass("09"), "9");
@@ -86,4 +86,20 @@ test("the excerpt shows the ordered classes' goods first, cut at its size, with 
     "with nothing in scope, the whole text is what a goods ground is read from");
   assert.equal(goodsExcerpt(null), null);
   assert.equal(goodsExcerpt(goods, { inScopeClasses: [] }).text.startsWith("[25] clothing"), true, "with no scope every statement is in scope, in its own order");
+});
+
+test("the shape reads the order's goods and markets from the run's instructed scope, so a replay from a rebuilt job sorts as the run did", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "record-goods-order-"));
+  try {
+    mkdirSync(driverDir(runDir), { recursive: true });
+    const P = { instructedScope: driverDir(runDir, "instructed-scope.json") };
+    const rebuilt = { markName: "QZORVAK", classes: ["9"] };   // what a job rebuilt from the run's status carries
+    assert.deepEqual(instructedOrder(P, rebuilt), rebuilt, "no instructed scope on file: the job as it is");
+    writeFileSync(P.instructedScope, JSON.stringify({ goods: "game controllers", jurisdictions: ["CH"], geography: { mode: "named" }, classes: ["9", "28"] }));
+    const order = instructedOrder(P, rebuilt);
+    assert.equal(order.goods, "game controllers");
+    assert.deepEqual(order.jurisdictions, ["CH"]);
+    assert.deepEqual(order.geography, { mode: "named" });
+    assert.deepEqual(order.classes, ["9"], "the classes stay the job's: only the goods wording and the markets are read from the scope");
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
