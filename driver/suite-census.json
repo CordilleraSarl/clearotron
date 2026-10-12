@@ -47,7 +47,7 @@
         },
         "a-band-record-carries-its-goods-from-the-records-on-file.test.mjs": {
           "tests": 13,
-          "asserts": 50,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -6448,8 +6448,8 @@
           "todos": 0
         },
         "the-shape-lists-the-band-in-the-lawyers-order.test.mjs": {
-          "tests": 20,
-          "asserts": 93,
+          "tests": 21,
+          "asserts": 95,
           "skips": 0,
           "todos": 0
         },
