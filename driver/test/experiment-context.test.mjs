@@ -247,11 +247,11 @@ test("a placement arm derives its floor duty and its owners' fates in the sandbo
   assert.ok(existsSync(duty), "the arm carries the floor-duty artifact a run writes after placement");
   assert.ok(!existsSync(join(runDir, "_experiments", "nope")), "guard");
   const artifact = JSON.parse(readFileSync(duty, "utf8"));
-  console.log(`      placement-inquiry: floor duty computable ${artifact.computable}, ${artifact.owners?.owners ?? "no"} owner(s) with a counted fate`);
+  console.log(`      placement-inquiry: floor duty computable ${artifact.computable}, ${artifact.owners?.lines ?? "no"} line(s) with a counted fate`);
   if (artifact.computable === true) {
     const shape = JSON.parse(readFileSync(join(ex.shadowDir, "_driver", "band-shape.json"), "utf8"));
-    const listed = ["a", "b", "c", "d"].reduce((n, g) => n + shape.groups[g].owners, 0) + shape.groups.rest.owners + shape.groups.unresolved.owners;
-    assert.equal(artifact.owners?.owners, listed, "every owner the shape groups has a fate counted, placed or not");
+    const listed = ["a", "b", "c", "d", "rest", "unresolved"].reduce((n, g) => n + shape.groups[g].lines, 0);
+    assert.equal(artifact.owners?.lines, listed, "every line the shape groups has a fate counted, placed or not");
   } else {
     assert.ok(artifact.reason, "an artifact that could not be computed says why, rather than counting zeros");
   }

@@ -21,6 +21,7 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { foldDiacritics } from "./form-neighbourhood.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
+import { clientMarkets } from "./effective-scope.mjs";
 
 /** A Nice class as the engine compares it: "09", 9 and " 9 " are all "9". Anything else is "". */
 export const niceClass = (c) => {
@@ -133,6 +134,19 @@ export function goodsWordCounter(words) {
   };
 }
 
+/**
+ * The goods test as a score, for the order inside a group: one for each goods word the record's goods hold,
+ * and one more for each of those words the client's own goods wording carries (the order's wording, where
+ * the variants stage starts its list), so the client's own product term counts double. Null when the record
+ * has no goods on file or there are no words. PURE.
+ */
+export function goodsWordScore(words, ownWording = "") {
+  const list = (Array.isArray(words) ? words : [words]).map((w) => String(w ?? "").trim()).filter(Boolean);
+  const own = goodsWordCounter(list.filter((w) => goodsWordCounter([w])([{ classes: [], text: String(ownWording ?? "") }]) === 1));
+  const all = goodsWordCounter(list);
+  return (goods) => { const n = all(goods); return n == null ? null : n + (own(goods) ?? 0); };
+}
+
 /** The same test as true or false: any word present, none present, or null when it cannot be told. PURE. */
 export function goodsWordMatcher(words) {
   const count = goodsWordCounter(words);
@@ -167,7 +181,7 @@ export const GOODS_ROW_CHARS = 1500;
  * search asked for beside the one the variants stage named. IMPURE (reads the run). Any part that cannot
  * be read is simply absent, and the shape sorts without it.
  */
-export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CHARS, lineChars = GOODS_LINE_CHARS } = {}) {
+export function bandShapeGoods(P, inScopeClasses = [], { job = null, profile = null, rowChars = GOODS_ROW_CHARS, lineChars = GOODS_LINE_CHARS } = {}) {
   let model = null;
   try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
   let searched = "";
@@ -177,12 +191,16 @@ export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CH
   } catch { searched = ""; }
   const manifestDominant = String(model?.dominant_element ?? "");
   const index = bandGoodsIndex(P.runDir);
-  const hits = goodsWordCounter(Array.isArray(model?.goods_words) ? model.goods_words : []);
+  const words = Array.isArray(model?.goods_words) ? model.goods_words : [];
+  const hits = goodsWordCounter(words);
   const goods = index.size ? {
     of: (r) => goodsFor(index, r),
     hits,
+    score: goodsWordScore(words, job?.goods ?? ""),
     line: (g) => goodsExcerpt(g, { inScopeClasses, maxChars: lineChars }),
     rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses, maxChars: rowChars })?.cut),
   } : null;
-  return { goods, dominantTerm: searched || manifestDominant, manifestDominant };
+  let markets = [];
+  try { markets = clientMarkets(job, profile); } catch { markets = []; }
+  return { goods, dominantTerm: searched || manifestDominant, manifestDominant, markets };
 }

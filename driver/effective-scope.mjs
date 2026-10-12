@@ -164,6 +164,17 @@ export function narrowingMarkets(job, profile) {
 }
 
 /**
+ * THE CLIENT'S MARKETS, as the band shape sorts by them (840 decision 7): the account's default markets,
+ * else the major markets, plus every market the order names. Codes as the territory vocabulary writes
+ * them, compared with a record's own jurisdictions. PURE.
+ */
+export function clientMarkets(job, profile) {
+  const { scope } = narrowingMarkets(job, profile);
+  const defaults = defaultTerritoryState(profile).kept;
+  return [...new Set([...scope, ...(defaults.length ? defaults : MAJOR_MARKETS)].map((t) => String(t).trim().toUpperCase()).filter(Boolean))];
+}
+
+/**
  * THE NARROWING ORDER, as the register reading step is told it (ruled 2026-09-26): goods and class
  * first, then the markets in turn, with the markets the driver knows filled in. One line. PURE.
  */

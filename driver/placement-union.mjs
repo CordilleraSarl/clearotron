@@ -24,9 +24,9 @@
 
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
-  SET_ASIDE_ROW_CONTRACT, isSetAsideRow, setAsideKey,
-  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys } from "./placement-form.mjs";
-import { BAND_GROUPS } from "./band-shape.mjs";
+  SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
+  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, positionKey,
+  ROWED_GROUPS } from "./placement-form.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
 /**
@@ -154,6 +154,9 @@ export function unionPlacementForm(prior, submitted, input) {
   // placements.json. Prior first, so a later row for the same owner replaces the earlier ground, and a
   // retraction names the record id the row set aside. A row the band cannot resolve, or one with no
   // ground, is reported back by id, never dropped in silence.
+  // A ground by name covers the named line where the shape lists its owner on several, else the owner's set.
+  const groups = input?.groups ?? null;
+  const multi = multiLineOwners(groups);
   const setAside = new Map();
   const setAsideRefused = [];
   const takeSetAside = (row) => {
@@ -163,7 +166,7 @@ export function unionPlacementForm(prior, submitted, input) {
     const refuse = (why) => { if (!setAsideRefused.some((x) => x.set_aside === id && x.why === why)) setAsideRefused.push({ set_aside: id, why }); };
     if (!canonical) { refuse("the band holds no record with this id"); return; }
     if (!ground) { refuse("no ground"); return; }
-    const key = setAsideKey(canonical);
+    const key = namedKey(canonical, multi);
     setAside.delete(key);
     setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground });
   };
@@ -178,16 +181,16 @@ export function unionPlacementForm(prior, submitted, input) {
   // prior first, a later row for the same group replaces the earlier one, and `group:<name>` retracts it.
   // Its count must be the shape's own, so the row is about the pile the step was shown. A group the shape
   // does not list, a count that is not the shape's, or a row with no ground is reported back, never dropped.
-  const groups = input?.groups ?? null;
   const setAsideGroups = new Map();
   const groupRefused = [];
   const takeGroup = (row) => {
     const written = String(row.set_aside_group).trim();
     const refuse = (why) => { if (!groupRefused.some((x) => x.set_aside_group === written && x.why === why)) groupRefused.push({ set_aside_group: written, why }); };
     const g = groupName(written);
-    if (!g) { refuse(`not one of the shape's groups (${BAND_GROUPS.join(", ")})`); return; }
+    if (g === "a") { refuse("group (a) takes no group row: place or set aside by name every line in it"); return; }
+    if (!g) { refuse(`not one of the groups that take a row (${ROWED_GROUPS.join(", ")})`); return; }
     const shown = groups?.[g];
-    if (!(shown?.owners > 0)) { refuse("the band shape lists no owner in this group"); return; }
+    if (!(shown?.lines > 0)) { refuse("the band shape lists no line in this group"); return; }
     const ground = typeof row.ground === "string" ? row.ground.trim() : "";
     if (!ground) { refuse("no ground"); return; }
     if (Number(row.count) !== shown.records) { refuse(`count ${row.count ?? "(none)"} is not the shape's ${shown.records}`); return; }
@@ -198,13 +201,17 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const e of (Array.isArray(submitted?.set_aside) ? submitted.set_aside : [])) if (isSetAsideGroupRow(e)) takeGroup(e);
   for (const r of (submittedRows ?? [])) if (isSetAsideGroupRow(r)) { consumed.add(r); takeGroup(r); }
   for (const g of [...setAsideGroups.keys()]) if (retracted.has(`group:${g}`) || retracted.has(`group:${g}`.toUpperCase())) setAsideGroups.delete(g);
-  // WHAT EACH ROW COVERS, said back to the step: the group's owners it neither selected nor set aside by name.
-  const placedKeys = new Set(selections.map((row) => setAsideKey(row)).filter(Boolean));
+  // WHAT EACH ROW COVERS, said back to the step: the group's lines it neither selected nor set aside by name.
+  const placedLines = new Set(selections.map((row) => positionKey(row)).filter(Boolean));
+  const ownerOfLine = new Map();
+  for (const g of ["a", "b", "c", "d", "rest"]) for (const l of Array.isArray(groups?.[g]?.list) ? groups[g].list : []) ownerOfLine.set(l.key, l.owner_key);
   const covers = new Map();
   for (const [key, g] of groupOfKeys(groups)) {
-    if (setAsideGroups.has(g) && !placedKeys.has(key) && !setAside.has(key)) covers.set(g, (covers.get(g) ?? 0) + 1);
+    const owner = ownerOfLine.get(key);
+    const named = setAside.has(key) || (!multi.has(owner) && setAside.has(owner));
+    if (setAsideGroups.has(g) && !placedLines.has(key) && !named) covers.set(g, (covers.get(g) ?? 0) + 1);
   }
-  for (const [g, e] of setAsideGroups) e.covers_owners = covers.get(g) ?? 0;
+  for (const [g, e] of setAsideGroups) e.covers_lines = covers.get(g) ?? 0;
 
   const form = { _provenance: PLACEMENT_FORM_PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
     seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT,

@@ -53,14 +53,16 @@
 // arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
-// ── THE RULING, ALL TWENTY-FIVE AS CLASSIFIED — TWENTY-FOUR IN THE SWEEP TODAY, SEE THE CURE BELOW ──
+// ── THE RULING, ALL TWENTY-SEVEN AS CLASSIFIED — TWENTY-SIX IN THE SWEEP TODAY, SEE THE CURE BELOW ──
 //
-//  AGREE (23) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (25) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · deriveRegisterPositions() in band-shape.mjs  `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
-//   · bandGroups() in band-shape.mjs  `in_scope` is minted in the same owner row as `records` and
-//                               `classes`, off the same `o.recs`. A reader holding the row holds all three.
+//   · bandGroups() in band-shape.mjs  `in_scope` and `in_market` are minted in the same line as `classes`
+//                               and `territories`, off the same `l.recs`. A reader holding the line holds all.
+//   · bandGroups() in band-shape.mjs  a record's `inMarket` is minted beside its own `territories`, off the
+//                               same array, and is read inside the same call to build its line.
 //   · commonlaw-carry.mjs:386   `completed` folds ALL THREE stage labels from one `outcomes` read and is
 //                               handed to `classifyCandidate` for every candidate in the same call.
 //   · findings-model.mjs:476 actionPartyReferences `boundLost` and `names` both come off the one `index` argument.
@@ -225,7 +227,7 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 // calibration `shared/suite-census.mjs` states for its own counts). The classified figure lives in the
 // header; this is what the tree may not exceed without a re-read.
 const RULED = new Map([
-  ["band-shape.mjs", 2], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
+  ["band-shape.mjs", 4], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
