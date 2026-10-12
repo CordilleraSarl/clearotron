@@ -652,8 +652,8 @@
           "todos": 0
         },
         "a-group-row-covers-only-the-lines-it-was-shown.test.mjs": {
-          "tests": 11,
-          "asserts": 36,
+          "tests": 12,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
