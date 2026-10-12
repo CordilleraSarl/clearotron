@@ -160,6 +160,13 @@ export function unionPlacementForm(prior, submitted, input) {
   const groups = input?.groups ?? null;
   const floorUris = new Set((Array.isArray(input?.floors) ? input.floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
   const holdsFloor = (canonical) => (canonical?.records ?? []).some((u) => floorUris.has(normalizeRecordUri(u) || String(u ?? "")));
+  // A by-name ground covers the LINE, so the floor check is made on the line: any floor record under the line's
+  // key, or a shape line holding one, though the record the row names is another position of it.
+  const floorLines = new Set([
+    ...[...floorUris].map((u) => namedKey(index.resolve(u))).filter(Boolean),
+    ...["a", "b", "c", "d", "no_goods"].flatMap((g) => (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).filter((l) => l?.floors > 0).map((l) => l.key)),
+  ]);
+  const lineHoldsFloor = (canonical) => holdsFloor(canonical) || floorLines.has(namedKey(canonical));
   const setAside = new Map();
   const setAsideRefused = [];
   const takeSetAside = (row) => {
@@ -170,7 +177,7 @@ export function unionPlacementForm(prior, submitted, input) {
     if (!canonical) { refuse("the band holds no record with this id"); return; }
     if (!ground) { refuse("no ground"); return; }
     const on = typeof row.on === "string" ? row.on.trim().toLowerCase() : "";
-    if (holdsFloor(canonical)) {
+    if (lineHoldsFloor(canonical)) {
       if (!FLOOR_GROUND_ON.includes(on)) { refuse(`a floor is set aside by name only on its status or its territory: give "on" as one of ${FLOOR_GROUND_ON.join(", ")}`); return; }
       if (FLOOR_GROUND_REFUSED.test(ground)) { refuse("a floor is never set aside on its owner's customers, channels, markets or field: write a ground about its status or its territory"); return; }
     }
@@ -193,10 +200,9 @@ export function unionPlacementForm(prior, submitted, input) {
     const inParts = served?.group_parts?.[g];
     const partsLeft = Array.isArray(inParts) ? inParts.filter((p) => !served?.parts_read?.has?.(p)) : null;
     const parts = pagesOnly ? null : partsLeft == null ? "read the parts of band_shape that print it" : partsLeft.length ? `read band_shape ${partsLeft.map((p) => `part ${p}`).join(" and ")}` : null;
-    const how = [parts, `page it with ${groupPageCall(g)}`].filter(Boolean).join(", or ");
-    return firstPage
-      ? `${seen} of the ${total} lines on group ${g}'s first page were read: ${how}, before its row`
-      : `${seen} of ${total} lines of group ${g} were read: ${how}, before its row`;
+    // A crowd outside (a) stands on its first page, which the shape prints: its refusal names the parts.
+    if (firstPage) return `${seen} of the first ${total} lines of group ${g} were read: ${partsLeft?.length ? `read band_shape ${partsLeft.map((p) => `part ${p}`).join(" and ")}, which prints them` : "read the parts of band_shape that print them"}, before its row`;
+    return `${seen} of ${total} lines of group ${g} were read: ${[parts, `page it with ${groupPageCall(g)}`].filter(Boolean).join(", or ")}, before its row`;
   };
   // ONE ROW PER GROUP (placement-form.mjs, SET_ASIDE_GROUP_CONTRACT), kept the way an owner's set-aside is:
   // prior first, a later row for the same group replaces the earlier one, and `group:<name>` retracts it.

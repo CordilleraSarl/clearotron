@@ -286,7 +286,7 @@ test("the lines the goods test could not place are read by the size rule, paged 
   const many = Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(`m${i}`, "QZORVAK", `Owner ${i} Ltd`, ["9"]));
   const crowded = buildBandShape({ enumerated: many }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, caps: { owners: 5 },
     goodsTest: { source: "product_words", words: ["joysticks"] } });
-  assert.ok(crowded.md.includes("A thousand or more? The first 5 lines are below, the live ones in the ordered classes first. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded."));
+  assert.ok(crowded.md.includes("A thousand or more? The first 5 lines are below, the floors first, then the live ones in the ordered classes. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded. A floor here is placed or set aside by name on its status or its territory; this row never covers it."));
   assert.equal((crowded.md.match(/\| no goods on file \| yes \|/g) ?? []).length, 5, "a crowded list shows its first page");
 });
 
@@ -325,6 +325,12 @@ test("a floor held outside the order says so on its line, an unread order territ
     goods: { of: (r) => bodies[r.record_id.split("/").pop()] ?? null, hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) },
     keysOf: () => ({ line: "line:eta", owner: "owner:eta" }) });
   assert.deepEqual([ng.no_goods[0].record_id, ng.no_goods[0].goods_on_file], ["/mark/eu/n2", true], "the line shows the record band_record can open");
+});
+
+test("the lines the goods test could not place run floors first", () => {
+  const recs = [rec("d1", "Drellux", "Alpha Ltd", ["9"]), rec("d2", "Drellux", "Beta Ltd", ["9"]), rec("f1", "QZORVAK", "Gamma Ltd", ["9"])];
+  const g = bandGroups(recs, { classify, inScope, goods: { of: () => null, hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) } });
+  assert.deepEqual(g.no_goods.map((l) => [l.owner_name, l.floors > 0]), [["Gamma Ltd", true], ["Alpha Ltd", false], ["Beta Ltd", false]]);
 });
 
 test("a mark whose goods carry no English is listed apart and opened, never sent to the rest", async () => {

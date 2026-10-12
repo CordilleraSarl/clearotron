@@ -117,7 +117,7 @@ export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground", "on"];
  * never its owner's customers or field, whatever `on` says, so the form reads the ground's words too.
  */
 export const FLOOR_GROUND_ON = Object.freeze(["status", "territory"]);
-export const FLOOR_GROUND_REFUSED = /\b(?:customers?|consumers?|clientele|users?|audiences?|buyers?|purchasers?|channels?|markets?|marketplaces?|sectors?|fields?|industr(?:y|ies)|trad(?:e|es|ing)(?!\s*-?\s*marks?)|distribution|retail(?:ers?)?|sells?|sold|selling|b2b|b2c|off[- ]field)\b/i;
+export const FLOOR_GROUND_REFUSED = /\b(?:customers?|consumers?|clients?|clientele|users?|audiences?|buyers?|purchasers?|patients?|professionals?|channels?|markets?|marketplaces?|sectors?|fields?|industr(?:y|ies|ial)|business(?:es)?|activit(?:y|ies)|commerce|commercial|trad(?:e|es|ing)(?!\s*-?\s*marks?)|distribution|wholesale|retail(?:ers?)?|sells?|sold|selling|b2b|b2c|off[- ]field|goods|products?|services?|merchandise)\b/i;
 /** The lists a group row may name: the shape's groups, the rest, and the lines the goods test could not place. */
 export const ROW_GROUPS = Object.freeze([...BAND_GROUPS, "no_goods"]);
 export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
@@ -154,8 +154,8 @@ export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
     + "the goods test could not place: one row sets aside every line in it that you neither place nor set aside "
     + "by name. Below a thousand records, and in (a) at any size, it waits until you have read every line; in a "
     + "crowd of a thousand or more outside (a), it stands on the first page read and the count. It covers a "
-    + "floor only in such a crowd in (b), or among the lines the goods test could not place; any other floor is "
-    + "placed or set aside by name.",
+    + "floor only in such a crowd in (b); a floor among the lines the goods test could not place, like any other "
+    + "floor, is placed or set aside by name.",
   fields: SET_ASIDE_GROUP_FIELDS,
   set_aside_group: `the group's letter as the shape gives it, "rest", or "no_goods" at a thousand records or more: one of ${ROW_GROUPS.join(", ")}.`,
   count: "the group's record count: the N the shape gives beside it.",
@@ -210,13 +210,13 @@ export function servedLines(groups, served, index) {
 
 /**
  * May a group's row answer for a floor in it? Only in a crowd of a thousand records or more in (b), the
- * identical marks in the ordered classes whose goods are not the client's, or among the lines the goods test
- * could not place: the crowded-field method's "do not write up the rest" (ruled 2026-10-12). Never in (a): (a)
- * is the identical and live marks for the client's goods, which that method reads, so every floor in (a) is
+ * identical marks in the ordered classes whose goods are not the client's: the crowded-field method's "do not
+ * write up the rest" (ruled 2026-10-12). Never in (a), which that method reads, and never among the lines the
+ * goods test could not place, where a floor is (a)'s kind with goods unread: there, as in (a), every floor is
  * placed or set aside by name at any size. ONE predicate, read by the grounds, the fate count and so the floor
  * duty, so the three cannot drift apart. PURE.
  */
-export const groupRowCoversFloors = (groups, g) => (g === "b" || g === "no_goods") && (groups?.[g]?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
+export const groupRowCoversFloors = (groups, g) => g === "b" && (groups?.b?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
 
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run

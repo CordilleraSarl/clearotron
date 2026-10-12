@@ -40,8 +40,8 @@ test("a crowd outside (a) stands on its first page and the count, and the shape,
   assert.ok(md.includes(`set the rest aside in this group's one row with the count: the client is told the field is crowded. The first 5 lines are below; page with ${groupPageCall("b")} only where a line needs reading.`));
   assert.doesNotMatch(md, /refused until every line was read|page every other line with band_lookup \{"group":"b"\}/, "the shape still makes paging a crowd a precondition");
   const refused = unionPlacementForm(null, { rows: [{ set_aside_group: "b", count: CROWDED_GROUP_RECORDS, ground: "identical in class, for printers" }] }, { ...input, served: { lines: new Set(), records: new Set() } });
-  assert.match(refused.form.set_aside_group_refused[0].why, /lines on group b's first page were read/, "the refusal asks for the first page only");
-  assert.ok(refused.form.set_aside_group_refused[0].why.includes(groupPageCall("b")), "and names the same call");
+  assert.match(refused.form.set_aside_group_refused[0].why, /^0 of the first 5 lines of group b were read: read the parts of band_shape that print them, before its row$/, "the refusal asks for the first page only");
+  assert.ok(!refused.form.set_aside_group_refused[0].why.includes(groupPageCall("b")), "and asks no paging of a crowd");
   assert.ok(MANUAL.includes("A crowd of a thousand or more outside (a) stands on its first page read and the count."));
   assert.ok(DICTATION.includes("a crowd of a thousand or more outside (a) stands on its first page read and the count"));
   assert.match(SET_ASIDE_GROUP_CONTRACT.when, /in a crowd of a thousand or more outside \(a\), it stands on the first page read and the count/);
@@ -50,12 +50,13 @@ test("a crowd outside (a) stands on its first page and the count, and the shape,
 test("no sentence the step reads lets a group's row answer a floor below a thousand records", () => {
   assert.equal(CROWDED_GROUP_RECORDS, 1000, "the words say a thousand: they move with the number or not at all");
   assert.doesNotMatch(MANUAL, /by name or by its group's row/);
-  assert.match(MANUAL, /only a crowd's row of a thousand records or more, in \(b\) or among the lines the goods test could not place, covers a floor/);
+  assert.match(MANUAL, /only a crowd's row of a thousand records or more in \(b\) covers a floor/);
   assert.match(MANUAL, /A group's row is refused until every line of the group was read/);
   assert.doesNotMatch(MANUAL, /you were served|covers only the lines/, "the manual still says a row covers a subset of a group");
   assert.match(MANUAL, /left to the group's row with the reason, except a floor, which is placed or set aside by name/);
-  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in such a crowd in \(b\), or among the lines the goods test could not place/);
-  assert.match(DICTATION, /A floor is placed, sheet-2 at the least, or set aside by name on its status or its territory; only a crowd's row in \(b\), or in those lines, may leave it to the row/);
+  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in such a crowd in \(b\); a floor among the lines the goods test could not place, like any other floor, is placed or set aside by name/);
+  assert.match(DICTATION, /A floor is placed, sheet-2 at the least, or set aside by name on its status or its territory; only a crowd's row in \(b\) may leave it to the row/);
+  assert.doesNotMatch(MANUAL + DICTATION, /among the lines the goods test could not place, covers a floor|or in those lines/, "no sentence lets the no-goods row cover a floor");
 });
 
 test("no sentence the step reads lets a name cover an owner's other marks", () => {

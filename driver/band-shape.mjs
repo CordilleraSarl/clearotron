@@ -765,8 +765,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     || (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || Number(y.in_market) - Number(x.in_market) || y.records - x.records || byName(x, y);
   for (const g of ["a", "b", "c", "d"]) byGroup[g].lines.sort(herOrder);
   byGroup.rest.lines.sort(byName);
-  // The lines the goods test could not place run by live records in the ordered classes, then records.
-  noGoods.sort((x, y) => y.live_in_scope - x.live_in_scope || y.records - x.records || byName(x, y));
+  // The lines the goods test could not place run floors first, then by live records in the ordered classes,
+  // then records: a floor here takes its own fate, so it is never left past the first page.
+  noGoods.sort((x, y) => Number(y.floors > 0) - Number(x.floors > 0) || y.live_in_scope - x.live_in_scope || y.records - x.records || byName(x, y));
   return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), markets: marketsGiven, territories: [...ordered], territories_unread: unreadTerritories,
     outside: { lines: outsideLines, records: outsideRecords }, by_group: byGroup, no_goods: noGoods };
 }
@@ -1111,7 +1112,7 @@ function renderGroupsMd(md, groups, rows = []) {
       ? `**Not tested on goods: ${count(ng)}.** No goods words were given, so the goods test could not place them.`
       : `**Goods the test could not read: ${count(ng)}.**`;
     md.push("", crowded
-      ? `${lead} A thousand or more? ${firstPage}, the live ones in the ordered classes first. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded.`
+      ? `${lead} A thousand or more? ${firstPage}, the floors first, then the live ones in the ordered classes. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded. A floor here is placed or set aside by name on its status or its territory; this row never covers it.`
       : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} Each line takes its own fate by name; no group row covers these lines.${tested.source === "none" ? "" : ' A line marked "on file, not readable" has goods on file: open its record with band_record before its fate. A line marked "no goods on file" has nothing to open.'} A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.`, "");
     md.push(...head);
     for (const l of crowded ? ng.list.slice(0, groups.first_page) : ng.list) { rows.push([md.length, l.key]); md.push(row(l)); }

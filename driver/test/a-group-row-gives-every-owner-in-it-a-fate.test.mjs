@@ -141,3 +141,31 @@ test("a floor is set aside by name only on its status or its territory, never on
   assert.match(oos.form.tier_refused[0].why, /never out-of-scope-filtered: place it, sheet-2 at the least/);
 });
 
+test("a ground by name on a line holding a floor needs a floor ground, though the record it names is another position of the line", async () => {
+  // The positions fold keeps the parenthetical; the line key does not. One line, two positions, one floor.
+  const band = [
+    { record_id: "/mark/gb/k1", mark_text: "QZORVAK", owner_name: "Ostrel Labs (UK branch)", classes: ["9"], status: "registered", jurisdictions: ["GB"] },
+    { record_id: "/mark/us/k2", mark_text: "QZORVAK", owner_name: "Ostrel Labs", classes: ["9"], status: "cancelled", jurisdictions: ["US"] },
+  ];
+  const positions = deriveRegisterPositions(band);
+  const goods = { of: () => [{ classes: ["9"], text: "joysticks" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
+  assert.deepEqual([shape.groups.a.lines, shape.groups.a.list[0].floors], [1, 1], "guard: one (a) line holding the live British floor");
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
+  const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/us/k2", ground: "the owner's clients are hospitals" }] }, input);
+  assert.deepEqual([u.form.set_aside.length, Boolean(u.form.set_aside_refused?.[0])], [0, true], "naming the cancelled US record does not set the line's floor aside on a customer ground");
+  const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsed(u), buildSelectionIndex(input), input.groups, input.floors) });
+  assert.equal(duty.undischarged_by_seat, 1);
+});
+
+test("the ground check refuses customer, business and goods grounds on a floor under any label", () => {
+  const { input } = fixture();
+  for (const ground of ["the owner's clients are banks", "the owner's business is industrial machinery", "a different line of business",
+    "used by medical professionals", "their activity is unrelated", "a different area of commerce", "patients and clinics",
+    "registered for printers, not the client's goods", "the products are unrelated", "sold wholesale only"]) {
+    const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground, on: "status" }] }, input);
+    assert.equal(u.form.set_aside.length, 0, `"${ground}" set a floor aside under on:"status"`);
+  }
+  const ok = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground: "the registration lapsed for want of renewal", on: "status" }] }, input);
+  assert.equal(ok.form.set_aside.length, 1, "a ground about the mark's status stands");
+});

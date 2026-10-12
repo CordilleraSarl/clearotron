@@ -38,7 +38,7 @@ test("a crowded (b)'s row stands on its first page read and the count: refused w
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS, "guard: (b) is listed by its first page");
   const unread = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(), records: new Set() } });
   assert.deepEqual(unread.form.set_aside_groups, []);
-  assert.match(unread.form.set_aside_group_refused[0].why, /^0 of the 5 lines on group b's first page were read: read the parts of band_shape that print it, or page it with band_lookup \{"group":"b"\}, before its row$/);
+  assert.match(unread.form.set_aside_group_refused[0].why, /^0 of the first 5 lines of group b were read: read the parts of band_shape that print them, before its row$/, "no paging is asked of a crowd");
   const firstPage = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(shape.groups.b.list.slice(0, 5).map((l) => l.key)), records: new Set() } });
   assert.deepEqual(firstPage.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["b", CROWDED_GROUP_RECORDS]],
     "the first page read and the count: the row covers the crowd, paging never required");
@@ -253,7 +253,7 @@ test("only placement's own reads serve a line: what another stage read does not 
   assert.deepEqual([...readServed(runDir).lines].sort(), ["line:placement-read", "line:untagged-read"]);
 });
 
-test("a crowded list of lines the goods test could not place takes one row on its first page and the count; a short one takes none", async () => {
+test("a crowded list of lines the goods test could not place takes one row on its first page and the count, which never covers a floor; a short one takes none", async () => {
   const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
   const { reconcileFloorDuty } = await import("../floor-duty.mjs");
   const make = (n) => {
@@ -268,9 +268,10 @@ test("a crowded list of lines the goods test could not place takes one row on it
   assert.equal(big.shape.groups.no_goods.records, CROWDED_GROUP_RECORDS, "guard: no goods on file anywhere");
   const firstPage = new Set(big.shape.groups.no_goods.list.slice(0, 5).map((l) => l.key));
   const u = unionPlacementForm(null, { rows: [ROW_NG(CROWDED_GROUP_RECORDS)] }, { ...big.input, served: { lines: firstPage, records: new Set() } });
-  assert.deepEqual(u.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["no_goods", CROWDED_GROUP_RECORDS]]);
+  const row = u.form.set_aside_groups.find((g) => g.set_aside_group === "no_goods");
+  assert.deepEqual([row.covers_lines, row.floors_not_covered.length], [0, CROWDED_GROUP_RECORDS], "every line here holds a floor: none is covered, each is said back");
   const duty = reconcileFloorDuty({ floors: big.input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(big.input), big.input.groups, big.input.floors) });
-  assert.equal(duty.undischarged_by_seat, 0, "the crowd's one row answers its floors, as (b)'s does");
+  assert.equal(duty.undischarged_by_seat, CROWDED_GROUP_RECORDS, "a floor whose goods cannot be read is (a)'s kind: it takes its fate by name, at any size");
   const small = make(30);
   const v = unionPlacementForm(null, { rows: [ROW_NG(30)] }, { ...small.input, served: { lines: new Set(small.shape.groups.no_goods.list.map((l) => l.key)), records: new Set() } });
   assert.match(v.form.set_aside_group_refused[0].why, /take a row only at a thousand records or more/);
