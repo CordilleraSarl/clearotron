@@ -28,7 +28,8 @@ test("each provider's goods shape is read, English first where a statement offer
     { classes: [32], language: "de", description: "Mineralwasser", translation_language: "en", translation: "mineral water" },
     { classes: [33], language: "en", description: "wines" },
   ] };
-  assert.deepEqual(recordGoods(clarivate), [{ classes: ["32"], text: "mineral water" }, { classes: ["33"], text: "wines" }]);
+  assert.deepEqual(recordGoods(clarivate), [{ classes: ["32"], text: "mineral water", alt: "Mineralwasser" }, { classes: ["33"], text: "wines" }],
+    "the English text is shown, and the original is kept beside it for the goods test");
   const signa = { markText: "QZXV", _raw: { classifications: [{ nice_class: 9, goods_services_text: "game controllers", goods_services_language: "en" }] } };
   assert.deepEqual(recordGoods(signa), [{ classes: ["9"], text: "game controllers" }]);
   const euipo = { goodsAndServices: [{ classNumber: 28, description: [{ language: "fr", terms: ["jouets"] }, { language: "en", terms: ["toys", "games"] }] }] };
@@ -102,4 +103,12 @@ test("the shape reads the order's goods and markets from the run's instructed sc
     assert.deepEqual(order.geography, { mode: "named" });
     assert.deepEqual(order.classes, ["9"], "the classes stay the job's: only the goods wording and the markets are read from the scope");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+test("a product word is a stem: it matches its forms, on the English text and on the original beside it", () => {
+  const g = [{ classes: ["10"], text: "medical device for diagnosing", alt: "dispositif médical de diagnostic" }];
+  assert.equal(goodsWordCounter(["diagnos"], { stems: true })(g), 1, "a stem matches the forms that begin with it");
+  assert.equal(goodsWordCounter(["diagnos"])(g), 0, "a goods word without stems matches only the whole word");
+  assert.equal(goodsWordCounter(["dispositif"])(g), 1, "the original wording is read beside its translation");
+  assert.equal(goodsWordCounter(["agnos"], { stems: true })(g), 0, "a stem begins at a word's start");
 });

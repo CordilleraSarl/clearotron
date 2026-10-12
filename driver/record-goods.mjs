@@ -48,15 +48,15 @@ export function recordGoods(body) {
   const b = Array.isArray(body) ? body[0] : body;
   if (!b || typeof b !== "object") return [];
   const out = [];
-  const push = (classes, text) => {
-    const t = String(text ?? "").trim();
-    if (t) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t });
+  const push = (classes, text, original = null) => {
+    const t = String(text ?? "").trim(), o = String(original ?? "").trim();
+    if (t) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, ...(o && o !== t ? { alt: o } : {}) });
   };
   if (Array.isArray(b.goodsServices)) {
     for (const g of b.goodsServices) {
       const english = isEnglish(g?.language) ? g?.description
         : isEnglish(g?.translation_language) && g?.translation ? g.translation : g?.description ?? g?.translation;
-      push(g?.classes, textOf(english));
+      push(g?.classes, textOf(english), textOf(g?.description));
     }
   }
   if (out.length === 0 && Array.isArray(b?._raw?.classifications)) {
@@ -120,15 +120,16 @@ const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /**
  * A counter for a list of goods words: how many of the words or phrases appear whole in the goods, or null
  * when the record has no goods on file, or when there are no words to look for. Case and diacritics are
- * folded. PURE.
+ * folded, and the original wording is read beside its English translation. With `stems`, a word matches
+ * its forms: its last word may run on (a product word is given as a stem, ruled 2026-10-13). PURE.
  */
-export function goodsWordCounter(words) {
+export function goodsWordCounter(words, { stems = false } = {}) {
   const res = (Array.isArray(words) ? words : [words])
     .map((w) => fold(w).trim()).filter(Boolean)
-    .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(w).replace(/\s+/g, "\\s+")}($|[^\\p{L}\\p{N}])`, "u"));
+    .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(w).replace(/\s+/g, "\\s+")}${stems ? "[\\p{L}\\p{N}]*" : ""}($|[^\\p{L}\\p{N}])`, "u"));
   return (goods) => {
     if (!res.length || !goods || !goods.length) return null;
-    const text = fold(goods.map((g) => g.text).join("\n"));
+    const text = fold(goods.map((g) => (g.alt ? `${g.text}\n${g.alt}` : g.text)).join("\n"));
     return res.filter((re) => re.test(text)).length;
   };
 }
@@ -138,9 +139,9 @@ export function goodsWordCounter(words) {
  * null when the record has no goods on file or there are no words. A shape line shows them as "k of N:
  * the words", which is the goods ground made visible on the line. PURE.
  */
-export function goodsWordsMatched(words) {
+export function goodsWordsMatched(words, { stems = false } = {}) {
   const list = (Array.isArray(words) ? words : [words]).map((w) => String(w ?? "").trim()).filter(Boolean);
-  const tests = list.map((w) => [w, goodsWordCounter([w])]);
+  const tests = list.map((w) => [w, goodsWordCounter([w], { stems })]);
   return (goods) => {
     if (!list.length || !goods || !goods.length) return null;
     return tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
@@ -206,14 +207,15 @@ export function bandShapeGoods(P, inScopeClasses = [], { rowChars = GOODS_ROW_CH
   } catch { searched = ""; }
   const manifestDominant = String(model?.dominant_element ?? "");
   const index = bandGoodsIndex(P.runDir);
-  // The particular goods when the variants stage names them, else the goods words (ruled 2026-10-13).
-  const words = Array.isArray(model?.product_words) && model.product_words.length ? model.product_words
-    : Array.isArray(model?.goods_words) ? model.goods_words : [];
-  const hits = goodsWordCounter(words);
+  // The particular goods when the variants stage names them, as stems, else the goods words (ruled 2026-10-13).
+  const product = Array.isArray(model?.product_words) && model.product_words.length;
+  const words = product ? model.product_words : Array.isArray(model?.goods_words) ? model.goods_words : [];
+  const stems = Boolean(product);
+  const hits = goodsWordCounter(words, { stems });
   const goods = index.size ? {
     of: (r) => goodsFor(index, r),
     hits,
-    matched: goodsWordsMatched(words),
+    matched: goodsWordsMatched(words, { stems }),
     rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses, maxChars: rowChars })?.cut),
   } : null;
   return { goods, goodsWordCount: words.length, dominantTerm: searched || manifestDominant, manifestDominant };

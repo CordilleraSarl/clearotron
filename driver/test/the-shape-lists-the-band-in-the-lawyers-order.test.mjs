@@ -8,7 +8,7 @@
 // client's goods; the rest counted with its rule. These arms pin the record rule, the line per position,
 // the order inside a group as ruled (the client's goods on a live record in the ordered classes, then live
 // records in those classes, then goods words, then the client's markets, then records), the goods test where
-// the run holds no goods, the goods-cut lines the rest may not cover, and the readable section, whose lines
+// the run holds no goods, the lines listed apart for having no goods on file, and the readable section, whose lines
 // carry the goods words matched and never the goods text. Every mark, owner and goods line is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -58,7 +58,8 @@ test("each mark of an owner is its own line in its own group, so a second mark i
   assert.deepEqual(g.by_group.rest.lines.map((l) => l.owner_name), ["Delta AG"]);
   // The keys a row reaches win over the band row's spelling: two spellings of one mark of one owner, one line.
   const keyed = bandGroups([rec("k1", "QZORVAK", "Omega Ltd", ["9"]), rec("k2", "QZORVAK", "Omega Limited", ["9"])],
-    { classify, inScope, goods: null, keysOf: () => ({ position: "pos:one", owner: "owner:omega" }) });
+    { classify, inScope, goods: goodsReader({ k1: [{ classes: ["9"], text: "joysticks" }], k2: [{ classes: ["9"], text: "joysticks" }] }),
+      keysOf: () => ({ line: "line:one", owner: "owner:omega" }) });
   assert.equal(keyed.by_group.a.lines.length, 1);
   assert.equal(keyed.by_group.a.lines[0].records, 2);
 });
@@ -80,15 +81,12 @@ test("inside a group the lines run by the client's goods on a live record in cla
   assert.deepEqual(g.by_group.a.lines.map((l) => l.goods_words), [["joysticks"], ["joysticks"], ["joysticks"], ["game controllers", "joysticks"], ["game controllers", "joysticks"]]);
 });
 
-test("a line the rest holds only because its goods missed, whose goods are cut on the row, is listed and not covered", () => {
-  const long = "printers; ".repeat(20);
-  const records = [rec("u1", "Qzorvak", "Epsilon Oy", ["31"]), rec("u2", "Drellux", "Zeta BV", ["9"]), rec("u3", "Drellux", "Eta Kft", ["31"], { status: "expired" })];
-  const g = bandGroups(records, { classify, inScope, goods: goodsReader({
-    u1: [{ classes: ["31"], text: long }], u2: [{ classes: ["9"], text: long }], u3: [{ classes: ["31"], text: long }],
-  }) });
-  assert.deepEqual(g.unresolved.map((l) => l.owner_name).sort(), ["Epsilon Oy", "Zeta BV"],
-    "identical outside the classes and live in class: each in the rest on goods alone, goods cut");
-  assert.deepEqual(g.by_group.rest.lines.map((l) => l.owner_name), ["Eta Kft"], "an expired record is in the rest on what the row shows");
+test("a line the goods test placed while its records carry no goods on file is listed apart, and no other line is", () => {
+  const records = [rec("u1", "QZORVAK", "Epsilon Oy", ["9"]), rec("u2", "QZORVAK", "Zeta BV", ["9"]), rec("u3", "Drellux", "Eta Kft", ["31"], { status: "expired" })];
+  const g = bandGroups(records, { classify, inScope, goods: goodsReader({ u2: [{ classes: ["9"], text: "printers; ".repeat(40) }] }) });
+  assert.deepEqual(g.no_goods.map((l) => l.owner_name), ["Epsilon Oy"], "identical, in class, and nothing on file to test its goods");
+  assert.deepEqual(g.by_group.b.lines.map((l) => l.owner_name), ["Zeta BV"], "a long goods text is read whole: nothing is cut, it is simply not the client's goods");
+  assert.deepEqual(g.by_group.rest.lines.map((l) => l.owner_name), ["Eta Kft"], "a dead mark with no goods is in the rest on what the line shows");
 });
 
 test("the readable section states each group's count in lines, carries goods words not goods text, and shows a crowded group by its first page", () => {

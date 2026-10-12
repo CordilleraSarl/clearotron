@@ -15,7 +15,7 @@ import { buildBandShape, deriveRegisterPositions } from "../band-shape.mjs";
 import { buildPlacementForm, buildSelectionIndex, parsePlacementForm, setAsideGrounds, setAsideKeysOf, ownerFates, SET_ASIDE_GROUP_CONTRACT } from "../placement-form.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { reconcileFloorDuty, SET_ASIDE_TIER } from "../floor-duty.mjs";
-import { goodsWordCounter, goodsExcerpt } from "../record-goods.mjs";
+import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
 
 const rec = (id, mark, owner, classes, extra = {}) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes, status: "registered", jurisdictions: ["EU"], ...extra });
 const BAND = [
@@ -26,17 +26,15 @@ const BAND = [
   rec("b2", "Qzorvak", "Gamma SA", ["9"]),                   // the same → (b), a floor
   rec("r1", "Drellux", "Delta AG", ["9"]),                   // similar to nothing, goods unrelated → the rest
   rec("r2", "Plimbo", "Eta Kft", ["31"], { status: "expired" }),
-  rec("u1", "Drellux", "Zeta BV", ["9"]),                    // the rest on goods alone, goods cut → listed, not covered
+  rec("u1", "QZORVAK", "Zeta BV", ["9"]),                    // identical, in class, no goods on file → listed apart, a floor
 ];
-const GOODS = { a1: "joysticks", a2: "joysticks", a3: "seeds", b1: "printers", b2: "printers", r1: "printers", r2: "seeds", u1: "printers; ".repeat(40) };
+const GOODS = { a1: "joysticks", a2: "joysticks", a3: "seeds", b1: "printers", b2: "printers", r1: "printers", r2: "seeds" };
 
 function fixture() {
   const positions = deriveRegisterPositions(BAND);
   const goods = {
-    of: (r) => [{ classes: r.classes, text: GOODS[r.record_id.split("/").pop()] }],
-    hits: goodsWordCounter(["joysticks"]), score: goodsWordCounter(["joysticks"]),
-    line: (g) => goodsExcerpt(g, { inScopeClasses: ["9"], maxChars: 40 }),
-    rowCut: (g) => Boolean(goodsExcerpt(g, { inScopeClasses: ["9"], maxChars: 100 })?.cut),
+    of: (r) => { const t = GOODS[r.record_id.split("/").pop()]; return t ? [{ classes: r.classes, text: t }] : null; },
+    hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]),
   };
   const { shape } = buildBandShape({ enumerated: BAND }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods,
     keysOf: setAsideKeysOf(positions.positions), markets: ["EU"] });
@@ -48,7 +46,7 @@ test("the form carries the group row's contract, and the shape's lines are what 
   const { input, shape } = fixture();
   assert.deepEqual(buildPlacementForm(input).set_aside_group_contract, SET_ASIDE_GROUP_CONTRACT);
   assert.deepEqual(["a", "b", "c", "d"].map((g) => shape.groups[g].lines), [1, 2, 0, 1]);
-  assert.deepEqual([shape.groups.rest.lines, shape.groups.unresolved.lines], [3, 1]);
+  assert.deepEqual([shape.groups.rest.lines, shape.groups.no_goods.lines], [3, 1]);
 });
 
 test("a group row with the shape's count is kept and says how many lines it covers, and a wrong one is reported back", () => {
@@ -90,7 +88,7 @@ test("a ground by name covers the named line where the owner has several lines, 
   assert.equal(groundOf("/mark/eu/a3").group, "rest", "Alpha's dead mark falls to the rest's row, not to the named line");
   assert.equal(groundOf("/mark/eu/b2").by, "name", "a one-line owner named covers its set");
   assert.deepEqual([groundOf("/mark/eu/b1").by, groundOf("/mark/eu/b1").group], ["group", "b"]);
-  assert.equal(groundOf("/mark/eu/u1"), null, "the rest's row does not cover a line whose goods were cut on the row");
+  assert.equal(groundOf("/mark/eu/u1"), null, "no group row covers a line with no goods on file");
 });
 
 test("every line's fate is counted by the list the shape put it in, and a group row answers its floors", () => {
@@ -105,12 +103,12 @@ test("every line's fate is counted by the list the shape put it in, and a group 
   const fates = ownerFates({ groups: input.groups, entries: parsed(u), index, placedUris: ["/mark/eu/a1"] });
   assert.deepEqual({ lines: fates.lines, placed: fates.placed, by_name: fates.by_name, by_group: fates.by_group, unfated: fates.unfated },
     { lines: 8, placed: 1, by_name: 1, by_group: 5, unfated: 1 });
-  assert.deepEqual([fates.owners, fates.owners_fated], [6, 5], "Zeta's goods-cut line is its one line without a fate");
-  assert.deepEqual(fates.unfated_lines.map((x) => x.list), ["unresolved"]);
+  assert.deepEqual([fates.owners, fates.owners_fated], [6, 5], "Zeta's line, with no goods on file, is the one line without a fate");
+  assert.deepEqual(fates.unfated_lines.map((x) => x.list), ["no_goods"]);
   const duty = reconcileFloorDuty({ floors: input.floors, placements: [{ records: ["/mark/eu/a1"], tier: "headline-candidate", reason: "identical, live" }],
     setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups) });
-  assert.deepEqual([duty.totals.floors, duty.totals.accounted, duty.undischarged_by_seat], [3, 3, 0]);
+  assert.deepEqual([duty.totals.floors, duty.totals.accounted, duty.undischarged_by_seat], [4, 3, 1], "Zeta's floor waits for its record to be opened");
   assert.equal(duty.by_tier[SET_ASIDE_TIER], 2, "the two (b) floors are answered by the group's row");
   const unplaced = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups) });
-  assert.equal(unplaced.undischarged_by_seat, 1, "(a)'s floor, neither placed nor named, has no fate when no row of (a) was written");
+  assert.equal(unplaced.undischarged_by_seat, 2, "(a)'s floor, neither placed nor named, has no fate when no row of (a) was written");
 });

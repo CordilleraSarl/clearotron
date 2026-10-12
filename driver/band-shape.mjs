@@ -629,13 +629,13 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  *
  * A line sits in the best group its records in scope reach. `keysOf` gives a record's line and its owner's
  * set-aside key, both read through the positions fold, so a line covers exactly what a row naming one of
- * its records reaches. THE REST IS SET ASIDE BY RULE: a line in the rest only because its goods miss the
- * client's words, whose goods are cut on the lookup row, is listed as goods cut, and no group row covers it.
+ * its records reaches. A line carries the words matched, so nothing on it is cut; the one line that cannot
+ * be judged from itself is one the goods test placed while its records carry no goods on file.
  *
  * @param records    the band's enumerated records
  * @param classify   record → { tier, target } (the shape's own classifier over its targets)
  * @param inScope    record → boolean (the shape's own class test)
- * @param goods      { of, hits, matched, rowCut } (record-goods.mjs), or null when the run holds none
+ * @param goods      { of, hits, matched } (record-goods.mjs), or null when the run holds none
  * @param dominantTerm  the word the register's goods-narrowed search asked for, or ""
  * @param keysOf     record → { line, owner }, or null
  * @param markets    the client's markets, as territory codes
@@ -661,11 +661,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     const outside = !inOrder(ts);
     const dominant = Boolean(domRe && domRe.test(fold(r?.mark_text)));
     const group = outside ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
-    const ident = tier === "identical" || tier === "near-identical";
-    // In the rest on goods alone: in scope, and in a group were its goods the client's.
-    const onGoods = !outside && group === "rest" && hits === 0 && (ident || tier === "same-family" || dominant || (live && s));
-    const rec = { r, tier, hits, words, live, inScope: s, group, outside, territories: ts, inMarket: ts.some((t) => market.has(t)),
-      unresolved: onGoods && Boolean(goods && g && goods.rowCut(g)) };
+    const rec = { r, tier, hits, words, live, inScope: s, group, outside, territories: ts, inMarket: ts.some((t) => market.has(t)) };
     const keys = typeof keysOf === "function" ? keysOf(r) : null;
     const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
     const key = keys?.line ?? `line:${ownerKey}|${normMark(r?.mark_text) || String(r?.record_id ?? "").trim().toLowerCase()}`;
@@ -677,7 +673,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
   const better = (x, y) => TIER_RANK[x.tier] - TIER_RANK[y.tier] || (y.hits ?? -1) - (x.hits ?? -1)
     || Number(y.live) - Number(x.live) || String(x.r?.record_id ?? "").localeCompare(String(y.r?.record_id ?? ""));
   const byGroup = Object.fromEntries(BAND_GROUPS.map((g) => [g, { records: 0, set_records: 0, lines: [] }]));
-  const unresolved = [];
+  const noGoods = [];
   let outsideLines = 0, outsideRecords = 0;
   for (const l of lines.values()) {
     const group = BAND_GROUPS[Math.min(...l.recs.map((x) => rank(x.group)))];
@@ -696,7 +692,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
       classes: [...new Set(l.recs.flatMap((x) => classesOf(x.r)))].sort((p, q) => Number(p) - Number(q) || p.localeCompare(q)),
       record_id: best.r?.record_id ?? null,
     };
-    if (group === "rest" && l.recs.some((x) => x.unresolved)) { unresolved.push(row); continue; }
+    // A line placed in (a), (c) or (d) by the goods test, whose records carry no goods the engine can read,
+    // cannot be judged from the line: it is listed apart, opened before a fate, and no group row covers it.
+    if (!known && (group === "a" || group === "c" || group === "d")) { noGoods.push(row); continue; }
     if (group === "rest" && l.recs.every((x) => x.outside)) { row.outside = true; outsideLines++; outsideRecords += l.recs.length; }
     byGroup[group].records += inGroup.length;
     byGroup[group].set_records += l.recs.length;
@@ -708,9 +706,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     || (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || Number(y.in_market) - Number(x.in_market) || y.records - x.records || byName(x, y);
   for (const g of ["a", "b", "c", "d"]) byGroup[g].lines.sort(herOrder);
   byGroup.rest.lines.sort(byName);
-  unresolved.sort(herOrder);
+  noGoods.sort(herOrder);
   return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), markets: [...market], territories: [...ordered],
-    outside: { lines: outsideLines, records: outsideRecords }, by_group: byGroup, unresolved };
+    outside: { lines: outsideLines, records: outsideRecords }, by_group: byGroup, no_goods: noGoods };
 }
 
 /**
@@ -800,8 +798,8 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
     rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest),
       list: rest.map(({ key, owner_key }) => ({ key, owner_key })) },
-    unresolved: { records: grouped.unresolved.reduce((n, l) => n + l.records, 0), lines: grouped.unresolved.length,
-      owners: ownersIn(grouped.unresolved), list: grouped.unresolved },
+    no_goods: { records: grouped.no_goods.reduce((n, l) => n + l.records, 0), lines: grouped.no_goods.length,
+      owners: ownersIn(grouped.no_goods), list: grouped.no_goods },
   };
   const concentrations = [...owners.entries()]
     .map(([owner_name, v]) => ({ owner_name, records: v.records, live: v.live }))
@@ -1010,11 +1008,11 @@ function renderGroupsMd(md, groups) {
     md.push("");
   }
   const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them outside the ordered territories` : "";
-  md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above, apart from the goods-cut lines below. Set them aside in one row with this count.`);
-  if (groups.unresolved.lines) {
-    md.push("", `**Goods cut: ${count(groups.unresolved)}** would be in the rest, but their goods are cut on the row. Open a record before setting its line aside on goods.`, "");
+  md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Set them aside in one row with this count.`);
+  if (groups.no_goods.lines) {
+    md.push("", `**No goods on file: ${count(groups.no_goods)}** — their records carry no goods the engine can read, so the goods test could not place them. Open a record before a fate; no group row covers them.`, "");
     md.push(...head);
-    for (const l of groups.unresolved.list) md.push(row(l));
+    for (const l of groups.no_goods.list) md.push(row(l));
   }
 }
 

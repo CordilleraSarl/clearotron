@@ -160,7 +160,7 @@ export function groupName(written) {
 /** The shape's listed lines, (a) to (d) and goods cut, each `{key, owner_key}`. PURE. */
 const listedLines = (groups) => (groups && typeof groups === "object"
   ? [...["a", "b", "c", "d"].flatMap((g) => (Array.isArray(groups[g]?.list) ? groups[g].list : [])),
-    ...(Array.isArray(groups.unresolved?.list) ? groups.unresolved.list : [])]
+    ...(Array.isArray(groups.no_goods?.list) ? groups.no_goods.list : [])]
   : []);
 
 /**
@@ -255,8 +255,8 @@ export function setAsideGrounds(entries, index, groups = null) {
 /**
  * EVERY LINE'S FATE AT PLACEMENT, counted by the list the shape put it in: placed (a record of its mark is
  * in a placement), set aside by name, covered by its group's row, or no fate. A line is one mark of one
- * owner; an owner counts as fated when every one of its lines is. The goods-cut lines are their own list,
- * which no group row covers. Counts, plus the keys left with no fate. PURE.
+ * owner; an owner counts as fated when every one of its lines is. The lines with no goods on file are their
+ * own list, which no group row covers. Counts, plus the keys left with no fate. PURE.
  */
 export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}) {
   if (!groups || typeof groups !== "object" || !index?.resolve) return null;
@@ -270,14 +270,14 @@ export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}
   const lists = {};
   for (const g of ["a", "b", "c", "d"]) lists[g] = Array.isArray(groups[g]?.list) ? groups[g].list : [];
   lists.rest = Array.isArray(groups.rest?.list) ? groups.rest.list : [];
-  lists.unresolved = Array.isArray(groups.unresolved?.list) ? groups.unresolved.list : [];
+  lists.no_goods = Array.isArray(groups.no_goods?.list) ? groups.no_goods.list : [];
   const zero = () => ({ lines: 0, placed: 0, by_name: 0, by_group: 0, unfated: 0 });
   const totals = zero(), by_list = {}, unfated_lines = [], ownerFated = new Map();
   for (const [list, lines] of Object.entries(lists)) {
     const c = zero();
     for (const l of lines) {
       const byName = named.has(l.key) || (!multi.has(l.owner_key) && named.has(l.owner_key));
-      const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : (list !== "unresolved" && grouped.has(list)) ? "by_group" : "unfated";
+      const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : (list !== "no_goods" && grouped.has(list)) ? "by_group" : "unfated";
       c.lines++; c[fate]++; totals.lines++; totals[fate]++;
       if (fate === "unfated") unfated_lines.push({ list, key: l.key });
       ownerFated.set(l.owner_key, (ownerFated.get(l.owner_key) ?? true) && fate !== "unfated");
