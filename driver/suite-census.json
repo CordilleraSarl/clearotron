@@ -39,9 +39,15 @@
           "skips": 3,
           "todos": 0
         },
+        "a-band-answer-in-a-wide-script-fits-one-response.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-band-record-carries-its-goods-from-the-records-on-file.test.mjs": {
-          "tests": 7,
-          "asserts": 39,
+          "tests": 9,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -581,7 +587,7 @@
         },
         "a-floor-row-whose-owner-was-set-aside-is-answered.test.mjs": {
           "tests": 2,
-          "asserts": 10,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -642,6 +648,12 @@
         "a-grid-too-big-for-one-print-comes-back-in-steps.test.mjs": {
           "tests": 7,
           "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-group-row-covers-only-the-lines-it-was-shown.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1973,7 +1985,7 @@
         },
         "an-owners-set-leaves-the-picking-step-with-one-ground.test.mjs": {
           "tests": 4,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -6436,8 +6448,8 @@
           "todos": 0
         },
         "the-shape-lists-the-band-in-the-lawyers-order.test.mjs": {
-          "tests": 7,
-          "asserts": 37,
+          "tests": 11,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -6552,6 +6564,12 @@
         "the-wider-families-wait-on-the-identical-question.test.mjs": {
           "tests": 13,
           "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-words-the-step-reads-match-what-the-driver-checks.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
