@@ -75,7 +75,7 @@ test("band_shape: serves the md whole (default) and the json on request; both lo
   const runDir = seedRun();
   const r = await mcpSession([INIT, call(2, "band_shape"), call(3, "band_shape", { format: "json" })], ENV(runDir));
   assert.match(textOf(r, 2), /# Band shape/);
-  assert.match(textOf(r, 2), /## Floors/);
+  assert.match(textOf(r, 2), /\*\*Floors: /);
   const shape = JSON.parse(textOf(r, 3));
   assert.equal(shape.totals.records, 3);
   const log = readLog(runDir);
@@ -387,7 +387,7 @@ function seedCrowdedRun(floorCount = 2500) {
   for (let i = 0; i < floorCount; i++) {
     enumerated.push({
       record_id: `/mark/us/8${String(i).padStart(7, "0")}`, mark_text: i % 2 ? "NOVA PULSE" : "NOVA PULSSE",
-      classes: [32], status: "Registered", owner_name: `Holder ${i % 400} Beverages GmbH & Co. KG`,
+      classes: [32], status: "Registered", owner_name: `Holder ${i} Beverages GmbH & Co. KG`,   // one line each: a floor is marked on its line, not listed again
       _query: "exact nova pulse [cl 32]", screen: { registry: "USPTO", live_status: "live", applicationDate: "2021-01-01" },
     });
   }
@@ -463,8 +463,8 @@ test("band_shape: given codex's answer size, every part fits under its cut and t
 });
 
 test("band_shape: a shape that fits one Claude answer but not codex's is split for codex and served whole otherwise", async () => {
-  // 230 records: the shape also lists its owners in the lawyer's order now, so fewer records reach the same size.
-  const { runDir, md } = seedCrowdedRun(230);
+  // 500 records, one line each: the floors are marked on their lines rather than listed a second time.
+  const { runDir, md } = seedCrowdedRun(500);
   assert.ok(md.length > 39_000 && md.length < 70_000, `the fixture sits between the two sizes (${md.length} characters)`);
   assert.deepEqual(await shapeParts(runDir, ENV(runDir)), [md], "with no size given, the shape is served verbatim, no banner");
   const parts = await shapeParts(runDir, { ...ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(codexBandAnswerChars({})) });

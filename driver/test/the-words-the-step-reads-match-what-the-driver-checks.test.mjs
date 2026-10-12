@@ -69,3 +69,12 @@ test("a group's row says back the lines holding a floor it leaves to be placed o
   assert.deepEqual([b.covers_lines, b.floors_not_covered], [1, ["/mark/eu/b1"]], "the dead mark is covered; Beta's floor is said back, Gamma's was named");
   assert.match(SET_ASIDE_GROUP_CONTRACT.said_back, /floors_not_covered/);
 });
+
+test("nothing the step reads promises the floors listed a second time, one per record", async () => {
+  const { BAND_READING_CONTRACT } = await import("../stages.mjs");
+  const SERVER = readFileSync(new URL("../engine/mcp/band-server.mjs", import.meta.url), "utf8");
+  assert.match(BAND_READING_CONTRACT, /Every floor has a fate on the form/);
+  for (const [where, text] of [["reading contract", BAND_READING_CONTRACT], ["manual", MANUAL], ["band_shape description", SERVER]])
+    assert.doesNotMatch(text, /listed individually|Every floor row must be weighed|complete floors list|floors-heavy shape/, `the ${where} still promises a per-record floors list`);
+  assert.match(MANUAL, /every live in-class identical\/near-identical record, each marked on its line in the band/);
+});

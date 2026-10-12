@@ -812,7 +812,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
     rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest),
-      floor_lines: rest.filter((l) => l.floors > 0).length,
+      floor_lines: rest.filter((l) => l.floors > 0).length, floor_list: rest.filter((l) => l.floors > 0),
       list: rest.map(({ key, owner_key, record_id, floors }) => ({ key, owner_key, record_id, floors })) },
     no_goods: { records: grouped.no_goods.reduce((n, l) => n + l.records, 0), lines: grouped.no_goods.length,
       owners: ownersIn(grouped.no_goods), list: grouped.no_goods },
@@ -997,6 +997,9 @@ const GROUP_HEADINGS = {
   d: "(d) Every other live mark in the ordered classes, for the client's goods",
 };
 export const READ_ALL_LINES = 50;
+/** How many lines of the band hold a floor, wherever the shape put them. PURE. */
+const floorLineCount = (groups) => ["a", "b", "c", "d", "no_goods"].reduce((n, g) => n + (groups[g]?.list ?? []).filter((l) => l.floors > 0).length, 0)
+  + (groups.rest?.floor_lines ?? 0);
 /** The lookup that pages a group, as the shape and the form's refusal both name it, so the two cannot drift. */
 export const groupPageCall = (g) => `band_lookup {"group":"${g}"}`;
 
@@ -1018,8 +1021,8 @@ function renderGroupsMd(md, groups) {
   const total = groups.goods_words_total || 0;
   const words = (l) => (l.goods_words == null ? "—" : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`);
   const count = (grp) => `${fmtN(grp.records)} records in ${fmtN(grp.lines)} lines from ${fmtN(grp.owners)} owners`;
-  const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(l.territories.join(","))} | ${cell(words(l))} | ${cell(l.record_id)} |`;
-  const head = ["| mark | owner | classes | live | territories | goods words | record |", "|---|---|---|---|---|---|---|"];
+  const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(l.territories.join(","))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
+  const head = ["| mark | owner | classes | live | territories | goods words | floor | record |", "|---|---|---|---|---|---|---|---|"];
   for (const g of ["a", "b", "c", "d"]) {
     const grp = groups[g];
     md.push(`### ${GROUP_HEADINGS[g]}`, "");
@@ -1034,9 +1037,11 @@ function renderGroupsMd(md, groups) {
     for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) md.push(row(l));
     md.push("");
   }
-  const floorsOutside = groups.rest.floor_lines ? `, ${fmtN(groups.rest.floor_lines)} of those identical marks live in an ordered class, among the floors above` : "";
+  const floorsOutside = groups.rest.floor_lines ? `, ${fmtN(groups.rest.floor_lines)} of those identical marks live in an ordered class, listed below` : "";
   const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories${floorsOutside}` : "";
   md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Write down what you set aside and why: one row, with this count.`);
+  // A floor the order's territories leave in the rest is listed, so every floor is a line the step has seen.
+  if (groups.rest.floor_list?.length) { md.push("", ...head); for (const l of groups.rest.floor_list) md.push(row(l)); }
   if (groups.no_goods.lines) {
     md.push("", tested.source === "none"
       ? `**Not tested on goods: ${count(groups.no_goods)}** — no goods words were given, so the goods test could not place them. Open a record before a fate; no group row covers them.`
@@ -1064,17 +1069,15 @@ export function renderBandShapeMd(shape, { positions = null } = {}) {
   md.push("|---|---|");
   for (const t of SHAPE_TIERS) md.push(`| ${t} | ${fmtN(shape.totals.by_tier[t])} |`);
 
+  // THE FLOORS ARE MARKED ON THEIR LINES, NOT LISTED A SECOND TIME (ruled 2026-10-12). The band in her order
+  // carries every floor as a line, and a per-record list of the same records was most of a crowded shape the
+  // step had to read whole before it could act. The shape's data keeps every floor for the floor duty, and
+  // `band_lookup` returns any floor record on request.
   const floors = shape.floors.in_class_identical_or_near;
-  md.push("", "## Floors — every LIVE in-class identical / near-identical record (complete list, never sampled)", "");
-  if (!floors.length) {
-    md.push("(none — no live in-class record classified identical or near-identical to any target)");
-  } else {
-    md.push("| mark | tier | target | classes | status | owner | registry | record |");
-    md.push("|---|---|---|---|---|---|---|---|");
-    for (const f of floors) {
-      md.push(`| ${cell(f.mark_text)} | ${f.tier} | ${cell(f.matched_target)} | ${cell(f.classes.join(","))} | ${cell(f.status)} | ${cell(f.owner_name)} | ${cell(f.registry)} | ${cell(f.record_id)} |`);
-    }
-  }
+  const floorLines = shape.groups ? floorLineCount(shape.groups) : null;
+  md.push("", floors.length
+    ? `**Floors: ${fmtN(floors.length)} records${floorLines != null ? ` in ${fmtN(floorLines)} lines` : ""}** — every live in-class identical or near-identical record, each marked on its line in the band below.`
+    : "**Floors:** none — no live in-class record classified identical or near-identical to any target.");
 
   if (shape.groups) renderGroupsMd(md, shape.groups);
 

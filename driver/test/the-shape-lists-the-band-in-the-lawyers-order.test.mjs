@@ -102,12 +102,25 @@ test("the readable section states each group's count in lines, carries goods wor
   assert.equal((section.match(/\| Qzorvak \| Owner \d{4} Ltd \|/g) ?? []).length, 5, "the readable mirror shows (b)'s first page only");
   assert.equal((section.match(/\| QZORVAK \| Theta \d Ltd \|/g) ?? []).length, 7, "a group under a thousand is listed whole");
   assert.match(section, /7 records in 7 lines from 7 owners\./);
-  assert.match(section, /\| QZORVAK \| Theta 0 Ltd \| 9 \| 1 of 1 \| EU \| 1 of 2: joysticks \| \/mark\/eu\/x0 \|/, "a line: classes, live of records, territories, the words matched");
+  assert.match(section, /\| QZORVAK \| Theta 0 Ltd \| 9 \| 1 of 1 \| EU \| 1 of 2: joysticks \| yes \| \/mark\/eu\/x0 \|/, "a line: classes, live of records, territories, the words matched, whether it is a floor");
   assert.doesNotMatch(section, /printers/, "no goods text on a line");
   assert.match(section, /The client's markets: EU\./);
   assert.match(section, /Sorted on «Qzorv», the word the register's goods-narrowed search asked for \(the variants stage named «Qzorvak»\)\./);
   assert.match(section, /\*\*The rest: 0 records in 0 lines from 0 owners\*\* — every record in none of \(a\) to \(d\) above\. Write down what you set aside and why: one row, with this count\./);
-  assert.ok(md.indexOf("## The band in the lawyer's order") > md.indexOf("## Floors"), "the groups follow the floors");
+  assert.ok(md.indexOf("**Floors: 1,007 records in 1,007 lines**") >= 0 && md.indexOf("**Floors:") < md.indexOf("## The band in the lawyer's order"), "the floors are counted above the band");
+});
+
+test("the served shape marks each floor on its line and lists none a second time; the data keeps every floor", () => {
+  const records = [rec("f1", "QZORVAK", "Alpha Ltd", ["9"]), rec("f2", "QZORVAK", "Alpha Ltd", ["9"], { jurisdictions: ["CH"] }),
+    rec("f3", "QZORVAK", "Beta GmbH", ["9"]), rec("n1", "Drellux", "Gamma SA", ["9"])];
+  const goods = goodsReader({ f1: [{ classes: ["9"], text: "joysticks" }], f2: [{ classes: ["9"], text: "joysticks" }], f3: [{ classes: ["9"], text: "printers" }], n1: [{ classes: ["9"], text: "joysticks" }] });
+  const { shape, md } = buildBandShape({ enumerated: records }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1 });
+  assert.equal(shape.floors.in_class_identical_or_near.length, 3, "the shape's data keeps every floor record for the duty check");
+  assert.ok(md.includes("**Floors: 3 records in 2 lines** — every live in-class identical or near-identical record, each marked on its line in the band below."));
+  assert.ok(!md.includes("## Floors") && !md.includes("| mark | tier | target |"), "no per-record floors section");
+  assert.match(md, /\| QZORVAK \| Alpha Ltd \| 9 \| 2 of 2 \| CH,EU \| 1 of 1: joysticks \| yes \| /, "Alpha's two floor records are one line, marked");
+  assert.match(md, /\| QZORVAK \| Beta GmbH \| 9 \| 1 of 1 \| EU \| 0 of 1 \| yes \| /, "a floor in (b) is marked too");
+  assert.match(md, /\| Drellux \| Gamma SA \| 9 \| 1 of 1 \| EU \| 1 of 1: joysticks \| no \| /, "a line holding no floor says so");
 });
 
 test("the list holds every register that binds the order's territories; a line held only outside them goes to the rest", () => {
@@ -126,8 +139,9 @@ test("the list holds every register that binds the order's territories; a line h
   assert.deepEqual(bandGroups(records, { classify, inScope, goods }).by_group.a.lines.length, 5, "a worldwide order lists the world");
   const { shape, md } = buildBandShape({ enumerated: records }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, territories: ["EU", "CH"] });
   assert.deepEqual([shape.groups.rest.floor_lines, shape.groups.rest.list[0].record_id], [1, "/mark/eu/t5"]);
-  assert.ok(md.includes("**The rest: 1 records in 1 lines from 1 owners, 1 lines of them held only outside the ordered territories, 1 of those identical marks live in an ordered class, among the floors above**"),
+  assert.ok(md.includes("**The rest: 1 records in 1 lines from 1 owners, 1 lines of them held only outside the ordered territories, 1 of those identical marks live in an ordered class, listed below**"),
     "an identical mark the order's territories leave in the rest is counted on the rest's line");
+  assert.match(md, /\| QZORVAK \| Epsilon KK \| 9 \| 1 of 1 \| JP \| 1 of 1: joysticks \| yes \| \/mark\/eu\/t5 \|/, "and listed below it, so every floor is a line the step has seen");
 });
 
 test("membership binds both ways: the EU register for a member's order, Benelux for its three, the International Bureau for any", () => {

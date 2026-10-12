@@ -301,7 +301,7 @@ function groupLookup(params) {
   const page = lines.slice(offset, offset + limit).map((l) => ({
     mark: l.mark, owner: l.owner_name, classes: l.classes, live: `${l.live} of ${l.records}`, territories: l.territories,
     goods_words: l.goods_words == null ? null : `${l.goods_words.length} of ${total}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`,
-    record: l.record_id, _key: l.key,
+    floor: l.floors > 0, record: l.record_id, _key: l.key,
   }));
   const body = () => JSON.stringify({
     group: g, lines_total: lines.length, returned: page.length, ...(offset ? { offset } : {}),
@@ -492,7 +492,7 @@ serve({
   tools: [
     {
       name: "band_shape",
-      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the complete floors list (every live in-class identical/near-identical record), class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. Read this FIRST, then pull what it names via band_lookup/band_record. A floors-heavy shape is served in PARTS (the response labels itself part N/M and names the next call — read ALL parts; the shape is complete only then, and a partial read is never the shape). Every call is logged to the run's reading audit.",
+      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the floors (every live in-class identical/near-identical record), each marked on its line in the band in the lawyer's order, class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. Read this FIRST, then pull what it names via band_lookup/band_record. A large shape is served in PARTS (the response labels itself part N/M and names the next call — read ALL parts; the shape is complete only then, and a partial read is never the shape). Every call is logged to the run's reading audit.",
       inputSchema: { type: "object", properties: { format: { type: "string", enum: ["md", "json"], description: "md (default, readable) or json (machine shape)" }, part: { type: "number", description: "1-based part number when the shape is served in parts (default 1)" } } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandShape,
