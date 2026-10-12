@@ -123,13 +123,16 @@ test("the served shape marks each floor on its line and lists none a second time
   assert.match(md, /\| Drellux \| Gamma SA \| 9 \| 1 of 1 \| EU \| 1 of 1: joysticks \| no \| /, "a line holding no floor says so");
 });
 
+// The territory arms use expired identical marks: a floor, live, is never cut by territory (the next arm).
+const lapsed = (id, owner, jurisdictions) => rec(id, "QZORVAK", owner, ["9"], { jurisdictions, status: "expired" });
+
 test("the list holds every register that binds the order's territories; a line held only outside them goes to the rest", () => {
   const records = [
-    rec("t1", "QZORVAK", "Alpha Ltd", ["9"], { jurisdictions: "EM" }),       // the EU register, spelt as one register writes it
-    rec("t2", "QZORVAK", "Beta GmbH", ["9"], { jurisdictions: "DE" }),       // a member's national register binds inside an EU order
-    rec("t3", "QZORVAK", "Gamma SA", ["9"], { jurisdictions: "WO" }),        // Madrid binds every ordered territory
-    rec("t4", "QZORVAK", "Delta AG", ["9"], { jurisdictions: [] }),          // a record naming no register stays in
-    rec("t5", "QZORVAK", "Epsilon KK", ["9"], { jurisdictions: "JP" }),      // outside an EU and CH order
+    lapsed("t1", "Alpha Ltd", "EM"),       // the EU register, spelt as one register writes it
+    lapsed("t2", "Beta GmbH", "DE"),       // a member's national register binds inside an EU order
+    lapsed("t3", "Gamma SA", "WO"),        // Madrid binds every ordered territory
+    lapsed("t4", "Delta AG", []),          // a record naming no register stays in
+    lapsed("t5", "Epsilon KK", "JP"),      // outside an EU and CH order
   ];
   const goods = goodsReader(Object.fromEntries(records.map((r) => [r.record_id.split("/").pop(), [{ classes: ["9"], text: "joysticks" }]])));
   const g = bandGroups(records, { classify, inScope, goods, territories: ["EU", "CH"] });
@@ -138,16 +141,23 @@ test("the list holds every register that binds the order's territories; a line h
   assert.deepEqual(g.outside, { lines: 1, records: 1 });
   assert.deepEqual(bandGroups(records, { classify, inScope, goods }).by_group.a.lines.length, 5, "a worldwide order lists the world");
   const { shape, md } = buildBandShape({ enumerated: records }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, territories: ["EU", "CH"] });
-  assert.deepEqual([shape.groups.rest.floor_lines, shape.groups.rest.list[0].record_id], [1, "/mark/eu/t5"]);
-  assert.ok(md.includes("**The rest: 1 records in 1 lines from 1 owners, 1 lines of them held only outside the ordered territories, 1 of those identical marks live in an ordered class, listed below**"),
-    "an identical mark the order's territories leave in the rest is counted on the rest's line");
-  assert.match(md, /\| QZORVAK \| Epsilon KK \| 9 \| 1 of 1 \| JP \| 1 of 1: joysticks \| yes \| \/mark\/eu\/t5 \|/, "and listed below it, so every floor is a line the step has seen");
+  assert.equal(shape.groups.rest.list[0].record_id, "/mark/eu/t5");
+  assert.ok(md.includes("**The rest: 1 records in 1 lines from 1 owners, 1 lines of them held only outside the ordered territories** — every record in none of (a) to (d) above."));
+});
+
+test("a floor held only outside the order's territories is listed in (a) or (b), never counted in the rest", async () => {
+  const { assertRestHoldsNoFloor } = await import("../band-shape.mjs");
+  const records = [rec("f1", "QZORVAK", "Zeta KK", ["9"], { jurisdictions: "JP" }), rec("f2", "QZORVAK", "Eta KK", ["9"], { jurisdictions: "JP" })];
+  const goods = goodsReader({ f1: [{ classes: ["9"], text: "joysticks" }], f2: [{ classes: ["9"], text: "printers" }] });
+  const g = bandGroups(records, { classify, inScope, goods, territories: ["EU"] });
+  assert.deepEqual([g.by_group.a.lines.map((l) => l.owner_name), g.by_group.b.lines.map((l) => l.owner_name), g.by_group.rest.lines.length],
+    [["Zeta KK"], ["Eta KK"], 0], "each floor is listed by its goods, with its territory on its line");
+  assert.throws(() => assertRestHoldsNoFloor([{ key: "line:x", floors: 1, record_id: "/mark/jp/9" }]), /the rest holds a floor \(\/mark\/jp\/9\)/, "a rest holding a floor refuses the shape");
 });
 
 test("membership binds both ways: the EU register for a member's order, Benelux for its three, the International Bureau for any", () => {
   const goods = goodsReader({ m1: [{ classes: ["9"], text: "joysticks" }], m2: [{ classes: ["9"], text: "joysticks" }], m3: [{ classes: ["9"], text: "joysticks" }], m4: [{ classes: ["9"], text: "joysticks" }] });
-  const recs = [rec("m1", "QZORVAK", "Alpha Ltd", ["9"], { jurisdictions: "EM" }), rec("m2", "QZORVAK", "Beta BV", ["9"], { jurisdictions: "BX" }),
-    rec("m3", "QZORVAK", "Gamma SA", ["9"], { jurisdictions: "IB" }), rec("m4", "QZORVAK", "Delta Inc", ["9"], { jurisdictions: "US" })];
+  const recs = [lapsed("m1", "Alpha Ltd", "EM"), lapsed("m2", "Beta BV", "BX"), lapsed("m3", "Gamma SA", "IB"), lapsed("m4", "Delta Inc", "US")];
   const inDE = bandGroups(recs, { classify, inScope, goods, territories: ["DE"] });
   assert.deepEqual(inDE.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Gamma SA"], "an EU mark and an international one bind Germany");
   const inNL = bandGroups(recs, { classify, inScope, goods, territories: ["NL"] });
@@ -158,9 +168,9 @@ test("an order written in names reads as its codes, and a register given as obje
   const { orderTerritories } = await import("../effective-scope.mjs");
   assert.deepEqual(orderTerritories({ jurisdictions: ["Switzerland"], geography: { mode: "named" } }, null), ["CH"]);
   const goods = goodsReader({ o1: [{ classes: ["9"], text: "joysticks" }], o2: [{ classes: ["9"], text: "joysticks" }], o3: [{ classes: ["9"], text: "joysticks" }] });
-  const recs = [rec("o1", "QZORVAK", "Alpha Ltd", ["9"], { jurisdictions: [{ jurisdiction: "CH", status: "registered" }] }),
-    rec("o2", "QZORVAK", "Beta AG", ["9"], { jurisdictions: { CH: "registered", US: "pending" } }),
-    rec("o3", "QZORVAK", "Gamma SA", ["9"], { jurisdictions: [{ unknown_shape: true }] })];
+  const recs = [lapsed("o1", "Alpha Ltd", [{ jurisdiction: "CH", status: "registered" }]),
+    lapsed("o2", "Beta AG", { CH: "registered", US: "pending" }),
+    lapsed("o3", "Gamma SA", [{ unknown_shape: true }])];
   const g = bandGroups(recs, { classify, inScope, goods, territories: ["CH"] });
   assert.deepEqual(g.by_group.a.lines.map((l) => l.owner_name).sort(), ["Alpha Ltd", "Beta AG", "Gamma SA"], "a register it cannot read keeps the record in");
 });

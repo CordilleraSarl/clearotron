@@ -188,3 +188,22 @@ test("a line printed in a part of the shape the step never read is not served, a
   const all = unionPlacementForm(null, { rows: [ROW_D] }, { ...input, served: readServed(runDir) });
   assert.deepEqual(all.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["d", 300]], "every part read: the row is taken");
 });
+
+test("the rest's row never answers a floor: one held outside the order's territories waits in its group", async () => {
+  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
+  const { reconcileFloorDuty } = await import("../floor-duty.mjs");
+  // An EU order. One live identical mark held only in Japan, and a thousand unrelated marks held there too.
+  const enumerated = [{ record_id: "/mark/jp/v1", mark_text: "QZORVAK", owner_name: "Owner K KK", classes: ["9"], status: "registered", jurisdictions: ["JP"] },
+    ...Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => ({ record_id: `/mark/jp/u${i}`, mark_text: `BRANTELO ${i}`, owner_name: `Owner U${i} KK`,
+      classes: ["9"], status: "registered", jurisdictions: ["JP"] }))];
+  const positions = deriveRegisterPositions(enumerated);
+  const goods = { of: () => [{ classes: ["9"], text: "printers" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape } = buildBandShape({ enumerated, crowds: [] }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
+    keysOf: setAsideKeysOf(positions.positions), territories: ["EU"] });
+  assert.deepEqual([shape.groups.rest.records, shape.groups.b.lines], [CROWDED_GROUP_RECORDS, 1], "the floor is listed in (b); the rest is the thousand others");
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups, served: { lines: new Set(), records: new Set() } };
+  const u = unionPlacementForm(null, { rows: [{ set_aside_group: "rest", count: CROWDED_GROUP_RECORDS, ground: "held only outside the order's territories" }] }, input);
+  assert.equal(u.form.set_aside_groups.length, 1, "guard: the rest's row is taken");
+  const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors) });
+  assert.equal(duty.undischarged_by_seat, 1, "the floor held outside the territories is still owed a fate of its own");
+});

@@ -644,6 +644,16 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  * @param markets    the client's markets, as territory codes
  * @param territories  the order's territories, as codes (effective-scope.mjs `orderTerritories`); empty for a worldwide order
  */
+/**
+ * THE REST NEVER HOLDS A FLOOR. The rest is counted, not listed, and set aside in one row, so a floor in it
+ * would leave unread. The group rule puts every floor in (a) or (b); a rest holding one is a defect here, and
+ * the shape is refused rather than served with a floor no one will read. PURE (throws).
+ */
+export function assertRestHoldsNoFloor(restLines) {
+  const stray = (restLines ?? []).find((l) => l?.floors > 0);
+  if (stray) throw new Error(`band shape: the rest holds a floor (${stray.record_id ?? stray.key}); a floor is listed in (a) or (b), never counted in the rest`);
+}
+
 export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", keysOf = null, markets = [], territories = [] } = {}) {
   const fold = (x) => foldDiacritics(String(x ?? "")).toLowerCase();
   const dom = fold(dominantTerm).trim();
@@ -670,8 +680,10 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     const ts = territoriesOf(r);
     const outside = !inOrder(ts);
     const dominant = Boolean(domRe && domRe.test(fold(r?.mark_text)));
-    const group = outside ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
     const floor = (tier === "identical" || tier === "near-identical") && live && s;   // the floors' own test
+    // A floor is never counted in the rest (ruled 2026-10-12): held only outside the order's territories, it
+    // is still listed, in (a) or (b), where the step reads it and may set it aside by name on its territory.
+    const group = outside && !floor ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
     const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, territories: ts, inMarket: ts.some((t) => market.has(t)) };
     const keys = typeof keysOf === "function" ? keysOf(r) : null;
     const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
@@ -714,6 +726,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     byGroup[group].set_records += l.recs.length;
     byGroup[group].lines.push(row);
   }
+  assertRestHoldsNoFloor(byGroup.rest.lines);
   const byName = (x, y) => String(x.owner_name ?? x.owner_key).localeCompare(String(y.owner_name ?? y.owner_key))
     || String(x.mark ?? "").localeCompare(String(y.mark ?? "")) || String(x.key).localeCompare(String(y.key));
   const herOrder = (x, y) => Number(y.goods_live_in_scope) - Number(x.goods_live_in_scope) || y.live_in_scope - x.live_in_scope
@@ -812,7 +825,6 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
     rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest),
-      floor_lines: rest.filter((l) => l.floors > 0).length, floor_list: rest.filter((l) => l.floors > 0),
       list: rest.map(({ key, owner_key, record_id, floors }) => ({ key, owner_key, record_id, floors })) },
     no_goods: { records: grouped.no_goods.reduce((n, l) => n + l.records, 0), lines: grouped.no_goods.length,
       owners: ownersIn(grouped.no_goods), list: grouped.no_goods },
@@ -1000,8 +1012,7 @@ const GROUP_HEADINGS = {
 };
 export const READ_ALL_LINES = 50;
 /** How many lines of the band hold a floor, wherever the shape put them. PURE. */
-const floorLineCount = (groups) => ["a", "b", "c", "d", "no_goods"].reduce((n, g) => n + (groups[g]?.list ?? []).filter((l) => l.floors > 0).length, 0)
-  + (groups.rest?.floor_lines ?? 0);
+const floorLineCount = (groups) => ["a", "b", "c", "d", "no_goods"].reduce((n, g) => n + (groups[g]?.list ?? []).filter((l) => l.floors > 0).length, 0);
 /** The lookup that pages a group, as the shape and the form's refusal both name it, so the two cannot drift. */
 export const groupPageCall = (g) => `band_lookup {"group":"${g}"}`;
 
@@ -1041,11 +1052,8 @@ function renderGroupsMd(md, groups, rows = []) {
     for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) { rows.push([md.length, l.key]); md.push(row(l)); }
     md.push("");
   }
-  const floorsOutside = groups.rest.floor_lines ? `, ${fmtN(groups.rest.floor_lines)} of those identical marks live in an ordered class, listed below` : "";
-  const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories${floorsOutside}` : "";
+  const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories` : "";
   md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Write down what you set aside and why: one row, with this count.`);
-  // A floor the order's territories leave in the rest is listed, so every floor is a line the step has seen.
-  if (groups.rest.floor_list?.length) { md.push("", ...head); for (const l of groups.rest.floor_list) { rows.push([md.length, l.key]); md.push(row(l)); } }
   if (groups.no_goods.lines) {
     md.push("", tested.source === "none"
       ? `**Not tested on goods: ${count(groups.no_goods)}** — no goods words were given, so the goods test could not place them. Open a record before a fate; no group row covers them.`
