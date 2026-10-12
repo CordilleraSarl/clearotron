@@ -812,7 +812,8 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
     rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest),
-      list: rest.map(({ key, owner_key }) => ({ key, owner_key })) },
+      floor_lines: rest.filter((l) => l.floors > 0).length,
+      list: rest.map(({ key, owner_key, record_id, floors }) => ({ key, owner_key, record_id, floors })) },
     no_goods: { records: grouped.no_goods.reduce((n, l) => n + l.records, 0), lines: grouped.no_goods.length,
       owners: ownersIn(grouped.no_goods), list: grouped.no_goods },
   };
@@ -996,6 +997,8 @@ const GROUP_HEADINGS = {
   d: "(d) Every other live mark in the ordered classes, for the client's goods",
 };
 export const READ_ALL_LINES = 50;
+/** The lookup that pages a group, as the shape and the form's refusal both name it, so the two cannot drift. */
+export const groupPageCall = (g) => `band_lookup {"group":"${g}"}`;
 
 function renderGroupsMd(md, groups) {
   md.push("", "## The band in the lawyer's order — for the client's goods first", "");
@@ -1023,7 +1026,7 @@ function renderGroupsMd(md, groups) {
     if (!grp.lines) { md.push("(none)", ""); continue; }
     const crowded = grp.records >= groups.crowded_at;
     md.push(crowded
-      ? `${count(grp)}: a thousand or more, the field is crowded. The first page is below; open by owner name only those your judgment needs.`
+      ? `${count(grp)}. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)} before this group's row, which covers only the lines you were served.`
       : grp.lines <= READ_ALL_LINES
         ? `${count(grp)}. Fifty? Read them all.`
         : `${count(grp)}. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.`, "");
@@ -1031,8 +1034,9 @@ function renderGroupsMd(md, groups) {
     for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) md.push(row(l));
     md.push("");
   }
-  const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them outside the ordered territories` : "";
-  md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Set them aside in one row with this count.`);
+  const floorsOutside = groups.rest.floor_lines ? `, ${fmtN(groups.rest.floor_lines)} of those identical marks live in an ordered class, among the floors above` : "";
+  const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories${floorsOutside}` : "";
+  md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Write down what you set aside and why: one row, with this count.`);
   if (groups.no_goods.lines) {
     md.push("", tested.source === "none"
       ? `**Not tested on goods: ${count(groups.no_goods)}** — no goods words were given, so the goods test could not place them. Open a record before a fate; no group row covers them.`

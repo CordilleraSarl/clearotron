@@ -98,7 +98,7 @@ test("the readable section states each group's count in lines, carries goods wor
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS);
   assert.equal(shape.groups.b.list.length, CROWDED_GROUP_RECORDS, "the machine shape keeps every line");
   const section = md.slice(md.indexOf("## The band in the lawyer's order"), md.indexOf("### By Nice class"));
-  assert.match(section, /1,000 records in 1,000 lines from 1,000 owners: a thousand or more, the field is crowded\. The first page is below; open by owner name only those your judgment needs\./);
+  assert.ok(section.includes("1,000 records in 1,000 lines from 1,000 owners. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. The first 5 lines are below; page every other line with band_lookup {\"group\":\"b\"} before this group's row, which covers only the lines you were served."), "her crowded sentence, and how to page the group");
   assert.equal((section.match(/\| Qzorvak \| Owner \d{4} Ltd \|/g) ?? []).length, 5, "the readable mirror shows (b)'s first page only");
   assert.equal((section.match(/\| QZORVAK \| Theta \d Ltd \|/g) ?? []).length, 7, "a group under a thousand is listed whole");
   assert.match(section, /7 records in 7 lines from 7 owners\./);
@@ -106,7 +106,7 @@ test("the readable section states each group's count in lines, carries goods wor
   assert.doesNotMatch(section, /printers/, "no goods text on a line");
   assert.match(section, /The client's markets: EU\./);
   assert.match(section, /Sorted on «Qzorv», the word the register's goods-narrowed search asked for \(the variants stage named «Qzorvak»\)\./);
-  assert.match(section, /\*\*The rest: 0 records in 0 lines from 0 owners\*\*/);
+  assert.match(section, /\*\*The rest: 0 records in 0 lines from 0 owners\*\* — every record in none of \(a\) to \(d\) above\. Write down what you set aside and why: one row, with this count\./);
   assert.ok(md.indexOf("## The band in the lawyer's order") > md.indexOf("## Floors"), "the groups follow the floors");
 });
 
@@ -124,6 +124,10 @@ test("the list holds every register that binds the order's territories; a line h
   assert.deepEqual(g.by_group.rest.lines.map((l) => [l.owner_name, l.outside]), [["Epsilon KK", true]]);
   assert.deepEqual(g.outside, { lines: 1, records: 1 });
   assert.deepEqual(bandGroups(records, { classify, inScope, goods }).by_group.a.lines.length, 5, "a worldwide order lists the world");
+  const { shape, md } = buildBandShape({ enumerated: records }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, territories: ["EU", "CH"] });
+  assert.deepEqual([shape.groups.rest.floor_lines, shape.groups.rest.list[0].record_id], [1, "/mark/eu/t5"]);
+  assert.ok(md.includes("**The rest: 1 records in 1 lines from 1 owners, 1 lines of them held only outside the ordered territories, 1 of those identical marks live in an ordered class, among the floors above**"),
+    "an identical mark the order's territories leave in the rest is counted on the rest's line");
 });
 
 test("membership binds both ways: the EU register for a member's order, Benelux for its three, the International Bureau for any", () => {

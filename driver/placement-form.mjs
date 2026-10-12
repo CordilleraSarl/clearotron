@@ -107,20 +107,21 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
 // ONE GROUND PER OWNER'S SET (ruled 2026-09-25, sentence 6: "Judge an owner's records as a set. … A record
 // you do not carry is given a ground; no record leaves without one."). The form had rows for what is
 // placed and nothing for what is not, so every record the step passed over left with "no ground for this
-// record was recorded", hundreds of owners a run. This row gives an owner's records that are not placed
-// one ground. It is not a candidate, it renders into no placement, and nothing bounds how many there are.
+// record was recorded", hundreds of owners a run. This row gives one ground to the records of a line, one
+// mark of one owner, that are not placed: an owner-wide ground set the owner's other marks aside unseen
+// (ruled 2026-10-12). It is not a candidate, it renders into no placement, and nothing bounds how many there are.
 export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground"];
 export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
-  when: "an owner the shape lists, whose records you judge as a set and do not carry. One row gives that "
-    + "owner's set its ground.",
+  when: "a line the shape lists, one mark of one owner, whose records you do not carry. One row gives that "
+    + "line its ground.",
   fields: SET_ASIDE_ROW_FIELDS,
-  set_aside: "one record id of that owner, from the band. The driver finds the owner on the register's own "
-    + "projection; the ground covers every record of that owner the form does not place. Where the shape lists "
-    + "that owner on more than one line, the ground covers the named line's mark only, and each other line needs "
-    + "its own fate. A record that names no owner stands for its own position only.",
-  ground: "why this owner's records are not carried, in a lawyer's words.",
-  not_a_candidate: "It places nothing. A record of the same owner you do place stays placed.",
-  latest: "A later row for the same owner replaces the earlier ground. To remove one, hand back "
+  set_aside: "one record id of that line, from the band. The driver finds the line on the register's own "
+    + "projection; the ground covers every record of that mark of that owner the form does not place, and "
+    + "never another mark of the owner, which needs its own fate. A record that names no owner stands for its "
+    + "own position only.",
+  ground: "why this line's records are not carried, in a lawyer's words.",
+  not_a_candidate: "It places nothing. A record of the same line you do place stays placed.",
+  latest: "A later row for the same line replaces the earlier ground. To remove one, hand back "
     + "{\"retract\":\"<its set_aside id>\"}.",
   unresolved: "A `set_aside` the band does not hold, or one with no ground, is reported back to you by id.",
 });
@@ -136,7 +137,8 @@ export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.
 export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
 export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
   when: "a group the shape lists, (a) to (d), or the rest it counts: one row sets aside every line in it that "
-    + "you neither place nor set aside by name.",
+    + "you were served and neither place nor set aside by name. It covers a floor only in a group of a "
+    + "thousand records or more; below that, each floor is placed or set aside by name.",
   fields: SET_ASIDE_GROUP_FIELDS,
   set_aside_group: `the group's letter as the shape gives it, or "rest": one of ${BAND_GROUPS.join(", ")}.`,
   count: "the group's record count: the N the shape gives beside it.",
@@ -144,8 +146,11 @@ export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
   not_a_candidate: "It places nothing. A line in the group that you place or set aside by name keeps that.",
   latest: "A later row for the same group replaces the earlier one. To remove one, hand back "
     + "{\"retract\":\"group:<letter or rest>\"}.",
-  unresolved: "A group the shape does not list, a count that does not match the shape's, or a row with no "
-    + "ground, is reported back to you.",
+  unresolved: "A group the shape does not list, a count that does not match the shape's, a row with no "
+    + "ground, or a group with lines you were not yet served, is reported back to you.",
+  said_back: "The driver writes back `covers_lines`, the lines the row covers, and `floors_not_covered`, one "
+    + "record id for each line of the group holding a floor the row does not cover: place each or set it "
+    + "aside by name.",
 });
 
 /** Is this submitted row a group's set-aside? PURE. */
@@ -306,9 +311,10 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "`placements.json` from your answers — DO NOT WRITE THAT FILE. Tiers accumulate across attempts: a row "
   + "you tier once stays tiered even if a later attempt never sees it, which is what makes a killed "
   + "attempt's work survive. Candidates the register does not hold are yours to write in full — see "
-  + "`seat_row_contract`. An owner whose records you judge as a set and do not carry gets one ground for "
-  + "the set — see `set_aside_row_contract`. A group the shape lists, or the rest it counts, gets one row "
-  + "for what you neither place nor set aside by name — see `set_aside_group_contract`.";
+  + "`seat_row_contract`. A line the shape lists, one mark of one owner, whose records you do not carry "
+  + "gets one ground — see `set_aside_row_contract`. A group the shape lists, or the rest it counts, gets "
+  + "one row for the lines you were served and neither place nor set aside by name — see "
+  + "`set_aside_group_contract`.";
 
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */
 export function formRowKey(row) {

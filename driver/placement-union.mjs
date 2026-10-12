@@ -27,7 +27,7 @@ import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
   SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, namedKey, lineKey, servedLines,
   groupRowCoversFloors } from "./placement-form.mjs";
-import { BAND_GROUPS } from "./band-shape.mjs";
+import { BAND_GROUPS, groupPageCall } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
 /**
@@ -199,7 +199,7 @@ export function unionPlacementForm(prior, submitted, input) {
     if (g !== "rest") {
       const list = Array.isArray(shown.list) ? shown.list : [];
       const seen = list.filter((l) => servedSet.has(l.key)).length;
-      if (seen < list.length) { refuse(`${seen} of ${list.length} lines of group ${g} were served: page the rest with band_lookup {"group":"${g}"} before its row`); return; }
+      if (seen < list.length) { refuse(`${seen} of ${list.length} lines of group ${g} were served: page the rest with ${groupPageCall(g)} before its row`); return; }
     }
     setAsideGroups.delete(g);
     setAsideGroups.set(g, { set_aside_group: g, count: shown.records, ground });
@@ -208,16 +208,20 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const e of (Array.isArray(submitted?.set_aside) ? submitted.set_aside : [])) if (isSetAsideGroupRow(e)) takeGroup(e);
   for (const r of (submittedRows ?? [])) if (isSetAsideGroupRow(r)) { consumed.add(r); takeGroup(r); }
   for (const g of [...setAsideGroups.keys()]) if (retracted.has(`group:${g}`) || retracted.has(`group:${g}`.toUpperCase())) setAsideGroups.delete(g);
-  // WHAT EACH ROW COVERS, said back to the step: the group's lines it neither selected nor set aside by name.
+  // WHAT EACH ROW COVERS, said back to the step: the group's lines it neither selected nor set aside by name,
+  // and, below a thousand records, the lines holding a floor the row leaves for the step to place or name.
   const placedLines = new Set(selections.map((row) => lineKey(row)).filter(Boolean));
-  const covers = new Map();
+  const covers = new Map(), floorsLeft = new Map();
   for (const [key, g] of groupOfKeys(groups)) {
-    const named = setAside.has(key);
+    if (!setAsideGroups.has(g) || placedLines.has(key) || setAside.has(key)) continue;
     const line = (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).find((l) => l.key === key);
-    const floorHeld = (line?.floors ?? 0) > 0 && !groupRowCoversFloors(groups, g);
-    if (setAsideGroups.has(g) && !placedLines.has(key) && !named && !floorHeld) covers.set(g, (covers.get(g) ?? 0) + 1);
+    if ((line?.floors ?? 0) > 0 && !groupRowCoversFloors(groups, g)) floorsLeft.set(g, [...(floorsLeft.get(g) ?? []), line.record_id ?? key]);
+    else covers.set(g, (covers.get(g) ?? 0) + 1);
   }
-  for (const [g, e] of setAsideGroups) e.covers_lines = covers.get(g) ?? 0;
+  for (const [g, e] of setAsideGroups) {
+    e.covers_lines = covers.get(g) ?? 0;
+    if (floorsLeft.get(g)?.length) e.floors_not_covered = floorsLeft.get(g);
+  }
 
   const form = { _provenance: PLACEMENT_FORM_PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
     seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT,
