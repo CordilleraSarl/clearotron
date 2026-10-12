@@ -1028,7 +1028,9 @@ function renderGroupsMd(md, groups) {
     md.push(`### ${GROUP_HEADINGS[g]}`, "");
     if (!grp.lines) { md.push("(none)", ""); continue; }
     const crowded = grp.records >= groups.crowded_at;
-    md.push(crowded
+    md.push(crowded && g === "a"
+      ? `${count(grp)}. These are the identical and live marks for the client's goods: read every line. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)}. Every floor here is placed or set aside by name; this group's row covers only its other lines.`
+      : crowded
       ? `${count(grp)}. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. The first ${fmtN(groups.first_page)} lines are below; page every other line with ${groupPageCall(g)} before this group's row, which covers only the lines you were served.`
       : grp.lines <= READ_ALL_LINES
         ? `${count(grp)}. Fifty? Read them all.`

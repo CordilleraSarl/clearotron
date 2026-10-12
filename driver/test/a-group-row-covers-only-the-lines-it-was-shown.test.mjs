@@ -56,6 +56,27 @@ test("group (a) is held to the same rule: its row over lines never served is ref
   assert.match(shown.form.set_aside_group_refused[0].why, /5 of 1000 lines of group a were served/);
 });
 
+test("a row on (a) never answers a floor, however many records (a) holds; only a crowded (b)'s row may", async () => {
+  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
+  const { reconcileFloorDuty } = await import("../floor-duty.mjs");
+  const band = { enumerated: Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(i)), crowds: [] };
+  const positions = deriveRegisterPositions(band.enumerated);
+  const goods = { of: () => [{ classes: ["9"], text: "joysticks" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape, md } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
+    keysOf: setAsideKeysOf(positions.positions), caps: { owners: 5 } });
+  assert.equal(shape.groups.a.records, CROWDED_GROUP_RECORDS, "guard: (a) holds a thousand floors");
+  const sectionA = md.slice(md.indexOf("### (a)"), md.indexOf("### (b)"));
+  assert.match(sectionA, /These are the identical and live marks for the client's goods: read every line\./);
+  assert.doesNotMatch(sectionA, /do not write up the rest/, "(a) is read, never left unwritten");
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
+  const served = { lines: new Set(shape.groups.a.list.map((l) => l.key)), records: new Set() };
+  const u = unionPlacementForm(null, { rows: [{ set_aside_group: "a", count: CROWDED_GROUP_RECORDS, ground: "a crowded field" }] }, { ...input, served });
+  const a = u.form.set_aside_groups.find((g) => g.set_aside_group === "a");
+  assert.deepEqual([a.covers_lines, a.floors_not_covered.length], [0, CROWDED_GROUP_RECORDS], "every floor in (a) is said back, none covered");
+  const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors) });
+  assert.equal(duty.undischarged_by_seat, CROWDED_GROUP_RECORDS, "the floor duty still owes every (a) floor");
+});
+
 test("a line is served when a lookup returned or opened one of its records", () => {
   const { shape, input } = crowded();
   const keys = new Set(shape.groups.b.list.slice(0, 999).map((l) => l.key));

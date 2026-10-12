@@ -193,11 +193,13 @@ export function servedLines(groups, served, index) {
 }
 
 /**
- * May a group's row answer for a floor in it? Only in a group of a thousand records or more, her "do not
- * write up the rest" (ruled 2026-10-12). Below that, a floor is placed or set aside by name. ONE predicate,
- * read by the grounds, the fate count and so the floor duty, so the three cannot drift apart. PURE.
+ * May a group's row answer for a floor in it? Only in group (b) of a thousand records or more: the crowd of
+ * identical marks in the ordered classes whose goods are not the client's, the crowded-field method's "do not
+ * write up the rest" (ruled 2026-10-12). Never in (a): (a) is the identical and live marks for the client's
+ * goods, which that method reads, so every floor in (a) is placed or set aside by name at any size. ONE
+ * predicate, read by the grounds, the fate count and so the floor duty, so the three cannot drift apart. PURE.
  */
-export const groupRowCoversFloors = (groups, g) => (groups?.[g]?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
+export const groupRowCoversFloors = (groups, g) => g === "b" && (groups?.b?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
 
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run
