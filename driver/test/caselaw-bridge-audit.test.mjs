@@ -35,12 +35,13 @@ test("THE BRIDGE NOW GETS A RUN DIR — the half that made the log impossible", 
 });
 
 test("A DELIBERATELY SMALLER SET THAN THE LOCAL SERVERS' ENV", () => {
-  // A bridge proxies someone else's MCP server and needs exactly three facts to write an audit line.
-  // The local servers get register ledger paths because they do register work; a bridge must not
-  // quietly acquire reach it has no use for.
+  // A bridge proxies someone else's MCP server and needs exactly three facts to write an audit line, and
+  // a fourth, the answer size, to serve a long answer in parts (shared/answer-parts.mjs). The local
+  // servers get register ledger paths because they do register work; a bridge must not quietly acquire
+  // reach it has no use for.
   const s = caselaw({ runDir: "/srv/testhome/run", agent: "mailagent", sessionKey: "sk" });
   const keys = Object.keys(s.courtlistener.env).sort();
-  assert.deepEqual(keys, ["CLEAROTRON_BAND_RUN_DIR", "CLEAROTRON_GATHER_AGENT", "CLEAROTRON_GATHER_SESSION_KEY"]);
+  assert.deepEqual(keys, ["CLEAROTRON_BAND_RUN_DIR", "CLEAROTRON_GATHER_AGENT", "CLEAROTRON_GATHER_SESSION_KEY", "CLEAROTRON_TOOL_ANSWER_BYTES"]);
   assert.ok(!keys.some((k) => /REGISTER|POOL|OUTBOX/.test(k)), "no register or pool reach");
 });
 

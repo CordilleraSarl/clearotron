@@ -12,6 +12,7 @@ import { createInterface } from "node:readline";
 import { appendFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { answerBudget, answerPieces, servedPart, partNotHeld, takePart, heldAnswers, withAnswerPart } from "../../../shared/answer-parts.mjs";
 
 // ── half 2 — THE TOOL CALL LOG, so a killed call is a FACT and not an inference ────────────────
 //
@@ -88,6 +89,10 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
   // reader must key on (server, seq) and never on seq alone.
   let callSeq = 0;
   const byName = new Map(tools.map((t) => [t.name, t]));
+  // A LONG ANSWER IS SERVED IN PARTS when this server was given an answer size (shared/answer-parts.mjs):
+  // the handler runs once, the answer is held here, and a later part is read from it. No size, no change.
+  const budget = answerBudget();
+  const held = heldAnswers();
   // ── — THE ANNOTATIONS TRAVEL, BECAUSE A TOOL MUST BE ABLE TO SAY WHAT IT DOES ──
   //
   // This line used to pick three fields and drop the rest, so a tool that declared `annotations` had
@@ -117,9 +122,10 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
   // convenience — the exact thing annotations exist to prevent.
   // Listed when asked, not at start: a tool may give the schema for the run it serves (`schemaNow`), read
   // at call time like every per-run read here. A tool without one lists its declared schema, as before.
+  const schemaOf = (t) => (typeof t.schemaNow === "function" ? t.schemaNow(t.inputSchema) : t.inputSchema);
   const list = () => tools.map((t) => ({
     name: t.name, description: t.description,
-    inputSchema: typeof t.schemaNow === "function" ? t.schemaNow(t.inputSchema) : t.inputSchema,
+    inputSchema: budget ? withAnswerPart(schemaOf(t)) : schemaOf(t),
     ...(t.annotations ? { annotations: t.annotations } : {}),
   }));
   const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
@@ -144,11 +150,20 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
       } else if (method === "tools/call") {
         const tool = byName.get(params?.name);
         if (!tool) return ok(id, { isError: true, content: [{ type: "text", text: `unknown tool: ${params?.name}` }] });
+        // A later part of a held answer is read from it, and the tool does not run: no started/settled pair,
+        // one row of its own, so a count of the tool's runs stays a count of its runs.
+        const { args, part } = budget ? takePart(params?.arguments) : { args: params?.arguments, part: null };
+        const kept = part ? held.get(tool.name, args) : null;
+        if (part && (kept || part > 1)) {
+          logToolEvent({ event: "answer-part", server: name, tool: tool.name, part, ...(kept ? { of: kept.length } : { held: false }) });
+          return ok(id, kept ? { content: [{ type: "text", text: servedPart(tool.name, kept, part) }] }
+            : { isError: true, content: [{ type: "text", text: partNotHeld(tool.name, part) }] });
+        }
         // — STAMPED BEFORE THE WORK, settled after it, and the pair is the whole mechanism. A
         // process killed mid-call cannot write anything, so "started with no settled" is the only shape
         // that can record a call that never returned.
         const seq = ++callSeq;
-        const axis = typeof params?.arguments?.axis === "string" ? params.arguments.axis : null;
+        const axis = typeof args?.axis === "string" ? args.axis : null;
         logToolEvent({ event: "started", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}) });
         // ── — THE ONE SEAM EVERY TYPED CALL PASSES THROUGH ───────────────────────
         //
@@ -157,7 +172,7 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
         // re-check by hand, which made "this field is required" a property of one author's diligence
         // rather than of the contract. The refusal names the fields in the acceptors' own token shape so
         // a seat can act on it in the turn it happens.
-        const unmet = requiredFieldViolations(tool.inputSchema, params?.arguments);
+        const unmet = requiredFieldViolations(tool.inputSchema, args);
         if (unmet.length) {
           // THE REASON THE ROW HAD IN SCOPE AND THREW AWAY. A settled row with
           // `ok: false` and nothing else asserts a failure and withholds everything that would let a
@@ -177,7 +192,7 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
             + `${unmet.length === 1 ? "it" : "them"}. Send the field itself, not null and not a placeholder.` }] });
         }
         let out;
-        try { out = await tool.handler(params?.arguments || {}); }
+        try { out = await tool.handler(args || {}); }
         catch (e) {
           // A THROWN tool error SETTLES. It returned an answer — a wrong one, but the model saw it and
           // could act on it. Recording it as unsettled would attribute a live failure to a timeout. The
@@ -193,6 +208,11 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
         const code = isError ? complaintCode(text) : null;
         logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: !isError,
           ...(isError ? { failure: "server", ...(code ? { reason: code } : {}) } : {}) });
+        const pieces = budget && !isError ? answerPieces(text, budget, tool.name) : null;
+        if (pieces && pieces.length > 1) {
+          held.hold(tool.name, args, pieces);
+          return ok(id, { content: [{ type: "text", text: servedPart(tool.name, pieces, 1) }] });
+        }
         ok(id, { isError: isError || undefined, content: [{ type: "text", text }] });
       } else if (id != null) {
         err(id, -32601, `method not found: ${method}`);
