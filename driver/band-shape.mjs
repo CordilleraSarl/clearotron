@@ -1001,6 +1001,15 @@ function renderGroupsMd(md, groups) {
   md.push("", "## The band in the lawyer's order — for the client's goods first", "");
   if (groups.dominant_term && groups.manifest_dominant && normKey(groups.dominant_term) !== normKey(groups.manifest_dominant))
     md.push(`Sorted on «${cell(groups.dominant_term)}», the word the register's goods-narrowed search asked for (the variants stage named «${cell(groups.manifest_dominant)}»).`, "");
+  // The words the goods test read, and where they came from: the client's product words, or, where the
+  // variants stage named none, the class words of the register search. A fallback is said, never silent.
+  const tested = groups.goods_test ?? { source: "none", words: [] };
+  const named = tested.words?.length ? `: ${tested.words.map((w) => `«${cell(w)}»`).join(", ")}` : "";
+  md.push(tested.source === "product_words"
+    ? `The goods test reads each record's goods for the client's product words${named}.`
+    : tested.source === "goods_words"
+      ? `No product words were given, so the goods test reads each record's goods for the class words of the register search${named}. They name the classes, not the client's product, so "for the client's goods" below means a record's goods hold one of them.`
+      : "No goods words were given, so no record was tested on its goods.", "");
   if (groups.territories?.length) md.push(`The list holds the order's territories: ${groups.territories.join(", ")}.`, "");
   if (groups.markets?.length) md.push(`The client's markets: ${groups.markets.join(", ")}.`, "");
   const total = groups.goods_words_total || 0;
@@ -1025,7 +1034,9 @@ function renderGroupsMd(md, groups) {
   const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them outside the ordered territories` : "";
   md.push(`**The rest: ${count(groups.rest)}${outside}** — every record in none of (a) to (d) above. Set them aside in one row with this count.`);
   if (groups.no_goods.lines) {
-    md.push("", `**No goods on file: ${count(groups.no_goods)}** — their records carry no goods the engine can read, so the goods test could not place them. Open a record before a fate; no group row covers them.`, "");
+    md.push("", tested.source === "none"
+      ? `**Not tested on goods: ${count(groups.no_goods)}** — no goods words were given, so the goods test could not place them. Open a record before a fate; no group row covers them.`
+      : `**No goods on file: ${count(groups.no_goods)}** — their records carry no goods the engine can read, so the goods test could not place them. Open a record before a fate; no group row covers them.`, "");
     md.push(...head);
     for (const l of groups.no_goods.list) md.push(row(l));
   }

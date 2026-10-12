@@ -170,6 +170,39 @@ test("the groups key on the client's product words when the variants stage names
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
+test("the shape says which words its goods test read, and says so when it fell back to the class words", async () => {
+  const { bandShapeGoods } = await import("../record-goods.mjs");
+  const { mkdtempSync, mkdirSync, writeFileSync, rmSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { driverDir } = await import("../../shared/driver-dir.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "shape-source-"));
+  try {
+    mkdirSync(driverDir(runDir), { recursive: true });
+    const P = { runDir, variantManifestModel: join(runDir, "variant-manifest.json"), registerPlan: driverDir(runDir, "register-plan.json") };
+    writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), JSON.stringify({ target: "/mark/eu/p1", body: { goodsServices: [{ classes: [9], language: "en", description: "joysticks" }] } }) + "\n");
+    const base = { schema_version: 1, mark: "QZORVAK", dominant_element: "QZORVAK", elements: [{ value: "QZORVAK", kind: "distinctive" }],
+      variants: [{ value: "QZORVAK", category: "core" }], incumbent_classes: [], watchlist_owners: [] };
+    const band = { enumerated: [rec("p1", "QZORVAK", "Alpha Ltd", ["9"])] };
+    const shapeFor = (model) => {
+      writeFileSync(P.variantManifestModel, JSON.stringify({ ...base, ...model }));
+      const g = bandShapeGoods(P);
+      return { test: g.goodsTest, md: buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], ...g }).md };
+    };
+    const product = shapeFor({ goods_words: ["computer peripherals"], product_words: ["joystick"] });
+    assert.deepEqual(product.test, { source: "product_words", words: ["joystick"] });
+    assert.match(product.md, /The goods test reads each record's goods for the client's product words: «joystick»\./);
+    const fallback = shapeFor({ goods_words: ["computer peripherals", "joysticks"] });
+    assert.deepEqual(fallback.test, { source: "goods_words", words: ["computer peripherals", "joysticks"] });
+    assert.match(fallback.md, /No product words were given, so the goods test reads each record's goods for the class words of the register search: «computer peripherals», «joysticks»\. They name the classes, not the client's product/);
+    const none = shapeFor({});
+    assert.equal(none.test.source, "none");
+    assert.match(none.md, /No goods words were given, so no record was tested on its goods\./);
+    assert.match(none.md, /\*\*Not tested on goods: 1 records in 1 lines from 1 owners\*\* — no goods words were given/, "with no words the line is listed apart for that reason, not for goods the record lacks");
+    assert.doesNotMatch(none.md, /No goods on file/);
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
 test("a mark whose goods carry no English is listed apart and opened, never sent to the rest", async () => {
   const { recordGoods } = await import("../record-goods.mjs");
   const bodies = { f1: { goodsServices: [{ classes: [9], language: "de", description: "Videospiele; Spielkonsolen" }] } };
