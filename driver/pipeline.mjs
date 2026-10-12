@@ -16484,6 +16484,10 @@ async function runExperimentInner(job, opts) {
   if (produced.verdict === "could-not-tell") {
     note(`--experiment ${name}: could not verify the seat produced anything — ${produced.why}`);
   }
+  // A PLACEMENT ARM IS READ BY ITS FLOORS AND ITS OWNERS' FATES, which a run derives after the pass
+  // (deriveFloorDuty, in pipelineInner). Derived here as well, inside the sandbox, so the arm carries the
+  // same floor-duty artifact a run would and a replay can be judged on it.
+  if (name === "placement-inquiry") deriveFloorDuty(shadowCtx, r, "experiment");
   note(`--experiment ${name} ${r.ok ? "OK" : `FAILED (${r.fail})`} → ${out ?? shadowDir} (canonical run untouched)`);
   return { ok: r.ok, shadowDir, output: out, fail: r.fail };
 }
