@@ -25,7 +25,7 @@
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
-  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, lineKey } from "./placement-form.mjs";
+  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, multiLineOwners, namedKey, lineKey, servedLines } from "./placement-form.mjs";
 import { BAND_GROUPS } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
@@ -183,6 +183,7 @@ export function unionPlacementForm(prior, submitted, input) {
   // does not list, a count that is not the shape's, or a row with no ground is reported back, never dropped.
   const setAsideGroups = new Map();
   const groupRefused = [];
+  const servedSet = servedLines(groups, input?.served, index);
   const takeGroup = (row) => {
     const written = String(row.set_aside_group).trim();
     const refuse = (why) => { if (!groupRefused.some((x) => x.set_aside_group === written && x.why === why)) groupRefused.push({ set_aside_group: written, why }); };
@@ -193,6 +194,13 @@ export function unionPlacementForm(prior, submitted, input) {
     const ground = typeof row.ground === "string" ? row.ground.trim() : "";
     if (!ground) { refuse("no ground"); return; }
     if (Number(row.count) !== shown.records) { refuse(`count ${row.count ?? "(none)"} is not the shape's ${shown.records}`); return; }
+    // A ROW COVERS ONLY WHAT WAS SHOWN. A line the step never saw cannot be set aside by a ground written
+    // about the lines it did see; a group listed by its first page is paged before its row is taken.
+    if (g !== "rest") {
+      const list = Array.isArray(shown.list) ? shown.list : [];
+      const seen = list.filter((l) => servedSet.has(l.key)).length;
+      if (seen < list.length) { refuse(`${seen} of ${list.length} lines of group ${g} were served: page the rest with band_lookup {"group":"${g}"} before its row`); return; }
+    }
     setAsideGroups.delete(g);
     setAsideGroups.set(g, { set_aside_group: g, count: shown.records, ground });
   };

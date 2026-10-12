@@ -269,8 +269,40 @@ const withGoods = (r) => {
   return { ...project(r), goods: ex ? ex.text : null, goods_cut: ex ? ex.cut : false };
 };
 
+// A GROUP, PAGED AS THE SHAPE LISTS IT. The shape lists a group of a thousand records or more by its first
+// page; the rest of its lines are served here, one compact line per mark of an owner, in the group's own
+// order. A group's row covers only lines that were served (placement-union.mjs), so the step can always
+// reach every line it is asked to answer for. Each answer logs the lines it served.
+const GROUP_LINE_LIMIT = 200;
+function groupLookup(params) {
+  const g = String(params.group ?? "").trim().toLowerCase();
+  let groups;
+  try { groups = loadJson(shapeJsonPath()).groups; } catch { groups = null; }
+  if (!groups?.[g]?.list) { logRead("band_lookup", params, { ok: false, reason: "no-group" }); return { isError: true, text: `ERROR: the band shape lists no group "${g}" — one of a, b, c, d.` }; }
+  const lines = groups[g].list;
+  const total = groups.goods_words_total || 0;
+  const limit = Math.max(1, Math.min(Number(params.limit) || GROUP_LINE_LIMIT, GROUP_LINE_LIMIT));
+  const offset = Math.max(0, Math.floor(Number(params.offset) || 0));
+  const page = lines.slice(offset, offset + limit).map((l) => ({
+    mark: l.mark, owner: l.owner_name, classes: l.classes, live: `${l.live} of ${l.records}`, territories: l.territories,
+    goods_words: l.goods_words == null ? null : `${l.goods_words.length} of ${total}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`,
+    record: l.record_id, _key: l.key,
+  }));
+  const body = () => JSON.stringify({
+    group: g, lines_total: lines.length, returned: page.length, ...(offset ? { offset } : {}),
+    ...(lines.length > offset + page.length ? { next_offset: offset + page.length,
+      note: `call again with offset: ${offset + page.length} for the next lines of group ${g}` } : {}),
+    lines: page.map(({ _key, ...l }) => l),
+  }, null, 2);
+  let out = body();
+  while (out.length > RESPONSE_CHARS && page.length > 1) { page.pop(); out = body(); }
+  logRead("band_lookup", params, { ok: true, group: g, returned: page.length, served_lines: page.map((l) => l._key) });
+  return out;
+}
+
 function bandLookup(params = {}) {
   if (!RUN_DIR) return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." };
+  if (params.group != null && String(params.group).trim()) return groupLookup(params);
   if (!existsSync(bandPath())) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: "ERROR: register-named-band.json not found in this run — the band has not been merged yet." }; }
   let band;
   try { band = loadJson(bandPath()); } catch (e) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: `ERROR: band unreadable (${e.message}) — a driver-side defect; report it, never hand-repair the band.` }; }
@@ -357,7 +389,8 @@ function bandLookup(params = {}) {
   }, null, 2);
   let out = body();
   while (out.length > RESPONSE_CHARS && hits.length > 1) { hits.pop(); byteCapped++; out = body(); }
-  logRead("band_lookup", params, { ok: true, matched, returned: hits.length, crowds: crowds.length, ...(byteCapped ? { byte_capped: byteCapped } : {}) });
+  logRead("band_lookup", params, { ok: true, matched, returned: hits.length, crowds: crowds.length, ...(byteCapped ? { byte_capped: byteCapped } : {}),
+    served: hits.map((h) => h.record_id).filter(Boolean) });
   return out;
 }
 
@@ -456,6 +489,7 @@ serve({
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
         status: { type: "string" }, live_only: { type: "boolean" }, goods: { type: "array", items: { type: "string" } },
+        group: { type: "string", enum: ["a", "b", "c", "d"] },
         limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },

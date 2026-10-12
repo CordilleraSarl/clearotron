@@ -175,6 +175,24 @@ export function groupOfKeys(groups) {
   return out;
 }
 
+/**
+ * The lines of a group the step was shown: every line of a group the shape lists whole, the first page of a
+ * group it lists by its first page, and every line a band lookup served, by the group's own page or by a
+ * record of the line looked up or opened. A group's row covers these and no others. PURE.
+ */
+export function servedLines(groups, served, index) {
+  const out = new Set();
+  if (!groups || typeof groups !== "object") return out;
+  for (const g of ["a", "b", "c", "d"]) {
+    const list = Array.isArray(groups[g]?.list) ? groups[g].list : [];
+    const shown = groups[g]?.records >= (groups.crowded_at ?? Infinity) ? list.slice(0, groups.first_page ?? 0) : list;
+    for (const l of shown) if (l?.key) out.add(l.key);
+  }
+  for (const k of served?.lines ?? []) out.add(k);
+  for (const id of served?.records ?? []) { const k = lineKey(index?.resolve?.(id)); if (k) out.add(k); }
+  return out;
+}
+
 /** Owners the shape lists on more than one line: a ground by name for one of them covers that line only. PURE. */
 export function multiLineOwners(groups) {
   const n = new Map();
