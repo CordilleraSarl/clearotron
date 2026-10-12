@@ -20,7 +20,7 @@ import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync } from
 import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
-import { answerBudget } from "../../../shared/answer-parts.mjs";
+import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
@@ -123,15 +123,27 @@ const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONS
 // so a larger answer size cannot push a part past Claude's limit; with no size set, nothing changes.
 const SHAPE_PART_SERVED = Math.min(SHAPE_PART_CHARS, RESPONSE_CHARS);
 
-/** Split text into parts of ≤ budget chars, cutting only at line boundaries (an over-budget single
- *  line still ships whole — never cut mid-line). Concatenating the parts with "\n" restores the
- *  input byte-for-byte. */
+// The answer size is in bytes, counted as a quoted string (shared/answer-parts.mjs), and characters are not
+// bytes: a page of marks and owners in a script of three bytes a character, trimmed to the character size,
+// came to about three times the answer size and was split a second time. So every answer and every part is
+// held to the bytes as well, with room in a part for its banner. Latin text meets the character size first,
+// so it is served as before.
+const RESPONSE_BYTES = answerBudget();
+const PART_ROOM = 512;
+const fits = (text) => text.length <= RESPONSE_CHARS && (!RESPONSE_BYTES || quotedBytes(text) <= RESPONSE_BYTES);
+
+/** Split text into parts of ≤ budget chars and, given an answer size, ≤ its bytes less a banner's room,
+ *  cutting only at line boundaries (an over-budget single line still ships whole — never cut mid-line).
+ *  Concatenating the parts with "\n" restores the input byte-for-byte. */
 function splitAtLines(text, budget) {
+  const bytes = RESPONSE_BYTES ? RESPONSE_BYTES - PART_ROOM : Infinity;
   const parts = [];
-  let cur = null;
+  let cur = null, curBytes = 0;
   for (const line of String(text).split("\n")) {
-    if (cur !== null && cur.length + 1 + line.length > budget) { parts.push(cur); cur = line; }
-    else cur = cur === null ? line : cur + "\n" + line;
+    const lineBytes = RESPONSE_BYTES ? quotedBytes(line) : 0;
+    if (cur !== null && (cur.length + 1 + line.length > budget || curBytes + 2 + lineBytes > bytes)) { parts.push(cur); cur = line; curBytes = lineBytes; }
+    else if (cur === null) { cur = line; curBytes = lineBytes; }
+    else { cur += "\n" + line; curBytes += 2 + lineBytes; }
   }
   parts.push(cur ?? "");
   return parts;
@@ -298,7 +310,7 @@ function groupLookup(params) {
     lines: page.map(({ _key, ...l }) => l),
   }, null, 2);
   let out = body();
-  while (out.length > RESPONSE_CHARS && page.length > 1) { page.pop(); out = body(); }
+  while (!fits(out) && page.length > 1) { page.pop(); out = body(); }
   logRead("band_lookup", params, { ok: true, group: g, returned: page.length, served_lines: page.map((l) => l._key) });
   return out;
 }
@@ -391,7 +403,7 @@ function bandLookup(params = {}) {
       + (unsizedCrowds ? ` — and ${unsizedCrowds} of them has/have an UNKNOWN SIZE (see "size"): the register stated no total, so how much lies under those slices is unmeasured` : "") } : {}),
   }, null, 2);
   let out = body();
-  while (out.length > RESPONSE_CHARS && hits.length > 1) { hits.pop(); byteCapped++; out = body(); }
+  while (!fits(out) && hits.length > 1) { hits.pop(); byteCapped++; out = body(); }
   logRead("band_lookup", params, { ok: true, matched, returned: hits.length, crowds: crowds.length, ...(byteCapped ? { byte_capped: byteCapped } : {}),
     served: hits.map((h) => h.record_id).filter(Boolean) });
   return out;

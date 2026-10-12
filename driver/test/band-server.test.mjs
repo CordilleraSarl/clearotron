@@ -21,6 +21,7 @@ const MCP = join(HERE, "..", "engine", "mcp");
 async function mcpSession(requests, env = {}) {
   return await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [join(MCP, "band-server.mjs")], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, ...env } });
+    child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8");   // a character split across two chunks decodes whole
     const responses = {}; let buf = "", stderr = "";
     const wantIds = new Set(requests.filter((r) => r.id != null).map((r) => r.id));
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve({ responses, stderr }); };

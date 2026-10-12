@@ -27,6 +27,7 @@ async function session(requests, env) {
     const want = new Set(requests.filter((r) => r.id != null).map((r) => r.id));
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve(responses); };
     const timer = setTimeout(done, 8000);
+    child.stdout.setEncoding("utf8");   // a character split across two chunks decodes whole
     child.stdout.on("data", (d) => {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {

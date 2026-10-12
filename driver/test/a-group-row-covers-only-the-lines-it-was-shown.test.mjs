@@ -42,6 +42,20 @@ test("a crowded group's row is refused while any of its lines is unserved, and t
   assert.deepEqual(paged.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["b", CROWDED_GROUP_RECORDS]]);
 });
 
+test("group (a) is held to the same rule: its row over lines never served is refused", () => {
+  const band = { enumerated: Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(i)), crowds: [] };
+  const positions = deriveRegisterPositions(band.enumerated);
+  const goods = { of: () => [{ classes: ["9"], text: "joysticks" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape } = buildBandShape(band, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
+    keysOf: setAsideKeysOf(positions.positions), caps: { owners: 5 } });
+  assert.equal(shape.groups.a.records, CROWDED_GROUP_RECORDS, "guard: (a) is listed by its first page");
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
+  const row = { set_aside_group: "a", count: CROWDED_GROUP_RECORDS, ground: "a crowded field; none trades where the client trades" };
+  const shown = unionPlacementForm(null, { rows: [row] }, { ...input, served: { lines: new Set(), records: new Set() } });
+  assert.deepEqual(shown.form.set_aside_groups, [], "the row covered (a)'s lines past the first page unseen");
+  assert.match(shown.form.set_aside_group_refused[0].why, /5 of 1000 lines of group a were served/);
+});
+
 test("a line is served when a lookup returned or opened one of its records", () => {
   const { shape, input } = crowded();
   const keys = new Set(shape.groups.b.list.slice(0, 999).map((l) => l.key));
@@ -56,6 +70,7 @@ const MCP = join(dirname(fileURLToPath(import.meta.url)), "..", "engine", "mcp")
 async function lookup(runDir, args) {
   return await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [join(MCP, "band-server.mjs")], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDir } });
+    child.stdout.setEncoding("utf8");   // a character split across two chunks decodes whole
     let buf = "";
     const timer = setTimeout(() => { child.kill("SIGKILL"); resolve(null); }, 8000);
     child.stdout.on("data", (d) => {
