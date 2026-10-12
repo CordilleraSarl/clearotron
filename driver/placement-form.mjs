@@ -117,7 +117,7 @@ export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground", "on"];
  * never its owner's customers or field, whatever `on` says, so the form reads the ground's words too.
  */
 export const FLOOR_GROUND_ON = Object.freeze(["status", "territory"]);
-export const FLOOR_GROUND_REFUSED = /\b(?:customers?|consumers?|clients?|clientele|users?|audiences?|buyers?|purchasers?|patients?|professionals?|channels?|markets?|marketplaces?|sectors?|fields?|industr(?:y|ies|ial)|business(?:es)?|activit(?:y|ies)|commerce|commercial|trad(?:e|es|ing)(?!\s*-?\s*marks?)|distribution|wholesale|retail(?:ers?)?|sells?|sold|selling|b2b|b2c|off[- ]field|goods|products?|services?|merchandise)\b/i;
+export const FLOOR_GROUND_REFUSED = /\b(?:customers?|consumers?|clients|clientele|users?|audiences?|buyers?|purchasers?|patients?|professionals?|channels?|markets?|marketplaces?|sectors?|fields?|industr(?:y|ies|ial)|business(?:es)?|activit(?:y|ies)|commerce|commercial|trad(?:e|es|ing)(?!\s*-?\s*marks?)|distribution|wholesale|retail(?:ers?)?|sells?|sold|selling|b2b|b2c|off[- ]field|goods|products?|services?(?!\s*-?\s*marks?)|merchandise)\b/i;
 /** The lists a group row may name: the shape's groups, the rest, and the lines the goods test could not place. */
 export const ROW_GROUPS = Object.freeze([...BAND_GROUPS, "no_goods"]);
 export const SET_ASIDE_ROW_CONTRACT = Object.freeze({

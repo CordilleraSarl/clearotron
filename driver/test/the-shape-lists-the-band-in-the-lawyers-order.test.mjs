@@ -286,7 +286,7 @@ test("the lines the goods test could not place are read by the size rule, paged 
   const many = Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(`m${i}`, "QZORVAK", `Owner ${i} Ltd`, ["9"]));
   const crowded = buildBandShape({ enumerated: many }, { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsWordCount: 1, caps: { owners: 5 },
     goodsTest: { source: "product_words", words: ["joysticks"] } });
-  assert.ok(crowded.md.includes("A thousand or more? The first 5 lines are below, the floors first, then the live ones in the ordered classes. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded. A floor here is placed or set aside by name on its status or its territory; this row never covers it."));
+  assert.ok(crowded.md.includes("A thousand or more? The first 5 lines are below, the floors first, then the live ones in the ordered classes. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded. A floor here is placed or set aside by name on its status or its territory; this row never covers it. Where more floors are counted than this page shows, page the rest with band_lookup {\"group\":\"no_goods\"}; they come first."));
   assert.equal((crowded.md.match(/\| no goods on file \| yes \|/g) ?? []).length, 5, "a crowded list shows its first page");
 });
 

@@ -168,4 +168,9 @@ test("the ground check refuses customer, business and goods grounds on a floor u
   }
   const ok = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground: "the registration lapsed for want of renewal", on: "status" }] }, input);
   assert.equal(ok.form.set_aside.length, 1, "a ground about the mark's status stands");
+  for (const [ground, on] of [["registered only in Japan, outside the client's territories", "territory"], ["the service mark lapsed for non-renewal", "status"],
+    ["the service-mark registration was cancelled", "status"]]) {
+    const taken = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground, on }] }, input);
+    assert.equal(taken.form.set_aside.length, 1, `"${ground}" is a ${on} ground and stands`);
+  }
 });
