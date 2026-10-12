@@ -24,6 +24,7 @@ import { answerBudget } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
+import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsExcerpt, GOODS_ROW_CHARS } from "../../record-goods.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
@@ -247,12 +248,36 @@ function bandShape(params) {
   return head + "\n" + parts[part - 1] + tail;
 }
 
+// THE GOODS ON THE ROW. The crowded-field method reads identical marks for the client's particular goods
+// first, and a band row carries no goods; every record's goods are in the bodies the register already
+// logged to this run, so they are read once per server and served on every record (record-goods.mjs).
+// Each record carries the goods text, the ordered classes first, and whether the part a goods ground is
+// read from was cut on the row. The goods filter tests the whole text, never the cut row.
+let goodsCache = null;
+const goodsIndex = () => (goodsCache ??= bandGoodsIndex(RUN_DIR));
+let scopeCache = null;
+const orderedClasses = () => {
+  if (scopeCache) return scopeCache;
+  try { scopeCache = loadJson(shapeJsonPath()).in_scope_classes ?? []; } catch { scopeCache = []; }
+  return scopeCache;
+};
+// The record's body first; a row that carries goods of its own stands in where the run holds no body.
+const goodsOfRow = (r) => goodsFor(goodsIndex(), r)
+  ?? (typeof r?.goods === "string" && r.goods.trim() ? [{ classes: [], text: r.goods.trim() }] : null);
+const withGoods = (r) => {
+  const ex = goodsExcerpt(goodsOfRow(r), { inScopeClasses: orderedClasses(), maxChars: GOODS_ROW_CHARS });
+  return { ...project(r), goods: ex ? ex.text : null, goods_cut: ex ? ex.cut : false };
+};
+
 function bandLookup(params = {}) {
   if (!RUN_DIR) return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." };
   if (!existsSync(bandPath())) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: "ERROR: register-named-band.json not found in this run — the band has not been merged yet." }; }
   let band;
   try { band = loadJson(bandPath()); } catch (e) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: `ERROR: band unreadable (${e.message}) — a driver-side defect; report it, never hand-repair the band.` }; }
-  const { record_id, owner, nice_class, tier, qid, query, text, status, live_only = false } = params;
+  const { record_id, owner, nice_class, tier, qid, query, text, status, live_only = false, goods } = params;
+  // Words, as a list or one string. A record whose goods the run does not hold passes: unknown is not a mismatch.
+  const goodsWords = (Array.isArray(goods) ? goods : goods == null ? [] : [goods]).map((w) => String(w ?? "").trim()).filter(Boolean);
+  const goodsCount = goodsWords.length ? goodsWordCounter(goodsWords) : null;
   const limit = Math.max(1, Math.min(Number(params.limit) || 20, 100));
   // PAGING. A large band is read page by page from `offset`, in the band's own order, and a capped answer
   // names the next offset. Without it the only way to see every record was to slice the band by owner or
@@ -288,8 +313,9 @@ function bandLookup(params = {}) {
     if (query && ![...(Array.isArray(r?._queries) ? r._queries : []), r?._query].some((q) => norm(q).includes(norm(query)))) continue;
     if (text && !norm(r?.mark_text).includes(norm(text))) continue;
     if (prepared && classifyRecord(r?.mark_text, prepared).tier !== tier) continue;
+    if (goodsCount && goodsCount(goodsOfRow(r)) === 0) continue;
     matched++;
-    if (matched > offset && hits.length < limit) hits.push(project(r));
+    if (matched > offset && hits.length < limit) hits.push(withGoods(r));
   }
   // matching crowd descriptors ride along (a lookup that lands in an un-enumerated zone must SEE that).
   const crowds = (Array.isArray(band?.crowds) ? band.crowds : []).filter((c) => {
@@ -425,11 +451,12 @@ serve({
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, limit (default 20, max 100), offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page). Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, whole words; a record with no goods on file matches too), limit (default 20, max 100), offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page). On each record served, `goods` is the record's goods, the ordered classes first; `goods_cut` true means the part a goods ground is read from was cut, so open the record before setting it aside on goods. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
-        status: { type: "string" }, live_only: { type: "boolean" }, limit: { type: "number" }, offset: { type: "number" },
+        status: { type: "string" }, live_only: { type: "boolean" }, goods: { type: "array", items: { type: "string" } },
+        limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandLookup,

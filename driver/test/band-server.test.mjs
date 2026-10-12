@@ -462,7 +462,8 @@ test("band_shape: given codex's answer size, every part fits under its cut and t
 });
 
 test("band_shape: a shape that fits one Claude answer but not codex's is split for codex and served whole otherwise", async () => {
-  const { runDir, md } = seedCrowdedRun(400);
+  // 230 records: the shape also lists its owners in the lawyer's order now, so fewer records reach the same size.
+  const { runDir, md } = seedCrowdedRun(230);
   assert.ok(md.length > 39_000 && md.length < 70_000, `the fixture sits between the two sizes (${md.length} characters)`);
   assert.deepEqual(await shapeParts(runDir, ENV(runDir)), [md], "with no size given, the shape is served verbatim, no banner");
   const parts = await shapeParts(runDir, { ...ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(codexBandAnswerChars({})) });
