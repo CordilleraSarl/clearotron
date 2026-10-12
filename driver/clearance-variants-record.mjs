@@ -236,7 +236,7 @@ export function acceptClearanceVariants(params) {
     // back a key nothing in this chain declares: the tool's schema offers the slot, and this is what
     // moves the answer from the call into the manifest the compiler reads.
     goods_words: params?.goods_words,
-    // — the client's product words, the particular goods the band shape groups on (ruled 2026-10-13).
+    // — the client's product words, the particular goods the band shape groups on (ruled 2026-10-12).
     product_words: params?.product_words,
     // — the search-floor axes. Validated by the model parser (closed against REGISTER_AXES), not
     // here, so there is ONE definition of what a floor may name.

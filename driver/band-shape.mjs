@@ -615,7 +615,7 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  * the mark, not the owner: an owner shown on one line under its closest mark hid a different mark of the
  * same owner, and a ground written about the shown mark set the other aside unseen.
  *
- * THE LIST IS THE ORDER'S SCOPE (ruled 2026-10-13). A worldwide order lists the world; an order naming its
+ * THE LIST IS THE ORDER'S SCOPE (ruled 2026-10-12). A worldwide order lists the world; an order naming its
  * territories lists every register that binds them (`bindingLayersFor`): a member state's own register,
  * the EU's and Madrid's for it, every member's for an EU order, Benelux for its three. A line held only in
  * registers outside them goes to the rest, counted with that reason and still open to a lookup. A record

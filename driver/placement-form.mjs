@@ -189,7 +189,7 @@ export function servedLines(groups, served, index) {
 
 /**
  * May a group's row answer for a floor in it? Only in a group of a thousand records or more, her "do not
- * write up the rest" (ruled 2026-10-13). Below that, a floor is placed or set aside by name. ONE predicate,
+ * write up the rest" (ruled 2026-10-12). Below that, a floor is placed or set aside by name. ONE predicate,
  * read by the grounds, the fate count and so the floor duty, so the three cannot drift apart. PURE.
  */
 export const groupRowCoversFloors = (groups, g) => (groups?.[g]?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
@@ -213,7 +213,7 @@ export const lineKey = (canonical) => {
 
 /**
  * The key a ground by name covers: the named line, one mark of its owner, and never the owner's other
- * marks (ruled 2026-10-13). Keyed by the owner's set while the owner had one listed line, a ground written
+ * marks (ruled 2026-10-12). Keyed by the owner's set while the owner had one listed line, a ground written
  * about that line reached the owner's marks in the rest, a floor among them. PURE.
  */
 export const namedKey = (canonical) => lineKey(canonical);

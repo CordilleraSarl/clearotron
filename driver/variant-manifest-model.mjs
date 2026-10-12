@@ -212,7 +212,7 @@ export function parseVariantManifestModel(raw) {
       throw new Error(`variantmodel_goods_words_invalid (${goods_words.length} words exceed the ${GOODS_WORDS_MAX}-word bound — keep the client's own wording and the words a filing would use for the same goods)`);
   }
 
-  // ── THE CLIENT'S PRODUCT, AS WORDS: the particular goods (ruled 2026-10-13) ───────────────────────
+  // ── THE CLIENT'S PRODUCT, AS WORDS: the particular goods (ruled 2026-10-12) ───────────────────────
   //
   // The goods words narrow the register search and so carry the words other filings use for the same
   // class; the particular goods are narrower, the words that name what the client makes. The band shape

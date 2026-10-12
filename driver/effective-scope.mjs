@@ -179,7 +179,7 @@ export function clientMarkets(job, profile) {
 }
 
 /**
- * THE ORDER'S TERRITORIES, as the band shape scopes its lists (ruled 2026-10-13): the countries a
+ * THE ORDER'S TERRITORIES, as the band shape scopes its lists (ruled 2026-10-12): the countries a
  * territorial order names, or the account's defaults filling an absent one; empty for a worldwide order.
  * A ladder that cannot read the order leaves the lists unscoped rather than the band without a shape. PURE.
  */

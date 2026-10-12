@@ -127,7 +127,7 @@ const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
  * A counter for a list of goods words: how many of the words or phrases appear whole in the goods, or null
  * when the record has no goods on file, or when there are no words to look for. Case and diacritics are
  * folded, and the original wording is read beside its English translation. With `stems`, a word matches
- * its forms: its last word may run on (a product word is given as a stem, ruled 2026-10-13). PURE.
+ * its forms: its last word may run on (a product word is given as a stem, ruled 2026-10-12). PURE.
  */
 export function goodsWordCounter(words, { stems = false } = {}) {
   const res = (Array.isArray(words) ? words : [words])
@@ -195,7 +195,7 @@ export function bandShapeGoods(P) {
   } catch { searched = ""; }
   const manifestDominant = String(model?.dominant_element ?? "");
   const index = bandGoodsIndex(P.runDir);
-  // The particular goods when the variants stage names them, as stems, else the goods words (ruled 2026-10-13).
+  // The particular goods when the variants stage names them, as stems, else the goods words (ruled 2026-10-12).
   const product = Array.isArray(model?.product_words) && model.product_words.length;
   const words = product ? model.product_words : Array.isArray(model?.goods_words) ? model.goods_words : [];
   const stems = true;   // the word list the shape groups on is matched as stems, whichever source it came from
