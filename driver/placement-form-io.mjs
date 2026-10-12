@@ -77,6 +77,9 @@ export function readServed(runDir) {
     if (!row.trim()) continue;
     let e; try { e = JSON.parse(row); } catch { continue; }
     if (e?.ok !== true) continue;
+    // Placement's own reads only: an entry its band tools logged, in any attempt, or one with no session (a
+    // test, or a rig that names none). What another stage read never counts as read by placement.
+    if (e.session && !/placement-inquiry/.test(String(e.session))) continue;
     for (const k of Array.isArray(e.served_lines) ? e.served_lines : []) lines.add(k);
     for (const id of Array.isArray(e.served) ? e.served : []) records.add(String(id));
     if (e.tool === "band_record" && e.args?.record_id) records.add(String(e.args.record_id));

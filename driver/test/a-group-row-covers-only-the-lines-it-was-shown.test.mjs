@@ -231,3 +231,16 @@ test("the rest's row never answers a floor: one held outside the order's territo
   const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors) });
   assert.equal(duty.undischarged_by_seat, 1, "the floor held outside the territories is still owed a fate of its own");
 });
+
+test("only placement's own reads serve a line: what another stage read does not count", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "own-reads-"));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const entry = (session, keys) => JSON.stringify({ tool: "band_lookup", ok: true, served_lines: keys, ...(session ? { session } : {}) });
+  writeFileSync(driverDir(runDir, "reading-log.jsonl"), [
+    entry("clearance-acme-x1-register-digest", ["line:digest-read"]),
+    entry("clearance-acme-x1-synthesis", ["line:synthesis-read"]),
+    entry("clearance-acme-x1-placement-inquiry", ["line:placement-read"]),
+    entry(null, ["line:untagged-read"]),
+  ].join("\n") + "\n");
+  assert.deepEqual([...readServed(runDir).lines].sort(), ["line:placement-read", "line:untagged-read"]);
+});
