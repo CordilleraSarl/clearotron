@@ -426,8 +426,8 @@ records the searches return, not from a list written before any record exists. O
 Step 5 names none.
 
 **Structured sibling:** **`goods_words`** — the words the register search is narrowed to.
-1. Start with the client's goods and services wording: the order's wording if it has one, otherwise the product description in the company profile.
-2. Add the words other filings use for the same goods that the client's wording does not already contain.
+1. Start with the client's goods and services wording: the order's wording if it has one, otherwise the product description in the company profile. Mark the words from it that name the client's own product or service, as a specification would write them, with the stem that matches their forms: these are `product_words`, and a category word on its own (software, services, preparations, research) is not one.
+2. Add the words other filings use for the same goods that the client's wording does not already contain; these join `goods_words` only.
 
 Single words or short phrases as a specification would write them, no wildcards, at most 24. Each word is matched against the goods and services description of registered marks, so use words a specification would contain. A word broader than the goods widens the search instead of narrowing it. The register cannot read the words and, or, not, adj or near inside an item. An item containing one is searched without it. Send an empty list when you have considered the goods and no word is worth narrowing by. Omit the key only when the matter states no goods at all — the two are different answers and the run records which one you gave.
 

@@ -516,6 +516,14 @@ serve({
             "field only when the matter states no goods at all. Those are different answers and the " +
             "run records which one you gave.",
         },
+        product_words: { type: "array", items: { type: "string" },
+          description:
+            "The words from the client's own goods and services wording that name the client's own product " +
+            "or service, as a specification would write them, each as the stem that matches its forms. A " +
+            "category word on its own (software, services, preparations, research) is not one. They decide " +
+            "which registered marks are for the client's particular goods; the synonyms in goods_words stay " +
+            "for the register search only.",
+        },
         scope_ledger: {
           type: "array",
           description:
