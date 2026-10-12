@@ -956,7 +956,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
 
   const shape = {
     schema_version: BAND_SHAPE_SCHEMA_VERSION,
-    role: "deterministic shape of the merged register band — judgment reads THIS whole and looks up records through the band tools (every lookup is logged); machine checks keep reading the complete band; tiers are mechanical string classes, never a relevance or materiality judgment",
+    role: "deterministic shape of the merged register band — judgment reads each group by the size sentence at its head and looks up records through the band tools (every lookup is logged); machine checks keep reading the complete band; tiers are mechanical string classes, never a relevance or materiality judgment",
     targets: prepared.map((t) => t.text),
     in_scope_classes: [...scope].sort(),
     totals: { records: records.length, crowds: crowds.length, by_tier: byTier },

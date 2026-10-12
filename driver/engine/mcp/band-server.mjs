@@ -467,15 +467,14 @@ function bandRecord(params = {}) {
       logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, ...resolution });
       return text;
     }
-    // An oversize official record serves in PARTS, same contract as band_shape: line-boundary splits,
-    // byte-identical concatenation, and an explicit "complete only once all parts are read" banner.
+    // An oversize official record serves in PARTS, as band_shape does: line-boundary splits, byte-identical
+    // concatenation, and a banner that says the next part continues it.
     const part = Math.min(Math.max(1, Math.floor(Number(params.part)) || 1), total);
     logRead("band_record", { record_id: uri, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length, ...resolution });
-    const head = `[band_record part ${part}/${total} — this record exceeds one tool response, so it is served in ${total} parts` +
-      ` split at line boundaries. The record is COMPLETE only once ALL ${total} parts are read; concatenate the parts before parsing.]`;
+    const head = `[band_record part ${part}/${total}. This record is served in ${total} parts; the next part continues it.]`;
     const tail = part < total
       ? `\n[end of part ${part}/${total} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}} for the next part]`
-      : `\n[end of part ${total}/${total} — the record is complete once parts 1..${total} are all read]`;
+      : `\n[end of the record]`;
     return head + "\n" + parts[part - 1] + tail;
   }
   // ── BEFORE CALLING IT A MISS, ASK THE LEDGER — ─────────────────────────────────

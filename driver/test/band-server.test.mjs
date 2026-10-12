@@ -512,7 +512,7 @@ test("band_record: an oversize official record serves in PARTS (a record is a do
   const parts = Array.from({ length: total }, (_, i) => textOf(rest, 2 + i));
   const body = (p) => p.split("\n").slice(1, -1).join("\n");
   assert.equal(parts.map(body).join("\n"), whole, "concatenated parts === the record on disk, byte-for-byte");
-  assert.match(parts[total - 1], /the record is complete once parts 1\.\.\d+ are all read/);
+  assert.match(parts[total - 1], /\[end of the record\]$/);
 });
 
 test("band_record: a record that fits is served verbatim — no banner, byte-identical (the common case)", async () => {

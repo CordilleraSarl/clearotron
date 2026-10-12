@@ -120,3 +120,13 @@ test("the three places that ask for product words ask for whole words in the sin
     assert.ok(text.includes("in the singular; the engine matches the plural too"), `the ${where} does not ask for the singular`);
   }
 });
+
+test("no part banner or role text orders a whole read, and the manual's identical-in-class line agrees with the floor rules", async () => {
+  const SERVER = readFileSync(new URL("../engine/mcp/band-server.mjs", import.meta.url), "utf8");
+  const SHAPE_SRC = readFileSync(new URL("../band-shape.mjs", import.meta.url), "utf8");
+  assert.doesNotMatch(SERVER, /COMPLETE only once|is complete once parts/, "a record's banner still orders a whole read");
+  assert.ok(SERVER.includes("This record is served in ${total} parts; the next part continues it."));
+  assert.doesNotMatch(SHAPE_SRC, /reads THIS whole/);
+  assert.ok(MANUAL.includes("An identical mark live in an ordered or added class is placed, sheet 2 at the least, unless it is set aside by name on its status or territory, or sits in a crowd of a thousand or more identical marks for other goods, where the crowd's row and count stand for it; it is never out-of-scope-filtered."));
+  assert.doesNotMatch(MANUAL, /is never out-of-scope-filtered: sheet 2 at the least\./, "the old line 172 still stands beside the by-name rule");
+});

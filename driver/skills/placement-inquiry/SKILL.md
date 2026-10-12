@@ -169,7 +169,7 @@ The inquiry above is primary. The patterns below describe how the inquiry's answ
 
 - Class match + customer-base overlap + active owner + live registration → typically **headline-candidate**
 - Class match + customer-base overlap + non-use vulnerable or distinguishing prefix → typically **headline-candidate** with Stage-2 mitigant flagged
-- Class match + no customer overlap + matter-context off-field flag → typically **out-of-scope-filtered**. An identical mark live in an ordered or frame-added class is never out-of-scope-filtered: sheet 2 at the least.
+- Class match + no customer overlap + matter-context off-field flag → typically **out-of-scope-filtered**. An identical mark live in an ordered or added class is placed, sheet 2 at the least, unless it is set aside by name on its status or territory, or sits in a crowd of a thousand or more identical marks for other goods, where the crowd's row and count stand for it; it is never out-of-scope-filtered.
 - Class match + no customer overlap + pending registration OR active enforcer history → typically **watchlist-annex**
 - Class match + partial customer overlap → typically **sheet-2**
 - Phonetic / visual variant + class match + on-field → **headline-candidate** or **sheet-2** as the promotion question answers it (does the variant change the advice, or only complete the record?), never on phonetic distance as such — **and** an *active same-field brand in the core classes* is not down-placed below the headline tier on phonetic distance alone (see Reasoning posture → "Active same-field brand"); phonetic distance is a rating-step input, not a placement demotion for a live in-class competitor
