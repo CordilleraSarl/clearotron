@@ -119,3 +119,11 @@ test("a word given in the plural and its singular match each other as stems", ()
   assert.equal(goodsWordCounter(["video game"], { stems: true })(g("video games")), 1);
   assert.equal(goodsWordCounter(["game consoles"], { stems: true })(g("game console")), 1);
 });
+
+test("goods with no English the engine can use are unknown to the goods test, never a mismatch", () => {
+  const word = goodsWordCounter(["video game"], { stems: true });
+  assert.equal(word(recordGoods({ goodsServices: [{ classes: [9], language: "de", description: "Videospiele; Spielkonsolen" }] })), null, "German only, no translation");
+  assert.equal(word(recordGoods({ goodsServices: [{ classes: [9], language: "de", description: "Videospiele", translation: "video games" }] })), 1, "an untagged translation is read");
+  assert.equal(word(recordGoods({ _raw: { classifications: [{ nice_class: 9, goods_services_text: "Videospiele", goods_services_language: "de" }] } })), null, "a tagged foreign text is not read as English");
+  assert.equal(word(recordGoods({ goodsAndServices: [{ classNumber: 9, description: [{ language: "fr", terms: ["jeux vidéo"] }] }] })), null, "a list with no English entry");
+});

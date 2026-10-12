@@ -48,19 +48,23 @@ export function recordGoods(body) {
   const b = Array.isArray(body) ? body[0] : body;
   if (!b || typeof b !== "object") return [];
   const out = [];
-  const push = (classes, text, original = null) => {
+  // `en: false` marks a statement with no English the engine can use: its words cannot be tested against the
+  // client's English goods words, so it is unknown to the goods test, never a mismatch.
+  const push = (classes, text, original = null, en = true) => {
     const t = String(text ?? "").trim(), o = String(original ?? "").trim();
-    if (t) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, ...(o && o !== t ? { alt: o } : {}) });
+    if (t) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, ...(o && o !== t ? { alt: o } : {}), ...(en ? {} : { en: false }) });
   };
+  const tagged = (lang) => String(lang ?? "").trim() !== "";
   if (Array.isArray(b.goodsServices)) {
     for (const g of b.goodsServices) {
-      const english = isEnglish(g?.language) ? g?.description
-        : isEnglish(g?.translation_language) && g?.translation ? g.translation : g?.description ?? g?.translation;
-      push(g?.classes, textOf(english), textOf(g?.description));
+      // English as written, else the translation, tagged English or untagged; else the original, unread.
+      if (isEnglish(g?.language) || (!tagged(g?.language) && !g?.translation)) push(g?.classes, textOf(g?.description), null, true);
+      else if (g?.translation && (isEnglish(g?.translation_language) || !tagged(g?.translation_language))) push(g?.classes, textOf(g.translation), textOf(g?.description), true);
+      else push(g?.classes, textOf(g?.description ?? g?.translation), null, false);
     }
   }
   if (out.length === 0 && Array.isArray(b?._raw?.classifications)) {
-    for (const c of b._raw.classifications) push([c?.nice_class], c?.goods_services_text);
+    for (const c of b._raw.classifications) push([c?.nice_class], c?.goods_services_text, null, !tagged(c?.goods_services_language) || isEnglish(c?.goods_services_language));
   }
   if (out.length === 0 && b.goodsAndServices != null) {
     const gs = b.goodsAndServices;
@@ -69,8 +73,10 @@ export function recordGoods(body) {
       for (const g of gs) {
         if (typeof g === "string") { push([], g); continue; }
         const d = g?.description;
-        const english = Array.isArray(d) ? (d.find((x) => isEnglish(x?.language)) ?? d[0]) : d;
-        push([g?.classNumber ?? g?.class ?? g?.niceClass ?? g?.nice_class], textOf(english ?? g?.text ?? g?.goods));
+        const en = Array.isArray(d) ? d.find((x) => isEnglish(x?.language)) : null;
+        const chosen = Array.isArray(d) ? (en ?? d[0]) : d;
+        push([g?.classNumber ?? g?.class ?? g?.niceClass ?? g?.nice_class], textOf(chosen ?? g?.text ?? g?.goods), null,
+          !Array.isArray(d) || Boolean(en) || !tagged(d[0]?.language));
       }
     }
   }
@@ -130,8 +136,9 @@ export function goodsWordCounter(words, { stems = false } = {}) {
     .map((w) => (stems ? w.replace(/(\p{L}{3,})s$/u, "$1") : w))
     .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escape(w).replace(/\s+/g, "\\s+")}${stems ? "[\\p{L}\\p{N}]*" : ""}($|[^\\p{L}\\p{N}])`, "u"));
   return (goods) => {
-    if (!res.length || !goods || !goods.length) return null;
-    const text = fold(goods.map((g) => (g.alt ? `${g.text}\n${g.alt}` : g.text)).join("\n"));
+    const readable = (goods ?? []).filter((g) => g.en !== false);
+    if (!res.length || !readable.length) return null;
+    const text = fold(readable.map((g) => (g.alt ? `${g.text}\n${g.alt}` : g.text)).join("\n"));
     return res.filter((re) => re.test(text)).length;
   };
 }
@@ -145,7 +152,7 @@ export function goodsWordsMatched(words, { stems = false } = {}) {
   const list = (Array.isArray(words) ? words : [words]).map((w) => String(w ?? "").trim()).filter(Boolean);
   const tests = list.map((w) => [w, goodsWordCounter([w], { stems })]);
   return (goods) => {
-    if (!list.length || !goods || !goods.length) return null;
+    if (!list.length || !(goods ?? []).some((g) => g.en !== false)) return null;
     return tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
   };
 }

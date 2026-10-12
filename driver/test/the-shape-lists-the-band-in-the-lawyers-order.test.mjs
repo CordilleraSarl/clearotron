@@ -170,3 +170,13 @@ test("the groups key on the client's product words when the variants stage names
     assert.equal(product.goodsWordCount, 1);
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
+
+test("a mark whose goods carry no English is listed apart and opened, never sent to the rest", async () => {
+  const { recordGoods } = await import("../record-goods.mjs");
+  const bodies = { f1: { goodsServices: [{ classes: [9], language: "de", description: "Videospiele; Spielkonsolen" }] } };
+  const goods = { of: (r) => { const b = bodies[r.record_id.split("/").pop()]; return b ? recordGoods(b) : null; },
+    hits: goodsWordCounter(["video game"], { stems: true }), matched: goodsWordsMatched(["video game"], { stems: true }) };
+  const g = bandGroups([rec("f1", "QZORVAK", "Alpha GmbH", ["9"])], { classify, inScope, goods });
+  assert.deepEqual(g.no_goods.map((l) => l.owner_name), ["Alpha GmbH"]);
+  assert.equal(g.by_group.rest.lines.length + g.by_group.b.lines.length, 0);
+});

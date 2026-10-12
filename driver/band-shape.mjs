@@ -690,7 +690,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     const group = BAND_GROUPS[Math.min(...l.recs.map((x) => rank(x.group)))];
     const inGroup = l.recs.filter((x) => x.group === group).sort(better);
     const best = inGroup[0];
-    const known = l.recs.some((x) => x.words != null);
+    // Unknown is decided on the records that put the line in its group: a line placed by a record whose goods
+    // could not be read is listed apart, whatever the line's other records carry.
+    const known = inGroup.some((x) => x.words != null);
     const words = [...new Set(l.recs.flatMap((x) => x.words ?? []))];
     const liveInScope = l.recs.filter((x) => x.live && x.inScope && !x.outside);
     const row = {
