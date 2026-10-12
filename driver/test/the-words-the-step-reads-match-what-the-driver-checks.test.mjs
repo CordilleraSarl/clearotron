@@ -60,13 +60,16 @@ test("no sentence the step reads lets a name cover an owner's other marks", () =
   for (const [where, text] of [["manual", MANUAL], ["dictation", DICTATION], ["form", CONTRACTS]])
     assert.doesNotMatch(text, /every record of that owner|owner's set|as a set and do not carry|several lines|more than one line/, `the ${where} still sets an owner's marks aside by one name`);
   assert.match(SET_ASIDE_ROW_CONTRACT.set_aside, /never another mark of the owner/);
+  assert.match(SET_ASIDE_ROW_CONTRACT.on, /one of goods, status or territory\. A floor is never set aside on its owner, its customers or its field/);
+  assert.match(MANUAL, /set aside by name on a ground about the mark, its goods, its status or its territory \(the row's `on`\)/);
+  assert.match(DICTATION, /sets a floor aside only on a ground about the mark, its goods, its status or its territory, said in "on"/);
 });
 
 test("a group's row says back the lines holding a floor it leaves to be placed or named", () => {
   const { input } = shapeOf([rec("b1", "QZORVAK", "Beta GmbH"), rec("b2", "Qzorvak", "Gamma SA"), rec("b3", "QZORVAK", "Delta AG", { status: "expired" })]);
   assert.deepEqual(input.groups.b.list.map((l) => l.floors).sort(), [0, 1, 1], "guard: two of (b)'s three lines hold a floor");
   const u = unionPlacementForm(null, { rows: [
-    { set_aside: "/mark/eu/b2", ground: "the owner sells printers only" },
+    { set_aside: "/mark/eu/b2", ground: "registered for printers only", on: "goods" },
     { set_aside_group: "b", count: 3, ground: "identical in class, for printers" },
   ] }, input);
   const b = u.form.set_aside_groups.find((g) => g.set_aside_group === "b");

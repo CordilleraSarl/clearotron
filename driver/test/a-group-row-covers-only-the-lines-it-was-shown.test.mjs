@@ -171,7 +171,7 @@ test("a ground by name covers the named mark only, never the owner's other marks
     keysOf: setAsideKeysOf(positions.positions), territories: ["EU"] });
   assert.equal(shape.groups.rest.list.length, 1, "guard: Alpha's Japanese mark is held only outside the EU order");
   const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
-  const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/n1", ground: "a toy shop with no online trade" }] }, input);
+  const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/n1", ground: "registered for toys, not the client's goods", on: "goods" }] }, input);
   const groundOf = setAsideGrounds(parsePlacementForm(JSON.stringify(u.form)).set_aside, buildSelectionIndex(input), input.groups, input.floors);
   assert.equal(groundOf("/mark/eu/n1").by, "name");
   assert.equal(groundOf("/mark/jp/n2"), null, "the owner's other mark keeps its own fate to be given");

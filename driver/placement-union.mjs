@@ -26,7 +26,7 @@ import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
   SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, namedKey, lineKey, servedLines,
-  groupRowCoversFloors } from "./placement-form.mjs";
+  groupRowCoversFloors, FLOOR_GROUND_ON } from "./placement-form.mjs";
 import { BAND_GROUPS, groupPageCall } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
@@ -155,8 +155,11 @@ export function unionPlacementForm(prior, submitted, input) {
   // placements.json. Prior first, so a later row for the same owner replaces the earlier ground, and a
   // retraction names the record id the row set aside. A row the band cannot resolve, or one with no
   // ground, is reported back by id, never dropped in silence.
-  // A ground by name covers the named line where the shape lists its owner on several, else the owner's set.
+  // A ground by name covers the named line only. On a line holding a floor it is about the mark, its goods,
+  // its status or its territory, and says which in `on`; a ground about the owner never sets a floor aside.
   const groups = input?.groups ?? null;
+  const floorUris = new Set((Array.isArray(input?.floors) ? input.floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
+  const holdsFloor = (canonical) => (canonical?.records ?? []).some((u) => floorUris.has(normalizeRecordUri(u) || String(u ?? "")));
   const setAside = new Map();
   const setAsideRefused = [];
   const takeSetAside = (row) => {
@@ -166,9 +169,13 @@ export function unionPlacementForm(prior, submitted, input) {
     const refuse = (why) => { if (!setAsideRefused.some((x) => x.set_aside === id && x.why === why)) setAsideRefused.push({ set_aside: id, why }); };
     if (!canonical) { refuse("the band holds no record with this id"); return; }
     if (!ground) { refuse("no ground"); return; }
+    const on = typeof row.on === "string" ? row.on.trim().toLowerCase() : "";
+    if (holdsFloor(canonical) && !FLOOR_GROUND_ON.includes(on)) {
+      refuse(`a floor is set aside by name only on a ground about the mark: give "on" as one of ${FLOOR_GROUND_ON.join(", ")}`); return;
+    }
     const key = namedKey(canonical);
     setAside.delete(key);
-    setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground });
+    setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground, ...(on ? { on } : {}) });
   };
   for (const e of (Array.isArray(prior?.set_aside) ? prior.set_aside : [])) if (isSetAsideRow(e)) takeSetAside(e);
   // The step may answer in either place: the top-level list it is shown, or a row. An entry equal to one

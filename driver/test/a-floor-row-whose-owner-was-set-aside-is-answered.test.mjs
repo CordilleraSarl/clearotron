@@ -59,8 +59,8 @@ const PLACED = { select: "/mark/us/1001", tier: "sheet-2", reason: "Owner A's on
 test("a floor of the named line is answered, and so is a set-aside record with no owner; the owner's other mark is not", () => {
   const duty = runWith({ rows: [
     PLACED,
-    { set_aside: "/mark/us/1002", ground: "Owner A's other marks are for kitchen tools, nowhere near the client's software." },
-    { set_aside: "/mark/us/3001", ground: "A lapsed filing with no owner on record, for garden furniture." },
+    { set_aside: "/mark/us/1002", ground: "This mark is registered for kitchen tools, nowhere near the client's software.", on: "goods" },
+    { set_aside: "/mark/us/3001", ground: "A filing with no owner on record, for garden furniture.", on: "goods" },
   ] });
   assert.equal(duty.computable, true, `the check could not run: ${duty.reason}`);
   assert.deepEqual(duty.totals, { floors: 5, accounted: 3, named_without_ground: 0, unanswered: 2, unanswerable: 0 });

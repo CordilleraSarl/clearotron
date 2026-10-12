@@ -110,7 +110,9 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
 // record was recorded", hundreds of owners a run. This row gives one ground to the records of a line, one
 // mark of one owner, that are not placed: an owner-wide ground set the owner's other marks aside unseen
 // (ruled 2026-10-12). It is not a candidate, it renders into no placement, and nothing bounds how many there are.
-export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground"];
+export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground", "on"];
+/** What a ground setting a floor aside by name may be about: the mark, never its owner (ruled 2026-10-12). */
+export const FLOOR_GROUND_ON = Object.freeze(["goods", "status", "territory"]);
 export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
   when: "a line the shape lists, one mark of one owner, whose records you do not carry. One row gives that "
     + "line its ground.",
@@ -120,10 +122,14 @@ export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
     + "never another mark of the owner, which needs its own fate. A record that names no owner stands for its "
     + "own position only.",
   ground: "why this line's records are not carried, in a lawyer's words.",
+  on: "where the line holds a floor, a live identical or near-identical mark in an ordered class: what the "
+    + "ground is about, one of goods, status or territory. A floor is never set aside on its owner, its "
+    + "customers or its field.",
   not_a_candidate: "It places nothing. A record of the same line you do place stays placed.",
   latest: "A later row for the same line replaces the earlier ground. To remove one, hand back "
     + "{\"retract\":\"<its set_aside id>\"}.",
-  unresolved: "A `set_aside` the band does not hold, or one with no ground, is reported back to you by id.",
+  unresolved: "A `set_aside` the band does not hold, one with no ground, or a floor's row whose `on` is not "
+    + "goods, status or territory, is reported back to you by id.",
 });
 
 /** Is this submitted row an owner's set-aside? PURE. */

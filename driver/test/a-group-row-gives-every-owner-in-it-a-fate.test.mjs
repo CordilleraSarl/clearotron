@@ -82,7 +82,7 @@ test("a ground by name covers the named line only, whatever else its owner holds
   const { input } = fixture();
   const u = unionPlacementForm(null, { rows: [
     { set_aside: "/mark/eu/a2", ground: "a different product, sold only to farmers" },
-    { set_aside: "/mark/eu/b2", ground: "the owner's printers are far from the client's goods" },
+    { set_aside: "/mark/eu/b2", ground: "registered for printers, far from the client's goods", on: "goods" },
     { set_aside_group: "b", count: 2, ground: "identical in class, for unrelated goods" },
     { set_aside_group: "rest", count: 3, ground: "similar to none of the mark's forms, or not live" },
   ] }, input);
@@ -116,4 +116,21 @@ test("every line's fate is counted by the list the shape put it in, and a small 
   assert.equal(duty.by_tier[SET_ASIDE_TIER], undefined);
   const unplaced = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(parsed(u), index, input.groups, input.floors) });
   assert.equal(unplaced.undischarged_by_seat, 4, "nothing placed: every floor is still owed");
+});
+
+test("a floor is set aside by name only on a ground about the mark, said in `on`; an earlier row without it is refused", () => {
+  const { input } = fixture();
+  const why = (u) => Object.fromEntries((u.form.set_aside_refused ?? []).map((x) => [x.set_aside, x.why]));
+  const u = unionPlacementForm(null, { rows: [
+    { set_aside: "/mark/eu/b1", ground: "the owner sells to farmers, not the client's customers" },
+    { set_aside: "/mark/eu/b2", ground: "the owner's customers are hospitals", on: "customers" },
+    { set_aside: "/mark/eu/u1", ground: "registered for printers only", on: "Goods" },
+    { set_aside: "/mark/eu/a2", ground: "a different product, sold only to farmers" },
+  ] }, input);
+  assert.match(why(u)["/mark/eu/b1"], /a floor is set aside by name only on a ground about the mark: give "on" as one of goods, status, territory/);
+  assert.ok(why(u)["/mark/eu/b2"], "a ground about the owner's customers does not set a floor aside");
+  assert.deepEqual(u.form.set_aside.map((e) => [e.set_aside, e.on ?? null]), [["/mark/eu/u1", "goods"], ["/mark/eu/a2", null]],
+    "a floor named on its goods is taken; a line holding no floor needs no `on`");
+  const earlier = unionPlacementForm({ rows: [], set_aside: [{ set_aside: "/mark/eu/b1", ground: "an earlier ground about the owner" }] }, { rows: [] }, input);
+  assert.deepEqual([earlier.form.set_aside.length, Boolean(why(earlier)["/mark/eu/b1"])], [0, true], "an earlier row on a floor without `on` is refused and said back");
 });
