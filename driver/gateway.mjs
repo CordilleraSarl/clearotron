@@ -1490,7 +1490,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         if (now === null) return no("absent");
         if (now === preArtifact.get(f)) return no("not-written-by-this-attempt");
         // A said-back refusal is a duty the artifact leaves open, not an invalid artifact: it never stops a rescue.
-        if (validate) { const v = validate(f, readFileSync(f, "utf8")); if (!v.ok && !SAID_BACK_REASON_RE.test(String(v.reason ?? ""))) return no("invalid", v.reason ? String(v.reason) : undefined); }
+        if (validate) { const v = validate(f, readFileSync(f, "utf8")); if (!v.ok && !saidBackOnly(v.reason)) return no("invalid", v.reason ? String(v.reason) : undefined); }
         return true;
       });
     };
@@ -3322,6 +3322,8 @@ const MAX_FORM_REPAIRS = 2;
 const SAID_BACK_TOKEN_SRC = "placement_(?:floors_without_fate|refused)=";
 const SAID_BACK_REASON_RE = new RegExp(`^${SAID_BACK_TOKEN_SRC}`);
 const SAID_BACK_OPEN_RE = new RegExp(`^invalid_file:.*?:${SAID_BACK_TOKEN_SRC}`);
+/** Is a validator's refusal a said-back one, a duty the output leaves open rather than an invalid output? PURE. */
+export const saidBackOnly = (reason) => SAID_BACK_REASON_RE.test(String(reason ?? ""));
 const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|blindframe_[a-z_]+|framediff_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
 
 // — `tool_timeout` IS ON THAT LIST TO KEEP ROUTING WHERE IT ALREADY IS, not to add a lane.

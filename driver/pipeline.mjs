@@ -15,7 +15,7 @@ import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does thi
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
-import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine } from "./gateway.mjs";
+import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
 // — the arm's TOOL WIRING, for its context receipt. Read through the same two functions the
 // gateway dispatches with, never re-derived: a receipt that described a second computation would be
 // describing a dispatch that did not happen.
@@ -4119,6 +4119,17 @@ function forceFromActive(ctx, name) {
 // warm-resume a session no engine ever opened. A code-side winner therefore recovers its TRUE model (the
 // telemetry stays honest in the skip event) with key:null — the same "resumed-past axis" contract
 // runSaturationProbeCodeSide already declares (null unitKey ⇒ escalation/envelope use their code/fresh lanes).
+/**
+ * Is a stage's output on disk valid to reuse? A said-back refusal is a duty the pass said back and recorded, not
+ * an invalid output (gateway.mjs saidBackOnly): a pass that stood on one is not run again on resume. A floor it
+ * left open is the floor duty's to re-run, above. @internal
+ */
+export function outputStands(def, out) {
+  if (!def?.validate) return true;
+  const v = def.validate(out, readFileSync(out, "utf8"));
+  return v.ok || saidBackOnly(v.reason);
+}
+
 export function recoverWinningAttempt(runDir, label) {   // @internal
   try {
     const lines = readFileSync(driverDir(runDir, `${label}.jsonl`), "utf8").trim().split("\n");
@@ -4424,7 +4435,7 @@ async function stageOnce(name, ctx, opts = {}) {
       + "(the placement form unions, so nothing already answered is lost)");
     runLog(P.runDir, { event: "stage-floor-duty-rerun", stage: label });
   }
-  if (!forced && !dutyBlocksSkip && !freshness.stale && out && existsSync(out) && (!def.validate || def.validate(out, readFileSync(out, "utf8")).ok)) {
+  if (!forced && !dutyBlocksSkip && !freshness.stale && out && existsSync(out) && outputStands(def, out)) {
     // recover the winning key + served model so a later warm-resume (corrective re-synthesis / verdict re-check)
     // targets the attempt that ACTUALLY produced this output, not the base key on the primary model.
     const won = recoverWinningAttempt(P.runDir, label);

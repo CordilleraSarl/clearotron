@@ -18,6 +18,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { syncPlacementForm } from "../gateway.mjs";
+import { unionPlacementForm } from "../placement-union.mjs";
+import { readPlacementFormInput } from "../placement-form-io.mjs";
 import { validators } from "../verify.mjs";
 import { buildBandShape, deriveRegisterPositions } from "../band-shape.mjs";
 import { setAsideKeysOf, OWNER_NOT_STATED } from "../placement-form.mjs";
@@ -65,7 +67,7 @@ function run(t, { stamp = STAMP } = {}) {
   };
   const form = () => JSON.parse(readFileSync(join(dir, "_driver", "placement-form.form.json"), "utf8"));
   const placements = () => JSON.parse(readFileSync(join(dir, "placements.json"), "utf8")).placements;
-  return { shape, turn, form, placements };
+  return { shape, turn, form, placements, dir };
 }
 const place = (id, tier = "sheet-2") => ({ select: id, tier, reason: "identical mark in class 9, live; completes the record" });
 const EVERY_FLOOR = ["/mark/eu/a1", "/mark/eu/b1", "/mark/eu/g1", "/mark/gb/g2", "/mark/eu/o1"].map((id) => place(id));
@@ -76,6 +78,16 @@ test("guard: the band holds five floors on four lines, Gamma's line held as a po
     ["/mark/eu/a1", "/mark/eu/b1", "/mark/eu/g1", "/mark/eu/o1", "/mark/gb/g2"]);
   const gamma = shape.groups.b.list.find((l) => l.owner_name === "Gamma SA");
   assert.deepEqual([gamma.records, gamma.floors], [2, 2], "one line, two records");
+});
+
+test("the form written before the step answers lists no floor; the first judgement says back what is owed", (t) => {
+  const r = run(t);
+  // The driver writes the form before the step's first turn, from no answer at all.
+  const before = unionPlacementForm({ rows: [], set_aside: [] }, null, readPlacementFormInput(r.dir));
+  assert.equal(before.form.floors_without_fate, undefined, "the step's first read held every floor of the band as owed");
+  assert.equal(before.floors_without_fate, 5, "guard: all five are owed, and counted");
+  const v = r.turn({ rows: [] });
+  assert.match(v.reason, /^placement_floors_without_fate=5: /);
 });
 
 test("a floor the step placed whose record names no owner is placed as the step placed it", (t) => {

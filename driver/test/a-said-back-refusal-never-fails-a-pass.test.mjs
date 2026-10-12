@@ -16,6 +16,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { runStage, registerEngine } from "../gateway.mjs";
+import { outputStands } from "../pipeline.mjs";
 
 const FLOOR = "placement_floors_without_fate=1: /mark/eu/b1 in (b) — each is a floor";
 const REFUSED = "placement_refused=1: select /mark/eu/x (the band holds no record with this id) — the form refused each of these";
@@ -66,6 +67,19 @@ test("a turn whose artifact landed before it died is rescued though the form sti
   const { r, messages } = await pass("rescue", FLOOR, exit1);
   assert.equal(r.ok, true, `the rescue was refused over an open duty, not an invalid artifact: ${r.fail}`);
   assert.equal(messages.length, 1, "finished work was run again");
+});
+
+test("a pass that stood on a said-back refusal is not run again on resume; an unfinished one is", () => {
+  const dir = mkdtempSync(join(tmpdir(), "said-back-skip-"));
+  const out = join(dir, "placement-recommendations.md");
+  writeFileSync(out, "# placed\n");
+  const judged = (v) => outputStands({ validate: () => v }, out);
+  try {
+    assert.equal(judged({ ok: false, reason: REFUSED }), true, "a pass that stood was run again on resume");
+    assert.equal(judged({ ok: false, reason: FLOOR }), true, "a floor it left open is the floor duty's to re-run, not the validator's");
+    assert.equal(judged({ ok: false, reason: UNJUDGED }), false);
+    assert.equal(judged({ ok: true }), true);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test("THE CONTROL: an unfinished row still fails the stage when the attempts run out", async () => {
