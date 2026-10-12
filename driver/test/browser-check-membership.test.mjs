@@ -188,6 +188,13 @@ const CANNOT_RUN_IN_CI = [
       + "`gh` by its own test file.",
   },
   {
+    path: "scripts/release-bench-replay-check.mjs",
+    why: "it reads the `bench replay` status of the commit a CUT is about to version, and the range since "
+      + "the last version tag, with the release job's token. In CI there is no cut and no answer to read; it "
+      + "runs in the release workflow's cut job and in front of the dispatch, and every path of its verdict "
+      + "is driven in the suite through injected readers by its own test file.",
+  },
+  {
     path: "scripts/release-visible-check.mjs",
     why: "it asks the public registry whether a version THIS RUN JUST PUBLISHED is served to a stranger, and "
       + "in CI nothing has been published. It runs in the release workflow's publishing jobs, between the "
