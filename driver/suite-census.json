@@ -658,8 +658,8 @@
           "todos": 0
         },
         "a-group-row-gives-every-owner-in-it-a-fate.test.mjs": {
-          "tests": 5,
-          "asserts": 30,
+          "tests": 7,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -6448,8 +6448,8 @@
           "todos": 0
         },
         "the-shape-lists-the-band-in-the-lawyers-order.test.mjs": {
-          "tests": 21,
-          "asserts": 95,
+          "tests": 22,
+          "asserts": 96,
           "skips": 0,
           "todos": 0
         },
@@ -6569,7 +6569,7 @@
         },
         "the-words-the-step-reads-match-what-the-driver-checks.test.mjs": {
           "tests": 8,
-          "asserts": 38,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
