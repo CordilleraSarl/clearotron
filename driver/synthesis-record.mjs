@@ -46,7 +46,7 @@ import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, ren
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { parseFindingsJson, COVERAGE_AREA_STATES, TOP_KEYS_CURRENT } from "./findings-model.mjs";
+import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion } from "./findings-model.mjs";
 import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { findCoverageRecommendations } from "./verify.mjs";
 import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";   // — the seat's own declines, read by the driver never asserted by the seat
@@ -539,8 +539,8 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
 // it carries, and the merged record is judged whole as any call is.
 //
 // MAIN'S READING STANDS FOR EVERYTHING ELSE. A list-less object reads as registers only when there is a stored
-// record to patch, every key it carries is a register of the record's ladder or its rows, its envelope is absent
-// or equal to the stored one, and its rows are unambiguous. Any other shape is read exactly as it always was,
+// record to patch, every key it carries is a register of that record's own ladder (the one its schema_version
+// gives) or its rows, its envelope is absent or equal to the stored one, and its rows are unambiguous. Any other shape is read exactly as it always was,
 // so the model meets the refusal it always met, byte for byte.
 
 const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
@@ -554,8 +554,6 @@ const sameValue = (a, b) => canon(a) === canon(b);
 // whole re-send (the schema-downlevel rung), and read as registers it could move the stored list to another
 // version's rules without the list ever being sent.
 const ENVELOPE_KEYS = ["schema_version", "rated_under_framework"];
-// What a list-less object may carry to be read as registers: a key of the record's ladder, or rows.
-const REGISTER_PATCH_KEYS = new Set([...TOP_KEYS_CURRENT.filter((k) => k !== "findings"), "findings_patch"]);
 
 /**
  * Rows sent inside a list-less `findings`, beside the call's own. PURE. Null when that is ambiguous: rows that are
@@ -587,7 +585,9 @@ function liftNestedRows(top, nested) {
 export function registerPatchOf(stored, call) {
   const doc = call?.findings;
   if (!isPlainObject(stored?.findings) || !isPlainObject(doc) || Object.hasOwn(doc, "findings")) return null;
-  if (Object.keys(doc).some((k) => !REGISTER_PATCH_KEYS.has(k))) return null;
+  // What it may carry: a register of the stored record's own ladder, or rows.
+  const allowed = new Set([...topKeysForVersion(stored.findings.schema_version).filter((k) => k !== "findings"), "findings_patch"]);
+  if (Object.keys(doc).some((k) => !allowed.has(k))) return null;
   if (ENVELOPE_KEYS.some((k) => Object.hasOwn(doc, k) && !sameValue(doc[k], stored.findings[k]))) return null;
   const { findings_patch: nested, ...registers } = doc;
   const lift = liftNestedRows(call.findings_patch, nested);

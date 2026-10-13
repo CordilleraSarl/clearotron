@@ -458,3 +458,28 @@ test("the delivery check's redo still orders a complete re-send for this tool, a
   assert.equal(canon(onDisk(dir).coverage), canon(record().coverage), "the top-level coverage of a whole call reached the record");
   assert.deepEqual(reading(dir), { ...NOTHING, accepted: true, keysIgnored: 1 });
 });
+
+// ── A STORED RECORD OF AN EARLIER VERSION KEEPS ITS OWN LADDER ────────────────────────────────────────
+//
+// A list-less object reads as registers only where every key it carries is on the STORED record's own ladder,
+// the one its schema_version gives. On a version-4 record, `four_answers` and `ask_answers` are not registers;
+// read as a patch, the merged record was refused naming that record's ladder, where main reads the object as a
+// whole document and refuses it naming the base ladder, or refuses the narrative before reaching it.
+const v4 = () => {
+  const doc = record();
+  doc.schema_version = 4;
+  for (const k of ["four_answers", "ask_answers"]) delete doc[k];
+  doc.findings = doc.findings.map(({ net: _net, ...f }) => f);
+  return doc;
+};
+
+test("on a stored record of an earlier version, a key its own ladder does not allow keeps main's refusal", () => {
+  const dir = saved({}, v4());
+  refusesUnchanged(dir, { findings: { four_answers: { q1: "an invented answer" } } },
+    /^synthesis_findings_invalid: findings_key_unknown:four_answers \(keys are EXACTLY: schema_version, findings, coverage, context_notes, coverage_judgment, corrections, mark_assessment, actions\)$/,
+    "a key the stored record's version does not allow");
+  refusesUnchanged(dir, { narrative: { verdict: `${NARRATIVE.verdict} Changed.` }, findings: { ask_answers: [] } },
+    /^synthesis_spine_missing: /, "a key the stored record's version does not allow, with a narrative");
+  accepts(recordSynthesis(dir, { findings: { coverage: COVERAGE } }), "a register the stored record's version allows");
+  assert.equal(canon(onDisk(dir).coverage), canon(COVERAGE));
+});

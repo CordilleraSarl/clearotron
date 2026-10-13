@@ -2640,9 +2640,13 @@ export function blankForeignRecordLinks(doc, origins) {
 }
 
 /**
- * THE TOP-LEVEL KEYS OF THE FINDINGS DOCUMENT AT THE CURRENT SCHEMA VERSION — the registers a synthesis
- * correction may carry. Exported for the transport, which reads a findings object carrying no list as a patch
- * on these and nothing else. Derived from the ladder above, never copied, for the reason
- * FINDING_KEYS_CURRENT is: a second list would drift the first time the ladder gains a key.
+ * THE TOP-LEVEL KEYS A FINDINGS DOCUMENT OF THIS schema_version MAY CARRY — the ladder the parsers hold it to,
+ * read off the version as they read it. Exported for the synthesis transport, which reads a correction's
+ * list-less findings object as registers only where every key it carries is on the STORED record's own ladder:
+ * a key that ladder does not allow is refused either way, and it must meet the refusal it always met. Derived
+ * from the ladder above, never copied, for the reason FINDING_KEYS_CURRENT is.
  */
-export const TOP_KEYS_CURRENT = Object.freeze([...TOP_KEYS_V7]);
+export function topKeysForVersion(schemaVersion) {
+  const v = typeof schemaVersion === "number" ? schemaVersion : 1;
+  return [...topKeysFor({ v4: v >= 4, v5: v >= 5, v6: v >= 6, v7: v >= 7 })];
+}
