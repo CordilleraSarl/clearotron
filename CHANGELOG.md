@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.1-beta.4
+
+### Fixed
+
+- Every clearance uses the same web search whichever engine runs it; the engines' own web search is switched off.
+
 ## 0.4.1-beta.3
 
 ### Fixed

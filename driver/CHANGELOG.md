@@ -1,5 +1,11 @@
 # clearotron-driver
 
+## 0.4.1-beta.4
+
+### Patch Changes
+
+- Fixed: Every clearance uses the same web search whichever engine runs it; the engines' own web search is switched off.
+
 ## 0.4.1-beta.3
 
 ### Patch Changes
