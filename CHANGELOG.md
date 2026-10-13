@@ -4,6 +4,17 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.1-beta.5
+
+### Fixed
+
+- A report's conditions no longer include an internal note about the search's own checking steps.
+- Every live identical or near-identical mark a register search finds is now placed in the report or set aside with its reason.
+
+### For operators
+
+- A stopped run no longer leaves behind a working folder linked to the Codex sign-in; leftovers are removed the next time Codex runs.
+
 ## 0.4.1-beta.4
 
 ### Fixed
