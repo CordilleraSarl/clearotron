@@ -849,6 +849,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-mark-that-means-the-clients-mark-is-weighed-as-its-family.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-too-short-for-contains-is-asked-exactly.test.mjs": {
           "tests": 12,
           "asserts": 58,
