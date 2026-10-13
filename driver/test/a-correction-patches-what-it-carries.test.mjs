@@ -17,7 +17,7 @@
 // Those arms below are characterisation: green before and after.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
@@ -282,4 +282,53 @@ test("a plain patch, a patch with no base, an unknown ordinal and a narrative pa
 test("a first whole save missing its spine or its verdict is refused by name", () => {
   refusesUnchanged(runDir(), { narrative: { verdict: NARRATIVE.verdict }, findings: record() }, /^synthesis_spine_missing: /, "no spine");
   refusesUnchanged(runDir(), { narrative: { spine: NARRATIVE.spine }, findings: record() }, /^synthesis_verdict_missing: /, "no verdict");
+});
+
+// ── THE CORRECTIONS MARKER SENT AS A JSON STRING ─────────────────────────────────────────────────────
+//
+// A correction has been seen to send its `corrections` marker as a JSON string of the object, and main refused
+// every one (`findings_corrections_invalid`), costing a regenerated save over content that was right. On a call
+// that carries no findings list the string is decoded and then validated as an object; the capture keeps what
+// arrived. A string that does not decode to an object is refused as it always was, and a call carrying a list is
+// read exactly as main reads it.
+
+const captures = (dir) => readdirSync(driverDir(dir, "synthesis-calls")).filter((n) => /^call-\d+\.json$/.test(n)).sort()
+  .map((n) => JSON.parse(read(driverDir(dir, "synthesis-calls", n))).params);
+
+test("a marker sent as a JSON string at the top level of a patch is decoded, and the capture keeps the string", () => {
+  const dir = saved();
+  accepts(recordSynthesis(dir, { findings_patch: [ROW2()], corrections: JSON.stringify(MARKER) }), "a patch with a string marker");
+  assert.deepEqual(onDisk(dir).corrections, MARKER, "the marker did not land as the object it encodes");
+  assert.equal(typeof captures(dir).at(-1).corrections, "string", "the capture no longer records what arrived");
+  assert.deepEqual(base(dir).findings.corrections, MARKER, "the base holds the string rather than the call as read");
+});
+
+test("a marker sent as a JSON string inside a list-less findings object is decoded", () => {
+  const dir = saved();
+  accepts(recordSynthesis(dir, { findings: { corrections: JSON.stringify(MARKER) }, findings_patch: [ROW2()] }), "a nested string marker");
+  assert.deepEqual(onDisk(dir).corrections, MARKER);
+});
+
+test("a marker string that is not a JSON object is refused as it always was, and nothing is written", () => {
+  const dir = saved();
+  for (const bad of ["{not json", "[1,2]", "\"applied\""]) {
+    refusesUnchanged(dir, { findings_patch: [ROW2()], corrections: bad },
+      /^synthesis_findings_invalid: findings_corrections_invalid \(corrections must be an object \{ applied, note \}\)/, `the marker ${bad}`);
+  }
+});
+
+test("a marker string on a call that carries a findings list is read exactly as main reads it", () => {
+  const dir = saved();
+  // a whole call: main reads only its narrative and its findings, so a top-level string is ignored as it stands
+  const whole = { narrative: NARRATIVE, findings: record(), corrections: JSON.stringify(MARKER) };
+  accepts(recordSynthesis(dir, structuredClone(whole)), "a whole call with a top-level string marker");
+  assert.deepEqual(base(dir), whole, "the stored call is not the call as it arrived");
+  assert.deepEqual(onDisk(dir).corrections, record().corrections, "the top-level marker of a whole call reached the record");
+  // inside a whole record, or a record re-sent with no narrative, the string reaches the parser as it came
+  refusesUnchanged(dir, { narrative: NARRATIVE, findings: { ...record(), corrections: JSON.stringify(MARKER) } },
+    /^synthesis_findings_invalid: findings_corrections_invalid /, "a whole call with a nested string marker");
+  refusesUnchanged(dir, { findings: { ...record(), corrections: JSON.stringify(MARKER) } },
+    /^synthesis_findings_invalid: findings_corrections_invalid /, "a record with no narrative and a nested string marker");
+  refusesUnchanged(dir, { findings: record(), corrections: JSON.stringify(MARKER) },
+    /^synthesis_findings_invalid: findings_corrections_invalid /, "a record with no narrative and a top-level string marker");
 });

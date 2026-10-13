@@ -594,6 +594,34 @@ export function registerPatchOf(stored, call) {
 }
 
 /**
+ * Read a call in the shapes the model has been seen to send it. PURE. Returns the call to decide on — the
+ * received object itself unless something below applies — and what was read, for the run's own record.
+ *
+ * A `corrections` marker sent as a JSON STRING is decoded where the call carries no findings list: at the top
+ * level of a patch, and inside a findings object read as registers (`registerPatchOf`). Only a string that
+ * decodes to an object is replaced, and the object is then validated as any marker is; anything else stays as it
+ * came, and the parser refuses it as it always did. A call carrying a list — a whole call, or a record re-sent
+ * with no narrative — is read exactly as main reads it.
+ */
+export function readSynthesisCall(received, stored) {
+  const notes = { decoded: [] };
+  if (!isPlainObject(received)) return { call: received, notes };
+  const asRegisters = registerPatchOf(stored, received) !== null;
+  if (received.findings !== undefined && !asRegisters) return { call: received, notes };
+  const decode = (v) => { try { const x = JSON.parse(v); return isPlainObject(x) ? x : undefined; } catch { return undefined; } };
+  let call = received;
+  if (typeof call.corrections === "string") {
+    const x = decode(call.corrections);
+    if (x !== undefined) { call = { ...call, corrections: x }; notes.decoded.push("corrections"); }
+  }
+  if (asRegisters && typeof call.findings.corrections === "string") {
+    const x = decode(call.findings.corrections);
+    if (x !== undefined) { call = { ...call, findings: { ...call.findings, corrections: x } }; notes.decoded.push("findings.corrections"); }
+  }
+  return { call, notes };
+}
+
+/**
  * Merge a patch call onto the stored one. PURE.
  *
  * `findings_patch` replaces finding objects BY ORDINAL and touches nothing else; `narrative` fields
@@ -791,10 +819,13 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // whole record and touches no section — and in both cases the half not sent is the stored one.
   // A call whose `findings` carries NO LIST is a patch too, on the registers it carries, where there is a stored
   // record to patch and the call reads that way (`registerPatchOf`); any other shape is read as it always was.
+  // The call is decided on AS READ (`readSynthesisCall`): a marker sent as a JSON string is decoded first. The
+  // capture above keeps what arrived; the base written below keeps the call as read.
   const stored = lastAcceptedCall(dir0);
-  const isPatch = Boolean(received) && (received.findings === undefined || received.narrative === undefined
-    || registerPatchOf(stored, received) !== null);
-  let call = received;
+  const read = readSynthesisCall(received, stored);
+  let call = read.call;
+  const isPatch = Boolean(call) && (call.findings === undefined || call.narrative === undefined
+    || registerPatchOf(stored, call) !== null);
   // Appended, never overwritten: a turn can be refused more than once and each one is a fact about the
   // run. Best-effort — bookkeeping that can kill a run is worse than bookkeeping that is absent.
   const noteRefusal = (reason) => {
@@ -802,7 +833,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   };
 
   if (isPatch) {
-    const merged = mergeSynthesisPatch(stored, received);
+    const merged = mergeSynthesisPatch(stored, call);   // the call as READ: a decoded marker merges as an object
     if (!merged.ok) {
       noteRefusal(merged.reason);
       return { written: null, refused: merged.reason,
