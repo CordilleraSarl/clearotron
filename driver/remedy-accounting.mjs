@@ -42,7 +42,7 @@
 // re-stated: verifyRegisterDirectiveClose asks the identical question of the same blocks, and two
 // copies of a matcher is how two matchers drift apart.
 
-import { blockCollapsed } from "./close-verify.mjs";
+import { blockCollapsed, answeredAs } from "./close-verify.mjs";
 import { reopenKey } from "./frame-diff-model.mjs";
 
 export const REMEDY_ACCOUNTING_SCHEMA_VERSION = 1;
@@ -158,11 +158,7 @@ export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids 
   //
   // ONLY THE DUPLICATE KIND RESOLVES. An identity collision or a malformed term is a genuine fault and
   // stays `dispatch-failed`: nothing else asked those questions, so nothing else answers them.
-  const resolve = (q) => {
-    const r = foldRefusals.get?.(q);
-    return r && r.kind === "duplicate-question" && r.twin ? String(r.twin) : q;
-  };
-  const landsAs = new Map(qids.map((q) => [q, resolve(q)]));
+  const landsAs = new Map(qids.map((q) => [q, answeredAs(q, foldRefusals)]));   // one rule with the directive check
   const blockFor = (q) => blocksByQid.get(landsAs.get(q) ?? q);
   const ranAs = (q) => executedQids.has(landsAs.get(q) ?? q);
   const slices = qids.map((q) => {
