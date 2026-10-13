@@ -2847,21 +2847,9 @@ export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — dri
     return null;
   };
   try {
-    if (!existsSync(P.bandShape)) return notComputable("no band-shape.json — the floors are not on disk to check against");
-    if (!existsSync(P.placementModel)) return notComputable("no placements.json (a run predating the structured placement mirror)");
-    let floors, placements;
-    try {
-      const shape = JSON.parse(readFileSync(P.bandShape, "utf8"));
-      // ABSENT vs EMPTY, and they are not the same answer. A shape with no floors slice cannot be
-      // reconciled and says so; a shape whose floors slice IS empty is a real answer — this band held no
-      // live in-class identical record — and reconciles trivially at 0/0.
-      const slice = shape?.floors?.in_class_identical_or_near;
-      if (!Array.isArray(slice)) return notComputable("band-shape.json carries no floors.in_class_identical_or_near array");
-      floors = slice;
-    } catch (e) { return notComputable(`band-shape.json unreadable: ${String(e?.message ?? e).slice(0, 80)}`); }
-    try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
-    catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
-    const artifact = reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) });
+    const now = floorDutyNow(P);
+    if (now.reason) return notComputable(now.reason);
+    const { artifact, placements } = now;
     artifact.owners = placementOwnerFates(P, placements);
     // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
@@ -2883,6 +2871,42 @@ export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — dri
     note(`floor-duty derivation failed (non-fatal — disclosure only): ${String(e?.message ?? e).slice(0, 100)}`);
     return null;
   }
+}
+
+/**
+ * The floors reconciled against the band shape and the placements now on disk: `{artifact, placements}`, or
+ * `{reason}` when they cannot be. Read, never written: `deriveFloorDuty` writes a pass's account from it, and a
+ * resumed run's skip reads it (`floorDutyOwedNow`).
+ */
+function floorDutyNow(P) {
+  const notComputable = (reason) => ({ reason });
+  if (!existsSync(P.bandShape)) return notComputable("no band-shape.json — the floors are not on disk to check against");
+  if (!existsSync(P.placementModel)) return notComputable("no placements.json (a run predating the structured placement mirror)");
+  let floors, placements;
+  try {
+    const shape = JSON.parse(readFileSync(P.bandShape, "utf8"));
+    // ABSENT vs EMPTY, and they are not the same answer. A shape with no floors slice cannot be
+    // reconciled and says so; a shape whose floors slice IS empty is a real answer — this band held no
+    // live in-class identical record — and reconciles trivially at 0/0.
+    const slice = shape?.floors?.in_class_identical_or_near;
+    if (!Array.isArray(slice)) return notComputable("band-shape.json carries no floors.in_class_identical_or_near array");
+    floors = slice;
+  } catch (e) { return notComputable(`band-shape.json unreadable: ${String(e?.message ?? e).slice(0, 80)}`); }
+  try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
+  catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
+  return { artifact: reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) }), placements };
+}
+
+/**
+ * DOES PLACEMENT OWE FLOORS ON THE SHAPE NOW ON DISK? A resumed run derives the band shape afresh, and one derived
+ * since the last placement pass can owe more than that pass's floor-duty artifact says: a floor the new shape adds,
+ * or a crowded (b) whose row no longer stands. Read from the artifact alone, placement skipped, the duty was derived
+ * again straight after it, and the report shipped clamped with the step never asked. Read here as well, placement
+ * runs again, and its dispatch-time union tells the step what changed. False where nothing can be reconciled.
+ */
+export function floorDutyOwedNow(P, name) {   // @internal — driven by its test with a run's own files
+  if (name !== "placement-inquiry" || !floorDutyArmed(P.runDir)) return false;
+  try { return Boolean(floorDutyBlock(floorDutyNow(P).artifact, { armed: true })); } catch { return false; }
 }
 
 function derivePlacementCarry(ctx, trigger) {
@@ -4443,7 +4467,7 @@ async function stageOnce(name, ctx, opts = {}) {
   // undischargeable and the run spent every remaining stage travelling toward a failure it was already
   // doomed to. Reconciled toward the stricter side — the predicate lives in floor-duty.mjs and is CALLED,
   // never copied, so the two judgements cannot drift apart again.
-  const dutyBlocksSkip = !forced && floorDutyBlocksSkip(P.runDir, name);
+  const dutyBlocksSkip = !forced && (floorDutyBlocksSkip(P.runDir, name) || floorDutyOwedNow(P, name));
   if (dutyBlocksSkip) {
     note(`[${label}] NOT skipped — its floor duty is undischarged, so its output is not valid to reuse; `
       + "re-running so the seat can place the outstanding floor(s) or name them with a ground "
