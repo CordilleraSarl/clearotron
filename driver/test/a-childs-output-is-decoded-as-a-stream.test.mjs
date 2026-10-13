@@ -79,6 +79,7 @@ function readersIn(src) {
 test("every reader of a child's output in the tracked tree decodes the stream", (t) => {
   const all = trackedFiles(GUARD, { root: REPO, pathspec: ["*.mjs", "*.js", "*.cjs"] });
   if (all === null) return t.skip("no tracked corpus in this tree — the guard could not look");
+  assert.ok(all.length > 100, `the tracked corpus reads as ${all.length} files — too few to be the real tree`);
   assert.ok(all.includes(SELF), "this guard's own file is not in the corpus — the exclusion is aimed at nothing");
   const sites = [];
   for (const rel of all) {
