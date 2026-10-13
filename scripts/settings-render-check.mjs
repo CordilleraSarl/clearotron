@@ -380,7 +380,6 @@ const signInProbe = `(() => {
 const out = {}
 const SPEC = {
   signInName: "Through your organisation's sign-in service",
-  webSearch: ['The engine’s own web search', 'provided by the engine', 'Available', 'The model searches the web itself during a run.'],
   categories: ['Trademark register', 'Common-law and marketplace research', 'Open-web search', 'Case law and oppositions'],
   caseLawGap: 'Until these are set up, a Full country search still runs and its report discloses the case-law gap instead of reporting no adverse case law.',
   adminLine: 'To change the address, the permissions or the companies on it, contact your Clearotron administrator.',
@@ -398,7 +397,9 @@ for (const theme of ['light', 'dark']) {
   // ── Installation settings
   console.log('\nInstallation settings:')
   loads.length = 0
-  if (await open('/portal/admin/config', "document.querySelectorAll('.cfg-row').length >= 10", 'Installation settings drew its rows')) {
+  // Nine rows: sign-in, the engine, and seven providers. The engine's own web search had a tenth; it is off on
+  // both engines and has no row.
+  if (await open('/portal/admin/config', "document.querySelectorAll('.cfg-row').length >= 9", 'Installation settings drew its rows')) {
     await setTheme(theme)
     const s = (await evalIn(settingsProbe)) ?? {}
     out[`settings-${theme}`] = s
@@ -411,12 +412,10 @@ for (const theme of ['light', 'dark']) {
       `the sign-in row reads "${SPEC.signInName} · Configured" (saw ${JSON.stringify(si)})`)
     ok(si && same(si.mono, [`auth-proxy · issuer ${ISSUER}`]), `the mode and issuer are the row's quiet mono line (saw ${JSON.stringify(si?.mono)})`)
     const rights = [...s.signIn, ...s.engine, ...s.categories.flatMap((c) => c.rows)].map((r) => r.stateRight)
-    ok(rights.length >= 10 && new Set(rights).size === 1, `every state lines up in one column (right edges ${JSON.stringify([...new Set(rights)])})`)
-    ok(s.engine.length === 2 && s.engine[0].name === 'Anthropic' && s.engine[0].state === 'Subscription',
-      `Engine carries the engine row first (saw ${JSON.stringify(s.engine[0])})`)
-    const web = s.engine[1]
-    ok(web && same([web.name, web.val, web.state, web.notes[0]], SPEC.webSearch),
-      `the engine's own web search sits under Engine, in the page's words (saw ${JSON.stringify(web)})`)
+    ok(rights.length >= 9 && new Set(rights).size === 1, `every state lines up in one column (right edges ${JSON.stringify([...new Set(rights)])})`)
+    ok(s.engine.length === 1 && s.engine[0].name === 'Anthropic' && s.engine[0].state === 'Subscription',
+      `Engine carries the engine row alone (saw ${JSON.stringify(s.engine)})`)
+    ok(!s.engine.some((r) => /web search/i.test(r.name)), "the engine's own web search, off on both engines, has no row under Engine")
     ok(same(s.categories.map((c) => c.label), SPEC.categories), `four provider categories, in order (saw ${JSON.stringify(s.categories.map((c) => c.label))})`)
     const repeated = s.categories.flatMap((c) => c.rows.filter((r) => [r.name, r.val ?? '', ...r.notes].some((t) => t.includes(c.label))).map((r) => `${c.label} on ${r.name}`))
     ok(repeated.length === 0, `no category name is repeated on a row (saw ${JSON.stringify(repeated)})`)

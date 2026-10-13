@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+name: Bench replay request
+
+# A CHANGE TO A MODEL OR TO AN ENGINE PROGRAM'S FLOOR asks for a replay of saved cases before the beta
+# that carries it is cut, because such a change moves what a clearance reads and writes while every test
+# around it stays green. This workflow is the request and nothing more: when a push moves the engine pins
+# (scripts/engine-pins.mjs is the one definition), it sets a `bench replay` status on the pushed commit,
+# pending, described `waiting`. The machine that holds the saved cases answers it with pass or flag, and
+# the cut reads the answer. Nothing waits on this workflow and no merge is blocked by it.
+#
+# It holds no key and calls no model or register: the token below can set a commit status and read the
+# repository, and the status carries a context and one word, never a link, a count or a case.
+#
+# The paths filter is only a cheap first cut: a push that touches none of these files cannot move a pin.
+# Whether one that does moved a pin is the script's question, against the branch's previous tip.
+# `bench-replay-probe-*` exists to prove the request end to end on a branch the replay never reads.
+
+on:
+  push:
+    branches: [main, 'beta-*', 'next-*', 'bench-replay-probe-*']
+    paths:
+      - driver/engine/openai-agent.mjs
+      - driver/driver.config.mjs
+      - scripts/engine-pins.mjs
+      - scripts/bench-replay-request.mjs
+
+permissions: {}
+
+jobs:
+  request:
+    name: Ask for a bench replay when the engine pins moved
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read        # the pushed commit and its parent, judged by the same rule
+      statuses: write       # the pending request on the pushed commit
+      pull-requests: read   # the pull request a squash on main came from, whose answer it may carry
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1   # v7
+        with:
+          node-version: '22.23.2'
+
+      - name: Compare the pushed commit's engine pins with the branch's previous tip
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: node scripts/bench-replay-request.mjs

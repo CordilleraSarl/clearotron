@@ -370,6 +370,14 @@ export function runDirGrant({ runDir, dispatch, seatWrites = null } = {}) {
  * shell the program offered them anyway.
  */
 export const COMMAND_TOOLS = Object.freeze(["Bash", "PowerShell", "Monitor"]);
+/**
+ * The program's own web search, removed from every stage by the same name-removal. The engine's web search
+ * is its own: the common-law sweep, which keeps a record of every result. The program's was never granted,
+ * and every attempt a stage made at it was refused, a turn spent for nothing (observed in testing,
+ * 2026-10-02 and 2026-10-03: 48 attempts in five runs, all refused). Removed, the model is never offered it.
+ * The codex engine turns its own off the same way (`web_search`, codex-config.mjs).
+ */
+export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
@@ -399,7 +407,7 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   // through Bash on a login with no rule allowing it. A bare name here "removes the matching tools from
   // Claude's context" (the vendor's CLI reference, `--disallowedTools`), on every call, the resumed one
   // included, so the model is never offered them. See COMMAND_TOOLS for the three names.
-  args.push("--disallowedTools", COMMAND_TOOLS.join(" "));
+  args.push("--disallowedTools", [...COMMAND_TOOLS, ...OWN_SEARCH_TOOLS].join(" "));
   const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
   if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
   // FILE ACCESS: claude's Read/Write/Edit tools are confined to cwd + --add-dir roots even under
@@ -593,6 +601,8 @@ export const anthropicAgentEngine = {
       let lastMove = Date.now();
       let lastProgress = Date.now();            // honest-progress clock: token movement / agent-loop steps / artifact writes ONLY
       let firstOutputAt = null;                 // #1692/#1813 — first byte of the PROTOCOL (stdout only); until then every clock below is timing STARTUP
+      let atKill = null;                        // what the watchdog had seen when it decided to kill — recording only, see killDecision
+      let silentIdleMs = null;                  // the no-progress clock at the watchdog's last look before the child spoke — recording only
       const GRACE = spawnGraceMs();             // one source of the grace: common.mjs, where #1703 set it
       let sawAnyEvent = false;                  // ANY parseable stream event (incl. system:init) — false on close = the CLI died before streaming (startup-class failure)
       let rateLimitEvent = null;   // a 429 session-cap rejection rides a `rate_limit_event` (status:"rejected" + resetsAt)
@@ -957,6 +967,7 @@ export const anthropicAgentEngine = {
         ? (sig) => { const n = killWindowsTreeNow({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
         : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
       const killTree = () => {
+        atKill ??= { ms: Date.now() - t0, spoken: firstOutputAt !== null, toolCalls };
         if (escalation) return;   // the watchdog polls — arm the escalation exactly once
         groupKill("SIGTERM");
         escalation = setTimeout(() => groupKill("SIGKILL"), killEscalateMs());
@@ -1009,6 +1020,7 @@ export const anthropicAgentEngine = {
         // was recorded as a no-progress stall against a turn that had not yet been given a chance to
         // progress. A child that never speaks AT ALL is still bounded: the byte-stall fires at max(STALL, GRACE).
         const started = firstOutputAt !== null;
+        if (!started) silentIdleMs = progIdle;
         if (idle >= (started ? STALL : Math.max(STALL, GRACE))) { stallKill = true; killed = true; killTree(); }
         // No observable progress (tokens/agent-loop/artifact) for NOPROG while bytes kept the pipe warm:
         // kill it NOW, well below the wall, and record it as a STALL — never let the ceiling raise turn
@@ -1220,6 +1232,16 @@ export const anthropicAgentEngine = {
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.
           firstByteMs: firstOutputAt === null ? null : Math.round(firstOutputAt - t0),
+          // WHICH SIDE OF THE KILL a byte or a tool ask fell on. RECORDING ONLY, like firstByteMs. The
+          // totals above keep counting after the decision, because what a dying child already wrote is
+          // still read (streamed usage depends on it). On Windows the kill blocks this process while it
+          // lists and ends the tree, measured at one to three seconds on the hosted runner, which is long
+          // enough for a booting child to speak and open a tool ask that is read only afterwards.
+          // `killDecision` is what the watchdog had seen when it decided: ms from spawn, whether the child
+          // had spoken, and the tool asks read by then; null when nothing was killed. `silentIdleMs` is how
+          // long the no-progress clock had run at the watchdog's last look before the child spoke; null
+          // when it never looked at a silent child.
+          killDecision: atKill, silentIdleMs,
           // WHICH CLOCK RAN OUT, and WHAT the wait was made of.
           //
           // The hard wall measures ELAPSED, and elapsed includes time the model spent waiting on tools

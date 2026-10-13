@@ -298,6 +298,19 @@ jobs:
       - name: No release note is counted twice
         run: node scripts/release-duplicate-notes.mjs
 
+      # A MOVED ENGINE PIN WAITS FOR ITS REPLAY. A change to a model or an engine program's floor is
+      # replayed on saved cases before the beta that carries it is cut; the push that moved it asked for
+      # that (bench-replay.yml), and the answer is a `bench replay` status. Only a cut reads it, here,
+      # before the notes are consumed: a flag or a missing answer holds the cut, and a push that moved no
+      # pin reads nothing. The token is this job's own, whose `statuses` right covers reading one. A dispatch
+      # that reaches this job is a real cut: the job's condition already turns the rehearsal and the publish away.
+      - name: A moved engine pin has a passing bench replay
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: node scripts/release-bench-replay-check.mjs
+
       # `version:` is our wrapper, and it is not optional: `changeset version` moves the four WORKSPACE
       # packages and leaves the root package — `clearotron`, the one thing a user installs — where it
       # was. The wrapper carries the number to the root, assembles the one changelog a reader opens, and

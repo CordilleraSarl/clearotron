@@ -84,7 +84,8 @@ const timed = (fn) => async (t) => {
 
 const specimen = (r) =>
   ` [#1780 firstByteMs=${r?.firstByteMs} toolCalls=${r?.toolCalls} toolWaitMs=${r?.toolWaitMs}`
-  + ` killed=${r?.killed} signals=${JSON.stringify(r?.signals ?? {})}]`;
+  + ` killed=${r?.killed} killDecision=${JSON.stringify(r?.killDecision ?? null)} silentIdleMs=${r?.silentIdleMs}`
+  + ` signals=${JSON.stringify(r?.signals ?? {})}]`;
 
 // ── BOTH SPELLINGS OF A TIER ARE ONE TIER ─────────────────────────────────────────────────────────
 //
@@ -695,9 +696,16 @@ test("a STARVED SPAWN does not read as a no-progress stall — the kill lands af
   assert.ok(r.toolCalls >= 1 || r.toolWaitMs > 0,
     "killed before the child opened its tool ask: the no-progress clock is timing STARTUP, which is the "
     + "#1692 defect" + specimen(r));
+  // THE SAME CHECK, READ AT THE DECISION. The totals above keep counting after the kill, and on Windows
+  // the kill blocks this process for one to three seconds, long enough for a booting child to speak and
+  // open its ask (measured on the hosted runner, 2026-10-10). There, a kill during the boot can still
+  // show a tool call in the totals. What the watchdog had read when it decided cannot.
+  assert.ok(r.killDecision?.toolCalls >= 1,
+    "the kill was decided before the child's tool ask had been read: the no-progress clock is timing "
+    + "STARTUP, and only the totals read after the kill show the ask" + specimen(r));
 }));
 
-test("the arm above still DISCRIMINATES — with the grace cut, the defect's timing reds it", timed(async () => {
+test("the arm above still DISCRIMINATES — with the grace cut, the defect's timing reds it", timed(async (t) => {
   // ✕ THE CONTROL FOR THE FIX ABOVE. Pinning the grace high stops a loaded box reddening that arm; this
   // proves it did not stop the ARM working. The engine's rule is
   // `progIdle >= (started ? NOPROG : max(NOPROG, GRACE))`, so cutting GRACE below NOPROG reproduces the
@@ -710,10 +718,31 @@ test("the arm above still DISCRIMINATES — with the grace cut, the defect's tim
     { MOCK_CLAUDE_BOOT_MS: "900", MOCK_CLAUDE_JUNK_STREAM: "40", MOCK_CLAUDE_TOOL_HANG: "1",
       CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "400", CLEAROTRON_SPAWN_GRACE_MS: "100" });
   assert.equal(r.killed, true, "the turn survived a 400ms ceiling across a 900ms boot" + specimen(r));
-  assert.equal(r.firstByteMs, null,
-    "the child spoke inside 400ms, so this control is not reproducing a kill during boot" + specimen(r));
-  assert.ok(!(r.toolCalls >= 1 || r.toolWaitMs > 0),
-    "the anti-vacuity condition the arm above turns on is SATISFIED here, so that arm would pass on a "
+  // READ AT THE DECISION, not from the totals. On Windows the kill blocks this process for one to three
+  // seconds, the booting child speaks and opens its ask meanwhile, and both are read after the kill
+  // returns: the totals then showed a first byte and a tool call on a kill that was decided during the
+  // boot (measured on the hosted runner, 2026-10-10, twice). The decision is the code's branch; what
+  // arrives while the kill runs is the runner's speed.
+  //
+  // A child already heard at the decision has two readings. Either the watchdog looked at a silent child
+  // past NOPROG and let it live, which is this rule broken, or it never got to look in that window before
+  // the child spoke, which this runner could not show either way. `silentIdleMs` tells them apart.
+  if (r.killDecision?.spoken) {
+    assert.ok(!(r.silentIdleMs >= 400),
+      `the watchdog looked at a silent child after ${r.silentIdleMs}ms without progress and did not kill: `
+      + "the threshold before the child speaks is not NOPROG, so the cut grace did not take" + specimen(r));
+    const looked = r.silentIdleMs === null ? "it never looked while the child was silent"
+      : `its last look at a silent child came after ${r.silentIdleMs}ms without progress`;
+    t.skip(`could not look: the watchdog did not look at the silent child after 400ms without progress `
+      + `before the child's first byte at ${r.firstByteMs}ms (${looked}), so this runner could not reproduce `
+      + "a kill during the boot");
+    return;
+  }
+  assert.ok(r.silentIdleMs >= 400,
+    "the kill was decided at a look that did not record a silent child past NOPROG, so the field that tells "
+    + "a broken rule from a runner that could not look is not being kept" + specimen(r));
+  assert.ok(!(r.killDecision?.toolCalls >= 1),
+    "the check the arm above turns on is SATISFIED at the decision, so that arm would pass on a "
     + "kill-during-boot — which is the defect it exists to catch" + specimen(r));
 }));
 

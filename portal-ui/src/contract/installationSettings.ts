@@ -150,7 +150,6 @@ export function engineCapabilityRows(providers: readonly ProviderState[]): reado
     name: splitSourceLabel(p.providerLabel ?? p.provider ?? '').name.replace(/'/g, '’'),
     mono: 'provided by the engine',
     state: p.configured ? 'Available' : 'Not available',
-    note: 'The model searches the web itself during a run.',
   }))
 }
 

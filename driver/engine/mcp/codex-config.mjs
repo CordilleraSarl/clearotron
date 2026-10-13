@@ -153,6 +153,14 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
   if (developerInstructions) lines.push(`developer_instructions = ${tomlString(developerInstructions)}`, "");
   // Top-level, so above the first table: TOML reads a bare key after a table header as that table's.
   if (fence) lines.push(`default_permissions = ${tomlString(FENCE_PROFILE)}`, "");
+  // CODEX'S OWN WEB SEARCH IS OFF, ON EVERY STAGE AND IN EVERY SAFETY SETTING. The engine's web search is its
+  // own: the common-law sweep, which keeps a record of every result. Codex brings a search of its own that
+  // is on unless the configuration says otherwise, "cached" by default and "live" once the sandbox is
+  // bypassed, and `"disabled"` removes the tool (the vendor's configuration reference, `web_search`). Left
+  // on, it fired in some runs and not others and brought web addresses into the placement notes that no
+  // recorded search returned (observed in testing, 2026-10). The Claude engine removes its own the same way
+  // (OWN_SEARCH_TOOLS, anthropic-agent.mjs). The case-law step's page fetcher is a tool server, not this.
+  lines.push(`web_search = "disabled"`, "");
   lines.push(...commandEnvToml(withheldFromCommands));
 
   const emitServer = (name, s, { forwardCreds } = {}) => {

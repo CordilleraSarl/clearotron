@@ -981,6 +981,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-pin-change-asks-for-a-bench-replay.test.mjs": {
+          "tests": 16,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
           "tests": 7,
           "asserts": 17,
@@ -3101,8 +3107,8 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 70,
-          "asserts": 260,
-          "skips": 1,
+          "asserts": 262,
+          "skips": 2,
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
@@ -3864,6 +3870,12 @@
         "no-stage-is-offered-a-command-tool.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-stage-is-offered-the-engines-own-web-search.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -5814,6 +5826,12 @@
         "the-engine-is-given-no-fixed-call-budget.test.mjs": {
           "tests": 1,
           "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-engine-pins-come-from-the-tree.test.mjs": {
+          "tests": 6,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },

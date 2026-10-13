@@ -40,10 +40,10 @@ test("an instance with NOTHING configured still lists every provider, each marke
   const all = providerInventory({});
   // ── — TWO KINDS OF ROW SHARE THIS LIST, and only one is credentialed ──────
   //
-  // The capability rows (case law, the engine's own web search) joined the same list deliberately: the
+  // The capability rows (the case-law sources) joined the same list deliberately: the
   // config page renders rows generically, so they reach the screen with no second surface to keep in
   // step. They are NOT credentialed providers, and the claim below is about credentialed providers —
-  // "nothing configured" is not a state EUR-Lex or the engine's web search can be in, because there is
+  // "nothing configured" is not a state EUR-Lex can be in, because there is
   // no credential for them to lack. `enrolment` is the discriminator, and it is on the row rather than
   // inferred from the key, so this arm cannot start silently skipping rows it should be checking.
   const rows = all.filter((r) => r.enrolment === undefined);
