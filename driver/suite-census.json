@@ -921,6 +921,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-name-above-its-cards-is-refused-where-the-model-can-fix-it.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-name-documented-in-any-example-file-is-documented.test.mjs": {
           "tests": 7,
           "asserts": 16,

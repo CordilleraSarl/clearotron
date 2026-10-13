@@ -656,6 +656,12 @@ export const validators = {
       // artifact (validateMergedFindings below), which is the object every surface renders from.
       try { validateKnockoutFindings(m.findings, method === undefined ? { manifest: fw } : { manifest: fw, method }); }
       catch (e) { return { ok: false, reason: `mark "${m.name}": ${e.message}` }; }
+      // A NAME IS NEVER RATED ABOVE THE WORST CARD ON ITS PAGE, refused here as well as on the merged artifact.
+      // The merged gate's refusal fails the stage outside the corrective ladder, so the turn that could rate the
+      // name again never heard why, and the run went back to the register listing. Refused at the chunk, the
+      // same rule's own words reach this chunk's corrective turn. After the findings check, which settles bands.
+      const above = markRatedAboveItsCards(fw, m);
+      if (above) return { ok: false, reason: above };
       // URL-receipts gate: every cited URL ∈ that mark's raw payload (one function, three doors)
       const rec = knockoutReceipts(runDir, [m]);
       if (!rec.ok) return { ok: false, reason: rec.failures[0] };
