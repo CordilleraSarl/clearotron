@@ -60,6 +60,18 @@ export function blockCollapsed(block) {
 }
 
 /**
+ * The plan row that answers a minted slice: the slice itself, or, where the fold refused it as already-asked, the
+ * row it duplicates. Such a slice is never frozen into the plan and never runs; its question was asked by the twin.
+ * ONLY THE DUPLICATE KIND RESOLVES: an identity collision or a malformed term asked a question nothing else asked.
+ * `foldRefusals` maps a refused qid to `{kind, twin}`, as `foldSupplementalEntries` records it. One rule for the
+ * directive below and the remedy term ledger (remedy-accounting.mjs), so the two cannot read a slice apart. PURE.
+ */
+export function answeredAs(qid, foldRefusals) {
+  const r = foldRefusals?.get?.(qid);
+  return r && r.kind === "duplicate-question" && r.twin ? String(r.twin) : qid;
+}
+
+/**
  * Verify a register frame-reopen directive was actually SEARCHED as intended (Part B, arm #1). A directive
  * is closed ONLY if EVERY minted qid clears three checks:
  *   1. qid-landed — the qid joined as an EXECUTED band block (joinPlanToBands). An error/missing/skipped
@@ -70,22 +82,29 @@ export function blockCollapsed(block) {
  *      wrong-scope 0/0). Indeterminate pins fall through to 1+2 — a strict tightening over byte-diff, never
  *      a new false deferral.
  * PURE. `executedQids` is a Set of joinPlanToBands.executed qids; `blocksByQid` maps qid → band block.
- * @returns {{closed: boolean, reason: string|null}}
+ *
+ * A slice the fold refused as already-asked is checked on the row that answered it (`answeredAs`), on the same
+ * three checks, and a directive closed that way names each such row in `answered_by`.
+ * @returns {{closed: boolean, reason: string|null, answered_by?: {qid: string, twin: string}[]}}
  */
-export function verifyRegisterDirectiveClose({ qids, intendedClasses = [], executedQids, blocksByQid } = {}) {
+export function verifyRegisterDirectiveClose({ qids, intendedClasses = [], executedQids, blocksByQid, foldRefusals = new Map() } = {}) {
   const list = qids ?? [];
   if (!list.length) return { closed: false, reason: "no-slice-dispatched" };
   const want = [...new Set((intendedClasses ?? []).map(String))];
   const executed = executedQids ?? new Set();
   const byQid = blocksByQid ?? new Map();
+  const answeredBy = [];
   for (const qid of list) {
-    if (!executed.has(qid)) return { closed: false, reason: `slice-not-landed:${qid}` };
-    const b = byQid.get(qid);
-    if (!b) return { closed: false, reason: `no-band-block:${qid}` };
-    if (blockCollapsed(b)) return { closed: false, reason: `collapsed-slice:${qid}` };
+    const q = answeredAs(qid, foldRefusals);
+    const as = q === qid ? qid : `${qid} (answered by ${q})`;
+    if (!executed.has(q)) return { closed: false, reason: `slice-not-landed:${as}` };
+    const b = byQid.get(q);
+    if (!b) return { closed: false, reason: `no-band-block:${as}` };
+    if (blockCollapsed(b)) return { closed: false, reason: `collapsed-slice:${as}` };
     const searched = blockSearchedClasses(b);
     if (want.length && searched.length && !want.every((c) => searched.includes(c)))
-      return { closed: false, reason: `wrong-scope:${qid} searched[${searched.join(",")}]⊉intended[${want.join(",")}]` };
+      return { closed: false, reason: `wrong-scope:${as} searched[${searched.join(",")}]⊉intended[${want.join(",")}]` };
+    if (q !== qid) answeredBy.push({ qid, twin: q });
   }
-  return { closed: true, reason: null };
+  return { closed: true, reason: null, ...(answeredBy.length ? { answered_by: answeredBy } : {}) };
 }

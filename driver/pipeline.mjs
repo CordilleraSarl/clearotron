@@ -10922,12 +10922,14 @@ async function pipelineInner(job, opts = {}) {
         // (`x:0` vs `x:null` must differ by value, never by presence). The demote paths carry the SAME
         // rows forward unchanged, deliberately — a failed re-digest demotes CLOSURE, not searchedness:
         // a query that ran still ran.
-        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null) => {
+        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null, answered = []) => {
           try {
             writeFileSync(reopenReceiptPath, JSON.stringify({
               ts: new Date().toISOString(), requested: firing.map(reopenKey),
               swept, deferrals, remaining: deferrals.map((x) => x.directive),
               ...(partials.length ? { partials } : {}),
+              // a closed directive whose slice the fold refused as already-asked, with the plan row that answered it
+              ...(answered.length ? { answered_elsewhere: answered } : {}),
               dominant_element_gap, domClosed: dom,
               directive_qids: reopenQids, born: reopenBorn,
               remedy_terms: accounting?.computable === true ? accounting.rows : null,
@@ -10973,6 +10975,7 @@ async function pipelineInner(job, opts = {}) {
           // minted subset — the refusal is disclosed per directive (receipt `partials` row on a close,
           // folded into the defer reason otherwise), never dropped into the aggregate count alone.
           const regPartialMint = new Map();
+          const regAnsweredBy = new Map();   // reopenKey → the plan rows that answered its slices the fold refused as already-asked
           // — the per-TERM rows the remedy ledger accounts. One row per remedy term per directive,
           // recorded at the mint seam (the only place the term→qid mapping exists) so the receipt can
           // later say what each term asked and what came back. reopenKey → [{term, predicates, qids,
@@ -11132,10 +11135,16 @@ async function pipelineInner(job, opts = {}) {
                 const blocksByQid = new Map((bands[a] ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
                 return { outcome, executedQids, blocksByQid };
               };
-              const verifyOne = (d, ev) => verifyRegisterDirectiveClose({
-                qids: directiveQids.get(reopenKey(d)) ?? [], intendedClasses: directiveIntended.get(reopenKey(d)) ?? [],
-                executedQids: ev.executedQids, blocksByQid: ev.blocksByQid,
-              });
+              // A slice the fold refused as already-asked is checked on the row that answered it, as the remedy
+              // term ledger reads it; the directive it closes names that row in the receipt.
+              const verifyOne = (d, ev) => {
+                const v = verifyRegisterDirectiveClose({
+                  qids: directiveQids.get(reopenKey(d)) ?? [], intendedClasses: directiveIntended.get(reopenKey(d)) ?? [],
+                  executedQids: ev.executedQids, blocksByQid: ev.blocksByQid, foldRefusals: regFoldRefusals,
+                });
+                if (v.closed && v.answered_by) regAnsweredBy.set(reopenKey(d), v.answered_by);
+                return v;
+              };
               const mintedDirectives = regDirectives.filter((d) => (directiveQids.get(reopenKey(d)) ?? []).length);
               let ev = await dispatchAndVerify(added);
               regLastJoin = ev;
@@ -11476,7 +11485,8 @@ async function pipelineInner(job, opts = {}) {
           // ending states "closed on N of M remedy proposals; K refused: <reason>", never a bare close.
           const partials = swept.filter((k) => regPartialMint.has(k))
             .map((k) => ({ directive: k, note: `verified-closed on the minted subset — ${regPartialMint.get(k)}` }));
-          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting);
+          const answered = swept.filter((k) => regAnsweredBy.has(k)).map((k) => ({ directive: k, slices: regAnsweredBy.get(k) }));
+          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered);
           runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed, reopenFetchCap: regDirectives.some((d) => d.severity === "dominant-element") ? reopenFetchCap : undefined });
           // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
           // unlocked path demotes verified-closed directives inline when its pre-synthesis flush
