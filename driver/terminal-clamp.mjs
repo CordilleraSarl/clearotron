@@ -37,6 +37,18 @@ const CAUTION = Object.freeze(["CLEAR", "CONDITIONAL", "BLOCKING"]);
 export const ENGINE_TOKEN_RE = /\b\w+_\w+(?::\d+)?\b/;
 
 /**
+ * The engine's own names for its internal steps, which no lawyer writes and no mark is likely to be: the blind
+ * frame comparison and its reopen pass. A sentence about them reached a client's conditions through the
+ * sidecar, because the token shape above has no underscore to find in it. Kept to the coined names, measured
+ * on every stored clause and reason of the saved runs: only that sentence matched. A phrase list over client
+ * text can eat a real mark, so this one withholds a condition and never rewrites one.
+ */
+export const ENGINE_PHRASE_RE = /\b(?:frame[- ]diff|blind frame|re-?open(?:ing)? pass|frame[- ]reopen)\b/i;
+
+/** Does a condition's text carry the engine's words? ONE test, read by every reader of a condition. PURE. */
+export const carriesEngineWords = (text) => ENGINE_TOKEN_RE.test(String(text ?? "")) || ENGINE_PHRASE_RE.test(String(text ?? ""));
+
+/**
  * Decide what a terminal guard does with a defect it has found at delivery. PURE.
  *
  * Always delivers. The only question is how far the verdict is clamped and what the run record says.
@@ -64,7 +76,7 @@ export function terminalClampDecision({ verdict, defect, reason, clause, detail 
   if (!text) throw new TypeError("terminalClampDecision needs a run-record reason — the run record alone is not the client's answer");
   const readerClause = String(clause ?? "").trim();
   if (!readerClause) throw new TypeError("terminalClampDecision needs a reader-facing clause — without one the run-record reason becomes the client's verdict sentence, which is the tracker-2096 defect");
-  if (ENGINE_TOKEN_RE.test(readerClause)) throw new TypeError(`terminalClampDecision: the reader's clause carries an engine identifier (${readerClause.match(ENGINE_TOKEN_RE)[0]}) — the clause is the client's sentence and speaks a lawyer's nouns; the token belongs in \`reason\` and the run record`);
+  if (carriesEngineWords(readerClause)) throw new TypeError(`terminalClampDecision: the reader's clause carries an engine identifier (${(readerClause.match(ENGINE_TOKEN_RE) ?? readerClause.match(ENGINE_PHRASE_RE))[0]}) — the clause is the client's sentence and speaks a lawyer's nouns; the token belongs in \`reason\` and the run record`);
 
   const at = CAUTION.indexOf(String(verdict ?? ""));
   // An UNKNOWN verdict is not clamped to a guess. It is delivered as it stands with the defect named:
@@ -111,10 +123,10 @@ export function unrenderableConditions({ reasons, clauses } = {}) {
   const cs = Array.isArray(clauses) ? clauses : [];
   return rs.filter((r, i) => {
     if (cs[i] === null) return false;   // run record only BY RULING, not a clause that failed to compose
-    if (typeof cs[i] === "string" && cs[i].trim()) return false;
+    if (typeof cs[i] === "string" && cs[i].trim()) return carriesEngineWords(cs[i]);   // a stored clause withheld for its words
     const text = String(r ?? "").trim();
     if (!text) return false;
-    return !clauseFromReason(text) && ENGINE_TOKEN_RE.test(text);
+    return !clauseFromReason(text) && carriesEngineWords(text);
   }).map((r) => String(r).trim());
 }
 
@@ -249,9 +261,31 @@ export function clientConditions({ reasons, clauses } = {}) {
   return rs.map((r, i) => {
     if (cs[i] === null) return "";   // a stored null is a condition ruled for the run record alone
     const clause = typeof cs[i] === "string" ? cs[i].trim() : "";
-    if (clause) return clause;
+    // A stored clause in the engine's words reaches no client surface, and nothing is written in its place
+    // (ruled 2026-10-13): the run record keeps the reason, and the workbook's gaps sheet lists it.
+    if (clause) return carriesEngineWords(clause) ? "" : clause;
     const text = String(r ?? "").trim();
     if (!text) return "";
-    return clauseFromReason(text) ?? (ENGINE_TOKEN_RE.test(text) ? "" : text);
+    return clauseFromReason(text) ?? (carriesEngineWords(text) ? "" : text);
   }).filter(Boolean);
+}
+
+/**
+ * THE STATEMENT A CLIENT READS, WITH ITS COUNT MADE TRUE. A stored statement counted every condition it was
+ * written with, so a condition since withheld from the list above makes its "(and N more)" name one too many. The
+ * count is a fact, not a sentence: it is recomputed from the list the client reads, and nothing else in the
+ * statement moves. A statement whose count already agrees, or that carries none, is returned as it was stored.
+ * PURE.
+ *
+ * @param {{statement?: string, reasons?: string[], clauses?: string[]}} sidecar  the parsed `_driver/verdict.json`
+ * @returns {string|undefined} the statement to render
+ */
+export function clientStatement(sidecar = {}) {
+  const st = sidecar?.statement;
+  if (typeof st !== "string") return st;
+  const m = st.match(/ \(and (\d+) more\)/);
+  if (!m) return st;
+  const more = clientConditions(sidecar).length - 1;
+  if (more < 0 || more === Number(m[1])) return st;
+  return st.replace(m[0], more > 0 ? ` (and ${more} more)` : "");
 }
