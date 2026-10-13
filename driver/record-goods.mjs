@@ -96,6 +96,36 @@ export function recordGoods(body, { english = true } = {}) {
   return out;
 }
 
+// THE RAW GOODS LIST SAYS NOTHING THE NORMALISED ONE DOES NOT. A Clarivate record holds its goods twice: as the
+// register wrote them (`_raw.goodsServices.intClassDescriptions`) and as the provider maps them, item for item,
+// into `goodsServices` beside it (providers/clarivate/src/core.js `normalizeGoodsServices`). On a crowded test
+// run, 2026-10-13, the raw goods were 22.7 of the 53.5 MB of record text, and all 1,348 records held both
+// lists. Only the five fields that mapping reads are known here: a raw item carrying any other field, classes
+// written other than as numbers between commas (one statement may cover several classes: "9,35,42"), or any
+// value the normalised item does not repeat exactly means the raw list says something of its own. The rest of
+// the raw goods block (a national class list, on six of those records) is not the normalised list's to carry.
+const RAW_GOODS_FIELDS = new Set(["intClassNumber", "intGoodsLanguageCode", "intGoodsServicesDescription",
+  "cmComputerTranslationIntGoodsLanguageCode", "cmComputerTranslationIntGoodsServicesDescription"]);
+
+/** Does the record's `goodsServices` carry its raw international goods list item for item, so that list adds nothing? PURE. */
+export function rawGoodsCarried(body) {
+  const items = body?._raw?.goodsServices?.intClassDescriptions, norm = body?.goodsServices;
+  if (!Array.isArray(items) || !items.length || !Array.isArray(norm) || norm.length !== items.length) return false;
+  return items.every((d, i) => {
+    const n = norm[i];
+    if (!d || typeof d !== "object" || Array.isArray(d) || !n || typeof n !== "object") return false;
+    if (Object.keys(d).some((k) => !RAW_GOODS_FIELDS.has(k))) return false;
+    const cls = String(d.intClassNumber ?? "").trim();
+    if (cls !== "" && !/^\d+(\s*,\s*\d+)*$/.test(cls)) return false;
+    const classes = cls === "" ? [] : cls.split(",").map((c) => Number(c.trim()));
+    const same = (a, b) => (a ?? null) === (b ?? null);
+    return Array.isArray(n.classes) && n.classes.length === classes.length && n.classes.every((c, j) => c === classes[j])
+      && same(d.intGoodsLanguageCode, n.language) && same(d.intGoodsServicesDescription, n.description)
+      && same(d.cmComputerTranslationIntGoodsLanguageCode, n.translation_language)
+      && same(d.cmComputerTranslationIntGoodsServicesDescription, n.translation);
+  });
+}
+
 /**
  * Every record's goods this run holds, by canonical record uri: Map(uri → [{classes, text}]). Read from the
  * record ledger, then from `_records/`, the later copy of a record winning, as `band_record` reads them. A
