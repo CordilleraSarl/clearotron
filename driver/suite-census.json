@@ -1487,7 +1487,7 @@
         },
         "a-stage-reads-only-its-own-folders.test.mjs": {
           "tests": 9,
-          "asserts": 31,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1507,6 +1507,12 @@
           "tests": 4,
           "asserts": 12,
           "skips": 0,
+          "todos": 0
+        },
+        "a-stopped-run-leaves-no-codex-home-behind.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 1,
           "todos": 0
         },
         "a-stopped-run-says-why-it-stopped.test.mjs": {

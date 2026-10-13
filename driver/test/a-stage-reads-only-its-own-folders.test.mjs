@@ -194,6 +194,10 @@ test("codex: every Codex home is made in the account's cache folder, which the p
   const { codexHome } = await codexTurn(undefined);
   assert.ok(codexHome.startsWith(codexHomesRoot() + sep), `the turn's Codex home is outside the cache folder: ${codexHome}`);
   const gateway = readFileSync(join(ROOT, "driver", "gateway.mjs"), "utf8");
-  assert.match(gateway, /stageCodexHome = mkdtempSync\(join\(codexHomesRoot\(\), `stage-/, "the stage's Codex home is made somewhere else");
+  assert.match(gateway, /stageCodexHome = makeCodexHome\(`stage-/, "the stage's Codex home is made somewhere else");
+  const { makeCodexHome, releaseCodexHome } = await import("../engine/openai-agent.mjs");
+  const stageHome = makeCodexHome("stage-probe-");
+  try { assert.ok(stageHome.startsWith(codexHomesRoot() + sep), `the stage's Codex home is outside the cache folder: ${stageHome}`); }
+  finally { releaseCodexHome(stageHome); }
   assert.doesNotMatch(readFileSync(join(ROOT, "driver", "engine", "openai-agent.mjs"), "utf8"), /mkdtempSync\(join\(tmpdir\(\), "codex-home-"\)\)/);
 });
