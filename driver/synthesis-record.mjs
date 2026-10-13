@@ -42,7 +42,7 @@
 // prose, so the same check had nothing to run on. They are typed now, so it runs: a `confirmed-clean`
 // row whose area does not join the plan-execution receipt is refused AT THE CALL, in the turn where
 // restating it is free, rather than at a gate whose only repair is a forced re-ask of the whole stage.
-import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
+import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, renameSync, rmSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
@@ -438,6 +438,95 @@ export function lastAcceptedCall(runDir) {
     const { accepted } = synthesisCallPaths(String(runDir ?? ""));
     return JSON.parse(readFileSync(accepted, "utf8"))?.params ?? null;
   } catch { return null; }
+}
+
+// ── THE BASE A LATER PATCH BUILDS ON IS HELD, PUT BACK AND REPAIRED WITH THE RECORD ──────────────────────
+//
+// A corrective pass that saves and is then rolled back used to put back findings.json alone. narrative.md
+// kept the failed pass's text, and the merge base kept the failed pass's record, so the next patch merged onto
+// a record the rollback had discarded and quietly applied it again. The three functions below hold the
+// narrative and the base beside the findings snapshot, put them back, and let the driver write a repair into
+// the base, so a restore the next patch cannot see is not dropped by it.
+
+const writeAtomic = (file, text) => {
+  mkdirSync(dirname(file), { recursive: true });
+  const tmp = `${file}.${process.pid}.tmp`;
+  writeFileSync(tmp, text);
+  renameSync(tmp, file);
+};
+
+/** The merge base and the narrative as they stand: each file's bytes, or null where it is absent or unreadable. Never throws. */
+export function snapshotSynthesisBase(runDir) {
+  const dir0 = String(runDir ?? "");
+  const bytes = (at) => { try { return readFileSync(at, "utf8"); } catch { return null; } };
+  return { accepted: bytes(synthesisCallPaths(dir0).accepted), narrative: bytes(join(dir0, NARRATIVE_FILE)) };
+}
+
+/**
+ * Put back what `snapshotSynthesisBase` held. Never throws. Returns what happened to each file — "restored",
+ * "removed", "unchanged" or "failed" — or null when there is no snapshot, which leaves both files as they are.
+ *
+ * A snapshot that held NO base removes the one written since, so a later patch is refused for having no base
+ * rather than built on the pass that was discarded. A snapshot that held no narrative leaves the file as it
+ * stands: a run with no narrative.md reads as one whose synthesis never finished, and the rollback exists to
+ * deliver.
+ */
+export function restoreSynthesisBase(runDir, snap) {
+  if (!snap || typeof snap !== "object") return null;
+  const dir0 = String(runDir ?? "");
+  const putBack = (at, held, { removeWhenAbsent }) => {
+    try {
+      let now = null;
+      try { now = readFileSync(at, "utf8"); } catch { now = null; }
+      if (held == null) {
+        if (!removeWhenAbsent || now == null) return "unchanged";
+        rmSync(at, { force: true });
+        return "removed";
+      }
+      if (now === held) return "unchanged";
+      writeAtomic(at, held);
+      return "restored";
+    } catch { return "failed"; }
+  };
+  return {
+    accepted: putBack(synthesisCallPaths(dir0).accepted, snap.accepted, { removeWhenAbsent: true }),
+    narrative: putBack(join(dir0, NARRATIVE_FILE), snap.narrative, { removeWhenAbsent: false }),
+  };
+}
+
+/**
+ * A DRIVER EDIT TO THE MERGE BASE, judged before it is written. Never throws.
+ *
+ * `edit` is PURE: it takes the base's findings record, the model's own in its numbering, and returns the record
+ * to hold instead. The edited call is judged by `acceptSynthesis` with the run's own reads, as a call is, so the
+ * base stays what it has always been: the last record that passed. A refusal, a throw or a failed write leaves
+ * the base as it was.
+ *
+ * Returns `{ok: true, changed}` or `{ok: false, reason}`.
+ */
+export function rebaseSynthesis(runDir, edit, opts = {}) {
+  const dir0 = String(runDir ?? "");
+  const base = lastAcceptedCall(dir0);
+  if (!base || typeof base !== "object") return { ok: false, reason: "no_base: this run holds no accepted synthesis call to edit" };
+  let findings;
+  try { findings = edit(structuredClone(base.findings)); }
+  catch (e) { return { ok: false, reason: `edit_failed: ${String(e?.message ?? e).slice(0, 160)}` }; }
+  if (JSON.stringify(findings) === JSON.stringify(base.findings)) return { ok: true, changed: false };
+  const auto = driverReadsFor(dir0);
+  const { asks = auto.asks, ledger = auto.ledger, manifest = auto.manifest,
+    method = auto.method, methodInvalid = auto.methodInvalid ?? null,
+    owed = auto.owed, declined = auto.declined, recordOrigins = undefined,
+    now = () => new Date().toISOString() } = opts;
+  const call = { ...base, findings };
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: recordOriginsOr(recordOrigins) });
+  if (!v.ok) return { ok: false, reason: v.reason };
+  try {
+    writeAtomic(synthesisCallPaths(dir0).accepted, JSON.stringify({
+      _provenance: "the last ACCEPTED call, with a driver edit that passed the same acceptance — the base a later repair patches onto",
+      acceptedAt: now(), editedBy: "driver", params: call,
+    }, null, 2) + "\n");
+  } catch (e) { return { ok: false, reason: `write_failed: ${String(e?.message ?? e).slice(0, 160)}` }; }
+  return { ok: true, changed: true };
 }
 
 /**
