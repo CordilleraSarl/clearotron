@@ -626,18 +626,15 @@ export const validators = {
       // fields are the sentences a reader now sees FIRST, so a banned tone or a fabricated quantity in
       // `basis` reaches the page ahead of anything in `bullets`. A check whose span stops short of the
       // most prominent prose on the card is a check that stopped working the day the card changed.
-      const prose = [m.contextFraming, m.basis, ...(m.factors ?? []), ...(m.counterFactors ?? []), m.mitigation,
-        ...(m.bullets ?? []), ...(m.purpleNotes ?? []), m.registerEstimate].filter(Boolean).join("\n");
+      const prose = markProse(m);
       // — the model may not speak for the register lane. Checked over the mark's whole prose and
       // over this chunk's summary: the live defect was in the summary, and the fields are new surface
       // for exactly the same invention.
       const claim = [prose, c.chunkSummary].filter(Boolean).join("\n").match(REGISTER_CLAIM_RE);
       if (claim)
         return { ok: false, reason: `knockout_register_claim:${m.name}: "${claim[0].trim()}" — this turn cannot see the register lane and must not describe it. The report states register coverage in code, from the run's own count sidecar; a summary that says the registers were not run, above a table of counts that were, is the contradiction this rule closes. Delete the clause` };
-      const banned = prose.match(BANNED_TONE_RE);
-      if (banned) return { ok: false, reason: `mark "${m.name}": banned tone "${banned[0]}" — measured tone only (the band colour carries urgency)` };
-      const quant = prose.match(QUANT_CLAIM_RE);
-      if (quant) return { ok: false, reason: `mark "${m.name}": quantitative claim "${quant[0].trim()}" — describe nature and reach, never counts/figures` };
+      const toneOrFigure = toneOrFigureRefusal(m, prose);
+      if (toneOrFigure) return { ok: false, reason: toneOrFigure };
       // PR-5 — a "tool was blocked / lacked permission" explanation for missing coverage is a false
       // excuse on this lane too (register work is a PENDING framing here, never an outage story). Fires
       // in the chunk validator so the corrective ladder re-asks THIS chunk with the quoted lines.
@@ -730,6 +727,19 @@ export function raterCaveats(list) {
     .filter((c) => String(c ?? "").trim() && !isEngineAppendedCaveat(c));
 }
 
+/** A mark's prose as a reader meets it: every field the tone, figure and permission checks sweep. PURE. */
+const markProse = (m) => [m.contextFraming, m.basis, ...(m.factors ?? []), ...(m.counterFactors ?? []), m.mitigation,
+  ...(m.bullets ?? []), ...(m.purpleNotes ?? []), m.registerEstimate].filter(Boolean).join("\n");
+
+/** The banned-tone or quantity refusal for a mark's prose, in the chunk gate's own words; null when clean. PURE. */
+function toneOrFigureRefusal(m, prose = markProse(m)) {
+  const banned = prose.match(BANNED_TONE_RE);
+  if (banned) return `mark "${m.name}": banned tone "${banned[0]}" — measured tone only (the band colour carries urgency)`;
+  const quant = prose.match(QUANT_CLAIM_RE);
+  if (quant) return `mark "${m.name}": quantitative claim "${quant[0].trim()}" — describe nature and reach, never counts/figures`;
+  return null;
+}
+
 export function validateMergedFindings(runDir, merged, plan) {
   const failures = [];
   if (merged?.schema_version !== 1) failures.push("schema_version must be 1");
@@ -780,12 +790,13 @@ export function validateMergedFindings(runDir, merged, plan) {
   // each mark's contextFraming/bullets/purpleNotes/registerEstimate. It does NOT cover findings[].name /
   // .description, which the report renders onto the page; that span is picked up (as a FLAG, never a
   // refusal) by the publish-path lint added 2026-07-31.
-  const mergedProse = [String(merged?.batch?.executiveSummary ?? ""),
-    ...marks.map((m) => [m.contextFraming, m.basis, ...(m.factors ?? []), ...(m.counterFactors ?? []), m.mitigation,
-      ...(m.bullets ?? []), ...(m.purpleNotes ?? []), m.registerEstimate].filter(Boolean).join("\n")),
-  ].join("\n");
+  const mergedProse = [String(merged?.batch?.executiveSummary ?? ""), ...marks.map(markProse)].join("\n");
   for (const c of permissionProseChecks({ text: mergedProse, surface: "findings", idSuffix: ":knockout", structural: true, cards: false }).filter((x) => !x.pass))
     failures.push(c.detail);
+  // THE CHUNK GATE'S TONE AND FIGURE CHECKS, AGAIN ON WHAT SHIPS. The review's rewrites reach the record through
+  // this gate alone (pipeline-knockout.mjs), so a phrase or a figure the first pass would have refused is
+  // refused here too, in the same words, and the rated record stands.
+  for (const m of marks) { const toneOrFigure = toneOrFigureRefusal(m); if (toneOrFigure) failures.push(toneOrFigure); }
   // backstop, on the MERGED artifact — the same reason the permission check has one: a resume can
   // compose from chunk files written before this rule existed, and the register sentence is the one the
   // reader meets in the executive summary. The renderer owns register coverage; nothing else states it.
