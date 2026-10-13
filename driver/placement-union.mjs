@@ -328,8 +328,9 @@ export function unionPlacementForm(prior, submitted, input) {
   // EVERY FLOOR WITHOUT A FATE, below a thousand records, said back with its line: counted by the floor duty's
   // own reconcile over what this form renders and sets aside, so a floor on a line placed through another of its
   // records is owed here as the duty owes it. Only a crowd whose row may cover its floors, (b) at a thousand records
-  // or more, stands on its row and its count. Said back to an answer only: the form written before the step has
-  // answered would list every floor of the band.
+  // or more, stands on its row and its count. Said back once the step has answered, on this turn or an earlier one:
+  // the form written before any answer would list every floor of the band, and a turn whose form will not parse
+  // leaves the earlier answer standing, its floors still owed.
   const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors);
   const duty = reconcileFloorDuty({ floors: Array.isArray(input?.floors) ? input.floors : [],
     placements: renderPlacementsJson(form.rows).placements, setAsideGroundOf: groundOf });
@@ -344,7 +345,8 @@ export function unionPlacementForm(prior, submitted, input) {
     e.floors.push(r.record_id);
     unfated.set(k, e);
   }
-  if (submittedRows !== null && unfated.size) form.floors_without_fate = [...unfated.values()];
+  const answered = submittedRows !== null || priorRows.length > 0 || (Array.isArray(prior?.set_aside) && prior.set_aside.length > 0);
+  if (answered && unfated.size) form.floors_without_fate = [...unfated.values()];
   return { form, total: form.rows.length, settled, outstanding: form.rows.length - settled,
     carried, seat_rows: carriedSeat.length, unresolved: unresolved.length, set_aside: setAside.size, set_aside_groups: setAsideGroups.size,
     floors_without_fate: [...unfated.values()].reduce((n, e) => n + e.floors.length, 0) };

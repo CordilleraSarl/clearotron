@@ -20,7 +20,9 @@ import { validators } from "../verify.mjs";
 import { buildBandShape, deriveRegisterPositions } from "../band-shape.mjs";
 import { setAsideKeysOf } from "../placement-form.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
-import { outputStands } from "../pipeline.mjs";
+import { outputStands, deriveFloorDuty } from "../pipeline.mjs";
+import { paths } from "../stages.mjs";
+import { floorDutyBlock } from "../floor-duty.mjs";
 
 const FLOOR = "placement_floors_without_fate=1: /mark/eu/b1 in (b) — each is a floor";
 const REFUSED = "placement_refused=1: select /mark/eu/x (the band holds no record with this id) — the form refused each of these";
@@ -118,6 +120,11 @@ test("a floor tiered out of scope, refused, and left alone on the turns after: t
     assert.match(messages[1], /placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\)/);
     assert.equal(r.ok, true, `the run stopped with no report over a floor the step was told of: ${r.fail}`);
     assert.match(r.saidBackOpen, /placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\)/, "the open floor is not what the pass left recorded");
+    // What the run does next: the floor duty records the open floor, and the delivery guard names it in the report.
+    const duty = deriveFloorDuty({ paths: paths(dir) }, r);
+    assert.deepEqual(duty?.rows?.filter((x) => x.disposition === "unanswered").map((x) => x.record_id), ["/mark/eu/b1"], "the floor duty did not record the open floor");
+    const block = floorDutyBlock(duty, { armed: true });
+    assert.equal(block?.undischarged, 1, "the delivery guard has no open floor to name");
   } finally {
     for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
     rmSync(dir, { recursive: true, force: true });

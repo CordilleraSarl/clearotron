@@ -67,7 +67,9 @@ function run(t, { stamp = STAMP } = {}) {
   };
   const form = () => JSON.parse(readFileSync(join(dir, "_driver", "placement-form.form.json"), "utf8"));
   const placements = () => JSON.parse(readFileSync(join(dir, "placements.json"), "utf8")).placements;
-  return { shape, turn, form, placements, dir };
+  // A turn whose write was cut off: the form will not parse.
+  const tear = () => writeFileSync(join(dir, "placement-form.json"), '{"rows": [');
+  return { shape, turn, form, placements, dir, tear };
 }
 const place = (id, tier = "sheet-2") => ({ select: id, tier, reason: "identical mark in class 9, live; completes the record" });
 const EVERY_FLOOR = ["/mark/eu/a1", "/mark/eu/b1", "/mark/eu/g1", "/mark/gb/g2", "/mark/eu/o1"].map((id) => place(id));
@@ -131,20 +133,41 @@ test("a floor row whose tier the form refused is not read as placed: its group's
   assert.deepEqual(r.form().floors_without_fate?.map((e) => e.floors), [["/mark/eu/b1"]]);
   // The step judged the row and the form refused its tier: the floor is said back, with why the tier was refused.
   assert.equal(v.ok, false);
-  assert.match(v.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /, "the refused tier was read as a row left unfinished");
+  assert.match(v.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_tier_invalid\) — /, "the refused tier was read as a row left unfinished");
   assert.match(v.reason, /The form also refused, each for the reason given: the tier on \/mark\/eu\/b1 \(an identical mark live in an ordered or frame-added class is never out-of-scope-filtered/);
 });
 
 test("a floor whose tier the form refused, left alone on the turns after, is said back as a floor and never fails as an unfinished row", (t) => {
   const r = run(t);
   const v1 = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), place("/mark/eu/b1", "out-of-scope-filtered")] });
-  assert.match(v1.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /);
+  assert.match(v1.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_tier_invalid\) — /);
   // Turn 2: the step leaves the form as the driver wrote it. The stored row has no tier left, and the tier refusal
   // is not rebuilt, since nothing re-sent the tier.
   const v2 = r.turn(null);
-  assert.match(v2.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /, `turn 2 read the floor's row as unfinished: ${v2.reason}`);
+  assert.match(v2.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_tier_invalid\) — /, `turn 2 read the floor's row as unfinished: ${v2.reason}`);
   const v3 = r.turn({ rows: [] });
-  assert.match(v3.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /, `turn 3 read the floor's row as unfinished: ${v3.reason}`);
+  assert.match(v3.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_tier_invalid\) — /, `turn 3 read the floor's row as unfinished: ${v3.reason}`);
+});
+
+test("a form that will not parse on a later turn leaves the earlier answer standing, and its floor is still said back", (t) => {
+  const r = run(t);
+  const v1 = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), place("/mark/eu/b1", "out-of-scope-filtered")] });
+  assert.match(v1.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_tier_invalid\) — /);
+  r.tear();
+  const v2 = r.turn(null);
+  assert.equal(v2.ok, false, "a torn form took the pass with the floor never named again");
+  assert.match(v2.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\)/);
+  rmSync(join(r.dir, "placement-form.json"));
+  const v3 = r.turn(null);
+  assert.match(v3.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\)/, "a deleted form took the pass with the floor never named again");
+});
+
+test("a floor whose own row lacks its reason is named with that row and what it lacks", (t) => {
+  const r = run(t);
+  const v = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), { select: "/mark/eu/b1", tier: "sheet-2" }] });
+  assert.match(v.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_reason_missing\) — /,
+    "the step was told to select a record it had selected, not what its row lacks");
+  assert.match(v.reason, /Where a floor's row is named, finish that row: a floor's row owes a tier, sheet-2 at the least, and a reason stating the ground\. Only these are owed/);
 });
 
 test("a pass whose only selection is a floor with its tier refused says the floor back, and is not refused as a lost register", (t) => {

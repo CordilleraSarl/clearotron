@@ -35,7 +35,7 @@ import { coverageFormStamp, readCoverageForm } from "./coverage-form-io.mjs";
 import { readUnacknowledgedTaintAxes } from "./register-taint.mjs";
 import { registerPlanCallKilled } from "./tool-calls.mjs";   // — did the dictated call return?
 import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, isUnconditionalProceed, joinFindingToBlock, parseBlockOrd } from "./findings-model.mjs";
-import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount, floorRowIds } from "./placement-form.mjs";
+import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount, floorRowIds, rowsHoldingFloors } from "./placement-form.mjs";
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
 import { parseFrameworkManifest, materialBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
@@ -2671,10 +2671,20 @@ function placementAccountVerdict(dir) {
   // the turn its tier was refused or on any turn after it, when the stored row has no tier left (ruled 2026-10-13).
   const floorRows = saidBack ? floorRowIds(rows, shapeFloors(dir)) : new Set();
   const unjudged = a.unjudged.filter((u) => !(u.kind === "register" && floorRows.has(u.row_id)));
+  // A floor whose own row is on the form, unfinished, is named with that row and what it lacks, so the step finishes
+  // the row rather than selecting again the record it already selected.
+  const causeOf = new Map(a.unjudged.map((u) => [u.row_id, u.cause]));
+  const rowOf = rowsHoldingFloors(rows, (saidBack?.floorEntries ?? []).map((e) => e.id));
+  const floors = (saidBack?.floorEntries ?? []).map(({ id, group }) => {
+    const rid = rowOf.get(id), cause = rid ? causeOf.get(rid) : null;
+    return `${id}${group ? ` in (${group})` : ""}${cause ? `, its row ${rid} (${cause})` : ""}`;
+  });
+  const finishRow = floors.some((f) => f.includes(", its row ")) ? " Where a floor's row is named, finish that row: a floor's row owes a tier, "
+    + "sheet-2 at the least, and a reason stating the ground." : "";
   if (unjudged.length) {
     const named = unjudged.slice(0, 8).map((u) => `${u.row_id ?? u.select ?? "?"} (${u.cause})`).join(", ");
-    const floorsToo = saidBack?.floors.length ? ` The form gives these floors no fate either: ${capped(saidBack.floors)}. Place each by `
-      + "selecting that record, sheet-2 at the least, or set its line aside by name on its status or its territory." : "";
+    const floorsToo = floors.length ? ` The form gives these floors no fate either: ${capped(floors)}. Place each by `
+      + `selecting that record, sheet-2 at the least, or set its line aside by name on its status or its territory.${finishRow}` : "";
     return fail(`placement_unjudged=${unjudged.length}: ${named}${unjudged.length > 8 ? ", …" : ""} — each of these rows is `
       + "in placement-form.json and its own judgement will not render: a selected row owes a `tier` from the closed set and a `reason` "
       + "stating the ground; a row you wrote in full owes mark, owner and jurisdiction too. Finish these rows in the form; "
@@ -2689,7 +2699,7 @@ function placementAccountVerdict(dir) {
       + `is refused on a fact the driver copies from the register's own records (${causes}) — not one reaches placements.json. `
       + "This is not a judgement the seat can repair: those fields are machine-copied and anything typed into them is ignored.");
   }
-  return saidBack ? placementSaidBackVerdict(saidBack) : ok();
+  return saidBack ? placementSaidBackVerdict({ ...saidBack, floors, finishRow }) : ok();
 }
 
 // ── WHAT THE FORM REFUSED IS SAID BACK IN THE PASS, AND A FLOOR WITHOUT A FATE IS REFUSED AT ITS END ────────
@@ -2728,15 +2738,15 @@ function formRefusals(raw) {
     ...list("set_aside_refused").map((x) => `the row setting aside ${x?.set_aside} (${x?.why})`),
     ...list("set_aside_group_refused").map((x) => `the row on group ${x?.set_aside_group} (${x?.why})`),
   ];
-  const floors = list("floors_without_fate").flatMap((e) => (Array.isArray(e?.floors) ? e.floors : []).map((id) => `${id}${e?.group ? ` in (${e.group})` : ""}`));
-  return { refused, floors, also: refused.length ? ` The form also refused, each for the reason given: ${capped(refused)}.` : "" };
+  const floorEntries = list("floors_without_fate").flatMap((e) => (Array.isArray(e?.floors) ? e.floors : []).map((id) => ({ id, group: e?.group ?? null })));
+  return { refused, floorEntries, also: refused.length ? ` The form also refused, each for the reason given: ${capped(refused)}.` : "" };
 }
-function placementSaidBackVerdict({ refused, floors, also }) {
+function placementSaidBackVerdict({ refused, floors, also, finishRow = "" }) {
   if (floors.length)
     return fail(`placement_floors_without_fate=${floors.length}: ${capped(floors)} — each is a floor, a live identical or `
       + "near-identical mark in an ordered class, and the form gives it no fate. "
       + "Place it by selecting that record, sheet-2 at the least, or set its line aside by name on its status or its "
-      + `territory. Only these are owed; every other row stands.${also}`);
+      + `territory.${finishRow} Only these are owed; every other row stands.${also}`);
   if (refused.length)
     return fail(`placement_refused=${refused.length}: ${capped(refused)} — the form refused each of these for the reason given `
       + "with it, and nothing else on the form moved. Send each again corrected, or leave it out; every other row stands.");

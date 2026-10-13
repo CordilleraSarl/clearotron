@@ -347,6 +347,14 @@ export function floorRowIds(rows, floors) {
     .filter((r) => (Array.isArray(r?.records) ? r.records : []).some((u) => floorUris.has(key(u)))).map((r) => r?.row_id));
 }
 
+/** The row on the form holding each of these floor records, by row id or null, keyed as floorRowIds keys them. PURE. */
+export function rowsHoldingFloors(rows, floorIds) {
+  const key = (u) => normalizeRecordUri(u) || String(u ?? "");
+  const rowOf = new Map();
+  for (const r of Array.isArray(rows) ? rows : []) for (const u of Array.isArray(r?.records) ? r.records : []) if (!rowOf.has(key(u))) rowOf.set(key(u), r?.row_id ?? null);
+  return new Map((Array.isArray(floorIds) ? floorIds : []).map((id) => [id, rowOf.get(key(id)) ?? null]));
+}
+
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */
 export function formRowKey(row) {
   if (row?.kind === "seat")
