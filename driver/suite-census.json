@@ -927,6 +927,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-nice-class-reads-one-way.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-non-latin-mark-is-delivered-with-its-report-link.test.mjs": {
           "tests": 3,
           "asserts": 11,

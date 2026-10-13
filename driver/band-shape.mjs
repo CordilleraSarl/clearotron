@@ -258,7 +258,7 @@ export function dominantElementBasis(markText, prep) {
 export function dominantElementComposites(band, { dominantElement, inScopeClasses = [] } = {}) {
   const prep = prepareDominantElement(dominantElement);
   if (!prep) return null;                         // no comparable dominant element ⇒ not computable
-  const scope = new Set((inScopeClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
+  const scope = new Set((inScopeClasses ?? []).map(niceClassKey).filter(Boolean));
   const inScope = (r) => {
     const cls = classesOf(r);
     if (!scope.size) return true;
@@ -531,7 +531,9 @@ export function deriveRegisterPositions(records, detailByUri = new Map()) {
 }
 
 const inc = (obj, key, by = 1) => { const k = String(key); obj[k] = (obj[k] ?? 0) + by; };
-const classesOf = (r) => (Array.isArray(r?.classes) ? r.classes : r?.classes != null ? [r.classes] : []).map((c) => String(c).trim()).filter(Boolean);
+/** A Nice class in one spelling: "09", "9" and 9 are class 9. The shape's scope, its floors and the lookup's class filter read it so. PURE. */
+export const niceClassKey = (c) => { const t = String(c ?? "").trim(); return /^\d+$/.test(t) ? String(Number(t)) : t; };
+const classesOf = (r) => (Array.isArray(r?.classes) ? r.classes : r?.classes != null ? [r.classes] : []).map(niceClassKey).filter(Boolean);
 const registryOf = (r) => String(r?.screen?.registry ?? (Array.isArray(r?.jurisdictions) ? r.jurisdictions[0] : r?.jurisdictions) ?? "").trim() || "unknown";
 const yearOf = (r) => {
   const m = String(r?.application_date ?? r?.screen?.applicationDate ?? "").match(/\b(19|20)\d{2}\b/);
@@ -591,7 +593,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const prepared = prepareTargets(Array.isArray(targets) && targets.every(isPrepared) ? targets.map((t) => t.text) : targets);
   const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
   const crowds = Array.isArray(band?.crowds) ? band.crowds : [];
-  const scope = new Set((inScopeClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
+  const scope = new Set((inScopeClasses ?? []).map(niceClassKey).filter(Boolean));
   const inScope = (r) => {
     const cls = classesOf(r);
     if (!scope.size) return true;               // no instructed classes ⇒ everything is in scope
