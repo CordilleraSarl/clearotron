@@ -46,7 +46,7 @@ import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, ren
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { parseFindingsJson, COVERAGE_AREA_STATES } from "./findings-model.mjs";
+import { parseFindingsJson, COVERAGE_AREA_STATES, TOP_KEYS_CURRENT } from "./findings-model.mjs";
 import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { findCoverageRecommendations } from "./verify.mjs";
 import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";   // — the seat's own declines, read by the driver never asserted by the seat
@@ -529,6 +529,70 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
   return { ok: true, changed: true };
 }
 
+// ── A FINDINGS OBJECT WITH NO LIST IS A PATCH ON THE REGISTERS IT CARRIES ───────────────────────────────
+//
+// A correction has been seen to send the registers it changed inside a `findings` object that carries no
+// findings list, beside its rows. Read as a document, that object has no findings at all, and the call was
+// refused as an unparseable record, or as a record accounting for none of the run's owed records, though the
+// stored record held every one. A findings list makes the document whole; without one, the call patches what
+// it carries, and the merged record is judged whole as any call is.
+//
+// MAIN'S READING STANDS FOR EVERYTHING ELSE. A list-less object reads as registers only when there is a stored
+// record to patch, every key it carries is a register of the record's ladder or its rows, its envelope is absent
+// or equal to the stored one, and its rows are unambiguous. Any other shape is read exactly as it always was,
+// so the model meets the refusal it always met, byte for byte.
+
+const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
+// Key-sorted JSON: "the same content" must not turn on the order the model wrote its keys in.
+const canon = (v) => (v === null || typeof v !== "object") ? JSON.stringify(v)
+  : Array.isArray(v) ? `[${v.map(canon).join(",")}]`
+  : `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canon(v[k])}`).join(",")}}`;
+const sameValue = (a, b) => canon(a) === canon(b);
+
+// The record's envelope. A list-less object that would change either is not a register edit: re-versioning is a
+// whole re-send (the schema-downlevel rung), and read as registers it could move the stored list to another
+// version's rules without the list ever being sent.
+const ENVELOPE_KEYS = ["schema_version", "rated_under_framework"];
+// What a list-less object may carry to be read as registers: a key of the record's ladder, or rows.
+const REGISTER_PATCH_KEYS = new Set([...TOP_KEYS_CURRENT.filter((k) => k !== "findings"), "findings_patch"]);
+
+/**
+ * Rows sent inside a list-less `findings`, beside the call's own. PURE. Null when that is ambiguous: rows that are
+ * not an array, or one ordinal carrying two different rows, whether both are nested or one is at the top level. A
+ * nested row that repeats one already sent is applied once, and `lifted` counts only the rows actually added.
+ */
+function liftNestedRows(top, nested) {
+  if (nested === undefined) return { rows: top, lifted: 0 };
+  if (!Array.isArray(nested) || (top != null && !Array.isArray(top))) return null;
+  const sent = new Map((top ?? []).map((r) => [r?.ordinal, r]));
+  const added = [];
+  for (const r of nested) {
+    if (sent.has(r?.ordinal)) {
+      if (!sameValue(sent.get(r?.ordinal), r)) return null;
+      continue;
+    }
+    sent.set(r?.ordinal, r);
+    added.push(r);
+  }
+  return { rows: added.length ? [...(top ?? []), ...added] : top, lifted: added.length };
+}
+
+/**
+ * A call whose `findings` carries no list, read as a patch on the registers it carries onto `stored`. PURE.
+ *
+ * Returns `{registers, rows, lifted}`, or null when the call does not read that way (see above), and null leaves
+ * the call to main's reading of it. `rows` are the call's own `findings_patch` with the nested rows after them.
+ */
+export function registerPatchOf(stored, call) {
+  const doc = call?.findings;
+  if (!isPlainObject(stored?.findings) || !isPlainObject(doc) || Object.hasOwn(doc, "findings")) return null;
+  if (Object.keys(doc).some((k) => !REGISTER_PATCH_KEYS.has(k))) return null;
+  if (ENVELOPE_KEYS.some((k) => Object.hasOwn(doc, k) && !sameValue(doc[k], stored.findings[k]))) return null;
+  const { findings_patch: nested, ...registers } = doc;
+  const lift = liftNestedRows(call.findings_patch, nested);
+  return lift ? { registers, rows: lift.rows, lifted: lift.lifted } : null;
+}
+
 /**
  * Merge a patch call onto the stored one. PURE.
  *
@@ -540,6 +604,9 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
  * A patch naming an ordinal the stored call does not hold is a DEFECT, not an insert: the repair
  * ladder only ever patches findings the parse already quarantined, so an unknown ordinal means the seat
  * is repairing something this run does not have.
+ *
+ * Returns `{ok: true, merged, lifted}`, where `lifted` counts the rows taken from inside a list-less
+ * `findings`, or `{ok: false, reason}`.
  */
 export function mergeSynthesisPatch(stored, patch) {
   if (!stored) return { ok: false, reason: "synthesis_patch_without_base: this run has no accepted synthesis call to patch — send the complete `narrative` and `findings` instead. A patch is a repair of values the driver is holding, and it is holding none" };
@@ -549,9 +616,16 @@ export function mergeSynthesisPatch(stored, patch) {
   // still arrives here rather than as a first call, because it carries no narrative — and the narrative
   // it is not being asked to redo is the stored one. Without this the rung could not succeed: the call
   // was refused for `synthesis_narrative_missing`, naming sections nobody had asked the seat to resend.
-  if (patch?.findings !== undefined) out.findings = patch.findings;
+  //
+  // A `findings` OBJECT WITH NO LIST is the other shape (`registerPatchOf`): each register it carries replaces
+  // the stored one and the rest are held, and rows sent inside it are applied as rows. Precedence: the stored
+  // record, then those registers, then the call's top-level registers (copied last, below, so the top-level
+  // copy wins); rows replace whole findings by ordinal; narrative sections replace sections.
+  const asRegisters = registerPatchOf(stored, patch);
+  if (asRegisters) Object.assign(out.findings, asRegisters.registers);
+  else if (patch?.findings !== undefined) out.findings = patch.findings;
   for (const [k, v] of Object.entries(patch?.narrative ?? {})) out.narrative[k] = v;
-  const rows = patch?.findings_patch;
+  const rows = asRegisters ? asRegisters.rows : patch?.findings_patch;
   if (rows != null) {
     if (!Array.isArray(rows)) return { ok: false, reason: "synthesis_patch_shape: `findings_patch` is an array of complete finding objects, each carrying the `ordinal` of the finding it replaces" };
     const byOrdinal = new Map((out.findings.findings ?? []).map((f, i) => [f?.ordinal, i]));
@@ -567,7 +641,7 @@ export function mergeSynthesisPatch(stored, patch) {
   for (const [k, v] of Object.entries(patch ?? {})) {
     if (k !== "narrative" && k !== "findings_patch" && k !== "findings") out.findings[k] = v;
   }
-  return { ok: true, merged: out };
+  return { ok: true, merged: out, lifted: asRegisters?.lifted ?? 0 };
 }
 
 /**
@@ -715,7 +789,11 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // a second way to say the same thing and the two can disagree. Either half may be the missing one —
   // a corrective sends findings changes with no narrative rewrite, a schema migration re-emits the
   // whole record and touches no section — and in both cases the half not sent is the stored one.
-  const isPatch = Boolean(received) && (received.findings === undefined || received.narrative === undefined);
+  // A call whose `findings` carries NO LIST is a patch too, on the registers it carries, where there is a stored
+  // record to patch and the call reads that way (`registerPatchOf`); any other shape is read as it always was.
+  const stored = lastAcceptedCall(dir0);
+  const isPatch = Boolean(received) && (received.findings === undefined || received.narrative === undefined
+    || registerPatchOf(stored, received) !== null);
   let call = received;
   // Appended, never overwritten: a turn can be refused more than once and each one is a fact about the
   // run. Best-effort — bookkeeping that can kill a run is worse than bookkeeping that is absent.
@@ -724,7 +802,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   };
 
   if (isPatch) {
-    const merged = mergeSynthesisPatch(lastAcceptedCall(dir0), received);
+    const merged = mergeSynthesisPatch(stored, received);
     if (!merged.ok) {
       noteRefusal(merged.reason);
       return { written: null, refused: merged.reason,

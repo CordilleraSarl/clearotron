@@ -2638,3 +2638,11 @@ export function blankForeignRecordLinks(doc, origins) {
   });
   return { doc: { ...doc, findings }, blanked, kept };
 }
+
+/**
+ * THE TOP-LEVEL KEYS OF THE FINDINGS DOCUMENT AT THE CURRENT SCHEMA VERSION — the registers a synthesis
+ * correction may carry. Exported for the transport, which reads a findings object carrying no list as a patch
+ * on these and nothing else. Derived from the ladder above, never copied, for the reason
+ * FINDING_KEYS_CURRENT is: a second list would drift the first time the ladder gains a key.
+ */
+export const TOP_KEYS_CURRENT = Object.freeze([...TOP_KEYS_V7]);
