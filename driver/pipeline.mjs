@@ -148,7 +148,7 @@ import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-
 import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf } from "./stage-freshness.mjs";
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
@@ -633,6 +633,7 @@ export function settleDerivedBases(ctx, at) {   // @internal
     });
     let applied = 0;
     let unwritable = 0;
+    let heldBase = null;   // what the synthesis merge base took, when there was a demotion to give it
     if (demotions.length) {
       let onDisk = null;
       try { onDisk = JSON.parse(raw); } catch { onDisk = null; }
@@ -647,6 +648,23 @@ export function settleDerivedBases(ctx, at) {   // @internal
         const next = applyDerivedBases(onDisk, demotions);
         applied = next.applied;
         atomicWrite(P.findings, JSON.stringify(next.doc, null, 2) + "\n");
+        // THE HELD BASE TAKES THE SAME DEMOTIONS. Every accepted synthesis patch merges onto
+        // `_driver/synthesis-calls/accepted.json` and re-renders the findings it does not name from there, so a
+        // demotion written to this file alone came back with the next patch, and the evidence check then told
+        // the reviewer the stamp had returned. In the model's numbering: under a fold, a demotion lands on the
+        // member the fold kept, whose object the folded finding is. The edit is judged as a call is; a refusal
+        // leaves the base byte-identical and is recorded below, and the run goes on as it did before.
+        if (applied) {
+          const fold = readFold(P.runDir);
+          const inModel = demotions.map((d) => ({ ...d, ordinal: keptModelOrdinal(fold, d.ordinal) })).filter((d) => d.ordinal != null);
+          const r = rebaseSynthesis(P.runDir, (held) => applyDerivedBases(held, inModel).doc);
+          heldBase = r.ok ? { base: r.changed ? "demoted" : "unchanged" }
+            : /^no_base:/.test(String(r.reason)) ? { base: "no-base" } : { base: "refused", baseReason: String(r.reason).slice(0, 200) };
+          if (heldBase.base === "refused") {
+            note(`basis derivation (${at}): the synthesis merge base could not take the demotions (${heldBase.baseReason.slice(0, 100)}) — `
+              + `it is left as it was, and the next accepted patch re-renders the stamps it holds`);
+          }
+        }
         // A SHORTFALL IS A FINDING. The demotions are computed against the lenient parse, which normalises
         // — so a raw finding missing the `ordinal` the match keys on would leave an unprovable claim
         // standing while `demoted` and `rows` sat next to each other looking consistent. Say it.
@@ -670,10 +688,11 @@ export function settleDerivedBases(ctx, at) {   // @internal
       .filter((m) => m?.basis === "verified-from-record").length, 0);
     const record = { ts: new Date().toISOString(), at,
       stamped_before: stampedBefore, stamped_after: stampedBefore - applied, demoted: applied,
-      ...(unwritable ? { unwritable } : {}),
+      ...(unwritable ? { unwritable } : {}), ...(heldBase ?? {}),
       rows: demotions.map((d) => ({ ordinal: d.ordinal, mark: d.mark, meter: d.meter, uri: d.uri, why: d.why })) };
     atomicWrite(P.basisDerivation, JSON.stringify(record, null, 2) + "\n");
     runLog(P.runDir, { event: "basis-derivation", at, stamped_after: stampedBefore - applied, demoted: applied,
+      ...(heldBase ? { base: heldBase.base } : {}),
       never_fetched: demotions.filter((d) => d.why === "record-never-fetched").length,
       never_read: demotions.filter((d) => d.why === "record-on-disk-never-read").length });
     return record;
