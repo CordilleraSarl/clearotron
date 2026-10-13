@@ -185,7 +185,7 @@
         },
         "a-childs-output-is-decoded-as-a-stream.test.mjs": {
           "tests": 3,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 1,
           "todos": 0
         },
