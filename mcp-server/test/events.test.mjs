@@ -112,3 +112,22 @@ test("folding an attempt out does NOT renumber seq — a poll cursor never re-re
   // …and a cursor held at the entry before the fold still returns exactly the entries after it
   assert.deepEqual(events.projectTimeline(evs, P, { sinceSeq: 0 }).timeline.map((t) => t.seq), [2, 3]);
 });
+
+// The run log carries records about the engine's own transport that are not decisions and have no reader on a
+// timeline read out in front of lawyers and clients. Such a record is projected out entirely, as a succeeded
+// attempt is, and the seq numbering is assigned over the full log first, so a poll cursor is unaffected.
+test("an engine-internal record never reaches the timeline or the account's view of it, and seq numbering is kept", async () => {
+  const P = runs.resolveRun(RUN_ID).P;
+  const evs = [
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
+    { ts: "2026-07-29T19:05:00.000Z", event: "synthesis-call-normalised", stage: "synthesis", seq: 2, accepted: true,
+      decoded: ["corrections"], lifted: 0, overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 },
+    { ts: "2026-07-29T19:14:00.000Z", event: "verdict", verdict: "CONDITIONAL" },
+  ];
+  const { timeline } = events.projectTimeline(evs, P);
+  assert.deepEqual(timeline.map((t) => t.kind), ["start", "verdict"], "an engine-internal record reached the timeline");
+  assert.deepEqual(timeline.map((t) => t.seq), [0, 2], "projecting the record out renumbered the entries after it");
+  const { accountTimeline } = await import("../lib/audit-view.mjs");
+  assert.ok(!JSON.stringify(accountTimeline({ timeline })).includes("synthesis-call-normalised"),
+    "the account's view of the timeline names the engine-internal record");
+});

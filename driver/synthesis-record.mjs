@@ -53,6 +53,7 @@ import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
 import { findingUris } from "./record-carry.mjs";   // one derivation of "which records did the findings name", called not copied
 import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam is passed, the saved record is folded again
+import { runLog } from "./log.mjs";   // what the transport read a call as goes to the run's record, never to the model's answer
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
@@ -602,12 +603,30 @@ export function registerPatchOf(stored, call) {
  * decodes to an object is replaced, and the object is then validated as any marker is; anything else stays as it
  * came, and the parser refuses it as it always did. A call carrying a list — a whole call, or a record re-sent
  * with no narrative — is read exactly as main reads it.
+ *
+ * WHAT IS COUNTED, for the run log only. On a WHOLE call every top-level key beside its narrative and its findings
+ * is ignored, as it always was, and counted: `keysIgnored` for keys, which are never named, since a key off the
+ * record's ladder is the model's own word; `rowsIgnored` for a top-level `findings_patch`, and `rowsDiffering` for
+ * those of its rows the record's own list does not hold as sent. On a register patch, a register sent both
+ * inside `findings` and at the top level with different values is named in `overridden`: the top-level copy wins,
+ * as it always has on a patch, and the name is a register of the ladder.
  */
 export function readSynthesisCall(received, stored) {
-  const notes = { decoded: [] };
+  const notes = { decoded: [], overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
   if (!isPlainObject(received)) return { call: received, notes };
   const asRegisters = registerPatchOf(stored, received) !== null;
-  if (received.findings !== undefined && !asRegisters) return { call: received, notes };
+  if (received.findings !== undefined && !asRegisters) {
+    if (received.narrative !== undefined) {   // a whole call
+      const list = new Map((Array.isArray(received.findings?.findings) ? received.findings.findings : []).map((f) => [f?.ordinal, f]));
+      for (const [k, v] of Object.entries(received)) {
+        if (k === "narrative" || k === "findings") continue;
+        if (k !== "findings_patch" || !Array.isArray(v)) { notes.keysIgnored++; continue; }
+        notes.rowsIgnored += v.length;
+        notes.rowsDiffering += v.filter((r) => !list.has(r?.ordinal) || !sameValue(list.get(r?.ordinal), r)).length;
+      }
+    }
+    return { call: received, notes };
+  }
   const decode = (v) => { try { const x = JSON.parse(v); return isPlainObject(x) ? x : undefined; } catch { return undefined; } };
   let call = received;
   if (typeof call.corrections === "string") {
@@ -617,6 +636,11 @@ export function readSynthesisCall(received, stored) {
   if (asRegisters && typeof call.findings.corrections === "string") {
     const x = decode(call.findings.corrections);
     if (x !== undefined) { call = { ...call, findings: { ...call.findings, corrections: x } }; notes.decoded.push("findings.corrections"); }
+  }
+  if (asRegisters) {   // compared as read, so a marker decoded on one side is not a difference
+    for (const k of Object.keys(call.findings)) {
+      if (k !== "findings_patch" && Object.hasOwn(call, k) && !sameValue(call[k], call.findings[k])) notes.overridden.push(k);
+    }
   }
   return { call, notes };
 }
@@ -826,6 +850,18 @@ export function recordSynthesis(runDir, received, opts = {}) {
   let call = read.call;
   const isPatch = Boolean(call) && (call.findings === undefined || call.narrative === undefined
     || registerPatchOf(stored, call) !== null);
+  // WHAT THE TRANSPORT READ THE CALL AS: one run-log row at whichever exit the call takes, beside the decision,
+  // when the reading decoded, lifted, overrode or ignored anything. Never in the answer below, which the tool
+  // returns whole into the model's turn. Best-effort, as the foreign-link record is.
+  const reading = { ...read.notes, lifted: 0 };
+  const recordReading = (accepted) => {
+    if (!reading.decoded.length && !reading.lifted && !reading.overridden.length && !reading.keysIgnored && !reading.rowsIgnored) return;
+    try {
+      runLog(dir0, { event: "synthesis-call-normalised", stage: "synthesis", seq: cap.seq ?? null, accepted,
+        decoded: reading.decoded, lifted: reading.lifted, overridden: reading.overridden,
+        keysIgnored: reading.keysIgnored, rowsIgnored: reading.rowsIgnored, rowsDiffering: reading.rowsDiffering });
+    } catch { /* a log that cannot be written must not stop the record it describes */ }
+  };
   // Appended, never overwritten: a turn can be refused more than once and each one is a fact about the
   // run. Best-effort — bookkeeping that can kill a run is worse than bookkeeping that is absent.
   const noteRefusal = (reason) => {
@@ -836,9 +872,11 @@ export function recordSynthesis(runDir, received, opts = {}) {
     const merged = mergeSynthesisPatch(stored, call);   // the call as READ: a decoded marker merges as an object
     if (!merged.ok) {
       noteRefusal(merged.reason);
+      recordReading(false);
       return { written: null, refused: merged.reason,
         captured: closeCapture({ ok: false, refused: merged.reason }), capture_failed: captureFailed };
     }
+    reading.lifted = merged.lifted ?? 0;
     call = merged.merged;
   }
 
@@ -854,6 +892,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: origins });
   if (!v.ok) {
     noteRefusal(v.reason);
+    recordReading(false);
     return { written: null, refused: v.reason,
       captured: closeCapture({ ok: false, refused: v.reason }), capture_failed: captureFailed };
   }
@@ -872,6 +911,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   } catch (e) {
     // The call was VALID and we could not store it. That is infrastructure, and it must not read as a
     // rejected call — the two have opposite repairs.
+    recordReading(false);
     return {
       written: null, refused: null,
       write_failed: String(e?.message ?? e).slice(0, 200),
@@ -882,6 +922,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // call records above stay the model's own, the base for its next patch; findings.json becomes the folded
   // record the reviewer, the cards and the delivery read. Before the seam this leaves the record as written.
   foldAfterSave(dir0, findingsAt);
+  recordReading(true);
 
   return {
     written: [findingsAt, narrativeAt], refused: null,

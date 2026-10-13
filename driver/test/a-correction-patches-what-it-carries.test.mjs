@@ -25,6 +25,7 @@ import { recordSynthesis, mergeSynthesisPatch, FINDINGS_FILE, NARRATIVE_FILE } f
 import { foldFindingsFile, UNFOLDED_FILE } from "../record-fold.mjs";
 import { parseFrameworkManifest } from "../framework.mjs";
 import { parseFrameworkMethod, freezeFrameworkMethod, FROZEN_METHOD_FILE } from "../framework-method.mjs";
+import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 
 const NARRATIVE = {
@@ -331,4 +332,129 @@ test("a marker string on a call that carries a findings list is read exactly as 
     /^synthesis_findings_invalid: findings_corrections_invalid /, "a record with no narrative and a nested string marker");
   refusesUnchanged(dir, { findings: record(), corrections: JSON.stringify(MARKER) },
     /^synthesis_findings_invalid: findings_corrections_invalid /, "a record with no narrative and a top-level string marker");
+});
+
+// ── WHAT THE TRANSPORT READ IS ON THE RUN'S RECORD ────────────────────────────────────────────────────
+//
+// Each decode, lift and override is written to the run log as `synthesis-call-normalised`, and so are the keys
+// and rows a whole call carries beside its record, which main ignores and still ignores: counted, never named.
+// Never in the answer the model reads. A call whose reading changed nothing writes no row.
+
+const readings = (dir) => (read(driverDir(dir, "run.jsonl")) ?? "").split("\n").filter(Boolean).map((l) => JSON.parse(l))
+  .filter((e) => e.event === "synthesis-call-normalised");
+const reading = (dir) => {
+  const rows = readings(dir);
+  assert.equal(rows.length, 1, `expected one reading on the run log, found ${rows.length}`);
+  const { ts: _ts, event: _event, stage, seq, ...rest } = rows[0];
+  assert.equal(stage, "synthesis");
+  assert.ok(Number.isInteger(seq), "the reading does not name the call it belongs to");
+  return rest;
+};
+const NOTHING = { decoded: [], lifted: 0, overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
+
+test("a lift, a decode and an override are each on the run log, and the answer the model reads is unchanged", () => {
+  const lifted = saved();
+  const r = recordSynthesis(lifted, { findings: { findings_patch: [ROW2()] } });
+  accepts(r, "rows nested in the findings object");
+  assert.deepEqual(reading(lifted), { ...NOTHING, accepted: true, lifted: 1 });
+  assert.deepEqual(Object.keys(r).sort(), ["captured", "capture_failed", "coverage_limits_checked", "coverage_rows", "findings", "refused", "written"].sort(),
+    "the answer the model reads gained a field");
+
+  const decoded = saved();
+  accepts(recordSynthesis(decoded, { findings_patch: [ROW2()], corrections: JSON.stringify(MARKER) }), "a string marker");
+  assert.deepEqual(reading(decoded), { ...NOTHING, accepted: true, decoded: ["corrections"] });
+  const nested = saved();
+  accepts(recordSynthesis(nested, { findings: { corrections: JSON.stringify(MARKER) }, findings_patch: [ROW2()] }), "a nested string marker");
+  assert.deepEqual(reading(nested), { ...NOTHING, accepted: true, decoded: ["findings.corrections"] });
+
+  // a register sent inside the object and at the top level: the top-level copy wins, as it always has on a patch
+  const twice = saved();
+  const top = [{ area: "the invented register", state: "coverage-limited", note: "The top-level copy." }];
+  accepts(recordSynthesis(twice, { findings: { coverage: COVERAGE }, coverage: top }), "a register sent twice");
+  assert.equal(canon(onDisk(twice).coverage), canon(top));
+  assert.deepEqual(reading(twice), { ...NOTHING, accepted: true, overridden: ["coverage"] });
+});
+
+test("a refused call's reading says it was refused, and a reading that changed nothing writes no row", () => {
+  const dir = saved({ method: true });
+  refusesUnchanged(dir, { findings: { findings_patch: [{ ...rated().findings[1], band: "Severe" }] } },
+    /^synthesis_findings_invalid: finding_band_off_table:2\b/, "a lifted row whose band its inputs do not give");
+  assert.deepEqual(reading(dir), { ...NOTHING, accepted: false, lifted: 1 });
+
+  const twin = saved();
+  accepts(recordSynthesis(twin, { findings: { findings_patch: [ROW2()] }, findings_patch: [ROW2()] }), "a row sent in both places");
+  assert.deepEqual(readings(twin), [], "a nested row that repeated a top-level row was counted as lifted");
+  const plain = saved();
+  accepts(recordSynthesis(plain, { findings_patch: [ROW2()] }), "a plain patch");
+  accepts(recordSynthesis(plain, { findings: { coverage: COVERAGE } }), "a register patch");
+  assert.deepEqual(readings(plain), [], "a call whose reading changed nothing wrote a row");
+});
+
+test("a whole call is read exactly as main reads it: what it carries beside its record is ignored, and counted", () => {
+  const list = record().findings;
+  const cases = [
+    ["a top-level coverage beside a nested one", { coverage: COVERAGE }, { keysIgnored: 1 }],
+    ["a top-level coverage where the record has none", { coverage: COVERAGE }, { keysIgnored: 1 }, (d) => { delete d.coverage; }],
+    ["a top-level corrections object", { corrections: MARKER }, { keysIgnored: 1 }],
+    ["a top-level schema_version", { schema_version: 6 }, { keysIgnored: 1 }],
+    ["a key off the ladder", { made_up_secret_key: 1 }, { keysIgnored: 1 }],
+    ["a top-level row that differs from the list", { findings_patch: [ROW2()] }, { rowsIgnored: 1, rowsDiffering: 1 }],
+    ["a top-level row identical to the list", { findings_patch: [list[1]] }, { rowsIgnored: 1, rowsDiffering: 0 }],
+  ];
+  for (const [what, extra, counted, trim] of cases) {
+    const dir = saved();
+    const doc = record();
+    if (trim) trim(doc);
+    const call = { narrative: NARRATIVE, findings: doc, ...extra };
+    accepts(recordSynthesis(dir, structuredClone(call)), what);
+    assert.deepEqual(base(dir), call, `${what}: the stored call is not the call as it arrived`);
+    assert.equal(canon(onDisk(dir).findings), canon(doc.findings), `${what}: the record's findings are not the ones it carried`);
+    for (const k of Object.keys(extra).filter((k) => k !== "findings_patch"))
+      assert.equal(canon(onDisk(dir)[k]), canon(doc[k]), `${what}: the top-level "${k}" reached the record`);
+    assert.deepEqual(reading(dir), { ...NOTHING, accepted: true, ...counted }, `${what}: miscounted`);
+    assert.ok(!read(driverDir(dir, "run.jsonl")).includes("made_up_secret_key"), `${what}: an unknown key was named on the run log`);
+  }
+});
+
+test("a whole call whose top-level copies are malformed or stale is accepted as main accepts it, first saves included", () => {
+  const clean = [{ area: "the invented register", state: "confirmed-clean", note: "A stale copy that says everything was clean." }];
+  const limited = [{ area: "the invented register", state: "coverage-limited", note: "The slice the run could not clear." }];
+  const ledgerLimit = (dir) => writeFileSync(join(dir, "register-coverage-ledger.json"),
+    JSON.stringify([{ axis: "primary-sweep", scope: "the invented register", status: "coverage-limited", reason: "invented" }]));
+  const cases = [
+    ["a first save with a top-level marker that is not JSON", runDir(), { corrections: "{not json" }],
+    ["a first save with a top-level marker in prose", runDir(), { corrections: "applied: yes" }],
+    ["a top-level mark assessment that is a string", saved(), { mark_assessment: "a string, not the object" }],
+    ["a top-level coverage sent as a JSON string", saved(), { coverage: JSON.stringify(COVERAGE) }],
+    ["a top-level marker that decodes to an invalid object", saved(), { corrections: JSON.stringify({ applied: "maybe" }) }],
+  ];
+  for (const [what, dir, extra] of cases) {
+    const call = { narrative: NARRATIVE, findings: record(), ...extra };
+    accepts(recordSynthesis(dir, structuredClone(call)), what);
+    assert.deepEqual(base(dir), call, `${what}: the stored call is not the call as it arrived`);
+  }
+  // a stale all-clean top-level coverage beside a nested one that carries the run's limit
+  for (const first of [true, false]) {
+    const dir = first ? runDir() : saved();
+    ledgerLimit(dir);
+    const doc = { ...record(), coverage: limited };
+    accepts(recordSynthesis(dir, { narrative: NARRATIVE, findings: doc, coverage: clean }), `a stale top-level coverage${first ? " on a first save" : ""}`);
+    assert.equal(canon(onDisk(dir).coverage), canon(limited), "the stale top-level copy replaced the record's own coverage");
+  }
+  // the same marker nested and at the top level
+  const dir = saved();
+  const call = { narrative: NARRATIVE, findings: { ...record(), corrections: MARKER }, corrections: MARKER };
+  accepts(recordSynthesis(dir, structuredClone(call)), "the same marker in both places");
+  assert.deepEqual(base(dir), call);
+});
+
+test("the delivery check's redo still orders a complete re-send for this tool, and a whole call it gets is read as main reads it", () => {
+  const lint = REPAIR_COMPOSERS.find((c) => c.key === "*:lint-repair");
+  const text = lint.compose({ label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, failures: [{ id: "x", detail: "a check" }] });
+  assert.ok(text.includes("the COMPLETE payload, not a patch"), "the redo's order for record_synthesis changed in this change");
+  const dir = saved();
+  const call = { narrative: NARRATIVE, findings: record(), coverage: COVERAGE };
+  accepts(recordSynthesis(dir, structuredClone(call)), "the redo's whole call with a top-level coverage");
+  assert.equal(canon(onDisk(dir).coverage), canon(record().coverage), "the top-level coverage of a whole call reached the record");
+  assert.deepEqual(reading(dir), { ...NOTHING, accepted: true, keysIgnored: 1 });
 });

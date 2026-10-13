@@ -152,6 +152,12 @@ function classify(e, st, rat) {
       return { ts, kind: "manual-rerun", phase: phaseFor(e.stage), stage: e.stage ?? null, decision: "manual-rerun", snapshot: e.snapshot ?? null };
     case "failed":
       return { ts, kind: "failed", phase: phaseFor(e.stage), stage: e.stage ?? null, decision: "run-failed", reason: e.reason ?? null };
+    // AN ENGINE-INTERNAL RECORD, NEVER A DECISION. How the synthesis transport read a call — a marker decoded, rows
+    // lifted, keys a call carried that the transport ignores — is a fact about the engine's own plumbing. It has
+    // no reader on a surface read out in front of lawyers and clients, so it is projected out of the timeline
+    // (`isInternalEntry`) rather than passed through under its own name.
+    case "synthesis-call-normalised":
+      return { ts, kind: e.event, decision: "engine-internal", internal: true };
     default:
       return { ts, kind: e.event ?? "unknown", decision: e.event ?? "unknown" }; // generic passthrough
   }
@@ -168,6 +174,9 @@ function classify(e, st, rat) {
 // one-sided — attempts survive here only when they say something `stage-completed` does not. Presentation
 // only: no gate, verdict path or delivery decision reads the projected timeline.
 const isNoiseEntry = (t) => t.kind === "attempt" && t.decision === "attempt-succeeded";
+// An engine-internal record (see classify) is folded out the same way, and for a stronger reason: it is not a
+// decision at all, and its name and fields would reach a client's timeline through the generic passthrough.
+const isInternalEntry = (t) => t.internal === true;
 
 /**
  * projectTimeline(events, P, {sinceTs}) → { timeline, verdictHistory }.
@@ -185,7 +194,7 @@ export function projectTimeline(events, P, { sinceTs, sinceSeq } = {}) {
     // unused, never compact the ones after it, or a `sinceSeq` cursor held by a poller would renumber (and
     // re-emit or skip) history it has already read.
     entry.seq = seq++;
-    if (isNoiseEntry(entry)) continue;
+    if (isNoiseEntry(entry) || isInternalEntry(entry)) continue;
     full.push(entry);
   }
   const verdictHistory = events.filter((e) => e.event === "verdict" || e.event === "verdict-2").map((e) => e.verdict ?? null);
