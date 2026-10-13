@@ -22,7 +22,7 @@ import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
 import { deliveryFlagLines } from '../predelivery-lint.mjs';
-import { unrenderableConditions } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface
+import { unrenderableConditions, clientStatement } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface
 import { runLog } from '../log.mjs';   // — one line in the run record when one does
 import { PROVIDERS, config } from '../driver.config.mjs';
 import { declaredRecordOrigins } from '../record-origins.mjs';
@@ -793,6 +793,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the narrative, never in a status line). Best-effort; legacy runs have no sidecar.
   let verdictInfo = null;
   try { verdictInfo = JSON.parse(readFileSync(driverDir(runDir, 'verdict.json'), 'utf8')); } catch { /* legacy */ }
+  // Every surface below reads the statement from here, so its count of further conditions is made true here, to
+  // the list the client reads (terminal-clamp.mjs clientStatement). The stored record is not touched.
+  if (typeof verdictInfo?.statement === 'string') verdictInfo = { ...verdictInfo, statement: clientStatement(verdictInfo) };
   // ── THE CONDITIONS THAT REACH NO PAGE, RECORDED RATHER THAN LOST ────────────────────────────────
   //
   // A condition whose reader-facing sentence was never stored and cannot be composed from the run

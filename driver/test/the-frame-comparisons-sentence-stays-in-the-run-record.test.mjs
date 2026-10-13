@@ -15,7 +15,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { clientConditions, unrenderableConditions, carriesEngineWords, clauseForDefect, terminalClampDecision } from "../terminal-clamp.mjs";
+import { clientConditions, unrenderableConditions, carriesEngineWords, clauseForDefect, terminalClampDecision, clientStatement } from "../terminal-clamp.mjs";
 import { riskStatement, statedConditions } from "../findings-model.mjs";
 import { clientConditionVoiceChecks, statementCoherenceChecks } from "../predelivery-lint.mjs";
 import { degradedParts, PART_NAMES } from "../degraded-parts.mjs";
@@ -30,6 +30,16 @@ test("an older record's stored clause in the engine's words reaches no client co
   assert.deepEqual(unrenderableConditions(older), [FRAME], "the withheld reason left the workbook's gaps sheet too");
   assert.deepEqual(statedConditions(older), { conds: [ASK], cls: [ASK] }, "the statement still counts the withheld clause");
   assert.equal(riskStatement(older), `Medium — conditional on: ${ASK}.`, "the statement led with, or counted, what the list withholds");
+});
+
+test("an older record's stored statement counts only the further conditions the client reads", () => {
+  const OTHER = "The earlier mark's use in the client's market is not shown on the record searched";
+  const three = { verdict: "CONDITIONAL", tier: "Medium", reasons: [ASK, OTHER, FRAME], clauses: [ASK, OTHER, FRAME], statement: `Medium — conditional on: ${ASK} (and 2 more).` };
+  assert.equal(clientStatement(three), `Medium — conditional on: ${ASK} (and 1 more).`, "the count names a condition the client never reads");
+  const two = { ...three, reasons: [ASK, FRAME], clauses: [ASK, FRAME], statement: `Medium — conditional on: ${ASK} (and 1 more).` };
+  assert.equal(clientStatement(two), `Medium — conditional on: ${ASK}.`, "one condition left: no further count");
+  const agreeing = { ...three, reasons: [ASK, OTHER], clauses: [ASK, OTHER], statement: `Medium — conditional on: ${ASK} (and 1 more).` };
+  assert.equal(clientStatement(agreeing), agreeing.statement, "a count that agrees was rewritten");
 });
 
 test("a new run's frame reason is the run record's alone: no clause, no statement line, and the delivery lint stays quiet", () => {

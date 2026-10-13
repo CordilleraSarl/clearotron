@@ -269,3 +269,23 @@ export function clientConditions({ reasons, clauses } = {}) {
     return clauseFromReason(text) ?? (carriesEngineWords(text) ? "" : text);
   }).filter(Boolean);
 }
+
+/**
+ * THE STATEMENT A CLIENT READS, WITH ITS COUNT MADE TRUE. A stored statement counted every condition it was
+ * written with, so a condition since withheld from the list above makes its "(and N more)" name one too many. The
+ * count is a fact, not a sentence: it is recomputed from the list the client reads, and nothing else in the
+ * statement moves. A statement whose count already agrees, or that carries none, is returned as it was stored.
+ * PURE.
+ *
+ * @param {{statement?: string, reasons?: string[], clauses?: string[]}} sidecar  the parsed `_driver/verdict.json`
+ * @returns {string|undefined} the statement to render
+ */
+export function clientStatement(sidecar = {}) {
+  const st = sidecar?.statement;
+  if (typeof st !== "string") return st;
+  const m = st.match(/ \(and (\d+) more\)/);
+  if (!m) return st;
+  const more = clientConditions(sidecar).length - 1;
+  if (more < 0 || more === Number(m[1])) return st;
+  return st.replace(m[0], more > 0 ? ` (and ${more} more)` : "");
+}

@@ -1923,6 +1923,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-older-reports-statement-counts-only-what-the-client-reads.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
           "tests": 1,
           "asserts": 6,
@@ -5896,8 +5902,8 @@
           "todos": 0
         },
         "the-frame-comparisons-sentence-stays-in-the-run-record.test.mjs": {
-          "tests": 5,
-          "asserts": 19,
+          "tests": 6,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
