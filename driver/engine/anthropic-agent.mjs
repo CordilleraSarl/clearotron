@@ -16,6 +16,7 @@
 // watchdog heartbeat (--include-partial-messages).
 
 import { spawn } from "node:child_process";
+import { StringDecoder } from "node:string_decoder";
 import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
@@ -594,6 +595,9 @@ export const anthropicAgentEngine = {
       child.stdin.on("error", () => {});
       try { child.stdin.write(input); child.stdin.end(); } catch { /* child gone — handled by close/error */ }
       let buf = "", stderr = "", resultEvent = null, killed = false, stallKill = false, settled = false;
+      // A CHUNK IS NOT A CHARACTER: a character split across two chunks of a pipe is held by its stream's decoder
+      // until the rest arrives (common.mjs `runStreamingChild` says why). The raw sink still takes the bytes.
+      const outText = new StringDecoder("utf8"), errText = new StringDecoder("utf8");
       let noProgressKill = false;               // the no-progress ceiling fired (a stall discriminator, see noProgressMs)
       let trickleKill = false;                  // the token-rate floor fired (a stall discriminator, see minTokensPerSec)
       let overflow = false;                     // A3: stdout/stderr exceeded maxBuffer — force a nonzero fail, never parse the truncated tail
@@ -1091,7 +1095,7 @@ export const anthropicAgentEngine = {
         prevChunkAt = Date.now();
         lastMove = Date.now();   // ANY streamed byte = liveness → resets the stall clock
         sink.write(d);           // the raw stream, byte for byte, before anything parses it
-        buf += d.toString();
+        buf += outText.write(d);
         let nl;
         while ((nl = buf.indexOf("\n")) >= 0) { parseLine(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
         if (buf.length > maxBuffer) { buf = buf.slice(0, maxBuffer); overflowKill(); }
@@ -1109,7 +1113,7 @@ export const anthropicAgentEngine = {
         // The diagnostic follows the same rule deliberately. `firstByteMs=NEVER` now means "never spoke
         // its protocol", which is the question the no-progress specimen is actually asking — a number
         // that came from a stderr line would have answered a different one.
-        stderr += d.toString();
+        stderr += errText.write(d);
         if (stderr.length > maxBuffer) { stderr = stderr.slice(0, maxBuffer); overflowKill(); }
       });
       // error + close can BOTH fire for a single failure (Node) → settle EXACTLY once (no double clearInterval/resolve).
@@ -1125,7 +1129,7 @@ export const anthropicAgentEngine = {
         // settlement must never wait on a pipe some straggler keeps open (the group SIGKILL reaps the tree).
         try { child.stdout.destroy(); } catch { /* stream gone */ }
         try { child.stderr.destroy(); } catch { /* stream gone */ }
-        if (!overflow) { parseLine(buf); }   // B1: flush the final, un-terminated line (the result event) — but NEVER the truncated overflow tail
+        if (!overflow) { buf += outText.end(); stderr += errText.end(); parseLine(buf); }   // B1: flush the final, un-terminated line (the result event) — but NEVER the truncated overflow tail
         const stream = sink.close();   // after the flush: every byte the program wrote is in it, or the record says why not
         buf = "";
         // ONE SAMPLE OF THE CLOCK, and both quantities below are derived from it. Two `Date.now()` calls
