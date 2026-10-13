@@ -249,6 +249,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-codex-stage-runs-without-the-sign-ins-apps.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-command-printed-from-npx-outlives-the-cache.test.mjs": {
           "tests": 3,
           "asserts": 14,
