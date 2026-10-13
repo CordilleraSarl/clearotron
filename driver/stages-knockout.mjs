@@ -467,19 +467,6 @@ export const KO_STAGES = {
       // the same run had taken. The turn was not lying: it is never shown the count lane's output (rule 1
       // of register-count.mjs) and it filled the gap with the only thing it had. Nobody who cannot see
       // the machinery describes it — the renderer owns that sentence and writes it from the sidecars.
-      // ── THE GAG SPLITS: THE LANE STAYS GAGGED, THE FILINGS DO NOT ─────────────────────────────────
-      //
-      // The rule below is about COVERAGE — whether the register lane ran, how much it found, how far it
-      // reached. That stays, and its reason is unchanged: this seat cannot see that lane, the report
-      // states coverage in code from the run's own measurements, and a summary saying the registers were
-      // not run above a table of counts that were is the contradiction it closes.
-      //
-      // What it must NOT be read as, and was: a bar on weighing an individual filing you were handed.
-      // The validator arm behind it (`REGISTER_CLAIM_RE`) is KEPT and is already scoped correctly —
-      // driven on seven sentences, it matches all three coverage narrations and none of four weighing
-      // sentences ("Disney holds a Hong Kong registration…", "the German registration is vulnerable to
-      // non-use revocation…"). The issue asked for the arm to be deleted; deleting it would remove
-      // exactly the protection the issue's own next sentence says to keep. Measured, raised, kept.
       `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted,`,
       `overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not`,
       `in the chunk summary. You cannot see that lane; the report states its coverage in code from the`,
