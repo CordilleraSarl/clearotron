@@ -210,7 +210,38 @@ export function classifyRecord(markText, targets) {
     if (cons && cons === t.cons) return { tier: "same-family", target: t.text, basis: "consonant-skeleton" };
     if (meta.length && t.metaphone.length && meta.some((m) => t.metaphone.includes(m))) return { tier: "same-family", target: t.text, basis: "double-metaphone" };
   }
+  // ── A MARK TWO EDITS FROM A VARIANT OF SIX LETTERS OR MORE IS OF ITS FAMILY (ruled 2026-10-13) ────────
+  //
+  // The variants stage renders the mark's meaning in some of a market's languages, and the same word in another
+  // language is often two edits from one of them. None of the rungs above reads that: one edit, a whole matching
+  // word, the consonant skeleton, the sound code. Measured on a saved band, a register entry a reviewing lawyer
+  // listed sat two edits from such a meaning form and read as "other". Each pair is compared, never enumerated:
+  // the form floor's radius stays one edit (form-neighbourhood.mjs). The rung makes no floor, which takes the
+  // identical and near-identical tiers only, and runs last, so no tier above it moves.
+  for (const t of prepared) {
+    if (t.norm.length >= EDIT2_MIN_LEN && withinTwoEdits(norm, t.norm)) return { tier: "same-family", target: t.text, basis: "edit-2" };
+  }
   return { tier: "other", target: null, basis: "no-mechanical-match" };
+}
+
+/** The shortest target the two-edit rung reads: below six letters two edits reach too many unrelated words. */
+export const EDIT2_MIN_LEN = 6;
+
+/** Is `a` within two insertions, deletions or substitutions of `b`? Stops at the first row past two. PURE. */
+function withinTwoEdits(a, b) {
+  if (Math.abs(a.length - b.length) > 2) return false;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let best = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (cur[j] < best) best = cur[j];
+    }
+    if (best > 2) return false;
+    prev = cur;
+  }
+  return prev[b.length] <= 2;
 }
 
 // ── dominant-element composites (P2-A, the recall spine) ────────────────────────────────────────────
