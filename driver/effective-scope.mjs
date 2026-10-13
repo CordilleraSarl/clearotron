@@ -34,7 +34,7 @@
 // those origins rather than re-deriving them, so it cannot disagree about which layer supplied a value.
 
 import { withRunPlatforms, derivedFloor } from "./profiles.mjs";
-import { recognizedTerritories } from "./territory-tiers.mjs";   // — a staff free-text field must not reach a prompt unchecked
+import { recognizedTerritories, territoryKey } from "./territory-tiers.mjs";   // — a staff free-text field must not reach a prompt unchecked
 
 /**
  * Human-readable provenance, shown to clients.
@@ -161,6 +161,32 @@ export function narrowingMarkets(job, profile) {
   const scope = geographyMode === "worldwide" ? [] : jurisdictions.map((t) => String(t).trim()).filter(Boolean);
   if (scope.length) return { scope, priorities: [], major: [] };
   return { scope: [], priorities: defaultTerritoryState(profile).kept, major: [...MAJOR_MARKETS] };
+}
+
+/**
+ * THE CLIENT'S MARKETS, as the band shape sorts by them (840 decision 7): the account's default markets,
+ * else the major markets, plus every market the order names. Codes as the territory vocabulary writes
+ * them, compared with a record's own jurisdictions. PURE.
+ */
+export function clientMarkets(job, profile) {
+  // A sort key, not a scope: an order the ladder cannot read leaves the sort without markets rather than
+  // the band without a shape.
+  try {
+    const { scope } = narrowingMarkets(job, profile);
+    const defaults = defaultTerritoryState(profile).kept;
+    return [...new Set([...scope, ...(defaults.length ? defaults : MAJOR_MARKETS)].map((t) => territoryKey(t)).filter(Boolean))];
+  } catch { return []; }
+}
+
+/**
+ * THE ORDER'S TERRITORIES, as the band shape scopes its lists (ruled 2026-10-12): the countries a
+ * territorial order names, or the account's defaults filling an absent one; empty for a worldwide order.
+ * A ladder that cannot read the order leaves the lists unscoped rather than the band without a shape. PURE.
+ */
+export function orderTerritories(job, profile) {
+  // Folded as the territory vocabulary folds them: an order that names "Switzerland" is CH, never a name
+  // that matches no register.
+  try { return [...new Set(narrowingMarkets(job, profile).scope.map((t) => territoryKey(t)).filter(Boolean))]; } catch { return []; }
 }
 
 /**

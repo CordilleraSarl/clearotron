@@ -15,7 +15,7 @@ import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does thi
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
-import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine } from "./gateway.mjs";
+import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
 // — the arm's TOOL WIRING, for its context receipt. Read through the same two functions the
 // gateway dispatches with, never re-derived: a receipt that described a second computation would be
 // describing a dispatch that did not happen.
@@ -78,7 +78,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -87,7 +87,7 @@ import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driv
 // CLIENT REPORT through the script-scope coverage row, which is why it is imported rather than typed:
 // the row used to name "Depth 5 (clearance-jx)" — a retired key on a retired ladder — as its remedy.
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
-import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
+import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
 import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
@@ -102,7 +102,8 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
+import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
+import { bandShapeGoods, instructedOrder } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
@@ -939,9 +940,9 @@ function deriveBandShape(ctx, band) {
     let crowdContext = null;
     try { if (existsSync(P.crowdContext)) crowdContext = JSON.parse(readFileSync(P.crowdContext, "utf8")); }
     catch { /* evidence artifact unreadable — the shape's crowds simply carry no join */ }
-    let inScopeClasses = [];
-    try { inScopeClasses = inScopeClassList(ctx.job, ctx.profile).map(String); }
-    catch { inScopeClasses = (ctx.job?.classes ?? []).map(String); }
+    // The instructed classes and those the frame added for the client's own goods (decision 18, ruled 2026-09-21): a live identical record in either is a floor.
+    let inScopeClasses = []; try { inScopeClasses = inScopeClassList(ctx.job, ctx.profile).map(String); } catch { inScopeClasses = (ctx.job?.classes ?? []).map(String); }
+    inScopeClasses = withFrameClasses(inScopeClasses, P.runDir);
     // P2-A (charter P2d) — the exact-identity POSITIONS projection rides every shape derivation, so
     // the identity collapse exists BEFORE any digest reads the band. The detail index (registration
     // numbers, IR-base linkage, Madrid designations) comes from _records/ — the fields search rows
@@ -958,13 +959,18 @@ function deriveBandShape(ctx, band) {
       runLog(P.runDir, { event: "register-positions-failed", fail: String(e?.message ?? e).slice(0, 160) });
       note(`register-positions derivation failed (non-fatal — the per-registration band stands): ${String(e?.message ?? e).slice(0, 100)}`);
     }
-    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions });
+    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...bandShapeGoods(P), markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null) });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");
+    const tested = shape.groups?.goods_test ?? { source: "none", words: [] };
     runLog(P.runDir, { event: "band-shape-derived", records: shape.totals.records, crowds: shape.totals.crowds,
       tiers: shape.totals.by_tier, floors: shape.floors.in_class_identical_or_near.length,
+      goods_test: tested.source, goods_test_words: tested.words.length,
       blind_spots: shape.blind_spots.map((b) => ({ kind: b.kind, count: b.count })) });
+    // The goods test falls back where the variants stage named no product words; the run says so.
+    if (tested.source !== "product_words")
+      note(`band shape: no product words named — the goods test reads ${tested.source === "goods_words" ? "the words the register search was narrowed by" : "no words, so every line it would place is listed as not tested on goods"}`);
   } catch (e) {
     runLog(P.runDir, { event: "band-shape-failed", fail: String(e?.message ?? e).slice(0, 200) });
     note(`band-shape derivation failed (non-fatal — judgment still holds band_lookup over the band; machine checks read the complete band): ${String(e?.message ?? e).slice(0, 120)}`);
@@ -2406,7 +2412,7 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     const proposed = frameHouseElementCandidate(P.runDir);
     if (!proposed) return;   // the ordinary case: the frame proposed nothing and there is no question
 
-    const classes = [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])];
+    const classes = withFrameClasses(inScopeClassList(ctx.job, ctx.profile), P.runDir);
     // THE CLIENT'S OWN NAMES. The profile's trading names are the curated list; the matter's customer is
     // the free-text one. Both, because a profile may be absent on a one-off matter and a customer string
     // may be a person where the filings are held by a company.
@@ -2856,6 +2862,7 @@ export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — dri
     try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
     catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
     const artifact = reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) });
+    artifact.owners = placementOwnerFates(P, placements);
     // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
@@ -3001,13 +3008,39 @@ function recordPlacementSeam(ctx, r, trigger = null) {
   });
 }
 
-/** The set-aside grounds the placement form holds, as uri → entry, through the form's own selection index. */
-function placementSetAsideGrounds(P) {
+/**
+ * The form's set-aside entries as they stand on the shape now on disk. A ground by name stands as stored. A
+ * group's row is checked again exactly as the union took it, on its count and on every line read, because the
+ * shape may have been derived again since: a resumed run derives it afresh, and a record body fetched after
+ * placement can move a line out of the list the goods test could not place and into a group. A row taken on
+ * the earlier shape then covers no line the later one added. Nothing is written back. PURE.
+ */
+function standingSetAside(entries, input) {
+  const all = Array.isArray(entries) ? entries : [];
+  const grouped = all.filter(isSetAsideGroupRow);
+  if (!grouped.length) return all;
+  const { form } = unionPlacementForm({ rows: [], set_aside: grouped }, null, input);
+  return [...all.filter((e) => !isSetAsideGroupRow(e)), ...form.set_aside_groups];
+}
+
+/** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
+export function placementSetAsideGrounds(P) {   // @internal — driven by its test with a run's own files
   try {
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return () => null;
-    return setAsideGrounds(form.set_aside, buildSelectionIndex(readPlacementFormInput(P.runDir)));
+    const input = readPlacementFormInput(P.runDir);
+    return setAsideGrounds(standingSetAside(form.set_aside, input), buildSelectionIndex(input), input.groups, input.floors);
   } catch { return () => null; }
+}
+
+/** Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`); null when the shape has no groups. */
+function placementOwnerFates(P, placements) {
+  try {
+    const input = readPlacementFormInput(P.runDir);
+    if (!input.groups) return null;
+    return ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index: buildSelectionIndex(input),
+      placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
+  } catch { return null; }
 }
 
 /**
@@ -3019,7 +3052,8 @@ export function placementSeamReason(groundOf) {   // @internal
   return (_rec, uri) => {
     const g = typeof groundOf === "function" ? groundOf(uri) : null;
     if (g) return { reason: "placement:set-aside", reason_source: "step-stated",
-      detail: `placement-inquiry set aside this owner's records as a set: ${g.ground}` };
+      detail: g.by === "group" ? `placement-inquiry set aside this owner's records with group ${g.group}: ${g.ground}`
+        : `placement-inquiry set aside this owner's records as a set: ${g.ground}` };
     return { reason: "placement:not-selected", reason_source: "step-silent",
       detail: "placement-inquiry completed this pass and named no placement for this record; the decision not to carry it was made and no ground for this record was recorded" };
   };
@@ -4100,6 +4134,17 @@ function forceFromActive(ctx, name) {
 // warm-resume a session no engine ever opened. A code-side winner therefore recovers its TRUE model (the
 // telemetry stays honest in the skip event) with key:null — the same "resumed-past axis" contract
 // runSaturationProbeCodeSide already declares (null unitKey ⇒ escalation/envelope use their code/fresh lanes).
+/**
+ * Is a stage's output on disk valid to reuse? A said-back refusal is a duty the pass said back and recorded, not
+ * an invalid output (gateway.mjs saidBackOnly): a pass that stood on one is not run again on resume. A floor it
+ * left open is the floor duty's to re-run, above. @internal
+ */
+export function outputStands(def, out) {
+  if (!def?.validate) return true;
+  const v = def.validate(out, readFileSync(out, "utf8"));
+  return v.ok || saidBackOnly(v.reason);
+}
+
 export function recoverWinningAttempt(runDir, label) {   // @internal
   try {
     const lines = readFileSync(driverDir(runDir, `${label}.jsonl`), "utf8").trim().split("\n");
@@ -4405,7 +4450,7 @@ async function stageOnce(name, ctx, opts = {}) {
       + "(the placement form unions, so nothing already answered is lost)");
     runLog(P.runDir, { event: "stage-floor-duty-rerun", stage: label });
   }
-  if (!forced && !dutyBlocksSkip && !freshness.stale && out && existsSync(out) && (!def.validate || def.validate(out, readFileSync(out, "utf8")).ok)) {
+  if (!forced && !dutyBlocksSkip && !freshness.stale && out && existsSync(out) && outputStands(def, out)) {
     // recover the winning key + served model so a later warm-resume (corrective re-synthesis / verdict re-check)
     // targets the attempt that ACTUALLY produced this output, not the base key on the primary model.
     const won = recoverWinningAttempt(P.runDir, label);
@@ -16472,6 +16517,10 @@ async function runExperimentInner(job, opts) {
   if (produced.verdict === "could-not-tell") {
     note(`--experiment ${name}: could not verify the seat produced anything — ${produced.why}`);
   }
+  // A PLACEMENT ARM IS READ BY ITS FLOORS AND ITS OWNERS' FATES, which a run derives after the pass
+  // (deriveFloorDuty, in pipelineInner). Derived here as well, inside the sandbox, so the arm carries the
+  // same floor-duty artifact a run would and a replay can be judged on it.
+  if (name === "placement-inquiry") deriveFloorDuty(shadowCtx, r, "experiment");
   note(`--experiment ${name} ${r.ok ? "OK" : `FAILED (${r.fail})`} → ${out ?? shadowDir} (canonical run untouched)`);
   return { ok: r.ok, shadowDir, output: out, fail: r.fail };
 }

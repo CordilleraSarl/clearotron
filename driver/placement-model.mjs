@@ -52,6 +52,12 @@ const TOP_KEYS = ["schema_version", "placements"];
 // shape, echoed verbatim in stages.mjs's dispatch, the skill and digest.md, and `onlyKeys` prints this
 // list in its error — so the order is part of what a reader is told the entry looks like.
 const ENTRY_KEYS = ["mark", "owner", "jurisdiction", "records", "tier", "reason", "borderline"];
+/**
+ * The owner a register record that names none is placed under (ruled 2026-10-12). Such a record is still a
+ * floor when its mark is, and the step's placement of it stands: the render carries this in place of the
+ * owner and never refuses a placement on that field. A row the step wrote in full names its own owner.
+ */
+export const OWNER_NOT_STATED = "not stated on the register";
 
 // ── The bare-label test, and an honest statement of what it does and does not decide ─────────────────
 //

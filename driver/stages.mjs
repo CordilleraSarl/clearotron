@@ -607,7 +607,7 @@ export function inquiryRungDirective(depth) {
     : "This is a MULTI-COUNTRY search — it trades breadth for depth per candidate, which is what a lawyer does when the question spans more ground.";
   return `DEPTH OF WRITING — ${breadth}\n`
     + "FIRST, WHAT DOES NOT CHANGE: every candidate you surface still gets a placement tier and its row, "
-    + "exactly as on a single-country search. Nothing is dropped, nothing is filtered, and this says "
+    + "exactly as on a single-country search. Write down what you set aside and why; this says "
     + "nothing about WHERE a candidate is placed — only about how much of your own reasoning you write "
     + "down beside it.\n"
     + "Write the full inquiry for the candidates you judge are genuinely in the way. For the rest, a "
@@ -688,7 +688,7 @@ export const OWNER_SWEEP_STEERING = `OWNER COVERAGE on this lane: an owner's mar
 // judgment reads the deterministic SHAPE whole and looks up the records it chooses through the band
 // tools, on the record — every lookup lands in the run's reading audit. This replaces the improvised,
 // unlogged shell-slicing of a multi-megabyte file that no Read call could ever take whole.
-export const BAND_READING_CONTRACT = `THE REGISTER BAND — how you read it: call `+"`band_shape`"+` FIRST (the deterministic shape of the complete merged band: totals, mechanical similarity tiers, THE FLOORS — every live in-class identical/near-identical record, listed individually and unconditionally — class/status/registry/recency census, owner concentrations, the `+"`incomplete`"+` crowd descriptors, and the blind spots the shape mechanically cannot see). A large shape is served in PARTS — the response labels itself part N/M and names the next call; read ALL parts before reasoning (a partial shape is never the shape). Then pull exactly the records and slices your reasoning needs via `+"`band_lookup`"+` (filter by owner / class / tier / qid / slice / text; matching un-enumerated crowds ride along so a counted-only zone can never read as a clean) and `+"`band_record`"+` (the official registry record fetched into this run, when one exists). Every floor row must be weighed — the floors list is complete by construction and no lookup pattern excuses skipping one. A crowd descriptor is an open slice for judgment to act on (cleared / material-gap), never a cleared slice by default; the shape's tiers are mechanical string classes, never a relevance or risk call — both of those remain yours. Do NOT slice band or shape files with shell tools: the band tools are the reading layer, and they keep the reading on the record.`;
+export const BAND_READING_CONTRACT = `THE REGISTER BAND — how you read it: call `+"`band_shape`"+` FIRST (the deterministic shape of the merged band: totals, mechanical similarity tiers, THE FLOORS — every live in-class identical/near-identical record, each marked on its line in the band — class/status/registry/recency census, owner concentrations, the `+"`incomplete`"+` crowd descriptors, and the blind spots the shape mechanically cannot see). A large shape is served in parts, each naming the next call. Then pull exactly the records and slices your reasoning needs via `+"`band_lookup`"+` (filter by owner / class / tier / qid / slice / text / goods; matching un-enumerated crowds ride along so a counted-only zone can never read as a clean) and `+"`band_record`"+` (the official registry record fetched into this run, when one exists). Every floor has a fate on the form. A crowd descriptor is an open slice for judgment to act on (cleared / material-gap), never a cleared slice by default; the shape's tiers are mechanical string classes, never a relevance or risk call — both of those remain yours. Do NOT slice band or shape files with shell tools: the band tools are the reading layer, and they keep the reading on the record.`;
 
 /**
  * `borderline` on a placement entry is an INTERNAL adjudication flag: placement declaring that its own
@@ -1617,7 +1617,7 @@ export const STAGES = {
       // the model discussed the goods eighteen times in its prose — and handed back no goods words at
       // all, because nothing in what it hands back had a slot for them. The manual asked; the contract
       // did not.
-      `Send \`goods_words\` — the words the register search is narrowed to, from the matter's own goods and services wording plus the words other filings use for the same goods. Single words or short phrases as a specification would write them, no wildcards, at most 24. Send an empty list when you have considered the goods and no word is worth narrowing by. Omit it only when the matter states no goods at all: this is what stops a crowded sweep returning more filings than anyone can read, so leaving it out costs the search its narrowing.`,
+      `Send \`goods_words\` — the words the register search is narrowed to, from the matter's own goods and services wording plus the words other filings use for the same goods. Single words or short phrases as a specification would write them, no wildcards, at most 24. Send an empty list when you have considered the goods and no word is worth narrowing by. Omit it only when the matter states no goods at all: this is what stops a crowded sweep returning more filings than anyone can read, so leaving it out costs the search its narrowing. Send \`product_words\` too: the words from the client's own wording that name the client's own product or service, as a specification would write them, each as a whole word, in the singular; the engine matches the plural too. A category word on its own (software, services, preparations, research) is not one.`,
       // THE SCOPE LEDGER STOPS BEING A TABLE THE DRIVER RE-READS. It used to be dictated as markdown in
       // the skill doc and recovered by parsing those columns back out of the prose (renderScopeLedgerJson
       // over variant-manifest.md). The rows arrive typed now and the driver renders the table AND
@@ -2343,7 +2343,7 @@ export const STAGES = {
     // — `placementForm: 1` joins it rather than replacing it. Under the form era placements.json is
     // DRIVER-RENDERED from the accumulator, so validators.placement must stop demanding it from the seat;
     // archived runs carry the old key alone and keep validating under the rules they were minted under.
-    contract: { structuredPlacements: 1, placementForm: 1, placementAccount: 1 },   // placementAccount: see placementAccountArmed in verify.mjs
+    contract: { structuredPlacements: 1, placementForm: 1, placementAccount: 1, placementSaidBack: 1 },   // placementAccount, placementSaidBack: see their Armed functions in verify.mjs
     skillReads: ["skills/placement-inquiry/SKILL.md"],
     out: (P) => P.placement,
     // — `outSibs: [P.placementModel]` is DELETED, and the premise is retired rather than overruled.
@@ -2359,7 +2359,7 @@ export const STAGES = {
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
       "tier — EXACTLY one of headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered, per placed candidate": {
-        class: "judgment", tokens: ["placement_tier_invalid", "missing", "placement_unjudged"],
+        class: "judgment", tokens: ["placement_tier_invalid", "missing", "placement_unjudged", "placement_floors_without_fate", "placement_refused"],
         why: "The answer to 'does this conflict change the advice, or only complete the record?' No artifact on disk holds it — the band supplies records, never a deliverable position. #850 keeps it J.",
       },
       "reason — the short paragraph carrying the stated ground for the tier (owner characterisation, customer/channel read, decisive ground, Stage-2 mitigant)": {
@@ -2420,9 +2420,9 @@ export const STAGES = {
       // judgment-relocation (2026-06-23): the COMPLETE named band crosses the firewall and is the AUTHORITATIVE
       // material — place over the REAL records, not a pre-pruned per-axis prose digest (those are audit-only).
       // PR-8: read via the band tools (shape whole + logged lookups), never by slicing the raw file.
-      `THE MATERIAL YOU PLACE OVER is the complete merged register band, read through the band tools. ${BAND_READING_CONTRACT}`,
+      `THE MATERIAL YOU PLACE OVER is the merged register band, read through the band tools. At every step: look at what you have before you work on it. ${BAND_READING_CONTRACT}`,
       `The per-axis prose digests (${(axes ?? []).map((a) => P.registerUnit(a)).join(", ")}) are an audit summary only — where they differ from the band material the tools return, the band wins.`,
-      `Place EVERY surfaced candidate at headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered with the structured-inquiry trace.`,
+      `Place every candidate you carry forward at headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered with the structured-inquiry trace; what you set aside goes in set-aside rows, not here.`,
       // The boundary package (2026-08-01): two runs of the same matter at identical settings disagreed on
       // 29% of shared records' tiers, and NINE IN TEN of those disagreements sat on headline vs sheet-2 —
       // a well-behaved model answering an UNDER-POSED question ("warrants the client narrative" is
@@ -2443,7 +2443,7 @@ export const STAGES = {
       `PLACEMENT FORM (MANDATORY): record every placement in ${P.placementForm} — {"rows":[…]}, and DO NOT WRITE placements.json (the driver renders it from this form).`,
       `· A REGISTER candidate: {"select":"<one record URI it holds>","tier":"…","reason":"…"} (+ optional "borderline":true). Naming ONE record selects the whole position — a mark registered in several territories is one candidate and you tier it once. The driver fills mark, owner, records, territories and classes from the register record itself; anything you write in those fields on a selected row is ignored, so do not re-type them.`,
       `· A COMMON-LAW candidate the register does not hold: write the row in full — {"kind":"seat","mark","owner","jurisdiction","records":[],"tier","reason"}. An empty records list is correct there, never a gap.`,
-      `· AN OWNER'S RECORDS YOU DO NOT CARRY get one ground for the set: a set-aside row naming one record of that owner, with the fields the form's set_aside_row_contract gives. It covers every record of that owner the form does not place (a record that names no owner stands for its own position). It is not a candidate and has no bound: a record you do not carry is given a ground; no record leaves without one.`,
+      `· EACH LINE THE SHAPE LISTS, one mark of one owner, gets a fate, not a row: place it; or set it aside by name, in a row naming one of its records with the fields the form's set_aside_row_contract gives, which covers that line's records the form does not place and never another mark of its owner (a record that names no owner stands for its own position), and sets a floor aside only on its status or its territory, said in "on", never on its goods or its owner's customers or field; or leave it to its group's row.\n· ONE ROW PER GROUP: for each of (a) to (d), and for the rest, one row with the fields the form's set_aside_group_contract gives sets aside every line in it you read and neither place nor name, with the group's count and your reason. Below a thousand records, and in (a) at any size, a row waits until you have read every line, paging (a) with band_lookup's group filter where the shape shows its first page; a crowd of a thousand or more outside (a) stands on its first page read and the count, and the lines the goods test could not place take such a row only in a crowd. A floor is placed, sheet-2 at the least, or set aside by name on its status or its territory; only a crowd's row in (b) may leave it to the row. Carry forward only what a lawyer would raise with the client. Write down what you set aside and why.`,
       `· tier EXACTLY one of headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered. reason = a SHORT PARAGRAPH carrying your STATED reasoning for the tier — the candidate characterisation (what the owner actually does, the customer/channel overlap read), the decisive placement ground, and any Stage-2 mitigant flag — substantial enough that a downstream stage can quote it and argue with it; NEVER a bare label, NEVER the full 7-point inquiry trace.`,
       `· The form ACCUMULATES across attempts: a row you complete stays complete even if a later pass never mentions it, so a pass that only fixes two rows writes only those two. To remove a row, hand back {"retract":"<its row_id>"} — silence never removes anything.`,
       `· The rulings tail of the md (Band reconciliation, Disagreements / flags surfaced to downstream, Coverage rulings & open questions, Open questions for the client / reviewer) is NOT mirrored into the form — it travels verbatim as prose.`,

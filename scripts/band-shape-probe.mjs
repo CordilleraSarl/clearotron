@@ -44,6 +44,7 @@ import { buildBandShape, deriveRegisterPositions } from "../driver/band-shape.mj
 import { parseVariantManifestModel } from "../driver/variant-manifest-model.mjs";
 import { readRecordArtifacts } from "../driver/registry-fidelity.mjs";
 import { probeSeed } from "../driver/order-probe.mjs";
+import { withFrameClasses } from "../driver/matter-frame-record.mjs";
 
 const die = (m, c = 2) => { console.error(`\n${m}\n`); process.exit(c); };
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -115,7 +116,7 @@ if (!targets.filter(Boolean).length) {
     + "  Without a target every record classifies `unclassifiable`, floors is empty, and this probe would\n"
     + "  print NO MOVEMENT — which is the answer that cancels the paid arms. Refusing rather than saying it.");
 }
-const inScopeClasses = (instructed?.classes ?? instructed?.nice_classes ?? job?.classes ?? []).map(String);
+const inScopeClasses = withFrameClasses(instructed?.classes ?? instructed?.nice_classes ?? job?.classes ?? [], runDir);   // as the run does: the frame's added classes too
 const crowdContext = existsSync(P.crowdContext) ? readJson(P.crowdContext) : null;
 
 let positions = null;

@@ -21,6 +21,7 @@ const MCP = join(HERE, "..", "engine", "mcp");
 async function mcpSession(requests, env = {}) {
   return await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [join(MCP, "band-server.mjs")], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, ...env } });
+    child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8");   // a character split across two chunks decodes whole
     const responses = {}; let buf = "", stderr = "";
     const wantIds = new Set(requests.filter((r) => r.id != null).map((r) => r.id));
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve({ responses, stderr }); };
@@ -74,7 +75,7 @@ test("band_shape: serves the md whole (default) and the json on request; both lo
   const runDir = seedRun();
   const r = await mcpSession([INIT, call(2, "band_shape"), call(3, "band_shape", { format: "json" })], ENV(runDir));
   assert.match(textOf(r, 2), /# Band shape/);
-  assert.match(textOf(r, 2), /## Floors/);
+  assert.match(textOf(r, 2), /\*\*Floors: /);
   const shape = JSON.parse(textOf(r, 3));
   assert.equal(shape.totals.records, 3);
   const log = readLog(runDir);
@@ -379,14 +380,14 @@ test("band_lookup: a single-slice record serialises exactly as before; a multi-s
 // cap and the tool call would ERROR in the engine. band_shape therefore serves parts, split at line
 // boundaries, with an explicit part-N/M continuation contract; concatenating the parts restores the
 // artifact byte-for-byte, so the floors stay complete across parts.
-function seedCrowdedRun(floorCount = 2500) {
+function seedCrowdedRun(floorCount = 999) {   // under a thousand: the list is printed whole, so the shape runs to parts
   const runDir = mkdtempSync(join(tmpdir(), "band-server-crowded-"));
   mkdirSync(driverDir(runDir), { recursive: true });
   const enumerated = [];
   for (let i = 0; i < floorCount; i++) {
     enumerated.push({
       record_id: `/mark/us/8${String(i).padStart(7, "0")}`, mark_text: i % 2 ? "NOVA PULSE" : "NOVA PULSSE",
-      classes: [32], status: "Registered", owner_name: `Holder ${i % 400} Beverages GmbH & Co. KG`,
+      classes: [32], status: "Registered", owner_name: `Holder ${i} Beverages GmbH & Co. KG`,   // one line each: a floor is marked on its line, not listed again
       _query: "exact nova pulse [cl 32]", screen: { registry: "USPTO", live_status: "live", applicationDate: "2021-01-01" },
     });
   }
@@ -401,7 +402,7 @@ function seedCrowdedRun(floorCount = 2500) {
 
 test("band_shape: a floors-heavy shape serves in parts, each under the MCP token cap, concatenation byte-identical", async () => {
   const { runDir, md } = seedCrowdedRun();
-  assert.ok(md.length > 140_000, `fixture is genuinely over one MCP response (${md.length} bytes)`);
+  assert.ok(md.length > 70_000, `fixture is genuinely over one part (${md.length} characters)`);
 
   // First call announces the parts contract.
   const first = await mcpSession([INIT, call(2, "band_shape")], ENV(runDir));
@@ -423,7 +424,7 @@ test("band_shape: a floors-heavy shape serves in parts, each under the MCP token
   // the floors stay COMPLETE across parts because the split never cuts a line.
   const body = (p) => p.split("\n").slice(1, -1).join("\n");
   assert.equal(parts.map(body).join("\n"), md, "concatenated parts === band-shape.md (nothing lost, nothing invented)");
-  assert.match(parts[total - 1], /the shape is complete once parts 1\.\.\d+ are all read/);
+  assert.match(parts[total - 1], /\[end of the shape\]$/);
 
   const log = readLog(runDir);
   const shapeCalls = log.filter((l) => l.tool === "band_shape");
@@ -432,9 +433,9 @@ test("band_shape: a floors-heavy shape serves in parts, each under the MCP token
 });
 
 test("band_shape: an out-of-range part clamps instead of erroring (the model can always finish the read)", async () => {
-  const { runDir } = seedCrowdedRun(1200);
+  const { runDir } = seedCrowdedRun(999);
   const r = await mcpSession([INIT, call(2, "band_shape", { part: 99 })], ENV(runDir));
-  assert.match(textOf(r, 2), /the shape is complete once parts/, "part 99 clamps to the last part");
+  assert.match(textOf(r, 2), /\[end of the shape\]$/, "part 99 clamps to the last part");
 });
 
 // Codex cuts the middle out of any tool answer over about 39,000 bytes, and there the band server is
@@ -462,7 +463,8 @@ test("band_shape: given codex's answer size, every part fits under its cut and t
 });
 
 test("band_shape: a shape that fits one Claude answer but not codex's is split for codex and served whole otherwise", async () => {
-  const { runDir, md } = seedCrowdedRun(400);
+  // 500 records, one line each: the floors are marked on their lines rather than listed a second time.
+  const { runDir, md } = seedCrowdedRun(500);
   assert.ok(md.length > 39_000 && md.length < 70_000, `the fixture sits between the two sizes (${md.length} characters)`);
   assert.deepEqual(await shapeParts(runDir, ENV(runDir)), [md], "with no size given, the shape is served verbatim, no banner");
   const parts = await shapeParts(runDir, { ...ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(codexBandAnswerChars({})) });
@@ -510,7 +512,7 @@ test("band_record: an oversize official record serves in PARTS (a record is a do
   const parts = Array.from({ length: total }, (_, i) => textOf(rest, 2 + i));
   const body = (p) => p.split("\n").slice(1, -1).join("\n");
   assert.equal(parts.map(body).join("\n"), whole, "concatenated parts === the record on disk, byte-for-byte");
-  assert.match(parts[total - 1], /the record is complete once parts 1\.\.\d+ are all read/);
+  assert.match(parts[total - 1], /\[end of the record\]$/);
 });
 
 test("band_record: a record that fits is served verbatim — no banner, byte-identical (the common case)", async () => {

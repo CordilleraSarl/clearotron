@@ -31,7 +31,8 @@ const RECORDS = 1400;
 const GOODS = "Beverages, namely mineral and aerated waters and other non-alcoholic drinks; fruit drinks and fruit juices; "
   + "syrups and other preparations for making beverages; energy drinks; sports drinks; isotonic beverages. ";
 
-// Goods text repeated to give the measured spread of record sizes.
+// Goods wording repeated to give the measured spread of record sizes. It rides a field of its own: real
+// rows carry no goods, and the lookup serves goods from the run's record bodies, cut on the row.
 const goodsRepeats = (i) => (i % 20 === 7 ? 45 : i % 10 === 3 ? 11 : i % 4 === 1 ? 6 : 5);
 
 /** A band of RECORDS records under 971 owners, sized like the measured one. */
@@ -43,7 +44,7 @@ function seedBand() {
     mark_text: `QZXV ${i}`, classes: [32, 33], status: i % 4 ? "Registered" : "Expired",
     owner_name: `Qzxv Owner ${i % 971}`, owner_country: "CH",
     application_date: "2019-04-01", registration_date: "2020-01-15",
-    goods: GOODS.repeat(goodsRepeats(i)), _query: "contains qzxv [cl 32]",
+    detail: GOODS.repeat(goodsRepeats(i)), _query: "contains qzxv [cl 32]",
     screen: { registry: "EUIPO", live_status: i % 4 ? "live" : "dead", applicationDate: "2019-04-01" },
   }));
   writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify({ enumerated, crowds: [] }));

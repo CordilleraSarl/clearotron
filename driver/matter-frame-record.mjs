@@ -201,8 +201,7 @@ export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLA
  *
  * THE PLAN COMPILE DOES NOT READ THIS. It takes `frameIdentifiedClassRows` below, where each added
  * class keeps its reason and costs one identical-mark question rather than riding every entry (decision
- * 18). The one caller left is the house-element check, which unions this list with the instructed
- * classes because the client's own filings are best looked for across the widest class set.
+ * 18). What reads it is `withFrameClasses`, the union with the instructed classes.
  *
  * EMPTY IS THE ORDINARY ANSWER and must stay cheap: no frame yet, a legacy or replayed run whose
  * accepted call predates the field, a frame that identified nothing — all of them return `[]`, the
@@ -211,6 +210,17 @@ export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLA
 export function frameIdentifiedClasses(runDir) {
   const rows = lastAcceptedMatterFrame(runDir)?.identified_classes;
   return (Array.isArray(rows) ? rows : []).map((r) => String(r?.class ?? "").trim()).filter(Boolean);
+}
+
+/**
+ * The classes this run's field is read in: the instructed ones, then the ones the frame added for the
+ * client's own goods. IMPURE, like its sibling. Two readers, one answer: the house-element check, where
+ * the client's own filings are best looked for across the widest class set, and the band shape, where a
+ * live identical mark in a class the frame added is a floor like one in an instructed class (decision 18).
+ * A frame that added nothing leaves the instructed list as it was.
+ */
+export function withFrameClasses(classes, runDir) {
+  return [...new Set([...(Array.isArray(classes) ? classes : []).map(String), ...frameIdentifiedClasses(runDir)])];
 }
 
 /**

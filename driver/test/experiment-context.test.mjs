@@ -240,6 +240,23 @@ test("--experiment register-digest — the derived band shape is IN the sandbox 
   console.log(`      register-digest: ${checked.length} context artefacts byte-equal`);
 });
 
+test("a placement arm derives its floor duty and its owners' fates in the sandbox, as a run does after the pass", async () => {
+  const { job, runDir, codename } = await canonicalRun();
+  const ex = await PL.runExperiment(job, { codename, experiment: "placement-inquiry", label: "floor duty" });
+  const duty = join(ex.shadowDir, "_driver", "floor-duty.json");
+  assert.ok(existsSync(duty), "the arm carries the floor-duty artifact a run writes after placement");
+  assert.ok(!existsSync(join(runDir, "_experiments", "nope")), "guard");
+  const artifact = JSON.parse(readFileSync(duty, "utf8"));
+  console.log(`      placement-inquiry: floor duty computable ${artifact.computable}, ${artifact.owners?.lines ?? "no"} line(s) with a counted fate`);
+  if (artifact.computable === true) {
+    const shape = JSON.parse(readFileSync(join(ex.shadowDir, "_driver", "band-shape.json"), "utf8"));
+    const listed = ["a", "b", "c", "d", "rest", "no_goods"].reduce((n, g) => n + shape.groups[g].lines, 0);
+    assert.equal(artifact.owners?.lines, listed, "every line the shape groups has a fate counted, placed or not");
+  } else {
+    assert.ok(artifact.reason, "an artifact that could not be computed says why, rather than counting zeros");
+  }
+});
+
 test("band_shape returns ok:true against a sandboxed register-digest (the tier filter is armed)", async () => {
   const { job, runDir, codename } = await canonicalRun();
   const ex = await PL.runExperiment(job, { codename, experiment: "register-digest", label: "band tool" });

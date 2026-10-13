@@ -75,10 +75,11 @@
       "fields": [
         "goods_words",
         "incumbent_classes",
+        "product_words",
         "search_floor",
         "watchlist_owners"
       ],
-      "why": "a partial silently empties the register-axis search floor, narrowing the run's own definition of coverage. `goods_words` joins them for the same reason and one worse: an emptied goods list reads as \"this matter named no goods\" rather than as a partial call, so the crowded sweep it exists to narrow goes back to returning more filings than anyone can read, and nothing says why. The MERGE preserves all four (mergeClearanceVariantsCall, keep-if-absent) — these rows record that the ACCEPTOR alone does not."
+      "why": "a partial silently empties the register-axis search floor, narrowing the run's own definition of coverage. `goods_words` joins them for the same reason and one worse: an emptied goods list reads as \"this matter named no goods\" rather than as a partial call, so the crowded sweep it exists to narrow goes back to returning more filings than anyone can read, and nothing says why. `product_words` joins them too: an emptied list sends the band shape's goods test back to the class words. The MERGE preserves all five (mergeClearanceVariantsCall, keep-if-absent) — these rows record that the ACCEPTOR alone does not."
     },
     {
       "tool": "record_blind_frame",

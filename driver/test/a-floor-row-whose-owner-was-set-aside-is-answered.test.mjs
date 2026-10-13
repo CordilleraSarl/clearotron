@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A FLOOR ROW WHOSE OWNER'S SET WAS SET ASIDE WITH A GROUND IS ANSWERED.
+// A FLOOR ROW WHOSE LINE WAS SET ASIDE WITH A GROUND IS ANSWERED.
 //
-// The picking step gives an owner's set of records one ground in a set-aside row, and by design that row
-// renders into no placement. The floor check read `placements.json` alone, so it counted every record of
+// The picking step gives a line of records, one mark of one owner, one ground in a set-aside row, and by
+// design that row renders into no placement. A floor of the owner's other mark is not answered by it: a
+// ground written about one mark set the others aside unseen (ruled 2026-10-12). The floor check read `placements.json` alone, so it counted every record of
 // a set-aside owner as unanswered, and the reviewer's floor ground blocked on records the step had
 // answered. Measured 2026-09-25: 985 of the 990 floor rows one run reported unanswered had left the
 // picking step with a ground.
@@ -55,20 +56,21 @@ function runWith(submitted) {
 
 const PLACED = { select: "/mark/us/1001", tier: "sheet-2", reason: "Owner A's one software filing completes the record but does not change the advice." };
 
-test("every unplaced record of a set-aside owner is answered, and so is a set-aside record with no owner", () => {
+test("a floor of the named line is answered, and so is a set-aside record with no owner; the owner's other mark is not", () => {
   const duty = runWith({ rows: [
     PLACED,
-    { set_aside: "/mark/us/1002", ground: "Owner A's other marks are for kitchen tools, nowhere near the client's software." },
-    { set_aside: "/mark/us/3001", ground: "A lapsed filing with no owner on record, for garden furniture." },
+    { set_aside: "/mark/us/1002", ground: "This registration lapsed and was never renewed.", on: "status" },
+    { set_aside: "/mark/us/3001", ground: "A filing with no owner on record, held only outside the ordered territories.", on: "territory" },
   ] });
   assert.equal(duty.computable, true, `the check could not run: ${duty.reason}`);
-  assert.deepEqual(duty.totals, { floors: 5, accounted: 4, named_without_ground: 0, unanswered: 1, unanswerable: 0 });
-  assert.deepEqual(duty.by_tier, { "sheet-2": 1, [SET_ASIDE_TIER]: 3 });
+  assert.deepEqual(duty.totals, { floors: 5, accounted: 3, named_without_ground: 0, unanswered: 2, unanswerable: 0 });
+  assert.deepEqual(duty.by_tier, { "sheet-2": 1, [SET_ASIDE_TIER]: 2 });
   const by = Object.fromEntries(duty.rows.map((r) => [r.record_id, `${r.disposition}/${r.tier}`]));
   assert.equal(by["/mark/us/1001"], "accounted/sheet-2", "the placed record lost its placement tier");
-  assert.equal(by["/mark/eu/1003"], `accounted/${SET_ASIDE_TIER}`, "a record of the set-aside owner the row did not name was not answered");
+  assert.equal(by["/mark/us/1002"], `accounted/${SET_ASIDE_TIER}`, "the named line's floor was not answered");
+  assert.equal(by["/mark/eu/1003"], "unanswered/null", "a ground written about another mark of owner A answered this floor");
   assert.equal(by["/mark/us/2001"], "unanswered/null", "an owner nobody answered for was counted answered");
-  assert.equal(duty.undischarged_by_seat, 1);
+  assert.equal(duty.undischarged_by_seat, 2);
   assert.equal(duty.reconciles, true);
 });
 

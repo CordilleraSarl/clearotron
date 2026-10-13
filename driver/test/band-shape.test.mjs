@@ -157,8 +157,8 @@ test("the md mirror stays small (<256KB) on a large band while the floors stay C
   for (let i = 0; i < 300; i++) enumerated.push(REC(9000 + i, "NOVA PULSE", { classes: [32], owner: `Floor Owner ${i}` }));
   const { shape, md } = buildBandShape({ enumerated, crowds: BAND.crowds }, { targets: ["NOVA PULSE"], inScopeClasses: ["32"] });
   assert.equal(shape.floors.in_class_identical_or_near.length, 300, "every floor record listed individually — never capped");
-  const floorSection = md.slice(md.indexOf("## Floors"));
-  for (let i = 0; i < 300; i += 37) assert.ok(floorSection.includes(`/mark/us/${9000 + i}`), `floor row ${i} present in the md`);
+  for (let i = 0; i < 300; i += 37) assert.ok(md.includes(`| yes | /mark/us/${9000 + i} |`), `floor ${i} is a line of the md, marked as a floor`);
+  assert.ok(!md.includes("| mark | tier | target |"), "the floors are not listed a second time, one per record");
   assert.ok(md.length < 256 * 1024, `md fits one Read (${md.length} bytes)`);
   assert.ok(shape.owners.concentrations.length <= 40, "aggregate owner list is bounded — only the floors are unconditional");
 });
