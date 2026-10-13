@@ -189,6 +189,7 @@ test("setup, driven in a terminal, shows the fix for an old copy when that engin
   const child = spawn("script", ["-qfec", `${JSON.stringify(process.execPath)} ${JSON.stringify(ONBOARD)}`, "/dev/null"],
     { env, stdio: ["pipe", "pipe", "pipe"] });
   let out = "";
+  child.stdout.setEncoding("utf8");
   child.stdout.on("data", (d) => { out += d; });
   const until = (re, ms = 30000) => new Promise((resolve, reject) => {
     const t0 = Date.now();

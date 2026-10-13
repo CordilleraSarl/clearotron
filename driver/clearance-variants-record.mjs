@@ -151,6 +151,7 @@ export function renderClearanceVariants(model, scopeRows) {
   // The prose copy restates exactly what the structured sibling holds — a reader of the manifest must
   // be able to see which words the register search was narrowed to without opening the JSON.
   if (model.goods_words?.length) out.push("### Goods words the register search is narrowed to", "", ...model.goods_words.map((w) => `- ${w}`), "");
+  if (model.product_words?.length) out.push("### The client's product words", "", ...model.product_words.map((w) => `- ${w}`), "");
   // — the search floor, on the human surface because a reader auditing the run has to see what was
   // obliged as well as what was done. Rendered ONLY when designated: an empty section would read as a
   // floor of nothing rather than as no floor, and those are the two states this mechanism must keep apart.
@@ -178,7 +179,7 @@ export function renderClearanceVariants(model, scopeRows) {
  */
 /** The shape this tool declares, at every depth — what the ACCEPTOR enforces. */
 const DECLARED = Object.freeze({
-  "": ["mark", "dominant_element", "elements", "variants", "incumbent_classes", "search_floor", "watchlist_owners", "goods_words", "scope_ledger"],
+  "": ["mark", "dominant_element", "elements", "variants", "incumbent_classes", "search_floor", "watchlist_owners", "goods_words", "product_words", "scope_ledger"],
   elements: ["value", "kind", "famous_mark_flag"],
   variants: ["value", "category", "rationale", "romanization"],
   scope_ledger: ["layer", "item", "status", "reason", "reopen_trigger"],
@@ -218,6 +219,7 @@ export function mergeClearanceVariantsCall(stored, received) {
     // correct one part, and a seat that sends only that part, would otherwise delete the goods words
     // — and the loss reads as "this matter has none" rather than as a partial call.
     goods_words: keepIfAbsent(received?.goods_words, base.goods_words),
+    product_words: keepIfAbsent(received?.product_words, base.product_words),
   };
 }
 
@@ -234,6 +236,8 @@ export function acceptClearanceVariants(params) {
     // back a key nothing in this chain declares: the tool's schema offers the slot, and this is what
     // moves the answer from the call into the manifest the compiler reads.
     goods_words: params?.goods_words,
+    // — the client's product words, the particular goods the band shape groups on (ruled 2026-10-12).
+    product_words: params?.product_words,
     // — the search-floor axes. Validated by the model parser (closed against REGISTER_AXES), not
     // here, so there is ONE definition of what a floor may name.
     search_floor: params?.search_floor,

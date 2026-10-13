@@ -285,6 +285,91 @@ export function codexHomesRoot(env = process.env, { platform = process.platform,
   return dir;
 }
 
+// ── A HOME OUTLIVES NOTHING IT WAS MADE FOR ───────────────────────────────────────────────────────────────
+//
+// A home is removed in the `finally` that closes its turn or its stage, and a process that a signal ends by its
+// default action never runs a `finally`: an operator's stop, a wall kill of the parent, a reboot mid-turn.
+// Nothing swept old homes, so one stayed, with a link to the account's sign-in (measured on the test box,
+// 2026-10-11). So a home's name carries the process that made it; the first home a process makes sweeps away
+// every home whose maker has ended; and a process removes the homes it made when it exits, and when a signal
+// arrives that nothing else in the process answers.
+const STALE_UNMARKED_MS = 24 * 60 * 60 * 1000;   // a home named before its maker was: no stage runs for a day
+const MAKER_RE = /-p(\d+)-[^-]{6}$/;              // `<kind>-<name>-p<pid>-` plus the six characters mkdtemp adds
+const OWNED = new Set();
+let swept = false, hooked = false;
+
+/** Is this process running? One this account may not signal is still running. */
+export function processAlive(pid) {
+  const n = Number(pid);
+  if (!Number.isInteger(n) || n <= 0) return false;
+  try { process.kill(n, 0); return true; } catch (e) { return e?.code === "EPERM"; }
+}
+
+/**
+ * Remove every home under `root` whose maker has ended, and every home named before makers were recorded that is
+ * a day old. A live maker's home, and this process's own, are left alone. Never throws: a home it cannot read or
+ * remove is left for the next sweep. Returns the names it removed.
+ */
+export function sweepStaleCodexHomes(root, { now = Date.now(), alive = processAlive } = {}) {
+  const removed = [];
+  let entries = [];
+  try { entries = readdirSync(root, { withFileTypes: true }); } catch { return removed; }
+  for (const e of entries) {
+    if (!e.isDirectory() || !/^(?:stage|turn)-/.test(e.name)) continue;
+    const dir = join(root, e.name);
+    if (OWNED.has(dir)) continue;
+    const maker = e.name.match(MAKER_RE);
+    let stale;
+    if (maker) stale = Number(maker[1]) !== process.pid && !alive(Number(maker[1]));
+    else { try { stale = now - statSync(dir).mtimeMs > STALE_UNMARKED_MS; } catch { stale = false; } }
+    if (!stale) continue;
+    try { rmSync(dir, { recursive: true, force: true }); removed.push(e.name); } catch { /* the next sweep tries again */ }
+  }
+  return removed;
+}
+
+const removeOwned = () => {
+  for (const dir of OWNED) { try { rmSync(dir, { recursive: true, force: true }); } catch { /* best-effort */ } }
+  OWNED.clear();
+};
+
+// Once per process. On exit, the homes it made go. On a signal, only where nothing else in the process answers
+// it: a process with its own stop (the runner's) leaves through `process.exit`, and the exit hook removes the
+// homes there; this one removes them and then ends the process as the signal would have.
+function hookCleanup() {
+  if (hooked) return;
+  hooked = true;
+  process.once("exit", removeOwned);
+  for (const sig of ["SIGTERM", "SIGINT", "SIGHUP"]) {
+    if (process.listenerCount(sig) > 0) continue;
+    process.once(sig, () => {
+      removeOwned();
+      if (process.listenerCount(sig) > 0) return;   // something answered it after all
+      try { process.kill(process.pid, sig); } catch { process.exit(1); }
+    });
+  }
+}
+
+/**
+ * Make a Codex home under the account's cache, its name carrying the process that made it. The first one a
+ * process makes sweeps away the homes of processes that have ended.
+ */
+export function makeCodexHome(prefix) {
+  const root = codexHomesRoot();
+  if (!swept) { swept = true; try { sweepStaleCodexHomes(root); } catch { /* a sweep never stops a stage */ } }
+  const dir = mkdtempSync(join(root, `${prefix}p${process.pid}-`));
+  OWNED.add(dir);
+  hookCleanup();
+  return dir;
+}
+
+/** Remove a home this process made. Best-effort: never throws. */
+export function releaseCodexHome(dir) {
+  if (!dir) return;
+  OWNED.delete(dir);
+  try { rmSync(dir, { recursive: true, force: true }); } catch { /* best-effort */ }
+}
+
 /**
  * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
  * shell command through a helper of its own inside the sandbox, so a profile that cannot read the helper
@@ -743,7 +828,7 @@ export const openaiAgentEngine = {
     // A home we were GIVEN is never deleted here — the stage that owns the session chain owns the
     // directory, or the next resume in that chain has nothing to resume from again.
     const ownHome = !providedHome;
-    try { codexHome = providedHome ?? mkdtempSync(join(codexHomesRoot(), "turn-")); }
+    try { codexHome = providedHome ?? makeCodexHome("turn-"); }
     catch (e) { return errResult(t0, e, resumeRef); }
     let authMaster = null, seeded = null;
     try {
@@ -815,7 +900,7 @@ export const openaiAgentEngine = {
       // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the
       // turn's result as it was; the next turn is seeded from the master either way.
       try { if (authMaster) returnAuth(authMaster, codexHome, seeded); } catch { /* the master is unchanged */ }
-      try { if (ownHome && codexHome) rmSync(codexHome, { recursive: true, force: true }); } catch { /* best-effort cleanup */ }
+      if (ownHome && codexHome) releaseCodexHome(codexHome);
     }
   },
 };

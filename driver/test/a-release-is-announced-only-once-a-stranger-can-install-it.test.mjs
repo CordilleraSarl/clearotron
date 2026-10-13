@@ -58,6 +58,7 @@ function run(reg, { version = "9.9.9-beta.1", tag = "beta", timeout = "3", inter
   return new Promise((ok) => {
     const p = spawn(process.execPath, [CHECK, "--version", version, "--tag", tag, "--tarball", tarball,
       "--registry", reg.url, "--timeout", timeout, "--interval", interval], { stdio: ["ignore", "pipe", "pipe"] });
+    p.stdout.setEncoding("utf8"); p.stderr.setEncoding("utf8");
     let out = ""; p.stdout.on("data", (d) => { out += d; }); p.stderr.on("data", (d) => { out += d; });
     p.on("close", (code) => ok({ code, out }));
   });

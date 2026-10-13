@@ -61,6 +61,7 @@ test("a server spawned exactly as the config says ANSWERS, with the environment 
   const env = { PATH: process.env.PATH, HOME: home };   // deliberately not process.env
   const child = spawn(s.command, s.args, { cwd: ROOT, env, stdio: ["pipe", "pipe", "pipe"] });
   let out = "";
+  child.stdout.setEncoding("utf8");
   child.stdout.on("data", (d) => { out += d; });
   const send = (o) => child.stdin.write(JSON.stringify(o) + "\n");
   try {

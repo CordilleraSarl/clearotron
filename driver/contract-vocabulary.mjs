@@ -213,6 +213,8 @@ export const VOCABULARY = [
   { token: "placement_unjudged", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
   { token: "placement_register_unrendered", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
   { token: "placement_form_unreadable", stages: ["placement-inquiry"], site: "driver/verify.mjs placementAccountVerdict" },
+  { token: "placement_floors_without_fate", stages: ["placement-inquiry"], site: "driver/verify.mjs placementSaidBackVerdict" },
+  { token: "placement_refused", stages: ["placement-inquiry"], site: "driver/verify.mjs placementSaidBackVerdict" },
   { token: "placement", stages: ["placement-inquiry"], site: "driver/verify.mjs validators.placement → checkSiblingJson → checkJson", family: "driver/placement-model.mjs (`placement_*` and `placements_*`)", dynamic: "D3" },
 
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────

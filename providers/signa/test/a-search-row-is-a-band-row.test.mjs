@@ -22,7 +22,7 @@ import assert from "node:assert/strict";
 import { normalizeSearchResponse } from "../src/core.js";
 import { deriveRegisterPositions } from "../../../driver/band-shape.mjs";
 import { unionPlacementForm } from "../../../driver/placement-union.mjs";
-import { renderPlacementsJson } from "../../../driver/placement-form.mjs";
+import { renderPlacementsJson, OWNER_NOT_STATED } from "../../../driver/placement-form.mjs";
 
 // The vendor's own shape: owner as a list of entities, classes under `classifications`, no flat owner_name.
 const vendorRow = (id, markText, owner, office = "US") => ({
@@ -70,6 +70,10 @@ test("vendor body → band → positions → placement form → placements.json:
   const placed = doc.placements.find((p) => p.records.includes(band[0].record_id));
   assert.ok(placed, "the tiered register candidate reaches the rendered file");
   assert.equal(placed.owner, "Invented Holdings SA");
-  assert.equal(doc.placements.length, 1,
-    "the record the register gives no owner for is still refused by the parser — counted by the gate, not rendered");
+  // A register record that names no owner is placed as the step placed it, its owner shown as not stated on
+  // the register (ruled 2026-10-12); it is never refused at the render and never given another record's owner.
+  assert.equal(doc.placements.length, 2, "the record the register gives no owner for did not reach the rendered file");
+  const ownerless = doc.placements.find((p) => p.records.includes(band[2].record_id));
+  assert.equal(ownerless?.owner, OWNER_NOT_STATED);
+  assert.equal(ownerless?.tier, "watchlist-annex");
 });

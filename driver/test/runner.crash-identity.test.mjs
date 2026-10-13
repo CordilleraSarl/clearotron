@@ -55,7 +55,9 @@ function envFor(root, extra = {}) {
 const spawnRunner = (env) => {
   const c = spawn(process.execPath, [RUNNER], { env, stdio: ["ignore", "pipe", "pipe"] });
   c.log = "";
+  c.stdout.setEncoding("utf8");
   c.stdout.on("data", (d) => { c.log += d; });
+  c.stderr.setEncoding("utf8");
   c.stderr.on("data", (d) => { c.log += d; });
   // capture at SPAWN time — an "exit" listener registered after the child already exited never fires
   c.exited = new Promise((r) => c.on("exit", (code) => r(code)));

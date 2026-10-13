@@ -175,6 +175,7 @@ export const CLIENT_TIER_BY_COMPOSITE = { 1: "LOW", 2: "MANAGEABLE", 3: "MEDIUM"
 // existing badge/gauge ramps without any per-framework code.
 import { bandIndex, bandTone, worstBand, aboveLowestBand, normalizeBand } from "./framework.mjs";
 import { checkRatingInputs } from "./framework-method.mjs";
+import { carriesEngineWords } from "./terminal-clamp.mjs";   // the one test of what a client's condition may carry
 const BADGE_BY_TONE = { severe: "l4", high: "l4", medium: "l3", low: "l2", minimal: "l2" };
 const GAUGE_BY_TONE = { severe: 4, high: 3, medium: 2, low: 1, minimal: 1 };
 /** The zero-banded-findings display word: a clean v4 run has NO rated conflicts — "Low" is not a band. */
@@ -586,8 +587,11 @@ const clipClause = (s, max) => {
  */
 export function statedConditions({ reasons, clauses } = {}) {
   const cs = Array.isArray(clauses) ? clauses : [];
-  const conds = (Array.isArray(reasons) ? reasons : []).filter((r, i) => cs[i] !== null).map((r) => String(r ?? "").trim()).filter(Boolean);
-  const cls = cs.map((c) => String(c ?? "").trim()).filter(Boolean);
+  // Not stated: a clause ruled to the run record (null), or a stored clause in the engine's words, which the
+  // condition list withholds (terminal-clamp.mjs clientConditions). It is neither the lede nor counted.
+  const held = (i) => cs[i] === null || (typeof cs[i] === "string" && carriesEngineWords(cs[i]));
+  const conds = (Array.isArray(reasons) ? reasons : []).filter((r, i) => !held(i)).map((r) => String(r ?? "").trim()).filter(Boolean);
+  const cls = cs.filter((c, i) => !held(i)).map((c) => String(c ?? "").trim()).filter(Boolean);
   return { conds, cls };
 }
 
@@ -1773,7 +1777,7 @@ function validateNet(f, ord, mode) {
 //
 // The name also has to satisfy the two conditions the gateway imposes, both verified in
 // findings-gate-token.test.mjs rather than assumed:
-//   · lowercase-and-underscore after the prefix, or gateway.mjs:3205 WARM_ELIGIBLE_RE
+//   · lowercase-and-underscore after the prefix, or gateway.mjs WARM_ELIGIBLE_RE
 //     (`findings?_[a-z_]+`) does not admit it and the failure goes cold instead of warm;
 //   · no `coverage_ledger` / `coverage_axis` / `coverage_key` / `coverage_mirror` /
 //     `coverage_status_invalid` substring, because repairSiblingName's ternary tests `coverage_*` BEFORE

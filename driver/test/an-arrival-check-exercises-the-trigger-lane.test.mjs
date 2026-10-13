@@ -77,6 +77,7 @@ async function doorAnswering401() {
     { stdio: ["ignore", "pipe", "ignore"] });
   const port = await new Promise((resolve, reject) => {
     const t = setTimeout(() => reject(new Error("the fixture door never announced a port")), 20_000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => { const m = /(\d+)/.exec(String(d)); if (m) { clearTimeout(t); resolve(m[1]); } });
     child.on("error", reject);
   });

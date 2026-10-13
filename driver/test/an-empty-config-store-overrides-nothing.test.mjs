@@ -105,7 +105,9 @@ function bootOn(env, port, { waitMs = 25000 } = {}) {
     const finish = (up) => { if (!done) { done = true; clearTimeout(t); resolve({ port: up ? Number(port) : null, child, said: () => said }); } };
     const t = setTimeout(() => finish(false), waitMs);
     const read = (c) => { said += String(c); if (/listening on/.test(said)) finish(true); };
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", read);
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", read);
     // `close`, not `exit`: it fires once the child's output is read to the end, so a portal that died
     // saying its port was taken is not resolved before the sentence that says so arrives.

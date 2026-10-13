@@ -59,6 +59,7 @@ async function callTool(args, env = {}, tool = "perplexity_research") {
     const responses = {}; let buf = "", stderr = "";
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve({ responses, stderr }); };
     const timer = setTimeout(done, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {
@@ -68,6 +69,7 @@ async function callTool(args, env = {}, tool = "perplexity_research") {
       }
       if (responses[2]) { clearTimeout(timer); done(); }
     });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (d) => { stderr += d.toString(); });
     child.on("error", reject);
     for (const r of requests) child.stdin.write(JSON.stringify(r) + "\n");

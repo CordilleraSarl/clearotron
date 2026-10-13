@@ -13,7 +13,7 @@ import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // a fixture p
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, basename } from "node:path";
 import { driverDir, driverRel } from "../../shared/driver-dir.mjs";   // #1336
 import { fileURLToPath } from "node:url";
 import { MEANING_SEAT } from "../common-law-receipts.mjs";
@@ -392,6 +392,18 @@ test("frame-omission: a firing frame-diff fires a supplemental sweep BEFORE plac
   // the clamp reason (asserted above) + the injected coverage rows, never a front-matter caveat.
   assert.ok(existsSync(driverDir(res.runDir, "frame-reopen.json")), "frame-reopen receipt written");
   assert.doesNotMatch(readFileSync(join(res.runDir, "report.md"), "utf8"), /frame_reopen_note/, "no fm caveat note post-spec-49");
+  // THE ENGINE'S SENTENCE STAYS IN THE RUN RECORD (ruled 2026-10-13): the frame reason is the record's, with no
+  // client clause; the client's page never prints it; the audit records the register part it left unfinished.
+  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
+  const at = sidecar.reasons.findIndex((r) => /blind frame-diff flagged/.test(r));
+  assert.ok(at >= 0, "the run record lost the frame reason");
+  assert.equal(sidecar.clauses[at], null, "the frame reason was stored as a client clause");
+  assert.doesNotMatch(String(sidecar.statement), /frame[- ]diff|reopen pass/i, "the statement carries the engine's sentence");
+  const { config: frameCfg } = await import("../driver.config.mjs");
+  const page = readFileSync(join(frameCfg.poolRoot, `${basename(dirname(res.runDir))}-${basename(res.runDir)}`, "report.html"), "utf8");
+  assert.doesNotMatch(page, /frame[- ]diff|reopen pass/i, "the client's page printed the engine's sentence");
+  const parts = JSON.parse(readFileSync(driverDir(res.runDir, "degraded-parts.json"), "utf8")).parts;
+  assert.ok(parts.some((p) => p.part === "register" && /blind frame comparison flagged/.test(p.cause)), "the audit does not record the unfinished part");
 });
 
 // ── ZERO SEMANTICS ────────────────────────────────────────────────────────────────────────────────────────────────

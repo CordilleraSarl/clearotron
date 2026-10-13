@@ -88,6 +88,7 @@ function toolsOf(server) {
     let buf = "";
     const timer = setTimeout(() => { p.kill(); reject(new Error(`${server}-server.mjs did not answer tools/list — could not look`)); }, 20000);
     p.on("error", (e) => { clearTimeout(timer); reject(e); });
+    p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {
@@ -164,6 +165,7 @@ const PLANTED = Object.freeze({
       incumbent_classes: ["9"],
       watchlist_owners: ["BigCo Interactive"],
       goods_words: ["headphones", "wireless headphones"],
+      product_words: ["headphone"],
       search_floor: ["primary-sweep"],
       scope_ledger: [
         { layer: "variant", item: "phonetic-family", status: "applied", reason: "sound-alike neighbours are in scope", reopen_trigger: "" },

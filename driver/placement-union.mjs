@@ -11,8 +11,9 @@
 // attempt 1 cannot be lost on attempt 2, so the outstanding count falls monotonically by construction
 // rather than by the next turn behaving well.
 //
-// PURE — no node imports. It reads placement-form.mjs and that module never reads this one, so the import
-// runs ONE WAY and there is no second opinion about what a settled row is. This file mints no row, no id
+// PURE functions. It reads placement-form.mjs and that module never reads this one, so the import runs ONE
+// WAY and there is no second opinion about what a settled row is. It counts floors with floor-duty.mjs's own
+// reconcile, the one the floor duty counts with, so the form and the duty cannot disagree about a floor. This file mints no row, no id
 // and no definition of "settled": `buildSelectionIndex` and `rowIsSettled` both come from the module the
 // GATE judges with.
 //
@@ -24,8 +25,15 @@
 
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
-  SET_ASIDE_ROW_CONTRACT, isSetAsideRow, setAsideKey } from "./placement-form.mjs";
+  SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
+  SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, namedKey, lineKey, servedLines,
+  groupRowCoversFloors, FLOOR_GROUND_ON, FLOOR_GROUND_REFUSED, ROW_GROUPS, renderPlacementsJson, setAsideGrounds } from "./placement-form.mjs";
+import { groupPageCall } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
+import { reconcileFloorDuty } from "./floor-duty.mjs";
+
+/** Why a `select` the fold does not hold is refused, said back with it. */
+const NOT_IN_BAND = "the band holds no record with this id";
 
 /**
  * Index a submitted/prior list three ways — by row id, by row key, and BY RECORD URI. An absent prior and
@@ -134,7 +142,7 @@ export function unionPlacementForm(prior, submitted, input) {
       // there — a typo, a record the band lost on a re-enumeration, or a candidate that belongs on a seat
       // row. It is reported back by id so the next pass can fix it, and counted so nobody reads the
       // shortfall as agreement.
-      if (!seenSel.has(`?${sel}`)) { seenSel.add(`?${sel}`); unresolved.push({ select: sel, tier: seatFields(row).tier }); }
+      if (!seenSel.has(`?${sel}`)) { seenSel.add(`?${sel}`); unresolved.push({ select: sel, tier: seatFields(row).tier, why: NOT_IN_BAND }); }
       return;
     }
     const key = formRowKey(canonical);
@@ -152,6 +160,18 @@ export function unionPlacementForm(prior, submitted, input) {
   // placements.json. Prior first, so a later row for the same owner replaces the earlier ground, and a
   // retraction names the record id the row set aside. A row the band cannot resolve, or one with no
   // ground, is reported back by id, never dropped in silence.
+  // A ground by name covers the named line only. On a line holding a floor it is about the mark, its goods,
+  // its status or its territory, and says which in `on`; a ground about the owner never sets a floor aside.
+  const groups = input?.groups ?? null;
+  const floorUris = new Set((Array.isArray(input?.floors) ? input.floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
+  const holdsFloor = (canonical) => (canonical?.records ?? []).some((u) => floorUris.has(normalizeRecordUri(u) || String(u ?? "")));
+  // A by-name ground covers the LINE, so the floor check is made on the line: any floor record under the line's
+  // key, or a shape line holding one, though the record the row names is another position of it.
+  const floorLines = new Set([
+    ...[...floorUris].map((u) => namedKey(index.resolve(u))).filter(Boolean),
+    ...["a", "b", "c", "d", "no_goods"].flatMap((g) => (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).filter((l) => l?.floors > 0).map((l) => l.key)),
+  ]);
+  const lineHoldsFloor = (canonical) => holdsFloor(canonical) || floorLines.has(namedKey(canonical));
   const setAside = new Map();
   const setAsideRefused = [];
   const takeSetAside = (row) => {
@@ -159,11 +179,16 @@ export function unionPlacementForm(prior, submitted, input) {
     const ground = typeof row.ground === "string" ? row.ground.trim() : "";
     const canonical = index.resolve(id);
     const refuse = (why) => { if (!setAsideRefused.some((x) => x.set_aside === id && x.why === why)) setAsideRefused.push({ set_aside: id, why }); };
-    if (!canonical) { refuse("the band holds no record with this id"); return; }
+    if (!canonical) { refuse(NOT_IN_BAND); return; }
     if (!ground) { refuse("no ground"); return; }
-    const key = setAsideKey(canonical);
+    const on = typeof row.on === "string" ? row.on.trim().toLowerCase() : "";
+    if (lineHoldsFloor(canonical)) {
+      if (!FLOOR_GROUND_ON.includes(on)) { refuse(`a floor is set aside by name only on its status or its territory: give "on" as one of ${FLOOR_GROUND_ON.join(", ")}`); return; }
+      if (FLOOR_GROUND_REFUSED.test(ground)) { refuse("a floor is never set aside on its owner's customers, channels, markets or field: write a ground about its status or its territory"); return; }
+    }
+    const key = namedKey(canonical);
     setAside.delete(key);
-    setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground });
+    setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground, ...(on ? { on } : {}) });
   };
   for (const e of (Array.isArray(prior?.set_aside) ? prior.set_aside : [])) if (isSetAsideRow(e)) takeSetAside(e);
   // The step may answer in either place: the top-level list it is shown, or a row. An entry equal to one
@@ -172,11 +197,60 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const r of (submittedRows ?? [])) if (isSetAsideRow(r)) { consumed.add(r); takeSetAside(r); }
   for (const [k, e] of setAside) if (retracted.has(e.set_aside) || retracted.has(e.set_aside.toUpperCase())) setAside.delete(k);
 
+  // A ROW OVER LINES NOT READ is refused with how to read them: the parts of the shape that print them and were
+  // not read, or the group's own pages, which serve every line, the crowded group's unprinted ones included.
+  // A crowd outside (a) needs only its first page, which the shape prints; (a), and any group below a thousand
+  // records, needs every line, and a crowded (a)'s lines past its first page are read only on its pages.
+  const unreadGroup = (g, seen, total, { firstPage, pagesOnly }, served) => {
+    const inParts = served?.group_parts?.[g];
+    const partsLeft = Array.isArray(inParts) ? inParts.filter((p) => !served?.parts_read?.has?.(p)) : null;
+    const parts = pagesOnly ? null : partsLeft == null ? "read the parts of band_shape that print it" : partsLeft.length ? `read band_shape ${partsLeft.map((p) => `part ${p}`).join(" and ")}` : null;
+    // A crowd outside (a) stands on its first page, which the shape prints: its refusal names the parts.
+    if (firstPage) return `${seen} of the first ${total} lines of group ${g} were read: ${partsLeft?.length ? `read band_shape ${partsLeft.map((p) => `part ${p}`).join(" and ")}, which prints them` : "read the parts of band_shape that print them"}, before its row`;
+    return `${seen} of ${total} lines of group ${g} were read: ${[parts, `page it with ${groupPageCall(g)}`].filter(Boolean).join(", or ")}, before its row`;
+  };
+  // ONE ROW PER GROUP (placement-form.mjs, SET_ASIDE_GROUP_CONTRACT), kept the way an owner's set-aside is:
+  // prior first, a later row for the same group replaces the earlier one, and `group:<name>` retracts it.
+  // Its count must be the shape's own, so the row is about the pile the step was shown. A group the shape
+  // does not list, a count that is not the shape's, or a row with no ground is reported back, never dropped.
+  const setAsideGroups = new Map();
+  const groupRefused = [];
+  const servedSet = servedLines(groups, input?.served, index);
+  const takeGroup = (row) => {
+    const written = String(row.set_aside_group).trim();
+    const refuse = (why) => { if (!groupRefused.some((x) => x.set_aside_group === written && x.why === why)) groupRefused.push({ set_aside_group: written, why }); };
+    const g = groupName(written);
+    if (!g) { refuse(`not one of the shape's groups (${ROW_GROUPS.join(", ")})`); return; }
+    const shown = groups?.[g];
+    if (!(shown?.lines > 0)) { refuse("the band shape lists no line in this group"); return; }
+    const ground = typeof row.ground === "string" ? row.ground.trim() : "";
+    if (!ground) { refuse("no ground"); return; }
+    if (Number(row.count) !== shown.records) { refuse(`count ${row.count ?? "(none)"} is not the shape's ${shown.records}`); return; }
+    const crowded = (shown.records ?? 0) >= (groups?.crowded_at ?? Infinity);
+    if (g === "no_goods" && !crowded) { refuse("the lines the goods test could not place take a row only at a thousand records or more; below that, each takes its fate by name"); return; }
+    // A ROW COVERS ONLY WHAT WAS READ (ruled 2026-10-12). Below a thousand records, and in (a) at any size, a
+    // row waits for every line; a crowd of a thousand or more outside (a) stands on its first page read and
+    // the count, the crowded-field method's "do not write up the rest". The rest is listed by the same rule.
+    const list = Array.isArray(shown.list) ? shown.list : [];
+    const firstPage = crowded && g !== "a";
+    const needed = firstPage ? list.slice(0, groups?.first_page ?? 0) : list;
+    const seen = needed.filter((l) => servedSet.has(l.key)).length;
+    if (seen < needed.length) { refuse(unreadGroup(g, seen, needed.length, { firstPage, pagesOnly: crowded && g === "a" }, input?.served)); return; }
+    setAsideGroups.delete(g);
+    setAsideGroups.set(g, { set_aside_group: g, count: shown.records, ground });
+  };
+  for (const e of (Array.isArray(prior?.set_aside) ? prior.set_aside : [])) if (isSetAsideGroupRow(e)) takeGroup(e);
+  for (const e of (Array.isArray(submitted?.set_aside) ? submitted.set_aside : [])) if (isSetAsideGroupRow(e)) takeGroup(e);
+  for (const r of (submittedRows ?? [])) if (isSetAsideGroupRow(r)) { consumed.add(r); takeGroup(r); }
+  for (const g of [...setAsideGroups.keys()]) if (retracted.has(`group:${g}`) || retracted.has(`group:${g}`.toUpperCase())) setAsideGroups.delete(g);
   const form = { _provenance: PLACEMENT_FORM_PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
     seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT,
-    generated_from: { ...index.derived_from, selected: selections.length, unresolved: unresolved.length, set_aside: setAside.size },
+    set_aside_group_contract: SET_ASIDE_GROUP_CONTRACT,
+    generated_from: { ...index.derived_from, selected: selections.length, unresolved: unresolved.length, set_aside: setAside.size,
+      set_aside_groups: setAsideGroups.size },
     ...(unresolved.length ? { unresolved } : {}), ...(setAsideRefused.length ? { set_aside_refused: setAsideRefused } : {}),
-    set_aside: [...setAside.values()], rows: selections };
+    ...(groupRefused.length ? { set_aside_group_refused: groupRefused } : {}),
+    set_aside: [...setAside.values()], set_aside_groups: [...setAsideGroups.values()], rows: selections };
 
   // THE TWO SIDES ARE MATCHED DIFFERENTLY, and the asymmetry is the point.
   //
@@ -196,6 +270,7 @@ export function unionPlacementForm(prior, submitted, input) {
   const findPrior = indexRows(priorRows, { bySelection: false, uriLeg: false });
   const findSubmitted = indexRows(submittedRows ?? []);
   let settled = 0, carried = 0;
+  const tierRefused = [];
   for (const row of form.rows) {
     const pr = findPrior(row), s = findSubmitted(row);
     const sOk = s && rowIsSettled(s, row), pOk = pr && rowIsSettled(pr, row);
@@ -209,11 +284,18 @@ export function unionPlacementForm(prior, submitted, input) {
     row.tier = fields.tier || null;
     row.reason = fields.reason || null;
     row.borderline = fields.borderline === true ? true : null;
+    // AN IDENTICAL MARK LIVE IN AN ORDERED OR FRAME-ADDED CLASS IS NEVER OUT-OF-SCOPE-FILTERED. The tier is
+    // refused, said back, and the row left open, so the floor duty still owes it a fate.
+    if (row.tier === "out-of-scope-filtered" && holdsFloor(row)) {
+      tierRefused.push({ select: row.select ?? null, why: "an identical mark live in an ordered or frame-added class is never out-of-scope-filtered: place it, sheet-2 at the least, or set it aside by name on its status or its territory" });
+      row.tier = null;
+    }
     // JUDGED ON THE MERGED ROW, not on either input — a tier written on one pass and its reason on the
     // next completes a row neither attempt finished alone, and counting whole settled inputs would report
     // it outstanding while the gate, reading this same merged row, accepts it.
     if (rowIsSettled(row, row)) { settled += 1; if (!sOk) carried += 1; }
   }
+  if (tierRefused.length) form.tier_refused = tierRefused;
   // SEAT ROWS accumulate exactly as selections do — prior ∪ submitted, minus explicit retractions. A
   // TORN write is still safe: it fails to parse, so it "said nothing", contributes no rows and retracts
   // none, and no corrupt judgment can enter.
@@ -224,8 +306,50 @@ export function unionPlacementForm(prior, submitted, input) {
     form.rows.push(r);
     if (rowIsSettled(r, r)) settled += 1;
   }
+
+  // WHAT EACH ROW COVERS, said back to the step: the group's lines it neither placed nor set aside by name,
+  // and, below a thousand records, the lines holding a floor the row leaves for the step to place or name. Read
+  // on the merged rows: a line is placed only where its row renders, so a selection the form refused, for its
+  // tier or anything else, is never read as a fate.
+  const placedLines = new Set(form.rows.filter((row) => row.kind === "register" && rowIsSettled(row, row)).map((row) => lineKey(row)).filter(Boolean));
+  const groupOf = groupOfKeys(groups);
+  const lineOf = (g, key) => (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).find((l) => l.key === key) ?? null;
+  const covers = new Map(), floorsLeft = new Map();
+  for (const [key, g] of groupOf) {
+    if (!setAsideGroups.has(g) || placedLines.has(key) || setAside.has(key)) continue;
+    const line = lineOf(g, key);
+    if ((line?.floors ?? 0) > 0 && !groupRowCoversFloors(groups, g)) floorsLeft.set(g, [...(floorsLeft.get(g) ?? []), line.record_id ?? key]);
+    else covers.set(g, (covers.get(g) ?? 0) + 1);
+  }
+  for (const [g, e] of setAsideGroups) {
+    e.covers_lines = covers.get(g) ?? 0;
+    if (floorsLeft.get(g)?.length) e.floors_not_covered = floorsLeft.get(g);
+  }
+  // EVERY FLOOR WITHOUT A FATE, below a thousand records, said back with its line: counted by the floor duty's
+  // own reconcile over what this form renders and sets aside, so a floor on a line placed through another of its
+  // records is owed here as the duty owes it. Only a crowd whose row may cover its floors, (b) at a thousand records
+  // or more, stands on its row and its count. Said back once the step has answered, on this turn or an earlier one:
+  // the form written before any answer would list every floor of the band, and a turn whose form will not parse
+  // leaves the earlier answer standing, its floors still owed.
+  const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors);
+  const duty = reconcileFloorDuty({ floors: Array.isArray(input?.floors) ? input.floors : [],
+    placements: renderPlacementsJson(form.rows).placements, setAsideGroundOf: groundOf });
+  const unfated = new Map();
+  for (const r of duty.rows) {
+    if (r.disposition !== "unanswered" && r.disposition !== "named-without-ground") continue;
+    const key = lineKey(index.resolve(r.record_id));
+    const g = key ? groupOf.get(key) ?? null : null;
+    if (g && groupRowCoversFloors(groups, g)) continue;
+    const k = key ?? `record:${r.record_id}`;
+    const e = unfated.get(k) ?? { group: g, line: (g ? lineOf(g, key)?.record_id : null) ?? r.record_id, floors: [] };
+    e.floors.push(r.record_id);
+    unfated.set(k, e);
+  }
+  const answered = submittedRows !== null || priorRows.length > 0 || (Array.isArray(prior?.set_aside) && prior.set_aside.length > 0);
+  if (answered && unfated.size) form.floors_without_fate = [...unfated.values()];
   return { form, total: form.rows.length, settled, outstanding: form.rows.length - settled,
-    carried, seat_rows: carriedSeat.length, unresolved: unresolved.length, set_aside: setAside.size };
+    carried, seat_rows: carriedSeat.length, unresolved: unresolved.length, set_aside: setAside.size, set_aside_groups: setAsideGroups.size,
+    floors_without_fate: [...unfated.values()].reduce((n, e) => n + e.floors.length, 0) };
 }
 
 /** How many rows of an already-unioned form the render would still omit. PURE. */

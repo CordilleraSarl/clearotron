@@ -20,10 +20,11 @@ import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync } from
 import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
-import { answerBudget } from "../../../shared/answer-parts.mjs";
-import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord } from "../../band-shape.mjs";
+import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
+import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
+import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, untaggedIsEnglish } from "../../record-goods.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
@@ -122,15 +123,27 @@ const RESPONSE_CHARS = Math.max(4096, Number(process.env.CLEAROTRON_BAND_RESPONS
 // so a larger answer size cannot push a part past Claude's limit; with no size set, nothing changes.
 const SHAPE_PART_SERVED = Math.min(SHAPE_PART_CHARS, RESPONSE_CHARS);
 
-/** Split text into parts of ≤ budget chars, cutting only at line boundaries (an over-budget single
- *  line still ships whole — never cut mid-line). Concatenating the parts with "\n" restores the
- *  input byte-for-byte. */
+// The answer size is in bytes, counted as a quoted string (shared/answer-parts.mjs), and characters are not
+// bytes: a page of marks and owners in a script of three bytes a character, trimmed to the character size,
+// came to about three times the answer size and was split a second time. So every answer and every part is
+// held to the bytes as well, with room in a part for its banner. Latin text meets the character size first,
+// so it is served as before.
+const RESPONSE_BYTES = answerBudget();
+const PART_ROOM = 512;
+const fits = (text) => text.length <= RESPONSE_CHARS && (!RESPONSE_BYTES || quotedBytes(text) <= RESPONSE_BYTES);
+
+/** Split text into parts of ≤ budget chars and, given an answer size, ≤ its bytes less a banner's room,
+ *  cutting only at line boundaries (an over-budget single line still ships whole — never cut mid-line).
+ *  Concatenating the parts with "\n" restores the input byte-for-byte. */
 function splitAtLines(text, budget) {
+  const bytes = RESPONSE_BYTES ? RESPONSE_BYTES - PART_ROOM : Infinity;
   const parts = [];
-  let cur = null;
+  let cur = null, curBytes = 0;
   for (const line of String(text).split("\n")) {
-    if (cur !== null && cur.length + 1 + line.length > budget) { parts.push(cur); cur = line; }
-    else cur = cur === null ? line : cur + "\n" + line;
+    const lineBytes = RESPONSE_BYTES ? quotedBytes(line) : 0;
+    if (cur !== null && (cur.length + 1 + line.length > budget || curBytes + 2 + lineBytes > bytes)) { parts.push(cur); cur = line; curBytes = lineBytes; }
+    else if (cur === null) { cur = line; curBytes = lineBytes; }
+    else { cur += "\n" + line; curBytes += 2 + lineBytes; }
   }
   parts.push(cur ?? "");
   return parts;
@@ -224,6 +237,28 @@ function resolveRecordFile(dir, uri) {
   return { miss: "not-fetched", files };
 }
 
+// WHAT A PART OF THE SHAPE HOLDS. A group's row is checked against the lines the step READ, so each md part
+// served logs the listed lines printed in it, found through the md line the shape's data records for each
+// (`md_lines`), and which parts hold each group, so a refusal can name the parts left unread. The json form
+// is the machine shape: reading it serves no line. A shape with no recorded lines logs none.
+function linesByPart(parts) {
+  let shape = null;
+  try { shape = loadJson(shapeJsonPath()); } catch { shape = null; }
+  const at = shape?.md_lines && typeof shape.md_lines === "object" ? shape.md_lines : {};
+  const ends = [];
+  let line = 0;
+  for (const p of parts) { line += p.split("\n").length; ends.push(line - 1); }
+  const partOf = (n) => ends.findIndex((end) => n <= end);
+  const keys = parts.map(() => []);
+  for (const [key, n] of Object.entries(at)) { const i = partOf(n); if (i >= 0) keys[i].push(key); }
+  const groupParts = {};
+  for (const g of ["a", "b", "c", "d", "rest", "no_goods"]) {
+    const ps = new Set((shape?.groups?.[g]?.list ?? []).map((l) => at[l.key]).filter((n) => n != null).map((n) => partOf(n) + 1));
+    if (ps.size) groupParts[g] = [...ps].sort((x, y) => x - y);
+  }
+  return { keys, groupParts };
+}
+
 function bandShape(params) {
   const format = params?.format === "json" ? "json" : "md";
   const p = format === "json" ? shapeJsonPath() : shapeMdPath();
@@ -232,27 +267,89 @@ function bandShape(params) {
   const text = readFileSync(p, "utf8");
   const parts = splitAtLines(text, SHAPE_PART_SERVED);
   const total = parts.length;
+  const read = format === "md" ? linesByPart(parts) : null;
   if (total === 1) {                                    // the common case — served verbatim, no banner
-    logRead("band_shape", { format }, { ok: true, bytes: text.length });
+    logRead("band_shape", { format }, { ok: true, bytes: text.length, ...(read ? { part: 1, parts: 1, served_lines: read.keys[0], group_parts: read.groupParts } : {}) });
     return text;
   }
   const part = Math.min(Math.max(1, Math.floor(Number(params?.part)) || 1), total);
-  logRead("band_shape", { format, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length });
-  const head = `[band_shape part ${part}/${total} — this shape exceeds one tool response, so it is served in ${total} parts` +
-    ` split at line boundaries (every floor row is intact). The shape is COMPLETE only once ALL ${total} parts are read` +
-    `${format === "json" ? "; concatenate the parts before parsing the JSON" : ""} — never reason from a partial shape.]`;
+  logRead("band_shape", { format, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length,
+    ...(read ? { served_lines: read.keys[part - 1], group_parts: read.groupParts } : {}) });
+  const head = format === "json"
+    ? `[band_shape part ${part}/${total} of the json; concatenate the parts before parsing it.]`
+    : `[band_shape part ${part}/${total}. Read each group by the size sentence at its head; the next part continues the groups.]`;
   const tail = part < total
     ? `\n[end of part ${part}/${total} — call band_shape again with {"part": ${part + 1}} for the next part]`
-    : `\n[end of part ${total}/${total} — the shape is complete once parts 1..${total} are all read]`;
+    : `\n[end of the shape]`;
   return head + "\n" + parts[part - 1] + tail;
+}
+
+// THE GOODS ON THE ROW, AS THE SHAPE TESTS THEM. Each record served carries the goods words its goods
+// hold, "k of N: the words", tested on the same words and stems the shape grouped on (its `goods_test`),
+// from the records the register already logged to this run (record-goods.mjs). The goods text is one
+// `band_record` away; a row never carries it. A record whose goods cannot be read says so with null.
+let goodsCache = null;
+const goodsIndex = () => (goodsCache ??= bandGoodsIndex(RUN_DIR));
+let testCache = null;
+const shapeGoodsTest = () => {
+  if (testCache) return testCache;
+  let words = [];
+  try { words = loadJson(shapeJsonPath()).groups?.goods_test?.words ?? []; } catch { words = []; }
+  testCache = { words, matched: goodsWordsMatched(words, { stems: true }) };
+  return testCache;
+};
+// The record's body first; a row that carries goods of its own stands in where the run holds no body.
+const goodsOfRow = (r) => goodsFor(goodsIndex(), r)
+  ?? (typeof r?.goods === "string" && r.goods.trim() ? [{ classes: [], text: r.goods.trim(), ...(untaggedIsEnglish(r?.record_id) ? {} : { en: false }) }] : null);
+const withGoods = (r) => {
+  const { words, matched } = shapeGoodsTest();
+  const m = words.length ? matched(goodsOfRow(r)) : null;
+  const { goods: _text, ...row } = project(r);   // a row's own goods text stands in for the test, and is not served
+  return { ...row, goods_words: m == null ? null : `${m.length} of ${words.length}${m.length ? `: ${m.join(", ")}` : ""}` };
+};
+
+// A GROUP, PAGED AS THE SHAPE LISTS IT. The shape lists a group of a thousand records or more by its first
+// page; the rest of its lines are served here, one compact line per mark of an owner, in the group's own
+// order. A group's row is refused until every line was read (placement-union.mjs), so the step can always
+// reach every line it is asked to answer for. Each answer logs the lines it served.
+const GROUP_LINE_LIMIT = 200;
+function groupLookup(params) {
+  const g = String(params.group ?? "").trim().toLowerCase();
+  let groups;
+  try { groups = loadJson(shapeJsonPath()).groups; } catch { groups = null; }
+  if (!groups?.[g]?.list) { logRead("band_lookup", params, { ok: false, reason: "no-group" }); return { isError: true, text: `ERROR: the band shape lists no group "${g}" — one of a, b, c, d, rest, no_goods.` }; }
+  const lines = groups[g].list;
+  const total = groups.goods_words_total || 0;
+  const limit = Math.max(1, Math.min(Number(params.limit) || GROUP_LINE_LIMIT, GROUP_LINE_LIMIT));
+  const offset = Math.max(0, Math.floor(Number(params.offset) || 0));
+  const page = lines.slice(offset, offset + limit).map((l) => ({
+    mark: l.mark, owner: l.owner_name, classes: l.classes, live: `${l.live} of ${l.records}`, territories: l.territories,
+    goods_words: l.goods_words == null ? null : `${l.goods_words.length} of ${total}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`,
+    ...(l.goods_words == null && l.goods_on_file != null ? { goods_on_file: l.goods_on_file } : {}),
+    floor: l.floors > 0, record: l.record_id, _key: l.key,
+  }));
+  const body = () => JSON.stringify({
+    group: g, lines_total: lines.length, returned: page.length, ...(offset ? { offset } : {}),
+    ...(lines.length > offset + page.length ? { next_offset: offset + page.length,
+      note: `call again with offset: ${offset + page.length} for the next lines of group ${g}` } : {}),
+    lines: page.map(({ _key, ...l }) => l),
+  }, null, 2);
+  let out = body();
+  while (!fits(out) && page.length > 1) { page.pop(); out = body(); }
+  logRead("band_lookup", params, { ok: true, group: g, returned: page.length, served_lines: page.map((l) => l._key) });
+  return out;
 }
 
 function bandLookup(params = {}) {
   if (!RUN_DIR) return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." };
+  if (params.group != null && String(params.group).trim()) return groupLookup(params);
   if (!existsSync(bandPath())) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: "ERROR: register-named-band.json not found in this run — the band has not been merged yet." }; }
   let band;
   try { band = loadJson(bandPath()); } catch (e) { logRead("band_lookup", params, { ok: false }); return { isError: true, text: `ERROR: band unreadable (${e.message}) — a driver-side defect; report it, never hand-repair the band.` }; }
-  const { record_id, owner, nice_class, tier, qid, query, text, status, live_only = false } = params;
+  const { record_id, owner, nice_class, tier, qid, query, text, status, live_only = false, goods } = params;
+  // Words, as a list or one string. A record whose goods the run does not hold passes: unknown is not a mismatch.
+  const goodsWords = (Array.isArray(goods) ? goods : goods == null ? [] : [goods]).map((w) => String(w ?? "").trim()).filter(Boolean);
+  const goodsCount = goodsWords.length ? goodsWordCounter(goodsWords, { stems: true }) : null;   // the shape's own matcher
   const limit = Math.max(1, Math.min(Number(params.limit) || 20, 100));
   // PAGING. A large band is read page by page from `offset`, in the band's own order, and a capped answer
   // names the next offset. Without it the only way to see every record was to slice the band by owner or
@@ -275,8 +372,8 @@ function bandLookup(params = {}) {
     if (record_id && norm(r?.record_id) !== norm(record_id)) continue;
     if (owner && !norm(r?.owner_name).includes(norm(owner))) continue;
     if (nice_class != null) {
-      const cls = (Array.isArray(r?.classes) ? r.classes : [r?.classes]).map((c) => String(c ?? "").trim());
-      if (!cls.includes(String(nice_class).trim())) continue;
+      const cls = (Array.isArray(r?.classes) ? r.classes : [r?.classes]).map(niceClassKey);   // "09" is class 9
+      if (!cls.includes(niceClassKey(nice_class))) continue;
     }
     if (status && !norm(r?.status ?? r?.screen?.status).includes(norm(status))) continue;
     if (live_only === true && !isLiveRecord(r)) continue;
@@ -288,8 +385,9 @@ function bandLookup(params = {}) {
     if (query && ![...(Array.isArray(r?._queries) ? r._queries : []), r?._query].some((q) => norm(q).includes(norm(query)))) continue;
     if (text && !norm(r?.mark_text).includes(norm(text))) continue;
     if (prepared && classifyRecord(r?.mark_text, prepared).tier !== tier) continue;
+    if (goodsCount && goodsCount(goodsOfRow(r)) === 0) continue;
     matched++;
-    if (matched > offset && hits.length < limit) hits.push(project(r));
+    if (matched > offset && hits.length < limit) hits.push(withGoods(r));
   }
   // matching crowd descriptors ride along (a lookup that lands in an un-enumerated zone must SEE that).
   const crowds = (Array.isArray(band?.crowds) ? band.crowds : []).filter((c) => {
@@ -330,8 +428,9 @@ function bandLookup(params = {}) {
       + (unsizedCrowds ? ` — and ${unsizedCrowds} of them has/have an UNKNOWN SIZE (see "size"): the register stated no total, so how much lies under those slices is unmeasured` : "") } : {}),
   }, null, 2);
   let out = body();
-  while (out.length > RESPONSE_CHARS && hits.length > 1) { hits.pop(); byteCapped++; out = body(); }
-  logRead("band_lookup", params, { ok: true, matched, returned: hits.length, crowds: crowds.length, ...(byteCapped ? { byte_capped: byteCapped } : {}) });
+  while (!fits(out) && hits.length > 1) { hits.pop(); byteCapped++; out = body(); }
+  logRead("band_lookup", params, { ok: true, matched, returned: hits.length, crowds: crowds.length, ...(byteCapped ? { byte_capped: byteCapped } : {}),
+    served: hits.map((h) => h.record_id).filter(Boolean) });
   return out;
 }
 
@@ -368,15 +467,14 @@ function bandRecord(params = {}) {
       logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, ...resolution });
       return text;
     }
-    // An oversize official record serves in PARTS, same contract as band_shape: line-boundary splits,
-    // byte-identical concatenation, and an explicit "complete only once all parts are read" banner.
+    // An oversize official record serves in PARTS, as band_shape does: line-boundary splits, byte-identical
+    // concatenation, and a banner that says the next part continues it.
     const part = Math.min(Math.max(1, Math.floor(Number(params.part)) || 1), total);
     logRead("band_record", { record_id: uri, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length, ...resolution });
-    const head = `[band_record part ${part}/${total} — this record exceeds one tool response, so it is served in ${total} parts` +
-      ` split at line boundaries. The record is COMPLETE only once ALL ${total} parts are read; concatenate the parts before parsing.]`;
+    const head = `[band_record part ${part}/${total}. This record is served in ${total} parts; the next part continues it.]`;
     const tail = part < total
       ? `\n[end of part ${part}/${total} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}} for the next part]`
-      : `\n[end of part ${total}/${total} — the record is complete once parts 1..${total} are all read]`;
+      : `\n[end of the record]`;
     return head + "\n" + parts[part - 1] + tail;
   }
   // ── BEFORE CALLING IT A MISS, ASK THE LEDGER — ─────────────────────────────────
@@ -418,18 +516,20 @@ serve({
   tools: [
     {
       name: "band_shape",
-      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the complete floors list (every live in-class identical/near-identical record), class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. Read this FIRST, then pull what it names via band_lookup/band_record. A floors-heavy shape is served in PARTS (the response labels itself part N/M and names the next call — read ALL parts; the shape is complete only then, and a partial read is never the shape). Every call is logged to the run's reading audit.",
+      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the floors (every live in-class identical/near-identical record), each marked on its line in the band in the lawyer's order, class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. Read this FIRST, then pull what it names via band_lookup/band_record. A large shape is served in parts, each naming the next call. Every call is logged to the run's reading audit.",
       inputSchema: { type: "object", properties: { format: { type: "string", enum: ["md", "json"], description: "md (default, readable) or json (machine shape)" }, part: { type: "number", description: "1-based part number when the shape is served in parts (default 1)" } } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandShape,
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, limit (default 20, max 100), offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page). Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
-        status: { type: "string" }, live_only: { type: "boolean" }, limit: { type: "number" }, offset: { type: "number" },
+        status: { type: "string" }, live_only: { type: "boolean" }, goods: { type: "array", items: { type: "string" } },
+        group: { type: "string", enum: ["a", "b", "c", "d", "rest", "no_goods"] },
+        limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandLookup,

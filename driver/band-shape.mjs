@@ -5,8 +5,8 @@
 // The 2026-07-28 postmortem's lesson: the merged band is megabytes (median 5.2MB across the archive; Read hard-refuses
 // >256KB), so judgment never read it whole — every stage sliced it with improvised, unreviewed shell
 // (digest#2: 71 ad-hoc Bash calls). This module is the reading layer's frozen-plan equivalent: a PURE,
-// deterministic projection of the band that fits in one Read (<256KB by construction for everything
-// except the unconditional floors), derived by the driver after EVERY named-band re-merge.
+// deterministic projection of the band, served in parts once it outgrows one answer (the groups section grows
+// with the band; the parts banner says how many), derived by the driver after EVERY named-band re-merge.
 //
 // What it is NOT: a relevance/sufficiency/materiality judgment. Tiers are MECHANICAL string classes
 // (the same pure utils the form floor is built from — normalizers + doubleMetaphone); whether a
@@ -26,6 +26,10 @@
 import { normalizeElement, editNeighbourhood, consonantSkeleton, confusableSkeleton, foldDiacritics } from "./form-neighbourhood.mjs";
 import { doubleMetaphone } from "./phonetic-key.mjs";
 import { probeOrder } from "./order-probe.mjs";   // item 11 — inert unless CLEAROTRON_ORDER_PROBE_SEED is set
+import { normKey } from "./placement-diff.mjs";
+import { canonicalJurisdictionCode, KNOWN_JURISDICTION_CODES } from "./jurisdiction-codes.mjs";   // — one spelling per register: a band's "EM" and a market's "EU" are one office
+import { bindingLayersFor } from "./binding-layers.mjs";
+import { territoryKey } from "./territory-tiers.mjs";   // — a territory written as a name reads as its code   // — the registers that bind an ordered territory: its own, the EU's for a member, every member's for the EU, Benelux, Madrid   // — the set-aside key's owner fold: an owner is grouped the way a set-aside row covers it
 
 export const BAND_SHAPE_SCHEMA_VERSION = 1;
 
@@ -206,7 +210,38 @@ export function classifyRecord(markText, targets) {
     if (cons && cons === t.cons) return { tier: "same-family", target: t.text, basis: "consonant-skeleton" };
     if (meta.length && t.metaphone.length && meta.some((m) => t.metaphone.includes(m))) return { tier: "same-family", target: t.text, basis: "double-metaphone" };
   }
+  // ── A MARK TWO EDITS FROM A VARIANT OF SIX LETTERS OR MORE IS OF ITS FAMILY (ruled 2026-10-13) ────────
+  //
+  // The variants stage renders the mark's meaning in some of a market's languages, and the same word in another
+  // language is often two edits from one of them. None of the rungs above reads that: one edit, a whole matching
+  // word, the consonant skeleton, the sound code. Measured on a saved band, a register entry a reviewing lawyer
+  // listed sat two edits from such a meaning form and read as "other". Each pair is compared, never enumerated:
+  // the form floor's radius stays one edit (form-neighbourhood.mjs). The rung makes no floor, which takes the
+  // identical and near-identical tiers only, and runs last, so no tier above it moves.
+  for (const t of prepared) {
+    if (t.norm.length >= EDIT2_MIN_LEN && withinTwoEdits(norm, t.norm)) return { tier: "same-family", target: t.text, basis: "edit-2" };
+  }
   return { tier: "other", target: null, basis: "no-mechanical-match" };
+}
+
+/** The shortest target the two-edit rung reads: below six letters two edits reach too many unrelated words. */
+export const EDIT2_MIN_LEN = 6;
+
+/** Is `a` within two insertions, deletions or substitutions of `b`? Stops at the first row past two. PURE. */
+function withinTwoEdits(a, b) {
+  if (Math.abs(a.length - b.length) > 2) return false;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let best = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (cur[j] < best) best = cur[j];
+    }
+    if (best > 2) return false;
+    prev = cur;
+  }
+  return prev[b.length] <= 2;
 }
 
 // ── dominant-element composites (P2-A, the recall spine) ────────────────────────────────────────────
@@ -258,7 +293,7 @@ export function dominantElementBasis(markText, prep) {
 export function dominantElementComposites(band, { dominantElement, inScopeClasses = [] } = {}) {
   const prep = prepareDominantElement(dominantElement);
   if (!prep) return null;                         // no comparable dominant element ⇒ not computable
-  const scope = new Set((inScopeClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
+  const scope = new Set((inScopeClasses ?? []).map(niceClassKey).filter(Boolean));
   const inScope = (r) => {
     const cls = classesOf(r);
     if (!scope.size) return true;
@@ -531,7 +566,9 @@ export function deriveRegisterPositions(records, detailByUri = new Map()) {
 }
 
 const inc = (obj, key, by = 1) => { const k = String(key); obj[k] = (obj[k] ?? 0) + by; };
-const classesOf = (r) => (Array.isArray(r?.classes) ? r.classes : r?.classes != null ? [r.classes] : []).map((c) => String(c).trim()).filter(Boolean);
+/** A Nice class as one spelling: "09", "9" and 9 are class 9. PURE. */
+export const niceClassKey = (c) => { const t = String(c ?? "").trim(); return /^\d+$/.test(t) ? String(Number(t)) : t; };
+const classesOf = (r) => (Array.isArray(r?.classes) ? r.classes : r?.classes != null ? [r.classes] : []).map(niceClassKey).filter(Boolean);
 const registryOf = (r) => String(r?.screen?.registry ?? (Array.isArray(r?.jurisdictions) ? r.jurisdictions[0] : r?.jurisdictions) ?? "").trim() || "unknown";
 const yearOf = (r) => {
   const m = String(r?.application_date ?? r?.screen?.applicationDate ?? "").match(/\b(19|20)\d{2}\b/);
@@ -572,6 +609,203 @@ const floorRow = (r, cls) => ({
   _query: r._query ?? null,
 });
 
+// ── THE BAND IN THE LAWYER'S ORDER ──────────────────────────────────────────────────────────────────
+//
+// The crowded-field method, as ruled 2026-09-21: identical marks in the class;
+// identical marks for the particular goods; the dominant word for the particular goods; then the rest,
+// counted, with its rule. "Fifty? Read them all. A few hundred? Sort by the client's goods and markets,
+// read the near ones first, list the rest. A thousand or more? The field is crowded: read the identical
+// and live ones for the client's goods, tell the client it is crowded, and do not write up the rest."
+//
+// Code sorts on fields the records carry: the mark's tier against the targets, a goods-word match, class
+// and status. It judges nothing.
+export const BAND_GROUPS = ["a", "b", "c", "d", "rest"];
+// The method's "a thousand or more": a group this size is served as its count and its first page.
+export const CROWDED_GROUP_RECORDS = 1000;
+const TIER_RANK = { identical: 0, "near-identical": 1, "same-family": 2, other: 3, unclassifiable: 4 };
+
+/**
+ * One record's group. PURE. `hits` is how many of the client's goods words its goods contain, or null
+ * when the run holds no goods for it: unknown passes the goods test, so a record is never set aside for
+ * what the run does not hold.
+ *   (a) identical or near-identical to a target, live in the ordered classes, for the client's goods;
+ *   (b) identical or near-identical to a target, in the ordered classes;
+ *   (c) the same family as a target, or carrying the searched dominant word, for the client's goods;
+ *   (d) every other live mark in the ordered classes, for the client's goods;
+ *   the rest: everything else.
+ */
+export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
+  const ident = tier === "identical" || tier === "near-identical";
+  const forGoods = hits !== 0;
+  // (a) reads the goods of live records in the ordered classes only (ruled 2026-10-12): a dead or
+  // out-of-class record's goods never put a mark in (a).
+  if (ident && live && inScope && forGoods) return "a";
+  if (ident && inScope) return "b";
+  if ((tier === "same-family" || dominant) && forGoods) return "c";
+  if (live && inScope && forGoods) return "d";
+  return "rest";
+}
+
+/**
+ * The band in the ruled order: ONE LINE PER MARK OF AN OWNER, in one collated list per group. PURE. The unit is
+ * the mark, not the owner: an owner shown on one line under its closest mark hid a different mark of the
+ * same owner, and a ground written about the shown mark set the other aside unseen.
+ *
+ * THE LIST IS THE ORDER'S SCOPE (ruled 2026-10-12). A worldwide order lists the world; an order naming its
+ * territories lists every register that binds them (`bindingLayersFor`): a member state's own register,
+ * the EU's and Madrid's for it, every member's for an EU order, Benelux for its three. A line held only in
+ * registers outside them goes to the rest, counted with that reason and still open to a lookup. A record
+ * whose register cannot be read stays in.
+ *
+ * "FOR THE CLIENT'S GOODS" MEANS THE PARTICULAR GOODS: the words that name the client's product, never
+ * the class words the variants stage adds for the register search. `goods.hits` and `goods.matched`
+ * answer for those words.
+ *
+ * EACH GROUP RUNS IN THE ORDER THE OWNER RULED (2026-10-12): a line with the client's goods on a live record
+ * in the ordered classes first; then more live records in those classes; then more goods words; then a
+ * client market; then more records. Code sorts on fields the records carry and judges nothing. A line
+ * carries the goods words it matched, never the goods text, which is one lookup away.
+ *
+ * A line sits in the best group its records in scope reach. `keysOf` gives a record's line and its owner's
+ * set-aside key, both read through the positions fold, so a line covers exactly what a row naming one of
+ * its records reaches. A line carries the words matched, so nothing on it is cut; the one line that cannot
+ * be judged from itself is one the goods test placed while its records carry no goods on file.
+ *
+ * @param records    the band's enumerated records
+ * @param classify   record → { tier, target } (the shape's own classifier over its targets)
+ * @param inScope    record → boolean (the shape's own class test)
+ * @param goods      { of, hits, matched } (record-goods.mjs), or null when the run holds none
+ * @param dominantTerm  the word the register's goods-narrowed search asked for, or ""
+ * @param keysOf     record → { line, owner }, or null
+ * @param markets    the client's markets, as territory codes
+ * @param territories  the order's territories, as codes (effective-scope.mjs `orderTerritories`); empty for a worldwide order
+ */
+/**
+ * THE REST NEVER HOLDS A FLOOR. The rest is set aside in one row, at a thousand records or more on its first
+ * page and its count, so a floor in it could be left unread. The group rule puts every floor in (a) or (b); a
+ * rest holding one is a defect here, and the shape is refused rather than served with a floor no one will
+ * read. PURE (throws).
+ */
+export function assertRestHoldsNoFloor(restLines) {
+  const stray = (restLines ?? []).find((l) => l?.floors > 0);
+  if (stray) throw new Error(`band shape: the rest holds a floor (${stray.record_id ?? stray.key}); a floor is listed in (a) or (b), never counted in the rest`);
+}
+
+/**
+ * Every register that binds any of these territories: each territory's own, the EU's for a member, every
+ * member's for the EU, Benelux's for its three, Madrid's for all. The Benelux register is written BX or as any
+ * of its three members' codes, binds all three, and sits inside the EU. PURE.
+ */
+const BENELUX = ["BX", "NL", "BE", "LU"];
+function bindingOffices(territories, code) {
+  const out = new Set();
+  for (const t of territories) {
+    out.add(t);
+    try { for (const l of bindingLayersFor(t)) out.add(code(l.office)); } catch { /* an unknown code binds itself */ }
+  }
+  if (out.has("WO")) out.add("IB");   // the International Bureau is the Madrid register by another name
+  if (BENELUX.some((c) => out.has(c))) { for (const c of BENELUX) out.add(c); out.add("EU"); out.add("WO"); out.add("IB"); }
+  return out;
+}
+
+export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", keysOf = null, markets = [], territories = [] } = {}) {
+  const fold = (x) => foldDiacritics(String(x ?? "")).toLowerCase();
+  const dom = fold(dominantTerm).trim();
+  const domRe = dom ? new RegExp(`(^|[^\\p{L}\\p{N}])${dom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^\\p{L}\\p{N}])`, "u") : null;
+  const domPrep = prepareDominantElement(dominantTerm);   // the composites' own ladder, for a word fused into a longer one
+  // A territory or register as written, a code or a name, read as its code: "Switzerland" and "CH" are one.
+  const code = (t) => canonicalJurisdictionCode(territoryKey(String(t ?? "").trim()) || String(t ?? "").trim().toUpperCase());
+  const ordered = new Set((territories ?? []).map(code).filter(Boolean));
+  // An ordered territory the engine cannot read binds no register it knows; cutting on the others would drop
+  // records inside it unseen. So it is reported, and the list holds every register.
+  const unreadTerritories = [...ordered].filter((t) => !KNOWN_JURISDICTION_CODES.has(t));
+  const offices = unreadTerritories.length ? new Set() : bindingOffices(ordered, code);
+  // The client's markets, read the same way; a market of the EU holds a member's register too.
+  const marketsGiven = [...new Set((markets ?? []).map(code).filter(Boolean))];
+  const market = bindingOffices(new Set(marketsGiven), code);
+  // A register as a provider writes it: a code, a list of codes, or a list of {jurisdiction, …}, read by its
+  // code field alone. What cannot be read gives no code, and a record with none stays in.
+  const raw = (j) => (j == null ? [] : Array.isArray(j) ? j.flatMap(raw) : typeof j === "object"
+    ? ((j.jurisdiction ?? j.code ?? j.office ?? j.country) != null ? raw(j.jurisdiction ?? j.code ?? j.office ?? j.country) : [])
+    : [j]);
+  const territoriesOf = (r) => raw(r?.jurisdictions).map(code).filter((t) => /^[A-Z]{2,5}$/.test(t));
+  const inOrder = (ts) => !offices.size || !ts.length || ts.some((t) => offices.has(t));
+  const lines = new Map();
+  for (const r of Array.isArray(records) ? records : []) {
+    const { tier } = classify(r);
+    const g = goods ? goods.of(r) : null;
+    const hits = goods && g ? goods.hits(g) : null;
+    const words = goods && g && goods.matched ? goods.matched(g) : null;
+    const live = isLiveRecord(r), s = inScope(r);
+    const ts = territoriesOf(r);
+    const outside = !inOrder(ts);
+    const dominant = Boolean(domRe && domRe.test(fold(r?.mark_text))) || dominantElementBasis(r?.mark_text, domPrep) === "concatenation";
+    const floor = (tier === "identical" || tier === "near-identical") && live && s;   // the floors' own test
+    // A floor is never counted in the rest (ruled 2026-10-12): held only outside the order's territories, it
+    // is still listed, in (a) or (b), where the step reads it and may set it aside by name on its territory.
+    const group = outside && !floor ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
+    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, onFile: Boolean(g), territories: ts, inMarket: ts.some((t) => market.has(t)) };
+    const keys = typeof keysOf === "function" ? keysOf(r) : null;
+    const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
+    const key = keys?.line ?? `line:${ownerKey}|${normMark(r?.mark_text) || String(r?.record_id ?? "").trim().toLowerCase()}`;
+    const line = lines.get(key) ?? { key, owner_key: ownerKey, owner_name: String(r?.owner_name ?? "").trim() || null, recs: [] };
+    line.recs.push(rec);
+    lines.set(key, line);
+  }
+  const rank = (g) => BAND_GROUPS.indexOf(g);
+  const better = (x, y) => TIER_RANK[x.tier] - TIER_RANK[y.tier] || (y.hits ?? -1) - (x.hits ?? -1)
+    || Number(y.live) - Number(x.live) || String(x.r?.record_id ?? "").localeCompare(String(y.r?.record_id ?? ""));
+  const byGroup = Object.fromEntries(BAND_GROUPS.map((g) => [g, { records: 0, set_records: 0, lines: [] }]));
+  const noGoods = [];
+  let outsideLines = 0, outsideRecords = 0;
+  for (const l of lines.values()) {
+    const group = BAND_GROUPS[Math.min(...l.recs.map((x) => rank(x.group)))];
+    const inGroup = l.recs.filter((x) => x.group === group).sort(better);
+    const best = inGroup[0];
+    // Unknown is decided on the records that put the line in its group: a line placed by a record whose goods
+    // could not be read is listed apart, whatever the line's other records carry.
+    const known = inGroup.some((x) => x.words != null);
+    const words = [...new Set(l.recs.flatMap((x) => x.words ?? []))];
+    const liveInScope = l.recs.filter((x) => x.live && x.inScope && !x.outside);
+    const row = {
+      key: l.key, owner_key: l.owner_key, owner_name: l.owner_name, mark: String(best.r?.mark_text ?? "").trim() || null, group,
+      records: l.recs.length, group_records: inGroup.length, live: l.recs.filter((x) => x.live).length,
+      live_in_scope: liveInScope.length, goods_live_in_scope: liveInScope.some((x) => (x.hits ?? 0) > 0),
+      best_tier: best.tier, goods_hits: known ? words.length : null, goods_words: known ? words : null,
+      in_market: l.recs.some((x) => x.inMarket), in_scope: l.recs.some((x) => x.inScope),
+      territories: [...new Set(l.recs.flatMap((x) => x.territories))].sort(),
+      classes: [...new Set(l.recs.flatMap((x) => classesOf(x.r)))].sort((p, q) => Number(p) - Number(q) || p.localeCompare(q)),
+      // A line the goods test could not place shows a record whose goods are on file where it has one, so
+      // `band_record` opens the record the line names; `goods_on_file` says so of that record.
+      record_id: (known ? best : (inGroup.find((x) => x.onFile) ?? best)).r?.record_id ?? null,
+      floors: l.recs.filter((x) => x.floor).length,
+      ...(known ? {} : { goods_on_file: inGroup.some((x) => x.onFile) }),
+      ...(offices.size && l.recs.every((x) => x.outside) ? { outside: true } : {}),
+    };
+    // A line placed in (a), (c) or (d) by the goods test, whose records carry no goods the engine can read,
+    // cannot be judged from the line: it is listed apart, opened before a fate, and no group row covers it.
+    if (!known && (group === "a" || group === "c" || group === "d")) { noGoods.push(row); continue; }
+    if (group === "rest" && l.recs.every((x) => x.outside)) { row.outside = true; outsideLines++; outsideRecords += l.recs.length; }
+    byGroup[group].records += inGroup.length;
+    byGroup[group].set_records += l.recs.length;
+    byGroup[group].lines.push(row);
+  }
+  assertRestHoldsNoFloor(byGroup.rest.lines);
+  const byName = (x, y) => String(x.owner_name ?? x.owner_key).localeCompare(String(y.owner_name ?? y.owner_key))
+    || String(x.mark ?? "").localeCompare(String(y.mark ?? "")) || String(x.key).localeCompare(String(y.key));
+  const herOrder = (x, y) => Number(y.goods_live_in_scope) - Number(x.goods_live_in_scope) || y.live_in_scope - x.live_in_scope
+    || (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || Number(y.in_market) - Number(x.in_market) || y.records - x.records || byName(x, y);
+  for (const g of ["a", "b", "c", "d"]) byGroup[g].lines.sort(herOrder);
+  // The rest runs by the client's goods words, then by live records in the ordered classes (ruled 2026-10-12):
+  // listed whole under a thousand records, by its first page at a thousand or more, like any group.
+  byGroup.rest.lines.sort((x, y) => (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || y.live_in_scope - x.live_in_scope || byName(x, y));
+  // The lines the goods test could not place run floors first, then by live records in the ordered classes,
+  // then records: a floor here takes its own fate, so the floors lead the first page.
+  noGoods.sort((x, y) => Number(y.floors > 0) - Number(x.floors > 0) || y.live_in_scope - x.live_in_scope || y.records - x.records || byName(x, y));
+  return { dominant_term: dominantTerm || null, goods_on_file: Boolean(goods), markets: marketsGiven, territories: [...ordered], territories_unread: unreadTerritories,
+    outside: { lines: outsideLines, records: outsideRecords }, by_group: byGroup, no_goods: noGoods };
+}
+
 /**
  * Build the deterministic band shape + its readable markdown mirror.
  *
@@ -587,11 +821,11 @@ const floorRow = (r, cls) => ({
  *                             (charter P2d); the band itself stays per-registration
  * @returns { shape, md }      deterministic — same band + inputs ⇒ same bytes (no timestamps)
  */
-export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null } = {}) {
+export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, goodsTest = null, goodsWordCount = 0, dominantTerm = "", manifestDominant = "", keysOf = null, markets = [], territories = [] } = {}) {
   const prepared = prepareTargets(Array.isArray(targets) && targets.every(isPrepared) ? targets.map((t) => t.text) : targets);
   const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
   const crowds = Array.isArray(band?.crowds) ? band.crowds : [];
-  const scope = new Set((inScopeClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
+  const scope = new Set((inScopeClasses ?? []).map(niceClassKey).filter(Boolean));
   const inScope = (r) => {
     const cls = classesOf(r);
     if (!scope.size) return true;               // no instructed classes ⇒ everything is in scope
@@ -606,8 +840,10 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const unclassifiable = [];
   const scriptGaps = new Map();                  // script(s) key → { count, sample[] }
 
+  const classified = new Map();
   for (const r of records) {
     const cls = classifyRecord(r?.mark_text, prepared);
+    classified.set(r, cls);
     byTier[cls.tier]++;
     for (const c of classesOf(r)) inc(byClass, c);
     inc(byStatus, String(r?.status ?? r?.screen?.status ?? "unknown").trim().toLowerCase() || "unknown");
@@ -643,6 +879,23 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const floorsOrdered = probeOrder(floors, "floors");
 
   const ownerCap = Number.isFinite(caps.owners) ? caps.owners : 40;
+  const grouped = bandGroups(records, { classify: (r) => classified.get(r), inScope, goods, dominantTerm, keysOf, markets, territories });
+  const ownersIn = (ls) => new Set(ls.map((l) => l.owner_key)).size;
+  const groupOf = (g) => {
+    const ls = grouped.by_group[g].lines;
+    return { records: grouped.by_group[g].records, set_records: grouped.by_group[g].set_records, lines: ls.length, owners: ownersIn(ls), list: ls };
+  };
+  const rest = grouped.by_group.rest.lines;
+  const groups = {
+    dominant_term: grouped.dominant_term, manifest_dominant: manifestDominant || null, goods_on_file: grouped.goods_on_file,
+    markets: grouped.markets, territories: grouped.territories, territories_unread: grouped.territories_unread, outside: grouped.outside,
+    goods_words_total: goodsWordCount || 0, goods_test: goodsTest ?? { source: goods ? "goods_words" : "none", words: [] },
+    crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
+    a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
+    rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest), list: rest },
+    no_goods: { records: grouped.no_goods.reduce((n, l) => n + l.records, 0), lines: grouped.no_goods.length,
+      owners: ownersIn(grouped.no_goods), list: grouped.no_goods },
+  };
   const concentrations = [...owners.entries()]
     .map(([owner_name, v]) => ({ owner_name, records: v.records, live: v.live }))
     .sort((a, b) => b.records - a.records || a.owner_name.localeCompare(b.owner_name))
@@ -736,11 +989,12 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
 
   const shape = {
     schema_version: BAND_SHAPE_SCHEMA_VERSION,
-    role: "deterministic shape of the merged register band — judgment reads THIS whole and looks up records through the band tools (every lookup is logged); machine checks keep reading the complete band; tiers are mechanical string classes, never a relevance or materiality judgment",
+    role: "deterministic shape of the merged register band — judgment reads each group by the size sentence at its head and looks up records through the band tools (every lookup is logged); machine checks keep reading the complete band; tiers are mechanical string classes, never a relevance or materiality judgment",
     targets: prepared.map((t) => t.text),
     in_scope_classes: [...scope].sort(),
     totals: { records: records.length, crowds: crowds.length, by_tier: byTier },
     floors: { in_class_identical_or_near: floorsOrdered },
+    groups,
     by_class: byClass,
     by_status: byStatus,
     by_registry: byRegistry,
@@ -765,7 +1019,9 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
     } } : {}),
   };
 
-  return { shape, md: renderBandShapeMd(shape, { positions }) };
+  const { md, lines } = bandShapeMdLines(shape, { positions });
+  shape.md_lines = lines;
+  return { shape, md };
 }
 
 const fmtN = (n) => Number(n ?? 0).toLocaleString("en-US");
@@ -779,7 +1035,7 @@ function topTable(md, title, cols, entries, cap = 30) {
   if (rows.length > cap) md.push(`| … ${fmtN(rows.length - cap)} more (full detail in band-shape.json) | |`);
 }
 
-/** The readable mirror — small enough to Read whole; the floors section is complete by contract. PURE. */
+/** The readable mirror, served in parts when large; each floor is marked on its line, and the data keeps them all. PURE. */
 /**
  * §8 — mark → the sharpest floor tier that mark holds, for the write-up-form predicate.
  *
@@ -811,8 +1067,114 @@ export function floorTierByMark(shape) {
 /** The same normalisation the floors were built with, so a caller cannot key the map differently. */
 export const floorMarkKey = (s) => normMark(s);
 
+// One line per mark of an owner, about 150 characters: the goods words it matched, never the goods text, and
+// whether it holds a floor. Each list carries the method's size sentence for its own length: read them all;
+// read the near ones first and list the rest; or, at a thousand records or more, the count and the first page.
+const GROUP_HEADINGS = {
+  a: "(a) Identical or near-identical to the mark or one of its forms, live in the ordered classes, for the client's goods",
+  b: "(b) Identical or near-identical to the mark or one of its forms, in the ordered classes",
+  c: "(c) The same family as the mark, or carrying the searched word, for the client's goods",
+  d: "(d) Every other live mark in the ordered classes, for the client's goods",
+};
+export const READ_ALL_LINES = 50;
+/** How many lines of the band hold a floor, wherever the shape put them. PURE. */
+const floorLineCount = (groups) => ["a", "b", "c", "d", "no_goods"].reduce((n, g) => n + (groups[g]?.list ?? []).filter((l) => l.floors > 0).length, 0);
+/** The lookup that pages a group, as the shape and the form's refusal both name it, so the two cannot drift. */
+export const groupPageCall = (g) => `band_lookup {"group":"${g}"}`;
+
+function renderGroupsMd(md, groups, rows = []) {
+  md.push("", "## The band in the lawyer's order — for the client's goods first", "");
+  if (groups.dominant_term && groups.manifest_dominant && normKey(groups.dominant_term) !== normKey(groups.manifest_dominant))
+    md.push(`Sorted on «${cell(groups.dominant_term)}», the word the register's goods-narrowed search asked for (the variants stage named «${cell(groups.manifest_dominant)}»).`, "");
+  // The words the goods test read, and where they came from: the client's product words, or, where the
+  // variants stage named none, the words the register search was narrowed by. A fallback is said, never silent.
+  const tested = groups.goods_test ?? { source: "none", words: [] };
+  const named = tested.words?.length ? `: ${tested.words.map((w) => `«${cell(w)}»`).join(", ")}` : "";
+  md.push(tested.source === "product_words"
+    ? `The goods test reads each record's goods for the client's product words${named}.`
+    : tested.source === "goods_words"
+      ? `No product words were given, so the goods test reads each record's goods for the words the register search was narrowed by${named}. They include words other filings use for the same goods, so "for the client's goods" below is wider than the client's own product.`
+      : "No goods words were given, so no record was tested on its goods.", "");
+  if (groups.territories_unread?.length)
+    md.push(`The order names ${groups.territories_unread.map((t) => `«${cell(t)}»`).join(", ")}, which the engine cannot read as a territory, so the list holds every register.`, "");
+  else if (groups.territories?.length) md.push(`The list holds the order's territories: ${groups.territories.join(", ")}.`, "");
+  if (groups.markets?.length) md.push(`The client's markets: ${groups.markets.join(", ")}.`, "");
+  const total = groups.goods_words_total || 0;
+  const word = groups.dominant_term || groups.manifest_dominant;
+  const carrying = word ? `carrying «${cell(word)}»` : "carrying the searched word";
+  const heading = (g) => (g === "c" ? `(c) The same family as the mark, or ${carrying}, for the client's goods` : GROUP_HEADINGS[g]);
+  const unread = (l) => (tested.source === "none" ? "—" : l.goods_on_file ? "on file, not readable" : "no goods on file");
+  const words = (l) => (l.goods_words == null ? unread(l) : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`);
+  const count = (grp) => `${fmtN(grp.records)} records in ${fmtN(grp.lines)} lines from ${fmtN(grp.owners)} owners`;
+  const where = (l) => `${l.territories.join(",")}${l.outside ? " (outside the order)" : ""}`;
+  const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(where(l))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
+  const head = ["| mark | owner | classes | live | territories | goods words | floor | record |", "|---|---|---|---|---|---|---|---|"];
+  // A crowded group's own words for what it holds, in the crowded-field method's sentence (ruled 2026-10-12).
+  const crowd = { b: "identical marks in the ordered classes for other goods than the client's",
+    c: "marks of the same family as the mark, or carrying the searched word, for the client's goods", d: "other marks in the ordered classes for the client's goods" };
+  const firstPage = `The first ${fmtN(groups.first_page)} lines are below`;
+  for (const g of ["a", "b", "c", "d"]) {
+    const grp = groups[g];
+    md.push(`### ${heading(g)}`, "");
+    if (!grp.lines) { md.push("(none)", ""); continue; }
+    const crowded = grp.records >= groups.crowded_at;
+    const readA = "These are the identical and near-identical marks live in the ordered classes for the client's goods: read every line.";
+    md.push(g === "a"
+      ? (crowded
+        ? `${count(grp)}. ${readA} ${firstPage}; page every other line with ${groupPageCall(g)}. Every floor here is placed or set aside by name; this group's row covers only its other lines.`
+        : grp.lines <= READ_ALL_LINES ? `${count(grp)}. Fifty? Read them all.` : `${count(grp)}. ${readA}`)
+      : crowded
+        ? `${count(grp)}. A thousand or more? The field is crowded. These are ${crowd[g]}. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. ${firstPage}; page with ${groupPageCall(g)} only where a line needs reading.`
+        : grp.lines <= READ_ALL_LINES
+          ? `${count(grp)}. Fifty? Read them all.`
+          : `${count(grp)}. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.`, "");
+    md.push(...head);
+    for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) { rows.push([md.length, l.key]); md.push(row(l)); }
+    md.push("");
+  }
+  const outside = groups.outside?.lines ? `, ${fmtN(groups.outside.lines)} lines of them held only outside the ordered territories` : "";
+  // The rest is read by the size rule too: listed under a thousand records, by its first page at a thousand or
+  // more, where its one row stands on that page read and the count.
+  const rest = groups.rest;
+  const restCrowded = rest.records >= groups.crowded_at;
+  md.push(`**The rest: ${count(rest)}${outside}** — every record in none of (a) to (d) above. ${!rest.lines ? "Write down what you set aside and why: one row, with this count."
+    : restCrowded
+      ? `A thousand or more? The field is crowded. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. ${firstPage}; page with ${groupPageCall("rest")} only where a line needs reading.`
+      : `${rest.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest."} Write down what you set aside and why: one row, with this count.`}`);
+  if (rest.lines) {
+    md.push("", ...head);
+    for (const l of restCrowded ? rest.list.slice(0, groups.first_page) : rest.list) { rows.push([md.length, l.key]); md.push(row(l)); }
+  }
+  if (groups.no_goods.lines) {
+    // The lines the goods test could not place, read by the same size rule (ruled 2026-10-12): under a thousand
+    // records, a fate per line by name, opened where goods are on file; at a thousand or more, the first page,
+    // and one row on the rest whose goods are unreadable in a crowded field. A floor is never set aside on
+    // its goods, so a floor here is placed or set aside on its status or territory.
+    const ng = groups.no_goods;
+    const crowded = ng.records >= groups.crowded_at;
+    const lead = tested.source === "none"
+      ? `**Not tested on goods: ${count(ng)}.** No goods words were given, so the goods test could not place them.`
+      : `**Goods the test could not read: ${count(ng)}.**`;
+    md.push("", crowded
+      ? `${lead} A thousand or more? ${firstPage}, the floors first, then the live ones in the ordered classes. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded. A floor here is placed or set aside by name on its status or its territory; this row never covers it. Where more floors are counted than this page shows, page the rest with ${groupPageCall("no_goods")}; they come first.`
+      : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} Each line takes its own fate by name; no group row covers these lines.${tested.source === "none" ? "" : ' A line marked "on file, not readable" has goods on file: open its record with band_record before its fate. A line marked "no goods on file" has nothing to open.'} A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.`, "");
+    md.push(...head);
+    for (const l of crowded ? ng.list.slice(0, groups.first_page) : ng.list) { rows.push([md.length, l.key]); md.push(row(l)); }
+  }
+}
+
 export function renderBandShapeMd(shape, { positions = null } = {}) {
-  const md = [];
+  return bandShapeMdLines(shape, { positions }).md;
+}
+
+/**
+ * The readable shape, and the md line each listed line is printed on: `{ md, lines: {lineKey: lineNumber} }`,
+ * 0-based over `md.split("\n")`. The band server reads `lines` from the shape's data to log which lines a
+ * part it serves holds, so a group's row is checked against what the step read, not against what was
+ * printed. PURE.
+ */
+export function bandShapeMdLines(shape, { positions = null } = {}) {
+  const md = [], rows = [];
   md.push("# Band shape — the register band, mechanically mapped");
   md.push("");
   md.push("Deterministic projection of the complete merged register band (code-derived after every band");
@@ -829,17 +1191,17 @@ export function renderBandShapeMd(shape, { positions = null } = {}) {
   md.push("|---|---|");
   for (const t of SHAPE_TIERS) md.push(`| ${t} | ${fmtN(shape.totals.by_tier[t])} |`);
 
+  // THE FLOORS ARE MARKED ON THEIR LINES, NOT LISTED A SECOND TIME (ruled 2026-10-12). The band in the ruled order
+  // carries every floor as a line, and a per-record list of the same records was most of a crowded shape the
+  // step had to read whole before it could act. The shape's data keeps every floor for the floor duty, and
+  // `band_lookup` returns any floor record on request.
   const floors = shape.floors.in_class_identical_or_near;
-  md.push("", "## Floors — every LIVE in-class identical / near-identical record (complete list, never sampled)", "");
-  if (!floors.length) {
-    md.push("(none — no live in-class record classified identical or near-identical to any target)");
-  } else {
-    md.push("| mark | tier | target | classes | status | owner | registry | record |");
-    md.push("|---|---|---|---|---|---|---|---|");
-    for (const f of floors) {
-      md.push(`| ${cell(f.mark_text)} | ${f.tier} | ${cell(f.matched_target)} | ${cell(f.classes.join(","))} | ${cell(f.status)} | ${cell(f.owner_name)} | ${cell(f.registry)} | ${cell(f.record_id)} |`);
-    }
-  }
+  const floorLines = shape.groups ? floorLineCount(shape.groups) : null;
+  md.push("", floors.length
+    ? `**Floors: ${fmtN(floors.length)} records${floorLines != null ? ` in ${fmtN(floorLines)} lines` : ""}** — every live in-class identical or near-identical record, each marked on its line in the band below.`
+    : "**Floors:** none — no live in-class record classified identical or near-identical to any target.");
+
+  if (shape.groups) renderGroupsMd(md, shape.groups, rows);
 
   topTable(md, "By Nice class", ["class", "records"], shape.by_class);
   topTable(md, "By status", ["status", "records"], shape.by_status);
@@ -929,5 +1291,12 @@ export function renderBandShapeMd(shape, { positions = null } = {}) {
     if ((b.records ?? b.sample ?? b.zones ?? []).length > 20) md.push(`  - … and ${fmtN((b.records ?? b.sample ?? b.zones).length - 20)} more (band-shape.json carries all)`);
   }
   md.push("");
-  return md.join("\n");
+  // A pushed element may hold line breaks of its own, so each row's line number counts the breaks before it.
+  const lines = {};
+  let at = 0, line = 0;
+  for (const [index, key] of rows) {
+    for (; at < index; at++) line += 1 + (md[at].match(/\n/g)?.length ?? 0);
+    if (key != null) lines[key] = line;
+  }
+  return { md: md.join("\n"), lines };
 }

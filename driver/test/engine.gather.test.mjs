@@ -36,6 +36,7 @@ async function mcpSession(serverScript, requests, env = {}) {
     const wantIds = new Set(requests.filter((r) => r.id != null).map((r) => r.id));
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve({ responses, stderr }); };
     const timer = setTimeout(done, 8000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {
@@ -45,6 +46,7 @@ async function mcpSession(serverScript, requests, env = {}) {
       }
       if (wantIds.size === 0) { clearTimeout(timer); done(); }
     });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (d) => { stderr += d.toString(); });
     child.on("error", reject);
     for (const r of requests) child.stdin.write(JSON.stringify(r) + "\n");

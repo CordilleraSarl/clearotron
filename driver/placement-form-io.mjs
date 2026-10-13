@@ -57,7 +57,38 @@ export function readPlacementFormInput(runDir) {
   return {
     floors: Array.isArray(shape?.floors?.in_class_identical_or_near) ? shape.floors.in_class_identical_or_near : null,
     positions: Array.isArray(pos?.positions) ? pos.positions : null,
+    // The shape's groups, which a group row names and is checked against; null on a shape that has none.
+    groups: shape?.groups && typeof shape.groups === "object" ? shape.groups : null,
+    served: readServed(runDir),
   };
+}
+
+/**
+ * What the band tools served the step, from the run's reading log: the lines a group lookup returned, and
+ * the records a lookup returned or opened. A group's row covers only lines the step was shown, so this is
+ * read where the row is checked. A log that cannot be read serves nothing beyond what the shape rendered.
+ */
+export function readServed(runDir) {
+  const lines = new Set(), records = new Set(), partsRead = new Set();
+  let groupParts = null;
+  let text = "";
+  try { text = readFileSync(driverDir(runDir, "reading-log.jsonl"), "utf8"); } catch { text = ""; }
+  for (const row of text.split("\n")) {
+    if (!row.trim()) continue;
+    let e; try { e = JSON.parse(row); } catch { continue; }
+    if (e?.ok !== true) continue;
+    // Placement's own reads only: an entry its band tools logged, in any attempt, or one with no session (a
+    // test, or a rig that names none). What another stage read never counts as read by placement.
+    if (e.session && !/placement-inquiry/.test(String(e.session))) continue;
+    for (const k of Array.isArray(e.served_lines) ? e.served_lines : []) lines.add(k);
+    for (const id of Array.isArray(e.served) ? e.served : []) records.add(String(id));
+    if (e.tool === "band_record" && e.args?.record_id) records.add(String(e.args.record_id));
+    if (e.tool === "band_shape" && e.group_parts && typeof e.group_parts === "object") {
+      groupParts = e.group_parts;
+      partsRead.add(Number(e.args?.part ?? e.part ?? 1));
+    }
+  }
+  return { lines, records, parts_read: partsRead, group_parts: groupParts };
 }
 
 /** Read the DRIVER'S copy. Three states, and they are not the same fact — see verify.mjs. */

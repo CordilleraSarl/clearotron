@@ -39,6 +39,18 @@
           "skips": 3,
           "todos": 0
         },
+        "a-band-answer-in-a-wide-script-fits-one-response.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-band-record-carries-its-goods-from-the-records-on-file.test.mjs": {
+          "tests": 13,
+          "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
         "a-bare-reference-added-in-a-diff-is-refused.test.mjs": {
           "tests": 21,
           "asserts": 69,
@@ -171,6 +183,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-childs-output-is-decoded-as-a-stream.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 1,
+          "todos": 0
+        },
         "a-claim-may-not-outlive-its-evidence.test.mjs": {
           "tests": 14,
           "asserts": 46,
@@ -209,7 +227,7 @@
         },
         "a-client-condition-never-carries-an-engine-token.test.mjs": {
           "tests": 11,
-          "asserts": 37,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
@@ -575,7 +593,7 @@
         },
         "a-floor-row-whose-owner-was-set-aside-is-answered.test.mjs": {
           "tests": 2,
-          "asserts": 10,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -636,6 +654,18 @@
         "a-grid-too-big-for-one-print-comes-back-in-steps.test.mjs": {
           "tests": 7,
           "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-group-row-covers-only-the-lines-it-was-shown.test.mjs": {
+          "tests": 13,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-group-row-gives-every-owner-in-it-a-fate.test.mjs": {
+          "tests": 7,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -807,6 +837,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-lookup-reads-the-clients-goods-on-the-row.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
           "tests": 9,
           "asserts": 38,
@@ -819,9 +855,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-mark-that-means-the-clients-mark-is-weighed-as-its-family.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-too-short-for-contains-is-asked-exactly.test.mjs": {
           "tests": 12,
           "asserts": 58,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-mark-two-edits-from-a-variant-is-of-its-family.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -927,6 +975,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-nice-class-reads-one-way.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-non-latin-mark-is-delivered-with-its-report-link.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -988,8 +1042,8 @@
           "todos": 0
         },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
-          "tests": 7,
-          "asserts": 17,
+          "tests": 8,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1341,6 +1395,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-said-back-refusal-never-fails-a-pass.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "a-sample-seeded-under-two-agent-ids-is-shown-once-per-copy.test.mjs": {
           "tests": 3,
           "asserts": 6,
@@ -1487,7 +1547,7 @@
         },
         "a-stage-reads-only-its-own-folders.test.mjs": {
           "tests": 9,
-          "asserts": 31,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1507,6 +1567,12 @@
           "tests": 4,
           "asserts": 12,
           "skips": 0,
+          "todos": 0
+        },
+        "a-stopped-run-leaves-no-codex-home-behind.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 1,
           "todos": 0
         },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
@@ -1923,6 +1989,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-older-reports-statement-counts-only-what-the-client-reads.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
           "tests": 1,
           "asserts": 6,
@@ -1955,7 +2027,7 @@
         },
         "an-owners-set-leaves-the-picking-step-with-one-ground.test.mjs": {
           "tests": 4,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -2057,7 +2129,7 @@
         },
         "band-shape.test.mjs": {
           "tests": 14,
-          "asserts": 61,
+          "asserts": 62,
           "skips": 0,
           "todos": 0
         },
@@ -3257,7 +3329,7 @@
         },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
           "tests": 10,
-          "asserts": 22,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -3310,8 +3382,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 26,
-          "asserts": 86,
+          "tests": 27,
+          "asserts": 90,
           "skips": 0,
           "todos": 0
         },
@@ -3766,8 +3838,8 @@
           "todos": 0
         },
         "matter-frame-record.test.mjs": {
-          "tests": 28,
-          "asserts": 108,
+          "tests": 29,
+          "asserts": 111,
           "skips": 0,
           "todos": 0
         },
@@ -4091,7 +4163,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 103,
-          "asserts": 865,
+          "asserts": 870,
           "skips": 0,
           "todos": 0
         },
@@ -5895,6 +5967,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-frame-comparisons-sentence-stays-in-the-run-record.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "the-frame-decides-the-web-grid.test.mjs": {
           "tests": 21,
           "asserts": 81,
@@ -6321,6 +6399,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-rest-is-listed-by-the-size-rule.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "the-retired-azure-settings-are-read-by-nothing.test.mjs": {
           "tests": 3,
           "asserts": 14,
@@ -6414,6 +6498,12 @@
         "the-settings-surface-reads-the-customer-store.test.mjs": {
           "tests": 10,
           "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-shape-lists-the-band-in-the-lawyers-order.test.mjs": {
+          "tests": 22,
+          "asserts": 96,
           "skips": 0,
           "todos": 0
         },
@@ -6528,6 +6618,12 @@
         "the-wider-families-wait-on-the-identical-question.test.mjs": {
           "tests": 13,
           "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-words-the-step-reads-match-what-the-driver-checks.test.mjs": {
+          "tests": 9,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
@@ -6846,6 +6942,12 @@
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 15,
           "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "what-the-form-refuses-reaches-the-step-in-the-pass.test.mjs": {
+          "tests": 14,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -7957,7 +8059,7 @@
         },
         "providers/signa/test/a-search-row-is-a-band-row.test.mjs": {
           "tests": 3,
-          "asserts": 13,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },

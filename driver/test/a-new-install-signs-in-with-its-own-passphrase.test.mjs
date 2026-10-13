@@ -263,7 +263,9 @@ test("a real first start, where another install left the shared credential, mint
       stdio: ["ignore", "pipe", "pipe"],
     });
     let said = "";
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (c) => { said += c; });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (c) => { said += c; });
     // `close`, not `exit`: it fires once the output is read to the end.
     const closed = new Promise((resolve) => child.on("close", resolve));

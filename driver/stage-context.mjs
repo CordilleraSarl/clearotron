@@ -265,8 +265,8 @@ export const VALIDATOR_SIDECARS = {
   "common-law": ["grid-spec.json", "profile.json"],
   // — the DRIVER'S copy of the placement form. Without it in the sandbox an experiment arm would
   // union against nothing and re-render an empty deliverable — the same class of defect fixed
-  // for the coverage form one line down.
-  "placement-inquiry": ["stage-contracts.json", "placement-form.form.json"],
+  // for the coverage form one line down. The band shape's floors tell the gate which unfinished rows hold a floor.
+  "placement-inquiry": ["stage-contracts.json", "placement-form.form.json", "band-shape.json"],
   // — `register-coverage-form.form.json` is the DRIVER'S copy of the coverage form and the artifact
   // validators.registerFindings judges. Without it in the sandbox an experiment arm would judge the
   // register digest under different rules than production did — the exact defect this table generalises.
@@ -303,6 +303,10 @@ export const CONTEXT_DERIVATIONS = [
       { path: P.variantManifestModel, why: "targets: the mark, its dominant element, distinctive elements and variants" },
       { path: P.crowdContext, why: "the crowd join the shape's crowd descriptors carry" },
       { path: join(P.runDir, "_records"), dir: true, why: "recordDetailIndex — registration/application numbers, IR↔base linkage, Madrid designations; no search row carries them" },
+      { path: driverDir(P.runDir, "register-record-bodies.jsonl"), why: "record-goods.mjs bandGoodsIndex: each record's goods, which the groups test against the client's goods words" },
+      { path: P.registerPlan, why: "record-goods.mjs bandShapeGoods: the word the register's goods-narrowed search asked for, which the shape sorts on" },
+      { path: driverDir(P.runDir, "matter-frame-calls", "accepted.json"), why: "withFrameClasses: the classes the frame added for the client's own goods join the in-scope set and the floors" },
+      { path: P.instructedScope, why: "record-goods.mjs instructedOrder: the order's goods wording and markets, which the groups sort by" },
     ],
   },
   {

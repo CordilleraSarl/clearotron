@@ -56,7 +56,8 @@
 import { shortId } from "./connotation-search.mjs";
 import { normKey } from "./placement-diff.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { PLACEMENT_TIERS, validatePlacement } from "./placement-model.mjs";
+import { PLACEMENT_TIERS, validatePlacement, OWNER_NOT_STATED } from "./placement-model.mjs";
+import { BAND_GROUPS, floorMarkKey } from "./band-shape.mjs";   // — the shape's groups, which a group row names
 
 export const PLACEMENT_FORM_NAME = "placement-form.json";
 
@@ -106,25 +107,116 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
 // ONE GROUND PER OWNER'S SET (ruled 2026-09-25, sentence 6: "Judge an owner's records as a set. … A record
 // you do not carry is given a ground; no record leaves without one."). The form had rows for what is
 // placed and nothing for what is not, so every record the step passed over left with "no ground for this
-// record was recorded", hundreds of owners a run. This row gives an owner's records that are not placed
-// one ground. It is not a candidate, it renders into no placement, and nothing bounds how many there are.
-export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground"];
+// record was recorded", hundreds of owners a run. This row gives one ground to the records of a line, one
+// mark of one owner, that are not placed: an owner-wide ground set the owner's other marks aside unseen
+// (ruled 2026-10-12). It is not a candidate, it renders into no placement, and nothing bounds how many there are.
+export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground", "on"];
+/**
+ * What a ground setting a floor aside by name may be about (ruled 2026-10-12): its status or its territory.
+ * Never its goods, which decide whether it sits in (a) or (b), and in a crowd (b)'s row is the goods ground;
+ * never its owner's customers or field, whatever `on` says, so the form reads the ground's words too.
+ */
+export const FLOOR_GROUND_ON = Object.freeze(["status", "territory"]);
+export const FLOOR_GROUND_REFUSED = /\b(?:customers?|consumers?|clients|clientele|users?|audiences?|buyers?|purchasers?|patients?|professionals?|channels?|markets?|marketplaces?|sectors?|fields?|industr(?:y|ies|ial)|business(?:es)?|activit(?:y|ies)|commerce|commercial|trad(?:e|es|ing)(?!\s*-?\s*marks?)|distribution|wholesale|retail(?:ers?)?|sells?|sold|selling|b2b|b2c|off[- ]field|goods|products?|services?(?!\s*-?\s*marks?)|merchandise)\b/i;
+/** The lists a group row may name: the shape's groups, the rest, and the lines the goods test could not place. */
+export const ROW_GROUPS = Object.freeze([...BAND_GROUPS, "no_goods"]);
 export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
-  when: "an owner whose records you judge as a set and do not carry. A record you do not carry is given a "
-    + "ground; no record leaves without one. One row gives that owner's set its ground.",
+  when: "a line the shape lists, one mark of one owner, whose records you do not carry. One row gives that "
+    + "line its ground.",
   fields: SET_ASIDE_ROW_FIELDS,
-  set_aside: "one record id of that owner, from the band. The driver finds the owner on the register's own "
-    + "projection; the ground covers every record of that owner the form does not place. A record that names "
-    + "no owner stands for its own position only.",
-  ground: "why this owner's records are not carried, in a lawyer's words.",
-  not_a_candidate: "It places nothing and has no bound. A record of the same owner you do place stays placed.",
-  latest: "A later row for the same owner replaces the earlier ground. To remove one, hand back "
+  set_aside: "one record id of that line, from the band. The driver finds the line on the register's own "
+    + "projection; the ground covers every record of that mark of that owner the form does not place, and "
+    + "never another mark of the owner, which needs its own fate. A record that names no owner stands for its "
+    + "own position only.",
+  ground: "why this line's records are not carried, in a lawyer's words.",
+  on: "where the line holds a floor, a live identical or near-identical mark in an ordered class: what the "
+    + "ground is about, status or territory. A floor is never set aside on its goods, which decide its group, "
+    + "nor on its owner, its customers or its field; a ground in those terms is refused.",
+  not_a_candidate: "It places nothing. A record of the same line you do place stays placed.",
+  latest: "A later row for the same line replaces the earlier ground. To remove one, hand back "
     + "{\"retract\":\"<its set_aside id>\"}.",
-  unresolved: "A `set_aside` the band does not hold, or one with no ground, is reported back to you by id.",
+  unresolved: "A `set_aside` the band does not hold, one with no ground, or a floor's row whose `on` is not "
+    + "status or territory or whose ground speaks of customers, channels, markets or field, is reported back "
+    + "to you by id.",
 });
 
 /** Is this submitted row an owner's set-aside? PURE. */
 export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.set_aside.trim() !== "";
+
+// ONE ROW PER GROUP. The band shape lists the band in the lawyer's order, one line per mark of an owner,
+// the rest last. A listed line gets a fate, not a row: it is placed, or set aside by name, or covered
+// by its group's one row, which states why everything in the group the step neither placed nor named is not
+// raised with the client: the crowded-field method's "read the near ones first, list the rest" (ruled
+// 2026-10-12, (a) included).
+export const SET_ASIDE_GROUP_FIELDS = ["set_aside_group", "count", "ground"];
+export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
+  when: "a group the shape lists, (a) to (d), the rest, or, at a thousand records or more, the lines "
+    + "the goods test could not place: one row sets aside every line in it that you neither place nor set aside "
+    + "by name. Below a thousand records, and in (a) at any size, it waits until you have read every line; in a "
+    + "crowd of a thousand or more outside (a), it stands on the first page read and the count. It covers a "
+    + "floor only in such a crowd in (b); a floor among the lines the goods test could not place, like any other "
+    + "floor, is placed or set aside by name.",
+  fields: SET_ASIDE_GROUP_FIELDS,
+  set_aside_group: `the group's letter as the shape gives it, "rest", or "no_goods" at a thousand records or more: one of ${ROW_GROUPS.join(", ")}.`,
+  count: "the group's record count: the N the shape gives beside it.",
+  ground: "why none of the lines this row covers is raised with the client, in a lawyer's words.",
+  not_a_candidate: "It places nothing. A line in the group that you place or set aside by name keeps that.",
+  latest: "A later row for the same group replaces the earlier one. To remove one, hand back "
+    + "{\"retract\":\"group:<letter, rest or no_goods>\"}.",
+  unresolved: "A group the shape does not list, a count that does not match the shape's, a row with no "
+    + "ground, a no_goods row under a thousand records, or a group with lines you have not read (its first "
+    + "page, in a crowd outside (a)), is reported back to you with how to read them.",
+  said_back: "The driver writes back `covers_lines`, the lines the row covers, and `floors_not_covered`, one "
+    + "record id for each line of the group holding a floor the row does not cover: place each or set it "
+    + "aside by name.",
+});
+
+/** Is this submitted row a group's set-aside? PURE. */
+export const isSetAsideGroupRow = (row) => typeof row?.set_aside_group === "string" && row.set_aside_group.trim() !== "";
+
+/** A group name as written ("b", "(b)", "B", "group b", "rest") to the shape's own, or null. PURE. */
+export function groupName(written) {
+  const g = String(written ?? "").trim().toLowerCase().replace(/^group\s+/, "").replace(/^\((.*)\)$/, "$1").trim();
+  const name = g.replace(/[\s-]+/g, "_");
+  return ROW_GROUPS.includes(name) ? name : null;
+}
+
+/**
+ * Which group each line sits in, by position key: the shape's lists (a) to (d) and the rest. A line the goods
+ * test could not place is in no group, so no group row covers it. PURE.
+ */
+export function groupOfKeys(groups) {
+  const out = new Map();
+  if (!groups || typeof groups !== "object") return out;
+  for (const g of ["a", "b", "c", "d"]) for (const l of Array.isArray(groups[g]?.list) ? groups[g].list : []) if (l?.key) out.set(l.key, g);
+  for (const l of Array.isArray(groups.rest?.list) ? groups.rest.list : []) if (l?.key) out.set(l.key, "rest");
+  for (const l of Array.isArray(groups.no_goods?.list) ? groups.no_goods.list : []) if (l?.key) out.set(l.key, "no_goods");
+  return out;
+}
+
+/**
+ * The lines of a group the step READ, from the reading log: every line printed in a part of the shape it was
+ * served, every line of a group's page, and every line with a record a lookup returned or opened. A line
+ * printed in a part the step never asked for was not read. A group's row is refused until every one of its
+ * lines is here. PURE.
+ */
+export function servedLines(groups, served, index) {
+  const out = new Set();
+  if (!groups || typeof groups !== "object") return out;
+  for (const k of served?.lines ?? []) out.add(k);
+  for (const id of served?.records ?? []) { const k = lineKey(index?.resolve?.(id)); if (k) out.add(k); }
+  return out;
+}
+
+/**
+ * May a group's row answer for a floor in it? Only in a crowd of a thousand records or more in (b), the
+ * identical marks in the ordered classes whose goods are not the client's: the crowded-field method's "do not
+ * write up the rest" (ruled 2026-10-12). Never in (a), which that method reads, and never among the lines the
+ * goods test could not place, where a floor is (a)'s kind with goods unread: there, as in (a), every floor is
+ * placed or set aside by name at any size. ONE predicate, read by the grounds, the fate count and so the floor
+ * duty, so the three cannot drift apart. PURE.
+ */
+export const groupRowCoversFloors = (groups, g) => g === "b" && (groups?.b?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
 
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run
@@ -137,18 +229,98 @@ export function setAsideKey(canonical) {
   return owner ? `owner:${owner}` : `position:${formRowKey(canonical)}`;
 }
 
+/** A line's own key: one mark of one owner, across every right and territory it is held in. PURE. */
+export const lineKey = (canonical) => {
+  const owner = setAsideKey(canonical);
+  return owner ? `line:${owner}|${floorMarkKey(canonical?.mark) || (canonical?.records ?? []).join(",")}` : null;
+};
+
+/**
+ * The key a ground by name covers: the named line, one mark of its owner, and never the owner's other
+ * marks (ruled 2026-10-12). Keyed by the owner's set while the owner had one listed line, a ground written
+ * about that line reached the owner's marks in the rest, a floor among them. PURE.
+ */
+export const namedKey = (canonical) => lineKey(canonical);
+
+/**
+ * Both keys of any band record, read the way a set-aside row reads them, through the positions fold: its
+ * line and its owner's set. The band shape lines up on these, so a line covers exactly what a row naming one
+ * of its records reaches. A record no position covers keys as the index's floor fallback would key it.
+ * PURE.
+ */
+export function setAsideKeysOf(positions) {
+  const index = buildSelectionIndex({ floors: [], positions });
+  return (record) => {
+    const canonical = index.resolve(record?.record_id) ?? (() => {
+      const id = normalizeRecordUri(record?.record_id) || String(record?.record_id ?? "");
+      return id ? { row_id: shortId("PR", `register:${id}`), mark: record?.mark_text ?? null, owner: record?.owner_name ?? null, records: [id], kind: "register" } : null;
+    })();
+    return canonical ? { line: lineKey(canonical), owner: setAsideKey(canonical) } : null;
+  };
+}
+
 /**
  * The ground a record leaves the picking step with, if its owner's set was set aside: record uri →
- * {set_aside, owner, ground} or null. Resolved through the same selection index a `select` resolves
- * through, so the owner is read one way at both ends. PURE; never throws.
+ * {set_aside, owner, ground, by} or null. Resolved through the same selection index a `select` resolves
+ * through, so the owner is read one way at both ends. A ground by name wins over the owner's group row;
+ * `groups` is the band shape's, which says which group each owner sits in. PURE; never throws.
  */
-export function setAsideGrounds(entries, index) {
-  const byKey = new Map();
-  for (const e of Array.isArray(entries) ? entries : []) if (e?.key && e?.ground) byKey.set(e.key, e);
+export function setAsideGrounds(entries, index, groups = null, floors = null) {
+  const byKey = new Map(), byGroup = new Map();
+  for (const e of Array.isArray(entries) ? entries : []) {
+    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && e?.ground) byGroup.set(g, e); }
+    else if (e?.key && e?.ground) byKey.set(e.key, e);
+  }
+  const groupOf = byGroup.size ? groupOfKeys(groups) : new Map();
+  const floorUris = new Set((Array.isArray(floors) ? floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
   return (uri) => {
-    if (!byKey.size || !index?.resolve) return null;
-    return byKey.get(setAsideKey(index.resolve(uri))) ?? null;
+    if ((!byKey.size && !byGroup.size) || !index?.resolve) return null;
+    const canonical = index.resolve(uri);
+    const owner = setAsideKey(canonical), line = lineKey(canonical);
+    if (!owner) return null;
+    const named = line ? byKey.get(line) : null;
+    if (named) return { ...named, by: "name" };
+    const group = line ? groupOf.get(line) : null, row = group ? byGroup.get(group) : null;
+    if (row && floorUris.has(normalizeRecordUri(uri) || String(uri ?? "")) && !groupRowCoversFloors(groups, group)) return null;
+    return row ? { set_aside: null, key: line, owner: null, ground: row.ground, by: "group", group } : null;
   };
+}
+
+/**
+ * EVERY LINE'S FATE AT PLACEMENT, counted by the list the shape put it in: placed (a record of its mark is
+ * in a placement), set aside by name, covered by its group's row, or no fate. A line is one mark of one
+ * owner; an owner counts as fated when every one of its lines is. The lines with no goods on file are their
+ * own list, which no group row covers. Counts, plus the keys left with no fate. PURE.
+ */
+export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}) {
+  if (!groups || typeof groups !== "object" || !index?.resolve) return null;
+  const placed = new Set([...placedUris].map((u) => lineKey(index.resolve(u))).filter(Boolean));
+  const named = new Set(), grouped = new Set();
+  for (const e of Array.isArray(entries) ? entries : []) {
+    if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && String(e?.ground ?? "").trim()) grouped.add(g); }
+    else if (e?.key && String(e?.ground ?? "").trim()) named.add(e.key);
+  }
+  const lists = {};
+  for (const g of ["a", "b", "c", "d"]) lists[g] = Array.isArray(groups[g]?.list) ? groups[g].list : [];
+  lists.rest = Array.isArray(groups.rest?.list) ? groups.rest.list : [];
+  lists.no_goods = Array.isArray(groups.no_goods?.list) ? groups.no_goods.list : [];
+  const zero = () => ({ lines: 0, placed: 0, by_name: 0, by_group: 0, unfated: 0 });
+  const totals = zero(), by_list = {}, unfated_lines = [], ownerFated = new Map();
+  for (const [list, lines] of Object.entries(lists)) {
+    const c = zero();
+    for (const l of lines) {
+      const byName = named.has(l.key);
+      const rowMay = (list !== "no_goods" || (groups.no_goods?.records ?? 0) >= (groups.crowded_at ?? Infinity))
+        && grouped.has(list) && (!(l.floors > 0) || groupRowCoversFloors(groups, list));
+      const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : rowMay ? "by_group" : "unfated";
+      c.lines++; c[fate]++; totals.lines++; totals[fate]++;
+      if (fate === "unfated") unfated_lines.push({ list, key: l.key });
+      ownerFated.set(l.owner_key, (ownerFated.get(l.owner_key) ?? true) && fate !== "unfated");
+    }
+    by_list[list] = c;
+  }
+  return { unit: "line", ...totals, owners: ownerFated.size, owners_fated: [...ownerFated.values()].filter(Boolean).length,
+    by_list, unfated_lines };
 }
 
 const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver COPIES. For each "
@@ -159,8 +331,29 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "`placements.json` from your answers — DO NOT WRITE THAT FILE. Tiers accumulate across attempts: a row "
   + "you tier once stays tiered even if a later attempt never sees it, which is what makes a killed "
   + "attempt's work survive. Candidates the register does not hold are yours to write in full — see "
-  + "`seat_row_contract`. An owner whose records you judge as a set and do not carry gets one ground for "
-  + "the set — see `set_aside_row_contract`.";
+  + "`seat_row_contract`. A line the shape lists, one mark of one owner, whose records you do not carry "
+  + "gets one ground — see `set_aside_row_contract`. A group the shape lists, or the rest, gets "
+  + "one row for the lines you have read and neither place nor set aside by name — see "
+  + "`set_aside_group_contract`.";
+
+/**
+ * The rows that hold one of the band's floors, by row id, keyed as the selection index keys a record, so the gate
+ * reads a floor row as the union does. PURE.
+ */
+export function floorRowIds(rows, floors) {
+  const key = (u) => normalizeRecordUri(u) || String(u ?? "");
+  const floorUris = new Set((Array.isArray(floors) ? floors : []).map((f) => key(f?.record_id)).filter(Boolean));
+  return new Set((Array.isArray(rows) ? rows : [])
+    .filter((r) => (Array.isArray(r?.records) ? r.records : []).some((u) => floorUris.has(key(u)))).map((r) => r?.row_id));
+}
+
+/** The row on the form holding each of these floor records, by row id or null, keyed as floorRowIds keys them. PURE. */
+export function rowsHoldingFloors(rows, floorIds) {
+  const key = (u) => normalizeRecordUri(u) || String(u ?? "");
+  const rowOf = new Map();
+  for (const r of Array.isArray(rows) ? rows : []) for (const u of Array.isArray(r?.records) ? r.records : []) if (!rowOf.has(key(u))) rowOf.set(key(u), r?.row_id ?? null);
+  return new Map((Array.isArray(floorIds) ? floorIds : []).map((id) => [id, rowOf.get(key(id)) ?? null]));
+}
 
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */
 export function formRowKey(row) {
@@ -186,12 +379,15 @@ export function rowIsSettled(row, canonical) {
   } catch { return false; }
 }
 
+// The owner a register record that names none is placed under, declared with the placement's contract.
+export { OWNER_NOT_STATED };
+
 /** The `placements.json` entry a settled row renders to. Driver facts from `canonical`, judgment from `row`. */
 export function renderEntry(canonical, row) {
   const f = seatFields(row ?? {});
   const e = {
     mark: canonical?.mark ?? null,
-    owner: canonical?.owner ?? null,
+    owner: canonical?.kind === "register" ? (String(canonical?.owner ?? "").trim() || OWNER_NOT_STATED) : (canonical?.owner ?? null),
     jurisdiction: canonical?.jurisdiction ?? "",
     records: Array.isArray(canonical?.records) ? canonical.records : [],
     tier: f.tier,
@@ -259,9 +455,10 @@ export function seatRefusal(row) {
 }
 
 /**
- * The register's part of a register row, refused — or null. A fact the register did not supply (no owner on
- * the record) is not something a corrective turn can repair: the seat is told not to type these fields and
- * anything it types is ignored. Null on a seat row. PURE; never throws.
+ * The register's part of a register row, refused — or null. A fact the register did not supply is not
+ * something a corrective turn can repair: the seat is told not to type these fields and anything it types is
+ * ignored. A record that names no owner is not refused here: it renders under OWNER_NOT_STATED. Null on a
+ * seat row. PURE; never throws.
  */
 export function registerFactRefusal(row) {
   if (row?.kind !== "register") return null;
@@ -279,9 +476,8 @@ export function registerFactRefusal(row) {
  *   register_selected   register candidates the seat selected.
  *   register_rendered   of those, how many reach placements.json.
  *   register_facts      rows judged by the seat and still refused on a fact the register did not supply,
- *                       counted by cause. A register that publishes no owner for a record is a real and
- *                       ordinary case (measured: single records at offices that do not publish one), so a
- *                       handful are recorded, not refused.
+ *                       counted by cause. No owner on the record is no longer one of them: such a
+ *                       record renders under OWNER_NOT_STATED, as the step placed it.
  *
  * `register_selected > 0 && register_rendered === 0` is the other refusal: a pass that tiered register
  * candidates and delivered none of them has not made a judgement about the register, it has lost one. That
@@ -416,7 +612,10 @@ export function parsePlacementForm(raw) {
   catch (e) { return { rows: null, error: `is not valid JSON (${String(e?.message ?? e).slice(0, 80)})` }; }
   const rows = Array.isArray(doc) ? doc : doc?.rows;
   if (!Array.isArray(rows)) return { rows: null, error: "carries no rows[] array" };
-  return { rows, set_aside: Array.isArray(doc?.set_aside) ? doc.set_aside : [], error: null };
+  // The group rows ride the set-aside list on the way in, so every reader of that list sees both kinds and
+  // tells them apart by their fields; the union writes them back to their own list.
+  return { rows, set_aside: [...(Array.isArray(doc?.set_aside) ? doc.set_aside : []),
+    ...(Array.isArray(doc?.set_aside_groups) ? doc.set_aside_groups : [])], error: null };
 }
 
 /**
@@ -430,7 +629,8 @@ export function parsePlacementForm(raw) {
 export function buildPlacementForm(input) {
   const { derived_from } = buildSelectionIndex(input);
   return { _provenance: PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
-    seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT, generated_from: derived_from, rows: [] };
+    seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT,
+    set_aside_group_contract: SET_ASIDE_GROUP_CONTRACT, generated_from: derived_from, rows: [] };
 }
 
 export { PROVENANCE as PLACEMENT_FORM_PROVENANCE };

@@ -38,7 +38,7 @@
 //
 // PURE — no IO, no clock. The CLI (`scripts/placement-diff.mjs`) owns the reading.
 
-import { PLACEMENT_TIERS } from "./placement-model.mjs";
+import { PLACEMENT_TIERS, OWNER_NOT_STATED } from "./placement-model.mjs";
 
 export const PLACEMENT_DIFF_SCHEMA_VERSION = 1;
 
@@ -48,8 +48,13 @@ export const BOUNDARY_PAIR = ["headline-candidate", "sheet-2"];
 /** Lowercase, collapse whitespace, drop a trailing parenthetical. Folds nothing else. */
 export const normKey = (s) => String(s ?? "").trim().replace(/\s*\([^)]*\)\s*$/, "").toLowerCase().replace(/\s+/g, " ");
 
-/** mark + owner + jurisdiction. Total over the artifact: placement-model makes all three required. */
-export const entryKey = (e) => `${normKey(e?.mark)}|${normKey(e?.owner)}|${normKey(e?.jurisdiction)}`;
+/**
+ * mark + owner + jurisdiction. Total over the artifact: placement-model makes all three required. A placement
+ * whose register names no owner carries the one owner text every such placement carries, so its records are
+ * part of its key: two of one mark at one office are two rights, not a duplicate.
+ */
+export const entryKey = (e) => `${normKey(e?.mark)}|${normKey(e?.owner)}|${normKey(e?.jurisdiction)}`
+  + (e?.owner === OWNER_NOT_STATED ? `|${(Array.isArray(e?.records) ? e.records : []).map((r) => String(r).trim().toLowerCase()).sort().join(",")}` : "");
 
 const bump = (o, k) => { o[k] = (o[k] ?? 0) + 1; };
 

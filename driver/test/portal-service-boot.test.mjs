@@ -71,6 +71,7 @@ function boot(overrides, { waitMs = 15000 } = {}) {
     let done = false;
     const finish = (r) => { if (!done) { done = true; clearTimeout(timer); resolve(r); } };
     const timer = setTimeout(() => { try { child.kill("SIGKILL"); } catch { /* gone */ } }, waitMs);
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (c) => {
       stderr += String(c);
       if (/listening on/.test(stderr)) { try { child.kill("SIGKILL"); } catch { /* gone */ } }
@@ -579,6 +580,7 @@ function bootAndGet(overrides, path, { waitMs = 20000, headers = {} } = {}) {
       resolve({ ...r, stderr });
     };
     const timer = setTimeout(() => finish({ status: null, json: null, error: "timed out before an answer" }), waitMs);
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", async (c) => {
       stderr += String(c);
       if (asked || !/listening on/.test(stderr)) return;

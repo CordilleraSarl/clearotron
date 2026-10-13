@@ -30,7 +30,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import {
   acceptMatterFrame, renderMatterFrame, recordMatterFrame, matterFrameWasRecorded,
   matterFrameCallPaths, MATTER_CONTEXT_FILE, SCOPE_BASES, INTAKE_ASK_OWNERS,
-  mergeMatterFrameCall, frameIdentifiedClasses, MEANING_ANGLE_MAX_CHARS,
+  mergeMatterFrameCall, frameIdentifiedClasses, withFrameClasses, MEANING_ANGLE_MAX_CHARS,
 } from "../matter-frame-record.mjs";
 import { channelsDiagnosis, channelsFromMatterContext } from "../scope-ledger.mjs";
 import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone } from "../connotation-search.mjs";
@@ -378,6 +378,20 @@ test("the compile reads the identified classes off the run, and an absent frame 
   assert.deepEqual(frameIdentifiedClasses(bare), []);
 });
 
+test("the field is read in the instructed classes and the frame's, so an identical mark in an added class is a floor too", () => {
+  // The band shape and the house-element check both read scope through this one union. A shape that read
+  // the instructed classes alone would leave a live identical mark in a class the frame added for the
+  // client's own goods off the floor list, unread and with no duty on it.
+  const runDir = mkdtempSync(join(tmpdir(), "frame-scope-"));
+  assert.deepEqual(withFrameClasses([32, "33"], runDir), ["32", "33"], "no frame yet: the instructed classes, as strings, unchanged");
+  recordMatterFrame(runDir, { ...PARAMS, identified_classes: [
+    { class: "33", reason: "already instructed: one entry, not two" },
+    { class: "43", reason: "the bar the drinks are served in" },
+  ] }, { instructedScope: SCOPE });
+  assert.deepEqual(withFrameClasses([32, "33"], runDir), ["32", "33", "43"], "instructed first, then the frame's, each once");
+  assert.deepEqual(withFrameClasses(undefined, runDir), ["33", "43"], "no instructed list: the frame's classes alone");
+});
+
 test("the plan compile actually calls it — the wiring, not the helper", () => {
   // An exported function nothing calls reads as done. This pins the one call site. Asserted on the
   // source because the compile happens inside a stage this file cannot run.
@@ -424,6 +438,7 @@ async function frameToolSchema() {
     const child = spawn(process.execPath, [server], { stdio: ["pipe", "pipe", "pipe"] });
     let buf = "";
     const timer = setTimeout(() => { child.kill("SIGKILL"); reject(new Error("the recording server did not list its tools")); }, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {
@@ -477,6 +492,7 @@ async function callFrameTool(runDirPath, args) {
       env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDirPath } });
     let buf = "";
     const timer = setTimeout(() => { child.kill("SIGKILL"); reject(new Error("the recording server did not answer the call")); }, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {

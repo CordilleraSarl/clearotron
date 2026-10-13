@@ -7,9 +7,11 @@
 // ground for this record was recorded". On the test runs of the last month that was a median of 745
 // records a run, behind a median of 364 owners.
 //
-// A set-aside row names one record of an owner and gives the set one ground. It is not a candidate and
-// renders into no placement. Every record of that owner the form does not place leaves with the step's
-// ground; a record that names no owner stands for its own position, never for every ownerless record.
+// A set-aside row names one record of a line, one mark of one owner, and gives the line one ground. It is
+// not a candidate and renders into no placement. Every record of that line the form does not place leaves
+// with the step's ground; the owner's other marks keep their own fate, since a ground written about one mark
+// set the others aside unseen (ruled 2026-10-12). A record that names no owner stands for its own position,
+// never for every ownerless record.
 // Driven through the real chain: the form union, the placement record, the ledger fold, the carry trace
 // and the count of reason-less exits.
 import { test } from "node:test";
@@ -57,16 +59,20 @@ test("a set-aside row is kept apart from the candidates, and refused by id when 
   assert.equal(u.set_aside, 2);
   assert.deepEqual(u.form.set_aside_row_contract, SET_ASIDE_ROW_CONTRACT, "the form does not carry the row's contract for the next attempt");
 
-  // The accumulator carries the grounds; a later ground for the same owner replaces the earlier one, and a
-  // retraction by the record id removes one.
-  const later = "Owner A files only for kitchen tools; none of its marks reaches software.";
+  // The accumulator carries the grounds, one per line: a ground for another mark of the same owner is its
+  // own, a later ground for the same line replaces the earlier one, and a retraction by the record id removes one.
+  const later = "Owner A's TALVOR filings are for kitchen tools only.";
   const u2 = unionPlacementForm({ rows: u.form.rows, set_aside: u.form.set_aside },
     { rows: [{ set_aside: "/mark/eu/1003", ground: later }, { retract: "/mark/us/3001" }] }, input);
-  assert.deepEqual(u2.form.set_aside.map((e) => [e.set_aside, e.ground]), [["/mark/eu/1003", later]]);
+  assert.deepEqual(u2.form.set_aside.map((e) => [e.set_aside, e.ground]), [["/mark/us/1002", GROUND_A], ["/mark/eu/1003", later]]);
   assert.equal(u2.form.rows.length, 1, "the placed candidate was lost when the grounds changed");
+  const latest = "Owner A's TALVOR filings lapsed, and were for kitchen tools.";
+  const u3 = unionPlacementForm({ rows: u2.form.rows, set_aside: u2.form.set_aside }, { rows: [{ set_aside: "/mark/us/1004", ground: latest }] }, input);
+  assert.deepEqual(u3.form.set_aside.map((e) => [e.set_aside, e.ground]), [["/mark/us/1002", GROUND_A], ["/mark/us/1004", latest]],
+    "a later ground for the same line replaces the earlier one");
 });
 
-test("every unplaced record of a set-aside owner leaves with the ground, and the reason-less exits fall to the rest", () => {
+test("a ground by name leaves with the named line's records only, and the owner's other marks are grounds still owed", () => {
   const u = unionPlacementForm({ rows: [], set_aside: [] }, submitted, input);
   const placed = renderPlacementsJson(u.form.rows).placements;
   const reasonFor = placementSeamReason(setAsideGrounds(u.form.set_aside, buildSelectionIndex(input)));
@@ -76,20 +82,20 @@ test("every unplaced record of a set-aside owner leaves with the ground, and the
   const trace = traceRecordCarry({ bandRecords: band, placements: placed, ledger });
   const byUri = new Map(trace.rows.map((r) => [r.uri, r]));
 
-  for (const uri of ["/mark/us/1002", "/mark/eu/1003", "/mark/us/1004"]) {
-    const r = byUri.get(uri);
-    assert.equal(r.reason, "placement:set-aside", `${uri}: owner A's unplaced record did not take the set's ground`);
-    assert.equal(r.reason_source, "step-stated");
-    assert.ok(r.detail.includes("kitchen tools"), `${uri}: the ground is not in the trace`);
-  }
+  const named = byUri.get("/mark/us/1002");
+  assert.equal(named.reason, "placement:set-aside", "the named line's record did not take its ground");
+  assert.equal(named.reason_source, "step-stated");
+  assert.ok(named.detail.includes("kitchen tools"), "the ground is not in the trace");
+  for (const uri of ["/mark/eu/1003", "/mark/us/1004"])
+    assert.equal(byUri.get(uri).reason_source, "step-silent", `${uri}: a ground written about another mark of owner A set this one aside`);
   assert.notEqual(byUri.get("/mark/us/1001").stopped_at, "placement", "owner A's placed record stopped at placement");
   // The ownerless set-aside stands for its own position, and nothing else.
   assert.equal(byUri.get("/mark/us/3001").reason, "placement:set-aside");
   assert.equal(byUri.get("/mark/us/3002").reason_source, "step-silent", "one ownerless ground covered another ownerless record");
 
   const e = pickingExits(trace);
-  assert.deepEqual(e.rows.map((r) => r.uri).sort(), ["/mark/us/2001", "/mark/us/2002", "/mark/us/3002"]);
-  assert.equal(e.owners, 2, "owner B is one ground owed, and the ownerless record is its own");
+  assert.deepEqual(e.rows.map((r) => r.uri).sort(), ["/mark/eu/1003", "/mark/us/1004", "/mark/us/2001", "/mark/us/2002", "/mark/us/3002"]);
+  assert.equal(e.owners, 3, "owner A's other mark is a ground owed, beside owner B and the ownerless record");
 });
 
 test("with no set-aside row, a passed-over record still leaves as before, with no ground recorded", () => {
