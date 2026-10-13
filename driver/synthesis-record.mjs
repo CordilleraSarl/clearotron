@@ -541,8 +541,8 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
 // MAIN'S READING STANDS FOR EVERYTHING ELSE. A list-less object reads as registers only when there is a stored
 // record to patch, every key it carries is a register of that record's own ladder (the one its schema_version
 // gives) or its rows, every key the call carries beside its narrative and that object is one too, its envelope
-// is absent or equal to the stored one, and its rows are unambiguous. Any other shape is read exactly as it
-// always was, so the model meets the refusal it always met, byte for byte.
+// is absent or equal to the stored one wherever it is sent, and its rows are unambiguous. Any other shape is read
+// exactly as it always was, so the model meets the refusal it always met, byte for byte.
 
 const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 // Key-sorted JSON: "the same content" must not turn on the order the model wrote its keys in.
@@ -551,9 +551,9 @@ const canon = (v) => (v === null || typeof v !== "object") ? JSON.stringify(v)
   : `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canon(v[k])}`).join(",")}}`;
 const sameValue = (a, b) => canon(a) === canon(b);
 
-// The record's envelope. A list-less object that would change either is not a register edit: re-versioning is a
-// whole re-send (the schema-downlevel rung), and read as registers it could move the stored list to another
-// version's rules without the list ever being sent.
+// The record's envelope. A list-less object that would change either, inside the object or at the call's top
+// level, is not a register edit: re-versioning is a whole re-send (the schema-downlevel rung), and read as
+// registers it could move the stored list to another version's rules without the list ever being sent.
 const ENVELOPE_KEYS = ["schema_version", "rated_under_framework"];
 
 /**
@@ -593,7 +593,9 @@ export function registerPatchOf(stored, call) {
   // there that the ladder does not allow would be judged against the stored record, where the object read as a
   // document is judged as sent.
   if (Object.keys(call).some((k) => k !== "narrative" && k !== "findings" && !allowed.has(k))) return null;
-  if (ENVELOPE_KEYS.some((k) => Object.hasOwn(doc, k) && !sameValue(doc[k], stored.findings[k]))) return null;
+  // Its envelope, inside the object or beside it, is absent or the stored one. The merge copies the call's own
+  // top-level keys last, so a different envelope there would re-version the record as surely as one inside.
+  if (ENVELOPE_KEYS.some((k) => [doc, call].some((o) => Object.hasOwn(o, k) && !sameValue(o[k], stored.findings[k])))) return null;
   const { findings_patch: nested, ...registers } = doc;
   const lift = liftNestedRows(call.findings_patch, nested);
   return lift ? { registers, rows: lift.rows, lifted: lift.lifted } : null;

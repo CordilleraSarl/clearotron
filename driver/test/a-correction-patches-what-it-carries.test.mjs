@@ -183,6 +183,12 @@ test("an envelope equal to the stored one is accepted beside the registers it tr
   accepts(recordSynthesis(dir, { findings: { schema_version: sv, coverage: COVERAGE } }), "a correction restating the stored version");
   assert.equal(onDisk(dir).schema_version, sv);
   assert.equal(canon(onDisk(dir).coverage), canon(COVERAGE));
+  // restated beside the object rather than inside it, the envelope changes nothing either
+  const framework = onDisk(dir).rated_under_framework;
+  assert.equal(typeof framework, "string", "premise: the stored record names the framework it was rated under");
+  accepts(recordSynthesis(dir, { findings: { coverage: COVERAGE }, schema_version: sv, rated_under_framework: framework }),
+    "a correction restating the stored envelope beside its registers");
+  assert.deepEqual([onDisk(dir).schema_version, onDisk(dir).rated_under_framework], [sv, framework]);
 });
 
 test("under a framework that states a method, a register patch leaves every rated finding as it was", () => {
@@ -510,5 +516,31 @@ for (const [what, run, call, re] of [
 ]) {
   test(`a top-level key off the stored record's ladder keeps main's refusal: ${what}`, () => {
     refusesUnchanged(run(), call, re, `a top-level key off the ladder ${what}`);
+  });
+}
+
+// ── AN ENVELOPE BESIDE THE FINDINGS OBJECT IS HELD TO THE STORED ONE ─────────────────────────────────
+//
+// The merge copies a patch's top-level keys into the record last, so a schema_version or rated_under_framework
+// beside a list-less object would re-version the stored list without the list ever being sent, which an
+// envelope inside the object may not do either. A call whose top-level envelope differs from the stored one is
+// read as main reads it: it meets main's refusal, and the stored record keeps its version and its framework.
+// One that restates the stored envelope changes nothing and is accepted (above).
+const UNPARSEABLE = /^synthesis_findings_invalid: findings_unparseable: "findings" must be a JSON ARRAY of finding objects$/;
+
+for (const [what, call, re] of [
+  ["the stored version inside the object and another beside it",
+    { findings: { schema_version: record().schema_version, coverage: COVERAGE }, schema_version: 6 },
+    /^synthesis_findings_invalid: findings_rated_under_missing: schema_version 4 requires rated_under_framework — the framework_key of the framework this rating reasoned with$/],
+  ["a narrative and a register, with version 6 beside them", { narrative: NARRATIVE, findings: { coverage: COVERAGE }, schema_version: 6 }, UNPARSEABLE],
+  ["a narrative and a register, with version 5 beside them", { narrative: NARRATIVE, findings: { coverage: COVERAGE }, schema_version: 5 }, UNPARSEABLE],
+  ["a register, with another framework beside it", { findings: { coverage: COVERAGE }, rated_under_framework: "another-invented-framework" },
+    offLadder("rated_under_framework")],
+]) {
+  test(`a top-level envelope that differs from the stored one keeps main's refusal: ${what}`, () => {
+    const dir = saved();
+    const { schema_version: version, rated_under_framework: framework } = onDisk(dir);
+    refusesUnchanged(dir, call, re, `a top-level envelope that differs from the stored one: ${what}`);
+    assert.deepEqual([onDisk(dir).schema_version, onDisk(dir).rated_under_framework], [version, framework], `${what}: the record was re-versioned`);
   });
 }
