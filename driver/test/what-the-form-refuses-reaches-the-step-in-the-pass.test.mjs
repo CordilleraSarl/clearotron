@@ -21,7 +21,7 @@ import { syncPlacementForm } from "../gateway.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { readPlacementFormInput } from "../placement-form-io.mjs";
 import { validators } from "../verify.mjs";
-import { buildBandShape, deriveRegisterPositions } from "../band-shape.mjs";
+import { buildBandShape, deriveRegisterPositions, CROWDED_GROUP_RECORDS } from "../band-shape.mjs";
 import { setAsideKeysOf, OWNER_NOT_STATED } from "../placement-form.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
 
@@ -133,6 +133,45 @@ test("a floor row whose tier the form refused is not read as placed: its group's
   assert.equal(v.ok, false);
   assert.match(v.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /, "the refused tier was read as a row left unfinished");
   assert.match(v.reason, /The form also refused, each for the reason given: the tier on \/mark\/eu\/b1 \(an identical mark live in an ordered or frame-added class is never out-of-scope-filtered/);
+});
+
+test("a floor whose tier the form refused, left alone on the turns after, is said back as a floor and never fails as an unfinished row", (t) => {
+  const r = run(t);
+  const v1 = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), place("/mark/eu/b1", "out-of-scope-filtered")] });
+  assert.match(v1.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /);
+  // Turn 2: the step leaves the form as the driver wrote it. The stored row has no tier left, and the tier refusal
+  // is not rebuilt, since nothing re-sent the tier.
+  const v2 = r.turn(null);
+  assert.match(v2.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /, `turn 2 read the floor's row as unfinished: ${v2.reason}`);
+  const v3 = r.turn({ rows: [] });
+  assert.match(v3.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\) — /, `turn 3 read the floor's row as unfinished: ${v3.reason}`);
+});
+
+test("a pass whose only selection is a floor with its tier refused says the floor back, and is not refused as a lost register", (t) => {
+  const r = run(t);
+  const v = r.turn({ rows: [place("/mark/eu/b1", "out-of-scope-filtered")] });
+  assert.match(v.reason, /^placement_floors_without_fate=5: /, `a floor said back was read as a register lost to its records' facts: ${v.reason}`);
+});
+
+test("a row left unfinished is refused as before, and the refusal names the floors with no fate too", (t) => {
+  const r = run(t);
+  const v = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), { select: "/mark/eu/d1", tier: "sheet-2" }] });
+  assert.match(v.reason, /^placement_unjudged=1: /, "guard: (d)'s row has no reason, and is not a floor");
+  assert.match(v.reason, /The form gives these floors no fate either: \/mark\/eu\/b1 in \(b\)\. Place each by selecting that record, sheet-2 at the least, or set its line aside by name on its status or its territory\./,
+    "the step learned of the floor a turn later than of the row");
+});
+
+test("a floor in a crowd of (a) is said back: only a crowd whose row may cover its floors stands on its count", () => {
+  const n = CROWDED_GROUP_RECORDS;
+  const band = Array.from({ length: n }, (_, i) => rec(`/mark/eu/a${i}`, "QZORVAK", `Owner ${String(i).padStart(4, "0")} Ltd`));
+  const positions = deriveRegisterPositions(band);
+  const goods = { of: () => [{ classes: ["9"], text: "joysticks" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
+    keysOf: setAsideKeysOf(positions.positions), markets: ["EU"] });
+  assert.equal(shape.groups.a.records, n, "guard: (a) is a crowd");
+  const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups };
+  const u = unionPlacementForm(null, { rows: band.slice(1).map((x) => place(x.record_id)) }, input);
+  assert.deepEqual(u.form.floors_without_fate?.map((e) => [e.group, e.floors]), [["a", ["/mark/eu/a0"]]], "a floor in a crowded (a) was never said back");
 });
 
 test("a set-aside the form refuses is said back in the pass with its reason", (t) => {

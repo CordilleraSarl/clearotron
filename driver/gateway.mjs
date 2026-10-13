@@ -2189,10 +2189,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
   // A SAID-BACK REFUSAL NEVER WITHHOLDS THE REPORT (reports always ship, ruled 2026-08-27). The placement form's
   // refusals refuse the pass so that a corrective turn carries them to the step, which is the only way back to it
   // within a pass (verify.mjs, placementSaidBackVerdict). They are the stage's last check, so a pass whose attempts
-  // run out on one has passed every other: its artifact stands, and what it left open is recorded, by the floor
-  // duty and by the delivery clamp that names it.
+  // run out on one has passed every other, and stands: an open floor is recorded by the floor duty and named at
+  // delivery; any other refusal is kept in the attempt record.
   if (SAID_BACK_OPEN_RE.test(lastFail ?? "")) {
-    note(`[${name}] ${abbrev(String(lastFail), 160)} — still open when the attempts ran out: the pass stands, and the floor duty records what it left open`);
+    note(`[${name}] ${abbrev(String(lastFail), 160)} — still open when the attempts ran out: the pass stands; an open floor is recorded by the floor duty and named at delivery, and any other refusal is kept in the attempt record`);
     return { ok: true, json: lastJson, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(lastJson), sessionKey: lastKey, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads: lastReads, readsTruncated: lastReadsTruncated, warm: lastWarm, wrote: lastWrote, formRepairs: formRepairsUsed, saidBackOpen: lastFail };
   }
   // sessionKey on FAILURE = the last attempted key (lastKey) — callers that recover terminally (e.g. the

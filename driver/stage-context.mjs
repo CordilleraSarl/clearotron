@@ -265,8 +265,8 @@ export const VALIDATOR_SIDECARS = {
   "common-law": ["grid-spec.json", "profile.json"],
   // — the DRIVER'S copy of the placement form. Without it in the sandbox an experiment arm would
   // union against nothing and re-render an empty deliverable — the same class of defect fixed
-  // for the coverage form one line down.
-  "placement-inquiry": ["stage-contracts.json", "placement-form.form.json"],
+  // for the coverage form one line down. The band shape's floors tell the gate which unfinished rows hold a floor.
+  "placement-inquiry": ["stage-contracts.json", "placement-form.form.json", "band-shape.json"],
   // — `register-coverage-form.form.json` is the DRIVER'S copy of the coverage form and the artifact
   // validators.registerFindings judges. Without it in the sandbox an experiment arm would judge the
   // register digest under different rules than production did — the exact defect this table generalises.

@@ -28,6 +28,7 @@ import { validators } from "../verify.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { renderPlacementsJson, placementRenderAccount, omittedFromRender, OWNER_NOT_STATED } from "../placement-form.mjs";
 import { reconcileFloorDuty } from "../floor-duty.mjs";
+import { entryKey } from "../placement-diff.mjs";
 
 const PAD = "Padding so the specimen clears the nonEmpty floor and the structural arm is what decides it.";
 const DOC = ["# Candidate grouping — TESTMARK", "", "## Band reconciliation", "", PAD, "",
@@ -85,6 +86,7 @@ test("two records of one mark at one office, neither naming an owner, are both p
   const floors = ["T1", "T2"].map((id) => ({ record_id: `/mark/us/${id}`, mark_text: "MARK-TWIN", owner_name: "" }));
   const duty = reconcileFloorDuty({ floors, placements: placed });
   assert.deepEqual([duty.totals.floors, duty.totals.accounted], [2, 2], "the floor duty joins on the record, so neither is lost to the shared owner text");
+  assert.notEqual(entryKey(placed[0]), entryKey(placed[1]), "the comparison tool read two rights as one duplicate");
 });
 
 test("a row the SEAT has not finished refuses, and the refusal names the row and its cause", () => {

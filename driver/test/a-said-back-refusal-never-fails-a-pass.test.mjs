@@ -16,6 +16,10 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { runStage, registerEngine } from "../gateway.mjs";
+import { validators } from "../verify.mjs";
+import { buildBandShape, deriveRegisterPositions } from "../band-shape.mjs";
+import { setAsideKeysOf } from "../placement-form.mjs";
+import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
 import { outputStands } from "../pipeline.mjs";
 
 const FLOOR = "placement_floors_without_fate=1: /mark/eu/b1 in (b) — each is a floor";
@@ -80,6 +84,44 @@ test("a pass that stood on a said-back refusal is not run again on resume; an un
     assert.equal(judged({ ok: false, reason: UNJUDGED }), false);
     assert.equal(judged({ ok: true }), true);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a floor tiered out of scope, refused, and left alone on the turns after: the pass stands at the end, through the real judgement", async () => {
+  // One invented floor: an identical mark, live in the ordered class, for other goods, so in (b).
+  const band = [{ record_id: "/mark/eu/b1", mark_text: "Qzorvak", owner_name: "Beta GmbH", classes: ["9"], status: "registered", jurisdictions: ["EU"] }];
+  const positions = deriveRegisterPositions(band);
+  const goods = { of: () => [{ classes: ["9"], text: "printers" }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, goodsWordCount: 1,
+    keysOf: setAsideKeysOf(positions.positions), markets: ["EU"] });
+  const dir = mkdtempSync(join(tmpdir(), "said-back-two-turns-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(driverDir(dir, "stage-contracts.json"), JSON.stringify({ "placement-inquiry": { structuredPlacements: 1, placementForm: 1, placementAccount: 1, placementSaidBack: 1 } }));
+  writeFileSync(driverDir(dir, "register-positions.json"), JSON.stringify(positions));
+  writeFileSync(driverDir(dir, "band-shape.json"), JSON.stringify(shape));
+  const out = join(dir, "placement-recommendations.md");
+  writeFileSync(out, ["# Candidate grouping — TESTMARK", "", "## Band reconciliation", "", "Padding so the specimen clears the nonEmpty floor and the structural arm is what decides it.", "",
+    "## Headline candidates", "<!-- clearotron:section=placement-tiers -->", "", "- CANDIDATE", ""].join("\n"));
+  const messages = [];
+  const saved = { CLEAROTRON_AI: process.env.CLEAROTRON_AI, CLEAROTRON_RETRY_BACKOFF_MS: process.env.CLEAROTRON_RETRY_BACKOFF_MS };
+  // Turn 1 tiers the floor out of scope; every turn after leaves the form as the driver wrote it.
+  registerEngine({ name: "fake-said-back-two-turns", runTurn: async (a) => {
+    messages.push(a.message);
+    if (messages.length === 1) writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows: [{ select: "/mark/eu/b1", tier: "out-of-scope-filtered", reason: "identical, but for printers" }] }));
+    return ok();
+  } });
+  process.env.CLEAROTRON_AI = "fake-said-back-two-turns";
+  process.env.CLEAROTRON_RETRY_BACKOFF_MS = "0";
+  try {
+    const r = await runStage("placement-inquiry", { agent: "mailagent", sessionKey: "clearotron-test-said-back-two-turns", message: "place the band",
+      model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out, validate: (f, text) => validators.placement(f, text), runDir: dir, maxRetries: 2 });
+    assert.ok(messages.length >= 2, "no corrective turn carried the floor");
+    assert.match(messages[1], /placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\)/);
+    assert.equal(r.ok, true, `the run stopped with no report over a floor the step was told of: ${r.fail}`);
+    assert.match(r.saidBackOpen, /placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\)/, "the open floor is not what the pass left recorded");
+  } finally {
+    for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("THE CONTROL: an unfinished row still fails the stage when the attempts run out", async () => {

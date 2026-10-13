@@ -651,7 +651,7 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  */
 /**
  * THE REST NEVER HOLDS A FLOOR. The rest is set aside in one row, at a thousand records or more on its first
- * page and its count, so a floor in it could leave unread. The group rule puts every floor in (a) or (b); a
+ * page and its count, so a floor in it could be left unread. The group rule puts every floor in (a) or (b); a
  * rest holding one is a defect here, and the shape is refused rather than served with a floor no one will
  * read. PURE (throws).
  */
@@ -765,9 +765,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
   const herOrder = (x, y) => Number(y.goods_live_in_scope) - Number(x.goods_live_in_scope) || y.live_in_scope - x.live_in_scope
     || (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || Number(y.in_market) - Number(x.in_market) || y.records - x.records || byName(x, y);
   for (const g of ["a", "b", "c", "d"]) byGroup[g].lines.sort(herOrder);
-  // The rest runs by the client's goods words, then by live records (ruled 2026-10-12): listed whole under a
-  // thousand records, by its first page at a thousand or more, like any group.
-  byGroup.rest.lines.sort((x, y) => (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || y.live - x.live || byName(x, y));
+  // The rest runs by the client's goods words, then by live records in the ordered classes (ruled 2026-10-12):
+  // listed whole under a thousand records, by its first page at a thousand or more, like any group.
+  byGroup.rest.lines.sort((x, y) => (y.goods_hits ?? -1) - (x.goods_hits ?? -1) || y.live_in_scope - x.live_in_scope || byName(x, y));
   // The lines the goods test could not place run floors first, then by live records in the ordered classes,
   // then records: a floor here takes its own fate, so the floors lead the first page.
   noGoods.sort((x, y) => Number(y.floors > 0) - Number(x.floors > 0) || y.live_in_scope - x.live_in_scope || y.records - x.records || byName(x, y));

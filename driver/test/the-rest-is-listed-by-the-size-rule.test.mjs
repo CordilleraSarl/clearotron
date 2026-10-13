@@ -60,6 +60,16 @@ test("under a thousand records the rest is listed, by the client's goods words a
   for (const l of shape.groups.rest.list) assert.ok(lines[shape.md_lines[l.key]]?.includes(l.record_id), "each rest line is on the md's line map, so reading its part serves it");
 });
 
+test("in the rest, a live record in the ordered classes comes before a live one outside them", () => {
+  const band = [
+    rec("z1", "Brindle", "Owner A Ltd", { classes: ["31"] }),   // live, outside the ordered classes; first by name
+    rec("z2", "Talisk", "Owner B Ltd"),                         // live, in the ordered class
+  ];
+  const { shape } = shapeOf(band, () => "printers");
+  assert.deepEqual(shape.groups.rest.list.map((l) => [l.record_id, l.live, l.live_in_scope]), [["/mark/eu/z2", 1, 1], ["/mark/eu/z1", 1, 0]],
+    "the rest was sorted by every live record, not by live records in the ordered classes");
+});
+
 test("a rest of a few hundred lines says so, and every line is printed", () => {
   const band = Array.from({ length: 60 }, (_, i) => rec(`p${i}`, `Brantelo ${i}`, `Owner P${i} Ltd`));
   const { shape, md } = shapeOf(band, () => "printers");

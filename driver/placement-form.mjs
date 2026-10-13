@@ -56,7 +56,7 @@
 import { shortId } from "./connotation-search.mjs";
 import { normKey } from "./placement-diff.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { PLACEMENT_TIERS, validatePlacement } from "./placement-model.mjs";
+import { PLACEMENT_TIERS, validatePlacement, OWNER_NOT_STATED } from "./placement-model.mjs";
 import { BAND_GROUPS, floorMarkKey } from "./band-shape.mjs";   // — the shape's groups, which a group row names
 
 export const PLACEMENT_FORM_NAME = "placement-form.json";
@@ -336,6 +336,17 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "one row for the lines you have read and neither place nor set aside by name — see "
   + "`set_aside_group_contract`.";
 
+/**
+ * The rows that hold one of the band's floors, by row id, keyed as the selection index keys a record, so the gate
+ * reads a floor row as the union does. PURE.
+ */
+export function floorRowIds(rows, floors) {
+  const key = (u) => normalizeRecordUri(u) || String(u ?? "");
+  const floorUris = new Set((Array.isArray(floors) ? floors : []).map((f) => key(f?.record_id)).filter(Boolean));
+  return new Set((Array.isArray(rows) ? rows : [])
+    .filter((r) => (Array.isArray(r?.records) ? r.records : []).some((u) => floorUris.has(key(u)))).map((r) => r?.row_id));
+}
+
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */
 export function formRowKey(row) {
   if (row?.kind === "seat")
@@ -360,12 +371,8 @@ export function rowIsSettled(row, canonical) {
   } catch { return false; }
 }
 
-/**
- * The owner a register record that names none is placed under (ruled 2026-10-12). Such a record is still a
- * floor when its mark is, and the step's placement of it stands: the render carries this in place of the
- * owner and never refuses a placement on that field. A row the step wrote in full names its own owner.
- */
-export const OWNER_NOT_STATED = "not stated on the register";
+// The owner a register record that names none is placed under, declared with the placement's contract.
+export { OWNER_NOT_STATED };
 
 /** The `placements.json` entry a settled row renders to. Driver facts from `canonical`, judgment from `row`. */
 export function renderEntry(canonical, row) {

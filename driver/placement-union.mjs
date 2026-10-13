@@ -327,8 +327,9 @@ export function unionPlacementForm(prior, submitted, input) {
   }
   // EVERY FLOOR WITHOUT A FATE, below a thousand records, said back with its line: counted by the floor duty's
   // own reconcile over what this form renders and sets aside, so a floor on a line placed through another of its
-  // records is owed here as the duty owes it. A crowd of a thousand or more stands on its row and its count. Said
-  // back to an answer only: the form written before the step has answered would list every floor of the band.
+  // records is owed here as the duty owes it. Only a crowd whose row may cover its floors, (b) at a thousand records
+  // or more, stands on its row and its count. Said back to an answer only: the form written before the step has
+  // answered would list every floor of the band.
   const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors);
   const duty = reconcileFloorDuty({ floors: Array.isArray(input?.floors) ? input.floors : [],
     placements: renderPlacementsJson(form.rows).placements, setAsideGroundOf: groundOf });
@@ -337,7 +338,7 @@ export function unionPlacementForm(prior, submitted, input) {
     if (r.disposition !== "unanswered" && r.disposition !== "named-without-ground") continue;
     const key = lineKey(index.resolve(r.record_id));
     const g = key ? groupOf.get(key) ?? null : null;
-    if (g && (groups?.[g]?.records ?? 0) >= (groups?.crowded_at ?? Infinity)) continue;
+    if (g && groupRowCoversFloors(groups, g)) continue;
     const k = key ?? `record:${r.record_id}`;
     const e = unfated.get(k) ?? { group: g, line: (g ? lineOf(g, key)?.record_id : null) ?? r.record_id, floors: [] };
     e.floors.push(r.record_id);

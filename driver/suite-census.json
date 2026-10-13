@@ -1019,7 +1019,7 @@
         },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
           "tests": 8,
-          "asserts": 18,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1372,8 +1372,8 @@
           "todos": 0
         },
         "a-said-back-refusal-never-fails-a-pass.test.mjs": {
-          "tests": 5,
-          "asserts": 15,
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -6358,8 +6358,8 @@
           "todos": 0
         },
         "the-rest-is-listed-by-the-size-rule.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -6904,8 +6904,8 @@
           "todos": 0
         },
         "what-the-form-refuses-reaches-the-step-in-the-pass.test.mjs": {
-          "tests": 8,
-          "asserts": 28,
+          "tests": 12,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
