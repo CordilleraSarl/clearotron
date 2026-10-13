@@ -15,6 +15,7 @@ import assert from "node:assert/strict";
 import { verifyRegisterDirectiveClose, answeredAs } from "../close-verify.mjs";
 import { accountRemedyTerms, domClosedOverAccounted } from "../remedy-accounting.mjs";
 import { compileRegisterPlan, foldSupplementalEntries } from "../register-plan.mjs";
+import { deriveAsks } from "../ask-ledger.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { CAPABILITIES as CLARIVATE } from "../../providers/clarivate/src/capabilities.js";
 
@@ -82,4 +83,16 @@ test("a slice that was never asked still does not close, and the two readers res
   assert.equal(v.closed, false);
   assert.equal(answeredAs(refused, foldRefusals), twin);
   assert.equal(answeredAs("supp:primary-sweep:exact:other:00000000", foldRefusals), "supp:primary-sweep:exact:other:00000000");
+});
+
+test("the run's ask for the directive ends on the row that answered it, not left open on the slice that never ran", () => {
+  const { refused, twin, foldRefusals } = foldARepeatedQuestion();
+  const key = "variant:dominant";
+  const v = verifyRegisterDirectiveClose({ qids: [refused], executedQids: new Set([twin]), blocksByQid: new Map([[twin, enumerated(twin)]]), foldRefusals });
+  const receipt = { requested: [key], swept: [key], deferrals: [], directive_qids: { [key]: [refused] },
+    answered_elsewhere: [{ directive: key, slices: v.answered_by }] };
+  const planExecution = { executed: [{ qid: twin, state: "enumerated", records: 71, total_hits: 71 }] };
+  const endingOf = (fr) => deriveAsks({ frameReopen: fr, planExecution }).find((a) => a.born?.ref === key)?.ending;
+  assert.equal(endingOf({ ...receipt, answered_elsewhere: undefined }), null, "control: without the twin the ask stays open on the slice that never ran");
+  assert.equal(endingOf(receipt)?.kind, "executed", "the ask stayed open though its question was asked and answered");
 });
