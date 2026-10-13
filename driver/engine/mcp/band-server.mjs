@@ -24,7 +24,7 @@ import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
-import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, untaggedIsEnglish } from "../../record-goods.mjs";
+import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish } from "../../record-goods.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
@@ -108,7 +108,8 @@ const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever 
 // band_lookup of 100 fat records or a pathological official record could exceed the engine's
 // per-tool-output token cap and error the call — killing the reading path exactly where the record
 // volume is highest. band_lookup TRIMS records (the full match count always survives, with an
-// honest note); band_record serves PARTS like band_shape (a record is a document — never trimmed).
+// honest note); band_record serves PARTS like band_shape (a record is a document — never trimmed of anything it
+// says; a goods list it says twice is served once, at `recordAsServed`).
 // Given an answer size and no band size of its own, the band answers in five sixths of it: the rest is room
 // for the quotes and line breaks a printout adds (up to 13% on band answers) and for a banner, so a band
 // answer is never split a second time (shared/answer-parts.mjs). 37,500 on Claude, 30,000 on codex.
@@ -434,6 +435,26 @@ function bandLookup(params = {}) {
   return out;
 }
 
+// A RECORD'S GOODS ARE SERVED ONCE. A Clarivate record carries the register's raw goods list beside the
+// normalised goods the provider maps from it item for item (record-goods.mjs `rawGoodsCarried`), so every goods
+// statement was read twice. On a crowded test run, 2026-10-13, one synthesis attempt read 10.79 MB of record
+// text in 549 calls; served this way, the same records come to 6.04 MB in 398. Where the normalised goods carry
+// the raw list, the record is served without that list, in the file's own layout and field order, and anything
+// else in the raw goods block stays; where they do not, or the text is not a record, it is served as it
+// stands. The file on disk is never touched, and the reading audit says how much was left out.
+function recordAsServed(text) {
+  let body;
+  try { body = JSON.parse(text); } catch { return { text, audit: {} }; }
+  if (!rawGoodsCarried(body)) return { text, audit: {} };
+  const goods = { ...body._raw.goodsServices };
+  delete goods.intClassDescriptions;
+  const raw = { ...body._raw, goodsServices: goods };
+  if (!Object.keys(goods).length) delete raw.goodsServices;
+  const indent = /^\{\n( +)"/.exec(text)?.[1]?.length ?? 0;
+  const served = JSON.stringify({ ...body, _raw: raw }, null, indent) + (text.endsWith("\n") ? "\n" : "");
+  return { text: served, audit: { raw_goods_left_out: text.length - served.length } };
+}
+
 function bandRecord(params = {}) {
   if (!RUN_DIR) return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." };
   const uri = String(params.record_id ?? "").trim();
@@ -461,16 +482,18 @@ function bandRecord(params = {}) {
     // How the cite resolved rides the log: an `exact` hit is the model quoting the store's own key; any
     // other value is this ladder doing work, and the reading audit says which and to what.
     const resolution = hit.via === "exact" ? {} : { via: hit.via, ...(hit.resolved ? { resolved: hit.resolved } : {}) };
+    const served = recordAsServed(text);
+    text = served.text;
     const parts = splitAtLines(text, RESPONSE_CHARS);
     const total = parts.length;
-    if (total === 1) {                                  // the common case — served verbatim, no banner
-      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, ...resolution });
+    if (total === 1) {                                  // the common case — one part, no banner
+      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, ...resolution, ...served.audit });
       return text;
     }
     // An oversize official record serves in PARTS, as band_shape does: line-boundary splits, byte-identical
     // concatenation, and a banner that says the next part continues it.
     const part = Math.min(Math.max(1, Math.floor(Number(params.part)) || 1), total);
-    logRead("band_record", { record_id: uri, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length, ...resolution });
+    logRead("band_record", { record_id: uri, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length, ...resolution, ...served.audit });
     const head = `[band_record part ${part}/${total}. This record is served in ${total} parts; the next part continues it.]`;
     const tail = part < total
       ? `\n[end of part ${part}/${total} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}} for the next part]`
@@ -484,15 +507,16 @@ function bandRecord(params = {}) {
   // fetched this run", which is a different claim and was false four times on a delivered round.
   const fromLedger = recordFromLedger(uri);
   if (fromLedger) {
-    const text = JSON.stringify(fromLedger, null, 2);
+    const served = recordAsServed(JSON.stringify(fromLedger, null, 2));
+    const text = served.text;
     const parts = splitAtLines(text, RESPONSE_CHARS);
     if (parts.length === 1) {
-      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger" });
+      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger", ...served.audit });
       return { type: "text", text };
     }
     const wanted = Number(params.part ?? 1);
     const part = Number.isInteger(wanted) && wanted >= 1 && wanted <= parts.length ? wanted : 1;
-    logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger", part, parts: parts.length });
+    logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger", part, parts: parts.length, ...served.audit });
     return { type: "text", text: `[record ${uri} — part ${part}/${parts.length}]\n` + parts[part - 1]
       + (part < parts.length ? `\n[end of part ${part}/${parts.length} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
   }
