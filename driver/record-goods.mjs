@@ -133,6 +133,42 @@ export function bandGoodsIndex(runDir) {
 /** The goods of one band row from an index, or null when the run holds none for it. PURE. */
 export const goodsFor = (index, record) => index?.get(normalizeRecordUri(record?.record_id)) ?? null;
 
+/**
+ * The goods a band row holds itself, where the register's search answer carries them: Signa sends each record's
+ * class statements on the search row (`raw.classifications`), up to 280 characters, and flags a statement it cut.
+ * Each statement is read as a held body's is (`recordGoods`) and marked `cut: true` where the register cut it, so a
+ * statement that stops early is never read as the whole of its class. null when the row holds none. PURE.
+ */
+export function rowGoods(row) {
+  const classes = Array.isArray(row?.raw?.classifications) ? row.raw.classifications : null;
+  if (!classes) return null;
+  const english = untaggedIsEnglish(normalizeRecordUri(row?.record_id));
+  const out = [];
+  for (const c of classes) {
+    const [g] = recordGoods({ _raw: { classifications: [c] } }, { english });
+    if (g) out.push(c?.goods_services_text_truncated === true ? { ...g, cut: true } : g);
+  }
+  return out.length ? out : null;
+}
+
+/**
+ * Was a statement of these goods cut short by the register? A record whose statements match no word, while one of
+ * them stops where the register cut it, is unknown to the goods test, not a mismatch: the words cut off may be the
+ * client's. Only goods read off a band row carry the mark (`rowGoods`); a held body's statements are whole. PURE.
+ */
+export const statementCut = (goods) => (goods ?? []).some((g) => g?.cut === true);
+
+/** How many records rest on each kind of goods evidence: a held body, a row's whole statements, a row's statements cut short, or none. PURE. */
+export function goodsEvidence(records, goods) {
+  const out = { held: 0, complete: 0, cut: 0, none: 0 };
+  for (const r of Array.isArray(records) ? records : []) {
+    if (goods?.held?.(r)) { out.held++; continue; }
+    const g = goods ? goods.of(r) : null;
+    if (!g) out.none++; else if (statementCut(g)) out.cut++; else out.complete++;
+  }
+  return out;
+}
+
 const fold = (s) => foldDiacritics(String(s ?? "")).toLowerCase();
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -176,7 +212,7 @@ export function goodsWordCounter(words, { stems = false } = {}) {
     if (!res.length || !readable.length) return null;
     const text = fold(readable.map((g) => (g.alt ? `${g.text}\n${g.alt}` : g.text)).join("\n"));
     const n = res.filter((re) => re.test(text)).length;
-    return n === 0 && classUnread(goods) ? null : n;
+    return n === 0 && (classUnread(goods) || statementCut(goods)) ? null : n;
   };
 }
 
@@ -208,7 +244,7 @@ export function goodsWordsMatched(words, { stems = false } = {}) {
   return (goods) => {
     if (!list.length || !(goods ?? []).some((g) => g.en !== false)) return null;
     const hit = tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
-    return hit.length === 0 && classUnread(goods) ? null : hit;
+    return hit.length === 0 && (classUnread(goods) || statementCut(goods)) ? null : hit;
   };
 }
 
@@ -239,8 +275,12 @@ export function instructedOrder(P, job = null) {
  * search asked for beside the one the variants stage named. The client's markets come from the caller:
  * this module is loaded by the band tool server, which reads no account settings. IMPURE (reads the run).
  * Any part that cannot be read is simply absent, and the shape sorts without it.
+ *
+ * A record's goods are its held body's, and where the run holds no body, the statements its band row carries
+ * (`rowGoods`). `held` says which: a line's goods are "on file" only where a body is held, because that is the
+ * record `band_record` can open. `records` are the band's, so the shape tests goods whenever either is held.
  */
-export function bandShapeGoods(P) {
+export function bandShapeGoods(P, records = []) {
   let model = null;
   try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
   let searched = "";
@@ -255,7 +295,9 @@ export function bandShapeGoods(P) {
   const words = product ? model.product_words : Array.isArray(model?.goods_words) ? model.goods_words : [];
   const stems = true;   // the word list the shape groups on is matched as stems, whichever source it came from
   const hits = goodsWordCounter(words, { stems });
-  const goods = index.size ? { of: (r) => goodsFor(index, r), hits, matched: goodsWordsMatched(words, { stems }) } : null;
+  const held = (r) => goodsFor(index, r);
+  const rowsHold = Array.isArray(records) && records.some((r) => r && typeof r === "object" && rowGoods(r));
+  const goods = index.size || rowsHold ? { of: (r) => held(r) ?? rowGoods(r), held: (r) => held(r) != null, hits, matched: goodsWordsMatched(words, { stems }) } : null;
   const goodsTest = { source: product ? "product_words" : words.length ? "goods_words" : "none", words };
   return { goods, goodsTest, goodsWordCount: words.length, dominantTerm: searched || manifestDominant, manifestDominant };
 }

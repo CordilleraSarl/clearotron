@@ -744,7 +744,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     // A floor is never counted in the rest (ruled 2026-10-12): held only outside the order's territories, it
     // is still listed, in (a) or (b), where the step reads it and may set it aside by name on its territory.
     const group = outside && !floor ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
-    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, onFile: Boolean(g), territories: ts, inMarket: ts.some((t) => market.has(t)) };
+    // "On file" is a body `band_record` can open: goods read off the band row decide the group, never that.
+    const onFile = goods?.held ? goods.held(r) : Boolean(g);
+    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, onFile, territories: ts, inMarket: ts.some((t) => market.has(t)) };
     const keys = typeof keysOf === "function" ? keysOf(r) : null;
     const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
     const key = keys?.line ?? `line:${ownerKey}|${normMark(r?.mark_text) || String(r?.record_id ?? "").trim().toLowerCase()}`;
