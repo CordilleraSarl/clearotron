@@ -131,3 +131,14 @@ test("an engine-internal record never reaches the timeline or the account's view
   assert.ok(!JSON.stringify(accountTimeline({ timeline })).includes("synthesis-call-normalised"),
     "the account's view of the timeline names the engine-internal record");
 });
+
+test("the record of whether the reviewer's corrections reached the delivered report never reaches the timeline", () => {
+  const P = runs.resolveRun(RUN_ID).P;
+  const evs = [
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
+    { ts: "2026-07-29T19:30:00.000Z", event: "corrections-delivered", ok: true, flags: 2, outcomes: { delivered: 1, "not-found": 1 } },
+    { ts: "2026-07-29T19:31:00.000Z", event: "corrections-delivered", ok: false, error: "the record could not be read" },
+  ];
+  const { timeline } = events.projectTimeline(evs, P);
+  assert.deepEqual(timeline.map((t) => t.kind), ["start"], "a record about the reviewer's corrections reached the timeline");
+});

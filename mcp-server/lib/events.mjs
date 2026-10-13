@@ -153,10 +153,12 @@ function classify(e, st, rat) {
     case "failed":
       return { ts, kind: "failed", phase: phaseFor(e.stage), stage: e.stage ?? null, decision: "run-failed", reason: e.reason ?? null };
     // AN ENGINE-INTERNAL RECORD, NEVER A DECISION. How the synthesis transport read a call — a marker decoded, rows
-    // lifted, keys a call carried that the transport ignores — is a fact about the engine's own plumbing. It has
-    // no reader on a surface read out in front of lawyers and clients, so it is projected out of the timeline
-    // (`isInternalEntry`) rather than passed through under its own name.
+    // lifted, keys a call carried that the transport ignores — is a fact about the engine's own plumbing, and
+    // whether each reviewer correction reached the delivered record is the reviewer's business, which never
+    // reaches a client page. Neither has a reader on a surface read out in front of lawyers and clients, so both
+    // are projected out of the timeline (`isInternalEntry`) rather than passed through under their own names.
     case "synthesis-call-normalised":
+    case "corrections-delivered":
       return { ts, kind: e.event, decision: "engine-internal", internal: true };
     default:
       return { ts, kind: e.event ?? "unknown", decision: e.event ?? "unknown" }; // generic passthrough

@@ -120,6 +120,9 @@ export const COUNTED_EVENTS = {
   "registry-record-closure": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : 0) > 0 },
   "silently-lost-findings": { kind: FAILED, when: (e) => Number(e.lost) > 0 },
   "correction-kinds": { kind: FAILED, when: (e) => e.ok === false },
+  // the delivery check of the reviewer's corrections could not read the record the report was built from;
+  // its outcomes themselves are a note about the answer's content, which the quality read judges
+  "corrections-delivered": { kind: FAILED, when: (e) => e.ok === false },
   "reasoning-integrity": { kind: FAILED, when: (e) => e.ok === false },
   "screen-gate-postflush": [{ kind: FAILED, when: (e) => Number(e.count) > 0 }, { kind: REPAIR, when: (e) => e.recovered === true }],
   // a duty or carry the run could not compute, or whose arithmetic does not reconcile

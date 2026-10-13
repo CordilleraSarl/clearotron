@@ -41,6 +41,7 @@ import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections
 import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
@@ -8025,6 +8026,54 @@ export function buildReasonedNegativesSection(findings) {   // @internal
   return `${CODE_BUILT_SECTIONS.reasonedNegatives}\n\n${lines.join("\n\n")}`;
 }
 
+// ── WHETHER EACH REVIEWER CORRECTION REACHED THE RECORD THE REPORT WAS BUILT FROM ───────────────────────
+//
+// The corrective pass keeps a basis — what each flag changed in the fields a report prints from the record —
+// in `_driver/corrections-delivered.json`, and every assembly reads it against the record the report was
+// built from and writes the outcome beside it (corrections-delivered.mjs). The last assembly's answer stands.
+// corrections-applied.json, which the open points and the verdict re-check read, is not touched.
+export const CORRECTIONS_DELIVERED_FILE = "corrections-delivered.json";
+
+/** Keep the basis at the corrective pass, from the two records the applied table was built from. Throws on a write failure; the caller is never-kill. */
+export function recordCorrectionsBasis(runDir, rows, preDoc, postDoc) {   // @internal
+  const basis = correctionTargets(rows, preDoc, postDoc);
+  atomicWrite(driverDir(runDir, CORRECTIONS_DELIVERED_FILE), JSON.stringify({
+    _provenance: "whether each reviewer correction reached the record the report was built from: the basis is kept at the corrective pass, and every assembly reads it against the delivered record (corrections-delivered.mjs)",
+    basisAt: new Date().toISOString(), basis,
+  }, null, 2) + "\n");
+  return basis;
+}
+
+/**
+ * Read the basis against the record this assembly was built from, and record the outcome: the file, and one
+ * run-log row. A run with no basis records nothing. A delivered record that cannot be read is recorded as a
+ * failure to look, never as an outcome. Never throws.
+ */
+export function recordCorrectionsDelivered(P) {   // @internal
+  if (!P?.runDir) return null;
+  const at = driverDir(P.runDir, CORRECTIONS_DELIVERED_FILE);
+  let held = null;
+  try { held = JSON.parse(readFileSync(at, "utf8")); } catch { return null; }   // no corrective basis on this run
+  if (!Array.isArray(held?.basis)) return null;
+  let deliveredDoc = null, reportMd = null;
+  try { deliveredDoc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { deliveredDoc = null; }
+  try { reportMd = readFileSync(P.report, "utf8"); } catch { reportMd = null; }
+  let foldMap = null;
+  try { foldMap = readFold(P.runDir)?.map ?? null; } catch { foldMap = null; }
+  const rows = deliveredOutcomes({ basis: held.basis, deliveredDoc, foldMap, reportMd });
+  const { rows: _rows, error: _error, assembledAt: _assembledAt, ...kept } = held;
+  const out = { ...kept, assembledAt: new Date().toISOString(), rows: rows ?? null,
+    ...(rows ? {} : { error: "the record the report was built from could not be read, so no correction was compared" }) };
+  try { atomicWrite(at, JSON.stringify(out, null, 2) + "\n"); } catch { /* the run-log row below is the record */ }
+  try {
+    const outcomes = (rows ?? []).reduce((a, r) => (a[r.outcome] = (a[r.outcome] ?? 0) + 1, a), {});
+    runLog(P.runDir, rows
+      ? { event: "corrections-delivered", ok: true, flags: rows.length, outcomes, reportMdRead: reportMd != null }
+      : { event: "corrections-delivered", ok: false, error: out.error });
+  } catch { /* a log that cannot be written must not stop the report it describes */ }
+  return out;
+}
+
 export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRight = false } = {}) {   // @internal
   const overviewRaw = existsSync(P.reportOverview) ? readFileSync(P.reportOverview, "utf8") : "---\n---\n";
   let overview = overviewRaw.split(/^#\s+Marks\b/m)[0].replace(/\s*$/, "");   // defensive: overview owns down to # Marks
@@ -8233,6 +8282,9 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     ensureDriverDir(P.runDir);
     writeFileSync(driverDir(P.runDir, "card-folds.json"), `${JSON.stringify({ schema: 1, folds }, null, 2)}\n`);
   } catch { /* observability only */ }
+  // Whether each reviewer correction reached the record this report was built from: rewritten on every
+  // assembly, like the fold record above, so the last assembly's answer stands. Nothing without a basis.
+  try { recordCorrectionsDelivered(P); } catch { /* observability only: the report is assembled either way */ }
   return { cards: cards.length, folds };
 }
 
@@ -12746,7 +12798,16 @@ async function pipelineInner(job, opts = {}) {
         runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
           scoped: correctionsScope.scoped, named: correctionsScope.named.length,
           movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length });
+        // The basis for the delivery check each assembly makes (recordCorrectionsDelivered): what each flag
+        // changed in the fields a report prints from the record, from the same two records. Its own file.
+        try { recordCorrectionsBasis(run.runDir, correctionsApplied, preDoc, postDoc); }
+        catch (e) {
+          try { rmSync(driverDir(run.runDir, CORRECTIONS_DELIVERED_FILE), { force: true }); } catch { /* best-effort */ }
+          note(`[corrections] the delivery basis could not be kept (${String(e?.message ?? e).slice(0, 100)}) — this pass has no delivery record`);
+        }
       } catch (e) {
+        // A basis from an earlier pass would be read against this pass's report as if it were this pass's.
+        try { rmSync(driverDir(run.runDir, CORRECTIONS_DELIVERED_FILE), { force: true }); } catch { /* best-effort */ }
         correctionsApplied = null;
         note(`[corrections] the applied table could not be built (${String(e?.message ?? e).slice(0, 100)}) — the recheck reads both files, as before`);
         runLog(run.runDir, { event: "corrections-applied-failed", error: String(e?.message ?? e).slice(0, 160) });
