@@ -1,5 +1,13 @@
 # clearotron-driver
 
+## 0.4.1-beta.5
+
+### Patch Changes
+
+- Fixed: A report's conditions no longer include an internal note about the search's own checking steps.
+- For operators: A stopped run no longer leaves behind a working folder linked to the Codex sign-in; leftovers are removed the next time Codex runs.
+- Fixed: Every live identical or near-identical mark a register search finds is now placed in the report or set aside with its reason.
+
 ## 0.4.1-beta.4
 
 ### Patch Changes
