@@ -789,6 +789,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-run-with-no-method-is-not-offered-inputs.test.mjs": {
           "tests": 2,
           "asserts": 5,
@@ -936,6 +942,12 @@
         "a-model-of-the-current-generation-is-named-in-every-spelling.test.mjs": {
           "tests": 8,
           "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-name-above-its-cards-is-refused-where-the-model-can-fix-it.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -6135,6 +6147,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-review-meets-the-tone-and-figure-checks.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
           "tests": 21,
           "asserts": 80,
@@ -7379,6 +7397,12 @@
         "the-handshake-reports-the-package-version.test.mjs": {
           "tests": 1,
           "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-stage-notes-match-the-pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },

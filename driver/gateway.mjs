@@ -2354,6 +2354,13 @@ export function frameDiffUndispatchable(expectFile, lastFail = "framediff_direct
  * — the routing was already correct, the prose was not. So the closing clause is the one part of a hint
  * that has to know, and it is passed rather than guessed.
  */
+// THE CLEARANCE WRITER'S FINDINGS CONTRACT, AND ONLY IT. A knockout finding's refusals carry `knockout_finding_*`
+// and `knockoutassess_finding_*` tokens (findings-model.mjs), prefixed so that no clearance branch would take
+// them; a bare `findings?_` matched the `finding_` inside them anyway, named findings.json, a file a knockout
+// run never has, and handed the model the clearance contract's keys. `synthesis_findings_*` stays the
+// clearance writer's.
+const CLEARANCE_FINDINGS_TOKEN_RE = /(?<!knockout_|knockoutassess_)findings?_/;
+
 export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null } = {}) {
   // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
   // new hint has one thing to append rather than a branch to reproduce.
@@ -2361,11 +2368,11 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     ? `Fix exactly that and send the corrected values — the driver re-derives this file and the prose table together from your \`${toolWritten}\` call, so there is nothing here for you to save`
     : `Fix exactly that, re-save the COMPLETE JSON file, and leave the prose table unchanged`;
   let hint = "the required output file is actually written and contains every required section IN FULL";
-  if (/findings?_/.test(lastFail)) {
+  if (CLEARANCE_FINDINGS_TOKEN_RE.test(lastFail)) {
     // The per-finding machine contract (findings-model.mjs). MUST sit ABOVE the coverage_ branch — a
     // findings_coverage_* token would otherwise route to the (wrong) coverage-ledger hint. The structural
     // "findings-heading" token has no underscore after "findings", so it never matches this branch.
-    const tok = (lastFail.match(/findings?_[a-z_]+(?::[^\s)]*)?/) || ["findings contract defect"])[0];
+    const tok = (lastFail.match(new RegExp(`${CLEARANCE_FINDINGS_TOKEN_RE.source}[a-z_]+(?::[^\\s)]*)?`)) || ["findings contract defect"])[0];
     // A2 (teal-bastion) — the specific repair the blind generic hint was missing: the famous-neighbour
     // empty-uri crash. Without naming the fix (registrations:[] / route to context_notes), three retries each
     // re-emitted a different malformed shape and never converged. These addenda close that loop.
@@ -3480,7 +3487,7 @@ function repairSiblingName(lastFail, expectFile) {
     // era: the seat writes no dispositions file, so there is no sibling a repair could aim at. The
     // remedy is a `record_dispositions` call, which warmPatchMessage's own connotation branch orders;
     // the graded artifact falls back to the stage's own.md exactly as it did before.
-    : /findings?_/.test(f) ? "findings.json"   // Phase-0 contract sibling (dormant until Phase 1)
+    : CLEARANCE_FINDINGS_TOKEN_RE.test(f) ? "findings.json"   // Phase-0 contract sibling (dormant until Phase 1)
     // blindframe_ is deliberately ABSENT: blind-frame-model.json is no longer a sibling, it is the
     // stage's expectFile. Routing it here would hand the model a message that forbids rewriting the very
     // file it then orders re-saved. The generic invalid_file branch aims the patch correctly.
