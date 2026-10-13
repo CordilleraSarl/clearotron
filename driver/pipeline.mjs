@@ -2850,7 +2850,9 @@ export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — dri
     const now = floorDutyNow(P);
     if (now.reason) return notComputable(now.reason);
     const { artifact, placements } = now;
-    artifact.owners = placementOwnerFates(P, placements);
+    const fates = placementOwnerFates(P, placements);
+    artifact.owners = fates.counted ?? null;
+    if (!fates.counted) artifact.owners_absent = fates.absent;   // no count, and why: no groups, or an input that would not read
     // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
@@ -3057,14 +3059,19 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
   } catch { return () => null; }
 }
 
-/** Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`); null when the shape has no groups. */
-function placementOwnerFates(P, placements) {
+/**
+ * Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`): `{counted}`, or `{absent}`
+ * saying why there is no count. A shape with no groups has nothing to count by; an input that would not read is a
+ * gap in the record. The two are not one fact, and the floor duty's artifact keeps them apart.
+ */
+export function placementOwnerFates(P, placements) {   // @internal — driven by its test with a run's own files
   try {
     const input = readPlacementFormInput(P.runDir);
-    if (!input.groups) return null;
-    return ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index: buildSelectionIndex(input),
+    if (!input.groups) return { absent: "the band shape lists no groups" };
+    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index: buildSelectionIndex(input),
       placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
-  } catch { return null; }
+    return counted ? { counted } : { absent: "the band shape's groups could not be counted" };
+  } catch (e) { return { absent: `an input could not be read: ${String(e?.message ?? e).slice(0, 120)}` }; }
 }
 
 /**

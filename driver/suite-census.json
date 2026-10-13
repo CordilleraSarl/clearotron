@@ -915,6 +915,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-missing-fate-count-says-why.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mixed-alphabet-look-alike-is-not-sent-where-the-register-drops-its-letters.test.mjs": {
           "tests": 10,
           "asserts": 46,
