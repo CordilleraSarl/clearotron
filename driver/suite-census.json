@@ -657,6 +657,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-group-row-covers-no-line-a-later-shape-added.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-group-row-covers-only-the-lines-it-was-shown.test.mjs": {
           "tests": 13,
           "asserts": 41,
@@ -906,6 +912,12 @@
         "a-missing-bus-is-not-a-closed-door.test.mjs": {
           "tests": 10,
           "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-missing-fate-count-says-why.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -1331,6 +1343,12 @@
         },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
+          "tests": 3,
           "asserts": 13,
           "skips": 0,
           "todos": 0
