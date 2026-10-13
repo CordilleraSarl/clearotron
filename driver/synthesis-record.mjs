@@ -540,8 +540,9 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
 //
 // MAIN'S READING STANDS FOR EVERYTHING ELSE. A list-less object reads as registers only when there is a stored
 // record to patch, every key it carries is a register of that record's own ladder (the one its schema_version
-// gives) or its rows, its envelope is absent or equal to the stored one, and its rows are unambiguous. Any other shape is read exactly as it always was,
-// so the model meets the refusal it always met, byte for byte.
+// gives) or its rows, every key the call carries beside its narrative and that object is one too, its envelope
+// is absent or equal to the stored one, and its rows are unambiguous. Any other shape is read exactly as it
+// always was, so the model meets the refusal it always met, byte for byte.
 
 const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 // Key-sorted JSON: "the same content" must not turn on the order the model wrote its keys in.
@@ -588,6 +589,10 @@ export function registerPatchOf(stored, call) {
   // What it may carry: a register of the stored record's own ladder, or rows.
   const allowed = new Set([...topKeysForVersion(stored.findings.schema_version).filter((k) => k !== "findings"), "findings_patch"]);
   if (Object.keys(doc).some((k) => !allowed.has(k))) return null;
+  // And what the call may carry beside it. The merge copies a patch's own top-level keys into the record, so a key
+  // there that the ladder does not allow would be judged against the stored record, where the object read as a
+  // document is judged as sent.
+  if (Object.keys(call).some((k) => k !== "narrative" && k !== "findings" && !allowed.has(k))) return null;
   if (ENVELOPE_KEYS.some((k) => Object.hasOwn(doc, k) && !sameValue(doc[k], stored.findings[k]))) return null;
   const { findings_patch: nested, ...registers } = doc;
   const lift = liftNestedRows(call.findings_patch, nested);

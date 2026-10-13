@@ -483,3 +483,32 @@ test("on a stored record of an earlier version, a key its own ladder does not al
   accepts(recordSynthesis(dir, { findings: { coverage: COVERAGE } }), "a register the stored record's version allows");
   assert.equal(canon(onDisk(dir).coverage), canon(COVERAGE));
 });
+
+// ── A KEY BESIDE THE FINDINGS OBJECT IS HELD TO THE SAME LADDER ──────────────────────────────────────
+//
+// A patch's top-level keys, beside its narrative, its findings object and its rows, are copied into the merged
+// record. So a list-less object reads as registers only where those keys, too, are on the stored record's own
+// ladder. A call carrying one that is not is read as main reads it, and meets main's refusal byte for byte:
+// the object as sent is refused against the base ladder, the narrative is refused for its missing spine, the
+// list-less record is refused as unparseable, or a row is refused for an ordinal that record does not hold.
+const BASE_LADDER = "schema_version, findings, coverage, context_notes, coverage_judgment, corrections, mark_assessment, actions";
+const offLadder = (key) => new RegExp(`^synthesis_findings_invalid: findings_key_unknown:${key} \\(keys are EXACTLY: ${BASE_LADDER}\\)$`);
+const VERDICT_ONLY = { verdict: `${NARRATIVE.verdict} Changed.` };
+
+for (const [what, run, call, re] of [
+  ["beside a register", () => saved(), { findings: { coverage: COVERAGE }, made_up_register: 1 }, offLadder("made_up_register")],
+  ["beside a register and a row", () => saved(), { findings: { coverage: COVERAGE }, made_up_register: 1, findings_patch: [ROW2()] },
+    /^synthesis_patch_ordinal_unknown:2 — this run holds no finding with that ordinal/],
+  ["beside a whole narrative and a register", () => saved(), { narrative: NARRATIVE, findings: { coverage: COVERAGE }, made_up_register: 1 },
+    /^synthesis_findings_invalid: findings_unparseable: "findings" must be a JSON ARRAY of finding objects$/],
+  ["beside a corrected verdict and a register", () => saved(), { narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, made_up_register: 1 },
+    /^synthesis_spine_missing: /],
+  ["beside a corrected verdict and a register, on a run that owes its records", () => saved({ owed: true }),
+    { narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, made_up_register: 1 }, /^synthesis_spine_missing: /],
+  ["on a version-4 record, a key that version does not allow, beside a register", () => saved({}, v4()),
+    { findings: { coverage: COVERAGE }, four_answers: { q1: "an invented answer" } }, offLadder("four_answers")],
+]) {
+  test(`a top-level key off the stored record's ladder keeps main's refusal: ${what}`, () => {
+    refusesUnchanged(run(), call, re, `a top-level key off the ladder ${what}`);
+  });
+}
