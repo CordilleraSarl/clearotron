@@ -68,9 +68,11 @@ test("a commit is judged by the rule of the checkout it runs in", () => {
 });
 
 test("the workflow runs on the line's branches, on the pin files, with nothing but the request's rights", () => {
-  for (const branch of ["main", "'beta-*'", "'next-*'"]) assert.match(WORKFLOW, new RegExp(`branches: \\[[^\\]]*${branch.replace(/[*]/g, "\\*")}`), branch);
+  const branches = (WORKFLOW.match(/^ {4}branches: \[(.*)\]$/m)?.[1] ?? "").split(",").map((b) => b.trim());
+  for (const branch of ["main", "'beta-*'", "'next-*'"]) assert.ok(branches.includes(branch), `${branch} triggers it`);
+  const lines = WORKFLOW.split("\n");
   for (const path of [...PIN_FILES, "scripts/engine-pins.mjs", "scripts/bench-replay-request.mjs"]) {
-    assert.match(WORKFLOW, new RegExp(`^ {6}- ${path.replace(/[.]/g, "\\.")}$`, "m"), `${path} is watched`);
+    assert.ok(lines.includes(`      - ${path}`), `${path} is watched`);
   }
   assert.match(WORKFLOW, /^permissions: \{\}$/m, "nothing by default");
   const job = WORKFLOW.match(/^ {4}permissions:\n((?: {6}[a-z-]+: \S+.*\n)+)/m)?.[1] ?? "";
