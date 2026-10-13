@@ -79,6 +79,7 @@ async function toolsFor(runDir) {
       env: { ...process.env, PERPLEXITY_API_KEY: "placeholder-not-a-key", CLEAROTRON_BAND_RUN_DIR: runDir } });
     let buf = "";
     const timer = setTimeout(() => { child.kill("SIGKILL"); reject(new Error("no tools/list answer")); }, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {

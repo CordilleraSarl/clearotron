@@ -152,7 +152,9 @@ test("THE DOOR ACTUALLY BOOTS on the composed environment — shape is not the s
     const child = spawn(process.execPath, [join(REPO, "mcp-server", "http-server-client.mjs")],
       { env: { PATH: process.env.PATH, HOME: base, USERPROFILE: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
     let out = "";
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => { out += d; });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (d) => { out += d; });
     const closed = new Promise((r) => child.once("close", r));
     const exited = await Promise.race([
@@ -201,7 +203,9 @@ test("a door that CANNOT bind is reported as not running — driven, not read", 
   const child = spawn(process.execPath, [join(REPO, "mcp-server", "http-server-client.mjs")],
     { env: { PATH: process.env.PATH, HOME: base, USERPROFILE: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
   let out = "";
+  child.stdout.setEncoding("utf8");
   child.stdout.on("data", (d) => { out += d; });
+  child.stderr.setEncoding("utf8");
   child.stderr.on("data", (d) => { out += d; });
   try {
     const code = await Promise.race([

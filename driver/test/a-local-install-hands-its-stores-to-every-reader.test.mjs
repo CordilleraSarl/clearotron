@@ -49,7 +49,9 @@ async function firstStartOn(home, ports) {
     stdio: ["ignore", "pipe", "pipe"],
   });
   let said = "";
+  child.stdout.setEncoding("utf8");
   child.stdout.on("data", (c) => { said += c; });
+  child.stderr.setEncoding("utf8");
   child.stderr.on("data", (c) => { said += c; });
   // `close`, not `exit`: it fires once the output is read to the end, so a start that refused a port has
   // said so in `said` before the retry asks.
@@ -75,9 +77,11 @@ async function connectorSavedSearches(home, keys) {
   });
   let stderr = "", buf = "";
   const replies = new Map();
+  child.stderr.setEncoding("utf8");
   child.stderr.on("data", (c) => { stderr += c; });
   const done = new Promise((resolve) => {
     const timer = setTimeout(resolve, 30000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {

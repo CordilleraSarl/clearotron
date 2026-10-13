@@ -68,6 +68,7 @@ function boot(env, until, { backstopMs = 20000, argv = [SERVER] } = {}) {
     // ACCUMULATED FROM THE STREAM, not from execFile's callback buffer: the callback only fires once the
     // child has exited, and this child is a server that does not exit on its own. Waiting for it is what
     // the old fixed timer was standing in for.
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (d) => { stderr += String(d); if (until.test(stderr)) finish(0); });
     child.on("error", () => finish(1));
     child.on("exit", (code) => finish(code ?? 0));

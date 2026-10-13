@@ -98,7 +98,9 @@ function launch(args, env) {
   // directory, and a child handed no TMPDIR puts them in the machine's, where nothing removes them.
   const child = spawn(process.execPath, args, { cwd: REPO, env: { TMPDIR: tmpdir(), ...env }, stdio: ["ignore", "pipe", "pipe"] });
   let said = "";
+  child.stdout.setEncoding("utf8");
   child.stdout.on("data", (c) => { said += c; });
+  child.stderr.setEncoding("utf8");
   child.stderr.on("data", (c) => { said += c; });
   const exited = new Promise((r) => child.on("exit", (code, signal) => r({ code, signal })));
   return { child, said: () => said, exited };

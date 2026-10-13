@@ -270,6 +270,7 @@ test("band_shape returns ok:true against a sandboxed register-digest (the tier f
     let buf = "", got = null;
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve(got); };
     const timer = setTimeout(done, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d.toString();
       let nl;

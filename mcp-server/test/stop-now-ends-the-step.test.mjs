@@ -77,6 +77,7 @@ async function startTurn(runDir, { leaderIgnoresTerm = false, childIgnoresTerm =
   const leader = spawn(process.execPath, ["-e", leaderSrc, join(runDir, ".cancel"), seenPath],
     { detached: true, stdio: ["ignore", "pipe", "ignore"] });
   const childPid = await new Promise((res, rej) => {
+    leader.stdout.setEncoding("utf8");
     leader.stdout.once("data", (b) => res(Number(String(b).trim())));
     leader.once("exit", () => rej(new Error("the leader exited before its child was ready")));
   });

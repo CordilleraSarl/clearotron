@@ -96,6 +96,7 @@ test("two processes writing one run's ledger at once still leave each record onc
     }`;
   const run = (seed) => new Promise((resolve, reject) => {
     const c = spawn(process.execPath, ["--input-type=module", "-e", writer(seed)], { stdio: ["ignore", "ignore", "pipe"] });
+    c.stderr.setEncoding("utf8");
     let err = ""; c.stderr.on("data", (d) => { err += d; });
     c.on("exit", (code) => (code === 0 ? resolve() : reject(new Error(`writer ${seed} exited ${code}: ${err}`))));
   });

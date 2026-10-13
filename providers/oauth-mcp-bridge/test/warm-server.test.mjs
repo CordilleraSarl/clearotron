@@ -151,6 +151,7 @@ describe("the OAuth bridge's warm HTTP door", () => {
       child = spawn(process.execPath,
         [WARM, "--server", "courtlistener", "--port", String(port), "--creds-dir", credsDir],
         { stdio: ["ignore", "ignore", "pipe"] });
+      child.stderr.setEncoding("utf8");
       child.stderr.on("data", (b) => { childErr += b.toString(); });
       child.on("exit", (code, signal) => { childExit = signal ?? code; });
 

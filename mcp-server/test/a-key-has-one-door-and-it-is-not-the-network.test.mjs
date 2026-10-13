@@ -169,6 +169,7 @@ function bootUntil(env, re, timeoutMs = 30000) {
     let out = ""; let done = false;
     const child = execFile(process.execPath, [SERVER], { env: pinEnvAll({ ...process.env }, env), timeout: timeoutMs },
       (err, _o, stderr) => { if (!done) { done = true; resolve({ matched: false, stderr: String(stderr) || out }); } });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (c) => {
       out += String(c);
       if (!done && re.test(out)) { done = true; resolve({ matched: true, stderr: out, child }); }

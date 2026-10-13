@@ -94,6 +94,7 @@ function server(method, params) {
     let buf = "";
     const timer = setTimeout(() => { p.kill(); reject(new Error("dispositions-server.mjs did not answer — could not look")); }, 20000);
     p.on("error", (e) => { clearTimeout(timer); reject(e); });
+    p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {

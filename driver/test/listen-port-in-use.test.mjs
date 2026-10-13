@@ -67,7 +67,9 @@ function boot(script, overrides, { waitMs = 20000 } = {}) {
     const finish = (r) => { if (!done) { done = true; clearTimeout(timer); resolve(r); } };
     const timer = setTimeout(() => { try { child.kill("SIGKILL"); } catch { /* gone */ } }, waitMs);
     const sawListen = () => /listening on|archive index →/.test(stderr + stdout);
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (c) => { stderr += String(c); if (sawListen()) { try { child.kill("SIGKILL"); } catch { /* gone */ } } });
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (c) => { stdout += String(c); if (sawListen()) { try { child.kill("SIGKILL"); } catch { /* gone */ } } });
     child.on("exit", (code, signal) => finish({ code, signal, stderr, stdout, listened: sawListen() }));
     child.on("error", (e) => finish({ code: null, signal: null, stderr: stderr + String(e), stdout, listened: false }));

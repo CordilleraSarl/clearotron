@@ -180,7 +180,9 @@ test("THE DOOR REFUSES TO START when its audience is one of the staff list — d
       stdio: ["ignore", "pipe", "pipe"],
     });
     let out = "";
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => { out += d; });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (d) => { out += d; });
     const timer = setTimeout(() => { try { process.kill(child.pid); } catch { /* gone */ } resolve({ code: null, out }); }, 8000);
     child.once("exit", (code) => { clearTimeout(timer); resolve({ code, out }); });

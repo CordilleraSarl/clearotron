@@ -438,6 +438,7 @@ async function frameToolSchema() {
     const child = spawn(process.execPath, [server], { stdio: ["pipe", "pipe", "pipe"] });
     let buf = "";
     const timer = setTimeout(() => { child.kill("SIGKILL"); reject(new Error("the recording server did not list its tools")); }, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {
@@ -491,6 +492,7 @@ async function callFrameTool(runDirPath, args) {
       env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDirPath } });
     let buf = "";
     const timer = setTimeout(() => { child.kill("SIGKILL"); reject(new Error("the recording server did not answer the call")); }, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {

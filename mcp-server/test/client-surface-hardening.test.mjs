@@ -50,6 +50,7 @@ function boot(env, timeoutMs = 6000) {
     const child = execFile(process.execPath, [CLIENT], { env: pinEnvAll({ ...process.env }, env)   // — every spelling, or a pin of the other one upstream wins
      , timeout: timeoutMs },
       () => finish());
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (d) => { out += String(d); if (/listening on|FATAL/.test(out)) finish(); });
   });
 }

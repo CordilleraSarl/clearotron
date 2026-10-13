@@ -48,7 +48,9 @@ function envFor(root, extra = {}) {
 const runToExit = (env) => {
   const c = spawn(process.execPath, [RUNNER], { env, stdio: ["ignore", "pipe", "pipe"] });
   c.log = "";
+  c.stdout.setEncoding("utf8");
   c.stdout.on("data", (d) => { c.log += d; });
+  c.stderr.setEncoding("utf8");
   c.stderr.on("data", (d) => { c.log += d; });
   return new Promise((r) => c.on("exit", (code) => r({ code, log: c.log })));
 };

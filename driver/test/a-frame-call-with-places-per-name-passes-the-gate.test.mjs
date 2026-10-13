@@ -34,6 +34,7 @@ function schemaOf(name) {
     const done = (fn, v) => { clearTimeout(timer); p.kill(); rmSync(runDir, { recursive: true, force: true }); fn(v); };
     const timer = setTimeout(() => done(reject, new Error("tools/list did not answer — could not look")), 20000);
     p.on("error", (e) => done(reject, e));
+    p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {

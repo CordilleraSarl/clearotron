@@ -55,7 +55,9 @@ async function drive(home) {
   const child = spawn(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "mcp"],
     { env: { PATH: process.env.PATH, HOME: home }, stdio: ["pipe", "pipe", "pipe"] });
   let out = "", err = "";
+  child.stdout.setEncoding("utf8");
   child.stdout.on("data", (d) => { out += d; });
+  child.stderr.setEncoding("utf8");
   child.stderr.on("data", (d) => { err += d; });
   const send = (m) => child.stdin.write(JSON.stringify(m) + "\n");
   const reply = async (id) => {
