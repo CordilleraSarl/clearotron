@@ -12417,8 +12417,9 @@ async function pipelineInner(job, opts = {}) {
     const { text: synthExtra } = composeDispatchExtra("synthesis", ctx);
     const synth = await quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
     recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
-    // The corrective re-synthesis must RESUME the WINNING attempt — its key AND model/thinking. If synthesis
-    // fell over to a cross-provider model, resuming the base key on opus would cold-cache + mismatch the model.
+    // The corrective re-synthesis is dispatched on the WINNING attempt's key AND model/thinking. It is a followup,
+    // a fresh turn, not a resumed session (no engine resumes by key); but if synthesis fell over to a
+    // cross-provider model, a dispatch on the base model would correct a record another model wrote.
     const synthesisKey = synth.sessionKey, synthesisModel = synth.model, synthesisThinking = synth.thinking;
 
     // A2/A4 — the v3 evidence gates (verified-needs-source, symmetric use-check, client-tier
@@ -12665,8 +12666,9 @@ async function pipelineInner(job, opts = {}) {
         note(`corrective cycle already settled for these exact review/narrative bytes — not re-firing (a stale-artifact recovery re-does what went stale, never the settled corrective loop)`);
       }
     }
-    // One corrective re-synthesis on CONDITIONAL/BLOCKING, feeding the reviewer's flags back in. Resume the
-    // WINNING synthesis attempt (key + model + thinking) so a fallback-won synthesis is corrected warm, in place.
+    // One corrective re-synthesis on CONDITIONAL/BLOCKING, feeding the reviewer's flags back in, dispatched on the
+    // WINNING synthesis attempt's key, model and thinking, so a fallback-won synthesis is corrected by the model
+    // that wrote it. The followup is a fresh turn handed the flags and the stage's inputs; it resumes no session.
     let correctionsApplied = null;   // — the driver's flag-by-flag observation, shared by both legs
     let evidenceViolations = [];     // — claims that moved against their own evidence, carried to the recheck
     let correctionsScope = null;     // — the declared per-finding scope, and whether the pass held to it
@@ -12817,9 +12819,10 @@ async function pipelineInner(job, opts = {}) {
     // read, so a recheck spends a dispatch to re-derive the verdict it already gave. The entry verdict
     // stands, which is also the fail-safe direction this block uses everywhere else.
     if (!correctiveRollback && !correctiveCycleSettled && (verdict === "CONDITIONAL" || verdict === "BLOCKING")) {
-      // A1: re-check after the corrective pass by RESUMING the refutation's winning session (warm cache, same
-      // model) with a lean follow-up — NOT a cold re-run on the base key, and NOT re-trying deepseek when sonnet
-      // won. (On a crash-resume skip with no live session, fall back to a clean forced re-run on the same model.)
+      // A1: re-check after the corrective pass with a lean follow-up on the refutation's winning key and model —
+      // NOT a full re-run of the stage, and NOT the base model when another model won. The follow-up is a fresh
+      // turn, not a resumed session (no engine resumes by key). (With no winning key, as on a crash-resume skip,
+      // a clean forced re-run on the same model.)
       // A1: the recheck also runs on the CONDITIONAL path (the VENZY shipping path — previously the
       // corrective output was never re-verified there) and reads the updated FINDINGS too, since the client
       // surfaces render from findings.json, not the narrative. Failure falls back to the ENTRY verdict
@@ -16435,12 +16438,12 @@ async function runExperimentInner(job, opts) {
 
   // — THE CORRECTIVE PASS, on a COLD turn, and it says which pass it reproduced.
   //
-  // Production's corrective pass RESUMES the synthesis session and sends only these blocks. An arm builds
-  // a fresh key in a sandbox and cannot resume anything; resuming the real session was rejected because
-  // "canonical run untouched" is the arm's whole contract. So the arm carries the same INPUTS on a cold
-  // turn, composed by the same function production uses — reaching the seam, not reproducing the
-  // resumption. The receipt says `dispatched-cold`, never `dispatched-warm`, so the two cannot be read as
-  // one another.
+  // Production's corrective pass is a followup dispatch on the run's own synthesis key, and its message is
+  // these blocks; it resumes no session (no engine resumes by key). An arm builds a fresh key in a sandbox,
+  // and dispatching on the real run's key was rejected because "canonical run untouched" is the arm's whole
+  // contract. So the arm carries the same INPUTS on a cold turn, composed by the same function production
+  // uses — reaching the seam, not reproducing production's dispatch. The receipt says `dispatched-cold`,
+  // never `dispatched-warm`, so the two cannot be read as one another.
   const P = shadowCtx.paths;
   const correctiveReady = correctiveReadiness({
     preCorrective: existsSync(driverDir(shadowDir, "findings-pre-corrective.json")),
