@@ -60,7 +60,7 @@ test("the timers come from the inventory, so a shipped one cannot be forgotten",
     "the derived list and the inventory disagree, so one of them is describing a deployment that does not exist");
 });
 
-test("the list names BOTH timers, and each is in it for its own reason", () => {
+test("the list names every timer, and each is in it for its own reason", () => {
   // ── WHY AN ANSWER AND NOT ONLY A DERIVATION ───────────────────────────────────────────────────────
   //
   // The check above recomputes the same expression the export computes and compares the two. It holds
@@ -68,18 +68,21 @@ test("the list names BOTH timers, and each is in it for its own reason", () => {
   // the same edit and both agree about a list that asks systemd the wrong question.
   //
   // A reader asked which number was right — one timer or two — and it is a real question, because the
-  // second one arrives through the FALLBACK rather than through a field written to declare it. So the
+  // deploy timer arrives through the FALLBACK rather than through a field written to declare it. So the
   // answer is written down, by name, with what puts each one there:
   //
+  //   bench-replay-reporter.timer     — untracked: the evaluation bench's own timer on the test
+  //                                     deployment, which ships with that tool and declares itself with
+  //                                     `systemdUnits`
   //   clearotron-doctrine-sync.timer  — untracked, ships no files, declares itself with `systemdUnits`
   //   clearotron-deploy.timer         — tracked; the file list it already ships carries the `.timer`
   //
-  // TWO IS RIGHT, and the deploy timer belongs here on its own merits rather than by accident of the
+  // THREE IS RIGHT, and the deploy timer belongs here on its own merits rather than by accident of the
   // fallback: it is installed, enabled and firing on the test deployment, and if it stops, that
   // deployment silently stops following the main branch while every service on it still reads healthy.
   // That is exactly the silence this whole file exists to break.
   assert.deepEqual([...CHECKED_TIMERS],
-    ["clearotron-deploy.timer", "clearotron-doctrine-sync.timer"],
+    ["bench-replay-reporter.timer", "clearotron-deploy.timer", "clearotron-doctrine-sync.timer"],
     "the timer list changed: a deployment gained or lost a timer, or the derivation stopped reaching one");
 });
 
