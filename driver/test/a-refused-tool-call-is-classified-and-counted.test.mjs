@@ -55,6 +55,7 @@ function callAll(runDir, calls) {
     const answered = new Set();
     const timer = setTimeout(() => { p.kill(); reject(new Error("the server did not answer every call — could not look")); }, 20000);
     p.on("error", (e) => { clearTimeout(timer); reject(e); });
+    p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
       const lines = buf.split("\n");

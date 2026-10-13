@@ -21,7 +21,9 @@ function runToEof(script, lines, { endAfterMs = 150, killAfterMs = 6000 } = {}) 
     const child = spawn(process.execPath, [join(HERE, script)], { stdio: ["pipe", "pipe", "pipe"] });
     let stdout = "", stderr = "";
     const t0 = Date.now();
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => { stdout += d.toString(); });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (d) => { stderr += d.toString(); });
     for (const l of lines) child.stdin.write(JSON.stringify(l) + "\n");
     setTimeout(() => child.stdin.end(), endAfterMs);

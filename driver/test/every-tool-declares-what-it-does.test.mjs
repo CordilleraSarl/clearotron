@@ -39,6 +39,7 @@ function listTools(file) {
     let out = "";
     const done = (v) => { try { child.kill("SIGKILL"); } catch { /* already gone */ } resolve(v); };
     const timer = setTimeout(() => done({ error: "timed out" }), 20_000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (b) => {
       out += b.toString();
       for (const line of out.split("\n")) {

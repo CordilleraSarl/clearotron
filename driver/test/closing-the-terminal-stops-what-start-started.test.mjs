@@ -58,7 +58,9 @@ test("hanging up a real start ends the portal and the door it started", {
       stdio: ["ignore", "pipe", "pipe"],
     });
     let said = "";
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (c) => { said += c; });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (c) => { said += c; });
     const closed = new Promise((resolve) => child.on("close", resolve));
     const deadline = Date.now() + 90000;

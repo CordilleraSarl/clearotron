@@ -117,6 +117,7 @@ test("the real probe server, started as the config starts it, returns exactly th
     const p = spawn(server.command, server.args, { stdio: ["pipe", "pipe", "ignore"], env: { ...process.env, ...server.env } });
     let buf = "";
     const timer = setTimeout(() => { p.kill(); reject(new Error("probe-server.mjs did not answer ping")); }, 20000);
+    p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {
@@ -853,6 +854,7 @@ function toolsOf(command, args, env = {}) {
     const p = spawn(command, args, { stdio: ["pipe", "pipe", "ignore"], env: { ...process.env, ...env } });
     let buf = "";
     const timer = setTimeout(() => { p.kill(); reject(new Error(`${args[0]} did not answer tools/list`)); }, 20000);
+    p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {

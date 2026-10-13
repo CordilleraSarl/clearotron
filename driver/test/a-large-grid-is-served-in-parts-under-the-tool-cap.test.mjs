@@ -35,6 +35,7 @@ async function callTool(args, env = {}) {
     let buf = "", text = null;
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve(text ?? ""); };
     const timer = setTimeout(done, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {

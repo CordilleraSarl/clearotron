@@ -171,6 +171,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-childs-output-is-decoded-as-a-stream.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 1,
+          "todos": 0
+        },
         "a-claim-may-not-outlive-its-evidence.test.mjs": {
           "tests": 14,
           "asserts": 46,

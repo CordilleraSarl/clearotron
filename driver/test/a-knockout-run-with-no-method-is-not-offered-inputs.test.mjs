@@ -30,6 +30,7 @@ function listTools(runDir) {
     const child = spawn(process.execPath, [SERVER], { env, stdio: ["pipe", "pipe", "inherit"] });
     let buf = "";
     const timer = setTimeout(() => { child.kill(); reject(new Error("no answer from the server")); }, 15000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d;
       // Only whole lines: an answer this size arrives in pieces, and a piece is not yet a line.

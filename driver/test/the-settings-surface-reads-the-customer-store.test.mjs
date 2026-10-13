@@ -162,7 +162,9 @@ function boot(extra, { waitMs = 25000 } = {}) {
       // so an arm asserting the store line does not wait out the timeout for a portal that will never listen.
       else if (/config surface unavailable/.test(said) && /listening on/.test(said)) finish({ port: null });
     };
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", read);
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", read);
     child.on("exit", () => finish({ port: null }));
     child.on("error", () => finish({ port: null }));

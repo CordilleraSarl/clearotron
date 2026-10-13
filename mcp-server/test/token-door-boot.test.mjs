@@ -61,6 +61,7 @@ function bootUntil(env, re, timeoutMs = 30000) {
     const child = execFile(process.execPath, [SERVER], { env: pinEnvAll({ ...process.env }, env)   // — every spelling, or a pin of the other one upstream wins
      , timeout: timeoutMs },
       (err, stdout, stderr) => { if (!done) { done = true; resolve({ matched: false, stderr: String(stderr) || out, code: err?.code ?? 0 }); } });
+    child.stderr.setEncoding("utf8");
     child.stderr.on("data", (c) => {
       out += String(c);
       if (!done && re.test(out)) { done = true; try { child.kill(); } catch { /* gone */ } resolve({ matched: true, stderr: out, code: null }); }

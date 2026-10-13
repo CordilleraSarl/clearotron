@@ -31,6 +31,7 @@ function servedProposal(server) {
       env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: join(MCP, ".no-such-run") } });
     let buf = "";
     const timer = setTimeout(() => { p.kill(); reject(new Error(`${server}-server.mjs did not answer tools/list`)); }, 20000);
+    p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
       for (const line of buf.split("\n")) {

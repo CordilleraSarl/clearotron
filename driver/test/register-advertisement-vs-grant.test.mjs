@@ -68,6 +68,7 @@ async function advertised(script) {
     let buf = "", out = null;
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve(out); };
     const timer = setTimeout(done, 8000);
+    child.stdout.setEncoding("utf8");
     child.stdout.on("data", (d) => {
       buf += d.toString(); let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {
