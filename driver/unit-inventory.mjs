@@ -560,6 +560,13 @@ export const UNIT_INVENTORY = Object.freeze([
       + "skills checkout that every role reads. A tracked file HERE would be this repo describing another "
       + "repo's unit, which is how a name mismatch starts.",
   },
+  {
+    unit: "bench-replay-reporter", runsOn: ["test"], tracked: null,
+    systemdUnits: ["bench-replay-reporter.service", "bench-replay-reporter.timer"],
+    untrackedReason: "belongs to the evaluation bench, a separate tool that reads this deployment's saved "
+      + "runs; its unit files ship with that tool. A tracked file here would be this repo describing "
+      + "another tool's unit, the same reason sync-skills carries.",
+  },
   // ── ORPHANED: RESOLVED. `portal-service.service` and `recipe-service.service` were tracked here and
   // run by no box. The decision the previous comment said was owed is taken: DELETED, owner-ruled
   // 2026-08-14, as superseded. Their rows are gone with their files rather than left as
