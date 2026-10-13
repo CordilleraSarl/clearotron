@@ -78,7 +78,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -3008,13 +3008,28 @@ function recordPlacementSeam(ctx, r, trigger = null) {
   });
 }
 
+/**
+ * The form's set-aside entries as they stand on the shape now on disk. A ground by name stands as stored. A
+ * group's row is checked again exactly as the union took it, on its count and on every line read, because the
+ * shape may have been derived again since: a resumed run derives it afresh, and a record body fetched after
+ * placement can move a line out of the list the goods test could not place and into a group. A row taken on
+ * the earlier shape then covers no line the later one added. Nothing is written back. PURE.
+ */
+function standingSetAside(entries, input) {
+  const all = Array.isArray(entries) ? entries : [];
+  const grouped = all.filter(isSetAsideGroupRow);
+  if (!grouped.length) return all;
+  const { form } = unionPlacementForm({ rows: [], set_aside: grouped }, null, input);
+  return [...all.filter((e) => !isSetAsideGroupRow(e)), ...form.set_aside_groups];
+}
+
 /** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
-function placementSetAsideGrounds(P) {
+export function placementSetAsideGrounds(P) {   // @internal — driven by its test with a run's own files
   try {
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
-    return setAsideGrounds(form.set_aside, buildSelectionIndex(input), input.groups, input.floors);
+    return setAsideGrounds(standingSetAside(form.set_aside, input), buildSelectionIndex(input), input.groups, input.floors);
   } catch { return () => null; }
 }
 
@@ -3023,7 +3038,7 @@ function placementOwnerFates(P, placements) {
   try {
     const input = readPlacementFormInput(P.runDir);
     if (!input.groups) return null;
-    return ownerFates({ groups: input.groups, entries: readPlacementForm(P.runDir).set_aside, index: buildSelectionIndex(input),
+    return ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index: buildSelectionIndex(input),
       placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
   } catch { return null; }
 }
