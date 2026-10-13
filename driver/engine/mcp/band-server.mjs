@@ -511,6 +511,21 @@ function bandRecord(params = {}) {
   return { isError: true, text: `${why} ${available.length ? `Records on file (${available.length}): ${available.slice(0, 40).join(", ")}${available.length > 40 ? ", …" : ""}.` : "No records fetched yet."} This tool is read-only — it never fetches; a record you need but do not have is an honest gap to state, not a reason to guess.` };
 }
 
+// THE SHAPE'S GROUP PAGES ARE PLACEMENT'S. Placement owes every line a group lists a fate, so it is offered the
+// group filter and told that a group is read page by page. No other stage owes the band a read, and a synthesis
+// offered the same paged an exhausted group 2,498 times (measured on a test run, 2026-10-13). The driver sets
+// CLEAROTRON_BAND_GROUPS for placement alone (stages.mjs GROUP_READING_STAGES); every other stage is offered
+// the lookup without `group`, in the words every stage had before group pages existed. A group argument that
+// arrives anyway is served as before: the offer changes, not what the tool answers.
+const GROUP_PAGES = process.env.CLEAROTRON_BAND_GROUPS === "1";
+const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
+const LOOKUP_GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
+const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page)";
+const LOOKUP_OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page)";
+/** The lookup's description as a stage is offered it: whole where it reads the groups, without them elsewhere. PURE. */
+const lookupDescription = (groupPages) => (groupPages ? LOOKUP_DESCRIPTION
+  : LOOKUP_DESCRIPTION.replace(LOOKUP_GROUP_CLAUSE, "").replace(LOOKUP_OFFSET_GROUPS, LOOKUP_OFFSET_BAND));
+
 serve({
   name: "band", version: "0.1.0",
   tools: [
@@ -523,12 +538,12 @@ serve({
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: lookupDescription(GROUP_PAGES),
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
         status: { type: "string" }, live_only: { type: "boolean" }, goods: { type: "array", items: { type: "string" } },
-        group: { type: "string", enum: ["a", "b", "c", "d", "rest", "no_goods"] },
+        ...(GROUP_PAGES ? { group: { type: "string", enum: ["a", "b", "c", "d", "rest", "no_goods"] } } : {}),
         limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },

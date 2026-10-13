@@ -33,6 +33,7 @@ import { CLOUD_SETTINGS } from "../engine/auth.mjs";
 import { CRED_ENV_FORWARD, renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
 import { PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS, ENGINE_BINARIES } from "../driver.config.mjs";
 import { buildGatherMcpConfig, toolGroupsForStage, allowedToolsFor } from "../engine/mcp/gather-config.mjs";
+import { GROUP_READING_STAGES } from "../stages.mjs";
 import { auditEnv, namesRead, envNameBindings, mergeEnvNameBindings } from "../../scripts/env-audit.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
@@ -272,8 +273,9 @@ function serverReads() {
   const saved = Object.fromEntries(Object.keys(lookEnv).map((k) => [k, process.env[k]]));
   Object.assign(process.env, lookEnv);
   try {
-    for (const stage of ["register-unit:primary-sweep", "common-law", "case-law", "synthesis", "report-card", "register-digest", "narrative-refutation"]) {
-      const cfg = buildGatherMcpConfig(toolGroupsForStage(stage), { sessionKey: "s", agent: "a", runDir: "/run", recordAxis: "x" });
+    // As the gateway builds them: placement's band server is the one told to serve the shape's group pages.
+    for (const stage of ["register-unit:primary-sweep", "common-law", "case-law", "placement-inquiry", "synthesis", "report-card", "register-digest", "narrative-refutation"]) {
+      const cfg = buildGatherMcpConfig(toolGroupsForStage(stage), { sessionKey: "s", agent: "a", runDir: "/run", recordAxis: "x", bandGroups: GROUP_READING_STAGES.has(stage) });
       for (const s of Object.values(cfg?.mcpServers ?? {})) for (const k of Object.keys(s.env ?? {})) perServer.add(k);
     }
   } finally { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } }
