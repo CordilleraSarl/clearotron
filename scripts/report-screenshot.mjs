@@ -56,6 +56,7 @@ const chrome = spawn("google-chrome", [
 let stderr = "";
 const wsUrl = await new Promise((res, rej) => {
   const t = setTimeout(() => rej(new Error(`chrome reported no devtools endpoint in 60s. Its stderr:\n${stderr || "(nothing)"}`)), 60000);
+  chrome.stderr.setEncoding("utf8");
   chrome.stderr.on("data", (c) => { stderr += c; const m = stderr.match(/ws:\/\/[^\s]+/); if (m) { clearTimeout(t); res(m[0]); } });
 });
 

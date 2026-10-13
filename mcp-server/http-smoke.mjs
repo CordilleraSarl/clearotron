@@ -40,6 +40,7 @@ const child = spawn("node", [join(here, "http-server.mjs")], {
   env: { ...process.env, TRADEMARK_MCP_AUTH_DISABLED: "1", TRADEMARK_MCP_DEV: "1", TRADEMARK_MCP_HTTP_PORT: String(PORT), TRADEMARK_MCP_HTTP_HOST: "127.0.0.1", CLEAROTRON_ACCESS_FILE: grantsFile },
   stdio: ["ignore", "ignore", "pipe"],
 });
+child.stderr.setEncoding("utf8");
 child.stderr.on("data", (d) => process.stderr.write(`[server] ${d}`));
 
 let failed = false;
@@ -47,6 +48,7 @@ const ok = (cond, msg) => { console.log(`${cond ? "ok  " : "FAIL"} ${msg}`); if 
 
 await new Promise((resolve, reject) => {
   const to = setTimeout(() => reject(new Error("http-server did not become ready in 8s")), 8000);
+  child.stderr.setEncoding("utf8");
   child.stderr.on("data", (d) => { if (String(d).includes("listening")) { clearTimeout(to); resolve(); } });
   child.on("exit", (c) => { clearTimeout(to); reject(new Error(`http-server exited early (${c})`)); });
 });

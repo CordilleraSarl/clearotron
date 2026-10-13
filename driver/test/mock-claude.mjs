@@ -25,6 +25,8 @@
 //                           stop_reason is max_tokens, with NO file written (zero usable output)
 //   MOCK_CLAUDE_NOFILE=1  — do not write the output file (drives the missing_file ladder)
 //   MOCK_CLAUDE_RESULT=<text>     — the result text (default "mock claude ok")
+//   MOCK_CLAUDE_SPLIT_UTF8=<ms>   — the result line written in two parts, cut inside a character of two or more
+//                               bytes, <ms> apart: the character reaches the engine split across two chunks
 //   MOCK_CLAUDE_TOOLS_UNUSED=1    — handed the engine probe's tool, answer WITHOUT calling it (by default the
 //                                   reply carries the word the probe's tool returns, as a working engine's does)
 //   MOCK_CLAUDE_FILE=<content>    — the output file content (default a tiny valid stub)
@@ -474,6 +476,17 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       permission_denials: Array.from({ length: Number(process.env.MOCK_CLAUDE_DENIALS || 0) },
         (_, i) => ({ tool_name: "WebSearch", tool_use_id: `toolu_denied_${i}`, tool_input: {} })),
     };
+    // MOCK_CLAUDE_SPLIT_UTF8=<ms> — write the result line in two parts, cut inside its first character of two or
+    // more bytes, <ms> apart, so the character's halves reach the engine in separate chunks of the pipe.
+    if (process.env.MOCK_CLAUDE_SPLIT_UTF8) {
+      const bytes = Buffer.from(JSON.stringify(obj) + "\n", "utf8");
+      const at = bytes.findIndex((b) => b >= 0xc0);
+      if (at >= 0) {
+        process.stdout.write(bytes.subarray(0, at + 1));
+        setTimeout(() => process.stdout.write(bytes.subarray(at + 1), () => process.exit(0)), Number(process.env.MOCK_CLAUDE_SPLIT_UTF8) || 300);
+        return;
+      }
+    }
     // MOCK_CLAUDE_NO_NEWLINE=1 — emit the FINAL result event with NO trailing newline (NDJSON last record);
     // the engine MUST flush its buffer on close or the result is dropped (the B1 regression).
     if (process.env.MOCK_CLAUDE_NO_NEWLINE) process.stdout.write(JSON.stringify(obj));

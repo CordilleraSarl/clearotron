@@ -185,7 +185,7 @@
         },
         "a-childs-output-is-decoded-as-a-stream.test.mjs": {
           "tests": 3,
-          "asserts": 10,
+          "asserts": 14,
           "skips": 1,
           "todos": 0
         },
@@ -1920,6 +1920,12 @@
         "an-engine-program-installed-with-clearotron-is-the-last-resort.test.mjs": {
           "tests": 13,
           "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-engines-output-is-decoded-as-a-stream.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },
