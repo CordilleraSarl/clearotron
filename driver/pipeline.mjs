@@ -13211,7 +13211,9 @@ async function pipelineInner(job, opts = {}) {
         const reasons = [], clauseOf = new Map();   // run-record reason → the client's clause: the same words, with any engine token taken out
         const machinery = (reason, clause = reason) => { reasons.push(reason); clauseOf.set(reason, clause); };
         if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
-        if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
+        // The frame comparison's reason is the engine's account of its own steps: it stays in the run record, and the
+        // client's conditions get nothing in its place (ruled 2026-10-13, as the screen-gate line below).
+        if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close", null);
         else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
         if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`, null);   // run record ONLY: no client clause (ruled 2026-09-18)
         if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);

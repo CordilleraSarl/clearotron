@@ -131,6 +131,9 @@ const stageEnded = (runDir, stage) => {
 
 // The register's own steps, each of which the run survives without: the band's shape (the floors and the
 // full cards read it), the mechanical form floor, the owner screen, and the digest's folding in of re-runs.
+// And the dominant-element crowd the blind frame comparison flagged and the reopen pass did not close: the
+// clamp keeps that reason on the run record alone (ruled 2026-10-13), so the audit records the part here,
+// read from the reopen's receipt as delivery found it.
 function register(runDir, log) {
   const part = { part: "register", name: PART_NAMES.register, reason: NOT_COMPLETED };
   const steps = [
@@ -140,6 +143,10 @@ function register(runDir, log) {
     ["digest-flush", "digest-flush-failed", "the digest flush"],
   ];
   const failed = steps.map(([ok, bad, what]) => [failedStep(log, ok, bad), what]).filter(([e]) => e);
+  let reopen = null;
+  try { reopen = JSON.parse(readFileSync(driverDir(runDir, "frame-reopen.json"), "utf8")); } catch { reopen = null; }
+  if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)
+    failed.push([{ fail: "the omission the blind frame comparison flagged was not closed by the reopen pass" }, "the dominant-element crowd"]);
   if (!failed.length) return null;
   return { ...part, cause: failed.map(([e, what]) => `${what}: ${e.fail ?? e.reason ?? e.event}`).join("; ") };
 }

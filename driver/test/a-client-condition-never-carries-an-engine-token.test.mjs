@@ -24,6 +24,7 @@
 //   · a legacy sidecar still yields its conditions      → break: require the clauses key, arm 3 red
 //   · clauses shorter than reasons loses nothing        → break: map over clauses, arm 4 red
 //   · the lint sees what the surface renders            → break: read either array directly, arm 6 red
+//     (a stored clause in engine words is now withheld from the surface, so the lint sees it as dropped)
 //   · a pre-split reason renders as the lawyer's       → break: return the reason, arm 7 red
 //   · one composer serves both entry points            → break: spell the sentence twice, arm 8 red
 //   · a reason nobody can render leaves a trace        → break: drop it silently, arm 9 red
@@ -90,13 +91,19 @@ test("the lint reads what the surface renders, in both directions", () => {
   // clause carrying a token — the machinery sites push free text as their own clause and nothing on that
   // path passes through `terminalClampDecision`. Planting the old route here would drive a surface that
   // no longer exists and pass whatever the lint did.
+  // A STORED CLAUSE IN ENGINE WORDS IS WITHHELD FROM THE SURFACE (ruled 2026-10-13), so the page never carries it
+  // and the lint reads that: the voice check finds a clean page, and the dropped check names the condition the
+  // page lost. Reading either array directly would flag the stored clause as printed, or miss the drop.
   const reason = "records_unscreened:12 of 88 rows — the band gave the seat nothing to name";
   const clause = "12 of the 88 records read were not individually screened in this report";
-  const fused = clientConditionVoiceChecks({ verdictDoc: { reasons: [reason], clauses: [reason] } });
-  assert.equal(fused[0].pass, false, "a delivered condition carrying an engine identifier passed the lint");
-  assert.match(fused[0].detail, /records_unscreened:12/, "the flag does not name the identifier it found");
+  const fusedDoc = { reasons: [reason], clauses: [reason] };
+  assert.deepEqual(clientConditions(fusedDoc), [], "a stored clause in engine words reached the surface");
+  const fused = clientConditionVoiceChecks({ verdictDoc: fusedDoc });
+  assert.equal(fused[0].pass, true, "the voice check flags a clause the surface does not print — it is not reading the surface");
+  assert.equal(fused[1].pass, false, "the condition the surface withheld passed the lint unnamed");
+  assert.match(fused[1].detail, /records_unscreened:12/, "the flag does not name the reason it found");
   const fixed = clientConditionVoiceChecks({ verdictDoc: { reasons: [reason], clauses: [clause] } });
-  assert.equal(fixed[0].pass, true, "the lint still flags a run whose conditions now read the clause — it is not reading the surface");
+  assert.ok(fixed.every((c) => c.pass), "the lint still flags a run whose conditions now read the clause — it is not reading the surface");
 });
 
 test("a pre-split reason renders as the lawyer's sentence, not as the run record", () => {

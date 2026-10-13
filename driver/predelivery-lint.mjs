@@ -32,7 +32,7 @@ import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";  
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, statedConditions, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
-import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
+import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE, ENGINE_PHRASE_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
 import { isEngineAppendedCaveat } from "./verify-knockout.mjs";   // ONE derivation for "the engine appended this caveat, not a seat"
 
@@ -1970,7 +1970,7 @@ export function verdictActionsCoherenceChecks({ actionsRegister, findings, verdi
 export function clientConditionVoiceChecks({ verdictDoc }) {
   if (!verdictDoc) return [];
   const carrying = clientConditions(verdictDoc)
-    .map((c) => ({ c, m: String(c).match(ENGINE_TOKEN_RE) }))
+    .map((c) => ({ c, m: String(c).match(ENGINE_TOKEN_RE) ?? String(c).match(ENGINE_PHRASE_RE) }))
     .filter((x) => x.m);
   // THE SECOND CHECK IS WHAT KEEPS THE FIRST ONE HONEST. The fallback now composes the reader's
   // sentence from a pre-split reason's own counts, and DROPS a token-bearing reason it cannot compose
