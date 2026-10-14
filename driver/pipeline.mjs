@@ -41,6 +41,7 @@ import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections
 import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
@@ -125,7 +126,7 @@ import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse 
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
-import { synthesisDutyForRun } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
+import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
@@ -149,7 +150,7 @@ import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-
 import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf } from "./stage-freshness.mjs";
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
@@ -634,6 +635,7 @@ export function settleDerivedBases(ctx, at) {   // @internal
     });
     let applied = 0;
     let unwritable = 0;
+    let heldBase = null;   // what the synthesis merge base took, when there was a demotion to give it
     if (demotions.length) {
       let onDisk = null;
       try { onDisk = JSON.parse(raw); } catch { onDisk = null; }
@@ -648,6 +650,23 @@ export function settleDerivedBases(ctx, at) {   // @internal
         const next = applyDerivedBases(onDisk, demotions);
         applied = next.applied;
         atomicWrite(P.findings, JSON.stringify(next.doc, null, 2) + "\n");
+        // THE HELD BASE TAKES THE SAME DEMOTIONS. Every accepted synthesis patch merges onto
+        // `_driver/synthesis-calls/accepted.json` and re-renders the findings it does not name from there, so a
+        // demotion written to this file alone came back with the next patch, and the evidence check then told
+        // the reviewer the stamp had returned. In the model's numbering: under a fold, a demotion lands on the
+        // member the fold kept, whose object the folded finding is. The edit is judged as a call is; a refusal
+        // leaves the base byte-identical and is recorded below, and the run goes on as it did before.
+        if (applied) {
+          const fold = readFold(P.runDir);
+          const inModel = demotions.map((d) => ({ ...d, ordinal: keptModelOrdinal(fold, d.ordinal) })).filter((d) => d.ordinal != null);
+          const r = rebaseSynthesis(P.runDir, (held) => applyDerivedBases(held, inModel).doc);
+          heldBase = r.ok ? { base: r.changed ? "demoted" : "unchanged" }
+            : /^no_base:/.test(String(r.reason)) ? { base: "no-base" } : { base: "refused", baseReason: String(r.reason).slice(0, 200) };
+          if (heldBase.base === "refused") {
+            note(`basis derivation (${at}): the synthesis merge base could not take the demotions (${heldBase.baseReason.slice(0, 100)}) — `
+              + `it is left as it was, and the next accepted patch re-renders the stamps it holds`);
+          }
+        }
         // A SHORTFALL IS A FINDING. The demotions are computed against the lenient parse, which normalises
         // — so a raw finding missing the `ordinal` the match keys on would leave an unprovable claim
         // standing while `demoted` and `rows` sat next to each other looking consistent. Say it.
@@ -671,10 +690,11 @@ export function settleDerivedBases(ctx, at) {   // @internal
       .filter((m) => m?.basis === "verified-from-record").length, 0);
     const record = { ts: new Date().toISOString(), at,
       stamped_before: stampedBefore, stamped_after: stampedBefore - applied, demoted: applied,
-      ...(unwritable ? { unwritable } : {}),
+      ...(unwritable ? { unwritable } : {}), ...(heldBase ?? {}),
       rows: demotions.map((d) => ({ ordinal: d.ordinal, mark: d.mark, meter: d.meter, uri: d.uri, why: d.why })) };
     atomicWrite(P.basisDerivation, JSON.stringify(record, null, 2) + "\n");
     runLog(P.runDir, { event: "basis-derivation", at, stamped_after: stampedBefore - applied, demoted: applied,
+      ...(heldBase ? { base: heldBase.base } : {}),
       never_fetched: demotions.filter((d) => d.why === "record-never-fetched").length,
       never_read: demotions.filter((d) => d.why === "record-on-disk-never-read").length });
     return record;
@@ -5948,14 +5968,16 @@ export function partitionDeliveryStale(staleStages) {   // @internal
 // file is byte-unchanged (or every named finding's object is) and no corrections marker landed, fire
 // ONE warm followup demanding the re-emit; a terminal miss NEVER withholds (never-withhold) — it logs,
 // flags the internal review bar, and closes the CLIENT export via _driver/corrections-state.json.
-function snapshotFindingsForCorrections(P, runDir) {
+export function snapshotFindingsForCorrections(P, runDir) {   // @internal
   let raw = null;
   try { raw = readFileSync(P.findings, "utf8"); } catch { /* legacy / not-yet-populated */ }
   if (raw == null) return null;
   const sha = createHash("sha256").update(raw).digest("hex");
   // THE RECORD IN THE MODEL'S NUMBERING, beside the one on disk. The review's flags name findings in the
   // model's numbering, so the corrective body compares the record the model wrote; once the delivered
-  // record is folded the two differ (record-fold.mjs). The fold is held too, for a rollback to put back.
+  // record is folded the two differ (record-fold.mjs). The fold is held too, for a rollback to put back,
+  // and so are narrative.md and the transport's merge base (`base`): a rollback that put back findings.json
+  // alone left the next patch to merge onto the failed pass's record.
   const modelAt = modelRecordPath(runDir, P.findings);
   let modelRaw = raw;
   if (modelAt !== P.findings) { try { modelRaw = readFileSync(modelAt, "utf8"); } catch { modelRaw = raw; } }
@@ -5970,7 +5992,7 @@ function snapshotFindingsForCorrections(P, runDir) {
     writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), sha, text: raw }, null, 2));
     renameSync(tmp, driverDir(runDir, "findings-pre-corrective.json"));
   } catch { /* advisory sidecar */ }
-  return { raw, sha, model, fold };
+  return { raw, sha, model, fold, base: snapshotSynthesisBase(runDir) };
 }
 /**
  *, T3b — THE CORRECTIVE PASS FAILED VALIDATION. RESTORE THE LAST GOOD STATE.
@@ -5996,6 +6018,11 @@ function snapshotFindingsForCorrections(P, runDir) {
  * is the document every earlier stage's output was checked against. It is not a guess at a good state;
  * it is the last one this run demonstrated.
  *
+ * The narrative beside it and the transport's merge base come back with it, whether or not findings.json
+ * moved: a pass can save a narrative change alone, and a base left at the failed pass's record is what the
+ * next patch would merge onto, which applies the discarded pass again. The snapshot holds both
+ * (`snapshotFindingsForCorrections`); a snapshot taken without them leaves both files as they are.
+ *
  * ── TWO CASES THAT MUST STILL THROW, BECAUSE SWALLOWING THEM LOSES MORE THAN IT SAVES ────────────
  *
  *   rate-limited   The run is PARKED and auto-resumes after the cap resets, with every stage intact.
@@ -6020,8 +6047,10 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
     atomicWrite(P.findings, pre.raw);
     if (pre.fold) restoreFold(runDir, pre.fold);   // the record the model wrote and the map, as they stood
   }
+  // `restored` keeps speaking for findings.json alone; what happened to the narrative and the base is its own field.
+  const base = restoreSynthesisBase(runDir, pre.base);
   const record = { ts: new Date().toISOString(), reason: String(fail?.fail ?? "failed").slice(0, 200),
-    restored: changed, preSha: pre.sha, failedSha: nowSha };
+    restored: changed, preSha: pre.sha, failedSha: nowSha, ...(base ? { base } : {}) };
   try { atomicWrite(driverDir(runDir, "corrective-rollback.json"), JSON.stringify(record, null, 2) + "\n"); }
   catch { /* sidecar is best-effort; the runLog event below is the record that decides */ }
   return record;
@@ -6108,26 +6137,35 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
 
   if (!restoredFindings.length && !restoredKeys.length && !restoredRows.length) return null;
 
-  const merged = { ...postDoc };
-  for (const k of restoredKeys) merged[k] = preDoc[k];
-  for (const [reg, back] of Object.entries(rowsBack)) {
-    // In the snapshot's order, the post-pass version of every row it kept, then any row the pass added.
-    const keyOf = REPORT_LINE_KEY[reg];
-    const post = new Map(postDoc[reg].map((r) => [keyOf(r), r]));
-    const restored = new Set(back);
-    const inPre = new Set(preDoc[reg].map(keyOf));
-    merged[reg] = [
-      ...preDoc[reg].flatMap((r) => restored.has(r) ? [r] : post.has(keyOf(r)) ? [post.get(keyOf(r))] : []),
-      ...postDoc[reg].filter((r) => !inPre.has(keyOf(r))),
-    ];
-  }
-  if (restoredFindings.length) {
-    // Back in the order the reviewer read them, by ordinal — a restored finding appended to the end
-    // would be a different document from the one that was correct.
-    const byOrdinal = new Map(preList.map((f, i) => [String(f?.ordinal), i]));
-    merged.findings = [...postList, ...restoredFindings]
-      .sort((a, b) => (byOrdinal.get(String(a?.ordinal)) ?? 0) - (byOrdinal.get(String(b?.ordinal)) ?? 0));
-  }
+  // ONE RESTORATION, applied to a record in the model's numbering: the file's here, and the merge base's
+  // below. Whatever a record already holds stays as it holds it; only what came back is added.
+  const byOrdinal = new Map(preList.map((f, i) => [String(f?.ordinal), i]));
+  const restoreInto = (doc) => {
+    const merged = { ...doc };
+    for (const k of restoredKeys) if (!(k in merged)) merged[k] = preDoc[k];
+    for (const [reg, back] of Object.entries(rowsBack)) {
+      // In the snapshot's order, the post-pass version of every row it kept, then any row the pass added.
+      const keyOf = REPORT_LINE_KEY[reg];
+      const now = Array.isArray(doc[reg]) ? doc[reg] : [];
+      const post = new Map(now.map((r) => [keyOf(r), r]));
+      const restored = new Set(back);
+      const inPre = new Set(preDoc[reg].map(keyOf));
+      merged[reg] = [
+        ...preDoc[reg].flatMap((r) => restored.has(r) ? [r] : post.has(keyOf(r)) ? [post.get(keyOf(r))] : []),
+        ...now.filter((r) => !inPre.has(keyOf(r))),
+      ];
+    }
+    if (restoredFindings.length) {
+      // Back in the order the reviewer read them, by ordinal — a restored finding appended to the end
+      // would be a different document from the one that was correct.
+      const list = Array.isArray(doc.findings) ? doc.findings : [];
+      const has = new Set(list.map((f) => String(f?.ordinal)));
+      merged.findings = [...list, ...restoredFindings.filter((f) => !has.has(String(f?.ordinal)))]
+        .sort((a, b) => (byOrdinal.get(String(a?.ordinal)) ?? 0) - (byOrdinal.get(String(b?.ordinal)) ?? 0));
+    }
+    return merged;
+  };
+  const merged = restoreInto(postDoc);
   const brief = (f) => ({ ordinal: f?.ordinal ?? null, mark: f?.mark ?? null });
   const record = {
     ts: new Date().toISOString(),
@@ -6138,9 +6176,31 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
   };
   atomicWrite(P.findings, JSON.stringify(merged, null, 2) + "\n");
   foldAfterSave(runDir, P.findings);   // after the seam the repaired record is folded again, as a save's is
+  // THE MERGE BASE TAKES THE SAME RESTORATION. The patch that follows (the corrections gate's re-emit) merges
+  // onto the base and re-renders the file from it, so a restore written to the file alone is dropped again.
+  // The edit is judged as a call is; a refusal leaves the base as it was, and the record says so.
+  record.base = rebaseSynthesis(runDir, restoreInto);
   try { atomicWrite(driverDir(runDir, "corrective-repair.json"), JSON.stringify(record, null, 2) + "\n"); }
   catch { /* sidecar is best-effort; the runLog event is the record that decides */ }
   return record;
+}
+
+/**
+ * THE REPAIR'S RUN-LOG ROW, built from what `repairUnnamedRemovals` returned. PURE.
+ *
+ * `base` says what the merge base took, in the words the basis derivation's row uses for the same edit:
+ * `restored`, or `unchanged` where the base already held what came back; `refused` where the acceptance boundary
+ * refused the edit and the base was left as it was, so the next accepted patch drops the restore again; and
+ * `no-base` where the run holds no base, so a later patch is refused for having none. The sidecar keeps the reason.
+ */
+export function removalRepairedRow(repaired) {   // @internal
+  const b = repaired?.base;
+  const base = !b ? null : b.ok ? (b.changed ? "restored" : "unchanged") : /^no_base:/.test(String(b.reason)) ? "no-base" : "refused";
+  return { event: "corrective-unnamed-removal-repaired", defect: true,
+    restored: repaired.restoredFindings.length, keys: repaired.restoredKeys.length,
+    rows: repaired.restoredRows.length,
+    leftRemoved: repaired.leftRemoved.length,
+    findings: repaired.restoredFindings.map((f) => `${f.ordinal}:${f.mark}`), ...(base ? { base } : {}) };
 }
 
 /**
@@ -8014,6 +8074,54 @@ export function buildReasonedNegativesSection(findings) {   // @internal
   return `${CODE_BUILT_SECTIONS.reasonedNegatives}\n\n${lines.join("\n\n")}`;
 }
 
+// ── WHETHER EACH REVIEWER CORRECTION REACHED THE RECORD THE REPORT WAS BUILT FROM ───────────────────────
+//
+// The corrective pass keeps a basis — what each flag changed in the fields a report prints from the record —
+// in `_driver/corrections-delivered.json`, and every assembly reads it against the record the report was
+// built from and writes the outcome beside it (corrections-delivered.mjs). The last assembly's answer stands.
+// corrections-applied.json, which the open points and the verdict re-check read, is not touched.
+export const CORRECTIONS_DELIVERED_FILE = "corrections-delivered.json";
+
+/** Keep the basis at the corrective pass, from the two records the applied table was built from. Throws on a write failure; the caller is never-kill. */
+export function recordCorrectionsBasis(runDir, rows, preDoc, postDoc) {   // @internal
+  const basis = correctionTargets(rows, preDoc, postDoc);
+  atomicWrite(driverDir(runDir, CORRECTIONS_DELIVERED_FILE), JSON.stringify({
+    _provenance: "whether each reviewer correction reached the record the report was built from: the basis is kept at the corrective pass, and every assembly reads it against the delivered record (corrections-delivered.mjs)",
+    basisAt: new Date().toISOString(), basis,
+  }, null, 2) + "\n");
+  return basis;
+}
+
+/**
+ * Read the basis against the record this assembly was built from, and record the outcome: the file, and one
+ * run-log row. A run with no basis records nothing. A delivered record that cannot be read is recorded as a
+ * failure to look, never as an outcome. Never throws.
+ */
+export function recordCorrectionsDelivered(P) {   // @internal
+  if (!P?.runDir) return null;
+  const at = driverDir(P.runDir, CORRECTIONS_DELIVERED_FILE);
+  let held = null;
+  try { held = JSON.parse(readFileSync(at, "utf8")); } catch { return null; }   // no corrective basis on this run
+  if (!Array.isArray(held?.basis)) return null;
+  let deliveredDoc = null, reportMd = null;
+  try { deliveredDoc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { deliveredDoc = null; }
+  try { reportMd = readFileSync(P.report, "utf8"); } catch { reportMd = null; }
+  let foldMap = null;
+  try { foldMap = readFold(P.runDir)?.map ?? null; } catch { foldMap = null; }
+  const rows = deliveredOutcomes({ basis: held.basis, deliveredDoc, foldMap, reportMd });
+  const { rows: _rows, error: _error, assembledAt: _assembledAt, ...kept } = held;
+  const out = { ...kept, assembledAt: new Date().toISOString(), rows: rows ?? null,
+    ...(rows ? {} : { error: "the record the report was built from could not be read, so no correction was compared" }) };
+  try { atomicWrite(at, JSON.stringify(out, null, 2) + "\n"); } catch { /* the run-log row below is the record */ }
+  try {
+    const outcomes = (rows ?? []).reduce((a, r) => (a[r.outcome] = (a[r.outcome] ?? 0) + 1, a), {});
+    runLog(P.runDir, rows
+      ? { event: "corrections-delivered", ok: true, flags: rows.length, outcomes, reportMdRead: reportMd != null }
+      : { event: "corrections-delivered", ok: false, error: out.error });
+  } catch { /* a log that cannot be written must not stop the report it describes */ }
+  return out;
+}
+
 export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRight = false } = {}) {   // @internal
   const overviewRaw = existsSync(P.reportOverview) ? readFileSync(P.reportOverview, "utf8") : "---\n---\n";
   let overview = overviewRaw.split(/^#\s+Marks\b/m)[0].replace(/\s*$/, "");   // defensive: overview owns down to # Marks
@@ -8222,6 +8330,9 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     ensureDriverDir(P.runDir);
     writeFileSync(driverDir(P.runDir, "card-folds.json"), `${JSON.stringify({ schema: 1, folds }, null, 2)}\n`);
   } catch { /* observability only */ }
+  // Whether each reviewer correction reached the record this report was built from: rewritten on every
+  // assembly, like the fold record above, so the last assembly's answer stands. Nothing without a basis.
+  try { recordCorrectionsDelivered(P); } catch { /* observability only: the report is assembled either way */ }
   return { cards: cards.length, folds };
 }
 
@@ -12354,8 +12465,9 @@ async function pipelineInner(job, opts = {}) {
     const { text: synthExtra } = composeDispatchExtra("synthesis", ctx);
     const synth = await quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
     recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
-    // The corrective re-synthesis must RESUME the WINNING attempt — its key AND model/thinking. If synthesis
-    // fell over to a cross-provider model, resuming the base key on opus would cold-cache + mismatch the model.
+    // The corrective re-synthesis is dispatched on the WINNING attempt's key AND model/thinking. A followup's first
+    // attempt starts fresh, and it never resumes the synthesis session (no engine resumes by key); but if synthesis
+    // fell over to a cross-provider model, a dispatch on the base model would correct a record another model wrote.
     const synthesisKey = synth.sessionKey, synthesisModel = synth.model, synthesisThinking = synth.thinking;
 
     // A2/A4 — the v3 evidence gates (verified-needs-source, symmetric use-check, client-tier
@@ -12602,8 +12714,9 @@ async function pipelineInner(job, opts = {}) {
         note(`corrective cycle already settled for these exact review/narrative bytes — not re-firing (a stale-artifact recovery re-does what went stale, never the settled corrective loop)`);
       }
     }
-    // One corrective re-synthesis on CONDITIONAL/BLOCKING, feeding the reviewer's flags back in. Resume the
-    // WINNING synthesis attempt (key + model + thinking) so a fallback-won synthesis is corrected warm, in place.
+    // One corrective re-synthesis on CONDITIONAL/BLOCKING, feeding the reviewer's flags back in, dispatched on the
+    // WINNING synthesis attempt's key, model and thinking, so the model that wrote a fallback-won synthesis corrects
+    // it. Its first attempt is a fresh turn handed the flags and the inputs; it never resumes the synthesis session.
     let correctionsApplied = null;   // — the driver's flag-by-flag observation, shared by both legs
     let evidenceViolations = [];     // — claims that moved against their own evidence, carried to the recheck
     let correctionsScope = null;     // — the declared per-finding scope, and whether the pass held to it
@@ -12663,11 +12776,7 @@ async function pipelineInner(job, opts = {}) {
           // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
           // and cannot remove a finding at all, so e2e asserts this count is ZERO — a firing reports the
           // primary fix not holding, never this backstop working.
-          runLog(run.runDir, { event: "corrective-unnamed-removal-repaired", defect: true,
-            restored: repaired.restoredFindings.length, keys: repaired.restoredKeys.length,
-            rows: repaired.restoredRows.length,
-            leftRemoved: repaired.leftRemoved.length,
-            findings: repaired.restoredFindings.map((f) => `${f.ordinal}:${f.mark}`) });
+          runLog(run.runDir, removalRepairedRow(repaired));   // with `base`: whether the merge base took the restore
           note(`[corrections] the corrective pass removed ${repaired.restoredFindings.length} finding(s) `
             + `no flag named — restored whole from the pre-corrective snapshot: `
             + `${repaired.restoredFindings.map((f) => `#${f.ordinal} ${f.mark}`).join(", ")}`
@@ -12735,7 +12844,16 @@ async function pipelineInner(job, opts = {}) {
         runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
           scoped: correctionsScope.scoped, named: correctionsScope.named.length,
           movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length });
+        // The basis for the delivery check each assembly makes (recordCorrectionsDelivered): what each flag
+        // changed in the fields a report prints from the record, from the same two records. Its own file.
+        try { recordCorrectionsBasis(run.runDir, correctionsApplied, preDoc, postDoc); }
+        catch (e) {
+          try { rmSync(driverDir(run.runDir, CORRECTIONS_DELIVERED_FILE), { force: true }); } catch { /* best-effort */ }
+          note(`[corrections] the delivery basis could not be kept (${String(e?.message ?? e).slice(0, 100)}) — this pass has no delivery record`);
+        }
       } catch (e) {
+        // A basis from an earlier pass would be read against this pass's report as if it were this pass's.
+        try { rmSync(driverDir(run.runDir, CORRECTIONS_DELIVERED_FILE), { force: true }); } catch { /* best-effort */ }
         correctionsApplied = null;
         note(`[corrections] the applied table could not be built (${String(e?.message ?? e).slice(0, 100)}) — the recheck reads both files, as before`);
         runLog(run.runDir, { event: "corrections-applied-failed", error: String(e?.message ?? e).slice(0, 160) });
@@ -12745,9 +12863,10 @@ async function pipelineInner(job, opts = {}) {
     // read, so a recheck spends a dispatch to re-derive the verdict it already gave. The entry verdict
     // stands, which is also the fail-safe direction this block uses everywhere else.
     if (!correctiveRollback && !correctiveCycleSettled && (verdict === "CONDITIONAL" || verdict === "BLOCKING")) {
-      // A1: re-check after the corrective pass by RESUMING the refutation's winning session (warm cache, same
-      // model) with a lean follow-up — NOT a cold re-run on the base key, and NOT re-trying deepseek when sonnet
-      // won. (On a crash-resume skip with no live session, fall back to a clean forced re-run on the same model.)
+      // A1: re-check after the corrective pass with a lean follow-up on the refutation's winning key and model —
+      // NOT a full re-run of the stage, and NOT the base model when another model won. The follow-up's first
+      // attempt starts fresh, and it never resumes the refutation's session (no engine resumes by key). (With no
+      // winning key, as on a crash-resume skip, a clean forced re-run on the same model.)
       // A1: the recheck also runs on the CONDITIONAL path (the VENZY shipping path — previously the
       // corrective output was never re-verified there) and reads the updated FINDINGS too, since the client
       // surfaces render from findings.json, not the narrative. Failure falls back to the ENTRY verdict
@@ -16365,12 +16484,12 @@ async function runExperimentInner(job, opts) {
 
   // — THE CORRECTIVE PASS, on a COLD turn, and it says which pass it reproduced.
   //
-  // Production's corrective pass RESUMES the synthesis session and sends only these blocks. An arm builds
-  // a fresh key in a sandbox and cannot resume anything; resuming the real session was rejected because
-  // "canonical run untouched" is the arm's whole contract. So the arm carries the same INPUTS on a cold
-  // turn, composed by the same function production uses — reaching the seam, not reproducing the
-  // resumption. The receipt says `dispatched-cold`, never `dispatched-warm`, so the two cannot be read as
-  // one another.
+  // Production's corrective pass is a followup dispatch on the run's own synthesis key, and its message is
+  // these blocks: its first attempt starts fresh, and it never resumes the synthesis session (no engine resumes
+  // by key). An arm builds a fresh key in a sandbox, and dispatching on the real run's key was rejected because
+  // "canonical run untouched" is the arm's whole contract. So the arm carries the same INPUTS on a cold turn,
+  // composed by the same function production uses — reaching the seam, not reproducing production's dispatch.
+  // The receipt says `dispatched-cold`, never `dispatched-warm`, so the two cannot be read as one another.
   const P = shadowCtx.paths;
   const correctiveReady = correctiveReadiness({
     preCorrective: existsSync(driverDir(shadowDir, "findings-pre-corrective.json")),

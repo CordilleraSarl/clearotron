@@ -120,6 +120,9 @@ export const COUNTED_EVENTS = {
   "registry-record-closure": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : 0) > 0 },
   "silently-lost-findings": { kind: FAILED, when: (e) => Number(e.lost) > 0 },
   "correction-kinds": { kind: FAILED, when: (e) => e.ok === false },
+  // the delivery check of the reviewer's corrections could not read the record the report was built from;
+  // its outcomes themselves are a note about the answer's content, which the quality read judges
+  "corrections-delivered": { kind: FAILED, when: (e) => e.ok === false },
   "reasoning-integrity": { kind: FAILED, when: (e) => e.ok === false },
   "screen-gate-postflush": [{ kind: FAILED, when: (e) => Number(e.count) > 0 }, { kind: REPAIR, when: (e) => e.recovered === true }],
   // a duty or carry the run could not compute, or whose arithmetic does not reconcile
@@ -140,6 +143,11 @@ export const COUNTED_EVENTS = {
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
   "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR, "foreign-record-links-blanked": REPAIR,
   "verdict-hardened-by-repair": REPAIR, "verdict-rederive-repair": REPAIR,
+  // The synthesis transport decoded a marker sent as a JSON string, or lifted rows sent inside the findings
+  // object, on a call it then accepted. Its other notes — an override the merge has always applied, keys and
+  // rows a whole call carries and the transport ignores — changed nothing that was accepted.
+  "synthesis-call-normalised": { kind: REPAIR, when: (e) => e.accepted === true
+    && ((Array.isArray(e.decoded) && e.decoded.length > 0) || Number(e.lifted) > 0) },
   "common-law-half-quarantined": QUARANTINE, "coverage-ledger-quarantined": QUARANTINE,
   "findings-actions-quarantined": QUARANTINE, "named-band-state-quarantined": QUARANTINE, "quarantine": QUARANTINE,
   "taint-quarantine": QUARANTINE,

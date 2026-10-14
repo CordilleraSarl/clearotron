@@ -303,6 +303,18 @@
           "skips": 1,
           "todos": 0
         },
+        "a-correction-is-checked-against-the-delivered-record.test.mjs": {
+          "tests": 7,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-correction-patches-what-it-carries.test.mjs": {
+          "tests": 34,
+          "asserts": 73,
+          "skips": 0,
+          "todos": 0
+        },
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
           "tests": 7,
           "asserts": 33,
@@ -451,6 +463,12 @@
           "tests": 3,
           "asserts": 11,
           "skips": 1,
+          "todos": 0
+        },
+        "a-demoted-stamp-survives-the-next-patch.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
           "todos": 0
         },
         "a-deprecate-only-dispatch-publishes-nothing.test.mjs": {
@@ -1350,6 +1368,12 @@
         "a-right-kept-on-a-sheet-is-not-dropped-by-its-copies.test.mjs": {
           "tests": 7,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-rollback-puts-back-the-base-the-next-patch-builds-on.test.mjs": {
+          "tests": 9,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -3460,8 +3484,8 @@
           "todos": 0
         },
         "first-time-is-read-from-the-whole-run-record.test.mjs": {
-          "tests": 9,
-          "asserts": 57,
+          "tests": 10,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -7179,8 +7203,8 @@
           "todos": 0
         },
         "events.test.mjs": {
-          "tests": 7,
-          "asserts": 26,
+          "tests": 9,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
