@@ -13,8 +13,10 @@
 //
 // WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: a
 // nested row that conflicts with a top-level one, two nested rows for one ordinal, a nested row that is not a
-// finding object with a whole-number ordinal, a key off the record's ladder, an envelope that would re-version
-// the record, and a first save that has no stored record to patch. Those arms below are characterisation:
+// finding object with a positive whole-number ordinal, a top-level row that does not name a finding the record
+// holds, a marker the decode does not read, a narrative that is not an object of the sections the tool describes,
+// a key off the record's ladder, an envelope that would re-version the record, and a first save that has no stored
+// record to patch. Those arms below are characterisation:
 // green before and after.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -403,10 +405,10 @@ test("a lift the merge refuses is on the run log as one the acceptance refuses i
   refusesUnchanged(nested, { findings: { findings_patch: [{ ...ROW2(), ordinal: 99 }] } }, /^synthesis_patch_ordinal_unknown:99 — /,
     "a nested row on an ordinal the record does not hold");
   assert.deepEqual(reading(nested), { ...NOTHING, accepted: false, lifted: 1 }, "a lift the merge refused left no reading");
-  // a nested row beside top-level rows, one of which names an ordinal the record does not hold
+  // the same nested row beside a top-level row the record holds
   const beside = saved();
-  refusesUnchanged(beside, { findings: { findings_patch: [{ ...record().findings[2], legal_position: "The third, corrected." }] },
-    findings_patch: [ROW2(), { ...ROW2(), ordinal: 99 }] }, /^synthesis_patch_ordinal_unknown:99 — /, "a nested row beside an unknown top-level row");
+  refusesUnchanged(beside, { findings: { findings_patch: [{ ...record().findings[2], ordinal: 99, legal_position: "The third, corrected." }] },
+    findings_patch: [ROW2()] }, /^synthesis_patch_ordinal_unknown:99 — /, "a nested row on an ordinal the record does not hold, beside a row it holds");
   assert.deepEqual(reading(beside), { ...NOTHING, accepted: false, lifted: 1 }, "a lift the merge refused left no reading");
 });
 
@@ -559,12 +561,12 @@ for (const [what, call, re] of [
   });
 }
 
-// ── A NESTED ROW IS LIFTED ONLY WHEN IT IS A FINDING OBJECT WITH A WHOLE-NUMBER ORDINAL ──────────────
+// ── A NESTED ROW IS LIFTED ONLY WHEN IT IS A FINDING OBJECT WITH A POSITIVE WHOLE-NUMBER ORDINAL ─────
 //
-// A finding row names the finding it replaces by its ordinal, a whole number. Rows sent inside a list-less
+// A finding row names the finding it replaces by its ordinal, a positive whole number. Rows sent inside a list-less
 // findings object are lifted beside the call's own only where every one of them is an object carrying such an
 // ordinal. A nested row that is not (a string, null, an array, a row with no ordinal, or one whose ordinal is
-// text or a fraction) is no row to lift: the object is read as main reads it, and the call meets main's refusal
+// text, a fraction, zero or below zero) is no row to lift: the object is read as main reads it, and the call meets main's refusal
 // byte for byte, with or without a narrative or a top-level row beside it.
 const UNKNOWN_ORDINAL_2 = /^synthesis_patch_ordinal_unknown:2 — this run holds no finding with that ordinal, so this patch is aimed at a finding that does not exist\. Send the ordinal as it appears in the record you emitted$/;
 const NO_ORDINAL = () => { const { ordinal: _ordinal, ...row } = ROW2(); return row; };
@@ -576,15 +578,155 @@ for (const [what, call, re] of [
   ["a row that is an array", () => ({ findings: { findings_patch: [[ROW2()]] } }), offLadder("findings_patch")],
   ["a row whose ordinal is text", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: "2" }] } }), offLadder("findings_patch")],
   ["a row whose ordinal is not a whole number", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: 2.5 }] } }), offLadder("findings_patch")],
+  ["a row whose ordinal is zero", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: 0 }] } }), offLadder("findings_patch")],
+  ["a row whose ordinal is below zero", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: -1 }] } }), offLadder("findings_patch")],
+  ["a row whose ordinal is zero, with a whole narrative, beside a top-level row",
+    () => ({ narrative: NARRATIVE, findings: { findings_patch: [{ ...ROW2(), ordinal: 0 }] }, findings_patch: [ROW2()] }), offLadder("findings_patch")],
   ["a good row beside a row with no ordinal", () => ({ findings: { findings_patch: [ROW2(), NO_ORDINAL()] } }), offLadder("findings_patch")],
   ["a row with no ordinal, with a whole narrative", () => ({ narrative: NARRATIVE, findings: { findings_patch: [NO_ORDINAL()] } }), offLadder("findings_patch")],
   ["a row with no ordinal, beside a top-level row", () => ({ findings: { findings_patch: [NO_ORDINAL()] }, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
   ["a row that is null, beside a register and a top-level row", () => ({ findings: { coverage: COVERAGE, findings_patch: [null] }, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
 ]) {
-  test(`a nested row that is not a finding object with a whole-number ordinal keeps main's refusal: ${what}`, () => {
-    refusesUnchanged(saved(), call(), re, `a nested row that is not a finding object with a whole-number ordinal: ${what}`);
+  test(`a nested row that is not a finding object with a positive whole-number ordinal keeps main's refusal: ${what}`, () => {
+    refusesUnchanged(saved(), call(), re, `a nested row that is not a finding object with a positive whole-number ordinal: ${what}`);
   });
 }
+
+// ── A NARRATIVE THAT IS NOT AN OBJECT IS READ AS MAIN READS IT ───────────────────────────────────────
+//
+// A narrative is an object of sections. Sent beside a list-less findings object as text, a list or null, it is no
+// section patch: read as registers, its characters became numbered keys in the held base, its prose reached no file,
+// and the tool answered that the call was accepted. Such a call is read as main reads it and meets main's refusal
+// byte for byte, which names the narrative's shape so the sections can be sent again.
+const NARRATIVE_MISSING = /^synthesis_narrative_missing: `narrative` must be an object of typed sections — the driver renders the document, so it needs the sections rather than the prose of a whole file$/;
+
+for (const [what, narrative] of [
+  ["as text", "The cross-finding read, sent as prose rather than as sections."],
+  ["as a list", ["The cross-finding read, sent as a list."]],
+  ["as null", null],
+]) {
+  test(`a narrative sent ${what} beside a list-less findings object keeps main's refusal`, () => {
+    refusesUnchanged(saved(), { narrative, findings: { coverage: COVERAGE } }, NARRATIVE_MISSING, `a narrative sent ${what}`);
+    refusesUnchanged(saved({ owed: true }), { narrative, findings: { coverage: COVERAGE } }, NARRATIVE_MISSING, `a narrative sent ${what}, records owed`);
+    refusesUnchanged(saved(), { narrative, findings: { coverage: COVERAGE }, findings_patch: [ROW2()] }, NARRATIVE_MISSING, `a narrative sent ${what}, beside a row`);
+  });
+}
+
+// ── THE CALL'S OWN ROWS EACH NAME A FINDING THE RECORD HOLDS ─────────────────────────────────────────
+//
+// A register patch carries its own rows beside the findings object, and the merge replaces each finding a row names.
+// So a list-less object reads as registers only where every one of those rows is a finding object whose ordinal, a
+// positive whole number, names a finding the stored record holds. A row list that is not a list, or null, a row that
+// is not such an object, or a row aimed at a finding the record does not hold, is read as main reads it, and the call
+// meets main's refusal byte for byte: the list-less record is refused as unparseable, the narrative for its missing
+// spine, or a row for an ordinal the object, read as the whole record, does not hold.
+const SPINE_MISSING = /^synthesis_spine_missing: `narrative\.spine` is the dominant-element spine — the cross-finding read no other artifact on this run holds\. It is the core of the product and there is no clean answer that omits it$/;
+const WITH_ROWS = (rows) => ({ narrative: NARRATIVE, findings: { coverage: COVERAGE }, findings_patch: rows });
+
+for (const [what, run, call, re] of [
+  ["a row list that is text", () => saved(), () => WITH_ROWS("a row list sent as text"), UNPARSEABLE],
+  ["a row list that is an object", () => saved(), () => WITH_ROWS({ ordinal: 2 }), UNPARSEABLE],
+  ["a row list that is null", () => saved(), () => WITH_ROWS(null), UNPARSEABLE],
+  ["a row list that is null, with no narrative", () => saved(), () => ({ findings: { coverage: COVERAGE }, findings_patch: null }), UNPARSEABLE],
+  ["a row that is null", () => saved(), () => WITH_ROWS([null]), UNPARSEABLE],
+  ["a row that is text", () => saved(), () => WITH_ROWS(["a row that is text"]), UNPARSEABLE],
+  ["a row with no ordinal", () => saved(), () => WITH_ROWS([NO_ORDINAL()]), UNPARSEABLE],
+  ["a row whose ordinal is zero", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 0 }]), UNPARSEABLE],
+  ["a row whose ordinal is not a whole number", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 2.5 }]), UNPARSEABLE],
+  ["a row whose ordinal is text", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: "2" }]), UNPARSEABLE],
+  ["a row on an ordinal the record does not hold", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 99 }]), UNPARSEABLE],
+  ["a row on an ordinal the record does not hold, beside a corrected verdict", () => saved(),
+    () => ({ narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, findings_patch: [{ ...ROW2(), ordinal: 99 }] }), SPINE_MISSING],
+  ["the same, on a run that owes its records", () => saved({ owed: true }),
+    () => ({ narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, findings_patch: [{ ...ROW2(), ordinal: 99 }] }), SPINE_MISSING],
+]) {
+  test(`a top-level row list that does not name findings the record holds keeps main's refusal: ${what}`, () => {
+    refusesUnchanged(run(), call(), re, `a top-level row list that does not name findings the record holds: ${what}`);
+  });
+}
+
+test("rows on an ordinal the record does not hold, beside a nested row, keep main's refusal and leave no reading", () => {
+  const dir = saved();
+  refusesUnchanged(dir, { findings: { findings_patch: [{ ...record().findings[2], legal_position: "The third, corrected." }] },
+    findings_patch: [ROW2(), { ...ROW2(), ordinal: 99 }] }, UNKNOWN_ORDINAL_2, "a nested row beside a top-level row the record does not hold");
+  assert.deepEqual(readings(dir), [], "a call read as main reads it left a reading");
+});
+
+// ── A CORRECTIONS MARKER SENT WITH A REGISTER PATCH IS ONE THE DECODE READS ──────────────────────────
+//
+// A marker sent as a JSON string is decoded where the call carries no list, and a string that does not decode to an
+// object is refused as it always was. On a list-less object, "as it always was" is main's reading of the object as a
+// whole record. So the object reads as registers only where every marker it carries, inside the object or beside it,
+// is null, an object, or a string that decodes to one. Any other marker, a string that is not JSON or decodes to
+// something else, a number or a list, is read as main reads it, and the call meets main's refusal byte for byte.
+for (const [what, call, re] of [
+  ["a nested marker string that is not JSON, beside a register", { findings: { coverage: COVERAGE, corrections: "{not json" } }, UNPARSEABLE],
+  ["a nested marker string that is not JSON, beside a top-level row", { findings: { corrections: "{not json" }, findings_patch: [ROW2()] }, UNKNOWN_ORDINAL_2],
+  ["a nested marker string that decodes to a list", { findings: { corrections: "[1]" } }, UNPARSEABLE],
+  ["a nested marker string that decodes to null", { findings: { corrections: "null" } }, UNPARSEABLE],
+  ["a nested marker string that decodes to text", { findings: { corrections: "\"a marker\"" } }, UNPARSEABLE],
+  ["a nested marker that is a number", { findings: { corrections: 5 } }, UNPARSEABLE],
+  ["a nested marker that is a list", { findings: { corrections: [MARKER] } }, UNPARSEABLE],
+  ["a top-level marker string that is not JSON, beside a register", { findings: { coverage: COVERAGE }, corrections: "not json" }, UNPARSEABLE],
+  ["a top-level marker string that is not JSON, beside a nested marker object", { findings: { corrections: MARKER }, corrections: "not json" }, UNPARSEABLE],
+  ["a top-level marker string that decodes to a list", { findings: { coverage: COVERAGE }, corrections: "[1]" }, UNPARSEABLE],
+  ["a top-level marker that is a number", { findings: { coverage: COVERAGE }, corrections: 5 }, UNPARSEABLE],
+]) {
+  test(`a marker the decode does not read keeps main's refusal on a list-less findings object: ${what}`, () => {
+    refusesUnchanged(saved(), structuredClone(call), re, `a marker the decode does not read: ${what}`);
+  });
+}
+
+// ── A NARRATIVE SENT BESIDE A REGISTER PATCH CARRIES THE SECTIONS THE TOOL DESCRIBES ─────────────────
+//
+// The tool describes the narrative's sections: the spine and the verdict as text, the coverage read as text inside
+// `coverage`, and the calibration challenges as a list of {challenge, answer} pairs. A narrative patch beside a
+// list-less object reads as registers only where every section it sends is one of those, or another section sent as
+// text. A section that is not, a spine or verdict that is not text, a coverage that is not an object carrying only its
+// read as text, calibration that is not such a list, or `ask_answers`, which belongs to the record, is read as main
+// reads it: the call meets main's refusal for its missing spine, byte for byte. Read as registers, several of these
+// were accepted while the section they carried reached no file.
+for (const [what, narrative] of [
+  ["a verdict that is a number", { verdict: 5 }],
+  ["a verdict that is blank", { verdict: "  " }],
+  ["a coverage that is text", { coverage: "The coverage read, sent as text." }],
+  ["a coverage that is null", { coverage: null }],
+  ["a coverage that is a list", { coverage: ["The coverage read."] }],
+  ["a coverage read that is a number", { coverage: { read: 5 } }],
+  ["a coverage read that is empty", { coverage: { read: "" } }],
+  ["a coverage carrying rows", { coverage: { read: "The coverage read.", rows: [] } }],
+  ["calibration that is text", { calibration: "A challenge and its answer, as text." }],
+  ["calibration that is a list of text", { calibration: ["A challenge and its answer."] }],
+  ["ask_answers on the narrative", { ask_answers: [] }],
+  ["another section that is not text", { made_up_section: 5 }],
+]) {
+  test(`a narrative section the tool does not describe keeps main's refusal beside a list-less findings object: ${what}`, () => {
+    refusesUnchanged(saved(), { narrative, findings: { coverage: COVERAGE } }, SPINE_MISSING, `a narrative section the tool does not describe: ${what}`);
+  });
+}
+
+// ── WHERE THESE GUARDS STOP ───────────────────────────────────────────────────────────────────────────
+//
+// Each guard above returns a call to main's reading only for the shapes it names. These are still read as registers
+// and accepted: a narrative of the sections the tool describes, or of another section sent as text; an empty row
+// list; a null marker, which the parser reads as no marker; and a marker string that decodes to an object.
+test("a narrative of described sections, an empty row list, a null marker and a decoded marker string are still read as registers", () => {
+  for (const [what, call, marker] of [
+    ["an empty narrative", { narrative: {}, findings: { coverage: COVERAGE } }],
+    ["a narrative carrying another section as text", { narrative: { made_up_section: "A section the tool does not render." }, findings: { coverage: COVERAGE } }],
+    ["a narrative carrying a coverage read", { narrative: { coverage: { read: "A changed coverage read." } }, findings: { coverage: COVERAGE } }],
+    ["a narrative carrying calibration pairs", { narrative: { calibration: [{ challenge: "An invented challenge?", answer: "An invented answer." }] }, findings: { coverage: COVERAGE } }],
+    ["a whole narrative and an empty row list", { narrative: NARRATIVE, findings: { coverage: COVERAGE }, findings_patch: [] }],
+    ["a null marker inside the object", { findings: { corrections: null } }, null],
+    ["a null marker beside the object", { findings: { coverage: COVERAGE }, corrections: null }, null],
+    ["a marker string beside the object that decodes to a marker", { findings: { coverage: COVERAGE }, corrections: JSON.stringify(MARKER) }, MARKER],
+  ]) {
+    const dir = saved();
+    accepts(recordSynthesis(dir, structuredClone(call)), what);
+    if (call.findings.coverage) assert.equal(canon(onDisk(dir).coverage), canon(COVERAGE), `${what}: the coverage register is not as sent`);
+    if (marker !== undefined) assert.deepEqual(onDisk(dir).corrections ?? null, marker, `${what}: the marker is not as read`);
+  }
+});
 
 // ── A NEWLY READ SHAPE MEETS THE SHIPPED CHECK ON WHAT IT CARRIES ────────────────────────────────────
 //
@@ -601,9 +743,6 @@ for (const [what, call, re] of [
   ["a patch whose marker string decodes to a marker with a key it does not have",
     () => ({ findings_patch: [ROW2()], corrections: JSON.stringify({ applied: true, note: "x", extra: 1 }) }),
     /^synthesis_findings_invalid: findings_corrections_key_unknown:extra \(keys are EXACTLY: applied, note, entries\)$/],
-  ["registers with a marker string that is not JSON",
-    () => ({ findings: { coverage: COVERAGE, corrections: "{not json" } }),
-    /^synthesis_findings_invalid: findings_corrections_invalid \(corrections must be an object \{ applied, note \}\)$/],
   ["registers with a marker string that decodes to a marker with an `applied` that is not a boolean",
     () => ({ findings: { corrections: JSON.stringify({ applied: "maybe" }) } }),
     /^synthesis_findings_invalid: findings_corrections_invalid \(corrections\.applied must be a boolean\)$/],

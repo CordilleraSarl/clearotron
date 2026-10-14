@@ -539,10 +539,12 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
 // it carries, and the merged record is judged whole as any call is.
 //
 // MAIN'S READING STANDS FOR EVERYTHING ELSE. A list-less object reads as registers only when there is a stored
-// record to patch, every key it carries is a register of that record's own ladder (the one its schema_version
-// gives) or its rows, every key the call carries beside its narrative and that object is one too, its envelope
-// is absent or equal to the stored one wherever it is sent, and its rows are unambiguous. Any other shape is read
-// exactly as it always was, so the model meets the refusal it always met, byte for byte.
+// record to patch, a narrative sent beside it is an object of the sections the tool describes, every key it carries
+// is a register of that record's own ladder (the one its schema_version gives) or its rows, every key the call
+// carries beside its narrative and that object is one too, its envelope is absent or equal to the stored one wherever
+// it is sent, a corrections marker sent inside it or beside it is one the decode reads, the call's own rows each name
+// a finding the stored record holds, and its nested rows are unambiguous. Any other shape is read exactly as it always
+// was, so the model meets the refusal it always met, byte for byte.
 
 const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 // Key-sorted JSON: "the same content" must not turn on the order the model wrote its keys in.
@@ -551,6 +553,18 @@ const canon = (v) => (v === null || typeof v !== "object") ? JSON.stringify(v)
   : `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canon(v[k])}`).join(",")}}`;
 const sameValue = (a, b) => canon(a) === canon(b);
 
+// A finding row names the finding it replaces by its ordinal, a positive whole number.
+const isRow = (r) => isPlainObject(r) && Number.isInteger(r.ordinal) && r.ordinal > 0;
+// A corrections marker sent as a JSON string, decoded: the object it encodes, or undefined for anything else.
+const decodedMarker = (v) => { try { const x = JSON.parse(v); return isPlainObject(x) ? x : undefined; } catch { return undefined; } };
+// A marker the decode reads: none (null, which the parser reads as no marker), an object, or a string encoding one.
+const isMarker = (v) => v == null || isPlainObject(v) || (typeof v === "string" && decodedMarker(v) !== undefined);
+// A narrative section as the tool describes it: the coverage prose inside `coverage`, the calibration challenges as
+// {challenge, answer} pairs, and every other section as text. `ask_answers` belongs to the record, not here.
+const isSection = ([k, v]) => k === "coverage" ? isPlainObject(v) && Object.keys(v).every((x) => x === "read") && isStr(v.read)
+  : k === "calibration" ? Array.isArray(v) && v.every((c) => isPlainObject(c) && isStr(c.challenge) && isStr(c.answer))
+  : k !== "ask_answers" && isStr(v);
+
 // The record's envelope. A list-less object that would change either, inside the object or at the call's top
 // level, is not a register edit: re-versioning is a whole re-send (the schema-downlevel rung), and read as
 // registers it could move the stored list to another version's rules without the list ever being sent.
@@ -558,15 +572,15 @@ const ENVELOPE_KEYS = ["schema_version", "rated_under_framework"];
 
 /**
  * Rows sent inside a list-less `findings`, beside the call's own. PURE. Null when that is ambiguous: rows that are
- * not an array, a nested row that is not an object carrying a whole-number ordinal (the way a finding row names
- * the finding it replaces), or one ordinal carrying two different rows, whether both are nested or one is at the
+ * not an array, a nested row that is not an object carrying a positive whole-number ordinal (the way a finding row
+ * names the finding it replaces), or one ordinal carrying two different rows, whether both are nested or one is at the
  * top level. A nested row that repeats one already sent is applied once, and `lifted` counts only the rows
  * actually added.
  */
 function liftNestedRows(top, nested) {
   if (nested === undefined) return { rows: top, lifted: 0 };
   if (!Array.isArray(nested) || (top != null && !Array.isArray(top))) return null;
-  if (nested.some((r) => !isPlainObject(r) || !Number.isInteger(r.ordinal))) return null;
+  if (!nested.every(isRow)) return null;
   const sent = new Map((top ?? []).map((r) => [r?.ordinal, r]));
   const added = [];
   for (const r of nested) {
@@ -589,6 +603,11 @@ function liftNestedRows(top, nested) {
 export function registerPatchOf(stored, call) {
   const doc = call?.findings;
   if (!isPlainObject(stored?.findings) || !isPlainObject(doc) || Object.hasOwn(doc, "findings")) return null;
+  // A narrative sent beside it is an object of sections. Text, a list or null is no section patch: merged, its
+  // characters would become numbered keys in the base while its prose reached no file. And each section it sends is
+  // one the tool describes: a coverage that is not its prose, or calibration that is not its pairs, would replace
+  // the held section with something no file renders, and a spine or verdict that is not text is no section at all.
+  if (call.narrative !== undefined && !(isPlainObject(call.narrative) && Object.entries(call.narrative).every(isSection))) return null;
   // What it may carry: a register of the stored record's own ladder, or rows.
   const allowed = new Set([...topKeysForVersion(stored.findings.schema_version).filter((k) => k !== "findings"), "findings_patch"]);
   if (Object.keys(doc).some((k) => !allowed.has(k))) return null;
@@ -599,6 +618,13 @@ export function registerPatchOf(stored, call) {
   // Its envelope, inside the object or beside it, is absent or the stored one. The merge copies the call's own
   // top-level keys last, so a different envelope there would re-version the record as surely as one inside.
   if (ENVELOPE_KEYS.some((k) => [doc, call].some((o) => Object.hasOwn(o, k) && !sameValue(o[k], stored.findings[k])))) return null;
+  // A corrections marker, inside the object or beside it, is one the decode reads. Any other marker, a string that
+  // does not decode to an object among them, is refused as it always was: on this shape, as main reads the object.
+  if (![doc, call].every((o) => isMarker(o.corrections))) return null;
+  // The call's own rows each replace a finding the stored record holds, named by a positive whole-number ordinal.
+  // A row list that is not one, or a row aimed elsewhere, is read as main reads the call.
+  const held = new Set((Array.isArray(stored.findings.findings) ? stored.findings.findings : []).map((f) => f?.ordinal));
+  if (call.findings_patch !== undefined && !(Array.isArray(call.findings_patch) && call.findings_patch.every((r) => isRow(r) && held.has(r.ordinal)))) return null;
   const { findings_patch: nested, ...registers } = doc;
   const lift = liftNestedRows(call.findings_patch, nested);
   return lift ? { registers, rows: lift.rows, lifted: lift.lifted } : null;
@@ -637,14 +663,13 @@ export function readSynthesisCall(received, stored) {
     }
     return { call: received, notes };
   }
-  const decode = (v) => { try { const x = JSON.parse(v); return isPlainObject(x) ? x : undefined; } catch { return undefined; } };
   let call = received;
   if (typeof call.corrections === "string") {
-    const x = decode(call.corrections);
+    const x = decodedMarker(call.corrections);
     if (x !== undefined) { call = { ...call, corrections: x }; notes.decoded.push("corrections"); }
   }
   if (asRegisters && typeof call.findings.corrections === "string") {
-    const x = decode(call.findings.corrections);
+    const x = decodedMarker(call.findings.corrections);
     if (x !== undefined) { call = { ...call, findings: { ...call.findings, corrections: x } }; notes.decoded.push("findings.corrections"); }
   }
   if (asRegisters) {   // compared as read, so a marker decoded on one side is not a difference
