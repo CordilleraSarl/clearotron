@@ -59,8 +59,8 @@ there is no other value: a band that needs sharpening is the band above it, stat
    known-to-enforce rights holders" — is RETIRED. That is owner size and fame driving a band, which the
    framework decks forbid in terms: "Optics — owner size, fame, partnership — never move the legal
    read." It was the only instruction in this seat's context licensing that move, and the readiest
-   explanation for a Disney hit rating Very High and an EA hit rating High against a lawyer's Medium and
-   Manageable. The rest of the rule stands and is doctrine.)*
+   explanation for a famous owner's hit rated well above the lawyer's grade. The rest of the rule stands
+   and is doctrine.)*
 3. **RETIRED — how ordinary the words are is a note for the reviewing lawyer, never a band.**
    This forbade the lowest band for a common English phrase and put a floor a band above it. On a
    scale that ends in Low it kept an everyday name off "no issues found"; on a client scale with no
