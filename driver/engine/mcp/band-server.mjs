@@ -21,10 +21,10 @@ import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
 import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
-import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey } from "../../band-shape.mjs";
+import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, PLACEMENT_GROUP_ORDERS } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
-import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, untaggedIsEnglish } from "../../record-goods.mjs";
+import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish } from "../../record-goods.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
@@ -108,7 +108,8 @@ const SHAPE_PART_CHARS = 70000;   // step 3 — was a knob; no environment ever 
 // band_lookup of 100 fat records or a pathological official record could exceed the engine's
 // per-tool-output token cap and error the call — killing the reading path exactly where the record
 // volume is highest. band_lookup TRIMS records (the full match count always survives, with an
-// honest note); band_record serves PARTS like band_shape (a record is a document — never trimmed).
+// honest note); band_record serves PARTS like band_shape (a record is a document — never trimmed of anything it
+// says; a goods list it says twice is served once, at `recordAsServed`).
 // Given an answer size and no band size of its own, the band answers in five sixths of it: the rest is room
 // for the quotes and line breaks a printout adds (up to 13% on band answers) and for a banner, so a band
 // answer is never split a second time (shared/answer-parts.mjs). 37,500 on Claude, 30,000 on codex.
@@ -264,7 +265,7 @@ function bandShape(params) {
   const p = format === "json" ? shapeJsonPath() : shapeMdPath();
   if (!RUN_DIR) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." }; }
   if (!existsSync(p)) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: `ERROR: ${p} not found — the driver derives it after the register fan-in; if the band exists but the shape does not, report this as a driver defect (do NOT slice the raw band instead).` }; }
-  const text = readFileSync(p, "utf8");
+  const text = format === "md" && !GROUP_PAGES ? withoutPlacementOrders(readFileSync(p, "utf8")) : readFileSync(p, "utf8");
   const parts = splitAtLines(text, SHAPE_PART_SERVED);
   const total = parts.length;
   const read = format === "md" ? linesByPart(parts) : null;
@@ -434,6 +435,26 @@ function bandLookup(params = {}) {
   return out;
 }
 
+// A RECORD'S GOODS ARE SERVED ONCE. A Clarivate record carries the register's raw goods list beside the
+// normalised goods the provider maps from it item for item (record-goods.mjs `rawGoodsCarried`), so every goods
+// statement was read twice. On a crowded test run, 2026-10-13, one synthesis attempt read 10.79 MB of record
+// text in 549 calls; served this way, the same records come to 6.04 MB in 398. Where the normalised goods carry
+// the raw list, the record is served without that list, in the file's own layout and field order, and anything
+// else in the raw goods block stays; where they do not, or the text is not a record, it is served as it
+// stands. The file on disk is never touched, and the reading audit says how much was left out.
+function recordAsServed(text) {
+  let body;
+  try { body = JSON.parse(text); } catch { return { text, audit: {} }; }
+  if (!rawGoodsCarried(body)) return { text, audit: {} };
+  const goods = { ...body._raw.goodsServices };
+  delete goods.intClassDescriptions;
+  const raw = { ...body._raw, goodsServices: goods };
+  if (!Object.keys(goods).length) delete raw.goodsServices;
+  const indent = /^\{\n( +)"/.exec(text)?.[1]?.length ?? 0;
+  const served = JSON.stringify({ ...body, _raw: raw }, null, indent) + (text.endsWith("\n") ? "\n" : "");
+  return { text: served, audit: { raw_goods_left_out: text.length - served.length } };
+}
+
 function bandRecord(params = {}) {
   if (!RUN_DIR) return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." };
   const uri = String(params.record_id ?? "").trim();
@@ -461,16 +482,18 @@ function bandRecord(params = {}) {
     // How the cite resolved rides the log: an `exact` hit is the model quoting the store's own key; any
     // other value is this ladder doing work, and the reading audit says which and to what.
     const resolution = hit.via === "exact" ? {} : { via: hit.via, ...(hit.resolved ? { resolved: hit.resolved } : {}) };
+    const served = recordAsServed(text);
+    text = served.text;
     const parts = splitAtLines(text, RESPONSE_CHARS);
     const total = parts.length;
-    if (total === 1) {                                  // the common case — served verbatim, no banner
-      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, ...resolution });
+    if (total === 1) {                                  // the common case — one part, no banner
+      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, ...resolution, ...served.audit });
       return text;
     }
     // An oversize official record serves in PARTS, as band_shape does: line-boundary splits, byte-identical
     // concatenation, and a banner that says the next part continues it.
     const part = Math.min(Math.max(1, Math.floor(Number(params.part)) || 1), total);
-    logRead("band_record", { record_id: uri, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length, ...resolution });
+    logRead("band_record", { record_id: uri, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length, ...resolution, ...served.audit });
     const head = `[band_record part ${part}/${total}. This record is served in ${total} parts; the next part continues it.]`;
     const tail = part < total
       ? `\n[end of part ${part}/${total} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}} for the next part]`
@@ -484,15 +507,16 @@ function bandRecord(params = {}) {
   // fetched this run", which is a different claim and was false four times on a delivered round.
   const fromLedger = recordFromLedger(uri);
   if (fromLedger) {
-    const text = JSON.stringify(fromLedger, null, 2);
+    const served = recordAsServed(JSON.stringify(fromLedger, null, 2));
+    const text = served.text;
     const parts = splitAtLines(text, RESPONSE_CHARS);
     if (parts.length === 1) {
-      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger" });
+      logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger", ...served.audit });
       return { type: "text", text };
     }
     const wanted = Number(params.part ?? 1);
     const part = Number.isInteger(wanted) && wanted >= 1 && wanted <= parts.length ? wanted : 1;
-    logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger", part, parts: parts.length });
+    logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger", part, parts: parts.length, ...served.audit });
     return { type: "text", text: `[record ${uri} — part ${part}/${parts.length}]\n` + parts[part - 1]
       + (part < parts.length ? `\n[end of part ${part}/${parts.length} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
   }
@@ -511,6 +535,25 @@ function bandRecord(params = {}) {
   return { isError: true, text: `${why} ${available.length ? `Records on file (${available.length}): ${available.slice(0, 40).join(", ")}${available.length > 40 ? ", …" : ""}.` : "No records fetched yet."} This tool is read-only — it never fetches; a record you need but do not have is an honest gap to state, not a reason to guess.` };
 }
 
+// THE SHAPE'S GROUP PAGES ARE PLACEMENT'S. Placement owes every line a group lists a fate, so it is offered the
+// group filter and told that a group is read page by page. No other stage owes the band a read, and a synthesis
+// offered the same paged an exhausted group 2,498 times (measured on a test run, 2026-10-13). The driver sets
+// CLEAROTRON_BAND_GROUPS for placement alone (stages.mjs GROUP_READING_STAGES); every other stage is offered
+// the lookup without `group`, in the words every stage had before group pages existed. A group argument that
+// arrives anyway is served as before: the offer changes, not what the tool answers.
+const GROUP_PAGES = process.env.CLEAROTRON_BAND_GROUPS === "1";
+// The same holds for the shape's own orders under the groups: placement reads them, and every other stage is
+// served the shape without them (Krzys's ruling, 2026-10-14). Each is removed with the space before it, inside
+// its line, so no line moves and the line each listed mark is printed on, which `linesByPart` reads, still holds.
+const withoutPlacementOrders = (text) => PLACEMENT_GROUP_ORDERS.reduce((t, order) => t.split(` ${order}`).join("").split(order).join(""), text);
+const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
+const LOOKUP_GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
+const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page)";
+const LOOKUP_OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page)";
+/** The lookup's description as a stage is offered it: whole where it reads the groups, without them elsewhere. PURE. */
+const lookupDescription = (groupPages) => (groupPages ? LOOKUP_DESCRIPTION
+  : LOOKUP_DESCRIPTION.replace(LOOKUP_GROUP_CLAUSE, "").replace(LOOKUP_OFFSET_GROUPS, LOOKUP_OFFSET_BAND));
+
 serve({
   name: "band", version: "0.1.0",
   tools: [
@@ -523,12 +566,12 @@ serve({
     },
     {
       name: "band_lookup",
-      description: "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.",
+      description: lookupDescription(GROUP_PAGES),
       inputSchema: { type: "object", properties: {
         record_id: { type: "string" }, owner: { type: "string" }, nice_class: { type: "string" },
         tier: { type: "string", enum: SHAPE_TIERS }, qid: { type: "string" }, query: { type: "string" }, text: { type: "string" },
         status: { type: "string" }, live_only: { type: "boolean" }, goods: { type: "array", items: { type: "string" } },
-        group: { type: "string", enum: ["a", "b", "c", "d", "rest", "no_goods"] },
+        ...(GROUP_PAGES ? { group: { type: "string", enum: ["a", "b", "c", "d", "rest", "no_goods"] } } : {}),
         limit: { type: "number" }, offset: { type: "number" },
       } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },

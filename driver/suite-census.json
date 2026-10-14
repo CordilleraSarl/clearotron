@@ -185,7 +185,7 @@
         },
         "a-childs-output-is-decoded-as-a-stream.test.mjs": {
           "tests": 3,
-          "asserts": 10,
+          "asserts": 14,
           "skips": 1,
           "todos": 0
         },
@@ -247,6 +247,12 @@
           "tests": 4,
           "asserts": 18,
           "skips": 1,
+          "todos": 0
+        },
+        "a-codex-stage-runs-without-the-sign-ins-apps.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
           "todos": 0
         },
         "a-command-printed-from-npx-outlives-the-cache.test.mjs": {
@@ -657,6 +663,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-group-row-covers-no-line-a-later-shape-added.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-group-row-covers-only-the-lines-it-was-shown.test.mjs": {
           "tests": 13,
           "asserts": 41,
@@ -774,6 +786,12 @@
         "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -909,6 +927,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-missing-fate-count-says-why.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mixed-alphabet-look-alike-is-not-sent-where-the-register-drops-its-letters.test.mjs": {
           "tests": 10,
           "asserts": 46,
@@ -918,6 +942,12 @@
         "a-model-of-the-current-generation-is-named-in-every-spelling.test.mjs": {
           "tests": 8,
           "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-name-above-its-cards-is-refused-where-the-model-can-fix-it.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -1113,6 +1143,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-question-the-plan-already-asked-closes-its-directive.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -1176,6 +1212,12 @@
         "a-record-asked-for-and-never-delivered.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-records-goods-are-served-once.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1331,6 +1373,12 @@
         },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
+          "tests": 3,
           "asserts": 13,
           "skips": 0,
           "todos": 0
@@ -1920,6 +1968,12 @@
         "an-engine-program-installed-with-clearotron-is-the-last-resort.test.mjs": {
           "tests": 13,
           "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-engines-output-is-decoded-as-a-stream.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },
@@ -4197,6 +4251,12 @@
           "skips": 0,
           "todos": 0
         },
+        "placements-orders-reach-placement-alone.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
           "tests": 20,
           "asserts": 50,
@@ -6009,6 +6069,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-group-filter-is-offered-to-placement-alone.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-heartbeat-stays-fresh-while-a-run-is-in-flight.test.mjs": {
           "tests": 4,
           "asserts": 8,
@@ -6096,6 +6162,12 @@
         "the-knockout-rating-step-reads-no-set-aside-lines.test.mjs": {
           "tests": 4,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-review-meets-the-tone-and-figure-checks.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -7179,8 +7251,8 @@
           "todos": 0
         },
         "events.test.mjs": {
-          "tests": 7,
-          "asserts": 26,
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -7343,6 +7415,12 @@
         "the-handshake-reports-the-package-version.test.mjs": {
           "tests": 1,
           "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-stage-notes-match-the-pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },

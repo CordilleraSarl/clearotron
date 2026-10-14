@@ -112,3 +112,34 @@ test("folding an attempt out does NOT renumber seq — a poll cursor never re-re
   // …and a cursor held at the entry before the fold still returns exactly the entries after it
   assert.deepEqual(events.projectTimeline(evs, P, { sinceSeq: 0 }).timeline.map((t) => t.seq), [2, 3]);
 });
+
+test("the interpreted kinds are exactly classify's cases", async () => {
+  const { readFileSync } = await import("node:fs");
+  const src = readFileSync(new URL("../lib/events.mjs", import.meta.url), "utf8");
+  const body = src.slice(src.indexOf("function classify("), src.indexOf("\n}\n", src.indexOf("function classify(")));
+  const cases = [...body.matchAll(/case "([^"]+)":/g)].map((m) => m[1]);
+  assert.ok(cases.length >= 15, `only ${cases.length} cases read out of classify — the reading is broken, not the set`);
+  assert.deepEqual([...events.INTERPRETED_EVENT_KINDS].sort(), cases.sort());
+});
+
+test("a client account's timeline keeps the interpreted kinds alone, and their seq as the full log numbered it", async () => {
+  const { accountTimeline } = await import("../lib/audit-view.mjs");
+  const P = runs.resolveRun(RUN_ID).P;
+  const evs = [
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
+    { ts: "2026-07-29T19:01:00.000Z", event: "stage-limit-derived", stage: "register-digest", limit_s: 2611 },
+    { ts: "2026-07-29T19:13:00.000Z", event: "stage", stage: "register-digest", trigger: "fresh", ok: true, attempts: 1 },
+    { ts: "2026-07-29T19:13:30.000Z", event: "foreign-record-links-blanked", stage: "synthesis", blanked: 2, kept: 9 },
+    { ts: "2026-07-29T19:13:40.000Z", event: "basis-derivation", demoted: 1 },
+    { ts: "2026-07-29T19:14:00.000Z", event: "verdict", verdict: "CONDITIONAL" },
+  ];
+  const projected = events.projectTimeline(evs, P);
+  // The engineering view keeps every event, the passthrough rows under their own names.
+  assert.deepEqual(projected.timeline.map((t) => t.kind),
+    ["start", "stage-limit-derived", "stage", "foreign-record-links-blanked", "basis-derivation", "verdict"]);
+  const acct = accountTimeline(projected);
+  assert.deepEqual(acct.timeline.map((t) => [t.seq, t.kind]), [[0, "start"], [2, "stage"], [5, "verdict"]]);
+  const blob = JSON.stringify(acct);
+  for (const name of ["stage-limit-derived", "foreign-record-links-blanked", "basis-derivation"])
+    assert.ok(!blob.includes(name), `the engine's name "${name}" reached a client account`);
+});

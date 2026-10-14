@@ -19,6 +19,7 @@
 // the engines it serves.
 
 import { spawn } from "node:child_process";
+import { StringDecoder } from "node:string_decoder";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
@@ -190,6 +191,10 @@ export function runStreamingChild({
     try { child.stdin.write(input ?? ""); child.stdin.end(); } catch { /* child gone — handled by close/error */ }
 
     let buf = "", stdoutAll = "", stderr = "";
+    // A CHUNK IS NOT A CHARACTER. A pipe hands the output over in chunks, and a character of two or more bytes can
+    // straddle two of them: decoded one chunk at a time, its halves read as replacement characters. One decoder per
+    // stream holds a split character's first bytes until the rest arrive.
+    const outText = new StringDecoder("utf8"), errText = new StringDecoder("utf8");
     let killed = false, stallKill = false, overflow = false, settled = false;
     let lastMove = Date.now();
     // — false until the child's FIRST byte on EITHER stream. Not "first liveness byte": a
@@ -248,7 +253,7 @@ export function runStreamingChild({
       if (settled || overflow) return;
       sawOutput = true; firstOutputAt ||= Date.now();        // — the child has spoken; startup is over
       lastMove = Date.now();   // ANY streamed byte = liveness → resets the stall clock
-      const s = d.toString();
+      const s = outText.write(d);
       buf += s; stdoutAll += s;
       let nl;
       while ((nl = buf.indexOf("\n")) >= 0) { emitLine(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
@@ -258,7 +263,7 @@ export function runStreamingChild({
       if (settled || overflow) return;
       sawOutput = true; firstOutputAt ||= Date.now();        // — spoken is spoken, whether or not this stream counts as liveness
       if (stderrIsLiveness) lastMove = Date.now();   // codex progress lives on stderr → it is liveness too
-      stderr += d.toString();
+      stderr += errText.write(d);
       if (stderr.length > maxBuffer) { stderr = stderr.slice(0, maxBuffer); overflowKill(); }
     });
 
@@ -282,7 +287,9 @@ export function runStreamingChild({
       // settlement must never wait on a pipe some straggler keeps open (the group SIGKILL reaps the tree).
       try { child.stdout.destroy(); } catch { /* stream gone */ }
       try { child.stderr.destroy(); } catch { /* stream gone */ }
-      if (!overflow) emitLine(buf);   // B1: flush the final, un-terminated line — but NEVER the truncated overflow tail
+      // B1: flush the final, un-terminated line — but NEVER the truncated overflow tail. The decoders give up
+      // what they held: a character the program never finished reads as a replacement character, once.
+      if (!overflow) { const tail = outText.end(); buf += tail; stdoutAll += tail; stderr += errText.end(); emitLine(buf); }
       buf = "";
       resolve({
         rawCode: typeof code === "number" ? code : null,

@@ -58,6 +58,7 @@
 // So `scrubBlocks` below keeps the drop, and the raw list a client account reads is the LIVE chain.
 
 import { scrubBody, scrubCards } from "./scrub.mjs";
+import { INTERPRETED_EVENT_KINDS } from "./events.mjs";
 import { accountMayReadArtifact } from "../../shared/scope.mjs";
 import { clientFailureNote } from "../../shared/client-failure-note.mjs";   
 
@@ -279,8 +280,14 @@ export function accountTrace(result) {
 //
 // The entry shape is a UNION over ~15 event kinds and classify() ends in a generic passthrough, so an
 // event nobody has projected yet arrives here with whatever keys it was written with. Hence an allowlist
-// over the union rather than a delete-list: a new event kind is thinned to its decision word until
-// someone widens this deliberately, which is the direction that fails safe.
+// over the union rather than a delete-list.
+//
+// AND THE PASSTHROUGH ROWS DO NOT TRAVEL AT ALL. Thinned to its decision word, a passthrough row still
+// carried the engine's own name for the event as both `kind` and `decision`: on one test run, 133 of the
+// 158 rows a client account read were 73 such names (measured 2026-10-14). The owner's standing rule for
+// engineering text on a client surface is to take it out and write nothing in its place, so a client
+// account keeps only the kinds classify() interprets (INTERPRETED_EVENT_KINDS). `seq` was assigned over
+// every event before this drop, so a poller's cursor never renumbers; the engineering view is unchanged.
 const TIMELINE_FIELDS = ["ts", "seq", "kind", "phase", "stage", "decision", "trigger", "ok", "outputSha",
   "changedFromPrevious", "attempt", "axes", "axis", "escalated", "verdict", "display", "cause",
   "recovered", "count", "uris", "findings", "negatives", "audit", "snapshot", "resume"];
@@ -306,7 +313,7 @@ export function accountTimeline(result, { brandName = "The firm" } = {}) {
   };
   return {
     ...pick(result, ["runId", "state", "tier", "_note"]),
-    timeline: Array.isArray(result.timeline) ? result.timeline.map(entry) : [],
+    timeline: Array.isArray(result.timeline) ? result.timeline.filter((t) => INTERPRETED_EVENT_KINDS.has(t.kind)).map(entry) : [],
     verdictHistory: Array.isArray(result.verdictHistory)
       ? result.verdictHistory.map((v) => pick(v, ["ts", "kind", "verdict", "stage"]))
       : result.verdictHistory ?? null,

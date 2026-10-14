@@ -341,6 +341,11 @@ export function deriveAsks({
     const deferrals = new Map((fr.deferrals ?? []).filter((d) => d?.directive).map((d) => [d.directive, d]));
     const qidsByKey = fr.directive_qids && typeof fr.directive_qids === "object" ? fr.directive_qids : {};
     const bornByKey = fr.born && typeof fr.born === "object" ? fr.born : {};
+    // A slice the fold refused as already-asked never ran: the plan row that asked its question did. The receipt
+    // names that row where the directive closed through it (`answered_elsewhere`), and its execution ends the ask.
+    const twinOf = new Map((Array.isArray(fr.answered_elsewhere) ? fr.answered_elsewhere : [])
+      .filter((x) => typeof x?.directive === "string")
+      .map((x) => [x.directive, new Map((Array.isArray(x.slices) ? x.slices : []).filter((t) => t?.qid && t?.twin).map((t) => [t.qid, t.twin]))]));
     for (const key of requested) {
       const qids = (Array.isArray(qidsByKey[key]) ? qidsByKey[key] : []).filter(Boolean);
       const place = bornByKey[key] === "form-neighbourhood" ? "form-neighbourhood" : "frame-diff";
@@ -351,7 +356,7 @@ export function deriveAsks({
         handoff = "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission";
       } else if (swept.has(key)) {
         ending = qids.length
-          ? endingForQids(qids, join, ts)   // computed — null (open) when the execution record disagrees
+          ? endingForQids(qids.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts)   // computed — null (open) when the execution record disagrees
           : mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts });
       }
       push({

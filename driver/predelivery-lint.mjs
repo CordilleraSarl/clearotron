@@ -2358,7 +2358,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
 //   prescription-prose
 // Everything else is ABSENT BY DESIGN and says so in the receipt (KNOCKOUT_ABSENT_BY_DESIGN below) —
 // never an entry that silently passes, which is the failure mode this tranche exists to kill. Measured
-// against two real archived knockout runs (2026-07-28 BRIMSTONE, 2026-07-29 TASTICLES): zero flags on the
+// against two archived knockout runs, from 2026-07-28 and 2026-07-29: zero flags on the
 // applicable five, and templateChecks false-FAILED names-cell-populated on both (there is no NAME(S)
 // row on this lane) — which is why it is excluded rather than run.
 //

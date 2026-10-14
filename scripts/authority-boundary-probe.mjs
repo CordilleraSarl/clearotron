@@ -78,7 +78,9 @@ const program = resolveEngineProgram("anthropic-agent");
 const child = spawn(program.resolved ?? program.bin, [...args, "--include-hook-events"],
   { stdio: ["pipe", "pipe", "pipe"], cwd: runDir, env: spawnEnv() });
 let out = "", err = "";
+child.stdout.setEncoding("utf8");
 child.stdout.on("data", (d) => { out += d; });
+child.stderr.setEncoding("utf8");
 child.stderr.on("data", (d) => { err += d; });
 child.stdin.on("error", () => {});
 child.stdin.write(input); child.stdin.end();

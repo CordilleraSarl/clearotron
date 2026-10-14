@@ -342,7 +342,7 @@ test("renderCodexConfigToml: each withheld name is one exclude filter, and the s
     { filters: { SIGNA_API_KEY: "exclude", CORSEARCH_SESSION_KEY: "exclude", CODEX_API_KEY: "exclude" } });
   // And the shell snapshot off: codex takes it from a shell that inherits the program's whole environment,
   // and replays it before each command, which put every filtered name back (measured, 0.156.1).
-  assert.deepEqual(cfg.features, { shell_snapshot: false });
+  assert.deepEqual(cfg.features, { apps: false, shell_snapshot: false });
   // Only the filters. Codex refuses `filters` beside the older `exclude` and `include_only` lists, and an
   // `inherit` here would change what every other name does.
   assert.doesNotMatch(toml, /^(exclude|include_only|inherit|ignore_default_excludes) =/m);
@@ -360,5 +360,5 @@ test("renderCodexConfigToml: nothing withheld writes no policy, and the file is 
   for (const none of [[], undefined, null, [""]])
     assert.equal(renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.", withheldFromCommands: none }), before);
   const withPolicy = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.", withheldFromCommands: ["SIGNA_API_KEY"] });
-  assert.equal(withPolicy.replace(/^\[features\]\nshell_snapshot = false\n\n\[shell_environment_policy\.filters\]\n"SIGNA_API_KEY" = "exclude"\n\n/m, ""), before);
+  assert.equal(withPolicy.replace(/^shell_snapshot = false\n/m, "").replace(/^\[shell_environment_policy\.filters\]\n"SIGNA_API_KEY" = "exclude"\n\n/m, ""), before);
 });
