@@ -558,12 +558,15 @@ const ENVELOPE_KEYS = ["schema_version", "rated_under_framework"];
 
 /**
  * Rows sent inside a list-less `findings`, beside the call's own. PURE. Null when that is ambiguous: rows that are
- * not an array, or one ordinal carrying two different rows, whether both are nested or one is at the top level. A
- * nested row that repeats one already sent is applied once, and `lifted` counts only the rows actually added.
+ * not an array, a nested row that is not an object carrying a whole-number ordinal (the way a finding row names
+ * the finding it replaces), or one ordinal carrying two different rows, whether both are nested or one is at the
+ * top level. A nested row that repeats one already sent is applied once, and `lifted` counts only the rows
+ * actually added.
  */
 function liftNestedRows(top, nested) {
   if (nested === undefined) return { rows: top, lifted: 0 };
   if (!Array.isArray(nested) || (top != null && !Array.isArray(top))) return null;
+  if (nested.some((r) => !isPlainObject(r) || !Number.isInteger(r.ordinal))) return null;
   const sent = new Map((top ?? []).map((r) => [r?.ordinal, r]));
   const added = [];
   for (const r of nested) {

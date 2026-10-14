@@ -12,9 +12,10 @@
 // call did not name can move.
 //
 // WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: a
-// nested row that conflicts with a top-level one, two nested rows for one ordinal, a key off the record's
-// ladder, an envelope that would re-version the record, and a first save that has no stored record to patch.
-// Those arms below are characterisation: green before and after.
+// nested row that conflicts with a top-level one, two nested rows for one ordinal, a nested row that is not a
+// finding object with a whole-number ordinal, a key off the record's ladder, an envelope that would re-version
+// the record, and a first save that has no stored record to patch. Those arms below are characterisation:
+// green before and after.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync, readdirSync } from "node:fs";
@@ -542,5 +543,32 @@ for (const [what, call, re] of [
     const { schema_version: version, rated_under_framework: framework } = onDisk(dir);
     refusesUnchanged(dir, call, re, `a top-level envelope that differs from the stored one: ${what}`);
     assert.deepEqual([onDisk(dir).schema_version, onDisk(dir).rated_under_framework], [version, framework], `${what}: the record was re-versioned`);
+  });
+}
+
+// ── A NESTED ROW IS LIFTED ONLY WHEN IT IS A FINDING OBJECT WITH A WHOLE-NUMBER ORDINAL ──────────────
+//
+// A finding row names the finding it replaces by its ordinal, a whole number. Rows sent inside a list-less
+// findings object are lifted beside the call's own only where every one of them is an object carrying such an
+// ordinal. A nested row that is not (a string, null, an array, a row with no ordinal, or one whose ordinal is
+// text or a fraction) is no row to lift: the object is read as main reads it, and the call meets main's refusal
+// byte for byte, with or without a narrative or a top-level row beside it.
+const UNKNOWN_ORDINAL_2 = /^synthesis_patch_ordinal_unknown:2 — this run holds no finding with that ordinal, so this patch is aimed at a finding that does not exist\. Send the ordinal as it appears in the record you emitted$/;
+const NO_ORDINAL = () => { const { ordinal: _ordinal, ...row } = ROW2(); return row; };
+
+for (const [what, call, re] of [
+  ["a row with no ordinal", () => ({ findings: { findings_patch: [NO_ORDINAL()] } }), offLadder("findings_patch")],
+  ["a row that is a string", () => ({ findings: { findings_patch: ["a row that is text"] } }), offLadder("findings_patch")],
+  ["a row that is null", () => ({ findings: { findings_patch: [null] } }), offLadder("findings_patch")],
+  ["a row that is an array", () => ({ findings: { findings_patch: [[ROW2()]] } }), offLadder("findings_patch")],
+  ["a row whose ordinal is text", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: "2" }] } }), offLadder("findings_patch")],
+  ["a row whose ordinal is not a whole number", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: 2.5 }] } }), offLadder("findings_patch")],
+  ["a good row beside a row with no ordinal", () => ({ findings: { findings_patch: [ROW2(), NO_ORDINAL()] } }), offLadder("findings_patch")],
+  ["a row with no ordinal, with a whole narrative", () => ({ narrative: NARRATIVE, findings: { findings_patch: [NO_ORDINAL()] } }), offLadder("findings_patch")],
+  ["a row with no ordinal, beside a top-level row", () => ({ findings: { findings_patch: [NO_ORDINAL()] }, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+  ["a row that is null, beside a register and a top-level row", () => ({ findings: { coverage: COVERAGE, findings_patch: [null] }, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+]) {
+  test(`a nested row that is not a finding object with a whole-number ordinal keeps main's refusal: ${what}`, () => {
+    refusesUnchanged(saved(), call(), re, `a nested row that is not a finding object with a whole-number ordinal: ${what}`);
   });
 }
