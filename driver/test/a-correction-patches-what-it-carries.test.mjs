@@ -585,3 +585,72 @@ for (const [what, call, re] of [
     refusesUnchanged(saved(), call(), re, `a nested row that is not a finding object with a whole-number ordinal: ${what}`);
   });
 }
+
+// ── A NEWLY READ SHAPE MEETS THE SHIPPED CHECK ON WHAT IT CARRIES ────────────────────────────────────
+//
+// A call this change reads as a patch can still carry something a shipped check refuses. It then meets that check's
+// own text, which names what is wrong in what it sent, where main named the shape. No text here is new. (A nested
+// row on an ordinal the record does not hold is pinned above, with its reading.)
+const W0 = (row) => ({ narrative: NARRATIVE, findings: { coverage: COVERAGE }, findings_patch: [row] });
+for (const [what, call, re] of [
+  ["a whole narrative beside a nested row on an ordinal the record does not hold",
+    () => ({ narrative: NARRATIVE, findings: { findings_patch: [{ ...ROW2(), ordinal: 99 }] } }), /^synthesis_patch_ordinal_unknown:99 — /],
+  ["a patch whose marker string decodes to a marker with an `applied` that is not a boolean",
+    () => ({ findings_patch: [ROW2()], corrections: JSON.stringify({ applied: "maybe" }) }),
+    /^synthesis_findings_invalid: findings_corrections_invalid \(corrections\.applied must be a boolean\)$/],
+  ["a patch whose marker string decodes to a marker with a key it does not have",
+    () => ({ findings_patch: [ROW2()], corrections: JSON.stringify({ applied: true, note: "x", extra: 1 }) }),
+    /^synthesis_findings_invalid: findings_corrections_key_unknown:extra \(keys are EXACTLY: applied, note, entries\)$/],
+  ["registers with a marker string that is not JSON",
+    () => ({ findings: { coverage: COVERAGE, corrections: "{not json" } }),
+    /^synthesis_findings_invalid: findings_corrections_invalid \(corrections must be an object \{ applied, note \}\)$/],
+  ["registers with a marker string that decodes to a marker with an `applied` that is not a boolean",
+    () => ({ findings: { corrections: JSON.stringify({ applied: "maybe" }) } }),
+    /^synthesis_findings_invalid: findings_corrections_invalid \(corrections\.applied must be a boolean\)$/],
+  ["registers carrying coverage as a JSON string",
+    () => ({ findings: { coverage: JSON.stringify(COVERAGE) } }),
+    /^synthesis_findings_invalid: findings_coverage_invalid: "coverage" must be a JSON ARRAY of coverage-area objects$/],
+  ["registers carrying the mark assessment as a string",
+    () => ({ findings: { mark_assessment: "a string, not the object" } }),
+    /^synthesis_findings_invalid: findings_mark_assessment_invalid \(mark_assessment must be an object \{ distinctiveness, connotation \}\)$/],
+  ["a narrative and registers beside a row carrying a key a finding does not have",
+    () => W0({ ...ROW2(), made_up_field: 1 }), /^synthesis_findings_invalid: finding_key_unknown:made_up_field \(keys are EXACTLY: /],
+  ["a narrative and registers beside a row carrying an unknown meter",
+    () => W0({ ...ROW2(), meters: { ...ROW2().meters, made_up_meter: { token: "low", basis: "inferred-from-signal" } } }),
+    /^synthesis_findings_invalid: finding_meter_unknown:made_up_meter \(keys are EXACTLY: mark_similarity, goods_proximity, use, enforcer\)$/],
+  ["a narrative and registers beside a row whose meter token is not one of its tokens",
+    () => W0({ ...ROW2(), meters: { ...ROW2().meters, goods_proximity: { token: "unclear", basis: "inferred-from-signal" } } }),
+    /^synthesis_findings_invalid: finding_meter_token_invalid:goods_proximity:unclear \(must be one of: high, medium, low\. /],
+  ["a narrative and registers beside a row whose finding sentence is a chain",
+    () => W0({ ...ROW2(), net: "A live prior right on the same element; the goods overlap in the searched class." }),
+    /^synthesis_findings_invalid: findings_net_chained:2 \(the finding sentence is a CONCLUSION, not a chain/],
+]) {
+  test(`a newly read shape meets the shipped check on what it carries: ${what}`, () => {
+    refusesUnchanged(saved(), call(), re, `a newly read shape: ${what}`);
+  });
+}
+
+// ── AN EMPTY CORRECTION INSIDE A FINDINGS OBJECT IS ACCEPTED, AND CHANGES NOTHING ───────────────────
+//
+// Main accepts an empty patch as a no-op: no call fields, no rows, or no sections. The same empty patch sent inside a
+// findings object, as no registers, no nested rows or the stored envelope, is accepted the same way, and both files
+// keep their bytes.
+test("an empty correction inside a findings object is accepted and changes nothing, as main's own empty patch does", () => {
+  for (const [what, call] of [
+    ["an empty call (main's own)", {}],
+    ["an empty row list (main's own)", { findings_patch: [] }],
+    ["an empty narrative (main's own)", { narrative: {} }],
+    ["an empty findings object", { findings: {} }],
+    ["an empty findings object beside the stored narrative", { narrative: NARRATIVE, findings: {} }],
+    ["a findings object carrying an empty row list", { findings: { findings_patch: [] } }],
+    ["a findings object carrying an empty row list beside the stored narrative", { narrative: NARRATIVE, findings: { findings_patch: [] } }],
+    ["a findings object carrying only the stored schema_version", { findings: { schema_version: record().schema_version } }],
+  ]) {
+    const dir = saved();
+    const before = files(dir);
+    accepts(recordSynthesis(dir, structuredClone(call)), what);
+    const after = files(dir);
+    assert.equal(after.findings, before.findings, `${what}: findings.json moved`);
+    assert.equal(after.narrative, before.narrative, `${what}: narrative.md moved`);
+  }
+});
