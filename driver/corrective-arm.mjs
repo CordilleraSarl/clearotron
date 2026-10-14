@@ -12,15 +12,15 @@
 // The production corrective pass is a FOLLOWUP dispatch of the synthesis stage, on the run's own key with
 // the winning attempt's model and thinking, and its message is `correctionsExtra`'s blocks. It does not
 // resume the synthesis session: no engine resumes by session key (stages-followup.test.mjs pins it), so
-// the followup is a fresh turn handed the corrections and the stage's inputs to read. An experiment arm
-// always builds a fresh key and dispatches into a sandbox — and dispatching on the REAL run's key from a
-// sandbox was rejected outright, because "canonical run untouched" is the arm's whole contract and an arm
-// that breaks its contract to gain fidelity is measuring with a broken instrument.
+// the followup's first attempt is a fresh turn handed the corrections and the stage's inputs to read. An
+// experiment arm always builds a fresh key and dispatches into a sandbox — and dispatching on the REAL run's
+// key from a sandbox was rejected outright, because "canonical run untouched" is the arm's whole contract and
+// an arm that breaks its contract to gain fidelity is measuring with a broken instrument.
 //
 // So an arm carries the corrective pass's INPUTS on a COLD turn, composed by the same function production
 // uses. That reaches the seam nothing else reaches without a two-hour run. It is NOT production's
 // dispatch, and the receipt says so in a word rather than leaving it to be inferred. The production word
-// is a recorded value and stays as it is, though the followup it names resumes nothing:
+// is a recorded value and stays as it is, though the followup it names never resumes the synthesis session:
 //
 //   dispatched-warm            production only — the followup on the run's own key
 //   dispatched-cold            the arm — the same blocks, a fresh turn
