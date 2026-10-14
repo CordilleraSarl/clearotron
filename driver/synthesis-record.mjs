@@ -543,8 +543,9 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
 // is a register of that record's own ladder (the one its schema_version gives) or its rows, every key the call
 // carries beside its narrative and that object is one too, its envelope is absent or equal to the stored one wherever
 // it is sent, a corrections marker sent inside it or beside it is one the decode reads, the call's own rows each name
-// a finding the stored record holds, and its nested rows are unambiguous. Any other shape is read exactly as it always
-// was, so the model meets the refusal it always met, byte for byte.
+// a finding the stored record holds, and no ordinal carries two different rows, among the call's own rows or its
+// nested ones. Any other shape is read exactly as it always was, so the model meets the refusal it always met, byte
+// for byte.
 
 const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 // Key-sorted JSON: "the same content" must not turn on the order the model wrote its keys in.
@@ -564,6 +565,11 @@ const isMarker = (v) => v == null || isPlainObject(v) || (typeof v === "string" 
 const isSection = ([k, v]) => k === "coverage" ? isPlainObject(v) && Object.keys(v).every((x) => x === "read") && isStr(v.read)
   : k === "calibration" ? Array.isArray(v) && v.every((c) => isPlainObject(c) && isStr(c.challenge) && isStr(c.answer))
   : k !== "ask_answers" && isStr(v);
+// Two different rows for one ordinal among `rows`. A row sent again with the same content is one row.
+const twoRowsForOneOrdinal = (rows) => {
+  const one = new Map();
+  return rows.some((r) => (one.has(r.ordinal) ? !sameValue(one.get(r.ordinal), r) : (one.set(r.ordinal, r), false)));
+};
 
 // The record's envelope. A list-less object that would change either, inside the object or at the call's top
 // level, is not a register edit: re-versioning is a whole re-send (the schema-downlevel rung), and read as
@@ -574,8 +580,9 @@ const ENVELOPE_KEYS = ["schema_version", "rated_under_framework"];
  * Rows sent inside a list-less `findings`, beside the call's own. PURE. Null when that is ambiguous: rows that are
  * not an array, a nested row that is not an object carrying a positive whole-number ordinal (the way a finding row
  * names the finding it replaces), or one ordinal carrying two different rows, whether both are nested or one is at the
- * top level. A nested row that repeats one already sent is applied once, and `lifted` counts only the rows
- * actually added.
+ * top level. The call's own rows reach here already checked to carry one row per ordinal (`registerPatchOf`), so a
+ * nested row is compared with the one row its ordinal has there. A nested row that repeats one already sent is
+ * applied once, and `lifted` counts only the rows actually added.
  */
 function liftNestedRows(top, nested) {
   if (nested === undefined) return { rows: top, lifted: 0 };
@@ -625,6 +632,10 @@ export function registerPatchOf(stored, call) {
   // A row list that is not one, or a row aimed elsewhere, is read as main reads the call.
   const held = new Set((Array.isArray(stored.findings.findings) ? stored.findings.findings : []).map((f) => f?.ordinal));
   if (call.findings_patch !== undefined && !(Array.isArray(call.findings_patch) && call.findings_patch.every((r) => isRow(r) && held.has(r.ordinal)))) return null;
+  // And no ordinal carries two different rows among them. Read as registers, the last would be applied and the other
+  // dropped without a word, the choice turning on the order they were sent in; read as main reads the call, it meets
+  // main's refusal. A row sent again with the same content is one row.
+  if (call.findings_patch !== undefined && twoRowsForOneOrdinal(call.findings_patch)) return null;
   const { findings_patch: nested, ...registers } = doc;
   const lift = liftNestedRows(call.findings_patch, nested);
   return lift ? { registers, rows: lift.rows, lifted: lift.lifted } : null;

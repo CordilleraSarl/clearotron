@@ -11,9 +11,9 @@
 // now a patch on the registers it carries, merged onto the stored record and judged whole, so nothing the
 // call did not name can move.
 //
-// WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: a
-// nested row that conflicts with a top-level one, two nested rows for one ordinal, a nested row that is not a
-// finding object with a positive whole-number ordinal, a top-level row that does not name a finding the record
+// WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: two
+// different rows for one ordinal, whether both are the call's own, both nested or one of each, a nested row that is
+// not a finding object with a positive whole-number ordinal, a top-level row that does not name a finding the record
 // holds, a marker the decode does not read, a narrative that is not an object of the sections the tool describes,
 // a key off the record's ladder, an envelope that would re-version the record, and a first save that has no stored
 // record to patch. Those arms below are characterisation:
@@ -650,6 +650,85 @@ test("rows on an ordinal the record does not hold, beside a nested row, keep mai
   refusesUnchanged(dir, { findings: { findings_patch: [{ ...record().findings[2], legal_position: "The third, corrected." }] },
     findings_patch: [ROW2(), { ...ROW2(), ordinal: 99 }] }, UNKNOWN_ORDINAL_2, "a nested row beside a top-level row the record does not hold");
   assert.deepEqual(readings(dir), [], "a call read as main reads it left a reading");
+});
+
+// ── ONE ORDINAL, ONE ROW ──────────────────────────────────────────────────────────────────────────────
+//
+// A row replaces the finding its ordinal names. A call carrying two different rows for one ordinal, both its own,
+// both nested in the findings object, or one of each, does not say which of them is the correction: read as
+// registers, the last was applied and the other dropped without a word, and which one was kept turned on the order
+// the rows were sent in. Such a call is read as main reads it, and meets main's refusal byte for byte, in whichever
+// order its rows come. A row sent again with the same content is one row (below), and a plain patch with no findings
+// object is main's own reading, which keeps the last row as it always did.
+const ROW2B = () => ({ ...ROW2(), legal_position: "A different correction for the same ordinal." });
+const ROW3 = () => ({ ...record().findings[2], legal_position: "The corrected legal position for the third invented finding." });
+const TWO_ROWS = (rows, findings = { coverage: COVERAGE }) => ({ findings, findings_patch: rows });
+
+for (const [what, run, call, re] of [
+  ["a whole narrative and a register, beside them", () => saved(), () => WITH_ROWS([ROW2(), ROW2B()]), UNPARSEABLE],
+  ["a whole narrative and a register, beside them in the other order", () => saved(), () => WITH_ROWS([ROW2B(), ROW2()]), UNPARSEABLE],
+  ["a whole narrative and a register, beside them with another finding's row between", () => saved(),
+    () => WITH_ROWS([ROW2(), ROW3(), ROW2B()]), UNPARSEABLE],
+  ["a whole narrative and a register, beside them with the first sent again last", () => saved(),
+    () => WITH_ROWS([ROW2(), ROW2B(), ROW2()]), UNPARSEABLE],
+  ["a whole narrative and a register, beside them, on a run that owes its records", () => saved({ owed: true }),
+    () => WITH_ROWS([ROW2(), ROW2B()]), /^synthesis_unaccounted_records:3 of 3\b/],
+  ["a corrected verdict and a register, beside them", () => saved(),
+    () => ({ narrative: VERDICT_ONLY, ...TWO_ROWS([ROW2(), ROW2B()]) }), SPINE_MISSING],
+  ["a register, beside them", () => saved(), () => TWO_ROWS([ROW2(), ROW2B()]), UNKNOWN_ORDINAL_2],
+  ["a register, beside them in the other order", () => saved(), () => TWO_ROWS([ROW2B(), ROW2()]), UNKNOWN_ORDINAL_2],
+  ["a register and a nested row repeating the second, beside them", () => saved(),
+    () => TWO_ROWS([ROW2(), ROW2B()], { coverage: COVERAGE, findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+  ["a register and a nested row repeating the first, beside them", () => saved(),
+    () => TWO_ROWS([ROW2(), ROW2B()], { coverage: COVERAGE, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+  ["a nested row repeating the second, beside them", () => saved(),
+    () => TWO_ROWS([ROW2(), ROW2B()], { findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+  ["a nested row repeating the first, beside them", () => saved(),
+    () => TWO_ROWS([ROW2(), ROW2B()], { findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+  ["a nested row repeating the second, beside them in the other order", () => saved(),
+    () => TWO_ROWS([ROW2B(), ROW2()], { findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+  ["a nested row repeating the first, beside them in the other order", () => saved(),
+    () => TWO_ROWS([ROW2B(), ROW2()], { findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+  ["a nested row and a top-level row, the nested one the original", () => saved(),
+    () => TWO_ROWS([ROW2B()], { findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+  ["a nested row and a top-level row, the top-level one sent first", () => saved(),
+    () => ({ findings_patch: [ROW2()], findings: { findings_patch: [ROW2B()] } }), UNKNOWN_ORDINAL_2],
+  ["two nested rows, one of them repeating the top-level row", () => saved(),
+    () => TWO_ROWS([ROW2()], { findings_patch: [ROW2(), ROW2B()] }), UNKNOWN_ORDINAL_2],
+  ["two nested rows in the other order, one of them repeating the top-level row", () => saved(),
+    () => TWO_ROWS([ROW2()], { findings_patch: [ROW2B(), ROW2()] }), UNKNOWN_ORDINAL_2],
+  ["a nested row beside a top-level row sent twice", () => saved(),
+    () => TWO_ROWS([ROW2(), ROW2()], { findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+]) {
+  test(`a call carrying two different rows for one ordinal keeps main's refusal: ${what}`, () => {
+    refusesUnchanged(run(), call(), re, `two different rows for one ordinal: ${what}`);
+  });
+}
+
+test("a plain patch carrying two different rows for one ordinal is read as main reads it: the last row is applied", () => {
+  for (const [what, rows] of [["in one order", [ROW2(), ROW2B()]], ["in the other", [ROW2B(), ROW2()]]]) {
+    const dir = saved();
+    accepts(recordSynthesis(dir, { findings_patch: rows }), `a plain patch with two rows for one ordinal, ${what}`);
+    assert.equal(onDisk(dir).findings[1].legal_position, rows[1].legal_position, `${what}: the last row was not the one applied`);
+  }
+});
+
+test("a row sent again with the same content is one row, and the call is still read as registers", () => {
+  const reordered = Object.fromEntries(Object.entries(ROW2()).reverse());
+  for (const [what, call] of [
+    ["a register, beside one row sent twice", TWO_ROWS([ROW2(), ROW2()])],
+    ["a register, beside one row sent twice with its keys in another order", TWO_ROWS([ROW2(), reordered])],
+    ["a whole narrative and a register, beside one row sent twice", WITH_ROWS([ROW2(), ROW2()])],
+    ["a nested row repeating one top-level row sent twice", TWO_ROWS([ROW2(), ROW2()], { findings_patch: [ROW2()] })],
+  ]) {
+    const dir = saved();
+    const before = onDisk(dir);
+    accepts(recordSynthesis(dir, structuredClone(call)), what);
+    const after = onDisk(dir);
+    assert.equal(after.findings[1].legal_position, ROW2().legal_position, `${what}: the row was not applied`);
+    assert.equal(JSON.stringify([after.findings[0], after.findings[2]]), JSON.stringify([before.findings[0], before.findings[2]]),
+      `${what}: a finding the call does not name moved`);
+  }
 });
 
 // ── A CORRECTIONS MARKER SENT WITH A REGISTER PATCH IS ONE THE DECODE READS ──────────────────────────
