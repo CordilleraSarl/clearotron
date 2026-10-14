@@ -4251,6 +4251,12 @@
           "skips": 0,
           "todos": 0
         },
+        "placements-orders-reach-placement-alone.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
           "tests": 20,
           "asserts": 50,
