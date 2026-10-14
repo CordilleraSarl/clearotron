@@ -397,6 +397,19 @@ test("a refused call's reading says it was refused, and a reading that changed n
   assert.deepEqual(readings(plain), [], "a call whose reading changed nothing wrote a row");
 });
 
+test("a lift the merge refuses is on the run log as one the acceptance refuses is", () => {
+  // a nested row naming an ordinal the record does not hold: lifted, then refused by the merge
+  const nested = saved();
+  refusesUnchanged(nested, { findings: { findings_patch: [{ ...ROW2(), ordinal: 99 }] } }, /^synthesis_patch_ordinal_unknown:99 — /,
+    "a nested row on an ordinal the record does not hold");
+  assert.deepEqual(reading(nested), { ...NOTHING, accepted: false, lifted: 1 }, "a lift the merge refused left no reading");
+  // a nested row beside top-level rows, one of which names an ordinal the record does not hold
+  const beside = saved();
+  refusesUnchanged(beside, { findings: { findings_patch: [{ ...record().findings[2], legal_position: "The third, corrected." }] },
+    findings_patch: [ROW2(), { ...ROW2(), ordinal: 99 }] }, /^synthesis_patch_ordinal_unknown:99 — /, "a nested row beside an unknown top-level row");
+  assert.deepEqual(reading(beside), { ...NOTHING, accepted: false, lifted: 1 }, "a lift the merge refused left no reading");
+});
+
 test("a whole call is read exactly as main reads it: what it carries beside its record is ignored, and counted", () => {
   const list = record().findings;
   const cases = [

@@ -858,12 +858,13 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const stored = lastAcceptedCall(dir0);
   const read = readSynthesisCall(received, stored);
   let call = read.call;
-  const isPatch = Boolean(call) && (call.findings === undefined || call.narrative === undefined
-    || registerPatchOf(stored, call) !== null);
+  const asRegisters = registerPatchOf(stored, call);
+  const isPatch = Boolean(call) && (call.findings === undefined || call.narrative === undefined || asRegisters !== null);
   // WHAT THE TRANSPORT READ THE CALL AS: one run-log row at whichever exit the call takes, beside the decision,
   // when the reading decoded, lifted, overrode or ignored anything. Never in the answer below, which the tool
-  // returns whole into the model's turn. Best-effort, as the foreign-link record is.
-  const reading = { ...read.notes, lifted: 0 };
+  // returns whole into the model's turn. Best-effort, as the foreign-link record is. A lift is counted as READ,
+  // so one the merge then refuses is on the record as one the acceptance refuses is.
+  const reading = { ...read.notes, lifted: asRegisters?.lifted ?? 0 };
   const recordReading = (accepted) => {
     if (!reading.decoded.length && !reading.lifted && !reading.overridden.length && !reading.keysIgnored && !reading.rowsIgnored) return;
     try {
@@ -886,7 +887,6 @@ export function recordSynthesis(runDir, received, opts = {}) {
       return { written: null, refused: merged.reason,
         captured: closeCapture({ ok: false, refused: merged.reason }), capture_failed: captureFailed };
     }
-    reading.lifted = merged.lifted ?? 0;
     call = merged.merged;
   }
 
