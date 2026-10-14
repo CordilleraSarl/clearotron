@@ -7251,8 +7251,8 @@
           "todos": 0
         },
         "events.test.mjs": {
-          "tests": 7,
-          "asserts": 26,
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
