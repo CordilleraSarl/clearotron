@@ -36,7 +36,7 @@ const NARRATIVE = {
 };
 const THREE = [["Halvorne Works", "TESSARIN"], ["Quillmere Ltd", "ODRAVEL"], ["Pennick Supply", "MARVETTE"]];
 // The second finding is a second filing of the first, so the delivery seam folds the two together.
-const FOLDING = [["Qorvalen Holdings", "VELTRIN"], ["Qorvalen Holdings", "VELTRIN"], ["Brannick Tooling", "ORVANTE"]];
+const FOLDING = [["Qorvalen Holdings", "PRUNDELIQ"], ["Qorvalen Holdings", "PRUNDELIQ"], ["Brannick Tooling", "ORVANTE"]];
 
 /** A record whose findings are `[owner, mark]` pairs, each on its own registration. */
 function record(rows = THREE) {

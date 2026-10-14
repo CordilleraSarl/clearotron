@@ -49,7 +49,7 @@ function record(rows) {
 }
 const APART = [["Halvorne Works", "TESSARIN"], ["Quillmere Ltd", "ODRAVEL"], ["Pennick Supply", "MARVETTE"]];
 // The second finding is a second filing of the first, so the delivery seam folds the two together.
-const FOLDING = [["Qorvalen Holdings", "VELTRIN"], ["Qorvalen Holdings", "VELTRIN"], ["Brannick Tooling", "ORVANTE"],
+const FOLDING = [["Qorvalen Holdings", "PRUNDELIQ"], ["Qorvalen Holdings", "PRUNDELIQ"], ["Brannick Tooling", "ORVANTE"],
   ["Selmora Labs", "KESTRIN"]];
 
 function runDir() {
@@ -214,7 +214,7 @@ test("with a fold in force, the base takes the restored finding in the model's n
     // a patch in the model's numbering, on the folded record's second finding
     const third = { ...doc.findings[2], legal_position: "The re-emit corrects the model's third finding." };
     accepted(recordSynthesis(dir, { findings_patch: [third] }), "the re-emit");
-    assert.deepEqual(onDisk(dir).findings.map((f) => f.mark), ["VELTRIN", "ORVANTE", "KESTRIN"],
+    assert.deepEqual(onDisk(dir).findings.map((f) => f.mark), ["PRUNDELIQ", "ORVANTE", "KESTRIN"],
       "the restored finding was dropped again by the patch that followed the repair");
     assert.equal(onDisk(dir).findings[1].legal_position, third.legal_position);
   } finally { rmSync(dir, { recursive: true, force: true }); }

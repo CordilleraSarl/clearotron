@@ -101,7 +101,7 @@ test("a correction that changed no printed field is not applicable, and one with
 
 test("after the delivery seam a correction is found through the fold's map, and one on a folded-away filing is not", async () => {
   const { correctionTargets, deliveredOutcomes } = await delivered();
-  const pre = record([["Qorvalen Holdings", "VELTRIN"], ["Qorvalen Holdings", "VELTRIN"], ["Brannick Tooling", "ORVANTE"]]);
+  const pre = record([["Qorvalen Holdings", "PRUNDELIQ"], ["Qorvalen Holdings", "PRUNDELIQ"], ["Brannick Tooling", "ORVANTE"]]);
   const post = structuredClone(pre);
   post.findings[2].legal_position = "The corrected legal position on ORVANTE.";
   post.findings[1].legal_position = "A correction made on the second filing, which the fold drops.";
