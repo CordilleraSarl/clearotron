@@ -361,9 +361,10 @@ export function knockoutCoverage(run) {
  * enumerated fifteen stages and none of them was a knockout stage — the tool could resolve nothing on this
  * product, including the word "verdict".
  *
- * `knockout-assess` is chunked (`knockout-assess#N`), so a caller may name the bare stage or one chunk.
+ * `knockout-assess` is chunked (`knockout-assess#N`), so a caller may name the bare stage or one chunk. The
+ * reviewing pass that follows it is a stage of its own, and its rewrites reach the record a reader receives.
  */
-export const KNOCKOUT_STAGES = ["knockout-frame", "knockout-sweep", "knockout-register", "knockout-assess"];
+export const KNOCKOUT_STAGES = ["knockout-frame", "knockout-sweep", "knockout-register", "knockout-assess", "knockout-review"];
 
 export function knockoutStageFor(target) {
   const t = String(target ?? "").trim();
@@ -404,7 +405,7 @@ export function traceKnockout(run, target, events = []) {
       events: rows,
       // What the stage wrote, by presence — the honest answer to "did this stage produce anything".
       produced: knockoutArtifacts(run).filter((a) => a.exists && STAGE_OUTPUTS[bare]?.includes(a.name)),
-      note: STAGE_NOTES[bare] ?? null,
+      note: KNOCKOUT_STAGE_NOTES[bare] ?? null,
     };
   }
 
@@ -436,9 +437,10 @@ const STAGE_OUTPUTS = {
   "knockout-assess": ["findings", "assessment"],
 };
 
-const STAGE_NOTES = {
+// A stage's note is read by the connector's model, which answers clients from it. A stage with no note says
+// nothing rather than something untrue: the sweep's note said two research calls per mark, and it makes one.
+export const KNOCKOUT_STAGE_NOTES = {
   "knockout-frame": "Reads the order and writes the plan: which names, which classes, at what depth.",
-  "knockout-sweep": "Two research calls per mark against the marketplace/common-law provider: the broad question, and the kinds of use the frame named for the client's field; the payloads land in research/.",
   "knockout-register": "Fetches and counts register filings for the searched names. Absent on a run with no register component.",
   "knockout-assess": "Rates each mark from its own payload and the fetched filings, and writes knockout-findings.json.",
 };

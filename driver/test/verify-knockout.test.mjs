@@ -78,7 +78,9 @@ test("registerReads[].band: optional, and refused when it is not a ladder word",
   }));
   const file = join(d, "knockout-assess-0.json");
   const mark = {
-    name: "TESTMARK", rating: "High", classesDriving: [9], basis: "The name is close to a known property.",
+    // Rated at the bottom band, so no read's band sits under it: a name rated above its own worst card is
+    // refused for that (markRatedAboveItsCards), and this arm is about the band word alone.
+    name: "TESTMARK", rating: "Low", classesDriving: [9], basis: "The name is close to a known property.",
     factors: ["A first load-bearing observation.", "A second load-bearing observation."],
     counterFactors: ["What holds it at this band."], mitigation: "",
     bullets: ["One honest evidence bullet."], findings: [], purpleNotes: [],

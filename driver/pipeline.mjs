@@ -79,7 +79,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -2867,22 +2867,12 @@ export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — dri
     return null;
   };
   try {
-    if (!existsSync(P.bandShape)) return notComputable("no band-shape.json — the floors are not on disk to check against");
-    if (!existsSync(P.placementModel)) return notComputable("no placements.json (a run predating the structured placement mirror)");
-    let floors, placements;
-    try {
-      const shape = JSON.parse(readFileSync(P.bandShape, "utf8"));
-      // ABSENT vs EMPTY, and they are not the same answer. A shape with no floors slice cannot be
-      // reconciled and says so; a shape whose floors slice IS empty is a real answer — this band held no
-      // live in-class identical record — and reconciles trivially at 0/0.
-      const slice = shape?.floors?.in_class_identical_or_near;
-      if (!Array.isArray(slice)) return notComputable("band-shape.json carries no floors.in_class_identical_or_near array");
-      floors = slice;
-    } catch (e) { return notComputable(`band-shape.json unreadable: ${String(e?.message ?? e).slice(0, 80)}`); }
-    try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
-    catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
-    const artifact = reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) });
-    artifact.owners = placementOwnerFates(P, placements);
+    const now = floorDutyNow(P);
+    if (now.reason) return notComputable(now.reason);
+    const { artifact, placements } = now;
+    const fates = placementOwnerFates(P, placements);
+    artifact.owners = fates.counted ?? null;
+    if (!fates.counted) artifact.owners_absent = fates.absent;   // no count, and why: no groups, or an input that would not read
     // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
@@ -2903,6 +2893,42 @@ export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — dri
     note(`floor-duty derivation failed (non-fatal — disclosure only): ${String(e?.message ?? e).slice(0, 100)}`);
     return null;
   }
+}
+
+/**
+ * The floors reconciled against the band shape and the placements now on disk: `{artifact, placements}`, or
+ * `{reason}` when they cannot be. Read, never written: `deriveFloorDuty` writes a pass's account from it, and a
+ * resumed run's skip reads it (`floorDutyOwedNow`).
+ */
+function floorDutyNow(P) {
+  const notComputable = (reason) => ({ reason });
+  if (!existsSync(P.bandShape)) return notComputable("no band-shape.json — the floors are not on disk to check against");
+  if (!existsSync(P.placementModel)) return notComputable("no placements.json (a run predating the structured placement mirror)");
+  let floors, placements;
+  try {
+    const shape = JSON.parse(readFileSync(P.bandShape, "utf8"));
+    // ABSENT vs EMPTY, and they are not the same answer. A shape with no floors slice cannot be
+    // reconciled and says so; a shape whose floors slice IS empty is a real answer — this band held no
+    // live in-class identical record — and reconciles trivially at 0/0.
+    const slice = shape?.floors?.in_class_identical_or_near;
+    if (!Array.isArray(slice)) return notComputable("band-shape.json carries no floors.in_class_identical_or_near array");
+    floors = slice;
+  } catch (e) { return notComputable(`band-shape.json unreadable: ${String(e?.message ?? e).slice(0, 80)}`); }
+  try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
+  catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
+  return { artifact: reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) }), placements };
+}
+
+/**
+ * DOES PLACEMENT OWE FLOORS ON THE SHAPE NOW ON DISK? A resumed run derives the band shape afresh, and one derived
+ * since the last placement pass can owe more than that pass's floor-duty artifact says: a floor the new shape adds,
+ * or a crowded (b) whose row no longer stands. Read from the artifact alone, placement skipped, the duty was derived
+ * again straight after it, and the report shipped clamped with the step never asked. Read here as well, placement
+ * runs again, and its dispatch-time union tells the step what changed. False where nothing can be reconciled.
+ */
+export function floorDutyOwedNow(P, name) {   // @internal — driven by its test with a run's own files
+  if (name !== "placement-inquiry" || !floorDutyArmed(P.runDir)) return false;
+  try { return Boolean(floorDutyBlock(floorDutyNow(P).artifact, { armed: true })); } catch { return false; }
 }
 
 function derivePlacementCarry(ctx, trigger) {
@@ -3028,24 +3054,44 @@ function recordPlacementSeam(ctx, r, trigger = null) {
   });
 }
 
+/**
+ * The form's set-aside entries as they stand on the shape now on disk. A ground by name stands as stored. A
+ * group's row is checked again exactly as the union took it, on its count and on every line read, because the
+ * shape may have been derived again since: a resumed run derives it afresh, and a record body fetched after
+ * placement can move a line out of the list the goods test could not place and into a group. A row taken on
+ * the earlier shape then covers no line the later one added. Nothing is written back. PURE.
+ */
+function standingSetAside(entries, input) {
+  const all = Array.isArray(entries) ? entries : [];
+  const grouped = all.filter(isSetAsideGroupRow);
+  if (!grouped.length) return all;
+  const { form } = unionPlacementForm({ rows: [], set_aside: grouped }, null, input);
+  return [...all.filter((e) => !isSetAsideGroupRow(e)), ...form.set_aside_groups];
+}
+
 /** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
-function placementSetAsideGrounds(P) {
+export function placementSetAsideGrounds(P) {   // @internal — driven by its test with a run's own files
   try {
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
-    return setAsideGrounds(form.set_aside, buildSelectionIndex(input), input.groups, input.floors);
+    return setAsideGrounds(standingSetAside(form.set_aside, input), buildSelectionIndex(input), input.groups, input.floors);
   } catch { return () => null; }
 }
 
-/** Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`); null when the shape has no groups. */
-function placementOwnerFates(P, placements) {
+/**
+ * Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`): `{counted}`, or `{absent}`
+ * saying why there is no count. A shape with no groups has nothing to count by; an input that would not read is a
+ * gap in the record. The two are not one fact, and the floor duty's artifact keeps them apart.
+ */
+export function placementOwnerFates(P, placements) {   // @internal — driven by its test with a run's own files
   try {
     const input = readPlacementFormInput(P.runDir);
-    if (!input.groups) return null;
-    return ownerFates({ groups: input.groups, entries: readPlacementForm(P.runDir).set_aside, index: buildSelectionIndex(input),
+    if (!input.groups) return { absent: "the band shape lists no groups" };
+    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index: buildSelectionIndex(input),
       placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
-  } catch { return null; }
+    return counted ? { counted } : { absent: "the band shape's groups could not be counted" };
+  } catch (e) { return { absent: `an input could not be read: ${String(e?.message ?? e).slice(0, 120)}` }; }
 }
 
 /**
@@ -4448,7 +4494,7 @@ async function stageOnce(name, ctx, opts = {}) {
   // undischargeable and the run spent every remaining stage travelling toward a failure it was already
   // doomed to. Reconciled toward the stricter side — the predicate lives in floor-duty.mjs and is CALLED,
   // never copied, so the two judgements cannot drift apart again.
-  const dutyBlocksSkip = !forced && floorDutyBlocksSkip(P.runDir, name);
+  const dutyBlocksSkip = !forced && (floorDutyBlocksSkip(P.runDir, name) || floorDutyOwedNow(P, name));
   if (dutyBlocksSkip) {
     note(`[${label}] NOT skipped — its floor duty is undischarged, so its output is not valid to reuse; `
       + "re-running so the seat can place the outstanding floor(s) or name them with a ground "
@@ -10987,12 +11033,14 @@ async function pipelineInner(job, opts = {}) {
         // (`x:0` vs `x:null` must differ by value, never by presence). The demote paths carry the SAME
         // rows forward unchanged, deliberately — a failed re-digest demotes CLOSURE, not searchedness:
         // a query that ran still ran.
-        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null) => {
+        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null, answered = []) => {
           try {
             writeFileSync(reopenReceiptPath, JSON.stringify({
               ts: new Date().toISOString(), requested: firing.map(reopenKey),
               swept, deferrals, remaining: deferrals.map((x) => x.directive),
               ...(partials.length ? { partials } : {}),
+              // a closed directive whose slice the fold refused as already-asked, with the plan row that answered it
+              ...(answered.length ? { answered_elsewhere: answered } : {}),
               dominant_element_gap, domClosed: dom,
               directive_qids: reopenQids, born: reopenBorn,
               remedy_terms: accounting?.computable === true ? accounting.rows : null,
@@ -11038,6 +11086,7 @@ async function pipelineInner(job, opts = {}) {
           // minted subset — the refusal is disclosed per directive (receipt `partials` row on a close,
           // folded into the defer reason otherwise), never dropped into the aggregate count alone.
           const regPartialMint = new Map();
+          const regAnsweredBy = new Map();   // reopenKey → the plan rows that answered its slices the fold refused as already-asked
           // — the per-TERM rows the remedy ledger accounts. One row per remedy term per directive,
           // recorded at the mint seam (the only place the term→qid mapping exists) so the receipt can
           // later say what each term asked and what came back. reopenKey → [{term, predicates, qids,
@@ -11197,10 +11246,16 @@ async function pipelineInner(job, opts = {}) {
                 const blocksByQid = new Map((bands[a] ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
                 return { outcome, executedQids, blocksByQid };
               };
-              const verifyOne = (d, ev) => verifyRegisterDirectiveClose({
-                qids: directiveQids.get(reopenKey(d)) ?? [], intendedClasses: directiveIntended.get(reopenKey(d)) ?? [],
-                executedQids: ev.executedQids, blocksByQid: ev.blocksByQid,
-              });
+              // A slice the fold refused as already-asked is checked on the row that answered it, as the remedy
+              // term ledger reads it; the directive it closes names that row in the receipt.
+              const verifyOne = (d, ev) => {
+                const v = verifyRegisterDirectiveClose({
+                  qids: directiveQids.get(reopenKey(d)) ?? [], intendedClasses: directiveIntended.get(reopenKey(d)) ?? [],
+                  executedQids: ev.executedQids, blocksByQid: ev.blocksByQid, foldRefusals: regFoldRefusals,
+                });
+                if (v.closed && v.answered_by) regAnsweredBy.set(reopenKey(d), v.answered_by);
+                return v;
+              };
               const mintedDirectives = regDirectives.filter((d) => (directiveQids.get(reopenKey(d)) ?? []).length);
               let ev = await dispatchAndVerify(added);
               regLastJoin = ev;
@@ -11541,7 +11596,8 @@ async function pipelineInner(job, opts = {}) {
           // ending states "closed on N of M remedy proposals; K refused: <reason>", never a bare close.
           const partials = swept.filter((k) => regPartialMint.has(k))
             .map((k) => ({ directive: k, note: `verified-closed on the minted subset — ${regPartialMint.get(k)}` }));
-          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting);
+          const answered = swept.filter((k) => regAnsweredBy.has(k)).map((k) => ({ directive: k, slices: regAnsweredBy.get(k) }));
+          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered);
           runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed, reopenFetchCap: regDirectives.some((d) => d.severity === "dominant-element") ? reopenFetchCap : undefined });
           // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
           // unlocked path demotes verified-closed directives inline when its pre-synthesis flush

@@ -116,6 +116,7 @@ reapOnExit(chrome)
 const wsUrl = await new Promise((resolve, reject) => {
   let devtools = ''
   const t = setTimeout(() => reject(new Error(`chrome reported no devtools endpoint in 60s:\n${devtools || '(nothing)'}`)), 60000)
+  chrome.stderr.setEncoding("utf8");
   chrome.stderr.on('data', (c) => { devtools += c; const m = devtools.match(/ws:\/\/[^\s]+/); if (m) { clearTimeout(t); resolve(m[0]) } })
 })
 const ws = new WebSocket(wsUrl)

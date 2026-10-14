@@ -161,6 +161,7 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
   // recorded search returned (observed in testing, 2026-10). The Claude engine removes its own the same way
   // (OWN_SEARCH_TOOLS, anthropic-agent.mjs). The case-law step's page fetcher is a tool server, not this.
   lines.push(`web_search = "disabled"`, "");
+  lines.push(...featuresToml(withheldFromCommands));
   lines.push(...commandEnvToml(withheldFromCommands));
 
   const emitServer = (name, s, { forwardCreds } = {}) => {
@@ -244,11 +245,30 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
 // Filter names are matched without regard to case, and codex refuses the whole file if two of them are
 // the same name in different case, so each name is written once whatever its case.
 export function commandEnvToml(withheld = []) {
-  const seen = new Set();
-  const names = (withheld ?? []).filter((n) => n && !seen.has(n.toUpperCase()) && seen.add(n.toUpperCase()));
+  const names = withheldNames(withheld);
   if (!names.length) return [];
-  return ["[features]", "shell_snapshot = false", "",
-    "[shell_environment_policy.filters]", ...names.map((n) => `${tomlString(n)} = "exclude"`), ""];
+  return ["[shell_environment_policy.filters]", ...names.map((n) => `${tomlString(n)} = "exclude"`), ""];
+}
+const withheldNames = (withheld) => {
+  const seen = new Set();
+  return (withheld ?? []).filter((n) => n && !seen.has(n.toUpperCase()) && seen.add(n.toUpperCase()));
+};
+
+// ── the program's own features: what is off on every stage ──────────────────────────────────────
+// ONE TABLE, WRITTEN ON EVERY STAGE: TOML refuses a table defined twice, so everything under `[features]`
+// is written here.
+//
+// THE SIGN-IN'S APPS ARE OFF. A ChatGPT sign-in brings the program's apps (connectors) into every session
+// as a tool server of its own, `codex_apps`, beside the servers a stage is given. Its search service opened
+// live web pages on a knockout stage once the program's own web search was off (measured on 0.162.0,
+// 2026-10-13). `apps = false` switches the integration off (the vendor's configuration reference,
+// `features.apps`: "Enable app (connector) integrations (stable; on by default)"), in every safety setting.
+// The web-search setting above never reached it: its filters "do not restrict connectors or MCP servers"
+// (`tools.web_search`, the same reference).
+//
+// The shell snapshot is off wherever names are withheld from commands (`commandEnvToml` says why).
+export function featuresToml(withheld = []) {
+  return ["[features]", "apps = false", ...(withheldNames(withheld).length ? ["shell_snapshot = false"] : []), ""];
 }
 
 // ── the stage's permission profile: what its shell commands may read and write ──────────────────────

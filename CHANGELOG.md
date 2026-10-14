@@ -4,6 +4,14 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.1-beta.6
+
+### Fixed
+
+- A clearance no longer reports a search as missing, or lowers a clear result, when the same search had already run under another entry.
+- The account connector's decision timeline no longer lists the engine's internal bookkeeping events.
+- The account connector now lists a knockout search's review step, and no longer says the search makes two research calls per name.
+
 ## 0.4.1-beta.5
 
 ### Fixed

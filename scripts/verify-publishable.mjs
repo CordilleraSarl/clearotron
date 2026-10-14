@@ -174,7 +174,9 @@ try {
         // this deliberately no longer starts.
         if (/report:\s+\S/.test(out) && /published:/.test(out)) { clearTimeout(t); finish(true); }
       };
+      child.stdout.setEncoding("utf8");
       child.stdout.on("data", read);
+      child.stderr.setEncoding("utf8");
       child.stderr.on("data", read);
       child.on("error", (e) => { clearTimeout(t); finish(false, `demo could not start: ${e.message}`); });
     });

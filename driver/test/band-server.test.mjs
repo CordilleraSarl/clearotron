@@ -70,6 +70,10 @@ function seedRun() {
   return runDir;
 }
 const ENV = (runDir) => ({ CLEAROTRON_BAND_RUN_DIR: runDir, CLEAROTRON_GATHER_SESSION_KEY: "clearotron-x-y-register-digest", CLEAROTRON_GATHER_AGENT: "mailagent" });
+// The shape served as placement reads it: the file byte for byte. Every other stage is served it without
+// placement's group orders (placements-orders-reach-placement-alone.test.mjs), so the tests below that
+// restore the file from its parts read it as placement.
+const PLACEMENT_ENV = (runDir) => ({ ...ENV(runDir), CLEAROTRON_GATHER_SESSION_KEY: "clearotron-x-y-placement-inquiry", CLEAROTRON_BAND_GROUPS: "1" });
 const readLog = (runDir) => existsSync(driverDir(runDir, "reading-log.jsonl"))
   ? readFileSync(driverDir(runDir, "reading-log.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)) : [];
 
@@ -407,7 +411,7 @@ test("band_shape: a floors-heavy shape serves in parts, each under the MCP token
   assert.ok(md.length > 70_000, `fixture is genuinely over one part (${md.length} characters)`);
 
   // First call announces the parts contract.
-  const first = await mcpSession([INIT, call(2, "band_shape")], ENV(runDir));
+  const first = await mcpSession([INIT, call(2, "band_shape")], PLACEMENT_ENV(runDir));
   const t1 = textOf(first, 2);
   const m = t1.match(/^\[band_shape part 1\/(\d+)/);
   assert.ok(m, "an over-size shape announces part 1/M");
@@ -418,7 +422,7 @@ test("band_shape: a floors-heavy shape serves in parts, each under the MCP token
   // Fetch every part; each response must fit the MCP transport cap: MAX_MCP_OUTPUT_TOKENS defaults to
   // 25,000 tokens and this tabular md measures ~3.7 chars/token, so the 70,000-char part budget is
   // ~19k tokens — pinned here with banner overhead included. (The old 256KB bound was the WRONG cap.)
-  const rest = await mcpSession([INIT, ...Array.from({ length: total }, (_, i) => call(2 + i, "band_shape", { part: i + 1 }))], ENV(runDir));
+  const rest = await mcpSession([INIT, ...Array.from({ length: total }, (_, i) => call(2 + i, "band_shape", { part: i + 1 }))], PLACEMENT_ENV(runDir));
   const parts = Array.from({ length: total }, (_, i) => textOf(rest, 2 + i));
   for (const p of parts) assert.ok(p.length <= 70_600, `every served part stays under the token-cap budget (${p.length} chars)`);
 
@@ -455,11 +459,11 @@ async function shapeParts(runDir, env) {
 test("band_shape: given codex's answer size, every part fits under its cut and the parts still restore the shape", async () => {
   const { runDir, md } = seedCrowdedRun();
   const size = codexBandAnswerChars({});
-  const parts = await shapeParts(runDir, { ...ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(size) });
+  const parts = await shapeParts(runDir, { ...PLACEMENT_ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(size) });
   for (const p of parts) assert.ok(Buffer.byteLength(p) < 39_000, `a part ran to ${Buffer.byteLength(p)} bytes, past codex's cut`);
   const body = (p) => p.split("\n").slice(1, -1).join("\n");
   assert.equal(parts.map(body).join("\n"), md, "concatenated parts === band-shape.md");
-  const unchanged = await shapeParts(runDir, ENV(runDir));
+  const unchanged = await shapeParts(runDir, PLACEMENT_ENV(runDir));
   assert.ok(parts.length > unchanged.length, `${parts.length} parts at codex's size against ${unchanged.length} with none given`);
   assert.ok(unchanged[0].length > 60_000, "with no size given, a part is as long as it was");
 });
@@ -468,8 +472,8 @@ test("band_shape: a shape that fits one Claude answer but not codex's is split f
   // 500 records, one line each: the floors are marked on their lines rather than listed a second time.
   const { runDir, md } = seedCrowdedRun(500);
   assert.ok(md.length > 39_000 && md.length < 70_000, `the fixture sits between the two sizes (${md.length} characters)`);
-  assert.deepEqual(await shapeParts(runDir, ENV(runDir)), [md], "with no size given, the shape is served verbatim, no banner");
-  const parts = await shapeParts(runDir, { ...ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(codexBandAnswerChars({})) });
+  assert.deepEqual(await shapeParts(runDir, PLACEMENT_ENV(runDir)), [md], "with no size given, the shape is served verbatim, no banner");
+  const parts = await shapeParts(runDir, { ...PLACEMENT_ENV(runDir), CLEAROTRON_BAND_RESPONSE_CHARS: String(codexBandAnswerChars({})) });
   assert.ok(parts.length >= 2, "at codex's size the same shape is served in parts");
   assert.match(parts[0], /^\[band_shape part 1\/\d+/);
   assert.ok(parts.every((p) => Buffer.byteLength(p) < 39_000));

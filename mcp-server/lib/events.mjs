@@ -165,6 +165,20 @@ function classify(e, st, rat) {
   }
 }
 
+// THE KINDS classify() INTERPRETS — one per `case` above, the engine-internal kinds below excepted; the two sets
+// together are pinned to the cases by events.test.mjs. Every other event reaches the timeline through the
+// passthrough, under the engine's own name for it. That is the engineering view's to keep; a client account's
+// timeline keeps these kinds alone (audit-view.mjs accountTimeline).
+export const INTERPRETED_EVENT_KINDS = new Set(["start", "axes", "stage", "skip", "failover", "attempt", "skeptic-escalation",
+  "escalation-skipped", "escalation-noop", "verdict", "verdict-2", "delivered-with-open-questions", "screen-gate-clean",
+  "screen-gate-violation", "audit", "provider-usage", "manual-rerun", "failed"]);
+
+// THE ENGINE-INTERNAL KINDS — classify() has a `case` for each, so that none passes through under its own name,
+// and projectTimeline drops every one of them (`isInternalEntry`). They are records about the engine's own
+// plumbing, not decisions, so they are listed apart from the interpreted kinds: a client account's timeline,
+// which keeps the interpreted kinds alone, would drop them even if one ever reached it.
+export const ENGINE_INTERNAL_EVENT_KINDS = new Set(["synthesis-call-normalised", "corrections-delivered"]);
+
 // A SUCCEEDED attempt is not a decision. put one `attempt` row on run.jsonl per model dispatch, and
 // with no kind filter here every stage began emitting BOTH `attempt-succeeded` and `stage-completed` —
 // +61 entries on 269 (+23%) on the 2026-07-29 delivered run, roughly double on a correction-heavy one, on

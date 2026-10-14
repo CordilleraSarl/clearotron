@@ -1060,6 +1060,7 @@ const wsUrl = await new Promise((resolve, reject) => {
     () => reject(new Error(`chrome did not report a devtools endpoint within 60s. Its stderr was:\n${devtools || '(nothing)'}`)),
     60000,
   )
+  chrome.stderr.setEncoding("utf8");
   chrome.stderr.on('data', (c) => {
     devtools += c
     const m = devtools.match(/ws:\/\/[^\s]+/)
