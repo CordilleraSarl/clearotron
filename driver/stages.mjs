@@ -4749,6 +4749,10 @@ export function dispatchBlockWhy(ctx, stage, id) {
 // onto a different real line passes while describing the wrong code. Adding below the last cited line
 // is the one placement that cannot do that. See band-size.mjs for what reads this.
 export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-digest", "synthesis"]);
+// THE STAGE THAT OWES THE SHAPE'S GROUPS THEIR FATES, and so the only one offered `band_lookup`'s group pages.
+// Every line a group lists gets a fate at placement; no other stage owes the band a read, and a synthesis that
+// was handed the same offer paged an exhausted group 2,498 times (measured on a test run, 2026-10-13).
+export const GROUP_READING_STAGES = new Set(["placement-inquiry"]);
 
 // The register reading step's order on the waiting families. One constant, because the cross-check
 // follow-up reads it word for word (repair-composers.mjs); declared last so no line above it moves.

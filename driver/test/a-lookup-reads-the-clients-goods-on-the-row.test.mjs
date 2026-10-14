@@ -87,7 +87,8 @@ test("the goods filter keeps records whose goods hold any of the words, and reco
 });
 
 test("the tool says what the goods filter does and what the served goods mean", async () => {
-  const r = await session([INIT, { jsonrpc: "2.0", id: 2, method: "tools/list" }], { CLEAROTRON_BAND_RUN_DIR: mkdtempSync(join(tmpdir(), "lookup-goods-list-")) });
+  // Placement's offer, which carries the group filter (stages.mjs GROUP_READING_STAGES).
+  const r = await session([INIT, { jsonrpc: "2.0", id: 2, method: "tools/list" }], { CLEAROTRON_BAND_RUN_DIR: mkdtempSync(join(tmpdir(), "lookup-goods-list-")), CLEAROTRON_BAND_GROUPS: "1" });
   const lookup = (r[2]?.result?.tools ?? []).find((t) => t.name === "band_lookup");
   assert.ok(lookup.description.includes("goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too)"));
   assert.ok(lookup.description.includes("`goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record"));

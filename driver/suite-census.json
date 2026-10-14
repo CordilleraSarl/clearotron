@@ -6063,6 +6063,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-group-filter-is-offered-to-placement-alone.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-heartbeat-stays-fresh-while-a-run-is-in-flight.test.mjs": {
           "tests": 4,
           "asserts": 8,

@@ -240,7 +240,7 @@ import { knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.
-import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mjs";
+import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING, GROUP_READING_STAGES } from "./stages.mjs";
 // The ONE kill-class discriminator (timeout/status_timeout fails, exit 137, killed, hard-wall/stall
 // signals; lane_wedge and rate_limited deliberately excluded). Reused verbatim so "a kill" means the
 // same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
@@ -927,7 +927,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     if (groups.length) {
       // The bound card index rides the same label the grant was resolved from — derived by the SAME
       // declared rule (`perAxis`), never by a second string-sniff that could disagree with it.
-      const cfg = buildGatherMcpConfig(groups, { sessionKey, agent, runDir, recordAxis: recordAxisFor(name)?.axis });
+      const cfg = buildGatherMcpConfig(groups, { sessionKey, agent, runDir, recordAxis: recordAxisFor(name)?.axis,
+        bandGroups: GROUP_READING_STAGES.has(name) });
       gatherMcpConfig = cfg ? JSON.stringify(cfg) : undefined;
       gatherAllowedTools = allowedToolsFor(groups);
       gatherSeatWrites = seatWritesForGroups(groups);   // — the SAME derivation allowedToolsFor uses

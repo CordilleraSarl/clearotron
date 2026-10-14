@@ -849,13 +849,14 @@ export const claudeToolAnswerBytes = (env = process.env) =>
 // The mcp-config server env carries ONLY the per-run, non-secret values (session key + ledger paths +
 // agent + the run dir the band tools serve, and the answer size above). Creds (CORSEARCH_SESSION_KEY /
 // PERPLEXITY_API_KEY / EUIPO_*) are inherited from the engine env.
-function serverEnv({ sessionKey, agent, runDir, recordAxis }) {
+function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false }) {
   const e = {};
   // — see buildGatherMcpConfig: a register server without a run is refused there, so by the time
   // the record-log line below runs, `runDir` is present for every config that could use it.
   if (sessionKey) e.CLEAROTRON_GATHER_SESSION_KEY = sessionKey;
   if (agent) e.CLEAROTRON_GATHER_AGENT = agent;
   if (runDir) e.CLEAROTRON_BAND_RUN_DIR = runDir;   // band-server: which run's band/shape/_records to serve + where the reading log lands
+  if (bandGroups) e.CLEAROTRON_BAND_GROUPS = "1";   // band-server: offer the shape's group pages (stages.mjs GROUP_READING_STAGES)
   // conversion 5 — THE BOUND CARD INDEX. A fan-out recording stage writes ONE member of a
   // per-ordinal artifact, and which one is the DRIVER's answer: it knows what it fanned out. Handed to
   // the server per turn so the acceptance boundary can refuse a payload naming any other index, which
@@ -899,7 +900,7 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis }) {
 
 // Build the mcp-config object for a set of groups. Returns { config: <object>, servers: [...] } or null if
 // the groups need no MCP server (e.g. caselaw-only EUR-Lex via WebFetch needs no server but the bridges do).
-export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis } = {}) {
+export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false } = {}) {
   const localKeys = new Set(), bridgeKeys = new Set();
   for (const g of groups) { const r = resolveGroup(g); r.local.forEach((k) => localKeys.add(k)); r.bridges.forEach((k) => bridgeKeys.add(k)); }
   const mcpServers = {};
@@ -929,7 +930,7 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
         + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
-  const env = serverEnv({ sessionKey, agent, runDir, recordAxis });
+  const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups });
   for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env };
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at
   // all, so a case-law tool call had nowhere to log: `tool-calls.jsonl` recorded server/tool/ok and the
