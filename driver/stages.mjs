@@ -2610,7 +2610,7 @@ export const STAGES = {
       `Adopt or override each placement BY ENGAGING ITS reason — an override quotes the reason it contradicts (never silently re-tiers), and a kept tier may still tighten a label while reusing the reason. On a corrective/repair pass, do NOT re-read the whole placement file: the tiers are in ${P.placementModel}, and the md's rulings tail is handed to you verbatim in this dispatch (the PLACEMENT RULINGS TAIL block) — adjudicate against it there.`,
       // judgment-relocation (2026-06-23): the COMPLETE named band — run the relevance gate over the REAL
       // material. PR-8: read via the band tools (shape whole + logged lookups), never by slicing the raw file.
-      BAND_READING_CONTRACT,
+      BAND_READING_CONTRACT_AFTER_PLACEMENT,
       `Reconcile your Coverage ledger against the shape's crowd descriptors: an `+"`incomplete`"+` slice is an open crowd the lawyer must weigh (a count-only / unenumerable slice), never a clean.`,
       // P2-A (charter P2d): identity collapse is CODE-derived before you read — the shape's Positions
       // section (and _driver/register-positions.json) is the exact-identity projection. "Owner
@@ -3198,7 +3198,7 @@ export const STAGES = {
       // dangerous named band or reported HONEST INCOMPLETENESS; you read the complete material and decide
       // relevance, risk, sufficiency and prioritisation. PR-8: the reading goes through the band tools
       // (shape whole + logged lookups) — nothing was sampled away upstream, and nothing is sliced by hand.
-      BAND_READING_CONTRACT,
+      BAND_READING_CONTRACT_AFTER_PLACEMENT,
       // PR-8: synthesis holds NO live register tools — by design, never an outage. The funnel owns
       // enumeration; a register check this stage still wants is either answerable from the frozen
       // material (the band tools) or it is NEW SEARCH WORK, which enters only through the supplemental
@@ -4753,6 +4753,11 @@ export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-diges
 // Every line a group lists gets a fate at placement; no other stage owes the band a read, and a synthesis that
 // was handed the same offer paged an exhausted group 2,498 times (measured on a test run, 2026-10-13).
 export const GROUP_READING_STAGES = new Set(["placement-inquiry"]);
+// The contract as the stages after placement read it: without "Every floor has a fate on the form.", which is an
+// order to placement, whose form it names. The digest and synthesis owe no floor a fate (Krzys's ruling,
+// 2026-10-14). Removed from the one contract, never restated, so the two cannot drift apart.
+export const FLOOR_FATE_ORDER = "Every floor has a fate on the form.";
+export const BAND_READING_CONTRACT_AFTER_PLACEMENT = BAND_READING_CONTRACT.replace(` ${FLOOR_FATE_ORDER}`, "");
 
 // The register reading step's order on the waiting families. One constant, because the cross-check
 // follow-up reads it word for word (repair-composers.mjs); declared last so no line above it moves.

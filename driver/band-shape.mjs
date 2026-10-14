@@ -1082,6 +1082,14 @@ const floorLineCount = (groups) => ["a", "b", "c", "d", "no_goods"].reduce((n, g
 /** The lookup that pages a group, as the shape and the form's refusal both name it, so the two cannot drift. */
 export const groupPageCall = (g) => `band_lookup {"group":"${g}"}`;
 
+// PLACEMENT'S ORDERS IN THE SHAPE. Three sentences under the groups tell the reader to give every line a fate,
+// and only placement owes the groups that. The band server serves the shape without them to every other
+// stage (Krzys's ruling, 2026-10-14), so they are declared once here and removed there by these same strings.
+export const SORT_THE_NEAR_ONES = "A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.";
+export const ONE_SET_ASIDE_ROW = "Write down what you set aside and why: one row, with this count.";
+export const A_FATE_BY_NAME = "Each line takes its own fate by name; no group row covers these lines.";
+export const PLACEMENT_GROUP_ORDERS = Object.freeze([SORT_THE_NEAR_ONES, ONE_SET_ASIDE_ROW, A_FATE_BY_NAME]);
+
 function renderGroupsMd(md, groups, rows = []) {
   md.push("", "## The band in the lawyer's order — for the client's goods first", "");
   if (groups.dominant_term && groups.manifest_dominant && normKey(groups.dominant_term) !== normKey(groups.manifest_dominant))
@@ -1127,7 +1135,7 @@ function renderGroupsMd(md, groups, rows = []) {
         ? `${count(grp)}. A thousand or more? The field is crowded. These are ${crowd[g]}. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. ${firstPage}; page with ${groupPageCall(g)} only where a line needs reading.`
         : grp.lines <= READ_ALL_LINES
           ? `${count(grp)}. Fifty? Read them all.`
-          : `${count(grp)}. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.`, "");
+          : `${count(grp)}. ${SORT_THE_NEAR_ONES}`, "");
     md.push(...head);
     for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) { rows.push([md.length, l.key]); md.push(row(l)); }
     md.push("");
@@ -1137,10 +1145,10 @@ function renderGroupsMd(md, groups, rows = []) {
   // more, where its one row stands on that page read and the count.
   const rest = groups.rest;
   const restCrowded = rest.records >= groups.crowded_at;
-  md.push(`**The rest: ${count(rest)}${outside}** — every record in none of (a) to (d) above. ${!rest.lines ? "Write down what you set aside and why: one row, with this count."
+  md.push(`**The rest: ${count(rest)}${outside}** — every record in none of (a) to (d) above. ${!rest.lines ? ONE_SET_ASIDE_ROW
     : restCrowded
       ? `A thousand or more? The field is crowded. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. ${firstPage}; page with ${groupPageCall("rest")} only where a line needs reading.`
-      : `${rest.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest."} Write down what you set aside and why: one row, with this count.`}`);
+      : `${rest.lines <= READ_ALL_LINES ? "Fifty? Read them all." : SORT_THE_NEAR_ONES} ${ONE_SET_ASIDE_ROW}`}`);
   if (rest.lines) {
     md.push("", ...head);
     for (const l of restCrowded ? rest.list.slice(0, groups.first_page) : rest.list) { rows.push([md.length, l.key]); md.push(row(l)); }
@@ -1157,7 +1165,7 @@ function renderGroupsMd(md, groups, rows = []) {
       : `**Goods the test could not read: ${count(ng)}.**`;
     md.push("", crowded
       ? `${lead} A thousand or more? ${firstPage}, the floors first, then the live ones in the ordered classes. Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded. A floor here is placed or set aside by name on its status or its territory; this row never covers it. Where more floors are counted than this page shows, page the rest with ${groupPageCall("no_goods")}; they come first.`
-      : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} Each line takes its own fate by name; no group row covers these lines.${tested.source === "none" ? "" : ' A line marked "on file, not readable" has goods on file: open its record with band_record before its fate. A line marked "no goods on file" has nothing to open.'} A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.`, "");
+      : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} ${A_FATE_BY_NAME}${tested.source === "none" ? "" : ' A line marked "on file, not readable" has goods on file: open its record with band_record before its fate. A line marked "no goods on file" has nothing to open.'} A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.`, "");
     md.push(...head);
     for (const l of crowded ? ng.list.slice(0, groups.first_page) : ng.list) { rows.push([md.length, l.key]); md.push(row(l)); }
   }

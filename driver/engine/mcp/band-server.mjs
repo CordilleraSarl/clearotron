@@ -21,7 +21,7 @@ import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
 import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
-import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey } from "../../band-shape.mjs";
+import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, PLACEMENT_GROUP_ORDERS } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
 import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish } from "../../record-goods.mjs";
@@ -265,7 +265,7 @@ function bandShape(params) {
   const p = format === "json" ? shapeJsonPath() : shapeMdPath();
   if (!RUN_DIR) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: "ERROR: CLEAROTRON_BAND_RUN_DIR not set — band tools are wired per run by the driver." }; }
   if (!existsSync(p)) { logRead("band_shape", { format }, { ok: false }); return { isError: true, text: `ERROR: ${p} not found — the driver derives it after the register fan-in; if the band exists but the shape does not, report this as a driver defect (do NOT slice the raw band instead).` }; }
-  const text = readFileSync(p, "utf8");
+  const text = format === "md" && !GROUP_PAGES ? withoutPlacementOrders(readFileSync(p, "utf8")) : readFileSync(p, "utf8");
   const parts = splitAtLines(text, SHAPE_PART_SERVED);
   const total = parts.length;
   const read = format === "md" ? linesByPart(parts) : null;
@@ -542,6 +542,10 @@ function bandRecord(params = {}) {
 // the lookup without `group`, in the words every stage had before group pages existed. A group argument that
 // arrives anyway is served as before: the offer changes, not what the tool answers.
 const GROUP_PAGES = process.env.CLEAROTRON_BAND_GROUPS === "1";
+// The same holds for the shape's own orders under the groups: placement reads them, and every other stage is
+// served the shape without them (Krzys's ruling, 2026-10-14). Each is removed with the space before it, inside
+// its line, so no line moves and the line each listed mark is printed on, which `linesByPart` reads, still holds.
+const withoutPlacementOrders = (text) => PLACEMENT_GROUP_ORDERS.reduce((t, order) => t.split(` ${order}`).join("").split(order).join(""), text);
 const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
 const LOOKUP_GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
 const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page)";
