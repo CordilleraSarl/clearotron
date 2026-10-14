@@ -13,8 +13,8 @@
 //
 // WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: a
 // nested row that conflicts with a top-level one, two nested rows for one ordinal, a nested row that is not a
-// finding object with a whole-number ordinal, a key off the record's ladder, an envelope that would re-version
-// the record, and a first save that has no stored record to patch. Those arms below are characterisation:
+// finding object with a whole-number ordinal, a narrative that is not an object, a key off the record's ladder, an
+// envelope that would re-version the record, and a first save that has no stored record to patch. Those arms below are characterisation:
 // green before and after.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -583,6 +583,26 @@ for (const [what, call, re] of [
 ]) {
   test(`a nested row that is not a finding object with a whole-number ordinal keeps main's refusal: ${what}`, () => {
     refusesUnchanged(saved(), call(), re, `a nested row that is not a finding object with a whole-number ordinal: ${what}`);
+  });
+}
+
+// ── A NARRATIVE THAT IS NOT AN OBJECT IS READ AS MAIN READS IT ───────────────────────────────────────
+//
+// A narrative is an object of sections. Sent beside a list-less findings object as text, a list or null, it is no
+// section patch: read as registers, its characters became numbered keys in the held base, its prose reached no file,
+// and the tool answered that the call was accepted. Such a call is read as main reads it and meets main's refusal
+// byte for byte, which names the narrative's shape so the sections can be sent again.
+const NARRATIVE_MISSING = /^synthesis_narrative_missing: `narrative` must be an object of typed sections — the driver renders the document, so it needs the sections rather than the prose of a whole file$/;
+
+for (const [what, narrative] of [
+  ["as text", "The cross-finding read, sent as prose rather than as sections."],
+  ["as a list", ["The cross-finding read, sent as a list."]],
+  ["as null", null],
+]) {
+  test(`a narrative sent ${what} beside a list-less findings object keeps main's refusal`, () => {
+    refusesUnchanged(saved(), { narrative, findings: { coverage: COVERAGE } }, NARRATIVE_MISSING, `a narrative sent ${what}`);
+    refusesUnchanged(saved({ owed: true }), { narrative, findings: { coverage: COVERAGE } }, NARRATIVE_MISSING, `a narrative sent ${what}, records owed`);
+    refusesUnchanged(saved(), { narrative, findings: { coverage: COVERAGE }, findings_patch: [ROW2()] }, NARRATIVE_MISSING, `a narrative sent ${what}, beside a row`);
   });
 }
 

@@ -539,10 +539,11 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
 // it carries, and the merged record is judged whole as any call is.
 //
 // MAIN'S READING STANDS FOR EVERYTHING ELSE. A list-less object reads as registers only when there is a stored
-// record to patch, every key it carries is a register of that record's own ladder (the one its schema_version
-// gives) or its rows, every key the call carries beside its narrative and that object is one too, its envelope
-// is absent or equal to the stored one wherever it is sent, and its rows are unambiguous. Any other shape is read
-// exactly as it always was, so the model meets the refusal it always met, byte for byte.
+// record to patch, a narrative sent beside it is an object, every key it carries is a register of that record's
+// own ladder (the one its schema_version gives) or its rows, every key the call carries beside its narrative and
+// that object is one too, its envelope is absent or equal to the stored one wherever it is sent, and its rows are
+// unambiguous. Any other shape is read exactly as it always was, so the model meets the refusal it always met,
+// byte for byte.
 
 const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 // Key-sorted JSON: "the same content" must not turn on the order the model wrote its keys in.
@@ -589,6 +590,9 @@ function liftNestedRows(top, nested) {
 export function registerPatchOf(stored, call) {
   const doc = call?.findings;
   if (!isPlainObject(stored?.findings) || !isPlainObject(doc) || Object.hasOwn(doc, "findings")) return null;
+  // A narrative sent beside it is an object of sections. Text, a list or null is no section patch: merged, its
+  // characters would become numbered keys in the base while its prose reached no file.
+  if (call.narrative !== undefined && !isPlainObject(call.narrative)) return null;
   // What it may carry: a register of the stored record's own ladder, or rows.
   const allowed = new Set([...topKeysForVersion(stored.findings.schema_version).filter((k) => k !== "findings"), "findings_patch"]);
   if (Object.keys(doc).some((k) => !allowed.has(k))) return null;
