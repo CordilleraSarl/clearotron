@@ -6156,6 +6156,24 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
 }
 
 /**
+ * THE REPAIR'S RUN-LOG ROW, built from what `repairUnnamedRemovals` returned. PURE.
+ *
+ * `base` says what the merge base took, in the words the basis derivation's row uses for the same edit:
+ * `restored`, or `unchanged` where the base already held what came back; `refused` where the acceptance boundary
+ * refused the edit and the base was left as it was, so the next accepted patch drops the restore again; and
+ * `no-base` where the run holds no base, so a later patch is refused for having none. The sidecar keeps the reason.
+ */
+export function removalRepairedRow(repaired) {   // @internal
+  const b = repaired?.base;
+  const base = !b ? null : b.ok ? (b.changed ? "restored" : "unchanged") : /^no_base:/.test(String(b.reason)) ? "no-base" : "refused";
+  return { event: "corrective-unnamed-removal-repaired", defect: true,
+    restored: repaired.restoredFindings.length, keys: repaired.restoredKeys.length,
+    rows: repaired.restoredRows.length,
+    leftRemoved: repaired.leftRemoved.length,
+    findings: repaired.restoredFindings.map((f) => `${f.ordinal}:${f.mark}`), ...(base ? { base } : {}) };
+}
+
+/**
  * The ordinals the reviewer's flags name, from the typed call where the run has one and the rendered
  * parse where it does not — the same two sources, in the same order, that `correctionsExtra` uses to
  * build the worklist. A flag with no `on` names no ordinal and is matched by MARK instead.
@@ -12728,11 +12746,7 @@ async function pipelineInner(job, opts = {}) {
           // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
           // and cannot remove a finding at all, so e2e asserts this count is ZERO — a firing reports the
           // primary fix not holding, never this backstop working.
-          runLog(run.runDir, { event: "corrective-unnamed-removal-repaired", defect: true,
-            restored: repaired.restoredFindings.length, keys: repaired.restoredKeys.length,
-            rows: repaired.restoredRows.length,
-            leftRemoved: repaired.leftRemoved.length,
-            findings: repaired.restoredFindings.map((f) => `${f.ordinal}:${f.mark}`) });
+          runLog(run.runDir, removalRepairedRow(repaired));   // with `base`: whether the merge base took the restore
           note(`[corrections] the corrective pass removed ${repaired.restoredFindings.length} finding(s) `
             + `no flag named — restored whole from the pre-corrective snapshot: `
             + `${repaired.restoredFindings.map((f) => `#${f.ordinal} ${f.mark}`).join(", ")}`

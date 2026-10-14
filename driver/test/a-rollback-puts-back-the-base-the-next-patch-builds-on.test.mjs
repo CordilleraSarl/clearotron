@@ -239,3 +239,49 @@ test("a restore the acceptance boundary refuses leaves the base as it was, and t
     assert.match(String(r.base?.reason), /^synthesis_coverage_state_invalid:/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+// ── THE REPAIR'S RUN-LOG ROW SAYS WHAT THE BASE TOOK ──────────────────────────────────────────────────
+//
+// The repair's sidecar has always said whether the base took the restoration; the run log did not, so a reader
+// of the run could not see a restore the next patch would drop again. The row now carries `base`, in the words
+// the basis derivation's row uses for the same edit: `restored` (or `unchanged`, where the base already held it),
+// `refused` where the acceptance boundary refused the edit and the base was left as it was, and `no-base` where
+// the run holds no base, so a later patch is refused for having none rather than dropping the restore.
+test("the removal repair's run-log row says what the merge base took", async () => {
+  const { removalRepairedRow } = await import("../pipeline.mjs");
+  assert.equal(typeof removalRepairedRow, "function", "the repair's run-log row cannot be built, so what it says about the base cannot be read");
+  const repairOn = (dir, edit = (held) => held) => {
+    accepted(recordSynthesis(dir, { narrative: NARRATIVE, findings: record(APART) }), "the first save");
+    const pre = edit(snapshot(dir));
+    const doc = record(APART);
+    accepted(recordSynthesis(dir, { narrative: NARRATIVE, findings: { ...doc, findings: [doc.findings[0], doc.findings[1]] } }), "the pass's save");
+    return repairUnnamedRemovals(P(dir), dir, pre, [], []);
+  };
+  const dirs = [runDir(), runDir(), runDir()];
+  try {
+    const restored = repairOn(dirs[0]);
+    assert.deepEqual(removalRepairedRow(restored), { event: "corrective-unnamed-removal-repaired", defect: true,
+      restored: 1, keys: 0, rows: 0, leftRemoved: 0, findings: ["3:MARVETTE"], base: "restored" }, "a restore the base took");
+
+    // a restore the acceptance boundary refuses: the snapshot carries a coverage row the transport would refuse
+    const refused = repairOn(dirs[1], (pre) => {
+      const preDoc = JSON.parse(pre.model.raw);
+      preDoc.coverage = [...(preDoc.coverage ?? []), { area: "an invented slice", state: "not-a-state" }];
+      const raw = JSON.stringify(preDoc, null, 2);
+      return { ...pre, raw, sha: sha(raw), model: { raw, sha: sha(raw) } };
+    });
+    assert.equal(removalRepairedRow(refused).base, "refused", "a restore the boundary refused");
+
+    // a run that holds no merge base when the repair runs
+    const bare = dirs[2];
+    accepted(recordSynthesis(bare, { narrative: NARRATIVE, findings: record(APART) }), "the first save");
+    const pre = snapshot(bare);
+    const doc = record(APART);
+    accepted(recordSynthesis(bare, { narrative: NARRATIVE, findings: { ...doc, findings: [doc.findings[0], doc.findings[1]] } }), "the pass's save");
+    rmSync(acceptedAt(bare));
+    assert.equal(removalRepairedRow(repairUnnamedRemovals(P(bare), bare, pre, [], [])).base, "no-base", "a run with no base");
+
+    // the base already held what came back
+    assert.equal(removalRepairedRow({ ...restored, base: { ok: true, changed: false } }).base, "unchanged", "a base that already held it");
+  } finally { for (const d of dirs) rmSync(d, { recursive: true, force: true }); }
+});
