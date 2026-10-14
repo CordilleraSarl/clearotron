@@ -292,8 +292,8 @@
           "todos": 0
         },
         "a-correction-patches-what-it-carries.test.mjs": {
-          "tests": 40,
-          "asserts": 76,
+          "tests": 43,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
