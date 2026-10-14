@@ -1,5 +1,13 @@
 # clearotron-driver
 
+## 0.4.1-beta.6
+
+### Patch Changes
+
+- Fixed: A clearance no longer reports a search as missing, or lowers a clear result, when the same search had already run under another entry.
+- Fixed: The account connector's decision timeline no longer lists the engine's internal bookkeeping events.
+- Fixed: The account connector now lists a knockout search's review step, and no longer says the search makes two research calls per name.
+
 ## 0.4.1-beta.5
 
 ### Patch Changes
