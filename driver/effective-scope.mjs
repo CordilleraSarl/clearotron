@@ -203,8 +203,8 @@ export function narrowingOrderLine(job, profile, inScopeClasses = null) {
       `the major markets (${major.join(", ")})`,
     ].filter(Boolean).join(", else ")}`;
   return `NARROWING A CROWD, in this order: first the goods and the classes, the client's goods words in `
-    + `${inScopeClasses ? `the order's classes [${inScopeClasses}]` : "the order's classes"}, then the classes the crowding owners `
-    + `file in; still a crowd, then the markets, ${markets}. From the narrowed lists, read what a lawyer would raise. `
+    + `${inScopeClasses ? `the order's classes [${inScopeClasses}]` : "the order's classes"}, then one of those classes at a time; `
+    + `still a crowd, then the markets, ${markets}. From the narrowed lists, read what a lawyer would raise. `
     + `What was counted and not read stays on its coverage row with its count: set aside, never clean.`;
 }
 

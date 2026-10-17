@@ -113,13 +113,15 @@ test("folding an attempt out does NOT renumber seq — a poll cursor never re-re
   assert.deepEqual(events.projectTimeline(evs, P, { sinceSeq: 0 }).timeline.map((t) => t.seq), [2, 3]);
 });
 
-test("the interpreted kinds are exactly classify's cases", async () => {
+test("the interpreted kinds and the engine-internal kinds are exactly classify's cases, and never the same kind", async () => {
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../lib/events.mjs", import.meta.url), "utf8");
   const body = src.slice(src.indexOf("function classify("), src.indexOf("\n}\n", src.indexOf("function classify(")));
   const cases = [...body.matchAll(/case "([^"]+)":/g)].map((m) => m[1]);
   assert.ok(cases.length >= 15, `only ${cases.length} cases read out of classify — the reading is broken, not the set`);
-  assert.deepEqual([...events.INTERPRETED_EVENT_KINDS].sort(), cases.sort());
+  assert.deepEqual([...events.INTERPRETED_EVENT_KINDS, ...events.ENGINE_INTERNAL_EVENT_KINDS].sort(), cases.sort());
+  for (const kind of events.ENGINE_INTERNAL_EVENT_KINDS)
+    assert.ok(!events.INTERPRETED_EVENT_KINDS.has(kind), `the engine-internal kind "${kind}" is also an interpreted kind a client account keeps`);
 });
 
 test("a client account's timeline keeps the interpreted kinds alone, and their seq as the full log numbered it", async () => {
@@ -142,4 +144,55 @@ test("a client account's timeline keeps the interpreted kinds alone, and their s
   const blob = JSON.stringify(acct);
   for (const name of ["stage-limit-derived", "foreign-record-links-blanked", "basis-derivation"])
     assert.ok(!blob.includes(name), `the engine's name "${name}" reached a client account`);
+});
+
+// The run log carries records about the engine's own transport that are not decisions and have no reader on a
+// timeline read out in front of lawyers and clients. Such a record is projected out entirely, as a succeeded
+// attempt is, and the seq numbering is assigned over the full log first, so a poll cursor is unaffected.
+test("an engine-internal record never reaches the timeline or the account's view of it, and seq numbering is kept", async () => {
+  const P = runs.resolveRun(RUN_ID).P;
+  const evs = [
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
+    { ts: "2026-07-29T19:05:00.000Z", event: "synthesis-call-normalised", stage: "synthesis", seq: 2, accepted: true,
+      decoded: ["corrections"], lifted: 0, overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 },
+    { ts: "2026-07-29T19:14:00.000Z", event: "verdict", verdict: "CONDITIONAL" },
+  ];
+  const { timeline } = events.projectTimeline(evs, P);
+  assert.deepEqual(timeline.map((t) => t.kind), ["start", "verdict"], "an engine-internal record reached the timeline");
+  assert.deepEqual(timeline.map((t) => t.seq), [0, 2], "projecting the record out renumbered the entries after it");
+  const { accountTimeline } = await import("../lib/audit-view.mjs");
+  assert.ok(!JSON.stringify(accountTimeline({ timeline })).includes("synthesis-call-normalised"),
+    "the account's view of the timeline names the engine-internal record");
+});
+
+test("the record of whether the reviewer's corrections reached the delivered report never reaches the timeline", () => {
+  const P = runs.resolveRun(RUN_ID).P;
+  const evs = [
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
+    { ts: "2026-07-29T19:30:00.000Z", event: "corrections-delivered", ok: true, flags: 2, outcomes: { delivered: 1, "not-found": 1 } },
+    { ts: "2026-07-29T19:31:00.000Z", event: "corrections-delivered", ok: false, error: "the record could not be read" },
+  ];
+  const { timeline } = events.projectTimeline(evs, P);
+  assert.deepEqual(timeline.map((t) => t.kind), ["start"], "a record about the reviewer's corrections reached the timeline");
+});
+
+// Both layers, for every engine-internal kind: the projection drops it, and a client account's view drops it again
+// if a timeline ever carried it there, because the account keeps the interpreted kinds alone.
+test("an engine-internal kind reaches neither the timeline nor a client account, even on a timeline that carried it", async () => {
+  const { accountTimeline } = await import("../lib/audit-view.mjs");
+  const P = runs.resolveRun(RUN_ID).P;
+  assert.deepEqual([...events.ENGINE_INTERNAL_EVENT_KINDS].sort(), ["corrections-delivered", "synthesis-call-normalised"]);
+  for (const kind of events.ENGINE_INTERNAL_EVENT_KINDS) {
+    const evs = [
+      { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
+      { ts: "2026-07-29T19:05:00.000Z", event: kind, stage: "synthesis", ok: true },
+      { ts: "2026-07-29T19:14:00.000Z", event: "verdict", verdict: "CONDITIONAL" },
+    ];
+    const projected = events.projectTimeline(evs, P);
+    assert.deepEqual(projected.timeline.map((t) => t.kind), ["start", "verdict"], `"${kind}" reached the timeline`);
+    const carried = { ...projected, timeline: [...projected.timeline, { ts: evs[1].ts, seq: 1, kind, decision: "engine-internal", internal: true }] };
+    const acct = accountTimeline(carried);
+    assert.deepEqual(acct.timeline.map((t) => t.kind), ["start", "verdict"], `"${kind}" reached a client account`);
+    assert.ok(!JSON.stringify(acct).includes(kind), `the engine's name "${kind}" reached a client account`);
+  }
 });

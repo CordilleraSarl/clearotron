@@ -14,7 +14,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { firstTimeRows, firstTimeLines, readRunRecord, NOT_RECORDED } from "../../scripts/e2e-first-time.mjs";
+import { firstTimeRows, firstTimeLines, readRunRecord, NOT_RECORDED, classOfEvent } from "../../scripts/e2e-first-time.mjs";
 
 const ok = (stage, attempt = 1, extra = {}) => ({ stage, row: { attempt, ok: true, engine: "engine-a", modelActual: "model-a", ...extra } });
 const clean = { attempts: [ok("matter-frame"), ok("register-digest")], runLog: [], status: { state: "delivered" } };
@@ -181,4 +181,22 @@ test("a failed step with no engine row is counted from its dispatch record, and 
   const engine = firstTimeRows({ attempts: [{ stage: "synthesis", row: { attempt: 1, ok: false, fail: "timeout", engine: "engine-a" } }],
     runLog: [{ event: "stage", stage: "synthesis", trigger: "fresh", ok: false, fail: "timeout" }] });
   assert.deepEqual(engine.rows.map((r) => r.kind), ["failed attempt"]);
+});
+
+// The synthesis transport records what it read a call as. A decode or a lift changed what the model sent, on a
+// call that was then accepted: that is code changing an answer, and it counts. Everything else on the row — an
+// override the merge has always applied, keys and rows a whole call carries and main ignores, a refused call —
+// changed nothing that was accepted, and counts nothing.
+test("a synthesis call the transport read differently counts as a repair only where code changed what was accepted", () => {
+  assert.notEqual(classOfEvent("synthesis-call-normalised"), null, "the transport's reading is a name this reader has not classed");
+  const row = (over) => ({ event: "synthesis-call-normalised", stage: "synthesis", seq: 2, accepted: true, decoded: [], lifted: 0,
+    overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0, ...over });
+  const kinds = (e) => firstTimeRows({ attempts: [ok("synthesis")], runLog: [e] }).rows.map((r) => r.kind);
+  assert.deepEqual(kinds(row({ decoded: ["corrections"] })), ["repair"], "an accepted decode is not counted");
+  assert.deepEqual(kinds(row({ lifted: 2 })), ["repair"], "an accepted lift is not counted");
+  assert.deepEqual(kinds(row({ accepted: false, decoded: ["corrections"], lifted: 1 })), [], "a refused call's reading was counted");
+  assert.deepEqual(kinds(row({ overridden: ["coverage"], keysIgnored: 2, rowsIgnored: 1, rowsDiffering: 1 })), [],
+    "a reading that changed nothing accepted was counted");
+  assert.equal(firstTimeRows({ attempts: [ok("synthesis")], runLog: [row({ keysIgnored: 1 })] }).firstTime, true,
+    "a run whose only reading changed nothing no longer reads first time");
 });

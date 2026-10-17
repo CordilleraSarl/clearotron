@@ -118,8 +118,8 @@ is, then read that list in full and decide.
 
 1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
    that list.
-2. Still a crowd? Ask again with the dominant goods word alone, then one class at a time: the instructed
-   classes first, then the incumbent's (the classes the owners crowding the list file in). Read each list.
+2. Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the instructed
+   classes. Read each list.
 3. Still a crowd? Ask again one question per market, in the order your dispatch names: the order's own countries;
    on a worldwide order, the customer's priority markets, else the markets the customer's field and brand
    point to, else the major markets. Read those lists.
