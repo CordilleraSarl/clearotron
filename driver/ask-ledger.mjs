@@ -170,6 +170,21 @@ function endingForQids(qids, join, ts) {
   return null;
 }
 
+/** The ending for a frame directive whose every slice repeated a family the reading turn withheld: that
+ *  judgment, in the turn's own recorded words, and nothing else — never `executed`, since nothing ran. A
+ *  family whose record cannot be read leaves the ask OPEN: there is no judgment to show, and an ending
+ *  without one would be invented. `withheld` is the record as readWithheldFamilies returns it. PURE. */
+function withheldEnding(families, withheld, ts) {
+  const reasons = families.map((f) => String(withheld?.[f]?.reason ?? "").trim());
+  if (!families.length || reasons.some((r) => !r)) return null;
+  const axes = [...new Set(families.map((f) => String(withheld?.[f]?.axis ?? "").trim()).filter(Boolean))];
+  return mkEnding("judged-immaterial", "reading-turn", {
+    reasons: [...new Set(reasons)],
+    evidence: axes.length ? axes.map((a) => `_driver/withheld-families-${a}.json`).join(", ") : "_driver/withheld-families",
+    ts,
+  });
+}
+
 /** The {ending, handoff} pair for one cross-check directive. Only `recall` is subject to the
  *  discharge rule; every other net keeps the ending it always had. PURE. */
 function recallEnding(name, qid, join, ts) {
@@ -195,7 +210,8 @@ function recallEnding(name, qid, join, ts) {
  *   3. escalation-skip      run.jsonl `escalation-skipped` events
  *   4. envelope             run.jsonl `envelope-decision` / `envelope-closed` events (+ state.failed)
  *   5. screen-gate          run.jsonl `screen-gate-violation` events + the unresolved sidecar
- *   6. frame-diff           _driver/frame-reopen.json (requested/swept/deferrals + directive_qids)
+ *   6. frame-diff           _driver/frame-reopen.json (requested/swept/deferrals + directive_qids), and the
+ *                           reading turn's withheld-family record for a slice its judgment settled
  *   7. form-neighbourhood   same receipt, rows the receipt's `born` map marks form-oracle-injected
  *   8. supplemental-proposal register-units/<axis>-supplemental-plan.json entries[] + rejected[]
  *   9. cross-check          _driver/register-xcheck.json + _driver/register-recall.json (+ overflow)
@@ -207,7 +223,7 @@ export function deriveAsks({
   escalationState = null, events = null,
   frameReopen = null, screenGateUnresolved = null,
   supplementalPlans = null, xcheck = null, recall = null,
-  planExecution = null,
+  planExecution = null, withheldFamilies = null,
 } = {}, { ts = null } = {}) {
   const join = planJoinFrom(planExecution);
   const evs = Array.isArray(events) ? events.filter((e) => e && typeof e === "object") : [];
@@ -346,6 +362,13 @@ export function deriveAsks({
     const twinOf = new Map((Array.isArray(fr.answered_elsewhere) ? fr.answered_elsewhere : [])
       .filter((x) => typeof x?.directive === "string")
       .map((x) => [x.directive, new Map((Array.isArray(x.slices) ? x.slices : []).filter((t) => t?.qid && t?.twin).map((t) => [t.qid, t.twin]))]));
+    // A slice refused as a family the reading turn withheld never ran either, and nothing answered it: the turn
+    // decided not to ask that family, and its record keeps why. The receipt names such slices
+    // (`withheld_by_judgment`). They are left out of the computed ending, which rests on the slices that ran,
+    // and a directive with no other slice ends on the turn's recorded judgment.
+    const withheldOf = new Map((Array.isArray(fr.withheld_by_judgment) ? fr.withheld_by_judgment : [])
+      .filter((x) => typeof x?.directive === "string")
+      .map((x) => [x.directive, new Map((Array.isArray(x.slices) ? x.slices : []).filter((t) => t?.qid && t?.family).map((t) => [t.qid, t.family]))]));
     for (const key of requested) {
       const qids = (Array.isArray(qidsByKey[key]) ? qidsByKey[key] : []).filter(Boolean);
       const place = bornByKey[key] === "form-neighbourhood" ? "form-neighbourhood" : "frame-diff";
@@ -355,9 +378,13 @@ export function deriveAsks({
         ending = mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts });
         handoff = "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission";
       } else if (swept.has(key)) {
-        ending = qids.length
-          ? endingForQids(qids.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts)   // computed — null (open) when the execution record disagrees
-          : mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts });
+        const settled = withheldOf.get(key) ?? new Map();
+        const ran = qids.filter((q) => !settled.has(q));
+        ending = !qids.length
+          ? mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts })
+          : ran.length
+            ? endingForQids(ran.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts)   // computed — null (open) when the execution record disagrees
+            : withheldEnding([...settled.values()], withheldFamilies, ts);
       }
       push({
         ask_id: `ask:frame:${slug(key)}`,
