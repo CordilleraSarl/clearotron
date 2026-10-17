@@ -382,8 +382,8 @@
           "todos": 0
         },
         "a-crowd-is-narrowed-by-goods-and-class-then-by-market.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
