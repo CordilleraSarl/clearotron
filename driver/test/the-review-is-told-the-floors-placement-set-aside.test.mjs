@@ -21,7 +21,7 @@ import { setAsideKeysOf, renderPlacementsJson } from "../placement-form.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { writePlacementForm } from "../placement-form-io.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
-import { placementFloorDecisionLines } from "../pipeline.mjs";
+import { placementFloorDecisionLines, messageCtxFor } from "../pipeline.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
@@ -129,4 +129,27 @@ test("the review after a repair reads the same sentence and decisions", () => {
     floorDecisions: LINES }));
   assert.ok(text.includes(SENTENCE));
   assert.ok(text.includes(`${LINES[0]}\n${LINES[1]}\n`));
+});
+
+test("each time the review's message is built, the list is read from the run as it stands then, never from a copy on the context", (t) => {
+  const { P } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/b1", ground: "the registration expired in 2019", on: "status" },
+  ]);
+  const message = (ctx) => String(STAGES["narrative-refutation"].message({ intakeAsks: [], job: {}, registerOnly: false, profileSelection: null, ...ctx }));
+  const stale = { paths: P, placementFloorDecisions: ["- a decision an earlier pass left on the context"] };
+  const built = messageCtxFor("narrative-refutation", stale);
+  assert.deepEqual(built.placementFloorDecisions, ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019"]);
+  assert.ok(message(built).includes("(/mark/eu/b1): set aside on its status"));
+  assert.ok(!message(built).includes("an earlier pass left"), "the review read a stale copy");
+  assert.ok(!message(messageCtxFor("narrative-refutation", { paths: P })).includes("(by design, never an outage).\n(none)\n"),
+    "a context that never set the list read \"(none)\" while a decision stands");
+  // A later pass places the floor: a build from that run reads the reversal, whatever the context still carries.
+  const { P: placedRun } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/b1", ground: "the registration expired in 2019", on: "status" },
+  ], { later: [[{ select: "/mark/eu/b1", tier: "sheet-2", reason: "near-identical, live in the class" }]] });
+  assert.deepEqual(messageCtxFor("narrative-refutation", { ...stale, paths: placedRun, placementFloorDecisions: built.placementFloorDecisions }).placementFloorDecisions, [],
+    "the review was told a floor placement now places was set aside");
+  assert.equal(messageCtxFor("synthesis", stale), stale, "another stage composes from its context as it is");
 });

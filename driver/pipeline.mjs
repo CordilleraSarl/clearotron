@@ -4627,6 +4627,17 @@ function clearedForSeat(runDir, label) {
   catch { return []; }
 }
 
+/**
+ * The context a stage's message is composed from. The review's floor check lists placement's standing decisions, and
+ * they are read here, from the run's files, each time its message is built: the review, its recheck, the delivery
+ * loop's whole review after a repeated placement pass and a review dispatched from a rebuilt context all read the
+ * decisions as they stand then, never a copy an earlier pass left on the context, and never "(none)" from a context
+ * that never set one. Every other stage composes from the context as it is.
+ */
+export function messageCtxFor(name, ctx) {   // @internal — driven by its test
+  return name === "narrative-refutation" && ctx?.paths ? { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) } : ctx;
+}
+
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
   if (!def) throw new Error(`unknown stage ${name}`);
@@ -4810,7 +4821,7 @@ async function stageOnce(name, ctx, opts = {}) {
       // passes nothing and keeps its own inputs line.
       changedInputs: opts.changedInputs ?? null,
     })
-    : (def.message(ctx) + (opts.extra ? `\n\n${opts.extra}` : ""));
+    : (def.message(messageCtxFor(name, ctx)) + (opts.extra ? `\n\n${opts.extra}` : ""));
   // Every stage runs as the forwarding agent (derived from the queue location). An explicit opts.agent wins.
   const execAgent = opts.agent ?? ctx.agent;
   // thinking: ONLY Anthropic models get a --thinking token; a cross-provider model (gpt/gemini) NEVER does, so
@@ -4877,7 +4888,7 @@ async function stageOnce(name, ctx, opts = {}) {
     // seat answering something it was no longer asked about is served from the ledger rather than refused
     // as out-of-list — and `still_open` keeps naming everything genuinely open.
     ...(patch == null && typeof def.refreshCtx === "function"
-      ? { refreshMessage: () => def.message(def.refreshCtx(ctx)) + (opts.extra ? `\n\n${opts.extra}` : "") }
+      ? { refreshMessage: () => def.message(messageCtxFor(name, def.refreshCtx(ctx))) + (opts.extra ? `\n\n${opts.extra}` : "") }
       : {}),
     // #5b: a followup is a warm session resume — tell runStage so a hard-wall timeout breaks after ONE attempt
     // (an already-over-budget resume can't fit the 1.5× extension; this restores ~1× the wall, was ~2.5×).
@@ -7162,9 +7173,6 @@ async function refute(ctx) {
     bandOrder: ctx.framework?.bands ?? null,
     maxRank: ctx.depth?.profileKeptBandRank ?? null,
   });
-  // The floors placement set aside, which the review's floor check lists with their grounds: on ctx for the same
-  // reason, so the recheck reads the list this review read.
-  ctx.placementFloorDecisions = placementFloorDecisionLines(ctx.paths);
   if (ctx.profileSelection.ordinals)
     runLog(ctx.run.runDir, { event: "profile-selection", of: ctx.profileSelection.total,
       selected: ctx.profileSelection.ordinals.length, keyless: ctx.profileSelection.keyless });
