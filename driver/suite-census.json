@@ -1288,8 +1288,8 @@
           "todos": 0
         },
         "a-record-placement-set-aside-is-not-a-lost-finding.test.mjs": {
-          "tests": 3,
-          "asserts": 5,
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
