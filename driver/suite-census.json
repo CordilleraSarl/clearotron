@@ -4401,6 +4401,12 @@
           "skips": 0,
           "todos": 0
         },
+        "placements-decisions-reach-the-audit-and-end-a-recall-position.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "placements-orders-reach-placement-alone.test.mjs": {
           "tests": 2,
           "asserts": 11,
