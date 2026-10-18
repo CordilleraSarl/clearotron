@@ -3153,6 +3153,30 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
 }
 
 /**
+ * THE FLOORS PLACEMENT SET ASIDE, AS THE REVIEW IS TOLD THEM: one line per floor of the shape now on disk whose
+ * set-aside stands, by name on its status or its territory, or under a crowd's row, with placement's ground. Only
+ * decisions that stand on the current shape are listed (`placementSetAsideGrounds`, which checks a group's row
+ * again); a floor with no standing decision is not listed, so the review flags it as before. [] when nothing stands
+ * or nothing can be read. IMPURE (reads the run).
+ */
+export function placementFloorDecisionLines(P) {   // @internal — driven by its test with a run's own files
+  try {
+    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
+    if (!Array.isArray(floors) || !floors.length) return [];
+    const groundOf = placementSetAsideGrounds(P);
+    const out = [];
+    for (const f of floors) {
+      const g = f?.record_id ? groundOf(f.record_id) : null;
+      if (!g?.ground) continue;
+      const who = `${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id})`;
+      if (g.by === "group") out.push(`- ${who}: covered by group (${g.group})'s row: ${g.ground}`);
+      else if (g.on === "status" || g.on === "territory") out.push(`- ${who}: set aside on its ${g.on}: ${g.ground}`);
+    }
+    return out;
+  } catch { return []; }
+}
+
+/**
  * Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`): `{counted}`, or `{absent}`
  * saying why there is no count. A shape with no groups has nothing to count by; an input that would not read is a
  * gap in the record. The two are not one fact, and the floor duty's artifact keeps them apart.
@@ -6527,7 +6551,7 @@ async function runPostRepairReview(ctx, P, run, scope) {
   const changedInputs = changedInputsOf(scope.changed, { narrative: P.narrative, findings: P.findings });
   const message = repairFollowup("narrative-refutation:post-repair-review", {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
-    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt,
+    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
@@ -7025,6 +7049,9 @@ async function refute(ctx) {
     bandOrder: ctx.framework?.bands ?? null,
     maxRank: ctx.depth?.profileKeptBandRank ?? null,
   });
+  // The floors placement set aside, which the review's floor check lists with their grounds: on ctx for the same
+  // reason, so the recheck reads the list this review read.
+  ctx.placementFloorDecisions = placementFloorDecisionLines(ctx.paths);
   if (ctx.profileSelection.ordinals)
     runLog(ctx.run.runDir, { event: "profile-selection", of: ctx.profileSelection.total,
       selected: ctx.profileSelection.ordinals.length, keyless: ctx.profileSelection.keyless });

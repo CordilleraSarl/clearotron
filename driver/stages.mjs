@@ -3592,7 +3592,7 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection }) => lines(
+    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions }) => lines(
       reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
@@ -3600,7 +3600,7 @@ export const STAGES = {
       // which is the one-country product always, and any run whose cut keeps everything.
       profileSelectionDirective(profileSelection),
       `Adversarially refute the narrative ${P.narrative} against the source files: register findings ${P.registerFindings}${registerOnly ? "" : `, common-law ${P.commonLaw}`}, placements ${P.placement} (structured tiers + reasons: ${P.placementModel}), matter frame ${P.matterContext}.`,
-      ...refutationStandingLines({ registerOnly, job }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions }),
       // PR-8: the reviewer verifies register claims against the RECORD, on the record — the same
       // read-only band tools the drafting stages used, every lookup logged to the reading audit.
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
@@ -4774,9 +4774,12 @@ export const DECIDE_WAITING_FAMILIES = "WHERE THE PLAN ABOVE HAS WAITING FAMILIE
 // The full review and the review after a delivery-check repair read the same standing tools and notes, the
 // same check on open items and the same recording lines. Each lives here once, so the two messages cannot
 // drift apart; the full review's message is byte-identical to what it was before they moved.
-export const refutationStandingLines = ({ registerOnly = false, job = {} } = {}) => [
+export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null } = {}) => [
   PLACEMENT_BORDERLINE_NOTE,
-  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them — a floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision already accounts for it under the placement rules. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+  // The validated decisions themselves, written by the driver from the placement form (pipeline.mjs
+  // placementFloorDecisionLines); none stands where the list is empty.
+  ...(Array.isArray(floorDecisions) && floorDecisions.length ? floorDecisions : ["(none)"]),
   `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
   registerOnly ? REGISTER_ONLY_NOTE : "",
   pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
