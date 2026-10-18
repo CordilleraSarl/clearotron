@@ -9,8 +9,9 @@
 // one row, leaves the placement seam exactly so: with the step's own ground, before the digest ever sees it.
 // Each one was listed as a divergence, "the reason given points at a different artifact", and on a crowded band
 // that is thousands of rows burying the few the check exists to find. Placement's own set-aside is the ruled
-// method's decision and stays out of that population, unless the digest ended the same position as a finding:
-// then the record did vanish, and it is still reported. Every mark is invented.
+// method's decision and stays out of that population, unless the digest ended the same position as a finding, in
+// the reconciliation or in its own typed calls: then the record did vanish, and it is still reported. The
+// reconciliation saying nothing of a position is not evidence of anything. Every mark is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { statedDivergenceFindings } from "../record-carry.mjs";
@@ -41,4 +42,12 @@ test("a set-aside position the digest ended as a finding is still reported, beca
 test("a run whose only stated drops are placement's set-asides has no population, which is its own answer", () => {
   const r = statedDivergenceFindings({ reconciliation: recon(), carryRows: [setAside("/mark/eu/a2"), setAside("/mark/eu/d1", "d")] });
   assert.deepEqual([r.computable, r.population_empty, r.diverged.length], [true, true, 0]);
+});
+
+test("a set-aside position the digest's own calls recorded as a finding is still reported, though the reconciliation names it nowhere", () => {
+  const r = statedDivergenceFindings({ reconciliation: recon(), carryRows: [setAside("/mark/eu/d1", "d"), setAside("/mark/eu/a2")],
+    digestFindingUris: ["/mark/EU/d1"] });
+  assert.equal(r.computable, true);
+  assert.deepEqual(r.diverged.map((d) => [d.uri, d.reconciliation_agrees]), [["/mark/eu/d1", false]],
+    "the reconciliation's silence erased a finding the digest's own calls recorded");
 });

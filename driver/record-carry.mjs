@@ -929,9 +929,12 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   // PLACEMENT'S OWN SET-ASIDE IS NOT A LOST FINDING. A record placement set aside, by name or by its group's row,
   // leaves the placement seam with the step's ground before the digest ever sees it: the ruled method's decision,
   // recorded where it was made. Read as a stated drop it was listed as a divergence pointing at another artifact,
-  // and on a crowded band those rows buried the few this check is for. It stays in the population only where the
-  // digest ended its position as a finding, because then the record did vanish.
-  const placementSetAside = (r) => r.stopped_at === "placement" && r.reason === "placement:set-aside" && !endedUris.has(lc(r.uri));
+  // and on a crowded band those rows buried the few this check is for. It stays in the population where the digest
+  // ended its position as a finding, because then the record did vanish: in the reconciliation, or in the finding
+  // rows the digest's own typed calls recorded, which the reconciliation's silence cannot erase.
+  const digestFound = new Set((Array.isArray(digestFindingUris) ? digestFindingUris : []).map(lc));
+  const placementSetAside = (r) => r.stopped_at === "placement" && r.reason === "placement:set-aside"
+    && !endedUris.has(lc(r.uri)) && !digestFound.has(lc(r.uri));
   const population = carryRows.filter((r) => r?.uri
     && r.reason_source === "step-stated"           // the sibling owns step-silent; step-structural is mechanical
     && !arrived.has(r.reach)                       // arrived, or arrived somewhere visible, is not a divergence
