@@ -29,7 +29,7 @@ const { STAGES, paths, PLACEMENT_SET_ASIDES_INTRO } = await import("../stages.mj
 const { buildBandShape, deriveRegisterPositions } = await import("../band-shape.mjs");
 const { setAsideKeysOf, renderPlacementsJson } = await import("../placement-form.mjs");
 const { unionPlacementForm } = await import("../placement-union.mjs");
-const { writePlacementForm } = await import("../placement-form-io.mjs");
+const { writePlacementForm, readPlacementForm, readPlacementFormInput } = await import("../placement-form-io.mjs");
 const { goodsWordCounter, goodsWordsMatched } = await import("../record-goods.mjs");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -140,4 +140,63 @@ test("THE CONTROL: a run whose placement set nothing aside tells neither stage o
   assert.equal(res.ok, true);
   assert.ok(prompts.length > 0, "guard: the engine calls were logged");
   assert.ok(!prompts.some((p) => p.includes("Placement's accepted set-asides")), "a stage was told of set-asides placement never made");
+});
+
+// ── a reload, and a correction: the run parks after placement, before the reading step, and is resumed ──
+// The reading step's turn is rate-limited on the first pass, so the run parks with placement's form on disk. Before
+// the resume, `between` may change that form as a later placement pass would. Claude's engine; the list is read from
+// the run's files, whatever engine sends it, and the arms above send it on both.
+async function parkAndResume(between = null) {
+  const root = mkdtempSync(join(tmpdir(), "clearotron-sat-resume-"));
+  const calls = join(root, "engine-calls.jsonl");
+  writeFileSync(LEDGER, "");
+  for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_PLACEMENT_SET_ASIDE", "MOCK_CLAUDE_CALL_LOG", "MOCK_CODEX_CALL_LOG", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY",
+    "CLEAROTRON_CODEX_PATH", "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH"]) delete process.env[k];
+  for (const [k, v] of Object.entries({
+    CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_CLAUDE_CALL_LOG: calls,
+    MOCK_PLACEMENT_SET_ASIDE: GROUND, MOCK_CLAUDE_RATELIMIT: String(Math.floor(Date.now() / 1000) + 3600), MOCK_CLAUDE_RATELIMIT_MATCH: "You are register DIGEST mode",
+  })) pinEnv(process.env, k, v);
+  const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
+  let first = null;
+  try { first = await pipeline({ ...JOB }); } catch { /* a parked run may throw its park */ }
+  const runDir = first?.runDir ?? null;
+  assert.ok(runDir && existsSync(join(runDir, "status.json")), "guard: the first pass left a run to resume");
+  const parkedAt = existsSync(calls) ? readFileSync(calls, "utf8").trim().split("\n").filter(Boolean).length : 0;
+  if (between) between(runDir);
+  delete process.env.MOCK_CLAUDE_RATELIMIT; delete process.env.MOCK_CLAUDE_RATELIMIT_MATCH;
+  const codename = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")).codename;
+  const { pipeline: resume } = await import(`../pipeline.mjs?bust=${Math.random()}`);
+  const res = await resume({ ...JOB }, { codename });
+  const prompts = readFileSync(calls, "utf8").trim().split("\n").filter(Boolean).slice(parkedAt).map((l) => JSON.parse(l).prompt ?? "");
+  return { first, res, prompts, runDir };
+}
+
+test("claude: a set-aside survives a reload — the resumed reading step and writer are still told it", async () => {
+  const { first, res, prompts } = await parkAndResume();
+  assert.notEqual(first?.ok, true, "guard: the first pass parked before the reading step");
+  assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
+  const digest = sent(prompts, "You are register DIGEST mode"), writer = sent(prompts, "Produce the joint synthesis narrative");
+  assert.ok(digest.length && writer.length, "guard: the resume sent both stages");
+  for (const [who, list] of [["the resumed reading step", digest], ["the resumed writer", writer]])
+    assert.ok(list[0].includes(PLACEMENT_SET_ASIDES_INTRO) && list[0].includes(`: set aside on its status: ${GROUND}`), `${who} lost placement's set-aside`);
+});
+
+test("claude: a set-aside a later pass reversed is gone — the resumed stages are not told it", async () => {
+  const { res, prompts } = await parkAndResume((runDir) => {
+    // A later placement pass places the line the first pass set aside, over the form the run holds.
+    const input = readPlacementFormInput(runDir);
+    const held = readPlacementForm(runDir);
+    const named = held.set_aside.map((e) => e.set_aside);
+    assert.equal(named.length, 1, "guard: the first pass set one line aside");
+    const { form } = unionPlacementForm(held, { rows: [{ select: named[0], tier: "sheet-2", reason: "the same mark, live in the class" }] }, input);
+    writePlacementForm(runDir, form);
+    writeFileSync(paths(runDir).placementModel, JSON.stringify(renderPlacementsJson(form.rows)));
+  });
+  // The delivery guard may hold this run: placement's files changed after the stage that wrote them, by hand here,
+  // which is the material it refuses to deliver from. What the resumed stages were told is the arm's question.
+  assert.ok(res, "guard: the resume ran");
+  const digest = sent(prompts, "You are register DIGEST mode"), writer = sent(prompts, "Produce the joint synthesis narrative");
+  assert.ok(digest.length && writer.length, "guard: the resume sent both stages");
+  for (const p of [...digest, ...writer]) assert.ok(!p.includes(GROUND), "a stage was told a set-aside the later pass reversed");
 });
