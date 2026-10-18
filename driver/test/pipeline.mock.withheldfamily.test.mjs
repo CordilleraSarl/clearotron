@@ -100,7 +100,8 @@ async function runOn(engine, env, { crowded } = {}) {
     asks: json(driverDir(res.runDir, "asks.json"))?.asks ?? null,
     doubts: json(driverDir(res.runDir, "doubts.json"))?.doubts ?? null,
     coverage: json(join(res.runDir, "findings.json"))?.coverage ?? null,
-    withheldRecord: json(driverDir(res.runDir, "withheld-families-primary-sweep.json"))?.families ?? {} };
+    withheldRecord: json(driverDir(res.runDir, "withheld-families-primary-sweep.json"))?.families ?? {},
+    audit: existsSync(join(res.runDir, "audit.md")) ? readFileSync(join(res.runDir, "audit.md"), "utf8") : null };
 }
 const refusalsOf = (events) => events.filter((e) => e.event === "frame-reopen-fold-refused").flatMap((e) => e.rows ?? []);
 const frameAsks = (asks) => asks.filter((a) => a.born?.place === "frame-diff");
@@ -135,10 +136,18 @@ for (const engine of Object.keys(ENGINES)) {
 
     // THE REPORT'S ACCOUNTING: no follow-up row, no open ask, no doubt, and the family on its own record.
     assert.deepEqual(r.coverage.filter((c) => /^Follow-up \//.test(String(c.area ?? ""))), [], "no follow-up row reaches the client");
-    const ask = frameAsks(r.asks);
-    assert.equal(ask.length, 1);
-    assert.equal(ask[0].ending?.kind, "executed", `the frame ask: ${JSON.stringify(ask[0])}`);
-    assert.ok(!ask[0].ending.evidence.includes(refused[0].qid), "the withheld question is not called executed");
+    // The request keeps each slice's disposition: the question that ran, and the one withheld on the turn's reason.
+    const asks = frameAsks(r.asks);
+    assert.deepEqual(asks.map((a) => a.ending?.kind ?? "open"), ["executed", "judged-immaterial"], `the frame asks: ${JSON.stringify(asks)}`);
+    assert.ok(!asks[0].ending.evidence.includes(refused[0].qid), "the withheld question is not called executed");
+    assert.deepEqual(asks[1].qids, [refused[0].qid]);
+    assert.deepEqual(asks[1].ending.reasons, [REASON], "the withheld question ends on the reading turn's own reason");
+    // The delivered audit shows both, each in the ledger's existing line.
+    const lines = (r.audit ?? "").split("\n## Ask Ledger\n")[1]?.split("\n").filter((l) => l.startsWith("- [frame-diff]")) ?? [];
+    assert.equal(lines.length, 2, `the audit's frame asks: ${JSON.stringify(lines)}`);
+    assert.match(lines[0], / — executed — qid\(s\) executed per plan-execution receipt: /);
+    assert.ok(!lines[0].includes(refused[0].qid), "the audit does not call the withheld question executed");
+    assert.ok(lines[1].endsWith(` — judged immaterial — ${REASON}`), lines[1]);
     assert.deepEqual(r.doubts.filter((d) => String(d.id).startsWith("doubt:remedy-accounting:")), []);
     assert.ok(r.execution.awaiting.some((x) => x.qid === CONTAINS_FAMILY), "the family reads as a question nobody asked");
     assert.ok(!r.execution.asked.some((x) => x.qid === CONTAINS_FAMILY));

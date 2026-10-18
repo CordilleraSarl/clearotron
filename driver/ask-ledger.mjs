@@ -366,13 +366,20 @@ export function deriveAsks({
     // decided not to ask that family, and its record keeps why. The receipt names such slices
     // (`withheld_by_judgment`). They are left out of the computed ending, which rests on the slices that ran,
     // and a directive with no other slice ends on the turn's recorded judgment.
+    //
+    // A directive with BOTH kinds of slice keeps each one's disposition: one record ends on the slices that
+    // ran, and a second, the same question, ends on the withheld slices exactly as a directive withheld whole
+    // ends. One record could carry one ending only, and computed over the slices that ran it named nothing of
+    // the slices withheld, while its qids still listed them beside an ending of `executed`.
     const withheldOf = new Map((Array.isArray(fr.withheld_by_judgment) ? fr.withheld_by_judgment : [])
       .filter((x) => typeof x?.directive === "string")
       .map((x) => [x.directive, new Map((Array.isArray(x.slices) ? x.slices : []).filter((t) => t?.qid && t?.family).map((t) => [t.qid, t.family]))]));
     for (const key of requested) {
       const qids = (Array.isArray(qidsByKey[key]) ? qidsByKey[key] : []).filter(Boolean);
       const place = bornByKey[key] === "form-neighbourhood" ? "form-neighbourhood" : "frame-diff";
-      let ending = null, handoff = null;
+      const born = { place, artifact: "_driver/frame-reopen.json", ref: key, ts: fr.ts ?? null };
+      const ask = { text: `${place === "form-neighbourhood" ? "mechanical form-oracle gap" : "blind frame-diff omission"}: ${key} — sweep it or say why not`, owner: "register", structured: null };
+      let ending = null, handoff = null, askedQids = qids, withheldPart = null;
       const d = deferrals.get(key);
       if (d) {
         ending = mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts });
@@ -380,20 +387,21 @@ export function deriveAsks({
       } else if (swept.has(key)) {
         const settled = withheldOf.get(key) ?? new Map();
         const ran = qids.filter((q) => !settled.has(q));
+        // A family the reading turn released after the fold is no longer withheld on record: its slices then end
+        // on what the execution record says of the family itself (it ran, it was deferred, or it stays open).
+        const settledEnding = () => withheldEnding([...settled.values()], withheldFamilies, ts) ?? endingForQids([...settled.values()], join, ts);
         ending = !qids.length
           ? mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts })
           : ran.length
             ? endingForQids(ran.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts)   // computed — null (open) when the execution record disagrees
-            // A family the reading turn released after the fold is no longer withheld on record: the ask then ends
-            // on what the execution record says of the family itself (it ran, it was deferred, or it stays open).
-            : withheldEnding([...settled.values()], withheldFamilies, ts) ?? endingForQids([...settled.values()], join, ts);
+            : settledEnding();
+        if (ran.length && settled.size) {
+          askedQids = ran;
+          withheldPart = { qids: qids.filter((q) => settled.has(q)), ending: settledEnding() };
+        }
       }
-      push({
-        ask_id: `ask:frame:${slug(key)}`,
-        born: { place, artifact: "_driver/frame-reopen.json", ref: key, ts: fr.ts ?? null },
-        ask: { text: `${place === "form-neighbourhood" ? "mechanical form-oracle gap" : "blind frame-diff omission"}: ${key} — sweep it or say why not`, owner: "register", structured: null },
-        qids, ending, handoff,
-      });
+      push({ ask_id: `ask:frame:${slug(key)}`, born, ask, qids: askedQids, ending, handoff });
+      if (withheldPart) push({ ask_id: `ask:frame:${slug(key)}:withheld`, born, ask, qids: withheldPart.qids, ending: withheldPart.ending, handoff: null });
     }
   }
 

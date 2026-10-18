@@ -277,21 +277,47 @@ test("no doubt and no unfinished count: the ledger keeps the withheld term apart
 
 // ── THE RUN'S ASK ────────────────────────────────────────────────────────────────────────────────────
 
-const askFor = (receipt, extra = {}) => deriveAsks({ frameReopen: receipt, ...extra }).find((a) => a.born?.ref === receipt.requested[0]);
+const asksFor = (receipt, extra = {}) => deriveAsks({ frameReopen: receipt, ...extra }).filter((a) => a.born?.ref === receipt.requested[0]);
+const askFor = (receipt, extra = {}) => asksFor(receipt, extra)[0];
 
-test("the run's ask for the directive ends on the slice that ran, never on the withheld one, and never opens", () => {
+/** A directive with one slice that ran through its twin and one slice the reading turn withheld. */
+function mixedReceipt() {
   const { exact, contains } = bothRefused();
   const key = "variant:inventedmark";
-  const receipt = { requested: [key], swept: [key], deferrals: [], directive_qids: { [key]: [exact, contains] },
+  return { exact, contains, receipt: { requested: [key], swept: [key], deferrals: [], directive_qids: { [key]: [exact, contains] },
     answered_elsewhere: [{ directive: key, slices: [{ qid: exact, twin: IDENTICAL }] }],
-    withheld_by_judgment: [{ directive: key, slices: [{ qid: contains, family: FAMILY }] }] };
+    withheld_by_judgment: [{ directive: key, slices: [{ qid: contains, family: FAMILY }] }] } };
+}
+
+test("a directive with a slice that ran and a slice the reading turn withheld keeps each slice's disposition, and calls neither by the other's", () => {
+  const { exact, contains, receipt } = mixedReceipt();
   const planExecution = { executed: [{ qid: IDENTICAL, state: "enumerated", records: 40, total_hits: 40 }] };
   assert.equal(askFor({ ...receipt, withheld_by_judgment: undefined }, { planExecution }).ending, null,
     "control: read without the withheld slices the ask stays open on a question that never ran");
-  const ask = askFor(receipt, { planExecution, withheldFamilies: withheldRecord() });
-  assert.equal(ask.ending?.kind, "executed");
-  assert.match(ask.ending.evidence, /primary-sweep:exact:inventedmark \(returned 40 records\)/);
-  assert.ok(!ask.ending.evidence.includes(contains) && !ask.ending.evidence.includes(FAMILY), "the withheld question is not called executed");
+  const asks = asksFor(receipt, { planExecution, withheldFamilies: withheldRecord() });
+  assert.equal(asks.length, 2, `one record for what ran, one for what was withheld: ${JSON.stringify(asks)}`);
+  const [ran, withheld] = asks;
+  assert.equal(ran.ending?.kind, "executed");
+  assert.match(ran.ending.evidence, /primary-sweep:exact:inventedmark \(returned 40 records\)/);
+  assert.ok(!ran.ending.evidence.includes(contains) && !ran.ending.evidence.includes(FAMILY), "the withheld question is not called executed");
+  assert.deepEqual(ran.qids, [exact], "and the record that ran lists only the slice that ran");
+  assert.equal(withheld.ending?.kind, "judged-immaterial");
+  assert.equal(withheld.ending.by, "reading-turn");
+  assert.deepEqual(withheld.ending.reasons, [REASON], "the withheld slice keeps the reading turn's reason, word for word");
+  assert.deepEqual(withheld.qids, [contains]);
+  assert.equal(withheld.handoff, null);
+  assert.equal(withheld.ask.text, ran.ask.text, "it is the same question, asked once");
+  assert.notEqual(withheld.ask_id, ran.ask_id, "and each record keeps its own id");
+});
+
+test("beside a withheld slice, a slice that did not run stays unresolved: open when the execution record cannot confirm it, a recovery when it was deferred", () => {
+  const { receipt } = mixedReceipt();
+  const kinds = (planExecution) => asksFor(receipt, { planExecution, withheldFamilies: withheldRecord() }).map((a) => a.ending?.kind ?? "open");
+  assert.deepEqual(kinds({ executed: [] }), ["open", "judged-immaterial"], "unconfirmed: the slice that should have run stays open");
+  assert.deepEqual(kinds({ executed: [], deferred: [{ qid: IDENTICAL, reason: "the register answered with an error" }] }), ["recovery", "judged-immaterial"],
+    "deferred: it is handed over as a recovery");
+  assert.deepEqual(asksFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} }).map((a) => a.ending?.kind ?? "open"), ["open", "open"],
+    "and without the turn's record the withheld slice has no judgment to end on, so it is open too");
 });
 
 test("every slice withheld: the ask ends judged immaterial on the reading turn's own reason, and stays open when that record is gone", () => {
