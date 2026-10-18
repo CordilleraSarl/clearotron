@@ -11,7 +11,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -101,3 +101,19 @@ for (const [engine, env] of [
     for (const id of Object.keys(before)) assert.equal(after[id], before[id], `${engine}: answer ${id} changed once the goods record existed`);
   });
 }
+
+test("THE CONTROL: a change the band tools do read changes their answers, so the comparison above can see one", async (t) => {
+  // The lookup now names what each record's goods rest on, read from the records the run holds. Filing an official
+  // record for a record that had none must change the lookup that lists it and the record tool's answer for it;
+  // were the comparison blind, the arms above would pass whatever the tools served.
+  const env = { CLEAROTRON_TOOL_ANSWER_BYTES: String(CLAUDE_TOOL_ANSWER_BYTES) };
+  const { runDir } = seedRun(t);
+  const before = answers(await session(REQUESTS, { ...env, CLEAROTRON_BAND_RUN_DIR: runDir }));
+  assert.ok(before["30"].includes("/mark/eu/s1") && before["34"].includes("No official record"), "guard: s1 is listed and has no official record");
+  appendFileSync(driverDir(runDir, "register-record-bodies.jsonl"), JSON.stringify({ ts: "2026-10-18T00:00:01Z", provider: "clarivate",
+    sessionKey: "clearance-x-y-register-unit-primary-sweep", target: "/mark/eu/s1",
+    body: { statusText: "Registered", goodsServices: [{ classes: [9], language: "en", description: "joysticks" }] } }) + "\n");
+  const after = answers(await session(REQUESTS, { ...env, CLEAROTRON_BAND_RUN_DIR: runDir }));
+  assert.notEqual(after["34"], before["34"], "the record tool's answer for a record now on file did not change");
+  assert.notEqual(after["30"], before["30"], "the lookup listing that record did not change its goods source");
+});
