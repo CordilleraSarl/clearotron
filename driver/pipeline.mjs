@@ -11261,11 +11261,7 @@ async function pipelineInner(job, opts = {}) {
                 // search still gets its retry and nothing landed is asked twice. The verify below reads the join
                 // either way, so a refused slice is still checked through its twin or its family.
                 let send = qids;
-                if (!send.length) {
-                  const released = releasedFamilyQids(ctx.paths.runDir);
-                  const landed = joinPlanToBands(ctx.registerPlan, readRegisterBands(P, axes), { released }).executed.map((x) => x.qid);
-                  send = pendingRequiredQids(ctx.registerPlan, a, new Set(landed), released);
-                }
+                if (!send.length) send = pendingRequiredQids(ctx.registerPlan, a, readRegisterBands(P, axes), releasedFamilyQids(ctx.paths.runDir));
                 const outcome = send.length ? await dispatchPlanQids(a, send, "frame-reopen-sweep", 2) : "ok";
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }

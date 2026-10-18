@@ -1871,21 +1871,23 @@ function officeLinksFor(findings, recordsByUri, runOrigins) {
 /**
  * The coverage form's family rows judged withheld, as audit-workbook coverage rows. Never throws.
  *
- * A family the reading turn withheld, with its reason on the turn's own record, is a recorded judgment and not open
- * work: it takes the shipped `Note` presentation a released family's row has, with the TURN'S reason, read from its
- * own record, never the words a later digest gave the form's row. A form row that says withheld with no such record
- * is no valid judgment, so it stays an open row with what the form says was not done.
+ * A family judged withheld is a recorded judgment and not open work: it takes the shipped `Note` presentation a
+ * released family's row has. Its reason is the reading turn's, read from the turn's own record, never the words a
+ * later digest gave the form's row; a family the turn left unrecorded, which the form itself settled, keeps the
+ * form's reason. That is the same set the register coverage line and the reviewer's table count as withheld
+ * (waitingFamilyStates), so the workbook never calls open work what the class line has already left out of it.
+ * A family the turn released after the form settled it ran: its own row, from the release record, says so, and
+ * the form's stale withheld row is not shown beside it.
  */
 export function withheldFamilyRows(runDir) {
   try {
     const { rows } = readCoverageForm(runDir, coverageFormStamp(runDir).formName);
     const judged = readWithheldFamilies(runDir);
-    return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason)
+    const released = readReleasedFamilies(runDir);
+    return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason && !Object.hasOwn(released, String(r.qid ?? '')))
       .map((r) => {
-        const reason = String(judged[String(r.qid ?? '')]?.reason ?? '').trim();
-        return reason
-          ? { area: coverageUnitLabel(r.unit), state: 'note', note: reason, done: reason, left: '' }
-          : { area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason), done: '', left: String(r.reason) };
+        const reason = String(judged[String(r.qid ?? '')]?.reason ?? r.reason).trim();
+        return { area: coverageUnitLabel(r.unit), state: 'note', note: reason, done: reason, left: '' };
       });
   } catch { return []; }
 }

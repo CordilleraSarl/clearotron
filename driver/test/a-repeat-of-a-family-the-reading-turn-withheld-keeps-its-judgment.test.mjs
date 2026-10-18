@@ -20,10 +20,10 @@
 // coverage form and the register coverage line. Every mark here is invented.
 import test from "node:test";
 import assert from "node:assert/strict";
-// The two re-sweep helpers are read off the module, not imported by name, so that on a tree without them each
+// The re-sweep's helpers are read off the module, not imported by name, so that on a tree without them each
 // arm that needs them fails on its own and every other arm still runs and reports.
 import * as registerPlan from "../register-plan.mjs";
-import { compileRegisterPlan, foldSupplementalEntries, joinPlanToBands, deriveCoverageSkeleton, pendingRequiredQids } from "../register-plan.mjs";
+import { compileRegisterPlan, foldSupplementalEntries, joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { verifyRegisterDirectiveClose, answeredAs } from "../close-verify.mjs";
 import { classifyRemedyTerm, accountRemedyTerms, domClosedOverAccounted, mintRemedyAccountingDoubts, remedyAccountingEvent } from "../remedy-accounting.mjs";
@@ -118,7 +118,7 @@ test("a released family, or one another plan row already asks, is not withheld",
   assert.equal(refusal?.twin, `${asker[0].qid}-asked`);
 });
 
-test("an unread required search cannot inherit it: a record naming a row that does not wait, or a family on another axis, settles nothing", () => {
+test("a record cannot hand its judgment to a required question or across axes: naming a row that does not wait, or a family on another axis, settles nothing", () => {
   const plan = planFor();
   const { exact, contains, minted } = mintMainElementRequest();
   const required = resweepFold(plan, minted, { [IDENTICAL]: { axis: "primary-sweep", reason: REASON } });
@@ -320,6 +320,27 @@ test("beside a withheld slice, a slice that did not run stays unresolved: open w
     "and without the turn's record the withheld slice has no judgment to end on, so it is open too");
 });
 
+test("a directive whose withheld slices repeat two families, one still withheld and one the turn released after the fold, ends each slice on what happened to it", () => {
+  const { exact, receipt: mixed } = mixedReceipt();
+  const key = mixed.requested[0];
+  const second = `${FAMILY}+merch`;   // a second waiting family, which the reading turn released after the fold
+  const receipt = { ...mixed, directive_qids: { [key]: [exact, "slice:withheld", "slice:released"] },
+    withheld_by_judgment: [{ directive: key, slices: [{ qid: "slice:withheld", family: FAMILY }, { qid: "slice:released", family: second }] }] };
+  const identical = { qid: IDENTICAL, state: "enumerated", records: 40, total_hits: 40 };
+  // The release deleted the second family's withholding from the record; the first keeps the turn's reason.
+  const asks = asksFor(receipt, { planExecution: { executed: [identical, { qid: second, state: "enumerated", records: 3, total_hits: 3 }] }, withheldFamilies: withheldRecord() });
+  assert.deepEqual(asks.map((a) => [a.ending?.kind ?? "open", a.qids]),
+    [["executed", [exact]], ["judged-immaterial", ["slice:withheld"]], ["executed", ["slice:released"]]], JSON.stringify(asks));
+  assert.deepEqual(asks[1].ending.reasons, [REASON], "the family still withheld keeps the reading turn's reason");
+  assert.match(asks[2].ending.evidence, /: primary-sweep:default:inventedmark\+merch \(returned 3 records\)$/, "the released family ends on its own run, and names only itself");
+  assert.equal(new Set(asks.map((a) => a.ask_id)).size, 3, "each record keeps its own id");
+  const notRun = asksFor(receipt, { planExecution: { executed: [identical] }, withheldFamilies: withheldRecord() });
+  assert.deepEqual(notRun.map((a) => a.ending?.kind ?? "open"), ["executed", "judged-immaterial", "open"],
+    "released and never run, that slice stays open, and the judgment on the other is still shown");
+  const noneRan = asksFor({ ...receipt, directive_qids: { [key]: ["slice:withheld", "slice:released"] } }, { planExecution: { executed: [] }, withheldFamilies: withheldRecord() });
+  assert.deepEqual(noneRan.map((a) => a.ending?.kind ?? "open"), ["judged-immaterial", "open"], "with no slice that ran, the same split holds");
+});
+
 test("every slice withheld: the ask ends judged immaterial on the reading turn's own reason, and stays open when that record is gone", () => {
   const { contains } = bothRefused();
   const key = "variant:inventedmark";
@@ -366,7 +387,7 @@ function bothStates() {
     now: { plan: now.plan, exec: exec(now.plan, false), bands: bands(false) } };
 }
 
-test("the plan join: the family reads awaiting and withheld, where the re-ask had made it read as asked", () => {
+test("the plan join: the family reads awaiting, neither missing nor executed, where the re-ask had made it read as asked", () => {
   const { contains, before, now } = bothStates();
   assert.deepEqual(before.exec.asked.filter((x) => x.qid === FAMILY).map((x) => x.asked_by), [contains.qid], "before: the re-ask answered the family");
   assert.ok(now.exec.awaiting.some((x) => x.qid === FAMILY), "now: the family is a question nobody asked");
@@ -434,13 +455,17 @@ test("a directive settled this way leaves no deferral, so no open frame row, no 
   assert.deepEqual(frameResidualGaps({ requested: [reopenKey(directive)], swept, deferrals, dominant_element_gap: true, domClosed }), []);
 });
 
-test("a re-sweep that adds nothing owes the axis only its required questions that have not landed: never a landed one, never a waiting family the turn did not release, never an unsupported entry", () => {
+test("a re-sweep that adds nothing owes the axis only what has not landed: never a landed question, a released family's block included, a waiting family the turn did not release, or an unsupported entry; a released family that has not landed is retried", () => {
   const plan = { plan_version: 1, entries: [
     { qid: "a:landed", axis: "primary-sweep" }, { qid: "a:pending", axis: "primary-sweep" },
-    { qid: "a:waiting", axis: "primary-sweep", when: { awaits_reading_turn: true } }, { qid: "a:released", axis: "primary-sweep", when: { awaits_reading_turn: true } },
+    { qid: "a:waiting", axis: "primary-sweep", when: { awaits_reading_turn: true } },
+    { qid: "a:released", axis: "primary-sweep", when: { awaits_reading_turn: true } },
+    { qid: "a:released-landed", axis: "primary-sweep", when: { awaits_reading_turn: true } },
     { qid: "a:unsupported", axis: "primary-sweep", unsupported: true }, { qid: "b:pending", axis: "transliteration-numeric" }] };
-  assert.deepEqual(pendingRequiredQids(plan, "primary-sweep", new Set(["a:landed"]), new Set(["a:released"])), ["a:pending", "a:released"]);
-  assert.deepEqual(pendingRequiredQids(plan, "primary-sweep", new Set(["a:landed", "a:pending", "a:released"]), new Set(["a:released"])), [],
-    "with every required question landed, nothing is sent");
-  assert.deepEqual(pendingRequiredQids({ entries: [] }, "primary-sweep"), []);
+  const released = new Set(["a:released", "a:released-landed"]);
+  const bands = { "primary-sweep": [listed("a:landed", 2), listed("a:released-landed", 1)], "transliteration-numeric": [] };
+  assert.deepEqual(registerPlan.pendingRequiredQids(plan, "primary-sweep", bands, released), ["a:pending", "a:released"]);
+  const everyLanded = { "primary-sweep": ["a:landed", "a:pending", "a:released", "a:released-landed"].map((q) => listed(q, 1)) };
+  assert.deepEqual(registerPlan.pendingRequiredQids(plan, "primary-sweep", everyLanded, released), [], "with every question landed, nothing is sent");
+  assert.deepEqual(registerPlan.pendingRequiredQids({ entries: [] }, "primary-sweep"), []);
 });

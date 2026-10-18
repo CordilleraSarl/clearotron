@@ -14,8 +14,9 @@
 //
 // THE GUARD BESIDE IT. A fold that adds nothing must send nothing. The executor reads an empty question
 // list as "every entry on the axis", so a re-sweep whose every question was refused used to re-send the
-// whole primary sweep. Refusing the withheld repeat makes that shape common, so the last arm pins the guard
-// on the case that reached it before: a re-sweep whose only question the plan had already asked.
+// whole primary sweep. Refusing the withheld repeat makes that shape common, so one arm pins the guard on the
+// case that reached it before: a re-sweep whose only question the plan had already asked. The arm after it pins
+// what the guard keeps: a required question that failed before the comparison is asked again, and only it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync, writeFileSync } from "node:fs";
@@ -33,7 +34,6 @@ chmodSync(CODEX, 0o755);
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_PLAN_DISPATCH ||= "off";        // the injected executor is the only register these runs reach
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const JOB = {
@@ -43,7 +43,7 @@ const JOB = {
 const CONTAINS_FAMILY = "primary-sweep:default:novapulse";   // the contains question on the main element, waiting
 const CASE_FAMILY = "primary-sweep:exact:novapulse";         // the case form of the main element, waiting
 const REASON = "the identical list already shows every mark a buyer would confuse with this one";
-const KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FRAME_DIFF", "MOCK_WITHHOLD_FAMILIES", "MOCK_CODEX_CALL_LOG"];
+const KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FRAME_DIFF", "MOCK_WITHHOLD_FAMILIES", "MOCK_CODEX_CALL_LOG", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY"];
 
 // Each engine's pins, and the other engine's pins UNSET (pinEnv deletes on undefined): the variables are
 // process-global, and a Codex billing mode left behind refuses the next Claude run at its preflight.
@@ -59,32 +59,59 @@ const ENGINES = {
  * record the mock band already carries, so the run's findings end it and the recall join has nothing new
  * to reconcile.
  */
+const listedBlock = (qid) => ({ state: "enumerated", qid, query: `${qid} [cl 9,41]`, total_hits: 1, records: [{ record_id: "/mark/us/90000001",
+  mark_text: "NOVAPULSE", classes: [9], status: "Registered", owner_name: "Mystery Owner LLC", owner_country: "US", screen_verdict: "surface:in-scope-live" }] });
+const writeBlocks = (outputPath, qids, blockFor) => {
+  const blocks = existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, "utf8")) : [];
+  for (const qid of qids) {
+    const block = blockFor(qid);
+    const at = blocks.findIndex((b) => b && b.qid === qid);
+    if (at >= 0) blocks[at] = block; else blocks.push(block);
+  }
+  writeFileSync(outputPath, JSON.stringify(blocks, null, 2) + "\n");
+};
+
 function recordingExecutor(crowded = () => false) {
   const calls = [];
   const planExecutor = async ({ axis, outputPath, qids }) => {
     calls.push({ axis, qids: Array.isArray(qids) ? [...qids] : null });
-    const blocks = existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, "utf8")) : [];
-    (qids ?? []).forEach((qid) => {
-      // A crowded question comes back counted and not listed, as a register answers a count too large to list.
-      const block = crowded(qid) ? { state: "incomplete", qid, query: `${qid} [cl 9,41]`, total_hits: 12000, records: null }
-        : { state: "enumerated", qid, query: `${qid} [cl 9,41]`, total_hits: 1, records: [{ record_id: "/mark/us/90000001",
-        mark_text: "NOVAPULSE", classes: [9], status: "Registered", owner_name: "Mystery Owner LLC", owner_country: "US", screen_verdict: "surface:in-scope-live" }] };
-      const at = blocks.findIndex((b) => b && b.qid === qid);
-      if (at >= 0) blocks[at] = block; else blocks.push(block);
-    });
-    writeFileSync(outputPath, JSON.stringify(blocks, null, 2) + "\n");
+    // A crowded question comes back counted and not listed, as a register answers a count too large to list.
+    writeBlocks(outputPath, qids ?? [], (qid) => (crowded(qid) ? { state: "incomplete", qid, query: `${qid} [cl 9,41]`, total_hits: 12000, records: null } : listedBlock(qid)));
     return { ok: true, states: {} };
   };
   return { planExecutor, calls };
 }
 
-async function runOn(engine, env, { crowded } = {}) {
+/**
+ * An executor whose register recovers between the two passes: a question `fails` names comes back as a provider
+ * error the run does not read as transient, so the fan-in defers it at once rather than spend its retries, until
+ * the blind frame comparison has run (it writes frame-diff.json), and listed after it. A call with no
+ * question list is the whole axis, as the real executor reads one; each call records which side of the comparison
+ * it came from.
+ */
+function recoveringExecutor(fails) {
+  const calls = [];
+  const planExecutor = async ({ planPath, axis, outputPath, qids }) => {
+    const afterComparison = existsSync(join(dirname(dirname(outputPath)), "frame-diff.json"));
+    const asked = Array.isArray(qids) && qids.length ? [...qids] : null;
+    calls.push({ axis, qids: asked, afterComparison });
+    const todo = asked ?? JSON.parse(readFileSync(planPath, "utf8")).entries
+      .filter((e) => e.axis === axis && e.unsupported !== true && !e.when?.awaits_reading_turn).map((e) => e.qid);
+    writeBlocks(outputPath, todo, (qid) => (fails(qid) && !afterComparison
+      ? { state: "incomplete", qid, query: `${qid} [cl 9,41]`, total_hits: 0, fetched: 0, sample: [], error: true, reason: "provider error — HTTP 400 Bad Request" }
+      : listedBlock(qid)));
+    return { ok: true, states: {} };
+  };
+  return { planExecutor, calls };
+}
+
+async function runOn(engine, env, { crowded, executor: injected } = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-withheld-"));
   for (const k of KNOBS) delete process.env[k];
   pinEnvAll(process.env, { ...ENGINES[engine](root), CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env });
-  const executor = recordingExecutor(crowded);
+  const executor = injected ?? recordingExecutor(crowded);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline({ ...JOB }, { planExecutor: executor.planExecutor });
   // An artifact a failed run never wrote reads as null here, so the arm's first assertion — the run's own
@@ -193,6 +220,24 @@ test("a re-sweep whose only question the plan already asked sends nothing to the
   const key = r.receipt.requested[0];
   assert.deepEqual(r.receipt.swept, [key], `deferrals: ${JSON.stringify(r.receipt.deferrals)}`);
   assert.deepEqual(r.receipt.answered_elsewhere, [{ directive: key, slices: [{ qid: refused[0].qid, twin: "primary-sweep:exact:project-novapulse" }] }]);
+});
+
+test("a re-sweep that adds nothing still retries the required questions that failed before it, and only those, so the request they answer closes", async () => {
+  const FAILED = "primary-sweep:exact:project-novapulse";   // the identical question and its merchandise-class row
+  const failed = (qid) => qid.includes(FAILED);
+  const r = await runOn("anthropic-agent", { MOCK_FRAME_DIFF: "duplicate-only", MOCK_PLAN_DROP_QID: FAILED, MOCK_PLAN_DROP_STICKY: "1" },
+    { executor: recoveringExecutor(failed) });
+  assert.equal(r.res.ok, true, JSON.stringify(r.res));
+  const owed = r.plan.entries.filter((e) => e.axis === "primary-sweep" && failed(e.qid)).map((e) => e.qid).sort();
+  assert.equal(owed.length, 2, `guard: the identical question and its merchandise row: ${JSON.stringify(owed)}`);
+  assert.ok(r.calls.some((c) => !c.afterComparison && c.qids?.some(failed)), `guard: both failed before the comparison: ${JSON.stringify(r.calls)}`);
+  const resweep = r.calls.filter((c) => c.afterComparison);
+  assert.equal(resweep.length, 1, `the re-sweep's dispatches: ${JSON.stringify(resweep)}`);
+  assert.ok(Array.isArray(resweep[0].qids), "never the whole axis");
+  assert.deepEqual([...resweep[0].qids].sort(), owed, "only the required questions that had not landed, and both of them");
+  assert.deepEqual(r.receipt.deferrals, [], "the request they answer closes");
+  const causes = r.events.filter((e) => Array.isArray(e.causes)).flatMap((e) => e.causes);
+  assert.ok(!causes.includes("frameDeferred"), `no hold rests on the request: ${JSON.stringify(causes)}`);
 });
 
 test("THE PRODUCTION HOLD, at its default: the crowd a withheld family's repeat would have found no longer holds the verdict; with no judgment on record the same crowd still holds it", async () => {

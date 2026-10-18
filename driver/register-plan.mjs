@@ -2176,20 +2176,6 @@ export function foldSupplementalEntries(plan, entries) {
  * the set releasedFamilyQids returns. The caller reads both, so this stays PURE.
  * @returns {Map<string, {qid: string, reason: string}>} question key → the withheld family and its reason
  */
-/**
- * THE AXIS'S REQUIRED QUESTIONS THAT HAVE NOT LANDED: what a re-sweep that adds nothing still owes the axis. A fold
- * that added nothing sends these, and only these: the executor read an empty question list as every entry on the
- * axis, so the empty re-sweep repeated every landed question and, with them, retried the required ones still
- * unanswered. Suppressing it keeps that retry and drops the repeats. A family waiting for the reading turn is required
- * only once the turn released it; an entry the provider cannot express is never sent.
- */
-export function pendingRequiredQids(plan, axis, executedQids = new Set(), released = new Set()) {
-  return (Array.isArray(plan?.entries) ? plan.entries : [])
-    .filter((e) => e?.qid && e.axis === axis && e.unsupported !== true && (!awaitsReadingTurn(e.when) || released?.has?.(e.qid))
-      && !executedQids.has(e.qid))
-    .map((e) => e.qid);
-}
-
 export function withheldFamilyTwins(plan, withheld = {}, released = new Set()) {
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
   const asked = new Set(entries.filter((e) => e && e.unsupported !== true && !awaitsReadingTurn(e.when))
@@ -2204,6 +2190,29 @@ export function withheldFamilyTwins(plan, withheld = {}, released = new Set()) {
     if (key && !asked.has(key) && !twins.has(key)) twins.set(key, { qid: e.qid, reason });
   }
   return twins;
+}
+
+/**
+ * WHAT A RE-SWEEP THAT ADDS NOTHING STILL OWES ITS AXIS: the axis's entries that have not landed. The executor reads
+ * an empty question list as every entry on the axis, so a fold that added nothing used to repeat every landed
+ * question and, with them, retry the ones still unanswered. These are that retry without the repeats: every entry
+ * on the axis the provider can express (`unsupported` is never sent), a family waiting for the reading turn only once
+ * the turn released it, less every entry the join of these bands counts as executed, a released family's block
+ * included. So it sends a required search that did not land, and also what the old re-send retried among the
+ * unlanded: an entry whose provider error spent its retry ladder (a real call, as before), a capability refusal not
+ * yet accepted as a gap (refused again without a call), and a fringe entry whose guard the executor still holds
+ * (no call). The dispatcher drops the capability gaps the run has already accepted. PURE.
+ * @param {object} plan  the frozen register plan
+ * @param {string} axis  the axis the re-sweep ran on
+ * @param {object} bandsByAxis  the run's register bands, as readRegisterBands returns them
+ * @param {Set<string>} released  the families the reading turn released (releasedFamilyQids)
+ */
+export function pendingRequiredQids(plan, axis, bandsByAxis = {}, released = new Set()) {
+  const landed = new Set(joinPlanToBands(plan, bandsByAxis, { released }).executed.map((x) => x.qid));
+  return (Array.isArray(plan?.entries) ? plan.entries : [])
+    .filter((e) => e?.qid && e.axis === axis && e.unsupported !== true && (!awaitsReadingTurn(e.when) || released?.has?.(e.qid))
+      && !landed.has(e.qid))
+    .map((e) => e.qid);
 }
 
 /**
