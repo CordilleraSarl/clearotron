@@ -323,7 +323,7 @@
         },
         "a-correction-session-is-told-it-is-fresh-and-sends-only-the-change.test.mjs": {
           "tests": 11,
-          "asserts": 38,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -6610,8 +6610,8 @@
           "todos": 0
         },
         "the-review-after-a-repair-reads-only-what-the-repair-changed.pipeline.test.mjs": {
-          "tests": 14,
-          "asserts": 110,
+          "tests": 15,
+          "asserts": 117,
           "skips": 0,
           "todos": 0
         },
