@@ -309,9 +309,11 @@ export function setAsideGrounds(entries, index, groups = null, floors = null, { 
  * EVERY LINE'S FATE AT PLACEMENT, counted by the list the shape put it in: placed (a record of its mark is
  * in a placement), set aside by name, covered by its group's row, or no fate. A line is one mark of one
  * owner; an owner counts as fated when every one of its lines is. The lines with no goods on file are their
- * own list, which no group row covers. Counts, plus the keys left with no fate. PURE.
+ * own list, which no group row covers. Counts, plus the keys left with no fate. Given `served`, the line keys
+ * placement was served, a group row's lines never served are counted as `by_group_unread`; given `lineEvidence`,
+ * line → what its goods rest on (goods-evidence.mjs), a group row's lines are counted by it. PURE.
  */
-export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}) {
+export function ownerFates({ groups, entries = [], index, placedUris = [], served = null, lineEvidence = null } = {}) {
   if (!groups || typeof groups !== "object" || !index?.resolve) return null;
   const placed = new Set([...placedUris].map((u) => lineKey(index.resolve(u))).filter(Boolean));
   const named = new Set(), grouped = new Set();
@@ -325,6 +327,7 @@ export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}
   lists.no_goods = Array.isArray(groups.no_goods?.list) ? groups.no_goods.list : [];
   const zero = () => ({ lines: 0, placed: 0, by_name: 0, by_group: 0, unfated: 0 });
   const totals = zero(), by_list = {}, unfated_lines = [], ownerFated = new Map();
+  let unreadTotal = 0;
   for (const [list, lines] of Object.entries(lists)) {
     const c = zero();
     for (const l of lines) {
@@ -334,13 +337,21 @@ export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}
       const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : rowMay ? "by_group" : "unfated";
       c.lines++; c[fate]++; totals.lines++; totals[fate]++;
       if (fate === "unfated") unfated_lines.push({ list, key: l.key });
+      if (fate === "by_group") {
+        // AN UNREAD CROWD IS NOT A CLEAN NEGATIVE (ruled 2026-10-18). A crowd's row stands on its first page read and the
+        // count, so it covers lines placement never read; given what placement was served, those are counted apart. They
+        // stay covered by the group: the ruled method accepts the row, and the count records what it rested on.
+        if (served && !served.has(l.key)) { c.by_group_unread = (c.by_group_unread ?? 0) + 1; unreadTotal++; }
+        const state = typeof lineEvidence === "function" ? lineEvidence(l) : null;
+        if (state) { c.by_group_goods ??= {}; c.by_group_goods[state] = (c.by_group_goods[state] ?? 0) + 1; }
+      }
       ownerFated.set(l.owner_key, (ownerFated.get(l.owner_key) ?? true) && fate !== "unfated");
     }
-    by_list[list] = { ...c, reconciles: sumsToLines(c) };
+    by_list[list] = { ...c, ...(served ? { by_group_unread: c.by_group_unread ?? 0 } : {}), reconciles: sumsToLines(c) };
   }
   // THE SUM IS STATED, as the floor duty states its own: one fate per line, so the four add up to the lines, and a
   // count that does not is a defect here that a reader should not have to find by adding.
-  return { unit: "line", ...totals, reconciles: sumsToLines(totals), owners: ownerFated.size, owners_fated: [...ownerFated.values()].filter(Boolean).length,
+  return { unit: "line", ...totals, ...(served ? { by_group_unread: unreadTotal } : {}), reconciles: sumsToLines(totals), owners: ownerFated.size, owners_fated: [...ownerFated.values()].filter(Boolean).length,
     by_list, unfated_lines };
 }
 

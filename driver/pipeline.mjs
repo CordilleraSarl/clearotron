@@ -79,7 +79,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow, servedLines } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -130,7 +130,7 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, registerCallAccount, GOODS_EVIDENCE_FILE } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -3134,8 +3134,14 @@ export function placementOwnerFates(P, placements) {   // @internal — driven b
   try {
     const input = readPlacementFormInput(P.runDir);
     if (!input.groups) return { absent: "the band shape lists no groups" };
-    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index: buildSelectionIndex(input),
-      placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
+    const index = buildSelectionIndex(input);
+    // What placement read, by its own reading log, and what each line's goods rest on, where the run recorded it.
+    const evidence = readGoodsEvidence(P.runDir);
+    const stateOf = Array.isArray(evidence?.records) ? new Map(evidence.records.map((r) => [normalizeRecordUri(r?.uri), r?.state])) : null;
+    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index,
+      placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])),
+      served: servedLines(input.groups, input.served, index),
+      lineEvidence: stateOf ? (l) => stateOf.get(normalizeRecordUri(l?.record_id)) ?? null : null });
     return counted ? { counted } : { absent: "the band shape's groups could not be counted" };
   } catch (e) { return { absent: `an input could not be read: ${String(e?.message ?? e).slice(0, 120)}` }; }
 }
