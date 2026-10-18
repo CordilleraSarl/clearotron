@@ -3303,6 +3303,12 @@
           "skips": 0,
           "todos": 0
         },
+        "each-registers-fetch-row-names-its-own-record.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "each-stable-npm-serves-is-listed-in-the-mcp-registry.test.mjs": {
           "tests": 11,
           "asserts": 61,
@@ -3310,8 +3316,8 @@
           "todos": 0
         },
         "each-stage-is-told-what-a-records-goods-rest-on.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+          "tests": 5,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
