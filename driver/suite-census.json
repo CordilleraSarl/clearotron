@@ -3297,6 +3297,12 @@
           "skips": 0,
           "todos": 0
         },
+        "each-stage-is-told-what-a-records-goods-rest-on.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "effective-scope.test.mjs": {
           "tests": 15,
           "asserts": 44,
@@ -6227,7 +6233,7 @@
         },
         "the-goods-record-reads-a-search-rows-goods-through-the-shared-reader.test.mjs": {
           "tests": 3,
-          "asserts": 8,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
