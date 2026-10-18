@@ -73,6 +73,10 @@ test("a drop the gate must fetch, and cannot: recorded as not held before the ga
   assert.ok(drop, "the policed drop is on the record");
   assert.deepEqual([drop.held_before_gate, drop.gate_fetch, drop.held_after_gate], [false, "failed", false]);
   assert.match(drop.cause, /404/);
+  assert.deepEqual([drop.goods_before_gate, drop.goods_after_gate], ["not-held", "unavailable"],
+    "the goods the drop rested on when the gate judged it, and what the gate's failed fetch left, are kept apart");
+  assert.equal(ev.schema_version, 2);
+  assert.match(ev.reading_note, /best-effort/);
   assert.ok(ev.fetches.added >= 1, "the gate's fetch is counted as added");
   assert.equal(ev.fetches.avoided, ev.counts.held_before_gate);
   const e = events.find((x) => x.event === "screen-gate-evidence");

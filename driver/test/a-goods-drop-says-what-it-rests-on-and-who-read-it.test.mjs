@@ -13,7 +13,7 @@
 // register answered, which are characters and not bytes. Every mark and record id is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { recordReads, registerCallAccount } from "../goods-evidence.mjs";
+import { recordReads, linesRead, registerCallAccount } from "../goods-evidence.mjs";
 import { screenGateEvidence } from "../screen-gate.mjs";
 
 const FINDINGS = [
@@ -59,34 +59,68 @@ test("register calls are counted four ways, never one: requests sent, answers fr
   });
 });
 
+const stateOf = (map) => (uri) => (map[uri] ? { goods: map[uri], source: "record-body" } : { goods: "not-held", source: null });
+
 test("each policed drop says what it rests on, who opened it, and what the gate fetched; the drop the gate does not police is left out", () => {
   const ev = screenGateEvidence({
     findingsContent: FINDINGS,
     heldBefore: new Set(["/mark/eu/r1", "/mark/eu/r2", "/mark/eu/r3"]),
     heldAfter: new Set(["/mark/eu/r1", "/mark/eu/r2", "/mark/eu/r3"]),
-    stateOf: (uri) => ({ "/mark/eu/r1": "complete", "/mark/eu/r2": "complete", "/mark/eu/r3": "absent" })[uri] ?? "not-held",
+    before: stateOf({ "/mark/eu/r1": "complete", "/mark/eu/r2": "complete", "/mark/eu/r3": "absent" }),
     reads: recordReads(READS), readerStage: "register-digest",
     gateFetched: new Map([["/mark/eu/r4", { ok: false, cause: "ERROR: HTTP 503" }]]),
   });
   const by = Object.fromEntries(ev.drops.map((d) => [d.uri, d]));
   assert.deepEqual(Object.keys(by).sort(), ["/mark/eu/r1", "/mark/eu/r2", "/mark/eu/r3", "/mark/eu/r4"], "the dead record's drop is not a goods drop the gate polices");
-  assert.deepEqual([by["/mark/eu/r1"].held_before_gate, by["/mark/eu/r1"].goods, by["/mark/eu/r1"].reading], [true, "complete", "opened"]);
+  assert.deepEqual([by["/mark/eu/r1"].held_before_gate, by["/mark/eu/r1"].goods_before_gate, by["/mark/eu/r1"].reading], [true, "complete", "opened"]);
   assert.equal(by["/mark/eu/r2"].reading, "goods-words-shown", "opened by placement and shown its goods words in a later digest attempt: shown, not opened, by the step that dropped it");
-  assert.deepEqual([by["/mark/eu/r3"].goods, by["/mark/eu/r3"].reading], ["absent", "goods-words-shown"]);
-  assert.deepEqual([by["/mark/eu/r4"].held_before_gate, by["/mark/eu/r4"].reading, by["/mark/eu/r4"].gate_fetch], [false, "not-read", "failed"]);
+  assert.deepEqual(by["/mark/eu/r2"].routes, ["band_lookup"]);
+  assert.deepEqual([by["/mark/eu/r3"].goods_before_gate, by["/mark/eu/r3"].reading], ["absent", "goods-words-shown"]);
+  assert.deepEqual([by["/mark/eu/r4"].held_before_gate, by["/mark/eu/r4"].reading, by["/mark/eu/r4"].gate_fetch], [false, "no-recorded-read", "failed"]);
   assert.deepEqual(ev.counts, {
-    policed: 4, held_before_gate: 3, opened_by_reader: 1, goods_words_shown_only: 2, held_not_read: 0,
+    policed: 4, held_before_gate: 3, opened_by_reader: 1, goods_words_shown_only: 2, held_no_recorded_open: 2, held_no_recorded_read: 0,
     gate_fetched: 1, gate_fetch_failed: 1, still_unheld: 1,
   });
   assert.deepEqual(ev.fetches, { avoided: 3, added: 1 }, "a drop on a record already held needed no fetch; each the gate made is added");
   assert.deepEqual(ev.alternatives.read_rule, { would_send_back: 2 },
-    "were only an opened record to count, two drops held but never opened by the reading step would go back to it");
+    "were only an opened record to count, two drops held and not opened by the reading step would go back to it");
 });
 
-test("a drop the reading step never saw at all, on a record the run holds, is counted as held and not read", () => {
+test("a drop the reading step has no recorded read of, on a record the run holds, is counted as held with no recorded read", () => {
   const ev = screenGateEvidence({ findingsContent: FINDINGS, heldBefore: new Set(["/mark/eu/r4"]), heldAfter: new Set(["/mark/eu/r4"]),
-    stateOf: () => "complete", reads: recordReads(""), readerStage: "register-digest", gateFetched: new Map() });
-  assert.equal(ev.drops.find((d) => d.uri === "/mark/eu/r4").reading, "not-read");
-  assert.equal(ev.counts.held_not_read, 1);
+    before: () => ({ goods: "complete", source: "record-body" }), reads: recordReads(""), readerStage: "register-digest", gateFetched: new Map() });
+  assert.equal(ev.drops.find((d) => d.uri === "/mark/eu/r4").reading, "no-recorded-read");
+  assert.equal(ev.counts.held_no_recorded_read, 1);
   assert.equal(ev.alternatives.read_rule.would_send_back, 1);
+});
+
+test("a part of the shape, or a page of a group, that served the drop's line counts as the goods words shown, by its own route", () => {
+  const LINES = [
+    { tool: "band_shape", args: { format: "md" }, ok: true, part: 1, parts: 2, served_lines: ["line:owner:plimbo|plimbo"], session: "clearance-x-y-register-digest" },
+    { tool: "band_lookup", args: { group: "b" }, ok: true, group: "b", returned: 1, served_lines: ["line:owner:drellux|drellux"], session: "clearance-x-y-register-digest" },
+    { tool: "band_lookup", args: { group: "b" }, ok: true, group: "b", returned: 1, served_lines: ["line:owner:qzorvak|qzorvak"], session: "clearance-x-y-placement-inquiry" },
+  ].map((r) => JSON.stringify(r)).join("\n");
+  const lineOf = (uri) => ({ "/mark/eu/r3": "line:owner:plimbo|plimbo", "/mark/eu/r4": "line:owner:drellux|drellux",
+    "/mark/eu/r1": "line:owner:qzorvak|qzorvak" })[uri] ?? null;
+  const ev = screenGateEvidence({ findingsContent: FINDINGS, heldBefore: new Set(["/mark/eu/r1", "/mark/eu/r3", "/mark/eu/r4"]),
+    heldAfter: new Set(["/mark/eu/r1", "/mark/eu/r3", "/mark/eu/r4"]), before: () => ({ goods: "complete", source: "record-body" }),
+    reads: recordReads(""), lines: linesRead(LINES), lineOf, readerStage: "register-digest", gateFetched: new Map() });
+  const by = Object.fromEntries(ev.drops.map((d) => [d.uri, d]));
+  assert.deepEqual([by["/mark/eu/r3"].reading, by["/mark/eu/r3"].routes], ["goods-words-shown", ["band_shape"]], "the shape printed the line's goods words and the record read as unread");
+  assert.deepEqual([by["/mark/eu/r4"].reading, by["/mark/eu/r4"].routes], ["goods-words-shown", ["group_page"]], "a page of the group served the line and the record read as unread");
+  assert.equal(by["/mark/eu/r1"].reading, "no-recorded-read", "a page another step was served is not the reading step's");
+  assert.deepEqual([ev.counts.held_no_recorded_open, ev.counts.held_no_recorded_read], [3, 1]);
+});
+
+test("the goods a drop rested on are the ones it had when the gate judged it, apart from what the gate's fetch brought", () => {
+  const ev = screenGateEvidence({ findingsContent: FINDINGS, heldBefore: new Set(), heldAfter: new Set(["/mark/eu/r4"]),
+    before: (uri) => (uri === "/mark/eu/r4" ? { goods: "complete", source: "search-row" } : { goods: "not-held", source: null }),
+    after: (uri) => (uri === "/mark/eu/r4" ? { goods: "complete", source: "record-body" } : { goods: "not-held", source: null }),
+    reads: recordReads(""), readerStage: "register-digest", gateFetched: new Map([["/mark/eu/r4", { ok: true }]]) });
+  const d = ev.drops.find((x) => x.uri === "/mark/eu/r4");
+  assert.deepEqual([d.goods_before_gate, d.source_before_gate, d.gate_fetch, d.goods_after_gate, d.source_after_gate, d.held_after_gate],
+    ["complete", "search-row", "fetched", "complete", "record-body", true]);
+  assert.equal(ev.alternatives.row_goods_rule.fetches_not_needed, 1, "the fetch the drop's whole search-answer goods made unnecessary was never counted");
+  const unfetched = ev.drops.find((x) => x.uri === "/mark/eu/r1");
+  assert.deepEqual([unfetched.goods_after_gate, unfetched.source_after_gate], ["not-held", null], "a drop the gate did not fetch keeps its state");
 });

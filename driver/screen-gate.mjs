@@ -238,31 +238,48 @@ export function findScreenGateParseGaps(findingsContent) {
 // record? A record the run holds answers it whether or not the reading step ever opened it: on a register whose
 // screen hydrates every band record, every drop is answered before any step reads a word. A record held is not
 // evidence the model read it. The rule stays exactly as it is; this records, for every drop the rule polices,
-// what its answer stood for: the goods the drop rests on, the reading the run recorded for the step that wrote
-// the drop, and what the gate fetched. The counts say how many fetches the rule avoided and how many it added,
-// and how many drops a rule that asked for an opened record would send back instead. Same parser, same rows,
-// same in-scope test as findScreenGateViolations: every policed drop is a violation against an empty fetched set.
+// what its answer stood for, AS IT STOOD WHEN THE GATE JUDGED IT: the goods the drop rested on, the reading the
+// run recorded for the step that wrote the drop, and what the gate then fetched, with the state after those
+// fetches kept apart. Measured after the fetches alone, a record the gate fetched reads as one the run held all
+// along, so the record could never show which fetch the drop's own goods had made unnecessary.
+//
+// WHAT THE READING STEP SAW is every route the reading log records for its sessions: a `band_record` open of
+// the record, and a lookup, a part of the shape or a page of a group that served the record's line with its
+// goods words. "No recorded read" means none of those is in the log for that step. The log is best-effort, and
+// goods can reach a judgment through other permitted inputs, so it is never read as "never read".
+//
+// The counts say how many fetches the rule avoided and how many it added, and how many drops a rule that asked
+// for an opened record would send back instead. Same parser, same rows, same in-scope test as
+// findScreenGateViolations: every policed drop is a violation against an empty fetched set.
 const gateKey = (u) => (typeof u === "string" ? (u.match(URI_RE)?.[0] ?? u).toLowerCase() : "");
 
+/** The drops the gate polices in this findings text, by gate key, in order. PURE. */
+export function policedDropUris(findingsContent = "") {
+  return [...new Set(findScreenGateViolations(findingsContent, new Set()).map((v) => gateKey(v.uri)).filter(Boolean))];
+}
+
 /**
- * @param findingsContent  the register-findings.md text
+ * @param findingsContent  the register-findings.md text the gate judged
  * @param heldBefore       record uris the gate found held or fetched before it fetched anything (gate-keyed)
  * @param heldAfter        the same after the gate's own fetches
- * @param stateOf          uri → the goods evidence state of the record (goods-evidence.mjs), or a falsy value
- * @param sourceOf         uri → the source of those goods ("record-body", "search-row" or null), optional
+ * @param before           uri → {goods, source}: the goods evidence (goods-evidence.mjs) as it stood before the gate fetched
+ * @param after            the same after the gate's fetches; defaults to `before`
  * @param reads            goods-evidence.mjs recordReads: uri → {opened, shown, missed} session sets
+ * @param lines            goods-evidence.mjs linesRead: line key → {band_shape, group_page} session sets
+ * @param lineOf           uri → the band shape line key the record sits on, or null
  * @param readerStage      the stage that writes the drop rows, matched within a session key ("register-digest")
  * @param gateFetched      uri → {ok, cause} for each fetch the gate made
  * @returns {{drops, counts, fetches, alternatives, unnamed}} PURE.
  */
-export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(), heldAfter = new Set(), stateOf = () => null,
-  sourceOf = () => null, reads = new Map(), readerStage = "register-digest", gateFetched = new Map() } = {}) {
+export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(), heldAfter = new Set(), before = () => null, after = null,
+  reads = new Map(), lines = new Map(), lineOf = () => null, readerStage = "register-digest", gateFetched = new Map() } = {}) {
   const policed = findScreenGateViolations(findingsContent, new Set());
   const unnamed = policed.filter((v) => !v.uri).length;
   const keyed = (set) => new Set([...(set ?? [])].map(gateKey));
-  const before = keyed(heldBefore), after = keyed(heldAfter);
+  const was = keyed(heldBefore), now = keyed(heldAfter);
   const fetched = new Map([...(gateFetched ?? new Map())].map(([u, r]) => [gateKey(u), r]));
   const byReader = (sessions) => [...(sessions ?? [])].some((s) => String(s).includes(readerStage));
+  const stateAt = (fn, uri) => { const e = typeof fn === "function" ? fn(uri) : null; return { goods: e?.goods || null, source: e?.source || null }; };
   const seen = new Set();
   const drops = [];
   for (const v of policed) {
@@ -270,11 +287,17 @@ export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(
     if (!uri || seen.has(uri)) continue;
     seen.add(uri);
     const r = reads?.get?.(uri);
-    const reading = byReader(r?.opened) ? "opened" : byReader(r?.shown) ? "goods-words-shown" : "not-read";
+    const line = lines?.get?.(lineOf(uri)) ?? null;
+    const routes = [
+      byReader(r?.opened) && "band_record", byReader(r?.shown) && "band_lookup",
+      byReader(line?.band_shape) && "band_shape", byReader(line?.group_page) && "group_page",
+    ].filter(Boolean);
+    const reading = routes.includes("band_record") ? "opened" : routes.length ? "goods-words-shown" : "no-recorded-read";
     const f = fetched.get(uri);
-    drops.push({ uri, mark: v.mark, held_before_gate: before.has(uri), goods: stateOf(uri) || null, source: sourceOf(uri) || null, reading,
+    const b = stateAt(before, uri), a = f ? stateAt(after ?? before, uri) : b;
+    drops.push({ uri, mark: v.mark, held_before_gate: was.has(uri), goods_before_gate: b.goods, source_before_gate: b.source, reading, routes,
       gate_fetch: f ? (f.ok ? "fetched" : "failed") : "none", ...(f && !f.ok && f.cause ? { cause: String(f.cause).slice(0, 160) } : {}),
-      held_after_gate: after.has(uri) });
+      held_after_gate: now.has(uri), goods_after_gate: a.goods, source_after_gate: a.source });
   }
   const n = (pred) => drops.filter(pred).length;
   const counts = {
@@ -282,7 +305,8 @@ export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(
     held_before_gate: n((d) => d.held_before_gate),
     opened_by_reader: n((d) => d.reading === "opened"),
     goods_words_shown_only: n((d) => d.reading === "goods-words-shown"),
-    held_not_read: n((d) => d.held_before_gate && d.reading === "not-read"),
+    held_no_recorded_open: n((d) => d.held_before_gate && d.reading !== "opened"),
+    held_no_recorded_read: n((d) => d.held_before_gate && d.reading === "no-recorded-read"),
     gate_fetched: n((d) => d.gate_fetch !== "none"),
     gate_fetch_failed: n((d) => d.gate_fetch === "failed"),
     still_unheld: n((d) => !d.held_after_gate),
@@ -292,9 +316,10 @@ export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(
     fetches: { avoided: counts.held_before_gate, added: counts.gate_fetched },
     alternatives: {
       // Were only a record the reading step OPENED to answer the gate: the drops it would send back to that step.
-      read_rule: { would_send_back: n((d) => d.held_before_gate && d.reading !== "opened") },
-      // Were a band row's whole goods to answer it: the fetches the gate made that would not have been needed.
-      row_goods_rule: { fetches_not_needed: n((d) => d.gate_fetch !== "none" && d.source === "search-row" && d.goods === "complete") },
+      read_rule: { would_send_back: counts.held_no_recorded_open },
+      // Were a band row's whole goods to answer it: the fetches the gate made that the drop's own goods, as they
+      // stood when the gate judged it, would have made unnecessary.
+      row_goods_rule: { fetches_not_needed: n((d) => d.gate_fetch !== "none" && d.source_before_gate === "search-row" && d.goods_before_gate === "complete") },
     },
   };
 }

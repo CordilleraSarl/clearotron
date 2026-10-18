@@ -79,7 +79,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow, servedLines } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -130,7 +130,7 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -148,7 +148,7 @@ import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, fetchedRecordUris, countLaneCa
 // one run's evidence under another.
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence } from "./screen-gate.mjs";
+import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
@@ -7772,35 +7772,69 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
 }
 
 /**
- * WHAT EACH POLICED GOODS DROP RESTS ON, recorded beside the screen gate (screen-gate.mjs `screenGateEvidence`):
- * the goods the drop stands on (goods-evidence.mjs, read from the run's files as they stand after the gate), what the
- * register reading step opened or was shown, and what the gate fetched, with the gate's own register calls counted
- * four ways. Disclosure only: the gate's rule and its outcome are decided above and nothing here changes them.
+ * WHAT EACH POLICED GOODS DROP RESTS ON, recorded beside the screen gate (screen-gate.mjs `screenGateEvidence`).
+ * Taken in two halves: `screenGateSnapshot` at the moment the gate judges, before it fetches anything (the findings
+ * it judged, each policed drop's goods evidence, and the reading log), and the record after the gate's fetches,
+ * which reads each drop's goods again only where the gate fetched. Disclosure only: the gate's rule and its
+ * outcome are decided above and nothing here changes them.
  */
-function recordScreenGateEvidence(ctx, { runPrefix, heldBeforeGate, heldAfterGate, gateFetched }) {
+function goodsEvidenceOfDrops(P, runPrefix, uris, gateFetched = null) {
+  const out = new Map();
+  if (!uris.length) return out;
+  const calls = readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix);
+  const held = heldRecordProvenance(P.runDir);
+  // Each drop's own band row, so that a goods reader which reads a row's goods reads this one's too.
+  const band = safeReadJson(P.registerNamedBand);
+  const bandRows = Array.isArray(band?.enumerated) ? band.enumerated : [];
+  const rowOf = new Map(bandRows.map((r) => [normalizeRecordUri(r?.record_id), r]));
+  const goods = bandShapeGoods(P, bandRows).goods;
+  const fetches = recordFetchOutcomes(calls.rows, { runPrefix });
+  // The gate's own fetches are this run's too, recorded by the gate whatever the register's ledger kept of them.
+  for (const [u, r] of gateFetched ?? []) {
+    const key = normalizeRecordUri(u) || String(u ?? "").toLowerCase();
+    const o = fetches.get(key) ?? { sent: 0, from_memory: 0, failed: 0, ok: false, last_status: null };
+    if (r?.ok === true) o.ok = true; else o.failed = Math.max(o.failed, 1);
+    fetches.set(key, o);
+  }
+  for (const uri of uris) {
+    const e = recordGoodsEvidence(rowOf.get(normalizeRecordUri(uri)) ?? { record_id: uri }, { goods, held, fetches });
+    out.set(uri, { goods: e.state, source: e.source });
+  }
+  return out;
+}
+
+function screenGateSnapshot(ctx, runPrefix) {
   const P = ctx.paths;
   try {
     const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
-    const calls = readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix);
-    const held = heldRecordProvenance(P.runDir);
-    // Each drop's own band row, so that a goods reader which reads a row's goods reads this one's too.
-    const band = safeReadJson(P.registerNamedBand);
-    const bandRows = Array.isArray(band?.enumerated) ? band.enumerated : [];
-    const rowOf = new Map(bandRows.map((r) => [normalizeRecordUri(r?.record_id), r]));
-    const goods = bandShapeGoods(P, bandRows).goods;
-    const fetches = recordFetchOutcomes(calls.rows, { runPrefix });
-    const evidence = new Map();
-    const evidenceOf = (uri) => {
-      if (!evidence.has(uri)) evidence.set(uri, recordGoodsEvidence(rowOf.get(normalizeRecordUri(uri)) ?? { record_id: uri }, { goods, held, fetches }));
-      return evidence.get(uri);
-    };
     let readingLog = "";
     try { readingLog = readFileSync(P.readingLog, "utf8"); } catch { readingLog = ""; }
-    const ev = screenGateEvidence({ findingsContent: findings, heldBefore: heldBeforeGate, heldAfter: heldAfterGate,
-      stateOf: (uri) => evidenceOf(uri).state, sourceOf: (uri) => evidenceOf(uri).source,
-      reads: recordReads(readingLog), readerStage: "register-digest", gateFetched });
+    return { findings, readingLog, goods: goodsEvidenceOfDrops(P, runPrefix, policedDropUris(findings)) };
+  } catch (e) {
+    return { findings: "", readingLog: "", goods: new Map(), error: String(e?.message ?? e).slice(0, 160) };
+  }
+}
+
+function recordScreenGateEvidence(ctx, { runPrefix, before, heldBeforeGate, heldAfterGate, gateFetched }) {
+  const P = ctx.paths;
+  try {
+    const uris = policedDropUris(before.findings);
+    const after = gateFetched.size ? goodsEvidenceOfDrops(P, runPrefix, uris, gateFetched) : before.goods;
+    // The line each drop's record sits on, as placement's fate count joins it, so a part of the shape or a page
+    // of a group that served the line counts as the goods words shown.
+    let lineOf = () => null, lineReads = "read";
+    try {
+      const index = buildSelectionIndex(readPlacementFormInput(P.runDir));
+      lineOf = (uri) => lineKey(index.resolve(uri));
+    } catch (e) { lineReads = `the band shape's lines could not be read, so only record opens and lookups count: ${String(e?.message ?? e).slice(0, 100)}`; }
+    const ev = screenGateEvidence({ findingsContent: before.findings, heldBefore: heldBeforeGate, heldAfter: heldAfterGate,
+      before: (uri) => before.goods.get(uri), after: (uri) => after.get(uri),
+      reads: recordReads(before.readingLog), lines: linesRead(before.readingLog), lineOf, readerStage: "register-digest", gateFetched });
+    const calls = readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix);
     const gateCalls = registerCallAccount(calls.rows.filter((r) => String(r?.sessionKey ?? "").includes("screen-gate-refetch")));
-    const doc = { schema_version: 1, ...ev, gate_calls: gateCalls, ...(calls.error ? { call_ledger_error: calls.error } : {}) };
+    const doc = { schema_version: 2, ...ev, gate_calls: gateCalls, line_reads: lineReads,
+      reading_note: "A drop with no recorded read has no band_record open, and no lookup, part of the shape or page of a group serving its line, in the reading log for the reading step. The log is best-effort: this does not show the goods were never read.",
+      ...(before.error ? { snapshot_error: before.error } : {}), ...(calls.error ? { call_ledger_error: calls.error } : {}) };
     ensureDriverDir(P.runDir);
     atomicWrite(driverDir(P.runDir, "screen-gate-evidence.json"), JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");
     runLog(P.runDir, { event: "screen-gate-evidence", ...ev.counts, unnamed: ev.unnamed, fetches: ev.fetches,
@@ -12559,6 +12593,7 @@ async function pipelineInner(job, opts = {}) {
       let violations = enforcedViolations();
       // What the gate's answer stood on before it fetched anything, and each fetch it makes: the evidence below.
       const heldBeforeGate = fetchedUniverse();
+      const gateBefore = screenGateSnapshot(ctx, runPrefix);
       const gateFetched = new Map();
       if (violations.length) {
         // REPAIR-OR-DISCLOSE, NEVER BLOCK (2026-06-18). The digest intermittently drops an in-scope-live mark on
@@ -12655,7 +12690,7 @@ async function pipelineInner(job, opts = {}) {
           ...screenGateZeroCause({ findingsPresent: fPresent,
             findingsContent: fPresent ? readFileSync(P.registerFindings, "utf8") : "", unnamedArmed }) });
       }
-      recordScreenGateEvidence(ctx, { runPrefix, heldBeforeGate, heldAfterGate: fetchedUniverse(), gateFetched });
+      recordScreenGateEvidence(ctx, { runPrefix, before: gateBefore, heldBeforeGate, heldAfterGate: fetchedUniverse(), gateFetched });
     }
 
     // ──: STANDALONE SETTLEMENT / LATE FLUSH ───────────────────────────────────────────────────

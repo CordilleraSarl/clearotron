@@ -170,7 +170,8 @@ export function readGoodsEvidence(runDir) {
 /**
  * WHAT THE STAGES READ, per record, from the band tools' reading log: canonical uri → {opened, shown, missed}, each
  * a set of session keys. `opened` is a `band_record` that served the record; `missed`, one that could not; `shown`,
- * a lookup that served the record's row with its goods words. Only the band tools' own rows count. PURE.
+ * a lookup that served the record's row with its goods words. Only the band tools' own rows count; the lines a part
+ * of the shape or a page of a group served are `linesRead`'s. PURE.
  */
 export function recordReads(readingLogText) {
   const out = new Map();
@@ -187,6 +188,30 @@ export function recordReads(readingLogText) {
     const session = String(row?.session ?? "unattributed");
     if (row?.tool === "band_record") at(row?.args?.record_id)?.[row.ok === true ? "opened" : "missed"].add(session);
     else if (row?.tool === "band_lookup" && row.ok === true) for (const id of Array.isArray(row.served) ? row.served : []) at(id)?.shown.add(session);
+  }
+  return out;
+}
+
+/**
+ * WHAT THE STAGES WERE SHOWN BY LINE, from the same log: band shape line key → {band_shape, group_page}, each a set
+ * of session keys. A part of the shape logs the lines printed in it, and a page of a group the lines it returned;
+ * both print each line's goods words. Joined to a record through the line it sits on. PURE.
+ */
+export function linesRead(readingLogText) {
+  const out = new Map();
+  for (const line of String(readingLogText ?? "").split("\n")) {
+    if (!line.trim()) continue;
+    let row; try { row = JSON.parse(line); } catch { continue; }
+    if (row?.ok !== true || !Array.isArray(row.served_lines)) continue;
+    const via = row.tool === "band_shape" ? "band_shape" : row.tool === "band_lookup" ? "group_page" : null;
+    if (!via) continue;
+    const session = String(row?.session ?? "unattributed");
+    for (const key of row.served_lines) {
+      if (typeof key !== "string" || !key) continue;
+      let e = out.get(key);
+      if (!e) { e = { band_shape: new Set(), group_page: new Set() }; out.set(key, e); }
+      e[via].add(session);
+    }
   }
   return out;
 }
