@@ -700,8 +700,8 @@
           "todos": 0
         },
         "a-goods-drop-says-what-it-rests-on-and-who-read-it.test.mjs": {
-          "tests": 4,
-          "asserts": 17,
+          "tests": 6,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -6743,7 +6743,7 @@
         },
         "the-screen-gate-records-what-its-drops-rest-on.pipeline.test.mjs": {
           "tests": 3,
-          "asserts": 17,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
