@@ -106,6 +106,9 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
   // alone would have left the prompt teaching the shape the parser now refuses. These pin the join, not
   // every word: the approved paragraph is pinned whole by the-finding-sentence-is-the-approved-standard.
   assert.match(msg, /- net: \*\*The finding sentence\.\*\* At most two sentences, each at most 25 words/);
+  assert.match(msg, /The first states the outcome as a likelihood: who would win against whom, for what goods, where\./,
+    "the conclusion first: the likelihood, the parties, the goods and the territory");
+  assert.match(msg, /No "prevail"\./, "the approved wording says win, and says so");
   assert.match(msg, /No semicolon, no arrow, no advice, no band word\./, "no chain, and never an action prescription");
   assert.doesNotMatch(msg, /semicolon-chained/i, "the retired shape is never re-taught — a superseded contract in the prompt is a gate silently switched off");
   assert.match(msg, /Every fact that does not fit goes in the legal and practical positions below, never dropped\./,
