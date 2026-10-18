@@ -1089,9 +1089,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-placement-decision-reads-alike-at-every-count.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
           "tests": 8,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
