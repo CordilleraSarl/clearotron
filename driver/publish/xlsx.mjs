@@ -141,22 +141,22 @@ const treatmentCell = f => f?.disposition === 'withdrawn'
 // Record retrieved? — the plain-English state of the register-record fetch for a finding, from the per-URI
 // fetch-state map ({retrieved | failed | not-attempted}). A common-law finding (no registrations) is
 // "n/a — live listing"; a failed fetch is VISIBLY unverified, never presented as confirmed.
-function retrievedCell(f, fetchState) {
+export function retrievedCell(f, fetchState) {   // @internal — driven by its test
   const regs = f?.owner?.registrations || [];
   if (!regs.length) return 'n/a — live listing';
   const st = uri => (fetchState && fetchState[String(uri || '').toLowerCase()]) || 'not-attempted';
   const states = regs.map(r => st(r.uri));
-  if (states.every(s => s === 'retrieved')) return 'Read from the register record';
+  if (states.every(s => s === 'retrieved')) return 'Retrieved from the register';
   const anyRead = states.some(s => s === 'retrieved');
   const anyFailed = states.some(s => s === 'failed');
   // no leg read: a fetch that FAILED (a 404) makes the registry values unverified — say so visibly; a leg
   // simply never pulled (off-field context) is the softer "not individually retrieved".
   if (!anyRead) return anyFailed ? 'Not retrieved — details unverified' : 'Not individually retrieved';
-  // mixed — spell out which country legs read and which did not ("CA read; US/AU not retrieved").
+  // mixed — spell out which country legs were retrieved and which were not ("CA retrieved; US/AU not retrieved").
   const read = regs.filter(r => st(r.uri) === 'retrieved').map(r => uriCountry(r.uri)).filter(Boolean);
   const missing = regs.filter(r => st(r.uri) !== 'retrieved').map(r => uriCountry(r.uri)).filter(Boolean);
   const parts = [];
-  if (read.length) parts.push(`${read.join('/')} read`);
+  if (read.length) parts.push(`${read.join('/')} retrieved`);
   if (missing.length) parts.push(`${missing.join('/')} not retrieved`);
   return parts.join('; ') || 'Not individually retrieved';
 }
@@ -442,7 +442,7 @@ function coverageOpen({ coverage = [], coverageJudgment = null, verdict = null, 
   return openState || judgeUnsure || verdictCoverage;
 }
 
-function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly = false, commonLawUnlogged = false, clientGate = null, lintFailures = [], productName = null, degradedParts = [] } = {}) {
+export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly = false, commonLawUnlogged = false, clientGate = null, lintFailures = [], productName = null, degradedParts = [] } = {}) {
   const disp = d => findings.filter(f => f.disposition === d && !f.isContextNote).length;
   const rated = findings.filter(f => !f.isContextNote);
   // A part that failed and still shipped is open too, so the count and the caveat never read complete
@@ -540,7 +540,7 @@ function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, 
         : 'every search we ran — register and common-law — so you can see we looked everywhere.' },
     { Field: '   Coverage & gaps', Value: 'what is fully cleared and what is still open — read this first if you have a doubt.' },
     { Field: '   Evidence tags', Value: '“from source” = checked against the actual register record or live listing · “our read” = our own assessment.' },
-    { Field: '   Record retrieved?', Value: 'whether the register entry itself was pulled and read; where a record could not be retrieved, its details are shown unverified.' },
+    { Field: '   Record retrieved?', Value: 'whether the register entry itself was retrieved; where a record could not be retrieved, its details are shown unverified.' },
   ];
   return rows;
 }
