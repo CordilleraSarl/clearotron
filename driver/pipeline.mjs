@@ -8014,7 +8014,7 @@ function recordScreenGateEvidence(ctx, { runPrefix, before, heldBeforeGate, held
     const calls = readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix);
     const gateCalls = registerCallAccount(calls.rows.filter((r) => String(r?.sessionKey ?? "").includes("screen-gate-refetch")));
     const doc = { schema_version: 2, ...ev, gate_calls: gateCalls, line_reads: lineReads,
-      reading_note: "A drop with no recorded read has no band_record open, and no lookup, part of the shape or page of a group serving its line, in the reading log for the reading step. The log is best-effort: this does not show the goods were never read.",
+      reading_note: "A drop with no recorded read has no band_record open or search-answer serve, and no lookup, part of the shape or page of a group serving its line, in the reading log for the reading step. The log is best-effort: this does not show the goods were never read.",
       ...(before.error ? { snapshot_error: before.error } : {}), ...(calls.error ? { call_ledger_error: calls.error } : {}) };
     ensureDriverDir(P.runDir);
     atomicWrite(driverDir(P.runDir, "screen-gate-evidence.json"), JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");

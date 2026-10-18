@@ -215,14 +215,16 @@ export function recordReads(readingLogText) {
     const key = uriKey(uri);
     if (!key) return null;
     let e = out.get(key);
-    if (!e) { e = { opened: new Set(), shown: new Set(), missed: new Set() }; out.set(key, e); }
+    if (!e) { e = { opened: new Set(), shown: new Set(), answered: new Set(), missed: new Set() }; out.set(key, e); }
     return e;
   };
   for (const line of String(readingLogText ?? "").split("\n")) {
     if (!line.trim()) continue;
     let row; try { row = JSON.parse(line); } catch { continue; }
     const session = String(row?.session ?? "unattributed");
-    if (row?.tool === "band_record") at(row?.args?.record_id)?.[row.ok === true ? "opened" : "missed"].add(session);
+    // A record tool's miss that served the goods the register's search answer listed is a read of those goods, not
+    // a miss: the stage was given their text, though no official record was on file.
+    if (row?.tool === "band_record") at(row?.args?.record_id)?.[row.ok === true ? "opened" : row.served === "search-answer-goods" ? "answered" : "missed"].add(session);
     else if (row?.tool === "band_lookup" && row.ok === true) for (const id of Array.isArray(row.served) ? row.served : []) at(id)?.shown.add(session);
   }
   return out;

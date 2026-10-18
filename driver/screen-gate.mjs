@@ -289,10 +289,13 @@ export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(
     const r = reads?.get?.(uri);
     const line = lines?.get?.(lineOf(uri)) ?? null;
     const routes = [
-      byReader(r?.opened) && "band_record", byReader(r?.shown) && "band_lookup",
+      byReader(r?.opened) && "band_record", byReader(r?.answered) && "band_record:search-answer", byReader(r?.shown) && "band_lookup",
       byReader(line?.band_shape) && "band_shape", byReader(line?.group_page) && "group_page",
     ].filter(Boolean);
-    const reading = routes.includes("band_record") ? "opened" : routes.length ? "goods-words-shown" : "no-recorded-read";
+    // The search answer's goods, served in full by the record tool where no official record was on file, are their
+    // own reading: more than a line's goods words, and not the official record the drop is policed on.
+    const reading = routes.includes("band_record") ? "opened" : routes.includes("band_record:search-answer") ? "search-answer-read"
+      : routes.length ? "goods-words-shown" : "no-recorded-read";
     const f = fetched.get(uri);
     const b = stateAt(before, uri), a = f ? stateAt(after ?? before, uri) : b;
     drops.push({ uri, mark: v.mark, held_before_gate: was.has(uri), goods_before_gate: b.goods, source_before_gate: b.source, reading, routes,
@@ -304,6 +307,7 @@ export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(
     policed: drops.length,
     held_before_gate: n((d) => d.held_before_gate),
     opened_by_reader: n((d) => d.reading === "opened"),
+    search_answer_read: n((d) => d.reading === "search-answer-read"),
     goods_words_shown_only: n((d) => d.reading === "goods-words-shown"),
     held_no_recorded_open: n((d) => d.held_before_gate && d.reading !== "opened"),
     held_no_recorded_read: n((d) => d.held_before_gate && d.reading === "no-recorded-read"),
