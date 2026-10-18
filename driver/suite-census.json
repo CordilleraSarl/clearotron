@@ -6255,6 +6255,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-groups-fates-are-placements-and-the-groups-stay-every-stages.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "the-heartbeat-stays-fresh-while-a-run-is-in-flight.test.mjs": {
           "tests": 4,
           "asserts": 8,
