@@ -316,14 +316,20 @@
           "todos": 0
         },
         "a-correction-patches-what-it-carries.test.mjs": {
-          "tests": 43,
-          "asserts": 79,
+          "tests": 47,
+          "asserts": 86,
           "skips": 0,
           "todos": 0
         },
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
           "tests": 7,
           "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-corrective-pass-builds-the-cards-on-the-settled-record.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -603,6 +609,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-fault-inside-a-card-is-repaired-in-that-card.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-finding-is-checked-by-its-rungs-risk-not-its-place-on-the-ladder.test.mjs": {
           "tests": 3,
           "asserts": 16,
@@ -834,6 +846,12 @@
         "a-large-grid-is-served-in-parts-under-the-tool-cap.test.mjs": {
           "tests": 5,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-late-reassembly-keeps-the-write-ups-the-first-assembly-made.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -1233,6 +1251,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-recorded-deadline-survives-a-later-save.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-records-goods-are-served-once.test.mjs": {
           "tests": 6,
           "asserts": 19,
@@ -1389,6 +1413,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-repair-after-the-cards-owes-a-card-to-the-record-it-delivers.test.mjs": {
+          "tests": 2,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repair-after-the-cards-rebuilds-only-the-cards-it-changed.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -1398,6 +1434,12 @@
         "a-repeat-of-a-family-the-reading-turn-withheld-keeps-its-judgment.test.mjs": {
           "tests": 25,
           "asserts": 113,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -7305,8 +7347,8 @@
           "todos": 0
         },
         "events.test.mjs": {
-          "tests": 12,
-          "asserts": 40,
+          "tests": 13,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
