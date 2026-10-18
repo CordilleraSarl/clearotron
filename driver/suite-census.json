@@ -1396,8 +1396,8 @@
           "todos": 0
         },
         "a-repeat-of-a-family-the-reading-turn-withheld-keeps-its-judgment.test.mjs": {
-          "tests": 24,
-          "asserts": 107,
+          "tests": 25,
+          "asserts": 113,
           "skips": 0,
           "todos": 0
         },
@@ -3437,7 +3437,7 @@
         },
         "every-waiting-family-is-asked-or-withheld.test.mjs": {
           "tests": 8,
-          "asserts": 33,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
@@ -4252,8 +4252,8 @@
           "todos": 0
         },
         "pipeline.mock.withheldfamily.test.mjs": {
-          "tests": 5,
-          "asserts": 58,
+          "tests": 6,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
