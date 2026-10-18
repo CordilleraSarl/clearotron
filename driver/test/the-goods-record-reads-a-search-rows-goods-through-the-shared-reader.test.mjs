@@ -6,8 +6,8 @@
 // The band shape reads the goods a register's search row carries: where the run holds no official record, the
 // class statements on the row, each marked where the register cut it (record-goods.mjs `rowGoods`). The run's
 // record of what each record's goods rest on reads them through that same reader and never reads a row itself:
-// a statement the register cut is cut, a whole one is complete, a held record still comes first, and a row with
-// no statements holds nothing. The shape's own count of the same evidence (`goodsEvidence`, on the band-shape
+// a statement the register cut is cut, one under the default answer's documented cut is complete, an unflagged one
+// at that cut is not established, a held record still comes first, and a row with no statements holds nothing. The shape's own count of the same evidence (`goodsEvidence`, on the band-shape
 // event) and the run's record must then agree record for record, or two counts of one fact have drifted apart.
 // Every mark, owner, record id and goods line is invented.
 import { test } from "node:test";
@@ -36,6 +36,7 @@ const BAND = [
   row("r4", [statement("printers", true)]),            // a held record comes first
   row("r5", null),                                      // nothing on the row
   row("r6", null),                                      // a held record that lists no goods
+  row("r7", [statement("y".repeat(280))]),              // unflagged at the default answer's cut: not established
 ];
 
 function seedRun(t) {
@@ -46,7 +47,7 @@ function seedRun(t) {
   const body = (target, classifications) => ({ ts: "2026-10-18T00:00:00Z", provider: "signa", sessionKey: "clearance-qz-test-register-unit-primary-sweep",
     target, body: { _raw: { classifications } } });
   writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), [
-    body("/mark/eu/r4", [{ nice_class: 9, goods_services_text: "printers and printer cartridges", goods_services_language: "en" }]),
+    body("/mark/eu/r4", [{ nice_class: 9, goods_services_text: "printers and printer cartridges", goods_services_language: "en", goods_services_text_truncated: false }]),
     body("/mark/eu/r6", []),
   ].map((r) => JSON.stringify(r)).join("\n") + "\n");
   return runDir;
@@ -58,11 +59,12 @@ test("a search row's statements are read through the shared reader: cut where th
   const doc = deriveGoodsEvidence({ records: BAND, goods, held: heldRecordProvenance(runDir) });
   assert.deepEqual(doc.records.map((r) => [r.uri.split("/").pop(), r.state, r.source, r.basis]), [
     ["r1", "cut", "search-row", "register-flag"],
-    ["r2", "complete", "search-row", "register-flag"],
+    ["r2", "complete", "search-row", "default-answer-under-its-cut"],
     ["r3", "not-held", null, "no-goods-held"],
-    ["r4", "complete", "record-body", "full-record"],
+    ["r4", "complete", "record-body", "register-flag"],
     ["r5", "not-held", null, "no-goods-held"],
     ["r6", "absent", "record-body", "full-record-without-goods"],
+    ["r7", "unknown", "search-row", "default-answer-at-or-over-its-cut"],
   ]);
 });
 
@@ -73,8 +75,8 @@ test("the shape's own count of the evidence and the run's record agree record fo
   const goods = bandShapeGoods(paths(runDir), BAND).goods;
   const doc = deriveGoodsEvidence({ records: BAND, goods, held: heldRecordProvenance(runDir) });
   const count = (source, ...states) => doc.records.filter((r) => r.source === source && (!states.length || states.includes(r.state))).length;
-  assert.deepEqual({ held: count("record-body", "complete", "cut"), complete: count("search-row", "complete"), cut: count("search-row", "cut"),
-    none: count(null) + count("record-body", "absent") }, goodsEvidence(BAND, goods));
+  assert.deepEqual({ held: count("record-body", "complete", "cut", "unknown"), complete: count("search-row", "complete"), cut: count("search-row", "cut"),
+    unknown: count("search-row", "unknown"), none: count(null) + count("record-body", "absent") }, goodsEvidence(BAND, goods));
 });
 
 test("the derivation the pipeline runs writes the row's states, and its two events agree", (t) => {
@@ -82,12 +84,12 @@ test("the derivation the pipeline runs writes the row's states, and its two even
   const ctx = { paths: paths(runDir), job: { markName: "Qzorvak", classes: ["9"], jurisdictions: ["EU"] }, profile: {}, run: { slug: "qz", codename: "test", runDir } };
   assert.equal(DERIVATION_RUNNERS["band-shape"](ctx), true);
   const doc = JSON.parse(readFileSync(driverDir(runDir, "goods-evidence.json"), "utf8"));
-  assert.deepEqual(doc.records.map((r) => r.state), ["cut", "complete", "not-held", "complete", "not-held", "absent"]);
+  assert.deepEqual(doc.records.map((r) => r.state), ["cut", "complete", "not-held", "complete", "not-held", "absent", "unknown"]);
   const events = readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
   const shaped = events.find((e) => e.event === "band-shape-derived")?.goods_evidence;
   const recorded = events.find((e) => e.event === "goods-evidence");
   assert.ok(shaped && recorded, "guard: both events were written");
   assert.equal(shaped.held, recorded.by_source["record-body"] - recorded.by_state.absent);
   assert.equal(shaped.none, recorded.by_source.none + recorded.by_state.absent);
-  assert.equal(shaped.complete + shaped.cut, recorded.by_source["search-row"]);
+  assert.equal(shaped.complete + shaped.cut + shaped.unknown, recorded.by_source["search-row"]);
 });

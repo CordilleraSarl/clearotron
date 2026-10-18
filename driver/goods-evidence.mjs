@@ -6,18 +6,21 @@
 // official record itself. Those tools say whether a record's goods could be read. They cannot say what the goods
 // rest on, and the difference decides what a goods judgment may conclude:
 //
-//   complete      the run holds the text whole: the register's own full record, fetched or hydrated, or
-//                 statements a search answer carried that the register did not mark as cut;
+//   complete      the run holds the text whole, on a basis the record names: a full record from an operation
+//                 whose goods are whole (the record text, the register's own flag on a retrieved record, the
+//                 bulk register statement), or a search answer's statement shorter than its documented cut;
 //   cut           the register marked the statement as cut: a missing word proves nothing;
-//   absent        the run holds the register's full record and it carries no goods statement;
+//   unknown       goods are held and their completeness is not established: a search answer's unflagged
+//                 statement at or over the default answer's documented cut, a retrieved record's statement with
+//                 no flag, a register whose full-record operation the tree documents nowhere, or a held record
+//                 whose goods field is missing;
+//   absent        the run holds a full record from such an operation, and it lists no goods;
 //   unavailable   no goods are held and a fetch of the record failed this run;
-//   not-held      no goods are held, and nothing was fetched. A search answer may carry statements the run
-//                 does not read (the shared goods reader reads them once it reads a band row's goods).
+//   not-held      no goods are held, and nothing was fetched.
 //
-// None of the last four means the goods are unrelated (ruled 2026-10-18). Length alone never establishes a cut:
-// a statement is cut where the register says so, and the default answer's documented cut length is a fact about
-// that answer, kept to the counts measured on it rather than read into a statement here. What cannot be
-// established is not called complete.
+// None of the last five means the goods are unrelated (ruled 2026-10-18). Every state comes from the shared
+// goods reader's one rule (record-goods.mjs `rowGoods`, `recordGoods`, `recordGoodsProvenance`), so the record
+// and the goods test the shape groups on cannot disagree. What cannot be established is not called complete.
 //
 // WHAT IT READS. Nothing a search row holds directly: the goods a record's evidence carries come from the goods
 // reader the band shape is handed (`of`, and `held` once the reader distinguishes a held body), which marks a
@@ -28,13 +31,14 @@
 //
 // PURE except `heldRecordProvenance` and `readRunCallRows`, which read the run's files.
 import { readFileSync, existsSync } from "node:fs";
-import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine } from "./registry-fidelity.mjs";
+import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyHasContent } from "./registry-fidelity.mjs";
+import { recordGoodsProvenance } from "./record-goods.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 
 export const GOODS_EVIDENCE_SCHEMA_VERSION = 1;
 export const GOODS_EVIDENCE_FILE = "goods-evidence.json";
-export const GOODS_STATES = Object.freeze(["complete", "cut", "absent", "unavailable", "not-held"]);
+export const GOODS_STATES = Object.freeze(["complete", "cut", "unknown", "absent", "unavailable", "not-held"]);
 
 const uriKey = (u) => normalizeRecordUri(u);
 // A register's own id for a record, as a fetch row names it where the provider logs its own id rather than the
@@ -42,18 +46,21 @@ const uriKey = (u) => normalizeRecordUri(u);
 const idOf = (u) => { const k = normalizeRecordUri(u); return k ? k.slice(k.lastIndexOf("/") + 1) : ""; };
 
 /**
- * Which official records the run holds, and where each came from: canonical uri → {via, provider, session, ts}.
- * The record ledger first, then `_records/`, the later copy winning, as the goods reader and `band_record` read
- * them. A torn line or an unreadable file contributes nothing. IMPURE (reads the run).
+ * Which official records the run holds, and where each came from: canonical uri → {via, provider, session, ts,
+ * goods}, where `goods` is the shared reader's account of the body (record-goods.mjs `recordGoodsProvenance`:
+ * the operation it came from, and whether it supplies the goods field). The record ledger first, then `_records/`,
+ * the later copy winning, as the goods reader and `band_record` read them. A body that carries no record is no
+ * record held (registry-fidelity.mjs `recordBodyHasContent`). A torn line or an unreadable file contributes
+ * nothing. IMPURE (reads the run).
  */
 export function heldRecordProvenance(runDir) {
   const out = new Map();
-  const put = (uri, via, facts) => {
+  const put = (uri, via, facts, body) => {
     const key = uriKey(uri);
-    if (!key) return;
+    if (!key || !recordBodyHasContent(body)) return;
     const prev = out.get(key);
     out.set(key, { via: [...new Set([...(prev?.via ?? []), via])], provider: facts.provider ?? prev?.provider ?? null,
-      session: facts.session ?? prev?.session ?? null, ts: facts.ts ?? prev?.ts ?? null });
+      session: facts.session ?? prev?.session ?? null, ts: facts.ts ?? prev?.ts ?? null, goods: recordGoodsProvenance(body) });
   };
   let text = "";
   try { text = readFileSync(driverDir(runDir, "register-record-bodies.jsonl"), "utf8"); } catch { text = ""; }
@@ -61,11 +68,11 @@ export function heldRecordProvenance(runDir) {
     if (!line.trim()) continue;
     let row; try { row = JSON.parse(line); } catch { continue; }
     if (!row?.body || typeof row.body !== "object") continue;
-    put(row.target, "register-record-bodies", { provider: row.provider ?? null, session: row.sessionKey ?? null, ts: row.ts ?? null });
+    put(row.target, "register-record-bodies", { provider: row.provider ?? null, session: row.sessionKey ?? null, ts: row.ts ?? null }, row.body);
   }
   for (const [uri, body] of readRecordArtifacts(runDir)) {
     const r = body?._receipt;
-    put(uri, "_records", { provider: r?.provider ?? null, session: r?.context ?? null, ts: r?.fetched_at ?? null });
+    put(uri, "_records", { provider: r?.provider ?? null, session: r?.context ?? null, ts: r?.fetched_at ?? null }, body);
   }
   return out;
 }
@@ -129,11 +136,24 @@ export function recordGoodsEvidence(record, { goods = null, held = null, fetches
   const fetch = fetchOf(fetches, record?.record_id);
   const readable = statements?.length ? statements.some((g) => g?.en !== false) : null;
   const cut = (statements ?? []).some((g) => g?.cut === true);
+  const unknown = (statements ?? []).some((g) => g?.unknown === true);
   const row = (state, source, basis) => ({ uri, state, source, basis, readable, held: body, fetch });
   // The statements are a held body's where the reader says so; a reader that cannot tell reads bodies only.
-  if (statements?.length && fromBody) return row(cut ? "cut" : "complete", "record-body", cut ? "register-flag" : "full-record");
-  if (statements?.length) return row(cut ? "cut" : "complete", "search-row", "register-flag");
-  if (body) return row("absent", "record-body", "full-record-without-goods");
+  if (statements?.length && fromBody) {
+    const op = body?.goods?.operation ?? "undocumented";
+    return row(cut ? "cut" : unknown ? "unknown" : "complete", "record-body",
+      cut ? "register-flag" : unknown ? (op === "retrieve" ? "retrieved-record-without-flag" : "full-record-operation-undocumented")
+        : op === "retrieve" ? "register-flag" : op === "bulk-register" ? "bulk-register-statement" : "full-record");
+  }
+  if (statements?.length) return row(cut ? "cut" : unknown ? "unknown" : "complete", "search-row",
+    cut ? "register-flag" : unknown ? "default-answer-at-or-over-its-cut" : "default-answer-under-its-cut");
+  if (body) {
+    // Lists no goods only where an operation whose goods are whole supplies the field and it is empty. A body with
+    // no goods field, or from an operation the tree documents nowhere, establishes nothing about its goods.
+    const g = body.goods ?? { operation: "undocumented", field: "none" };
+    if (g.field === "empty" && g.operation !== "undocumented") return row("absent", "record-body", "full-record-without-goods");
+    return row("unknown", "record-body", g.field === "none" ? "record-without-goods-field" : "full-record-operation-undocumented");
+  }
   if (fetch?.failed && !fetch.ok) return row("unavailable", null, "record-fetch-failed");
   return row("not-held", null, "no-goods-held");
 }

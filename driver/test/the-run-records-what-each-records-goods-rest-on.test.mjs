@@ -30,27 +30,36 @@ const reader = (byId, heldIds = null) => ({
   ...(heldIds ? { held: (r) => heldIds.includes(r.record_id.split("/").pop()) } : {}),
 });
 
-test("a body the run holds, with goods, is complete on the full record it is; with none, the register's record is without goods", () => {
-  const held = new Map([["/mark/eu/g1", { via: ["register-record-bodies"], provider: "signa", session: "clearance-x-y-register-unit-primary", ts: "2026-10-18T00:00:00Z" }],
-    ["/mark/eu/g2", { via: ["register-record-bodies"], provider: "signa", session: "clearance-x-y-screen-gate-refetch", ts: "2026-10-18T00:01:00Z" }]]);
-  const goods = reader({ g1: [statement("joysticks")] });
-  const g1 = recordGoodsEvidence(rec("g1"), { goods, held });
-  assert.deepEqual([g1.state, g1.source, g1.basis], ["complete", "record-body", "full-record"]);
-  assert.equal(g1.held.session, "clearance-x-y-register-unit-primary", "where the body came from is kept with it");
-  const g2 = recordGoodsEvidence(rec("g2"), { goods, held });
-  assert.deepEqual([g2.state, g2.source, g2.basis], ["absent", "record-body", "full-record-without-goods"],
-    "a held record whose register entry carries no goods is absent at the register, never unrelated and never unknown");
+test("a body the run holds is complete on the operation it came from, and lists no goods only where that record says so", () => {
+  const at = (session, op, field) => ({ via: ["register-record-bodies"], provider: "signa", session, ts: "2026-10-18T00:00:00Z", goods: { operation: op, field } });
+  const held = new Map([
+    ["/mark/eu/g1", at("clearance-x-y-register-unit-primary", "record-text", "listed")],
+    ["/mark/eu/g2", at("clearance-x-y-screen-gate-refetch", "retrieve", "empty")],
+    ["/mark/eu/g3", at("clearance-x-y-record-closure", "undocumented", "none")],
+    ["/mark/eu/g4", at("clearance-x-y-record-closure", "undocumented", "empty")],
+    ["/mark/eu/g5", at("clearance-x-y-record-closure", "retrieve", "listed")],
+    ["/mark/eu/g6", at("clearance-x-y-record-closure", "bulk-register", "listed")],
+  ]);
+  const goods = reader({ g1: [statement("joysticks")], g5: [statement("printers", { unknown: true })], g6: [statement("beverages")] });
+  const of = (id) => { const e = recordGoodsEvidence(rec(id), { goods, held }); return [e.state, e.source, e.basis]; };
+  assert.deepEqual(of("g1"), ["complete", "record-body", "full-record"]);
+  assert.equal(recordGoodsEvidence(rec("g1"), { goods, held }).held.session, "clearance-x-y-register-unit-primary", "where the body came from is kept with it");
+  assert.deepEqual(of("g2"), ["absent", "record-body", "full-record-without-goods"],
+    "a full record that supplies the goods field and lists none is absent at the register, never unrelated");
+  assert.deepEqual(of("g3"), ["unknown", "record-body", "record-without-goods-field"], "a body with no goods field establishes nothing about its goods");
+  assert.deepEqual(of("g4"), ["unknown", "record-body", "full-record-operation-undocumented"], "an empty list from an undocumented operation is not a record listing no goods");
+  assert.deepEqual(of("g5"), ["unknown", "record-body", "retrieved-record-without-flag"]);
+  assert.deepEqual(of("g6"), ["complete", "record-body", "bulk-register-statement"]);
 });
 
-test("statements a search answer carried are cut where the register says so, and whole otherwise; length is never the test", () => {
-  // The shared goods reader marks a statement the register cut; nothing here reads a search row itself.
-  const twoEighty = "x".repeat(280);
-  const goods = reader({ r1: [statement("joysticks for games", { cut: true })], r2: [statement(twoEighty)], r3: [statement("joysticks")] }, []);
+test("statements a search answer carried are cut where the register says so, not established at the default answer's cut, and whole under it", () => {
+  // The shared goods reader marks each statement (record-goods.mjs `rowGoods`); nothing here reads a search row itself.
+  const goods = reader({ r1: [statement("joysticks for games", { cut: true })], r2: [statement("x".repeat(280), { unknown: true })], r3: [statement("joysticks")] }, []);
   const at = (id) => recordGoodsEvidence(rec(id), { goods, held: new Map() });
   assert.deepEqual([at("r1").state, at("r1").source, at("r1").basis], ["cut", "search-row", "register-flag"]);
-  assert.deepEqual([at("r2").state, at("r2").basis], ["complete", "register-flag"],
-    "a statement of exactly the default cut length that the register did not flag is not called cut on its length");
-  assert.equal(at("r3").state, "complete");
+  assert.deepEqual([at("r2").state, at("r2").basis], ["unknown", "default-answer-at-or-over-its-cut"],
+    "an unflagged statement at the default answer's cut is neither cut nor whole: its completeness is not established");
+  assert.deepEqual([at("r3").state, at("r3").basis], ["complete", "default-answer-under-its-cut"]);
 });
 
 test("no goods held: unavailable where a fetch for the record failed, otherwise not held; neither is absent", () => {
@@ -96,13 +105,18 @@ test("the run's own files say which bodies it holds and where from, the later co
   mkdirSync(driverDir(runDir), { recursive: true });
   mkdirSync(join(runDir, "_records"), { recursive: true });
   writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), [
-    { ts: "2026-10-18T00:00:00Z", provider: "signa", sessionKey: "clearance-x-y-register-unit-primary", target: "/mark/eu/g1", body: { _raw: {} } },
+    { ts: "2026-10-18T00:00:00Z", provider: "signa", sessionKey: "clearance-x-y-register-unit-primary", target: "/mark/eu/g1",
+      body: { statusText: "Registered", _raw: { classifications: [{ nice_class: 9, goods_services_text: "joysticks", goods_services_text_truncated: false }] } } },
     "not json",
-    { ts: "2026-10-18T00:02:00Z", provider: "signa", sessionKey: "clearance-x-y-record-closure", target: "/mark/EU/g2", body: {} },
+    { ts: "2026-10-18T00:02:00Z", provider: "signa", sessionKey: "clearance-x-y-record-closure", target: "/mark/EU/g2", body: { statusText: "Registered" } },
+    { ts: "2026-10-18T00:03:00Z", provider: "signa", sessionKey: "clearance-x-y-record-closure", target: "/mark/eu/g4", body: { statusText: null } },
   ].map((r) => (typeof r === "string" ? r : JSON.stringify(r))).join("\n") + "\n");
-  writeFileSync(join(runDir, "_records", "eu-g3.json"), JSON.stringify({ _uri: "/mark/eu/g3", goodsServices: [] }));
+  writeFileSync(join(runDir, "_records", "eu-g3.json"), JSON.stringify({ _uri: "/mark/eu/g3", statusText: "Registered", goodsServices: [] }));
   const held = heldRecordProvenance(runDir);
-  assert.deepEqual([...held.keys()].sort(), ["/mark/eu/g1", "/mark/eu/g2", "/mark/eu/g3"]);
+  assert.deepEqual([...held.keys()].sort(), ["/mark/eu/g1", "/mark/eu/g2", "/mark/eu/g3"], "a body that carries no record is no record held");
+  assert.deepEqual([held.get("/mark/eu/g1").goods, held.get("/mark/eu/g2").goods, held.get("/mark/eu/g3").goods],
+    [{ operation: "retrieve", field: "listed" }, { operation: "undocumented", field: "none" }, { operation: "record-text", field: "empty" }],
+    "each body says the operation it came from and whether it supplies the goods field");
   assert.equal(held.get("/mark/eu/g2").session, "clearance-x-y-record-closure", "the register's case is folded, as every reader of the ledger folds it");
   assert.deepEqual(held.get("/mark/eu/g3").via, ["_records"]);
 });

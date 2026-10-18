@@ -85,7 +85,7 @@ test("a line is on file only where a body is held, so band_record is never point
 
 test("the run record counts what each record's goods rest on", (t) => {
   const { g } = runWith(t);
-  assert.deepEqual(goodsEvidence(ROWS, g.goods), { held: 2, complete: 3, cut: 2, none: 1 });
+  assert.deepEqual(goodsEvidence(ROWS, g.goods), { held: 2, complete: 3, cut: 2, unknown: 0, none: 1 });
 });
 
 test("a band whose rows carry no statements, with no body held, is read as before", (t) => {
