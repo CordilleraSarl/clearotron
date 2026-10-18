@@ -3381,6 +3381,18 @@
           "skips": 0,
           "todos": 0
         },
+        "every-model-stage-is-handed-its-tools-on-both-engines.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-model-stage-is-handed-the-instruction-files-it-declares.test.mjs": {
+          "tests": 7,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "every-own-pass-digest-is-declared.test.mjs": {
           "tests": 5,
           "asserts": 11,
