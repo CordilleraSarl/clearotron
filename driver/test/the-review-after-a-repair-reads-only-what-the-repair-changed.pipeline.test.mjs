@@ -295,7 +295,9 @@ test("a resume's whole review of an unreviewed change sends its flags to the one
   const msg = dispatches(r2.runDir, "synthesis").find((m) => m.includes(CORRECTION_OPENS) && m.includes(flags[0].text));
   assert.ok(msg, "the correction does not carry the whole review's flag");
   assert.ok(e2.some((e) => e.event === "verdict-hardened-by-repair" && e.now === "CONDITIONAL"), "its verdict never reached the late-review rule");
-  assert.equal(JSON.parse(readFileSync(driverDir(r2.runDir, "post-repair-review.json"), "utf8")).status, "read");
+  const rec = JSON.parse(readFileSync(driverDir(r2.runDir, "post-repair-review.json"), "utf8"));
+  assert.equal(rec.status, "read");
+  assert.equal(rec.findingOnly, false, "the resume relabelled a narrative change as a change to the findings alone");
   assert.equal(r2.ok, true, JSON.stringify(r2).slice(0, 300));
 });
 
