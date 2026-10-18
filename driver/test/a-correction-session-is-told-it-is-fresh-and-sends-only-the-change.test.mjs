@@ -25,7 +25,7 @@ import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
-import { composeFollowup } from "../stages.mjs";
+import { composeFollowup, STAGES, paths } from "../stages.mjs";
 import { correctionHint, heldSynthesisRecord } from "../gateway.mjs";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -152,14 +152,18 @@ test("the writer's retry after a failed check sends only the change while the dr
   assert.ok(correctionHint(tok).includes(WHOLE) && !correctionHint(tok).includes(PATCH), "no held record takes the whole save");
   assert.ok(correctionHint("finding_legacy_scale_forbidden:composite", { heldRecord: true }).includes(WHOLE), "a version being replaced takes the whole save");
   assert.ok(!correctionHint("coverage_status_offenum (axis primary-sweep)", { heldRecord: true }).includes("record_synthesis"), "another stage's hint is unchanged");
-  // The run's own files decide: an accepted save is the record the driver holds.
+  // The run's own files decide: an accepted save is the record the driver holds. The files are the ones the stage
+  // really expects, its narrative alone, as the retry is composed from them.
   const dir = mkdtempSync(join(tmpdir(), "held-record-"));
   try {
-    const findings = join(dir, "findings.json");
-    assert.equal(heldSynthesisRecord([join(dir, "narrative.md"), findings]), false);
+    const expected = [STAGES.synthesis.out(paths(dir), {})].flat();
+    assert.deepEqual(expected.map((f) => f.slice(dir.length + 1)), ["narrative.md"], "premise: the writer's stage expects its narrative alone");
+    assert.equal(heldSynthesisRecord(expected), false);
     mkdirSync(join(dir, "_driver", "synthesis-calls"), { recursive: true });
     writeFileSync(join(dir, "_driver", "synthesis-calls", "accepted.json"), "{}\n");
-    assert.equal(heldSynthesisRecord([join(dir, "narrative.md"), findings]), true);
+    assert.equal(heldSynthesisRecord(expected), true, "the stage's own expected files do not show the record the driver holds");
+    assert.ok(correctionHint(tok, { heldRecord: heldSynthesisRecord(expected) }).includes(PATCH), "a real retry is not offered the patch");
+    assert.equal(heldSynthesisRecord([join(dir, "findings.json")]), true, "the findings file names the same record");
     assert.equal(heldSynthesisRecord([join(dir, "register-findings.md")]), false, "files of another stage hold no writer's record");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

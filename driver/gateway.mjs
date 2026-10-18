@@ -2368,9 +2368,12 @@ const CLEARANCE_FINDINGS_TOKEN_RE = /(?<!knockout_|knockoutassess_)findings?_/;
 // takes the complete save.
 const HELD_RECORD_RETRY = "Fix exactly that in ONE `record_synthesis` PATCH call, sending only the change: `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces, and `findings` carrying any register you corrected, complete, and never a `findings[]` list; leave the narrative prose unchanged";
 const VERSION_FAILURE_RE = /finding_legacy_scale_forbidden|schema_version/;
-/** Does the driver hold an accepted synthesis record for the run these files belong to? */
+/**
+ * Does the driver hold an accepted synthesis record for the run these files belong to? Read from either of the files
+ * the writer's call renders: the stage's own expected file is the narrative, and a caller may name the findings.
+ */
 export const heldSynthesisRecord = (files) => {
-  const f = (Array.isArray(files) ? files : [files]).find((x) => typeof x === "string" && basename(x) === FINDINGS_FILE);
+  const f = (Array.isArray(files) ? files : [files]).find((x) => typeof x === "string" && [NARRATIVE_FILE, FINDINGS_FILE].includes(basename(x)));
   return Boolean(f) && existsSync(synthesisCallPaths(dirname(f)).accepted);
 };
 
