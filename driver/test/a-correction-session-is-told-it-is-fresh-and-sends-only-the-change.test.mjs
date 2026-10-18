@@ -52,6 +52,10 @@ const V12 = "The findings document — schema_version, rated_under_framework, fi
 const V12_SECOND_TEXT_OPENS = " TWO OF ITS FIELDS ALSO RENDER INTO THE NARRATIVE, which is why they are here and not on `narrative`:";
 const V18 = "This is a fresh session: your earlier refutation is not in your context, and you do NOT redo it from scratch. Your prior verdict and its flags are in senior-eye-review.md — open it first — and the source files you refuted against are listed below.";
 const V19_OPEN_TOOL = (label, file, tool) => `This is a fresh session: your earlier ${label} work is not in your context — the driver wrote ${file} from your \`${tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`;
+// The writer's form names both files its call wrote, and the content its faults were found in (design's answer on the
+// writer route, 2026-10-18).
+const V19_OPEN_WRITER = (findings, narrative) => `This is a fresh session: your earlier synthesis work is not in your context. The driver wrote ${findings} and ${narrative} from your \`record_synthesis\` call. The deterministic pre-delivery checks found these faults in content rendered from that record:`;
+const V19_READ_WRITER = (findings, narrative) => `Read ${findings} and ${narrative}, then correct the finding or narrative section that owns each fault.`;
 const V19_OPEN_HAND = (label, file) => `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`;
 const V19_SAVE_WRITER = "Apply the fix in ONE `record_synthesis` PATCH call, sending only the change: `narrative` carrying only the sections you corrected; `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces; and `findings` carrying any register you corrected, complete, and never a `findings[]` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. You hold no Write or Edit tool for it and nothing you write by hand is read.";
 const V19_SAVE_OTHER = (tool) => `Apply the fix by calling \`${tool}\` AGAIN with the corrected values — the COMPLETE payload, not a patch, because the driver re-renders the whole artifact from what you send. You hold no Write or Edit tool for it and nothing you write by hand is read.`;
@@ -88,8 +92,11 @@ test("the reviewer's re-check opens fresh and points at its own verdict file", (
 test("the delivery-check repair opens fresh; the writer saves a patch, every other tool its whole payload", () => {
   const c = composer("*:lint-repair");
   const failures = [{ id: "x", detail: "a check the lint named" }];
-  const writer = linesOf(c.compose({ label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, failures }));
-  assert.equal(writer[0], V19_OPEN_TOOL("synthesis", "narrative.md", "record_synthesis"));
+  const writer = linesOf(c.compose({ label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, findings: "findings.json", narrative: "narrative.md",
+    failures: [...failures, { id: "y", finding: 2, detail: "a fault in a sentence composed from finding 2" }] }));
+  assert.equal(writer[0], V19_OPEN_WRITER("findings.json", "narrative.md"));
+  assert.deepEqual(writer.slice(1, 4), ["- a check the lint named", "- finding 2: a fault in a sentence composed from finding 2", V19_READ_WRITER("findings.json", "narrative.md")],
+    "the faults, each in a line composed from the record named by its finding, then the order to read both files");
   assert.equal(writer.at(-1), V19_SAVE_WRITER, "the writer's save takes only the change");
   assert.ok(!writer.some((l) => l.includes("COMPLETE payload")), "and is never ordered to re-send the whole record");
 

@@ -43,7 +43,7 @@ const JOB = {
 const KNOBS = ["MOCK_VERDICT", "MOCK_VERDICT_DEFECTS", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_ACTIONS",
   "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING", "MOCK_REVIEW_BLOCKS_AFTER_VERDICT",
   "MOCK_NARRATIVE_OVER_CAP", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_LINT_REPAIR_SAME_VALUES",
-  "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS"];
+  "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS", "MOCK_WHOLE_FALLBACK_VERDICT", "MOCK_LATE_SAVE_ADDS"];
 
 // The Codex run pins its own billing; every Claude run puts back what the suite started with.
 const AS_STARTED = Object.fromEntries(["CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"].map((k) => [k, process.env[k]]));
@@ -52,13 +52,13 @@ const ENGINES = {
   codex: { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: CODEX, CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-dummy" },
 };
 
-async function runPipeline(env, engine = "claude") {
-  const root = tempDir("clearotron-post-repair-");
+async function runPipeline(env, engine = "claude", { codename = null } = {}) {
+  const root = codename ? process.env.CLEAROTRON_WORK_DIR : tempDir("clearotron-post-repair-");
   for (const k of KNOBS) delete process.env[k];
   pinEnvAll(process.env, { ...ENGINES[engine], CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_SKEPTIC: "no flags surfaced", ...env });
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
-  const res = await pipeline({ ...JOB });
+  const res = await pipeline({ ...JOB }, codename ? { codename } : {});
   const events = readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
   return { res, events };
 }
@@ -134,6 +134,9 @@ test("a findings-only change whose review cannot be read falls back to the whole
   assert.equal(stageEvents(events, "synthesis", "post-repair-corrective").length, 1, "the whole review's flags go to the one correction");
   const msg = dispatches(res.runDir, "synthesis").find((m) => m.includes(CORRECTION_OPENS));
   assert.ok(msg?.includes(flags[0].text), "the correction carries the whole review's flag");
+  // …and its verdict is decided by the late-review rule every review here goes through: its CONDITIONAL hardens the run.
+  assert.ok(events.some((e) => e.event === "verdict-hardened-by-repair" && e.now === "CONDITIONAL"), "the whole review's verdict never reached the late-review rule");
+  assert.equal(res.verdict, "CONDITIONAL");
   assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "post-repair-review.json"), "utf8")).status, "read");
   assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
 });
@@ -198,6 +201,103 @@ test("a narrowed CLEAR does not soften a BLOCKING run: the whole review stays th
   assert.match(readFileSync(driverDir(res.runDir, "review-after-repair.md"), "utf8"), /^CLEAR/, "the narrowed one is kept under _driver/");
   assert.match(readFileSync(driverDir(res.runDir, "reviewer-open-questions.md"), "utf8"), /coined element is misquoted/,
     "the open questions still carry the whole review's grounds");
+});
+
+// ── NO CHANGE GOES UNREVIEWED, AND NO POINT IS LOST ─────────────────────────────────────────────────────
+const codenameOf = (runDir) => runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
+const openQuestions = (runDir) => (existsSync(driverDir(runDir, "reviewer-open-questions.md")) ? readFileSync(driverDir(runDir, "reviewer-open-questions.md"), "utf8") : "");
+
+for (const engine of Object.keys(ENGINES)) {
+  test(`${engine}: a narrative repair whose review cannot be read falls back to the whole review, and when neither is read the guard holds the run`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_UNREAD: "both" }, engine);
+    assert.equal(stageEvents(events, "synthesis", "lint-repair").length, 1, "premise: the writer repaired the narrative");
+    const reads = events.filter((e) => e.event === "post-repair-review");
+    assert.deepEqual(reads.map((e) => [e.read, e.whole ?? false]), [[false, false], [false, true]], `the two reads: ${JSON.stringify(reads)}`);
+    const rec = JSON.parse(readFileSync(driverDir(res.runDir, "post-repair-review.json"), "utf8"));
+    assert.deepEqual([rec.status, rec.findingOnly], ["unread", false], "the record does not say the narrative change went unreviewed");
+    const blocked = events.find((e) => e.event === "delivery-stale-blocked");
+    assert.ok(blocked && JSON.stringify(blocked).includes("narrative-refutation"), `the guard did not hold the run: ${JSON.stringify(events.map((e) => e.event).slice(-12))}`);
+    assert.notEqual(res.ok, true, "a narrative change nobody reviewed was delivered");
+  });
+
+  test(`${engine}: a point that hardened the verdict stays in the reviewing lawyer's record after the correction changes what it names`, async () => {
+    const flags = [{ kind: "fact", text: "An invented point the review after the repair raised about finding 1.", on: [1] }];
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_LINT_REPAIR_SAME_VALUES: "finding",
+      MOCK_POST_REPAIR_FLAGS: JSON.stringify(flags) }, engine);
+    assert.ok(events.some((e) => e.event === "verdict-hardened-by-repair" && e.now === "CONDITIONAL"), "premise: the review after the repair hardened the verdict");
+    assert.equal(stageEvents(events, "synthesis", "post-repair-corrective").length, 1, "premise: its one correction ran");
+    const doc = JSON.parse(readFileSync(driverDir(res.runDir, "post-repair-corrections.json"), "utf8"));
+    assert.equal(doc.grounds, true, "the correction's record does not say its points are the verdict's grounds");
+    assert.equal(doc.rows[0].outcome, "findings-changed", "premise: the correction changed the finding the point names");
+    const open = openQuestions(res.runDir);
+    assert.ok(open.includes(flags[0].text), "the CONDITIONAL label shipped with no visible ground");
+    assert.ok(open.includes("the run could not check whether this was addressed"), "the changed point is not marked unchecked");
+    assert.ok(!open.includes("the report did not change in response"), "the observed change is relabelled as unchanged");
+    assert.ok(!readFileSync(join(res.runDir, "report.md"), "utf8").includes(flags[0].text), "the point reached the client's report");
+    assert.equal(res.verdict, "CONDITIONAL");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+}
+
+test("a finding the correction after the review adds gets its card, and the delivered report carries it", async () => {
+  const flags = [{ kind: "fact", text: "An invented point about finding 1.", on: [1] }];
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_LINT_REPAIR_SAME_VALUES: "finding",
+    MOCK_POST_REPAIR_FLAGS: JSON.stringify(flags), MOCK_LATE_SAVE_ADDS: "1" });
+  const fix = events.findIndex((e) => e.event === "stage" && e.stage === "synthesis" && e.trigger === "post-repair-corrective");
+  assert.ok(fix >= 0, "premise: the correction ran");
+  const doc = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+  assert.ok(doc.findings.some((f) => f.owner?.name === "Mystery Owner 2 LLC"), "premise: the correction's save added a finding");
+  assert.ok(events.slice(fix).some((e) => e.event === "stage" && e.stage === "report-card:2" && e.ok === true), "no card was built for the added finding");
+  assert.ok(readFileSync(join(res.runDir, "report.md"), "utf8").includes("Mock filing detail for Mystery Owner 2 LLC."),
+    "the delivered report does not carry the added finding's card");
+  assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+});
+
+test("a narrative repair whose review is refused, on a stage that still reads ok, is reviewed whole before it is delivered", async () => {
+  // The refused call leaves the earlier review's file standing, so the stage reads ok: only the accepted call counts.
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: "[]", MOCK_POST_REPAIR_VERDICT: "BLOCKING" });
+  const reads = events.filter((e) => e.event === "post-repair-review");
+  assert.deepEqual(reads.map((e) => [e.read, e.whole ?? false]), [[false, false], [true, true]], `the two reads: ${JSON.stringify(reads)}`);
+  assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "post-repair-review.json"), "utf8")).status, "read");
+  assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+});
+
+test("a resume's whole review that is refused does not mark the unreviewed change read, and one that is read does", async () => {
+  // The first pass repairs the narrative, and neither review of the repair is read: the run is held.
+  const { res: r1, events: e1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_UNREAD: "both" });
+  assert.notEqual(r1.ok, true, "premise: the first pass is held on the unreviewed change");
+  const codename = codenameOf(r1.runDir);
+  // The resume finds the narrative repaired, so no repair runs again: the record queues the reviewer, and its whole
+  // review is a call the tool refuses, on a stage that reads ok on the earlier review's file.
+  const { res: r2, events: all2 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_POST_REPAIR_UNREAD: "narrowed", MOCK_WHOLE_FALLBACK_FLAGS: "[]",
+    MOCK_WHOLE_FALLBACK_VERDICT: "BLOCKING" }, "claude", { codename });
+  const e2 = all2.slice(e1.length);   // the run log carries every pass: this one's rows only
+  assert.ok(e2.some((e) => e.event === "post-repair-review-queued" && /went unreviewed/.test(e.why)), "premise: the record queued the reviewer");
+  assert.equal(stageEvents(e2, "synthesis", "lint-repair").length, 0, "premise: the resume ran no repair of its own");
+  assert.ok(stageEvents(e2, "narrative-refutation", "stale-repair").some((e) => e.ok === true), "premise: the whole review's stage read ok");
+  assert.equal(JSON.parse(readFileSync(driverDir(r2.runDir, "post-repair-review.json"), "utf8")).status, "unread",
+    "a whole review the tool refused marked the change read");
+  assert.notEqual(r2.ok, true, "the resume delivered a change no review read");
+  const { res: r3 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_POST_REPAIR_UNREAD: "narrowed", MOCK_WHOLE_FALLBACK_FLAGS: "[]" }, "claude", { codename });
+  assert.equal(JSON.parse(readFileSync(driverDir(r3.runDir, "post-repair-review.json"), "utf8")).status, "read", "a whole review that was read did not close it");
+  assert.equal(r3.ok, true, JSON.stringify(r3).slice(0, 300));
+});
+
+test("a change to the findings record alone is owed a review unless it saves the same values, even when it cannot be narrowed", async () => {
+  const { recordChangeOwesReview } = await import("../pipeline.mjs");
+  const runDir = tempDir("post-repair-owed-");
+  const record = (over = {}) => ({ narrative: { verdict: "V.", spine: "S." }, findings: { schema_version: 7, rated_under_framework: "house-default", findings: [{ ordinal: 1, mark: "NOVA" }], ...over } });
+  const { dir, accepted } = synthesisCallPaths(runDir);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(repairBasePath(runDir), JSON.stringify({ params: record() }));
+  writeFileSync(accepted, JSON.stringify({ params: record() }));
+  assert.equal(recordChangeOwesReview(runDir), false, "the same values saved again");
+  writeFileSync(accepted, JSON.stringify({ params: record({ findings: [{ ordinal: 1, mark: "NOVA", net: "A new sentence." }] }) }));
+  assert.equal(recordChangeOwesReview(runDir), true, "a changed finding");
+  writeFileSync(accepted, JSON.stringify({ params: record({ schema_version: 6 }) }));
+  assert.equal(recordChangeOwesReview(runDir), true, "a change the scope cannot narrow went unqueued");
+  rmSync(repairBasePath(runDir));
+  assert.equal(recordChangeOwesReview(runDir), true, "a record that cannot be compared went unqueued");
 });
 
 // ── WHEN THE SCOPE IS NOT CERTAIN THE REVIEW STAYS WHOLE ────────────────────────────────────────────────

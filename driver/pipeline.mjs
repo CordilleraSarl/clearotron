@@ -6402,21 +6402,32 @@ export function postRepairScope(runDir, P, s2, { staleRepaired = [], baseKept = 
   return { mode: "narrowed", changed, after, findingOnly: queuedForTheRecordOnly(s2) };
 }
 
+/**
+ * Whether the delivery-check repair's change to the findings record is owed a review when the narrative did not move:
+ * any change but the same values saved again. A change the scope cannot narrow (a moved version or framework, or a
+ * record that could not be compared) is owed one too, and the loop gives it the whole review. Never throws.
+ */
+export function recordChangeOwesReview(runDir) {   // @internal
+  let c = null;
+  try { c = changedContent(readRepairBase(runDir), lastAcceptedCall(runDir)); } catch { c = null; }
+  return !isEmptyChange(c);
+}
+
 /** Whether the reviewer was queued for a change to the findings record only: its narrative did not move. */
 function queuedForTheRecordOnly(s2) {
   return (s2?.changed ?? []).every((c) => c?.via === "repair-record");
 }
 
 /**
- * A repair that changed only the findings, and whose review could not be read, ON RECORD. The reviewer's own stamp
- * cannot see that change (the reviewer does not declare findings.json), so the delivery guard is handed it from
- * this record, on this pass and on a resume, until a review that is read replaces the record.
+ * A review after a repair that could not be read, ON RECORD. Its change went unreviewed, and the reviewer's own stamp
+ * cannot be trusted to say so: a findings-only change does not move the files the reviewer declares, and a stage
+ * that ends with no accepted call still reads ok whenever the earlier review's file stands, so its stamp is
+ * refreshed over the repaired narrative. The delivery guard is handed the change from this record, on this pass
+ * and on a resume, until a review that is read replaces the record.
  */
 export function unreadRecordReview(runDir) {   // @internal
-  try {
-    const r = JSON.parse(readFileSync(postRepairRecordPath(runDir), "utf8"));
-    return r?.status === "unread" && r?.findingOnly === true;
-  } catch { return false; }
+  try { return JSON.parse(readFileSync(postRepairRecordPath(runDir), "utf8"))?.status === "unread"; }
+  catch { return false; }
 }
 
 const reviewBeforeRepairPath = (runDir) => driverDir(runDir, "review-before-repair.md");
@@ -6477,7 +6488,7 @@ async function runPostRepairReview(ctx, P, run, scope) {
   const points = classifyPoints(rec.flags, items);
   const by = points.reduce((a, x) => ((a[x.class] = (a[x.class] ?? 0) + 1), a), {});
   writePostRepairRecord(runDir, { status: "read", ...base, verdict: rec.verdict, seq: rec.seq,
-    points: points.map((x) => ({ n: x.n, kind: x.kind, on: x.on, target: x.target.label, class: x.class })) });
+    points: points.map((x) => ({ n: x.n, kind: x.kind, on: x.on, target: x.target.label, class: x.class, text: String(rec.flags[x.n - 1]?.text ?? "") })) });
   runLog(runDir, { event: "post-repair-review", read: true, verdict: rec.verdict, flags: rec.flags.length, classes: by,
     changed: { findings: scope.changed.findings.length, lines: scope.changed.lines.length, sections: scope.changed.sections.length, registers: scope.changed.registers.length },
     findingOnly: Boolean(scope.findingOnly), ms: base.ms });
@@ -6485,11 +6496,11 @@ async function runPostRepairReview(ctx, P, run, scope) {
 }
 
 /**
- * THE WHOLE REVIEW, WHEN THE NARROWED ONE COULD NOT BE READ AFTER A REPAIR THAT CHANGED ONLY THE FINDINGS. It
- * returns what runPostRepairReview returns, so its points go to the same one correction; adopting its verdict
- * alone would leave its flags unapplied. When it cannot be read either, the record says the changed findings
- * were not reviewed (`unreadRecordReview`), and the delivery guard holds the run on that record: neither unread
- * review is a pass. `rerun` is the reviewer's own stale-repair arm.
+ * THE WHOLE REVIEW, WHEN THE NARROWED ONE COULD NOT BE READ AFTER A REPAIR. It returns what runPostRepairReview
+ * returns, so its points go to the same one correction; adopting its verdict alone would leave its flags
+ * unapplied. When it cannot be read either, the record says the change was not reviewed (`unreadRecordReview`),
+ * and the delivery guard holds the run on that record: neither unread review is a pass. `rerun` is the
+ * reviewer's own stale-repair arm.
  */
 async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
   const runDir = run.runDir;
@@ -6504,14 +6515,14 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
     const fail = r?.ok ? "no-accepted-call" : String(r?.fail ?? "failed");
     writePostRepairRecord(runDir, { status: "unread", ...base, fail });
     runLog(runDir, { event: "post-repair-review", read: false, whole: true, fail: fail.slice(0, 120) });
-    note(`[post-repair] neither review of the findings the repair changed could be read back — they were not reviewed, and the delivery guard holds the run`);
+    note(`[post-repair] neither review of what the repair changed could be read back — it was not reviewed, and the delivery guard holds the run`);
     return { reviewed: false };
   }
   const reviewText = readFileSync(P.seniorEyeReview, "utf8");
   atomicWrite(reviewAfterRepairPath(runDir), reviewText);
   const points = classifyPoints(rec.flags, items);
   writePostRepairRecord(runDir, { status: "read", ...base, verdict: rec.verdict, seq: rec.seq,
-    points: points.map((x) => ({ n: x.n, kind: x.kind, on: x.on, target: x.target.label, class: x.class })) });
+    points: points.map((x) => ({ n: x.n, kind: x.kind, on: x.on, target: x.target.label, class: x.class, text: String(rec.flags[x.n - 1]?.text ?? "") })) });
   runLog(runDir, { event: "post-repair-review", read: true, whole: true, verdict: rec.verdict, flags: rec.flags.length, ms: base.ms });
   return { reviewed: true, rec, reviewText, items, points, putBack: () => {}, base };
 }
@@ -6522,7 +6533,7 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
  * flag named, the follow-up when a correction missed the findings — on a view of the run's paths that points at
  * the review after the repair, and records what each flag led to beside the first correction's record.
  */
-async function runPostRepairCorrection(ctx, P, run, { rec, items, points, synthesisRef }) {
+async function runPostRepairCorrection(ctx, P, run, { rec, items, points, grounds = false, synthesisRef }) {
   const runDir = run.runDir;
   const Pv = { ...P, seniorEyeReview: reviewAfterRepairPath(runDir), correctionsApplied: postRepairCorrectionsPath(runDir), reviewFlags: rec.flags };
   const named = [...new Set(points.filter((x) => x.target.kind !== "none").map((x) => x.target.label))];
@@ -6563,7 +6574,8 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, synthe
       return { n: x.n, label: x.target.label, before: sectionText(sec?.read(before?.narrative)), after: sectionText(sec?.read(after?.narrative)) };
     });
     applied = buildCorrectionsApplied(rows, preDoc, postDoc, { sections });
-    atomicWrite(Pv.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), pass: "post-repair",
+    // `grounds`: the review these rows answer hardened the run's verdict, so its points are that verdict's grounds.
+    atomicWrite(Pv.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), pass: "post-repair", ...(grounds ? { grounds: true } : {}),
       rows: applied, classes: points.map((x) => ({ n: x.n, class: x.class, target: x.target.label })) }, null, 2) + "\n");
     const outcomes = applied.reduce((a, x) => ((a[x.outcome] = (a[x.outcome] ?? 0) + 1), a), {});
     runLog(runDir, { event: "post-repair-fix-pass", handed: rows.length, ok: Boolean(pass.ok), rolledBack: Boolean(rollback), outcomes });
@@ -8124,6 +8136,8 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 //
 //   BLOCKING            every ground the reviewer cites — unchanged, the reviewer refused to sign
 //   ANY VERDICT         plus every objection the run tried and could not show it closed
+//   A HARDENED VERDICT  plus every point of the review after a repair that hardened it, even one its correction
+//                       changed: nothing reviewed that change, so the label keeps a visible ground (`ground`)
 //
 // The second source is `corrections-applied.json`, the driver's own flag-by-flag observation,
 // which already exists and is already written on both the CONDITIONAL and the BLOCKING path. What
@@ -8148,7 +8162,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {   // @internal
   const blocking = parseVerdict(reviewMd) === "BLOCKING";
   const cited = blocking ? parseCorrections(reviewMd) : [];
-  const unfixed = unresolvedFlags(appliedRows);
+  const unfixed = (Array.isArray(appliedRows) ? appliedRows : []).filter((r) => r?.ground === true || unresolvedFlags([r]).length);
   const seen = new Set();
   const rows = [];
   for (const r of [...cited, ...unfixed]) {
@@ -8207,7 +8221,9 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     if (Array.isArray(r.ordinals) && r.ordinals.length) bits.push(`finding ${r.ordinals.join(", ")}`);
     // An outcome nobody has classified takes the unchecked wording, never the checked one — the same
     // direction `unresolvedFlags` fails in, for the same reason.
-    if (r.outcome) bits.push(QUALIFIER[r.outcome] ?? "the run could not check whether this was addressed");
+    // A ground the correction changed keeps its observed outcome in the record and prints as unchecked: no review
+    // read the change, so the run cannot say it was addressed, and "did not change" would be false.
+    if (r.outcome) bits.push((r.ground === true ? null : QUALIFIER[r.outcome]) ?? "the run could not check whether this was addressed");
     const tail = bits.length ? ` *(${bits.join(" — ")})*` : "";
     return `- ${ADVISORY_TAG["client-fact"]} ${String(r.text).trim()}${tail}`;
   });
@@ -8498,10 +8514,23 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     // …and the correction after the review of a delivery-check repair, which records its rows beside them. Its
     // points print through the same rule: anything not positively resolved. Which review raised a point stays in
     // the run's own records (_driver/post-repair-review.json); the printed line adds nothing.
+    // Where that review hardened the verdict its points are the verdict's grounds, and print even when changed.
     try {
-      const after = JSON.parse(readFileSync(driverDir(dirname(P.report), "post-repair-corrections.json"), "utf8"))?.rows;
-      if (Array.isArray(after) && after.length) applied = [...(applied ?? []), ...after];
+      const doc = JSON.parse(readFileSync(driverDir(dirname(P.report), "post-repair-corrections.json"), "utf8"));
+      const after = doc?.rows;
+      if (Array.isArray(after) && after.length) applied = [...(applied ?? []), ...(doc.grounds === true ? after.map((r) => ({ ...r, ground: true })) : after)];
     } catch { /* no correction after a repair on this run */ }
+    // …and a review after a repair that was read and never corrected: the run was parked before its one correction,
+    // and nothing on a resume repeats it. Its points are not shown closed, so they print through the same rule.
+    try {
+      const runDir = dirname(P.report);
+      const rec = JSON.parse(readFileSync(driverDir(runDir, "post-repair-review.json"), "utf8"));
+      if (rec?.status === "read" && !existsSync(driverDir(runDir, "post-repair-corrections.json"))) {
+        const rows = (Array.isArray(rec.points) ? rec.points : []).filter((x) => String(x?.text ?? "").trim())
+          .map((x) => ({ text: String(x.text), kind: x.kind ?? null, outcome: "not-checkable" }));
+        if (rows.length) applied = [...(applied ?? []), ...rows];
+      }
+    } catch { /* no review after a repair on this run */ }
     const openPoints = existsSync(P.seniorEyeReview)
       ? buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied)
       : "";
@@ -15063,13 +15092,13 @@ async function pipelineInner(job, opts = {}) {
         // `Write` and `Edit` out of its grant. Same class as the ten anchor sites and the max-tokens
         // corrective before it: a retirement reaches the first-attempt surfaces and misses a correction
         // surface. Keyed on the ARTIFACT rather than on the label, so conversions 5 and 6 inherit it.
-        const redo = async (label, failures, key, model, thinking, file) => {
+        const redo = async (label, failures, key, model, thinking, file, more = {}) => {
           if (!failures.length || !key) return;
           note(`pre-delivery lint: ${failures.length} failed check(s) on ${label} — one warm named-correction redo`);
           const toolWritten = file ? toolWrittenArtifact(file) : null;
           const r = await stage(label, ctx, {
             force: true, sessionKey: key, model, thinking, trigger: "lint-repair",
-            followup: repairFollowup("*:lint-repair", { label, file, toolWritten, failures })
+            followup: repairFollowup("*:lint-repair", { label, file, toolWritten, failures, ...more })
               + stageCharter(label, ctx.depth, ctx.framework),
           });
           if (r.ok) repaired.push(label);
@@ -15086,7 +15115,8 @@ async function pipelineInner(job, opts = {}) {
         let reassembled = false;
         // Each fault goes to the part that holds it (repair-targets.mjs): a card's to that card, with the detail its
         // check gives on that card alone; the overview's to the overview; and a fault only the lines composed from the
-        // record hold to no repair, since neither could make it. One no single part holds keeps the overview's repair.
+        // record hold to the writer's repair below, since the record is the writer's. One no single part holds keeps the
+        // overview's repair.
         const targets = locateReportFaults(reportFixable, reportPartsOf(P, findingsForCards, writeUps));
         if (reportFixable.length) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
           overview: targets.overview.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), unlocated: targets.unlocated.map((f) => f.id) });
@@ -15120,9 +15150,20 @@ async function pipelineInner(job, opts = {}) {
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
         // narrative that broke the rules is the run shipping the defect with a note attached. ONE warm
         // pass, named violations; a second overrun ships and the lint row is the record.
-        const narrativeFixable = modelFixable(bySurface("narrative"));
+        //
+        // A FAULT IN A LINE COMPOSED FROM THE RECORD (a finding's own sentence, a short entry, a grouped line) is the
+        // writer's too: no card or overview repair can change what the renderer stamps from the record. It joins the
+        // narrative's faults in the writer's one repair, each named by the finding that owns it, in the numbering the
+        // writer's save takes. Its consumers then rebuild, and its change is reviewed, as for any repair of the record.
+        const fold = readFold(run.runDir);
+        const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
+        const narrativeFixable = [...modelFixable(bySurface("narrative")), ...sentenceFixable];
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
-        if (narrativeFixable.length) await redo("synthesis", narrativeFixable, synthesisKey, synthesisModel, synthesisThinking, P.narrative);
+        // A writer fault with no writer session to repair it is not repaired, and the run says so.
+        if (narrativeFixable.length && !synthesisKey)
+          runLog(run.runDir, { event: "lint-redo-skipped", surface: "writer", why: "no-writer-session", failures: narrativeFixable.map((f) => f.id) });
+        if (narrativeFixable.length) await redo("synthesis", narrativeFixable, synthesisKey, synthesisModel, synthesisThinking, P.narrative,
+          { findings: modelRecordPath(run.runDir, P.findings), narrative: P.narrative });
         if (reassembled) assembleReportMd(P, findingsForCards, assembledOrdinals, { grouped: groupedMembers, byRight });
         // The client-summary redo arm is retired with the stage (2026-08-01). Its `email`-surface
         // failures have not gone unowned: the `:email` reference check now runs over the report-derived
@@ -15166,9 +15207,7 @@ async function pipelineInner(job, opts = {}) {
       // reviewer, fresh — the reviewer does not declare findings.json. The change is still content no review has
       // read, so the reviewer is queued for the review after a repair, marked as the record's change.
       if (repairBaseKept && !staleStages.some((s2) => s2.label === "narrative-refutation")) {
-        let c = null;
-        try { c = changedContent(readRepairBase(run.runDir), lastAcceptedCall(run.runDir)); } catch { c = null; }
-        if (c && !c.whole && !isEmptyChange(c)) {
+        if (recordChangeOwesReview(run.runDir)) {
           // At the FRONT, so the dependency order below puts it after the writer and ahead of the overview and the
           // cards, which then rebuild from whatever its correction changes.
           staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
@@ -15300,10 +15339,11 @@ async function pipelineInner(job, opts = {}) {
               continue;
             }
             let review = await runPostRepairReview(ctx, P, run, scope);
-            // The finding-only arm has no staleness of its own the guard could block on, so a review that could not
-            // be read falls back to the whole review, whose points go to the same one correction below. When that
-            // cannot be read either, its record hands the guard the change no review read.
-            if (!review.reviewed && scope.findingOnly)
+            // A review that could not be read falls back to the whole review, whose points go to the same one
+            // correction below: neither the stamp of a findings-only change nor that of a stage that ends ok on the
+            // earlier review's file can show the change unread. When the whole review cannot be read either, its
+            // record hands the guard the change no review read.
+            if (!review.reviewed)
               review = await runWholeReviewForRecord(ctx, P, run, scope, () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict }));
             if (!review.reviewed) continue;
             staleRepaired.push(s2.label);
@@ -15315,7 +15355,7 @@ async function pipelineInner(job, opts = {}) {
             if (!hardened) review.putBack();
             if (review.rec.flags.length) {
               const pass = await runPostRepairCorrection(ctx, P, run, { rec: review.rec, items: review.items, points: review.points,
-                synthesisRef: { key: synthesisKey, model: synthesisModel, thinking: synthesisThinking } });
+                grounds: Boolean(hardened), synthesisRef: { key: synthesisKey, model: synthesisModel, thinking: synthesisThinking } });
               // NOTHING REVIEWS THE CORRECTION: the reviewer's stamp takes what it changed as accounted for, and so
               // does the first cycle's receipt, so a resume re-fires neither.
               settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
@@ -15338,9 +15378,11 @@ async function pipelineInner(job, opts = {}) {
                 // A label not queued yet is appended; one this loop already re-done is re-queued ONCE, so the
                 // pass stays bounded and still ends with every surface rebuilt from the corrected record.
                 const queued = new Set(staleStages.map((x) => x.label));
-                for (const x of staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput })) {
+                // A finding the correction's save added is owed its one card call, as after any later save.
+                for (const x of [...staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput }),
+                  ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)]) {
                   if (!(x.label === "report-overview" || x.label.startsWith("report-card:"))) continue;
-                  if (!queued.has(x.label)) staleStages.push(x);
+                  if (!queued.has(x.label)) { staleStages.push(x); queued.add(x.label); }
                   else if (processedLabels.has(x.label) && !requeuedLabels.has(x.label)) { requeuedLabels.add(x.label); staleStages.push(x); }
                 }
               }
@@ -15351,14 +15393,23 @@ async function pipelineInner(job, opts = {}) {
             // run, forced, with a `stale-repair` trigger so the telemetry says why. Dependency order put
             // it ahead of anything that reads what it writes, so the tail arms below rebuild from the
             // repaired artifact rather than from the one that moved.
+            const reviewSeq0 = s2.label === "narrative-refutation" ? nextRefutationSeq(run.runDir) : null;
             const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
-            if (r?.ok) {
+            // NOT A PASS: a reviewer that ends with no accepted call reads ok whenever the earlier review's file
+            // stands, and its stamp is refreshed over the change it never read. The record says so, and the guard
+            // below blocks on it, on this pass and on a resume.
+            if (r?.ok && s2.label === "narrative-refutation" && !readAcceptedReviewSince(run.runDir, reviewSeq0)) {
+              writePostRepairRecord(run.runDir, { status: "unread", whole: true, findingOnly: queuedForTheRecordOnly(s2), by: "stale-repair", fail: "no-accepted-call" });
+              runLog(run.runDir, { event: "post-repair-review", read: false, whole: true, fail: "no-accepted-call" });
+              note(`stale-repair: the reviewer's re-run recorded no review — the change it was queued for is unreviewed, and the delivery guard holds the run`);
+            } else if (r?.ok) {
               staleRepaired.push(s2.label);
               reassemble = true;
               // A whole review that is read reviews the change an earlier unread one left: its record says so, and
-              // its points stand under the late-review rule below, as any whole review's do.
+              // its points stand under the late-review rule below, as any whole review's do. (The arm above has
+              // already set aside a stage that read ok without an accepted review.)
               if (s2.label === "narrative-refutation" && unreadRecordReview(run.runDir))
-                writePostRepairRecord(run.runDir, { status: "read", whole: true, findingOnly: true, by: "stale-repair" });
+                writePostRepairRecord(run.runDir, { status: "read", whole: true, by: "stale-repair" });
               // its consumers rebuild from what it JUST wrote — re-read, do not carry the pre-repair copy
               readNow = readFindingsForReport(P);
               findingsNow = readNow.findings;
@@ -15420,8 +15471,8 @@ async function pipelineInner(job, opts = {}) {
         lint = lintNow();
         autoCorrectRegistry();
         staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
-        // A REPAIR THAT CHANGED ONLY THE FINDINGS, WHICH NO REVIEW COULD READ, IS NOT REVIEWED. Its record says so, and
-        // the reviewer's stamp cannot, so the guard is handed it here and blocks as for any reviewer left stale.
+        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED. Its record says so, and the reviewer's stamp cannot,
+        // so the guard is handed it here and blocks as for any reviewer left stale.
         if (unreadRecordReview(run.runDir) && !staleStages.some((x) => x.label === "narrative-refutation"))
           staleStages.push({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);

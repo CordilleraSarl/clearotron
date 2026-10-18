@@ -7,7 +7,8 @@
 // Most of the delivery check's prose checks name no finding, and every such fault went to the overview's repair,
 // which cannot edit a card. Each is now located by running its own check again on each part's own text: a card that
 // holds it gets it, with the detail the check gives on that card alone; the overview gets what it holds; a fault only
-// the lines composed from the record hold costs no repair; and one no single part holds keeps the overview's repair.
+// the lines composed from the record hold goes to the writer, named by the finding of each line that holds it; and one
+// no single part holds keeps the overview's repair.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { locateReportFaults, LOCATED_CHECKS } from "../repair-targets.mjs";
@@ -36,10 +37,12 @@ test("a fault in the overview goes to the overview, and one in a card and the ov
   assert.deepEqual([[...both.cards.keys()], both.overview.length, both.unlocated.length], [[1], 1, 0]);
 });
 
-test("a fault only a line composed from the record holds costs no repair", () => {
+test("a fault only a line composed from the record holds goes to the writer, named by that line's finding", () => {
   const t = locateReportFaults([fault("prescription-prose")], { cards: [CARD(1), CARD(2)], overview: OVERVIEW(),
     stamped: [{ ordinal: 1, text: "The invented finding sentence." }, { ordinal: 2, text: ADVICE }] });
   assert.deepEqual([t.cards.size, t.overview.length, t.stamped.length, t.unlocated.length], [0, 0, 1, 0]);
+  assert.deepEqual(t.stamped[0].parts.map((x) => x.ordinal), [2], "the fault is not placed in the line that holds it");
+  assert.match(t.stamped[0].parts[0].detail, /We recommend filing a narrower specification/, "the writer is not told what that line holds");
 });
 
 test("a fault no single part holds, or whose check cannot run on a part, keeps the overview's repair it always had", () => {

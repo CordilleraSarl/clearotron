@@ -12,9 +12,9 @@
 // So each such fault is located. Its own check runs again on each part's own text, and a part where it fails is a
 // part that holds it: a card's fault goes to that card's repair, carrying the detail the check gives on that card
 // alone, and the overview's goes to the overview's. A fault that only the lines code composes from the record hold is
-// one neither repair can edit, so it costs neither a repair. A fault no single part holds (two cards counting one
-// owner's registrations differently), or one whose check cannot be run on a part, keeps the overview's repair it
-// always had.
+// one neither of those repairs can edit: it goes to the writer, whose record those lines are composed from. A fault no
+// single part holds (two cards counting one owner's registrations differently), or one whose check cannot be run on a
+// part, keeps the overview's repair it always had.
 import { readFileSync } from "node:fs";
 import { prescriptionProseChecks, scopeNumberProseChecks, wipoLanguageChecks, countingChecks, countsFromFindings } from "./predelivery-lint.mjs";
 import { netOf, memberLine } from "./write-up-render.mjs";
@@ -40,7 +40,8 @@ export const LOCATED_CHECKS = Object.freeze(Object.keys(ON_A_PART));
  * Returns `{cards, overview, stamped, unlocated}`: `cards` maps a card's ordinal to the faults it holds, each with
  * that card's ordinal and the detail its check gives on that card alone; `overview` holds the faults the overview's
  * repair is given, those it holds (with its own detail) and those no part holds alone; `stamped` the faults only
- * lines composed from the record hold; `unlocated` the faults no part holds alone, already counted in `overview`.
+ * lines composed from the record hold, each with `parts`, the finding of each line that holds it and the detail its
+ * check gives on that line; `unlocated` the faults no part holds alone, already counted in `overview`.
  */
 export function locateReportFaults(failures, { cards = [], overview = null, stamped = [], findings = [] } = {}) {
   const out = { cards: new Map(), overview: [], stamped: [], unlocated: [] };
@@ -64,7 +65,8 @@ export function locateReportFaults(failures, { cards = [], overview = null, stam
     const shell = fails(rerun, overview);
     if (shell) { held = true; out.overview.push({ ...f, detail: shell.detail }); }
     if (held) continue;
-    if (stamped.some((s) => fails(rerun, s.text))) { out.stamped.push(f); continue; }
+    const lines = stamped.map((s) => ({ ordinal: s.ordinal, hit: fails(rerun, s.text) })).filter((x) => x.hit);
+    if (lines.length) { out.stamped.push({ ...f, parts: lines.map((x) => ({ ordinal: x.ordinal, detail: x.hit.detail ?? f.detail })) }); continue; }
     out.overview.push(f);
     out.unlocated.push(f);
   }

@@ -311,8 +311,9 @@ export const REPAIR_COMPOSERS = [
     // from one shared text, and the flag list closes on the line for a pass nothing reviews.
     compose: ({ narrative, findings, placement, rulingsTail, items, renumbered, worklist, review }) => lines(
       `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. After the delivery check, that record was repaired, and an independent review then read only what the repair changed and what rests on it. It flagged the corrections below, and nothing reviews this pass again. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, or remove the sentence) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
-      // An empty list reuses the first correction's own words for a review whose flags name no finding.
-      `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : "(none — every flag is about the document, not a finding)"}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
+      // An empty list does not reuse the first correction's "every flag is about the document": here an unplaced flag
+      // may be about a finding, and the line below says how to apply one.
+      `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : "(none named; apply each unplaced flag as described below)"}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
       `For a coverage line the repair changed, a flag may ask for its state or its facts to change, not only its words. Make that change only where the line then claims less than it does now, as the narrowing rule below requires. This is the one exception to the rule below that the coverage account is not yours to reopen; every other coverage line keeps its area, its state and every fact it states.`,
       `A flag that names no item is applied to the item it is about; name that item in the "corrections" note. If you cannot tell what the flag is about, change nothing for it and say so in the note.`,
       renumbered ? `Where a flag's own words give a finding a different number from its [on: …], use the [on: …] number. It is the number in your record.` : "",
@@ -448,11 +449,17 @@ export const REPAIR_COMPOSERS = [
     // delivery-tail stage failed its pre-delivery lint.
     stage: "*",
     key: "*:lint-repair",
-    compose: ({ label, file, toolWritten, failures }) => lines(
-      toolWritten
-        ? `This is a fresh session: your earlier ${label} work is not in your context — the driver wrote ${file} from your \`${toolWritten.tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`
-        : `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`,
-      ...failures.map((f) => `- ${f.detail || f.id}`),
+    // THE WRITER'S FORM names both files its call wrote: its faults can sit in the narrative or in a line the report
+    // composes from its findings record, and a fault in such a line is named by the finding that owns it, in the
+    // numbering its save takes.
+    compose: ({ label, file, toolWritten, failures, findings, narrative }) => lines(
+      toolWritten?.tool === "record_synthesis"
+        ? `This is a fresh session: your earlier synthesis work is not in your context. The driver wrote ${findings} and ${narrative} from your \`record_synthesis\` call. The deterministic pre-delivery checks found these faults in content rendered from that record:`
+        : toolWritten
+          ? `This is a fresh session: your earlier ${label} work is not in your context — the driver wrote ${file} from your \`${toolWritten.tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`
+          : `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`,
+      ...failures.map((f) => `- ${f.finding != null ? `finding ${f.finding}: ` : ""}${f.detail || f.id}`),
+      toolWritten?.tool === "record_synthesis" ? `Read ${findings} and ${narrative}, then correct the finding or narrative section that owns each fault.` : "",
       `Where a check quotes the fetched record's true value, correct the identifier to the record's value EXACTLY (the record is the only permitted source for registry identifiers).`,
       `Risk tiers and Level/Composite labels are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
       `Fix ONLY what the checks name; change nothing else.`,
@@ -486,7 +493,8 @@ export const REPAIR_COMPOSERS = [
     // reported a defect in text no seat can be handed." The edit branch IS exercised — by the fixed
     // `samples` below, which is where the census checks branch coverage.
     samplesForStage: ({ stage, tool, file }) => [
-      { name: `${stage}'s own tool-written artifact`, tail: "tool", args: { label: stage, file, toolWritten: { tool }, failures: [{ id: "lint_1", detail: "a check the lint named" }] } },
+      { name: `${stage}'s own tool-written artifact`, tail: "tool", args: { label: stage, file, toolWritten: { tool }, findings: "findings.json", narrative: file,
+        failures: [{ id: "lint_1", detail: "a check the lint named" }] } },
     ],
     samples: [
       { name: "a tool-written artifact", tail: "tool",
@@ -495,8 +503,9 @@ export const REPAIR_COMPOSERS = [
       // The writer's branch: its save merges a patch, so it is the one tool-written artifact told to send only
       // the change.
       { name: "the writer's record, which takes a patch", tail: "tool",
-        args: { label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" },
-          failures: [{ id: "narrative_coverage_claim", detail: "a coverage line claims a slice the plan did not run" }] } },
+        args: { label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, findings: "findings.json", narrative: "narrative.md",
+          failures: [{ id: "narrative_coverage_claim", detail: "a coverage line claims a slice the plan did not run" },
+            { id: "prescription-prose", finding: 2, detail: "the sentence composed from finding 2 recommends a filing" }] } },
       // THE SAMPLE MOVED STAGES RATHER THAN FLIPPING ITS SHAPE. It read
       // `{label:"synthesis", file:"narrative.md", toolWritten:null}`, and when the writer converted, the
       // sample-honesty arm fails it by name — narrative.md now has a row. Flipping this entry to

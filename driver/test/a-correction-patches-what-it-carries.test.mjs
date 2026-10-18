@@ -328,6 +328,20 @@ test("a marker string that is not a JSON object is refused as it always was, and
   }
 });
 
+test("a list-less findings object whose only defect is its marker is refused for the marker, not for its rows", () => {
+  // Read as main reads it, the call would replace the record, and its rows would then be refused as naming findings
+  // the run does not hold, which it does: the refusal would point the writer at the wrong field.
+  const dir = saved();
+  for (const bad of ["{not json", "[1,2]"]) {
+    refusesUnchanged(dir, { findings: { coverage: COVERAGE, corrections: bad }, findings_patch: [ROW2()] },
+      /^synthesis_findings_invalid: findings_corrections_invalid \(corrections must be an object \{ applied, note \}\)$/, `the nested marker ${bad}`);
+    const r = recordSynthesis(dir, { findings: { coverage: COVERAGE, corrections: bad }, findings_patch: [ROW2()] });
+    assert.doesNotMatch(String(r.refused), /ordinal_unknown/, `the nested marker ${bad} was refused as an unknown finding`);
+  }
+  // CONTROL: the same call with a good marker is accepted as a patch.
+  accepts(recordSynthesis(dir, { findings: { coverage: COVERAGE, corrections: MARKER }, findings_patch: [ROW2()] }), "the same call with a good marker");
+});
+
 test("a marker string on a call that carries a findings list is read exactly as main reads it", () => {
   const dir = saved();
   // a whole call: main reads only its narrative and its findings, so a top-level string is ignored as it stands
@@ -735,25 +749,27 @@ test("a row sent again with the same content is one row, and the call is still r
 // ── A CORRECTIONS MARKER SENT WITH A REGISTER PATCH IS ONE THE DECODE READS ──────────────────────────
 //
 // A marker sent as a JSON string is decoded where the call carries no list, and a string that does not decode to an
-// object is refused as it always was. On a list-less object, "as it always was" is main's reading of the object as a
-// whole record. So the object reads as registers only where every marker it carries, inside the object or beside it,
-// is null, an object, or a string that decodes to one. Any other marker, a string that is not JSON or decodes to
-// something else, a number or a list, is read as main reads it, and the call meets main's refusal byte for byte.
-for (const [what, call, re] of [
-  ["a nested marker string that is not JSON, beside a register", { findings: { coverage: COVERAGE, corrections: "{not json" } }, UNPARSEABLE],
-  ["a nested marker string that is not JSON, beside a top-level row", { findings: { corrections: "{not json" }, findings_patch: [ROW2()] }, UNKNOWN_ORDINAL_2],
-  ["a nested marker string that decodes to a list", { findings: { corrections: "[1]" } }, UNPARSEABLE],
-  ["a nested marker string that decodes to null", { findings: { corrections: "null" } }, UNPARSEABLE],
-  ["a nested marker string that decodes to text", { findings: { corrections: "\"a marker\"" } }, UNPARSEABLE],
-  ["a nested marker that is a number", { findings: { corrections: 5 } }, UNPARSEABLE],
-  ["a nested marker that is a list", { findings: { corrections: [MARKER] } }, UNPARSEABLE],
-  ["a top-level marker string that is not JSON, beside a register", { findings: { coverage: COVERAGE }, corrections: "not json" }, UNPARSEABLE],
-  ["a top-level marker string that is not JSON, beside a nested marker object", { findings: { corrections: MARKER }, corrections: "not json" }, UNPARSEABLE],
-  ["a top-level marker string that decodes to a list", { findings: { coverage: COVERAGE }, corrections: "[1]" }, UNPARSEABLE],
-  ["a top-level marker that is a number", { findings: { coverage: COVERAGE }, corrections: 5 }, UNPARSEABLE],
+// object is refused. So the object reads as registers only where every marker it carries, inside the object or beside
+// it, is null, an object, or a string that decodes to one. Any other marker, a string that is not JSON or decodes to
+// something else, a number or a list, is refused for the marker, with the refusal the same marker meets at the top of
+// a plain patch. Read as main reads it, the call was refused for a defect it does not have: a record with no list, or
+// rows naming findings the run holds.
+const MARKER_INVALID = /^synthesis_findings_invalid: findings_corrections_invalid \(corrections must be an object \{ applied, note \}\)$/;
+for (const [what, call] of [
+  ["a nested marker string that is not JSON, beside a register", { findings: { coverage: COVERAGE, corrections: "{not json" } }],
+  ["a nested marker string that is not JSON, beside a top-level row", { findings: { corrections: "{not json" }, findings_patch: [ROW2()] }],
+  ["a nested marker string that decodes to a list", { findings: { corrections: "[1]" } }],
+  ["a nested marker string that decodes to null", { findings: { corrections: "null" } }],
+  ["a nested marker string that decodes to text", { findings: { corrections: "\"a marker\"" } }],
+  ["a nested marker that is a number", { findings: { corrections: 5 } }],
+  ["a nested marker that is a list", { findings: { corrections: [MARKER] } }],
+  ["a top-level marker string that is not JSON, beside a register", { findings: { coverage: COVERAGE }, corrections: "not json" }],
+  ["a top-level marker string that is not JSON, beside a nested marker object", { findings: { corrections: MARKER }, corrections: "not json" }],
+  ["a top-level marker string that decodes to a list", { findings: { coverage: COVERAGE }, corrections: "[1]" }],
+  ["a top-level marker that is a number", { findings: { coverage: COVERAGE }, corrections: 5 }],
 ]) {
-  test(`a marker the decode does not read keeps main's refusal on a list-less findings object: ${what}`, () => {
-    refusesUnchanged(saved(), structuredClone(call), re, `a marker the decode does not read: ${what}`);
+  test(`a marker the decode does not read is refused for the marker on a list-less findings object: ${what}`, () => {
+    refusesUnchanged(saved(), structuredClone(call), MARKER_INVALID, `a marker the decode does not read: ${what}`);
   });
 }
 

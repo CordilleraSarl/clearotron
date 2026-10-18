@@ -12,10 +12,11 @@
 // The scenario, from mock knobs: two findings, each with its card; the second card's first rendering states a search
 // count in its own prose, which the delivery check refuses as `scope-numbers-in-prose`, a fault that names no
 // finding; any later rendering of that card is clean (MOCK_CARD_SCOPE_COUNT). MOCK_OVERVIEW_SCOPE_COUNT does the same for the
-// overview's first rendering.
+// overview's first rendering. MOCK_SENTENCE_SCOPE_COUNT puts the count in a finding's own sentence, which the report
+// composes from the writer's record: no card or overview repair can change it, so it goes to the writer's.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, chmodSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, chmodSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -47,7 +48,7 @@ const ENGINES = {
   codex: { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: CODEX, CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-dummy" },
 };
 const ENGINE_KEYS = ["CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY"];
-const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FINDINGS_N", "MOCK_CARD_SCOPE_COUNT", "MOCK_OVERVIEW_SCOPE_COUNT"];
+const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FINDINGS_N", "MOCK_CARD_SCOPE_COUNT", "MOCK_OVERVIEW_SCOPE_COUNT", "MOCK_SENTENCE_SCOPE_COUNT"];
 const SCENARIO = { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FINDINGS_N: "2" };
 const SENTENCE = "The search ran 14 queries across the register.";
 
@@ -101,6 +102,31 @@ for (const engine of Object.keys(ENGINES)) {
     const repairs = events.slice(lintFailed).filter((e) => e.event === "stage" && e.trigger === "lint-repair").map((e) => e.stage).sort();
     assert.deepEqual(repairs, ["report-card:2", "report-overview"], "the repair did not reach each part that holds the fault");
     assert.ok(!readFileSync(join(res.runDir, "report.md"), "utf8").includes(SENTENCE), "the delivered report still carries the faulty sentence");
+    assert.equal(res.ok, true, JSON.stringify(res));
+  });
+
+  test(`${engine}: a fault in a finding's own sentence goes to the writer's one repair, named by its finding, and its change is reviewed`, async () => {
+    const { res, events } = await runPipeline(engine, { ...SCENARIO, MOCK_SENTENCE_SCOPE_COUNT: "2" });
+    const lintFailed = events.findIndex((e) => e.event === "predelivery-lint-failed");
+    assert.ok(lintFailed >= 0 && events[lintFailed].failures.includes("scope-numbers-in-prose"),
+      "the delivery check did not find the search count in the finding's sentence");
+    const targets = events.find((e) => e.event === "report-repair-targets");
+    assert.deepEqual([targets?.cards, targets?.overview, targets?.stamped], [[], [], ["scope-numbers-in-prose"]],
+      "the fault was not placed in the line composed from the record alone");
+    // THE CLAIMS.
+    const repairs = events.slice(lintFailed).filter((e) => e.event === "stage" && e.trigger === "lint-repair").map((e) => e.stage);
+    assert.deepEqual(repairs, ["synthesis"], "the repair did not go to the writer alone");
+    const msg = readdirSync(driverDir(res.runDir)).filter((f) => f.startsWith("synthesis.attempt") && f.includes(".dispatch.txt"))
+      .map((f) => readFileSync(driverDir(res.runDir, f), "utf8")).find((m) => m.includes("The deterministic pre-delivery checks found these faults"));
+    assert.ok(msg, "the writer's repair was not sent its own opening");
+    assert.match(msg, /^This is a fresh session: your earlier synthesis work is not in your context\. The driver wrote \S+ and \S*narrative\.md from your `record_synthesis` call\. The deterministic pre-delivery checks found these faults in content rendered from that record:$/m);
+    assert.match(msg, /^- finding 2: .*14 queries/m, "the fault is not named by the finding that owns it");
+    assert.match(msg, /^Read \S+ and \S*narrative\.md, then correct the finding or narrative section that owns each fault\.$/m);
+    assert.ok(msg.includes("Apply the fix in ONE `record_synthesis` PATCH call"), "the save line is not the writer's");
+    assert.ok(!readFileSync(join(res.runDir, "report.md"), "utf8").includes(SENTENCE), "the delivered report still carries the finding's faulty sentence");
+    const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8"));
+    assert.ok(!receipt.failures.includes("scope-numbers-in-prose"), "the delivery check still finds the fault after the repair");
+    assert.ok(events.some((e) => e.event === "post-repair-review" && e.read === true), "the change to the record was not reviewed");
     assert.equal(res.ok, true, JSON.stringify(res));
   });
 }
