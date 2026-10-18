@@ -176,12 +176,23 @@ test("the record of whether the reviewer's corrections reached the delivered rep
   assert.deepEqual(timeline.map((t) => t.kind), ["start"], "a record about the reviewer's corrections reached the timeline");
 });
 
+test("the record of which part of the report each delivery-check fault was sent to never reaches the timeline", () => {
+  const P = runs.resolveRun(RUN_ID).P;
+  const evs = [
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
+    { ts: "2026-07-29T19:40:00.000Z", event: "report-repair-targets", cards: [2], overview: ["scope-numbers-in-prose"], stamped: [], unlocated: [] },
+  ];
+  const { timeline } = events.projectTimeline(evs, P);
+  assert.deepEqual(timeline.map((t) => t.kind), ["start"], "the repair's own routing reached the timeline");
+  assert.ok(!JSON.stringify(timeline).includes("scope-numbers-in-prose"), "a delivery check's identifier reached the timeline");
+});
+
 // Both layers, for every engine-internal kind: the projection drops it, and a client account's view drops it again
 // if a timeline ever carried it there, because the account keeps the interpreted kinds alone.
 test("an engine-internal kind reaches neither the timeline nor a client account, even on a timeline that carried it", async () => {
   const { accountTimeline } = await import("../lib/audit-view.mjs");
   const P = runs.resolveRun(RUN_ID).P;
-  assert.deepEqual([...events.ENGINE_INTERNAL_EVENT_KINDS].sort(), ["corrections-delivered", "synthesis-call-normalised"]);
+  assert.deepEqual([...events.ENGINE_INTERNAL_EVENT_KINDS].sort(), ["corrections-delivered", "report-repair-targets", "synthesis-call-normalised"]);
   for (const kind of events.ENGINE_INTERNAL_EVENT_KINDS) {
     const evs = [
       { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },

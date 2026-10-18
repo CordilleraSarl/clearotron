@@ -155,10 +155,13 @@ function classify(e, st, rat) {
     // AN ENGINE-INTERNAL RECORD, NEVER A DECISION. How the synthesis transport read a call — a marker decoded, rows
     // lifted, keys a call carried that the transport ignores — is a fact about the engine's own plumbing, and
     // whether each reviewer correction reached the delivered record is the reviewer's business, which never
-    // reaches a client page. Neither has a reader on a surface read out in front of lawyers and clients, so both
-    // are projected out of the timeline (`isInternalEntry`) rather than passed through under their own names.
+    // reaches a client page, and which part of the report each delivery-check fault was sent to repair is the
+    // repair's own routing, named in the check's own identifiers. None has a reader on a surface read out in front
+    // of lawyers and clients, so each is projected out of the timeline (`isInternalEntry`) rather than passed
+    // through under its own name.
     case "synthesis-call-normalised":
     case "corrections-delivered":
+    case "report-repair-targets":
       return { ts, kind: e.event, decision: "engine-internal", internal: true };
     default:
       return { ts, kind: e.event ?? "unknown", decision: e.event ?? "unknown" }; // generic passthrough
@@ -177,7 +180,7 @@ export const INTERPRETED_EVENT_KINDS = new Set(["start", "axes", "stage", "skip"
 // and projectTimeline drops every one of them (`isInternalEntry`). They are records about the engine's own
 // plumbing, not decisions, so they are listed apart from the interpreted kinds: a client account's timeline,
 // which keeps the interpreted kinds alone, would drop them even if one ever reached it.
-export const ENGINE_INTERNAL_EVENT_KINDS = new Set(["synthesis-call-normalised", "corrections-delivered"]);
+export const ENGINE_INTERNAL_EVENT_KINDS = new Set(["synthesis-call-normalised", "corrections-delivered", "report-repair-targets"]);
 
 // A SUCCEEDED attempt is not a decision. put one `attempt` row on run.jsonl per model dispatch, and
 // with no kind filter here every stage began emitting BOTH `attempt-succeeded` and `stage-completed` —
