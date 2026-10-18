@@ -130,6 +130,7 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, registerCallAccount, GOODS_EVIDENCE_FILE } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -147,7 +148,7 @@ import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, fetchedRecordUris, countLaneCa
 // one run's evidence under another.
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause } from "./screen-gate.mjs";
+import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
@@ -994,6 +995,33 @@ function deriveBandShape(ctx, band) {
   } catch (e) {
     runLog(P.runDir, { event: "band-shape-failed", fail: String(e?.message ?? e).slice(0, 200) });
     note(`band-shape derivation failed (non-fatal — judgment still holds band_lookup over the band; machine checks read the complete band): ${String(e?.message ?? e).slice(0, 120)}`);
+  }
+  recordGoodsEvidenceFor(ctx, band);
+}
+
+/**
+ * WHAT EACH BAND RECORD'S GOODS REST ON, written beside the shape after every derivation (goods-evidence.mjs): the
+ * goods reader the shape tests with, given the band's records so that a reader which reads a band row's own goods
+ * reads them here too; the official records the run holds, with where each came from; and this run's record fetches,
+ * from the register call ledger. Disclosure only: no band tool serves it, nothing gates on it, and a failure costs
+ * the run this record and nothing else.
+ */
+function recordGoodsEvidenceFor(ctx, band) {
+  const P = ctx.paths;
+  try {
+    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    const calls = runPrefix ? readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix) : { rows: [], error: null };
+    const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
+    const doc = deriveGoodsEvidence({ records, goods: bandShapeGoods(P, records).goods, held: heldRecordProvenance(P.runDir),
+      fetches: recordFetchOutcomes(calls.rows, { runPrefix }) });
+    // Whether fetches could be read is part of the record: without the ledger, "not held" may hide a failed fetch.
+    doc.fetches_read = runPrefix ? (calls.error ? `the register call ledger could not be read: ${calls.error}` : true) : "no run prefix";
+    ensureDriverDir(P.runDir);
+    atomicWrite(driverDir(P.runDir, GOODS_EVIDENCE_FILE), JSON.stringify(doc, null, 2) + "\n");
+    runLog(P.runDir, { event: "goods-evidence", records: doc.totals.records, by_state: doc.totals.by_state,
+      by_source: doc.totals.by_source, unreadable: doc.totals.unreadable, fetches_read: doc.fetches_read });
+  } catch (e) {
+    runLog(P.runDir, { event: "goods-evidence-failed", fail: String(e?.message ?? e).slice(0, 160) });
   }
 }
 
@@ -7561,6 +7589,45 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
   }
 }
 
+/**
+ * WHAT EACH POLICED GOODS DROP RESTS ON, recorded beside the screen gate (screen-gate.mjs `screenGateEvidence`):
+ * the goods the drop stands on (goods-evidence.mjs, read from the run's files as they stand after the gate), what the
+ * register reading step opened or was shown, and what the gate fetched, with the gate's own register calls counted
+ * four ways. Disclosure only: the gate's rule and its outcome are decided above and nothing here changes them.
+ */
+function recordScreenGateEvidence(ctx, { runPrefix, heldBeforeGate, heldAfterGate, gateFetched }) {
+  const P = ctx.paths;
+  try {
+    const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
+    const calls = readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix);
+    const held = heldRecordProvenance(P.runDir);
+    // Each drop's own band row, so that a goods reader which reads a row's goods reads this one's too.
+    const band = safeReadJson(P.registerNamedBand);
+    const bandRows = Array.isArray(band?.enumerated) ? band.enumerated : [];
+    const rowOf = new Map(bandRows.map((r) => [normalizeRecordUri(r?.record_id), r]));
+    const goods = bandShapeGoods(P, bandRows).goods;
+    const fetches = recordFetchOutcomes(calls.rows, { runPrefix });
+    const evidence = new Map();
+    const evidenceOf = (uri) => {
+      if (!evidence.has(uri)) evidence.set(uri, recordGoodsEvidence(rowOf.get(normalizeRecordUri(uri)) ?? { record_id: uri }, { goods, held, fetches }));
+      return evidence.get(uri);
+    };
+    let readingLog = "";
+    try { readingLog = readFileSync(P.readingLog, "utf8"); } catch { readingLog = ""; }
+    const ev = screenGateEvidence({ findingsContent: findings, heldBefore: heldBeforeGate, heldAfter: heldAfterGate,
+      stateOf: (uri) => evidenceOf(uri).state, sourceOf: (uri) => evidenceOf(uri).source,
+      reads: recordReads(readingLog), readerStage: "register-digest", gateFetched });
+    const gateCalls = registerCallAccount(calls.rows.filter((r) => String(r?.sessionKey ?? "").includes("screen-gate-refetch")));
+    const doc = { schema_version: 1, ...ev, gate_calls: gateCalls, ...(calls.error ? { call_ledger_error: calls.error } : {}) };
+    ensureDriverDir(P.runDir);
+    atomicWrite(driverDir(P.runDir, "screen-gate-evidence.json"), JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");
+    runLog(P.runDir, { event: "screen-gate-evidence", ...ev.counts, unnamed: ev.unnamed, fetches: ev.fetches,
+      alternatives: ev.alternatives, gate_calls: gateCalls });
+  } catch (e) {
+    runLog(P.runDir, { event: "screen-gate-evidence-failed", fail: String(e?.message ?? e).slice(0, 160) });
+  }
+}
+
 // ── screen-gate unexamined-disclosure readers ────────────────────────────────────────────────────────
 // The screen-gate's disclose-and-continue terminal writes _driver/screen-gate-unresolved.json (atomic,
 // the receipt idiom) the moment its post-repair re-check still fails, so the disclosure survives a
@@ -12124,13 +12191,13 @@ async function pipelineInner(job, opts = {}) {
       // the findings AND may record_fetch the flagged URIs — both must be picked up on the post-recovery
       // check). V4-1: the fetched universe is the DELIVERED ARTIFACT SET's records (run-dir _records/ ∪ this
       // session's ledger rows) ∪ this session's fetch attempts — not the session-prefixed ledger alone.
+      const fetchedUniverse = () => new Set([
+        ...fetchedRecordUris(DEFAULT_LEDGER_PATH, runPrefix),
+        ...assembleRunRecords(run.runDir, runPrefix).records.keys(),
+      ]);
       const checkScreenGate = () => {
         const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
-        const fetched = new Set([
-          ...fetchedRecordUris(DEFAULT_LEDGER_PATH, runPrefix),
-          ...assembleRunRecords(run.runDir, runPrefix).records.keys(),
-        ]);
-        return findScreenGateViolations(findings, fetched);
+        return findScreenGateViolations(findings, fetchedUniverse());
       };
 
       // PARSE-GAP LEDGER (2026-07-21): records the gate is blind to because URI_RE's `[a-z]{2}` cannot read
@@ -12266,6 +12333,9 @@ async function pipelineInner(job, opts = {}) {
         }
       };
       let violations = enforcedViolations();
+      // What the gate's answer stood on before it fetched anything, and each fetch it makes: the evidence below.
+      const heldBeforeGate = fetchedUniverse();
+      const gateFetched = new Map();
       if (violations.length) {
         // REPAIR-OR-DISCLOSE, NEVER BLOCK (2026-06-18). The digest intermittently drops an in-scope-live mark on
         // goods WITHOUT record_fetching it, and a generic re-digest re-runs identically (the model skips the same
@@ -12288,7 +12358,8 @@ async function pipelineInner(job, opts = {}) {
           try {
             const r = await fetcher(v.uri, { agentId: agent, sessionKey: `${runPrefix}screen-gate-refetch`, recordLog: runRecordLogPath(run.runDir) });
             if (!r?.ok) fetchFailures.set(v.uri, r?.cause ?? "record_fetch returned not-ok");
-          } catch (e) { fetchFailures.set(v.uri, String(e?.message ?? e).slice(0, 120)); }
+            gateFetched.set(v.uri, { ok: r?.ok === true, cause: r?.ok ? null : (r?.cause ?? "record_fetch returned not-ok") });
+          } catch (e) { fetchFailures.set(v.uri, String(e?.message ?? e).slice(0, 120)); gateFetched.set(v.uri, { ok: false, cause: String(e?.message ?? e).slice(0, 120) }); }
         }
         // The re-decide text — shared verbatim between the legacy immediate re-digest (funnel OFF) and
         // the queued settlement-flush section (funnel ON).
@@ -12360,6 +12431,7 @@ async function pipelineInner(job, opts = {}) {
           ...screenGateZeroCause({ findingsPresent: fPresent,
             findingsContent: fPresent ? readFileSync(P.registerFindings, "utf8") : "", unnamedArmed }) });
       }
+      recordScreenGateEvidence(ctx, { runPrefix, heldBeforeGate, heldAfterGate: fetchedUniverse(), gateFetched });
     }
 
     // ──: STANDALONE SETTLEMENT / LATE FLUSH ───────────────────────────────────────────────────

@@ -231,3 +231,70 @@ export function findScreenGateParseGaps(findingsContent) {
   }
   return gaps;
 }
+
+// ── WHAT EACH POLICED DROP RESTS ON (ruled 2026-10-18) ────────────────────────────────────────────────
+//
+// The gate above asks one question of each in-scope live goods drop: does the run hold, or has it fetched, the
+// record? A record the run holds answers it whether or not the reading step ever opened it: on a register whose
+// screen hydrates every band record, every drop is answered before any step reads a word. A record held is not
+// evidence the model read it. The rule stays exactly as it is; this records, for every drop the rule polices,
+// what its answer stood for: the goods the drop rests on, the reading the run recorded for the step that wrote
+// the drop, and what the gate fetched. The counts say how many fetches the rule avoided and how many it added,
+// and how many drops a rule that asked for an opened record would send back instead. Same parser, same rows,
+// same in-scope test as findScreenGateViolations: every policed drop is a violation against an empty fetched set.
+const gateKey = (u) => (typeof u === "string" ? (u.match(URI_RE)?.[0] ?? u).toLowerCase() : "");
+
+/**
+ * @param findingsContent  the register-findings.md text
+ * @param heldBefore       record uris the gate found held or fetched before it fetched anything (gate-keyed)
+ * @param heldAfter        the same after the gate's own fetches
+ * @param stateOf          uri → the goods evidence state of the record (goods-evidence.mjs), or a falsy value
+ * @param sourceOf         uri → the source of those goods ("record-body", "search-row" or null), optional
+ * @param reads            goods-evidence.mjs recordReads: uri → {opened, shown, missed} session sets
+ * @param readerStage      the stage that writes the drop rows, matched within a session key ("register-digest")
+ * @param gateFetched      uri → {ok, cause} for each fetch the gate made
+ * @returns {{drops, counts, fetches, alternatives, unnamed}} PURE.
+ */
+export function screenGateEvidence({ findingsContent = "", heldBefore = new Set(), heldAfter = new Set(), stateOf = () => null,
+  sourceOf = () => null, reads = new Map(), readerStage = "register-digest", gateFetched = new Map() } = {}) {
+  const policed = findScreenGateViolations(findingsContent, new Set());
+  const unnamed = policed.filter((v) => !v.uri).length;
+  const keyed = (set) => new Set([...(set ?? [])].map(gateKey));
+  const before = keyed(heldBefore), after = keyed(heldAfter);
+  const fetched = new Map([...(gateFetched ?? new Map())].map(([u, r]) => [gateKey(u), r]));
+  const byReader = (sessions) => [...(sessions ?? [])].some((s) => String(s).includes(readerStage));
+  const seen = new Set();
+  const drops = [];
+  for (const v of policed) {
+    const uri = gateKey(v.uri);
+    if (!uri || seen.has(uri)) continue;
+    seen.add(uri);
+    const r = reads?.get?.(uri);
+    const reading = byReader(r?.opened) ? "opened" : byReader(r?.shown) ? "goods-words-shown" : "not-read";
+    const f = fetched.get(uri);
+    drops.push({ uri, mark: v.mark, held_before_gate: before.has(uri), goods: stateOf(uri) || null, source: sourceOf(uri) || null, reading,
+      gate_fetch: f ? (f.ok ? "fetched" : "failed") : "none", ...(f && !f.ok && f.cause ? { cause: String(f.cause).slice(0, 160) } : {}),
+      held_after_gate: after.has(uri) });
+  }
+  const n = (pred) => drops.filter(pred).length;
+  const counts = {
+    policed: drops.length,
+    held_before_gate: n((d) => d.held_before_gate),
+    opened_by_reader: n((d) => d.reading === "opened"),
+    goods_words_shown_only: n((d) => d.reading === "goods-words-shown"),
+    held_not_read: n((d) => d.held_before_gate && d.reading === "not-read"),
+    gate_fetched: n((d) => d.gate_fetch !== "none"),
+    gate_fetch_failed: n((d) => d.gate_fetch === "failed"),
+    still_unheld: n((d) => !d.held_after_gate),
+  };
+  return {
+    drops, counts, unnamed,
+    fetches: { avoided: counts.held_before_gate, added: counts.gate_fetched },
+    alternatives: {
+      // Were only a record the reading step OPENED to answer the gate: the drops it would send back to that step.
+      read_rule: { would_send_back: n((d) => d.held_before_gate && d.reading !== "opened") },
+      // Were a band row's whole goods to answer it: the fetches the gate made that would not have been needed.
+      row_goods_rule: { fetches_not_needed: n((d) => d.gate_fetch !== "none" && d.source === "search-row" && d.goods === "complete") },
+    },
+  };
+}

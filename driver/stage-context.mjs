@@ -297,7 +297,8 @@ export const CONTEXT_DERIVATIONS = [
     // live inside these functions (band-shape.mjs: dominantElementComposites, deriveRegisterPositions,
     // buildBandShape), which is why a rig that REPLAYS a persisted band-shape.json cannot serve a
     // seeded arm: it would replay the unseeded artifact and report no movement.
-    writes: (P) => [P.bandShape, P.bandShapeMd, P.registerPositions],
+    // goods-evidence.json: what each record's goods rest on, read from the same run files; no band tool serves it.
+    writes: (P) => [P.bandShape, P.bandShapeMd, P.registerPositions, driverDir(P.runDir, "goods-evidence.json")],
     reads: (P) => [
       { path: P.registerNamedBand, why: "the merged band the shape is derived FROM" },
       { path: P.variantManifestModel, why: "targets: the mark, its dominant element, distinctive elements and variants" },
