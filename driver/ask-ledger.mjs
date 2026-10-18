@@ -384,7 +384,9 @@ export function deriveAsks({
           ? mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts })
           : ran.length
             ? endingForQids(ran.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts)   // computed — null (open) when the execution record disagrees
-            : withheldEnding([...settled.values()], withheldFamilies, ts);
+            // A family the reading turn released after the fold is no longer withheld on record: the ask then ends
+            // on what the execution record says of the family itself (it ran, it was deferred, or it stays open).
+            : withheldEnding([...settled.values()], withheldFamilies, ts) ?? endingForQids([...settled.values()], join, ts);
       }
       push({
         ask_id: `ask:frame:${slug(key)}`,

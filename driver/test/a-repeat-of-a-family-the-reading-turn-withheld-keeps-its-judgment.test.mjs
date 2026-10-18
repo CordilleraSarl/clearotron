@@ -192,9 +192,12 @@ test("nothing less settles a slice: no reason, no twin, another kind, or a faile
     assert.equal(v.closed, false, `${JSON.stringify(r)} closed a directive whose question never ran`);
   }
   // A failed search cannot hide behind a withheld sibling: the directive is deferred on the slice that failed.
-  const failed = "supp:primary-sweep:exact:inventedmarq:00000003";
-  const v = verifyRegisterDirectiveClose({ qids: [failed, contains], ...empty, foldRefusals: new Map([[contains, withheldRefusal()]]) });
-  assert.deepEqual([v.closed, v.reason], [false, `slice-not-landed:${failed}`]);
+  const failed = "supp:primary-sweep:exact:lanternwick:00000003";
+  for (const qids of [[failed, contains], [contains, failed]]) {
+    const v = verifyRegisterDirectiveClose({ qids, ...empty, foldRefusals: new Map([[contains, withheldRefusal()]]) });
+    assert.deepEqual([v.closed, v.reason], [false, `slice-not-landed:${failed}`], `slices in the order ${qids.join(", ")}`);
+    assert.equal(v.answered_by, undefined, "a withheld slice answers nothing, whatever its place in the list");
+  }
   // and what is missing in each control above is the only difference: the whole record does settle the slice.
   assert.equal(verifyRegisterDirectiveClose({ qids: [contains], ...empty, foldRefusals: new Map([[contains, withheldRefusal()]]) }).closed, true);
 });
@@ -229,10 +232,10 @@ test("a term whose every slice was withheld, or whose other slices came back emp
 
 test("a failed search cannot inherit it: a withheld slice beside a slice that did not land leaves the term dispatch-failed", () => {
   const { contains, foldRefusals } = bothRefused();
-  const failed = "supp:primary-sweep:exact:inventedmarq:00000003";
+  const failed = "supp:primary-sweep:exact:lanternwick:00000003";
   const c = classifyRemedyTerm(term([contains, failed]), { executedQids: new Set(), blocksByQid: new Map(), foldRefusals });
   assert.equal(c.class, "dispatch-failed");
-  assert.match(c.reason, /slice-not-landed:supp:primary-sweep:exact:inventedmarq/, "the failure named is the search that did not land");
+  assert.match(c.reason, /slice-not-landed:supp:primary-sweep:exact:lanternwick/, "the failure named is the search that did not land");
   assert.ok(!c.reason.includes(contains), "never the slice the reading turn withheld");
 });
 
@@ -248,7 +251,7 @@ test("the main-element gap closes on a withheld slice where the twin ran and whe
   assert.equal(gap([exact, contains], world).domClosed, true, "the twin ran and the rest is the reading turn's judgment");
   assert.equal(gap([contains], { executedQids: new Set(), blocksByQid: new Map() }).domClosed, true,
     "a request settled wholly by the reading turn's judgment holds no CLEAR open");
-  const failed = "supp:primary-sweep:exact:inventedmarq:00000003";
+  const failed = "supp:primary-sweep:exact:lanternwick:00000003";
   const open = gap([failed, contains], { executedQids: new Set(), blocksByQid: new Map() });
   assert.equal(open.domClosed, false, "a search that did not land keeps the gap open");
   // and with the term ledger's verdict alone, a directive closed elsewhere is still blocked by a failed term
@@ -302,6 +305,19 @@ test("every slice withheld: the ask ends judged immaterial on the reading turn's
   assert.equal(ask.handoff, null);
   assert.equal(askFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} }).ending, null,
     "without the record there is no judgment to show, so the ask stays open");
+});
+
+test("a family the reading turn released after the fold, and asked then: the ask ends on what the execution record says of it, never open", () => {
+  const { contains } = bothRefused();
+  const key = "variant:inventedmark";
+  const receipt = { requested: [key], swept: [key], deferrals: [], directive_qids: { [key]: [contains] },
+    withheld_by_judgment: [{ directive: key, slices: [{ qid: contains, family: FAMILY }] }] };
+  // The release deleted the family's withholding from the record; the family itself then ran.
+  const ask = askFor(receipt, { planExecution: { executed: [{ qid: FAMILY, state: "enumerated", records: 3, total_hits: 3 }] }, withheldFamilies: {} });
+  assert.equal(ask.ending?.kind, "executed", `the frame ask: ${JSON.stringify(ask)}`);
+  assert.ok(ask.ending.evidence.includes(FAMILY), "it names the family that ran");
+  assert.equal(askFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} }).ending, null,
+    "control: released and never run, it stays open");
 });
 
 // ── THE REPORT'S ACCOUNTING ──────────────────────────────────────────────────────────────────────────

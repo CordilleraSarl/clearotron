@@ -59,13 +59,15 @@ const ENGINES = {
  * record the mock band already carries, so the run's findings end it and the recall join has nothing new
  * to reconcile.
  */
-function recordingExecutor() {
+function recordingExecutor(crowded = () => false) {
   const calls = [];
   const planExecutor = async ({ axis, outputPath, qids }) => {
     calls.push({ axis, qids: Array.isArray(qids) ? [...qids] : null });
     const blocks = existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, "utf8")) : [];
     (qids ?? []).forEach((qid) => {
-      const block = { state: "enumerated", qid, query: `${qid} [cl 9,41]`, total_hits: 1, records: [{ record_id: "/mark/us/90000001",
+      // A crowded question comes back counted and not listed, as a register answers a count too large to list.
+      const block = crowded(qid) ? { state: "incomplete", qid, query: `${qid} [cl 9,41]`, total_hits: 12000, records: null }
+        : { state: "enumerated", qid, query: `${qid} [cl 9,41]`, total_hits: 1, records: [{ record_id: "/mark/us/90000001",
         mark_text: "NOVAPULSE", classes: [9], status: "Registered", owner_name: "Mystery Owner LLC", owner_country: "US", screen_verdict: "surface:in-scope-live" }] };
       const at = blocks.findIndex((b) => b && b.qid === qid);
       if (at >= 0) blocks[at] = block; else blocks.push(block);
@@ -76,13 +78,13 @@ function recordingExecutor() {
   return { planExecutor, calls };
 }
 
-async function runOn(engine, env) {
+async function runOn(engine, env, { crowded } = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-withheld-"));
   for (const k of KNOBS) delete process.env[k];
   pinEnvAll(process.env, { ...ENGINES[engine](root), CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env });
-  const executor = recordingExecutor();
+  const executor = recordingExecutor(crowded);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline({ ...JOB }, { planExecutor: executor.planExecutor });
   // An artifact a failed run never wrote reads as null here, so the arm's first assertion — the run's own
@@ -182,4 +184,24 @@ test("a re-sweep whose only question the plan already asked sends nothing to the
   const key = r.receipt.requested[0];
   assert.deepEqual(r.receipt.swept, [key], `deferrals: ${JSON.stringify(r.receipt.deferrals)}`);
   assert.deepEqual(r.receipt.answered_elsewhere, [{ directive: key, slices: [{ qid: refused[0].qid, twin: "primary-sweep:exact:project-novapulse" }] }]);
+});
+
+test("THE PRODUCTION HOLD, at its default: the crowd a withheld family's repeat would have found no longer holds the verdict; with no judgment on record the same crowd still holds it", async () => {
+  const before = process.env.CLEAROTRON_REGISTER_GAP_CLAMP;
+  delete process.env.CLEAROTRON_REGISTER_GAP_CLAMP;   // the unfinished-register hold, on as in production
+  try {
+    const crowded = (qid) => qid.startsWith("supp:primary-sweep:default:novapulse");
+    const holds = (events) => events.some((e) => Array.isArray(e.causes) && e.causes.includes("registerGap"));
+    const control = await runOn("anthropic-agent", { MOCK_FRAME_DIFF: "dominant-on-waiting-family" }, { crowded });
+    assert.equal(control.res.ok, true, JSON.stringify(control.res));
+    assert.equal(control.res.verdict, "CONDITIONAL", "guard: the hold is live, and the asked family's crowd holds the verdict");
+    assert.ok(holds(control.events), "guard: the hold's own event names the unfinished register slice");
+    const r = await runOn("anthropic-agent", { MOCK_FRAME_DIFF: "dominant-on-waiting-family", MOCK_WITHHOLD_FAMILIES: JSON.stringify({ [CONTAINS_FAMILY]: REASON }) }, { crowded });
+    assert.equal(r.res.ok, true, JSON.stringify(r.res));
+    assert.ok(!sentQids(r.calls).some(crowded), "the withheld family's question was not asked");
+    assert.equal(r.res.verdict, "CLEAR", "nothing unfinished is left to hold it: the family stands on the reading turn's judgment");
+    assert.ok(!holds(r.events), "no unfinished-register hold");
+  } finally {
+    if (before === undefined) delete process.env.CLEAROTRON_REGISTER_GAP_CLAMP; else process.env.CLEAROTRON_REGISTER_GAP_CLAMP = before;
+  }
 });
