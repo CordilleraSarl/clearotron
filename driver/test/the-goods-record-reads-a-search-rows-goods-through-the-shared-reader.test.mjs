@@ -92,4 +92,10 @@ test("the derivation the pipeline runs writes the row's states, and its two even
   assert.equal(shaped.held, recorded.by_source["record-body"] - recorded.by_state.absent);
   assert.equal(shaped.none, recorded.by_source.none + recorded.by_state.absent);
   assert.equal(shaped.complete + shaped.cut + shaped.unknown, recorded.by_source["search-row"]);
+  // The shape's lines carry the same state for the record each names, from the same derivation.
+  const shape = JSON.parse(readFileSync(driverDir(runDir, "band-shape.json"), "utf8"));
+  const stateOf = new Map(doc.records.map((r) => [r.uri, r.state]));
+  const lines = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups?.[g]?.list ?? []);
+  assert.ok(lines.length >= 1, "guard: the shape lists lines");
+  for (const l of lines) assert.equal(l.goods_evidence, stateOf.get(l.record_id), `the line naming ${l.record_id} says another state than the run's record`);
 });

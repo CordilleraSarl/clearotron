@@ -158,6 +158,19 @@ export function recordGoodsEvidence(record, { goods = null, held = null, fetches
   return row("not-held", null, "no-goods-held");
 }
 
+/**
+ * WHAT A RECORD'S GOODS REST ON, IN THE WORDS THE STAGES READ (the band lookup's `goods_from`, the write-up's list):
+ * the supporting evidence the record holds, never the last call made for it. An official record's completeness is
+ * said by the band shape's goods cell for its line. null where there is no evidence row. PURE.
+ */
+export function goodsFromLabel(e) {
+  if (!e) return null;
+  if (e.source === "record-body") return e.state === "absent" ? "official record, no goods listed" : "official record";
+  if (e.source === "search-row") return e.state === "cut" ? "search answer, cut by the register"
+    : e.state === "unknown" ? "search answer, completeness not established" : "search answer";
+  return e.state === "unavailable" ? "fetch failed" : "nothing held";
+}
+
 /** Records counted by state, by source and by basis; `unreadable` counts goods held in no language the engine reads. PURE. */
 export function goodsEvidenceTotals(rows) {
   const list = Array.isArray(rows) ? rows : [];

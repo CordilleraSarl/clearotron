@@ -708,7 +708,7 @@ function bindingOffices(territories, code) {
   return out;
 }
 
-export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", keysOf = null, markets = [], territories = [] } = {}) {
+export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", keysOf = null, markets = [], territories = [], evidenceOf = null } = {}) {
   const fold = (x) => foldDiacritics(String(x ?? "")).toLowerCase();
   const dom = fold(dominantTerm).trim();
   const domRe = dom ? new RegExp(`(^|[^\\p{L}\\p{N}])${dom.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^\\p{L}\\p{N}])`, "u") : null;
@@ -780,6 +780,8 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
       // A line the goods test could not place shows a record whose goods are on file where it has one, so
       // `band_record` opens the record the line names; `goods_on_file` says so of that record.
       record_id: (known ? best : (inGroup.find((x) => x.onFile) ?? best)).r?.record_id ?? null,
+      // What the goods of the record the line names rest on (goods-evidence.mjs), where the run recorded it.
+      ...(typeof evidenceOf === "function" ? { goods_evidence: evidenceOf((known ? best : (inGroup.find((x) => x.onFile) ?? best)).r)?.state ?? null } : {}),
       floors: l.recs.filter((x) => x.floor).length,
       ...(known ? {} : { goods_on_file: inGroup.some((x) => x.onFile) }),
       ...(offices.size && l.recs.every((x) => x.outside) ? { outside: true } : {}),
@@ -823,7 +825,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
  *                             (charter P2d); the band itself stays per-registration
  * @returns { shape, md }      deterministic — same band + inputs ⇒ same bytes (no timestamps)
  */
-export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, goodsTest = null, goodsWordCount = 0, dominantTerm = "", manifestDominant = "", keysOf = null, markets = [], territories = [] } = {}) {
+export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, goodsTest = null, goodsWordCount = 0, dominantTerm = "", manifestDominant = "", keysOf = null, markets = [], territories = [], evidenceOf = null } = {}) {
   const prepared = prepareTargets(Array.isArray(targets) && targets.every(isPrepared) ? targets.map((t) => t.text) : targets);
   const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
   const crowds = Array.isArray(band?.crowds) ? band.crowds : [];
@@ -881,7 +883,7 @@ export function buildBandShape(band, { targets = [], inScopeClasses = [], crowdC
   const floorsOrdered = probeOrder(floors, "floors");
 
   const ownerCap = Number.isFinite(caps.owners) ? caps.owners : 40;
-  const grouped = bandGroups(records, { classify: (r) => classified.get(r), inScope, goods, dominantTerm, keysOf, markets, territories });
+  const grouped = bandGroups(records, { classify: (r) => classified.get(r), inScope, goods, dominantTerm, keysOf, markets, territories, evidenceOf });
   const ownersIn = (ls) => new Set(ls.map((l) => l.owner_key)).size;
   const groupOf = (g) => {
     const ls = grouped.by_group[g].lines;
@@ -1113,7 +1115,19 @@ function renderGroupsMd(md, groups, rows = []) {
   const word = groups.dominant_term || groups.manifest_dominant;
   const carrying = word ? `carrying «${cell(word)}»` : "carrying the searched word";
   const heading = (g) => (g === "c" ? `(c) The same family as the mark, or ${carrying}, for the client's goods` : GROUP_HEADINGS[g]);
-  const unread = (l) => (tested.source === "none" ? "—" : l.goods_on_file ? "on file, not readable" : "no goods on file");
+  // A line the goods test could not place says why, from what its goods rest on: cut by the register, held but not
+  // established whole, the register's record listing none, a fetch that failed, or nothing held. Goods held whole
+  // that the test still could not read are in a language it cannot use. A shape derived with no record of the goods
+  // evidence reads as it always did.
+  const unread = (l) => {
+    if (tested.source === "none") return "—";
+    if (l.goods_evidence === "cut") return "cut by the register, no goods word found";
+    if (l.goods_evidence === "unknown") return "goods held; completeness not established";
+    if (l.goods_evidence === "absent") return "the register's record lists no goods";
+    if (l.goods_evidence === "unavailable") return "fetch failed, no goods on file";
+    if (l.goods_evidence === "complete") return "on file, not readable";
+    return l.goods_on_file ? "on file, not readable" : "no goods on file";
+  };
   const words = (l) => (l.goods_words == null ? unread(l) : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`);
   const count = (grp) => `${fmtN(grp.records)} records in ${fmtN(grp.lines)} lines from ${fmtN(grp.owners)} owners`;
   const where = (l) => `${l.territories.join(",")}${l.outside ? " (outside the order)" : ""}`;

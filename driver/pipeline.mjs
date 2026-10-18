@@ -130,7 +130,7 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -946,6 +946,7 @@ function recordDetailIndex(runDir) {
 
 function deriveBandShape(ctx, band) {
   const P = ctx.paths;
+  let evidenceDoc = null;
   try {
     const targets = [];
     const markNames = Array.isArray(ctx.job?.marks)
@@ -983,7 +984,12 @@ function deriveBandShape(ctx, band) {
       note(`register-positions derivation failed (non-fatal — the per-registration band stands): ${String(e?.message ?? e).slice(0, 100)}`);
     }
     const shapeGoods = bandShapeGoods(P, band?.enumerated ?? []);
-    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null) });
+    // What each record's goods rest on, derived first so the shape says it of each line the goods test could not
+    // place; the same record is written beside the shape below.
+    try { evidenceDoc = goodsEvidenceDocFor(ctx, band, shapeGoods.goods); } catch { evidenceDoc = null; }
+    const evidenceBy = evidenceDoc ? new Map(evidenceDoc.records.map((r) => [r.uri, r])) : null;
+    const evidenceOf = evidenceBy ? (r) => evidenceBy.get(normalizeRecordUri(r?.record_id) || String(r?.record_id ?? "")) ?? null : null;
+    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null), evidenceOf });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");
@@ -1001,26 +1007,33 @@ function deriveBandShape(ctx, band) {
     runLog(P.runDir, { event: "band-shape-failed", fail: String(e?.message ?? e).slice(0, 200) });
     note(`band-shape derivation failed (non-fatal — judgment still holds band_lookup over the band; machine checks read the complete band): ${String(e?.message ?? e).slice(0, 120)}`);
   }
-  recordGoodsEvidenceFor(ctx, band);
+  recordGoodsEvidenceFor(ctx, band, evidenceDoc);
 }
 
 /**
  * WHAT EACH BAND RECORD'S GOODS REST ON, written beside the shape after every derivation (goods-evidence.mjs): the
  * goods reader the shape tests with, given the band's records so that a reader which reads a band row's own goods
  * reads them here too; the official records the run holds, with where each came from; and this run's record fetches,
- * from the register call ledger. Disclosure only: no band tool serves it, nothing gates on it, and a failure costs
- * the run this record and nothing else.
+ * from the register call ledger. The shape says the same of each line from the same derivation (its goods cell and
+ * `goods_evidence`); the file itself is served by no band tool, gates nothing, and a failure costs the run this
+ * record and nothing else.
  */
-function recordGoodsEvidenceFor(ctx, band) {
+function goodsEvidenceDocFor(ctx, band, goods = null) {
+  const P = ctx.paths;
+  const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+  const calls = runPrefix ? readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix) : { rows: [], error: null };
+  const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
+  const doc = deriveGoodsEvidence({ records, goods: goods ?? bandShapeGoods(P, records).goods, held: heldRecordProvenance(P.runDir),
+    fetches: recordFetchOutcomes(calls.rows, { runPrefix }) });
+  // Whether fetches could be read is part of the record: without the ledger, "not held" may hide a failed fetch.
+  doc.fetches_read = runPrefix ? (calls.error ? `the register call ledger could not be read: ${calls.error}` : true) : "no run prefix";
+  return doc;
+}
+
+function recordGoodsEvidenceFor(ctx, band, derived = null) {
   const P = ctx.paths;
   try {
-    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
-    const calls = runPrefix ? readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix) : { rows: [], error: null };
-    const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
-    const doc = deriveGoodsEvidence({ records, goods: bandShapeGoods(P, records).goods, held: heldRecordProvenance(P.runDir),
-      fetches: recordFetchOutcomes(calls.rows, { runPrefix }) });
-    // Whether fetches could be read is part of the record: without the ledger, "not held" may hide a failed fetch.
-    doc.fetches_read = runPrefix ? (calls.error ? `the register call ledger could not be read: ${calls.error}` : true) : "no run prefix";
+    const doc = derived ?? goodsEvidenceDocFor(ctx, band);
     ensureDriverDir(P.runDir);
     atomicWrite(driverDir(P.runDir, GOODS_EVIDENCE_FILE), JSON.stringify(doc, null, 2) + "\n");
     runLog(P.runDir, { event: "goods-evidence", records: doc.totals.records, by_state: doc.totals.by_state,
@@ -3269,6 +3282,21 @@ function findingsSurfaceRows(P) {
  * `scope` is instructed-scope.json, JOB-authored before any model ran. It is the only thing the
  * contradiction refusals rest on, which is why it is read here rather than accepted from the seat.
  */
+// THE WRITE-UP IS TOLD WHAT EACH RECORD'S GOODS REST ON, beside its position (goods-evidence.mjs `goodsFromLabel`),
+// so a record declined on goods is declined knowing whether those goods were the official record's, a search answer's,
+// cut, or none. Only the dispatch's copy carries it; the spec the declination tool reads is the positions alone.
+function withGoodsFrom(ctx, P, rows) {
+  try {
+    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    const uris = rows.filter((r) => r?.kind !== "page" && r?.uri).map((r) => r.uri);
+    const evidence = runPrefix ? goodsEvidenceOfDrops(P, runPrefix, uris) : new Map();
+    return rows.map((r) => {
+      const e = r?.kind !== "page" && r?.uri ? evidence.get(r.uri) : null;
+      return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source }) } : r;
+    });
+  } catch { return rows; }
+}
+
 export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
   if (!rows.length) {
@@ -3286,7 +3314,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
     ensureDriverDir(P.runDir);
     atomicWrite(driverDir(P.runDir, "declination-spec.json"),
       JSON.stringify({ ts: new Date().toISOString(), rows, scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
-    ctx.findingsSurface = rows;
+    ctx.findingsSurface = withGoodsFrom(ctx, P, rows);
   } catch (e) {
     // The dispatch block is gated on ctx.findingsSurface, so a failed write leaves the stage UNORDERED
     // rather than ordered to call a tool whose spec it cannot read. Loud in the log, never a dead order.
