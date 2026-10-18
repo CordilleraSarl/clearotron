@@ -6598,7 +6598,16 @@ const NO_CHANGE = Object.freeze({ findings: [], lines: [], registers: [], sectio
 
 /** Whether the reviewer was queued for a change to the findings record only: its narrative did not move. */
 function queuedForTheRecordOnly(s2) {
-  return (s2?.changed ?? []).every((c) => c?.via === "repair-record");
+  const changed = s2?.changed ?? [];
+  return changed.length > 0 && changed.every((c) => c?.via === "repair-record");
+}
+
+/** What the record of an unread review says its change was: findings only, or more. null with no unread record. */
+function unreadRecordFindingOnly(runDir) {
+  try {
+    const r = JSON.parse(readFileSync(postRepairRecordPath(runDir), "utf8"));
+    return r?.status === "unread" && typeof r.findingOnly === "boolean" ? r.findingOnly : null;
+  } catch { return null; }
 }
 
 /**
@@ -15606,7 +15615,9 @@ async function pipelineInner(job, opts = {}) {
             const rerun = () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
             // A scope that cannot be narrowed is reviewed whole at once, and its record lists no change it could compare.
             let review = scope.mode === "whole"
-              ? await runWholeReviewForRecord(ctx, P, run, { ...scope, changed: scope.changed ?? NO_CHANGE, findingOnly: queuedForTheRecordOnly(s2) }, rerun)
+              // A resume reviews the change its earlier record names, so that record says what the change was.
+              ? await runWholeReviewForRecord(ctx, P, run, { ...scope, changed: scope.changed ?? NO_CHANGE,
+                findingOnly: unreadRecordFindingOnly(run.runDir) ?? queuedForTheRecordOnly(s2) }, rerun)
               : await runPostRepairReview(ctx, P, run, scope);
             // A narrowed review that could not be read falls back to the whole review, whose points go to the same one
             // correction below: neither the stamp of a findings-only change nor that of a stage that ends ok on the

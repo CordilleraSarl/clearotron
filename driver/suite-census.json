@@ -6701,7 +6701,7 @@
         },
         "the-review-after-a-repair-reads-only-what-the-repair-changed.pipeline.test.mjs": {
           "tests": 15,
-          "asserts": 117,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },
