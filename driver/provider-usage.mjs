@@ -241,14 +241,17 @@ export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) 
 }
 
 /**
- * The SET of record_fetch target URIs for the run identified by `runPrefix`. Backs the Fix-1b acceptance
- * gate (the screen-gate predicate cross-checks each in-scope-live goods/field drop against this set). Reuses
- * the same gateway-namespace stripping + run-prefix matching as tallyRegisterCalls; read-only and defensive
- * (missing/unreadable ledger or a torn last line ⇒ skips that line, never throws). A cache_hit record_fetch
- * still counts — the URI WAS fetched this run, which is exactly what the gate asks.
+ * The SET of record_fetch target URIs this run fetched SUCCESSFULLY, for the run identified by `runPrefix`.
+ * Backs the Fix-1b acceptance gate (the screen-gate predicate cross-checks each in-scope-live goods/field drop
+ * against this set). Reuses the same gateway-namespace stripping + run-prefix matching as tallyRegisterCalls;
+ * read-only and defensive (missing/unreadable ledger or a torn last line ⇒ skips that line, never throws). A
+ * cache_hit record_fetch that succeeded still counts — the record WAS retrieved this run, which is what the
+ * gate asks. A fetch the register refused or that failed in transport (`ok: false`) does not: an attempt is
+ * not a retrieval, and the gate's own recovery fetch, then its disclosure, is what such a drop is owed (ruled
+ * 2026-10-18). One success among the target's rows is enough, whatever came before or after it.
  * @param {string} ledgerPath  path to the JSONL ledger
  * @param {string} runPrefix   e.g. `clearance-acme-bluejay-` (note the trailing hyphen)
- * @returns {Set<string>} the set of fetched record URIs
+ * @returns {Set<string>} the set of record URIs this run fetched successfully
  */
 export function fetchedRecordUris(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) {
   const out = new Set();
@@ -262,7 +265,7 @@ export function fetchedRecordUris(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) {
     let row;
     try { row = JSON.parse(line); } catch { continue; } // tolerate a torn concurrent-append line
     if (!rowMatchesRun(row, runPrefix)) continue;
-    if (row.tool === "record_fetch" && typeof row.target === "string" && row.target) out.add(row.target);
+    if (row.tool === "record_fetch" && row.ok === true && typeof row.target === "string" && row.target) out.add(row.target);
   }
   return out;
 }

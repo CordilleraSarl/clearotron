@@ -160,7 +160,7 @@ import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, 
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
-import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
+import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
 import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
@@ -12408,10 +12408,13 @@ async function pipelineInner(job, opts = {}) {
       // Re-read the findings + recompute the fetched universe on EACH check (the recovery re-digest rewrites
       // the findings AND may record_fetch the flagged URIs — both must be picked up on the post-recovery
       // check). V4-1: the fetched universe is the DELIVERED ARTIFACT SET's records (run-dir _records/ ∪ this
-      // session's ledger rows) ∪ this session's fetch attempts — not the session-prefixed ledger alone.
+      // session's ledger rows) ∪ this session's successful fetches — not the session-prefixed ledger alone. A
+      // failed fetch is not a retrieval, and a body that carries no record is not one either (ruled 2026-10-18):
+      // neither answers the gate, so such a drop gets the gate's own recovery fetch and, failing that, its
+      // disclosure. A valid copy the run already holds still answers it, whatever a later attempt did.
       const fetchedUniverse = () => new Set([
         ...fetchedRecordUris(DEFAULT_LEDGER_PATH, runPrefix),
-        ...assembleRunRecords(run.runDir, runPrefix).records.keys(),
+        ...[...assembleRunRecords(run.runDir, runPrefix).records].filter(([, body]) => recordBodyHasContent(body)).map(([uri]) => uri),
       ]);
       const checkScreenGate = () => {
         const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
@@ -12515,7 +12518,7 @@ async function pipelineInner(job, opts = {}) {
           // Re-stamp the disclosure to the CURRENT leftover set — the flush may have corrected some
           // rows while new ones appeared; the floor and the sidecar must describe what is true now.
           // A row already disclosed keeps its original (more specific) fetch-failure cause.
-          const priorCause = new Map((ctx.screenGateUnresolved ?? []).map((u) => [u.uri ?? u.mark, u.cause]));
+          const priorCause = new Map((ctx.screenGateUnresolved ?? []).map((u) => [u.uri ?? u.mark, u]));
           // — the PROVIDER's own words first. `runPostFlushGateRepair` now returns what each fetch
           // said instead of discarding it, so a row disclosed on this path names the register's error
           // rather than the driver's generic string. `cause_source` says which of the three it is,
@@ -12526,7 +12529,10 @@ async function pipelineInner(job, opts = {}) {
             const fresh = v.uri ? postFlushFailures?.get(v.uri) : null;
             const prior = priorCause.get(key);
             if (fresh) return { mark: v.mark, uri: v.uri ?? null, cause: fresh, cause_source: "provider" };
-            if (prior) return { mark: v.mark, uri: v.uri ?? null, cause: prior, cause_source: "provider-earlier-pass" };
+            // An earlier pass's cause keeps the source it was given: a refusal is the provider's on that earlier
+            // pass, and a fetch that reported success, or a row naming no record, stays what it was.
+            if (prior?.cause) return { mark: v.mark, uri: v.uri ?? null, cause: prior.cause,
+              cause_source: !prior.cause_source || prior.cause_source === "provider" ? "provider-earlier-pass" : prior.cause_source };
             return {
               mark: v.mark, uri: v.uri ?? null,
               cause: v.uri

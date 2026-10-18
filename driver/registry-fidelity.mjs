@@ -105,6 +105,22 @@ let lastLedgerError = null;
 export const ledgerReadError = () => lastLedgerError;
 const noteLedger = (r) => { if (r.error) lastLedgerError = r.error; return r; };
 
+// A RECORD BODY THAT CARRIES NO RECORD IS NOT A RECORD. A body counts as the record only where some field beside
+// its identity and the driver's own plumbing (`_uri`, `_receipt`) holds a value: a mark, a status, an owner, a class
+// list, goods, or the register's raw record. An object holding nothing else (an all-null normalisation, an empty
+// shell) is a placeholder: it satisfies no evidence duty, and it never replaces a body that carries the record.
+const RECORD_IDENTITY_KEYS = new Set(["_uri", "_receipt", "uri", "record_id", "id", "object"]);
+const holdsValue = (v) => v != null && !(typeof v === "string" && !v.trim()) && !(Array.isArray(v) && !v.length)
+  && !(typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length);
+/** Does this body carry the record's own content, rather than only an identity? PURE. */
+export function recordBodyHasContent(body) {
+  const b = Array.isArray(body) ? body[0] : body;
+  if (!b || typeof b !== "object" || Array.isArray(b)) return false;
+  return Object.entries(b).some(([k, v]) => !RECORD_IDENTITY_KEYS.has(k) && holdsValue(v));
+}
+// A later copy wins, unless it is a placeholder and the record already holds one with content.
+const keepRecord = (map, uri, body) => { if (recordBodyHasContent(body) || !recordBodyHasContent(map.get(uri))) map.set(uri, body); };
+
 // Latest fetched body per record URI for the run. Never throws (a missing ledger → empty map).
 //
 // — NO DEFAULT PATH. It used to fall back to `ledgerPath("record")`, the box-global file. Now that
@@ -118,7 +134,7 @@ export function collectRecordBodies(recordLogPath, runPrefix) {
     try { row = JSON.parse(line); } catch { return; }
     if (!runPrefix || !rowMatchesRun(row, runPrefix)) return;
     const body = Array.isArray(row.body) ? row.body[0] : row.body;
-    if (row.target && body && typeof body === "object") map.set(String(row.target).toLowerCase(), body);
+    if (row.target && body && typeof body === "object") keepRecord(map, String(row.target).toLowerCase(), body);
   }));
   return map;
 }
@@ -128,12 +144,17 @@ export function collectRecordBodies(recordLogPath, runPrefix) {
 // provider calls); replaces the "was it on disk?" inference the report's `verified` label rested on.
 export function collectRecordReceipts(recordLogPath, runPrefix) {   // — no default; see above
   const map = new Map();
+  const real = new Set();   // the records whose receipt is from a body carrying the record, which a placeholder's never replaces
   noteLedger(forEachLedgerLine(recordLogPath, (line) => {
     let row;
     try { row = JSON.parse(line); } catch { return; }
     if (!runPrefix || !rowMatchesRun(row, runPrefix)) return;
     if (!row.target || !row.ts) return;
-    map.set(String(row.target).toLowerCase(), { fetched_at: String(row.ts), context: stripGatewayNs(row.sessionKey ?? "") || null });
+    const key = String(row.target).toLowerCase();
+    const full = recordBodyHasContent(row.body);
+    if (!full && real.has(key)) return;
+    if (full) real.add(key);
+    map.set(key, { fetched_at: String(row.ts), context: stripGatewayNs(row.sessionKey ?? "") || null });
   }));
   return map;
 }
@@ -229,7 +250,7 @@ export function assembleRunRecords(runDir, runPrefix,
   const fromRunDir = readRecordArtifacts(runDir);
   const fromLedger = collectRecordBodies(recordLogPath, runPrefix);
   const records = new Map(fromRunDir);
-  for (const [uri, body] of fromLedger) records.set(uri, body);
+  for (const [uri, body] of fromLedger) keepRecord(records, uri, body);
   // WP-receipts: receipts assemble the same way the records do — artifact-embedded ones (inherited run
   // dir) ∪ this-session ledger rows (fresh fetch wins) — so a re-assembled run dir keeps its proof.
   const receipts = new Map();
