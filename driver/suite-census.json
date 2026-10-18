@@ -1233,6 +1233,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-recorded-deadline-survives-a-later-save.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-records-goods-are-served-once.test.mjs": {
           "tests": 6,
           "asserts": 19,
@@ -1386,6 +1392,12 @@
         "a-repair-after-the-cards-keeps-the-record-folded.test.mjs": {
           "tests": 1,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repair-after-the-cards-rebuilds-only-the-cards-it-changed.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
