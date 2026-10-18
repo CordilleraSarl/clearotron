@@ -6546,7 +6546,7 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
  * flag named, the follow-up when a correction missed the findings — on a view of the run's paths that points at
  * the review after the repair, and records what each flag led to beside the first correction's record.
  */
-async function runPostRepairCorrection(ctx, P, run, { rec, items, points, grounds = false, synthesisRef }) {
+async function runPostRepairCorrection(ctx, P, run, { rec, items, points, grounds = false, whole = false, synthesisRef }) {
   const runDir = run.runDir;
   const Pv = { ...P, seniorEyeReview: reviewAfterRepairPath(runDir), correctionsApplied: postRepairCorrectionsPath(runDir), reviewFlags: rec.flags };
   const named = [...new Set(points.filter((x) => x.target.kind !== "none").map((x) => x.target.label))];
@@ -6556,7 +6556,7 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
   const followup = repairFollowup("synthesis:post-repair-corrective", {
     narrative: P.narrative, findings: P.findings, placement: P.placement, rulingsTail,
-    items: named, renumbered: anyRenumbered(items), worklist: correctionsWorklist(rows, { afterRepair: true }), review,
+    items: named, renumbered: anyRenumbered(items), worklist: correctionsWorklist(rows, { afterRepair: true }), review, whole,
   });
   const before = lastAcceptedCall(runDir);
   const pre = snapshotFindingsForCorrections(Pv, runDir);
@@ -15375,7 +15375,7 @@ async function pipelineInner(job, opts = {}) {
             if (!hardened) review.putBack();
             if (review.rec.flags.length) {
               const pass = await runPostRepairCorrection(ctx, P, run, { rec: review.rec, items: review.items, points: review.points,
-                grounds: Boolean(hardened), synthesisRef: { key: synthesisKey, model: synthesisModel, thinking: synthesisThinking } });
+                grounds: Boolean(hardened), whole: review.base?.whole === true, synthesisRef: { key: synthesisKey, model: synthesisModel, thinking: synthesisThinking } });
               // NOTHING REVIEWS THE CORRECTION: the reviewer's stamp takes what it changed as accounted for, and so
               // does the first cycle's receipt, so a resume re-fires neither.
               settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
