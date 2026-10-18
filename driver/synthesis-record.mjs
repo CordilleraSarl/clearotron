@@ -542,10 +542,10 @@ export function rebaseSynthesis(runDir, edit, opts = {}) {
 // record to patch, a narrative sent beside it is an object of the sections the tool describes, every key it carries
 // is a register of that record's own ladder (the one its schema_version gives) or its rows, every key the call
 // carries beside its narrative and that object is one too, its envelope is absent or equal to the stored one wherever
-// it is sent, a corrections marker sent inside it or beside it is one the decode reads, the call's own rows each name
-// a finding the stored record holds, and no ordinal carries two different rows, among the call's own rows or its
-// nested ones. Any other shape is read exactly as it always was, so the model meets the refusal it always met, byte
-// for byte.
+// it is sent, a corrections marker sent inside it or beside it is one the decode reads, a register sent inside it and
+// again beside it carries the same value in both places, the call's own rows each name a finding the stored record
+// holds, and no ordinal carries two different rows, among the call's own rows or its nested ones. Any other shape is
+// read exactly as it always was, so the model meets the refusal it always met, byte for byte.
 
 const isPlainObject = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 // Key-sorted JSON: "the same content" must not turn on the order the model wrote its keys in.
@@ -560,6 +560,8 @@ const isRow = (r) => isPlainObject(r) && Number.isInteger(r.ordinal) && r.ordina
 const decodedMarker = (v) => { try { const x = JSON.parse(v); return isPlainObject(x) ? x : undefined; } catch { return undefined; } };
 // A marker the decode reads: none (null, which the parser reads as no marker), an object, or a string encoding one.
 const isMarker = (v) => v == null || isPlainObject(v) || (typeof v === "string" && decodedMarker(v) !== undefined);
+// A register's value as the transport reads it: a marker string as the object it encodes, anything else as sent.
+const asRead = (k, v) => (k === "corrections" && typeof v === "string" ? (decodedMarker(v) ?? v) : v);
 // A narrative section as the tool describes it: the coverage prose inside `coverage`, the calibration challenges as
 // {challenge, answer} pairs, and every other section as text. `ask_answers` belongs to the record, not here.
 const isSection = ([k, v]) => k === "coverage" ? isPlainObject(v) && Object.keys(v).every((x) => x === "read") && isStr(v.read)
@@ -628,6 +630,11 @@ export function registerPatchOf(stored, call) {
   // A corrections marker, inside the object or beside it, is one the decode reads. Any other marker, a string that
   // does not decode to an object among them, is refused as it always was: on this shape, as main reads the object.
   if (![doc, call].every((o) => isMarker(o.corrections))) return null;
+  // A register sent inside the object and again beside it carries one value in both places. Read as registers, the
+  // copy beside the object would be kept and the other dropped without a word, so the model would never learn that
+  // part of its correction was ignored; read as main reads the call, it meets main's refusal. Compared as read, so the
+  // answer is the same on the call as it arrives and on the call once its markers are decoded.
+  if (Object.keys(doc).some((k) => k !== "findings_patch" && Object.hasOwn(call, k) && !sameValue(asRead(k, doc[k]), asRead(k, call[k])))) return null;
   // The call's own rows each replace a finding the stored record holds, named by a positive whole-number ordinal.
   // A row list that is not one, or a row aimed elsewhere, is read as main reads the call.
   const held = new Set((Array.isArray(stored.findings.findings) ? stored.findings.findings : []).map((f) => f?.ordinal));
@@ -654,9 +661,8 @@ export function registerPatchOf(stored, call) {
  * WHAT IS COUNTED, for the run log only. On a WHOLE call every top-level key beside its narrative and its findings
  * is ignored, as it always was, and counted: `keysIgnored` for keys, which are never named, since a key off the
  * record's ladder is the model's own word; `rowsIgnored` for a top-level `findings_patch`, and `rowsDiffering` for
- * those of its rows the record's own list does not hold as sent. On a register patch, a register sent both
- * inside `findings` and at the top level with different values is named in `overridden`: the top-level copy wins,
- * as it always has on a patch, and the name is a register of the ladder.
+ * those of its rows the record's own list does not hold as sent. A register patch never carries a register in both
+ * places with two values: such a call is read as main reads it (`registerPatchOf`), so `overridden` stays empty.
  */
 export function readSynthesisCall(received, stored) {
   const notes = { decoded: [], overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
@@ -717,8 +723,9 @@ export function mergeSynthesisPatch(stored, patch) {
   //
   // A `findings` OBJECT WITH NO LIST is the other shape (`registerPatchOf`): each register it carries replaces
   // the stored one and the rest are held, and rows sent inside it are applied as rows. Precedence: the stored
-  // record, then those registers, then the call's top-level registers (copied last, below, so the top-level
-  // copy wins); rows replace whole findings by ordinal; narrative sections replace sections.
+  // record, then those registers, then the call's top-level registers (copied last, below); a register sent in both
+  // places carries one value there, so the order chooses nothing. Rows replace whole findings by ordinal; narrative
+  // sections replace sections.
   const asRegisters = registerPatchOf(stored, patch);
   if (asRegisters) Object.assign(out.findings, asRegisters.registers);
   else if (patch?.findings !== undefined) out.findings = patch.findings;
