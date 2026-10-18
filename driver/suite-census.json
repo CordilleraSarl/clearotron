@@ -310,20 +310,20 @@
           "todos": 0
         },
         "a-correction-is-checked-against-the-delivered-record.test.mjs": {
-          "tests": 7,
-          "asserts": 25,
+          "tests": 9,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
         "a-correction-patches-what-it-carries.test.mjs": {
-          "tests": 47,
-          "asserts": 87,
+          "tests": 48,
+          "asserts": 88,
           "skips": 0,
           "todos": 0
         },
         "a-correction-session-is-told-it-is-fresh-and-sends-only-the-change.test.mjs": {
           "tests": 11,
-          "asserts": 37,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -376,8 +376,8 @@
           "todos": 0
         },
         "a-cross-check-waits-for-the-reading-step.test.mjs": {
-          "tests": 5,
-          "asserts": 21,
+          "tests": 6,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -616,8 +616,8 @@
           "todos": 0
         },
         "a-fault-inside-a-card-is-repaired-in-that-card.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
+          "tests": 4,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -822,6 +822,12 @@
         "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-rating-may-cite-the-filings-it-was-handed.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -1445,7 +1451,7 @@
         },
         "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
           "tests": 6,
-          "asserts": 15,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -2183,7 +2189,7 @@
         },
         "anchor-directive.test.mjs": {
           "tests": 4,
-          "asserts": 8,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -3442,8 +3448,8 @@
           "todos": 0
         },
         "every-model-stage-is-handed-the-instruction-files-it-declares.test.mjs": {
-          "tests": 7,
-          "asserts": 13,
+          "tests": 8,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -6197,7 +6203,7 @@
         },
         "the-hit-list-owes-one-fate-per-line.test.mjs": {
           "tests": 16,
-          "asserts": 55,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -6604,8 +6610,8 @@
           "todos": 0
         },
         "the-review-after-a-repair-reads-only-what-the-repair-changed.pipeline.test.mjs": {
-          "tests": 8,
-          "asserts": 73,
+          "tests": 14,
+          "asserts": 110,
           "skips": 0,
           "todos": 0
         },
@@ -6881,7 +6887,7 @@
         },
         "tool-timeout-attribution.test.mjs": {
           "tests": 12,
-          "asserts": 29,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
