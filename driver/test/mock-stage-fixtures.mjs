@@ -45,7 +45,7 @@ import { recordClearanceVariants } from "../clearance-variants-record.mjs";   //
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
 import { recordReportCard } from "../report-card-record.mjs";          // conversion 5 — the fan-out transport
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
-import { recordWithheldFamilies } from "../withheld-families.mjs";       // the reading turn's withheld families — called, not copied
+import { recordWithheldFamilies, recordReleasedFamilies } from "../withheld-families.mjs";       // the reading turn's withheld and released families — called, not copied
 import { recordRegisterDigest, readDigestFacts, joinKey } from "../register-digest-record.mjs";   // conversion 11 — the findings document, called not copied
 import { recordDeclinations } from "../declination-tool.mjs";   // — the mock declines through the REAL transport
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
@@ -1626,6 +1626,14 @@ export function applyStageWrites(msg, argv) {
       const families = Object.entries(JSON.parse(process.env.MOCK_WITHHOLD_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
       const w = recordWithheldFamilies(runDir, { axis: bound, families });
       if (w.refused || w.write_failed) return `mock unit-note: the withheld families were not recorded (${w.refused ?? w.write_failed})`;
+    }
+    // MOCK_RELEASE_FAMILIES — the same turn releasing waiting families, `{ "<qid>": "<reason>" }`, through the
+    // production record. It records the release only: the turn's own ask of a released family is not modelled, so
+    // the family stays unlanded until something else asks it.
+    if (process.env.MOCK_RELEASE_FAMILIES && !resume) {
+      const families = Object.entries(JSON.parse(process.env.MOCK_RELEASE_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
+      const w = recordReleasedFamilies(runDir, { axis: bound, families });
+      if (w.refused || w.write_failed) return `mock unit-note: the released families were not recorded (${w.refused ?? w.write_failed})`;
     }
     return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"})`;
   }

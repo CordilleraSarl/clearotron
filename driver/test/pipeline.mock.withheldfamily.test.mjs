@@ -43,7 +43,7 @@ const JOB = {
 const CONTAINS_FAMILY = "primary-sweep:default:novapulse";   // the contains question on the main element, waiting
 const CASE_FAMILY = "primary-sweep:exact:novapulse";         // the case form of the main element, waiting
 const REASON = "the identical list already shows every mark a buyer would confuse with this one";
-const KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FRAME_DIFF", "MOCK_WITHHOLD_FAMILIES", "MOCK_CODEX_CALL_LOG", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY"];
+const KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FRAME_DIFF", "MOCK_WITHHOLD_FAMILIES", "MOCK_CODEX_CALL_LOG", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_RELEASE_FAMILIES"];
 
 // Each engine's pins, and the other engine's pins UNSET (pinEnv deletes on undefined): the variables are
 // process-global, and a Codex billing mode left behind refuses the next Claude run at its preflight.
@@ -238,6 +238,20 @@ test("a re-sweep that adds nothing still retries the required questions that fai
   assert.deepEqual(r.receipt.deferrals, [], "the request they answer closes");
   const causes = r.events.filter((e) => Array.isArray(e.causes)).flatMap((e) => e.causes);
   assert.ok(!causes.includes("frameDeferred"), `no hold rests on the request: ${JSON.stringify(causes)}`);
+});
+
+test("a re-sweep that adds nothing asks again a family the reading turn released that failed before it, and nothing else", async () => {
+  const failed = (qid) => qid === CONTAINS_FAMILY;
+  const r = await runOn("anthropic-agent", { MOCK_FRAME_DIFF: "duplicate-only", MOCK_RELEASE_FAMILIES: JSON.stringify({ [CONTAINS_FAMILY]: REASON }),
+    MOCK_PLAN_DROP_QID: CONTAINS_FAMILY, MOCK_PLAN_DROP_STICKY: "1" }, { executor: recoveringExecutor(failed) });
+  assert.equal(r.res.ok, true, JSON.stringify(r.res));
+  assert.ok(existsSync(driverDir(r.res.runDir, "released-families-primary-sweep.json")), "guard: the release is on record");
+  assert.ok(r.calls.some((c) => !c.afterComparison && c.qids?.includes(CONTAINS_FAMILY)), `guard: the family failed before the comparison: ${JSON.stringify(r.calls)}`);
+  const resweep = r.calls.filter((c) => c.afterComparison);
+  assert.deepEqual(resweep.map((c) => c.qids), [[CONTAINS_FAMILY]], `the re-sweep's dispatches: ${JSON.stringify(resweep)}`);
+  // The band holds the answer; the plan-execution receipt is not refreshed after this retry, on main as here.
+  const band = JSON.parse(readFileSync(join(r.res.runDir, "register-units", "primary-sweep-band.json"), "utf8"));
+  assert.equal(band.find((b) => b?.qid === CONTAINS_FAMILY)?.state, "enumerated", "and the family's answer is in the band");
 });
 
 test("THE PRODUCTION HOLD, at its default: the crowd a withheld family's repeat would have found no longer holds the verdict; with no judgment on record the same crowd still holds it", async () => {
