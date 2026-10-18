@@ -1,5 +1,39 @@
 # clearotron-driver
 
+## 0.4.1
+
+### Patch Changes
+
+- Fixed: On a crowded register search, the step that writes the findings no longer runs out of time and stops the search without a report.
+- Fixed: A connection library is updated to close a reported weakness in how sign-in details could be sent.
+- Fixed: A clearance started from a connected assistant under the Generic default now appears on Clearances when you choose Generic. Before, it showed only under All companies.
+- Fixed: A crowded clearance on the Codex engine no longer stops before its report.
+- Fixed: A register count or record that could not be fetched no longer shows the program's error message to a client. This covers the knockout workbook's count notes, the knockout report and a clearance finding card. Each shows the line the report already uses for something left open.
+- Fixed: A knockout's completion message and email now give its rating, or the highest rating when several names were screened. They no longer use the term 'worst band'.
+- Fixed: A client whose mark is written in another script, such as Greek, Cyrillic or Chinese, now receives the link to the report. Before, the email arrived without one.
+- Fixed: In rare cases, a report repaired just before delivery listed one conflict as two findings. Its last finding also lost its full write-up. The conflict now stays one finding, and every finding keeps its write-up.
+- Fixed: A clearance no longer stops before its report when findings link to an office's own page instead of the register record.
+- Fixed: A report repaired just before delivery keeps its coverage notes, such as a script that was not searched, in the report and the audit workbook.
+- Fixed: A report's conditions no longer include an internal note about the search's own checking steps.
+- Fixed: A clearance no longer reports a search as missing, or lowers a clear result, when the same search had already run under another entry.
+- Fixed: A search too broad for the register to count is no longer reported as one that could not be run. The report shows it as too large to read, with the register's own figure.
+- Fixed: Reports no longer say a search "did not finish and must be re-run" when a name's non-Latin form was in fact searched. They no longer make a conclusion depend on reviewing records the search had already read in full. Knockout reports now list every territory you ordered.
+- Fixed: The audit workbook no longer warns that the depth rules were applied to nothing on a clearance whose narrative is written in sections. Those rules govern per-finding write-ups, and such a narrative has none.
+- For operators: A stopped run no longer leaves behind a working folder linked to the Codex sign-in; leftovers are removed the next time Codex runs.
+- Fixed: An order for the European Union now also searches each member state's own trade mark register, at no extra search cost. A national registration — in France, for example — is now found by an EU search.
+- Before you upgrade: if you installed Codex yourself, update it to 0.159.0 or newer first. Older copies cannot use GPT-6.1 Sol, and searches on the OpenAI engine would stop at their first step.
+- Fixed: On Signa, a crowded search over several spellings now counts each spelling alone, so a rare spelling is no longer reported as crowded.
+- Fixed: Every clearance uses the same web search whichever engine runs it; the engines' own web search is switched off.
+- Fixed: Every live identical or near-identical mark a register search finds is now placed in the report or set aside with its reason.
+- New: `npx clearotron mcp` starts Clearotron's MCP server for an assistant; with no install it answers from the demo's sample runs, and says so.
+- New: Searches now use the latest models: Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5, and OpenAI's GPT-6.1 Sol and GPT-6 Luna. Installing or updating Clearotron brings the Claude and Codex programs up to versions that can use them.
+- Fixed: The account connector's decision timeline no longer lists the engine's internal bookkeeping events.
+- Fixed: The address `clearotron start` and `clearotron demo` print for a client's assistant now answers as soon as it is printed.
+- Fixed: The account connector now lists a knockout search's review step, and no longer says the search makes two research calls per name.
+- Fixed: The audit workbook's coverage summary names each area in words, not the engine's identifiers.
+- Fixed: Two different names written in Greek, Cyrillic or Chinese characters, or differing only in an accented letter, can now be screened in one knockout. Before, they were refused as duplicates.
+- Fixed: Findings rated medium risk or higher are now checked for the owner's actual use in the same way on every company's risk ladder. That same search looks for the owner's record of oppositions and disputes, so "Likely to enforce" carries a rating instead of "not checked".
+
 ## 0.4.1-beta.6
 
 ### Patch Changes
