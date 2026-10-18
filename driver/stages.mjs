@@ -841,10 +841,16 @@ const readsForReference = (skillReads) =>
 // narrative and the findings record, and the reviewer declares the narrative among its inputs, so the
 // re-check after a correction was told an input it must re-read was "unchanged". Every other stage keeps the
 // line it has.
+//
+// THE REVIEW AFTER A DELIVERY-CHECK REPAIR SAYS WHICH FILES CHANGED. `changedInputs` names them — the narrative,
+// the findings record, or both — worked out from the writer's record before and after the repair, never from
+// file bytes; that review runs only when no other declared input moved, so the rest of its line is true.
 const INPUTS_NOT_CALLED_UNCHANGED = new Set(["synthesis", "narrative-refutation"]);
-const inputsForReference = (paths, { name } = {}) => INPUTS_NOT_CALLED_UNCHANGED.has(name)
-  ? `YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`
-  : `YOUR DECLARED INPUTS, unchanged and on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`;
+const inputsForReference = (paths, { name, changedInputs = null } = {}) => changedInputs?.length
+  ? `YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them. Since this run's last review, the repair has changed ${changedInputs.join(" and ")} where listed above; your other inputs have not changed. Open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`
+  : INPUTS_NOT_CALLED_UNCHANGED.has(name)
+    ? `YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`
+    : `YOUR DECLARED INPUTS, unchanged and on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`;
 
 /**
  * The skill documents a stage's prompt ACTUALLY names for this run.
@@ -919,14 +925,14 @@ export function resolveSkillReads(name, ctx = {}) {
  * blocks, then the input pointers. The instruction stays FIRST IN INTENT — the two reference lines that
  * bracket it are addressed to a session that has nothing, and neither states a task.
  */
-export function composeFollowup(name, ctx, { followup, extra = null, inputs = [], cleared = [] } = {}) {
+export function composeFollowup(name, ctx, { followup, extra = null, inputs = [], cleared = [], changedInputs = null } = {}) {
   const skills = resolveSkillReads(name, ctx);
   return lines(
     skills.length ? readsForReference(skills) : "",
     followup,
     clearedConstraint(cleared),
     extra || "",
-    inputs.length ? inputsForReference(inputs, { name }) : "",
+    inputs.length ? inputsForReference(inputs, { name, changedInputs }) : "",
   );
 }
 
@@ -3594,15 +3600,11 @@ export const STAGES = {
       // which is the one-country product always, and any run whose cut keeps everything.
       profileSelectionDirective(profileSelection),
       `Adversarially refute the narrative ${P.narrative} against the source files: register findings ${P.registerFindings}${registerOnly ? "" : `, common-law ${P.commonLaw}`}, placements ${P.placement} (structured tiers + reasons: ${P.placementModel}), matter frame ${P.matterContext}.`,
-      PLACEMENT_BORDERLINE_NOTE,
+      ...refutationStandingLines({ registerOnly, job }),
       // PR-8: the reviewer verifies register claims against the RECORD, on the record — the same
       // read-only band tools the drafting stages used, every lookup logged to the reading audit.
-      `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them — a floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
-      `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
-      registerOnly ? REGISTER_ONLY_NOTE : "",
       // C4 — the pharma field module is binding on pharma matters; the review verifies it was honoured
-      pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
       // C5 — the generic correction: a registered right can support an injunction without the
       // owner's use (country-dependent); "no use → procedural only / no injunction risk" is a forbidden inference.
       `Flag as a CORRECTION any line reasoning "the owner does not use it → procedural risk only / no injunction exposure": non-use may open a revocation DEFENCE after the grace period, it does not neutralise an enforceable registration today.`,
@@ -3610,7 +3612,7 @@ export const STAGES = {
       `DEMOTION VERIFICATION (per the skill): for every finding at the framework's lowest band, or disposition "distinguished"/"off-field", whose senior right is same-class and in use, verify the three demotion receipts (a registered-scope comparison with the specification quoted — never the senior's trade dress; any dilution counted in that conflict's jurisdiction × goods lane; a use-meets-use read consistent with the finding's own use-check result) and the response-band reconciliation line. A missing/dishonest receipt on the conflict that would otherwise drive the verdict is BLOCKING; elsewhere a FLAGGED CORRECTION. Where the receipts exist, the demotion STANDS — audit the evidence, never re-decide the band.`,
       // A3/A6 — verify the machine's own open items and the customer's explicit asks were HONOURED,
       // not narrated away: an unaddressed deferral/flag or an unanswered ask is a flagged correction.
-      `Also verify against ${P.skepticFlags} and ${P.frameReopenReceipt} (JSON "deferrals"): every skeptic flag and every reopen deferral must be either visible as a coverage[]/narrative open item or explicitly reasoned immaterial — one that appears in neither place is a FLAGGED CORRECTION. Files absent ⇒ skip.`,
+      refutationOpenItemsLine(P),
       // RETIRED. This ordered the reviewer to "verify the \"## Answers to your
       // instructions\" section answers EACH of these verbatim intake asks with a labelled line … A missing
       // or evasive answer is a FLAGGED CORRECTION." Every clause of it was true when it was written and
@@ -3646,10 +3648,7 @@ export const STAGES = {
       // lettered flags were invisible for exactly that reason. The kind VOCABULARY survives verbatim
       // below, because the model still declares it from its own legal read; what goes is the seat
       // formatting it into prose for the driver to parse back out.
-      `RECORD YOUR REVIEW WITH \`record_narrative_refutation\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders the review from what you send, so a flag the corrective ladder cannot parse cannot be written. You hold no Write or Edit tool for it and nothing you write by hand is read.`,
-      `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about, omitted for a flag about the document rather than a finding). You do NOT number the flags: render order is the numbering.`,
-      `TYPE EACH CORRECTION: \`kind\` is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest), fact (a factual defect — record values, owners, statuses, dates, grounding), rating (a band/rating you challenge), narrative (prose, structure or voice of the narrative). DECLARE the kind from what the correction is about, never from how severe it is.`,
-      `A BLOCKING verdict REQUIRES at least one flag. A refusal to sign that names nothing is refused by the call itself, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.`,
+      ...REFUTATION_RECORDING_LINES,
     ),
   },
 
@@ -4769,3 +4768,24 @@ export const BAND_READING_CONTRACT_AFTER_PLACEMENT = BAND_READING_CONTRACT.repla
 // The register reading step's order on the waiting families. One constant, because the cross-check
 // follow-up reads it word for word (repair-composers.mjs); declared last so no line above it moves.
 export const DECIDE_WAITING_FAMILIES = "WHERE THE PLAN ABOVE HAS WAITING FAMILIES, DECIDE EVERY ONE. Release each one you ask with `record_released_families`: its qids, as listed above, and why looking wider would change what you tell the client. Then call register_execute_plan again with those qids; it runs only what you released. Record each one you do not ask with `record_withheld_families`: its qids and why it was not asked. A family you leave unasked was never searched, so it is recorded withheld-by-judgment; one nobody decided holds up delivery. The reasons go into the audit workbook, not the report.";
+
+// ── THE REVIEWER'S STANDING LINES, ONE TEXT FOR BOTH OF ITS REVIEWS ───────────────────────────────────
+//
+// The full review and the review after a delivery-check repair read the same standing tools and notes, the
+// same check on open items and the same recording lines. Each lives here once, so the two messages cannot
+// drift apart; the full review's message is byte-identical to what it was before they moved.
+export const refutationStandingLines = ({ registerOnly = false, job = {} } = {}) => [
+  PLACEMENT_BORDERLINE_NOTE,
+  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them — a floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+  `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
+  registerOnly ? REGISTER_ONLY_NOTE : "",
+  pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
+];
+export const refutationOpenItemsLine = (P) =>
+  `Also verify against ${P.skepticFlags} and ${P.frameReopenReceipt} (JSON "deferrals"): every skeptic flag and every reopen deferral must be either visible as a coverage[]/narrative open item or explicitly reasoned immaterial — one that appears in neither place is a FLAGGED CORRECTION. Files absent ⇒ skip.`;
+export const REFUTATION_RECORDING_LINES = Object.freeze([
+  `RECORD YOUR REVIEW WITH \`record_narrative_refutation\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders the review from what you send, so a flag the corrective ladder cannot parse cannot be written. You hold no Write or Edit tool for it and nothing you write by hand is read.`,
+  `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about, omitted for a flag about the document rather than a finding). You do NOT number the flags: render order is the numbering.`,
+  `TYPE EACH CORRECTION: \`kind\` is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest), fact (a factual defect — record values, owners, statuses, dates, grounding), rating (a band/rating you challenge), narrative (prose, structure or voice of the narrative). DECLARE the kind from what the correction is about, never from how severe it is.`,
+  `A BLOCKING verdict REQUIRES at least one flag. A refusal to sign that names nothing is refused by the call itself, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.`,
+]);

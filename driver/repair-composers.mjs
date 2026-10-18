@@ -53,6 +53,7 @@ import { basename } from "node:path";
 // this file would trade locality for nothing: what was missing was never their location, it was that
 // nothing enumerated them, so the guard could not walk them. They are imported and registered.
 import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES } from "./stages.mjs";
+import { refutationStandingLines, refutationOpenItemsLine, REFUTATION_RECORDING_LINES } from "./stages.mjs";
 import { buildReconcileFollowup } from "./recall-reconciliation.mjs";
 import { buildFlushFollowup } from "./digest-queue.mjs";
 
@@ -87,6 +88,107 @@ const SAMPLE_PATHS = Object.freeze({
   commonLawHalf: (h) => `common-law-${h}.md`, gridSpecHalf: (h) => `grid-${h}.json`,
   commonLawGridHalf: (h) => `grid-ledger-${h}.json`, registerUnit: (a) => `units/${a}.md`,
 });
+
+// ── THE CORRECTION'S RULES AND STEPS, ONE TEXT FOR BOTH CORRECTIONS ──────────────────────────────────
+//
+// The first correction after the full review and the one correction after the review of a delivery-check
+// repair carry the same rules and steps, from the narrowing rule through the placement rulings. They live
+// here once, so the two corrections cannot drift apart; the first correction's text is byte-identical to
+// what it was before they moved.
+const KNOCK_ON = `If applying a flag genuinely REQUIRES changing a finding outside that list — a knock-on the reviewer did not see — make the change and say which one and why in the "corrections" note. A silent edit outside the scope is the one thing this instruction forbids; a reasoned one is not.`;
+// ── THE REVIEW AFTER A REPAIR: HOW ITS LIST IS RENDERED FROM VALUES ─────────────────────────────────────
+//
+// `repair-scope.mjs listForReview` computes the changes and the statements resting on them; these render each
+// one in the list's own words. A value is shown as written: text as text, anything else as JSON, an absent
+// value as null.
+const shown = (v) => (v == null ? "null" : typeof v === "string" ? v.replace(/\s+/g, " ").trim() : JSON.stringify(v));
+const lineState = (row) => (row ? `${row.state ?? ""}${row.note ? `: ${String(row.note).replace(/\s+/g, " ").trim()}` : ""}` : "null");
+const findingHead = (c) => (c.delivered != null ? `- Finding ${c.ordinal} (finding ${c.delivered} in findings.json):` : `- Finding ${c.ordinal}:`);
+const changeLine = (c) => {
+  if (c.kind === "finding") {
+    if (c.change === "added") return `${findingHead(c)} added by the repair: ${shown(c.after)}. It cites: ${shown(c.records)}.`;
+    if (c.change === "removed") return `${findingHead(c)} removed by the repair. It read: ${shown(c.before)}.`;
+    return `${findingHead(c)} ${c.fields.join(", ")} changed. Before: ${shown(c.before)}. After: ${shown(c.after)}. It cites: ${shown(c.records)}.`;
+  }
+  if (c.kind === "coverage") {
+    if (c.change === "added") return `- ${c.label}: added by the repair: ${lineState(c.after)}.`;
+    if (c.change === "removed") return `- ${c.label}: removed by the repair. It read: ${lineState(c.before)}.`;
+    return `- ${c.label}: before: ${lineState(c.before)}. After: ${lineState(c.after)}.`;
+  }
+  if (c.kind === "section") return `- the narrative's "${c.title}" section. Before: ${c.before} After: ${c.after}`;
+  return `- ${c.label}: before: ${shown(c.before)}. After: ${shown(c.after)}.`;
+};
+const restingLine = (r) => {
+  if (r.kind === "section") return `- the narrative's "${r.title}" section: ${r.text}`;
+  if (r.kind === "coverage-judgment") return `- the coverage judgment: ${shown(r.value)}`;
+  return `- ${r.label}, which names finding ${(r.ordinals ?? []).join(", ")}: ${r.text}`;
+};
+
+const correctiveRules = ({ narrative, findings, placement, rulingsTail }) => [
+  // ── — THE PASS THAT WRITES THE DEFECT ──────────────────────────────────
+  //
+  // Five verdict refusals in seven days, all one shape: a coverage or search-completion claim
+  // contradicted by the run's own records. FOUR of the five were introduced or worsened BY THIS
+  // PASS. one reviewer names it — "the REPLACEMENT for the frame-reopen sentence is now an
+  // overconfident global negative". another names it — "the corrective pass deleted the
+  // evidence and left the claim standing in a stronger and now factually wrong form".
+  // a third run's offending sentence entered at the corrective rewrite, measured at the
+  // sentence level: that pass removed one coverage assertion and wrote two, one of which refused
+  // the run.
+  //
+  // NOTHING ABOVE FORBADE ANY OF IT. The instruction constrains WHICH passages may move — "every
+  // passage the flags do not name stays byte-identical", plus the scope block below when the
+  // reviewer declared ordinals. It says nothing about what the REPLACEMENT may assert, and every
+  // one of these defects was an in-scope rewrite that broadened. The lead move — "correct the
+  // statement to what the evidence supports" — is itself a licence to rewrite, which is where the
+  // broadening happens.
+  //
+  // AND THE RESOLUTION WITH THE LINE ABOVE IS STATED, BECAUSE THE TWO LOOK LIKE THEY FIGHT.
+  // "Never softened" forbids adding hedges; "may never broaden" requires claiming less. A model
+  // handed both without the distinction will pick one. Narrowing is not hedging: stating a
+  // smaller claim, or removing the claim, is a correction; keeping the same claim and wrapping it
+  // in "may" or "appears to" is the hedge. Said in the text, not just here.
+  //
+  // NO DETECTOR, AND THAT IS DELIBERATE. The lexical gate this issue also proposed was measured
+  // over 32 delivered narratives and withdrawn: 31 of 32 fired, 141 sentences, and nine of twelve
+  // before/after run-pairs read identically, because a clearance narrative's job IS to state what
+  // was searched and what came back — the legitimate sentence and the defective one have the same
+  // shape and differ only in truth. The typed half of this class IS enforced structurally, on the
+  // corrective pair, by `evidenceClaimViolations` (pipeline.mjs ~10973) — but it reads
+  // `findings.json` meters, and a narrative sentence with no findings-side counterpart is invisible
+  // to it. That prose gap is conversion-era work, not an instruction. This is the instruction.
+  `A REPAIR MAY NARROW A CLAIM AND MAY NEVER BROADEN ONE. If a flagged statement is wrong because it claims too much, the correction states LESS: strike the claim, or replace it with the smaller claim the evidence actually carries. Never restate the same claim in different words, and never replace a specific sentence with a general one. NARROWING IS NOT HEDGING and the rule above still holds — claiming less is a correction; keeping the claim and wrapping it in "may", "appears to" or "broadly" is the hedge that is forbidden.`,
+  `THE COVERAGE ACCOUNT IS NOT YOURS TO REOPEN HERE. Do not introduce any statement about what was searched, counted, screened, finished, or came back empty that is not already in ${narrative}. That account was settled when you wrote it against the evidence in front of you; this pass has the reviewer's flags and not that evidence, so it is not in a position to widen it. Deleting a false coverage sentence is a correction. Replacing it with a different coverage sentence is not — strike it and say nothing in its place.`,
+  `IF YOU REMOVE THE SUPPORT FOR A CLAIM, THE CLAIM GOES WITH IT. Deleting the evidence and leaving the sentence standing does not make it safer, it makes it unsupported and therefore stronger than the record allows. A run was refused for exactly this.`,
+  `1. Correct the flagged narrative sections — send back ONLY the sections a flag names, and every section the flags do not name is left out and comes back byte-identical;`,
+  `2. mirror every correction into the finding objects the flags name (owner names, levels/composites, meters). A finding the review KILLS is not deleted: keep its object, set "disposition": "withdrawn" and add "withdrawn_reason": "<the review flag that killed it>". Add a "corrections": {"applied": true, "note": "<one line per flagged entity: corrected / withdrawn / no-change-because-…>"} marker inside the call's \`findings\` object.`,
+  // THE LINES THAT ARE NOT A FINDING. A coverage note, an action and the mark assessment carry no
+  // ordinal, so step 2 cannot reach them, and nothing said where a rewrite of one goes: seven such
+  // flags survived one clearance on the test box, each recorded as naming nothing (2026-09-11). The
+  // channel already existed — a PATCH copies a top-level register of the findings document through
+  // — and this names it. The coverage-account rule above forbids NEW claims about what was searched;
+  // rewording a note keeps its claims, and the text says so, or the seat reads the two as a conflict
+  // and does nothing, which is what it did.
+  `3. A flag about a line the reader sees that is NOT a finding — a coverage row's "note", an action's "text", or the mark assessment's "distinctiveness" or "connotation" — is applied in the same PATCH, inside the call's \`findings\` object beside the "corrections" marker: send the complete \`coverage\` array (every row, the unflagged ones exactly as you last sent them), the complete \`actions\` array, or the complete \`mark_assessment\` object, with the flagged line rewritten. A row left out of the array is a row deleted, so send every row. Rewording a coverage note is NOT reopening the coverage account: keep its area, its state and every fact it states, and change only how it says them. A flagged line you leave as written is named in the "corrections" note with the reason, as the flag names it — for example: the coverage line for "<area>": no-change-because …`,
+  // ── CONVERTED. `editRepairTail` stood here and ordered targeted Edits of
+  // both files. The seat holds no Edit for either any more — but the ECONOMICS that argued for a
+  // targeted edit are preserved rather than lost, which is why the call has a patch shape at all:
+  // measured full re-emission on four delivered clearances at 707.7 / 406.2 / 746.3 / 293.3 s
+  // on the serial critical path, and a conversion that answered it with "re-send everything
+  // through a tool" would have paid that cost back in a different currency. The driver holds the
+  // accepted values; the seat sends what changed.
+  `Send it all in ONE \`record_synthesis\` PATCH call, sending only the change: \`narrative\` carrying only the sections you corrected; \`findings_patch\` carrying the complete corrected finding object(s), each with the \`ordinal\` it replaces; and \`findings\` carrying the "corrections" marker and any register from step 3, complete, and never a \`findings[]\` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file to write or edit and nothing you write by hand is read.`,
+  // 2026-07-04 (the VENZY corrective thrash): three attempts died inventing three different keys
+  // while trying to EXPRESS a hold. The contract is closed and every correction is expressible
+  // inside it — say so.
+  `THE FINDINGS CONTRACT IS CLOSED — MINIMAL CHANGE ONLY: start from the finding objects as you last sent them and change the smallest set of existing fields the flags require; NEVER invent a key, a state, or an enum value (any unknown key fails the file and, repeated, fails the WHOLE RUN). Every correction the reviewer can ask for is expressible with existing fields: an unsourced/confabulated attribution ⇒ that finding gets "disposition":"withdrawn" + "withdrawn_reason", OR its owner/prose is re-attributed to what the sources actually support — an identity that needs the applicant's confirmation is stated in the finding's prose/impact text, NEVER as a new field or note-type; use_check.quality is EXACTLY one of owner-site | independent | register-mirror or omitted; context_notes entries are EXACTLY {"type","mark","owner","context"}. RE-TYPING A DISPOSITION CARRIES ITS FIELDS WITH IT — this is the one case where a minimal edit MUST add a key, and these are the only keys it may add: re-typing a finding TO "off-field" also sets "off_field_ground" (EXACTLY "different-field" — only where that finding's own goods_proximity meter reads "low" — or "no-material-risk"), and re-typing AWAY from "off-field" REMOVES it; any finding that is not "withdrawn" keeps a non-empty "legal_position" and "practical_position", so a re-type that lands on a finding missing either must write both. Nothing else may be added.`,
+  rulingsTail ? lines(
+    `PLACEMENT RULINGS TAIL (verbatim from ${placement}, provided AS DATA — do NOT re-read the placement file; where a flagged correction touches a coverage disposition, a coverage[] row, or a placement call, adjudicate it against these rulings — adopt each ruling or counter-reason it, never silently drop one):`,
+    "```markdown",
+    rulingsTail,
+    "```",
+  ) : "",
+];
 
 export const REPAIR_COMPOSERS = [
   {
@@ -168,7 +270,7 @@ export const REPAIR_COMPOSERS = [
         `SCOPE — THE REVIEWER DECLARED WHICH FINDINGS ITS FLAGS ARE ABOUT, AND THIS IS THE COMPLETE LIST: ${
           scope.ordinals.length ? scope.ordinals.map((o) => `#${o}`).join(", ") : "(none — every flag is about the document, not a finding)"}.`,
         `Change ONLY those finding objects and ONLY the narrative passages that discuss them. EVERY OTHER FINDING OBJECT IN ${findings} MUST COME BACK BYTE-IDENTICAL — do not re-derive it, do not re-word it, do not re-order its keys. The driver compares them and records anything that moved.`,
-        `If applying a flag genuinely REQUIRES changing a finding outside that list — a knock-on the reviewer did not see — make the change and say which one and why in the "corrections" note. A silent edit outside the scope is the one thing this instruction forbids; a reasoned one is not.`,
+        KNOCK_ON,
       ) : "";
       return lines(
         // — RULING 2026-08-09: "add caveat" is DELETED, not softened. A repair has exactly
@@ -176,69 +278,7 @@ export const REPAIR_COMPOSERS = [
         // exactly as it governs a first draft, and this instruction was the one place the engine invited
         // a hedge into a deliverable. It fired on 4 of 4 delivered clearances in the 2026-08-09 round.
         `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. The independent refutation flagged the corrections below. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, remove the sentence, or verify-flag for re-check) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
-        // ── — THE PASS THAT WRITES THE DEFECT ──────────────────────────────────
-        //
-        // Five verdict refusals in seven days, all one shape: a coverage or search-completion claim
-        // contradicted by the run's own records. FOUR of the five were introduced or worsened BY THIS
-        // PASS. one reviewer names it — "the REPLACEMENT for the frame-reopen sentence is now an
-        // overconfident global negative". another names it — "the corrective pass deleted the
-        // evidence and left the claim standing in a stronger and now factually wrong form".
-        // a third run's offending sentence entered at the corrective rewrite, measured at the
-        // sentence level: that pass removed one coverage assertion and wrote two, one of which refused
-        // the run.
-        //
-        // NOTHING ABOVE FORBADE ANY OF IT. The instruction constrains WHICH passages may move — "every
-        // passage the flags do not name stays byte-identical", plus the scope block below when the
-        // reviewer declared ordinals. It says nothing about what the REPLACEMENT may assert, and every
-        // one of these defects was an in-scope rewrite that broadened. The lead move — "correct the
-        // statement to what the evidence supports" — is itself a licence to rewrite, which is where the
-        // broadening happens.
-        //
-        // AND THE RESOLUTION WITH THE LINE ABOVE IS STATED, BECAUSE THE TWO LOOK LIKE THEY FIGHT.
-        // "Never softened" forbids adding hedges; "may never broaden" requires claiming less. A model
-        // handed both without the distinction will pick one. Narrowing is not hedging: stating a
-        // smaller claim, or removing the claim, is a correction; keeping the same claim and wrapping it
-        // in "may" or "appears to" is the hedge. Said in the text, not just here.
-        //
-        // NO DETECTOR, AND THAT IS DELIBERATE. The lexical gate this issue also proposed was measured
-        // over 32 delivered narratives and withdrawn: 31 of 32 fired, 141 sentences, and nine of twelve
-        // before/after run-pairs read identically, because a clearance narrative's job IS to state what
-        // was searched and what came back — the legitimate sentence and the defective one have the same
-        // shape and differ only in truth. The typed half of this class IS enforced structurally, on the
-        // corrective pair, by `evidenceClaimViolations` (pipeline.mjs ~10973) — but it reads
-        // `findings.json` meters, and a narrative sentence with no findings-side counterpart is invisible
-        // to it. That prose gap is conversion-era work, not an instruction. This is the instruction.
-        `A REPAIR MAY NARROW A CLAIM AND MAY NEVER BROADEN ONE. If a flagged statement is wrong because it claims too much, the correction states LESS: strike the claim, or replace it with the smaller claim the evidence actually carries. Never restate the same claim in different words, and never replace a specific sentence with a general one. NARROWING IS NOT HEDGING and the rule above still holds — claiming less is a correction; keeping the claim and wrapping it in "may", "appears to" or "broadly" is the hedge that is forbidden.`,
-        `THE COVERAGE ACCOUNT IS NOT YOURS TO REOPEN HERE. Do not introduce any statement about what was searched, counted, screened, finished, or came back empty that is not already in ${narrative}. That account was settled when you wrote it against the evidence in front of you; this pass has the reviewer's flags and not that evidence, so it is not in a position to widen it. Deleting a false coverage sentence is a correction. Replacing it with a different coverage sentence is not — strike it and say nothing in its place.`,
-        `IF YOU REMOVE THE SUPPORT FOR A CLAIM, THE CLAIM GOES WITH IT. Deleting the evidence and leaving the sentence standing does not make it safer, it makes it unsupported and therefore stronger than the record allows. A run was refused for exactly this.`,
-        `1. Correct the flagged narrative sections — send back ONLY the sections a flag names, and every section the flags do not name is left out and comes back byte-identical;`,
-        `2. mirror every correction into the finding objects the flags name (owner names, levels/composites, meters). A finding the review KILLS is not deleted: keep its object, set "disposition": "withdrawn" and add "withdrawn_reason": "<the review flag that killed it>". Add a "corrections": {"applied": true, "note": "<one line per flagged entity: corrected / withdrawn / no-change-because-…>"} marker inside the call's \`findings\` object.`,
-        // THE LINES THAT ARE NOT A FINDING. A coverage note, an action and the mark assessment carry no
-        // ordinal, so step 2 cannot reach them, and nothing said where a rewrite of one goes: seven such
-        // flags survived one clearance on the test box, each recorded as naming nothing (2026-09-11). The
-        // channel already existed — a PATCH copies a top-level register of the findings document through
-        // — and this names it. The coverage-account rule above forbids NEW claims about what was searched;
-        // rewording a note keeps its claims, and the text says so, or the seat reads the two as a conflict
-        // and does nothing, which is what it did.
-        `3. A flag about a line the reader sees that is NOT a finding — a coverage row's "note", an action's "text", or the mark assessment's "distinctiveness" or "connotation" — is applied in the same PATCH, inside the call's \`findings\` object beside the "corrections" marker: send the complete \`coverage\` array (every row, the unflagged ones exactly as you last sent them), the complete \`actions\` array, or the complete \`mark_assessment\` object, with the flagged line rewritten. A row left out of the array is a row deleted, so send every row. Rewording a coverage note is NOT reopening the coverage account: keep its area, its state and every fact it states, and change only how it says them. A flagged line you leave as written is named in the "corrections" note with the reason, as the flag names it — for example: the coverage line for "<area>": no-change-because …`,
-        // ── CONVERTED. `editRepairTail` stood here and ordered targeted Edits of
-        // both files. The seat holds no Edit for either any more — but the ECONOMICS that argued for a
-        // targeted edit are preserved rather than lost, which is why the call has a patch shape at all:
-        // measured full re-emission on four delivered clearances at 707.7 / 406.2 / 746.3 / 293.3 s
-        // on the serial critical path, and a conversion that answered it with "re-send everything
-        // through a tool" would have paid that cost back in a different currency. The driver holds the
-        // accepted values; the seat sends what changed.
-        `Send it all in ONE \`record_synthesis\` PATCH call, sending only the change: \`narrative\` carrying only the sections you corrected; \`findings_patch\` carrying the complete corrected finding object(s), each with the \`ordinal\` it replaces; and \`findings\` carrying the "corrections" marker and any register from step 3, complete, and never a \`findings[]\` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file to write or edit and nothing you write by hand is read.`,
-        // 2026-07-04 (the VENZY corrective thrash): three attempts died inventing three different keys
-        // while trying to EXPRESS a hold. The contract is closed and every correction is expressible
-        // inside it — say so.
-        `THE FINDINGS CONTRACT IS CLOSED — MINIMAL CHANGE ONLY: start from the finding objects as you last sent them and change the smallest set of existing fields the flags require; NEVER invent a key, a state, or an enum value (any unknown key fails the file and, repeated, fails the WHOLE RUN). Every correction the reviewer can ask for is expressible with existing fields: an unsourced/confabulated attribution ⇒ that finding gets "disposition":"withdrawn" + "withdrawn_reason", OR its owner/prose is re-attributed to what the sources actually support — an identity that needs the applicant's confirmation is stated in the finding's prose/impact text, NEVER as a new field or note-type; use_check.quality is EXACTLY one of owner-site | independent | register-mirror or omitted; context_notes entries are EXACTLY {"type","mark","owner","context"}. RE-TYPING A DISPOSITION CARRIES ITS FIELDS WITH IT — this is the one case where a minimal edit MUST add a key, and these are the only keys it may add: re-typing a finding TO "off-field" also sets "off_field_ground" (EXACTLY "different-field" — only where that finding's own goods_proximity meter reads "low" — or "no-material-risk"), and re-typing AWAY from "off-field" REMOVES it; any finding that is not "withdrawn" keeps a non-empty "legal_position" and "practical_position", so a re-type that lands on a finding missing either must write both. Nothing else may be added.`,
-        rulingsTail ? lines(
-          `PLACEMENT RULINGS TAIL (verbatim from ${placement}, provided AS DATA — do NOT re-read the placement file; where a flagged correction touches a coverage disposition, a coverage[] row, or a placement call, adjudicate it against these rulings — adopt each ruling or counter-reason it, never silently drop one):`,
-          "```markdown",
-          rulingsTail,
-          "```",
-        ) : "",
+        ...correctiveRules({ narrative, findings, placement, rulingsTail }),
         scopeBlock ? lines(scopeBlock, ``) : "",
         worklist ? lines(worklist, ``) : "",
         `The reviewer's flags, verbatim:`,
@@ -258,6 +298,40 @@ export const REPAIR_COMPOSERS = [
         args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
           rulingsTail: "| axis | ruling |", scope: { scoped: true, ordinals: [1, 4] },
           worklist: "- #1 correct the owner", review: "the flags, verbatim" } },
+    ],
+  },
+  {
+    trigger: "post-repair-corrective",
+    stage: "synthesis",
+    key: "synthesis:post-repair-corrective",
+    // THE ONE CORRECTION AFTER THE REVIEW OF A DELIVERY-CHECK REPAIR. Its opening says where the flags come from
+    // and that nothing reviews this pass; it offers no "verify-flag for re-check", because no re-check follows.
+    // Its items line replaces the first correction's scope block, a changed coverage line may be narrowed, and a
+    // flag that names no item is applied to the one it is about. The rules and steps are the first correction's,
+    // from one shared text, and the flag list closes on the line for a pass nothing reviews.
+    compose: ({ narrative, findings, placement, rulingsTail, items, renumbered, worklist, review }) => lines(
+      `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. After the delivery check, that record was repaired, and an independent review then read only what the repair changed and what rests on it. It flagged the corrections below, and nothing reviews this pass again. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, or remove the sentence) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
+      // An empty list reuses the first correction's own words for a review whose flags name no finding.
+      `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : "(none — every flag is about the document, not a finding)"}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
+      `For a coverage line the repair changed, a flag may ask for its state or its facts to change, not only its words. Make that change only where the line then claims less than it does now, as the narrowing rule below requires. This is the one exception to the rule below that the coverage account is not yours to reopen; every other coverage line keeps its area, its state and every fact it states.`,
+      `A flag that names no item is applied to the item it is about; name that item in the "corrections" note. If you cannot tell what the flag is about, change nothing for it and say so in the note.`,
+      renumbered ? `Where a flag's own words give a finding a different number from its [on: …], use the [on: …] number. It is the number in your record.` : "",
+      KNOCK_ON,
+      ...correctiveRules({ narrative, findings, placement, rulingsTail }),
+      worklist ? lines(worklist, ``) : "",
+      `The reviewer's flags, verbatim:`,
+      ``,
+      ``,
+      review,
+    ),
+    samples: [
+      { name: "flags on a coverage line and a finding, no placement tail", tail: "tool",
+        args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md", rulingsTail: "",
+          items: ["finding 2", "the coverage line for \"register / EU\""], renumbered: false,
+          worklist: "THE FLAGS, TYPED (2):", review: "the flags, verbatim" } },
+      { name: "a renumbered finding, a placement tail, and no item named", tail: "tool",
+        args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md", rulingsTail: "| axis | ruling |",
+          items: [], renumbered: true, worklist: "", review: "the flags, verbatim" } },
     ],
   },
   {
@@ -310,9 +384,62 @@ export const REPAIR_COMPOSERS = [
           correctionsScope: { scoped: true, named: [1], moved: [4] },
           appliedTable: "| flag | outcome |", restoredTable: "", evidenceTable: "| finding | meter | what moved |", planAuditCarry: "plan-audit carry" } },
     ],
-    singleMember: "narrative-refutation has exactly one bespoke composer. Recorded so the census reds if "
-      + "the stage gains a second without this note being read — a guard proven at n=1 has proven "
-      + "nothing about ordering or interaction between two composers on one stage.",
+  },
+  {
+    trigger: "post-repair-review",
+    stage: "narrative-refutation",
+    key: "narrative-refutation:post-repair-review",
+    // THE REVIEW AFTER A DELIVERY-CHECK REPAIR. The first review stays whole; this one reads what the repair
+    // changed and every statement that rests on it, with the evidence to check both, and its flags go to one
+    // correction. VALUES IN: the list `repair-scope.mjs listForReview` computed from the writer's record before
+    // and after the repair. The standing tools and notes, the open-items check and the recording lines are the
+    // full review's own, read from one shared text in stages.mjs.
+    compose: ({ findings, changes, resting, renumbered, coverageChanged, evidence, registerOnly = false, job = {}, skepticFlags, frameReopenReceipt }) => lines(
+      `This is a review of a repair, not a full review. Earlier in this run the narrative was reviewed in full, and the corrections that review raised went to the writer. The delivery check then found a fault, and the writer repaired the record.`,
+      `Review only what that repair changed, listed below under WHAT THE REPAIR CHANGED, and any statement elsewhere in the narrative or in the findings record, ${findings}, that rests on a changed item. Such a statement no longer holds if the change leaves it untrue, without its support, or incomplete.`,
+      `Everything else stands as this run's earlier reviews left it. Do not flag a statement that rests on no changed item.`,
+      `From your own manual, skills/narrative-refutation/SKILL.md, use only the checks that bear on these items. Its whole-report checks, its length target for a review and its expectation that a clean review is rare belong to the full review, not to this one. A clean result is a normal outcome here.`,
+      `Check each changed item against the evidence named for it, and each statement that rests on a changed item against the new values.`,
+      `Say what each flag is about. For a finding, put its number from the list below in \`on\`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for "<area>".`,
+      renumbered ? `Where a finding below shows two numbers, put the first in \`on\`. The second is its number in findings.json.` : "",
+      `Your verdict is about the repair. CLEAR: what changed is sound, and every statement that rests on a changed item still holds. CONDITIONAL: a flag needs a correction. BLOCKING: the change makes the report unsafe to sign, under your manual's verdict logic.`,
+      `Your flags go to one correction pass by the writer, and nothing reviews that pass again. Make each fix exact.`,
+      ...refutationStandingLines({ registerOnly, job }),
+      // A repair that rewrites coverage lines can drop an open item; when coverage is untouched, the full review
+      // already checked this.
+      coverageChanged ? refutationOpenItemsLine({ skepticFlags, frameReopenReceipt }) : "",
+      ...REFUTATION_RECORDING_LINES,
+      `WHAT THE REPAIR CHANGED. The driver worked this out from the writer's saved record before and after the repair. A value saved again unchanged is not listed.`,
+      ...(changes ?? []).map(changeLine),
+      resting?.length ? `WHAT RESTS ON THESE CHANGES, as it reads now. Check that each still holds:` : "",
+      ...(resting ?? []).map(restingLine),
+      `WHERE THE EVIDENCE IS:`,
+      evidence?.coverage ? `- For a coverage line: the run's coverage ledger, register-coverage-ledger.json, and the plan-execution check below.` : "",
+      evidence?.finding ? `- For a finding: the records it cites, through band_record, and its row in placements.json.` : "",
+      `- For a narrative section: the source files in your declared inputs, below.`,
+    ),
+    // NO REPAIR TAIL, DECLARED: like the re-check, this orders the reviewer's own review, recorded through its
+    // own tool, which the recording lines name.
+    samples: [
+      { name: "a repair that changed coverage lines only", tail: "none",
+        args: { findings: "findings.json", skepticFlags: "skeptic-flags.json", frameReopenReceipt: "frame-reopen.json",
+          changes: [{ kind: "coverage", change: "changed", label: "the coverage line for \"register / EU\"",
+            before: { state: "confirmed-clean", note: "searched in full" }, after: { state: "coverage-limited", note: "one class was not read" } },
+            { kind: "coverage", change: "added", label: "the coverage line for \"register / UK\"", after: { state: "not-searched", note: "outside the plan" } }],
+          resting: [{ kind: "section", title: "Verdict", text: "One conflict needs a decision." }, { kind: "coverage-judgment", value: { sufficient: true, reason: "the plan ran" } }],
+          renumbered: false, coverageChanged: true, evidence: { coverage: true, finding: false } } },
+      { name: "a prose section and a finding the fold renumbered", tail: "none",
+        args: { findings: "findings.json", skepticFlags: "skeptic-flags.json", frameReopenReceipt: "frame-reopen.json",
+          changes: [{ kind: "finding", change: "changed", ordinal: 7, delivered: 6, fields: ["band"], before: { band: "Moderate" }, after: { band: "Serious" },
+            records: { source_type: "register-vendor", resolved_link: "https://example.invalid/mark/1" } },
+            { kind: "section", change: "changed", title: "The spine", before: "The spine was the coined element.", after: "The spine is the coined element." }],
+          resting: [{ kind: "action", label: "the action \"a1\"", ordinals: [7], text: "Ask counsel about finding 7." }],
+          renumbered: true, coverageChanged: false, evidence: { coverage: false, finding: true } } },
+      { name: "a register-only run whose repair removed a finding", tail: "none",
+        args: { findings: "findings.json", registerOnly: true, skepticFlags: "skeptic-flags.json", frameReopenReceipt: "frame-reopen.json",
+          changes: [{ kind: "finding", change: "removed", ordinal: 3, delivered: null, before: { ordinal: 3, mark: "NOVA" } }],
+          resting: [], renumbered: false, coverageChanged: false, evidence: { coverage: false, finding: true } } },
+    ],
   },
   {
     trigger: "lint-repair",
