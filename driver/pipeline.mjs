@@ -79,7 +79,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow, servedLines, lineKey } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow, servedLines, lineKey, groupName } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -3177,6 +3177,47 @@ export function placementFloorDecisionLines(P) {   // @internal — driven by it
 }
 
 /**
+ * PLACEMENT'S DECISIONS IN THE DELIVERED AUDIT TRAIL (ruled 2026-10-18): one row per set-aside that stands on the shape
+ * now on disk, in the Audit Trail's own fields, carrying the decision's reference, its ground and, for a group's row,
+ * its count. A set-aside the shape no longer supports is not delivered. [] when there is none or nothing can be read.
+ * IMPURE (reads the run).
+ */
+export function placementAuditRows(P) {   // @internal — driven by its test with a run's own files
+  try {
+    const form = readPlacementForm(P.runDir);
+    if (!form.set_aside?.length) return [];
+    const input = readPlacementFormInput(P.runDir);
+    const index = buildSelectionIndex(input);
+    return standingSetAside(form.set_aside, input).flatMap((e) => {
+      if (!e?.ground) return [];
+      if (isSetAsideGroupRow(e)) return [{ source_layer: "Register", step: "placement", query: `group (${groupName(e.set_aside_group)})`,
+        rationale: e.ground, result_summary: `${Number(e.count ?? 0).toLocaleString("en-US")} records` }];
+      const c = index.resolve(e.set_aside);
+      return [{ source_layer: "Register", step: "placement",
+        query: `${c?.mark ?? e.set_aside}${c?.owner ? ` — ${c.owner}` : ""} (${e.set_aside})`, rationale: e.ground }];
+    });
+  } catch { return []; }
+}
+
+/**
+ * The records placement set aside, as recall reconciliation accepts them now that the audit delivers them: by name,
+ * an individual ending for any position; under a group's row, the members that row validly covers, which end only a
+ * residual position, as a ruled crowd does. Lower-cased uris. Empty when nothing stands. IMPURE (reads the run).
+ */
+export function placementRecallEndings(P, uris) {   // @internal — driven by its test with a run's own files
+  const byName = new Set(), byGroup = new Set();
+  try {
+    const groundOf = placementSetAsideGrounds(P);
+    for (const u of uris ?? []) {
+      const g = u ? groundOf(u) : null;
+      if (!g?.ground) continue;
+      (g.by === "group" ? byGroup : byName).add(String(u).toLowerCase());
+    }
+  } catch { /* nothing stands */ }
+  return { byName, byGroup };
+}
+
+/**
  * Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`): `{counted}`, or `{absent}`
  * saying why there is no count. A shape with no groups has nothing to count by; an input that would not read is a
  * gap in the record. The two are not one fact, and the floor duty's artifact keeps them apart.
@@ -3756,7 +3797,8 @@ function deriveRecallReconciliation(ctx, trigger) {
       }
     }
     if (!positions) return notComputable("no exact-identity positions projection — the join's unit is the POSITION and record-unit would block a compliant one-URI position row");
-    const artifact = reconcileRecall({ candidates, endings, crowdRulings, positions, dominantElement, inScopeClasses });
+    const placement = placementRecallEndings(P, candidates.map((c) => c.record_id));
+    const artifact = reconcileRecall({ candidates, endings, crowdRulings, positions, dominantElement, inScopeClasses, placement });
     writeArtifact(artifact);
     runLog(P.runDir, recallReconciliationEvent({ trigger, artifact }));
     if (artifact.totals.unended) note(`recall-reconciliation: ${artifact.totals.unended} screened-live dominant-element position(s) end NOWHERE (${artifact.totals.candidates} candidate record(s) in ${artifact.totals.positions} position(s); crowd declares ${artifact.crowd.declared} vs residual ${artifact.crowd.residual})`);
@@ -14899,7 +14941,8 @@ async function pipelineInner(job, opts = {}) {
         runLog(run.runDir, { event: "register-presence-skipped", reason: "no register-named-band.json" });
       }
       const a = buildAuditMd(registerFindingsText, commonLawText,
-        { findings: auditRunFindings, doubts: runDoubts, asks: runAsks, readingLog, commonLawGrid, doubtTruncations, registerPresence });
+        { findings: auditRunFindings, doubts: runDoubts, asks: runAsks, readingLog, commonLawGrid, doubtTruncations, registerPresence,
+          placementRows: placementAuditRows(P) });
       if (!a.counts.findings) throw new Error("0 findings parsed from the spine tables");  // count-guard
       writeFileSync(P.audit, a.md);
       runLog(run.runDir, { event: "audit", ...a.counts });   // — counts now carry doubtsOmitted
