@@ -669,6 +669,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-goods-drop-says-what-it-rests-on-and-who-read-it.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-goods-slice-and-an-added-class-read-as-themselves.test.mjs": {
           "tests": 5,
           "asserts": 20,
@@ -5769,6 +5775,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-band-shape-derivation-writes-what-the-goods-rest-on.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "the-bands-box-shows-the-whole-band.test.mjs": {
           "tests": 9,
           "asserts": 22,
@@ -6573,6 +6585,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-run-records-what-each-records-goods-rest-on.test.mjs": {
+          "tests": 7,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "the-run-s-own-materiality-orders-the-table.test.mjs": {
           "tests": 9,
           "asserts": 19,
@@ -6594,6 +6612,12 @@
         "the-scorer-withholds-names-unless-asked.test.mjs": {
           "tests": 32,
           "asserts": 63,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-screen-gate-records-what-its-drops-rest-on.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -7050,6 +7074,12 @@
         "wave-boundaries.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "what-a-band-tool-serves-does-not-change-with-the-goods-record.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
