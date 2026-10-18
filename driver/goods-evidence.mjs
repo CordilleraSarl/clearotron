@@ -98,20 +98,38 @@ export function readRunCallRows(callLogPath, runPrefix) {
  * A record fetch names its record by address or by the register's own id; a batch of full records names each id
  * it carried. Requests sent and answers served from the run's memory are counted apart: one cost the register a
  * request, the other did not. PURE.
+ *
+ * WHICH RECORD A FETCH ROW NAMES, in the address a band record carries. The registers log it three ways. Most give
+ * the address itself. EUIPO gives its application number, which names an EU record, so it is read as one: as a
+ * bare id it would also match a record of the same number on another register. Signa gives its own record id,
+ * opaque and unique to it, which stays an id. USPTO-local gives the serial it looked up, and says whether the
+ * record was found rather than whether the call succeeded, so an unfound record is a failed fetch.
  */
+export function fetchRowKey(row) {   // @internal — driven by its test
+  if (row?.tool !== "record_fetch") return null;
+  if (row.target) {
+    const key = uriKey(row.target);
+    if (key) return key;
+    const bare = String(row.target).trim().toLowerCase();
+    return !bare ? null : row.provider === "euipo" ? `/mark/eu/${bare}` : bare;
+  }
+  return row.provider === "uspto-local" && row.serial ? `/mark/us/${String(row.serial).trim().toLowerCase()}` : null;
+}
+const fetchRowOk = (row) => (typeof row?.ok === "boolean" ? row.ok : typeof row?.found === "boolean" ? row.found : undefined);
 export function recordFetchOutcomes(rows, { runPrefix = null } = {}) {
   const out = new Map();
   for (const row of Array.isArray(rows) ? rows : []) {
     if (!inRun(row, runPrefix)) continue;
-    const ids = row?.tool === "record_fetch" && row?.target ? [row.target]
-      : Array.isArray(row?.records) ? row.records : [];
-    for (const raw of ids) {
-      const key = uriKey(raw) || String(raw ?? "").trim().toLowerCase();
+    const one = fetchRowKey(row);
+    const keys = one ? [one] : Array.isArray(row?.records)
+      ? row.records.map((raw) => uriKey(raw) || String(raw ?? "").trim().toLowerCase()) : [];
+    for (const key of keys) {
       if (!key) continue;
       const o = out.get(key) ?? { sent: 0, from_memory: 0, failed: 0, ok: false, last_status: null };
       if (row.cache_hit === true) o.from_memory++; else o.sent++;
-      if (row.ok === false) o.failed++;
-      if (row.ok === true) o.ok = true;
+      const ok = fetchRowOk(row);
+      if (ok === false) o.failed++;
+      if (ok === true) o.ok = true;
       if (row.http_status !== undefined) o.last_status = row.http_status;
       out.set(key, o);
     }

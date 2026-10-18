@@ -552,11 +552,14 @@ function bandRecord(params = {}) {
   // with the miss, each statement with its source and completeness, in parts as an official record's text is: a
   // whole statement on the search answer can decide a line's group, and no other tool serves its text. A fetch
   // that the register's call ledger records as failed is said to have failed; nothing else is.
+  // A cite without its leading slash resolves on a hit; the miss reads it the same way, or it would lose the failed
+  // fetch and the search answer's goods that the cite's record has.
   const parsed = hit.miss !== "unparsable-uri";
-  const bandRow = parsed ? bandRowFor(uri) : null;
+  const key = normalizeRecordUri(uri) || normalizeRecordUri(`/${String(uri ?? "").trim().replace(/^\/+/, "")}`);
+  const bandRow = parsed && key ? bandRowFor(key) : null;
   const statements = bandRow ? rowGoods(bandRow) : null;
   const fetched = parsed ? runEvidence().fetches : null;
-  const fetch = fetched ? (fetched.get(normalizeRecordUri(uri)) ?? fetched.get(String(normalizeRecordUri(uri) ?? "").split("/").pop())) : null;
+  const fetch = fetched && key ? (fetched.get(key) ?? fetched.get(key.split("/").pop())) : null;
   const failed = Boolean(fetch?.failed && !fetch.ok);
   const why = !parsed
     ? `"${uri}" did not parse as a record reference (expected /mark/<cc>/<id> — a full provider URL carrying one is fine) and no archived record matches it exactly. If the uri IS right, its shape is outside this tool's grammar: state the gap, never read it as a clean.`

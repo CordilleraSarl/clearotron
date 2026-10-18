@@ -144,3 +144,9 @@ test("the write-up's list says what each record's goods rest on", () => {
   assert.ok(text.includes("  1. Plimbo — Beta GmbH [sheet-2] /mark/eu/a2 — goods: search answer, cut by the register\n"));
   assert.ok(text.includes("  2. Drellux — Gamma SA [sheet-2] /mark/eu/a3\n"), "a row with no recorded evidence keeps its line as it was");
 });
+
+test("a cite without its leading slash reads on the record tool's miss as it does on a hit: its failed fetch and its search answer's goods", async (t) => {
+  const { env } = seedRun(t);
+  const r = await session([INIT, tool(2, "band_record", { record_id: "mark/us/e8" })], env);
+  assert.equal(textOf(r[2]).split("\n")[0], `No official record is on file for "mark/us/e8": a fetch of it failed this run. The register's search answer listed these goods. Their source and completeness are shown with each statement.`);
+});
