@@ -687,6 +687,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-goods-drop-says-what-it-rests-on-and-who-read-it.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-goods-slice-and-an-added-class-read-as-themselves.test.mjs": {
           "tests": 5,
           "asserts": 20,
@@ -1113,9 +1119,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-placement-decision-reads-alike-at-every-count.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
           "tests": 8,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -1254,6 +1272,12 @@
         "a-record-asked-for-and-never-delivered.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-record-placement-set-aside-is-not-a-lost-finding.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -2160,6 +2184,12 @@
         "an-owners-set-leaves-the-picking-step-with-one-ground.test.mjs": {
           "tests": 4,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-unread-crowd-is-counted-as-unread.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -5829,6 +5859,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-band-shape-derivation-writes-what-the-goods-rest-on.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "the-bands-box-shows-the-whole-band.test.mjs": {
           "tests": 9,
           "asserts": 22,
@@ -6168,6 +6204,12 @@
         "the-goods-a-band-row-holds-are-read.test.mjs": {
           "tests": 6,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-goods-record-reads-a-search-rows-goods-through-the-shared-reader.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -6657,6 +6699,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-run-records-what-each-records-goods-rest-on.test.mjs": {
+          "tests": 7,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "the-run-s-own-materiality-orders-the-table.test.mjs": {
           "tests": 9,
           "asserts": 19,
@@ -6678,6 +6726,12 @@
         "the-scorer-withholds-names-unless-asked.test.mjs": {
           "tests": 32,
           "asserts": 63,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-screen-gate-records-what-its-drops-rest-on.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -7134,6 +7188,12 @@
         "wave-boundaries.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "what-a-band-tool-serves-does-not-change-with-the-goods-record.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
