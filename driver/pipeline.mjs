@@ -142,7 +142,7 @@ const COMMONLAW_CARRY_FLOOR = (() => {
   catch { return null; }
 })();
 import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent, mintRemedyAccountingDoubts, SETTLED_CLASSES } from "./remedy-accounting.mjs";   // — every remedy term ends accounted (2026-08-03)
-import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, fetchedRecordUris, countLaneCalls } from "./provider-usage.mjs";
+import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, countLaneCalls } from "./provider-usage.mjs";
 // — the run's own record log. Every driver-side register call that can write a record BODY carries
 // this path, because this process runs several runs' pipelines at once and a global address would file
 // one run's evidence under another.
@@ -12588,14 +12588,14 @@ async function pipelineInner(job, opts = {}) {
       // Re-read the findings + recompute the fetched universe on EACH check (the recovery re-digest rewrites
       // the findings AND may record_fetch the flagged URIs — both must be picked up on the post-recovery
       // check). V4-1: the fetched universe is the DELIVERED ARTIFACT SET's records (run-dir _records/ ∪ this
-      // session's ledger rows) ∪ this session's successful fetches — not the session-prefixed ledger alone. A
-      // failed fetch is not a retrieval, and a body that carries no record is not one either (ruled 2026-10-18):
-      // neither answers the gate, so such a drop gets the gate's own recovery fetch and, failing that, its
-      // disclosure. A valid copy the run already holds still answers it, whatever a later attempt did.
-      const fetchedUniverse = () => new Set([
-        ...fetchedRecordUris(DEFAULT_LEDGER_PATH, runPrefix),
-        ...[...assembleRunRecords(run.runDir, runPrefix).records].filter(([, body]) => recordBodyHasContent(body)).map(([uri]) => uri),
-      ]);
+      // session's ledger rows) — not the session-prefixed ledger alone. A failed fetch is not a retrieval, and a
+      // body that carries no record is not one either (ruled 2026-10-18): neither answers the gate, so such a drop
+      // gets the gate's own recovery fetch and, failing that, its disclosure. A valid copy the run already holds
+      // still answers it, whatever a later attempt did. A call the register answered `ok` is no record on its own:
+      // every register files the body it fetched, and a 200 carrying an empty record files an empty one, so the
+      // body is what is read, never the call's status.
+      const fetchedUniverse = () => new Set(
+        [...assembleRunRecords(run.runDir, runPrefix).records].filter(([, body]) => recordBodyHasContent(body)).map(([uri]) => uri));
       const checkScreenGate = () => {
         const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
         return findScreenGateViolations(findings, fetchedUniverse());

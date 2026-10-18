@@ -8,7 +8,10 @@
 // object body as a record, whatever it held. A failed attempt then answered the gate, so the drop was never sent
 // to the gate's own recovery fetch and never disclosed (ruled 2026-10-18). Now only a fetch that succeeded counts,
 // and only a body that carries the record's own content is the record; a valid copy the run holds is never
-// replaced by a later placeholder, and neither is its receipt. Every record id here is invented.
+// replaced by a later placeholder, and neither is its receipt. The empty record a normalising register writes
+// is a placeholder too: its provider, office, requested numbers, "unknown" status class and raw copy are its
+// identity and plumbing, never the record, so each register's own normaliser is read here. Every record id here
+// is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, mkdirSync } from "node:fs";
@@ -16,6 +19,9 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fetchedRecordUris } from "../provider-usage.mjs";
 import { recordBodyHasContent, assembleRunRecords, collectRecordReceipts } from "../registry-fidelity.mjs";
+import { normalizeRecord as signaRecord } from "../../providers/signa/src/core.js";
+import { normalizeRecord as clarivateRecord } from "../../providers/clarivate/src/core.js";
+import { toNeutralRecord as euipoRecord } from "../../providers/euipo/src/row.js";
 
 const PREFIX = "clearance-acme-bluejay-";
 const jsonl = (rows) => rows.map((r) => JSON.stringify(r)).join("\n") + "\n";
@@ -43,8 +49,26 @@ test("a body is the record only where it carries something beside its identity",
   assert.equal(recordBodyHasContent({ _uri: "/mark/eu/a1", _receipt: { fetched_at: "2026-10-01T00:00:00Z" } }), false, "plumbing alone is not a record");
   assert.equal(recordBodyHasContent({ uri: "/mark/eu/a1", mark_text: "", statusText: null, classList: [], _raw: {} }), false, "an all-empty normalisation is a placeholder");
   assert.equal(recordBodyHasContent({ uri: "/mark/eu/a1", statusText: "Registered" }), true);
-  assert.equal(recordBodyHasContent({ _raw: { classifications: [{ nice_class: 9 }] } }), true, "the register's raw record is content");
+  assert.equal(recordBodyHasContent({ uri: "/mark/eu/a1", provider: "signa", _raw: { id: "a1", mark_text: null } }), false,
+    "a raw copy is plumbing: the registers that keep one lift its content into the record's own fields");
+  assert.equal(recordBodyHasContent({ uri: "/mark/eu/a1", owner: { name: null, country: null }, classList: [{}] }), false,
+    "an object of nulls, or a list of empty objects, holds nothing");
   assert.equal(recordBodyHasContent([{ classList: ["9"] }]), true, "a one-record array is read as its record, as the ledger reads it");
+});
+
+test("the empty record each normalising register writes is no record, and a real one is", () => {
+  const empty = {
+    signa: signaRecord({ id: "88001-42" }, "CN"),
+    clarivate: clarivateRecord({ guid: "g-88001-42" }, "EM"),
+    euipo: euipoRecord({ applicationNumber: "018800142" }),
+  };
+  for (const [register, body] of Object.entries(empty)) {
+    assert.ok(Object.keys(body).length > 3, `guard: the ${register} normaliser wrote its identity fields`);
+    assert.equal(recordBodyHasContent(body), false, `the empty record ${register} writes read as a record`);
+  }
+  assert.equal(recordBodyHasContent(signaRecord({ id: "88001-42", mark_text: "QZORVAK", status: "registered" }, "CN")), true);
+  assert.equal(recordBodyHasContent(clarivateRecord({ guid: "g-88001-42", markVerbalElementText: "QZORVAK", status: { markCurrentStatus: "Registered" } }, "EM")), true);
+  assert.equal(recordBodyHasContent(euipoRecord({ applicationNumber: "018800142", status: "REGISTERED" })), true);
 });
 
 test("a later placeholder never replaces the record the run holds, nor its receipt; a record held only as a placeholder is no record", () => {

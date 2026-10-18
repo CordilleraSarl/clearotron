@@ -106,17 +106,27 @@ export const ledgerReadError = () => lastLedgerError;
 const noteLedger = (r) => { if (r.error) lastLedgerError = r.error; return r; };
 
 // A RECORD BODY THAT CARRIES NO RECORD IS NOT A RECORD. A body counts as the record only where some field beside
-// its identity and the driver's own plumbing (`_uri`, `_receipt`) holds a value: a mark, a status, an owner, a class
-// list, goods, or the register's raw record. An object holding nothing else (an all-null normalisation, an empty
-// shell) is a placeholder: it satisfies no evidence duty, and it never replaces a body that carries the record.
-const RECORD_IDENTITY_KEYS = new Set(["_uri", "_receipt", "uri", "record_id", "id", "object"]);
-const holdsValue = (v) => v != null && !(typeof v === "string" && !v.trim()) && !(Array.isArray(v) && !v.length)
-  && !(typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length);
+// its identity and its plumbing holds a value: a mark, a status, an owner, a class list, goods, a date. An object
+// holding nothing else is a placeholder: it satisfies no evidence duty, and it never replaces a body that carries
+// the record. The normalising registers write their identity on every record, an empty one included: the provider,
+// the office, the numbers the request asked for, a status class of "unknown", the link minted from them, and the
+// underscored provenance and raw copy. None of those is the record. A value counts only where something in it holds
+// one, so an object of nulls, or a list of empty objects, is no content either.
+const RECORD_IDENTITY_KEYS = new Set(["uri", "record_id", "id", "guid", "serial", "serialNumber", "object", "provider", "office", "statusClass", "status_class",
+  "applicationNumber", "registrationNumber", "resolved_link", "officeUrl"]);
+const holdsValue = (v, depth = 0) => {
+  if (v == null) return false;
+  if (typeof v === "string") return Boolean(v.trim());
+  if (depth > 8) return true;
+  if (Array.isArray(v)) return v.some((x) => holdsValue(x, depth + 1));
+  if (typeof v === "object") return Object.values(v).some((x) => holdsValue(x, depth + 1));
+  return true;
+};
 /** Does this body carry the record's own content, rather than only an identity? PURE. */
 export function recordBodyHasContent(body) {
   const b = Array.isArray(body) ? body[0] : body;
   if (!b || typeof b !== "object" || Array.isArray(b)) return false;
-  return Object.entries(b).some(([k, v]) => !RECORD_IDENTITY_KEYS.has(k) && holdsValue(v));
+  return Object.entries(b).some(([k, v]) => !k.startsWith("_") && !RECORD_IDENTITY_KEYS.has(k) && holdsValue(v));
 }
 // A later copy wins, unless it is a placeholder and the record already holds one with content.
 const keepRecord = (map, uri, body) => { if (recordBodyHasContent(body) || !recordBodyHasContent(map.get(uri))) map.set(uri, body); };

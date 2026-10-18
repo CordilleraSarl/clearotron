@@ -7,7 +7,8 @@
 // bring the record (ruled). It read a failed record fetch in the call ledger as a fetched record, and any object body
 // as the record, so a recovery that brought nothing closed the drop and the report shipped it as examined. Now the
 // recovery that files the record resolves the drop, and the two that do not are disclosed as they always should
-// have been, through the existing presentation. The mocked drop is the fixture's own record id.
+// have been, through the existing presentation. The empty record arrives as a register sends it: a call row that
+// reads ok, and the empty record its normaliser writes. The mocked drop is the fixture's own record id.
 //
 // Own file = own process + own workspace root (the repo convention for mock-pipeline scenarios). SAFETY GUARD: the
 // workspace root and the call ledger are pinned BEFORE any driver module loads, so driver modules load dynamically.
@@ -21,6 +22,8 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK
 const LEDGER = join(mkdtempSync(join(tmpdir(), "clearotron-sgr-ledger-")), "corsearch-calls.jsonl");
 process.env.CLEAROTRON_REGISTER_CALL_LOG = LEDGER;
 writeFileSync(LEDGER, "");
+// The register's normaliser loads after the pins above, as the driver modules do: its ledger fixes its paths on load.
+const { normalizeRecord: signaRecord } = await import("../../providers/signa/src/core.js");
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -94,11 +97,16 @@ test("a recovery fetch the register refused, logged as a failed record fetch, do
   assert.deepEqual(sidecar.unresolved.map((u) => [u.uri, u.cause_source]), [[DROP, "provider"]]);
 });
 
+// A register that answers 200 with an empty record: the call row reads ok, as a register's own ledger writes it, and
+// the body filed is the empty record the register's normaliser writes, identity and plumbing and nothing else.
+const answeredEmpty = (uri, { sessionKey, recordLog }) => {
+  appendFileSync(LEDGER, JSON.stringify({ ts: "2026-10-18T00:00:00Z", provider: "corsearch", sessionKey, tool: "record_fetch", target: uri,
+    ok: true, http_status: 200, bytes: 412, cache_hit: false }) + "\n");
+  fileBody(recordLog, sessionKey, uri, signaRecord({ id: uri.split("/").pop() }, uri.split("/")[2].toUpperCase()));
+};
+
 test("a recovery fetch that reports success and files a body carrying no record does not answer the gate either", async () => {
-  const recordFetcher = async (uri, { sessionKey, recordLog }) => {
-    fileBody(recordLog, sessionKey, uri, { statusText: null, classList: [], goodsAndServices: null });
-    return { ok: true };
-  };
+  const recordFetcher = async (uri, ctx) => { answeredEmpty(uri, ctx); return { ok: true }; };
   const { res, events } = await runMockPipeline({ MOCK_SCREEN_DROP: "persist" }, { recordFetcher });
   assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
   const unresolved = events.find((e) => e.event === "screen-gate-unresolved");
@@ -110,10 +118,7 @@ test("a recovery fetch that reports success and files a body carrying no record 
 });
 
 test("on the Codex engine too: an empty body does not answer the gate", async () => {
-  const recordFetcher = async (uri, { sessionKey, recordLog }) => {
-    fileBody(recordLog, sessionKey, uri, { statusText: null, classList: [] });
-    return { ok: true };
-  };
+  const recordFetcher = async (uri, ctx) => { answeredEmpty(uri, ctx); return { ok: true }; };
   const { res, events } = await runMockPipeline({ MOCK_SCREEN_DROP: "persist", ...ON_CODEX }, { recordFetcher });
   assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
   assert.deepEqual(events.find((e) => e.event === "screen-gate-unresolved")?.uris, [DROP]);

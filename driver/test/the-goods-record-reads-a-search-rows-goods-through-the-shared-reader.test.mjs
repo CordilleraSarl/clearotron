@@ -44,8 +44,9 @@ function seedRun(t) {
   t.after(() => rmSync(runDir, { recursive: true, force: true }));
   mkdirSync(driverDir(runDir), { recursive: true });
   writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify({ enumerated: BAND, crowds: [] }));
+  // A held body as the register's normaliser files it: the record's own fields, with the raw record kept beside them.
   const body = (target, classifications) => ({ ts: "2026-10-18T00:00:00Z", provider: "signa", sessionKey: "clearance-qz-test-register-unit-primary-sweep",
-    target, body: { _raw: { classifications } } });
+    target, body: { markText: "QZORVAK", statusText: "Registered", niceClasses: classifications.map((c) => c.nice_class), _raw: { classifications } } });
   writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), [
     body("/mark/eu/r4", [{ nice_class: 9, goods_services_text: "printers and printer cartridges", goods_services_language: "en", goods_services_text_truncated: false }]),
     body("/mark/eu/r6", []),
