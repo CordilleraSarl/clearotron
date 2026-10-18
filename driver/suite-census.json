@@ -327,6 +327,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-corrective-pass-builds-the-cards-on-the-settled-record.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-count-that-threw-shows-no-exception-text.test.mjs": {
           "tests": 4,
           "asserts": 13,
