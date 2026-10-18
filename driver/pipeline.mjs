@@ -3361,16 +3361,23 @@ function findingsSurfaceRows(P) {
 // THE WRITE-UP IS TOLD WHAT EACH RECORD'S GOODS REST ON, beside its position (goods-evidence.mjs `goodsFromLabel`),
 // so a record declined on goods is declined knowing whether those goods were the official record's, a search answer's,
 // cut, or none. Only the dispatch's copy carries it; the spec the declination tool reads is the positions alone.
-function withGoodsFrom(ctx, P, rows) {
+// A list the label could not be added to keeps its lines as they were, and the run says so: a write-up handed no goods
+// source must not read as one whose records have none.
+export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its test with a run's own files
+  const unlabelled = (reason) => {
+    try { runLog(P.runDir, { event: "write-up-goods-from-failed", rows: rows.length, reason: String(reason).slice(0, 120) }); } catch { /* the list still goes */ }
+    return rows;
+  };
   try {
     const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    if (!runPrefix) return unlabelled("the run has no session prefix to read its evidence by");
     const uris = rows.filter((r) => r?.kind !== "page" && r?.uri).map((r) => r.uri);
-    const evidence = runPrefix ? goodsEvidenceOfDrops(P, runPrefix, uris) : new Map();
+    const evidence = goodsEvidenceOfDrops(P, runPrefix, uris);
     return rows.map((r) => {
       const e = r?.kind !== "page" && r?.uri ? evidence.get(r.uri) : null;
       return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source }) } : r;
     });
-  } catch { return rows; }
+  } catch (e) { return unlabelled(e?.message ?? e); }
 }
 
 export function prepareDeclinationSpec(ctx, P) {   // @internal
