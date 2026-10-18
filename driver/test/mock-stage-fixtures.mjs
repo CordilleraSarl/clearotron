@@ -1978,6 +1978,17 @@ export function applyStageWrites(msg, argv) {
         const cfg = i >= 0 && argv[i + 1] ? JSON.parse(argv[i + 1]) : null;
         bound = cfg?.mcpServers?.["recording-report-card"]?.env?.CLEAROTRON_RECORD_AXIS ?? null;
       } catch { /* malformed config — `bound` stays null and the receiver refuses by name */ }
+      // The codex channel: the same server's table in the rendered `$CODEX_HOME/config.toml`, where the engine writes
+      // what claude carries on argv (recordAxisFromWiring, above). Without it no card was ever written on the openai
+      // engine, and every card there rendered structured-only, a harness gap that read as the product's behaviour.
+      if (!bound && process.env.CODEX_HOME) {
+        try {
+          const table = readFileSync(join(process.env.CODEX_HOME, "config.toml"), "utf8").split(/^\[/m)
+            .find((t) => t.startsWith("mcp_servers.recording-report-card]"));
+          const m = table?.match(/CLEAROTRON_RECORD_AXIS\s*=\s*"((?:[^"\\]|\\.)*)"/);
+          if (m) bound = JSON.parse(`"${m[1]}"`);
+        } catch { /* no config.toml — `bound` stays null and the receiver refuses by name */ }
+      }
       if (!bound) return "mock report-card: no CLEAROTRON_RECORD_AXIS in the resolved mcp config — the driver did not bind a card index";
       recordMockToolCall(runDir, "record_report_card", "recording-report-card");
       // The fixture's own prose, sent as VALUES. `reportCardFixture` still exists and still writes the
