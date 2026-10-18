@@ -2035,10 +2035,15 @@ export function applyStageWrites(msg, argv) {
         const fj = JSON.parse(readFileSync(join(runDir, "findings.json"), "utf8"));
         owner = (fj.findings ?? []).find((x) => String(x.ordinal) === String(bound))?.owner?.name || owner;
       } catch { /* no findings yet — the default names the fixture's own owner */ }
+      // MOCK_CARD_SCOPE_COUNT=<ordinal> — that card's FIRST rendering states a search count in its own prose, which the
+      // delivery check refuses as `scope-numbers-in-prose`, a fault that names no finding; a later rendering of the same
+      // card is clean. Keyed on the card's own file, never on a repair message's wording.
+      const scopeCount = String(process.env.MOCK_CARD_SCOPE_COUNT ?? "") === String(bound) && !existsSync(join(runDir, "report-cards", `${bound}.md`));
       const r = recordReportCard(runDir, {
         ordinal: String(bound),
         full_detail: [
           { lead: "Filing", text: `Mock filing detail for ${owner}.` },
+          ...(scopeCount ? [{ lead: "Scope", text: "The search ran 14 queries across the register." }] : []),
           // D3 — the read bullet is REQUIRED of a real seat (reportcard_read_lead_missing), so the
           // mock that stands in for one carries it. A fixture that would be refused in production is not
           // a mock of production: without this the acceptance change reds every mocked card run, and
@@ -2063,10 +2068,14 @@ export function applyStageWrites(msg, argv) {
       // which is the honest post-conversion shape of the same defect.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
+      // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
+      // of MOCK_CARD_SCOPE_COUNT; a later rendering is clean. Keyed on the overview's own file, never on a message.
+      const scopeCountNote = process.env.MOCK_OVERVIEW_SCOPE_COUNT && !existsSync(join(runDir, "report-overview.md"))
+        ? "The search ran 14 queries across the register." : "";
       const r = recordReportOverview(runDir, {
         overall_caption: "mock composite 3",
         actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
+        methodology: [permNote, scopeCountNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
           .filter(Boolean).join(" "),
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.

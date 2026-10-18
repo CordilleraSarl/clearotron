@@ -152,6 +152,7 @@ import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKe
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
+import { locateReportFaults, reportPartsOf } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
   routeHalfTermScopes, findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
@@ -14818,7 +14819,13 @@ async function pipelineInner(job, opts = {}) {
         // finding-provenance bleed) re-renders THAT card alone, FRESH (isolated from its own record, so the bleed
         // cannot recur); a shell failure (no ordinal) re-runs report-overview. Then re-assemble. Bounded: one pass.
         let reassembled = false;
-        const badOrdinals = [...new Set(reportFixable.map((f) => f.ordinal).filter((o) => o != null))];
+        // Each fault goes to the part that holds it (repair-targets.mjs): a card's to that card, with the detail its
+        // check gives on that card alone; the overview's to the overview; and a fault only the lines composed from the
+        // record hold to no repair, since neither could make it. One no single part holds keeps the overview's repair.
+        const targets = locateReportFaults(reportFixable, reportPartsOf(P, findingsForCards, writeUps));
+        if (reportFixable.length) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
+          overview: targets.overview.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), unlocated: targets.unlocated.map((f) => f.id) });
+        const badOrdinals = [...targets.cards.keys()];
         for (const ord of badOrdinals) {
           const f = findingsForCards.find((x) => x.ordinal === ord);
           if (!f) continue;
@@ -14831,7 +14838,7 @@ async function pipelineInner(job, opts = {}) {
           // isolation from the contaminated rendering is the entire point — patching the bad card would
           // preserve exactly what the re-render exists to discard. The redo() ladder below is the opposite
           // case (a warm resume of a session that owns its file) and patches.
-          const why = reportFixable.filter((x) => x.ordinal === ord).map((x) => x.detail).filter(Boolean);
+          const why = targets.cards.get(ord).map((x) => x.detail).filter(Boolean);
           const rc = await stage("report-card", { ...ctx, axis: String(ord), finding: f }, {
             force: true, trigger: "lint-repair",
             ...(why.length ? { extra: lines(
@@ -14842,7 +14849,7 @@ async function pipelineInner(job, opts = {}) {
           });
           if (rc.ok) { repaired.push(`report-card:${ord}`); reassembled = true; }
         }
-        const shellFixable = reportFixable.filter((f) => f.ordinal == null);
+        const shellFixable = targets.overview;
         if (shellFixable.length) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
