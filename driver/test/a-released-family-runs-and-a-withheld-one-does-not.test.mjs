@@ -181,8 +181,8 @@ test("the audit workbook's coverage sheet carries each released family and its r
     assert.equal(rows.length, 2, "not one row per released family");
     assert.ok(rows.every((r) => r.note === RELEASE && r.state === "note"));
     assert.ok(rows.every((r) => /^main register sweep \/ /.test(r.area)), "the area is not the driver's reader label for the family");
-    // A withheld family's reason stays whole too, in the cell that says what was not done.
-    const withheldRow = { area: "main register sweep / exact: WELTRIS", state: "not-searched", note: WITHHOLD, done: "", left: WITHHOLD };
+    // A withheld family is a recorded judgment: the same Note presentation, its reason whole in one cell.
+    const withheldRow = { area: "main register sweep / exact: WELTRIS", state: "note", note: WITHHOLD, done: WITHHOLD, left: "" };
     await buildAudit({ findings: [], coverage: [], fetchState: {}, releasedFamilies: rows, withheldFamilies: [withheldRow] }, null, book, MARK, {});
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.readFile(book);
@@ -196,6 +196,6 @@ test("the audit workbook's coverage sheet carries each released family and its r
     // The reason is one cell: cut at its ";" it read as half done and half left.
     assert.ok(released.every((t) => t.endsWith(`| ${RELEASE} | —`)), `a release reason was split across two cells:\n${released.join("\n")}`);
     const withheld = text.filter((t) => t.includes(WITHHOLD));
-    assert.deepEqual(withheld, [`main register sweep / exact: WELTRIS | Open |  | ${WITHHOLD}`], "the withheld family's reason was split, or claimed as done");
+    assert.deepEqual(withheld, [`main register sweep / exact: WELTRIS | Note | ${WITHHOLD} | —`], "the withheld family's reason was split, or shown as open work");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

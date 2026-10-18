@@ -125,17 +125,24 @@ test("a family's reason is kept out of everything the report is built from", () 
   assert.match(coverageFormBrief({ rows }), /A `family` row is a waiting family the reading turn did not ask/);
 });
 
-test("the audit workbook's coverage sheet carries the withheld family and its reason", async () => {
+test("the audit workbook's coverage sheet carries the withheld family as a recorded judgment, a Note with the reading turn's own reason", async () => {
   const { withheldFamilyRows } = await import("../publish/index.mjs");
   const dir = runDir();
   try {
     const { rows } = coverageFormRows(input({ [waiting[0].qid]: { axis: AXIS, reason: REASON } }));
     writeFileSync(coverageFormPaths(dir).sidecar, JSON.stringify({ rows }));
+    // Without the turn's own record the form's row is no valid judgment: it stays open, with what was not done.
+    const unjudged = withheldFamilyRows(dir);
+    assert.deepEqual([unjudged.length, unjudged[0].state, unjudged[0].left], [1, "not-searched", REASON]);
+    // With it, the row is the turn's judgment, in the shipped Note presentation, and claims no work done or left.
+    writeFileSync(driverDir(dir, `withheld-families-${AXIS}.json`), JSON.stringify({ axis: AXIS, families: { [waiting[0].qid]: { axis: AXIS, reason: REASON } } }));
     const out = withheldFamilyRows(dir);
     assert.equal(out.length, 1);
-    assert.equal(out[0].note, REASON);
-    assert.equal(out[0].state, "not-searched");
+    assert.deepEqual([out[0].state, out[0].note, out[0].done, out[0].left], ["note", REASON, REASON, ""]);
     assert.match(out[0].area, /^main register sweep \/ /, "the area is not the driver's reader label");
+    // A later digest that re-words the form's row does not replace the turn's reason.
+    writeFileSync(coverageFormPaths(dir).sidecar, JSON.stringify({ rows: rows.map((r) => (r.kind === "family" ? { ...r, reason: "an invented later wording" } : r)) }));
+    assert.equal(withheldFamilyRows(dir)[0].note, REASON, "the reason shown is the reading turn's, not the digest's");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

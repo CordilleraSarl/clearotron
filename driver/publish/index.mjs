@@ -14,7 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
+import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
@@ -1868,12 +1868,25 @@ function officeLinksFor(findings, recordsByUri, runOrigins) {
   return links;
 }
 
-/** The coverage form's family rows judged withheld, as audit-workbook coverage rows. Never throws. */
+/**
+ * The coverage form's family rows judged withheld, as audit-workbook coverage rows. Never throws.
+ *
+ * A family the reading turn withheld, with its reason on the turn's own record, is a recorded judgment and not open
+ * work: it takes the shipped `Note` presentation a released family's row has, with the TURN'S reason, read from its
+ * own record, never the words a later digest gave the form's row. A form row that says withheld with no such record
+ * is no valid judgment, so it stays an open row with what the form says was not done.
+ */
 export function withheldFamilyRows(runDir) {
   try {
     const { rows } = readCoverageForm(runDir, coverageFormStamp(runDir).formName);
+    const judged = readWithheldFamilies(runDir);
     return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason)
-      .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason), done: '', left: String(r.reason) }));
+      .map((r) => {
+        const reason = String(judged[String(r.qid ?? '')]?.reason ?? '').trim();
+        return reason
+          ? { area: coverageUnitLabel(r.unit), state: 'note', note: reason, done: reason, left: '' }
+          : { area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason), done: '', left: String(r.reason) };
+      });
   } catch { return []; }
 }
 
