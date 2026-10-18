@@ -31,7 +31,7 @@ const FILE = () => ({
   people: {
     "dana@anthropic.example": { run: true, manage: false },
     "priya@anthropic.example": { run: true, manage: true },
-    "krzys@cordillera.example": { run: true, manage: true, everything: true },
+    "owner@cordillera.example": { run: true, manage: true, everything: true },
     "tom@outside.example": { run: false, manage: false },
   },
 });
@@ -50,9 +50,9 @@ test("personPoints reads every shape a person can take, and the population is no
   assert.deepEqual(pointsOf(g, "priya@anthropic.example"), ["anthropic/anthropic-eu"]);
   // ACCESS TO EVERYTHING IS NOT A POINT. It lives under `people` and in no organisation, which is the
   // whole reason a narrowing cannot be honest about it.
-  assert.deepEqual(pointsOf(g, "krzys@cordillera.example"), []);
-  assert.equal(personPoints(g, "krzys@cordillera.example").switches.everything, true);
-  assert.equal(personPoints(g, "krzys@cordillera.example").listed, true);
+  assert.deepEqual(pointsOf(g, "owner@cordillera.example"), []);
+  assert.equal(personPoints(g, "owner@cordillera.example").switches.everything, true);
+  assert.equal(personPoints(g, "owner@cordillera.example").listed, true);
   assert.equal(personPoints(g, "nobody@nowhere.example").listed, false);
 });
 

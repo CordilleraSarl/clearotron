@@ -34,7 +34,7 @@ const FILE = () => ({
   people: {
     "dana@anthropic.example": { run: true, manage: false },
     "priya@anthropic.example": { run: true, manage: true },
-    "krzys@cordillera.example": { run: true, manage: true, everything: true },
+    "owner@cordillera.example": { run: true, manage: true, everything: true },
   },
   connectKeys: {
     "jti-dana-1": { sub: "dana@anthropic.example", client: "an assistant", minted: "2026-09-01T00:00:00.000Z" },
@@ -42,7 +42,7 @@ const FILE = () => ({
   },
 });
 
-const KRZYS = { email: "krzys@cordillera.example" };   // sees everything
+const OWNER = { email: "owner@cordillera.example" };   // sees everything
 const PRIYA = { email: "priya@anthropic.example" };    // manages Anthropic, and cannot see Summit
 const DANA = "dana@anthropic.example";
 
@@ -78,7 +78,7 @@ const pointsFor = (grants, email) => {
 
 test("a manager who sees everything changes what somebody holds, in one save", async () => {
   const { state, post } = on();
-  const r = await post("change", KRZYS, { email: DANA, permissions: { run: true, manage: true },
+  const r = await post("change", OWNER, { email: DANA, permissions: { run: true, manage: true },
     access: [{ kind: "organisation", key: "anthropic" }] });
   assert.equal(r.status, 200, JSON.stringify(r.json));
   // Anthropic kept, Summit taken away — the untick the mockup draws.
@@ -95,7 +95,7 @@ test("the diff is computed from the FILE, so a stale page cannot write back over
   // sends only what it knew: Anthropic and Summit.
   state.grants = structuredClone(state.grants);
   state.grants.tenants.cordillera.users[DANA] = ["summit", "ridge"];
-  const r = await post("change", KRZYS, { email: DANA, permissions: { run: true, manage: false },
+  const r = await post("change", OWNER, { email: DANA, permissions: { run: true, manage: false },
     access: [{ kind: "organisation", key: "anthropic" }, { kind: "company", key: "summit" }] });
   assert.equal(r.status, 200, JSON.stringify(r.json));
   // The page's own set is what it asked for, so Ridge goes — that is a change this caller CAN see and
@@ -144,7 +144,7 @@ test("nobody changes or removes themselves", async () => {
 
 test("unticking every row is not a removal — it is refused, with the removal named", async () => {
   const { state, post } = on();
-  const r = await post("change", KRZYS, { email: DANA, permissions: { run: true, manage: false }, access: [] });
+  const r = await post("change", OWNER, { email: DANA, permissions: { run: true, manage: false }, access: [] });
   assert.equal(r.status, 400);
   assert.match(r.json.error, /remove them instead/);
   assert.equal(state.writes, 0);
@@ -152,7 +152,7 @@ test("unticking every row is not a removal — it is refused, with the removal n
 
 test("removing from the whole install strikes every row, the entry under people, AND the keys", async () => {
   const { state, post } = on();
-  const r = await post("remove", KRZYS, { email: DANA });
+  const r = await post("remove", OWNER, { email: DANA });
   assert.equal(r.status, 200, JSON.stringify(r.json));
   assert.equal(r.json.removed, "install");
   assert.deepEqual(pointsFor(state.grants, DANA), []);
@@ -241,7 +241,7 @@ test("the route keeps the record when its seam does", async () => {
       return { grants, revoked: jtis.length, jtis, lateArm: false, recordKept: true };
     },
   });
-  const r = await svc.route("POST", "/portal/admin/people/remove", KRZYS, { email: DANA });
+  const r = await svc.route("POST", "/portal/admin/people/remove", OWNER, { email: DANA });
   assert.equal(r.status, 200, JSON.stringify(r.json));
   assert.equal(r.json.keys.revoked, 1, "the revocation did not happen");
   assert.equal(r.json.keys.recordKept, true, "the answer does not say the record was kept");
@@ -253,7 +253,7 @@ test("the route keeps the record when its seam does", async () => {
 
 test("a door started with no revocation list says the keys stay live, and strikes no record", async () => {
   const { state, post } = on(FILE(), { revoke: "lateArm" });
-  const r = await post("remove", KRZYS, { email: DANA });
+  const r = await post("remove", OWNER, { email: DANA });
   assert.equal(r.status, 200, JSON.stringify(r.json));
   assert.equal(r.json.keys.lateArm, true);
   assert.equal(r.json.keys.revoked, 0);
@@ -267,7 +267,7 @@ test("a door started with no revocation list says the keys stay live, and strike
 
 test("an installation that cannot revoke at all says so rather than implying it did", async () => {
   const { post } = on(FILE(), { revoke: null });
-  const r = await post("remove", KRZYS, { email: DANA });
+  const r = await post("remove", OWNER, { email: DANA });
   assert.equal(r.status, 200);
   assert.equal(r.json.keys.checked, false);
   assert.match(r.json.keys.note, /cannot revoke/);
@@ -285,13 +285,13 @@ test("a whole email domain is a row like any other, through both routes", async 
   const { state, post } = on(start);
   const DOMAIN = "*@anthropic.example";
 
-  const narrowed = await post("change", KRZYS, { email: DOMAIN, permissions: { run: false, manage: false },
+  const narrowed = await post("change", OWNER, { email: DOMAIN, permissions: { run: false, manage: false },
     access: [{ kind: "organisation", key: "anthropic" }] });
   assert.equal(narrowed.status, 200, JSON.stringify(narrowed.json));
   assert.deepEqual(pointsFor(state.grants, DOMAIN), ["anthropic/*"], "a domain row could not be narrowed");
   assert.deepEqual(state.grants.people[DOMAIN], { run: false, manage: false });
 
-  const gone = await post("remove", KRZYS, { email: DOMAIN });
+  const gone = await post("remove", OWNER, { email: DOMAIN });
   assert.equal(gone.status, 200, JSON.stringify(gone.json));
   assert.equal(gone.json.removed, "install");
   assert.deepEqual(pointsFor(state.grants, DOMAIN), []);
@@ -303,7 +303,7 @@ test("a whole email domain is a row like any other, through both routes", async 
 test("somebody who is not on the guest list is a not-found, not an empty success", async () => {
   const { state, post } = on();
   for (const what of ["change", "remove"]) {
-    const r = await post(what, KRZYS, { email: "nobody@nowhere.example", permissions: { run: true, manage: false },
+    const r = await post(what, OWNER, { email: "nobody@nowhere.example", permissions: { run: true, manage: false },
       access: [{ kind: "organisation", key: "anthropic" }] });
     assert.equal(r.status, 404, what);
   }
@@ -317,11 +317,11 @@ test("the access page says keys can be withdrawn whenever the portal can withdra
   const saved = process.env.TRADEMARK_MCP_TOKEN_DENYLIST;
   delete process.env.TRADEMARK_MCP_TOKEN_DENYLIST;
   try {
-    const withRevoker = await on().view(KRZYS);
+    const withRevoker = await on().view(OWNER);
     assert.equal(withRevoker.status, 200, JSON.stringify(withRevoker.json));
     assert.equal(withRevoker.json.keysRevocable, true, "a portal that can revoke says it cannot, because no list is named");
     // The control: a portal built without a revoker still says it cannot.
-    assert.equal((await on(FILE(), { revoke: null }).view(KRZYS)).json.keysRevocable, false);
+    assert.equal((await on(FILE(), { revoke: null }).view(OWNER)).json.keysRevocable, false);
   } finally {
     if (saved !== undefined) process.env.TRADEMARK_MCP_TOKEN_DENYLIST = saved;
   }

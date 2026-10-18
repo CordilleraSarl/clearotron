@@ -23,10 +23,10 @@ const FILE = () => ({
   },
   people: {
     "priya@anthropic.example": { run: true, manage: true },
-    "krzys@cordillera.example": { run: true, manage: true, everything: true },
+    "owner@cordillera.example": { run: true, manage: true, everything: true },
   },
 });
-const KRZYS = { email: "krzys@cordillera.example" };
+const OWNER = { email: "owner@cordillera.example" };
 const PRIYA = { email: "priya@anthropic.example" };
 
 const on = () => {
@@ -40,7 +40,7 @@ const on = () => {
 
 test('the form’s "Everything on this Clearotron" grants it, where it used to answer 404', async () => {
   const { state, add } = on();
-  const r = await add(KRZYS,
+  const r = await add(OWNER,
     { email: "new@cordillera.example", permissions: { run: true, manage: true }, access: [{ kind: "everything" }] });
   assert.equal(r.status, 201, JSON.stringify(r.json));
   assert.equal(state.grants.people["new@cordillera.example"].everything, true,
