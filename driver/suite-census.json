@@ -2133,6 +2133,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-unread-crowd-is-counted-as-unread.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "an-unread-probe-is-not-a-failed-measurement.test.mjs": {
           "tests": 5,
           "asserts": 11,
