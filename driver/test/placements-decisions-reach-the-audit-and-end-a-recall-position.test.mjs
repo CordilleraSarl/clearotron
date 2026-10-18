@@ -9,8 +9,9 @@
 // existing Audit Trail, in its own fields, with its reference, its ground and a group row's count, and recall
 // reconciliation then accepts it. A set-aside by name is an individual ending, for any position; a group's row ends
 // only a residual position, for the members it validly covers, as a ruled crowd does, never a top-slice position
-// that must end individually. A decision the shape no longer supports is neither delivered nor accepted. Every
-// mark and owner is invented.
+// that must end individually. A decision the shape no longer supports is neither delivered nor accepted: a group row
+// the shape no longer bears, a set-aside by name whose line a later pass placed, or one whose record the band no
+// longer holds. Every mark and owner is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
@@ -95,4 +96,63 @@ test("with no standing decision, nothing is delivered and nothing ends by placem
   assert.deepEqual(placementAuditRows(P), []);
   const placement = placementRecallEndings(P, BAND.map((r) => r.record_id));
   assert.equal(placement.byName.size + placement.byGroup.size, 0);
+});
+
+// Two placement passes over one band, the second written over the first as the union keeps a form, and the band the
+// run then holds, which may be merged again without a record the first pass named.
+function seedPasses(t, passes, heldBand = BAND) {
+  const runDir = mkdtempSync(join(tmpdir(), "placement-reversed-"));
+  t.after(() => rmSync(runDir, { recursive: true, force: true }));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const shapeOf = (band) => {
+    const positions = deriveRegisterPositions(band);
+    const goods = { of: (r) => [{ classes: ["9"], text: GOODS[r.record_id.split("/").pop()] }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+    const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
+    const read = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
+    return { positions, shape, read, input: { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups,
+      served: { lines: new Set(read), records: new Set() } } };
+  };
+  const first = shapeOf(BAND);
+  let form = null;
+  for (const rows of passes) form = unionPlacementForm(form, { rows }, first.input).form;
+  const held = shapeOf(heldBand);
+  const P = paths(runDir);
+  writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: heldBand, crowds: [] }));
+  writeFileSync(P.bandShape, JSON.stringify(held.shape));
+  writeFileSync(P.registerPositions, JSON.stringify(held.positions));
+  writePlacementForm(runDir, form);
+  writeFileSync(driverDir(runDir, "reading-log.jsonl"), JSON.stringify({ ts: "2026-10-18T00:00:00Z", tool: "band_shape", args: { format: "md" },
+    ok: true, part: 1, parts: 1, served_lines: held.read, session: "clearance-x-y-placement-inquiry" }) + "\n");
+  writeFileSync(P.placementModel, JSON.stringify(renderPlacementsJson(form.rows)));
+  return { P, form };
+}
+
+test("a set-aside by name that a later pass reversed by placing its line is neither delivered nor accepted", (t) => {
+  const { P, form } = seedPasses(t, [
+    [{ select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+      { set_aside: "/mark/eu/a2", ground: "a different product, sold only to farmers" }],
+    [{ select: "/mark/eu/a2", tier: "sheet-2", reason: "the same owner's second mark, live in the class" }],
+  ]);
+  assert.ok(form.set_aside.some((e) => e.set_aside === "/mark/eu/a2"), "guard: the form still holds the first pass's set-aside");
+  assert.deepEqual(placementAuditRows(P), [], "the Audit Trail delivers a decision the run reversed");
+  const placement = placementRecallEndings(P, BAND.map((r) => r.record_id));
+  assert.ok(!placement.byName.has("/mark/eu/a2"), "recall accepts as set aside a record placement placed");
+});
+
+test("a set-aside by name whose record the band no longer holds is neither delivered nor accepted", (t) => {
+  const { P } = seedPasses(t, [
+    [{ select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+      { set_aside: "/mark/eu/a2", ground: "a different product, sold only to farmers" }],
+  ], BAND.filter((r) => r.record_id !== "/mark/eu/a2"));
+  assert.deepEqual(placementAuditRows(P), [], "the Audit Trail delivers a decision about a record the run no longer holds");
+  assert.equal(placementRecallEndings(P, ["/mark/eu/a2"]).byName.size, 0);
+});
+
+test("THE CONTROL: the same set-aside, standing, is delivered and accepted", (t) => {
+  const { P } = seedPasses(t, [
+    [{ select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+      { set_aside: "/mark/eu/a2", ground: "a different product, sold only to farmers" }],
+  ]);
+  assert.deepEqual(placementAuditRows(P).map((r) => r.query), ["Plimbo — Alpha Ltd (/mark/eu/a2)"]);
+  assert.ok(placementRecallEndings(P, ["/mark/eu/a2"]).byName.has("/mark/eu/a2"));
 });

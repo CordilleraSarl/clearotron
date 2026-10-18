@@ -35,20 +35,21 @@ const BAND = [
 ];
 const GOODS = { a1: "joysticks", b1: "printers", c1: "printers", r1: "printers" };
 
-function seedRun(t, rows) {
+function seedRun(t, rows, { band = BAND, goodsOf = GOODS, later = [] } = {}) {
   const runDir = mkdtempSync(join(tmpdir(), "review-floors-"));
   t.after(() => rmSync(runDir, { recursive: true, force: true }));
   mkdirSync(driverDir(runDir), { recursive: true });
-  const positions = deriveRegisterPositions(BAND);
-  const goods = { of: (r) => { const g = GOODS[r.record_id.split("/").pop()]; return g ? [{ classes: ["9"], text: g }] : null; },
+  const positions = deriveRegisterPositions(band);
+  const goods = { of: (r) => { const g = goodsOf[r.record_id.split("/").pop()]; return g ? [{ classes: ["9"], text: g }] : null; },
     hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
-  const { shape } = buildBandShape({ enumerated: BAND }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
+  const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
   const read = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
   const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups,
     served: { lines: new Set(read), records: new Set() } };
-  const u = unionPlacementForm(null, { rows }, input);
+  let u = unionPlacementForm(null, { rows }, input);
+  for (const more of later) u = unionPlacementForm(u.form, { rows: more }, input);
   const P = paths(runDir);
-  writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: BAND, crowds: [] }));
+  writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: band, crowds: [] }));
   writeFileSync(P.bandShape, JSON.stringify(shape));
   writeFileSync(P.registerPositions, JSON.stringify(positions));
   writePlacementForm(runDir, u.form);
@@ -72,6 +73,38 @@ test("only the floors whose set-aside stands are listed, each with its ground an
 test("with no floor set aside, the list is empty", (t) => {
   const { P } = seedRun(t, [{ select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live" }]);
   assert.deepEqual(placementFloorDecisionLines(P), []);
+});
+
+test("a floor a later pass placed is not listed as set aside, though the form still holds the first pass's ground", (t) => {
+  const { P } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/b1", ground: "the registration expired in 2019", on: "status" },
+  ], { later: [[{ select: "/mark/eu/b1", tier: "sheet-2", reason: "near-identical, live in the class" }]] });
+  assert.deepEqual(placementFloorDecisionLines(P), [], "the review is told a placed floor was set aside");
+});
+
+test("a floor set aside on its territory is listed with that ground", (t) => {
+  const { P } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/b1", ground: "the registration covers only Japan, outside the ordered territories", on: "territory" },
+  ]);
+  assert.deepEqual(placementFloorDecisionLines(P), ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its territory: the registration covers only Japan, outside the ordered territories"]);
+});
+
+test("a floor a crowd's row covers is listed as covered by that group's row", (t) => {
+  // A thousand or more identical marks for goods the client does not sell: group (b), crowded, whose row may cover
+  // its floors.
+  const N = 1001;
+  const band = [rec("a1", "QZORVAK", "Alpha Ltd"), ...Array.from({ length: N }, (_, i) => rec(`m${i}`, "QZORVAK", `Owner ${i} Ltd`))];
+  const goodsOf = { a1: "joysticks", ...Object.fromEntries(Array.from({ length: N }, (_, i) => [`m${i}`, "printers"])) };
+  const { P, shape } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside_group: "b", count: N, ground: "identical marks in the class for goods unrelated to the client's" },
+  ], { band, goodsOf });
+  assert.equal(shape.groups.b.records, N, "guard: the crowd is in (b)");
+  const lines = placementFloorDecisionLines(P);
+  assert.equal(lines.length, N, "every floor the row covers is listed");
+  assert.equal(lines[0], "- QZORVAK — Owner 0 Ltd (/mark/eu/m0): covered by group (b)'s row: identical marks in the class for goods unrelated to the client's");
 });
 
 const SENTENCE = "Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision already accounts for it under the placement rules. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision.";

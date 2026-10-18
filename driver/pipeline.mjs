@@ -3127,18 +3127,27 @@ export function recordPlacementPass(ctx, r, trigger = null) {   // @internal —
 }
 
 /**
- * The form's set-aside entries as they stand on the shape now on disk. A ground by name stands as stored. A
- * group's row is checked again exactly as the union took it, on its count and on every line read, because the
- * shape may have been derived again since: a resumed run derives it afresh, and a record body fetched after
- * placement can move a line out of the list the goods test could not place and into a group. A row taken on
- * the earlier shape then covers no line the later one added. Nothing is written back. PURE.
+ * The form's set-aside entries as they stand on the shape now on disk, and on what placement placed. A ground by
+ * name stands while the band still holds its record and no placement places its line: a later pass that places
+ * the line reverses the set-aside, as the fate count already reads it, and a record the band no longer holds has
+ * no decision left to deliver. A group's row is checked again exactly as the union took it, on its count and on
+ * every line read, because the shape may have been derived again since: a resumed run derives it afresh, and a
+ * record body fetched after placement can move a line out of the list the goods test could not place and into a
+ * group. A row taken on the earlier shape then covers no line the later one added. `placedUris` are the records
+ * the placements carry. Nothing is written back. PURE.
  */
-function standingSetAside(entries, input) {
+function standingSetAside(entries, input, { placedUris = [] } = {}) {
   const all = Array.isArray(entries) ? entries : [];
+  const index = buildSelectionIndex(input);
+  const placedLines = new Set([...placedUris].map((u) => lineKey(index.resolve(u))).filter(Boolean));
+  const named = all.filter((e) => !isSetAsideGroupRow(e)).filter((e) => {
+    const line = lineKey(index.resolve(e?.set_aside));
+    return Boolean(line) && !placedLines.has(line);
+  }).map((e) => ({ ...e, key: lineKey(index.resolve(e.set_aside)) }));
   const grouped = all.filter(isSetAsideGroupRow);
-  if (!grouped.length) return all;
+  if (!grouped.length) return named;
   const { form } = unionPlacementForm({ rows: [], set_aside: grouped }, null, input);
-  return [...all.filter((e) => !isSetAsideGroupRow(e)), ...form.set_aside_groups];
+  return [...named, ...form.set_aside_groups];
 }
 
 /** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
@@ -3147,8 +3156,9 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
-    return setAsideGrounds(standingSetAside(form.set_aside, input), buildSelectionIndex(input), input.groups, input.floors,
-      { placedUris: placedUriRows(P).map((r) => r.uri) });
+    const placedUris = placedUriRows(P).map((r) => r.uri);
+    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris }), buildSelectionIndex(input), input.groups, input.floors,
+      { placedUris });
   } catch { return () => null; }
 }
 
@@ -3188,7 +3198,7 @@ export function placementAuditRows(P) {   // @internal — driven by its test wi
     if (!form.set_aside?.length) return [];
     const input = readPlacementFormInput(P.runDir);
     const index = buildSelectionIndex(input);
-    return standingSetAside(form.set_aside, input).flatMap((e) => {
+    return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri) }).flatMap((e) => {
       if (!e?.ground) return [];
       if (isSetAsideGroupRow(e)) return [{ source_layer: "Register", step: "placement", query: `group (${groupName(e.set_aside_group)})`,
         rationale: e.ground, result_summary: `${Number(e.count ?? 0).toLocaleString("en-US")} records` }];
@@ -3230,8 +3240,9 @@ export function placementOwnerFates(P, placements) {   // @internal — driven b
     // What placement read, by its own reading log, and what each line's goods rest on, where the run recorded it.
     const evidence = readGoodsEvidence(P.runDir);
     const stateOf = Array.isArray(evidence?.records) ? new Map(evidence.records.map((r) => [normalizeRecordUri(r?.uri), r?.state])) : null;
-    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index,
-      placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])),
+    const placedUris = (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : []));
+    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input, { placedUris }), index,
+      placedUris,
       served: servedLines(input.groups, input.served, index),
       lineEvidence: stateOf ? (l) => stateOf.get(normalizeRecordUri(l?.record_id)) ?? null : null });
     return counted ? { counted } : { absent: "the band shape's groups could not be counted" };
