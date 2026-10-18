@@ -1245,6 +1245,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-placement-set-aside-is-not-a-lost-finding.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-records-goods-are-served-once.test.mjs": {
           "tests": 6,
           "asserts": 19,
