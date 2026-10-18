@@ -123,7 +123,7 @@ test("a recovery fetch the register answered 200 with a body it could not read f
   const recordFetcher = async (uri, { sessionKey }) => {
     appendFileSync(LEDGER, JSON.stringify({ ts: "2026-10-18T00:00:00Z", provider: "corsearch", sessionKey, tool: "record_fetch", target: uri,
       ok: true, http_status: 200, bytes: 37, cache_hit: false }) + "\n");
-    return { ok: false, cause: "corsearch_record_fetch: the body did not parse (mock)" };
+    return { ok: false, cause: "the register's answer did not parse (mock)" };
   };
   const { res, events } = await runMockPipeline({ MOCK_SCREEN_DROP: "persist" }, { recordFetcher });
   assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
