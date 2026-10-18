@@ -7596,7 +7596,7 @@ export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @inte
 // the EARLIEST qualifying window end. Code fills ABSENCE only (an authored deadline always wins);
 // out-of-window dates never inject (an archived 2015 window is history, not urgency). Receipt:
 // _driver/deadline-enrich.json. NEVER-KILL: any defect leaves findings.json untouched.
-function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDays = 60, graceDays = 14 } = {}) {
+export function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDays = 60, graceDays = 14 } = {}) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     const deadlines = collectOppositionDeadlines(runDir);
@@ -7620,7 +7620,8 @@ function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDay
     if (!enriched.length) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
     atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — a crash mid-write must never leave a truncated findings.json
-    atomicWrite(driverDir(runDir, "deadline-enrich.json"), JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), enriched }, null, 2) + "\n");
+    const base = rebaseEnrichedDeadlines(runDir, enriched);   // a later patch keeps what the file now carries
+    atomicWrite(driverDir(runDir, "deadline-enrich.json"), JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), judged_at: new Date(nowMs).toISOString(), enriched, base }, null, 2) + "\n");
     note(`[deadline-enrich] ${enriched.length} finding(s) gained the register's own opposition window (${enriched.map((e) => `${e.mark}: ${e.date}`).join("; ").slice(0, 140)}) — a recorded deadline never silently disappears`);
   } catch (e) {
     note(`[deadline-enrich] skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -13757,6 +13758,7 @@ async function pipelineInner(job, opts = {}) {
     ctx.afterSynthesisSave = async () => {
       note(`[seam] a synthesis save after the seam rewrote findings.json — re-applying the seam's writes`);
       runLog(run.runDir, { event: "seam-reapplied", after: "synthesis-save" });
+      rewriteFromBeforeTheSeam(ctx);   // the basis derivation and the deadline enrichment, as the pass made them
       await seamWrites();
     };
     // wp50/wi2 — the overview PROSE must speak the derived tier (VENZY: caption said "High risk" while
@@ -17177,6 +17179,52 @@ export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — e
  */
 async function afterLateSynthesisSave(name, ctx, r) {
   if (r?.ok && !r.skipped && name === "synthesis" && typeof ctx?.afterSynthesisSave === "function") await ctx.afterSynthesisSave();
+}
+
+/**
+ * THE DRIVER'S WRITES FROM BEFORE THE SEAM, MADE AGAIN AFTER A SYNTHESIS SAVE THAT FOLLOWS IT.
+ *
+ * Two writes into the findings record run before the seam rather than at it: the basis derivation, which demotes a
+ * `verified-from-record` stamp the reading log cannot back, and the deadline enrichment, which gives a finding with
+ * no deadline the register's own opposition window. A save after the seam renders the record from the model's call.
+ * A patch keeps both, because each also lands in the merge base the patch is merged onto; a whole re-send replaces
+ * that base, and they went with it. The seam's own writes were made again after such a save, and these two were not,
+ * so the delivered record claimed reads no step had made, and every card whose finding had carried a demoted stamp
+ * read as stale and was rebuilt for a finding the save had not changed. They run again here, in the order the pass
+ * ran them, before the seam's writes. Each leaves a record that already carries it as it is, and neither throws.
+ */
+export function rewriteFromBeforeTheSeam(ctx) {   // @internal
+  settleDerivedBases(ctx, "late-save");
+  enrichFindingDeadlines(ctx.paths, ctx.paths.runDir, note, { nowMs: deadlineClockOf(ctx.paths.runDir) });
+}
+
+/**
+ * The clock the run's deadline enrichment judged its windows by, so a window is judged again exactly as it was
+ * judged the first time, never moved across its edge by the minutes a repair took. Now, on a run whose enrichment
+ * recorded none: it judged nothing, so there is nothing to keep it consistent with. Never throws.
+ */
+function deadlineClockOf(runDir) {
+  try {
+    const at = Date.parse(JSON.parse(readFileSync(driverDir(runDir, "deadline-enrich.json"), "utf8"))?.judged_at);
+    return Number.isFinite(at) ? at : Date.now();
+  } catch { return Date.now(); }
+}
+
+/**
+ * THE MERGE BASE TAKES THE ENRICHED DEADLINES. A patch after the enrichment is merged onto
+ * `_driver/synthesis-calls/accepted.json` and re-renders every finding from there, so a deadline written to the
+ * findings file alone was dropped by the next patch, and a card built with it was rebuilt without it. In the model's
+ * numbering: under a fold, a deadline lands on the member the fold kept, whose object the folded finding is, and the
+ * fold carries it again. Only a finding the base holds with no deadline of its own takes one, as in the file. The
+ * edit is judged as a call is; a refusal leaves the base as it was, and the receipt says what happened. Never throws.
+ */
+function rebaseEnrichedDeadlines(runDir, enriched) {
+  const fold = readFold(runDir);
+  const byOrdinal = new Map(enriched.map((e) => [keptModelOrdinal(fold, e.ordinal), e.date]).filter(([o]) => o != null));
+  if (!byOrdinal.size) return "unmapped";
+  const r = rebaseSynthesis(runDir, (held) => ({ ...held, findings: (Array.isArray(held?.findings) ? held.findings : [])
+    .map((f) => (byOrdinal.has(f?.ordinal) && !f?.deadline?.date ? { ...f, deadline: { kind: "opposition", date: byOrdinal.get(f.ordinal) } } : f)) }));
+  return r.ok ? (r.changed ? "enriched" : "unchanged") : /^no_base:/.test(String(r.reason)) ? "no-base" : "refused";
 }
 
 /**

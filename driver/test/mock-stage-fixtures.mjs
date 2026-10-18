@@ -1224,6 +1224,31 @@ export function variantManifestModelFixture() {
  * Both key on the report-overview resume the redo ladder composes, which the conversion left intact: the
  * followup still opens "RESUMING your own report-overview session", it just orders a CALL now.
  */
+/**
+ * THE SAVE-AFTER-THE-CARDS KNOBS. A synthesis save once the report cards have been started (their folder exists)
+ * changes the record the cards were built from, the way a late repair does. Each knob is keyed on that run state,
+ * never on a repair message's wording, and leaves every earlier save as it was:
+ *   MOCK_LATE_SAVE_EDITS=<ordinal>     that finding's owner name gains " (post-redo)", which its card echoes;
+ *   MOCK_LATE_SAVE_ADDS=1              the record carries one more finding, cloned as MOCK_FINDINGS_N clones;
+ *   MOCK_LATE_SAVE_WITHDRAWS=<ordinal> that finding is withdrawn, so no card is owed for it.
+ * Ordinals are the model's, the numbering the record is written in, before any fold.
+ */
+function savedAfterTheCards(runDir, buildRecord) {
+  if (!runDir || !existsSync(join(runDir, "report-cards"))) return buildRecord();
+  const n = Math.max(1, Number(process.env.MOCK_FINDINGS_N || 1));
+  const adds = Boolean(process.env.MOCK_LATE_SAVE_ADDS);
+  if (adds) process.env.MOCK_FINDINGS_N = String(n + 1);
+  let doc;
+  try { doc = buildRecord(); } finally { if (adds) process.env.MOCK_FINDINGS_N = String(n); }
+  const edit = Number(process.env.MOCK_LATE_SAVE_EDITS || 0);
+  const withdraw = Number(process.env.MOCK_LATE_SAVE_WITHDRAWS || 0);
+  for (const f of Array.isArray(doc?.findings) ? doc.findings : []) {
+    if (f?.ordinal === edit && f.owner && !String(f.owner.name ?? "").includes("(post-redo)")) f.owner.name = `${f.owner.name ?? ""} (post-redo)`.trim();
+    if (f?.ordinal === withdraw) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review flag on this invented finding withdrew it."; }
+  }
+  return doc;
+}
+
 function stalefindingsOnLintRepair(dir, msg) {
   if (!/RESUMING your own report-overview session/.test(msg)) return;
   const fp = join(dir, "findings.json");
@@ -1685,7 +1710,7 @@ export function applyStageWrites(msg, argv) {
       // three tests whose whole subject is that the run RECOVERS. So the mock restates once, the way a
       // competent seat does, by re-deriving with the family's own heal phrase. It restates ONCE: a
       // second refusal is returned, so a genuinely unfixable call still fails rather than looping.
-      const build = (m) => JSON.parse(synthesisFindings(runDir, m));
+      const build = (m) => savedAfterTheCards(runDir, () => JSON.parse(synthesisFindings(runDir, m)));
       let doc;
       try { doc = build(msg); }
       catch (e) { return `mock synthesis: could not build the findings record (${String(e?.message ?? e).slice(0, 120)})`; }
