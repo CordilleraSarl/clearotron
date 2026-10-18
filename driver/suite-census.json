@@ -603,6 +603,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-fault-inside-a-card-is-repaired-in-that-card.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-finding-is-checked-by-its-rungs-risk-not-its-place-on-the-ladder.test.mjs": {
           "tests": 3,
           "asserts": 16,
@@ -1416,6 +1422,12 @@
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
