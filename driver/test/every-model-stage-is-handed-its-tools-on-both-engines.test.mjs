@@ -221,9 +221,11 @@ function toolsList(server) {
   });
 }
 
-// Every tool some recording stage may call on the shared recording server, by its bare name.
+// Every tool some recording stage may call on the shared recording server, by its bare name. The server part
+// holds no underscore, so one class matches it, hyphens and all: a repeated hyphenated group inside it could
+// match the same text many ways and backtrack without end on a long name.
 const OTHER_STAGES_RECORDING_TOOLS = new Set(Object.values(RECORDING_TOOLS).flat()
-  .map((t) => /^mcp__recording-[^_]+(?:-[^_]+)*__(.+)$/.exec(t)?.[1]).filter(Boolean));
+  .map((t) => /^mcp__recording-[^_]+__(.+)$/.exec(t)?.[1]).filter(Boolean));
 
 // The local servers only. The case-law step's two bridges are remote services granted whole; what they
 // serve is theirs, and the bridge wildcards are pinned by server-tools-granted-or-stated.
