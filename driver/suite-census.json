@@ -46,8 +46,8 @@
           "todos": 0
         },
         "a-band-record-carries-its-goods-from-the-records-on-file.test.mjs": {
-          "tests": 13,
-          "asserts": 51,
+          "tests": 14,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -3759,6 +3759,12 @@
           "skips": 0,
           "todos": 0
         },
+        "goods-not-established-whole-are-never-read-as-a-mismatch.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "grant-command.test.mjs": {
           "tests": 19,
           "asserts": 76,
@@ -6713,7 +6719,7 @@
         },
         "the-run-records-what-each-records-goods-rest-on.test.mjs": {
           "tests": 7,
-          "asserts": 21,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
