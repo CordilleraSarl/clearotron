@@ -117,6 +117,20 @@ test("a recovery fetch that reports success and files a body carrying no record 
     "the disclosure names the case the existing presentation already has: the fetch reported success and the record is not on file");
 });
 
+test("a recovery fetch the register answered 200 with a body it could not read files no record, and does not answer the gate", async () => {
+  // The call row reads ok, as the register's ledger logs an HTTP success, and the fetch itself then refuses the
+  // unreadable body, so no record is filed. The success receipt alone is no retrieval.
+  const recordFetcher = async (uri, { sessionKey }) => {
+    appendFileSync(LEDGER, JSON.stringify({ ts: "2026-10-18T00:00:00Z", provider: "corsearch", sessionKey, tool: "record_fetch", target: uri,
+      ok: true, http_status: 200, bytes: 37, cache_hit: false }) + "\n");
+    return { ok: false, cause: "corsearch_record_fetch: the body did not parse (mock)" };
+  };
+  const { res, events } = await runMockPipeline({ MOCK_SCREEN_DROP: "persist" }, { recordFetcher });
+  assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
+  assert.deepEqual(events.find((e) => e.event === "screen-gate-unresolved")?.uris, [DROP], "a success receipt with no record filed closed the drop");
+  assert.equal(res.verdict, "CONDITIONAL");
+});
+
 test("on the Codex engine too: an empty body does not answer the gate", async () => {
   const recordFetcher = async (uri, ctx) => { answeredEmpty(uri, ctx); return { ok: true }; };
   const { res, events } = await runMockPipeline({ MOCK_SCREEN_DROP: "persist", ...ON_CODEX }, { recordFetcher });
