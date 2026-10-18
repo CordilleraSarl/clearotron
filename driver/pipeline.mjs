@@ -13753,6 +13753,12 @@ async function pipelineInner(job, opts = {}) {
       catch (e2) { throw new StageFailure("verdict", `verdict sidecar refresh failed after consolidation: ${String(e2.message).slice(0, 120)}`); }
     }
     };
+    // THE RECORD THE CARDS ARE BUILT ON CARRIES EVERY DEMOTION. The derivation settled the record after the first
+    // synthesis save; a corrective pass saves again before this seam, and a whole re-send brings back every stamp it had
+    // demoted. Built on those, every card whose finding carried one read as stale after the derivation before delivery
+    // demoted them again, and was rebuilt with the overview for a finding nothing had changed. Settled here, once more,
+    // before the overview and the cards; idempotent on a record that already carries every demotion.
+    settleDerivedBases(ctx, "seam");
     await seamWrites();
     // Every write above is idempotent: each injection skips a row the record already carries, the stamp
     // replaces its rows, and the fold leaves a folded record as it is.
