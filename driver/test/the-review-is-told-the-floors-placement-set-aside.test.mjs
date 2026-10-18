@@ -151,5 +151,5 @@ test("each time the review's message is built, the list is read from the run as 
   ], { later: [[{ select: "/mark/eu/b1", tier: "sheet-2", reason: "near-identical, live in the class" }]] });
   assert.deepEqual(messageCtxFor("narrative-refutation", { ...stale, paths: placedRun, placementFloorDecisions: built.placementFloorDecisions }).placementFloorDecisions, [],
     "the review was told a floor placement now places was set aside");
-  assert.equal(messageCtxFor("synthesis", stale), stale, "another stage composes from its context as it is");
+  assert.equal(messageCtxFor("report-overview", stale), stale, "a stage told no placement decision composes from its context as it is");
 });

@@ -78,8 +78,11 @@ import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
+import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
+  placementRecallEndings } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
+export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow, servedLines, lineKey, groupName } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -3077,18 +3080,6 @@ function bandUriRows(P) {
   } catch { return []; }
 }
 
-/** Every record uri a placements.json names. */
-function placedUriRows(P) {
-  try {
-    const placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-    const out = [];
-    for (const p of Array.isArray(placements) ? placements : []) {
-      for (const r of Array.isArray(p?.records) ? p.records : []) out.push({ uri: r, tier: p?.tier ?? null });
-    }
-    return out;
-  } catch { return []; }
-}
-
 /**
  * PLACEMENT. Everything in the band was in front of this pass; what it placed is in placements.json.
  * Recorded whether the pass completed or not — an incomplete pass discards nothing, and its rows say so
@@ -3124,107 +3115,6 @@ export function recordPlacementPass(ctx, r, trigger = null) {   // @internal —
   deriveFloorDuty(ctx, r, trigger);
   if (r?.ok === true && r?.skipped !== true && trigger !== "stale-repair") armFloorDuty(ctx.paths.runDir);
   return r;
-}
-
-/**
- * The form's set-aside entries as they stand on the shape now on disk, and on what placement placed. A ground by
- * name stands while the band still holds its record and no placement places its line: a later pass that places
- * the line reverses the set-aside, as the fate count already reads it, and a record the band no longer holds has
- * no decision left to deliver. A group's row is checked again exactly as the union took it, on its count and on
- * every line read, because the shape may have been derived again since: a resumed run derives it afresh, and a
- * record body fetched after placement can move a line out of the list the goods test could not place and into a
- * group. A row taken on the earlier shape then covers no line the later one added. `placedUris` are the records
- * the placements carry. Nothing is written back. PURE.
- */
-function standingSetAside(entries, input, { placedUris = [] } = {}) {
-  const all = Array.isArray(entries) ? entries : [];
-  const index = buildSelectionIndex(input);
-  const placedLines = new Set([...placedUris].map((u) => lineKey(index.resolve(u))).filter(Boolean));
-  const named = all.filter((e) => !isSetAsideGroupRow(e)).filter((e) => {
-    const line = lineKey(index.resolve(e?.set_aside));
-    return Boolean(line) && !placedLines.has(line);
-  }).map((e) => ({ ...e, key: lineKey(index.resolve(e.set_aside)) }));
-  const grouped = all.filter(isSetAsideGroupRow);
-  if (!grouped.length) return named;
-  const { form } = unionPlacementForm({ rows: [], set_aside: grouped }, null, input);
-  return [...named, ...form.set_aside_groups];
-}
-
-/** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
-export function placementSetAsideGrounds(P) {   // @internal — driven by its test with a run's own files
-  try {
-    const form = readPlacementForm(P.runDir);
-    if (!form.set_aside?.length) return () => null;
-    const input = readPlacementFormInput(P.runDir);
-    const placedUris = placedUriRows(P).map((r) => r.uri);
-    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris }), buildSelectionIndex(input), input.groups, input.floors,
-      { placedUris });
-  } catch { return () => null; }
-}
-
-/**
- * THE FLOORS PLACEMENT SET ASIDE, AS THE REVIEW IS TOLD THEM: one line per floor of the shape now on disk whose
- * set-aside stands, by name on its status or its territory, or under a crowd's row, with placement's ground. Only
- * decisions that stand on the current shape are listed (`placementSetAsideGrounds`, which checks a group's row
- * again); a floor with no standing decision is not listed, so the review flags it as before. [] when nothing stands
- * or nothing can be read. IMPURE (reads the run).
- */
-export function placementFloorDecisionLines(P) {   // @internal — driven by its test with a run's own files
-  try {
-    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
-    if (!Array.isArray(floors) || !floors.length) return [];
-    const groundOf = placementSetAsideGrounds(P);
-    const out = [];
-    for (const f of floors) {
-      const g = f?.record_id ? groundOf(f.record_id) : null;
-      if (!g?.ground) continue;
-      const who = `${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id})`;
-      if (g.by === "group") out.push(`- ${who}: covered by group (${g.group})'s row: ${g.ground}`);
-      else if (g.on === "status" || g.on === "territory") out.push(`- ${who}: set aside on its ${g.on}: ${g.ground}`);
-    }
-    return out;
-  } catch { return []; }
-}
-
-/**
- * PLACEMENT'S DECISIONS IN THE DELIVERED AUDIT TRAIL (ruled 2026-10-18): one row per set-aside that stands on the shape
- * now on disk, in the Audit Trail's own fields, carrying the decision's reference, its ground and, for a group's row,
- * its count. A set-aside the shape no longer supports is not delivered. [] when there is none or nothing can be read.
- * IMPURE (reads the run).
- */
-export function placementAuditRows(P) {   // @internal — driven by its test with a run's own files
-  try {
-    const form = readPlacementForm(P.runDir);
-    if (!form.set_aside?.length) return [];
-    const input = readPlacementFormInput(P.runDir);
-    const index = buildSelectionIndex(input);
-    return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri) }).flatMap((e) => {
-      if (!e?.ground) return [];
-      if (isSetAsideGroupRow(e)) return [{ source_layer: "Register", step: "placement", query: `group (${groupName(e.set_aside_group)})`,
-        rationale: e.ground, result_summary: `${Number(e.count ?? 0).toLocaleString("en-US")} records` }];
-      const c = index.resolve(e.set_aside);
-      return [{ source_layer: "Register", step: "placement",
-        query: `${c?.mark ?? e.set_aside}${c?.owner ? ` — ${c.owner}` : ""} (${e.set_aside})`, rationale: e.ground }];
-    });
-  } catch { return []; }
-}
-
-/**
- * The records placement set aside, as recall reconciliation accepts them now that the audit delivers them: by name,
- * an individual ending for any position; under a group's row, the members that row validly covers, which end only a
- * residual position, as a ruled crowd does. Lower-cased uris. Empty when nothing stands. IMPURE (reads the run).
- */
-export function placementRecallEndings(P, uris) {   // @internal — driven by its test with a run's own files
-  const byName = new Set(), byGroup = new Set();
-  try {
-    const groundOf = placementSetAsideGrounds(P);
-    for (const u of uris ?? []) {
-      const g = u ? groundOf(u) : null;
-      if (!g?.ground) continue;
-      (g.by === "group" ? byGroup : byName).add(String(u).toLowerCase());
-    }
-  } catch { /* nothing stands */ }
-  return { byName, byGroup };
 }
 
 /**
@@ -4639,10 +4529,15 @@ function clearedForSeat(runDir, label) {
  * they are read here, from the run's files, each time its message is built: the review, its recheck, the delivery
  * loop's whole review after a repeated placement pass and a review dispatched from a rebuilt context all read the
  * decisions as they stand then, never a copy an earlier pass left on the context, and never "(none)" from a context
- * that never set one. Every other stage composes from the context as it is.
+ * that never set one. The reading step and the writer read placement's accepted set-asides the same way. Every
+ * other stage composes from the context as it is.
  */
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
-  return name === "narrative-refutation" && ctx?.paths ? { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) } : ctx;
+  if (!ctx?.paths) return ctx;
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) };
+  // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
+  if (name === "register-digest" || name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  return ctx;
 }
 
 async function stageOnce(name, ctx, opts = {}) {

@@ -8,7 +8,7 @@
 // (on-field / off-field / out-of-scope) lives on the report cards, so we expose those separately. Read-only.
 
 import { existsSync, readFileSync } from "node:fs";
-import { parseAudit, parseReport, parseBlocks, parseFront, parseSections, buildAuditMd } from "./driver.mjs";
+import { parseAudit, parseReport, parseBlocks, parseFront, parseSections, buildAuditMd, placementAuditRows } from "./driver.mjs";
 
 // id-stamp the three block lists so callers (get_finding / trace) can address a single record.
 function idStamp(lists) {
@@ -64,7 +64,9 @@ export function loadFindings(P) {
       //
       // Best-effort by construction: an unreadable or absent findings.json yields undefined, which is
       // exactly the no-op this path already had. It can only add fidelity, never remove it.
-      const { md } = buildAuditMd(reg, cl, { findings: readRunFindings(P) });
+      // …and placement's standing decisions, the rows the driver's own builder adds to the Audit Trail: without them the
+      // rebuilt trail would lose the very set-asides recall reconciliation accepted.
+      const { md } = buildAuditMd(reg, cl, { findings: readRunFindings(P), placementRows: placementAuditRows(P) });
       return { ...idStamp(parseAuditText(md)), source: "rebuilt-from-spine" };
     }
   } catch { /* fall through */ }

@@ -2634,12 +2634,16 @@ export function applyStageWrites(msg, argv) {
         const pos = JSON.parse(readFileSync(driverDir(dir, "register-positions.json"), "utf8"));
         selectable = (pos?.positions ?? []).flatMap((x) => (Array.isArray(x?.records) ? x.records : []))[0] ?? null;
       } catch { /* no fold in reach — fall through to a seat-authored row, which is the honest shape then */ }
-      const rows = selectable
+      // MOCK_PLACEMENT_SET_ASIDE=<ground>: the step sets that record's line aside by name, on its status, instead of
+      // placing it (the fixture's band is one line, so a set-aside beside the placement would be on a placed line).
+      const setAside = process.env.MOCK_PLACEMENT_SET_ASIDE && selectable
+        ? [{ set_aside: selectable, ground: process.env.MOCK_PLACEMENT_SET_ASIDE, on: "status" }] : null;
+      const rows = setAside ? [] : selectable
         ? [{ select: selectable, tier: "headline-candidate",
              reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }]
         : [{ kind: "seat", mark: "LUMENGARDE", owner: "Acme", jurisdiction: "DK", records: [], tier: "headline-candidate",
              reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }];
-      writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows }, null, 2) + "\n");
+      writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows: [...rows, ...(setAside ?? [])] }, null, 2) + "\n");
     }
     if (basename(out) === "narrative.md" && !process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) {
       writeFileSync(join(dirname(out), "findings.json"), synthesisFindings(dirname(out), msg));

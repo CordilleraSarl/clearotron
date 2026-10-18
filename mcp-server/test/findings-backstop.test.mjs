@@ -129,3 +129,39 @@ describe("the rebuilt-from-spine backstop", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });
+
+// THE REBUILT AUDIT CARRIES PLACEMENT'S DECISIONS TOO. The driver's audit builder adds a row to the Audit Trail for each
+// set-aside placement made that still stands, and recall reconciliation accepts those decisions because the audit
+// delivers them. A rebuild that left them out would lose the very rows that justify those endings. Invented marks.
+test("a run with no audit.md rebuilds an Audit Trail that carries placement's standing set-aside", async (t) => {
+  const { buildBandShape, deriveRegisterPositions } = await import("../../driver/band-shape.mjs");
+  const { setAsideKeysOf, renderPlacementsJson } = await import("../../driver/placement-form.mjs");
+  const { unionPlacementForm } = await import("../../driver/placement-union.mjs");
+  const { writePlacementForm } = await import("../../driver/placement-form-io.mjs");
+  const { goodsWordCounter, goodsWordsMatched } = await import("../../driver/record-goods.mjs");
+  const { driverDir } = await import("../../shared/driver-dir.mjs");
+  const rec = (id, mark, owner) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes: ["9"], status: "registered", jurisdictions: ["EU"] });
+  const band = [rec("v1", "VOLTMAX", "Alpha Ltd"), rec("v2", "Plimbo", "Alpha Ltd")];
+  const dir = runDir();
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  mkdirSync(driverDir(dir), { recursive: true });
+  const positions = deriveRegisterPositions(band);
+  const goods = { of: (r) => [{ classes: ["9"], text: r.record_id.endsWith("v1") ? "batteries" : "printers" }], hits: goodsWordCounter(["batteries"]), matched: goodsWordsMatched(["batteries"]) };
+  const { shape } = buildBandShape({ enumerated: band }, { targets: ["Voltmax"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
+  const read = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
+  const { form } = unionPlacementForm(null, { rows: [
+    { select: "/mark/eu/v1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/v2", ground: "a different product, sold only to farmers" },
+  ] }, { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups, served: { lines: new Set(read), records: new Set() } });
+  const P = driver.paths(dir);
+  writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: band, crowds: [] }));
+  writeFileSync(P.bandShape, JSON.stringify(shape));
+  writeFileSync(P.registerPositions, JSON.stringify(positions));
+  writePlacementForm(dir, form);
+  writeFileSync(P.placementModel, JSON.stringify(renderPlacementsJson(form.rows)));
+  const out = loadFindings(P);
+  assert.equal(out.source, "rebuilt-from-spine", "guard: the backstop ran");
+  const row = out.audit.find((a) => a.step === "placement");
+  assert.ok(row, "the rebuilt Audit Trail lost placement's standing set-aside");
+  assert.deepEqual([row.query, row.rationale], ["Plimbo — Alpha Ltd (/mark/eu/v2)", "a different product, sold only to farmers"]);
+});
