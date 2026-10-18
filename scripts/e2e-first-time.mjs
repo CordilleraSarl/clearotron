@@ -198,7 +198,11 @@ export const NOT_COUNTED_EVENTS = {
     "knockout-sweep-total", "level-scope-note",
     "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
-    "plan-execution-refresh", "plan-qids-deferred", "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
+    "plan-execution-refresh", "plan-qids-deferred",
+    // the review after a delivery-check repair: its record, the record of its one correction, a reviewer queued
+    // for a change to the findings record only, and a repair that saved the same values again (no review run)
+    "post-repair-fix-pass", "post-repair-review", "post-repair-review-not-needed", "post-repair-review-queued",
+    "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
     "profile-resolved", "profile-selection", "provider-usage", "quote",
     "record-artifacts", "register-digest-facts-written",
     "register-only", "register-plan", "register-plan-axis-deferred", "register-plan-deferred-coverage",
@@ -226,7 +230,7 @@ export const NOT_COUNTED_EVENTS = {
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
-    "recovery-classified", "record-discard", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
+    "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
     "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3",
   ],
   "read from its own record: the stage records, the dispatch records and the tool-call log": [
@@ -267,6 +271,9 @@ export const COUNTED_TRIGGERS = {
   "frame-reopen": REASK,
   "frame-reopen-retry": RETRY, "grid-ledger": REASK, "intake-asks-followup": REASK, "lint-repair": REPAIR,
   "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR,
+  // the review after a delivery-check repair re-reads what that repair changed; its one correction applies the
+  // flags that review raised
+  "post-repair-review": REPAIR, "post-repair-corrective": REASK,
   "stale-repair-entry": REPAIR, "taint-rerun": REASK, "verdict-recheck": REASK,
 };
 // The two reasons built at run time: a recall reconciliation re-asking the digest, and a flush retried.

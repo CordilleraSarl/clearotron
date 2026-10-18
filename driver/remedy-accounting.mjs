@@ -42,19 +42,23 @@
 // re-stated: verifyRegisterDirectiveClose asks the identical question of the same blocks, and two
 // copies of a matcher is how two matchers drift apart.
 
-import { blockCollapsed, answeredAs } from "./close-verify.mjs";
+import { blockCollapsed, answeredAs, withheldAs } from "./close-verify.mjs";
 import { reopenKey } from "./frame-diff-model.mjs";
 
 export const REMEDY_ACCOUNTING_SCHEMA_VERSION = 1;
 
 /**
- * The five term classes. EXACTLY ONE per remedy term, decided in the fixed order in classifyRemedyTerm.
+ * The six term classes. EXACTLY ONE per remedy term, decided in the fixed order in classifyRemedyTerm.
  *
- *   found          — every slice landed and the register returned material (records, or a counted crowd
- *                    too large to enumerate). The term is answered.
+ *   found          — every slice that ran landed and the register returned material (records, or a
+ *                    counted crowd too large to enumerate). The term is answered.
  *   searched-empty — every slice landed and every one is a COUNTED zero: state `enumerated`, a finite
  *                    total_hits of 0, an empty records array. The executed query and its empty result
  *                    are both recorded on the row. This is the state that used to leave no trace.
+ *   withheld-by-judgment — a slice repeated a waiting family the reading turn withheld, so it was never
+ *                    asked, and every other slice landed with nothing material. Nothing was found and
+ *                    nothing is claimed clean: the term rests on the reading turn's recorded judgment,
+ *                    named on the slice it settles (`withheld_as`).
  *   not-dispatched — no slice was ever minted for this term, with the reason the mint or the remedy
  *                    derivation gave. The term was NOT searched, and now says so.
  *   dispatch-failed— a slice was minted but did not land as a usable executed block: unlanded, error,
@@ -64,7 +68,7 @@ export const REMEDY_ACCOUNTING_SCHEMA_VERSION = 1;
  *                    counted zero (an uncountable total, an unrecognised state), or the receipt offers
  *                    no mapping at all. NEVER guessed in either direction.
  */
-export const REMEDY_TERM_CLASSES = ["found", "searched-empty", "not-dispatched", "dispatch-failed", "unaccounted"];
+export const REMEDY_TERM_CLASSES = ["found", "searched-empty", "withheld-by-judgment", "not-dispatched", "dispatch-failed", "unaccounted"];
 
 /**
  * The two classes that mean "this term's search is ON THE RECORD". Deliberately NOT every class with a
@@ -72,6 +76,15 @@ export const REMEDY_TERM_CLASSES = ["found", "searched-empty", "not-dispatched",
  * evidence that the term was searched, and the closure claim below rests on searchedness alone.
  */
 export const ACCOUNTED_CLASSES = ["found", "searched-empty"];
+
+/**
+ * The classes that leave nothing open: a search on the record, or the reading turn's recorded judgment not
+ * to ask the question at all. A withheld family is a wider question the ruled method lets that turn leave
+ * unasked, on the record with its reason, so a term resting on one is neither a hole nor a doubt. It is
+ * still not a search, which is why ACCOUNTED_CLASSES stays as it is. The not-accounted list, the doubts and
+ * the closure read below all read this one.
+ */
+export const SETTLED_CLASSES = [...ACCOUNTED_CLASSES, "withheld-by-judgment"];
 
 const clip = (s, n = 240) => {
   const t = String(s ?? "").replace(/\s+/g, " ").trim();
@@ -138,10 +151,13 @@ function material(block) {
  *   2. ANY slice that did not land clean ⇒ `dispatch-failed`, naming the first such qid. Every slice
  *      must land, exactly as verifyRegisterDirectiveClose requires of a directive — one convention. A
  *      slice the FOLD refused as already-asked is read through the twin it duplicates first, because that
- *      slice cannot land and the twin is where its question was answered;
+ *      slice cannot land and the twin is where its question was answered. A slice refused as a family
+ *      the reading turn withheld is settled by that judgment (`withheldAs`) and is left out of rules 2-5:
+ *      it never ran, so it has no result to read either way;
  *   3. all landed, ANY slice material ⇒ `found`;
- *   4. all landed, EVERY slice a counted zero ⇒ `searched-empty`;
- *   5. otherwise ⇒ `unaccounted`, with the shape that defeated the join stated.
+ *   4. all landed with nothing material, and a slice withheld ⇒ `withheld-by-judgment`;
+ *   5. all landed, EVERY slice a counted zero ⇒ `searched-empty`;
+ *   6. otherwise ⇒ `unaccounted`, with the shape that defeated the join stated.
  * PURE.
  */
 export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids = new Set(), foldRefusals = new Map() } = {}) {
@@ -159,20 +175,31 @@ export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids 
   // ONLY THE DUPLICATE KIND RESOLVES. An identity collision or a malformed term is a genuine fault and
   // stays `dispatch-failed`: nothing else asked those questions, so nothing else answers them.
   const landsAs = new Map(qids.map((q) => [q, answeredAs(q, foldRefusals)]));   // one rule with the directive check
+  // — A SLICE REFUSED AS A FAMILY THE READING TURN WITHHELD IS SETTLED, NOT READ.
+  //
+  // Its twin never ran: the reading turn decided not to ask that family and recorded why, and the re-sweep
+  // refused to ask it on the turn's behalf. So there is no result to read, and reading the slice as one that
+  // failed to land would record a dispatch failure, and mint a doubt, over a decision the run had made on
+  // purpose. It is settled by the same rule the directive check uses (`withheldAs`), it keeps its own row
+  // saying which family it repeats, and it carries no count, no state and no executed flag of its own.
+  const settledBy = new Map(qids.map((q) => [q, withheldAs(q, foldRefusals)]).filter(([, w]) => w));
   const blockFor = (q) => blocksByQid.get(landsAs.get(q) ?? q);
   const ranAs = (q) => executedQids.has(landsAs.get(q) ?? q);
   const slices = qids.map((q) => {
+    const settled = settledBy.get(q);
+    if (settled) return { ...sliceRow(q, null, false), refused_at_fold: "withheld-by-judgment", withheld_as: settled.family };
     const via = landsAs.get(q);
     const slice = sliceRow(q, blockFor(q), ranAs(q));
     return via && via !== q ? { ...slice, answered_by: via, refused_at_fold: "duplicate-question" } : slice;
   });
+  const asked = qids.filter((q) => !settledBy.has(q));
   if (!qids.length) {
     const reason = String(row?.dispatch_reason ?? "").trim();
     return reason
       ? { class: "not-dispatched", basis: "no-slice-minted", reason: clip(reason, 300), slices }
       : { class: "unaccounted", basis: "no-mapping", reason: "the receipt records no slice and no reason for this term — the join cannot say whether it was searched", slices };
   }
-  for (const q of qids) {
+  for (const q of asked) {
     const b = blockFor(q);
     if (sliceLanded(b, ranAs(q))) continue;
     const why = !ranAs(q) ? "slice-not-landed"
@@ -182,8 +209,11 @@ export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids 
             : "collapsed-slice";
     return { class: "dispatch-failed", basis: why, reason: `${why}:${q}${b?.reason ? ` — ${clip(b.reason, 200)}` : ""}`, slices };
   }
-  const blocks = qids.map((q) => blockFor(q));
+  const blocks = asked.map((q) => blockFor(q));
   if (blocks.some(material)) return { class: "found", basis: "band-block", reason: null, slices };
+  // Nothing material came back, and part of the term was never asked by the turn's decision: a counted zero
+  // beside a question nobody asked is not a clean result for the term, so it is not `searched-empty`.
+  if (settledBy.size && blocks.every(countedZero)) return { class: "withheld-by-judgment", basis: "reading-turn-record", reason: null, slices };
   if (blocks.every(countedZero)) return { class: "searched-empty", basis: "counted-zero", reason: null, slices };
   const odd = blocks.find((b) => !countedZero(b));
   return {
@@ -240,9 +270,10 @@ export function accountRemedyTerms({ terms = [], blocksByQid = new Map(), execut
     totals,
     by_directive: byDirective,
     // the two lists a reader is owed, kept APART on purpose (see the zero-semantics note in the header):
-    // a term that ran and found nothing is EVIDENCE; a term that never ran is a hole.
+    // a term that ran and found nothing is EVIDENCE; a term that never ran is a hole. A term the reading
+    // turn's judgment settled is neither, and is in neither list: its row says which family it rests on.
     searched_empty: rows.filter((r) => r.class === "searched-empty"),
-    not_accounted: rows.filter((r) => !ACCOUNTED_CLASSES.includes(r.class)),
+    not_accounted: rows.filter((r) => !SETTLED_CLASSES.includes(r.class)),
     out_of_scope: (Array.isArray(outOfScope) ? outOfScope : []).map((o) => ({
       directive: String(o?.directive ?? ""), layer: String(o?.layer ?? ""),
       reason: clip(o?.reason ?? "source-channel directive — swept by a prose byte-diff on the common-law findings, so it has no term unit and no per-query record to account", 300),
@@ -269,6 +300,11 @@ export function accountRemedyTerms({ terms = [], blocksByQid = new Map(), execut
  * `accounting` may be null (the ledger did not build) — then this returns the caller's own prior answer
  * untouched, because a join that could not run is not evidence of a gap. PURE.
  *
+ * A term settled by the reading turn's recorded judgment does not hold the gap open (SETTLED_CLASSES): the
+ * re-sweep did not ask a question that turn had decided against, and holding a CLEAR on that would turn a
+ * recorded decision into an unfinished search. It closes nothing by itself either: the directive must still
+ * be verified-closed, and every slice that did run must have landed.
+ *
  * @returns {{domClosed: boolean, blockedBy: {term, directive, class, reason}[]}}
  */
 export function domClosedOverAccounted({ directives = [], swept = [], accounting = null, reopenKeyOf = reopenKey } = {}) {
@@ -283,7 +319,7 @@ export function domClosedOverAccounted({ directives = [], swept = [], accounting
   if (!closedOnADominant) return { domClosed: false, blockedBy: [] };
   if (!accounting || accounting.computable !== true) return { domClosed: true, blockedBy: [] };
   const blockedBy = (accounting.rows ?? [])
-    .filter((r) => domKeys.has(r.directive) && !ACCOUNTED_CLASSES.includes(r.class))
+    .filter((r) => domKeys.has(r.directive) && !SETTLED_CLASSES.includes(r.class))
     .map((r) => ({ term: r.term, directive: r.directive, class: r.class, reason: r.reason }));
   return { domClosed: blockedBy.length === 0, blockedBy };
 }
@@ -292,7 +328,7 @@ export function domClosedOverAccounted({ directives = [], swept = [], accounting
 // AD-4 house rule: every field is written on EVERY row, so "no term went unaccounted"
 // (unaccounted:0) and "the ledger could not run" (unaccounted:null) differ by VALUE, never by field
 // presence.
-export const REMEDY_ACCOUNTING_EVENT_FIELDS = ["terms", "found", "searched_empty", "not_dispatched",
+export const REMEDY_ACCOUNTING_EVENT_FIELDS = ["terms", "found", "searched_empty", "withheld_by_judgment", "not_dispatched",
   "dispatch_failed", "unaccounted"];
 
 export function remedyAccountingEvent({ trigger = null, artifact = null, reason = null } = {}) {
@@ -313,6 +349,8 @@ export function remedyAccountingEvent({ trigger = null, artifact = null, reason 
  *   doubt:remedy-accounting:unaccounted:N     — the join cannot say either way
  * A `searched-empty` term mints NOTHING: it is answered, and its query and empty result ride the
  * artifact and the receipt. Minting a doubt for it would turn a completed search into an open question.
+ * A `withheld-by-judgment` term mints nothing either: it rests on the reading turn's recorded decision not
+ * to ask, and a doubt would re-open that decision as a question nobody had answered.
  *
  * The frozen doubt-record shape, status "open"; stitchDoubts and the doubt-closure stage decide endings
  * exactly as for every other doubt family, and an OPEN one shipping is the system working. Never gates,

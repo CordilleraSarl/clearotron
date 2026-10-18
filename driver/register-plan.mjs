@@ -2156,6 +2156,95 @@ export function foldSupplementalEntries(plan, entries) {
 }
 
 /**
+ * THE WAITING FAMILIES THE READING TURN WITHHELD, keyed by the question each one asks.
+ *
+ * A wider family waits in the plan until the reading turn asks for it, and the turn records each family it
+ * leaves unasked as withheld-by-judgment, with its reason (withheld-families.mjs). The fold above lets a
+ * question through when it matches a waiting family, because the turn's own ask of that question is what the
+ * family waits for. That rule cannot tell the turn's ask from anyone else's, and the blind frame comparison's
+ * re-sweep turns its requests into questions by code: its contains question on the mark is such a family, so
+ * it asked families the turn had withheld. This map is what lets the re-sweep tell them apart.
+ *
+ * A family is in it only when all of these hold, because each one missing is a way a question could inherit
+ * a judgment nobody made:
+ *   · it waits for the reading turn in this plan: a required row has no withholding to inherit;
+ *   · the turn's record names it, on its own axis, with a reason: a family nobody judged is still open;
+ *   · it is not released: a release replaces the withholding;
+ *   · no plan row that does not wait asks the same question: that row is the one that answers it, and the
+ *     fold's duplicate rule names it as the twin.
+ * `withheld` is the record as readWithheldFamilies returns it, `{ [qid]: { axis, reason } }`, and `released`
+ * the set releasedFamilyQids returns. The caller reads both, so this stays PURE.
+ * @returns {Map<string, {qid: string, reason: string}>} question key → the withheld family and its reason
+ */
+export function withheldFamilyTwins(plan, withheld = {}, released = new Set()) {
+  const entries = Array.isArray(plan?.entries) ? plan.entries : [];
+  const asked = new Set(entries.filter((e) => e && e.unsupported !== true && !awaitsReadingTurn(e.when))
+    .map((e) => entryQuestionKey(e, plan)).filter(Boolean));
+  const twins = new Map();
+  for (const e of entries) {
+    if (!e?.qid || e.unsupported === true || !awaitsReadingTurn(e.when) || released?.has?.(e.qid)) continue;
+    const w = withheld?.[e.qid];
+    const reason = String(w?.reason ?? "").trim();
+    if (!reason || (w?.axis != null && String(w.axis) !== String(e.axis ?? ""))) continue;
+    const key = entryQuestionKey(e, plan);
+    if (key && !asked.has(key) && !twins.has(key)) twins.set(key, { qid: e.qid, reason });
+  }
+  return twins;
+}
+
+/**
+ * WHAT A RE-SWEEP THAT ADDS NOTHING STILL OWES ITS AXIS: the axis's entries that have not landed. The executor reads
+ * an empty question list as every entry on the axis, so a fold that added nothing used to repeat every landed
+ * question and, with them, retry the ones still unanswered. These are that retry without the repeats: every entry
+ * on the axis the provider can express (`unsupported` is never sent), a family waiting for the reading turn only once
+ * the turn released it, less every entry the join of these bands counts as executed, a released family's block
+ * included. So it sends a required search that did not land, and also what the old re-send retried among the
+ * unlanded: an entry whose provider error spent its retry ladder (a real call, as before), a capability refusal not
+ * yet accepted as a gap (refused again without a call), and a fringe entry whose guard the executor still holds
+ * (no call). The dispatcher drops the capability gaps the run has already accepted. PURE.
+ * @param {object} plan  the frozen register plan
+ * @param {string} axis  the axis the re-sweep ran on
+ * @param {object} bandsByAxis  the run's register bands, as readRegisterBands returns them
+ * @param {Set<string>} released  the families the reading turn released (releasedFamilyQids)
+ */
+export function pendingRequiredQids(plan, axis, bandsByAxis = {}, released = new Set()) {
+  const landed = new Set(joinPlanToBands(plan, bandsByAxis, { released }).executed.map((x) => x.qid));
+  return (Array.isArray(plan?.entries) ? plan.entries : [])
+    .filter((e) => e?.qid && e.axis === axis && e.unsupported !== true && (!awaitsReadingTurn(e.when) || released?.has?.(e.qid))
+      && !landed.has(e.qid))
+    .map((e) => e.qid);
+}
+
+/**
+ * Refuse the minted entries that repeat a withheld family exactly, before they reach the fold. "Exactly" is
+ * the fold's own question identity (entryQuestionKey: offices resolved, classes, goods, owner, term form), so
+ * the same term asked in other classes, other offices or narrowed by goods is a different question and is
+ * kept. Each refusal is `withheld-by-judgment`, its twin is the family, and it carries the reason on the
+ * family's record, so the closure rule (close-verify.mjs, withheldAs) settles the slice by that judgment:
+ * the slice is never frozen into the plan and never runs, and the family stays waiting, so the reading turn
+ * can still release it.
+ *
+ * NOT A SCREEN IN THE FOLD ITSELF, deliberately. The fold is the funnel for the reading turn's own proposals
+ * as well, and the turn's ask of a family it once withheld is that turn reconsidering, which the waiting rule
+ * exists to let through. Only the re-sweep, which asks on nobody's judgment, calls this.
+ *
+ * Every other entry is KEPT for the fold, which screens it as before. An entry whose qid the plan already
+ * holds is kept too: the fold reads it as a re-proposal of a row that is already there. PURE.
+ * @returns {{ kept: object[], refused: {qid: string, term: string, kind: "withheld-by-judgment", twin: string, reason: string}[] }}
+ */
+export function refuseWithheldFamilies(entries, twins, plan) {
+  const inPlan = new Set((plan?.entries ?? []).map((e) => e?.qid));
+  const kept = [], refused = [];
+  for (const e of Array.isArray(entries) ? entries : []) {
+    const key = e?.qid && !inPlan.has(e.qid) ? entryQuestionKey(e, plan) : null;
+    const twin = key ? twins?.get?.(key) : undefined;
+    if (!twin) { kept.push(e); continue; }
+    refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "withheld-by-judgment", twin: twin.qid, reason: twin.reason });
+  }
+  return { kept, refused };
+}
+
+/**
  * The store decision (pure — the attach step does only IO around this): given the slug store's
  * latest plan (or null) and a fresh compile, decide reuse / extend / mint.
  *   { plan, action: "reused" | "extended" | "minted", added: [qid] }

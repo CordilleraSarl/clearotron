@@ -38,13 +38,14 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
-import { recordSynthesis, uncarriedCoverageLimits } from "../synthesis-record.mjs";
+import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall } from "../synthesis-record.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
 import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
 import { recordReportCard } from "../report-card-record.mjs";          // conversion 5 — the fan-out transport
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
+import { recordWithheldFamilies, recordReleasedFamilies } from "../withheld-families.mjs";       // the reading turn's withheld and released families — called, not copied
 import { recordRegisterDigest, readDigestFacts, joinKey } from "../register-digest-record.mjs";   // conversion 11 — the findings document, called not copied
 import { recordDeclinations } from "../declination-tool.mjs";   // — the mock declines through the REAL transport
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
@@ -985,6 +986,31 @@ export function frameDiffModel() {
         observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38 — surfaced only via 9/28/41/42 co-classification", severity: "dominant-element" }],
       dominant_element_gap: true,
     });
+  // A main-element request on the main element: the re-sweep turns it into an exact and a contains
+  // question, and the contains one is the waiting family `primary-sweep:default:novapulse`. The scenarios
+  // pair it with MOCK_WITHHOLD_FAMILIES, which records that family withheld before the comparison runs.
+  if (process.env.MOCK_FRAME_DIFF === "dominant-on-waiting-family")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "NOVAPULSE", observation: "the main element's wider contains search was never read", severity: "dominant-element" }],
+      dominant_element_gap: true,
+    });
+  // An ordinary request whose one question is the waiting family `primary-sweep:exact:novapulse` itself.
+  if (process.env.MOCK_FRAME_DIFF === "waiting-family-only")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "the lower-case form of the main element", observation: "the case form was never searched",
+        severity: "material", remedy: { terms: ["novapulse"], nice_classes: ["9", "41"] } }],
+      dominant_element_gap: false,
+    });
+  // An ordinary request whose one question the plan already asks: the identical question, answered by its own row.
+  if (process.env.MOCK_FRAME_DIFF === "duplicate-only")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "the mark as ordered", observation: "the identical search should be confirmed",
+        severity: "material", remedy: { terms: ["PROJECT NOVAPULSE"], nice_classes: ["9", "41"] } }],
+      dominant_element_gap: false,
+    });
   // Two class-gap directives, so a re-attempt can be seen to re-send only the one that failed.
   if (process.env.MOCK_FRAME_DIFF === "field-classgap-two")
     return JSON.stringify({
@@ -1221,11 +1247,36 @@ export function variantManifestModelFixture() {
  * moves a coverage note, the other an actual finding; without both, narrowing the freshness question
  * looks like a pass because it went quiet).
  *
- * Both key on the report-overview resume the redo ladder composes, which the conversion left intact: the
- * followup still opens "RESUMING your own report-overview session", it just orders a CALL now.
+ * Both key on the report-overview repair the redo ladder composes: the followup opens "your earlier
+ * report-overview work is not in your context", and it orders a CALL.
  */
+/**
+ * THE SAVE-AFTER-THE-CARDS KNOBS. A synthesis save once the report cards have been started (their folder exists)
+ * changes the record the cards were built from, the way a late repair does. Each knob is keyed on that run state,
+ * never on a repair message's wording, and leaves every earlier save as it was:
+ *   MOCK_LATE_SAVE_EDITS=<ordinal>     that finding's owner name gains " (post-redo)", which its card echoes;
+ *   MOCK_LATE_SAVE_ADDS=1              the record carries one more finding, cloned as MOCK_FINDINGS_N clones;
+ *   MOCK_LATE_SAVE_WITHDRAWS=<ordinal> that finding is withdrawn, so no card is owed for it.
+ * Ordinals are the model's, the numbering the record is written in, before any fold.
+ */
+function savedAfterTheCards(runDir, buildRecord) {
+  if (!runDir || !existsSync(join(runDir, "report-cards"))) return buildRecord();
+  const n = Math.max(1, Number(process.env.MOCK_FINDINGS_N || 1));
+  const adds = Boolean(process.env.MOCK_LATE_SAVE_ADDS);
+  if (adds) process.env.MOCK_FINDINGS_N = String(n + 1);
+  let doc;
+  try { doc = buildRecord(); } finally { if (adds) process.env.MOCK_FINDINGS_N = String(n); }
+  const edit = Number(process.env.MOCK_LATE_SAVE_EDITS || 0);
+  const withdraw = Number(process.env.MOCK_LATE_SAVE_WITHDRAWS || 0);
+  for (const f of Array.isArray(doc?.findings) ? doc.findings : []) {
+    if (f?.ordinal === edit && f.owner && !String(f.owner.name ?? "").includes("(post-redo)")) f.owner.name = `${f.owner.name ?? ""} (post-redo)`.trim();
+    if (f?.ordinal === withdraw) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review flag on this invented finding withdrew it."; }
+  }
+  return doc;
+}
+
 function stalefindingsOnLintRepair(dir, msg) {
-  if (!/RESUMING your own report-overview session/.test(msg)) return;
+  if (!/your earlier report-overview work is not in your context/.test(msg)) return;
   const fp = join(dir, "findings.json");
   // AD-2 A1 (E2E-R2): the redo ALSO rewrites findings.json — the exact incident shape (the redo turn moved
   // the input every report card was built from, staling the whole delivery tail). The rewrite stays
@@ -1592,6 +1643,23 @@ export function applyStageWrites(msg, argv) {
     });
     if (r.refused) return `mock unit-note REFUSED by record_unit_note: ${r.refused}`;
     if (r.write_failed) return `mock unit-note: record_unit_note could not store the note (${r.write_failed})`;
+    // MOCK_WITHHOLD_FAMILIES — the reading turn's judgment on its waiting families, `{ "<qid>": "<reason>" }`,
+    // recorded through the production record exactly as the turn's own tool records it. The first pass only:
+    // a resume is the same turn reconsidering, which this knob does not model. The record itself refuses a
+    // family that is not waiting on the bound axis, so one knob serves every seat.
+    if (process.env.MOCK_WITHHOLD_FAMILIES && !resume) {
+      const families = Object.entries(JSON.parse(process.env.MOCK_WITHHOLD_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
+      const w = recordWithheldFamilies(runDir, { axis: bound, families });
+      if (w.refused || w.write_failed) return `mock unit-note: the withheld families were not recorded (${w.refused ?? w.write_failed})`;
+    }
+    // MOCK_RELEASE_FAMILIES — the same turn releasing waiting families, `{ "<qid>": "<reason>" }`, through the
+    // production record. It records the release only: the turn's own ask of a released family is not modelled, so
+    // the family stays unlanded until something else asks it.
+    if (process.env.MOCK_RELEASE_FAMILIES && !resume) {
+      const families = Object.entries(JSON.parse(process.env.MOCK_RELEASE_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
+      const w = recordReleasedFamilies(runDir, { axis: bound, families });
+      if (w.refused || w.write_failed) return `mock unit-note: the released families were not recorded (${w.refused ?? w.write_failed})`;
+    }
     return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"})`;
   }
   if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
@@ -1654,6 +1722,21 @@ export function applyStageWrites(msg, argv) {
     // post-hoc validator to the call, and a mock that stops at the refusal models a seat that ignores an
     // error response — reporting the stage as exhausted where the PRODUCT withheld nothing.
     if (/record_synthesis/.test(msg)) {
+      // MOCK_LINT_REPAIR_SAME_VALUES — the writer's delivery-check repair saves its accepted record again with
+      // the same values and its verdict spaced differently: the narrative's bytes move, its values do not.
+      if (process.env.MOCK_LINT_REPAIR_SAME_VALUES && /the deterministic pre-delivery lint failed these checks/.test(msg)) {
+        const held = lastAcceptedCall(runDir);
+        if (held) {
+          const call = structuredClone(held);
+          // "finding": the repair changes one finding's legal position and nothing the narrative renders.
+          const f0 = (call.findings?.findings ?? [])[0];
+          if (process.env.MOCK_LINT_REPAIR_SAME_VALUES === "finding" && f0) f0.legal_position = `${f0.legal_position ?? ""} The repair restates the specification.`.trim();
+          else if (typeof call.narrative?.verdict === "string") call.narrative.verdict = call.narrative.verdict.replace(" ", "  ");
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, call);
+          return r.refused ? `mock writer refused re-saving the same values: ${r.refused}` : "mock writer re-saved the same values";
+        }
+      }
       // THE WRITER. The mock drives the PRODUCTION receiver rather than writing the two files, for the
       // same reason every arm here does: a fixture that wrote narrative.md and findings.json would be
       // the mock taking the path this conversion deleted, and it would hide the one thing the
@@ -1685,7 +1768,7 @@ export function applyStageWrites(msg, argv) {
       // three tests whose whole subject is that the run RECOVERS. So the mock restates once, the way a
       // competent seat does, by re-deriving with the family's own heal phrase. It restates ONCE: a
       // second refusal is returned, so a genuinely unfixable call still fails rather than looping.
-      const build = (m) => JSON.parse(synthesisFindings(runDir, m));
+      const build = (m) => savedAfterTheCards(runDir, () => JSON.parse(synthesisFindings(runDir, m)));
       let doc;
       try { doc = build(msg); }
       catch (e) { return `mock synthesis: could not build the findings record (${String(e?.message ?? e).slice(0, 120)})`; }
@@ -1729,7 +1812,10 @@ export function applyStageWrites(msg, argv) {
       // Keyed on narrative.md not yet existing, so the redo is recognised by run state rather than by
       // matching the repair prompt's wording, which the composer is free to change. It goes in the
       // SPINE because that is the section the write-up prose renders into.
-      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && !existsSync(join(runDir, "narrative.md")))
+      // "until-lint-repair": the over-cap write-up survives every save but the delivery-check repair's, so a
+      // run whose first review is not CLEAR still reaches the repair; any other value heals after the first.
+      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && (process.env.MOCK_NARRATIVE_OVER_CAP === "until-lint-repair"
+        ? !/the deterministic pre-delivery lint failed these checks/.test(msg) : !existsSync(join(runDir, "narrative.md"))))
         ? " " + "the cited registration covers the identical mark in the searched class and remains material here. ".repeat(40)
         : "";
       // MOCK_CANDSELF — the applicant-unknown note, on the same condition the fixture used.
@@ -1870,6 +1956,16 @@ export function applyStageWrites(msg, argv) {
         return r;
       };
 
+      // MOCK_POST_REPAIR_FLAGS — the review after a delivery-check repair, recognised by its own opening line:
+      // these flags (a JSON array), under MOCK_POST_REPAIR_VERDICT or, by default, CONDITIONAL when there are
+      // flags and CLEAR when there are none. Every other review this run makes answers as the knobs below say.
+      if (process.env.MOCK_POST_REPAIR_FLAGS && /This is a review of a repair, not a full review\./.test(msg)) {
+        const flags = JSON.parse(process.env.MOCK_POST_REPAIR_FLAGS);
+        const verdict = process.env.MOCK_POST_REPAIR_VERDICT ?? (flags.length ? "CONDITIONAL" : "CLEAR");
+        const r = send({ verdict, flags, plan_audit: planAudit });
+        return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
+          : `mock reviewer recorded the review after the repair (${verdict}) through record_narrative_refutation`;
+      }
       if (process.env.MOCK_REVIEW_BLOCKS_AFTER_VERDICT && runDir && existsSync(driverDir(runDir, "verdict.json"))) {
         // The audit rides UNCONDITIONALLY here. The stale-repair dispatch does not re-demand it, so a
         // msg-conditional mock would fail that pass on `plan_audit_missing` and the arm would go
@@ -1978,6 +2074,17 @@ export function applyStageWrites(msg, argv) {
         const cfg = i >= 0 && argv[i + 1] ? JSON.parse(argv[i + 1]) : null;
         bound = cfg?.mcpServers?.["recording-report-card"]?.env?.CLEAROTRON_RECORD_AXIS ?? null;
       } catch { /* malformed config — `bound` stays null and the receiver refuses by name */ }
+      // The codex channel: the same server's table in the rendered `$CODEX_HOME/config.toml`, where the engine writes
+      // what claude carries on argv (recordAxisFromWiring, above). Without it no card was ever written on the openai
+      // engine, and every card there rendered structured-only, a harness gap that read as the product's behaviour.
+      if (!bound && process.env.CODEX_HOME) {
+        try {
+          const table = readFileSync(join(process.env.CODEX_HOME, "config.toml"), "utf8").split(/^\[/m)
+            .find((t) => t.startsWith("mcp_servers.recording-report-card]"));
+          const m = table?.match(/CLEAROTRON_RECORD_AXIS\s*=\s*"((?:[^"\\]|\\.)*)"/);
+          if (m) bound = JSON.parse(`"${m[1]}"`);
+        } catch { /* no config.toml — `bound` stays null and the receiver refuses by name */ }
+      }
       if (!bound) return "mock report-card: no CLEAROTRON_RECORD_AXIS in the resolved mcp config — the driver did not bind a card index";
       recordMockToolCall(runDir, "record_report_card", "recording-report-card");
       // The fixture's own prose, sent as VALUES. `reportCardFixture` still exists and still writes the
@@ -1999,10 +2106,15 @@ export function applyStageWrites(msg, argv) {
         const fj = JSON.parse(readFileSync(join(runDir, "findings.json"), "utf8"));
         owner = (fj.findings ?? []).find((x) => String(x.ordinal) === String(bound))?.owner?.name || owner;
       } catch { /* no findings yet — the default names the fixture's own owner */ }
+      // MOCK_CARD_SCOPE_COUNT=<ordinal> — that card's FIRST rendering states a search count in its own prose, which the
+      // delivery check refuses as `scope-numbers-in-prose`, a fault that names no finding; a later rendering of the same
+      // card is clean. Keyed on the card's own file, never on a repair message's wording.
+      const scopeCount = String(process.env.MOCK_CARD_SCOPE_COUNT ?? "") === String(bound) && !existsSync(join(runDir, "report-cards", `${bound}.md`));
       const r = recordReportCard(runDir, {
         ordinal: String(bound),
         full_detail: [
           { lead: "Filing", text: `Mock filing detail for ${owner}.` },
+          ...(scopeCount ? [{ lead: "Scope", text: "The search ran 14 queries across the register." }] : []),
           // D3 — the read bullet is REQUIRED of a real seat (reportcard_read_lead_missing), so the
           // mock that stands in for one carries it. A fixture that would be refused in production is not
           // a mock of production: without this the acceptance change reds every mocked card run, and
@@ -2027,10 +2139,14 @@ export function applyStageWrites(msg, argv) {
       // which is the honest post-conversion shape of the same defect.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
+      // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
+      // of MOCK_CARD_SCOPE_COUNT; a later rendering is clean. Keyed on the overview's own file, never on a message.
+      const scopeCountNote = process.env.MOCK_OVERVIEW_SCOPE_COUNT && !existsSync(join(runDir, "report-overview.md"))
+        ? "The search ran 14 queries across the register." : "";
       const r = recordReportOverview(runDir, {
         overall_caption: "mock composite 3",
         actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
+        methodology: [permNote, scopeCountNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
           .filter(Boolean).join(" "),
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.

@@ -31,9 +31,10 @@ to open something to see it.
 
 **DEFAULT-VISIBLE TEXT CARRIES NO LEGAL OR ENGINE VOCABULARY.** Default-visible means anything a reader
 meets before opening a fold: the summary and the opening line, the basis for the rating, the points for
-and against and what would soften them, the one sentence under each name, the four answers, the
-reviewer's notes, the caveats, the coverage rows and the lines saying what needs a decision. Ordinary
-nouns. One idea per sentence. **No visible sentence over 25 words.** The conclusion first.
+and against and what would soften them, the finding sentence under each name (at most two sentences),
+the four answers, the reviewer's notes, the caveats, the coverage rows and the lines saying what needs a
+decision. Ordinary nouns. One idea per sentence. **No visible sentence over 25 words.** The conclusion
+first.
 
 Which stored fields those are is not prose's business and is not listed here — `DEFAULT_VISIBLE_FIELDS`
 in `driver/plain-register.mjs` names them for both products, in one place, so a field renamed once does

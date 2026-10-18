@@ -126,7 +126,7 @@ test("the corrective pass is told where a rewrite of such a line goes, in both o
     const text = corrective.compose(sample.args);
     assert.match(text, /a coverage row's "note", an action's "text", or the mark assessment's/,
       `${sample.name}: the pass is not told that such a line is correctable at all`);
-    assert.match(text, /send the complete top-level `coverage` array/, sample.name);
+    assert.match(text, /inside the call's `findings` object beside the "corrections" marker: send the complete `coverage` array/, sample.name);
     assert.match(text, /A row left out of the array is a row deleted/, `${sample.name}: nothing warns that a partial array deletes`);
     assert.match(text, /Rewording a coverage note is NOT reopening the coverage account/,
       `${sample.name}: without this the seat reads two instructions as a conflict and does nothing`);

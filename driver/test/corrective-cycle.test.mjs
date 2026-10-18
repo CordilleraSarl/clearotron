@@ -293,7 +293,9 @@ test("T3a/#1674: a review that flips to BLOCKING during the delivery stale-repai
   // FAILED (`plan_audit_missing`) and the run stale-BLOCKED, an ending with nothing to do with the
   // verdict. Assert the repair SUCCEEDED and the run did not stale-block, so the only route to the claim
   // below is the one under test.
-  assert.ok(events.some((e) => e.event === "stage" && e.stage === "narrative-refutation" && e.trigger === "stale-repair" && e.ok === true),
+  // The repair changed the narrative's content and nothing else the reviewer reads, so the reviewer is sent
+  // the review after a repair (what changed and what rests on it) rather than the whole review again.
+  assert.ok(events.some((e) => e.event === "stage" && e.stage === "narrative-refutation" && e.trigger === "post-repair-review" && e.ok === true),
     "the re-run SUCCEEDED — a failed repair fails the run for an unrelated reason and proves nothing");
   assert.ok(!events.some((e) => e.event === "delivery-stale-blocked"),
     "and the run did not stale-block — freshness was restored, so delivery was genuinely on the table");

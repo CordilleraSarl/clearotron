@@ -52,7 +52,7 @@ test("a word of the profession's on a default-visible line reaches the reviewer 
   assert.ok(out.ids.some((x) => x.id === "refute-plain-register"), "the block was not built");
   assert.match(out.text, /"proprietor"/, "the term is named");
   assert.match(out.text, /owner/, "and so is the word the reader needs — a flag naming a word teaches nothing");
-  assert.match(out.text, /conflict 1's one sentence/, "the line to rewrite is named, not a score");
+  assert.match(out.text, /conflict 1's finding sentence/, "the line to rewrite is named, not a score");
   assert.match(out.text, /EVIDENCE, NOT A VERDICT/, "the seat is handed evidence, never a ruling");
 });
 
@@ -115,7 +115,7 @@ test("the read is not confined to the finding's one sentence — the other visib
   const out = compose(plant("Same name, same goods, and they were first."), { marks: [{ name: "NORTHWIND" }] });
   assert.ok(out.ids.some((x) => x.id === "refute-plain-register"),
     "every finding's sentence was clean, so a block here must have come from another visible surface");
-  assert.doesNotMatch(out.text, /conflict \d+'s one sentence/,
+  assert.doesNotMatch(out.text, /conflict \d+'s finding sentence/,
     "and it must not be attributed to the sentences that were clean");
 });
 
