@@ -59,7 +59,7 @@ import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordU
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
 import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
@@ -140,7 +140,7 @@ const COMMONLAW_CARRY_FLOOR = (() => {
   try { return JSON.parse(readFileSync(new URL("./commonlaw-carry-floor.json", import.meta.url), "utf8")); }
   catch { return null; }
 })();
-import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent, mintRemedyAccountingDoubts } from "./remedy-accounting.mjs";   // — every remedy term ends accounted (2026-08-03)
+import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent, mintRemedyAccountingDoubts, SETTLED_CLASSES } from "./remedy-accounting.mjs";   // — every remedy term ends accounted (2026-08-03)
 import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, fetchedRecordUris, countLaneCalls } from "./provider-usage.mjs";
 // — the run's own record log. Every driver-side register call that can write a record BODY carries
 // this path, because this process runs several runs' pipelines at once and a global address would file
@@ -11036,7 +11036,7 @@ async function pipelineInner(job, opts = {}) {
         // (`x:0` vs `x:null` must differ by value, never by presence). The demote paths carry the SAME
         // rows forward unchanged, deliberately — a failed re-digest demotes CLOSURE, not searchedness:
         // a query that ran still ran.
-        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null, answered = []) => {
+        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null, answered = [], withheld = []) => {
           try {
             writeFileSync(reopenReceiptPath, JSON.stringify({
               ts: new Date().toISOString(), requested: firing.map(reopenKey),
@@ -11044,6 +11044,9 @@ async function pipelineInner(job, opts = {}) {
               ...(partials.length ? { partials } : {}),
               // a closed directive whose slice the fold refused as already-asked, with the plan row that answered it
               ...(answered.length ? { answered_elsewhere: answered } : {}),
+              // a closed directive with a slice settled by the reading turn's judgment: the slice and the family
+              // it repeats, and nothing else. The reason stays on the turn's own record.
+              ...(withheld.length ? { withheld_by_judgment: withheld } : {}),
               dominant_element_gap, domClosed: dom,
               directive_qids: reopenQids, born: reopenBorn,
               remedy_terms: accounting?.computable === true ? accounting.rows : null,
@@ -11090,6 +11093,7 @@ async function pipelineInner(job, opts = {}) {
           // folded into the defer reason otherwise), never dropped into the aggregate count alone.
           const regPartialMint = new Map();
           const regAnsweredBy = new Map();   // reopenKey → the plan rows that answered its slices the fold refused as already-asked
+          const regWithheldBy = new Map();   // reopenKey → its slices refused as families the reading turn withheld, with each family
           // — the per-TERM rows the remedy ledger accounts. One row per remedy term per directive,
           // recorded at the mint seam (the only place the term→qid mapping exists) so the receipt can
           // later say what each term asked and what came back. reopenKey → [{term, predicates, qids,
@@ -11207,18 +11211,28 @@ async function pipelineInner(job, opts = {}) {
             note(`frame-reopen: ${regDirectives.length} register omission(s) → ${allMinted.length} supplemental entr${allMinted.length === 1 ? "y" : "ies"} minted (structured remedy), dispatched as pure code (no agent sweep)`);
             const beforeBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
             if (allMinted.length) {
-              const { plan, added, refused } = foldSupplementalEntries(ctx.registerPlan, allMinted);
+              // A QUESTION THE READING TURN WITHHELD IS NOT ASKED AGAIN HERE. The fold lets a question through
+              // when it matches a waiting family, because the reading turn's own ask is what the family waits
+              // for; this sweep asks on nobody's judgment, so its exact repeat of a family the turn withheld is
+              // refused before the fold, with the family as its twin and the turn's recorded reason. The record
+              // is read here, at the fold, so a family the turn has since released is asked as before.
+              const withheldTwins = withheldFamilyTwins(ctx.registerPlan, readWithheldFamilies(run.runDir), releasedFamilyQids(run.runDir));
+              const { kept: toFold, refused: withheldRefused } = refuseWithheldFamilies(allMinted, withheldTwins, ctx.registerPlan);
+              const folded = foldSupplementalEntries(ctx.registerPlan, toFold);
+              const { plan, added } = folded;
+              const refused = [...withheldRefused, ...folded.refused];
               if (added.length) {
                 writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
                 renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
                 ctx.registerPlan = plan;
               }
-              // — expected empty: mintSupplementalEntries runs entryTermIssues at the mint and the
-              // rejects are already in the sidecar above. Logged anyway, because "expected empty" is a
-              // belief about two screens agreeing, and the day they stop agreeing this is the only place
-              // that would say so.
+              // — expected to hold only the two refusals that mean the question is settled already: a
+              // duplicate of the plan's own question, and a family the reading turn withheld. Every other kind
+              // is a term mintSupplementalEntries should have caught (it runs entryTermIssues at the mint, and
+              // its rejects are already in the sidecar above). Logged anyway, because that is a belief about
+              // two screens agreeing, and the day they stop agreeing this is the only place that would say so.
               if (refused.length) {
-                for (const r of refused) if (r?.qid) regFoldRefusals.set(r.qid, { kind: r.kind ?? null, twin: r.twin ?? null });
+                for (const r of refused) if (r?.qid) regFoldRefusals.set(r.qid, { kind: r.kind ?? null, twin: r.twin ?? null, reason: r.reason ?? null });
                 // THE REASON THE FOLD GAVE IS LOGGED, not just the qid it refused. The fold is the only
                 // place that knows WHY, and for a duplicate it knows WHICH plan row already holds the
                 // answer. Logging the qid alone threw that away: recovering it on one run meant
@@ -11233,15 +11247,25 @@ async function pipelineInner(job, opts = {}) {
                 // in the plan and its existing row carries the coverage. An identity collision or a
                 // malformed term IS the mint screen and the fold screen disagreeing, because the mint
                 // runs entryTermIssues and should have caught it.
+                // A withheld family's refusal is neither: it is the reading turn's decision standing, recorded on
+                // the run log row above with its kind and its family, and settled by that turn's reason.
                 const dupes = refused.filter((r) => r.kind === "duplicate-question");
-                const faults = refused.filter((r) => r.kind !== "duplicate-question");
+                const faults = refused.filter((r) => r.kind !== "duplicate-question" && r.kind !== "withheld-by-judgment");
                 if (dupes.length) note(`frame-reopen: ${dupes.length} minted entr${dupes.length === 1 ? "y" : "ies"} refused at the fold as already-asked — the plan row${dupes.length === 1 ? "" : "s"} ${dupes.map((r) => `"${r.twin ?? "(twin unstated)"}"`).join(", ")} carr${dupes.length === 1 ? "ies" : "y"} that coverage; the term is answered, not unsearched`);
                 if (faults.length) note(`frame-reopen: ${faults.length} minted entr${faults.length === 1 ? "y" : "ies"} REFUSED at the fold (${[...new Set(faults.map((r) => r.kind ?? "unstated"))].join(", ")}) — the mint screen and the fold screen disagree, which is a wiring finding`);
               }
               // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
               // A byte-changed band with only a wrong-scope/empty/error block closes NOTHING.
               const dispatchAndVerify = async (qids) => {
-                const outcome = await dispatchPlanQids(a, qids, "frame-reopen-sweep", 2);
+                // NOTHING ADDED, NOTHING REPEATED. The executor reads an empty question list as every entry on the
+                // axis, so a fold that refused every slice (the plan's own questions, or families the reading
+                // turn withheld) handed the whole primary sweep back to the executor to run again. It now sends
+                // only the axis's required questions that have not landed (pendingRequiredQids), so a required
+                // search still gets its retry and nothing landed is asked twice. The verify below reads the join
+                // either way, so a refused slice is still checked through its twin or its family.
+                let send = qids;
+                if (!send.length) send = pendingRequiredQids(ctx.registerPlan, a, readRegisterBands(P, axes), releasedFamilyQids(ctx.paths.runDir));
+                const outcome = send.length ? await dispatchPlanQids(a, send, "frame-reopen-sweep", 2) : "ok";
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
@@ -11257,6 +11281,7 @@ async function pipelineInner(job, opts = {}) {
                   executedQids: ev.executedQids, blocksByQid: ev.blocksByQid, foldRefusals: regFoldRefusals,
                 });
                 if (v.closed && v.answered_by) regAnsweredBy.set(reopenKey(d), v.answered_by);
+                if (v.closed && v.withheld_by_judgment) regWithheldBy.set(reopenKey(d), v.withheld_by_judgment);
                 return v;
               };
               const mintedDirectives = regDirectives.filter((d) => (directiveQids.get(reopenKey(d)) ?? []).length);
@@ -11545,7 +11570,7 @@ async function pipelineInner(job, opts = {}) {
               return "unchanged-after-resume";
             });
           // — THE REMEDY TERM LEDGER, built before the closure read because the closure read now
-          // depends on it. Every term a firing directive restated ends in one of five named states, and
+          // depends on it. Every term a firing directive restated ends in one of six named states, and
           // `searched-empty` carries the executed query and its counted zero — the state that used to
           // leave no trace anywhere. Non-fatal end to end: a ledger that cannot build leaves the
           // receipt's fields NULL (never absent) and the closure read falls back to its prior rule,
@@ -11600,7 +11625,8 @@ async function pipelineInner(job, opts = {}) {
           const partials = swept.filter((k) => regPartialMint.has(k))
             .map((k) => ({ directive: k, note: `verified-closed on the minted subset — ${regPartialMint.get(k)}` }));
           const answered = swept.filter((k) => regAnsweredBy.has(k)).map((k) => ({ directive: k, slices: regAnsweredBy.get(k) }));
-          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered);
+          const withheldBy = swept.filter((k) => regWithheldBy.has(k)).map((k) => ({ directive: k, slices: regWithheldBy.get(k) }));
+          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered, withheldBy);
           runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed, reopenFetchCap: regDirectives.some((d) => d.severity === "dominant-element") ? reopenFetchCap : undefined });
           // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
           // unlocked path demotes verified-closed directives inline when its pre-synthesis flush
@@ -14184,6 +14210,7 @@ async function pipelineInner(job, opts = {}) {
           supplementalPlans,
           xcheck: readJson(driverDir(run.runDir, "register-xcheck.json")),
           recall: recallReceiptForOwnCompany(readJson(driverDir(run.runDir, "register-recall.json"))),   // never another company's recall line
+          withheldFamilies: readWithheldFamilies(run.runDir),   // the reading turn's reasons, for a frame ask its judgment settled
           planExecution: ctx.planExecution ?? readJson(P.planExecution),
         }, { ts: askTs });
       } catch (e) {
@@ -14285,12 +14312,13 @@ async function pipelineInner(job, opts = {}) {
         // a record of what the EXECUTOR did, and nothing after the reopen can retroactively make an
         // undispatched term dispatched, so the receipt is the authority and re-deriving would need band
         // blocks the audit seam has no reason to hold. A `searched-empty` term mints nothing — it is
-        // answered. A run with no reopen, or a legacy receipt with no term rows, mints nothing.
+        // answered — and nor does one the reading turn's recorded judgment settled (SETTLED_CLASSES). A run
+        // with no reopen, or a legacy receipt with no term rows, mints nothing.
         try {
           const fr = JSON.parse(readFileSync(driverDir(run.runDir, "frame-reopen.json"), "utf8"));
           if (Array.isArray(fr?.remedy_terms)) {
             doubts.push(...mintRemedyAccountingDoubts(
-              { not_accounted: fr.remedy_terms.filter((r) => !["found", "searched-empty"].includes(r?.class)) },
+              { not_accounted: fr.remedy_terms.filter((r) => !SETTLED_CLASSES.includes(r?.class)) },
               { sourceName: "_driver/frame-reopen.json" },
             ));
           }

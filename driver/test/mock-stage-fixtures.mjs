@@ -45,6 +45,7 @@ import { recordClearanceVariants } from "../clearance-variants-record.mjs";   //
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
 import { recordReportCard } from "../report-card-record.mjs";          // conversion 5 — the fan-out transport
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
+import { recordWithheldFamilies, recordReleasedFamilies } from "../withheld-families.mjs";       // the reading turn's withheld and released families — called, not copied
 import { recordRegisterDigest, readDigestFacts, joinKey } from "../register-digest-record.mjs";   // conversion 11 — the findings document, called not copied
 import { recordDeclinations } from "../declination-tool.mjs";   // — the mock declines through the REAL transport
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
@@ -985,6 +986,31 @@ export function frameDiffModel() {
         observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38 — surfaced only via 9/28/41/42 co-classification", severity: "dominant-element" }],
       dominant_element_gap: true,
     });
+  // A main-element request on the main element: the re-sweep turns it into an exact and a contains
+  // question, and the contains one is the waiting family `primary-sweep:default:novapulse`. The scenarios
+  // pair it with MOCK_WITHHOLD_FAMILIES, which records that family withheld before the comparison runs.
+  if (process.env.MOCK_FRAME_DIFF === "dominant-on-waiting-family")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "NOVAPULSE", observation: "the main element's wider contains search was never read", severity: "dominant-element" }],
+      dominant_element_gap: true,
+    });
+  // An ordinary request whose one question is the waiting family `primary-sweep:exact:novapulse` itself.
+  if (process.env.MOCK_FRAME_DIFF === "waiting-family-only")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "the lower-case form of the main element", observation: "the case form was never searched",
+        severity: "material", remedy: { terms: ["novapulse"], nice_classes: ["9", "41"] } }],
+      dominant_element_gap: false,
+    });
+  // An ordinary request whose one question the plan already asks: the identical question, answered by its own row.
+  if (process.env.MOCK_FRAME_DIFF === "duplicate-only")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "the mark as ordered", observation: "the identical search should be confirmed",
+        severity: "material", remedy: { terms: ["PROJECT NOVAPULSE"], nice_classes: ["9", "41"] } }],
+      dominant_element_gap: false,
+    });
   // Two class-gap directives, so a re-attempt can be seen to re-send only the one that failed.
   if (process.env.MOCK_FRAME_DIFF === "field-classgap-two")
     return JSON.stringify({
@@ -1592,6 +1618,23 @@ export function applyStageWrites(msg, argv) {
     });
     if (r.refused) return `mock unit-note REFUSED by record_unit_note: ${r.refused}`;
     if (r.write_failed) return `mock unit-note: record_unit_note could not store the note (${r.write_failed})`;
+    // MOCK_WITHHOLD_FAMILIES — the reading turn's judgment on its waiting families, `{ "<qid>": "<reason>" }`,
+    // recorded through the production record exactly as the turn's own tool records it. The first pass only:
+    // a resume is the same turn reconsidering, which this knob does not model. The record itself refuses a
+    // family that is not waiting on the bound axis, so one knob serves every seat.
+    if (process.env.MOCK_WITHHOLD_FAMILIES && !resume) {
+      const families = Object.entries(JSON.parse(process.env.MOCK_WITHHOLD_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
+      const w = recordWithheldFamilies(runDir, { axis: bound, families });
+      if (w.refused || w.write_failed) return `mock unit-note: the withheld families were not recorded (${w.refused ?? w.write_failed})`;
+    }
+    // MOCK_RELEASE_FAMILIES — the same turn releasing waiting families, `{ "<qid>": "<reason>" }`, through the
+    // production record. It records the release only: the turn's own ask of a released family is not modelled, so
+    // the family stays unlanded until something else asks it.
+    if (process.env.MOCK_RELEASE_FAMILIES && !resume) {
+      const families = Object.entries(JSON.parse(process.env.MOCK_RELEASE_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
+      const w = recordReleasedFamilies(runDir, { axis: bound, families });
+      if (w.refused || w.write_failed) return `mock unit-note: the released families were not recorded (${w.refused ?? w.write_failed})`;
+    }
     return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"})`;
   }
   if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
