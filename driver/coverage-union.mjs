@@ -104,8 +104,17 @@ export function unionCoverageForm(prior, submitted, input, { parkedIds = null } 
     const p = findPrior(row), s = findSubmitted(row);
     const sOk = s && rowIsSettled(s, row), pOk = p && rowIsSettled(p, row), dOk = rowIsSettled(row, row);
     let fields;
-    if (sOk) fields = seatFields(s);
-    else if (pOk) fields = seatFields(p); else if (dOk) fields = seatFields(row);   // a judgment the driver row arrived with (a family the reading turn withheld)
+    // A FAMILY THE READING TURN WITHHELD ARRIVES SETTLED WITH THE TURN'S OWN JUDGMENT, and that judgment stays the
+    // row's. Every later reader is told the row carries the turn's decision, so a digest that re-words it would
+    // make that untrue: its own reading is kept beside the turn's, as `digest_reason`, and never replaces it. A
+    // release takes the family out of the turn's record, so the next pass builds the row without that judgment
+    // and the digest settles it as any row.
+    if (row.kind === "family" && row.reason_from && dOk) {
+      fields = seatFields(row);
+      const theirs = sOk ? seatFields(s).reason : (p?.digest_reason ?? null);
+      if (theirs && theirs !== fields.reason) row.digest_reason = theirs;
+    } else if (sOk) fields = seatFields(s);
+    else if (pOk) fields = seatFields(p); else if (dOk) fields = seatFields(row);   // a judgment the driver row arrived with
     else {
       const sf = seatFields(s ?? {}), pf = seatFields(p ?? {});
       fields = { status: sf.status || pf.status, reason: sf.reason || pf.reason };

@@ -1956,6 +1956,24 @@ export function applyStageWrites(msg, argv) {
         return r;
       };
 
+      // MOCK_POST_REPAIR_UNREAD — the review after a delivery-check repair ends without recording a review
+      // ("narrowed"), and with "both" so does the whole review the driver then falls back to. MOCK_WHOLE_FALLBACK_FLAGS
+      // gives that whole review its flags (a JSON array; CONDITIONAL when there are any). A marker beside the run,
+      // outside it, tells that fallback from the run's first whole review.
+      const unreadMarker = runDir ? `${runDir}.mock-post-repair-unread` : null;
+      if (process.env.MOCK_POST_REPAIR_UNREAD && /This is a review of a repair, not a full review\./.test(msg)) {
+        if (unreadMarker) writeFileSync(unreadMarker, "1\n");
+        return "mock reviewer ended without recording a review of the repair";
+      }
+      if (process.env.MOCK_POST_REPAIR_UNREAD && unreadMarker && existsSync(unreadMarker)) {
+        if (process.env.MOCK_POST_REPAIR_UNREAD === "both") return "mock reviewer ended without recording the whole review either";
+        if (process.env.MOCK_WHOLE_FALLBACK_FLAGS) {
+          const flags = JSON.parse(process.env.MOCK_WHOLE_FALLBACK_FLAGS);
+          const r = send({ verdict: flags.length ? "CONDITIONAL" : "CLEAR", flags, plan_audit: planAudit });
+          return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
+            : "mock reviewer recorded the whole review after the unread one through record_narrative_refutation";
+        }
+      }
       // MOCK_POST_REPAIR_FLAGS — the review after a delivery-check repair, recognised by its own opening line:
       // these flags (a JSON array), under MOCK_POST_REPAIR_VERDICT or, by default, CONDITIONAL when there are
       // flags and CLEAR when there are none. Every other review this run makes answers as the knobs below say.

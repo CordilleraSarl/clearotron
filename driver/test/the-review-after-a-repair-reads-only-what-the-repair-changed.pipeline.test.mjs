@@ -42,7 +42,8 @@ const JOB = {
 };
 const KNOBS = ["MOCK_VERDICT", "MOCK_VERDICT_DEFECTS", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_ACTIONS",
   "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING", "MOCK_REVIEW_BLOCKS_AFTER_VERDICT",
-  "MOCK_NARRATIVE_OVER_CAP", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_LINT_REPAIR_SAME_VALUES"];
+  "MOCK_NARRATIVE_OVER_CAP", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_LINT_REPAIR_SAME_VALUES",
+  "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS"];
 
 // The Codex run pins its own billing; every Claude run puts back what the suite started with.
 const AS_STARTED = Object.fromEntries(["CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"].map((k) => [k, process.env[k]]));
@@ -122,6 +123,31 @@ test("a repair that changed only the findings record still has its change review
     "the findings record, and only it");
   assert.ok(msg.includes("- For a finding: the records it cites, through band_record, and its row in placements.json."));
   assert.equal(res.ok, true);
+});
+
+test("a findings-only change whose review cannot be read falls back to the whole review, and its flags go to the same one correction", async () => {
+  const flags = [{ kind: "fact", text: "An invented point the whole review raised about the changed finding." }];
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_LINT_REPAIR_SAME_VALUES: "finding",
+    MOCK_POST_REPAIR_UNREAD: "narrowed", MOCK_WHOLE_FALLBACK_FLAGS: JSON.stringify(flags) });
+  const reads = events.filter((e) => e.event === "post-repair-review");
+  assert.deepEqual(reads.map((e) => [e.read, e.whole ?? false]), [[false, false], [true, true]], `the two reads: ${JSON.stringify(reads)}`);
+  assert.equal(stageEvents(events, "synthesis", "post-repair-corrective").length, 1, "the whole review's flags go to the one correction");
+  const msg = dispatches(res.runDir, "synthesis").find((m) => m.includes(CORRECTION_OPENS));
+  assert.ok(msg?.includes(flags[0].text), "the correction carries the whole review's flag");
+  assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "post-repair-review.json"), "utf8")).status, "read");
+  assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+});
+
+test("when neither review of a findings-only change can be read, the change is recorded unreviewed and the delivery guard holds the run", async () => {
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_LINT_REPAIR_SAME_VALUES: "finding",
+    MOCK_POST_REPAIR_UNREAD: "both" });
+  const rec = JSON.parse(readFileSync(driverDir(res.runDir, "post-repair-review.json"), "utf8"));
+  assert.deepEqual([rec.status, rec.findingOnly, rec.whole], ["unread", true, true], "the record says the changed findings were not reviewed");
+  assert.equal(stageEvents(events, "synthesis", "post-repair-corrective").length, 0, "nothing was reviewed, so nothing is corrected");
+  const blocked = events.find((e) => e.event === "delivery-stale-blocked");
+  assert.ok(blocked, `the guard did not hold the run: ${JSON.stringify(events.map((e) => e.event).slice(-12))}`);
+  assert.ok(JSON.stringify(blocked).includes("narrative-refutation"), JSON.stringify(blocked));
+  assert.notEqual(res.ok, true, "an unread review is not a pass");
 });
 
 test("the review's flags go to one correction by the writer; nothing reviews it, and what it did not close stays visible", async () => {

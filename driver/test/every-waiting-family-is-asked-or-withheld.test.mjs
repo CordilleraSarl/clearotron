@@ -107,13 +107,26 @@ test("the form the driver builds from the run carries the receipt's waiting fami
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the turn's judgment survives the union, and the digest may still re-judge it", () => {
+test("the turn's judgment survives the union, and a later digest cannot replace it: its reading is kept beside the turn's", () => {
   const withheld = { [waiting[0].qid]: { axis: AXIS, reason: REASON } };
   const u = unionCoverageForm({ rows: [] }, { rows: null }, input(withheld));
   const row = u.form.rows.find((r) => r.qid === waiting[0].qid);
   assert.equal(row.status, "withheld-by-judgment", "the union dropped the reading turn's judgment");
+  assert.equal(row.reason_from, `_driver/withheld-families-${AXIS}.json`, "the row names the record its judgment came from");
   const again = unionCoverageForm({ rows: u.form.rows }, { rows: [{ row_id: row.row_id, status: "withheld-by-judgment", reason: "A second reason." }] }, input(withheld));
-  assert.equal(again.form.rows.find((r) => r.qid === waiting[0].qid).reason, "A second reason.");
+  const kept = again.form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.deepEqual([kept.status, kept.reason, kept.digest_reason], ["withheld-by-judgment", REASON, "A second reason."],
+    "the turn's reason stays the row's, and the digest's words ride beside it");
+  // The digest's reading survives a pass that sends nothing, and a pass that repeats the turn's own words adds nothing.
+  const quiet = unionCoverageForm({ rows: again.form.rows }, { rows: null }, input(withheld)).form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.equal(quiet.digest_reason, "A second reason.");
+  const same = unionCoverageForm({ rows: [] }, { rows: [{ row_id: row.row_id, status: "withheld-by-judgment", reason: REASON }] }, input(withheld)).form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.equal(same.digest_reason, undefined);
+  // Released, the family leaves the turn's record: the next pass builds the row without that judgment, and the
+  // digest settles it as any row, in its own words.
+  const released = unionCoverageForm({ rows: again.form.rows }, { rows: [{ row_id: row.row_id, status: "withheld-by-judgment", reason: "A digest's own reason." }] }, input({}));
+  const r2 = released.form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.deepEqual([r2.reason, r2.reason_from], ["A digest's own reason.", undefined]);
 });
 
 test("a family's reason is kept out of everything the report is built from", () => {

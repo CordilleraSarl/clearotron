@@ -4134,7 +4134,7 @@ export const STAGES = {
       ) : "",
       openAsks.length ? lines(
         `THE OPEN ASKS (machine questions — a directive, proposal or probe the run raised and could not end deterministically):`,
-        ...openAsks.map((a) => `- ${a.ask_id} — [${a.born?.place}] ${a.ask?.text}`),
+        ...openAsks.map((a) => `- ${a.ask_id} — [${a.born?.place}] ${a.ask?.text}${a.part ? ` (${(a.qids ?? []).join(", ")})` : ""}`),
         `For EACH ask id above send ONE row with kind "ask": verdict "immaterial" (with file_index, quote and reason) or verdict "open" (with a handoff — what the reviewing lawyer should do with it).`,
         `IMMATERIAL is always available and is the terminating move — but only with a real citation. You can NEVER mark an ask executed: execution is computed by code from the plan-execution record, not asserted.`,
       ) : "",

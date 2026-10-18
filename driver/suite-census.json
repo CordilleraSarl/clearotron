@@ -322,8 +322,8 @@
           "todos": 0
         },
         "a-correction-session-is-told-it-is-fresh-and-sends-only-the-change.test.mjs": {
-          "tests": 9,
-          "asserts": 28,
+          "tests": 11,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -1474,8 +1474,8 @@
           "todos": 0
         },
         "a-repeat-of-a-family-the-reading-turn-withheld-keeps-its-judgment.test.mjs": {
-          "tests": 25,
-          "asserts": 113,
+          "tests": 28,
+          "asserts": 129,
           "skips": 0,
           "todos": 0
         },
@@ -3545,7 +3545,7 @@
         },
         "every-waiting-family-is-asked-or-withheld.test.mjs": {
           "tests": 8,
-          "asserts": 34,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -6688,8 +6688,8 @@
           "todos": 0
         },
         "the-review-after-a-repair-reads-only-what-the-repair-changed.pipeline.test.mjs": {
-          "tests": 6,
-          "asserts": 63,
+          "tests": 8,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },

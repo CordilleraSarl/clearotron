@@ -167,7 +167,7 @@ import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the str
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "./plain-register.mjs";
-import { snapshotRepairBase, readRepairBase, changedContent, isEmptyChange, restingOn, scopeItems, anyRenumbered, classifyPoints, changedInputsOf, listForReview, writePostRepairRecord, NARRATIVE_PROSE, sectionText } from "./repair-scope.mjs";
+import { snapshotRepairBase, readRepairBase, changedContent, isEmptyChange, restingOn, scopeItems, anyRenumbered, classifyPoints, changedInputsOf, listForReview, writePostRepairRecord, postRepairRecordPath, NARRATIVE_PROSE, sectionText } from "./repair-scope.mjs";
 import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
@@ -6558,6 +6558,18 @@ function queuedForTheRecordOnly(s2) {
   return (s2?.changed ?? []).every((c) => c?.via === "repair-record");
 }
 
+/**
+ * A repair that changed only the findings, and whose review could not be read, ON RECORD. The reviewer's own stamp
+ * cannot see that change (the reviewer does not declare findings.json), so the delivery guard is handed it from
+ * this record, on this pass and on a resume, until a review that is read replaces the record.
+ */
+export function unreadRecordReview(runDir) {   // @internal
+  try {
+    const r = JSON.parse(readFileSync(postRepairRecordPath(runDir), "utf8"));
+    return r?.status === "unread" && r?.findingOnly === true;
+  } catch { return false; }
+}
+
 const reviewBeforeRepairPath = (runDir) => driverDir(runDir, "review-before-repair.md");
 const reviewAfterRepairPath = (runDir) => driverDir(runDir, "review-after-repair.md");
 const postRepairCorrectionsPath = (runDir) => driverDir(runDir, "post-repair-corrections.json");
@@ -6621,6 +6633,38 @@ async function runPostRepairReview(ctx, P, run, scope) {
     changed: { findings: scope.changed.findings.length, lines: scope.changed.lines.length, sections: scope.changed.sections.length, registers: scope.changed.registers.length },
     findingOnly: Boolean(scope.findingOnly), ms: base.ms });
   return { reviewed: true, rec, reviewText, items, points, putBack, base };
+}
+
+/**
+ * THE WHOLE REVIEW, WHEN THE NARROWED ONE COULD NOT BE READ AFTER A REPAIR THAT CHANGED ONLY THE FINDINGS. It
+ * returns what runPostRepairReview returns, so its points go to the same one correction; adopting its verdict
+ * alone would leave its flags unapplied. When it cannot be read either, the record says the changed findings
+ * were not reviewed (`unreadRecordReview`), and the delivery guard holds the run on that record: neither unread
+ * review is a pass. `rerun` is the reviewer's own stale-repair arm.
+ */
+async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
+  const runDir = run.runDir;
+  const seq0 = nextRefutationSeq(runDir);
+  const t0 = Date.now();
+  const r = await rerun();
+  const rec = r?.ok ? readAcceptedReviewSince(runDir, seq0) : null;
+  const fold = readFold(runDir);
+  const items = scopeItems(scope.changed, restingOn(scope.changed, scope.after), fold?.map);
+  const base = { seq0, ...scopeRecord(scope, items), whole: true, ms: Date.now() - t0 };
+  if (!rec) {
+    const fail = r?.ok ? "no-accepted-call" : String(r?.fail ?? "failed");
+    writePostRepairRecord(runDir, { status: "unread", ...base, fail });
+    runLog(runDir, { event: "post-repair-review", read: false, whole: true, fail: fail.slice(0, 120) });
+    note(`[post-repair] neither review of the findings the repair changed could be read back — they were not reviewed, and the delivery guard holds the run`);
+    return { reviewed: false };
+  }
+  const reviewText = readFileSync(P.seniorEyeReview, "utf8");
+  atomicWrite(reviewAfterRepairPath(runDir), reviewText);
+  const points = classifyPoints(rec.flags, items);
+  writePostRepairRecord(runDir, { status: "read", ...base, verdict: rec.verdict, seq: rec.seq,
+    points: points.map((x) => ({ n: x.n, kind: x.kind, on: x.on, target: x.target.label, class: x.class })) });
+  runLog(runDir, { event: "post-repair-review", read: true, whole: true, verdict: rec.verdict, flags: rec.flags.length, ms: base.ms });
+  return { reviewed: true, rec, reviewText, items, points, putBack: () => {}, base };
 }
 
 /**
@@ -15364,6 +15408,11 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "post-repair-review-queued", why: "the repair changed the findings record only" });
         }
       }
+      // A RESUME AFTER SUCH A CHANGE WENT UNREVIEWED: its record queues the reviewer again, so this pass reviews it.
+      if (unreadRecordReview(run.runDir) && !staleStages.some((s2) => s2.label === "narrative-refutation")) {
+        staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
+        runLog(run.runDir, { event: "post-repair-review-queued", why: "a change to the findings record went unreviewed" });
+      }
       // ── AD-2 A1 (E2E-R2, ordering) — repair-owned staleness is re-done IN-PASS, never parked. The
       // pre-delivery repair can move an input under the tail this pass already built (the observed
       // case: the report-overview lint redo rewrote findings.json, staling every report card + the
@@ -15483,20 +15532,13 @@ async function pipelineInner(job, opts = {}) {
               staleRepaired.push(s2.label);
               continue;
             }
-            const review = await runPostRepairReview(ctx, P, run, scope);
-            if (!review.reviewed) {
-              // The finding-only arm has no staleness the guard could block on, so a review that could not be read
-              // falls back to the whole review rather than letting the change go unread.
-              if (scope.findingOnly) {
-                const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
-                if (r?.ok) {
-                  staleRepaired.push(s2.label);
-                  reassemble = true;
-                  adoptLateReview(existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "", s2.label);
-                } else note(`stale-repair: ${s2.label} re-run failed (${r?.fail}) — stays stale, the guard below decides`);
-              }
-              continue;
-            }
+            let review = await runPostRepairReview(ctx, P, run, scope);
+            // The finding-only arm has no staleness of its own the guard could block on, so a review that could not
+            // be read falls back to the whole review, whose points go to the same one correction below. When that
+            // cannot be read either, its record hands the guard the change no review read.
+            if (!review.reviewed && scope.findingOnly)
+              review = await runWholeReviewForRecord(ctx, P, run, scope, () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict }));
+            if (!review.reviewed) continue;
             staleRepaired.push(s2.label);
             reassemble = true;
             // senior-eye-review.md HOLDS THE REVIEW WHOSE VERDICT THE RUN CARRIES. A narrowed review that hardened
@@ -15559,6 +15601,10 @@ async function pipelineInner(job, opts = {}) {
                 }
                 runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
               }
+              // A whole review that is read reviews the change an earlier unread one left: its record says so, and
+              // its points stand under the late-review rule below, as any whole review's do.
+              if (s2.label === "narrative-refutation" && unreadRecordReview(run.runDir))
+                writePostRepairRecord(run.runDir, { status: "read", whole: true, findingOnly: true, by: "stale-repair" });
               // its consumers rebuild from what it JUST wrote — re-read, do not carry the pre-repair copy
               readNow = readFindingsForReport(P);
               findingsNow = readNow.findings;
@@ -15620,6 +15666,10 @@ async function pipelineInner(job, opts = {}) {
         lint = lintNow();
         autoCorrectRegistry();
         staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
+        // A REPAIR THAT CHANGED ONLY THE FINDINGS, WHICH NO REVIEW COULD READ, IS NOT REVIEWED. Its record says so, and
+        // the reviewer's stamp cannot, so the guard is handed it here and blocks as for any reviewer left stale.
+        if (unreadRecordReview(run.runDir) && !staleStages.some((x) => x.label === "narrative-refutation"))
+          staleStages.push({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
       // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw

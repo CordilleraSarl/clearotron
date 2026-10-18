@@ -63,10 +63,14 @@ import { squash } from "./doubt-ledger.mjs";
 //     qids:   [ ... ],                           // the plan qids that would answer it (may be [])
 //     ending: { kind, by, evidence, reasons, ts } | null,
 //     handoff: "<the surface a human reads an un-ended/handed-over ask on>" | null,
+//     part, family,                              // only on a request kept as parts: "ran" or "family", and that family's qid
 //   }
 
 const clip = (s, n = 200) => { const t = String(s ?? "").replace(/\s+/g, " ").trim(); return t.length > n ? `${t.slice(0, n - 1)}…` : t; };
 const slug = (s) => String(s ?? "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) || "x";
+// A short, stable hash of an exact string (FNV-1a, 32 bits), beside a slug, so two qids the slug folds or cuts to
+// one spelling still give two ids. PURE: no import, no clock.
+const fnv32 = (s) => { let h = 0x811c9dc5; for (const c of String(s ?? "")) { h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, "0"); };
 
 export const ASK_ENDINGS = ["executed", "judged-immaterial", "recovery"];
 
@@ -371,11 +375,12 @@ export function deriveAsks({
     // where the fold refused it as already asked. A slice whose family the turn still withholds ends on the
     // turn's recorded reason. A slice whose family the turn released after the fold is no longer withheld on
     // record, so it ends on what the execution record says of the family itself: it ran, it was deferred, or it
-    // stays open; so does a slice whose record cannot be read, which has no judgment to end on. A directive
-    // whose slices end in more than one of these ways keeps one record for each, under the same question. One
-    // record could carry one ending only: computed over the slices that ran it named nothing of the others,
-    // and computed over every settled slice one family without a reason left the turn's judgment on the rest
-    // unshown.
+    // stays open; so does a slice whose record cannot be read, which has no judgment to end on.
+    //
+    // ONE RECORD PER PART, AND A PART KEEPS ITS ID. The slices that ran are one part, under the directive's own
+    // id. Each family the settled slices repeat is a part of its own, under an id made from that family, so its
+    // id never moves when the family's disposition changes (withheld, then released and run) or a sibling part
+    // disappears. A closure names one part, and settles only that part; an id no part carries settles nothing.
     const withheldOf = new Map((Array.isArray(fr.withheld_by_judgment) ? fr.withheld_by_judgment : [])
       .filter((x) => typeof x?.directive === "string")
       .map((x) => [x.directive, new Map((Array.isArray(x.slices) ? x.slices : []).filter((t) => t?.qid && t?.family).map((t) => [t.qid, t.family]))]));
@@ -384,27 +389,29 @@ export function deriveAsks({
       const place = bornByKey[key] === "form-neighbourhood" ? "form-neighbourhood" : "frame-diff";
       const born = { place, artifact: "_driver/frame-reopen.json", ref: key, ts: fr.ts ?? null };
       const ask = { text: `${place === "form-neighbourhood" ? "mechanical form-oracle gap" : "blind frame-diff omission"}: ${key} — sweep it or say why not`, owner: "register", structured: null };
-      let parts = [{ ending: null, handoff: null }];
+      const id = `ask:frame:${slug(key)}`;
+      let parts = [{ id, qids, ending: null, handoff: null }];
       const d = deferrals.get(key);
       if (d) {
-        parts = [{ ending: mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts }),
+        parts = [{ id, qids, ending: mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts }),
           handoff: "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission" }];
       } else if (swept.has(key) && !qids.length) {
-        parts = [{ ending: mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts }) }];
+        parts = [{ id, qids, ending: mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts }) }];
       } else if (swept.has(key)) {
         const settled = withheldOf.get(key) ?? new Map();
-        const reasonOf = (q) => String(withheldFamilies?.[settled.get(q)]?.reason ?? "").trim();
         const ran = qids.filter((q) => !settled.has(q));
-        const withheld = qids.filter((q) => settled.has(q) && reasonOf(q));
-        const released = qids.filter((q) => settled.has(q) && !reasonOf(q));
+        const families = [...new Set(qids.filter((q) => settled.has(q)).map((q) => settled.get(q)))];
         parts = [
-          ran.length && { qids: ran, ending: endingForQids(ran.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts) },   // null (open) when the execution record disagrees
-          withheld.length && { qids: withheld, ending: withheldEnding(withheld.map((q) => settled.get(q)), withheldFamilies, ts), suffix: "withheld" },
-          released.length && { qids: released, ending: endingForQids(released.map((q) => settled.get(q)), join, ts), suffix: "released" },
+          ran.length && { id, qids: ran, ending: endingForQids(ran.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts),   // null (open) when the execution record disagrees
+            ...(families.length ? { part: "ran" } : {}) },
+          ...families.map((fam) => ({
+            id: `${id}:family:${slug(fam)}-${fnv32(fam)}`, qids: qids.filter((q) => settled.get(q) === fam), part: "family", family: fam,
+            ending: String(withheldFamilies?.[fam]?.reason ?? "").trim() ? withheldEnding([fam], withheldFamilies, ts) : endingForQids([fam], join, ts),
+          })),
         ].filter(Boolean);
       }
-      parts.forEach((p, i) => push({ ask_id: i ? `ask:frame:${slug(key)}:${p.suffix}` : `ask:frame:${slug(key)}`, born, ask,
-        qids: parts.length > 1 ? p.qids : qids, ending: p.ending, handoff: p.handoff ?? null }));
+      for (const p of parts) push({ ask_id: p.id, born, ask, qids: p.qids, ending: p.ending, handoff: p.handoff ?? null,
+        ...(p.part ? { part: p.part } : {}), ...(p.family ? { family: p.family } : {}) });
     }
   }
 
