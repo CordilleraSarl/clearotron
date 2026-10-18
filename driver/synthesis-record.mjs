@@ -661,11 +661,11 @@ export function registerPatchOf(stored, call) {
  * WHAT IS COUNTED, for the run log only. On a WHOLE call every top-level key beside its narrative and its findings
  * is ignored, as it always was, and counted: `keysIgnored` for keys, which are never named, since a key off the
  * record's ladder is the model's own word; `rowsIgnored` for a top-level `findings_patch`, and `rowsDiffering` for
- * those of its rows the record's own list does not hold as sent. A register patch never carries a register in both
- * places with two values: such a call is read as main reads it (`registerPatchOf`), so `overridden` stays empty.
+ * those of its rows the record's own list does not hold as sent. Nothing a register patch carries is dropped: a
+ * register sent in both places with two values makes the call one main reads as it always did (`registerPatchOf`).
  */
 export function readSynthesisCall(received, stored) {
-  const notes = { decoded: [], overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
+  const notes = { decoded: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
   if (!isPlainObject(received)) return { call: received, notes };
   const asRegisters = registerPatchOf(stored, received) !== null;
   if (received.findings !== undefined && !asRegisters) {
@@ -688,11 +688,6 @@ export function readSynthesisCall(received, stored) {
   if (asRegisters && typeof call.findings.corrections === "string") {
     const x = decodedMarker(call.findings.corrections);
     if (x !== undefined) { call = { ...call, findings: { ...call.findings, corrections: x } }; notes.decoded.push("findings.corrections"); }
-  }
-  if (asRegisters) {   // compared as read, so a marker decoded on one side is not a difference
-    for (const k of Object.keys(call.findings)) {
-      if (k !== "findings_patch" && Object.hasOwn(call, k) && !sameValue(call[k], call.findings[k])) notes.overridden.push(k);
-    }
   }
   return { call, notes };
 }
@@ -904,15 +899,15 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const asRegisters = registerPatchOf(stored, call);
   const isPatch = Boolean(call) && (call.findings === undefined || call.narrative === undefined || asRegisters !== null);
   // WHAT THE TRANSPORT READ THE CALL AS: one run-log row at whichever exit the call takes, beside the decision,
-  // when the reading decoded, lifted, overrode or ignored anything. Never in the answer below, which the tool
+  // when the reading decoded, lifted or ignored anything. Never in the answer below, which the tool
   // returns whole into the model's turn. Best-effort, as the foreign-link record is. A lift is counted as READ,
   // so one the merge then refuses is on the record as one the acceptance refuses is.
   const reading = { ...read.notes, lifted: asRegisters?.lifted ?? 0 };
   const recordReading = (accepted) => {
-    if (!reading.decoded.length && !reading.lifted && !reading.overridden.length && !reading.keysIgnored && !reading.rowsIgnored) return;
+    if (!reading.decoded.length && !reading.lifted && !reading.keysIgnored && !reading.rowsIgnored) return;
     try {
       runLog(dir0, { event: "synthesis-call-normalised", stage: "synthesis", seq: cap.seq ?? null, accepted,
-        decoded: reading.decoded, lifted: reading.lifted, overridden: reading.overridden,
+        decoded: reading.decoded, lifted: reading.lifted,
         keysIgnored: reading.keysIgnored, rowsIgnored: reading.rowsIgnored, rowsDiffering: reading.rowsDiffering });
     } catch { /* a log that cannot be written must not stop the record it describes */ }
   };

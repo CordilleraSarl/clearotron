@@ -360,7 +360,7 @@ const reading = (dir) => {
   assert.ok(Number.isInteger(seq), "the reading does not name the call it belongs to");
   return rest;
 };
-const NOTHING = { decoded: [], lifted: 0, overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
+const NOTHING = { decoded: [], lifted: 0, keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
 
 test("a lift and a decode are each on the run log, and the answer the model reads is unchanged", () => {
   const lifted = saved();
@@ -799,7 +799,7 @@ const ASSESSMENT_B = () => ({ ...record().mark_assessment, connotation: "An inve
 
 // Beside a narrative the call is a whole call as main reads it, whose top-level copy main ignores: the run log counts
 // that key, as it counts one on any whole call, and the answer stays main's.
-const WHOLE_CALL_IGNORED = { decoded: [], lifted: 0, overridden: [], keysIgnored: 1, rowsIgnored: 0, rowsDiffering: 0, accepted: false };
+const WHOLE_CALL_IGNORED = { decoded: [], lifted: 0, keysIgnored: 1, rowsIgnored: 0, rowsDiffering: 0, accepted: false };
 for (const [what, run, call, re, reads = []] of [
   ["coverage inside the object and different coverage beside it", () => saved(),
     () => ({ findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE }), UNPARSEABLE],
