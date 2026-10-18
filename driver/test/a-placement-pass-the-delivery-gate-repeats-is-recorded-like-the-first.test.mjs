@@ -6,9 +6,12 @@
 // When placement's answer goes stale before delivery, the delivery gate runs the step again and the report is
 // rebuilt from the new answer. The main path records what each placement pass did, at once: the ground every
 // record left the picking step with, the floors it answered, and the stamp that says the pass ran under the
-// floors order. The repeated pass recorded none of it, so the record trace kept the first pass's grounds and
-// the floor duty described placements the delivered report no longer held. One helper now records a pass,
-// and both paths call it. A pass that was skipped decided nothing: the earlier pass's grounds stand.
+// floors order. The repeated pass recorded none of it, so the discard ledger kept the first pass's grounds and
+// the floor duty described placements the delivered report no longer held. One helper now records a pass, and
+// both paths call it. The stamp stays the main path's: the repeated pass arms nothing, and the floor the run is
+// already held to is applied again to the repeated pass's account, where the gate rebuilds the report from it.
+// A pass that was skipped decided nothing: the earlier pass's grounds stand. The record trace is authored before
+// the delivery gate and is not derived again after its repairs; that is its own limit, older than this.
 // Every mark and owner is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -68,7 +71,7 @@ function seedRun(t) {
 }
 const ledgerOf = (runDir) => readFileSync(driverDir(runDir, DISCARD_LEDGER_NAME), "utf8");
 
-test("the repeated pass writes its own rows, its floor duty and its stamp, as the first pass does", (t) => {
+test("the repeated pass writes its own rows and its floor duty, as the first pass does, and arms nothing", (t) => {
   const { runDir, ctx } = seedRun(t);
   recordPlacementPass(ctx, { ok: true }, "stale-repair");
   const rows = ledgerOf(runDir).trim().split("\n").map((l) => JSON.parse(l));
@@ -82,7 +85,14 @@ test("the repeated pass writes its own rows, its floor duty and its stamp, as th
   const duty = JSON.parse(readFileSync(ctx.paths.floorDuty, "utf8"));
   assert.equal(duty.trigger, "stale-repair", "the floor duty is derived again for the pass that delivered");
   assert.deepEqual([duty.totals.floors, duty.totals.accounted, duty.undischarged_by_seat], [2, 1, 1]);
-  assert.ok(existsSync(driverDir(runDir, FLOOR_DUTY_STAMP)), "a pass that ran is armed");
+  assert.equal(existsSync(driverDir(runDir, FLOOR_DUTY_STAMP)), false, "the delivery gate's repeat armed the floor: the stamp is the main path's");
+});
+
+test("the main path's pass that ran is armed", (t) => {
+  const { runDir, ctx } = seedRun(t);
+  recordPlacementPass(ctx, { ok: true }, null);
+  assert.ok(existsSync(driverDir(runDir, FLOOR_DUTY_STAMP)), "a pass that ran on the main path is armed");
+  assert.equal(JSON.parse(readFileSync(ctx.paths.floorDuty, "utf8")).trigger, null);
 });
 
 test("a skipped pass decides nothing: the earlier pass's grounds stand and no stamp is written", (t) => {
@@ -103,4 +113,9 @@ test("the delivery gate's repeat of placement goes through the one helper, as th
   assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true, trigger: "stale-repair" \}\), "stale-repair"\)/);
   const main = src.slice(src.indexOf("const placementPass = await stage(\"placement-inquiry\", ctx);"), src.indexOf("must(placementPass, \"placement-inquiry\");"));
   assert.match(main, /recordPlacementPass\(ctx, placementPass\);/, "the main path records its pass through the same helper");
+  // After a repeated placement pass the gate applies the floor again, through the one clamp the terminal checks use.
+  const arm = src.slice(src.indexOf("} else if (UPSTREAM_STALE_REPAIR[s2.label]) {"), src.indexOf("} else if (s2.label.startsWith(\"report-card:\")) {"));
+  assert.match(arm, /if \(s2\.label === "placement-inquiry"\) \{[\s\S]*?if \(clampOnTheFloorDuty\(\)\) \{[\s\S]*?writeVerdictSidecar\(\);/,
+    "the repeated pass's floor account is not judged again before the report is rebuilt from it");
+  assert.match(src, /const clampOnTheFloorDuty = \(\) => \{\n\s+\/\/ THE PREDICATE IS `floorDutyBlock`/, "the terminal checks and the repair share one clamp");
 });

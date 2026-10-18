@@ -3094,17 +3094,22 @@ function recordPlacementSeam(ctx, r, trigger = null) {
 }
 
 /**
- * WHAT ONE PLACEMENT PASS DID, RECORDED: the ground every band record left it with (the seam rows), the floors
- * it answered (the floor duty), and, on a pass that actually ran, the stamp that its floor account may be held
- * to. The main path and the delivery gate's repeat of the stage both record through here, so the record trace
- * and the floor duty describe the placements the report was built from. Returns the pass result. A SKIPPED
- * pass leaves `placements.json` written by an earlier seat (on a resume, possibly one that never saw the
- * floors order), so it arms nothing, and its seam rows leave the earlier pass's grounds standing.
+ * WHAT ONE PLACEMENT PASS DID, RECORDED: the ground every band record left it with (the seam rows) and the floors
+ * it answered (the floor duty). The main path and the delivery gate's repeat of the stage both record through
+ * here, so the ledger and the floor duty describe the placements the report is built from. Returns the pass
+ * result.
+ *
+ * THE STAMP IS THE MAIN PATH'S. On the main path, a pass that actually ran arms the floor its account may be held
+ * to. A SKIPPED pass leaves `placements.json` written by an earlier seat (on a resume, possibly one that never saw
+ * the floors order), so it arms nothing, and its seam rows leave the earlier pass's grounds standing. The delivery
+ * gate's repeat (`stale-repair`) arms nothing either: the floor it is held to is the one the run was already held
+ * to, applied again to the repeated pass's account where the gate rebuilds the report from it. A run whose only
+ * pass under the floors order is that repeat is held to no floor, as before.
  */
 export function recordPlacementPass(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
   recordPlacementSeam(ctx, r, trigger);
   deriveFloorDuty(ctx, r, trigger);
-  if (r?.ok === true && r?.skipped !== true) armFloorDuty(ctx.paths.runDir);
+  if (r?.ok === true && r?.skipped !== true && trigger !== "stale-repair") armFloorDuty(ctx.paths.runDir);
   return r;
 }
 
@@ -13512,6 +13517,37 @@ async function pipelineInner(job, opts = {}) {
     // larger piece of work than this floor. The blast radius said it could wait: on the day this was
     // written today's run discharged all 60 of its floors, and the only two runs with undischarged rows
     // carried 5 and 9 out of 222 and 352. A rung is a follow-up, never a precondition.
+    // THE FLOOR DUTY'S CLAMP, callable: applied where the terminal checks run, and again to a placement pass the
+    // delivery gate repeats, whose account the report is then rebuilt from. Returns the block it clamped on, or null.
+    const clampOnTheFloorDuty = () => {
+      // THE PREDICATE IS `floorDutyBlock`, called not copied — it lives in floor-duty.mjs so the arms can
+      // DRIVE it. Inline here it could only be pinned by source text, and a source-text pin cannot tell
+      // an armed check from one somebody disarmed while leaving its words in place.
+      const block = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) });
+      if (block) {
+        // DELIVERS AND CLAMPS. This threw until a live clearance run died at
+        // delivery after 5.55 hours on ONE undischarged floor row — the guard's first real catch,
+        // working exactly as built, and the client received nothing instead of a report naming one gap.
+        // The era stamp still gates it: `floorDutyArmed` means a placement pass ran under the code
+        // carrying the order, so an archived run neither blocks nor is now accused of a defect.
+        deliverAndClamp({
+          event: "floor-duty-undischarged",
+          defect: `floor_duty_undischarged:${block.undischarged}`,
+          detail: { undischarged: block.undischarged, floors: block.floors, named_without_ground: block.named_without_ground ?? 0, unanswerable: block.unanswerable ?? 0 },
+          reason: `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: ${block.sample}${block.undischarged > 4 ? " …" : ""}`
+            + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
+            + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
+            + `. The report ships with these named rather than being withheld.`,
+          // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
+          // lawyer: live registrations identical or near-identical to the mark that the report does not
+          // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
+          // Composed by the authority in `terminal-clamp.mjs` for the reason the sibling site above
+          // gives: a republished pre-split run has to reach the same sentence from the counts alone.
+          clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
+        });
+      }
+      return block;
+    };
     {
     // ── — THE DECLINATION DUTY, CHECKED AGAINST THE DELIVERED DOCUMENT ────────────────────────
     //
@@ -13550,32 +13586,7 @@ async function pipelineInner(job, opts = {}) {
       }
     }
 
-      // THE PREDICATE IS `floorDutyBlock`, called not copied — it lives in floor-duty.mjs so the arms can
-      // DRIVE it. Inline here it could only be pinned by source text, and a source-text pin cannot tell
-      // an armed check from one somebody disarmed while leaving its words in place.
-      const block = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) });
-      if (block) {
-        // DELIVERS AND CLAMPS. This threw until a live clearance run died at
-        // delivery after 5.55 hours on ONE undischarged floor row — the guard's first real catch,
-        // working exactly as built, and the client received nothing instead of a report naming one gap.
-        // The era stamp still gates it: `floorDutyArmed` means a placement pass ran under the code
-        // carrying the order, so an archived run neither blocks nor is now accused of a defect.
-        deliverAndClamp({
-          event: "floor-duty-undischarged",
-          defect: `floor_duty_undischarged:${block.undischarged}`,
-          detail: { undischarged: block.undischarged, floors: block.floors, named_without_ground: block.named_without_ground ?? 0, unanswerable: block.unanswerable ?? 0 },
-          reason: `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: ${block.sample}${block.undischarged > 4 ? " …" : ""}`
-            + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
-            + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
-            + `. The report ships with these named rather than being withheld.`,
-          // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
-          // lawyer: live registrations identical or near-identical to the mark that the report does not
-          // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
-          // Composed by the authority in `terminal-clamp.mjs` for the reason the sibling site above
-          // gives: a republished pre-split run has to reach the same sentence from the counts alone.
-          clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
-        });
-      }
+      clampOnTheFloorDuty();
     }
 
     // PR-3 (report voice) — the factual open-state clause per reason, INDEX-ALIGNED with clampReasons.
@@ -15437,6 +15448,19 @@ async function pipelineInner(job, opts = {}) {
             if (r?.ok) {
               staleRepaired.push(s2.label);
               reassemble = true;
+              // THE FLOOR, APPLIED AGAIN TO THE PLACEMENT THE REPORT IS NOW BUILT FROM. The delivery floor was judged on
+              // the placement account before this repair; the repeated pass has recorded its own floor duty, and the
+              // stages after it rebuild from it in this loop. The same rule is applied to that account, through the
+              // same clamp, so the delivered verdict, its floor and its record describe one pass. It only tightens.
+              if (s2.label === "placement-inquiry") {
+                const was = verdict;
+                if (clampOnTheFloorDuty()) {
+                  try { writeVerdictSidecar(); }
+                  catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed after the repeated placement pass: ${String(e.message).slice(0, 120)}`); }
+                  try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
+                }
+                runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
+              }
               // its consumers rebuild from what it JUST wrote — re-read, do not carry the pre-repair copy
               readNow = readFindingsForReport(P);
               findingsNow = readNow.findings;
