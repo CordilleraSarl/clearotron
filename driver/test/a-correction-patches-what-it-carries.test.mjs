@@ -470,10 +470,11 @@ test("a whole call whose top-level copies are malformed or stale is accepted as 
   assert.deepEqual(base(dir), call);
 });
 
-test("the delivery check's redo still orders a complete re-send for this tool, and a whole call it gets is read as main reads it", () => {
+test("the delivery check's redo orders this tool a patch, and a whole call it still gets is read as main reads it", () => {
   const lint = REPAIR_COMPOSERS.find((c) => c.key === "*:lint-repair");
   const text = lint.compose({ label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, failures: [{ id: "x", detail: "a check" }] });
-  assert.ok(text.includes("the COMPLETE payload, not a patch"), "the redo's order for record_synthesis changed in this change");
+  assert.ok(text.includes("Apply the fix in ONE `record_synthesis` PATCH call, sending only the change:"), "the redo orders the writer's record a patch");
+  assert.ok(!text.includes("the COMPLETE payload, not a patch"), "and no longer the whole record again");
   const dir = saved();
   const call = { narrative: NARRATIVE, findings: record(), coverage: COVERAGE };
   accepts(recordSynthesis(dir, structuredClone(call)), "the redo's whole call with a top-level coverage");

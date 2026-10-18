@@ -836,8 +836,15 @@ const readsForReference = (skillReads) =>
 // disk, and absence is itself the reason (an optional input — crowdContext, frameReopenReceipt — that this
 // run never produced). The composer takes the list ALREADY filtered by the caller so this module stays a
 // pure prompt table with no filesystem reach.
-const inputsForReference = (paths) =>
-  `YOUR DECLARED INPUTS, unchanged and on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`;
+//
+// ON THE WRITER'S AND THE REVIEWER'S PATH IT DOES NOT CALL THEM UNCHANGED. A correction there rewrites the
+// narrative and the findings record, and the reviewer declares the narrative among its inputs, so the
+// re-check after a correction was told an input it must re-read was "unchanged". Every other stage keeps the
+// line it has.
+const INPUTS_NOT_CALLED_UNCHANGED = new Set(["synthesis", "narrative-refutation"]);
+const inputsForReference = (paths, { name } = {}) => INPUTS_NOT_CALLED_UNCHANGED.has(name)
+  ? `YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`
+  : `YOUR DECLARED INPUTS, unchanged and on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`;
 
 /**
  * The skill documents a stage's prompt ACTUALLY names for this run.
@@ -919,7 +926,7 @@ export function composeFollowup(name, ctx, { followup, extra = null, inputs = []
     followup,
     clearedConstraint(cleared),
     extra || "",
-    inputs.length ? inputsForReference(inputs) : "",
+    inputs.length ? inputsForReference(inputs, { name }) : "",
   );
 }
 

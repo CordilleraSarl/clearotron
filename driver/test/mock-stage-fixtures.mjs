@@ -1221,11 +1221,11 @@ export function variantManifestModelFixture() {
  * moves a coverage note, the other an actual finding; without both, narrowing the freshness question
  * looks like a pass because it went quiet).
  *
- * Both key on the report-overview resume the redo ladder composes, which the conversion left intact: the
- * followup still opens "RESUMING your own report-overview session", it just orders a CALL now.
+ * Both key on the report-overview repair the redo ladder composes: the followup opens "your earlier
+ * report-overview work is not in your context", and it orders a CALL.
  */
 function stalefindingsOnLintRepair(dir, msg) {
-  if (!/RESUMING your own report-overview session/.test(msg)) return;
+  if (!/your earlier report-overview work is not in your context/.test(msg)) return;
   const fp = join(dir, "findings.json");
   // AD-2 A1 (E2E-R2): the redo ALSO rewrites findings.json — the exact incident shape (the redo turn moved
   // the input every report card was built from, staling the whole delivery tail). The rewrite stays

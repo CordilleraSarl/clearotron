@@ -110,7 +110,7 @@ test("arm 5 — an UNDECLARED scope emits no block at all: the dispatch is what 
     flag("fact", "9", "Finding 9 — wrong scope."), flag("rating", null, "an untyped-scope flag.")));
   assert.ok(!/SCOPE — THE REVIEWER DECLARED/.test(extra),
     "the narrowing is bought by the reviewer's declaration, never assumed on its behalf");
-  assert.match(extra, /You are RESUMING your own synthesis session/, "…and the rest of the dispatch is unchanged");
+  assert.match(extra, /This is a fresh session: your earlier synthesis is not in your context/, "…and the rest of the dispatch is unchanged");
 });
 
 // ── 6. what the driver checks ────────────────────────────────────────────────────────────────────────

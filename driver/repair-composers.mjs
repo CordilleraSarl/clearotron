@@ -93,13 +93,17 @@ export const REPAIR_COMPOSERS = [
     trigger: "corrective-findings",
     stage: "synthesis",
     key: "synthesis:corrective-findings",
-    compose: ({ findings, named }) => lines(
-      `You are RESUMING your own synthesis session. Your corrective pass updated the narrative but did NOT re-emit ${findings} — the structured findings the client report renders from. The review named: ${named.join(", ")}.`,
-      `Apply each flag to the finding objects it names: correct the fields, or set "disposition": "withdrawn" + "withdrawn_reason" for a killed finding, and add the top-level "corrections": {"applied": true, "note": "…"} marker. Change nothing else.`,
-      `Send the correction with \`record_synthesis\`: a PATCH call carrying \`findings_patch\` — the complete corrected finding object(s), each with the \`ordinal\` it replaces — and nothing else. The driver is holding every value you already sent and re-renders both files from them, so what you do not name comes back byte-identical. There is no file for you to write or edit and nothing you write by hand is read.`,
+    // A FRESH SESSION IS HANDED WHERE THE FLAGS ARE. The message names the findings the review flagged and
+    // nothing else of the review, so a session that starts with nothing would have no flag to apply; the
+    // review's own file is named for it to open. `seniorEyeReview` is that file: the run's review on the first
+    // cycle, and the review after the delivery-check repair on the pass that applies it.
+    compose: ({ findings, named, seniorEyeReview }) => lines(
+      `This is a fresh session: your earlier synthesis is not in your context, and the driver holds the record it last accepted from you. Your corrective pass updated the narrative but did NOT re-emit ${findings} — the structured findings the client report renders from. The review named: ${named.join(", ")}. Its flags are in ${seniorEyeReview}; open it and ${findings} for the findings it names.`,
+      `Apply each flag to the finding objects it names: correct the fields, or set "disposition": "withdrawn" + "withdrawn_reason" for a killed finding, and add the "corrections": {"applied": true, "note": "…"} marker inside the call's \`findings\` object. Change nothing else.`,
+      `Send the correction with \`record_synthesis\`, sending only the change: a PATCH call carrying \`findings_patch\` — the complete corrected finding object(s), each with the \`ordinal\` it replaces — and \`findings\` carrying only the "corrections" marker, never a \`findings[]\` list; nothing else. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file for you to write or edit and nothing you write by hand is read.`,
     ),
     samples: [{ name: "the standard re-emit demand", tail: "tool",
-      args: { findings: "findings.json", named: ["#1", "#4"] } }],
+      args: { findings: "findings.json", named: ["#1", "#4"], seniorEyeReview: "senior-eye-review.md" } }],
   },
   {
     trigger: "intake-asks-followup",
@@ -126,7 +130,7 @@ export const REPAIR_COMPOSERS = [
     stage: "synthesis",
     key: "synthesis:schema-downlevel",
     compose: ({ findings, declaredSv, frameworkKey, bandLabels }) => lines(
-      `You are RESUMING your own synthesis session. The findings file you emitted (${findings}) declares "schema_version": ${declaredSv}, but the dictation requires "schema_version": 4 — rated in the framework's band WORDS with a top-level "rated_under_framework": "${frameworkKey}", and NO composite/level/dispute_type keys (that scale is retired).`,
+      `This is a fresh session: your earlier synthesis is not in your context. The findings file you emitted (${findings}) declares "schema_version": ${declaredSv}, but the dictation requires "schema_version": 4 — rated in the framework's band WORDS with a top-level "rated_under_framework": "${frameworkKey}", and NO composite/level/dispute_type keys (that scale is retired).`,
       `Re-emit the COMPLETE record through \`record_synthesis\` at schema_version 4 — same findings, same judgments, each rated finding carrying "band" (EXACTLY one of: ${bandLabels.join(" / ")}) per the original dictation. Change nothing else. This one is a whole re-send rather than a patch, because the key set itself changes shape: there is no set of named findings to correct.`,
     ),
     // A WHOLE-FILE EMISSION WITH NO REPAIR TAIL, AND THE SITE SAYS WHY: the key set changes shape, so
@@ -139,12 +143,14 @@ export const REPAIR_COMPOSERS = [
     trigger: "actions-missing",
     stage: "synthesis",
     key: "synthesis:actions-missing",
-    compose: ({ findings }) => lines(
-      `You are RESUMING your own synthesis session. The findings file you emitted (${findings}) has no top-level "actions" array, but the dictation requires the ACTIONS REGISTER: ONE object per forward step your opinion names that a HUMAN must still take, each EXACTLY {"id","kind","text","ordinals"} (+ optional "deadline":{"kind","date"}) — kinds: conditions consent / coexistence-agreement / territorial-delimitation / goods-amendment / mark-modification / senior-clearance / proceeding-response / counsel-opinion-required; advisory client-fact / commercial-decision / monitoring / filing-routine.`,
-      `Add ONE top-level "actions": [...] key that registers every forward step your own narrative names ("actions": [] ONLY if the opinion genuinely demands nothing beyond ordinary filing). Same findings, same judgments — the findings themselves do not change.`,
+    // `narrative` is named because a fresh session has not read it, and the register it is asked for is the
+    // forward steps that narrative names.
+    compose: ({ findings, narrative }) => lines(
+      `This is a fresh session: your earlier synthesis is not in your context. The findings file you emitted (${findings}) has no top-level "actions" array, but the dictation requires the ACTIONS REGISTER: ONE object per forward step your opinion names that a HUMAN must still take, each EXACTLY {"id","kind","text","ordinals"} (+ optional "deadline":{"kind","date"}) — kinds: conditions consent / coexistence-agreement / territorial-delimitation / goods-amendment / mark-modification / senior-clearance / proceeding-response / counsel-opinion-required; advisory client-fact / commercial-decision / monitoring / filing-routine.`,
+      `Add ONE top-level "actions": [...] key that registers every forward step your own narrative (${narrative}) names ("actions": [] ONLY if the opinion genuinely demands nothing beyond ordinary filing). Same findings, same judgments — the findings themselves do not change.`,
       `Send it with \`record_synthesis\` as a PATCH call carrying only "actions". The driver is holding every finding you already sent and re-renders from them, so nothing else moves. There is no file for you to write or edit.`,
     ),
-    samples: [{ name: "the actions register demand", tail: "tool", args: { findings: "findings.json" } }],
+    samples: [{ name: "the actions register demand", tail: "tool", args: { findings: "findings.json", narrative: "narrative.md" } }],
   },
   {
     trigger: "corrective",
@@ -169,7 +175,7 @@ export const REPAIR_COMPOSERS = [
         // four moves and there is no fifth. The standing outward-language rule governs the REPAIR path
         // exactly as it governs a first draft, and this instruction was the one place the engine invited
         // a hedge into a deliverable. It fired on 4 of 4 delivered clearances in the 2026-08-09 round.
-        `You are RESUMING your own synthesis session — your narrative and all inputs are already in your context; do NOT redo it from scratch. The independent refutation flagged the corrections below. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, remove the sentence, or verify-flag for re-check) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
+        `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. The independent refutation flagged the corrections below. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, remove the sentence, or verify-flag for re-check) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
         // ── — THE PASS THAT WRITES THE DEFECT ──────────────────────────────────
         //
         // Five verdict refusals in seven days, all one shape: a coverage or search-completion claim
@@ -206,7 +212,7 @@ export const REPAIR_COMPOSERS = [
         `THE COVERAGE ACCOUNT IS NOT YOURS TO REOPEN HERE. Do not introduce any statement about what was searched, counted, screened, finished, or came back empty that is not already in ${narrative}. That account was settled when you wrote it against the evidence in front of you; this pass has the reviewer's flags and not that evidence, so it is not in a position to widen it. Deleting a false coverage sentence is a correction. Replacing it with a different coverage sentence is not — strike it and say nothing in its place.`,
         `IF YOU REMOVE THE SUPPORT FOR A CLAIM, THE CLAIM GOES WITH IT. Deleting the evidence and leaving the sentence standing does not make it safer, it makes it unsupported and therefore stronger than the record allows. A run was refused for exactly this.`,
         `1. Correct the flagged narrative sections — send back ONLY the sections a flag names, and every section the flags do not name is left out and comes back byte-identical;`,
-        `2. mirror every correction into the finding objects the flags name (owner names, levels/composites, meters). A finding the review KILLS is not deleted: keep its object, set "disposition": "withdrawn" and add "withdrawn_reason": "<the review flag that killed it>". Add a top-level "corrections": {"applied": true, "note": "<one line per flagged entity: corrected / withdrawn / no-change-because-…>"}.`,
+        `2. mirror every correction into the finding objects the flags name (owner names, levels/composites, meters). A finding the review KILLS is not deleted: keep its object, set "disposition": "withdrawn" and add "withdrawn_reason": "<the review flag that killed it>". Add a "corrections": {"applied": true, "note": "<one line per flagged entity: corrected / withdrawn / no-change-because-…>"} marker inside the call's \`findings\` object.`,
         // THE LINES THAT ARE NOT A FINDING. A coverage note, an action and the mark assessment carry no
         // ordinal, so step 2 cannot reach them, and nothing said where a rewrite of one goes: seven such
         // flags survived one clearance on the test box, each recorded as naming nothing (2026-09-11). The
@@ -214,7 +220,7 @@ export const REPAIR_COMPOSERS = [
         // — and this names it. The coverage-account rule above forbids NEW claims about what was searched;
         // rewording a note keeps its claims, and the text says so, or the seat reads the two as a conflict
         // and does nothing, which is what it did.
-        `3. A flag about a line the reader sees that is NOT a finding — a coverage row's "note", an action's "text", or the mark assessment's "distinctiveness" or "connotation" — is applied in the same PATCH: send the complete top-level \`coverage\` array (every row, the unflagged ones exactly as you last sent them), the complete \`actions\` array, or the complete \`mark_assessment\`, with the flagged line rewritten. A row left out of the array is a row deleted, so send every row. Rewording a coverage note is NOT reopening the coverage account: keep its area, its state and every fact it states, and change only how it says them. A flagged line you leave as written is named in the "corrections" note with the reason, as the flag names it — for example: the coverage line for "<area>": no-change-because …`,
+        `3. A flag about a line the reader sees that is NOT a finding — a coverage row's "note", an action's "text", or the mark assessment's "distinctiveness" or "connotation" — is applied in the same PATCH, inside the call's \`findings\` object beside the "corrections" marker: send the complete \`coverage\` array (every row, the unflagged ones exactly as you last sent them), the complete \`actions\` array, or the complete \`mark_assessment\` object, with the flagged line rewritten. A row left out of the array is a row deleted, so send every row. Rewording a coverage note is NOT reopening the coverage account: keep its area, its state and every fact it states, and change only how it says them. A flagged line you leave as written is named in the "corrections" note with the reason, as the flag names it — for example: the coverage line for "<area>": no-change-because …`,
         // ── CONVERTED. `editRepairTail` stood here and ordered targeted Edits of
         // both files. The seat holds no Edit for either any more — but the ECONOMICS that argued for a
         // targeted edit are preserved rather than lost, which is why the call has a patch shape at all:
@@ -222,7 +228,7 @@ export const REPAIR_COMPOSERS = [
         // on the serial critical path, and a conversion that answered it with "re-send everything
         // through a tool" would have paid that cost back in a different currency. The driver holds the
         // accepted values; the seat sends what changed.
-        `Send it all in ONE \`record_synthesis\` PATCH call: \`narrative\` carrying only the sections you corrected, and \`findings_patch\` carrying the complete corrected finding object(s), each with the \`ordinal\` it replaces. The driver is holding everything else you sent and re-renders both files, so what you do not name is byte-identical by construction rather than by your care. There is no file to write or edit and nothing you write by hand is read.`,
+        `Send it all in ONE \`record_synthesis\` PATCH call, sending only the change: \`narrative\` carrying only the sections you corrected; \`findings_patch\` carrying the complete corrected finding object(s), each with the \`ordinal\` it replaces; and \`findings\` carrying the "corrections" marker and any register from step 3, complete, and never a \`findings[]\` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file to write or edit and nothing you write by hand is read.`,
         // 2026-07-04 (the VENZY corrective thrash): three attempts died inventing three different keys
         // while trying to EXPRESS a hold. The contract is closed and every correction is expressible
         // inside it — say so.
@@ -259,7 +265,7 @@ export const REPAIR_COMPOSERS = [
     stage: "narrative-refutation",
     key: "narrative-refutation:verdict-recheck",
     compose: ({ narrative, findings, seniorEyeReview, correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry }) => lines(
-      `You are RESUMING your own narrative-refutation session — your prior verdict, the narrative, and the source files you refuted against are already in your context; do NOT re-read them from scratch.`,
+      `This is a fresh session: your earlier refutation is not in your context, and you do NOT redo it from scratch. Your prior verdict and its flags are in ${seniorEyeReview} — open it first — and the source files you refuted against are listed below.`,
       // — WHEN THE SCOPE WAS DECLARED, THE RE-READ IS NARROWED TO IT. The recheck cost 270-510 s on
       // every measured run, and its whole job is to judge whether the corrections are RIGHT — not to
       // re-derive which parts of two long documents changed. The driver already knows: it holds the
@@ -317,15 +323,21 @@ export const REPAIR_COMPOSERS = [
     key: "*:lint-repair",
     compose: ({ label, file, toolWritten, failures }) => lines(
       toolWritten
-        ? `You are RESUMING your own ${label} session — the driver wrote ${file} from your \`${toolWritten.tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`
-        : `You are RESUMING your own ${label} session — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`,
+        ? `This is a fresh session: your earlier ${label} work is not in your context — the driver wrote ${file} from your \`${toolWritten.tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`
+        : `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`,
       ...failures.map((f) => `- ${f.detail || f.id}`),
       `Where a check quotes the fetched record's true value, correct the identifier to the record's value EXACTLY (the record is the only permitted source for registry identifiers).`,
       `Risk tiers and Level/Composite labels are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
       `Fix ONLY what the checks name; change nothing else.`,
-      toolWritten
-        ? `Apply the fix by calling \`${toolWritten.tool}\` AGAIN with the corrected values — the COMPLETE payload, not a patch, because the driver re-renders the whole artifact from what you send. You hold no Write or Edit tool for it and nothing you write by hand is read.`
-        : editRepairTail(file),
+      // THE WRITER'S SAVE MERGES A PATCH; EVERY OTHER TOOL HERE TAKES ITS WHOLE PAYLOAD. `record_synthesis`
+      // holds the record it last accepted and merges a patch into it, so the writer sends only the change, in
+      // the shape its correction message uses. The other tools a delivery repair reaches render their artifact
+      // from the call they are sent, so they keep the complete-payload line.
+      toolWritten?.tool === "record_synthesis"
+        ? `Apply the fix in ONE \`record_synthesis\` PATCH call, sending only the change: \`narrative\` carrying only the sections you corrected; \`findings_patch\` carrying the complete corrected finding object(s), each with the \`ordinal\` it replaces; and \`findings\` carrying any register you corrected, complete, and never a \`findings[]\` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. You hold no Write or Edit tool for it and nothing you write by hand is read.`
+        : toolWritten
+          ? `Apply the fix by calling \`${toolWritten.tool}\` AGAIN with the corrected values — the COMPLETE payload, not a patch, because the driver re-renders the whole artifact from what you send. You hold no Write or Edit tool for it and nothing you write by hand is read.`
+          : editRepairTail(file),
     ),
     // BOTH BRANCHES, AND THE CENSUS REQUIRES BOTH. This composer is the one that can hand a seat either
     // a tool order or a file-edit order depending on how its artifact is written, so a sample set
@@ -353,6 +365,11 @@ export const REPAIR_COMPOSERS = [
       { name: "a tool-written artifact", tail: "tool",
         args: { label: "report-card", file: "report-cards/0.md", toolWritten: { tool: "record_report_card" },
           failures: [{ id: "rc_band_mismatch", detail: "band says CLEAR, findings say BORDERLINE" }] } },
+      // The writer's branch: its save merges a patch, so it is the one tool-written artifact told to send only
+      // the change.
+      { name: "the writer's record, which takes a patch", tail: "tool",
+        args: { label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" },
+          failures: [{ id: "narrative_coverage_claim", detail: "a coverage line claims a slice the plan did not run" }] } },
       // THE SAMPLE MOVED STAGES RATHER THAN FLIPPING ITS SHAPE. It read
       // `{label:"synthesis", file:"narrative.md", toolWritten:null}`, and when the writer converted, the
       // sample-honesty arm fails it by name — narrative.md now has a row. Flipping this entry to
@@ -383,7 +400,7 @@ export const REPAIR_COMPOSERS = [
       // The direction is scoped to the two files by name BEFORE the Edit tool is offered, per the hazard
       // GRID_SCOPED records: the rulings tail below names the placement file precisely to forbid re-reading
       // it, and an unscoped Edit affordance beside a named path is an invitation to edit it.
-      `You are RESUMING your own synthesis session — your narrative and inputs are already in your context; do NOT redo the analysis.`,
+      `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo the analysis.`,
               `Exactly ${quarantined.length} finding object(s) in ${findings} failed the strict parse. Fix ONLY these objects and change NOTHING else:`,
               ...quarantined.map((q) => `- "${q.mark}" (index ${q.index}): ${String(q.error ?? "invalid shape").slice(0, 160)}`),
               `THE FINDINGS CONTRACT IS CLOSED — MINIMAL EDIT ONLY: change the smallest set of existing fields these errors require; NEVER invent a key, a state, or an enum value. A correction that cannot be expressed in existing fields goes in the finding's prose/impact text. ONE exception: a finding re-typed TO "off-field" also gets "off_field_ground" ("different-field" only where its goods_proximity reads "low", else "no-material-risk"), re-typing away from off-field removes it, and every finding that is not "withdrawn" carries a non-empty "legal_position" and "practical_position".`,
@@ -396,7 +413,7 @@ export const REPAIR_COMPOSERS = [
     stage: "synthesis",
     key: "synthesis:action-reemit",
     compose: ({ findings, bad }) => lines(
-        `You are RESUMING your own synthesis session — your narrative and inputs are already in your context; do NOT redo the analysis.`,
+        `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo the analysis.`,
         `Exactly ${bad.length} object(s) in the "actions" register of ${findings} failed the strict parse. Fix ONLY these objects and change NOTHING else — no finding changes, no new actions, none removed:`,
         // The id is what the seat can find its own row by; `kind` is echoed because a kind defect is
         // the one case where the id alone does not locate the fault in the seat's own reading.
@@ -411,7 +428,7 @@ export const REPAIR_COMPOSERS = [
     stage: "synthesis",
     key: "synthesis:ask-answer-reemit",
     compose: ({ findings, bad }) => lines(
-        `You are RESUMING your own synthesis session — your narrative and inputs are already in your context; do NOT redo the analysis.`,
+        `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo the analysis.`,
         `Exactly ${bad.length} object(s) in the "ask_answers" array of ${findings} failed the strict parse. Fix ONLY these objects and change NOTHING else — no finding changes, no action changes:`,
         ...bad.map((q) => `- ask_answers index ${q.index}${q.ask ? ` (ask "${q.ask}")` : ""}: ${String(q.error ?? "invalid shape").slice(0, 160)}`),
         `THE SHAPE IS CLOSED — MINIMAL EDIT ONLY. Each entry is EXACTLY {"ask","answer"} plus an OPTIONAL "ordinals" array of finding ordinals. \`ask\` is the requester's instruction VERBATIM (it is the join key to the frozen intake asks). \`answer\` is the ANSWER ALONE — never prefixed with "You asked: … →", which the driver adds when it builds the section. Do not resolve a defect by DELETING the entry: the ask was committed at intake and would then ship unanswered.`,

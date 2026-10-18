@@ -6378,7 +6378,7 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   await stage("synthesis", ctx, {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
     trigger: "corrective-findings",
-    followup: repairFollowup("synthesis:corrective-findings", { findings: P.findings, named }) + stageCharter("synthesis", ctx.depth, ctx.framework),
+    followup: repairFollowup("synthesis:corrective-findings", { findings: P.findings, named, seniorEyeReview: P.seniorEyeReview }) + stageCharter("synthesis", ctx.depth, ctx.framework),
   });
   if (readState().stale) {
     runLog(run.runDir, { event: "corrective-findings-stale", named });
@@ -12587,7 +12587,7 @@ async function pipelineInner(job, opts = {}) {
       await stage("synthesis", ctx, {
         force: true, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking,
         trigger: "actions-missing",
-        followup: repairFollowup("synthesis:actions-missing", { findings: P.findings }) + stageCharter("synthesis", ctx.depth, ctx.framework),
+        followup: repairFollowup("synthesis:actions-missing", { findings: P.findings, narrative: P.narrative }) + stageCharter("synthesis", ctx.depth, ctx.framework),
       });
       const after = readActionsPresence();
       if (after && !after.hasActions) runLog(run.runDir, { event: "findings-actions-absent" });
