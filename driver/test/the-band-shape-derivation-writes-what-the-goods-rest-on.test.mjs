@@ -33,7 +33,7 @@ function seedRun(t) {
   mkdirSync(driverDir(runDir), { recursive: true });
   const P = paths(runDir);
   writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: BAND, crowds: [] }));
-  const body = (statements) => ({ goodsServices: statements.map(([c, t]) => ({ classes: [c], language: "en", description: t })) });
+  const body = (statements) => ({ statusText: "Registered", goodsServices: statements.map(([c, t]) => ({ classes: [c], language: "en", description: t })) });
   writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), [
     { ts: "2026-10-18T00:00:00Z", provider: "clarivate", sessionKey: "clearance-qz-test-register-unit-primary-sweep", target: "/mark/eu/g1", body: body([[9, "joysticks"]]) },
     { ts: "2026-10-18T00:00:01Z", provider: "clarivate", sessionKey: "clearance-qz-test-register-unit-primary-sweep", target: "/mark/eu/g2", body: body([]) },
