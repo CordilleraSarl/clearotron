@@ -264,15 +264,31 @@ export function setAsideKeysOf(positions) {
  * {set_aside, owner, ground, by} or null. Resolved through the same selection index a `select` resolves
  * through, so the owner is read one way at both ends. A ground by name wins over the owner's group row;
  * `groups` is the band shape's, which says which group each owner sits in. PURE; never throws.
+ *
+ * A GROUP'S ROW GIVES A RECORD ONLY THE GROUND IT GIVES THE RECORD'S LINE. The row covers the lines of its group
+ * the step neither placed nor named, and a line holding a floor only in a crowd of a thousand or more in (b): the
+ * form says back exactly that (`covers_lines`, `floors_not_covered`) and the fate count counts it. Read record by
+ * record, the row also gave its ground to the other records of a floor's line, which had no fate, and to the other
+ * positions of a line the step placed through one of them, so the record trace showed grounds nobody gave. Every
+ * record of a line holding a floor the row cannot answer now leaves with none; so does every record of a placed
+ * line other than a floor, given `placedUris`, the records the form placed. A floor there keeps the answer it had,
+ * because the floor duty counts floors one by one and the delivery floor is read from it.
  */
-export function setAsideGrounds(entries, index, groups = null, floors = null) {
+export function setAsideGrounds(entries, index, groups = null, floors = null, { placedUris = null } = {}) {
   const byKey = new Map(), byGroup = new Map();
   for (const e of Array.isArray(entries) ? entries : []) {
     if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && e?.ground) byGroup.set(g, e); }
     else if (e?.key && e?.ground) byKey.set(e.key, e);
   }
   const groupOf = byGroup.size ? groupOfKeys(groups) : new Map();
-  const floorUris = new Set((Array.isArray(floors) ? floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
+  const uriKey = (u) => normalizeRecordUri(u) || String(u ?? "");
+  const floorUris = new Set((Array.isArray(floors) ? floors : []).map((f) => uriKey(f?.record_id)).filter(Boolean));
+  // The lines holding a floor, as the union reads them: any floor record's line, or a shape line counting one.
+  const floorLines = new Set(byGroup.size ? [
+    ...[...floorUris].map((u) => lineKey(index?.resolve?.(u))).filter(Boolean),
+    ...["a", "b", "c", "d", "no_goods"].flatMap((g) => (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).filter((l) => l?.floors > 0).map((l) => l.key)),
+  ] : []);
+  const placedLines = new Set(byGroup.size ? [...(placedUris ?? [])].map((u) => lineKey(index?.resolve?.(u))).filter(Boolean) : []);
   return (uri) => {
     if ((!byKey.size && !byGroup.size) || !index?.resolve) return null;
     const canonical = index.resolve(uri);
@@ -281,8 +297,11 @@ export function setAsideGrounds(entries, index, groups = null, floors = null) {
     const named = line ? byKey.get(line) : null;
     if (named) return { ...named, by: "name" };
     const group = line ? groupOf.get(line) : null, row = group ? byGroup.get(group) : null;
-    if (row && floorUris.has(normalizeRecordUri(uri) || String(uri ?? "")) && !groupRowCoversFloors(groups, group)) return null;
-    return row ? { set_aside: null, key: line, owner: null, ground: row.ground, by: "group", group } : null;
+    if (!row) return null;
+    const isFloor = floorUris.has(uriKey(uri));
+    if ((isFloor || floorLines.has(line)) && !groupRowCoversFloors(groups, group)) return null;
+    if (!isFloor && placedLines.has(line)) return null;
+    return { set_aside: null, key: line, owner: null, ground: row.ground, by: "group", group };
   };
 }
 
@@ -317,11 +336,15 @@ export function ownerFates({ groups, entries = [], index, placedUris = [] } = {}
       if (fate === "unfated") unfated_lines.push({ list, key: l.key });
       ownerFated.set(l.owner_key, (ownerFated.get(l.owner_key) ?? true) && fate !== "unfated");
     }
-    by_list[list] = c;
+    by_list[list] = { ...c, reconciles: sumsToLines(c) };
   }
-  return { unit: "line", ...totals, owners: ownerFated.size, owners_fated: [...ownerFated.values()].filter(Boolean).length,
+  // THE SUM IS STATED, as the floor duty states its own: one fate per line, so the four add up to the lines, and a
+  // count that does not is a defect here that a reader should not have to find by adding.
+  return { unit: "line", ...totals, reconciles: sumsToLines(totals), owners: ownerFated.size, owners_fated: [...ownerFated.values()].filter(Boolean).length,
     by_list, unfated_lines };
 }
+
+const sumsToLines = (c) => c.placed + c.by_name + c.by_group + c.unfated === c.lines;
 
 const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver COPIES. For each "
   + "register candidate you are placing, add a row naming one of its record ids in `select` plus your "

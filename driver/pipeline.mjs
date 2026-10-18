@@ -2995,13 +2995,15 @@ function derivePlacementCarry(ctx, trigger) {
 //
 // NEVER THROWS and never gates — same doctrine as the trace it feeds. A ledger that cannot be written
 // costs the run a `basis: "recorded"`, which the trace then states, and costs it nothing else.
-function recordSeamDiscards(ctx, { seam, stage: stageName, trigger = null, completed = true,
+function recordSeamDiscards(ctx, { seam, stage: stageName, trigger = null, completed = true, skipped = false,
   saw = [], carried = [], reasonFor = null, evidence = "" } = {}) {
   const P = ctx.paths;
   try {
     ctx._discardPass ??= {};
     const pass = (ctx._discardPass[seam] = (ctx._discardPass[seam] ?? 0) + 1);
-    const rows = seamRows({ seam, stage: stageName, trigger, pass, completed, saw, carried, reasonFor, evidence });
+    // A skipped pass leaves standing what an earlier pass recorded (record-discard.mjs, `seamRows`).
+    const prior = skipped ? foldDiscardLedger(safeReadText(driverDir(P.runDir, DISCARD_LEDGER_NAME))) : null;
+    const rows = seamRows({ seam, stage: stageName, trigger, pass, completed, skipped, prior, saw, carried, reasonFor, evidence });
     const w = appendDiscardRows(P.runDir, rows);
     const discarded = rows.filter((r) => r.verdict === "discarded").length;
     runLog(P.runDir, {
@@ -3047,11 +3049,26 @@ function recordPlacementSeam(ctx, r, trigger = null) {
   const saw = bandUriRows(P);
   if (!saw.length) return null;
   return recordSeamDiscards(ctx, {
-    seam: "placement", stage: "placement-inquiry", trigger, completed: r?.ok === true && !r?.skipped,
+    seam: "placement", stage: "placement-inquiry", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
     saw, carried: placedUriRows(P),
     evidence: r?.skipped ? "the pass was SKIPPED on an artifact already on disk, so it made no decision this pass" : (r?.fail ? String(r.fail).slice(0, 80) : ""),
     reasonFor: placementSeamReason(placementSetAsideGrounds(P)),
   });
+}
+
+/**
+ * WHAT ONE PLACEMENT PASS DID, RECORDED: the ground every band record left it with (the seam rows), the floors
+ * it answered (the floor duty), and, on a pass that actually ran, the stamp that its floor account may be held
+ * to. The main path and the delivery gate's repeat of the stage both record through here, so the record trace
+ * and the floor duty describe the placements the report was built from. Returns the pass result. A SKIPPED
+ * pass leaves `placements.json` written by an earlier seat (on a resume, possibly one that never saw the
+ * floors order), so it arms nothing, and its seam rows leave the earlier pass's grounds standing.
+ */
+export function recordPlacementPass(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
+  recordPlacementSeam(ctx, r, trigger);
+  deriveFloorDuty(ctx, r, trigger);
+  if (r?.ok === true && r?.skipped !== true) armFloorDuty(ctx.paths.runDir);
+  return r;
 }
 
 /**
@@ -3075,7 +3092,8 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
-    return setAsideGrounds(standingSetAside(form.set_aside, input), buildSelectionIndex(input), input.groups, input.floors);
+    return setAsideGrounds(standingSetAside(form.set_aside, input), buildSelectionIndex(input), input.groups, input.floors,
+      { placedUris: placedUriRows(P).map((r) => r.uri) });
   } catch { return () => null; }
 }
 
@@ -3132,7 +3150,7 @@ function recordDigestSeam(ctx, r, trigger = null) {
     if (c === "carried") carried.push(row);
   }
   return recordSeamDiscards(ctx, {
-    seam: "digest", stage: "register-digest", trigger, completed: r?.ok === true && !r?.skipped,
+    seam: "digest", stage: "register-digest", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
     saw, carried,
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
@@ -3252,7 +3270,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
     }
   } catch { /* validators.findings' business; this seam records what it can */ }
   return recordSeamDiscards(ctx, {
-    seam: "synthesis", stage: "synthesis", trigger, completed: r?.ok === true && !r?.skipped,
+    seam: "synthesis", stage: "synthesis", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
     saw, carried: delivered,
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
@@ -5992,7 +6010,7 @@ const UPSTREAM_STALE_REPAIR = {
   // re-run could leave outvoting its prose, and it is re-runnable by contract (no one-shot receipt — the
   // assertReceiptSettled call ahead of its normal dispatch settles the plan receipt, which is already
   // settled by the time the delivery gate asks).
-  "placement-inquiry": (ctx) => stage("placement-inquiry", ctx, { force: true, trigger: "stale-repair" }),
+  "placement-inquiry": async (ctx) => recordPlacementPass(ctx, await stage("placement-inquiry", ctx, { force: true, trigger: "stale-repair" }), "stale-repair"),
   // frame-diff is DELIBERATELY ABSENT and must stay absent. It is one-shot by contract (no in-process
   // re-diff), so an entry here would re-dispatch a stage the design says runs once, for a model call
   // that cannot change anything: nothing declares frame-diff's outputs as a stage input, so by the time
@@ -11694,23 +11712,10 @@ async function pipelineInner(job, opts = {}) {
     // Step 2C placement → Step 2D digest
     await assertReceiptSettled(ctx, "placement-inquiry");
     const placementPass = await stage("placement-inquiry", ctx);
-    // half one — what THIS pass did to every record in the band, recorded before anything else can
-    // overwrite placements.json. Ahead of `must` deliberately: a pass that failed or skipped on a partial
-    // artifact is exactly the pass whose account is worth having, and `must` throws.
-    recordPlacementSeam(ctx, placementPass);
-    // — and whether the floors came back, on the SAME seam and for the same reason: before
-    // anything can overwrite placements.json, and ahead of `must`, because a pass that failed or
-    // skipped is exactly the pass whose floor account is worth having.
-    deriveFloorDuty(ctx, placementPass);
-    // ── — ARM THE FLOOR, AND ONLY ON A PASS THAT ACTUALLY RAN ─────────────────────────────────
-    //
-    // The stamp says "this run's placement ran under code carrying the floors order", which is the one
-    // fact a delivery floor may rest on. A SKIPPED pass leaves `placements.json` written by an earlier
-    // seat — on a resume, potentially one that never saw the dictation — so arming there would hold a
-    // seat to an order it never got. `ok:false` never reaches here anyway (`must` throws on the next
-    // line), and it is written out rather than relied on, because the reason it cannot reach here is a
-    // property of the line below rather than of this one.
-    if (placementPass?.ok === true && placementPass?.skipped !== true) armFloorDuty(P.runDir);
+    // What THIS pass did, recorded before anything else can overwrite placements.json, and ahead of `must`
+    // deliberately: a pass that failed or skipped on a partial artifact is exactly the pass whose account is
+    // worth having, and `must` throws. The delivery gate's repeat of this stage records through the same helper.
+    recordPlacementPass(ctx, placementPass);
     must(placementPass, "placement-inquiry");
     await checkLateBind("pre-digest");   // B5b checkpoint 2: a bind here rides the digest message as a re-classification block
     const digestKey = must(await runDigest(ctx), "register-digest").sessionKey;

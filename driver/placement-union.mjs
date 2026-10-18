@@ -331,9 +331,11 @@ export function unionPlacementForm(prior, submitted, input) {
   // or more, stands on its row and its count. Said back once the step has answered, on this turn or an earlier one:
   // the form written before any answer would list every floor of the band, and a turn whose form will not parse
   // leaves the earlier answer standing, its floors still owed.
-  const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors);
+  const rendered = renderPlacementsJson(form.rows).placements;
+  const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors,
+    { placedUris: rendered.flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
   const duty = reconcileFloorDuty({ floors: Array.isArray(input?.floors) ? input.floors : [],
-    placements: renderPlacementsJson(form.rows).placements, setAsideGroundOf: groundOf });
+    placements: rendered, setAsideGroundOf: groundOf });
   const unfated = new Map();
   for (const r of duty.rows) {
     if (r.disposition !== "unanswered" && r.disposition !== "named-without-ground") continue;
