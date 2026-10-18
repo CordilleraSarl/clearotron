@@ -201,7 +201,7 @@ test("a review after a repair that was read and never corrected keeps its points
     assembleReportMd(P, doc.findings, [1, 2, 3]);
     const open = readdirOpenPoints(dir) ?? "";
     assert.ok(open.includes(POINT), "the point of a review whose correction never ran was lost");
-    assert.match(open, new RegExp(`${POINT.replace(/[.]/g, "\\.")} \\*\\(the run could not check whether this was addressed\\)\\*`));
+    assert.ok(open.includes(`${POINT} *(the run could not check whether this was addressed)*`), open);
     // CONTROL: once its correction is on record, the correction's own rows are what print.
     writeFileSync(driverDir(dir, "post-repair-corrections.json"), JSON.stringify({ rows: [flag(1, { text: POINT, ordinals: [2], outcome: "findings-changed" })] }) + "\n");
     assembleReportMd(P, doc.findings, [1, 2, 3]);
