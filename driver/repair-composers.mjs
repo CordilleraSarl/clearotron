@@ -628,14 +628,16 @@ export const REPAIR_COMPOSERS = [
     trigger: "xcheck-decide",
     stage: "register-unit",
     key: "register-unit:xcheck-decide",
-    compose: ({ axis, entries }) => lines(
+    // A fresh session cannot infer the tool's arguments, so the caller supplies all three.
+    compose: ({ axis, registerPlan, bandPath, entries }) => lines(
         `This is a fresh session: your earlier register-unit work (axis "${axis}") is not in your context. Your unit digest stands — do NOT redo it.`,
         `The web search's findings named these register questions after your reading. They wait for you like the families in your plan:`,
         ...entries.map((e) => `- qid "${e.qid}": ${e.predicate} "${e.term}" · nice_classes ${JSON.stringify(e.nice_classes)}${e.from ? ` · from ${e.from}` : ""}`),
+        `For \`register_execute_plan\`, use \`plan_path: ${JSON.stringify(registerPlan)}\`, \`axis: ${JSON.stringify(axis)}\`, and \`output_path: ${JSON.stringify(bandPath)}\`; pass only the qids you released.`,
         DECIDE_WAITING_FAMILIES,
         `Return ONLY: the band path + the tool's summary line.`,
       ),
-    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] } }],
+    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] } }],
   },
   {
     trigger: "grid-ledger",
