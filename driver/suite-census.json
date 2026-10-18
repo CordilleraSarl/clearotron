@@ -317,7 +317,13 @@
         },
         "a-correction-patches-what-it-carries.test.mjs": {
           "tests": 43,
-          "asserts": 79,
+          "asserts": 80,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-correction-session-is-told-it-is-fresh-and-sends-only-the-change.test.mjs": {
+          "tests": 9,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
