@@ -24,7 +24,7 @@ import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, PLACEMENT_GROUP_ORDERS } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
-import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish } from "../../record-goods.mjs";
+import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish, rowGoods } from "../../record-goods.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
@@ -299,8 +299,9 @@ const shapeGoodsTest = () => {
   testCache = { words, matched: goodsWordsMatched(words, { stems: true }) };
   return testCache;
 };
-// The record's body first; a row that carries goods of its own stands in where the run holds no body.
-const goodsOfRow = (r) => goodsFor(goodsIndex(), r)
+// The record's body first; where the run holds none, the statements the row carries, as the shape reads them
+// (`rowGoods`, a statement the register cut marked so); a row that carries its goods as one string stands in last.
+const goodsOfRow = (r) => goodsFor(goodsIndex(), r) ?? rowGoods(r)
   ?? (typeof r?.goods === "string" && r.goods.trim() ? [{ classes: [], text: r.goods.trim(), ...(untaggedIsEnglish(r?.record_id) ? {} : { en: false }) }] : null);
 const withGoods = (r) => {
   const { words, matched } = shapeGoodsTest();
