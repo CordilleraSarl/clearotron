@@ -21,7 +21,7 @@ import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
 import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
-import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, PLACEMENT_GROUP_ORDERS } from "../../band-shape.mjs";
+import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, withoutPlacementOrders } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
 import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish, rowGoods } from "../../record-goods.mjs";
@@ -606,7 +606,7 @@ const GROUP_PAGES = process.env.CLEAROTRON_BAND_GROUPS === "1";
 // The same holds for the shape's own orders under the groups: placement reads them, and every other stage is
 // served the shape without them (Krzys's ruling, 2026-10-14). Each is removed with the space before it, inside
 // its line, so no line moves and the line each listed mark is printed on, which `linesByPart` reads, still holds.
-const withoutPlacementOrders = (text) => PLACEMENT_GROUP_ORDERS.reduce((t, order) => t.split(` ${order}`).join("").split(order).join(""), text);
+// (band-shape.mjs `withoutPlacementOrders` removes them, with the shape's other placement-only orders and its group-page commands.)
 const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: the official record, the official record listing no goods, the search answer, the search answer cut by the register, a failed fetch, or nothing held. The goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
 const LOOKUP_GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
 const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page)";
