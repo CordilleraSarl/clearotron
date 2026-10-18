@@ -2176,6 +2176,20 @@ export function foldSupplementalEntries(plan, entries) {
  * the set releasedFamilyQids returns. The caller reads both, so this stays PURE.
  * @returns {Map<string, {qid: string, reason: string}>} question key → the withheld family and its reason
  */
+/**
+ * THE AXIS'S REQUIRED QUESTIONS THAT HAVE NOT LANDED: what a re-sweep that adds nothing still owes the axis. A fold
+ * that added nothing sends these, and only these: the executor read an empty question list as every entry on the
+ * axis, so the empty re-sweep repeated every landed question and, with them, retried the required ones still
+ * unanswered. Suppressing it keeps that retry and drops the repeats. A family waiting for the reading turn is required
+ * only once the turn released it; an entry the provider cannot express is never sent.
+ */
+export function pendingRequiredQids(plan, axis, executedQids = new Set(), released = new Set()) {
+  return (Array.isArray(plan?.entries) ? plan.entries : [])
+    .filter((e) => e?.qid && e.axis === axis && e.unsupported !== true && (!awaitsReadingTurn(e.when) || released?.has?.(e.qid))
+      && !executedQids.has(e.qid))
+    .map((e) => e.qid);
+}
+
 export function withheldFamilyTwins(plan, withheld = {}, released = new Set()) {
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
   const asked = new Set(entries.filter((e) => e && e.unsupported !== true && !awaitsReadingTurn(e.when))

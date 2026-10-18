@@ -23,7 +23,7 @@ import assert from "node:assert/strict";
 // The two re-sweep helpers are read off the module, not imported by name, so that on a tree without them each
 // arm that needs them fails on its own and every other arm still runs and reports.
 import * as registerPlan from "../register-plan.mjs";
-import { compileRegisterPlan, foldSupplementalEntries, joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
+import { compileRegisterPlan, foldSupplementalEntries, joinPlanToBands, deriveCoverageSkeleton, pendingRequiredQids } from "../register-plan.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { verifyRegisterDirectiveClose, answeredAs } from "../close-verify.mjs";
 import { classifyRemedyTerm, accountRemedyTerms, domClosedOverAccounted, mintRemedyAccountingDoubts, remedyAccountingEvent } from "../remedy-accounting.mjs";
@@ -378,6 +378,21 @@ test("the register coverage line counts the family as withheld, never as a searc
   assert.doesNotMatch(now9.coverage_line, /did not complete/);
 });
 
+test("a class reads searched only when every required search in it is complete: a withheld family leaves the count, a required search that did not run keeps it from searched", () => {
+  const { now } = bothStates();
+  const line = (planExecution) => deriveScopeFacts({ instructedScope: { marks: [MARK], classes: [9], jurisdictions: [] },
+    plan: now.plan, planExecution, coverageRows: [], withheldQids: [FAMILY] });
+  const complete = line(now.exec);
+  assert.equal(complete.per_class["9"].withheld, 1);
+  assert.match(complete.coverage_line, /Class 9: searched/, `every required search ran: ${complete.coverage_line}`);
+  // The same withholding beside a required search that never ran: the class is not searched.
+  const bands = { "primary-sweep": [listed(`${IDENTICAL}+merch`, 3)] };
+  const join = joinPlanToBands(now.plan, bands);
+  const short = line({ ...join, skeleton: deriveCoverageSkeleton(now.plan, join) });
+  assert.doesNotMatch(short.coverage_line, /Class 9: searched/, `a required search did not run: ${short.coverage_line}`);
+  assert.equal(short.per_class["9"].withheld, 1, "the withheld family still leaves the count");
+});
+
 test("a directive settled this way leaves no deferral, so no open frame row, no follow-up row and no standing main-element gap", () => {
   // The pipeline's own chain, without its IO: the per-directive check decides the partition, the term
   // ledger decides the gap, and the receipt those two write is what the follow-up rows, the CLEAR hold and
@@ -391,4 +406,15 @@ test("a directive settled this way leaves no deferral, so no open frame row, no 
   assert.deepEqual(deferrals, [], "nothing is left for a follow-up row or a held CLEAR");
   assert.equal(domClosed, true);
   assert.deepEqual(frameResidualGaps({ requested: [reopenKey(directive)], swept, deferrals, dominant_element_gap: true, domClosed }), []);
+});
+
+test("a re-sweep that adds nothing owes the axis only its required questions that have not landed: never a landed one, never a waiting family the turn did not release, never an unsupported entry", () => {
+  const plan = { plan_version: 1, entries: [
+    { qid: "a:landed", axis: "primary-sweep" }, { qid: "a:pending", axis: "primary-sweep" },
+    { qid: "a:waiting", axis: "primary-sweep", when: { awaits_reading_turn: true } }, { qid: "a:released", axis: "primary-sweep", when: { awaits_reading_turn: true } },
+    { qid: "a:unsupported", axis: "primary-sweep", unsupported: true }, { qid: "b:pending", axis: "transliteration-numeric" }] };
+  assert.deepEqual(pendingRequiredQids(plan, "primary-sweep", new Set(["a:landed"]), new Set(["a:released"])), ["a:pending", "a:released"]);
+  assert.deepEqual(pendingRequiredQids(plan, "primary-sweep", new Set(["a:landed", "a:pending", "a:released"]), new Set(["a:released"])), [],
+    "with every required question landed, nothing is sent");
+  assert.deepEqual(pendingRequiredQids({ entries: [] }, "primary-sweep"), []);
 });

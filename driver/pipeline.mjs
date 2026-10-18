@@ -59,7 +59,7 @@ import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordU
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
 import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
@@ -11254,12 +11254,19 @@ async function pipelineInner(job, opts = {}) {
               // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
               // A byte-changed band with only a wrong-scope/empty/error block closes NOTHING.
               const dispatchAndVerify = async (qids) => {
-                // NOTHING ADDED, NOTHING SENT. The executor reads an empty question list as every entry on the
+                // NOTHING ADDED, NOTHING REPEATED. The executor reads an empty question list as every entry on the
                 // axis, so a fold that refused every slice (the plan's own questions, or families the reading
-                // turn withheld) handed the whole primary sweep back to the executor to run again. The verify
-                // below reads the join either way, so a refused slice is still checked through its twin or its
-                // family.
-                const outcome = qids.length ? await dispatchPlanQids(a, qids, "frame-reopen-sweep", 2) : "ok";
+                // turn withheld) handed the whole primary sweep back to the executor to run again. It now sends
+                // only the axis's required questions that have not landed (pendingRequiredQids), so a required
+                // search still gets its retry and nothing landed is asked twice. The verify below reads the join
+                // either way, so a refused slice is still checked through its twin or its family.
+                let send = qids;
+                if (!send.length) {
+                  const released = releasedFamilyQids(ctx.paths.runDir);
+                  const landed = joinPlanToBands(ctx.registerPlan, readRegisterBands(P, axes), { released }).executed.map((x) => x.qid);
+                  send = pendingRequiredQids(ctx.registerPlan, a, new Set(landed), released);
+                }
+                const outcome = send.length ? await dispatchPlanQids(a, send, "frame-reopen-sweep", 2) : "ok";
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
