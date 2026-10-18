@@ -164,7 +164,7 @@ import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
-import { plainRegisterFlags } from "./plain-register.mjs";
+import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "./plain-register.mjs";
 import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
@@ -6594,15 +6594,22 @@ function plainRegisterExtra(ctx) {
     // The surfaces a clearance reader meets before opening anything, named one by one so adding a
     // field to the page is a deliberate addition here too.
     const visible = [];
-    const add = (where, v) => { const t = String(v ?? "").trim(); if (t) visible.push({ where, text: t }); };
-    for (const f of doc.findings ?? []) add(`conflict ${f?.ordinal ?? "?"}'s one sentence`, f?.net);
+    const add = (where, v, field = null) => { const t = String(v ?? "").trim(); if (t) visible.push({ where, text: t, field }); };
+    for (const f of doc.findings ?? []) add(`conflict ${f?.ordinal ?? "?"}'s finding sentence`, f?.net, "net");
     // The lines that are not a finding, labelled by `reportLines` — the labels the corrective cycle's
     // observation joins a flag back to, so what the reviewer is handed and what the driver reads agree.
     for (const l of reportLines(doc)) add(l.label, l.text);
 
+    // A FINDING SENTENCE IS AT MOST TWO SENTENCES, so its length hit cannot say "split it": a finding sentence
+    // already at two would be told to grow a third. What does not fit goes to the legal and practical
+    // positions, in the approved paragraph's own words. Every other visible line, and the knockout's, keeps the
+    // shared hit word for word — `plainRegisterFlags` is not changed.
+    const findingSentenceLength = (n) => `${n} words in one sentence, and a visible line takes ${SENTENCE_WORD_LIMIT}. The finding sentence is at most two sentences: every fact that does not fit goes in the legal and practical positions, never dropped.`;
     const hits = [];
-    for (const { where, text } of visible) {
-      for (const flag of plainRegisterFlags(text, about)) hits.push(`- ${where} — ${flag.say}`);
+    for (const { where, text, field } of visible) {
+      for (const flag of plainRegisterFlags(text, about)) {
+        hits.push(`- ${where} — ${field === "net" && flag.kind === "length" ? findingSentenceLength(flag.words) : flag.say}`);
+      }
     }
     if (!hits.length) return nothingFound(`no plain-words flag over ${visible.length} visible line(s)`);   // a NEGATIVE FINDING, and the count travels with it so a clean read is not a read of nothing
 

@@ -101,18 +101,17 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
     paths: paths("/r"), job: {}, profile: null,
     framework: { title: "T", framework_key: "house-default", entity_label: "the company", bands: MANIFEST.bands },
   });
-  assert.match(msg, /THE FINDING SENTENCE/);
-  assert.match(msg, /NEVER AN ACTION PRESCRIPTION/);
-  // the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
-  // the consequence after '→'"), so rewriting synthesis-rules.md alone would have left the prompt
-  // teaching the shape the parser now refuses. These pin the join, not the wording of the section.
-  assert.match(msg, /IT IS A CONCLUSION, NOT A CHAIN/);
-  assert.match(msg, /NO SEMICOLON-CHAIN, NO "→", NO CONSEQUENCE CLAUSE/);
+  // The line is the paragraph approved on 2026-10-02. The dictation used to restate the retired chain
+  // shape here IN FULL ("semicolon-chained … the consequence after '→'"), so rewriting synthesis-rules.md
+  // alone would have left the prompt teaching the shape the parser now refuses. These pin the join, not
+  // every word: the approved paragraph is pinned whole by the-finding-sentence-is-the-approved-standard.
+  assert.match(msg, /- net: \*\*The finding sentence\.\*\* At most two sentences, each at most 25 words/);
+  assert.match(msg, /No semicolon, no arrow, no advice, no band word\./, "no chain, and never an action prescription");
   assert.doesNotMatch(msg, /semicolon-chained/i, "the retired shape is never re-taught — a superseded contract in the prompt is a gate silently switched off");
-  assert.match(msg, /THE REASONING MOVES, IT NEVER DISAPPEARS/,
+  assert.match(msg, /Every fact that does not fit goes in the legal and practical positions below, never dropped\./,
     "relocation, not compression: a net that got shorter because the reasoning got thinner is the rewrite the ruling rejects");
-  assert.match(msg, /There is NO length cap and none is coming/,
-    "the budget was never the validator's and is no longer the renderer's — nothing asks the model to be brief");
+  assert.doesNotMatch(msg, /There is NO length cap/,
+    "the old claim that nothing limits the sentence's length is gone: the approved paragraph sets the limit");
 });
 
 // ── the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────
