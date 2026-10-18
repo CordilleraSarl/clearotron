@@ -38,7 +38,7 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
-import { recordSynthesis, uncarriedCoverageLimits } from "../synthesis-record.mjs";
+import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall } from "../synthesis-record.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
 import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
@@ -1247,8 +1247,8 @@ export function variantManifestModelFixture() {
  * moves a coverage note, the other an actual finding; without both, narrowing the freshness question
  * looks like a pass because it went quiet).
  *
- * Both key on the report-overview resume the redo ladder composes, which the conversion left intact: the
- * followup still opens "RESUMING your own report-overview session", it just orders a CALL now.
+ * Both key on the report-overview repair the redo ladder composes: the followup opens "your earlier
+ * report-overview work is not in your context", and it orders a CALL.
  */
 /**
  * THE SAVE-AFTER-THE-CARDS KNOBS. A synthesis save once the report cards have been started (their folder exists)
@@ -1276,7 +1276,7 @@ function savedAfterTheCards(runDir, buildRecord) {
 }
 
 function stalefindingsOnLintRepair(dir, msg) {
-  if (!/RESUMING your own report-overview session/.test(msg)) return;
+  if (!/your earlier report-overview work is not in your context/.test(msg)) return;
   const fp = join(dir, "findings.json");
   // AD-2 A1 (E2E-R2): the redo ALSO rewrites findings.json — the exact incident shape (the redo turn moved
   // the input every report card was built from, staling the whole delivery tail). The rewrite stays
@@ -1722,6 +1722,21 @@ export function applyStageWrites(msg, argv) {
     // post-hoc validator to the call, and a mock that stops at the refusal models a seat that ignores an
     // error response — reporting the stage as exhausted where the PRODUCT withheld nothing.
     if (/record_synthesis/.test(msg)) {
+      // MOCK_LINT_REPAIR_SAME_VALUES — the writer's delivery-check repair saves its accepted record again with
+      // the same values and its verdict spaced differently: the narrative's bytes move, its values do not.
+      if (process.env.MOCK_LINT_REPAIR_SAME_VALUES && /the deterministic pre-delivery lint failed these checks/.test(msg)) {
+        const held = lastAcceptedCall(runDir);
+        if (held) {
+          const call = structuredClone(held);
+          // "finding": the repair changes one finding's legal position and nothing the narrative renders.
+          const f0 = (call.findings?.findings ?? [])[0];
+          if (process.env.MOCK_LINT_REPAIR_SAME_VALUES === "finding" && f0) f0.legal_position = `${f0.legal_position ?? ""} The repair restates the specification.`.trim();
+          else if (typeof call.narrative?.verdict === "string") call.narrative.verdict = call.narrative.verdict.replace(" ", "  ");
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, call);
+          return r.refused ? `mock writer refused re-saving the same values: ${r.refused}` : "mock writer re-saved the same values";
+        }
+      }
       // THE WRITER. The mock drives the PRODUCTION receiver rather than writing the two files, for the
       // same reason every arm here does: a fixture that wrote narrative.md and findings.json would be
       // the mock taking the path this conversion deleted, and it would hide the one thing the
@@ -1797,7 +1812,10 @@ export function applyStageWrites(msg, argv) {
       // Keyed on narrative.md not yet existing, so the redo is recognised by run state rather than by
       // matching the repair prompt's wording, which the composer is free to change. It goes in the
       // SPINE because that is the section the write-up prose renders into.
-      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && !existsSync(join(runDir, "narrative.md")))
+      // "until-lint-repair": the over-cap write-up survives every save but the delivery-check repair's, so a
+      // run whose first review is not CLEAR still reaches the repair; any other value heals after the first.
+      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && (process.env.MOCK_NARRATIVE_OVER_CAP === "until-lint-repair"
+        ? !/the deterministic pre-delivery lint failed these checks/.test(msg) : !existsSync(join(runDir, "narrative.md"))))
         ? " " + "the cited registration covers the identical mark in the searched class and remains material here. ".repeat(40)
         : "";
       // MOCK_CANDSELF — the applicant-unknown note, on the same condition the fixture used.
@@ -1938,6 +1956,16 @@ export function applyStageWrites(msg, argv) {
         return r;
       };
 
+      // MOCK_POST_REPAIR_FLAGS — the review after a delivery-check repair, recognised by its own opening line:
+      // these flags (a JSON array), under MOCK_POST_REPAIR_VERDICT or, by default, CONDITIONAL when there are
+      // flags and CLEAR when there are none. Every other review this run makes answers as the knobs below say.
+      if (process.env.MOCK_POST_REPAIR_FLAGS && /This is a review of a repair, not a full review\./.test(msg)) {
+        const flags = JSON.parse(process.env.MOCK_POST_REPAIR_FLAGS);
+        const verdict = process.env.MOCK_POST_REPAIR_VERDICT ?? (flags.length ? "CONDITIONAL" : "CLEAR");
+        const r = send({ verdict, flags, plan_audit: planAudit });
+        return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
+          : `mock reviewer recorded the review after the repair (${verdict}) through record_narrative_refutation`;
+      }
       if (process.env.MOCK_REVIEW_BLOCKS_AFTER_VERDICT && runDir && existsSync(driverDir(runDir, "verdict.json"))) {
         // The audit rides UNCONDITIONALLY here. The stale-repair dispatch does not re-demand it, so a
         // msg-conditional mock would fail that pass on `plan_audit_missing` and the arm would go

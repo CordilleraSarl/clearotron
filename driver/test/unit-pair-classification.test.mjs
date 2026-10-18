@@ -110,6 +110,11 @@
 //                               exists to argue against.)
 //   · publish/xlsx.mjs `searchRows`, `buildAudit`  `anyHit` and `commonLawUnlogged` are derived from the exact rows the
 //                               sheet then writes, in the same builder.
+//   · `listForReview` declared in repair-scope.mjs mints `renumbered`, `coverageChanged` and both `evidence`
+//                               flags in the SAME object literal as the `changes` list they summarise, off that
+//                               list. The review's composer reads the flags and the list from that one object in
+//                               the same dispatch, and nothing keeps either for later. (CITED BY SYMBOL AND NO
+//                               LINE, per CONTRIBUTING.md.)
 //   · reference-score.mjs `scoreRecall`, `receiptOutcome`, `scoreCounts`  all three only select WORDING — an excluded-reason string, a
 //                               receipt `detail`, a `missingArtifact` note. A flag that chooses a
 //                               sentence has no satisfaction side to disagree with.
@@ -236,7 +241,7 @@ const RULED = new Map([
   ["band-shape.mjs", 7], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
-  ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
+  ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2],
 ]);
 

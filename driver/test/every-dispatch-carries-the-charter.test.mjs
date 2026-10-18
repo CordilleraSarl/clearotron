@@ -150,8 +150,10 @@ test("every warm dispatch that could carry a charter does — counted, not merel
   // CONTROL 2 — and the CLASSIFIER selects. That shape: assert the COUNT, because "none missing" is
   // satisfied forever by a filter that stopped selecting. If this number moves, a dispatch was added or
   // removed and somebody decides deliberately which it was — it is not a free update.
-  assert.equal(bite.length, 8,
-    `${bite.length} warm charter-relevant dispatch site(s), expected 8. Adding or removing one is a `
+  // 9: the correction after the review of a delivery-check repair joined the first correction's shape — a
+  // synthesis followup dispatched on the writer's session key. It starts a fresh session, as every followup does.
+  assert.equal(bite.length, 9,
+    `${bite.length} warm charter-relevant dispatch site(s), expected 9. Adding or removing one is a `
     + "decision: say which dispatch, and whether it resumes a session. Sites:\n  "
     + bite.map((s) => `:${s.line} ${s.name}`).join("\n  "));
 
