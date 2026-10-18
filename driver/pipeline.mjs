@@ -151,7 +151,8 @@ import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause 
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
-import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf } from "./stage-freshness.mjs";
+import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
+import { locateReportFaults, reportPartsOf } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
   routeHalfTermScopes, findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
@@ -7599,7 +7600,7 @@ export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @inte
 // the EARLIEST qualifying window end. Code fills ABSENCE only (an authored deadline always wins);
 // out-of-window dates never inject (an archived 2015 window is history, not urgency). Receipt:
 // _driver/deadline-enrich.json. NEVER-KILL: any defect leaves findings.json untouched.
-function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDays = 60, graceDays = 14 } = {}) {
+export function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDays = 60, graceDays = 14 } = {}) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     const deadlines = collectOppositionDeadlines(runDir);
@@ -7623,7 +7624,8 @@ function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDay
     if (!enriched.length) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
     atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — a crash mid-write must never leave a truncated findings.json
-    atomicWrite(driverDir(runDir, "deadline-enrich.json"), JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), enriched }, null, 2) + "\n");
+    const base = rebaseEnrichedDeadlines(runDir, enriched);   // a later patch keeps what the file now carries
+    atomicWrite(driverDir(runDir, "deadline-enrich.json"), JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), judged_at: new Date(nowMs).toISOString(), enriched, base }, null, 2) + "\n");
     note(`[deadline-enrich] ${enriched.length} finding(s) gained the register's own opposition window (${enriched.map((e) => `${e.mark}: ${e.date}`).join("; ").slice(0, 140)}) — a recorded deadline never silently disappears`);
   } catch (e) {
     note(`[deadline-enrich] skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -13780,12 +13782,19 @@ async function pipelineInner(job, opts = {}) {
       catch (e2) { throw new StageFailure("verdict", `verdict sidecar refresh failed after consolidation: ${String(e2.message).slice(0, 120)}`); }
     }
     };
+    // THE RECORD THE CARDS ARE BUILT ON CARRIES EVERY DEMOTION. The derivation settled the record after the first
+    // synthesis save; a corrective pass saves again before this seam, and a whole re-send brings back every stamp it had
+    // demoted. Built on those, every card whose finding carried one read as stale after the derivation before delivery
+    // demoted them again, and was rebuilt with the overview for a finding nothing had changed. Settled here, once more,
+    // before the overview and the cards; idempotent on a record that already carries every demotion.
+    settleDerivedBases(ctx, "seam");
     await seamWrites();
     // Every write above is idempotent: each injection skips a row the record already carries, the stamp
     // replaces its rows, and the fold leaves a folded record as it is.
     ctx.afterSynthesisSave = async () => {
       note(`[seam] a synthesis save after the seam rewrote findings.json — re-applying the seam's writes`);
       runLog(run.runDir, { event: "seam-reapplied", after: "synthesis-save" });
+      rewriteFromBeforeTheSeam(ctx);   // the basis derivation and the deadline enrichment, as the pass made them
       await seamWrites();
     };
     // wp50/wi2 — the overview PROSE must speak the derived tier (VENZY: caption said "High risk" while
@@ -13851,13 +13860,11 @@ async function pipelineInner(job, opts = {}) {
     // plausible zero, and a zero here means every floor row quietly loses the full card the owner made
     // non-negotiable. An absent band-shape yields an empty map and every finding reads as holding no
     // floor — which is what it did before this existed.
-    const floorTiers = floorTierByMark(safeReadJson(P.bandShape));
-    const formOf = (f) => writeUpForm(ctx.depth, f, { floorTier: floorTiers.get(floorMarkKey(f?.mark)) ?? null });
-    const byOrdinal = new Map((findingsForCards ?? []).filter((f) => f?.ordinal != null).map((f) => [f.ordinal, f]));
-    const proseOrdinals = fullProseOrdinals(findingsForCards);
-    const cardOrdinals = proseOrdinals.filter((ord) => formOf(byOrdinal.get(ord)) === "full");
-    // The remainder, in the same order, for the short-entry and grouped-row render below.
-    const entryOrdinals = proseOrdinals.filter((ord) => formOf(byOrdinal.get(ord)) !== "full");
+    // The plan is made in one place (planWriteUps), the same way here and wherever a later save changes the record:
+    // the full cards in the record's order, then the remainder, in the same order, for the short-entry and grouped-row
+    // render below.
+    const writeUps = planWriteUps(findingsForCards, ctx.depth, safeReadJson(P.bandShape));
+    const { cardOrdinals, entryOrdinals } = writeUps;
     // §9 — WRITTEN ON EVERY GRADED PRODUCT, INCLUDING ONE WHOSE ENTRY COUNT IS 0. The old gate was
     // `entryOrdinals.length`, which conflated two different empties: one country is empty BY CONSTRUCTION
     // (every form is `full`, so the row would report the product's own definition back), while a graded run
@@ -13928,17 +13935,11 @@ async function pipelineInner(job, opts = {}) {
     // The bodies are written to the SAME card files a dispatched card would use, so `assembleReportMd`
     // frames them with the same composer and the ordinal binding is untouched. What they never get is a
     // model turn — the whole saving.
-    const entryFindings = entryOrdinals.map((ord) => byOrdinal.get(ord)).filter(Boolean);
-    const byRight = String(ctx.depth?.narrativeProse ?? "") === "adversarial";
-    const { groups: entryGroups, singles: entrySingles } = groupEntries(entryFindings, { byRight });
-    for (const f of entrySingles) {
-      try { writeFileSync(P.reportCard(String(f.ordinal)), `${shortEntryBody(f)}\n`); }
-      catch (e) { note(`short entry ${f.ordinal} not written (${String(e?.message ?? e).slice(0, 80)}) — it renders structured-only, as an absent card always has`); }
-    }
+    const { entryFindings, byRight, entrySingles } = writeUps;
+    writeShortEntries(P, entrySingles);
     // Assembly sees full cards AND short entries; the DISPATCH set and the freshness stage list stay
     // `cardOrdinals`, because a short entry has no stage and never had one.
-    const assembledOrdinals = [...cardOrdinals, ...entrySingles.map((f) => f.ordinal)];
-    const groupedMembers = entryGroups.flatMap((g) => g.findings);
+    const { assembledOrdinals, groupedMembers } = writeUps;
     if (entryFindings.length)
       note(`write-up forms: ${cardOrdinals.length} full card(s), ${entrySingles.length} short entr(y/ies), ${groupedMembers.length} grouped line(s)`);
     assembleReportMd(P, findingsForCards, assembledOrdinals, { grouped: groupedMembers, byRight });
@@ -14855,7 +14856,13 @@ async function pipelineInner(job, opts = {}) {
         // finding-provenance bleed) re-renders THAT card alone, FRESH (isolated from its own record, so the bleed
         // cannot recur); a shell failure (no ordinal) re-runs report-overview. Then re-assemble. Bounded: one pass.
         let reassembled = false;
-        const badOrdinals = [...new Set(reportFixable.map((f) => f.ordinal).filter((o) => o != null))];
+        // Each fault goes to the part that holds it (repair-targets.mjs): a card's to that card, with the detail its
+        // check gives on that card alone; the overview's to the overview; and a fault only the lines composed from the
+        // record hold to no repair, since neither could make it. One no single part holds keeps the overview's repair.
+        const targets = locateReportFaults(reportFixable, reportPartsOf(P, findingsForCards, writeUps));
+        if (reportFixable.length) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
+          overview: targets.overview.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), unlocated: targets.unlocated.map((f) => f.id) });
+        const badOrdinals = [...targets.cards.keys()];
         for (const ord of badOrdinals) {
           const f = findingsForCards.find((x) => x.ordinal === ord);
           if (!f) continue;
@@ -14868,7 +14875,7 @@ async function pipelineInner(job, opts = {}) {
           // isolation from the contaminated rendering is the entire point — patching the bad card would
           // preserve exactly what the re-render exists to discard. The redo() ladder below is the opposite
           // case (a warm resume of a session that owns its file) and patches.
-          const why = reportFixable.filter((x) => x.ordinal === ord).map((x) => x.detail).filter(Boolean);
+          const why = targets.cards.get(ord).map((x) => x.detail).filter(Boolean);
           const rc = await stage("report-card", { ...ctx, axis: String(ord), finding: f }, {
             force: true, trigger: "lint-repair",
             ...(why.length ? { extra: lines(
@@ -14879,7 +14886,7 @@ async function pipelineInner(job, opts = {}) {
           });
           if (rc.ok) { repaired.push(`report-card:${ord}`); reassembled = true; }
         }
-        const shellFixable = reportFixable.filter((f) => f.ordinal == null);
+        const shellFixable = targets.overview;
         if (shellFixable.length) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
@@ -14913,16 +14920,19 @@ async function pipelineInner(job, opts = {}) {
       // lint-repair-tax metric: recording the verdict here means no consumer can read the failure list of
       // a stale-blocked run and mistake it for a delivery-quality signal. The receipt itself stays
       // ALWAYS-WRITTEN (spec A2 auditor evidence) — blocking a run must not cost us the evidence of why.
-      const deliveryPathStages = [...new Set([
+      // The cards on the path are the ones the record owes as it stands, read again each time the path is judged: a
+      // synthesis save after the cards can add a finding that is owed one, or withdraw one whose card is owed no longer.
+      const deliveryPathStages = () => [...new Set([
         ...(ctx.skippedStages ?? []), "register-digest", "synthesis", "narrative-refutation",
-        "report-overview", ...cardOrdinals.map((o) => `report-card:${o}`),
+        "report-overview", ...owedCardOrdinals(P, ctx.depth).map((o) => `report-card:${o}`),
       ])];
       const deliveryInputsFor = (label) => {
         const bare = label.replace(/:.*$/, "");
         const axis = label.includes(":") ? label.slice(label.indexOf(":") + 1) : null;
         try { return stageInputs(bare, P, { axes: ctx.axes, axis, registerOnly: ctx.registerOnly }); } catch { return []; }
       };
-      staleStages = staleOnPath(run.runDir, deliveryPathStages, deliveryInputsFor, { project: projectStageInput });
+      staleStages = [...staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput }),
+        ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
       // ── AD-2 A1 (E2E-R2, ordering) — repair-owned staleness is re-done IN-PASS, never parked. The
       // pre-delivery repair can move an input under the tail this pass already built (the observed
       // case: the report-overview lint redo rewrote findings.json, staling every report card + the
@@ -14987,6 +14997,7 @@ async function pipelineInner(job, opts = {}) {
               try {
                 if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
               } catch { /* no case-law layer */ }
+              for (const owed of cardsNeverBuilt(P, ctx.depth, cardOrdinals)) if (!staleStages.some((x) => x.label === owed.label)) staleStages.push(owed);
               // — AND THE REVIEW IS ALSO SOMETHING THIS PASS JUST WROTE.
               //
               // The re-reads above are the artifacts a repaired stage's CONSUMERS need. narrative-refutation
@@ -15073,7 +15084,7 @@ async function pipelineInner(job, opts = {}) {
           }
         }
         if (reassemble) {
-          assembleReportMd(P, findingsNow, ordinalsNow);
+          reassembleFromTheRecord(P, findingsNow, ctx.depth);   // the plan the first assembly used, made from the record as it stands
           applyVerdictFrontMatter();      // the reassembly rewrote report.md — re-apply every driver-owned
                                           // field, exactly as the lint-repair branch above does
           writeScopeFacts();
@@ -15086,7 +15097,7 @@ async function pipelineInner(job, opts = {}) {
         // freshness question — one bounded pass; anything still stale blocks below, exactly as before.
         lint = lintNow();
         autoCorrectRegistry();
-        staleStages = staleOnPath(run.runDir, deliveryPathStages, deliveryInputsFor, { project: projectStageInput });
+        staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
       // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw
@@ -17211,6 +17222,52 @@ async function afterLateSynthesisSave(name, ctx, r) {
 }
 
 /**
+ * THE DRIVER'S WRITES FROM BEFORE THE SEAM, MADE AGAIN AFTER A SYNTHESIS SAVE THAT FOLLOWS IT.
+ *
+ * Two writes into the findings record run before the seam rather than at it: the basis derivation, which demotes a
+ * `verified-from-record` stamp the reading log cannot back, and the deadline enrichment, which gives a finding with
+ * no deadline the register's own opposition window. A save after the seam renders the record from the model's call.
+ * A patch keeps both, because each also lands in the merge base the patch is merged onto; a whole re-send replaces
+ * that base, and they went with it. The seam's own writes were made again after such a save, and these two were not,
+ * so the delivered record claimed reads no step had made, and every card whose finding had carried a demoted stamp
+ * read as stale and was rebuilt for a finding the save had not changed. They run again here, in the order the pass
+ * ran them, before the seam's writes. Each leaves a record that already carries it as it is, and neither throws.
+ */
+export function rewriteFromBeforeTheSeam(ctx) {   // @internal
+  settleDerivedBases(ctx, "late-save");
+  enrichFindingDeadlines(ctx.paths, ctx.paths.runDir, note, { nowMs: deadlineClockOf(ctx.paths.runDir) });
+}
+
+/**
+ * The clock the run's deadline enrichment judged its windows by, so a window is judged again exactly as it was
+ * judged the first time, never moved across its edge by the minutes a repair took. Now, on a run whose enrichment
+ * recorded none: it judged nothing, so there is nothing to keep it consistent with. Never throws.
+ */
+function deadlineClockOf(runDir) {
+  try {
+    const at = Date.parse(JSON.parse(readFileSync(driverDir(runDir, "deadline-enrich.json"), "utf8"))?.judged_at);
+    return Number.isFinite(at) ? at : Date.now();
+  } catch { return Date.now(); }
+}
+
+/**
+ * THE MERGE BASE TAKES THE ENRICHED DEADLINES. A patch after the enrichment is merged onto
+ * `_driver/synthesis-calls/accepted.json` and re-renders every finding from there, so a deadline written to the
+ * findings file alone was dropped by the next patch, and a card built with it was rebuilt without it. In the model's
+ * numbering: under a fold, a deadline lands on the member the fold kept, whose object the folded finding is, and the
+ * fold carries it again. Only a finding the base holds with no deadline of its own takes one, as in the file. The
+ * edit is judged as a call is; a refusal leaves the base as it was, and the receipt says what happened. Never throws.
+ */
+function rebaseEnrichedDeadlines(runDir, enriched) {
+  const fold = readFold(runDir);
+  const byOrdinal = new Map(enriched.map((e) => [keptModelOrdinal(fold, e.ordinal), e.date]).filter(([o]) => o != null));
+  if (!byOrdinal.size) return "unmapped";
+  const r = rebaseSynthesis(runDir, (held) => ({ ...held, findings: (Array.isArray(held?.findings) ? held.findings : [])
+    .map((f) => (byOrdinal.has(f?.ordinal) && !f?.deadline?.date ? { ...f, deadline: { kind: "opposition", date: byOrdinal.get(f.ordinal) } } : f)) }));
+  return r.ok ? (r.changed ? "enriched" : "unchanged") : /^no_base:/.test(String(r.reason)) ? "no-base" : "refused";
+}
+
+/**
  * The reader's name for a planned search that never ran and that no open ledger row on its axis claims —
  * the orphan row of `coverageJudgmentRows`. Its area is the plan's qid, which a lawyer cannot read; the
  * label is composed the way the workbook's released-family rows compose theirs (publish/index.mjs
@@ -17261,4 +17318,76 @@ export function foreignRecordLinksBlanked(r, ctx, name) {   // exported for its 
   if (v?.ok) return true;
   runLog(ctx.paths.runDir, { event: "foreign-record-links-recheck", stage: name, ok: false, fail: String(v?.reason ?? "no validator").slice(0, 200) });
   return false;
+}
+
+/**
+ * THE WRITE-UPS A RECORD OWES, PLANNED IN ONE PLACE. PURE.
+ *
+ * §9: a finding owed prose earns a full card where its form is `full`, and the rest render code-side, as a short
+ * entry or as a line in the grouped section (§8). The first assembly made this plan inline, and the delivery check's
+ * repair, which reassembles the report after a synthesis save has moved the record, made its own: every finding owed
+ * prose and no grouped section. So a report reassembled on a graded product lost its "Also on the register" section,
+ * where its grouped findings are read by territory or by right, each short entry kept the text composed before the
+ * save, and the cards a run owed stayed the ones the first plan named whatever the record became. One plan, made here
+ * from the record as it stands, now serves the first build, the delivery path and every reassembly.
+ *
+ * The floor tier joins on `mark_text` (floorTierByMark); an absent band shape yields an empty map, and every finding
+ * then reads as holding no floor. On one country every form is `full`, so the plan is `fullProseOrdinals` itself.
+ */
+export function planWriteUps(findings, depth, bandShape) {   // @internal
+  const floorTiers = floorTierByMark(bandShape);
+  const formOf = (f) => writeUpForm(depth, f, { floorTier: floorTiers.get(floorMarkKey(f?.mark)) ?? null });
+  const byOrdinal = new Map((findings ?? []).filter((f) => f?.ordinal != null).map((f) => [f.ordinal, f]));
+  const proseOrdinals = fullProseOrdinals(findings);
+  const cardOrdinals = proseOrdinals.filter((ord) => formOf(byOrdinal.get(ord)) === "full");
+  const entryOrdinals = proseOrdinals.filter((ord) => formOf(byOrdinal.get(ord)) !== "full");
+  const entryFindings = entryOrdinals.map((ord) => byOrdinal.get(ord)).filter(Boolean);
+  // Worldwide groups by the right, multi-country by territory: the depth row's prose rung says which.
+  const byRight = String(depth?.narrativeProse ?? "") === "adversarial";
+  const { groups, singles: entrySingles } = groupEntries(entryFindings, { byRight });
+  return {
+    cardOrdinals, entryOrdinals, entryFindings, byRight, entrySingles,
+    // Assembly sees full cards AND short entries; a grouped finding is a line in its section, never a card.
+    assembledOrdinals: [...cardOrdinals, ...entrySingles.map((f) => f.ordinal)],
+    groupedMembers: groups.flatMap((g) => g.findings),
+  };
+}
+
+/** Each short entry's card file, composed by code from its finding as it stands. No model turn. */
+function writeShortEntries(P, entrySingles) {
+  for (const f of entrySingles) {
+    try { writeFileSync(P.reportCard(String(f.ordinal)), `${shortEntryBody(f)}\n`); }
+    catch (e) { note(`short entry ${f.ordinal} not written (${String(e?.message ?? e).slice(0, 80)}) — it renders structured-only, as an absent card always has`); }
+  }
+}
+
+/** The full cards the record owes as it stands now, in its order. */
+function owedCardOrdinals(P, depth) {
+  return planWriteUps(readFindingsForReport(P).findings, depth, safeReadJson(P.bandShape)).cardOrdinals;
+}
+
+/**
+ * THE CARD A FINDING ADDED AFTER THE CARDS IS OWED. A card with no stamp is never stale, so a finding that a
+ * synthesis save after the cards made owed a full card, at an ordinal the first plan never dispatched one for (a
+ * finding it added, or one it moved from a short entry to a full card), got no card call, and the report rendered it
+ * structured-only or as the short entry. Each such card joins the delivery check's repair once, as owed and never
+ * built; a card the first plan dispatched and that failed keeps that outcome, as a failed card always has. Returns
+ * entries in the shape `staleOnPath` gives.
+ */
+function cardsNeverBuilt(P, depth, firstPlan) {
+  const dispatched = new Set(firstPlan ?? []);
+  return owedCardOrdinals(P, depth)
+    .filter((o) => !dispatched.has(o) && !readStamp(P.runDir, `report-card:${o}`))
+    .map((o) => ({ label: `report-card:${o}`, changed: [{ name: `${o}.md`, was: null, now: null, via: "never-built" }] }));
+}
+
+/**
+ * Reassemble report.md from the record as it stands, as the first assembly did: the plan made again, each short entry
+ * composed again from its finding, and the grouped section built. Returns the plan.
+ */
+export function reassembleFromTheRecord(P, findings, depth) {   // @internal
+  const plan = planWriteUps(findings, depth, safeReadJson(P.bandShape));
+  writeShortEntries(P, plan.entrySingles);
+  assembleReportMd(P, findings, plan.assembledOrdinals, { grouped: plan.groupedMembers, byRight: plan.byRight });
+  return plan;
 }

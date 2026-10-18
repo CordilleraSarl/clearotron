@@ -1250,6 +1250,31 @@ export function variantManifestModelFixture() {
  * Both key on the report-overview resume the redo ladder composes, which the conversion left intact: the
  * followup still opens "RESUMING your own report-overview session", it just orders a CALL now.
  */
+/**
+ * THE SAVE-AFTER-THE-CARDS KNOBS. A synthesis save once the report cards have been started (their folder exists)
+ * changes the record the cards were built from, the way a late repair does. Each knob is keyed on that run state,
+ * never on a repair message's wording, and leaves every earlier save as it was:
+ *   MOCK_LATE_SAVE_EDITS=<ordinal>     that finding's owner name gains " (post-redo)", which its card echoes;
+ *   MOCK_LATE_SAVE_ADDS=1              the record carries one more finding, cloned as MOCK_FINDINGS_N clones;
+ *   MOCK_LATE_SAVE_WITHDRAWS=<ordinal> that finding is withdrawn, so no card is owed for it.
+ * Ordinals are the model's, the numbering the record is written in, before any fold.
+ */
+function savedAfterTheCards(runDir, buildRecord) {
+  if (!runDir || !existsSync(join(runDir, "report-cards"))) return buildRecord();
+  const n = Math.max(1, Number(process.env.MOCK_FINDINGS_N || 1));
+  const adds = Boolean(process.env.MOCK_LATE_SAVE_ADDS);
+  if (adds) process.env.MOCK_FINDINGS_N = String(n + 1);
+  let doc;
+  try { doc = buildRecord(); } finally { if (adds) process.env.MOCK_FINDINGS_N = String(n); }
+  const edit = Number(process.env.MOCK_LATE_SAVE_EDITS || 0);
+  const withdraw = Number(process.env.MOCK_LATE_SAVE_WITHDRAWS || 0);
+  for (const f of Array.isArray(doc?.findings) ? doc.findings : []) {
+    if (f?.ordinal === edit && f.owner && !String(f.owner.name ?? "").includes("(post-redo)")) f.owner.name = `${f.owner.name ?? ""} (post-redo)`.trim();
+    if (f?.ordinal === withdraw) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review flag on this invented finding withdrew it."; }
+  }
+  return doc;
+}
+
 function stalefindingsOnLintRepair(dir, msg) {
   if (!/RESUMING your own report-overview session/.test(msg)) return;
   const fp = join(dir, "findings.json");
@@ -1728,7 +1753,7 @@ export function applyStageWrites(msg, argv) {
       // three tests whose whole subject is that the run RECOVERS. So the mock restates once, the way a
       // competent seat does, by re-deriving with the family's own heal phrase. It restates ONCE: a
       // second refusal is returned, so a genuinely unfixable call still fails rather than looping.
-      const build = (m) => JSON.parse(synthesisFindings(runDir, m));
+      const build = (m) => savedAfterTheCards(runDir, () => JSON.parse(synthesisFindings(runDir, m)));
       let doc;
       try { doc = build(msg); }
       catch (e) { return `mock synthesis: could not build the findings record (${String(e?.message ?? e).slice(0, 120)})`; }
@@ -2021,6 +2046,17 @@ export function applyStageWrites(msg, argv) {
         const cfg = i >= 0 && argv[i + 1] ? JSON.parse(argv[i + 1]) : null;
         bound = cfg?.mcpServers?.["recording-report-card"]?.env?.CLEAROTRON_RECORD_AXIS ?? null;
       } catch { /* malformed config — `bound` stays null and the receiver refuses by name */ }
+      // The codex channel: the same server's table in the rendered `$CODEX_HOME/config.toml`, where the engine writes
+      // what claude carries on argv (recordAxisFromWiring, above). Without it no card was ever written on the openai
+      // engine, and every card there rendered structured-only, a harness gap that read as the product's behaviour.
+      if (!bound && process.env.CODEX_HOME) {
+        try {
+          const table = readFileSync(join(process.env.CODEX_HOME, "config.toml"), "utf8").split(/^\[/m)
+            .find((t) => t.startsWith("mcp_servers.recording-report-card]"));
+          const m = table?.match(/CLEAROTRON_RECORD_AXIS\s*=\s*"((?:[^"\\]|\\.)*)"/);
+          if (m) bound = JSON.parse(`"${m[1]}"`);
+        } catch { /* no config.toml — `bound` stays null and the receiver refuses by name */ }
+      }
       if (!bound) return "mock report-card: no CLEAROTRON_RECORD_AXIS in the resolved mcp config — the driver did not bind a card index";
       recordMockToolCall(runDir, "record_report_card", "recording-report-card");
       // The fixture's own prose, sent as VALUES. `reportCardFixture` still exists and still writes the
@@ -2042,10 +2078,15 @@ export function applyStageWrites(msg, argv) {
         const fj = JSON.parse(readFileSync(join(runDir, "findings.json"), "utf8"));
         owner = (fj.findings ?? []).find((x) => String(x.ordinal) === String(bound))?.owner?.name || owner;
       } catch { /* no findings yet — the default names the fixture's own owner */ }
+      // MOCK_CARD_SCOPE_COUNT=<ordinal> — that card's FIRST rendering states a search count in its own prose, which the
+      // delivery check refuses as `scope-numbers-in-prose`, a fault that names no finding; a later rendering of the same
+      // card is clean. Keyed on the card's own file, never on a repair message's wording.
+      const scopeCount = String(process.env.MOCK_CARD_SCOPE_COUNT ?? "") === String(bound) && !existsSync(join(runDir, "report-cards", `${bound}.md`));
       const r = recordReportCard(runDir, {
         ordinal: String(bound),
         full_detail: [
           { lead: "Filing", text: `Mock filing detail for ${owner}.` },
+          ...(scopeCount ? [{ lead: "Scope", text: "The search ran 14 queries across the register." }] : []),
           // D3 — the read bullet is REQUIRED of a real seat (reportcard_read_lead_missing), so the
           // mock that stands in for one carries it. A fixture that would be refused in production is not
           // a mock of production: without this the acceptance change reds every mocked card run, and
@@ -2070,10 +2111,14 @@ export function applyStageWrites(msg, argv) {
       // which is the honest post-conversion shape of the same defect.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
+      // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
+      // of MOCK_CARD_SCOPE_COUNT; a later rendering is clean. Keyed on the overview's own file, never on a message.
+      const scopeCountNote = process.env.MOCK_OVERVIEW_SCOPE_COUNT && !existsSync(join(runDir, "report-overview.md"))
+        ? "The search ran 14 queries across the register." : "";
       const r = recordReportOverview(runDir, {
         overall_caption: "mock composite 3",
         actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
+        methodology: [permNote, scopeCountNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
           .filter(Boolean).join(" "),
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.

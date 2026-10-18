@@ -12,7 +12,8 @@
 // call did not name can move.
 //
 // WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: two
-// different rows for one ordinal, whether both are the call's own, both nested or one of each, a nested row that is
+// different rows for one ordinal, whether both are the call's own, both nested or one of each, a register sent inside
+// the findings object and again beside it with another value, a nested row that is
 // not a finding object with a positive whole-number ordinal, a top-level row that does not name a finding the record
 // holds, a marker the decode does not read, a narrative that is not an object of the sections the tool describes,
 // a key off the record's ladder, an envelope that would re-version the record, and a first save that has no stored
@@ -24,7 +25,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { recordSynthesis, mergeSynthesisPatch, FINDINGS_FILE, NARRATIVE_FILE } from "../synthesis-record.mjs";
+import { recordSynthesis, mergeSynthesisPatch, registerPatchOf, FINDINGS_FILE, NARRATIVE_FILE } from "../synthesis-record.mjs";
 import { foldFindingsFile, UNFOLDED_FILE } from "../record-fold.mjs";
 import { parseFrameworkManifest } from "../framework.mjs";
 import { parseFrameworkMethod, freezeFrameworkMethod, FROZEN_METHOD_FILE } from "../framework-method.mjs";
@@ -345,9 +346,9 @@ test("a marker string on a call that carries a findings list is read exactly as 
 
 // ── WHAT THE TRANSPORT READ IS ON THE RUN'S RECORD ────────────────────────────────────────────────────
 //
-// Each decode, lift and override is written to the run log as `synthesis-call-normalised`, and so are the keys
-// and rows a whole call carries beside its record, which main ignores and still ignores: counted, never named.
-// Never in the answer the model reads. A call whose reading changed nothing writes no row.
+// Each decode and lift is written to the run log as `synthesis-call-normalised`, and so are the keys and rows a
+// whole call carries beside its record, which main ignores and still ignores: counted, never named. Never in the
+// answer the model reads. A call whose reading changed nothing writes no row.
 
 const readings = (dir) => (read(driverDir(dir, "run.jsonl")) ?? "").split("\n").filter(Boolean).map((l) => JSON.parse(l))
   .filter((e) => e.event === "synthesis-call-normalised");
@@ -359,9 +360,9 @@ const reading = (dir) => {
   assert.ok(Number.isInteger(seq), "the reading does not name the call it belongs to");
   return rest;
 };
-const NOTHING = { decoded: [], lifted: 0, overridden: [], keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
+const NOTHING = { decoded: [], lifted: 0, keysIgnored: 0, rowsIgnored: 0, rowsDiffering: 0 };
 
-test("a lift, a decode and an override are each on the run log, and the answer the model reads is unchanged", () => {
+test("a lift and a decode are each on the run log, and the answer the model reads is unchanged", () => {
   const lifted = saved();
   const r = recordSynthesis(lifted, { findings: { findings_patch: [ROW2()] } });
   accepts(r, "rows nested in the findings object");
@@ -376,12 +377,11 @@ test("a lift, a decode and an override are each on the run log, and the answer t
   accepts(recordSynthesis(nested, { findings: { corrections: JSON.stringify(MARKER) }, findings_patch: [ROW2()] }), "a nested string marker");
   assert.deepEqual(reading(nested), { ...NOTHING, accepted: true, decoded: ["findings.corrections"] });
 
-  // a register sent inside the object and at the top level: the top-level copy wins, as it always has on a patch
+  // a register sent inside the object and beside it with another value is read as main reads it: refused, no reading
   const twice = saved();
   const top = [{ area: "the invented register", state: "coverage-limited", note: "The top-level copy." }];
-  accepts(recordSynthesis(twice, { findings: { coverage: COVERAGE }, coverage: top }), "a register sent twice");
-  assert.equal(canon(onDisk(twice).coverage), canon(top));
-  assert.deepEqual(reading(twice), { ...NOTHING, accepted: true, overridden: ["coverage"] });
+  refusesUnchanged(twice, { findings: { coverage: COVERAGE }, coverage: top }, UNPARSEABLE, "a register sent twice with two values");
+  assert.deepEqual(readings(twice), [], "a register sent twice with two values left a reading on the run log");
 });
 
 test("a refused call's reading says it was refused, and a reading that changed nothing writes no row", () => {
@@ -783,6 +783,105 @@ for (const [what, narrative] of [
     refusesUnchanged(saved(), { narrative, findings: { coverage: COVERAGE } }, SPINE_MISSING, `a narrative section the tool does not describe: ${what}`);
   });
 }
+
+// ── ONE REGISTER, ONE VALUE ───────────────────────────────────────────────────────────────────────────
+//
+// A register sent inside a list-less findings object and again beside it, with another value, does not say which of
+// the two is the correction. Read as registers, the copy beside the object was kept and the other dropped, and
+// nothing in the answer told the model that part of what it sent was ignored. Such a call is read as main reads it,
+// and meets main's refusal byte for byte, as two different rows for one ordinal do. The two copies are compared as
+// read: the order of their keys does not count, and a marker sent as a JSON string is compared as the object it
+// encodes. Two copies with the same content are one register, applied once.
+const UNACCOUNTED = /^synthesis_unaccounted_records:3 of 3\b/;
+const TOP_COVERAGE = [{ area: "the invented register", state: "coverage-limited", note: "The copy sent beside the object." }];
+const MARKER_B = { applied: true, note: "MARVETTE: corrected" };
+const ASSESSMENT_B = () => ({ ...record().mark_assessment, connotation: "An invented connotation read, the copy sent beside the object." });
+
+// Beside a narrative the call is a whole call as main reads it, whose top-level copy main ignores: the run log counts
+// that key, as it counts one on any whole call, and the answer stays main's.
+const WHOLE_CALL_IGNORED = { decoded: [], lifted: 0, keysIgnored: 1, rowsIgnored: 0, rowsDiffering: 0, accepted: false };
+for (const [what, run, call, re, reads = []] of [
+  ["coverage inside the object and different coverage beside it", () => saved(),
+    () => ({ findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE }), UNPARSEABLE],
+  ["the same, beside a whole narrative", () => saved(),
+    () => ({ narrative: NARRATIVE, findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE }), UNPARSEABLE, [WHOLE_CALL_IGNORED]],
+  ["the same, beside a corrected verdict", () => saved(),
+    () => ({ narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE }), SPINE_MISSING, [WHOLE_CALL_IGNORED]],
+  ["the same, beside a row the record holds", () => saved(),
+    () => ({ findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+  ["the same, on a run that owes its records", () => saved({ owed: true }),
+    () => ({ findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE }), UNACCOUNTED],
+  ["the mark assessment inside the object and a different one beside it", () => saved(),
+    () => ({ findings: { mark_assessment: record().mark_assessment }, mark_assessment: ASSESSMENT_B() }), UNPARSEABLE],
+  ["marker strings inside the object and beside it that decode to different markers", () => saved(),
+    () => ({ findings: { corrections: JSON.stringify(MARKER) }, corrections: JSON.stringify(MARKER_B) }), UNPARSEABLE],
+  ["a marker string inside the object and a different marker object beside it", () => saved(),
+    () => ({ findings: { corrections: JSON.stringify(MARKER) }, corrections: MARKER_B }), UNPARSEABLE],
+  ["a marker object inside the object and null beside it", () => saved(),
+    () => ({ findings: { corrections: MARKER }, corrections: null }), UNPARSEABLE],
+  ["null inside the object and a marker string beside it", () => saved(),
+    () => ({ findings: { corrections: null }, corrections: JSON.stringify(MARKER) }), UNPARSEABLE],
+]) {
+  test(`a register sent inside the findings object and beside it with another value keeps main's refusal: ${what}`, () => {
+    const dir = run();
+    refusesUnchanged(dir, call(), re, `a register sent twice with two values: ${what}`);
+    const strip = ({ ts: _ts, event: _event, stage: _stage, seq: _seq, ...rest }) => rest;
+    assert.deepEqual(readings(dir).map(strip), reads, `${what}: the run log does not carry the reading main's reading of the call gives`);
+  });
+}
+
+test("a register sent inside the findings object and beside it with the same content is one register, applied once", () => {
+  const reordered = COVERAGE.map((r) => Object.fromEntries(Object.entries(r).reverse()));
+  for (const [what, call, register, value] of [
+    ["the same coverage in both places", { findings: { coverage: COVERAGE }, coverage: structuredClone(COVERAGE) }, "coverage", COVERAGE],
+    ["the same coverage, its keys in another order beside the object", { findings: { coverage: COVERAGE }, coverage: reordered }, "coverage", COVERAGE],
+    ["the same marker in both places", { findings: { corrections: MARKER }, corrections: { ...MARKER } }, "corrections", MARKER],
+    ["a marker string inside and the marker it encodes beside", { findings: { corrections: JSON.stringify(MARKER) }, corrections: MARKER }, "corrections", MARKER],
+    ["a marker inside and a string encoding it beside", { findings: { corrections: MARKER }, corrections: JSON.stringify(MARKER) }, "corrections", MARKER],
+    ["the same marker string in both places", { findings: { corrections: JSON.stringify(MARKER) }, corrections: JSON.stringify(MARKER) }, "corrections", MARKER],
+    ["the same coverage in both places, beside a row the record holds", { findings: { coverage: COVERAGE }, coverage: COVERAGE, findings_patch: [ROW2()] }, "coverage", COVERAGE],
+  ]) {
+    const dir = saved();
+    const before = onDisk(dir);
+    accepts(recordSynthesis(dir, structuredClone(call)), what);
+    const after = onDisk(dir);
+    assert.equal(canon(after[register]), canon(value), `${what}: the register is not the one value both copies carry`);
+    if (!call.findings_patch) assert.equal(JSON.stringify(after.findings), JSON.stringify(before.findings), `${what}: a finding moved`);
+    else assert.equal(after.findings[1].legal_position, ROW2().legal_position, `${what}: the row was not applied`);
+  }
+});
+
+test("whether a call reads as registers is the same on the call as it arrives and on the call as it is read", () => {
+  const stored = { narrative: { ...NARRATIVE }, findings: record() };
+  for (const [what, arrives, asRead, registers] of [
+    ["a marker string inside and the marker it encodes beside",
+      { findings: { corrections: JSON.stringify(MARKER) }, corrections: MARKER }, { findings: { corrections: MARKER }, corrections: MARKER }, true],
+    ["marker strings in both places that encode one marker",
+      { findings: { corrections: JSON.stringify(MARKER) }, corrections: JSON.stringify(MARKER) }, { findings: { corrections: MARKER }, corrections: MARKER }, true],
+    ["marker strings that decode to different markers",
+      { findings: { corrections: JSON.stringify(MARKER) }, corrections: JSON.stringify(MARKER_B) }, { findings: { corrections: MARKER }, corrections: MARKER_B }, false],
+    ["coverage inside and different coverage beside",
+      { findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE }, { findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE }, false],
+  ]) {
+    assert.equal(registerPatchOf(stored, arrives) !== null, registers, `${what}: as it arrives`);
+    assert.equal(registerPatchOf(stored, asRead) !== null, registers, `${what}: as it is read`);
+  }
+});
+
+test("after a register sent twice with two values is refused, the correction sent once is accepted, and so is a whole re-send", () => {
+  const twice = { findings: { coverage: COVERAGE }, coverage: TOP_COVERAGE };
+  for (const [what, once] of [
+    ["the coverage sent once, inside the findings object", { findings: { coverage: TOP_COVERAGE } }],
+    ["the coverage sent once, as main's own plain patch", { coverage: TOP_COVERAGE }],
+    ["a whole re-send carrying the coverage", { narrative: NARRATIVE, findings: { ...record(), coverage: TOP_COVERAGE } }],
+  ]) {
+    const dir = saved();
+    refusesUnchanged(dir, structuredClone(twice), UNPARSEABLE, `${what}: the register sent twice`);
+    accepts(recordSynthesis(dir, structuredClone(once)), what);
+    assert.equal(canon(onDisk(dir).coverage), canon(TOP_COVERAGE), `${what}: the coverage did not land`);
+    assert.equal(onDisk(dir).findings.length, 3, `${what}: the record lost a finding`);
+  }
+});
 
 // ── WHERE THESE GUARDS STOP ───────────────────────────────────────────────────────────────────────────
 //
