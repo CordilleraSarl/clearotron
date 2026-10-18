@@ -172,7 +172,8 @@ test("the collapsed-band repair is lane-appropriate: re-execute the qid or RE-PR
   // code-side plan-direct-execute repair). A hint ordering "execute_plan with that qid" would contradict
   // the three-key call form the same prompt's stage message gives — this PR's own failure class.
   assert.match(lane, /register_execute_plan ONCE with the exact \{"plan_path", "axis", "output_path"\}/);
-  assert.match(lane, /takes no per-qid argument/);
+  // The plan tool does take qids, so the hint no longer says it takes none (packet row D31); the call it orders is the same.
+  assert.doesNotMatch(lane, /takes no per-qid argument/);
   assert.match(lane, /RE-PROPOSE that EXACT slice through register_propose_supplemental/);
   assert.match(lane, /Do NOT author, edit or append a band block by hand/);
   assert.doesNotMatch(legacy, /register_propose_supplemental/, "off-lane the executor/propose repair does not apply");

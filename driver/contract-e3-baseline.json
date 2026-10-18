@@ -36,9 +36,9 @@
       "dictated-line-shape": 1
     },
     "register-digest": {
-      "literal-json-skeleton": 1,
+      "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 2
+      "dictated-line-shape": 1
     },
     "skeptic": {
       "literal-json-skeleton": 0,
@@ -120,7 +120,7 @@
     "skills/clearance-register/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 4
+      "dictated-line-shape": 3
     },
     "skills/clearance-register/unit.md": {
       "literal-json-skeleton": 5,
@@ -189,7 +189,7 @@
     }
   },
   "totals": {
-    "stages": 45,
-    "files": 64
+    "stages": 43,
+    "files": 63
   }
 }

@@ -41,6 +41,8 @@ test("the delivery stale-repair decides through lateReviewAgainst and logs the s
   const site = src.slice(at, at + 2500);
   assert.match(site, /const \{ hardened, softened: reviewSays \} = lateReviewAgainst\(verdict, reviewNow\);/);
   assert.match(site, /if \(reviewSays\) \{\s*runLog\(run\.runDir, \{ event: "verdict-softening-not-adopted", was: verdict, reviewSays, stage: stageLabel \}\);/);
-  assert.ok(src.split("adoptLateReview(").length - 1 >= 3, "the whole review and the review after a repair both decide through it");
+  // Two calls: the review after a repair, whose whole-review fallback returns the same record and so decides
+  // through the same call, and the whole review the stale-repair arm re-runs.
+  assert.ok(src.split("adoptLateReview(").length - 1 >= 2, "the whole review and the review after a repair both decide through it");
   assert.equal(src.split("lateReviewAgainst(").length - 1, 1, "one call site, so no second reading of the late review can skip the log");
 });

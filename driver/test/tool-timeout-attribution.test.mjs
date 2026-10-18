@@ -149,7 +149,11 @@ test("the corrective does not accuse the model, and forbids the hand-authored es
   assert.match(msg, /WAS MADE and never returned/, "it says what happened");
   assert.match(msg, /Nothing about your turn was wrong/, "and that the model is not at fault");
   assert.match(msg, /do NOT author band blocks by hand/, "the forbidden repair stays forbidden");
-  assert.match(msg, /CROSS-CHECK REQUIRED/, "and the honest note is named as the correct answer if it dies again");
+  // The step never writes its note file (the driver writes it from the step's call) and the note tool refuses any
+  // note while the band is missing, so it is not told to hand-write one; the driver's call log records the kill
+  // (packet rows D20 and D21).
+  assert.doesNotMatch(msg, /CROSS-CHECK REQUIRED/, "it is not told to hand-write a note it never writes");
+  assert.match(msg, /driver's own call log records that the call never returned/i, "and it is told where the kill is recorded");
   assert.doesNotMatch(msg, /NEVER WRITTEN — the stage cannot pass/,
     "never the named_band_missing wording, which reads as 'you did not do it'");
 });

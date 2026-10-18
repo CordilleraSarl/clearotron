@@ -31,7 +31,6 @@ import { coverageFormStamp } from "./coverage-form-io.mjs";
 // imports node builtins and shared/driver-dir only.
 import { UNIT_NOTE_REPAIR_TAIL } from "./register-unit-record.mjs";
 import { grantVocabularySentence } from "./register-grant-vocabulary.mjs";
-import { LINE_GROUNDS } from "./hit-list.mjs";   //  — the dictation reads the contract, never a copy of it   //  — the grant sentence is per-deployment
 import { marketplaceScopeDirective } from "./jurisdiction-systems.mjs";
 import { MEANING_SEAT } from "./common-law-receipts.mjs";   // — the seat whose whole dispatch is the meaning sweep
 import { meaningSweepReceiptsInstruction } from "./connotation-search.mjs";   // M1 — ONE composer; this sentence was authored four times
@@ -837,20 +836,17 @@ const readsForReference = (skillReads) =>
 // run never produced). The composer takes the list ALREADY filtered by the caller so this module stays a
 // pure prompt table with no filesystem reach.
 //
-// ON THE WRITER'S AND THE REVIEWER'S PATH IT DOES NOT CALL THEM UNCHANGED. A correction there rewrites the
-// narrative and the findings record, and the reviewer declares the narrative among its inputs, so the
-// re-check after a correction was told an input it must re-read was "unchanged". Every other stage keeps the
-// line it has.
+// IT DOES NOT CALL THEM UNCHANGED. An earlier pass can rewrite an input before a follow-up runs: a correction
+// rewrites the narrative and the findings record the reviewer re-reads, and a settlement follow-up of the
+// register reading step is sent after a pass rewrote the unit files it names. A follow-up told "unchanged"
+// was told an input it must re-read had not moved, so no follow-up's line says it.
 //
 // THE REVIEW AFTER A DELIVERY-CHECK REPAIR SAYS WHICH FILES CHANGED. `changedInputs` names them — the narrative,
 // the findings record, or both — worked out from the writer's record before and after the repair, never from
 // file bytes; that review runs only when no other declared input moved, so the rest of its line is true.
-const INPUTS_NOT_CALLED_UNCHANGED = new Set(["synthesis", "narrative-refutation"]);
-const inputsForReference = (paths, { name, changedInputs = null } = {}) => changedInputs?.length
+const inputsForReference = (paths, { changedInputs = null } = {}) => changedInputs?.length
   ? `YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them. Since this run's last review, the repair has changed ${changedInputs.join(" and ")} where listed above; your other inputs have not changed. Open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`
-  : INPUTS_NOT_CALLED_UNCHANGED.has(name)
-    ? `YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`
-    : `YOUR DECLARED INPUTS, unchanged and on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`;
+  : `YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): ${paths.join(", ")}.`;
 
 /**
  * The skill documents a stage's prompt ACTUALLY names for this run.
@@ -926,7 +922,7 @@ export function resolveSkillReads(name, ctx = {}) {
  * bracket it are addressed to a session that has nothing, and neither states a task.
  */
 export function composeFollowup(name, ctx, { followup, extra = null, inputs = [], cleared = [], changedInputs = null } = {}) {
-  const skills = resolveSkillReads(name, ctx);
+  const skills = [...new Set([...resolveSkillReads(name, ctx), ...(STAGES[name]?.followupSkillReads?.(ctx) ?? [])])];
   return lines(
     skills.length ? readsForReference(skills) : "",
     followup,
@@ -1395,7 +1391,7 @@ export const STAGES = {
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE (: a field phrased outside one was
       // written 0 of 9 times against 74 of 74 when imperative-carried).
       `Hand the frame back by calling the \`record_matter_frame\` tool. Send \`prose_body\` — the commercial read of the matter in full prose: client, sector, product description, customer base, channels of trade, off-field sectors, sector-convergence flags, watchlist-owner seeds, your scope reasoning, the class scope and adjacency call with a one-line reason per class, the applicant's own and affiliated marks, and the campaign shape where you are inferring one (label an inference as an inference).`,
-      `Send \`scope_basis\` as "instructed" or "derived", with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories. Send \`identified_classes\` — the Nice classes you judge NECESSARY that the request did NOT instruct, each as {class, reason}, the class a whole number 1-45 and the reason one line. Add a class only for the client's own goods, never for what a competitor might hold, and give one sentence saying why — a class sent without a reason is not searched. The added class is searched like every other: the identical mark first, and the count looked at before anything is read. Omit the field or send an empty array where the instructed classes are the whole scope, which is the ordinary answer and adds nothing.`,
+      `Send \`scope_basis\` as \`instructed | worldwide | inferred\`, with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories. Send \`identified_classes\` — the Nice classes you judge NECESSARY that the request did NOT instruct, each as {class, reason}, the class a whole number 1-45 and the reason one line. Add a class only for the client's own goods, never for what a competitor might hold, and give one sentence saying why — a class sent without a reason is not searched. The added class is searched like every other: the identical mark first, and the count looked at before anything is read. Omit the field or send an empty array where the instructed classes are the whole scope, which is the ordinary answer and adds nothing.`,
       // The driver STAMPS the instructed-scope section from _driver/instructed-scope.json, so the seat is
       // not asked to quote back values the driver wrote at intake. That retyping was the stage's
       // `frame_scope_missing` loop and it is gone; see matter-frame-record.mjs.
@@ -1417,7 +1413,7 @@ export const STAGES = {
       // frame-diff — whose reads were an enumerable pair — got only the seeded `Read`. Named here because
       // a granted tool no instruction mentions is a capability the seat does not know it has, and it then
       // reaches for the one the doctrine does name ( direction (a)).
-      `To look inside this run's own files, call \`search_run_artifacts\` — a read-only literal search over the run directory. Use it instead of shell commands; there is no Bash on this stage.`,
+      `To look inside this run's own files, call \`search_run_artifacts\` — a read-only literal search over the run directory. Use it instead of shell commands.`,
     ),
   },
 
@@ -2109,6 +2105,10 @@ export const STAGES = {
     // ~seconds; this is a safety margin only. stallSec stays < timeoutSec so a true silent wedge still trips.
     timeoutSec: 1500, stallSec: 1100,
     skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/unit.md"],
+    // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
+    // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
+    // message tells the first session to read and follow.
+    followupSkillReads: () => (PROVIDER_META.skillDoc ? [PROVIDER_META.skillDoc] : []),
     out: (P, axis) => P.registerUnit(axis),
     validate: validators.registerUnit,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2678,20 +2678,9 @@ export const STAGES = {
       `RECORD YOUR WORK WITH \`record_register_digest\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders the findings document from what you send. You hold no Write or Edit tool for it and nothing you write by hand is read.`,
       `WHAT THE CALL TAKES, AND WHAT IT DOES NOT. \`findings_rows\` / \`incumbent_rows\`: one entry per POSITION that earns a row — the \`uri\` of any one constituent, your \`flag_reason\`, and \`verify\`. \`negative_rows\`: one entry per candidate screened out — its \`uri\` and your \`drop_reason\`. \`instructed_checks\`: {ask, answer}. \`disagreement_resolutions\`: {subject, ADOPTED|OVERRODE, reason}. Plus your prose sections: \`opposition\`, \`merch_sweep\`, \`cross_checks\`, \`open_flags\`.`,
       `YOU DO NOT SEND — AND MUST NOT RETYPE — any record's Mark, Owner, Country, Classes, Status, Filed or Expiry, the clickable record URL, the register name, the summary counts, the audit trail or the record ids you read. Every one of those is rendered from the band record your \`uri\` names or from this run's own receipts. The uri IS the join: a uri no band record carries is refused on the call, naming it, rather than rendered as a row of blank cells.`,
-      // ── — THE SEAT MARKS THE LIST, AND THE RULE NAMES THE FIELD IT SENDS ─────────
-      //
-      // Stated as a FIELD ON THE CALL, deliberately. The failure this avoids is measured: an earlier
-      // ruling covered a rule that described a downstream effect — "the string you sweep" — the seat opened
-      // the file, and it reached one variant of thirty-six, because the seat authors rows and had no
-      // field to put the effect in. A rule the seat cannot map onto something it sends produces nothing
-      // and no refusal.
-      //
-      // The dictation says SEND IT. It does not say "optional", even though the transport accepts a call
-      // without it: the leniency is a delivery-safety property of the driver — a new instruction wired
-      // to a refusal on its first live outing would put a no-report path on the run that exercises it —
-      // and telling a seat a thing is optional is how it comes back unsent. What the driver forgives is
-      // not the seat's contract.
-      `MARK THE LIST — \`fates\`. \`${basename(P.registerHitList)}\` holds one line per enumerated record: sign, classes, territory, status, owner, the office's own reading where there is one, and its dates. Send \`fates\` as one entry per line you dispose of — \`{ "id": <the line's id>, "fate": 0 | 1 | 2, "ground": <token, when fate is 0> }\` — where 0 is NOT PICKED (scanned on the list, never opened), 1 is OPENED AND DISMISSED, 2 is REPORTED. A fate of 0 carries exactly one \`ground\`, one of: ${LINE_GROUNDS.join(" · ")}. THESE ARE THE ONLY GROUNDS A LINE CAN BE SET ASIDE ON WITHOUT OPENING IT, and each answers ONE question — a record is out of TERRITORY, or it is a different SIGN, and which of those it is is the thing a reader checks. Never one token for both. If the reason needs the record — its goods, its specification, the wording of a class head — that is not a ground, it is an OPEN: fetch it, read it, and send fate 1 with your reasoning in the row it earns.`,
+      // The reading step is not asked to mark the list's lines with fate codes. That order named a field its tool
+      // does not take and a fetch it cannot make, and only an operator metric read the result, which now says
+      // it was not computed (gate-metrics.mjs). The tool still accepts codes a call carries.
       `COVERAGE DOES NOT COME HERE. Your Coverage-ledger rulings ride \`record_coverage\`, row by row, exactly as described above — two transports, two statements, and the obligation ledger keeps its own writer.`,
     ),
   },
@@ -4189,9 +4178,9 @@ export const PLAN_ENTRY_RERUN_RULE = `This axis's plan has already run. Do not c
 // Step-2.6 skeptic escalated this axis → resume its session to defend or adjust.
 export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLane = false }) {
   return lines(
-    `You are RESUMING your own register-unit session for axis "${axis}". Your prior search, coverage ledger, and fetched records are already in your context, and your output file is ${P.registerUnit(axis)}.`,
+    `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior search is in your band artifact (${P.registerBand(axis)}), and your output file is ${P.registerUnit(axis)}.`,
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
-    `Do NOT restart the search from scratch. The Step-2.6 skeptic raised the concerns below. For EACH concern relevant to THIS axis: either (a) defend your existing finding using evidence already in your context, or (b) run ONLY the narrow additional sub-query the concern requires, then revise.`,
+    `Do NOT restart the search from scratch. The Step-2.6 skeptic raised the concerns below. For EACH concern relevant to THIS axis: either (a) defend your existing finding using evidence already in your band artifact, or (b) run ONLY the narrow additional sub-query the concern requires, then revise.`,
     `Every finding the concerns do not touch stays exactly as it is.`,
     PLAN_ENTRY_RERUN_RULE,
     ``,
@@ -4207,7 +4196,7 @@ export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLan
 // The deadline envelope permits closing this axis's DEFERRED coverage rows before the analysis is written.
 export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalLane = false }) {
   return lines(
-    `You are RESUMING your own register-unit session for axis "${axis}". Your prior search, coverage ledger, and fetched records are already in your context, and your output file is ${P.registerUnit(axis)}.`,
+    `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior search is in your band artifact (${P.registerBand(axis)}), and your output file is ${P.registerUnit(axis)}.`,
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
     `The Coverage ledger records DEFERRED (planned but never run) work owned by this axis — the deadline envelope permits closing it NOW, before the analysis is written:`,
     rows || `(deferred row(s) for ${axis} — see the Coverage ledger)`,
@@ -4228,7 +4217,7 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
   const dom = (directives ?? []).filter((d) => d.severity === "dominant-element");
   const other = (directives ?? []).filter((d) => d.severity !== "dominant-element");
   if (supplementalLane) return lines(
-    `You are RESUMING your own register-unit session for axis "${axis}". Your prior queries, your band artifact (${P.registerBand(axis)}), and your fetched records are already in your context.`,
+    `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior queries are in your band artifact (${P.registerBand(axis)}).`,
     `A blind, frame-INDEPENDENT re-derivation (it never saw this run's framing) found these threats the run did NOT fully scope or search:`,
     ...(directives ?? []).map(directiveLine),
     dom.length
@@ -4240,7 +4229,7 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
     SUPPLEMENTAL_LANE_STEERING,
   );
   return lines(
-    `You are RESUMING your own register-unit session for axis "${axis}". Your prior queries, your band artifact (${P.registerBand(axis)}), and your fetched records are already in your context.`,
+    `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior queries are in your band artifact (${P.registerBand(axis)}).`,
     `A blind, frame-INDEPENDENT re-derivation (it never saw this run's framing) found these threats the run did NOT fully scope or search:`,
     ...(directives ?? []).map(directiveLine),
     dom.length

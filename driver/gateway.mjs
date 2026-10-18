@@ -2840,8 +2840,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       ? diagnosis +
         `On this run the TOOLS own every band block: if the collapsed slice belongs to a DICTATED plan entry ` +
         `(it carries a qid from the frozen plan), close it by calling register_execute_plan ONCE with the exact ` +
-        `{"plan_path", "axis", "output_path"} from your stage instructions — that is the tool's whole call form ` +
-        `(it takes no per-qid argument); it re-runs this axis's dictated entries and refreshes their blocks, ` +
+        `{"plan_path", "axis", "output_path"} from your stage instructions; it re-runs this axis's dictated entries and refreshes their blocks, ` +
         `qid-stamped. If the collapsed slice ` +
         `was a judgment addition, RE-PROPOSE that EXACT slice through register_propose_supplemental with the same ` +
         `predicate, term(s), nice_classes and regions — the tool re-executes it and merges the corrected block ` +
@@ -2891,9 +2890,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `the bridge killed it, so the band was never written. This is NOT a missing-structure defect and ` +
       `NOT something you did wrong. Call register_execute_plan ONCE more with the exact ` +
       `{"plan_path", "axis", "output_path"} from your stage instructions. If it is killed again, do ` +
-      `NOT author band blocks by hand and do NOT narrate coverage you did not get — record the timeout ` +
-      `in your .md, state the scope you attempted, and flag CROSS-CHECK REQUIRED. That note is the ` +
-      `correct answer to a tool that will not return, and it is what the reader needs`;
+      `NOT author band blocks by hand and do NOT narrate coverage you did not get — the driver's own call ` +
+      `log records that the call never returned`;
   } else if (/named_band_missing/.test(lastFail)) {
     // 2026-07-14 (copper-keystone): the unit's .md narrated success but the band file was NEVER WRITTEN —
     // the model skipped its one register_execute_plan call and fabricated the narrative. Unlike the
@@ -3529,7 +3527,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
     const band = join(dirname(files[0]), basename(files[0]).replace(/\.md$/i, "-band.json"));
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo your digest prose (${names} already passed validation).\n` +
       `Your register tool call WAS MADE and never returned — it was still running when the bridge killed it, so ${band} was never written. Nothing about your turn was wrong. Call register_execute_plan ONCE more with the exact {"plan_path", "axis", "output_path"} from your original stage instructions (output_path = ${band}), then stop.\n` +
-      `If it is killed again: do NOT author band blocks by hand and do NOT narrate coverage you did not obtain. Record the timeout in your .md, state the scope you attempted, and flag CROSS-CHECK REQUIRED. That is the correct answer to a tool that will not return.`;
+      `If it is killed again: do NOT author band blocks by hand and do NOT narrate coverage you did not obtain. The driver's own call log records that the call never returned.`;
   }
   // Sibling-JSON defects (WS-A coverage mirror / common-law grid): the FINDINGS file already passed
   // its prose checks — telling the model to rewrite it "in full" on a patch turn risks degrading

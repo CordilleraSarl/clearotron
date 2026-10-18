@@ -1630,7 +1630,7 @@ export function applyStageWrites(msg, argv) {
     // DIFFERS from the prior one, or the driver's byte-diff sees no change and skips the re-digest the
     // escalation asked for. MOCK_ESCALATION_NOOP suppresses it — that knob's whole job is to force the
     // byte-identical re-emit whose skip is the thing under test.
-    const resume = /RESUMING your own register-unit session/.test(msg);
+    const resume = /RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg);
     const marker = resume && !process.env.MOCK_ESCALATION_NOOP
       ? (/frame-INDEPENDENT re-derivation/.test(msg)
         ? " Re-derived independently of the blind frame on a supplemental sweep."
@@ -2536,7 +2536,7 @@ export function applyStageWrites(msg, argv) {
       // a session resume with NO tool call — the plugin does not re-run, so the ledger MUST NOT move. Same
       // rule, same reason as the routed common-law followups; keep this guard broad (over-matching only
       // suppresses a write, under-matching fabricates a pass).
-      const resuming = /RESUMING your own common-law session/.test(msg) || /^You are RESUMING your own session for this stage/.test(msg);
+      const resuming = /RESUMING your own common-law session|your earlier common-law work is not in your context/.test(msg) || /^You are RESUMING your own session for this stage/.test(msg);
       if (process.env.MOCK_CL_APPEND_MALFORMED && /APPEND the supplementary call/.test(msg)) {
         const target = msg.match(/APPEND the supplementary call's stdout JSON to ((?:[A-Za-z]:)?[\\/]\S+common-law-grid[^\s]*\.json)/)?.[1] ?? mainLedger;
         writeFileSync(target, malformedAppend(msg, dirname(out)));
@@ -2561,7 +2561,7 @@ export function applyStageWrites(msg, argv) {
     if (content == null) return `mock turn completed without writing ${basename(out)}`;
     // A frame-reopen resume carries a DISTINCT marker so its re-emit differs from any prior escalation/
     // envelope re-emit of the same unit (else the byte-diff guard would see no change and skip it).
-    if (/RESUMING your own register-unit session/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
+    if (/RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
       content += /frame-INDEPENDENT re-derivation/.test(msg)
         ? "\n<!-- frame-reopen: supplemental sweep -->\n"
         : "\n<!-- escalation: revised in place -->\n";

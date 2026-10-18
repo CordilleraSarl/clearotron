@@ -18,9 +18,9 @@ description: Shared strategy + variant generation for the v3 preliminary tradema
 
 ## Spawned session
 
-Invoked from `clearance-search` (orchestrator) as the first stage of any preliminary trademark review. Reads `task` containing: mark(s), class(es), jurisdiction scope, product description, optional industry context. Produces a single artifact — the **variant manifest** — written to the workspace for the downstream skills to consume.
+Invoked from `clearance-search` (orchestrator) as the first stage of any preliminary trademark review. Reads `task` containing: mark(s), class(es), jurisdiction scope, product description, optional industry context. Produces a single artifact — the **variant manifest** — written by the driver from your `record_clearance_variants` call for the downstream skills to consume.
 
-No tool calls. Pure analytical work.
+Hand the manifest back by calling the `record_clearance_variants` tool. Pure analytical work.
 
 Companion files:
 - [transliteration-scripts.md](transliteration-scripts.md) — non-Latin script reference (CJK + Arabic + Cyrillic + Devanagari + Thai + Greek)
@@ -69,7 +69,7 @@ If a mark genuinely doesn't fit any archetype, document the reasoning and fall b
 
 ## Output — the variant manifest
 
-A single file inside the active run-dir: `studio/clearance-search/<slug>/<date>/variant-manifest.md`. Slug and date are passed in by the orchestrator (see [clearance-search/SKILL.md → Phase 1](../clearance-search/SKILL.md#phase-1--template)). Markdown by design. Consumed by both downstream skills.
+`variant-manifest.md`, written by the driver from your `record_clearance_variants` call. Markdown by design. Consumed by both downstream skills.
 
 ### Format
 
@@ -474,4 +474,4 @@ Downstream skills do NOT generate their own variants — the manifest is authori
 - [ ] Watchlists populated (with client-exclusion applied)
 - [ ] Famous-mark Perplexity calls flagged (or "None")
 - [ ] Cross-mark themes captured (multi-mark only)
-- [ ] Manifest written to workspace
+- [ ] Manifest handed back by calling the `record_clearance_variants` tool, and the tool accepted it

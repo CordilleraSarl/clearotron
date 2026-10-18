@@ -173,15 +173,16 @@ test("no message on the writer's and the reviewer's path tells a fresh session i
   }
 });
 
-test("the writer's and the reviewer's follow-ups no longer call their inputs unchanged; other stages keep today's line", () => {
+test("no follow-up calls its inputs unchanged: the writer's and the reviewer's, and every other stage's", () => {
+  // V23 on the writing path; its extension to every other follow-up (packet row D10, 2026-10-18) makes the line one
+  // text again.
   const ctx = { paths: {}, framework: null };
   const paths = ["register-findings.md", "placements.md"];
-  for (const stage of ["synthesis", "narrative-refutation"]) {
+  for (const stage of ["synthesis", "narrative-refutation", "common-law", "register-digest"]) {
     const out = linesOf(composeFollowup(stage, ctx, { followup: "the instruction", inputs: paths }));
     assert.equal(out.at(-1), V23(paths), stage);
+    assert.notEqual(out.at(-1), TODAYS_INPUTS_LINE(paths), `${stage}: the old line, which called the inputs unchanged`);
   }
-  const other = linesOf(composeFollowup("common-law", ctx, { followup: "the instruction", inputs: paths }));
-  assert.equal(other.at(-1), TODAYS_INPUTS_LINE(paths), "a stage off this path is byte-identical");
 });
 
 // ── THE SAVE TOOL'S FORM, AS THE MODEL RECEIVES IT ───────────────────────────────────────────────────

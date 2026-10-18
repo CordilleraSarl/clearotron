@@ -16,7 +16,7 @@ gathered and saying what it means under an assumption somebody has handed you.
 
 ## What you may not do
 
-- **No new searching.** You have no tools here and there is nothing to call. If answering properly needs
+- **No new searching.** If answering properly needs
   evidence this run did not gather, that is a LIMIT — state it, do not estimate around it.
 - **No new verdict.** You do not issue CLEAR, CONDITIONAL or BLOCKING. You say what moves and by how
   much, and what the verdict line would read if the assumption held. That is a conditional sentence, not

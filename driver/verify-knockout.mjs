@@ -94,12 +94,27 @@ export function knockoutCitedUrls(f) {
  *
  * @returns {{ok: boolean, failures: string[], checked: {marks: number, citing: number, findings: number, urls: number}}}
  */
+/**
+ * THE REGISTER FILINGS THE RATING STEP WAS HANDED, per mark, as text (register-records.json, which the rating
+ * message names when it is on disk). The message lets a citation come from the mark's own payload or from the
+ * filings supplied for that mark, so the receipts check reads both; another mark's filings license nothing.
+ */
+function suppliedRecordsByMark(runDir) {
+  try {
+    const doc = JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8"));
+    return new Map((Array.isArray(doc?.marks) ? doc.marks : []).filter((x) => x?.name)
+      .map((x) => [String(x.name).trim().toLowerCase(), JSON.stringify(Array.isArray(x.records) ? x.records : [])]));
+  } catch { return new Map(); }
+}
+
 export function knockoutReceipts(runDir, marks) {
   const failures = [];
   const checked = { marks: (marks ?? []).length, citing: 0, findings: 0, urls: 0 };
+  const supplied = suppliedRecordsByMark(runDir);
   for (const m of marks ?? []) {
     const list = Array.isArray(m?.findings) ? m.findings : [];
     checked.findings += list.length;
+    const records = supplied.get(String(m?.name ?? "").trim().toLowerCase()) ?? null;
     let payload = null, opened = false;
     for (const f of list) {
       const cited = knockoutCitedUrls(f);
@@ -111,6 +126,7 @@ export function knockoutReceipts(runDir, marks) {
       }
       for (const url of cited) {
         checked.urls += 1;
+        if (records != null && urlInPayload(url, records)) continue;   // a filing supplied for this mark
         if (payload == null) { failures.push(`knockout_url_unreceipted:${m.name}: cites "${url}" but the mark has no research payload — a degraded mark cannot cite URLs`); continue; }
         if (!urlInPayload(url, payload)) failures.push(`knockout_url_unreceipted:${m.name}: "${url}" does not appear in the mark's research payload — cite only held evidence`);
       }

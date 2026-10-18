@@ -97,10 +97,8 @@ unit screened candidates out via a provider batch-screen tool (Corsearch: `regis
 contribution into `negative_rows` — one entry per dropped candidate. A batch-dropped candidate with no
 entry vanishes from the published audit — a **silent recall loss** — and a drop with no stated reason is
 refused on the call. **Never** batch-drop a `surface:in-scope-live` / `surface:all-class`
-row on goods/services (brand-json lacks G&S) — those fall through to `record_fetch` and are decided on real
-goods; **never** drop a Slice-A exact-in-class-live candidate or class-drop an `all_class` row. **Never** batch-drop a `surface:in-scope-live` / `surface:all-class`
-row on goods/services (brand-json lacks G&S) — those fall through to `record_fetch` and are decided on real
-goods; **never** drop a Slice-A exact-in-class-live candidate or class-drop an `all_class` row.
+row on goods/services (brand-json lacks G&S) — those are decided on the record's goods, read with `band_record`;
+**never** drop a Slice-A exact-in-class-live candidate or class-drop an `all_class` row.
 
 **Fetch the SENIOR leg.** When a kept conflict's owner holds SEVERAL
 registrations of the same mark (a multi-country family), deep-fetch the **senior live leg** — the
@@ -119,8 +117,10 @@ THIS table, in the column shape the deterministic audit builder parses — so it
 `# Negative Results` (the internal/senior-facing workbook's defensibility record of what was considered and
 ruled out). Do **not** put these under a separate "audit-only" heading: a heading `buildAuditMd` does not parse
 never leaves the spine, so the drop vanishes from the delivered audit. An **in-scope-live** off-field drop
-(verdict `surface:in-scope-live` / `surface:all-class`) must rest on a `record_fetch` of the real goods, never
-a batch-row guess — the driver's acceptance gate **rejects the digest** if such a URI was never fetched. Carry
+(verdict `surface:in-scope-live` / `surface:all-class`) must rest on the official record's goods, read with
+`band_record`, never a batch-row guess. This tool reads evidence already held; it does not fetch. If the required
+record is missing or unavailable, leave the gap explicit. The driver applies the existing fetch-and-recheck
+recovery; an unresolved gap remains disclosed. Carry
 the **`screen_verdict`, `class`, and `status`** into Notes so the gate can identify the row.
 
 **ONE ROW PER RECORD — the row is the unit of DISMISSAL, so it is one record (floor-critical).** A drop row
@@ -385,7 +385,7 @@ Your task gives the paths to: the per-axis prose digests (`register-units/<axis>
 
 Every judgment below spans the band and/or needs data a single unit cannot have, so it MUST happen here.
 
-**Consume `placement-recommendations.md` (from Touchpoint 2 `placement-inquiry`).** The per-candidate tiers ALSO arrive structured in `placements.json` beside the md — `{mark, owner, jurisdiction, records[], tier, reason}` per candidate (plus an optional `borderline: true` — see below), `reason` carrying placement's stated reasoning. When present, the JSON is the authoritative tier record: adopt or override each tier BY ENGAGING ITS `reason` (an override quotes the reason it contradicts — never a silent re-tier; a kept tier may tighten a label while reusing the reason). The md remains the home of the rulings tail (Disagreements, Coverage rulings, Open questions), which you carry forward exactly as below. On a corrective/repair pass do NOT re-read the whole md — the tiers are in the JSON, and the driver hands you the md's rulings tail verbatim in the dispatch (a `PLACEMENT RULINGS TAIL` block): adjudicate against it there, adopting or counter-reasoning each ruling. For each enumerated record in the complete band (the shape's census + your lookups):
+**Consume `placement-recommendations.md` (from Touchpoint 2 `placement-inquiry`).** The per-candidate tiers ALSO arrive structured in `placements.json` beside the md — `{mark, owner, jurisdiction, records[], tier, reason}` per candidate (plus an optional `borderline: true` — see below), `reason` carrying placement's stated reasoning. When present, the JSON is the authoritative tier record: adopt or override each tier BY ENGAGING ITS `reason` (an override quotes the reason it contradicts — never a silent re-tier; a kept tier may tighten a label while reusing the reason). The md remains the home of the rulings tail (Disagreements, Coverage rulings, Open questions), which you carry forward exactly as below. On a corrective/repair pass do NOT re-read the whole md — the tiers are in the JSON, and the driver hands you the md's rulings tail verbatim in the dispatch (a `PLACEMENT RULINGS TAIL` block): adjudicate against it there, adopting or counter-reasoning each ruling. For each candidate `placement-inquiry` placed:
 - Find the matching entry in `placements.json` (mark text + owner + jurisdiction match; fall back to the md's tier sections on runs that predate the JSON)
 - Adopt the graduated outcome (`headline-candidate` / `sheet-2` / `watchlist-annex` / `out-of-scope-filtered`) as the placement
 - **Between `headline-candidate` and `sheet-2`, what you are adopting is an ANSWER, not a label.** Those two tiers are placement-inquiry's written answer to one question — *does this conflict change the advice, or only complete the record?* (a headline entry names what it changes; a sheet-2 entry states why the advice reads the same either way). Adopting means adopting that answer. **Overriding means answering the SAME question the other way, in writing**, in your `### Disagreement resolutions` row — never re-labelling the tier and never substituting a risk-tier argument for the question. An override that does not say what the conflict does (or does not do) to the advice has not engaged the placement
@@ -598,5 +598,5 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] Watchlist-annex candidates routed to audit-tab + optional brief narrative mention with monitor trigger
 - [ ] **Dominant-element reconciliation satisfied** — every screened-live dominant-element POSITION ends as a finding row, a drop row citing any one constituent URI, or membership of the ONE counted `dominant-element crowd` row ADDED THROUGH `record_coverage`, whose `unit` value carries `(<N> members)` with `<N>` >= the residual POSITION count (the count is read from `unit`, never from `reason`); the code-ranked closest positions ended individually
 - [ ] **Sheet-1 rows are POSITIONS** (one row per position, citing at least one constituent URI; owner-divergent pairs left as separate rows per the shape's Cross-references) — never one row per registration of the same right
-- [ ] Register findings file written; per-unit counts + per-jurisdiction-subquery counts + thin-unit flags in the audit trail
+- [ ] `record_register_digest` called before you return; any unit that reported it shortcut its axis flagged in your `open_flags` prose
 - [ ] Open verification flags listed

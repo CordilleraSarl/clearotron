@@ -128,7 +128,7 @@ serve({
   name: "dispositions", version: "0.1.0",
   tools: [{
     name: "record_dispositions",
-    description: "Record your meaning rulings. Send VALUES, not a file: one entry per row, and the driver writes the document. You type NO identifier of any kind: give `row_index`, the NUMBER printed beside that obligation in the obligations block, and `receipt_index`, the POSITION of the candidate in that row's own list — the driver resolves both. Rows are validated against THAT row as they arrive, so you learn what to fix inside this turn; rows that validate are kept even when others in the same call are refused. The answer names every obligation still outstanding and which of them still owe proof of reading — a `segment_index` and a `fragment`.",
+    description: "Record your meaning rulings. Send VALUES, not a file: one entry per row, and the driver writes the document. You type NO identifier of any kind: give `row_index`, the NUMBER printed beside that obligation in the obligations block, and `receipt_index`, the POSITION of the candidate in that row's own list — the driver resolves both. Rows are validated against THAT row as they arrive, so you learn what to fix inside this turn; rows that validate are kept even when others in the same call are refused. The answer names every obligation still outstanding and which of them still owe proof of reading — a `segment_index`.",
     inputSchema: { type: "object", required: ["grid_spec_path", "rows"], properties: {
       grid_spec_path: { type: "string", description: "Absolute path to the driver-written grid spec — the same one the grid tool was given." },
       rows: {
@@ -156,7 +156,7 @@ serve({
           // — THE HONEST EXIT. Declared here because a seat can only take an exit it can see: the
           // one row that killed a production run was refused 217 times by a seat that had no way to say
           // it could not rule, and the schema is the half its tool-calling binds to.
-          obstacle: { type: "string", description: "ONLY when this receipt supports no ruling at all: one line naming what in it blocks a ruling. Send this INSTEAD of `ruling` — never both. The row is then recorded as undecided, with your sentence shown to the reviewing lawyer in place of a ruling, and the stage completes rather than stalling on it. Prefer a ruling whenever you can give one; this is not a way past a hard row." },
+          obstacle: { type: "string", description: "ONLY when this receipt is genuinely impossible to evidence — every passage an elision marker, nothing quotable in any of them: one line saying what stops you. Send this ALONGSIDE your `ruling` and `note`, never instead of them. The row is then recorded as undecided, with your sentence shown to the reviewing lawyer in place of proof, and the stage completes rather than stalling on it. This is not a way past a hard row: `obstacle` is for the receipt that offers nothing, not the awkward one." },
         } },
       },
     } },
