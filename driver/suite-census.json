@@ -580,8 +580,8 @@
           "todos": 0
         },
         "a-failed-fetch-or-an-empty-record-is-not-a-retrieval.test.mjs": {
-          "tests": 3,
-          "asserts": 13,
+          "tests": 4,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -4402,8 +4402,8 @@
           "todos": 0
         },
         "placements-decisions-reach-the-audit-and-end-a-recall-position.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
+          "tests": 6,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -6694,8 +6694,8 @@
           "todos": 0
         },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
+          "tests": 7,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
