@@ -1086,7 +1086,7 @@ export const groupPageCall = (g) => `band_lookup {"group":"${g}"}`;
 
 // PLACEMENT'S ORDERS IN THE SHAPE. Three sentences under the groups tell the reader to give every line a fate,
 // and only placement owes the groups that. The band server serves the shape without them to every other
-// stage (Krzys's ruling, 2026-10-14), so they are declared once here and removed there by these same strings.
+// stage (the owner's ruling, 2026-10-14), so they are declared once here and removed there by these same strings.
 export const SORT_THE_NEAR_ONES = "A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest.";
 export const ONE_SET_ASIDE_ROW = "Write down what you set aside and why: one row, with this count.";
 export const A_FATE_BY_NAME = "Each line takes its own fate by name; no group row covers these lines.";

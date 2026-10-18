@@ -4754,7 +4754,7 @@ export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-diges
 // was handed the same offer paged an exhausted group 2,498 times (measured on a test run, 2026-10-13).
 export const GROUP_READING_STAGES = new Set(["placement-inquiry"]);
 // The contract as the stages after placement read it: without "Every floor has a fate on the form.", which is an
-// order to placement, whose form it names. The digest and synthesis owe no floor a fate (Krzys's ruling,
+// order to placement, whose form it names. The digest and synthesis owe no floor a fate (the owner's ruling,
 // 2026-10-14). Removed from the one contract, never restated, so the two cannot drift apart.
 export const FLOOR_FATE_ORDER = "Every floor has a fate on the form.";
 export const BAND_READING_CONTRACT_AFTER_PLACEMENT = BAND_READING_CONTRACT.replace(` ${FLOOR_FATE_ORDER}`, "");
