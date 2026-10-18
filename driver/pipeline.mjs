@@ -6413,6 +6413,9 @@ export function recordChangeOwesReview(runDir) {   // @internal
   return !isEmptyChange(c);
 }
 
+/** The change a whole review's record lists when its scope could not be compared: none. */
+const NO_CHANGE = Object.freeze({ findings: [], lines: [], registers: [], sections: [], whole: true, why: "not-compared" });
+
 /** Whether the reviewer was queued for a change to the findings record only: its narrative did not move. */
 function queuedForTheRecordOnly(s2) {
   return (s2?.changed ?? []).every((c) => c?.via === "repair-record");
@@ -6496,11 +6499,12 @@ async function runPostRepairReview(ctx, P, run, scope) {
 }
 
 /**
- * THE WHOLE REVIEW, WHEN THE NARROWED ONE COULD NOT BE READ AFTER A REPAIR. It returns what runPostRepairReview
- * returns, so its points go to the same one correction; adopting its verdict alone would leave its flags
- * unapplied. When it cannot be read either, the record says the change was not reviewed (`unreadRecordReview`),
- * and the delivery guard holds the run on that record: neither unread review is a pass. `rerun` is the
- * reviewer's own stale-repair arm.
+ * THE WHOLE REVIEW OF A REPAIR'S CHANGE: when the narrowed one could not be read, and when the change cannot be
+ * narrowed at all (a change to the record the scope cannot compare, or one an earlier review could not read, as on
+ * a resume). It returns what runPostRepairReview returns, so its points go to the same one correction; adopting its
+ * verdict alone would leave its flags unapplied. When it cannot be read, the record says the change was not reviewed
+ * (`unreadRecordReview`), and the delivery guard holds the run on that record: no unread review is a pass. `rerun`
+ * is the reviewer's own stale-repair arm.
  */
 async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
   const runDir = run.runDir;
@@ -15325,9 +15329,11 @@ async function pipelineInner(job, opts = {}) {
             if (r.ok) { staleRepaired.push(s2.label); reassemble = true; }
             else note(`stale-repair: report-overview re-emit failed (${r.fail}) — stays stale, the guard below decides`);
           } else if (s2.label === "narrative-refutation"
-              && postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept }).mode !== "whole") {
-            // THE REVIEW AFTER A DELIVERY-CHECK REPAIR (see runPostRepairReview). Reached only when the scope is
-            // certain; every other staleness of the reviewer takes the whole-review arm below, as before.
+              && (postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept }).mode !== "whole"
+                || queuedForTheRecordOnly(s2) || unreadRecordReview(run.runDir))) {
+            // THE REVIEW AFTER A DELIVERY-CHECK REPAIR (see runPostRepairReview). Reached where the scope is certain, and
+            // where a change to the record, or one an earlier review could not read, is reviewed whole: that review's
+            // flags go to the same one correction. Every other staleness of the reviewer takes the arm below, as before.
             const scope = postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept });
             if (scope.mode === "none") {
               // A FILE WRITTEN AGAIN WITH THE SAME VALUES IS NOT A CHANGE: no review runs, and the reviewer's stamp
@@ -15338,13 +15344,16 @@ async function pipelineInner(job, opts = {}) {
               staleRepaired.push(s2.label);
               continue;
             }
-            let review = await runPostRepairReview(ctx, P, run, scope);
-            // A review that could not be read falls back to the whole review, whose points go to the same one
+            const rerun = () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
+            // A scope that cannot be narrowed is reviewed whole at once, and its record lists no change it could compare.
+            let review = scope.mode === "whole"
+              ? await runWholeReviewForRecord(ctx, P, run, { ...scope, changed: scope.changed ?? NO_CHANGE, findingOnly: queuedForTheRecordOnly(s2) }, rerun)
+              : await runPostRepairReview(ctx, P, run, scope);
+            // A narrowed review that could not be read falls back to the whole review, whose points go to the same one
             // correction below: neither the stamp of a findings-only change nor that of a stage that ends ok on the
             // earlier review's file can show the change unread. When the whole review cannot be read either, its
             // record hands the guard the change no review read.
-            if (!review.reviewed)
-              review = await runWholeReviewForRecord(ctx, P, run, scope, () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict }));
+            if (!review.reviewed && scope.mode !== "whole") review = await runWholeReviewForRecord(ctx, P, run, scope, rerun);
             if (!review.reviewed) continue;
             staleRepaired.push(s2.label);
             reassemble = true;

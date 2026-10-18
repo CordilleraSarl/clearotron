@@ -283,6 +283,22 @@ test("a resume's whole review that is refused does not mark the unreviewed chang
   assert.equal(r3.ok, true, JSON.stringify(r3).slice(0, 300));
 });
 
+test("a resume's whole review of an unreviewed change sends its flags to the one correction", async () => {
+  const { res: r1, events: e1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_UNREAD: "both" });
+  assert.notEqual(r1.ok, true, "premise: the first pass is held on the unreviewed change");
+  const flags = [{ kind: "fact", text: "An invented point the resumed whole review raised about the repaired narrative." }];
+  const { res: r2, events: all2 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_POST_REPAIR_UNREAD: "narrowed", MOCK_WHOLE_FALLBACK_FLAGS: JSON.stringify(flags) },
+    "claude", { codename: codenameOf(r1.runDir) });
+  const e2 = all2.slice(e1.length);
+  assert.deepEqual(e2.filter((e) => e.event === "post-repair-review").map((e) => [e.read, e.whole ?? false]), [[true, true]], "the resume's review is not the whole review, read once");
+  assert.equal(stageEvents(e2, "synthesis", "post-repair-corrective").length, 1, "the whole review's flags went to no correction");
+  const msg = dispatches(r2.runDir, "synthesis").find((m) => m.includes(CORRECTION_OPENS) && m.includes(flags[0].text));
+  assert.ok(msg, "the correction does not carry the whole review's flag");
+  assert.ok(e2.some((e) => e.event === "verdict-hardened-by-repair" && e.now === "CONDITIONAL"), "its verdict never reached the late-review rule");
+  assert.equal(JSON.parse(readFileSync(driverDir(r2.runDir, "post-repair-review.json"), "utf8")).status, "read");
+  assert.equal(r2.ok, true, JSON.stringify(r2).slice(0, 300));
+});
+
 test("a change to the findings record alone is owed a review unless it saves the same values, even when it cannot be narrowed", async () => {
   const { recordChangeOwesReview } = await import("../pipeline.mjs");
   const runDir = tempDir("post-repair-owed-");
