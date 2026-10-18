@@ -420,6 +420,8 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
     // it was not asked. The row arrives settled when the turn recorded that, and open when nobody did,
     // so an unjudged family is an obligation the digest's gate refuses to pass. `family` rows stay out of
     // the ledger the report is built from; the reason is the run's record and the audit workbook's.
+    // A row that arrives settled names the record its judgment came from (`reason_from`), so the union can keep
+    // that judgment the row's own: a later digest may add its reading beside it, never in place of it.
     for (const f of (Array.isArray(awaiting) ? awaiting : [])) {
       const qid = String(f?.qid ?? "").trim();
       if (!qid || String(f?.axis ?? "").trim() !== axis) continue;
@@ -432,6 +434,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
         open: true,
         open_because: "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
         status: w?.reason ? "withheld-by-judgment" : null, reason: w?.reason ? String(w.reason) : null,
+        ...(w?.reason ? { reason_from: `_driver/withheld-families-${String(w.axis ?? axis)}.json` } : {}),
       });
     }
     // ── AN OFFICE THIS DEPLOYMENT COULD NOT REACH ────────────────────────────────────────

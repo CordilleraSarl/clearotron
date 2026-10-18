@@ -27,7 +27,8 @@ import { compileRegisterPlan, foldSupplementalEntries, joinPlanToBands, deriveCo
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { verifyRegisterDirectiveClose, answeredAs } from "../close-verify.mjs";
 import { classifyRemedyTerm, accountRemedyTerms, domClosedOverAccounted, mintRemedyAccountingDoubts, remedyAccountingEvent } from "../remedy-accounting.mjs";
-import { deriveAsks } from "../ask-ledger.mjs";
+import { deriveAsks, applyAskClosure } from "../ask-ledger.mjs";
+import { STAGES, paths as stagePaths } from "../stages.mjs";
 import { coverageFormRows } from "../coverage-form.mjs";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { frameResidualGaps, partitionFiring, reopenKey } from "../frame-diff-model.mjs";
@@ -334,11 +335,74 @@ test("a directive whose withheld slices repeat two families, one still withheld 
   assert.deepEqual(asks[1].ending.reasons, [REASON], "the family still withheld keeps the reading turn's reason");
   assert.match(asks[2].ending.evidence, /: primary-sweep:default:inventedmark\+merch \(returned 3 records\)$/, "the released family ends on its own run, and names only itself");
   assert.equal(new Set(asks.map((a) => a.ask_id)).size, 3, "each record keeps its own id");
+  assert.deepEqual(asks.map((a) => a.part), ["ran", "family", "family"], "the slices that ran are one part, and each family its own");
   const notRun = asksFor(receipt, { planExecution: { executed: [identical] }, withheldFamilies: withheldRecord() });
   assert.deepEqual(notRun.map((a) => a.ending?.kind ?? "open"), ["executed", "judged-immaterial", "open"],
     "released and never run, that slice stays open, and the judgment on the other is still shown");
   const noneRan = asksFor({ ...receipt, directive_qids: { [key]: ["slice:withheld", "slice:released"] } }, { planExecution: { executed: [] }, withheldFamilies: withheldRecord() });
   assert.deepEqual(noneRan.map((a) => a.ending?.kind ?? "open"), ["judged-immaterial", "open"], "with no slice that ran, the same split holds");
+});
+
+// ── A PART KEEPS ITS ID, AND A CLOSURE SETTLES ONLY THE PART IT NAMES ─────────────────────────────
+
+/** A request with a slice that should have run and a slice whose family the turn released and nothing ran. */
+function twoOpenParts(order = (xs) => xs) {
+  const { exact, receipt: mixed } = mixedReceipt();
+  const key = mixed.requested[0];
+  return { key, receipt: { ...mixed, directive_qids: { [key]: order([exact, "slice:released"]) },
+    withheld_by_judgment: [{ directive: key, slices: [{ qid: "slice:released", family: FAMILY }] }] } };
+}
+const CITED = "an invented line the closure cites";
+const immaterial = (id) => ({ id, verdict: "IMMATERIAL", file: "findings.json", quote: CITED, reason: "an invented reason" });
+const kinds = (asks) => Object.fromEntries(asks.map((a) => [a.ask_id, a.ending?.kind ?? "open"]));
+
+test("two open parts of one request: a closure naming one part settles that part alone, and an id no part carries settles nothing", () => {
+  const { key, receipt } = twoOpenParts();
+  const asks = asksFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} });
+  assert.deepEqual(asks.map((a) => a.ending?.kind ?? "open"), ["open", "open"]);
+  const [ran, fam] = asks;
+  assert.equal(ran.ask_id, `ask:frame:${key.replace(/[^a-z0-9]+/g, "-")}`, "the part that should have run keeps the request's own id");
+  assert.match(fam.ask_id, /^ask:frame:variant-inventedmark:family:primary-sweep-default-inventedmark-[0-9a-f]{8}$/, "the family's part is named for its family");
+  assert.deepEqual([ran.part, fam.part, fam.family], ["ran", "family", FAMILY]);
+  const files = { "findings.json": CITED };
+  const one = applyAskClosure(asks, [immaterial(fam.ask_id)], files).asks;
+  assert.deepEqual(kinds(one), { [ran.ask_id]: "open", [fam.ask_id]: "judged-immaterial" }, "the cited part settles; its sibling stays open");
+  const other = applyAskClosure(asks, [immaterial(ran.ask_id)], files).asks;
+  assert.deepEqual(kinds(other), { [ran.ask_id]: "judged-immaterial", [fam.ask_id]: "open" });
+  // With no slice that ran, no part carries the request's own id, so a citation of it settles nothing.
+  const settledOnly = asksFor({ ...receipt, directive_qids: { [key]: ["slice:released"] } }, { planExecution: { executed: [] }, withheldFamilies: {} });
+  assert.equal(settledOnly.length, 1);
+  assert.deepEqual(kinds(applyAskClosure(settledOnly, [immaterial(ran.ask_id)], files).asks), { [settledOnly[0].ask_id]: "open" });
+});
+
+test("a part's id does not depend on slice order, does not move when its family is released and runs, and survives a save and reload", () => {
+  const { receipt } = twoOpenParts();
+  const { receipt: reversed } = twoOpenParts((xs) => [...xs].reverse());
+  const identical = { qid: IDENTICAL, state: "enumerated", records: 40, total_hits: 40 };
+  const withheld = asksFor(receipt, { planExecution: { executed: [identical] }, withheldFamilies: withheldRecord() });
+  assert.deepEqual(kinds(asksFor(reversed, { planExecution: { executed: [identical] }, withheldFamilies: withheldRecord() })), kinds(withheld),
+    "reversed slices give the same parts with the same endings");
+  // The turn later releases the family and it runs: the same part, the same id, a new ending.
+  const released = asksFor(receipt, { planExecution: { executed: [identical, { qid: FAMILY, state: "enumerated", records: 3, total_hits: 3 }] }, withheldFamilies: {} });
+  assert.deepEqual(released.map((a) => a.ask_id), withheld.map((a) => a.ask_id));
+  assert.deepEqual(withheld.map((a) => a.ending?.kind), ["executed", "judged-immaterial"]);
+  assert.deepEqual(released.map((a) => a.ending?.kind), ["executed", "executed"]);
+  // Saved to asks.json and read back, the records keep their ids and close exactly as before.
+  const open = asksFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} });
+  const reloaded = JSON.parse(JSON.stringify(open));
+  const files = { "findings.json": CITED };
+  assert.deepEqual(kinds(applyAskClosure(reloaded, [immaterial(open[1].ask_id)], files).asks), kinds(applyAskClosure(open, [immaterial(open[1].ask_id)], files).asks));
+});
+
+test("the closure step is shown each part's own questions, beside the shared question text", () => {
+  const { receipt } = twoOpenParts();
+  const openAsks = asksFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} });
+  const msg = STAGES["doubt-closure"].message({ paths: stagePaths("/nonexistent/invented-run"), openDoubts: [], openAsks });
+  for (const a of openAsks) assert.ok(msg.includes(`- ${a.ask_id} — [frame-diff] ${a.ask.text} (${a.qids.join(", ")})`), `the part ${a.ask_id} is listed with its questions:\n${msg}`);
+  // An ask that is not part of a request is listed as before.
+  const plain = { ...openAsks[0], ask_id: "ask:invented:plain", part: undefined };
+  const msg2 = STAGES["doubt-closure"].message({ paths: stagePaths("/nonexistent/invented-run"), openDoubts: [], openAsks: [plain] });
+  assert.ok(msg2.includes(`- ask:invented:plain — [frame-diff] ${plain.ask.text}\n`) || msg2.endsWith(`- ask:invented:plain — [frame-diff] ${plain.ask.text}`), msg2);
 });
 
 test("every slice withheld: the ask ends judged immaterial on the reading turn's own reason, and stays open when that record is gone", () => {
