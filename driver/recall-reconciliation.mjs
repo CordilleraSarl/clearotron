@@ -374,7 +374,7 @@ export function buildReconcileFollowup(artifact, { registerFindingsPath, hasCove
       : "";
   };
   const lines = [
-    `You are RESUMING your own register-digest session. The driver's retrieved-to-judgment RECONCILIATION found ${un.length} screened-live dominant-element POSITION(s) that end NOWHERE a reader can see — retrieved, screened in an instructed class, then silent. A report never ships losing screened candidates silently. The unit is the POSITION (the exact-identity collapse in the shape's "## Positions" section): one row ends the whole position, and citing ANY ONE constituent URI is enough. End each one now:`,
+    `This is a fresh session: your earlier register-digest work is not in your context. Your prior digest is ${registerFindingsPath}. The driver's retrieved-to-judgment RECONCILIATION found ${un.length} screened-live dominant-element POSITION(s) that end NOWHERE a reader can see — retrieved, screened in an instructed class, then silent. A report never ships losing screened candidates silently. The unit is the POSITION (the exact-identity collapse in the shape's "## Positions" section): one row ends the whole position, and citing ANY ONE constituent URI is enough. End each one now:`,
   ];
   if (topUn.length) {
     lines.push(

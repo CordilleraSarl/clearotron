@@ -117,7 +117,9 @@ test("the one correction after that review opens on where its flags come from an
   assert.ok(c, "the composer is registered");
   const [plain, renumbered] = c.samples.map((s) => c.compose(s.args).split("\n"));
   assert.deepEqual(plain.slice(0, 4), [CORRECTION_OPENING, ITEMS("finding 2, the coverage line for \"register / EU\""), NARROWED, NO_ITEM]);
-  assert.deepEqual(renumbered.slice(0, 5), [CORRECTION_OPENING, ITEMS("(none — every flag is about the document, not a finding)"), NARROWED, NO_ITEM, ON_NUMBER]);
+  // With no item named, the line says so and points at the rule for an unplaced flag below it: "every flag is about the
+  // document" would be false here, where an unplaced flag may be about a finding (design's wording, 2026-10-18).
+  assert.deepEqual(renumbered.slice(0, 5), [CORRECTION_OPENING, ITEMS("(none named; apply each unplaced flag as described below)"), NARROWED, NO_ITEM, ON_NUMBER]);
   assert.ok(!plain.join("\n").includes("verify-flag for re-check"), "no re-check follows this pass, so the move is not offered");
   // THE RULES AND STEPS ARE THE FIRST CORRECTION'S: every line of the first correction from the narrowing rule
   // to its save line appears in this one, in the same order.

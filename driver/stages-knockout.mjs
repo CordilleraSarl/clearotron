@@ -337,7 +337,7 @@ export const KO_STAGES = {
       // reached the client as raw cards with no band. The URL rule stays and is scoped: a cited URL must
       // come from one of the two sources named here, which is the anti-confabulation rule it always was
       // and never a rule about which of the two.
-      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own payload or in the register records below:`,
+      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark.`,
       ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
       // THE ORDERED TERRITORIES, where the request named some. The web questions used to carry them in
       // their own scope lines and drop what fell outside; the grid returns results and judges nothing, so

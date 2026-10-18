@@ -63,6 +63,9 @@ import { coverageFormStamp, coverageFormPaths, readCoverageForm } from "../cover
 import { FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 import { kebab } from "../search-policy.mjs";   // — the mock cites what the mark's payload holds
 
+// The writer's delivery-check repair, by either opening its message has had: the old one every stage shares, and the
+// writer's own, which names the faults found in content rendered from its record.
+const WRITER_LINT_REPAIR = /the deterministic pre-delivery lint failed these checks|The deterministic pre-delivery checks found these faults in content rendered from that record/;
 const PAD = (s, n = 260) => (s.length >= n ? s : s + "\n" + "lorem ipsum ".repeat(Math.ceil((n - s.length) / 12)));
 
 // ── B — FIXTURE TRUTHFULNESS FOR THE CALL RECORDS ───────────────────────────────────────────────────
@@ -1630,7 +1633,7 @@ export function applyStageWrites(msg, argv) {
     // DIFFERS from the prior one, or the driver's byte-diff sees no change and skips the re-digest the
     // escalation asked for. MOCK_ESCALATION_NOOP suppresses it — that knob's whole job is to force the
     // byte-identical re-emit whose skip is the thing under test.
-    const resume = /RESUMING your own register-unit session/.test(msg);
+    const resume = /RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg);
     const marker = resume && !process.env.MOCK_ESCALATION_NOOP
       ? (/frame-INDEPENDENT re-derivation/.test(msg)
         ? " Re-derived independently of the blind frame on a supplemental sweep."
@@ -1724,7 +1727,7 @@ export function applyStageWrites(msg, argv) {
     if (/record_synthesis/.test(msg)) {
       // MOCK_LINT_REPAIR_SAME_VALUES — the writer's delivery-check repair saves its accepted record again with
       // the same values and its verdict spaced differently: the narrative's bytes move, its values do not.
-      if (process.env.MOCK_LINT_REPAIR_SAME_VALUES && /the deterministic pre-delivery lint failed these checks/.test(msg)) {
+      if (process.env.MOCK_LINT_REPAIR_SAME_VALUES && WRITER_LINT_REPAIR.test(msg)) {
         const held = lastAcceptedCall(runDir);
         if (held) {
           const call = structuredClone(held);
@@ -1772,6 +1775,13 @@ export function applyStageWrites(msg, argv) {
       let doc;
       try { doc = build(msg); }
       catch (e) { return `mock synthesis: could not build the findings record (${String(e?.message ?? e).slice(0, 120)})`; }
+      // MOCK_SENTENCE_SCOPE_COUNT=<ordinal> — that finding's own sentence, which the report composes from the record,
+      // states a search count the delivery check refuses as `scope-numbers-in-prose`, on every save but the writer's
+      // delivery-check repair, which is clean.
+      if (process.env.MOCK_SENTENCE_SCOPE_COUNT && !WRITER_LINT_REPAIR.test(msg)) {
+        const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_SENTENCE_SCOPE_COUNT));
+        if (f) f.net = `${String(f.net ?? f.legal_position ?? "").trim()} The search ran 14 queries across the register.`.trim();
+      }
       // THE MOCK CARRIES THE RUN'S OWN LIMITS, because a compliant seat does. The receiver refuses a
       // coverage account that is clean throughout when the register ledger records a slice as less than
       // clean — doctrine, not a new rule: "a unit recorded coverage-limited can never be written as a
@@ -1815,7 +1825,7 @@ export function applyStageWrites(msg, argv) {
       // "until-lint-repair": the over-cap write-up survives every save but the delivery-check repair's, so a
       // run whose first review is not CLEAR still reaches the repair; any other value heals after the first.
       const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && (process.env.MOCK_NARRATIVE_OVER_CAP === "until-lint-repair"
-        ? !/the deterministic pre-delivery lint failed these checks/.test(msg) : !existsSync(join(runDir, "narrative.md"))))
+        ? !WRITER_LINT_REPAIR.test(msg) : !existsSync(join(runDir, "narrative.md"))))
         ? " " + "the cited registration covers the identical mark in the searched class and remains material here. ".repeat(40)
         : "";
       // MOCK_CANDSELF — the applicant-unknown note, on the same condition the fixture used.
@@ -1958,8 +1968,9 @@ export function applyStageWrites(msg, argv) {
 
       // MOCK_POST_REPAIR_UNREAD — the review after a delivery-check repair ends without recording a review
       // ("narrowed"), and with "both" so does the whole review the driver then falls back to. MOCK_WHOLE_FALLBACK_FLAGS
-      // gives that whole review its flags (a JSON array; CONDITIONAL when there are any). A marker beside the run,
-      // outside it, tells that fallback from the run's first whole review.
+      // gives that whole review its flags (a JSON array; CONDITIONAL when there are any, or MOCK_WHOLE_FALLBACK_VERDICT,
+      // which can make it a call the tool refuses). A marker beside the run, outside it, tells that fallback from the
+      // run's first whole review.
       const unreadMarker = runDir ? `${runDir}.mock-post-repair-unread` : null;
       if (process.env.MOCK_POST_REPAIR_UNREAD && /This is a review of a repair, not a full review\./.test(msg)) {
         if (unreadMarker) writeFileSync(unreadMarker, "1\n");
@@ -1969,7 +1980,7 @@ export function applyStageWrites(msg, argv) {
         if (process.env.MOCK_POST_REPAIR_UNREAD === "both") return "mock reviewer ended without recording the whole review either";
         if (process.env.MOCK_WHOLE_FALLBACK_FLAGS) {
           const flags = JSON.parse(process.env.MOCK_WHOLE_FALLBACK_FLAGS);
-          const r = send({ verdict: flags.length ? "CONDITIONAL" : "CLEAR", flags, plan_audit: planAudit });
+          const r = send({ verdict: process.env.MOCK_WHOLE_FALLBACK_VERDICT ?? (flags.length ? "CONDITIONAL" : "CLEAR"), flags, plan_audit: planAudit });
           return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
             : "mock reviewer recorded the whole review after the unread one through record_narrative_refutation";
         }
@@ -2536,7 +2547,7 @@ export function applyStageWrites(msg, argv) {
       // a session resume with NO tool call — the plugin does not re-run, so the ledger MUST NOT move. Same
       // rule, same reason as the routed common-law followups; keep this guard broad (over-matching only
       // suppresses a write, under-matching fabricates a pass).
-      const resuming = /RESUMING your own common-law session/.test(msg) || /^You are RESUMING your own session for this stage/.test(msg);
+      const resuming = /RESUMING your own common-law session|your earlier common-law work is not in your context/.test(msg) || /^You are RESUMING your own session for this stage/.test(msg);
       if (process.env.MOCK_CL_APPEND_MALFORMED && /APPEND the supplementary call/.test(msg)) {
         const target = msg.match(/APPEND the supplementary call's stdout JSON to ((?:[A-Za-z]:)?[\\/]\S+common-law-grid[^\s]*\.json)/)?.[1] ?? mainLedger;
         writeFileSync(target, malformedAppend(msg, dirname(out)));
@@ -2561,7 +2572,7 @@ export function applyStageWrites(msg, argv) {
     if (content == null) return `mock turn completed without writing ${basename(out)}`;
     // A frame-reopen resume carries a DISTINCT marker so its re-emit differs from any prior escalation/
     // envelope re-emit of the same unit (else the byte-diff guard would see no change and skip it).
-    if (/RESUMING your own register-unit session/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
+    if (/RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
       content += /frame-INDEPENDENT re-derivation/.test(msg)
         ? "\n<!-- frame-reopen: supplemental sweep -->\n"
         : "\n<!-- escalation: revised in place -->\n";

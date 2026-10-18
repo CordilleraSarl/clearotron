@@ -187,3 +187,44 @@ test("the corrective pass keeps its basis beside the applied table, never inside
     assert.equal(readFileSync(P.correctionsApplied, "utf8"), appliedBefore, "keeping the basis changed corrections-applied.json");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+// ── THE REVIEW AFTER A REPAIR, IN THE REVIEWING LAWYER'S RECORD ──────────────────────────────────────────────────
+// Its points print through the same rule as the first review's, and two of its states are not the first review's: a
+// review that was read and whose one correction never ran (the run was parked first), and a review whose points
+// hardened the verdict, which keep their ground even where the correction changed what they name.
+const POINT = "An invented point the review after the repair raised about ODRAVEL.";
+test("a review after a repair that was read and never corrected keeps its points in the record, marked unchecked", () => {
+  const { dir, P, doc } = assembledRun();
+  try {
+    writeFileSync(driverDir(dir, "post-repair-review.json"), JSON.stringify({ status: "read", verdict: "CONDITIONAL",
+      points: [{ n: 1, kind: "fact", on: [2], target: "finding 2", class: "mapped", text: POINT }] }, null, 2) + "\n");
+    assembleReportMd(P, doc.findings, [1, 2, 3]);
+    const open = readdirOpenPoints(dir) ?? "";
+    assert.ok(open.includes(POINT), "the point of a review whose correction never ran was lost");
+    assert.match(open, new RegExp(`${POINT.replace(/[.]/g, "\\.")} \\*\\(the run could not check whether this was addressed\\)\\*`));
+    // CONTROL: once its correction is on record, the correction's own rows are what print.
+    writeFileSync(driverDir(dir, "post-repair-corrections.json"), JSON.stringify({ rows: [flag(1, { text: POINT, ordinals: [2], outcome: "findings-changed" })] }) + "\n");
+    assembleReportMd(P, doc.findings, [1, 2, 3]);
+    assert.ok(!(readdirOpenPoints(dir) ?? "").includes(POINT), "a point its correction closed still prints");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a point that hardened the verdict prints after its correction changed what it names, as unchecked and never as unchanged", () => {
+  const { dir, P, doc } = assembledRun();
+  try {
+    const row = flag(1, { text: POINT, ordinals: [2], outcome: "findings-changed" });
+    writeFileSync(driverDir(dir, "post-repair-corrections.json"), JSON.stringify({ grounds: true, rows: [row] }) + "\n");
+    assembleReportMd(P, doc.findings, [1, 2, 3]);
+    const open = readdirOpenPoints(dir) ?? "";
+    assert.ok(open.includes(POINT), "the verdict's ground was dropped because its correction changed the finding");
+    assert.ok(open.includes(`${POINT} *(finding 2 — the run could not check whether this was addressed)*`), open);
+    const line = open.split("\n").find((l) => l.includes(POINT)) ?? "";
+    assert.ok(!line.includes("the report did not change in response"), "the observed change was relabelled as unchanged");
+    const held = JSON.parse(readFileSync(driverDir(dir, "post-repair-corrections.json"), "utf8"));
+    assert.equal(held.rows[0].outcome, "findings-changed", "the record lost the outcome the run observed");
+    // CONTROL: the same row from a review that did not harden the verdict is closed, as before.
+    writeFileSync(driverDir(dir, "post-repair-corrections.json"), JSON.stringify({ rows: [row] }) + "\n");
+    assembleReportMd(P, doc.findings, [1, 2, 3]);
+    assert.ok(!(readdirOpenPoints(dir) ?? "").includes(POINT), "a closed point of a review that hardened nothing still prints");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

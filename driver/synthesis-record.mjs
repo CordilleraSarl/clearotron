@@ -648,6 +648,16 @@ export function registerPatchOf(stored, call) {
   return lift ? { registers, rows: lift.rows, lifted: lift.lifted } : null;
 }
 
+/** Would `call` read as a register patch on `stored` but for a corrections marker the decode cannot read? PURE. */
+function markerAloneBlocks(stored, call) {
+  const doc = call?.findings;
+  if (!isPlainObject(doc) || Object.hasOwn(doc, "findings")) return false;
+  if ([doc, call].every((o) => isMarker(o.corrections))) return false;
+  const { corrections: _inner, ...docRest } = doc;
+  const { corrections: _outer, ...callRest } = call;
+  return registerPatchOf(stored, { ...callRest, findings: docRest }) != null;
+}
+
 /**
  * Read a call in the shapes the model has been seen to send it. PURE. Returns the call to decide on — the
  * received object itself unless something below applies — and what was read, for the run's own record.
@@ -722,6 +732,11 @@ export function mergeSynthesisPatch(stored, patch) {
   // places carries one value there, so the order chooses nothing. Rows replace whole findings by ordinal; narrative
   // sections replace sections.
   const asRegisters = registerPatchOf(stored, patch);
+  // A list-less `findings` object that reads as registers in every way but its corrections marker: the marker is what
+  // is wrong. Read as main reads the call it would replace the record, and it would then be refused for a defect it
+  // does not have (rows naming findings the run holds, or a record with no list); it gets the refusal the same marker
+  // meets at the top level instead.
+  if (!asRegisters && markerAloneBlocks(stored, patch)) return { ok: false, reason: "synthesis_findings_invalid: findings_corrections_invalid (corrections must be an object { applied, note })" };
   if (asRegisters) Object.assign(out.findings, asRegisters.registers);
   else if (patch?.findings !== undefined) out.findings = patch.findings;
   for (const [k, v] of Object.entries(patch?.narrative ?? {})) out.narrative[k] = v;

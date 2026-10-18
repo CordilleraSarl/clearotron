@@ -93,6 +93,28 @@ test("the follow-up lists the questions and gives the reading step its own order
   assert.ok(dispatch.includes(DECIDE_WAITING_FAMILIES), "the reading step's dispatch no longer carries the order the follow-up repeats");
 });
 
+test("the follow-up hands a fresh session the plan, axis and band path the tool takes, ahead of the order", async () => {
+  const { readFileSync, readdirSync } = await import("node:fs");
+  const entries = PLAN.entries.filter((e) => e.when);
+  const text = repairFollowup("register-unit:xcheck-decide", { axis: AXIS, registerPlan: "/run/_driver/register-plan.json", bandPath: "/run/bands/primary-sweep.md", entries });
+  const line = 'For `register_execute_plan`, use `plan_path: "/run/_driver/register-plan.json"`, `axis: "primary-sweep"`, and `output_path: "/run/bands/primary-sweep.md"`; pass only the qids you released.';
+  assert.ok(text.includes(line), "the follow-up does not give the tool's three arguments their values");
+  assert.ok(text.indexOf(line) < text.indexOf(DECIDE_WAITING_FAMILIES), "the arguments do not come before the order that uses them");
+  // Each argument it names is one every register server's plan tool requires.
+  const mcp = new URL("../engine/mcp/", import.meta.url);
+  const servers = readdirSync(mcp).filter((f) => f.endsWith(".mjs")).map((f) => readFileSync(new URL(f, mcp), "utf8"))
+    .filter((s) => /name: "register_execute_plan"/.test(s));
+  assert.ok(servers.length > 0, "no server defines the plan tool; re-read this check");
+  for (const s of servers) {
+    const required = s.slice(s.indexOf('name: "register_execute_plan"')).match(/required: \[([^\]]*)\]/)?.[1] ?? "";
+    for (const k of ["plan_path", "axis", "output_path"]) assert.ok(required.includes(`"${k}"`), `${k} is not an argument the plan tool requires`);
+  }
+  // The caller supplies the run's own paths, not the composer's samples.
+  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  assert.match(src, /repairFollowup\("register-unit:xcheck-decide", \{ axis, registerPlan: P\.registerPlan, bandPath: P\.registerBand\(axis\),/,
+    "the lane does not hand the follow-up the run's plan and band paths");
+});
+
 test("the lane mints waiting, asks the reading step, runs what is left undecided, and records it (source)", async () => {
   // No mock run reaches this lane: the mock web findings name no owner or similar listing. So the wiring
   // is asserted where it lives, the way the repo pins other mid-run lanes.

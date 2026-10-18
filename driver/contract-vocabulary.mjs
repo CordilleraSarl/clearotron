@@ -474,21 +474,21 @@ export const INNER_CODES = Object.freeze([
   // `no_recorded_queries`, and the `connotation_` family row (dynamic D1) is declared against exactly
   // that list. The four call codes are folded by a template — `connotation_${callFail.reason}` at
   // verify.mjs — so they are namespaced by construction rather than one branch at a time.
-  { code: "call_never_made", mints: ["driver/connotation-search.mjs:1981"], rollsUpTo: ["connotation_call_never_made"],
+  { code: "call_never_made", mints: ["driver/connotation-search.mjs:1979"], rollsUpTo: ["connotation_call_never_made"],
     why: "CALL_AUDIT_ROWS. The typed transport's four call states, handed in by disposition-call-audit.mjs and namespaced at verify.mjs." },
-  { code: "call_truncated", mints: ["driver/connotation-search.mjs:1982"], rollsUpTo: ["connotation_call_truncated"],
+  { code: "call_truncated", mints: ["driver/connotation-search.mjs:1980"], rollsUpTo: ["connotation_call_truncated"],
     why: "As call_never_made — same table, same projection." },
-  { code: "call_schema_violation", mints: ["driver/connotation-search.mjs:1983"], rollsUpTo: ["connotation_call_schema_violation"],
+  { code: "call_schema_violation", mints: ["driver/connotation-search.mjs:1981"], rollsUpTo: ["connotation_call_schema_violation"],
     why: "As call_never_made — same table, same projection." },
-  { code: "call_partial", mints: ["driver/connotation-search.mjs:1984"], rollsUpTo: ["connotation_call_partial"],
+  { code: "call_partial", mints: ["driver/connotation-search.mjs:1982"], rollsUpTo: ["connotation_call_partial"],
     why: "As call_never_made — same table, same projection. This is the pair #1211 cites as its worked example: the composite is covered, the bare form reaches no stage." },
-  { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2115"], rollsUpTo: ["connotation_quote_unbound"],
+  { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2113"], rollsUpTo: ["connotation_quote_unbound"],
     why: "The ruled-but-unbound row. Projected as `unbound` in connotationDispositionFail() in verify.mjs, and reported only once nothing is unruled." },
-  { code: "token_absent", mints: ["driver/connotation-search.mjs:2142"], rollsUpTo: ["connotation_token_absent"],
+  { code: "token_absent", mints: ["driver/connotation-search.mjs:2140"], rollsUpTo: ["connotation_token_absent"],
     why: "#592 split this out of no_ruling. Row-level only — PROGRESS_TOKENS declared in repairs.mjs says so in as many words: `never a top-level token`." },
-  { code: "cite_absent", mints: ["driver/connotation-search.mjs:2151"], rollsUpTo: ["connotation_cite_absent"],
+  { code: "cite_absent", mints: ["driver/connotation-search.mjs:2149"], rollsUpTo: ["connotation_cite_absent"],
     why: "#592, as token_absent. PROGRESS_TOKENS declared in repairs.mjs: `row-level only — never a top-level token`." },
-  { code: "no_ruling", mints: ["driver/connotation-search.mjs:2158"], rollsUpTo: ["connotation_no_ruling"],
+  { code: "no_ruling", mints: ["driver/connotation-search.mjs:2156"], rollsUpTo: ["connotation_no_ruling"],
     why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token at repairs.mjs:308 and in stages.mjs's E1 rows, always namespaced." },
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
@@ -496,7 +496,7 @@ export const INNER_CODES = Object.freeze([
   // verify.mjs's block headed "the meaning-sweep failure tokens" states the ruling: a sweep that did not
   // RUN is a canonical-only decision with its own token and its own remedy, so the projector,
   // connotationDispositionFail() in verify.mjs, deliberately does not handle it.
-  { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:1999"], rollsUpTo: ["connotation_search_missing"],
+  { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:1997"], rollsUpTo: ["connotation_search_missing"],
     why: "RENAMED, not namespaced: verify.mjs emits `connotation_search_missing`. It is excluded from CONNOTATION_FORM_REASONS at connotation-search.mjs for exactly this reason." },
 
   // ── case-law-ledger.mjs — ONE token, the codes as census payload ─────────────────────────────────
@@ -544,7 +544,7 @@ export const INNER_CODES = Object.freeze([
   // failure tokens" already states the rule this row records: `coverage_form_damaged`, never a bare
   // `form_damaged`.
   { code: "form_damaged",
-    mints: ["driver/connotation-search.mjs:2004", "driver/connotation-search.mjs:2080", "driver/coverage-form.mjs:879"],
+    mints: ["driver/connotation-search.mjs:2002", "driver/connotation-search.mjs:2078", "driver/coverage-form.mjs:879"],
     rollsUpTo: ["connotation_form_damaged", "coverage_form_damaged"],
     why: "Minted in two lanes and namespaced per lane: connotationDispositionFail() in verify.mjs for the meaning sweep, coverageFormFail() in verify.mjs for the register digest. The namespacing is what keeps them apart — see verify.mjs's block headed \"the register coverage-form failure tokens\"." },
 ]);

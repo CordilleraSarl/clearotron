@@ -1169,7 +1169,7 @@ serve({
         chunkSummary: {
           type: "string",
           description:
-            "2–5 sentences covering THIS chunk's marks, as markdown narrative. EVERY chunk emits one: " +
+            "The cross-mark read covering THIS chunk's marks: a short opening line for what the batch as a whole shows, then one \"## <MARK NAME>\" sub-header per mark with its band and the one or two things that drive it, bullets where they help. EVERY chunk emits one: " +
             "the whole-batch executive summary is composed in code by concatenating them, so a chunk " +
             "without one vanishes from the summary a client reads.",
         },
@@ -1211,7 +1211,7 @@ serve({
               registerEstimate: { type: "string" },
               parodyNote: { type: ["string", "null"] },
               crowdedField: { type: "boolean" },
-              purpleNotes: { type: "array", items: { type: "string" }, description: "Internal notes — removed on export, never client-facing." },
+              purpleNotes: { type: "array", items: { type: "string" }, description: "Reviewer notes appear on the report page and are removed on export." },
               // — DECLARED HERE OR IT IS FOLKLORE.
               //
               // Both fields were built end to end for — instructed in the dispatch,
@@ -1413,7 +1413,7 @@ serve({
             inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
             places: {
               type: "array", items: { type: "string" },
-              description: "The 2 to 4 places every spelling is searched on: \"web\" for the whole web, and the client's stores and the sites where the kinds of use are listed, each a bare host. A host covers its subdomains.",
+              description: "THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.",
             },
             umbrellaBrandNote: { type: "string", description: "A note where an umbrella brand is in play, or omit it." },
             executionOrder: {

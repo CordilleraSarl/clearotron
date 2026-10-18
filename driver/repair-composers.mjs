@@ -311,8 +311,9 @@ export const REPAIR_COMPOSERS = [
     // from one shared text, and the flag list closes on the line for a pass nothing reviews.
     compose: ({ narrative, findings, placement, rulingsTail, items, renumbered, worklist, review }) => lines(
       `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. After the delivery check, that record was repaired, and an independent review then read only what the repair changed and what rests on it. It flagged the corrections below, and nothing reviews this pass again. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, or remove the sentence) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
-      // An empty list reuses the first correction's own words for a review whose flags name no finding.
-      `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : "(none — every flag is about the document, not a finding)"}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
+      // An empty list does not reuse the first correction's "every flag is about the document": here an unplaced flag
+      // may be about a finding, and the line below says how to apply one.
+      `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : "(none named; apply each unplaced flag as described below)"}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
       `For a coverage line the repair changed, a flag may ask for its state or its facts to change, not only its words. Make that change only where the line then claims less than it does now, as the narrowing rule below requires. This is the one exception to the rule below that the coverage account is not yours to reopen; every other coverage line keeps its area, its state and every fact it states.`,
       `A flag that names no item is applied to the item it is about; name that item in the "corrections" note. If you cannot tell what the flag is about, change nothing for it and say so in the note.`,
       renumbered ? `Where a flag's own words give a finding a different number from its [on: …], use the [on: …] number. It is the number in your record.` : "",
@@ -448,11 +449,17 @@ export const REPAIR_COMPOSERS = [
     // delivery-tail stage failed its pre-delivery lint.
     stage: "*",
     key: "*:lint-repair",
-    compose: ({ label, file, toolWritten, failures }) => lines(
-      toolWritten
-        ? `This is a fresh session: your earlier ${label} work is not in your context — the driver wrote ${file} from your \`${toolWritten.tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`
-        : `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`,
-      ...failures.map((f) => `- ${f.detail || f.id}`),
+    // THE WRITER'S FORM names both files its call wrote: its faults can sit in the narrative or in a line the report
+    // composes from its findings record, and a fault in such a line is named by the finding that owns it, in the
+    // numbering its save takes.
+    compose: ({ label, file, toolWritten, failures, findings, narrative }) => lines(
+      toolWritten?.tool === "record_synthesis"
+        ? `This is a fresh session: your earlier synthesis work is not in your context. The driver wrote ${findings} and ${narrative} from your \`record_synthesis\` call. The deterministic pre-delivery checks found these faults in content rendered from that record:`
+        : toolWritten
+          ? `This is a fresh session: your earlier ${label} work is not in your context — the driver wrote ${file} from your \`${toolWritten.tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`
+          : `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`,
+      ...failures.map((f) => `- ${f.finding != null ? `finding ${f.finding}: ` : ""}${f.detail || f.id}`),
+      toolWritten?.tool === "record_synthesis" ? `Read ${findings} and ${narrative}, then correct the finding or narrative section that owns each fault.` : "",
       `Where a check quotes the fetched record's true value, correct the identifier to the record's value EXACTLY (the record is the only permitted source for registry identifiers).`,
       `Risk tiers and Level/Composite labels are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
       `Fix ONLY what the checks name; change nothing else.`,
@@ -486,7 +493,8 @@ export const REPAIR_COMPOSERS = [
     // reported a defect in text no seat can be handed." The edit branch IS exercised — by the fixed
     // `samples` below, which is where the census checks branch coverage.
     samplesForStage: ({ stage, tool, file }) => [
-      { name: `${stage}'s own tool-written artifact`, tail: "tool", args: { label: stage, file, toolWritten: { tool }, failures: [{ id: "lint_1", detail: "a check the lint named" }] } },
+      { name: `${stage}'s own tool-written artifact`, tail: "tool", args: { label: stage, file, toolWritten: { tool }, findings: "findings.json", narrative: file,
+        failures: [{ id: "lint_1", detail: "a check the lint named" }] } },
     ],
     samples: [
       { name: "a tool-written artifact", tail: "tool",
@@ -495,8 +503,9 @@ export const REPAIR_COMPOSERS = [
       // The writer's branch: its save merges a patch, so it is the one tool-written artifact told to send only
       // the change.
       { name: "the writer's record, which takes a patch", tail: "tool",
-        args: { label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" },
-          failures: [{ id: "narrative_coverage_claim", detail: "a coverage line claims a slice the plan did not run" }] } },
+        args: { label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, findings: "findings.json", narrative: "narrative.md",
+          failures: [{ id: "narrative_coverage_claim", detail: "a coverage line claims a slice the plan did not run" },
+            { id: "prescription-prose", finding: 2, detail: "the sentence composed from finding 2 recommends a filing" }] } },
       // THE SAMPLE MOVED STAGES RATHER THAN FLIPPING ITS SHAPE. It read
       // `{label:"synthesis", file:"narrative.md", toolWritten:null}`, and when the writer converted, the
       // sample-honesty arm fails it by name — narrative.md now has a row. Flipping this entry to
@@ -568,7 +577,7 @@ export const REPAIR_COMPOSERS = [
     stage: "register-digest",
     key: "register-digest:late-bind",
     compose: ({ registerFindings, bind }) => lines(
-        `You are RESUMING your earlier register-digest session — your prior digest and all unit files are already in your context. Do NOT redo it from scratch and do NOT run any new searches.`,
+        `This is a fresh session: your earlier register-digest work is not in your context, and the unit files are among the inputs listed below. Your prior digest is ${registerFindings}. Do NOT redo it from scratch and do NOT run any new searches.`,
         `The applicant has been named mid-run: ${bind.customer}.${bind.exclusions.length ? ` Affiliate/exclusion set: ${bind.exclusions.join(", ")}.` : ""}`,
         `Re-classify your existing findings against this: marks owned by the applicant/exclusion set are the client's OWN rights (not conflicts — move them out of the adverse tiers and note them as own-rights context); any finding previously treated as candidate-self resolves normally. Everything the re-classification does not touch stays as it is.`,
         // ── CONVERTED (conversion 11). `editRepairTail(registerFindings)` stood here and ordered
@@ -590,7 +599,7 @@ export const REPAIR_COMPOSERS = [
     stage: "common-law-half",
     key: "common-law-half:connotation-remedy",
     compose: ({ findingsFile, gridSpecPath, tok }) => lines(
-        `You are RESUMING your own common-law session — your findings file is ${findingsFile} and your prior work is in context. Do NOT redo the sweep and do NOT rewrite your findings file. You own this matter's MEANING SWEEP (your spec: ${gridSpecPath}).`,
+        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the sweep and do NOT rewrite your findings file. You own this matter's MEANING SWEEP (your spec: ${gridSpecPath}).`,
         `The MERGED findings failed the meaning-receipts gate (${abbrev(tok, 160)}). Fix exactly this: ensure ${correctionHint(tok, { gridLedgerName: gridLedgerNameFor(findingsFile) })}.`,
         `Everything else in your half stays exactly as it is — the driver re-merges the halves and re-runs the canonical gate in code.`,
         `Record the outstanding rulings ONLY by calling the \`record_dispositions\` tool with grid_spec_path = ${gridSpecPath} — never by writing or editing any file. Everything already recorded is kept; stop when the tool's answer reports nothing outstanding.`,
@@ -613,7 +622,7 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:plan-join",
     compose: ({ axis, registerPlan, bandPath, entries }) => lines(
-        `You are RESUMING your own register-unit session (axis "${axis}"). Your unit digest stands — do NOT redo it.`,
+        `This is a fresh session: your earlier register-unit work (axis "${axis}") is not in your context. Your unit digest stands — do NOT redo it.`,
         `These DICTATED plan entries have no band block yet:`,
         ...entries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)}` : `"${e.term}"`} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""} · expected: ${e.expected_kind}`),
         `Close them by calling register_execute_plan ONCE with {"plan_path": ${JSON.stringify(registerPlan)}, "axis": "${axis}", "output_path": ${JSON.stringify(bandPath)}, "qids": ${JSON.stringify(entries.map((e) => e.qid))}} — the tool runs ONLY those entries and MERGES the band itself (your judgment blocks and every other block stay as they are; the missing dictated blocks land, qids stamped). Do NOT run the entries manually or edit the band yourself, and do not call it without qids: that re-runs every entry on the axis.`,
@@ -628,21 +637,23 @@ export const REPAIR_COMPOSERS = [
     trigger: "xcheck-decide",
     stage: "register-unit",
     key: "register-unit:xcheck-decide",
-    compose: ({ axis, entries }) => lines(
-        `You are RESUMING your own register-unit session (axis "${axis}"). Your unit digest stands — do NOT redo it.`,
+    // A fresh session cannot infer the tool's arguments, so the caller supplies all three.
+    compose: ({ axis, registerPlan, bandPath, entries }) => lines(
+        `This is a fresh session: your earlier register-unit work (axis "${axis}") is not in your context. Your unit digest stands — do NOT redo it.`,
         `The web search's findings named these register questions after your reading. They wait for you like the families in your plan:`,
         ...entries.map((e) => `- qid "${e.qid}": ${e.predicate} "${e.term}" · nice_classes ${JSON.stringify(e.nice_classes)}${e.from ? ` · from ${e.from}` : ""}`),
+        `For \`register_execute_plan\`, use \`plan_path: ${JSON.stringify(registerPlan)}\`, \`axis: ${JSON.stringify(axis)}\`, and \`output_path: ${JSON.stringify(bandPath)}\`; pass only the qids you released.`,
         DECIDE_WAITING_FAMILIES,
         `Return ONLY: the band path + the tool's summary line.`,
       ),
-    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] } }],
+    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] } }],
   },
   {
     trigger: "grid-ledger",
     stage: "common-law",
     key: "common-law:grid-ledger",
     compose: ({ gridLedger, gridSpecPath }) => lines(
-        `You are RESUMING your own common-law session. Your findings file is already written and stands.`,
+        `This is a fresh session: your earlier common-law work is not in your context. Your findings file is already written and stands.`,
         `The grid ledger ${gridLedger} is missing — the deterministic grid call did not complete. Call perplexity_research again with enable_sandbox:true and grid_spec_path: ${gridSpecPath}. The tool writes the ledger itself from the API response; do NOT write it yourself and do NOT re-emit the grid JSON.`,
         `Then return ONLY: the grid ledger path + one line confirming the tool reported it written.`,
       ),
@@ -653,7 +664,7 @@ export const REPAIR_COMPOSERS = [
     stage: "common-law",
     key: "common-law:coverage-closure",
     compose: ({ findingsFile, suppSpec, suppSpecPath, closable, cellKey, sourceChannels }) => lines(
-        `You are RESUMING your own common-law session — your findings file is ${findingsFile} and your prior work is in context. Do NOT redo the full sweep.`,
+        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep.`,
         suppSpec ? `These ${closable.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? closable.map((c) => `- ${cellKey(c)}`) : []),
         sourceChannels.length ? `IN-SCOPE CHANNELS not searched this run (the blind frame-diff flagged them as applied-but-unsearched distribution/discovery surfaces — CLOSE them, never recommend them): ${sourceChannels.join("; ")}. For EVERY manifest variant, run the appropriate search of each channel — its real domain(s) (e.g. github.com / nuget.org / npmjs.com, or the relevant store/registry) or a general-web search scoped to it — and ADD one Negative-results matrix row per (variant × channel) with its receipt, then reconcile the matching Scope-ledger / Coverage rows from not-searched to searched.` : "",
@@ -671,7 +682,7 @@ export const REPAIR_COMPOSERS = [
     stage: "common-law-half",
     key: "common-law-half:coverage-closure",
     compose: ({ findingsFile, gridSpecPath, suppSpec, suppSpecPath, cells, cellKey, chans, scopes }) => lines(
-        `You are RESUMING your own common-law session — your findings file is ${findingsFile} and your prior work is in context. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
+        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
         suppSpec ? `These ${cells.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? cells.map((c) => `- ${cellKey(c)}`) : []),
         chans.length ? `IN-SCOPE CHANNELS not searched this run (the blind frame-diff flagged them as applied-but-unsearched distribution/discovery surfaces — CLOSE them, never recommend them): ${chans.join("; ")}. For EACH of these variants — ${scopes.join("; ")} — (the driver dictates this list; it may include the sibling half's terms re-routed to you because its session is unavailable), run the appropriate search of each channel — its real domain(s) (e.g. github.com / nuget.org / npmjs.com, or the relevant store/registry) or a general-web search scoped to it — and ADD one Negative-results matrix row per (variant × channel) with its receipt, then reconcile the matching Scope-ledger / Coverage rows from not-searched to searched.` : "",
@@ -685,7 +696,7 @@ export const REPAIR_COMPOSERS = [
     stage: "common-law",
     key: "common-law:frame-reopen",
     compose: ({ findingsFile, gridLedger, directives }) => lines(
-        `You are RESUMING your own common-law session — your findings file is ${findingsFile} and your prior work is in context. Do NOT redo the full sweep.`,
+        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep.`,
         `A blind, frame-INDEPENDENT re-derivation found these SOURCE CHANNELS the run did NOT search. Run a supplementary search over them (enable_sandbox: true, depth: "pro-search") — resolve each channel to its real domain(s) or a general-web search scoped to it:`,
         ...directives.map((d) => `- ${d.item} — ${d.observation}`),
         `Then update the Negative-results matrix + Coverage ledger for what you searched, preserving everything else. Do NOT hand-edit ${gridLedger} — the driver owns the machine ledger. The edit direction below covers ${findingsFile} ONLY.`,
@@ -698,7 +709,7 @@ export const REPAIR_COMPOSERS = [
     stage: "common-law-half",
     key: "common-law-half:frame-reopen",
     compose: ({ findingsFile, gridSpecPath, gridLedger, directives, scopes }) => lines(
-        `You are RESUMING your own common-law session — your findings file is ${findingsFile} and your prior work is in context. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
+        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
         `A blind, frame-INDEPENDENT re-derivation found these SOURCE CHANNELS the run did NOT search. For EACH of these variants — ${scopes.join("; ")} — (the driver dictates this list; it may include the sibling half's terms re-routed to you because its session is unavailable), run a supplementary search over them (enable_sandbox: true, depth: "pro-search") — resolve each channel to its real domain(s) or a general-web search scoped to it:`,
         ...directives.map((d) => `- ${d.item} — ${d.observation}`),
         `Then update the Negative-results matrix + Coverage ledger for what you searched, preserving everything else. Do NOT hand-edit ${gridLedger} — the driver owns the machine ledger. The edit direction below covers ${findingsFile} ONLY.`,
@@ -846,7 +857,7 @@ export const REPAIR_COMPOSERS = [
     // Its key differs from the spec'd arm because both dispatch under `trigger: "grid-ledger"` on the
     // same stage — a trigger-only key would have resolved both to whichever came first.
     compose: ({ gridLedger }) => lines(
-      `You are RESUMING your own common-law session. Your findings file is already written and stands.`,
+      `This is a fresh session: your earlier common-law work is not in your context. Your findings file is already written and stands.`,
       `One artifact is missing: save the grid call's stdout JSON VERBATIM to ${gridLedger} — the single stdout object, or a JSON ARRAY of the per-batch stdout objects in batch order. Copy it exactly as the tool returned it; do not reformat, re-type, or judge.`,
       `Then return ONLY: that absolute path + one line confirming the save.`,
     ),

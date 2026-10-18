@@ -22,10 +22,10 @@ Two modes, chosen by the orchestrator and stated in the spawn `task`:
   the **complete named band + crowd descriptors** cross the firewall as the band JSON.
 - **Digest mode (judgment — Layer B)** — the task gives the paths to the per-axis prose digests (audit
   summaries) and the manifest; the driver has already MERGED the per-axis bands into the run's complete
-  band. The worker reads that COMPLETE band **through the band tools** (`band_shape` first, then
+  band. The worker reads the candidates placement carried forward and their supporting evidence **through the band tools** (`band_shape` first, then
   `band_lookup` / `band_record` — every call lands in the reading audit; never by opening or slicing band
   files), performs all cross-cutting judgment (relevance, owner aggregation, opposition, Option-D),
-  DECIDES SUFFICIENCY, and writes `studio/clearance-search/<slug>/<date>/register-findings.md`.
+  DECIDES SUFFICIENCY, and hands the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
 
 Reads (both modes): the variant manifest at `studio/clearance-search/<slug>/<date>/variant-manifest.md` (archetype + risk
 theory), the `matter-context.md` at `studio/clearance-search/<slug>/<date>/matter-context.md` (Phase 0 strategic anchor — names materially-matters jurisdictions, watchlist-owner seeds, off-field sectors), the request context, the active **provider**. The **watchlist-owner seeds are enrichment / additive-surfacing context, not a search or priority filter** — an in-class identical/near-identical incumbent surfaces on field-relevance alone whether or not its owner is named (see `digest.md` Step 5).
@@ -34,7 +34,7 @@ theory), the `matter-context.md` at `studio/clearance-search/<slug>/<date>/matte
 
 Writes:
 - Unit mode — TWO artifacts, both gate-checked, neither optional. `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` is the stage's DECLARED OUTPUT: the driver fails the pass outright when it is absent, and the digest worker reads it as an input. `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json` is the COMPLETE named band — a JSON array of `enumerated` / `incomplete` blocks (see `unit.md` → *Named-band artifact*) — carrying every record and no clearance verdict. The md narrates and proves nothing on its own: an md narrating a completed sweep while the band its plan entries call for is missing is refused as `named_band_missing`. In plan mode `register_execute_plan` writes the band itself and you never hand-write its blocks.
-- Digest mode: `studio/clearance-search/<slug>/<date>/register-findings.md`. Coverage statuses are NOT a file you write: they ride the `record_coverage` tool into a driver-held record, and the driver renders the `## Coverage ledger` table and its JSON mirror from it (see *Coverage ledger* below and `digest.md` → *Coverage ledger*). Optional: `register-details/` snapshots inside the run-dir.
+- Digest mode: you write no file. The driver renders `studio/clearance-search/<slug>/<date>/register-findings.md` from what you send. Coverage statuses are NOT a file you write: they ride the `record_coverage` tool into a driver-held record, and the driver renders the `## Coverage ledger` table and its JSON mirror from it (see *Coverage ledger* below and `digest.md` → *Coverage ledger*).
 
 Returns to the orchestrator: your **final session message** — a 2–3 line summary (counts + the
 absolute path of the file you wrote). Keep raw character-noise records out of the message and out of any

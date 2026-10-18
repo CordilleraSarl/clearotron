@@ -34,12 +34,14 @@ test("both composers serve the evidence order, and neither serves it as a prefer
   // by that: whatever is ordered must be ordered as an IMPERATIVE, in BOTH composers. The 0-of-9 defect
   // was phrasing a required field as something the row "wants".
   for (const text of served()) {
-    for (const field of ["segment_index", "fragment"]) {
+    for (const field of ["segment_index", "fragment"])
       assert.doesNotMatch(text, new RegExp(`\\b(?:also\\s+)?wants?\\s+\`?${field}\`?`, "i"),
         `\`${field}\` must not be described as something a row wants — that phrasing was written 0 of 9 times`);
-      assert.match(text, new RegExp(`\\b(?:set|write|give|supply|copy)\\b[^.]{0,200}\`${field}\`|\`${field}\`[^.]{0,200}\\b(?:set|write|give|supply|copy)\\b`, "i"),
-        `\`${field}\` must be carried by an imperative, like the three fields that are written 74 of 74`);
-    }
+    // The locator is the ordered field. The proof of reading is optional: the code binds a ruling to the
+    // passage number alone and records the characters as a transcription check (packet row D26, 2026-10-18).
+    assert.match(text, /\b(?:set|write|give|supply|copy)\b[^.]{0,200}`segment_index`|`segment_index`[^.]{0,200}\b(?:set|write|give|supply|copy)\b/i,
+      "`segment_index` must be carried by an imperative, like the three fields that are written 74 of 74");
+    assert.match(text, /`fragment` is OPTIONAL, and never refused/, "`fragment` is stated as optional, as the code treats it");
     // AND THE RETIRED ORDER IS GONE FROM BOTH. A dictation is a code path: leaving the anchor sentence
     // beside its replacement would keep a seat choosing between an order that works and one that cannot.
     assert.doesNotMatch(text, /`anchor`/,
@@ -47,10 +49,13 @@ test("both composers serve the evidence order, and neither serves it as a prefer
   }
 });
 
-test("the order states a consequence — the omission that was never priced", () => {
+test("the order claims no consequence the code does not apply, and says what pointing alone achieves", () => {
+  // The old text told the seat a row whose characters were missing was not counted and the stage failed; the
+  // code counts the row whatever the characters (packet row D26). What it says now is what the code does.
   for (const text of served()) {
-    assert.match(text, /\bnot\s+counted\s+as\s+ruled\b|\bfails?\s+while\s+any\s+remain\b/i,
-      "the seat must be told what happens if the anchor is absent; the old text never said");
+    assert.doesNotMatch(text, /\bnot\s+counted\s+as\s+ruled\b|\bfails?\s+while\s+any\s+remain\b/i,
+      "a consequence the code never applies is not stated");
+    assert.match(text, /pointing at the passage is the whole obligation/);
   }
 });
 
@@ -70,12 +75,12 @@ test("ONE definition: the two composers cannot drift apart", () => {
   // Both are built from the same constant, so the whole directive appears verbatim in each. Asserted on
   // a distinctive interior span rather than the full block, so reflowing the lines does not fail this —
   // the property is "identical in both", not "formatted this way".
-  const span = "The number says WHICH passage; the characters show you read it";
+  const span = "`fragment` is OPTIONAL, and never refused";
   assert.ok(a.includes(span), "the obligations brief serves it");
   assert.ok(b.includes(span), "the receipts instruction serves it");
 
   // And the sentence that carries the consequence, likewise in both.
-  const owed = "not counted as ruled";
+  const owed = "pointing at the passage is the whole obligation";
   assert.ok(a.includes(owed) && b.includes(owed),
     "fixed-at-one-composer-forgotten-at-the-other is the defect class this change belongs to");
 });

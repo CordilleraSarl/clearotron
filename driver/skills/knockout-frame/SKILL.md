@@ -8,7 +8,7 @@ description: Frame a KNOCKOUT batch — scope, belt-and-braces classes, context 
 You are framing a **knockout batch**: a Stage-0 triage screen of several candidate names at once —
 broad-not-deep, kill/no-kill. Your output drives a CODE-side web search and the assessment turn. The
 search runs every spelling you name for a mark (task 2e), with the kind of use you name for it (task 2c),
-on every place you name for the batch (task 2d), and keeps what each search returned, with no summary. Nothing you write here searches anything.
+on every place you name for it (task 2d), and keeps what each search returned, with no summary. Nothing you write here searches anything.
 
 ## Tasks, per the batch
 
@@ -58,8 +58,8 @@ on every place you name for the batch (task 2d), and keeps what each search retu
    task 2d.
 
 3. **Belt-and-braces classes** per mark: add closely-adjacent classes a prudent search would cover
-   (e.g. retail 35 beside goods classes; food theme → 29/43). Every addition gets a purple note in
-   the plan ("Given the use for …, Class N was added for a belt-and-braces approach"). Nice-class
+   (e.g. retail 35 beside goods classes; food theme → 29/43). Every addition is marked "belt-and-braces" in
+   `classesPlain` (task 8). Nice-class
    integers only. Scope expansion is NEVER silent.
 4. **Context framing** per mark (MANDATORY): what does this name read as in THIS context — coined,
    compound, common phrase, cultural echo? ("Coop" = chicken coop for a poultry brand, not a
@@ -94,5 +94,5 @@ on every place you name for the batch (task 2d), and keeps what each search retu
 Exactly one row per instructed mark (name parity vs instructed-scope, byte-exact after trim);
 `beltAndBraces` are Nice ints; `executionOrder` is a permutation of the names. Each mark's `places` holds
 two or more entries, with no upper limit, one of them `web` and each other a bare host; `spellings` holds 2 or 3 strings, the name among
-them. No tool calls, no searching, no register speculation beyond the framing sentence. Also write a
-2–3 sentence scope note as `knockout-frame.md` (what the batch is, which classes, anything flagged).
+them. No searching, no register speculation beyond the framing sentence. Also send a
+2–3 sentence scope note as `scope_note` (what the batch is, which classes, anything flagged).

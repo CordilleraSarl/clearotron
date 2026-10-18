@@ -8,6 +8,9 @@
 // "does a line look right" — it is "can this accounting be wrong without saying so".
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { slimLine, assertFates, applyFates, FATES, LINE_GROUNDS, OPEN_ONLY_GROUNDS, BAND_CHECKED_GROUNDS, RETIRED_GROUND_TOKENS } from "../hit-list.mjs";
 
 const REC = { record_id: "/mark/ch/AAA", _qid: "q1", mark_text: "QORIMEX", classes: [5],
@@ -178,32 +181,24 @@ test("⭐ PLANT: marking cannot fail the call — an absent list returns null ra
 
 // ── THE DICTATION ───────────────────────────────────────────────────────────────────────────────────
 
-test("⭐ the dictation names the FIELD the seat sends, and its grounds come from the contract", async () => {
-  // THE FAILURE THIS ARM EXISTS FOR, measured rather than imagined. ruled a rule
-  // that described a downstream effect — "the string you sweep" — the run's own record proves the seat
-  // opened the file, and it reached ONE variant of thirty-six. A rule a seat cannot map onto something
-  // it SENDS produces nothing, and produces no refusal either.
+test("the reading step is no longer ordered to mark the list, and the tool still takes the codes a call carries", async () => {
+  // Packet row D25 (2026-10-18): the order named a field the step's tool does not take and a fetch the step cannot
+  // make, and only an operator metric read the result, which now reports that it was not computed. The codes
+  // stay accepted when a call carries them (applyFates above), so nothing that sends them is refused.
   process.env.CLEAROTRON_DATABASE ??= "corsearch";
   const { STAGES, paths } = await import("../stages.mjs");
   const P = paths("/run", "slug", "code");
   const msg = STAGES["register-digest"].message({ paths: P, axes: ["primary-sweep"], registerOnly: false, depth: null });
-
-  assert.match(msg, /`fates`/, "the dispatch does not name the field the seat sends — the 1955 shape exactly");
-  assert.match(msg, /"fate": 0 \| 1 \| 2/, "the codes are not stated in the payload's own shape");
-  assert.match(msg, /register-hit-list\.json/, "the dispatch does not name the artifact the seat marks");
-
-  // THE GROUNDS ARE READ FROM THE CONTRACT, NEVER RETYPED. A hand-copied list in prose is how the
-  // dictation and the validator come to disagree — `out-of-class` reached this set precisely because
-  // one derivation missed what another had.
-  for (const g of LINE_GROUNDS)
-    assert.ok(msg.includes(g), `the dictation does not offer the ground "${g}", which the transport accepts`);
-  assert.equal(msg.includes("off-field"), false,
-    "the retired conflated token is back in the dictation — it meant territory 320 times and sign 152 on the measured round");
-
-  // And the open-only rule reaches the seat in the seat's own terms.
-  assert.match(msg, /that is not a ground, it is an OPEN/,
-    "the dispatch does not tell the seat what to do when the reason needs the record — which is the one "
-    + "instruction that keeps `goods` out of the line grounds in practice rather than only in the validator");
+  assert.doesNotMatch(msg, /MARK THE LIST/, "the order to mark the list is gone");
+  assert.doesNotMatch(msg, /"fate": 0 \| 1 \| 2/, "and so is the payload shape it dictated");
+  const { scoredFetched } = await import("../gate-metrics.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "fates-not-computed-"));
+  try {
+    writeFileSync(join(dir, "findings.json"), JSON.stringify({ findings: [{ ordinal: 1, band: "High", owner: { registrations: [{ uri: "/mark/us/1" }] } }] }));
+    writeFileSync(join(dir, "register-hit-list.json"), JSON.stringify({ lines: [{ id: "/mark/us/1" }] }));
+    assert.deepEqual(scoredFetched(dir), { notComputed: "the hit list carries no fate codes" },
+      "a list with no codes says it could not be computed, never that every finding went unfetched");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test("⭐ PLANT: the line answers what band_lookup asks — the qid SET and the screen's own liveness", () => {

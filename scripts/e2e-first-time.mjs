@@ -228,7 +228,7 @@ export const NOT_COUNTED_EVENTS = {
     "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair",
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
-    "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped-structural",
+    "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
     "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
     "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3",

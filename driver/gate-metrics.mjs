@@ -148,6 +148,10 @@ export function scoredFetched(runDir) {
   // un-normalised join here would miss ALL of them, not some — and a total miss reads as a clean
   // `fetched: 0`, which is this metric's alert, not its absence.
   const lines = readJson(join(runDir, "register-hit-list.json"))?.lines;
+  // NOT COMPUTED WHERE THE CODES ARE NOT THERE. The reading step is not asked for fate codes, and a list whose
+  // lines carry none says nothing about what judgment opened: read as a measurement, every scored finding would
+  // count as unfetched, an alarm about nothing. It says it could not be computed instead.
+  if (Array.isArray(lines) && lines.length && !lines.some((l) => l?.fate != null)) return { notComputed: "the hit list carries no fate codes" };
   if (Array.isArray(lines)) {
     // THREE STATES, NOT TWO, and the third is the one an earlier cut of this got wrong. A line the run
     // deliberately did not open (`NOT_PICKED`) leaves the denominator. A line whose fate this file does
@@ -292,7 +296,9 @@ export function computeGateMetrics(runDirs) {
   for (const d of runDirs) {
     const dr = deferralsRendered(d); if (dr) { agg.deferralsRendered.num += dr.rendered; agg.deferralsRendered.den += dr.total; }
     const sk = skepticConsumed(d);  if (sk) { agg.skepticConsumed.num += sk.consumed; agg.skepticConsumed.den += sk.total; }
-    const sf = scoredFetched(d);    if (sf) { agg.scoredFetched.num += sf.fetched;   agg.scoredFetched.den += sf.total; }
+    const sf = scoredFetched(d);
+    if (sf?.notComputed) agg.scoredFetched.notComputed = (agg.scoredFetched.notComputed ?? 0) + 1;
+    else if (sf) { agg.scoredFetched.num += sf.fetched;   agg.scoredFetched.den += sf.total; }
     const ct = clientTierMatch(d);  if (ct) { agg.clientTierMatch.num += ct.match;   agg.clientTierMatch.den += ct.total; }
     const lt = lintFirstPassTax(d); if (lt) { lintTaxRuns++; lintTaxFailures += lt.initialFailures; if (!lt.initialFailures) lintCleanFirstPass++; }
     const dg = documentGrowth(d);   if (dg) { growthRuns++; growthTrips += dg.count; }

@@ -25,7 +25,7 @@ import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
-import { composeFollowup } from "../stages.mjs";
+import { composeFollowup, STAGES, paths } from "../stages.mjs";
 import { correctionHint, heldSynthesisRecord } from "../gateway.mjs";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -52,6 +52,10 @@ const V12 = "The findings document — schema_version, rated_under_framework, fi
 const V12_SECOND_TEXT_OPENS = " TWO OF ITS FIELDS ALSO RENDER INTO THE NARRATIVE, which is why they are here and not on `narrative`:";
 const V18 = "This is a fresh session: your earlier refutation is not in your context, and you do NOT redo it from scratch. Your prior verdict and its flags are in senior-eye-review.md — open it first — and the source files you refuted against are listed below.";
 const V19_OPEN_TOOL = (label, file, tool) => `This is a fresh session: your earlier ${label} work is not in your context — the driver wrote ${file} from your \`${tool}\` call, and the deterministic pre-delivery lint failed these checks on it:`;
+// The writer's form names both files its call wrote, and the content its faults were found in (design's answer on the
+// writer route, 2026-10-18).
+const V19_OPEN_WRITER = (findings, narrative) => `This is a fresh session: your earlier synthesis work is not in your context. The driver wrote ${findings} and ${narrative} from your \`record_synthesis\` call. The deterministic pre-delivery checks found these faults in content rendered from that record:`;
+const V19_READ_WRITER = (findings, narrative) => `Read ${findings} and ${narrative}, then correct the finding or narrative section that owns each fault.`;
 const V19_OPEN_HAND = (label, file) => `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`;
 const V19_SAVE_WRITER = "Apply the fix in ONE `record_synthesis` PATCH call, sending only the change: `narrative` carrying only the sections you corrected; `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces; and `findings` carrying any register you corrected, complete, and never a `findings[]` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. You hold no Write or Edit tool for it and nothing you write by hand is read.";
 const V19_SAVE_OTHER = (tool) => `Apply the fix by calling \`${tool}\` AGAIN with the corrected values — the COMPLETE payload, not a patch, because the driver re-renders the whole artifact from what you send. You hold no Write or Edit tool for it and nothing you write by hand is read.`;
@@ -88,8 +92,11 @@ test("the reviewer's re-check opens fresh and points at its own verdict file", (
 test("the delivery-check repair opens fresh; the writer saves a patch, every other tool its whole payload", () => {
   const c = composer("*:lint-repair");
   const failures = [{ id: "x", detail: "a check the lint named" }];
-  const writer = linesOf(c.compose({ label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, failures }));
-  assert.equal(writer[0], V19_OPEN_TOOL("synthesis", "narrative.md", "record_synthesis"));
+  const writer = linesOf(c.compose({ label: "synthesis", file: "narrative.md", toolWritten: { tool: "record_synthesis" }, findings: "findings.json", narrative: "narrative.md",
+    failures: [...failures, { id: "y", finding: 2, detail: "a fault in a sentence composed from finding 2" }] }));
+  assert.equal(writer[0], V19_OPEN_WRITER("findings.json", "narrative.md"));
+  assert.deepEqual(writer.slice(1, 4), ["- a check the lint named", "- finding 2: a fault in a sentence composed from finding 2", V19_READ_WRITER("findings.json", "narrative.md")],
+    "the faults, each in a line composed from the record named by its finding, then the order to read both files");
   assert.equal(writer.at(-1), V19_SAVE_WRITER, "the writer's save takes only the change");
   assert.ok(!writer.some((l) => l.includes("COMPLETE payload")), "and is never ordered to re-send the whole record");
 
@@ -145,14 +152,18 @@ test("the writer's retry after a failed check sends only the change while the dr
   assert.ok(correctionHint(tok).includes(WHOLE) && !correctionHint(tok).includes(PATCH), "no held record takes the whole save");
   assert.ok(correctionHint("finding_legacy_scale_forbidden:composite", { heldRecord: true }).includes(WHOLE), "a version being replaced takes the whole save");
   assert.ok(!correctionHint("coverage_status_offenum (axis primary-sweep)", { heldRecord: true }).includes("record_synthesis"), "another stage's hint is unchanged");
-  // The run's own files decide: an accepted save is the record the driver holds.
+  // The run's own files decide: an accepted save is the record the driver holds. The files are the ones the stage
+  // really expects, its narrative alone, as the retry is composed from them.
   const dir = mkdtempSync(join(tmpdir(), "held-record-"));
   try {
-    const findings = join(dir, "findings.json");
-    assert.equal(heldSynthesisRecord([join(dir, "narrative.md"), findings]), false);
+    const expected = [STAGES.synthesis.out(paths(dir), {})].flat();
+    assert.deepEqual(expected.map((f) => f.slice(dir.length + 1)), ["narrative.md"], "premise: the writer's stage expects its narrative alone");
+    assert.equal(heldSynthesisRecord(expected), false);
     mkdirSync(join(dir, "_driver", "synthesis-calls"), { recursive: true });
     writeFileSync(join(dir, "_driver", "synthesis-calls", "accepted.json"), "{}\n");
-    assert.equal(heldSynthesisRecord([join(dir, "narrative.md"), findings]), true);
+    assert.equal(heldSynthesisRecord(expected), true, "the stage's own expected files do not show the record the driver holds");
+    assert.ok(correctionHint(tok, { heldRecord: heldSynthesisRecord(expected) }).includes(PATCH), "a real retry is not offered the patch");
+    assert.equal(heldSynthesisRecord([join(dir, "findings.json")]), true, "the findings file names the same record");
     assert.equal(heldSynthesisRecord([join(dir, "register-findings.md")]), false, "files of another stage hold no writer's record");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
@@ -173,15 +184,16 @@ test("no message on the writer's and the reviewer's path tells a fresh session i
   }
 });
 
-test("the writer's and the reviewer's follow-ups no longer call their inputs unchanged; other stages keep today's line", () => {
+test("no follow-up calls its inputs unchanged: the writer's and the reviewer's, and every other stage's", () => {
+  // V23 on the writing path; its extension to every other follow-up (packet row D10, 2026-10-18) makes the line one
+  // text again.
   const ctx = { paths: {}, framework: null };
   const paths = ["register-findings.md", "placements.md"];
-  for (const stage of ["synthesis", "narrative-refutation"]) {
+  for (const stage of ["synthesis", "narrative-refutation", "common-law", "register-digest"]) {
     const out = linesOf(composeFollowup(stage, ctx, { followup: "the instruction", inputs: paths }));
     assert.equal(out.at(-1), V23(paths), stage);
+    assert.notEqual(out.at(-1), TODAYS_INPUTS_LINE(paths), `${stage}: the old line, which called the inputs unchanged`);
   }
-  const other = linesOf(composeFollowup("common-law", ctx, { followup: "the instruction", inputs: paths }));
-  assert.equal(other.at(-1), TODAYS_INPUTS_LINE(paths), "a stage off this path is byte-identical");
 });
 
 // ── THE SAVE TOOL'S FORM, AS THE MODEL RECEIVES IT ───────────────────────────────────────────────────

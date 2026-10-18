@@ -44,7 +44,7 @@ const RUN = "/nonexistent/invented-run";
 // change to this list rather than as silence. Keyed by stage and context label.
 const NAMED_NOT_DECLARED = Object.freeze({
   // The active register provider's operator manual, which the search unit's opening message names beside
-  // its two declared files. Its follow-ups (plan join, escalation, envelope close, frame reopen) do not.
+  // its two declared files. Its follow-ups name it too, through the stage's `followupSkillReads` (packet row D11).
   "register-unit": () => [`skills/clearance-register/providers/${requireRegisterProvider()}.md`],
   // The pharma field doctrine, which the reviewer's opening message names on a matter in the pharma class.
   // The writer declares it (resolveSkillReads); the reviewer does not, so its re-check is not pointed at it.
@@ -61,6 +61,18 @@ test("every model stage is composed and checked: the clearance stages under ever
   // A stage that reads no file is allowed (doubt-closure works from its message alone), but most read
   // several: a population with no reads at all would make every check below pass on nothing.
   assert.ok(all.filter((d) => d.declared.length).length >= 30, "almost no stage declares an instruction file");
+});
+
+test("the register search's follow-ups are pointed at the active provider's manual, which is in the tree", async () => {
+  const { composeFollowup } = await import("../stages.mjs");
+  const deck = `skills/clearance-register/providers/${requireRegisterProvider()}.md`;
+  const msg = composeFollowup("register-unit", { axis: "primary-sweep" }, { followup: "an invented follow-up instruction" });
+  assert.ok(msg.split("\n")[0].includes(deck), `the follow-up's methodology line does not name ${deck}:\n${msg.split("\n")[0]}`);
+  assert.ok(existsSync(join(DRIVER, deck)) && statSync(join(DRIVER, deck)).size > 0, `${deck} is not in the shipped tree`);
+  // Each engine's rewrite turns it into the file's absolute path, as every other instruction reference.
+  assert.ok(codexRewrite(msg, SKILLS).includes(join(DRIVER, deck)), "the Codex rewrite does not reach it");
+  assert.ok(buildClaudeArgs({ message: msg, model: "opus", thinking: "low", cwd: "/tmp", skillsDir: SKILLS, runDir: RUN }).input.includes(join(DRIVER, deck)),
+    "the Claude rewrite does not reach it");
 });
 
 test("every instruction file a model stage declares is in the shipped tree, and is not empty", () => {
