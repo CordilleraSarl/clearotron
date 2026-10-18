@@ -26,6 +26,9 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
 import { composeFollowup } from "../stages.mjs";
+import { correctionHint, heldSynthesisRecord } from "../gateway.mjs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const composer = (key) => {
@@ -118,6 +121,40 @@ test("the three re-sends open fresh", () => {
     const c = composer(key);
     for (const s of c.samples) assert.equal(linesOf(c.compose(s.args))[0], V22, `${key} / ${s.name}`);
   }
+});
+
+test("the finding re-send and the missing-actions repair promise only what the save keeps", () => {
+  // Design's correction to the packet (2026-10-18): each sentence that promised more than the merge keeps
+  // ("comes back byte-identical", "nothing else moves") is replaced by the approved merge sentence.
+  const MERGE = "The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files.";
+  for (const key of ["synthesis:finding-reemit", "synthesis:actions-missing"]) {
+    const c = composer(key);
+    for (const s of c.samples) {
+      const text = c.compose(s.args);
+      assert.ok(text.includes(MERGE), `${key} / ${s.name}: the approved merge sentence is missing`);
+      assert.doesNotMatch(text, /comes back byte-identical|so nothing else moves/, `${key} / ${s.name}`);
+    }
+  }
+});
+
+test("the writer's retry after a failed check sends only the change while the driver holds its record, and the whole record otherwise", () => {
+  const PATCH = "Fix exactly that in ONE `record_synthesis` PATCH call, sending only the change: `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces, and `findings` carrying any register you corrected, complete, and never a `findings[]` list; leave the narrative prose unchanged";
+  const WHOLE = "Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged";
+  const tok = "finding_meter_unknown:1";
+  assert.ok(correctionHint(tok, { heldRecord: true }).includes(PATCH), "a held record takes the patch");
+  assert.ok(correctionHint(tok).includes(WHOLE) && !correctionHint(tok).includes(PATCH), "no held record takes the whole save");
+  assert.ok(correctionHint("finding_legacy_scale_forbidden:composite", { heldRecord: true }).includes(WHOLE), "a version being replaced takes the whole save");
+  assert.ok(!correctionHint("coverage_status_offenum (axis primary-sweep)", { heldRecord: true }).includes("record_synthesis"), "another stage's hint is unchanged");
+  // The run's own files decide: an accepted save is the record the driver holds.
+  const dir = mkdtempSync(join(tmpdir(), "held-record-"));
+  try {
+    const findings = join(dir, "findings.json");
+    assert.equal(heldSynthesisRecord([join(dir, "narrative.md"), findings]), false);
+    mkdirSync(join(dir, "_driver", "synthesis-calls"), { recursive: true });
+    writeFileSync(join(dir, "_driver", "synthesis-calls", "accepted.json"), "{}\n");
+    assert.equal(heldSynthesisRecord([join(dir, "narrative.md"), findings]), true);
+    assert.equal(heldSynthesisRecord([join(dir, "register-findings.md")]), false, "files of another stage hold no writer's record");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test("no message on the writer's and the reviewer's path tells a fresh session it is resuming", () => {
