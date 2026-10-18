@@ -91,7 +91,7 @@ test("the tool says what the goods filter does and what the served goods mean", 
   const r = await session([INIT, { jsonrpc: "2.0", id: 2, method: "tools/list" }], { CLEAROTRON_BAND_RUN_DIR: mkdtempSync(join(tmpdir(), "lookup-goods-list-")), CLEAROTRON_BAND_GROUPS: "1" });
   const lookup = (r[2]?.result?.tools ?? []).find((t) => t.name === "band_lookup");
   assert.ok(lookup.description.includes("goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too)"));
-  assert.ok(lookup.description.includes("`goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: the official record, the official record listing no goods, the search answer, the search answer cut by the register, a failed fetch, or nothing held. The goods text is in band_record."));
+  assert.ok(lookup.description.includes("`goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: official record; official record, cut by the register; official record, completeness not established; official record, no goods listed; search answer; search answer, cut by the register; search answer, completeness not established; fetch failed; or nothing held. The goods text is in band_record."));
   assert.ok(lookup.description.includes("group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner)"));
   assert.ok(lookup.inputSchema.properties.goods, "the filter is in the schema");
 });

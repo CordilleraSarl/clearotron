@@ -160,12 +160,15 @@ export function recordGoodsEvidence(record, { goods = null, held = null, fetches
 
 /**
  * WHAT A RECORD'S GOODS REST ON, IN THE WORDS THE STAGES READ (the band lookup's `goods_from`, the write-up's list):
- * the supporting evidence the record holds, never the last call made for it. An official record's completeness is
- * said by the band shape's goods cell for its line. null where there is no evidence row. PURE.
+ * the supporting evidence the record holds and its completeness, never the last call made for it. "No goods listed"
+ * needs a full record from an operation whose goods are whole, with the field there and empty; a record whose goods
+ * field is missing is "completeness not established". null where there is no evidence row. PURE.
  */
 export function goodsFromLabel(e) {
   if (!e) return null;
-  if (e.source === "record-body") return e.state === "absent" ? "official record, no goods listed" : "official record";
+  if (e.source === "record-body") return e.state === "absent" ? "official record, no goods listed"
+    : e.state === "cut" ? "official record, cut by the register"
+    : e.state === "unknown" ? "official record, completeness not established" : "official record";
   if (e.source === "search-row") return e.state === "cut" ? "search answer, cut by the register"
     : e.state === "unknown" ? "search answer, completeness not established" : "search answer";
   return e.state === "unavailable" ? "fetch failed" : "nothing held";

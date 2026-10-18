@@ -38,6 +38,8 @@ const BAND = [
   row("e6", "Theta Oy"),                                                   // nothing held, a fetch failed
   row("e7", "Iota Oy"),                                                    // nothing held
   row("e8", "Kappa Ltd", [signa("Laser printers", true)]),                 // a search answer, and a fetch that failed
+  row("e9", "Lambda AG"),                                                  // a held official record the register flags as cut
+  row("e10", "Mu SA"),                                                     // a held official record whose goods field is missing
 ];
 const PREFIX = "clearance-qz-test-";
 
@@ -52,6 +54,8 @@ function seedRun(t) {
   writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), [
     body("/mark/us/e1", { statusText: "Registered", goodsServices: [{ classes: [9], language: "en", description: "joysticks" }] }),
     body("/mark/us/e2", { statusText: "Registered", _raw: { classifications: [] } }),
+    body("/mark/us/e9", { statusText: "Registered", _raw: { classifications: [signa(at(280, "Laser printers"), true)] } }),
+    body("/mark/us/e10", { statusText: "Registered" }),
   ].join("\n") + "\n");
   const calls = join(runDir, "register-calls.jsonl");
   writeFileSync(calls, [
@@ -109,7 +113,8 @@ test("the lookup gives each record what its goods rest on, from the evidence the
   assert.deepEqual(Object.fromEntries(records.map((x) => [x.record_id.split("/").pop(), x.goods_from])), {
     e1: "official record", e2: "official record, no goods listed", e3: "search answer", e4: "search answer, cut by the register",
     e5: "search answer, completeness not established", e6: "fetch failed", e7: "nothing held", e8: "search answer, cut by the register",
-  }, "a failed fetch beside a search answer's goods: the goods the record holds are its evidence, not the call that failed");
+    e9: "official record, cut by the register", e10: "official record, completeness not established",
+  }, "a failed fetch beside a search answer's goods: the goods the record holds are its evidence, not the call that failed; a missing goods field is not a record listing none");
 });
 
 test("the record tool says a fetch failed only where the ledger records it, and serves a search answer's goods with their source", async (t) => {
