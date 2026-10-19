@@ -6500,6 +6500,15 @@ export function recordChangeOwesReview(runDir) {   // @internal
   return !isEmptyChange(c);
 }
 
+/**
+ * An open ask as the closure step is shown it: its id, where it was raised and its text, and for a request kept as
+ * parts, which part it is and the questions that part holds, so two parts of one request never read as one line.
+ */
+export function openAskForClosure(a) {   // @internal — driven by its test
+  return { ask_id: a.ask_id, born: a.born, ask: a.ask,
+    ...(a.part ? { part: a.part, qids: Array.isArray(a.qids) ? a.qids : [] } : {}), ...(a.family ? { family: a.family } : {}) };
+}
+
 /** The change a whole review's record lists when its scope could not be compared: none. */
 const NO_CHANGE = Object.freeze({ findings: [], lines: [], registers: [], sections: [], whole: true, why: "not-compared" });
 
@@ -14806,7 +14815,7 @@ async function pipelineInner(job, opts = {}) {
               ? openAfterStitch.filter((d) => doubtSel.ids.includes(d.id))
               : openAfterStitch;
             ctx.openDoubts = dispatchDoubts.map((d) => ({ id: d.id, birth: d.birth, subject: d.subject }));
-            ctx.openAsks = openAsksForStage.map((a) => ({ ask_id: a.ask_id, born: a.born, ask: a.ask }));
+            ctx.openAsks = openAsksForStage.map(openAskForClosure);
             // THE SPEC SIDECAR, WRITTEN BEFORE THE DISPATCH. The seat supplies none of its own context:
             // the ids it may speak about and the files it may cite are the driver's, so a doubt it was not
             // given is refused by name and a file it was not given cannot be expressed at all. Both
