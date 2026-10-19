@@ -44,7 +44,8 @@ const KNOBS = ["MOCK_VERDICT", "MOCK_VERDICT_DEFECTS", "MOCK_PERMISSION_PROSE", 
   "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING", "MOCK_REVIEW_BLOCKS_AFTER_VERDICT",
   "MOCK_NARRATIVE_OVER_CAP", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_LINT_REPAIR_SAME_VALUES",
   "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS", "MOCK_WHOLE_FALLBACK_VERDICT", "MOCK_LATE_SAVE_ADDS",
-  "MOCK_FAIL_AFTER_WRITES", "MOCK_POST_REPAIR_LOSES", "MOCK_CORRECTION_MARKS"];
+  "MOCK_FAIL_AFTER_WRITES", "MOCK_POST_REPAIR_LOSES", "MOCK_CORRECTION_MARKS",
+  "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH", "MOCK_CODEX_RATELIMIT", "MOCK_CODEX_RATELIMIT_MATCH"];
 
 // The Codex run pins its own billing; every Claude run puts back what the suite started with.
 const AS_STARTED = Object.fromEntries(["CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"].map((k) => [k, process.env[k]]));
@@ -310,6 +311,21 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
   });
 
+  test(`${engine}: a rate-limited correction after the review is not waited for: it is rolled back, and the run delivers`, async () => {
+    const limit = engine === "codex"
+      ? { MOCK_CODEX_RATELIMIT: "1", MOCK_CODEX_RATELIMIT_MATCH: CORRECTION_OPENS }
+      : { MOCK_CLAUDE_RATELIMIT: String(Math.floor(Date.now() / 1000) + 3600), MOCK_CLAUDE_RATELIMIT_MATCH: CORRECTION_OPENS };
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", ...limit }, engine);
+    const pass = stageEvents(events, "synthesis", "post-repair-corrective");
+    assert.ok(pass.length === 1 && pass[0].ok === false, `premise: the correction was rate-limited: ${JSON.stringify(pass)}`);
+    const rb = rollbackOf(events);
+    assert.ok(rb && /rate_limited/.test(rb.reason), `no rollback for the rate limit: ${JSON.stringify(rb)}`);
+    assert.ok(!events.some((e) => e.event === "postponed"), "the run waited for the reset");
+    assert.ok(text(driverDir(res.runDir, "reviewer-open-questions.md")).includes(FLAG_ON_1[0].text), "the point the correction never applied is not on record");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+
   // THE ONE CASE THAT STILL ENDS THE PASS: the record and both saves unreadable, a storage failure. Delivering past it
   // shipped a report with no findings under the verdict as it stood, so the pass keeps its failure, with nothing the
   // failed correction wrote kept.
@@ -323,6 +339,7 @@ for (const engine of Object.keys(ENGINES)) {
     assert.ok(!rollbackOf(events), "a rollback was claimed with nothing to roll back to");
     for (const f of [join(res.runDir, "findings.json"), synthesisCallPaths(res.runDir).accepted, join(res.runDir, "narrative.md")])
       assert.ok(!text(f).includes(MARK), `the failed correction's text was kept in ${f}`);
+    assert.ok(text(driverDir(res.runDir, "findings-failed-correction.json")).includes(MARK), "the failed pass's record was not kept aside as evidence");
     assert.notEqual(res.ok, true, "a report went out with its record unreadable");
   });
 }
