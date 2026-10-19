@@ -793,9 +793,10 @@ function axisBandsFingerprint(P, axes = []) {
  * the size ceiling before they dispatch, and that refusal ends the run with no report. These re-runs alone can grow a
  * band the first merge kept under it past it, where without this merge the run would have gone on reading the band as
  * first merged. So the band is measured before it is adopted, by the test each stage applies at dispatch, and a band any
- * of the three would refuse is not adopted: the earlier merge stands, and the records the re-runs found stay unread, as
- * they were before this merge was made. The run record says so; the report does not, since no approved sentence states
- * it. `refusing` is that test, injectable so a test can drive a refusal without a band of that size.
+ * of the three would refuse is not adopted: the earlier merge stands, and the records the re-runs found stay unread. They
+ * are not lost silently: the records the refused band held and the band standing does not are kept, and the recall gate
+ * counts them into its approved sentence for records neither addressed nor set aside. `refusing` is that test,
+ * injectable so a test can drive a refusal without a band of that size.
  */
 export function remergeIfBandsMoved(ctx, why, { refusing = (bytes) => stagesRefusingBand(bytes, (s) => STAGES[s]?.timeoutSec) } = {}) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
@@ -809,7 +810,8 @@ export function remergeIfBandsMoved(ctx, why, { refusing = (bytes) => stagesRefu
       const stages = refusing(bytes);
       if (stages.length) {
         ctx.bandsRefusedAt = now;
-        runLog(P.runDir, { event: "named-band-remerge-over-ceiling", why, bytes, stages });
+        const left = recordRefusedRecords(P, merged.band);
+        runLog(P.runDir, { event: "named-band-remerge-over-ceiling", why, bytes, stages, records: left });
         note(`${why}: the band merged again would be ${(bytes / (1024 * 1024)).toFixed(1)} MB, more than ${stages.join(", ")} can be dispatched over — the earlier merge stands, and the records the re-run found stay unread`);
         return false;
       }
@@ -817,6 +819,39 @@ export function remergeIfBandsMoved(ctx, why, { refusing = (bytes) => stagesRefu
     deriveNamedBand(ctx, merged); runLog(P.runDir, { event: "named-band-remerged", why }); return true;
   }
   catch (e) { note(`${why}: the named band could not be merged again (${String(e?.message ?? e).slice(0, 100)}) — the earlier merge stands`); return false; }
+}
+
+/** Where the records a refused merge left out are kept, for the recall gate. */
+const refusedRecordsPath = (P) => driverDir(P.runDir, "band-refused-records.json");
+
+/**
+ * THE RECORDS A REFUSED MERGE LEAVES OUT: the ids the band merged again holds and the band standing does not, added to
+ * those an earlier refusal left out. Returns how many are kept, or null when they could not be written, which the run
+ * record names. Never throws.
+ */
+function recordRefusedRecords(P, band) {
+  try {
+    const key = (r) => String(r?.record_id ?? "").toLowerCase();
+    const standing = new Set((safeReadJson(P.registerNamedBand)?.enumerated ?? []).map(key));
+    const ids = [...new Set([...(safeReadJson(refusedRecordsPath(P))?.ids ?? []),
+      ...(band?.enumerated ?? []).map(key).filter((id) => id && !standing.has(id))])];
+    atomicWrite(refusedRecordsPath(P), JSON.stringify({ ids, count: ids.length }, null, 2) + "\n");
+    return ids.length;
+  } catch (e) {
+    runLog(P.runDir, { event: "band-refused-records-failed", reason: String(e?.message ?? e).slice(0, 160) });
+    return null;
+  }
+}
+
+/**
+ * The records a refused merge left out that are still outside the named band: a record a later merge took in is read,
+ * and is not counted as left out. Never throws.
+ */
+export function refusedRecordsLeftOut(P) {   // @internal — driven by its test with a run's own files
+  const ids = safeReadJson(refusedRecordsPath(P))?.ids;
+  if (!Array.isArray(ids) || !ids.length) return [];
+  const inBand = new Set((safeReadJson(P.registerNamedBand)?.enumerated ?? []).map((r) => String(r?.record_id ?? "").toLowerCase()));
+  return ids.map((x) => String(x).toLowerCase()).filter((id) => id && !inBand.has(id));
 }
 
 /** The named band as it is written to disk: what a dispatch over it measures. */
@@ -13722,24 +13757,31 @@ async function pipelineInner(job, opts = {}) {
     // the floor) is left to it, so no record is counted twice. Returns the count it clamped on, or 0.
     const clampOnTheRecallGate = (duty = null) => {
       const rec = safeReadJson(P.recallReconciliation);
-      if (rec?.computable !== true || !((rec.totals?.unended ?? 0) > 0)) return 0;
+      const computable = rec?.computable === true;
+      // A RECORD A REFUSED MERGE LEFT OUT IS UNREAD, and it is counted here, in the same sentence, out of a total that
+      // includes it: the band could not take it without passing the size its readers can be dispatched over.
+      const left = refusedRecordsLeftOut(P);
+      if (!left.length && (!computable || !((rec.totals?.unended ?? 0) > 0))) return 0;
       // A record the writer's duty or the floor's clamp already names is left to that clause: one record, one sentence.
       // The floor's rows count only where its clamp fires, so a record is never left unnamed by both.
       const floorNames = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) })
         ? (safeReadJson(P.floorDuty)?.rows ?? []).filter((r) => r?.disposition !== "accounted").map((r) => String(r?.record_id ?? "").toLowerCase())
         : [];
       const alreadyNamed = new Set([...(duty?.computable === true ? duty.unaccounted : []).map((u) => String(u?.uri ?? "").toLowerCase()), ...floorNames]);
-      const unended = (rec.unended ?? []).filter((u) => !(u.candidate_records ?? [u.record_id])
+      const unended = (computable ? rec.unended ?? [] : []).filter((u) => !(u.candidate_records ?? [u.record_id])
         .some((x) => alreadyNamed.has(String(x).toLowerCase())));
-      const records = [...new Set(unended.flatMap((u) => u.candidate_records ?? [u.record_id]).map((x) => String(x).toLowerCase()))];
-      const weighed = Number(rec.totals?.candidates ?? 0);
+      const records = [...new Set([...unended.flatMap((u) => u.candidate_records ?? [u.record_id]).map((x) => String(x).toLowerCase()), ...left])];
+      // Out of the records the gate weighed or, where it could weigh none, the records the band holds; and the records
+      // left out besides.
+      const base = computable ? Number(rec.totals?.candidates ?? 0) : (safeReadJson(P.registerNamedBand)?.enumerated ?? []).length;
+      const weighed = base + left.length;
       if (!records.length || !(weighed > 0)) return 0;
-      const sample = unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`).join("; ");
+      const sample = [...unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`), ...left.slice(0, 2)].join("; ");
       deliverAndClamp({
         event: "recall-reconciliation-unended-delivered",
         defect: `recall_reconciliation_unended:${records.length}`,
-        detail: { positions: unended.length, records: records.length, candidates: weighed },
-        reason: `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery: ${sample}. The report ships with these named rather than being withheld.`,
+        detail: { positions: unended.length, records: records.length, candidates: base, refused: left.length },
+        reason: `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery${left.length ? `, ${left.length} of them found by a unit's re-run and left out of a band its readers could not have been dispatched over` : ""}: ${sample}. The report ships with these named rather than being withheld.`,
         clause: clauseForDefect("recall_reconciliation_unended", records.length, weighed),
       });
       return records.length;

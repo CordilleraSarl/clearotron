@@ -71,8 +71,8 @@ test("an axis band that moves while the unit's notes stand is merged again into 
   assert.deepEqual(ev.filter((e) => e.event === "named-band-remerged").map((e) => e.why), ["escalation"]);
 });
 
-test("a band merged again that a reading stage would refuse is not adopted: the earlier merge stands, and the run record says so", async (t) => {
-  const { deriveNamedBand, remergeIfBandsMoved } = await import("../pipeline.mjs");
+test("a band merged again that a reading stage would refuse is not adopted: the earlier merge stands, and the records it held are kept for the recall gate", async (t) => {
+  const { deriveNamedBand, remergeIfBandsMoved, refusedRecordsLeftOut } = await import("../pipeline.mjs");
   const { paths } = await import("../stages.mjs");
   const runDir = mkdtempSync(join(tmpdir(), "remerge-ceiling-"));
   t.after(() => rmSync(runDir, { recursive: true, force: true }));
@@ -90,20 +90,26 @@ test("a band merged again that a reading stage would refuse is not adopted: the 
   // The ceiling stands just above the first merge, so the band the re-run grows is past it. The measure is handed the
   // size of the band as it would be written.
   const measured = [];
-  const refusing = (bytes) => { measured.push(bytes); return bytes > Buffer.byteLength(first) ? ["placement-inquiry"] : []; };
+  let ceiling = Buffer.byteLength(first);
+  const refusing = (bytes) => { measured.push(bytes); return bytes > ceiling ? ["placement-inquiry"] : []; };
   writeFileSync(P.registerBand("primary-sweep"), JSON.stringify([block(1, [rec("a1", "Alpha Holdings Limited")]), block(2, [rec("b1", "Beta GmbH")])]));
   assert.equal(remergeIfBandsMoved(ctx, "escalation", { refusing }), false, "a band a reading stage would refuse was adopted");
   assert.equal(readFileSync(P.registerNamedBand, "utf8"), first, "the earlier merge does not stand");
   assert.equal(remergeIfBandsMoved(ctx, "escalation", { refusing }), false);
   assert.equal(measured.length, 1, "the band refused as it stands was merged and measured again");
   const ev = () => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
-  assert.deepEqual(ev().filter((e) => e.event === "named-band-remerge-over-ceiling").map((e) => [e.why, e.stages, e.bytes > Buffer.byteLength(first)]),
-    [["escalation", ["placement-inquiry"], true]], "the run record does not say the band was refused, by whom and at what size");
-  // The band moves again and is back under the ceiling: it is merged, and the size measured is the size written.
-  writeFileSync(P.registerBand("primary-sweep"), JSON.stringify([block(1, [rec("a1", "Al")])]));
+  assert.deepEqual(ev().filter((e) => e.event === "named-band-remerge-over-ceiling").map((e) => [e.why, e.stages, e.bytes > Buffer.byteLength(first), e.records]),
+    [["escalation", ["placement-inquiry"], true, 1]], "the run record does not say the band was refused, by whom, at what size and leaving out what");
+  // the record the refused band held and the band standing does not is kept, and counts as left out
+  assert.deepEqual(JSON.parse(readFileSync(driverDir(runDir, "band-refused-records.json"), "utf8")).ids, ["/mark/eu/b1"]);
+  assert.deepEqual(refusedRecordsLeftOut(P), ["/mark/eu/b1"], "the record the refused merge left out is not counted as left out");
+  // The band moves again and fits: it is merged, at the size measured, and a record it takes in is no longer left out.
+  ceiling = Number.MAX_SAFE_INTEGER;
+  writeFileSync(P.registerBand("primary-sweep"), JSON.stringify([block(1, [rec("a1", "Alpha Holdings Limited")]), block(2, [rec("b1", "Beta GmbH")]), block(3, [rec("c1", "Gamma SA")])]));
   assert.equal(remergeIfBandsMoved(ctx, "escalation", { refusing }), true, "a band under the ceiling was not merged again");
   assert.equal(statSync(P.registerNamedBand).size, measured.at(-1), "the size measured before adoption is not the size of the band written");
   assert.deepEqual(ev().filter((e) => e.event === "named-band-remerged").map((e) => e.why), ["escalation"]);
+  assert.deepEqual(refusedRecordsLeftOut(P), [], "a record a later merge took in is still counted as left out");
 });
 
 // ── whole runs: a resumed run whose warm re-run adds a live identical record ──
@@ -187,6 +193,28 @@ test("claude: a record the reading step leaves unended after the run's recovery 
   const clause = clauseForDefect("recall_reconciliation_unended", gap[0].records, gap[0].candidates);
   assert.ok(r.verdict.clauses.includes(clause), `the verdict does not carry the approved sentence: ${JSON.stringify(r.verdict.clauses)}`);
   assert.equal(clause, clauseForDefect("synthesis_unaccounted_delivered", gap[0].records, gap[0].candidates), "the gap is not said in the approved sentence");
+});
+
+test("claude: a record a refused merge left out is counted in the delivered report's recall sentence, out of a total that includes it", async () => {
+  const { clauseForDefect } = await import("../terminal-clamp.mjs");
+  const root = mkdtempSync(join(tmpdir(), "clearotron-remerge-refused-"));
+  const p1 = await runMockPipeline(root, { MOCK_FAIL_STAGE: PARK_AT_DIGEST });
+  assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+  const rd = p1.res.runDir;
+  const codename = JSON.parse(readFileSync(join(rd, "status.json"), "utf8")).codename;
+  // What a refused merge leaves on record: one record outside the band, and one a later merge took in, which is read.
+  const inBand = JSON.parse(readFileSync(join(rd, "register-named-band.json"), "utf8")).enumerated[0].record_id;
+  writeFileSync(driverDir(rd, "band-refused-records.json"), JSON.stringify({ ids: ["/mark/us/90000099", String(inBand).toLowerCase()], count: 2 }));
+  const n1 = p1.events.length;
+  const p2 = await runMockPipeline(root, {}, codename);
+  const ev2 = p2.events.slice(n1);
+  assert.equal(p2.res.ok, true, JSON.stringify({ fail: p2.res.fail, stage: p2.res.failedStage }));
+  const gap = ev2.filter((e) => e.event === "recall-reconciliation-unended-delivered");
+  assert.deepEqual(gap.map((e) => [e.records, e.refused]), [[1, 1]], "the record left out was not counted once, or the one taken in was counted");
+  const verdict = JSON.parse(readFileSync(driverDir(p2.res.runDir, "verdict.json"), "utf8"));   // the delivered run, as archived
+  assert.equal(verdict.verdict, "CONDITIONAL");
+  const clause = clauseForDefect("recall_reconciliation_unended", 1, gap[0].candidates + 1);
+  assert.ok(verdict.clauses.includes(clause), `the verdict does not count the record left out in the approved sentence: ${JSON.stringify(verdict.clauses)}`);
 });
 
 test("claude: a record the envelope close adds reaches the named band, the shape and the floor of the placement pass that assesses it", async () => {
