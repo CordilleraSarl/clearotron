@@ -131,7 +131,7 @@ import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse 
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
-import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
+import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
 import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
@@ -14974,7 +14974,7 @@ async function pipelineInner(job, opts = {}) {
       auditWrittenThisPass = true;
       runLog(run.runDir, { event: "audit", ...a.counts });   // — counts now carry doubtsOmitted
       // The trace and the Audit Trail, written again over a repair (`rebuildDeliveredRecord`), from the inputs this
-      // pass built them from: the doubts and asks stand as this pass raised and closed them.
+      // pass built them from; the doubts minted from the trace follow the trace written again.
       rebuildTheDeliveredRecord = (trigger) => rebuildDeliveredRecord(ctx,
         { commonLawText, doubts: runDoubts, asks: runAsks, commonLawGrid, doubtTruncations, registerPresence }, trigger);
       note(`audit (code): ${a.counts.findings} findings, ${a.counts.negatives} negatives, ${a.counts.audit} audit-trail${a.counts.withdrawnStamped ? `, ${a.counts.withdrawnStamped} withdrawn-stamped` : ""}${a.counts.resolutionStamped ? `, ${a.counts.resolutionStamped} resolution-stamped` : ""}${runDoubts ? `, doubts ${a.counts.doubtsSettled} settled / ${a.counts.doubtsOpen} open` : ""}${a.counts.presenceRows != null ? `, register presence ${a.counts.presenceRows} row(s)` : ""}`);
@@ -17995,16 +17995,17 @@ export const NARROW_REPAIR_TRIGGERS = new Set(["lint-repair", "finding-reemit", 
 const REBUILDS_THE_DELIVERED_RECORD = new Set(["placement-inquiry", "register-digest", "synthesis", "narrative-refutation"]);
 
 /**
- * Keep the delivered record as it stands, the Audit Trail and the record-carry trace, under _history/<ts>-delivered-record-
- * <reason>/ before either is written again, so a pass that writes them over a repair or a resume never loses what the
- * earlier state said. Returns the directory, or null when there was nothing to keep. Best-effort, like every snapshot.
+ * Keep the Audit Trail, the record-carry trace and the doubt ledger as they stand, under _history/<ts>-audit-and-trace-
+ * <reason>/, before any of them is written again, so a pass that writes them over a repair or a resume never loses what
+ * the earlier state said. The pass that wrote them may have delivered nothing: a pass the delivery check held writes
+ * them too. Returns the directory, or null when there was nothing to keep. Best-effort, like every snapshot.
  */
 export function keepDeliveredRecordAsHistory(P, reason) {   // @internal — driven by its test with a run's own files
-  const files = [P.audit, P.recordCarry].filter((f) => existsSync(f));
+  const files = [P.audit, P.recordCarry, driverDir(P.runDir, "doubts.json")].filter((f) => existsSync(f));
   if (!files.length) return null;
   try {
     const ts = new Date().toISOString().replace(/[:.]/g, "-");
-    const dest = join(P.runDir, "_history", `${ts}-delivered-record-${reason}`);
+    const dest = join(P.runDir, "_history", `${ts}-audit-and-trace-${reason}`);
     mkdirSync(dest, { recursive: true });
     for (const f of files) copyFileSync(f, join(dest, basename(f)));
     return dest;
@@ -18041,12 +18042,23 @@ export function withdrawSupersededAudit(P, reason, { keep = true } = {}) {   // 
   return true;
 }
 
+/** The doubt ledger on disk, written again with the doubts the rebuilt audit carries; what it said of the closure stays. */
+function writeDoubtLedgerAgain(P, doubts, truncated) {
+  const path = driverDir(P.runDir, "doubts.json");
+  const earlier = safeReadJson(path) ?? {};
+  const settled = doubts.filter((d) => d?.status === "checked-and-settled").length;
+  const { doubts: _d, minted: _m, settled: _s, open: _o, truncated: _t, ...closure } = earlier;
+  writeFileSync(path, JSON.stringify({ minted: doubts.length, settled, open: doubts.length - settled,
+    ...(truncated?.length ? { truncated } : {}), ...closure, doubts }, null, 2));
+}
+
 /**
  * THE TRACE AND THE AUDIT TRAIL, WRITTEN AGAIN OVER A REPAIR. Both describe a pass before the delivery check repairs
  * anything, and a stage that check re-runs can change what they report: a repeated placement pass can reverse a
  * set-aside or change its ground. This keeps the pair as it stands under _history, then writes the trace and the audit
  * again from the run's files, so what is delivered describes the decision that stands at delivery. `inputs` are what the
- * pass built its audit from: the doubts and asks stand as it raised and closed them, and nothing is dispatched again.
+ * pass built its audit from. The doubts minted from the trace follow the trace written again (recordCarryDoubtsAgain);
+ * every other doubt and ask stands as the pass raised and closed it, and nothing is dispatched again.
  * A rebuild that fails, the trace written and the audit not among the ways, withdraws the audit on disk: it describes
  * the state before the repair. Returns {ok, counts} or {ok:false, reason}. IMPURE (writes the run).
  */
@@ -18054,13 +18066,34 @@ export function rebuildDeliveredRecord(ctx, inputs = {}, trigger = "stale-repair
   const P = ctx.paths;
   keepDeliveredRecordAsHistory(P, trigger);
   try {
-    let findingsNow = [];
-    try { if (existsSync(P.findings)) findingsNow = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).findings ?? []; }
-    catch { /* the audit still builds without them */ }
+    let findingsNow = [], actionsNow = [];
+    try {
+      if (existsSync(P.findings)) {
+        const parsed = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"));
+        findingsNow = parsed.findings ?? [];
+        actionsNow = parsed.actions ?? [];
+      }
+    } catch { /* the audit still builds without them */ }
     deriveRecordCarry(ctx, trigger, { findings: findingsNow });
-    const again = buildAuditMd(readFileSync(P.registerFindings, "utf8"), inputs.commonLawText ?? "",
-      { findings: findingsNow, doubts: inputs.doubts ?? null, asks: inputs.asks ?? null, readingLog: readReadingLog(P),
-        commonLawGrid: inputs.commonLawGrid ?? null, doubtTruncations: inputs.doubtTruncations ?? null,
+    const registerFindingsText = readFileSync(P.registerFindings, "utf8");
+    // THE DOUBTS MINTED FROM THE TRACE FOLLOW THE TRACE. The record-carry family was minted from the trace before the
+    // repair; read against the trace written just above, a record the repair answered loses its doubt and one it left
+    // unreasoned gains one, keyed by record so no closure the closure step recorded moves onto another record. Every
+    // other family stands as the pass raised and closed it.
+    let doubts = inputs.doubts ?? null, doubtTruncations = inputs.doubtTruncations ?? null;
+    if (Array.isArray(doubts)) {
+      const coverageRows = (() => { try { const rows = JSON.parse(readFileSync(P.registerCoverageLedger, "utf8")); return Array.isArray(rows) ? rows : []; } catch { return []; } })();
+      const re = recordCarryDoubtsAgain(doubts, safeReadJson(P.recordCarry),
+        { stitch: (ds) => stitchDoubts(ds, { findings: { findings: findingsNow, actions: actionsNow }, coverageRows, registerFindingsText }) });
+      doubts = re.doubts;
+      doubtTruncations = [...(doubtTruncations ?? []).filter((t) => t?.source !== "record-carry"),
+        ...(re.omitted ? [{ source: "record-carry", minted: re.minted, omitted: re.omitted }] : [])];
+      writeDoubtLedgerAgain(P, doubts, doubtTruncations);
+      if (re.fresh.length || re.dropped.length) runLog(P.runDir, { event: "record-carry-doubts-again", trigger, fresh: re.fresh.length, dropped: re.dropped.length });
+    }
+    const again = buildAuditMd(registerFindingsText, inputs.commonLawText ?? "",
+      { findings: findingsNow, doubts, asks: inputs.asks ?? null, readingLog: readReadingLog(P),
+        commonLawGrid: inputs.commonLawGrid ?? null, doubtTruncations,
         registerPresence: inputs.registerPresence ?? null, placementRows: placementAuditRows(P) });
     if (!again.counts.findings) throw new Error("0 findings parsed from the spine tables");
     writeFileSync(P.audit, again.md);

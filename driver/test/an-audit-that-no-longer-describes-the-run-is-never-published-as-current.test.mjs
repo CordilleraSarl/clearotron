@@ -50,7 +50,7 @@ test("a rebuild that fails after the trace is written withdraws the audit writte
   // the trace was written again, the audit was not: the case between the two writes
   assert.equal(JSON.parse(readFileSync(P.recordCarry, "utf8")).trigger, "stale-repair", "guard: the rebuild wrote the trace before the audit failed");
   assert.ok(!existsSync(P.audit), "the audit written before the repair is still where publishing reads it");
-  const [dir] = kept(P, "-delivered-record-stale-repair");
+  const [dir] = kept(P, "-audit-and-trace-stale-repair");
   assert.ok(dir, "the earlier pair was not kept");
   assert.equal(readFileSync(join(dir, "audit.md"), "utf8"), EARLIER_AUDIT, "the audit kept is not the one that stood");
   assert.equal(JSON.parse(readFileSync(join(dir, "record-carry.json"), "utf8")).trigger, "publish", "the trace kept is not the one that stood");
@@ -63,7 +63,7 @@ test("a first build that fails beside an earlier pass's audit withdraws that aud
   const P = seedRun(t);
   assert.equal(withdrawSupersededAudit(P, "audit-build-failed"), true);
   assert.ok(!existsSync(P.audit), "the earlier pass's audit is still where publishing reads it");
-  const [dir] = kept(P, "-delivered-record-audit-build-failed");
+  const [dir] = kept(P, "-audit-and-trace-audit-build-failed");
   assert.ok(dir && readFileSync(join(dir, "audit.md"), "utf8") === EARLIER_AUDIT, "the earlier pass's audit was not kept as it stood");
   assert.deepEqual(events(P).filter((e) => e.event === "audit-withdrawn").map((e) => e.reason), ["audit-build-failed"]);
 });
@@ -72,6 +72,6 @@ test("with no audit on disk there is nothing to withdraw, and nothing is written
   const P = seedRun(t);
   rmSync(P.audit);
   assert.equal(withdrawSupersededAudit(P, "audit-build-failed"), false);
-  assert.deepEqual(kept(P, "-delivered-record-audit-build-failed"), []);
+  assert.deepEqual(kept(P, "-audit-and-trace-audit-build-failed"), []);
   assert.deepEqual(events(P).filter((e) => e.event === "audit-withdrawn"), []);
 });

@@ -703,6 +703,46 @@ export function mintRecordCarryDoubts(artifact, { max = 25 } = {}) {
 }
 
 /**
+ * THE RECORD-CARRY DOUBTS AGAIN, FROM A TRACE WRITTEN AGAIN after a repair. A doubt of this family names one record
+ * under a POSITIONAL id, and the closure step's verdicts are applied by id, so a closure recorded against an id must
+ * never move onto another record:
+ *   - a record still unreasoned keeps its doubt exactly as it stands: id, status and ending;
+ *   - a record newly unreasoned gets a new doubt, under an id past every one this family gave, stitched by `stitch` as
+ *     a fresh doubt is (in code; nothing is dispatched);
+ *   - a record the new trace reasons loses its doubt.
+ * Every other family's doubts stay exactly where they stood. Returns { doubts, fresh, dropped, minted, omitted }:
+ * the ids of the new and the dropped doubts, and the mint's own counts against its cap. PURE.
+ */
+export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max = 25 } = {}) {
+  const FAMILY = /^doubt:record-carry:unreasoned:(\d+)$/;
+  const all = Array.isArray(doubts) ? doubts : [];
+  const inFamily = (d) => FAMILY.test(String(d?.id ?? ""));
+  const uriOf = (d) => String(d?.subject?.uris?.[0] ?? "").toLowerCase();
+  const old = all.filter(inFamily);
+  const oldByUri = new Map(old.filter((d) => uriOf(d)).map((d) => [uriOf(d), d]));
+  const mint = trace?.computable === true ? mintRecordCarryDoubts(trace, { max }) : { doubts: [], minted: 0, omitted: 0 };
+  let next = old.reduce((n, d) => Math.max(n, Number(FAMILY.exec(d.id)[1])), 0);
+  const family = [], fresh = [];
+  for (const d of mint.doubts) {
+    const prior = oldByUri.get(uriOf(d));
+    if (prior) family.push(prior);
+    else { const f = { ...d, id: `doubt:record-carry:unreasoned:${++next}` }; fresh.push(f); family.push(f); }
+  }
+  const stitched = fresh.length ? new Map(stitch(fresh).map((d) => [d.id, d])) : new Map();
+  const members = family.map((d) => stitched.get(d.id) ?? d);
+  const keptIds = new Set(members.map((d) => d.id));
+  const out = [];
+  let placed = false;
+  for (const d of all) {
+    if (!inFamily(d)) { out.push(d); continue; }
+    if (!placed) { out.push(...members); placed = true; }
+  }
+  if (!placed) out.push(...members);
+  return { doubts: out, fresh: fresh.map((d) => d.id), dropped: old.filter((d) => !keptIds.has(d.id)).map((d) => d.id),
+    minted: mint.minted ?? mint.doubts.length, omitted: mint.omitted ?? 0 };
+}
+
+/**
  * The one-line reader answer to "where did this record stop, and why". Takes the artifact and a mark
  * text or uri; returns the matching rows. The acceptance question for — "does it say why 澜珀 did
  * not become a finding?" — is this function with `"澜珀"`. Substring, not the house token matcher, for

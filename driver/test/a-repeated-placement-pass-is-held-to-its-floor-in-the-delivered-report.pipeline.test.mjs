@@ -104,7 +104,7 @@ async function parkAndResume({ withFloor }) {
   const json = (f) => JSON.parse(readFileSync(f, "utf8"));
   const status = json(join(rd, "status.json"));
   const published = join(p2.root, "pool", status.runId);
-  const kept = readdirSync(join(rd, "_history")).filter((d) => d.endsWith("delivered-record-stale-repair"));
+  const kept = readdirSync(join(rd, "_history")).filter((d) => d.endsWith("audit-and-trace-stale-repair"));
   return { p2, duty1, ev2, rd, json, status, published, kept,
     duty2: json(driverDir(rd, "floor-duty.json")), verdict: json(driverDir(rd, "verdict.json")),
     html: readFileSync(join(published, "report.html"), "utf8"), data: json(join(published, "report-data.json")), settle: json(join(published, "settle.json")) };
@@ -157,6 +157,18 @@ test("a repeated placement pass that leaves a floor unanswered is clamped, and t
     "the trace kept is not the one written before the repair");
   assert.ok(existsSync(join(rd, "_history", kept[0], "audit.md")), "the audit written before the repair was not kept");
   assert.deepEqual(ev2.filter((e) => e.event === "audit-rebuilt").map((e) => e.trigger), ["stale-repair"]);
+
+  // one answer per record: the doubt minted from the trace before the repair said nobody recorded a verdict on the record;
+  // the trace written again says placement screened it, so the delivered audit and the doubt ledger no longer carry it
+  const carryDoubtLines = (text) => text.split("\n").filter((l) => l.includes("[record-carry]") && l.includes(NEW_FLOOR.record_id));
+  assert.ok(carryDoubtLines(readFileSync(join(rd, "_history", kept[0], "audit.md"), "utf8")).length, "guard: the audit before the repair carried the record's doubt");
+  assert.deepEqual(carryDoubtLines(readFileSync(join(rd, "audit.md"), "utf8")), [], "the delivered audit still carries a doubt the rebuilt trace answers");
+  const ledger = json(driverDir(rd, "doubts.json"));
+  assert.ok(!ledger.doubts.some((d) => String(d.id).startsWith("doubt:record-carry:") && (d.subject?.uris ?? []).includes(NEW_FLOOR.record_id)),
+    "the doubt ledger still carries the record's record-carry doubt");
+  assert.ok(json(join(rd, "_history", kept[0], "doubts.json")).doubts.some((d) => (d.subject?.uris ?? []).includes(NEW_FLOOR.record_id)),
+    "the doubt ledger before the repair was not kept");
+  assert.deepEqual(ev2.filter((e) => e.event === "record-carry-doubts-again").map((e) => [e.fresh, e.dropped]), [[0, 1]]);
 });
 
 test("a repeated placement pass that answers every floor changes nothing: the verdict stands and no clause is added", async () => {
