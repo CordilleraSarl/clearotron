@@ -418,6 +418,36 @@ test("a closure that names a request's short id settles the one request that has
     "the ambiguous citation is not reported with the requests it could have meant");
 });
 
+test("an old short-id closure is ambiguous when another request with that short id is now kept only as family parts", () => {
+  // Request A's one slice is a family the reading turn withheld, so A is kept only as its family part; request B has an
+  // unanswered slice that should have run. Both had one short id. An old closure of it could have meant either.
+  const receipt = { requested: [CUT_A, CUT_B], swept: [CUT_A, CUT_B], deferrals: [],
+    directive_qids: { [CUT_A]: ["slice:a:withheld"], [CUT_B]: ["slice:b:open"] },
+    withheld_by_judgment: [{ directive: CUT_A, slices: [{ qid: "slice:a:withheld", family: FAMILY }] }] };
+  const files = { "findings.json": CITED };
+  for (const [what, withheldFamilies] of [["withheld", withheldRecord()], ["released and unanswered", {}]]) {
+    const asks = deriveAsks({ frameReopen: receipt, planExecution: { executed: [] }, withheldFamilies }).filter((a) => a.born?.artifact === "_driver/frame-reopen.json");
+    const a = asks.find((x) => x.born.ref === CUT_A), b = asks.find((x) => x.born.ref === CUT_B);
+    assert.deepEqual([a?.part, b?.part ?? "single"], ["family", "single"], `${what}: premise: A is only its family part, B its own`);
+    assert.match(String(b.legacy_id), /^ask:frame:register-check-the-identical-spelling/, `${what}: premise: B keeps its short id for old closures`);
+    const shared = applyAskClosure(asks, [immaterial(b.legacy_id)], files);
+    assert.deepEqual(kinds(shared.asks), kinds(asks), `${what}: the ambiguous old closure settled a request it may not have judged`);
+    assert.equal(a.short_id, b.legacy_id, `${what}: A's parts do not record the short id it shared`);
+    assert.deepEqual(shared.unverified.map((u) => u.ask_id), [b.legacy_id], `${what}: the ambiguous citation is not reported`);
+  }
+});
+
+test("the closure step is shown which part of a request each open ask is, as the pipeline hands them over", async () => {
+  const { openAskForClosure } = await import("../pipeline.mjs");
+  const { receipt } = twoOpenParts();
+  const openAsks = asksFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} }).map(openAskForClosure);
+  const msg = STAGES["doubt-closure"].message({ paths: stagePaths("/nonexistent/invented-run"), openDoubts: [], openAsks });
+  const lines = msg.split("\n").filter((l) => openAsks.some((a) => l.startsWith(`- ${a.ask_id} — `)));
+  assert.equal(lines.length, 2, "premise: both parts are listed");
+  for (const a of openAsks) assert.ok(lines.some((l) => l.startsWith(`- ${a.ask_id} — `) && l.endsWith(`(${a.qids.join(", ")})`)),
+    `${a.ask_id}: the closure step cannot tell this part from its sibling`);
+});
+
 test("a part's id does not depend on slice order, does not move when its family is released and runs, and survives a save and reload", () => {
   const { receipt } = twoOpenParts();
   const { receipt: reversed } = twoOpenParts((xs) => [...xs].reverse());

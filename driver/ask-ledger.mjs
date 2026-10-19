@@ -64,7 +64,8 @@ import { squash } from "./doubt-ledger.mjs";
 //     ending: { kind, by, evidence, reasons, ts } | null,
 //     handoff: "<the surface a human reads an un-ended/handed-over ask on>" | null,
 //     part, family,                              // only on a request kept as parts: "ran" or "family", and that family's qid
-//     legacy_id,                                 // a frame request's ran part only: the short id it had before its hash
+//     short_id,                                  // every part of a frame request: the request's short id from before its hash
+//     legacy_id,                                 // the one part an old closure of that short id may settle: the ran part
 //   }
 
 const clip = (s, n = 200) => { const t = String(s ?? "").replace(/\s+/g, " ").trim(); return t.length > n ? `${t.slice(0, n - 1)}…` : t; };
@@ -416,7 +417,7 @@ export function deriveAsks({
         ].filter(Boolean);
       }
       for (const p of parts) push({ ask_id: p.id, born, ask, qids: p.qids, ending: p.ending, handoff: p.handoff ?? null,
-        ...(p.part ? { part: p.part } : {}), ...(p.family ? { family: p.family } : {}), ...(p.legacy ? { legacy_id: p.legacy } : {}) });
+        ...(p.part ? { part: p.part } : {}), ...(p.family ? { family: p.family } : {}), short_id: legacy, ...(p.legacy ? { legacy_id: p.legacy } : {}) });
     }
   }
 
@@ -703,17 +704,24 @@ export function applyAskClosure(asks, closureLines, fileTexts = {}, { ts = null 
   const byId = new Map();
   for (const l of closureLines ?? []) if (l?.id && !byId.has(l.id)) byId.set(l.id, l);
   const unverified = [];
-  // A CLOSURE WRITTEN BEFORE FRAME IDS CARRIED THEIR HASH names a request by its short id. It settles the one ran
-  // part that still carries that short id, and none where two do: it cannot say which it meant, and settling either
-  // could end the obligation it did not judge. Such a citation is reported with the parts it could have meant.
-  const legacyOwners = new Map();
-  for (const a of asks ?? []) if (a?.legacy_id && a.legacy_id !== a.ask_id) legacyOwners.set(a.legacy_id, [...(legacyOwners.get(a.legacy_id) ?? []), a.ask_id]);
-  for (const [legacy, owners] of legacyOwners) {
-    const l = byId.get(legacy);
-    if (l && owners.length > 1) unverified.push({ ask_id: legacy, file: l.file, quote: l.quote, ambiguous: owners });
+  // A CLOSURE WRITTEN BEFORE FRAME IDS CARRIED THEIR HASH names a request by its short id. Every request that had that
+  // short id could be the one it meant, a request now kept only as family parts included. It settles the ran part of
+  // the one request that had it, and nothing where two did: settling either could end an obligation it never judged.
+  // An ambiguous citation is reported with the parts it could have meant, while any of them is still open.
+  const requestsOf = new Map(), partsOf = new Map();
+  for (const a of asks ?? []) {
+    const short = a?.short_id ?? a?.legacy_id;
+    if (!short || short === a.ask_id) continue;
+    requestsOf.set(short, new Set([...(requestsOf.get(short) ?? []), a.born?.ref ?? a.ask_id]));
+    partsOf.set(short, [...(partsOf.get(short) ?? []), a]);
+  }
+  for (const [short, requests] of requestsOf) {
+    const l = byId.get(short);
+    const parts = partsOf.get(short) ?? [];
+    if (l && requests.size > 1 && parts.some((a) => !a.ending)) unverified.push({ ask_id: short, file: l.file, quote: l.quote, ambiguous: parts.map((a) => a.ask_id) });
   }
   const lineFor = (a) => byId.get(a.ask_id)
-    ?? (a.legacy_id && legacyOwners.get(a.legacy_id)?.length === 1 ? byId.get(a.legacy_id) : undefined);
+    ?? (a.legacy_id && requestsOf.get(a.legacy_id)?.size === 1 ? byId.get(a.legacy_id) : undefined);
   const carryIntoFindings = [];
   let immaterialByStage = 0;
   const delivered = deliveredMarks(fileTexts?.["findings.json"]);

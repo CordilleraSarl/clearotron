@@ -1012,14 +1012,6 @@ function deriveBandShape(ctx, band) {
     note(`band-shape derivation failed (non-fatal — judgment still holds band_lookup over the band; machine checks read the complete band): ${String(e?.message ?? e).slice(0, 120)}`);
   }
   recordGoodsEvidenceFor(ctx, band, evidenceDoc);
-  // Placement's standing decisions are read off the shape, so a shape derived again can change them with no placement
-  // pass: a group's row checked again on the new shape may cover other lines, or stand no longer, and the floors it
-  // leaves can grow. The decisions file the reading step, the writer and the review declare is written again with the
-  // shape, so such a change makes a stage that already read them stale. Only once placement has written it.
-  if (existsSync(P.placementDecisions)) {
-    try { writePlacementDecisions(P); }
-    catch (e) { runLog(P.runDir, { event: "placement-decisions-failed", trigger: "band-shape", reason: String(e?.message ?? e).slice(0, 120) }); }
-  }
 }
 
 /**
@@ -6485,6 +6477,10 @@ export function postRepairScope(runDir, P, s2, { staleRepaired = [], baseKept = 
   const moved = (s2?.changed ?? []).filter((c) => c?.via !== "repair-record" && basename(String(c?.name ?? "")) !== narrative);
   if (moved.length) return { mode: "whole", why: "another-input-moved", moved: moved.map((c) => String(c?.name ?? "")) };
   if (staleRepaired.includes("synthesis")) return { mode: "whole", why: "re-synthesised" };
+  // Any other step this loop re-ran ahead of the reviewer (the digest, placement, the skeptic) moved what the review
+  // stands on beyond the repair's own change, so the scope the queue captured no longer says what changed.
+  const upstream = staleRepaired.filter((l) => l !== "narrative-refutation" && !/^report-(overview|card:)/.test(l));
+  if (upstream.length) return { mode: "whole", why: "upstream-re-run", upstream };
   let before = null, after = null;
   try { before = readRepairBase(runDir); after = lastAcceptedCall(runDir); } catch { /* read as no base */ }
   const changed = changedContent(before, after);
@@ -6502,6 +6498,15 @@ export function recordChangeOwesReview(runDir) {   // @internal
   let c = null;
   try { c = changedContent(readRepairBase(runDir), lastAcceptedCall(runDir)); } catch { c = null; }
   return !isEmptyChange(c);
+}
+
+/**
+ * An open ask as the closure step is shown it: its id, where it was raised and its text, and for a request kept as
+ * parts, which part it is and the questions that part holds, so two parts of one request never read as one line.
+ */
+export function openAskForClosure(a) {   // @internal — driven by its test
+  return { ask_id: a.ask_id, born: a.born, ask: a.ask,
+    ...(a.part ? { part: a.part, qids: Array.isArray(a.qids) ? a.qids : [] } : {}), ...(a.family ? { family: a.family } : {}) };
 }
 
 /** The change a whole review's record lists when its scope could not be compared: none. */
@@ -14814,7 +14819,7 @@ async function pipelineInner(job, opts = {}) {
               ? openAfterStitch.filter((d) => doubtSel.ids.includes(d.id))
               : openAfterStitch;
             ctx.openDoubts = dispatchDoubts.map((d) => ({ id: d.id, birth: d.birth, subject: d.subject }));
-            ctx.openAsks = openAsksForStage.map((a) => ({ ask_id: a.ask_id, born: a.born, ask: a.ask }));
+            ctx.openAsks = openAsksForStage.map(openAskForClosure);
             // THE SPEC SIDECAR, WRITTEN BEFORE THE DISPATCH. The seat supplies none of its own context:
             // the ids it may speak about and the files it may cite are the driver's, so a doubt it was not
             // given is refused by name and a file it was not given cannot be expressed at all. Both
@@ -15538,7 +15543,12 @@ async function pipelineInner(job, opts = {}) {
             // THE REVIEW AFTER A DELIVERY-CHECK REPAIR (see runPostRepairReview). Reached where the scope is certain, and
             // where a change to the record, or one an earlier review could not read, is reviewed whole: that review's
             // flags go to the same one correction. Every other staleness of the reviewer takes the arm below, as before.
-            const scope = postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept });
+            // A CHANGE NO REVIEW READ IS REVIEWED WHOLE, whatever this pass's own repair changed: the base this pass
+            // kept follows the earlier change, so a narrowed review would read only the later one, and saving the same
+            // values again would settle a stamp over a change nobody read.
+            const unreadOnEntry = unreadRecordReview(run.runDir);
+            const narrowedScope = postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept });
+            const scope = unreadOnEntry && narrowedScope.mode !== "whole" ? { mode: "whole", why: "an earlier change went unreviewed" } : narrowedScope;
             if (scope.mode === "none") {
               // A FILE WRITTEN AGAIN WITH THE SAME VALUES IS NOT A CHANGE: no review runs, and the reviewer's stamp
               // takes the rewrite as accounted for, so the delivery guard does not block on it.
