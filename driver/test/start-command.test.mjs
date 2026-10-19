@@ -285,7 +285,7 @@ test("the worker is NON-FATAL — an install with no worker is a supported state
   // that argument now carries a spawn-time handoff, and this arm must not care what the worker is told.
   assert.match(src, /start\("the worker", "driver\/runner\.mjs", [^\n]*\{ args: \["--watch"[^\n]*\], fatal: false \}\)/,
     "the worker is not started with fatal:false — a worker that dies would call shutdown(1) and take the portal down with it");
-  assert.match(src, /const start = \(name, script, env, \{ args = \[\], fatal = true \} = \{\}\) =>/,
+  assert.match(src, /const start = \(name, script, env, \{ args = \[\], fatal = true, clientDoor = false \} = \{\}\) =>/,
     "start() no longer distinguishes a fatal child from a non-fatal one, so fatal:false above is inert");
   // The default must stay FATAL: the portal and the engine door are not optional, and a silent default flip
   // would turn a dead door into a portal that serves 500s rather than an install that stops and says why.
