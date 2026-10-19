@@ -850,8 +850,8 @@
           "todos": 0
         },
         "a-knockout-rating-may-cite-the-filings-it-was-handed.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
