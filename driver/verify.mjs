@@ -12,7 +12,7 @@ import { dirname, join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { findReceiptViolations, findGridLedgerViolations, findUnranDictatedCells, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
-import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
+import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs"; import { lastAcceptedOverview, acceptReportOverview, readReportIdentity } from "./report-overview-record.mjs";
 import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, MEANING_ANGLES_RE,
   parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
@@ -237,6 +237,7 @@ function all(...checks) {
   return ok();
 }
 const ok = (reason = "") => ({ ok: true, reason });
+
 const fail = (reason) => ({ ok: false, reason });
 
 // ── A1 SPLIT: the structural core shared by the commonLaw and commonLawHalf validators ─────────────
@@ -2505,8 +2506,8 @@ export const validators = {
   // delivery contract files. report.md is now ASSEMBLED by the driver (assembleReportMd) from the two LLM
   // halves below; its validator stays (front-matter + Marks) as the post-assembly structural gate.
   report: (_p, c) => all(nonEmpty(c, 300), needs(c, [/^---/m, /^#\s*Marks/im], "front-matter+marks", ["front-matter", "marks-section"])),
-  // B1 — report-overview: the cross-finding shell (front-matter + Actions/Coverage/Methodology, NO cards).
-  reportOverview: (_p, c) => all(nonEmpty(c, 120), needs(c, [/^---/m, /^#\s*(Actions|Coverage|Methodology)/im], "front-matter+shell", ["front-matter", "shell-section"])),
+  // B1 — report-overview: the cross-finding shell (front-matter + Actions/Coverage/Methodology, NO cards). The driver's own render of an accepted call passes on the acceptance's terms (see isAcceptedOverviewRender, at the end of this file).
+  reportOverview: (p, c) => (isAcceptedOverviewRender(dirname(String(p ?? "")), c) ? ok("rendered from an accepted call") : all(nonEmpty(c, 120), needs(c, [/^---/m, /^#\s*(Actions|Coverage|Methodology)/im], "front-matter+shell", ["front-matter", "shell-section"]))),
   // B1 — report-card: ONE isolated finding card (heading + its depth section). Lenient-but-structural
   // like the rest.: the required section is "### Full detail", NOT "### The read" — the read was a
   // third condensation of a finding already summarised by the typed `net`, and it is retired. This gate
@@ -2776,4 +2777,23 @@ export function lateReviewAgainst(carried, reviewMd) {
   const b = VERDICT_RANK[now];
   const softened = !hardened && Number.isInteger(a) && Number.isInteger(b) && b < a ? now : null;
   return { hardened, softened };
+}
+
+/**
+ * IS THIS THE DRIVER'S OWN RENDER OF THE RUN'S LAST ACCEPTED OVERVIEW CALL, byte for byte? Never throws.
+ *
+ * The record_report_overview transport (report-overview-record.mjs) measures the call and renders the shell itself. A
+ * caption with no actions and no methodology is a call it accepts, and it renders with no section heading; the
+ * delivered report places its code-built sections whether or not `# Actions` is there. Holding that render to a
+ * section heading asked the model to repair structure the code writes, and a run went into recovery on it. So
+ * `validators.reportOverview` passes a file that is exactly this render, on the acceptance's terms. Any other file (an
+ * archived or replayed shell written by hand, or a render changed after the save) is held to the structural check.
+ */
+function isAcceptedOverviewRender(runDir, content) {
+  try {
+    const call = lastAcceptedOverview(runDir);
+    if (!call) return false;
+    const v = acceptReportOverview(call, { identity: readReportIdentity(runDir) });
+    return v.ok === true && v.content === content;
+  } catch { return false; }
 }

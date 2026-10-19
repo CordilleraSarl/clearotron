@@ -135,6 +135,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-caption-only-overview-the-save-accepts-passes-its-own-file-check.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-capture-allocates-a-sequence.test.mjs": {
           "tests": 2,
           "asserts": 2,
