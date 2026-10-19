@@ -2757,3 +2757,21 @@ export function applyStageWrites(msg, argv) {
   }
   return summary;
 }
+
+/**
+ * MOCK_POST_REPAIR_OWES_MORE=persist — the record owed after the review is still owed when the correction after it is
+ * cut off: the run's declination list, which the driver builds again before that correction, holds it once more. Called
+ * by mock-claude and mock-codex just before a forced failure, so the restored record meets a duty it does not answer.
+ */
+export function beforeForcedFailure(argv, msg) {
+  if (process.env.MOCK_POST_REPAIR_OWES_MORE !== "persist" || !/After the delivery check, that record was repaired/.test(msg)) return;
+  const dir = runDirFromWiring(argv);
+  if (!dir) return;
+  const at = driverDir(dir, "declination-spec.json");
+  let spec = null;
+  try { spec = JSON.parse(readFileSync(at, "utf8")); } catch { spec = null; }
+  const rows = Array.isArray(spec?.rows) ? spec.rows : [];
+  if (!rows.some((r) => r?.uri === "/mark/us/90000099"))
+    rows.push({ uri: "/mark/us/90000099", mark: "NOVAPULSE", owner: "Owed Later LLC", tier: "high", classes: [9], status: "Registered" });
+  writeFileSync(at, JSON.stringify({ ...(spec ?? {}), rows }, null, 2) + "\n");
+}
