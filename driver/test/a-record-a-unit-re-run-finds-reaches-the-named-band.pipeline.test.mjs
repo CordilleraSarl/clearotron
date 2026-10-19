@@ -215,6 +215,14 @@ test("claude: a record a refused merge left out is counted in the delivered repo
   assert.equal(verdict.verdict, "CONDITIONAL");
   const clause = clauseForDefect("recall_reconciliation_unended", 1, gap[0].candidates + 1);
   assert.ok(verdict.clauses.includes(clause), `the verdict does not count the record left out in the approved sentence: ${JSON.stringify(verdict.clauses)}`);
+  // and the report the client opens says so, in the same sentence, beside the same result
+  const status = JSON.parse(readFileSync(join(p2.res.runDir, "status.json"), "utf8"));
+  const published = join(root, "pool", status.runId);
+  const data = JSON.parse(readFileSync(join(published, "report-data.json"), "utf8"));
+  assert.ok(data.rating.conditions.includes(clause), `the delivered report's rating does not list the sentence: ${JSON.stringify(data.rating.conditions)}`);
+  assert.equal(data.rating.statement, verdict.statement, "the delivered report's rating is not the verdict on record");
+  assert.ok(readFileSync(join(published, "report.html"), "utf8").includes(clause), "the report the client opens does not name the record left out");
+  assert.equal(JSON.parse(readFileSync(join(published, "settle.json"), "utf8")).signoff, "CONDITIONAL", "the delivered sign-off is not the verdict on record");
 });
 
 test("claude: a record the envelope close adds reaches the named band, the shape and the floor of the placement pass that assesses it", async () => {
