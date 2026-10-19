@@ -43,7 +43,8 @@ const JOB = {
 const KNOBS = ["MOCK_VERDICT", "MOCK_VERDICT_DEFECTS", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_ACTIONS",
   "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING", "MOCK_REVIEW_BLOCKS_AFTER_VERDICT",
   "MOCK_NARRATIVE_OVER_CAP", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_LINT_REPAIR_SAME_VALUES",
-  "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS", "MOCK_WHOLE_FALLBACK_VERDICT", "MOCK_LATE_SAVE_ADDS"];
+  "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS", "MOCK_WHOLE_FALLBACK_VERDICT", "MOCK_LATE_SAVE_ADDS",
+  "MOCK_FAIL_AFTER_WRITES", "MOCK_POST_REPAIR_LOSES", "MOCK_CORRECTION_MARKS"];
 
 // The Codex run pins its own billing; every Claude run puts back what the suite started with.
 const AS_STARTED = Object.fromEntries(["CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"].map((k) => [k, process.env[k]]));
@@ -253,6 +254,78 @@ test("a finding the correction after the review adds gets its card, and the deli
     "the delivered report does not carry the added finding's card");
   assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
 });
+
+// ── A FAILED CORRECTION AFTER THE REVIEW NEVER ENDS THE RUN (owner's ruling, 2026-10-19: a run is never held) ───────
+// The state before the correction comes back whole, from the record as it stood or, where that cannot be read, from the
+// save the review read, or the one kept from before the repair; with none of them, nothing the failed pass wrote is kept.
+const FLAG_ON_1 = [{ kind: "fact", text: "An invented point the failed correction never applied.", on: [1] }];
+const MARK = "MARKED-BY-THE-FAILED-CORRECTION";
+const rollbackOf = (events) => events.find((e) => e.event === "corrective-rollback" && e.pass === "post-repair");
+const text = (f) => (existsSync(f) ? readFileSync(f, "utf8") : "");
+
+for (const engine of Object.keys(ENGINES)) {
+  test(`${engine}: a correction after the review that saves and then fails is rolled back whole, and the run delivers without it`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_CORRECTION_MARKS: MARK, MOCK_FAIL_AFTER_WRITES: CORRECTION_OPENS }, engine);
+    assert.equal(stageEvents(events, "synthesis", "post-repair-corrective").length, 1, "premise: the correction ran");
+    const calls = readdirSync(driverDir(res.runDir, "synthesis-calls")).filter((f) => /^call-\d+\.json$/.test(f))
+      .map((f) => readFileSync(driverDir(res.runDir, "synthesis-calls", f), "utf8"));
+    assert.ok(calls.some((c) => c.includes(MARK)), "premise: the failed correction's save reached the tool");
+    const rb = rollbackOf(events);
+    assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
+    assert.equal(rb.from, "record", JSON.stringify(rb));
+    // THE RECORD, ITS NARRATIVE, THE NEXT PATCH'S BASE AND THE DELIVERED REPORT all hold the state before the correction.
+    for (const f of [join(res.runDir, "findings.json"), join(res.runDir, "narrative.md"), synthesisCallPaths(res.runDir).accepted, join(res.runDir, "report.md")])
+      assert.ok(!text(f).includes(MARK), `the failed correction's text survives in ${f}`);
+    assert.ok(text(driverDir(res.runDir, "reviewer-open-questions.md")).includes(FLAG_ON_1[0].text), "the point the correction never applied is not on record");
+    assert.ok(!text(join(res.runDir, "report.md")).includes(FLAG_ON_1[0].text), "the point reached the client's report");
+    assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8")).verdict, res.verdict, "the label and the run's verdict disagree");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+
+  test(`${engine}: a correction after the review that fails with its findings record unreadable is rolled back to the save the review read, and the run delivers`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings", MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
+    assert.equal(stageEvents(events, "synthesis", "post-repair-corrective").length, 1, "premise: the correction ran");
+    const rb = rollbackOf(events);
+    assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
+    assert.equal(rb.from, "accepted-save", JSON.stringify(rb));
+    // The record is rebuilt from that save, and the base the next patch builds on is that save.
+    const acc = JSON.parse(readFileSync(synthesisCallPaths(res.runDir).accepted, "utf8")).params;
+    const fj = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+    assert.ok(Array.isArray(fj.findings) && fj.findings.length, "no record was rebuilt");
+    assert.equal(fj.findings[0].net, acc.findings.findings[0].net, "the rebuilt record is not the save the review read");
+    assert.ok(text(driverDir(res.runDir, "reviewer-open-questions.md")).includes(FLAG_ON_1[0].text), "the point the correction never applied is not on record");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+
+  test(`${engine}: with the review's save gone too, the rollback stands on the save kept from before the repair, and the run delivers`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,accepted", MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
+    const rb = rollbackOf(events);
+    assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
+    assert.equal(rb.from, "save-before-the-repair", JSON.stringify(rb));
+    assert.equal(text(synthesisCallPaths(res.runDir).accepted), text(repairBasePath(res.runDir)), "the next patch's base is not the save it was rebuilt from");
+    assert.ok(JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8")).findings?.length, "no record was rebuilt");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+
+  // THE ONE CASE THAT STILL ENDS THE PASS: the record and both saves unreadable, a storage failure. Delivering past it
+  // shipped a report with no findings under the verdict as it stood, so the pass keeps its failure, with nothing the
+  // failed correction wrote kept.
+  test(`${engine}: with no trusted state left, nothing the failed correction wrote is kept, and no report goes out without its record`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,accepted,repair-base", MOCK_CORRECTION_MARKS: MARK,
+      MOCK_FAIL_AFTER_WRITES: CORRECTION_OPENS }, engine);
+    const lost = events.find((e) => e.event === "post-repair-correction-unrecoverable");
+    assert.ok(lost, `the case was not recorded: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
+    assert.equal(lost.findings, "set-aside", JSON.stringify(lost));
+    assert.ok(!rollbackOf(events), "a rollback was claimed with nothing to roll back to");
+    for (const f of [join(res.runDir, "findings.json"), synthesisCallPaths(res.runDir).accepted, join(res.runDir, "narrative.md")])
+      assert.ok(!text(f).includes(MARK), `the failed correction's text was kept in ${f}`);
+    assert.notEqual(res.ok, true, "a report went out with its record unreadable");
+  });
+}
 
 test("a narrative repair whose review is refused, on a stage that still reads ok, is reviewed whole before it is delivered", async () => {
   // The refused call leaves the earlier review's file standing, so the stage reads ok: only the accepted call counts.
