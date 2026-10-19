@@ -73,7 +73,7 @@ export const COUNTED_EVENTS = {
   "connotation-unfinished-disclosed": FAILED, "core-artifact-invalid": FAILED, "corrections-applied-failed": FAILED,
   "coverage-form-absent": FAILED, "coverage-ledger-fallback": FAILED, "coverage-ledger-render-failed": FAILED,
   "crowd-context-failed": FAILED, "delivery-stale-blocked": FAILED, "digest-flush-failed": FAILED,
-  "post-repair-correction-unrecoverable": FAILED,
+  "post-repair-correction-unrecoverable": FAILED, "post-repair-state-not-kept": FAILED,
   "digest-flush-timeout": FAILED, "document-coverage-render-failed": FAILED, "doubts-failed": FAILED,
   "evidence-claim-invariant": { kind: FAILED, when: (e) => e.ok === false || Number(e.violations) > 0 },
   "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,

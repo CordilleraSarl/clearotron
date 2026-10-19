@@ -2017,8 +2017,19 @@ export function applyStageWrites(msg, argv) {
         // MOCK_POST_REPAIR_LOSES=<findings,accepted,repair-base> — once that review is recorded, the named files are gone
         // (a disk that lost them), so the correction after it starts with no readable record, or with no save behind it.
         if (!bad(r) && runDir && process.env.MOCK_POST_REPAIR_LOSES) {
-          const lost = { findings: join(runDir, "findings.json"), accepted: synthesisCallPaths(runDir).accepted, "repair-base": repairBasePath(runDir) };
+          const lost = { findings: join(runDir, "findings.json"), accepted: synthesisCallPaths(runDir).accepted, "repair-base": repairBasePath(runDir),
+            retained: driverDir(runDir, "post-repair-state.json") };
           for (const k of process.env.MOCK_POST_REPAIR_LOSES.split(",").map((x) => x.trim()).filter(Boolean)) if (lost[k]) rmSync(lost[k], { force: true });
+        }
+        // MOCK_POST_REPAIR_OWES_MORE=1 — once that review is recorded, the run owes one more record a finding or a
+        // declination: the duty grew after the save the review read, so that save no longer meets it as it stands.
+        if (!bad(r) && runDir && process.env.MOCK_POST_REPAIR_OWES_MORE) {
+          const at = driverDir(runDir, "declination-spec.json");
+          let spec = null;
+          try { spec = JSON.parse(readFileSync(at, "utf8")); } catch { spec = null; }
+          const rows = Array.isArray(spec?.rows) ? spec.rows : [];
+          rows.push({ uri: "/mark/us/90000099", mark: "NOVAPULSE", owner: "Owed Later LLC", tier: "high", classes: [9], status: "Registered" });
+          writeFileSync(at, JSON.stringify({ ...(spec ?? {}), rows }, null, 2) + "\n");
         }
         return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
           : `mock reviewer recorded the review after the repair (${verdict}) through record_narrative_refutation`;

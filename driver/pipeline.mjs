@@ -6741,9 +6741,11 @@ function unreadRecordFindingOnly(runDir) {
  * A review after a repair that could not be read, ON RECORD. Its change went unreviewed, and the reviewer's own stamp
  * cannot be trusted to say so: a findings-only change does not move the files the reviewer declares, and a stage
  * that ends with no accepted call still reads ok whenever the earlier review's file stands, so its stamp is
- * refreshed over the repaired narrative. The run delivers all the same, as the released engine delivers it: a run is
- * never held on an unread review (owner's ruling, 2026-10-19). The record keeps what went unreviewed, and a resume
- * for any other cause reviews that change whole, until a review that is read replaces the record.
+ * refreshed over the repaired narrative. This record is never handed to the delivery guard: a run is not held on an
+ * unread review (owner's ruling, 2026-10-19), and such a run delivers as the released engine delivers it. The one
+ * boundary is the released engine's own: a reviewer whose re-run fails outright leaves its stamp stale on a changed
+ * narrative, and the freshness guard decides that, as it always has. The record keeps what went unreviewed, and a
+ * resume for any other cause reviews that change whole, until a review that is read replaces the record.
  */
 export function unreadRecordReview(runDir) {   // @internal
   try { return JSON.parse(readFileSync(postRepairRecordPath(runDir), "utf8"))?.status === "unread"; }
@@ -6820,7 +6822,8 @@ async function runPostRepairReview(ctx, P, run, scope) {
  * narrowed at all (a change to the record the scope cannot compare, or one an earlier review could not read, as on
  * a resume). It returns what runPostRepairReview returns, so its points go to the same one correction; adopting its
  * verdict alone would leave its flags unapplied. When it cannot be read, the record says the change was not reviewed
- * (`unreadRecordReview`). No unread review is a pass, and none holds the run: it delivers, as the released engine does. `rerun`
+ * (`unreadRecordReview`). No unread review is a pass, and the record never holds the run; a re-run that failed outright
+ * leaves the reviewer's stamp as the released engine leaves it, for the freshness guard. `rerun`
  * is the reviewer's own stale-repair arm.
  */
 async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
@@ -6836,7 +6839,7 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
     const fail = r?.ok ? "no-accepted-call" : String(r?.fail ?? "failed");
     writePostRepairRecord(runDir, { status: "unread", ...base, fail });
     runLog(runDir, { event: "post-repair-review", read: false, whole: true, fail: fail.slice(0, 120) });
-    note(`[post-repair] neither review of what the repair changed could be read back — it was not reviewed; the run's record says so, and the run delivers`);
+    note(`[post-repair] neither review of what the repair changed could be read back — it was not reviewed, and the run's record says so; ${r?.ok ? "the run delivers" : "the reviewer's re-run failed, so its stamp stays as it was and the freshness guard decides, as in the released engine"}`);
     return { reviewed: false };
   }
   const reviewText = readFileSync(P.seniorEyeReview, "utf8");
@@ -6848,24 +6851,69 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
   return { reviewed: true, rec, reviewText, items, points, putBack: () => {}, base };
 }
 
+/** Where the state the review after a repair reads is kept whole, before the review and its correction run. */
+const postRepairStatePath = (runDir) => driverDir(runDir, "post-repair-state.json");
+
 /**
- * THE TRUSTED STATE BEFORE THE CORRECTION AFTER A POST-REPAIR REVIEW, for its rollback. The usual snapshot reads the
- * findings record as it stands. Where that read fails, the state is rebuilt from an accepted save, through the driver's
- * own acceptance, never from a save the correction may write afterwards: first the save the review read (`before`,
- * read before the correction starts), then the save kept from before the delivery-check repair, the last record this
- * run checked before it. The record, its narrative and the merge base the next patch builds on all come from that one
- * save, so they agree. Null when none of the three can stand. Never throws.
+ * THE STATE THE REVIEW AFTER A REPAIR READS, KEPT WHOLE before the review and its correction can lose any of it: the
+ * findings record, its narrative, the merge base the next patch builds on, and the fold, in one file under `_driver/`,
+ * so the four are kept together or not at all. Where a part cannot be read, no state is kept, and an earlier one is
+ * removed so that it never stands for this review. Returns whether a state was kept. Never throws.
+ */
+function retainStateBeforeReview(runDir, P) {
+  try {
+    const findings = readFileSync(P.findings, "utf8");
+    const base = snapshotSynthesisBase(runDir);
+    if (base.accepted == null || base.narrative == null) throw new Error("a part of the state could not be read");
+    atomicWrite(postRepairStatePath(runDir), JSON.stringify({ ts: new Date().toISOString(), findings, narrative: base.narrative,
+      accepted: base.accepted, fold: snapshotFold(runDir) }) + "\n");
+    return true;
+  } catch (e) {
+    try { rmSync(postRepairStatePath(runDir), { force: true }); } catch { /* nothing to remove */ }
+    runLog(runDir, { event: "post-repair-state-not-kept", reason: String(e?.message ?? e).slice(0, 160) });
+    return false;
+  }
+}
+
+/**
+ * THE TRUSTED STATE BEFORE THE CORRECTION AFTER A POST-REPAIR REVIEW, for its rollback, from the first source that
+ * stands, in this order:
+ *   1. the findings record as it stands, with its fold, narrative and base (the usual snapshot);
+ *   2. the state kept whole before the review (`retainStateBeforeReview`), byte for byte;
+ *   3. the save the review read (`before`, read before the correction starts), rebuilt through the driver's own
+ *      acceptance, never from a save the correction may write afterwards;
+ *   4. the save kept from before the delivery-check repair, rebuilt the same way.
+ * A save that the run's CURRENT duty refuses is not lost: it was accepted when it was made, and the records owed since
+ * are evidence added later. It is rebuilt with the duty set aside and marked so (`duty: "relaxed"`), and the delivery
+ * check's own duty then names what it leaves unaccounted, in the approved sentence. A save that cannot be read, or that
+ * the acceptance refuses for anything else, is not a source. Null only when none of the four stands. Never throws.
  */
 function trustedStateBeforeCorrection(Pv, runDir, before) {
   const held = snapshotFindingsForCorrections(Pv, runDir);
   if (held) return held;
+  const sha = (t) => createHash("sha256").update(t).digest("hex");
+  try {
+    const k = JSON.parse(readFileSync(postRepairStatePath(runDir), "utf8"));
+    if (typeof k?.findings === "string" && typeof k.narrative === "string" && typeof k.accepted === "string") {
+      const h = sha(k.findings);
+      return { raw: k.findings, sha: h, model: { raw: k.findings, sha: h }, fold: k.fold ?? null,
+        base: { accepted: k.accepted, narrative: k.narrative }, from: "state-before-the-review" };
+    }
+  } catch { /* no state kept, or it does not read: the saves below */ }
+  const reads = (() => { try { return driverReadsFor(runDir); } catch { return null; } })();
   const fromSave = (params, accepted, from) => {
-    if (!params || accepted == null) return null;
-    let v = null;
-    try { v = acceptSynthesis(params, driverReadsFor(runDir)); } catch { v = null; }
+    if (!params || accepted == null || !reads) return null;
+    const accept = (r) => { try { return acceptSynthesis(params, r); } catch { return null; } };
+    let v = accept(reads), duty = "current", refused = null;
+    if (!v?.ok && reads.owed != null) {
+      refused = v?.reason ?? null;
+      const w = accept({ ...reads, owed: null, declined: null });
+      if (w?.ok) { v = w; duty = "relaxed"; }
+    }
     if (!v?.ok || typeof v.findings !== "string" || typeof v.narrative !== "string") return null;
-    const sha = createHash("sha256").update(v.findings).digest("hex");
-    return { raw: v.findings, sha, model: { raw: v.findings, sha }, fold: null, base: { accepted, narrative: v.narrative }, from };
+    const h = sha(v.findings);
+    return { raw: v.findings, sha: h, model: { raw: v.findings, sha: h }, fold: null, base: { accepted, narrative: v.narrative }, from, duty,
+      ...(duty === "relaxed" ? { refusedUnderCurrentDuty: String(refused ?? "").slice(0, 160) } : {}) };
   };
   const bytes = (at) => { try { return readFileSync(at, "utf8"); } catch { return null; } };
   return fromSave(before, snapshotSynthesisBase(runDir).accepted, "accepted-save")
@@ -6880,8 +6928,9 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
  * not waited for either: it is rolled back as a failed one is, since the report it would correct is already reviewed,
  * and waiting for the reset would hold the run.
  *
- * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER. The record, the save the review read and the save kept from before
- * the repair are all unreadable, a storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
+ * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER. That is the precise limit: the record, the state kept whole before
+ * the review, the save the review read and the save kept from before the repair are all unreadable or refused, a
+ * storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
  * go back to what they were, and the failed pass's record is set aside under `_driver/` as evidence. A pass that went on from there delivered a
  * report with no findings, labelled with the verdict as it stood (measured on the mock pipeline, 2026-10-19): a clear
  * result over a record nobody can read. So this case alone keeps the failure it always had. Returns the rollback
@@ -6892,11 +6941,12 @@ async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBef
   const failure = pass?.fail === "rate_limited" || pass?.resetsAt ? { fail: "rate_limited, not waited for" } : pass;
   if (pre?.raw) {
     const rollback = rollbackCorrectivePass(Pv, runDir, pre, failure);
-    if (rollback && pre.from) {
+    if (rollback && pre.from) rollback.from = pre.from;
+    if (rollback && pre.duty) rollback.duty = pre.duty;
+    if (rollback && (pre.from === "accepted-save" || pre.from === "save-before-the-repair")) {
       // A record rebuilt from a save is folded, and given the seam's writes, as the save itself was.
       try { foldAfterSave(runDir, Pv.findings); } catch (e) { note(`[post-repair] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
       try { await ctx.afterSynthesisSave?.(); } catch (e) { note(`[post-repair] the seam's writes could not be made again over the restored record (${String(e?.message ?? e).slice(0, 100)})`); }
-      rollback.from = pre.from;
     }
     return rollback;
   }
@@ -6947,7 +6997,8 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
   recordSynthesisSeam(ctx, pass, "post-repair-corrective");
   const rollback = pass.ok ? null : await recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore });
   if (rollback) {
-    runLog(runDir, { event: "corrective-rollback", reason: rollback.reason, restored: rollback.restored, pass: "post-repair", from: rollback.from ?? "record" });
+    runLog(runDir, { event: "corrective-rollback", reason: rollback.reason, restored: rollback.restored, pass: "post-repair", from: rollback.from ?? "record",
+      ...(rollback.duty ? { duty: rollback.duty } : {}) });
     note(`[post-repair] the correction after the review of the repair failed (${rollback.reason}) — the record it started from is back, and the run delivers with the points recorded`);
   } else {
     must(pass, "synthesis(post-repair)");
@@ -16017,6 +16068,9 @@ async function pipelineInner(job, opts = {}) {
               continue;
             }
             const rerun = () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
+            // THE STATE THIS REVIEW READS IS KEPT WHOLE before it runs, so a correction that fails after it has a trusted
+            // state to come back to even where the record itself is lost meanwhile.
+            retainStateBeforeReview(run.runDir, P);
             // A scope that cannot be narrowed is reviewed whole at once, and its record lists no change it could compare.
             let review = scope.mode === "whole"
               // A resume reviews the change its earlier record names, so that record says what the change was.
@@ -16026,7 +16080,7 @@ async function pipelineInner(job, opts = {}) {
             // A narrowed review that could not be read falls back to the whole review, whose points go to the same one
             // correction below: neither the stamp of a findings-only change nor that of a stage that ends ok on the
             // earlier review's file can show the change unread. When the whole review cannot be read either, its
-            // record keeps the change no review read, and the run delivers.
+            // record keeps the change no review read; the record holds nothing (see `unreadRecordReview`).
             if (!review.reviewed && scope.mode !== "whole") review = await runWholeReviewForRecord(ctx, P, run, scope, rerun);
             if (!review.reviewed) continue;
             staleRepaired.push(s2.label);
@@ -16196,9 +16250,9 @@ async function pipelineInner(job, opts = {}) {
         lint = lintNow();
         autoCorrectRegistry();
         staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
-        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, AND THE RUN STILL DELIVERS, as the released engine
-        // delivers it. Its record says so (`unreadRecordReview`); the guard is never handed that record, because a run
-        // is never held on an unread review (owner's ruling, 2026-10-19).
+        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, and its record says so (`unreadRecordReview`). The guard
+        // is never handed that record: a run is not held on an unread review (owner's ruling, 2026-10-19). What the guard
+        // reads here is staleness alone, as in the released engine.
         // A CHANGED DECISION STILL UNREAD AFTER ITS RE-RUN IS DELIVERED, NOT HELD (the owner's ruling of 2026-10-19 that a
         // run is never held). When every stage still stale is one the changed decision left stale and whose re-run in
         // this pass did not complete, the run delivers what it has. The writer's duty and the recall gate are judged
