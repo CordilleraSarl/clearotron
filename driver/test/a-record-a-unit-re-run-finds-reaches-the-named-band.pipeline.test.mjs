@@ -179,10 +179,11 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
   });
 }
 
-test("claude: a record the reading step leaves unended after the run's recovery is named in the delivered report, never a stopped run", async () => {
+for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
+test(`${engine}: a record the reading step leaves unended after the run's recovery is named in the delivered report, never a stopped run`, async () => {
   const { clauseForDefect } = await import("../terminal-clamp.mjs");
   // a record of the mark's dominant element in a longer mark: a record the recall gate weighs, and not a floor
-  const r = await resumeWithAddedRecord({}, "transliteration-numeric", { MOCK_SKEPTIC: ESCALATE, MOCK_ESCALATION_ADDS_MARK: "NOVAPULSE MOBILE" });
+  const r = await resumeWithAddedRecord(env, "transliteration-numeric", { MOCK_SKEPTIC: ESCALATE, MOCK_ESCALATION_ADDS_MARK: "NOVAPULSE MOBILE" });
   assert.ok(r.inNamedBand, "guard: the record reached the named band");
   assert.ok(!r.floorInShape, "guard: the record is not a floor");
   assert.equal(r.p2.res.ok, true, JSON.stringify({ fail: r.p2.res.fail, stage: r.p2.res.failedStage }));
@@ -194,11 +195,13 @@ test("claude: a record the reading step leaves unended after the run's recovery 
   assert.ok(r.verdict.clauses.includes(clause), `the verdict does not carry the approved sentence: ${JSON.stringify(r.verdict.clauses)}`);
   assert.equal(clause, clauseForDefect("synthesis_unaccounted_delivered", gap[0].records, gap[0].candidates), "the gap is not said in the approved sentence");
 });
+}
 
-test("claude: a record a refused merge left out is counted in the delivered report's recall sentence, out of a total that includes it", async () => {
+for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
+test(`${engine}: a record a refused merge left out is counted in the delivered report's recall sentence, out of a total that includes it`, async () => {
   const { clauseForDefect } = await import("../terminal-clamp.mjs");
   const root = mkdtempSync(join(tmpdir(), "clearotron-remerge-refused-"));
-  const p1 = await runMockPipeline(root, { MOCK_FAIL_STAGE: PARK_AT_DIGEST });
+  const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST });
   assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
   const rd = p1.res.runDir;
   const codename = JSON.parse(readFileSync(join(rd, "status.json"), "utf8")).codename;
@@ -206,7 +209,7 @@ test("claude: a record a refused merge left out is counted in the delivered repo
   const inBand = JSON.parse(readFileSync(join(rd, "register-named-band.json"), "utf8")).enumerated[0].record_id;
   writeFileSync(driverDir(rd, "band-refused-records.json"), JSON.stringify({ ids: ["/mark/us/90000099", String(inBand).toLowerCase()], count: 2 }));
   const n1 = p1.events.length;
-  const p2 = await runMockPipeline(root, {}, codename);
+  const p2 = await runMockPipeline(root, { ...env }, codename);
   const ev2 = p2.events.slice(n1);
   assert.equal(p2.res.ok, true, JSON.stringify({ fail: p2.res.fail, stage: p2.res.failedStage }));
   const gap = ev2.filter((e) => e.event === "recall-reconciliation-unended-delivered");
@@ -224,9 +227,11 @@ test("claude: a record a refused merge left out is counted in the delivered repo
   assert.ok(readFileSync(join(published, "report.html"), "utf8").includes(clause), "the report the client opens does not name the record left out");
   assert.equal(JSON.parse(readFileSync(join(published, "settle.json"), "utf8")).signoff, "CONDITIONAL", "the delivered sign-off is not the verdict on record");
 });
+}
 
-test("claude: a record the envelope close adds reaches the named band, the shape and the floor of the placement pass that assesses it", async () => {
-  const r = await resumeWithAddedRecord({}, "primary-sweep", {});
+for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
+test(`${engine}: a record the envelope close adds reaches the named band, the shape and the floor of the placement pass that assesses it`, async () => {
+  const r = await resumeWithAddedRecord(env, "primary-sweep", {});
   assert.ok(r.ev2.some((e) => e.event === "stage" && e.stage === "register-unit:primary-sweep" && e.trigger === "envelope"), "guard: the envelope close re-ran the unit");
   assert.ok(r.inAxisBand, "guard: the re-run added the record to its axis band");
   assert.deepEqual(r.ev2.filter((e) => e.event === "named-band-remerged").map((e) => e.why), ["envelope"]);
@@ -234,3 +239,4 @@ test("claude: a record the envelope close adds reaches the named band, the shape
   assert.ok(r.duty.rows.some((f) => f.record_id === ADDED && f.disposition === "unanswered"), "the repeated pass's floor does not count the record");
   assert.equal(r.verdict.verdict, "CONDITIONAL");
 });
+}

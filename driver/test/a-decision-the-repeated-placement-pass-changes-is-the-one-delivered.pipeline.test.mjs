@@ -112,6 +112,13 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.deepEqual(ev2.filter((e) => e.event === "writer-duty-after-repair").map((e) => [e.was, e.now]), [["CLEAR", "CLEAR"]],
       "the writer was not judged again against its duty and the recall gate");
     const rd = p2.res.runDir;
+    // judged on the writer that re-ran: the counts it judged are the duty of the files delivered (none, where the mock
+    // writer is owed no declination, so both sides read null)
+    const { synthesisDutyForRun } = await import("../synthesis-record.mjs");
+    const delivered = synthesisDutyForRun(rd);
+    const judged = ev2.find((e) => e.event === "writer-duty-after-repair");
+    const expected = delivered.computable === true ? [delivered.totals.owed, delivered.unaccounted.length] : [null, null];
+    assert.deepEqual([judged.owed, judged.unaccounted], expected, `the writer was judged on something other than what it delivered: ${JSON.stringify(judged)}`);
     const sent = promptsOf(root).slice(before);
     for (const [who, marker] of [["the reading step", "You are register DIGEST mode"], ["the writer", "Produce the joint synthesis narrative"]]) {
       const p = sent.filter((x) => x.includes(marker)).at(-1) ?? "";
@@ -144,15 +151,16 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
   });
 }
 
-test("claude: a writer that cannot re-run for the changed decision does not hold the run — it delivers, and the run record names what went unread", async () => {
+for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
+test(`${engine}: a writer that cannot re-run for the changed decision does not hold the run — it delivers, and the run record names what went unread`, async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-repeatground-unread-"));
   const planExecutor = executor([]);
-  const p1 = await runMockPipeline(root, { MOCK_FAIL_STAGE: PARK_AT_DIGEST, MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
+  const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
   assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
   const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
   const n1 = p1.events.length;
   // The writer's re-run is the one dispatch told the repeat's ground, so failing that fails it alone.
-  const p2 = await runMockPipeline(root, { MOCK_SKEPTIC: ESCALATE_SATPROBE, MOCK_PLACEMENT_SET_ASIDE: G2,
+  const p2 = await runMockPipeline(root, { ...env, MOCK_SKEPTIC: ESCALATE_SATPROBE, MOCK_PLACEMENT_SET_ASIDE: G2,
     MOCK_FAIL_STAGE: `Produce the joint synthesis narrative&&: set aside on its status: ${G2}` }, { planExecutor }, codename);
   const ev2 = p2.events.slice(n1);
   assert.ok(ev2.some((e) => e.event === "delivery-stale-requeued" && e.after === "placement-inquiry" && e.stages.includes("synthesis")),
@@ -189,3 +197,4 @@ test("claude: a writer that cannot re-run for the changed decision does not hold
   assert.match(readFileSync(join(rd, "report.md"), "utf8"), new RegExp(`^overall_label:\\s*${verdict.tier}\\s*$`, "m"),
     "the report's own label is not the verdict on record's");
 });
+}
