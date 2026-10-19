@@ -52,6 +52,22 @@ export function verdictWithoutTheClosedGap({ verdict, assessed, reasons = [] } =
 }
 
 /**
+ * ONE SENTENCE WHEN THE WRITER'S DUTY AND THE RECALL GATE BOTH FIND RECORDS UNADDRESSED. Both state the approved
+ * sentence for records neither addressed nor set aside, each out of its own population: the records the writer was
+ * owed, and the records the recall gate weighed. Stated twice, the same words would give two totals for "the register
+ * records this search surfaced". Stated once, N is the records either names and M the records either required to be
+ * assessed, each counted once: never a sum of overlapping records, and never a record neither required. Null when
+ * either side names no record or either population is unknown; each then states its own count. PURE.
+ */
+export function jointUnaccounted({ dutyIds = [], owedIds = null, recallIds = [], weighedIds = null } = {}) {
+  if (!Array.isArray(owedIds) || !Array.isArray(weighedIds) || !dutyIds.length || !recallIds.length) return null;
+  const ids = (...lists) => new Set(lists.flat().map((x) => String(x ?? "").trim().toLowerCase()).filter(Boolean));
+  const n = ids(dutyIds, recallIds).size;
+  const m = ids(owedIds, weighedIds, dutyIds, recallIds).size;
+  return { n, m };
+}
+
+/**
  * The shape of an engine identifier: `word_word:N` tokens (`floor_duty_undischarged:22`) and the
  * `snake_case` defect vocabulary generally. The CLIENT'S clause may never carry one —:
  * two delivered reports opened their Verdict row with exactly such a token, because the run-record
