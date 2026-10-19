@@ -267,6 +267,9 @@ export function reconcileRecall({ candidates = [], endings, crowdRulings = [], t
     in_scope_classes: inScopeClasses,
     top_slice: topRows,
     crowd: { rulings: crowdRulings, declared, residual: residualUnended.length, covers: crowdCovers },
+    // The records the gate weighed, by id: the population its count is out of, so a sentence stated with another
+    // gate's records can count each record once.
+    candidate_ids: [...new Set(ranked.map((c) => lc(normalizeRecordUri(c.record_id) || c.record_id || "")).filter(Boolean))],
     totals: {
       candidates: ranked.length,
       positions: groups.length,

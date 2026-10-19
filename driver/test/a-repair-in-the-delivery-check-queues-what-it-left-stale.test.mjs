@@ -18,7 +18,7 @@ writeFileSync(process.env.CLEAROTRON_REGISTER_CALL_LOG, "");
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-const { whatTheRepairLeftStale, saveWithRetries } = await import("../pipeline.mjs");
+const { whatTheRepairLeftStale, saveWithRetries, stagesStaleOnPlacement, withdrawByToken } = await import("../pipeline.mjs");
 const { recordsReRanked, rankedRecords } = await import("../placement-decisions.mjs");
 
 const stale = (label, ...changed) => ({ label, changed: changed.map(([name, now]) => ({ name, was: "old", now })) });
@@ -90,4 +90,32 @@ test("the records a repeated placement pass re-ranked are counted once each, and
     { a: { key: "unrelated goods|12|h2", records: 40 } });
   assert.equal(recordsReRanked(before, grouped), 40);
   assert.equal(recordsReRanked(ranking({}), ranking({}, {})), 0, "nothing on either side re-ranked a record");
+});
+
+// A stage stale on what placement wrote is a changed decision's, whoever moved the file.
+test("a stage stale on what placement wrote joins the chain, and one stale on anything else does not", () => {
+  const placementWrote = new Set(["placement.md", "placements.json", "placement-form.json", "placement-decisions.json"]);
+  const stale = [stale_("register-digest", ["placement-decisions.json", "d2"]), stale_("synthesis", ["register-findings.md", "f2"], ["placements.json", "p2"]),
+    stale_("report-card:2", ["findings.json", "x2"]), stale_("narrative-refutation", ["narrative.md", "n2"])];
+  assert.deepEqual(stagesStaleOnPlacement(stale, placementWrote), ["register-digest", "synthesis"]);
+  assert.deepEqual(stagesStaleOnPlacement([], placementWrote), []);
+  function stale_(label, ...changed) { return { label, changed: changed.map(([name, now]) => ({ name, now })) }; }
+});
+
+// A guard judged again replaces its earlier clause; nothing else moves.
+test("a clause judged again withdraws the earlier one of its kind, and only that kind", () => {
+  const reasons = ["floor_duty_undischarged:1 of 9 floor row(s) — …", "the opinion's own condition", "recall_reconciliation_unended:2 of 30 record(s) — …"];
+  const clauses = ["1 of the 9 live registrations …", "a condition the opinion states", "2 of the 30 register records …"];
+  const guard = new Set(["1 of the 9 live registrations …", "2 of the 30 register records …"]);
+  const w = withdrawByToken(reasons, clauses, guard, "floor_duty_undischarged");
+  assert.deepEqual(w.reasons, reasons.slice(1));
+  assert.deepEqual(w.clauses, clauses.slice(1), "the reasons and the clauses no longer line up");
+  assert.equal(w.withdrawn, 1);
+  assert.deepEqual([...guard], ["2 of the 30 register records …"], "the withdrawn clause is still marked as a guard's");
+  const none = withdrawByToken(w.reasons, w.clauses, guard, "synthesis_unaccounted_delivered");
+  assert.deepEqual([none.reasons, none.clauses, none.withdrawn], [w.reasons, w.clauses, 0], "a kind that is not there moved something");
+  // a clause another entry still carries stays a guard's
+  const twin = new Set(["same"]);
+  withdrawByToken(["floor_duty_undischarged:1 of 9 …", "recall_reconciliation_unended:1 of 9 …"], ["same", "same"], twin, "floor_duty_undischarged");
+  assert.deepEqual([...twin], ["same"]);
 });

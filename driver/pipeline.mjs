@@ -12,7 +12,7 @@ import { join, dirname, basename, resolve } from "node:path";   // resolve: the 
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
-import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
+import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect, gapPositivelyClosed, verdictWithoutTheClosedGap, jointUnaccounted } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
 import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
@@ -37,7 +37,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst } from "./verify.mjs";
+import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
 import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
@@ -79,7 +79,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
-  placementRecallEndings, writePlacementDecisions, rankingNow, rankedRecords, recordsReRanked } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
+  placementRecallEndings, writePlacementDecisions, rankingNow, rankedRecords, recordsReRanked, rankingToJson, rankingFromJson } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
@@ -129,7 +129,7 @@ import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presenc
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
-import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
+import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyClosed, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
@@ -3241,6 +3241,31 @@ export function lateRecordIds(P) {   // @internal — driven by its test with a 
 }
 
 /**
+ * THE LATE RECORDS THE REPORT DOES NOT ADDRESS: records the band holds that no placement pass read (`lateRecordIds`),
+ * which neither the reading step's account nor the writer's findings name, and which no other clause names
+ * (`alreadyNamed`, lowercased). A record either step names is addressed there, whatever placement did. Lowercased ids,
+ * in the band's order. Never throws. PURE over the run's files.
+ */
+export function lateRecordsUnaddressed(P, alreadyNamed = new Set()) {   // @internal — driven by its test with a run's own files
+  const late = lateRecordIds(P);
+  if (!late.length) return [];
+  let endings = { carried: new Set(), dropRows: new Set() };
+  try { endings = parseFindingsEndings(readFileSync(P.registerFindings, "utf8")); } catch { /* no account from the reading step */ }
+  let named = new Set();
+  try { named = new Set([...findingUris(parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? []).keys()].map((u) => String(u).toLowerCase())); }
+  catch { /* no findings from the writer */ }
+  return late.filter((id) => !endings.carried.has(id) && !endings.dropRows.has(id) && !named.has(id) && !alreadyNamed.has(id));
+}
+
+/** The records the writer was owed, by id: the population its duty is out of. Null without a spec. Never throws. */
+function owedUrisFor(runDir) {
+  try {
+    const owed = driverReadsFor(runDir).owed;
+    return Array.isArray(owed) ? owed.map((row) => String(normalizeRecordUri(row?.uri ?? row?.record_id) ?? "").toLowerCase()).filter(Boolean) : null;
+  } catch { return null; }
+}
+
+/**
  * Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`): `{counted}`, or `{absent}`
  * saying why there is no count. A shape with no groups has nothing to count by; an input that would not read is a
  * gap in the record. The two are not one fact, and the floor duty's artifact keeps them apart.
@@ -3425,8 +3450,17 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
  * on a fenced or prose-wrapped file, and a synthesis pass whose output is merely untidy would otherwise
  * record every record it delivered as discarded — the defect rebuilt one seam later.
  */
+/** Where the ranking the writer last read is kept, for the sentence on records re-ranked after it wrote. */
+const rankingReadByWriterPath = (P) => driverDir(P.runDir, "ranking-read-by-writer.json");
+/** Keeps where each record stood when a writer's pass completed. Never throws. */
+function keepRankingReadByWriter(P) {
+  try { atomicWrite(rankingReadByWriterPath(P), JSON.stringify(rankingToJson(rankingNow(P)), null, 2) + "\n"); }
+  catch (e) { runLog(P.runDir, { event: "ranking-read-by-writer-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
+}
+
 function recordSynthesisSeam(ctx, r, trigger = null) {
   const P = ctx.paths;
+  if (r?.ok) keepRankingReadByWriter(P);   // where each record stood as this writer read it
   const declined = readDeclinations(P.runDir);   // — three-valued: absent ledger ≠ empty ledger
   // — ONE DERIVATION, and it is CALLED rather than copied. This used to rebuild the carried set
   // inline, in three lines that happened to match `findingsSurfaceRows`'s. They must match: that function
@@ -6592,13 +6626,6 @@ function correctionNamedSet(P, doc0 = null) {
 
 /** Which review the reviewer's staleness after a delivery-check repair calls for. Reads the run; never throws. */
 /**
- * WHAT A REPAIR IN THE DELIVERY CHECK LEFT STALE, AND WHAT OF IT IS QUEUED. A stage is this repair's when it is stale now
- * and was not before the repair, or is stale on an input that has moved since; a stage stale before for the same reasons
- * is not, and stays the guard's. Every stage the repair left stale joins the chain, so its own re-run is followed in turn.
- * Of those, a stage already queued ahead runs where it stands, and one this pass already re-did is re-done once more at
- * most. PURE.
- */
-/**
  * A SAVE TRIED AGAIN BEFORE IT IS GIVEN UP. Calls `save` up to `attempts` times, waiting `waitMs` between tries, and
  * says how it went: `{ ok, attempts, error }`. Never throws. `wait` is injectable so a test does not sleep.
  */
@@ -6611,6 +6638,34 @@ export function saveWithRetries(save, { attempts = 3, waitMs = 250, wait = (ms) 
   return { ok: false, attempts, error };
 }
 
+/**
+ * THE STAGES STALE ON WHAT PLACEMENT WROTE, which join the chain of a changed decision whoever moved it: the delivery
+ * check's own repeat, the decisions written again when the shape is derived again, or a late pass whose readers had
+ * already run. `names` are the base names of placement's files. PURE.
+ */
+export function stagesStaleOnPlacement(stale = [], names = new Set()) {   // @internal — driven by its test
+  return stale.filter((x) => (x?.changed ?? []).some((c) => names.has(String(c?.name ?? "")))).map((x) => x.label);
+}
+
+/**
+ * A CLAUSE JUDGED AGAIN REPLACES THE ONE IT REPEATS, BY ITS KIND. Withdraws every entry whose reason opens with
+ * `<token>:` from the index-aligned reasons and clauses, and a withdrawn clause from the guard set once no entry left
+ * carries it. Returns the arrays as they now stand and how many entries went. PURE.
+ */
+export function withdrawByToken(reasons = [], clauses = [], guard = new Set(), token) {   // @internal — driven by its test
+  const keep = reasons.map((r) => !String(r ?? "").startsWith(`${token}:`));
+  const out = { reasons: reasons.filter((_, i) => keep[i]), clauses: clauses.filter((_, i) => keep[i]), withdrawn: keep.filter((k) => !k).length };
+  for (const [i, c] of clauses.entries()) if (!keep[i] && !out.clauses.includes(c)) guard.delete(c);
+  return out;
+}
+
+/**
+ * WHAT A REPAIR IN THE DELIVERY CHECK LEFT STALE, AND WHAT OF IT IS QUEUED. A stage is this repair's when it is stale now
+ * and was not before the repair, or is stale on an input that has moved since; a stage stale before for the same reasons
+ * is not, and stays the guard's. Every stage the repair left stale joins the chain, so its own re-run is followed in turn.
+ * Of those, a stage already queued ahead runs where it stands, and one this pass already re-did is re-done once more at
+ * most. PURE.
+ */
 export function whatTheRepairLeftStale({ before = [], after = [], repaired, ahead = new Set(), processed = new Set(), requeued = new Set() }) {   // @internal — driven by its test
   const keys = (x) => (x?.changed ?? []).map((c) => `${c?.name}@${c?.now}`);
   const was = new Map(before.map((x) => [x.label, new Set(keys(x))]));
@@ -13095,6 +13150,7 @@ async function pipelineInner(job, opts = {}) {
           catch (e) { pass = { ok: false, fail: String(e?.message ?? e) }; }
           if (!pass?.ok) {
             runLog(run.runDir, { event: "late-evidence-failed", records: late.length, fail: String(pass?.fail ?? "failed").slice(0, 200) });
+            ctx.latePassFailed = { records: late.length, fail: String(pass?.fail ?? "failed").slice(0, 200) };   // the attempt, for the delivery record
             note(`late evidence: placement's pass did not complete (${String(pass?.fail ?? "").slice(0, 100)}) — its earlier account stands, and the floor and the recall gate state what it leaves open`);
           }
           if (!pendingItems(ctx.digestQueue).length) runLog(run.runDir, { event: "late-evidence-no-digest-work", records: late.length });
@@ -13830,6 +13886,11 @@ async function pipelineInner(job, opts = {}) {
     // run earlier in this function. The sidecar write sorts guard clauses AFTER the opinion's, stated
     // there; this set is how it tells them apart without a parallel index to keep aligned.
     const guardClauses = new Set();
+    // THE ACCEPTED ASSESSMENT: the result the review reached, before any guard or floor clamped it. It moves with the
+    // review alone (the degenerate re-ask, a late review that is harsher), and a gap a guard judged again finds closed is
+    // withdrawn against it (ruled 2026-10-19).
+    let assessed = verdict;
+    let restoredClear = false;   // a closed gap took this run back to CLEAR, so a later writer's judgment meets the floor again
 
     /**
      * Deliver, clamp conservatively, and name the defect in the run record.
@@ -13846,14 +13907,20 @@ async function pipelineInner(job, opts = {}) {
     // could only be pinned by source text, and a source-text pin cannot tell an armed check from one
     // somebody disarmed while leaving its words in place. This closure is the wiring: run record, note,
     // clamp lists, status. The judgement is all in the module.
-    const deliverAndClamp = ({ event, defect, reason, clause, detail = {} }) => {
+    const deliverAndClamp = ({ event, defect, reason, clause, detail = {}, again = false, statedElsewhere = false }) => {
+      // A GUARD JUDGED AGAIN in this run says nothing new when its judgment is unchanged, and otherwise replaces its
+      // earlier clause of the same kind, so a record is never counted twice and no count stands from an earlier pass.
+      if (again && clampReasons.includes(String(reason ?? "").trim())) return;
+      if (again) replaceClauses(String(defect ?? "").split(":")[0]);
       // — reason and clause are SEPARATE inputs now: the run record and the ops note keep
       // the token sentence; the clause list (which riskStatement renders into the client's Verdict row)
       // receives only the reader's sentence. terminalClampDecision refuses a fused clause by shape.
       const d = terminalClampDecision({ verdict, defect, reason, clause, detail });
       runLog(run.runDir, { event, ...d.record });
       note(d.reason);
-      if (!clampReasons.includes(d.reason)) { clampClauses.push(d.clause); clampReasons.push(d.reason); guardClauses.add(d.clause); }
+      // A gap stated in another entry's sentence keeps its reason for the run record, and its clause is that sentence's.
+      const stored = statedElsewhere ? null : d.clause;
+      if (!clampReasons.includes(d.reason)) { clampClauses.push(stored); clampReasons.push(d.reason); guardClauses.add(stored); }
       if (d.clamped) {
         runLog(run.runDir, { event: "terminal-guard-clamp", defect: d.record.defect, from: verdict, to: d.verdict });
         verdict = d.verdict;
@@ -13861,39 +13928,93 @@ async function pipelineInner(job, opts = {}) {
       }
     };
 
+    // A CLAUSE JUDGED AGAIN REPLACES THE ONE IT REPEATS. A guard judged a second time in this run, after a repeat or a
+    // re-run, withdraws its earlier clause of the same kind before it states the current one, so a record is never
+    // counted twice and a count never stands from an earlier judgment. Returns how many entries it withdrew.
+    const replaceClauses = (token, { event = "guard-clause-replaced" } = {}) => {
+      const w = withdrawByToken(clampReasons, clampClauses, guardClauses, token);
+      if (!w.withdrawn) return 0;
+      clampReasons = w.reasons;
+      clampClauses = w.clauses;
+      runLog(run.runDir, { event, token, withdrawn: w.withdrawn });
+      return w.withdrawn;
+    };
+
+    // A GAP JUDGED AGAIN AND POSITIVELY CLOSED takes its own clause with it, and the result is recomputed from the
+    // accepted assessment and the conditions still standing (ruled 2026-10-19). Only a CONDITIONAL that this run's
+    // guards alone made goes back to CLEAR, and that CLEAR then meets the same deliver-conditional floor any CLEAR meets.
+    // A gap whose account is absent, unreadable or not computable is not closed: its clause stands.
+    const withdrawClosedGap = (token) => {
+      if (!replaceClauses(token, { event: "guard-gap-closed" })) return;
+      const now = verdictWithoutTheClosedGap({ verdict, assessed, reasons: clampReasons });
+      if (now === verdict) return;
+      runLog(run.runDir, { event: "verdict-recomputed-gap-closed", token, from: verdict, to: now });
+      note(`the ${token.split("_")[0]} gap this run named is closed, and nothing else conditions the result — ${verdict} goes back to ${now}, the result the review reached`);
+      verdict = now;
+      restoredClear = now === "CLEAR";
+      writeRunStatus(ctx, signoffPatch(verdict));
+      applyCoverageFloor();   // the floor any CLEAR meets: the opinion's forward actions, the coverage gaps
+    };
+
     // THE RECALL GATE, DELIVERED AND CLAMPED (the owner's ruling of 2026-10-19: a run is never held). A retrieved record still
     // ending nowhere a reader can see after the run's recovery ships named, in the approved sentence for the same state,
     // counted in records out of the records the gate weighed. A record another clause already names (the writer's duty,
     // the floor) is left to it, so no record is counted twice. Returns the count it clamped on, or 0.
-    const clampOnTheRecallGate = (duty = null, { again = false } = {}) => {
-      if (again && clampReasons.some((r) => String(r).startsWith("recall_reconciliation_unended:"))) return 0;   // named already
+    // THE RECALL GATE'S GAP AS IT STANDS, judged and not yet clamped, so the writer's duty can be stated with it.
+    const recallGapNow = (duty = null) => {
       const rec = safeReadJson(P.recallReconciliation);
       const computable = rec?.computable === true;
-      // A RECORD A REFUSED MERGE LEFT OUT IS UNREAD, and it is counted here, in the same sentence, out of a total that
-      // includes it: the band could not take it without passing the size its readers can be dispatched over.
-      const left = refusedRecordsLeftOut(P);
-      if (!left.length && (!computable || !((rec.totals?.unended ?? 0) > 0))) return 0;
       // A record the writer's duty or the floor's clamp already names is left to that clause: one record, one sentence.
       // The floor's rows count only where its clamp fires, so a record is never left unnamed by both.
       const floorNames = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) })
         ? (safeReadJson(P.floorDuty)?.rows ?? []).filter((r) => r?.disposition !== "accounted").map((r) => String(r?.record_id ?? "").toLowerCase())
         : [];
       const alreadyNamed = new Set([...(duty?.computable === true ? duty.unaccounted : []).map((u) => String(u?.uri ?? "").toLowerCase()), ...floorNames]);
+      // A RECORD A REFUSED MERGE LEFT OUT IS UNREAD, and it is counted here, in the same sentence, out of a total that
+      // includes it: the band could not take it without passing the size its readers can be dispatched over.
+      const left = refusedRecordsLeftOut(P);
+      // A RECORD NO PLACEMENT PASS READ, and that the report does not address, is counted in the same sentence: the band
+      // gained it after placement's last pass, and the pass that would have assessed it did not complete.
+      const late = lateRecordsUnaddressed(P, alreadyNamed);
       const unended = (computable ? rec.unended ?? [] : []).filter((u) => !(u.candidate_records ?? [u.record_id])
         .some((x) => alreadyNamed.has(String(x).toLowerCase())));
-      const records = [...new Set([...unended.flatMap((u) => u.candidate_records ?? [u.record_id]).map((x) => String(x).toLowerCase()), ...left])];
+      const weighedIds = new Set(unended.flatMap((u) => u.candidate_records ?? [u.record_id]).map((x) => String(x).toLowerCase()));
+      const records = [...new Set([...weighedIds, ...left, ...late])];
       // Out of the records the gate weighed or, where it could weigh none, the records the band holds; and the records
-      // left out besides.
+      // left out besides. A late record outside the records the gate weighed is added to the total; where the gate
+      // weighed none, the band's count already holds it.
       const base = computable ? Number(rec.totals?.candidates ?? 0) : (safeReadJson(P.registerNamedBand)?.enumerated ?? []).length;
-      const weighed = base + left.length;
+      const weighed = base + left.length + (computable ? late.filter((id) => !weighedIds.has(id)).length : 0);
+      // The same population by id, where the gate kept it: what a sentence stated with the writer's duty counts once.
+      const population = computable
+        ? (Array.isArray(rec.candidate_ids) ? [...rec.candidate_ids, ...left, ...late] : null)
+        : [...(safeReadJson(P.registerNamedBand)?.enumerated ?? []).map((r) => String(r?.record_id ?? "").toLowerCase()), ...left];
+      return { rec, computable, left, late, unended, records, base, weighed, population };
+    };
+    // THE RECALL GATE, DELIVERED AND CLAMPED (the owner's ruling of 2026-10-19: a run is never held). A retrieved record still
+    // ending nowhere a reader can see after the run's recovery ships named, in the approved sentence for the same state,
+    // counted in records out of the records the gate weighed. A record another clause already names (the writer's duty,
+    // the floor) is left to it, so no record is counted twice. Where the writer's duty names records too, the one sentence
+    // is the duty's, stated with these (`joint`). Returns the count it clamped on, or 0.
+    const clampOnTheRecallGate = (duty = null, { again = false, gap = recallGapNow(duty), joint = null } = {}) => {
+      const { rec, computable, left, late, unended, records, base, weighed } = gap;
+      if (!left.length && !late.length && (!computable || !((rec.totals?.unended ?? 0) > 0))) {
+        if (again && gapPositivelyClosed("recall_reconciliation_unended", { recall: rec, leftOut: [...left, ...late] })) withdrawClosedGap("recall_reconciliation_unended");
+        return 0;
+      }
+      // Every record the gate would name is named by a clause standing now: its own earlier clause goes, so the record
+      // is counted once. The gap is not closed, and the result is not recomputed.
+      if (again && !records.length && unended.length < (rec?.unended ?? []).length) replaceClauses("recall_reconciliation_unended", { event: "guard-clause-named-elsewhere" });
       if (!records.length || !(weighed > 0)) return 0;
-      const sample = [...unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`), ...left.slice(0, 2)].join("; ");
+      const sample = [...unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`), ...left.slice(0, 2), ...late.slice(0, 2)].join("; ");
       deliverAndClamp({
         event: "recall-reconciliation-unended-delivered",
         defect: `recall_reconciliation_unended:${records.length}`,
-        detail: { positions: unended.length, records: records.length, candidates: base, refused: left.length },
-        reason: `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery${left.length ? `, ${left.length} of them found by a unit's re-run and left out of a band its readers could not have been dispatched over` : ""}: ${sample}. The report ships with these named rather than being withheld.`,
+        detail: { positions: unended.length, records: records.length, candidates: base, refused: left.length, late: late.length, ...(joint ? { stated_with_duty: joint } : {}) },
+        reason: `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery${left.length ? `, ${left.length} of them found by a unit's re-run and left out of a band its readers could not have been dispatched over` : ""}${late.length ? `, ${late.length} of them reaching the band after placement's last pass, whose pass to assess them did not complete` : ""}: ${sample}. The report ships with these named rather than being withheld.${joint ? ` Stated with the writer's duty, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
+        again,
         clause: clauseForDefect("recall_reconciliation_unended", records.length, weighed),
+        statedElsewhere: Boolean(joint),
       });
       return records.length;
     };
@@ -13909,15 +14030,20 @@ async function pipelineInner(job, opts = {}) {
     // boundary ever saw a call about the records added since, because the only call ordered against them
     // was the one that was refused.
     //
-    // JUDGED AGAIN after a changed placement decision re-runs the writer in the delivery check, with `again`: a gap the
-    // re-run opens is named, and one already named stays named, as a clamp only tightens.
+    // JUDGED AGAIN after the delivery check repeats placement or re-runs the writer, with `again`: a gap that remains
+    // replaces its earlier clause with the current count, and a gap positively closed withdraws it (withdrawClosedGap).
     //
     // NO ERA STAMP, and it needs none: an archived run carries no declination spec, so `owed` is null,
     // the reconcile is `computable:false` and this never blocks. Archive compatibility by construction.
     const clampOnTheWritersDuty = ({ again = false } = {}) => {
       const duty = synthesisDutyForRun(run.runDir);
-      if (duty?.computable === true && duty.unaccounted.length
-          && !(again && clampReasons.some((r) => String(r).startsWith("synthesis_unaccounted_delivered:")))) {
+      // THE TWO GAPS STATED ONCE when both name records: the approved sentence, with each record counted once out of the
+      // records either required to be assessed (ruled 2026-10-19). The run record keeps each gap's own counts.
+      const gap = recallGapNow(duty);
+      const joint = duty?.computable === true && duty.unaccounted.length
+        ? jointUnaccounted({ dutyIds: duty.unaccounted.map((u) => u.uri), owedIds: owedUrisFor(run.runDir), recallIds: gap.records, weighedIds: gap.population })
+        : null;
+      if (duty?.computable === true && duty.unaccounted.length) {
         const sample = duty.unaccounted.slice(0, 4).map((u) => `${u.mark ? `${u.mark} ` : ""}(${u.uri})`).join("; ");
         // DELIVERS AND CLAMPS. It used to throw. The defect is real and stays
         // named — a record the run judged worth a reader's attention reached the document unaccounted —
@@ -13926,17 +14052,20 @@ async function pipelineInner(job, opts = {}) {
           event: "synthesis-duty-undischarged",
           defect: `synthesis_unaccounted_delivered:${duty.unaccounted.length}`,
           detail: { unaccounted: duty.unaccounted.length, owed: duty.totals.owed, uris: duty.unaccounted.slice(0, 6).map((u) => u.uri) },
-          reason: `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.`,
+          reason: `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.${joint ? ` Stated with the recall gate's records, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
+          again,
           // — the READER's sentence: what is open, in a lawyer's nouns. Counts survive;
           // the token, the record ids and the engine's nouns stay in `reason` and the run record.
           // COMPOSED BY THE AUTHORITY, NOT SPELLED HERE. The same sentence has to be reachable from a
           // run that stored no clause, where these two objects are long gone and only the reason's own
           // counts survive; `terminal-clamp.mjs` composes it from the counts either way, so the fresh
           // run and the republished archive cannot drift apart.
-          clause: clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
+          clause: joint ? clauseForDefect("synthesis_unaccounted_delivered", joint.n, joint.m)
+            : clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
         });
-      }
-      clampOnTheRecallGate(duty, { again });   // the recall gate's gap, beside the writer's duty
+      } else if (again && gapPositivelyClosed("synthesis_unaccounted_delivered", { duty })) withdrawClosedGap("synthesis_unaccounted_delivered");
+      const recall = clampOnTheRecallGate(duty, { again, gap, joint });   // the recall gate's gap, beside the writer's duty
+      return { duty, recall };
     };
     // ── — THE FLOOR DUTY, DISCLOSED AND CLAMPED AT DELIVERY (it BLOCKED until) ───
     //
@@ -13964,7 +14093,7 @@ async function pipelineInner(job, opts = {}) {
     // carried 5 and 9 out of 222 and 352. A rung is a follow-up, never a precondition.
     // THE FLOOR DUTY'S CLAMP, callable: applied where the terminal checks run, and again to a placement pass the
     // delivery gate repeats, whose account the report is then rebuilt from. Returns the block it clamped on, or null.
-    const clampOnTheFloorDuty = () => {
+    const clampOnTheFloorDuty = ({ again = false } = {}) => {
       // THE PREDICATE IS `floorDutyBlock`, called not copied — it lives in floor-duty.mjs so the arms can
       // DRIVE it. Inline here it could only be pinned by source text, and a source-text pin cannot tell
       // an armed check from one somebody disarmed while leaving its words in place.
@@ -13983,6 +14112,7 @@ async function pipelineInner(job, opts = {}) {
             + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
             + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
             + `. The report ships with these named rather than being withheld.`,
+          again,
           // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
           // lawyer: live registrations identical or near-identical to the mark that the report does not
           // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
@@ -13990,7 +14120,8 @@ async function pipelineInner(job, opts = {}) {
           // gives: a republished pre-split run has to reach the same sentence from the counts alone.
           clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
         });
-      }
+      } else if (again && gapPositivelyClosed("floor_duty_undischarged", { floorClosed: floorDutyClosed(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) }) }))
+        withdrawClosedGap("floor_duty_undischarged");
       return block;
     };
     {
@@ -14426,6 +14557,7 @@ async function pipelineInner(job, opts = {}) {
         reviewLedger.record("reviewer-degenerate-reask", run.codename, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: degenerateReaskMax });
         if (rr.ok) {
           verdict = parseVerdict(readReview()) ?? "BLOCKING";
+          assessed = verdict;   // the re-asked review is the assessment now
           runLog(run.runDir, { event: "verdict-3", verdict, trigger: "degenerate-reask" });
           writeRunStatus(ctx, signoffPatch(verdict));
           applyCoverageFloor();   // a re-asked CLEAR passes the same deliver-conditional floor
@@ -15774,6 +15906,9 @@ async function pipelineInner(job, opts = {}) {
         // the run carries in senior-eye-review.md.
         const adoptLateReview = (reviewNow, stageLabel) => {
           const { hardened, softened: reviewSays } = lateReviewAgainst(verdict, reviewNow);
+          // A late review harsher than the assessment is a ground of its own: a gap closed later never lifts it.
+          const says = parseVerdict(reviewNow);
+          if ((VERDICT_RANK[says] ?? -1) > (VERDICT_RANK[assessed] ?? -1)) assessed = says;
           // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
           // tightens, so a re-review that comes back softer leaves the settled verdict in force while
           // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
@@ -15824,6 +15959,7 @@ async function pipelineInner(job, opts = {}) {
         };
         const processedLabels = new Set();   // the labels this loop has re-done, for the re-queue after a correction
         const requeuedLabels = new Set();
+        const repairFailed = new Map();   // label → why its re-run in this loop did not complete
         // A CHANGED DECISION IS READ AGAIN IN THIS PASS. A repeated placement pass whose decisions moved leaves the reading
         // step, the writer and the review stale, and each of them leaves what reads it stale in turn. They are queued here,
         // in dependency order after the stage that moved them, each re-done at most once more; one already queued runs where
@@ -15842,10 +15978,15 @@ async function pipelineInner(job, opts = {}) {
           for (const l of left.requeue) requeuedLabels.add(l);
           if (!left.queue.length) return;
           const rest = [...staleStages.slice(at), ...left.queue];
-          const order = dependencyOrder(rest.map((x) => x.label), P, { axes: ctx.axes });
+          const order = [...new Set(dependencyOrder(rest.map((x) => x.label), P, { axes: ctx.axes }))];   // each label once
           staleStages.splice(at, staleStages.length - at, ...order.map((l) => rest.find((x) => x.label === l)).filter(Boolean));
           runLog(run.runDir, { event: "delivery-stale-requeued", after: s2.label, stages: left.queue.map((x) => x.label) });
         };
+        // A STAGE STALE ON WHAT PLACEMENT WROTE IS THE CHAIN'S FROM THE START, whoever moved it: the decisions written
+        // again when the shape is derived again, or a late pass whose readers had already run, as much as this check's
+        // own repeat. Its re-run is followed, and a re-run that does not complete delivers.
+        const placementWrote = new Set([...stageOutputs("placement-inquiry", P, { axes: ctx.axes }).map((f) => basename(f)), basename(P.placementDecisions)]);
+        for (const l of stagesStaleOnPlacement(staleStages, placementWrote)) chain.add(l);
         for (const s2 of staleStages) {
           processedLabels.add(s2.label);
           if (s2.label === "report-overview") {
@@ -15956,9 +16097,11 @@ async function pipelineInner(job, opts = {}) {
               // stages after it rebuild from it in this loop. The same rule is applied to that account, through the
               // same clamp, so the delivered verdict, its floor and its record describe one pass. It only tightens.
               if (s2.label === "placement-inquiry") {
-                const was = verdict;
+                const was = verdict, stood = JSON.stringify(clampReasons);
+                clampOnTheFloorDuty({ again: true });
+                clampOnTheWritersDuty({ again: true });   // the recall gate leaves out the floor that now stands
                 // A save that fails here is tried again, then owed, never the end of the run: see saveTheLabel.
-                if (clampOnTheFloorDuty()) saveTheLabel("after the repeated placement pass");
+                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the repeated placement pass");
                 runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
               }
               // A whole review that is read reviews the change an earlier unread one left: its record says so, and
@@ -15996,14 +16139,23 @@ async function pipelineInner(job, opts = {}) {
               // THE WRITER, JUDGED AGAIN WHEN A CHANGED DECISION RE-RAN IT. Its duty and the recall gate were judged on the
               // writer before it; a gap this one opens is named through the same clamps, and one already named stays named.
               // The label is saved again as the floor's is above, through saveTheLabel.
+              if (s2.label === "synthesis") keepRankingReadByWriter(P);   // where each record stood as this writer read it
               if (s2.label === "synthesis" && chain.has(s2.label)) {
-                const was = verdict, named = clampReasons.length;
-                clampOnTheWritersDuty({ again: true });
-                if (clampReasons.length !== named) saveTheLabel("after the writer's re-run");
-                runLog(run.runDir, { event: "writer-duty-after-repair", was, now: verdict, named: clampReasons.length - named });
+                const was = verdict, stood = JSON.stringify(clampReasons);
+                const judged = clampOnTheWritersDuty({ again: true });
+                // A CLEAR a closed gap gave back meets the floor again on what this writer now says: its forward actions
+                // are a ground of their own.
+                if (restoredClear && verdict === "CLEAR") applyCoverageFloor();
+                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the writer's re-run");
+                runLog(run.runDir, { event: "writer-duty-after-repair", was, now: verdict,
+                  owed: judged.duty?.computable === true ? judged.duty.totals?.owed ?? null : null,
+                  unaccounted: judged.duty?.computable === true ? judged.duty.unaccounted.length : null, recall: judged.recall });
               }
               if (staleBefore) queueWhatItLeftStale(s2, staleBefore);
-            } else note(`stale-repair: ${s2.label} re-run failed (${r?.fail}) — stays stale, the guard below decides`);
+            } else {
+              repairFailed.set(s2.label, String(r?.fail ?? "failed").slice(0, 200));
+              note(`stale-repair: ${s2.label} re-run failed (${r?.fail}) — stays stale, the guard below decides`);
+            }
           } else if (s2.label.startsWith("report-card:")) {
             const ord = Number(s2.label.slice("report-card:".length));
             const f = findingsNow.find((x) => x.ordinal === ord);
@@ -16052,14 +16204,33 @@ async function pipelineInner(job, opts = {}) {
         // this pass did not complete, the run delivers what it has. The writer's duty and the recall gate are judged
         // again on the writer delivered, and name in their approved sentences what they find. Staleness for any other
         // reason still falls to the guard.
+        // LATE RECORDS NO PLACEMENT PASS COULD ASSESS ARE DELIVERED, NOT HELD (ruled 2026-10-19). The band gained records
+        // after placement's last pass, and neither the pass that would have assessed them nor the delivery check's repeat
+        // of placement completed. The report stands as the last accepted passes built it. An account from before the late
+        // records cannot show they were assessed, so the floor and the recall gate are judged again on the band as it
+        // stands, and the late records the report does not address are counted in the approved sentence for records
+        // neither addressed nor set aside. The attempts and the records are kept in the run record.
+        const unassessed = repairFailed.has("placement-inquiry") ? lateRecordIds(P) : [];
+        if (unassessed.length && staleStages.some((x) => x.label === "placement-inquiry")
+          && staleStages.every((x) => x.label === "placement-inquiry" || chain.has(x.label))) {
+          const was = verdict, stood = JSON.stringify(clampReasons);
+          clampOnTheFloorDuty({ again: true });
+          const judged = clampOnTheWritersDuty({ again: true });
+          if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after late records went unassessed")) applyVerdictFrontMatter();
+          runLog(run.runDir, { event: "late-evidence-unassessed-delivered", was, now: verdict, records: unassessed.length, ids: unassessed.slice(0, 20),
+            stated: judged.recall, latePass: ctx.latePassFailed ?? null, repeat: repairFailed.get("placement-inquiry") });
+          note(`late evidence: ${unassessed.length} record(s) reached the band after placement's last pass, and neither its pass for them nor the delivery check's repeat completed — the run delivers what the last accepted passes built, and the approved clauses state what is open`);
+          staleStages = staleStages.filter((x) => x.label !== "placement-inquiry");
+        }
         if (staleStages.length && staleStages.every((x) => chain.has(x.label))) {
-          const was = verdict, named = clampReasons.length;
+          const was = verdict, named = clampReasons.length, stood = JSON.stringify(clampReasons);
           clampOnTheWritersDuty({ again: true });
           // THE RECORDS RE-RANKED SINCE THE WRITER LAST WROTE, in the owner's words of 2026-10-19. The report states the
           // ranking the writer last read; the audit trail, written again after the repeat, states the one that stands.
-          if (rankingBeforeRepeat && staleStages.some((x) => x.label === "synthesis")) {
-            const now = rankingNow(P), n = recordsReRanked(rankingBeforeRepeat, now);
-            const m = Math.max(rankedRecords(rankingBeforeRepeat), rankedRecords(now), n);
+          const readByWriter = rankingFromJson(safeReadJson(rankingReadByWriterPath(P))) ?? rankingBeforeRepeat;
+          if (readByWriter && staleStages.some((x) => x.label === "synthesis")) {
+            const now = rankingNow(P), n = recordsReRanked(readByWriter, now);
+            const m = Math.max(rankedRecords(readByWriter), rankedRecords(now), n);
             if (n > 0) deliverAndClamp({
               event: "ranking-changed-unread-delivered",
               defect: `ranking_changed_unread:${n}`,
@@ -16068,7 +16239,7 @@ async function pipelineInner(job, opts = {}) {
               clause: clauseForDefect("ranking_changed_unread", n, m),
             });
           }
-          if (clampReasons.length !== named && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
+          if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
           runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: verdict, named: clampReasons.length - named,
             stages: staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
           note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);

@@ -143,6 +143,17 @@ export function rankingNow(P) {   // @internal — driven by its test with a run
   return { records, groups };
 }
 
+/** A ranking as it is kept on disk: its two maps as plain objects. PURE. */
+export function rankingToJson(ranking) {
+  return { records: Object.fromEntries(ranking?.records ?? []), groups: Object.fromEntries(ranking?.groups ?? []) };
+}
+
+/** A ranking kept on disk, read back into its two maps; null when there is none to read. PURE. */
+export function rankingFromJson(json) {
+  if (!json || typeof json !== "object" || typeof json.records !== "object" || typeof json.groups !== "object") return null;
+  return { records: new Map(Object.entries(json.records ?? {})), groups: new Map(Object.entries(json.groups ?? {})) };
+}
+
 /** How many records a ranking accounts for: each named record once, and every record a group's row holds. PURE. */
 export function rankedRecords(ranking) {
   return (ranking?.records?.size ?? 0) + [...(ranking?.groups?.values() ?? [])].reduce((n, g) => n + (Number(g?.records) || 0), 0);
