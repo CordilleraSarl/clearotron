@@ -15970,6 +15970,20 @@ async function pipelineInner(job, opts = {}) {
         // so the guard is handed it here and blocks as for any reviewer left stale.
         if (unreadRecordReview(run.runDir) && !staleStages.some((x) => x.label === "narrative-refutation"))
           staleStages.push({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
+        // A CHANGED DECISION STILL UNREAD AFTER ITS RE-RUN IS DELIVERED, NOT HELD (the owner's ruling of 2026-10-19 that a
+        // run is never held). When every stage still stale is one the changed decision left stale and whose re-run in
+        // this pass did not complete, the run delivers what it has. The writer's duty and the recall gate are judged
+        // again on the writer delivered, and name in their approved sentences what they find. Staleness for any other
+        // reason still falls to the guard.
+        if (staleStages.length && staleStages.every((x) => chain.has(x.label))) {
+          const was = verdict, named = clampReasons.length;
+          clampOnTheWritersDuty({ again: true });
+          if (clampReasons.length !== named) saveTheLabel("after a changed decision went unread");
+          runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: verdict, named: clampReasons.length - named,
+            stages: staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
+          note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
+          staleStages = [];
+        }
         // THE LABEL OWED IS SAVED NOW, before anything is published from it, and the report's own label follows it. Only
         // a run directory that refuses every save of it ends the run here, and then nothing the run writes can be published.
         if (labelOwed) {

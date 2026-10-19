@@ -143,3 +143,31 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.ok(keptAudits.some((f) => readFileSync(f, "utf8").includes(`- rationale: ${G1}`)), "the audit that stated the earlier ground was not kept");
   });
 }
+
+test("claude: a writer that cannot re-run for the changed decision does not hold the run — it delivers, and the run record names what went unread", async () => {
+  const root = mkdtempSync(join(tmpdir(), "clearotron-repeatground-unread-"));
+  const planExecutor = executor([]);
+  const p1 = await runMockPipeline(root, { MOCK_FAIL_STAGE: PARK_AT_DIGEST, MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
+  assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+  const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
+  const n1 = p1.events.length;
+  // The writer's re-run is the one dispatch told the repeat's ground, so failing that fails it alone.
+  const p2 = await runMockPipeline(root, { MOCK_SKEPTIC: ESCALATE_SATPROBE, MOCK_PLACEMENT_SET_ASIDE: G2,
+    MOCK_FAIL_STAGE: `Produce the joint synthesis narrative&&: set aside on its status: ${G2}` }, { planExecutor }, codename);
+  const ev2 = p2.events.slice(n1);
+  assert.ok(ev2.some((e) => e.event === "delivery-stale-requeued" && e.after === "placement-inquiry" && e.stages.includes("synthesis")),
+    "guard: the changed decision queued the writer");
+  assert.equal(p2.res.ok, true, JSON.stringify({ fail: p2.res.fail, stage: p2.res.failedStage }));
+  assert.deepEqual(ev2.filter((e) => e.event === "delivery-stale-blocked"), [], "the run was held on a writer that could not re-run");
+  const unread = ev2.filter((e) => e.event === "changed-decision-unread-delivered");
+  assert.equal(unread.length, 1, "the run record does not say a changed decision went unread");
+  assert.deepEqual(unread[0].stages.map((x) => x.label), ["synthesis"]);
+  assert.ok(unread[0].stages[0].changed.some((c) => /placement/.test(c)), `the record does not name what the writer did not read: ${JSON.stringify(unread[0])}`);
+  // one result wherever it is read
+  const rd = p2.res.runDir;
+  const json = (f) => JSON.parse(readFileSync(f, "utf8"));
+  const status = json(join(rd, "status.json"));
+  const settle = json(join(root, "pool", status.runId, "settle.json"));
+  assert.deepEqual([p2.res.verdict, json(driverDir(rd, "verdict.json")).verdict, status.review.signoff, settle.signoff],
+    Array(4).fill(p2.res.verdict), "the delivered result differs between the surfaces it is read from");
+});
