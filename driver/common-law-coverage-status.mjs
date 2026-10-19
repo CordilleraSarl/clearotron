@@ -116,7 +116,7 @@ export function recordCoverageStatus(spec, received, { now = () => new Date().to
 export const NOT_STATED = "not stated";
 
 /**
- * THE STATUSES A FINDINGS FILE STATES, RECORDED BY CODE (Krzys, 2026-10-01). A seat whose findings carry
+ * THE STATUSES A FINDINGS FILE STATES, RECORDED BY CODE (the owner, 2026-10-01). A seat whose findings carry
  * a coverage ledger but made no `record_coverage_status` call is accepted, not re-run: a re-run for this
  * was a full stage re-run, and nothing is added to what the model reads. Each ledger row's status is read
  * from the row as the findings wrote it — one of the three words, else "not stated" — and recorded in the

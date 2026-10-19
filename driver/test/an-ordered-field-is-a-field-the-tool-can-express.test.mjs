@@ -49,7 +49,7 @@ const SERVERS = Object.freeze(["recording", "coverage", "dispositions", "unit-no
 // above is what replaces reading them.
 const ORDER_SOURCES = Object.freeze(["repair-composers.mjs", "gateway.mjs", "stages.mjs"]);
 // A transport whose only order is its stage's manual. `record_coverage_status` was also ordered by the
-// retry text for `no_coverage_status_row`; Krzys ruled on 2026-10-01 that no retry is spent on that token
+// retry text for `no_coverage_status_row`; the owner ruled on 2026-10-01 that no retry is spent on that token
 // and the retry text goes, so the manual's line under the Coverage ledger is now its one order, and the
 // census reads it there rather than reporting a stage that lost its dispatch.
 const MANUAL_ORDERS = Object.freeze({ record_coverage_status: "skills/clearance-common-law/SKILL.md" });
