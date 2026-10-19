@@ -710,8 +710,9 @@ export function mintRecordCarryDoubts(artifact, { max = 25 } = {}) {
  *   - a record newly unreasoned gets a new doubt, under an id past every one this family gave, stitched by `stitch` as
  *     a fresh doubt is (in code; nothing is dispatched);
  *   - a record the new trace reasons loses its doubt.
- * Every other family's doubts stay exactly where they stood. Returns { doubts, fresh, dropped, minted, omitted }:
- * the ids of the new and the dropped doubts, and the mint's own counts against its cap. PURE.
+ * Every other family's doubts stay exactly where they stood. The cap (`max`) limits only the new doubts: a record that
+ * keeps its doubt keeps it wherever the new trace lists it. Returns { doubts, fresh, dropped, minted, omitted }: the ids
+ * of the new and the dropped doubts, the family's size, and the records without a ground the cap left out. PURE.
  */
 export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max = 25 } = {}) {
   const FAMILY = /^doubt:record-carry:unreasoned:(\d+)$/;
@@ -720,13 +721,17 @@ export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max
   const uriOf = (d) => String(d?.subject?.uris?.[0] ?? "").toLowerCase();
   const old = all.filter(inFamily);
   const oldByUri = new Map(old.filter((d) => uriOf(d)).map((d) => [uriOf(d), d]));
-  const mint = trace?.computable === true ? mintRecordCarryDoubts(trace, { max }) : { doubts: [], minted: 0, omitted: 0 };
+  // Minted whole, then capped: a record that keeps its doubt keeps it wherever the new trace lists it, and the cap
+  // limits only the new doubts, filled in the trace's order up to what the kept ones leave.
+  const mint = trace?.computable === true ? mintRecordCarryDoubts(trace, { max: Infinity }) : { doubts: [] };
+  const keptCount = mint.doubts.filter((d) => oldByUri.has(uriOf(d))).length;
+  let room = Math.max(0, max - keptCount);
   let next = old.reduce((n, d) => Math.max(n, Number(FAMILY.exec(d.id)[1])), 0);
   const family = [], fresh = [];
   for (const d of mint.doubts) {
     const prior = oldByUri.get(uriOf(d));
     if (prior) family.push(prior);
-    else { const f = { ...d, id: `doubt:record-carry:unreasoned:${++next}` }; fresh.push(f); family.push(f); }
+    else if (room > 0) { room--; const f = { ...d, id: `doubt:record-carry:unreasoned:${++next}` }; fresh.push(f); family.push(f); }
   }
   const stitched = fresh.length ? new Map(stitch(fresh).map((d) => [d.id, d])) : new Map();
   const members = family.map((d) => stitched.get(d.id) ?? d);
@@ -739,7 +744,7 @@ export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max
   }
   if (!placed) out.push(...members);
   return { doubts: out, fresh: fresh.map((d) => d.id), dropped: old.filter((d) => !keptIds.has(d.id)).map((d) => d.id),
-    minted: mint.minted ?? mint.doubts.length, omitted: mint.omitted ?? 0 };
+    minted: members.length, omitted: Math.max(0, mint.doubts.length - members.length) };
 }
 
 /**

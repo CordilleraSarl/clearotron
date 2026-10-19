@@ -15014,7 +15014,10 @@ async function pipelineInner(job, opts = {}) {
       note(`audit (code): ${a.counts.findings} findings, ${a.counts.negatives} negatives, ${a.counts.audit} audit-trail${a.counts.withdrawnStamped ? `, ${a.counts.withdrawnStamped} withdrawn-stamped` : ""}${a.counts.resolutionStamped ? `, ${a.counts.resolutionStamped} resolution-stamped` : ""}${runDoubts ? `, doubts ${a.counts.doubtsSettled} settled / ${a.counts.doubtsOpen} open` : ""}${a.counts.presenceRows != null ? `, register presence ${a.counts.presenceRows} row(s)` : ""}`);
     } catch (e) {
       note(`audit build failed (NON-FATAL — report still ships, audit will regenerate on re-run): ${e.message}`);
-      runLog(run.runDir, { event: "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) });
+      // A findings record with no finding row trips the count guard, and on a clean run it can: that is recorded apart,
+      // as a note on the run's content, and only a build that broke is recorded as a failure.
+      const noFindings = /^0 findings parsed from the spine tables/.test(String(e?.message ?? ""));
+      runLog(run.runDir, { event: noFindings ? "audit-not-built-no-findings" : "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) });
       // An audit an earlier pass wrote describes that pass, not this one: the report ships without it, kept under _history.
       if (!auditWrittenThisPass) withdrawSupersededAudit(P, "audit-build-failed", { keep: !earlierPairKept });
     }

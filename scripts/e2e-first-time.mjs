@@ -215,6 +215,7 @@ export const NOT_COUNTED_EVENTS = {
     "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
+    "audit-not-built-no-findings",
     "ask-closure-mark-owed", "classifier-gap", 
     "connotation-addressed-not-discharged", "connotation-ruling-drift", "default-territory-unrecognized", "delivery-flags",
     "enforcer-signals", "findings-actions-legacy", "findings-schema-legacy", "floor-duty-undischarged",
