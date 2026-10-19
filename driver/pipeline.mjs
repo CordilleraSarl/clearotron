@@ -15746,6 +15746,11 @@ async function pipelineInner(job, opts = {}) {
               if (s2.label === "placement-inquiry") {
                 const was = verdict;
                 if (clampOnTheFloorDuty()) {
+                  // A WRITE THAT FAILS HERE STILL ENDS THE RUN (2026-10-19). The clamp only tightens the verdict, so none of
+                  // the label's own checks can refuse it, and what fails is the disk. Delivering past it would publish the
+                  // label settled before the clamp, a clear result over a floor the report leaves unanswered, against the
+                  // run's own record, and no approved sentence states that gap. Until one does, this keeps the rule every
+                  // other write of the label follows.
                   try { writeVerdictSidecar(); }
                   catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed after the repeated placement pass: ${String(e.message).slice(0, 120)}`); }
                   try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
