@@ -18034,8 +18034,9 @@ function readReadingLog(P) {
 
 /**
  * Take an audit that no longer describes the run out of the place publishing reads it from, keeping it under _history
- * (unless the caller has just kept it). The report then ships with no audit, as it does when a first build fails,
- * never with an earlier one offered as current. Returns whether an audit was withdrawn.
+ * (unless the caller has just kept it). The report then ships without that Audit Trail, as it does when a first build
+ * fails, never with an earlier one offered as current; the publisher still builds the workbook from the current
+ * findings. Returns whether an audit was withdrawn.
  */
 export function withdrawSupersededAudit(P, reason, { keep = true } = {}) {   // @internal — driven by its test with a run's own files
   if (!existsSync(P.audit)) return false;
@@ -18089,10 +18090,13 @@ export function rebuildDeliveredRecord(ctx, inputs = {}, trigger = "stale-repair
       const re = recordCarryDoubtsAgain(doubts, safeReadJson(P.recordCarry),
         { stitch: (ds) => stitchDoubts(ds, { findings: { findings: findingsNow, actions: actionsNow }, coverageRows, registerFindingsText }) });
       doubts = re.doubts;
-      doubtTruncations = [...(doubtTruncations ?? []).filter((t) => t?.source !== "record-carry"),
+      // A trace that could not be read says nothing about any record: the doubts stand as raised, and so does the count
+      // of those the cap left out.
+      if (!re.unavailable) doubtTruncations = [...(doubtTruncations ?? []).filter((t) => t?.source !== "record-carry"),
         ...(re.omitted ? [{ source: "record-carry", minted: re.minted, omitted: re.omitted }] : [])];
       writeDoubtLedgerAgain(P, doubts, doubtTruncations);
-      if (re.fresh.length || re.dropped.length) runLog(P.runDir, { event: "record-carry-doubts-again", trigger, fresh: re.fresh.length, dropped: re.dropped.length });
+      if (re.fresh.length || re.dropped.length || re.unavailable)
+        runLog(P.runDir, { event: "record-carry-doubts-again", trigger, fresh: re.fresh.length, dropped: re.dropped.length, ...(re.unavailable ? { unavailable: true } : {}) });
     }
     const again = buildAuditMd(registerFindingsText, inputs.commonLawText ?? "",
       { findings: findingsNow, doubts, asks: inputs.asks ?? null, readingLog: readReadingLog(P),

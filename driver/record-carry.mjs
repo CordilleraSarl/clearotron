@@ -709,10 +709,14 @@ export function mintRecordCarryDoubts(artifact, { max = 25 } = {}) {
  *   - a record still unreasoned keeps its doubt exactly as it stands: id, status and ending;
  *   - a record newly unreasoned gets a new doubt, under an id past every one this family gave, stitched by `stitch` as
  *     a fresh doubt is (in code; nothing is dispatched);
- *   - a record the new trace reasons loses its doubt.
+ *   - a record the new trace POSITIVELY reasons, a row for it that is not unreasoned, loses its doubt;
+ *   - a record the new trace does not list at all keeps its doubt as it stands: an absence is not a ground.
+ * A trace that is missing or could not be computed (no readable band, among other causes) says nothing about any
+ * record, so it removes nothing and adds nothing: every doubt stands as the pass raised it (`unavailable: true`).
  * Every other family's doubts stay exactly where they stood. The cap (`max`) limits only the new doubts: a record that
- * keeps its doubt keeps it wherever the new trace lists it. Returns { doubts, fresh, dropped, minted, omitted }: the ids
- * of the new and the dropped doubts, the family's size, and the records without a ground the cap left out. PURE.
+ * keeps its doubt keeps it wherever the new trace lists it, or where it does not. Returns { doubts, fresh, dropped,
+ * minted, omitted, unavailable }: the ids of the new and the dropped doubts, the family's size, the records without a
+ * ground the cap left out, and whether the trace could be read at all. PURE.
  */
 export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max = 25 } = {}) {
   const FAMILY = /^doubt:record-carry:unreasoned:(\d+)$/;
@@ -720,11 +724,16 @@ export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max
   const inFamily = (d) => FAMILY.test(String(d?.id ?? ""));
   const uriOf = (d) => String(d?.subject?.uris?.[0] ?? "").toLowerCase();
   const old = all.filter(inFamily);
+  if (trace?.computable !== true) return { doubts: all, fresh: [], dropped: [], minted: old.length, omitted: 0, unavailable: true };
   const oldByUri = new Map(old.filter((d) => uriOf(d)).map((d) => [uriOf(d), d]));
   // Minted whole, then capped: a record that keeps its doubt keeps it wherever the new trace lists it, and the cap
   // limits only the new doubts, filled in the trace's order up to what the kept ones leave.
-  const mint = trace?.computable === true ? mintRecordCarryDoubts(trace, { max: Infinity }) : { doubts: [] };
-  const keptCount = mint.doubts.filter((d) => oldByUri.has(uriOf(d))).length;
+  const mint = mintRecordCarryDoubts(trace, { max: Infinity });
+  const unreasonedUris = new Set(mint.doubts.map(uriOf));
+  const listed = new Set((Array.isArray(trace?.rows) ? trace.rows : []).map((r) => String(r?.uri ?? "").toLowerCase()).filter(Boolean));
+  const reasoned = (uri) => listed.has(uri) && !unreasonedUris.has(uri);
+  const carried = old.filter((d) => !unreasonedUris.has(uriOf(d)) && !reasoned(uriOf(d)));   // not listed: kept as it stands
+  const keptCount = mint.doubts.filter((d) => oldByUri.has(uriOf(d))).length + carried.length;
   let room = Math.max(0, max - keptCount);
   let next = old.reduce((n, d) => Math.max(n, Number(FAMILY.exec(d.id)[1])), 0);
   const family = [], fresh = [];
@@ -733,6 +742,7 @@ export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max
     if (prior) family.push(prior);
     else if (room > 0) { room--; const f = { ...d, id: `doubt:record-carry:unreasoned:${++next}` }; fresh.push(f); family.push(f); }
   }
+  family.push(...carried);
   const stitched = fresh.length ? new Map(stitch(fresh).map((d) => [d.id, d])) : new Map();
   const members = family.map((d) => stitched.get(d.id) ?? d);
   const keptIds = new Set(members.map((d) => d.id));
@@ -744,7 +754,7 @@ export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max
   }
   if (!placed) out.push(...members);
   return { doubts: out, fresh: fresh.map((d) => d.id), dropped: old.filter((d) => !keptIds.has(d.id)).map((d) => d.id),
-    minted: members.length, omitted: Math.max(0, mint.doubts.length - members.length) };
+    minted: members.length, omitted: Math.max(0, mint.doubts.length - (members.length - carried.length)), unavailable: false };
 }
 
 /**
