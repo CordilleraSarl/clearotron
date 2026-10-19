@@ -1498,8 +1498,8 @@
           "todos": 0
         },
         "a-repeated-placement-pass-is-held-to-its-floor-in-the-delivered-report.pipeline.test.mjs": {
-          "tests": 2,
-          "asserts": 50,
+          "tests": 3,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
