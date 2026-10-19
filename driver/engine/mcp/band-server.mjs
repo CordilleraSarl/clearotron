@@ -21,10 +21,12 @@ import { join, dirname } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { serve } from "./stdio-server.mjs";
 import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
-import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, PLACEMENT_GROUP_ORDERS } from "../../band-shape.mjs";
+import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, withoutPlacementOrders } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
 import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish, rowGoods } from "../../record-goods.mjs";
+import { recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, goodsFromLabel } from "../../goods-evidence.mjs";
+import { DEFAULT_LEDGER_PATH } from "../../provider-usage.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
@@ -303,11 +305,27 @@ const shapeGoodsTest = () => {
 // (`rowGoods`, a statement the register cut marked so); a row that carries its goods as one string stands in last.
 const goodsOfRow = (r) => goodsFor(goodsIndex(), r) ?? rowGoods(r)
   ?? (typeof r?.goods === "string" && r.goods.trim() ? [{ classes: [], text: r.goods.trim(), ...(untaggedIsEnglish(r?.record_id) ? {} : { en: false }) }] : null);
+// WHAT A RECORD'S GOODS REST ON, from the run's own files and its fetches, by the shared reader's one rule
+// (goods-evidence.mjs `recordGoodsEvidence`): the supporting evidence the record holds, never the last call made
+// for it. A fetch counts as failed only where the register's call ledger records it so; missing telemetry is not a
+// recorded failure. Read once per server, as the band and the goods index are.
+let evidenceCache = null;
+const runEvidence = () => evidenceCache ??= (() => {
+  let prefix = null;
+  try { const st = loadJson(join(RUN_DIR, "status.json")); if (st?.slug && st?.codename) prefix = `clearance-${st.slug}-${st.codename}-`; } catch { prefix = null; }
+  const calls = prefix ? readRunCallRows(DEFAULT_LEDGER_PATH, prefix) : { rows: [], error: "no run prefix" };
+  return { held: heldRecordProvenance(RUN_DIR), fetches: calls.error ? null : recordFetchOutcomes(calls.rows, { runPrefix: prefix }) };
+})();
+const evidenceOfRow = (r) => {
+  const { held, fetches } = runEvidence();
+  return recordGoodsEvidence(r, { goods: { of: goodsOfRow, held: (x) => goodsFor(goodsIndex(), x) != null }, held, fetches });
+};
 const withGoods = (r) => {
   const { words, matched } = shapeGoodsTest();
   const m = words.length ? matched(goodsOfRow(r)) : null;
   const { goods: _text, ...row } = project(r);   // a row's own goods text stands in for the test, and is not served
-  return { ...row, goods_words: m == null ? null : `${m.length} of ${words.length}${m.length ? `: ${m.join(", ")}` : ""}` };
+  return { ...row, goods_words: m == null ? null : `${m.length} of ${words.length}${m.length ? `: ${m.join(", ")}` : ""}`,
+    goods_from: goodsFromLabel(evidenceOfRow(r)) };
 };
 
 // A GROUP, PAGED AS THE SHAPE LISTS IT. The shape lists a group of a thousand records or more by its first
@@ -526,14 +544,59 @@ function bandRecord(params = {}) {
   // It stays an error, it stays in the reading audit with the reason that made it one, and it still says
   // what IS on file: the deferral this tool reports must stay visible for the real failures, or a dead
   // document reads back as a record that never had one.
-  logRead("band_record", { record_id: uri }, { ok: false, reason: hit.miss });
   // The uri grammar is the same one screen-gate reads, and it does not cover every segment shape (a
   // 7+ character office segment parses nowhere). So this message never tells the model its uri is
   // wrong: it says what the resolver could not do, and what to do about it either way.
-  const why = hit.miss === "unparsable-uri"
+  //
+  // WHAT IS ON FILE INSTEAD. Where the register's search answer listed goods for the record, they are served here
+  // with the miss, each statement with its source and completeness, in parts as an official record's text is: a
+  // whole statement on the search answer can decide a line's group, and no other tool serves its text. A fetch
+  // that the register's call ledger records as failed is said to have failed; nothing else is.
+  // A cite without its leading slash resolves on a hit; the miss reads it the same way, or it would lose the failed
+  // fetch and the search answer's goods that the cite's record has.
+  const parsed = hit.miss !== "unparsable-uri";
+  const key = normalizeRecordUri(uri) || normalizeRecordUri(`/${String(uri ?? "").trim().replace(/^\/+/, "")}`);
+  const bandRow = parsed && key ? bandRowFor(key) : null;
+  const statements = bandRow ? rowGoods(bandRow) : null;
+  const fetched = parsed ? runEvidence().fetches : null;
+  const fetch = fetched && key ? (fetched.get(key) ?? fetched.get(key.split("/").pop())) : null;
+  const failed = Boolean(fetch?.failed && !fetch.ok);
+  const why = !parsed
     ? `"${uri}" did not parse as a record reference (expected /mark/<cc>/<id> — a full provider URL carrying one is fine) and no archived record matches it exactly. If the uri IS right, its shape is outside this tool's grammar: state the gap, never read it as a clean.`
-    : `No official record fetched for "${uri}" this run.`;
-  return { isError: true, text: `${why} ${available.length ? `Records on file (${available.length}): ${available.slice(0, 40).join(", ")}${available.length > 40 ? ", …" : ""}.` : "No records fetched yet."} This tool is read-only — it never fetches; a record you need but do not have is an honest gap to state, not a reason to guess.` };
+    : statements
+      ? `${failed ? `No official record is on file for "${uri}": a fetch of it failed this run.` : `No official record is on file for "${uri}".`} The register's search answer listed these goods. Their source and completeness are shown with each statement.`
+      : failed ? `No official record is on file for "${uri}": a fetch of it failed this run.` : `No official record fetched for "${uri}" this run.`;
+  const rest = `${available.length ? `Records on file (${available.length}): ${available.slice(0, 40).join(", ")}${available.length > 40 ? ", …" : ""}.` : "No records fetched yet."} This tool is read-only — it never fetches; a record you need but do not have is an honest gap to state, not a reason to guess.`;
+  if (!statements) {
+    logRead("band_record", { record_id: uri }, { ok: false, reason: hit.miss, ...(failed ? { fetch_failed: true } : {}) });
+    return { isError: true, text: `${why} ${rest}` };
+  }
+  const goodsLines = statements.map((g) => JSON.stringify({ class: g.classes.join(",") || null, text: g.text,
+    goods_from: g.cut ? "search answer, cut by the register" : g.unknown ? "search answer, completeness not established" : "search answer" }));
+  const text = [why, ...goodsLines, rest].join("\n");
+  const parts = splitAtLines(text, RESPONSE_CHARS);
+  const wanted = Number(params.part ?? 1);
+  const part = Number.isInteger(wanted) && wanted >= 1 && wanted <= parts.length ? wanted : 1;
+  logRead("band_record", { record_id: uri }, { ok: false, reason: hit.miss, served: "search-answer-goods", bytes: text.length,
+    ...(parts.length > 1 ? { part, parts: parts.length } : {}), ...(failed ? { fetch_failed: true } : {}) });
+  if (parts.length === 1) return { isError: true, text };
+  return { isError: true, text: `[record ${uri} — part ${part}/${parts.length}]\n` + parts[part - 1]
+    + (part < parts.length ? `\n[end of part ${part}/${parts.length} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
+}
+
+// The band row a record id names, from the band file, read once per server. null where the band holds none.
+let bandRowsCache = null;
+function bandRowFor(uri) {
+  if (!bandRowsCache) {
+    bandRowsCache = new Map();
+    try {
+      for (const r of loadJson(bandPath())?.enumerated ?? []) {
+        const k = normalizeRecordUri(r?.record_id);
+        if (k && !bandRowsCache.has(k)) bandRowsCache.set(k, r);
+      }
+    } catch { /* no band on file: nothing to serve beside the miss */ }
+  }
+  return bandRowsCache.get(normalizeRecordUri(uri)) ?? null;
 }
 
 // THE SHAPE'S GROUP PAGES ARE PLACEMENT'S. Placement owes every line a group lists a fate, so it is offered the
@@ -546,8 +609,8 @@ const GROUP_PAGES = process.env.CLEAROTRON_BAND_GROUPS === "1";
 // The same holds for the shape's own orders under the groups: placement reads them, and every other stage is
 // served the shape without them (Krzys's ruling, 2026-10-14). Each is removed with the space before it, inside
 // its line, so no line moves and the line each listed mark is printed on, which `linesByPart` reads, still holds.
-const withoutPlacementOrders = (text) => PLACEMENT_GROUP_ORDERS.reduce((t, order) => t.split(` ${order}`).join("").split(order).join(""), text);
-const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; the goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
+// (band-shape.mjs `withoutPlacementOrders` removes them, with the shape's other placement-only orders and its group-page commands.)
+const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: official record; official record, cut by the register; official record, completeness not established; official record, no goods listed; search answer; search answer, cut by the register; search answer, completeness not established; fetch failed; or nothing held. The goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
 const LOOKUP_GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
 const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page)";
 const LOOKUP_OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page)";
@@ -580,7 +643,7 @@ serve({
     },
     {
       name: "band_record",
-      description: "The OFFICIAL registry record the driver fetched into this run's _records/ for a given record_id (/mark/... uri) — the fetched document itself, for detail the band row does not carry. Cite the uri in whatever form the band, the findings or the provider gave you: case, a wrapping provider URL and the registration-instance suffix are all resolved to the same document. Read-only: it never fetches; an unfetched record returns an honest miss listing what is on file, and a record that IS on file but cannot be opened says so — both are gaps to state, never records without documents. Every call is logged to the reading audit.",
+      description: "The OFFICIAL registry record the driver fetched into this run's _records/ for a given record_id (/mark/... uri) — the fetched document itself, for detail the band row does not carry. Cite the uri in whatever form the band, the findings or the provider gave you: case, a wrapping provider URL and the registration-instance suffix are all resolved to the same document. Read-only: it never fetches. An unfetched record returns an honest miss listing what is on file, with the goods the register's search answer listed for it where it listed any; a record that IS on file but cannot be opened says so — both are gaps to state, never records without documents. Every call is logged to the reading audit.",
       inputSchema: { type: "object", required: ["record_id"], properties: { record_id: { type: "string", description: "the /mark/<cc>/<id> uri" }, part: { type: "number", description: "1-based part number when an oversize record is served in parts (default 1)" } } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandRecord,

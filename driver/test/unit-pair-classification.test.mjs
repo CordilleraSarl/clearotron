@@ -53,9 +53,9 @@
 // arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
-// ── THE RULING, ALL THIRTY AS CLASSIFIED — TWENTY-NINE IN THE SWEEP TODAY, SEE THE CURE BELOW ──
+// ── THE RULING, ALL THIRTY-FIVE AS CLASSIFIED — THIRTY-FOUR IN THE SWEEP TODAY, SEE THE CURE BELOW ──
 //
-//  AGREE (28) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (33) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · deriveRegisterPositions() in band-shape.mjs  `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
@@ -158,6 +158,12 @@
 //                               zeros. An arm of court-decisions-take-the-pass-record-over-its-words
 //                               pins that cut. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
+//   · `recordGoodsEvidence` declared in goods-evidence.mjs mints `readable` in the SAME object literal as the
+//                               `state`, `source` and `basis` it qualifies, off the one `statements` read, in one
+//                               call. The run's goods record stores them together and nothing enforces against the
+//                               flag later: the record gates nothing, and its `unreadable` total is counted off the
+//                               same rows. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//
 //  DISAGREE (1), fixed here:
 //   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
 //                        answers `files.length ? files.some(…) : null`; the repair row answered
@@ -242,7 +248,7 @@ const RULED = new Map([
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
-  ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2],
+  ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");

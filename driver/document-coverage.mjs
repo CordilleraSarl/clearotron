@@ -94,8 +94,9 @@ export function renderDocumentCoverageSection(summary) {
       : `**Registry documents were retrieved for this search:** ${s.recordsWithBody} record`
         + `${s.recordsWithBody === 1 ? "" : "s"}${s.recordsTotal != null && s.recordsTotal !== s.recordsWithBody
           ? ` of the ${s.recordsTotal} held for this matter` : ""} carr${s.recordsWithBody === 1 ? "ies" : "y"} `
-        + "the document itself, so the goods and services behind those rights were read as written rather "
-        + "than inferred from their class numbers.");
+        // Holding a record is not reading it: a judging step opens few of the records a register holds, so the
+        // sentence says what was retrieved and claims no reading (the owner's approved wording, 2026-10-18).
+        + "the document itself.");
   if (s.findingsOnRecord != null && s.recordsWithBody !== 0)
     parts.push(s.findingsOnRecord === 0
       ? "No finding in this report rests on wording read from a retrieved document; where a specification "

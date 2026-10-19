@@ -92,8 +92,13 @@ const clip = (s, n = 300) => {
  * not name cannot be distinguished between considered-and-not-selected and never reached at all. Those
  * rows carry `verdict: "discarded"` with `reason_source: "step-structural"` and a reason naming the
  * incompletion, so the fact survives; they are never silently folded into ordinary drops.
+ *
+ * A SKIPPED PASS DECIDED NOTHING. A resumed run skips a stage whose answer is on disk, and that answer is an
+ * earlier pass's. Where `prior` (the folded ledger) already holds that earlier pass's row for a record at this
+ * seam, the skipped pass writes none: under the winner rule an incompletion written over it erased every ground
+ * the step had given. A record no earlier pass spoke about is still recorded as not reached.
  */
-export function seamRows({ seam, stage, trigger = null, pass = 1, completed = true,
+export function seamRows({ seam, stage, trigger = null, pass = 1, completed = true, skipped = false, prior = null,
   saw = [], carried = [], reasonFor = null, evidence = "" } = {}) {
   if (!DISCARD_SEAMS.includes(seam)) return [];
   const carriedSet = new Set();
@@ -112,6 +117,7 @@ export function seamRows({ seam, stage, trigger = null, pass = 1, completed = tr
       continue;
     }
     if (!completed) {
+      if (skipped && prior?.byUri?.get?.(uri)?.[seam]) continue;
       rows.push({
         seam, stage, trigger, pass, uri, verdict: "discarded",
         reason: `${seam}:stage-incomplete`, reason_source: "step-structural",

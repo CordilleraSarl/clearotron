@@ -915,12 +915,7 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   // So the carry rows are the population — they are where a stated drop is RECORDED — and the
   // reconciliation is demoted to optional corroboration. Measured on that delivery, the correct
   // population is 70 rows over 34 distinct marks, all `digest:reasoned-negative`, and it contains both.
-  const arrived = new Set(["finding", "findings-surface"]);
-  const population = carryRows.filter((r) => r?.uri
-    && r.reason_source === "step-stated"           // the sibling owns step-silent; step-structural is mechanical
-    && !arrived.has(r.reach));                     // arrived, or arrived somewhere visible, is not a divergence
-
-  // Kept for corroboration only. `ended` no longer gates anything; where the reconciliation DOES name a
+  // Kept for corroboration. `ended` gates nothing but one exclusion below; where the reconciliation DOES name a
   // position it agrees with, that is recorded on the row so a reader can weigh it.
   const ended = [];
   for (const bucket of ["top_slice", "residual"]) {
@@ -930,6 +925,20 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
     }
   }
   const endedUris = new Set(ended.map((e) => e.uri));
+  const arrived = new Set(["finding", "findings-surface"]);
+  // PLACEMENT'S OWN SET-ASIDE IS NOT A LOST FINDING. A record placement set aside, by name or by its group's row,
+  // leaves the placement seam with the step's ground before the digest ever sees it: the ruled method's decision,
+  // recorded where it was made. Read as a stated drop it was listed as a divergence pointing at another artifact,
+  // and on a crowded band those rows buried the few this check is for. It stays in the population where the digest
+  // ended its position as a finding, because then the record did vanish: in the reconciliation, or in the finding
+  // rows the digest's own typed calls recorded, which the reconciliation's silence cannot erase.
+  const digestFound = new Set((Array.isArray(digestFindingUris) ? digestFindingUris : []).map(lc));
+  const placementSetAside = (r) => r.stopped_at === "placement" && r.reason === "placement:set-aside"
+    && !endedUris.has(lc(r.uri)) && !digestFound.has(lc(r.uri));
+  const population = carryRows.filter((r) => r?.uri
+    && r.reason_source === "step-stated"           // the sibling owns step-silent; step-structural is mechanical
+    && !arrived.has(r.reach)                       // arrived, or arrived somewhere visible, is not a divergence
+    && !placementSetAside(r));
   const byUri = new Map();
   for (const r of carryRows) if (r?.uri) byUri.set(lc(r.uri), r);
 

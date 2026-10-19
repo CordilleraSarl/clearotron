@@ -20,6 +20,11 @@ export {
 // exists: a second copy of a path table drifts, and the drift shows up as an artifact reported missing.
 export { koPaths } from "../../driver/stages-knockout.mjs";
 
+// PLACEMENT'S STANDING DECISIONS, as the driver's audit builder delivers them in the Audit Trail. The rebuild of a
+// missing audit (lib/findings.mjs) carries the same rows, so the decisions recall reconciliation accepted are not lost
+// on the recovery path. A dependency-free driver module, like the rest of this file.
+export { placementAuditRows } from "../../driver/placement-decisions.mjs";
+
 // HOW PUBLISH ADDRESSES A KNOCKOUT'S LISTED FILINGS. On a register with no record pages of its own, each
 // filing with an office number is given the office's own page, or the office and the number and why that is
 // not a link, and the report, the workbook and report-data.json state it. The evidence view states it from

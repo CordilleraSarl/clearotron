@@ -78,8 +78,11 @@ import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
+import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
+  placementRecallEndings } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
+export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { buildSelectionIndex, setAsideGrounds, setAsideKeysOf, ownerFates, isSetAsideGroupRow } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -130,6 +133,7 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -141,13 +145,13 @@ const COMMONLAW_CARRY_FLOOR = (() => {
   catch { return null; }
 })();
 import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent, mintRemedyAccountingDoubts, SETTLED_CLASSES } from "./remedy-accounting.mjs";   // — every remedy term ends accounted (2026-08-03)
-import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, fetchedRecordUris, countLaneCalls } from "./provider-usage.mjs";
+import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, countLaneCalls } from "./provider-usage.mjs";
 // — the run's own record log. Every driver-side register call that can write a record BODY carries
 // this path, because this process runs several runs' pipelines at once and a global address would file
 // one run's evidence under another.
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause } from "./screen-gate.mjs";
+import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
@@ -159,7 +163,7 @@ import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, 
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
-import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
+import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
 import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
@@ -945,6 +949,7 @@ function recordDetailIndex(runDir) {
 
 function deriveBandShape(ctx, band) {
   const P = ctx.paths;
+  let evidenceDoc = null;
   try {
     const targets = [];
     const markNames = Array.isArray(ctx.job?.marks)
@@ -982,7 +987,12 @@ function deriveBandShape(ctx, band) {
       note(`register-positions derivation failed (non-fatal — the per-registration band stands): ${String(e?.message ?? e).slice(0, 100)}`);
     }
     const shapeGoods = bandShapeGoods(P, band?.enumerated ?? []);
-    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null) });
+    // What each record's goods rest on, derived first so the shape says it of each line the goods test could not
+    // place; the same record is written beside the shape below.
+    try { evidenceDoc = goodsEvidenceDocFor(ctx, band, shapeGoods.goods); } catch { evidenceDoc = null; }
+    const evidenceBy = evidenceDoc ? new Map(evidenceDoc.records.map((r) => [r.uri, r])) : null;
+    const evidenceOf = evidenceBy ? (r) => evidenceBy.get(normalizeRecordUri(r?.record_id) || String(r?.record_id ?? "")) ?? null : null;
+    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null), evidenceOf });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");
@@ -999,6 +1009,40 @@ function deriveBandShape(ctx, band) {
   } catch (e) {
     runLog(P.runDir, { event: "band-shape-failed", fail: String(e?.message ?? e).slice(0, 200) });
     note(`band-shape derivation failed (non-fatal — judgment still holds band_lookup over the band; machine checks read the complete band): ${String(e?.message ?? e).slice(0, 120)}`);
+  }
+  recordGoodsEvidenceFor(ctx, band, evidenceDoc);
+}
+
+/**
+ * WHAT EACH BAND RECORD'S GOODS REST ON, written beside the shape after every derivation (goods-evidence.mjs): the
+ * goods reader the shape tests with, given the band's records so that a reader which reads a band row's own goods
+ * reads them here too; the official records the run holds, with where each came from; and this run's record fetches,
+ * from the register call ledger. The shape says the same of each line from the same derivation (its goods cell and
+ * `goods_evidence`); the file itself is served by no band tool, gates nothing, and a failure costs the run this
+ * record and nothing else.
+ */
+function goodsEvidenceDocFor(ctx, band, goods = null) {
+  const P = ctx.paths;
+  const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+  const calls = runPrefix ? readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix) : { rows: [], error: null };
+  const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
+  const doc = deriveGoodsEvidence({ records, goods: goods ?? bandShapeGoods(P, records).goods, held: heldRecordProvenance(P.runDir),
+    fetches: recordFetchOutcomes(calls.rows, { runPrefix }) });
+  // Whether fetches could be read is part of the record: without the ledger, "not held" may hide a failed fetch.
+  doc.fetches_read = runPrefix ? (calls.error ? `the register call ledger could not be read: ${calls.error}` : true) : "no run prefix";
+  return doc;
+}
+
+function recordGoodsEvidenceFor(ctx, band, derived = null) {
+  const P = ctx.paths;
+  try {
+    const doc = derived ?? goodsEvidenceDocFor(ctx, band);
+    ensureDriverDir(P.runDir);
+    atomicWrite(driverDir(P.runDir, GOODS_EVIDENCE_FILE), JSON.stringify(doc, null, 2) + "\n");
+    runLog(P.runDir, { event: "goods-evidence", records: doc.totals.records, by_state: doc.totals.by_state,
+      by_source: doc.totals.by_source, unreadable: doc.totals.unreadable, fetches_read: doc.fetches_read });
+  } catch (e) {
+    runLog(P.runDir, { event: "goods-evidence-failed", fail: String(e?.message ?? e).slice(0, 160) });
   }
 }
 
@@ -3004,13 +3048,15 @@ function derivePlacementCarry(ctx, trigger) {
 //
 // NEVER THROWS and never gates — same doctrine as the trace it feeds. A ledger that cannot be written
 // costs the run a `basis: "recorded"`, which the trace then states, and costs it nothing else.
-function recordSeamDiscards(ctx, { seam, stage: stageName, trigger = null, completed = true,
+function recordSeamDiscards(ctx, { seam, stage: stageName, trigger = null, completed = true, skipped = false,
   saw = [], carried = [], reasonFor = null, evidence = "" } = {}) {
   const P = ctx.paths;
   try {
     ctx._discardPass ??= {};
     const pass = (ctx._discardPass[seam] = (ctx._discardPass[seam] ?? 0) + 1);
-    const rows = seamRows({ seam, stage: stageName, trigger, pass, completed, saw, carried, reasonFor, evidence });
+    // A skipped pass leaves standing what an earlier pass recorded (record-discard.mjs, `seamRows`).
+    const prior = skipped ? foldDiscardLedger(safeReadText(driverDir(P.runDir, DISCARD_LEDGER_NAME))) : null;
+    const rows = seamRows({ seam, stage: stageName, trigger, pass, completed, skipped, prior, saw, carried, reasonFor, evidence });
     const w = appendDiscardRows(P.runDir, rows);
     const discarded = rows.filter((r) => r.verdict === "discarded").length;
     runLog(P.runDir, {
@@ -3034,18 +3080,6 @@ function bandUriRows(P) {
   } catch { return []; }
 }
 
-/** Every record uri a placements.json names. */
-function placedUriRows(P) {
-  try {
-    const placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-    const out = [];
-    for (const p of Array.isArray(placements) ? placements : []) {
-      for (const r of Array.isArray(p?.records) ? p.records : []) out.push({ uri: r, tier: p?.tier ?? null });
-    }
-    return out;
-  } catch { return []; }
-}
-
 /**
  * PLACEMENT. Everything in the band was in front of this pass; what it placed is in placements.json.
  * Recorded whether the pass completed or not — an incomplete pass discards nothing, and its rows say so
@@ -3056,7 +3090,7 @@ function recordPlacementSeam(ctx, r, trigger = null) {
   const saw = bandUriRows(P);
   if (!saw.length) return null;
   return recordSeamDiscards(ctx, {
-    seam: "placement", stage: "placement-inquiry", trigger, completed: r?.ok === true && !r?.skipped,
+    seam: "placement", stage: "placement-inquiry", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
     saw, carried: placedUriRows(P),
     evidence: r?.skipped ? "the pass was SKIPPED on an artifact already on disk, so it made no decision this pass" : (r?.fail ? String(r.fail).slice(0, 80) : ""),
     reasonFor: placementSeamReason(placementSetAsideGrounds(P)),
@@ -3064,28 +3098,23 @@ function recordPlacementSeam(ctx, r, trigger = null) {
 }
 
 /**
- * The form's set-aside entries as they stand on the shape now on disk. A ground by name stands as stored. A
- * group's row is checked again exactly as the union took it, on its count and on every line read, because the
- * shape may have been derived again since: a resumed run derives it afresh, and a record body fetched after
- * placement can move a line out of the list the goods test could not place and into a group. A row taken on
- * the earlier shape then covers no line the later one added. Nothing is written back. PURE.
+ * WHAT ONE PLACEMENT PASS DID, RECORDED: the ground every band record left it with (the seam rows) and the floors
+ * it answered (the floor duty). The main path and the delivery gate's repeat of the stage both record through
+ * here, so the ledger and the floor duty describe the placements the report is built from. Returns the pass
+ * result.
+ *
+ * THE STAMP IS THE MAIN PATH'S. On the main path, a pass that actually ran arms the floor its account may be held
+ * to. A SKIPPED pass leaves `placements.json` written by an earlier seat (on a resume, possibly one that never saw
+ * the floors order), so it arms nothing, and its seam rows leave the earlier pass's grounds standing. The delivery
+ * gate's repeat (`stale-repair`) arms nothing either: the floor it is held to is the one the run was already held
+ * to, applied again to the repeated pass's account where the gate rebuilds the report from it. A run whose only
+ * pass under the floors order is that repeat is held to no floor, as before.
  */
-function standingSetAside(entries, input) {
-  const all = Array.isArray(entries) ? entries : [];
-  const grouped = all.filter(isSetAsideGroupRow);
-  if (!grouped.length) return all;
-  const { form } = unionPlacementForm({ rows: [], set_aside: grouped }, null, input);
-  return [...all.filter((e) => !isSetAsideGroupRow(e)), ...form.set_aside_groups];
-}
-
-/** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
-export function placementSetAsideGrounds(P) {   // @internal — driven by its test with a run's own files
-  try {
-    const form = readPlacementForm(P.runDir);
-    if (!form.set_aside?.length) return () => null;
-    const input = readPlacementFormInput(P.runDir);
-    return setAsideGrounds(standingSetAside(form.set_aside, input), buildSelectionIndex(input), input.groups, input.floors);
-  } catch { return () => null; }
+export function recordPlacementPass(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
+  recordPlacementSeam(ctx, r, trigger);
+  deriveFloorDuty(ctx, r, trigger);
+  if (r?.ok === true && r?.skipped !== true && trigger !== "stale-repair") armFloorDuty(ctx.paths.runDir);
+  return r;
 }
 
 /**
@@ -3097,8 +3126,15 @@ export function placementOwnerFates(P, placements) {   // @internal — driven b
   try {
     const input = readPlacementFormInput(P.runDir);
     if (!input.groups) return { absent: "the band shape lists no groups" };
-    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input), index: buildSelectionIndex(input),
-      placedUris: (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
+    const index = buildSelectionIndex(input);
+    // What placement read, by its own reading log, and what each line's goods rest on, where the run recorded it.
+    const evidence = readGoodsEvidence(P.runDir);
+    const stateOf = Array.isArray(evidence?.records) ? new Map(evidence.records.map((r) => [normalizeRecordUri(r?.uri), r?.state])) : null;
+    const placedUris = (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : []));
+    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input, { placedUris }), index,
+      placedUris,
+      served: servedLines(input.groups, input.served, index),
+      lineEvidence: stateOf ? (l) => stateOf.get(normalizeRecordUri(l?.record_id)) ?? null : null });
     return counted ? { counted } : { absent: "the band shape's groups could not be counted" };
   } catch (e) { return { absent: `an input could not be read: ${String(e?.message ?? e).slice(0, 120)}` }; }
 }
@@ -3141,7 +3177,7 @@ function recordDigestSeam(ctx, r, trigger = null) {
     if (c === "carried") carried.push(row);
   }
   return recordSeamDiscards(ctx, {
-    seam: "digest", stage: "register-digest", trigger, completed: r?.ok === true && !r?.skipped,
+    seam: "digest", stage: "register-digest", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
     saw, carried,
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
@@ -3212,6 +3248,28 @@ function findingsSurfaceRows(P) {
  * `scope` is instructed-scope.json, JOB-authored before any model ran. It is the only thing the
  * contradiction refusals rest on, which is why it is read here rather than accepted from the seat.
  */
+// THE WRITE-UP IS TOLD WHAT EACH RECORD'S GOODS REST ON, beside its position (goods-evidence.mjs `goodsFromLabel`),
+// so a record declined on goods is declined knowing whether those goods were the official record's, a search answer's,
+// cut, or none. Only the dispatch's copy carries it; the spec the declination tool reads is the positions alone.
+// A list the label could not be added to keeps its lines as they were, and the run says so: a write-up handed no goods
+// source must not read as one whose records have none.
+export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its test with a run's own files
+  const unlabelled = (reason) => {
+    try { runLog(P.runDir, { event: "write-up-goods-from-failed", rows: rows.length, reason: String(reason).slice(0, 120) }); } catch { /* the list still goes */ }
+    return rows;
+  };
+  try {
+    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    if (!runPrefix) return unlabelled("the run has no session prefix to read its evidence by");
+    const uris = rows.filter((r) => r?.kind !== "page" && r?.uri).map((r) => r.uri);
+    const evidence = goodsEvidenceOfDrops(P, runPrefix, uris);
+    return rows.map((r) => {
+      const e = r?.kind !== "page" && r?.uri ? evidence.get(r.uri) : null;
+      return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source }) } : r;
+    });
+  } catch (e) { return unlabelled(e?.message ?? e); }
+}
+
 export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
   if (!rows.length) {
@@ -3229,7 +3287,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
     ensureDriverDir(P.runDir);
     atomicWrite(driverDir(P.runDir, "declination-spec.json"),
       JSON.stringify({ ts: new Date().toISOString(), rows, scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
-    ctx.findingsSurface = rows;
+    ctx.findingsSurface = withGoodsFrom(ctx, P, rows);
   } catch (e) {
     // The dispatch block is gated on ctx.findingsSurface, so a failed write leaves the stage UNORDERED
     // rather than ordered to call a tool whose spec it cannot read. Loud in the log, never a dead order.
@@ -3261,7 +3319,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
     }
   } catch { /* validators.findings' business; this seam records what it can */ }
   return recordSeamDiscards(ctx, {
-    seam: "synthesis", stage: "synthesis", trigger, completed: r?.ok === true && !r?.skipped,
+    seam: "synthesis", stage: "synthesis", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
     saw, carried: delivered,
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
@@ -3647,7 +3705,8 @@ function deriveRecallReconciliation(ctx, trigger) {
       }
     }
     if (!positions) return notComputable("no exact-identity positions projection — the join's unit is the POSITION and record-unit would block a compliant one-URI position row");
-    const artifact = reconcileRecall({ candidates, endings, crowdRulings, positions, dominantElement, inScopeClasses });
+    const placement = placementRecallEndings(P, candidates.map((c) => c.record_id));
+    const artifact = reconcileRecall({ candidates, endings, crowdRulings, positions, dominantElement, inScopeClasses, placement });
     writeArtifact(artifact);
     runLog(P.runDir, recallReconciliationEvent({ trigger, artifact }));
     if (artifact.totals.unended) note(`recall-reconciliation: ${artifact.totals.unended} screened-live dominant-element position(s) end NOWHERE (${artifact.totals.candidates} candidate record(s) in ${artifact.totals.positions} position(s); crowd declares ${artifact.crowd.declared} vs residual ${artifact.crowd.residual})`);
@@ -4465,6 +4524,22 @@ function clearedForSeat(runDir, label) {
   catch { return []; }
 }
 
+/**
+ * The context a stage's message is composed from. The review's floor check lists placement's standing decisions, and
+ * they are read here, from the run's files, each time its message is built: the review, its recheck, the delivery
+ * loop's whole review after a repeated placement pass and a review dispatched from a rebuilt context all read the
+ * decisions as they stand then, never a copy an earlier pass left on the context, and never "(none)" from a context
+ * that never set one. The reading step and the writer read placement's accepted set-asides the same way. Every
+ * other stage composes from the context as it is.
+ */
+export function messageCtxFor(name, ctx) {   // @internal — driven by its test
+  if (!ctx?.paths) return ctx;
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) };
+  // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
+  if (name === "register-digest" || name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  return ctx;
+}
+
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
   if (!def) throw new Error(`unknown stage ${name}`);
@@ -4648,7 +4723,7 @@ async function stageOnce(name, ctx, opts = {}) {
       // passes nothing and keeps its own inputs line.
       changedInputs: opts.changedInputs ?? null,
     })
-    : (def.message(ctx) + (opts.extra ? `\n\n${opts.extra}` : ""));
+    : (def.message(messageCtxFor(name, ctx)) + (opts.extra ? `\n\n${opts.extra}` : ""));
   // Every stage runs as the forwarding agent (derived from the queue location). An explicit opts.agent wins.
   const execAgent = opts.agent ?? ctx.agent;
   // thinking: ONLY Anthropic models get a --thinking token; a cross-provider model (gpt/gemini) NEVER does, so
@@ -4715,7 +4790,7 @@ async function stageOnce(name, ctx, opts = {}) {
     // seat answering something it was no longer asked about is served from the ledger rather than refused
     // as out-of-list — and `still_open` keeps naming everything genuinely open.
     ...(patch == null && typeof def.refreshCtx === "function"
-      ? { refreshMessage: () => def.message(def.refreshCtx(ctx)) + (opts.extra ? `\n\n${opts.extra}` : "") }
+      ? { refreshMessage: () => def.message(messageCtxFor(name, def.refreshCtx(ctx))) + (opts.extra ? `\n\n${opts.extra}` : "") }
       : {}),
     // #5b: a followup is a warm session resume — tell runStage so a hard-wall timeout breaks after ONE attempt
     // (an already-over-budget resume can't fit the 1.5× extension; this restores ~1× the wall, was ~2.5×).
@@ -6004,7 +6079,7 @@ const UPSTREAM_STALE_REPAIR = {
   // re-run could leave outvoting its prose, and it is re-runnable by contract (no one-shot receipt — the
   // assertReceiptSettled call ahead of its normal dispatch settles the plan receipt, which is already
   // settled by the time the delivery gate asks).
-  "placement-inquiry": (ctx) => stage("placement-inquiry", ctx, { force: true, trigger: "stale-repair" }),
+  "placement-inquiry": async (ctx) => recordPlacementPass(ctx, await stage("placement-inquiry", ctx, { force: true, trigger: "stale-repair" }), "stale-repair"),
   // frame-diff is DELIBERATELY ABSENT and must stay absent. It is one-shot by contract (no in-process
   // re-diff), so an entry here would re-dispatch a stage the design says runs once, for a model call
   // that cannot change anything: nothing declares frame-diff's outputs as a stage input, so by the time
@@ -6477,7 +6552,7 @@ async function runPostRepairReview(ctx, P, run, scope) {
   const changedInputs = changedInputsOf(scope.changed, { narrative: P.narrative, findings: P.findings });
   const message = repairFollowup("narrative-refutation:post-repair-review", {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
-    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt,
+    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
@@ -7785,6 +7860,79 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
     note(`[lane-depth] injected the depth-shortfall coverage row for ${added.join(", ")} — configured full, delivered less (coverage-limited: a disclosed limit, never a verdict clamp)`);
   } catch (e) {
     note(`[lane-depth] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+  }
+}
+
+/**
+ * WHAT EACH POLICED GOODS DROP RESTS ON, recorded beside the screen gate (screen-gate.mjs `screenGateEvidence`).
+ * Taken in two halves: `screenGateSnapshot` at the moment the gate judges, before it fetches anything (the findings
+ * it judged, each policed drop's goods evidence, and the reading log), and the record after the gate's fetches,
+ * which reads each drop's goods again only where the gate fetched. Disclosure only: the gate's rule and its
+ * outcome are decided above and nothing here changes them.
+ */
+function goodsEvidenceOfDrops(P, runPrefix, uris, gateFetched = null) {
+  const out = new Map();
+  if (!uris.length) return out;
+  const calls = readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix);
+  const held = heldRecordProvenance(P.runDir);
+  // Each drop's own band row, so that a goods reader which reads a row's goods reads this one's too.
+  const band = safeReadJson(P.registerNamedBand);
+  const bandRows = Array.isArray(band?.enumerated) ? band.enumerated : [];
+  const rowOf = new Map(bandRows.map((r) => [normalizeRecordUri(r?.record_id), r]));
+  const goods = bandShapeGoods(P, bandRows).goods;
+  const fetches = recordFetchOutcomes(calls.rows, { runPrefix });
+  // The gate's own fetches are this run's too, recorded by the gate whatever the register's ledger kept of them.
+  for (const [u, r] of gateFetched ?? []) {
+    const key = normalizeRecordUri(u) || String(u ?? "").toLowerCase();
+    const o = fetches.get(key) ?? { sent: 0, from_memory: 0, failed: 0, ok: false, last_status: null };
+    if (r?.ok === true) o.ok = true; else o.failed = Math.max(o.failed, 1);
+    fetches.set(key, o);
+  }
+  for (const uri of uris) {
+    const e = recordGoodsEvidence(rowOf.get(normalizeRecordUri(uri)) ?? { record_id: uri }, { goods, held, fetches });
+    out.set(uri, { goods: e.state, source: e.source });
+  }
+  return out;
+}
+
+function screenGateSnapshot(ctx, runPrefix) {
+  const P = ctx.paths;
+  try {
+    const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
+    let readingLog = "";
+    try { readingLog = readFileSync(P.readingLog, "utf8"); } catch { readingLog = ""; }
+    return { findings, readingLog, goods: goodsEvidenceOfDrops(P, runPrefix, policedDropUris(findings)) };
+  } catch (e) {
+    return { findings: "", readingLog: "", goods: new Map(), error: String(e?.message ?? e).slice(0, 160) };
+  }
+}
+
+function recordScreenGateEvidence(ctx, { runPrefix, before, heldBeforeGate, heldAfterGate, gateFetched }) {
+  const P = ctx.paths;
+  try {
+    const uris = policedDropUris(before.findings);
+    const after = gateFetched.size ? goodsEvidenceOfDrops(P, runPrefix, uris, gateFetched) : before.goods;
+    // The line each drop's record sits on, as placement's fate count joins it, so a part of the shape or a page
+    // of a group that served the line counts as the goods words shown.
+    let lineOf = () => null, lineReads = "read";
+    try {
+      const index = buildSelectionIndex(readPlacementFormInput(P.runDir));
+      lineOf = (uri) => lineKey(index.resolve(uri));
+    } catch (e) { lineReads = `the band shape's lines could not be read, so only record opens and lookups count: ${String(e?.message ?? e).slice(0, 100)}`; }
+    const ev = screenGateEvidence({ findingsContent: before.findings, heldBefore: heldBeforeGate, heldAfter: heldAfterGate,
+      before: (uri) => before.goods.get(uri), after: (uri) => after.get(uri),
+      reads: recordReads(before.readingLog), lines: linesRead(before.readingLog), lineOf, readerStage: "register-digest", gateFetched });
+    const calls = readRunCallRows(DEFAULT_LEDGER_PATH, runPrefix);
+    const gateCalls = registerCallAccount(calls.rows.filter((r) => String(r?.sessionKey ?? "").includes("screen-gate-refetch")));
+    const doc = { schema_version: 2, ...ev, gate_calls: gateCalls, line_reads: lineReads,
+      reading_note: "A drop with no recorded read has no band_record open or search-answer serve, and no lookup, part of the shape or page of a group serving its line, in the reading log for the reading step. The log is best-effort: this does not show the goods were never read.",
+      ...(before.error ? { snapshot_error: before.error } : {}), ...(calls.error ? { call_ledger_error: calls.error } : {}) };
+    ensureDriverDir(P.runDir);
+    atomicWrite(driverDir(P.runDir, "screen-gate-evidence.json"), JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");
+    runLog(P.runDir, { event: "screen-gate-evidence", ...ev.counts, unnamed: ev.unnamed, fetches: ev.fetches,
+      alternatives: ev.alternatives, gate_calls: gateCalls });
+  } catch (e) {
+    runLog(P.runDir, { event: "screen-gate-evidence-failed", fail: String(e?.message ?? e).slice(0, 160) });
   }
 }
 
@@ -11992,23 +12140,10 @@ async function pipelineInner(job, opts = {}) {
     // Step 2C placement → Step 2D digest
     await assertReceiptSettled(ctx, "placement-inquiry");
     const placementPass = await stage("placement-inquiry", ctx);
-    // half one — what THIS pass did to every record in the band, recorded before anything else can
-    // overwrite placements.json. Ahead of `must` deliberately: a pass that failed or skipped on a partial
-    // artifact is exactly the pass whose account is worth having, and `must` throws.
-    recordPlacementSeam(ctx, placementPass);
-    // — and whether the floors came back, on the SAME seam and for the same reason: before
-    // anything can overwrite placements.json, and ahead of `must`, because a pass that failed or
-    // skipped is exactly the pass whose floor account is worth having.
-    deriveFloorDuty(ctx, placementPass);
-    // ── — ARM THE FLOOR, AND ONLY ON A PASS THAT ACTUALLY RAN ─────────────────────────────────
-    //
-    // The stamp says "this run's placement ran under code carrying the floors order", which is the one
-    // fact a delivery floor may rest on. A SKIPPED pass leaves `placements.json` written by an earlier
-    // seat — on a resume, potentially one that never saw the dictation — so arming there would hold a
-    // seat to an order it never got. `ok:false` never reaches here anyway (`must` throws on the next
-    // line), and it is written out rather than relied on, because the reason it cannot reach here is a
-    // property of the line below rather than of this one.
-    if (placementPass?.ok === true && placementPass?.skipped !== true) armFloorDuty(P.runDir);
+    // What THIS pass did, recorded before anything else can overwrite placements.json, and ahead of `must`
+    // deliberately: a pass that failed or skipped on a partial artifact is exactly the pass whose account is
+    // worth having, and `must` throws. The delivery gate's repeat of this stage records through the same helper.
+    recordPlacementPass(ctx, placementPass);
     must(placementPass, "placement-inquiry");
     await checkLateBind("pre-digest");   // B5b checkpoint 2: a bind here rides the digest message as a re-classification block
     const digestKey = must(await runDigest(ctx), "register-digest").sessionKey;
@@ -12416,14 +12551,17 @@ async function pipelineInner(job, opts = {}) {
       // Re-read the findings + recompute the fetched universe on EACH check (the recovery re-digest rewrites
       // the findings AND may record_fetch the flagged URIs — both must be picked up on the post-recovery
       // check). V4-1: the fetched universe is the DELIVERED ARTIFACT SET's records (run-dir _records/ ∪ this
-      // session's ledger rows) ∪ this session's fetch attempts — not the session-prefixed ledger alone.
+      // session's ledger rows) — not the session-prefixed ledger alone. A failed fetch is not a retrieval, and a
+      // body that carries no record is not one either (ruled 2026-10-18): neither answers the gate, so such a drop
+      // gets the gate's own recovery fetch and, failing that, its disclosure. A valid copy the run already holds
+      // still answers it, whatever a later attempt did. A call the register answered `ok` is no record on its own:
+      // every register files the body it fetched, and a 200 carrying an empty record files an empty one, so the
+      // body is what is read, never the call's status.
+      const fetchedUniverse = () => new Set(
+        [...assembleRunRecords(run.runDir, runPrefix).records].filter(([, body]) => recordBodyHasContent(body)).map(([uri]) => uri));
       const checkScreenGate = () => {
         const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
-        const fetched = new Set([
-          ...fetchedRecordUris(DEFAULT_LEDGER_PATH, runPrefix),
-          ...assembleRunRecords(run.runDir, runPrefix).records.keys(),
-        ]);
-        return findScreenGateViolations(findings, fetched);
+        return findScreenGateViolations(findings, fetchedUniverse());
       };
 
       // PARSE-GAP LEDGER (2026-07-21): records the gate is blind to because URI_RE's `[a-z]{2}` cannot read
@@ -12523,7 +12661,7 @@ async function pipelineInner(job, opts = {}) {
           // Re-stamp the disclosure to the CURRENT leftover set — the flush may have corrected some
           // rows while new ones appeared; the floor and the sidecar must describe what is true now.
           // A row already disclosed keeps its original (more specific) fetch-failure cause.
-          const priorCause = new Map((ctx.screenGateUnresolved ?? []).map((u) => [u.uri ?? u.mark, u.cause]));
+          const priorCause = new Map((ctx.screenGateUnresolved ?? []).map((u) => [u.uri ?? u.mark, u]));
           // — the PROVIDER's own words first. `runPostFlushGateRepair` now returns what each fetch
           // said instead of discarding it, so a row disclosed on this path names the register's error
           // rather than the driver's generic string. `cause_source` says which of the three it is,
@@ -12534,7 +12672,10 @@ async function pipelineInner(job, opts = {}) {
             const fresh = v.uri ? postFlushFailures?.get(v.uri) : null;
             const prior = priorCause.get(key);
             if (fresh) return { mark: v.mark, uri: v.uri ?? null, cause: fresh, cause_source: "provider" };
-            if (prior) return { mark: v.mark, uri: v.uri ?? null, cause: prior, cause_source: "provider-earlier-pass" };
+            // An earlier pass's cause keeps the source it was given: a refusal is the provider's on that earlier
+            // pass, and a fetch that reported success, or a row naming no record, stays what it was.
+            if (prior?.cause) return { mark: v.mark, uri: v.uri ?? null, cause: prior.cause,
+              cause_source: !prior.cause_source || prior.cause_source === "provider" ? "provider-earlier-pass" : prior.cause_source };
             return {
               mark: v.mark, uri: v.uri ?? null,
               cause: v.uri
@@ -12559,6 +12700,10 @@ async function pipelineInner(job, opts = {}) {
         }
       };
       let violations = enforcedViolations();
+      // What the gate's answer stood on before it fetched anything, and each fetch it makes: the evidence below.
+      const heldBeforeGate = fetchedUniverse();
+      const gateBefore = screenGateSnapshot(ctx, runPrefix);
+      const gateFetched = new Map();
       if (violations.length) {
         // REPAIR-OR-DISCLOSE, NEVER BLOCK (2026-06-18). The digest intermittently drops an in-scope-live mark on
         // goods WITHOUT record_fetching it, and a generic re-digest re-runs identically (the model skips the same
@@ -12581,7 +12726,8 @@ async function pipelineInner(job, opts = {}) {
           try {
             const r = await fetcher(v.uri, { agentId: agent, sessionKey: `${runPrefix}screen-gate-refetch`, recordLog: runRecordLogPath(run.runDir) });
             if (!r?.ok) fetchFailures.set(v.uri, r?.cause ?? "record_fetch returned not-ok");
-          } catch (e) { fetchFailures.set(v.uri, String(e?.message ?? e).slice(0, 120)); }
+            gateFetched.set(v.uri, { ok: r?.ok === true, cause: r?.ok ? null : (r?.cause ?? "record_fetch returned not-ok") });
+          } catch (e) { fetchFailures.set(v.uri, String(e?.message ?? e).slice(0, 120)); gateFetched.set(v.uri, { ok: false, cause: String(e?.message ?? e).slice(0, 120) }); }
         }
         // The re-decide text — shared verbatim between the legacy immediate re-digest (funnel OFF) and
         // the queued settlement-flush section (funnel ON).
@@ -12653,6 +12799,7 @@ async function pipelineInner(job, opts = {}) {
           ...screenGateZeroCause({ findingsPresent: fPresent,
             findingsContent: fPresent ? readFileSync(P.registerFindings, "utf8") : "", unnamedArmed }) });
       }
+      recordScreenGateEvidence(ctx, { runPrefix, before: gateBefore, heldBeforeGate, heldAfterGate: fetchedUniverse(), gateFetched });
     }
 
     // ──: STANDALONE SETTLEMENT / LATE FLUSH ───────────────────────────────────────────────────
@@ -13474,6 +13621,37 @@ async function pipelineInner(job, opts = {}) {
     // larger piece of work than this floor. The blast radius said it could wait: on the day this was
     // written today's run discharged all 60 of its floors, and the only two runs with undischarged rows
     // carried 5 and 9 out of 222 and 352. A rung is a follow-up, never a precondition.
+    // THE FLOOR DUTY'S CLAMP, callable: applied where the terminal checks run, and again to a placement pass the
+    // delivery gate repeats, whose account the report is then rebuilt from. Returns the block it clamped on, or null.
+    const clampOnTheFloorDuty = () => {
+      // THE PREDICATE IS `floorDutyBlock`, called not copied — it lives in floor-duty.mjs so the arms can
+      // DRIVE it. Inline here it could only be pinned by source text, and a source-text pin cannot tell
+      // an armed check from one somebody disarmed while leaving its words in place.
+      const block = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) });
+      if (block) {
+        // DELIVERS AND CLAMPS. This threw until a live clearance run died at
+        // delivery after 5.55 hours on ONE undischarged floor row — the guard's first real catch,
+        // working exactly as built, and the client received nothing instead of a report naming one gap.
+        // The era stamp still gates it: `floorDutyArmed` means a placement pass ran under the code
+        // carrying the order, so an archived run neither blocks nor is now accused of a defect.
+        deliverAndClamp({
+          event: "floor-duty-undischarged",
+          defect: `floor_duty_undischarged:${block.undischarged}`,
+          detail: { undischarged: block.undischarged, floors: block.floors, named_without_ground: block.named_without_ground ?? 0, unanswerable: block.unanswerable ?? 0 },
+          reason: `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: ${block.sample}${block.undischarged > 4 ? " …" : ""}`
+            + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
+            + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
+            + `. The report ships with these named rather than being withheld.`,
+          // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
+          // lawyer: live registrations identical or near-identical to the mark that the report does not
+          // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
+          // Composed by the authority in `terminal-clamp.mjs` for the reason the sibling site above
+          // gives: a republished pre-split run has to reach the same sentence from the counts alone.
+          clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
+        });
+      }
+      return block;
+    };
     {
     // ── — THE DECLINATION DUTY, CHECKED AGAINST THE DELIVERED DOCUMENT ────────────────────────
     //
@@ -13512,32 +13690,7 @@ async function pipelineInner(job, opts = {}) {
       }
     }
 
-      // THE PREDICATE IS `floorDutyBlock`, called not copied — it lives in floor-duty.mjs so the arms can
-      // DRIVE it. Inline here it could only be pinned by source text, and a source-text pin cannot tell
-      // an armed check from one somebody disarmed while leaving its words in place.
-      const block = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) });
-      if (block) {
-        // DELIVERS AND CLAMPS. This threw until a live clearance run died at
-        // delivery after 5.55 hours on ONE undischarged floor row — the guard's first real catch,
-        // working exactly as built, and the client received nothing instead of a report naming one gap.
-        // The era stamp still gates it: `floorDutyArmed` means a placement pass ran under the code
-        // carrying the order, so an archived run neither blocks nor is now accused of a defect.
-        deliverAndClamp({
-          event: "floor-duty-undischarged",
-          defect: `floor_duty_undischarged:${block.undischarged}`,
-          detail: { undischarged: block.undischarged, floors: block.floors, named_without_ground: block.named_without_ground ?? 0, unanswerable: block.unanswerable ?? 0 },
-          reason: `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: ${block.sample}${block.undischarged > 4 ? " …" : ""}`
-            + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
-            + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
-            + `. The report ships with these named rather than being withheld.`,
-          // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
-          // lawyer: live registrations identical or near-identical to the mark that the report does not
-          // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
-          // Composed by the authority in `terminal-clamp.mjs` for the reason the sibling site above
-          // gives: a republished pre-split run has to reach the same sentence from the counts alone.
-          clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
-        });
-      }
+      clampOnTheFloorDuty();
     }
 
     // PR-3 (report voice) — the factual open-state clause per reason, INDEX-ALIGNED with clampReasons.
@@ -14795,7 +14948,8 @@ async function pipelineInner(job, opts = {}) {
         runLog(run.runDir, { event: "register-presence-skipped", reason: "no register-named-band.json" });
       }
       const a = buildAuditMd(registerFindingsText, commonLawText,
-        { findings: auditRunFindings, doubts: runDoubts, asks: runAsks, readingLog, commonLawGrid, doubtTruncations, registerPresence });
+        { findings: auditRunFindings, doubts: runDoubts, asks: runAsks, readingLog, commonLawGrid, doubtTruncations, registerPresence,
+          placementRows: placementAuditRows(P) });
       if (!a.counts.findings) throw new Error("0 findings parsed from the spine tables");  // count-guard
       writeFileSync(P.audit, a.md);
       runLog(run.runDir, { event: "audit", ...a.counts });   // — counts now carry doubtsOmitted
@@ -15425,6 +15579,19 @@ async function pipelineInner(job, opts = {}) {
             } else if (r?.ok) {
               staleRepaired.push(s2.label);
               reassemble = true;
+              // THE FLOOR, APPLIED AGAIN TO THE PLACEMENT THE REPORT IS NOW BUILT FROM. The delivery floor was judged on
+              // the placement account before this repair; the repeated pass has recorded its own floor duty, and the
+              // stages after it rebuild from it in this loop. The same rule is applied to that account, through the
+              // same clamp, so the delivered verdict, its floor and its record describe one pass. It only tightens.
+              if (s2.label === "placement-inquiry") {
+                const was = verdict;
+                if (clampOnTheFloorDuty()) {
+                  try { writeVerdictSidecar(); }
+                  catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed after the repeated placement pass: ${String(e.message).slice(0, 120)}`); }
+                  try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
+                }
+                runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
+              }
               // A whole review that is read reviews the change an earlier unread one left: its record says so, and
               // its points stand under the late-review rule below, as any whole review's do. (The arm above has
               // already set aside a stage that read ok without an accepted review.)

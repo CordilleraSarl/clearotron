@@ -2601,7 +2601,7 @@ export const STAGES = {
         why: "CONVERTED (conversion 11): there is no path to hand back — the dispatch names no file, so the element's subject is gone rather than reassigned. The tool's own answer reports what it rendered (surfaced / incumbent / dropped counts). What stood here was the frame_scope_missing loop in miniature: the driver wrote the path into the message, gated on the file at that path, and asked for the path back.",
       },
     },
-    message: ({ paths: P, axes, lateBind, intakeAsks }) => lines(
+    message: ({ paths: P, axes, lateBind, intakeAsks, placementSetAsides }) => lines(
       `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/digest.md (MODE B — DIGEST).`,
       `You are register DIGEST mode. Combine the unit digests into the register findings file.`,
       // T9 (A2) — the owning stage executes its committed intake checks (see common-law twin).
@@ -2624,6 +2624,7 @@ export const STAGES = {
       `Adopt or override each placement BY ENGAGING ITS reason — an override quotes the reason it contradicts (never silently re-tiers), and a kept tier may still tighten a label while reusing the reason. On a corrective/repair pass, do NOT re-read the whole placement file: the tiers are in ${P.placementModel}, and the md's rulings tail is handed to you verbatim in this dispatch (the PLACEMENT RULINGS TAIL block) — adjudicate against it there.`,
       // judgment-relocation (2026-06-23): the COMPLETE named band — run the relevance gate over the REAL
       // material. PR-8: read via the band tools (shape whole + logged lookups), never by slicing the raw file.
+      placementSetAsideBlock(placementSetAsides),
       BAND_READING_CONTRACT_AFTER_PLACEMENT,
       `Reconcile your Coverage ledger against the shape's crowd descriptors: an `+"`incomplete`"+` slice is an open crowd the lawyer must weigh (a count-only / unenumerable slice), never a clean.`,
       // P2-A (charter P2d): identity collapse is CODE-derived before you read — the shape's Positions
@@ -3092,7 +3093,7 @@ export const STAGES = {
         why: "THE SECOND frame_scope_missing. The driver holds the value in _driver/framework.json, writes it into the dispatch, asks the model to retype it, and fails the file when the retyping does not match its own copy. The audit table groups it under the tool-written envelope row; pre-bound is the sharper discharge and either removes it from the model",
       },
     },
-    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth }) => lines(
+    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth, placementSetAsides }) => lines(
       // C4 — pharma matters (class 5 / pharma-shaped goods) FORCE-READ the field module: the
       // therapeutic-goods discipline, no-use ≠ safety (pipelines run 5-10y), practitioner/pharmacist
       // confusion. Conditional read (frameworkFor pattern); doctrine TABLES live elsewhere, untouched.
@@ -3143,6 +3144,7 @@ export const STAGES = {
       // (house-brand attachment / seasonality / scale). Context, never a rule that decides a finding.
       job?.campaignShape ? `Stated campaign shape (verbatim from intake — how the mark will be deployed; facts, not judgment): ${job.campaignShape}` : "",
       `Inputs: register findings ${P.registerFindings}${registerOnly ? "" : `; common-law ${P.commonLaw}`}; placements ${P.placement} (structured tiers + reasons: ${P.placementModel}); matter frame ${P.matterContext}; manifest ${P.variantManifest}.`,
+      placementSetAsideBlock(placementSetAsides),
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
       `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
       PLACEMENT_BORDERLINE_NOTE,
@@ -3324,7 +3326,7 @@ export const STAGES = {
         `Decline by calling the \`record_declination\` tool. Its schema names the fields it takes and what each is for — read them there, not here. The one thing to know before you call: you cite a record or page by its POSITION in the list below — there is no field for a mark name, a uri or a page address, so anything you were not handed cannot be expressed at all. The reason vocabulary is closed: ${DECLINATION_REASON_TOKENS.join(" / ")}, each an omission synthesis-rules.md already authorises, and if your ground is none of them the rules do not let you omit the record or page. ONE OF THEM IS NOT AVAILABLE ON A LIVE RECORD IN AN INSTRUCTED CLASS: \`not-worth-the-line\` is a statement about the report's budget rather than about the mark, and a live registration inside one of the matter's own classes is never omitted for want of room — carry it, or decline it on something true of THAT MARK. The call is refused if you try, so it costs you a turn. The grounds you write are one or two lines in your OWN words on why THIS record or page does not earn a line — never machine-parsed, and what the reviewing lawyer reads. Send them in one batch where you can; a refused row never voids its neighbours, and the answer names what is still undecided so you can finish in this turn.`,
         `A REFUSAL FROM THAT TOOL IS ABOUT BOOKKEEPING, NEVER ABOUT YOUR LEGAL JUDGMENT. There is exactly ONE case: declining a mark IDENTICAL to the applied-for mark, live, in one of the matter's own filed classes, on a discretionary ground — because synthesis-rules.md orders that an on-point identical mark in the relevant class is never dropped, "regardless of filer profile", so such a declination contradicts the instruction you are already following. Nothing else is refused. If that record really is the applicant's own, or already delivered under another record, say exactly that with own-right or duplicate-of-delivered and it is accepted. Whether goods are related, whether a name is off-field, whether a conflict is worth the line — those are your calls and the tool does not have an opinion about any of them.`,
         `The records on your findings surface, by position:`,
-        ...findingsSurface.flatMap((r, i) => r?.kind === "page" ? [] : [`  ${i}. ${r.mark ?? "(unnamed)"}${r.owner ? ` — ${r.owner}` : ""}${r.tier ? ` [${r.tier}]` : ""}${r.uri ? ` ${r.uri}` : ""}`]), ...(findingsSurface.some((r) => r?.kind === "page") ? [`The pages the web notes marked as candidates or conflicts, continuing the same positions:`, ...findingsSurface.flatMap((r, i) => r?.kind === "page" ? [`  ${i}. ${r.url ?? r.page}`] : [])] : []),
+        ...findingsSurface.flatMap((r, i) => r?.kind === "page" ? [] : [`  ${i}. ${r.mark ?? "(unnamed)"}${r.owner ? ` — ${r.owner}` : ""}${r.tier ? ` [${r.tier}]` : ""}${r.uri ? ` ${r.uri}` : ""}${r.goods_from ? ` — goods: ${r.goods_from}` : ""}`]), ...(findingsSurface.some((r) => r?.kind === "page") ? [`The pages the web notes marked as candidates or conflicts, continuing the same positions:`, ...findingsSurface.flatMap((r, i) => r?.kind === "page" ? [`  ${i}. ${r.url ?? r.page}`] : [])] : []),
       ] : []),
       // A1 — the home for a famous neighbour the famous-neighbour rule keeps but no record grounds. WITHOUT
       // this, such a mark was forced into findings[] with an empty-uri registration, which the F-14 URI guard
@@ -3581,7 +3583,7 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection }) => lines(
+    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions }) => lines(
       reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
@@ -3589,7 +3591,7 @@ export const STAGES = {
       // which is the one-country product always, and any run whose cut keeps everything.
       profileSelectionDirective(profileSelection),
       `Adversarially refute the narrative ${P.narrative} against the source files: register findings ${P.registerFindings}${registerOnly ? "" : `, common-law ${P.commonLaw}`}, placements ${P.placement} (structured tiers + reasons: ${P.placementModel}), matter frame ${P.matterContext}.`,
-      ...refutationStandingLines({ registerOnly, job }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions }),
       // PR-8: the reviewer verifies register claims against the RECORD, on the record — the same
       // read-only band tools the drafting stages used, every lookup logged to the reading audit.
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
@@ -4763,9 +4765,19 @@ export const DECIDE_WAITING_FAMILIES = "WHERE THE PLAN ABOVE HAS WAITING FAMILIE
 // The full review and the review after a delivery-check repair read the same standing tools and notes, the
 // same check on open items and the same recording lines. Each lives here once, so the two messages cannot
 // drift apart; the full review's message is byte-identical to what it was before they moved.
-export const refutationStandingLines = ({ registerOnly = false, job = {} } = {}) => [
+// PLACEMENT'S ACCEPTED SET-ASIDES, FOR THE READING STEP AND THE WRITER (approved wording, 2026-10-18). Placement keeps
+// its set-asides out of placements.json, and neither stage was shown them: the driver lists the decisions that stand
+// on the run's files when the message is built, each with its ground and the records it covers, under this
+// introduction. Nothing is printed where none stands.
+export const PLACEMENT_SET_ASIDES_INTRO = "Placement's accepted set-asides are listed below with their grounds, the records they cover, and any exceptions. Carry those decisions forward under the placement rules. Where a conclusion depends on a set-aside, check its ground against the supporting evidence and flag an unsupported decision.";
+export const placementSetAsideBlock = (decisions) => (Array.isArray(decisions) && decisions.length ? lines(PLACEMENT_SET_ASIDES_INTRO, ...decisions) : "");
+
+export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null } = {}) => [
   PLACEMENT_BORDERLINE_NOTE,
-  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them — a floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision already accounts for it under the placement rules. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+  // The validated decisions themselves, written by the driver from the placement form (pipeline.mjs
+  // placementFloorDecisionLines); none stands where the list is empty.
+  ...(Array.isArray(floorDecisions) && floorDecisions.length ? floorDecisions : ["(none)"]),
   `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
   registerOnly ? REGISTER_ONLY_NOTE : "",
   pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",

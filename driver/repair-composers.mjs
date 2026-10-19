@@ -400,7 +400,7 @@ export const REPAIR_COMPOSERS = [
     // correction. VALUES IN: the list `repair-scope.mjs listForReview` computed from the writer's record before
     // and after the repair. The standing tools and notes, the open-items check and the recording lines are the
     // full review's own, read from one shared text in stages.mjs.
-    compose: ({ findings, changes, resting, renumbered, coverageChanged, evidence, registerOnly = false, job = {}, skepticFlags, frameReopenReceipt }) => lines(
+    compose: ({ findings, changes, resting, renumbered, coverageChanged, evidence, registerOnly = false, job = {}, skepticFlags, frameReopenReceipt, floorDecisions = null }) => lines(
       `This is a review of a repair, not a full review. Earlier in this run the narrative was reviewed in full, and the corrections that review raised went to the writer. The delivery check then found a fault, and the writer repaired the record.`,
       `Review only what that repair changed, listed below under WHAT THE REPAIR CHANGED, and any statement elsewhere in the narrative or in the findings record, ${findings}, that rests on a changed item. Such a statement no longer holds if the change leaves it untrue, without its support, or incomplete.`,
       `Everything else stands as this run's earlier reviews left it. Do not flag a statement that rests on no changed item.`,
@@ -410,7 +410,7 @@ export const REPAIR_COMPOSERS = [
       renumbered ? `Where a finding below shows two numbers, put the first in \`on\`. The second is its number in findings.json.` : "",
       `Your verdict is about the repair. CLEAR: what changed is sound, and every statement that rests on a changed item still holds. CONDITIONAL: a flag needs a correction. BLOCKING: the change makes the report unsafe to sign, under your manual's verdict logic.`,
       `Your flags go to one correction pass by the writer, and nothing reviews that pass again. Make each fix exact.`,
-      ...refutationStandingLines({ registerOnly, job }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions }),
       // A repair that rewrites coverage lines can drop an open item; when coverage is untouched, the full review
       // already checked this.
       coverageChanged ? refutationOpenItemsLine({ skepticFlags, frameReopenReceipt }) : "",

@@ -209,24 +209,30 @@ export function groupByPosition(rankedCandidates, positions = []) {
  *
  * Deterministic; returns the machine artifact (no timestamps — the caller stamps `ts`).
  */
-export function reconcileRecall({ candidates = [], endings, crowdRulings = [], topSlice = RECALL_TOP_SLICE, positions = [], dominantElement = null, inScopeClasses = [] } = {}) {
+export function reconcileRecall({ candidates = [], endings, crowdRulings = [], topSlice = RECALL_TOP_SLICE, positions = [], dominantElement = null, inScopeClasses = [], placement = null } = {}) {
   const carried = endings?.carried ?? new Set();
   const dropRows = endings?.dropRows ?? new Set();
+  // PLACEMENT'S DECISIONS END A POSITION TOO, now that the delivered audit carries them (ruled 2026-10-18): a
+  // set-aside by name is an individual ending, for any position; a group's row ends only a residual position,
+  // for the members it validly covers, as a ruled crowd does, never a top-slice one that must end individually.
+  const byName = placement?.byName ?? new Set(), byGroup = placement?.byGroup ?? new Set();
   const ranked = rankCandidates(candidates);
   const groups = groupByPosition(ranked, positions);
   // ANY constituent URI ends the position — drop row first so an explicit negative is reported as
   // the reason even when the same position is also mentioned elsewhere.
   // match on the lowercased key, REPORT the URI in the band's own casing (see groupByPosition)
-  const endingOf = (g) => {
+  const endingOf = (g, tier) => {
     for (let i = 0; i < g.members.length; i++) if (dropRows.has(g.members[i])) return { ending: "drop-row", ended_by: g.member_display[i] };
     for (let i = 0; i < g.members.length; i++) if (carried.has(g.members[i])) return { ending: "finding", ended_by: g.member_display[i] };
+    for (let i = 0; i < g.members.length; i++) if (byName.has(g.members[i])) return { ending: "placement-set-aside", ended_by: g.member_display[i] };
+    if (tier === "residual") for (let i = 0; i < g.members.length; i++) if (byGroup.has(g.members[i])) return { ending: "placement-group", ended_by: g.member_display[i] };
     return { ending: null, ended_by: null };
   };
   const top = groups.slice(0, Math.max(0, topSlice));
   const rest = groups.slice(Math.max(0, topSlice));
   const row = (g, tier) => {
     const c = g.candidates[0];                      // the position's strongest constituent candidate
-    const { ending, ended_by } = endingOf(g);
+    const { ending, ended_by } = endingOf(g, tier);
     return {
       record_id: c.record_id, mark_text: c.mark_text, basis: c.basis, classes: c.classes,
       status: c.status, registry: c.registry, application_date: c.application_date ?? null,
@@ -268,6 +274,7 @@ export function reconcileRecall({ candidates = [], endings, crowdRulings = [], t
       ended_finding: [...topRows, ...restRows].filter((r) => r.ending === "finding").length,
       ended_drop_row: [...topRows, ...restRows].filter((r) => r.ending === "drop-row").length,
       ended_crowd: restRows.filter((r) => r.ending === "crowd").length,
+      ended_placement: [...topRows, ...restRows].filter((r) => r.ending === "placement-set-aside" || r.ending === "placement-group").length,
       unended: unended.length,
     },
     unended,
@@ -282,7 +289,7 @@ export function reconcileRecall({ candidates = [], endings, crowdRulings = [], t
  * Every field below is written on every row; absence is expressed as an explicit null. PURE.
  */
 export const RECALL_EVENT_FIELDS = ["candidates", "positions", "top_slice", "ended_finding",
-  "ended_drop_row", "ended_crowd", "unended", "crowd_declared", "crowd_residual"];
+  "ended_drop_row", "ended_crowd", "ended_placement", "unended", "crowd_declared", "crowd_residual"];
 
 export function recallReconciliationEvent({ trigger = null, artifact = null, reason = null } = {}) {
   const computable = artifact?.computable === true;

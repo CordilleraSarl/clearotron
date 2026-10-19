@@ -46,8 +46,8 @@
           "todos": 0
         },
         "a-band-record-carries-its-goods-from-the-records-on-file.test.mjs": {
-          "tests": 13,
-          "asserts": 51,
+          "tests": 14,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -573,6 +573,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-fetch-or-an-empty-record-does-not-answer-the-screen-gate.pipeline.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-failed-fetch-or-an-empty-record-is-not-a-retrieval.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-filings-search-says-so-in-plain-words.test.mjs": {
           "tests": 9,
           "asserts": 28,
@@ -684,6 +696,12 @@
         "a-gone-session-meets-a-door-not-a-json-body.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-goods-drop-says-what-it-rests-on-and-who-read-it.test.mjs": {
+          "tests": 7,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1119,8 +1137,20 @@
           "skips": 0,
           "todos": 0
         },
+        "a-placement-decision-reads-alike-at-every-count.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
           "tests": 8,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
+          "tests": 4,
           "asserts": 19,
           "skips": 0,
           "todos": 0
@@ -1260,6 +1290,12 @@
         "a-record-asked-for-and-never-delivered.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-record-placement-set-aside-is-not-a-lost-finding.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -1953,6 +1989,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-write-up-list-the-goods-source-cannot-reach-says-so.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "ab-tooling-honesty.test.mjs": {
           "tests": 16,
           "asserts": 78,
@@ -2166,6 +2208,12 @@
         "an-owners-set-leaves-the-picking-step-with-one-ground.test.mjs": {
           "tests": 4,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-unread-crowd-is-counted-as-unread.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -3255,9 +3303,21 @@
           "skips": 0,
           "todos": 0
         },
+        "each-registers-fetch-row-names-its-own-record.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "each-stable-npm-serves-is-listed-in-the-mcp-registry.test.mjs": {
           "tests": 11,
           "asserts": 61,
+          "skips": 0,
+          "todos": 0
+        },
+        "each-stage-is-told-what-a-records-goods-rest-on.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -3720,6 +3780,12 @@
         "giving-access-to-everything-is-a-switch-not-a-point.test.mjs": {
           "tests": 1,
           "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "goods-not-established-whole-are-never-read-as-a-mismatch.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4350,6 +4416,12 @@
         "placement-model.test.mjs": {
           "tests": 14,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "placements-decisions-reach-the-audit-and-end-a-recall-position.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -5835,6 +5907,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-band-shape-derivation-writes-what-the-goods-rest-on.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "the-bands-box-shows-the-whole-band.test.mjs": {
           "tests": 9,
           "asserts": 22,
@@ -5952,6 +6030,12 @@
         "the-cut-approves-its-own-parked-run.test.mjs": {
           "tests": 8,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-delivered-files-say-what-was-retrieved-not-what-was-read.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -6177,6 +6261,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-goods-record-reads-a-search-rows-goods-through-the-shared-reader.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-grant-sentence-and-its-carve-out-hold-per-provider.test.mjs": {
           "tests": 6,
           "asserts": 7,
@@ -6192,6 +6282,12 @@
         "the-group-filter-is-offered-to-placement-alone.test.mjs": {
           "tests": 2,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-groups-fates-are-placements-and-the-groups-stay-every-stages.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -6477,6 +6573,12 @@
           "skips": 2,
           "todos": 0
         },
+        "the-reading-step-and-the-writer-are-told-placements-set-asides.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reading-turn-narrows-the-same-way-on-every-register.test.mjs": {
           "tests": 5,
           "asserts": 20,
@@ -6615,6 +6717,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reviewer-asks-the-clients-question-first.test.mjs": {
           "tests": 3,
           "asserts": 5,
@@ -6669,6 +6777,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-run-records-what-each-records-goods-rest-on.test.mjs": {
+          "tests": 7,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "the-run-s-own-materiality-orders-the-table.test.mjs": {
           "tests": 9,
           "asserts": 19,
@@ -6690,6 +6804,12 @@
         "the-scorer-withholds-names-unless-asked.test.mjs": {
           "tests": 32,
           "asserts": 63,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-screen-gate-records-what-its-drops-rest-on.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -7149,6 +7269,12 @@
           "skips": 0,
           "todos": 0
         },
+        "what-a-band-tool-serves-does-not-change-with-the-goods-record.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 15,
           "asserts": 49,
@@ -7395,8 +7521,8 @@
           "todos": 0
         },
         "findings-backstop.test.mjs": {
-          "tests": 6,
-          "asserts": 13,
+          "tests": 7,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },

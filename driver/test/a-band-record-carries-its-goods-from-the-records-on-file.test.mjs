@@ -30,15 +30,24 @@ test("each provider's goods shape is read, English first where a statement offer
   ] };
   assert.deepEqual(recordGoods(clarivate), [{ classes: ["32"], text: "mineral water", alt: "Mineralwasser" }, { classes: ["33"], text: "wines" }],
     "the English text is shown, and the original is kept beside it for the goods test");
-  const signa = { markText: "QZXV", _raw: { classifications: [{ nice_class: 9, goods_services_text: "game controllers", goods_services_language: "en" }] } };
-  assert.deepEqual(recordGoods(signa), [{ classes: ["9"], text: "game controllers" }]);
+  const signa = { markText: "QZXV", _raw: { classifications: [{ nice_class: 9, goods_services_text: "game controllers", goods_services_language: "en", goods_services_text_truncated: false }] } };
+  assert.deepEqual(recordGoods(signa), [{ classes: ["9"], text: "game controllers" }], "a retrieved record the register flags whole is whole");
   const euipo = { goodsAndServices: [{ classNumber: 28, description: [{ language: "fr", terms: ["jouets"] }, { language: "en", terms: ["toys", "games"] }] }] };
-  assert.deepEqual(recordGoods(euipo), [{ classes: ["28"], text: "toys; games" }]);
+  assert.deepEqual(recordGoods(euipo), [{ classes: ["28"], text: "toys; games", unknown: true }],
+    "a register whose full-record operation the tree documents nowhere: read, and its completeness not established");
   const usptoLocal = { goodsAndServices: "beverages, namely sparkling water" };
-  assert.deepEqual(recordGoods(usptoLocal), [{ classes: [], text: "beverages, namely sparkling water" }]);
-  assert.deepEqual(recordGoods([{ goodsAndServices: [{ niceClass: "09", text: "software" }] }]), [{ classes: ["9"], text: "software" }], "a body that is an array is read from its first element");
+  assert.deepEqual(recordGoods(usptoLocal), [{ classes: [], text: "beverages, namely sparkling water" }], "the bulk register statement the US index holds whole");
+  assert.deepEqual(recordGoods([{ goodsAndServices: [{ niceClass: "09", text: "software" }] }]), [{ classes: ["9"], text: "software", unknown: true }], "a body that is an array is read from its first element");
   assert.deepEqual(recordGoods({ markText: "QZXV" }), [], "a body with no goods gives none");
   assert.deepEqual(recordGoods(null), []);
+});
+
+test("a retrieved record's statement is cut where the register flags it, and not established where it carries no flag", () => {
+  const body = (flag) => ({ _raw: { classifications: [{ nice_class: 9, goods_services_text: "game controllers", goods_services_language: "en",
+    ...(flag === undefined ? {} : { goods_services_text_truncated: flag }) }] } });
+  assert.deepEqual(recordGoods(body(true)), [{ classes: ["9"], text: "game controllers", cut: true }]);
+  assert.deepEqual(recordGoods(body(undefined)), [{ classes: ["9"], text: "game controllers", unknown: true }]);
+  assert.deepEqual(recordGoods(body(false)), [{ classes: ["9"], text: "game controllers" }]);
 });
 
 test("the index reads the record ledger and _records, a record's later copy winning, and a band row finds its goods by uri", () => {
