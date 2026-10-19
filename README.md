@@ -9,6 +9,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-AGPL--3.0--only-860F09?style=flat-square" alt="Licence: AGPL-3.0-only"></a>
   <a href=".nvmrc"><img src="https://img.shields.io/badge/node-%E2%89%A5%2022.13-250902?style=flat-square" alt="Node 22.13+"></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/CordilleraSarl/clearotron"><img src="https://img.shields.io/ossf-scorecard/github.com/CordilleraSarl/clearotron?label=openssf%20scorecard&style=flat-square" alt="OpenSSF Scorecard"></a>
+  <a href="https://www.bestpractices.dev/projects/15666"><img src="https://img.shields.io/cii/level/15666?label=openssf%20best%20practices&style=flat-square" alt="OpenSSF Best Practices"></a>
 </p>
 
 Before your company commits to a name, find out what stands in its way. Give Clearotron the name, the
