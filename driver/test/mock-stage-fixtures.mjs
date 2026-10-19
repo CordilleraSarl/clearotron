@@ -2211,7 +2211,12 @@ export function applyStageWrites(msg, argv) {
       // of MOCK_CARD_SCOPE_COUNT; a later rendering is clean. Keyed on the overview's own file, never on a message.
       const scopeCountNote = process.env.MOCK_OVERVIEW_SCOPE_COUNT && !existsSync(join(runDir, "report-overview.md"))
         ? "The search ran 14 queries across the register." : "";
-      const r = recordReportOverview(runDir, {
+      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption, an empty actions list, and
+      // no methodology. The driver renders it with no section heading.
+      const r = recordReportOverview(runDir, process.env.MOCK_OVERVIEW_BARE ? {
+        overall_caption: "The identical registration in class 9 is the one finding that conditions reliance on this mark; nothing else in the field blocks it.",
+        actions: [],
+      } : {
         overall_caption: "mock composite 3",
         actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
         methodology: [permNote, scopeCountNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
