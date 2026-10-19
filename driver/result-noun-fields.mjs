@@ -79,7 +79,7 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
       + "The two newest record what an engine-side re-issue of a missing meaning search actually brought back, counted off the rows "
       + "in hand at the write site rather than from anything the call promised — an attempt that recovered nothing writes 0, which "
       + "is the fact the disclosure downstream depends on" },
-  { file: "driver/pipeline.mjs", noun: "settled", sites: 5, atWriteSite: 4, verdict: "result",
+  { file: "driver/pipeline.mjs", noun: "settled", sites: 6, atWriteSite: 4, verdict: "result",
     why: "counts off the union and the doubt ledger" },
   { file: "driver/pipeline.mjs", noun: "verified", sites: 4, atWriteSite: 2, verdict: "result",
     why: "two sites, both measured states rather than calls returning. (1) `rows.filter(r => r.verified).length`, where each row's flag is `srRecords.has(senior.uri)` — a lookup, not a call. (2) the house-element ownership row's `verified: receipt.verified`, which the verifier sets only where a returned register record matched the client's own name AND was live AND carried an instructed class; the lookup CALL returning is a separate field on the same receipt (`reason`), and an unanswered lookup writes this false" },
