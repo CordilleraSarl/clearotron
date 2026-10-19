@@ -92,16 +92,20 @@ const tool = (id, name, args) => ({ jsonrpc: "2.0", id, method: "tools/call", pa
 const textOf = (r) => r?.result?.content?.[0]?.text ?? "";
 
 test("the shape's goods cell says why the goods test could not place a line, and its machine copy carries the state", () => {
-  const states = { e3: "complete", e4: "cut", e5: "unknown", e2: "absent", e6: "unavailable", e7: "not-held" };
+  const states = { e3: "complete", e4: "cut", e5: "unknown", e10: "unknown", e2: "absent", e6: "unavailable", e7: "not-held" };
+  // Goods text is held for e5, a search answer at its cut, and for none of the others: e10 is a held record with no
+  // goods field, whose completeness is not established either.
+  const readable = { e3: true, e4: true, e5: true };
   const goods = { of: () => null, held: () => false, hits: () => null, matched: () => null };
   const { shape, md } = buildBandShape({ enumerated: BAND.filter((r) => states[r.record_id.split("/").pop()]), crowds: [] },
     { targets: ["Qzorvak"], inScopeClasses: ["9"], goods, goodsTest: { source: "product_words", words: ["joysticks"] }, goodsWordCount: 1,
-      evidenceOf: (r) => ({ state: states[r.record_id.split("/").pop()] }) });
+      evidenceOf: (r) => ({ state: states[r.record_id.split("/").pop()], readable: readable[r.record_id.split("/").pop()] ?? null }) });
   const lines = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list);
   assert.deepEqual(Object.fromEntries(lines.map((l) => [l.record_id.split("/").pop(), l.goods_evidence])), states, "the machine copy carries each line's state");
   const cellOf = (id) => md.split("\n").find((l) => l.includes(`/mark/us/${id} |`))?.split("|").map((c) => c.trim())[6];
   assert.deepEqual(Object.fromEntries(Object.keys(states).map((id) => [id, cellOf(id)])), {
     e3: "on file, not readable", e4: "cut by the register, no goods word found", e5: "goods held; completeness not established",
+    e10: "no goods text held; completeness not established",
     e2: "the register's record lists no goods", e6: "fetch failed, no goods on file", e7: "no goods on file",
   });
 });
