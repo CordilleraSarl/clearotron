@@ -36,7 +36,7 @@
 //   MOCK_WARM_MODE=flake|draft|soft_fail|stubborn — the warm-patch ladder (resume detected via the patch msg)
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, readdirSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { applyStageWrites } from "./mock-stage-fixtures.mjs";
+import { applyStageWrites, beforeForcedFailure } from "./mock-stage-fixtures.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -200,6 +200,7 @@ if (process.env.MOCK_BARRIER_FILE && /matter-context\.md/.test(msg)) {
 
 // ── Forced stage failure (parity with mock-claude MOCK_FAIL_STAGE): stderr + exit 1, no turn.completed. ──
 if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part))) {
+  beforeForcedFailure(argv, msg);
   process.stderr.write("mock forced failure\n");
   process.exit(1);
 }

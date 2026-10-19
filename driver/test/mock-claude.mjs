@@ -56,7 +56,7 @@
 //                               detected via the engine-agnostic patch message ("RESUMING your own session").
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
-import { applyStageWrites } from "./mock-stage-fixtures.mjs";
+import { applyStageWrites, beforeForcedFailure } from "./mock-stage-fixtures.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -179,6 +179,7 @@ if (process.env.MOCK_BARRIER_FILE && /matter-context\.md/.test(msg)) {
 // degenerate case) — lets a test fail ONLY the reopen followup ("SOURCE CHANNELS&&half-b") without also
 // failing half-b's original gather turn. Mirrors the retired gateway mock exactly.
 if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part))) {
+  beforeForcedFailure(argv, msg);
   process.stderr.write("mock forced failure\n");
   process.exit(1);
 }

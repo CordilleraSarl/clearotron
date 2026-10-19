@@ -6884,8 +6884,9 @@ function retainStateBeforeReview(runDir, P) {
  *      acceptance, never from a save the correction may write afterwards;
  *   4. the save kept from before the delivery-check repair, rebuilt the same way.
  * A save that the run's CURRENT duty refuses is not lost: it was accepted when it was made, and the records owed since
- * are evidence added later. It is rebuilt with the duty set aside and marked so (`duty: "relaxed"`), and the delivery
- * check's own duty then names what it leaves unaccounted, in the approved sentence. A save that cannot be read, or that
+ * are evidence added later. It is rebuilt with the duty set aside and marked so (`duty: "relaxed"`); once the correction
+ * settles, the writer's duty is judged again on the record that stands, and names what it leaves unaccounted in the
+ * approved sentence. A save that cannot be read, or that
  * the acceptance refuses for anything else, is not a source. Null only when none of the four stands. Never throws.
  */
 function trustedStateBeforeCorrection(Pv, runDir, before) {
@@ -16124,6 +16125,20 @@ async function pipelineInner(job, opts = {}) {
                   if (!queued.has(x.label)) { staleStages.push(x); queued.add(x.label); }
                   else if (processedLabels.has(x.label) && !requeuedLabels.has(x.label)) { requeuedLabels.add(x.label); staleStages.push(x); }
                 }
+              }
+              // THE WRITER'S DUTY, JUDGED AGAIN ONCE THE CORRECTION HAS SETTLED, rollback included. The terminal guards judged
+              // it on the record before this correction. A correction that rolled back restores a record that the duty as it
+              // now stands may not be met by: a save restored as accepted work, or records owed since the save was made. The
+              // approved clause names what it leaves unaccounted, and a gap it closed withdraws its clause, as after the
+              // writer's re-run in this loop; the label is saved again before anything is published.
+              {
+                const was = verdict, stood = JSON.stringify(clampReasons);
+                const judged = clampOnTheWritersDuty({ again: true });
+                if (restoredClear && verdict === "CLEAR") applyCoverageFloor();
+                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the correction after a post-repair review");
+                runLog(run.runDir, { event: "writer-duty-after-correction", was, now: verdict, rolledBack: Boolean(pass.rollback),
+                  owed: judged.duty?.computable === true ? judged.duty.totals?.owed ?? null : null,
+                  unaccounted: judged.duty?.computable === true ? judged.duty.unaccounted.length : null, recall: judged.recall });
               }
             }
             continue;

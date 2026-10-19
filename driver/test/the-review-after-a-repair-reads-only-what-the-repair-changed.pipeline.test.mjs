@@ -357,7 +357,56 @@ for (const engine of Object.keys(ENGINES)) {
     const acc = JSON.parse(readFileSync(synthesisCallPaths(res.runDir).accepted, "utf8")).params;
     const fj = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
     assert.equal(fj.findings[0].net, acc.findings.findings[0].net, "the delivered record is not the save the review read");
-    assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8")).verdict, res.verdict, "the label and the run's verdict disagree");
+    // CLEAN RESTORATION: the obligation was the review's moment only; the run's list is built again before the correction
+    // and no longer holds it, so the duty judged again after the correction finds nothing open, and nothing is stated.
+    const { synthesisDutyForRun } = await import("../synthesis-record.mjs");
+    assert.equal(synthesisDutyForRun(res.runDir).unaccounted.length, 0, "premise: no obligation stays open");
+    const judged = events.filter((e) => e.event === "writer-duty-after-correction");
+    assert.deepEqual(judged.map((e) => [e.rolledBack, e.unaccounted]), [[true, 0]], `the duty was not judged again after the correction: ${JSON.stringify(judged)}`);
+    const label = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
+    assert.deepEqual([label.verdict, label.clauses ?? []], ["CLEAR", []], "a clean restoration states a condition");
+    assert.equal(label.verdict, res.verdict, "the label and the run's verdict disagree");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+
+  test(`${engine}: a restored save that leaves an obligation open is judged again after the correction, and the delivered report states the gap`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,retained", MOCK_POST_REPAIR_OWES_MORE: "persist",
+      MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
+    const rb = rollbackOf(events);
+    assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
+    assert.deepEqual([rb.from, rb.duty], ["accepted-save", "relaxed"], JSON.stringify(rb));
+    // PREMISE: the obligation the save does not answer is still owed when the run is delivered.
+    const { synthesisDutyForRun } = await import("../synthesis-record.mjs");
+    const duty = synthesisDutyForRun(res.runDir);
+    assert.equal(duty.unaccounted.length, 1, `premise: one obligation stays open: ${JSON.stringify(duty.unaccounted)}`);
+    // JUDGED AGAIN after the correction, and stated in the approved sentence on every surface the label reaches.
+    const judged = events.filter((e) => e.event === "writer-duty-after-correction");
+    assert.deepEqual(judged.map((e) => [e.rolledBack, e.unaccounted, e.now]), [[true, 1, "CONDITIONAL"]], JSON.stringify(judged));
+    const label = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
+    assert.equal(label.verdict, "CONDITIONAL", "the result was not clamped on the open obligation");
+    assert.ok((label.clauses ?? []).some((c) => /register records this search surfaced are neither addressed as findings nor expressly set aside/.test(String(c))),
+      `the approved sentence is not among the conditions: ${JSON.stringify(label.clauses)}`);
+    // ONE RESULT, AND THE SAME CONDITIONS, WHEREVER THEY ARE READ: the label, the run's status, the published rating and
+    // report, the report's own label and the workbook's verdict.
+    const gapClause = (label.clauses ?? []).find((c) => /neither addressed as findings nor expressly set aside/.test(String(c)));
+    const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
+    const published = join(process.env.CLEAROTRON_REPORTS_DIR, status.runId);
+    const data = JSON.parse(readFileSync(join(published, "report-data.json"), "utf8"));
+    assert.deepEqual([res.verdict, status.review?.signoff], ["CONDITIONAL", "CONDITIONAL"], "the delivered result differs between the surfaces it is read from");
+    assert.ok((data.rating?.conditions ?? []).includes(gapClause), `the delivered rating does not list the gap: ${JSON.stringify(data.rating?.conditions)}`);
+    assert.equal(data.rating?.statement, label.statement, "the delivered rating is not the verdict on record");
+    assert.ok(!/clear to proceed/i.test(String(data.rating?.statement ?? "")), `the delivered rating still reads clear: ${data.rating?.statement}`);
+    assert.ok(readFileSync(join(published, "report.html"), "utf8").includes(gapClause), "the report the client opens does not state the gap");
+    assert.match(text(join(res.runDir, "report.md")), new RegExp(`^overall_label:\\s*${label.tier}\\s*$`, "m"), "the report's own label is not the verdict on record's");
+    const book = readdirSync(process.env.CLEAROTRON_REPORTS_DIR, { recursive: true }).find((x) => String(x).endsWith("-audit.xlsx"));
+    assert.ok(book, "the run published no workbook");
+    const ExcelJS = (await import("exceljs")).default;
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.readFile(join(process.env.CLEAROTRON_REPORTS_DIR, book));
+    const summary = [];
+    wb.getWorksheet("Summary")?.eachRow((row) => summary.push(row.values.slice(1).map((v) => (v == null ? "" : String(v)))));
+    assert.equal(summary.find((r) => r[0] === "Verdict")?.[1], label.statement, "the workbook's verdict is not the verdict on record");
     assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
   });
 
