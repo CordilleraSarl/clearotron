@@ -6532,8 +6532,9 @@ function unreadRecordFindingOnly(runDir) {
  * A review after a repair that could not be read, ON RECORD. Its change went unreviewed, and the reviewer's own stamp
  * cannot be trusted to say so: a findings-only change does not move the files the reviewer declares, and a stage
  * that ends with no accepted call still reads ok whenever the earlier review's file stands, so its stamp is
- * refreshed over the repaired narrative. The delivery guard is handed the change from this record, on this pass
- * and on a resume, until a review that is read replaces the record.
+ * refreshed over the repaired narrative. The run delivers all the same, as the released engine delivers it: a run is
+ * never held on an unread review (owner's ruling, 2026-10-19). The record keeps what went unreviewed, and a resume
+ * for any other cause reviews that change whole, until a review that is read replaces the record.
  */
 export function unreadRecordReview(runDir) {   // @internal
   try { return JSON.parse(readFileSync(postRepairRecordPath(runDir), "utf8"))?.status === "unread"; }
@@ -6610,7 +6611,7 @@ async function runPostRepairReview(ctx, P, run, scope) {
  * narrowed at all (a change to the record the scope cannot compare, or one an earlier review could not read, as on
  * a resume). It returns what runPostRepairReview returns, so its points go to the same one correction; adopting its
  * verdict alone would leave its flags unapplied. When it cannot be read, the record says the change was not reviewed
- * (`unreadRecordReview`), and the delivery guard holds the run on that record: no unread review is a pass. `rerun`
+ * (`unreadRecordReview`). No unread review is a pass, and none holds the run: it delivers, as the released engine does. `rerun`
  * is the reviewer's own stale-repair arm.
  */
 async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
@@ -6626,7 +6627,7 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
     const fail = r?.ok ? "no-accepted-call" : String(r?.fail ?? "failed");
     writePostRepairRecord(runDir, { status: "unread", ...base, fail });
     runLog(runDir, { event: "post-repair-review", read: false, whole: true, fail: fail.slice(0, 120) });
-    note(`[post-repair] neither review of what the repair changed could be read back — it was not reviewed, and the delivery guard holds the run`);
+    note(`[post-repair] neither review of what the repair changed could be read back — it was not reviewed; the run's record says so, and the run delivers`);
     return { reviewed: false };
   }
   const reviewText = readFileSync(P.seniorEyeReview, "utf8");
@@ -15552,7 +15553,7 @@ async function pipelineInner(job, opts = {}) {
             // A narrowed review that could not be read falls back to the whole review, whose points go to the same one
             // correction below: neither the stamp of a findings-only change nor that of a stage that ends ok on the
             // earlier review's file can show the change unread. When the whole review cannot be read either, its
-            // record hands the guard the change no review read.
+            // record keeps the change no review read, and the run delivers.
             if (!review.reviewed && scope.mode !== "whole") review = await runWholeReviewForRecord(ctx, P, run, scope, rerun);
             if (!review.reviewed) continue;
             staleRepaired.push(s2.label);
@@ -15605,12 +15606,12 @@ async function pipelineInner(job, opts = {}) {
             const reviewSeq0 = s2.label === "narrative-refutation" ? nextRefutationSeq(run.runDir) : null;
             const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
             // NOT A PASS: a reviewer that ends with no accepted call reads ok whenever the earlier review's file
-            // stands, and its stamp is refreshed over the change it never read. The record says so, and the guard
-            // below blocks on it, on this pass and on a resume.
+            // stands, and its stamp is refreshed over the change it never read. The record says so, the run delivers,
+            // and a resume for any other cause reviews the change whole.
             if (r?.ok && s2.label === "narrative-refutation" && !readAcceptedReviewSince(run.runDir, reviewSeq0)) {
               writePostRepairRecord(run.runDir, { status: "unread", whole: true, findingOnly: queuedForTheRecordOnly(s2), by: "stale-repair", fail: "no-accepted-call" });
               runLog(run.runDir, { event: "post-repair-review", read: false, whole: true, fail: "no-accepted-call" });
-              note(`stale-repair: the reviewer's re-run recorded no review — the change it was queued for is unreviewed, and the delivery guard holds the run`);
+              note(`stale-repair: the reviewer's re-run recorded no review — the change it was queued for is unreviewed; the run's record says so, and the run delivers`);
             } else if (r?.ok) {
               staleRepaired.push(s2.label);
               reassemble = true;
@@ -15700,10 +15701,9 @@ async function pipelineInner(job, opts = {}) {
         lint = lintNow();
         autoCorrectRegistry();
         staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
-        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED. Its record says so, and the reviewer's stamp cannot,
-        // so the guard is handed it here and blocks as for any reviewer left stale.
-        if (unreadRecordReview(run.runDir) && !staleStages.some((x) => x.label === "narrative-refutation"))
-          staleStages.push({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
+        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, AND THE RUN STILL DELIVERS, as the released engine
+        // delivers it. Its record says so (`unreadRecordReview`); the guard is never handed that record, because a run
+        // is never held on an unread review (owner's ruling, 2026-10-19).
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
       // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw
