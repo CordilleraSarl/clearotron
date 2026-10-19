@@ -44,7 +44,7 @@ const KNOBS = ["MOCK_VERDICT", "MOCK_VERDICT_DEFECTS", "MOCK_PERMISSION_PROSE", 
   "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING", "MOCK_REVIEW_BLOCKS_AFTER_VERDICT",
   "MOCK_NARRATIVE_OVER_CAP", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_LINT_REPAIR_SAME_VALUES",
   "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS", "MOCK_WHOLE_FALLBACK_VERDICT", "MOCK_LATE_SAVE_ADDS",
-  "MOCK_FAIL_AFTER_WRITES", "MOCK_POST_REPAIR_LOSES", "MOCK_CORRECTION_MARKS",
+  "MOCK_FAIL_AFTER_WRITES", "MOCK_POST_REPAIR_LOSES", "MOCK_CORRECTION_MARKS", "MOCK_POST_REPAIR_OWES_MORE",
   "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH", "MOCK_CODEX_RATELIMIT", "MOCK_CODEX_RATELIMIT_MATCH"];
 
 // The Codex run pins its own billing; every Claude run puts back what the suite started with.
@@ -284,9 +284,9 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
   });
 
-  test(`${engine}: a correction after the review that fails with its findings record unreadable is rolled back to the save the review read, and the run delivers`, async () => {
+  test(`${engine}: a correction after the review that fails with its findings record and the kept state unreadable is rolled back to the save the review read, and the run delivers`, async () => {
     const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
-      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings", MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,retained", MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
     assert.equal(stageEvents(events, "synthesis", "post-repair-corrective").length, 1, "premise: the correction ran");
     const rb = rollbackOf(events);
     assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
@@ -300,9 +300,9 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
   });
 
-  test(`${engine}: with the review's save gone too, the rollback stands on the save kept from before the repair, and the run delivers`, async () => {
+  test(`${engine}: with the review's save and the kept state gone too, the rollback stands on the save kept from before the repair, and the run delivers`, async () => {
     const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
-      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,accepted", MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,accepted,retained", MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
     const rb = rollbackOf(events);
     assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
     assert.equal(rb.from, "save-before-the-repair", JSON.stringify(rb));
@@ -326,12 +326,47 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
   });
 
-  // THE ONE CASE THAT STILL ENDS THE PASS: the record and both saves unreadable, a storage failure. Delivering past it
-  // shipped a report with no findings under the verdict as it stood, so the pass keeps its failure, with nothing the
-  // failed correction wrote kept.
-  test(`${engine}: with no trusted state left, nothing the failed correction wrote is kept, and no report goes out without its record`, async () => {
+  test(`${engine}: with the record and both saves lost after the review, the state kept before the review comes back whole, and the run delivers its findings`, async () => {
     const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
       MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,accepted,repair-base", MOCK_CORRECTION_MARKS: MARK,
+      MOCK_FAIL_AFTER_WRITES: CORRECTION_OPENS }, engine);
+    const rb = rollbackOf(events);
+    assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
+    assert.equal(rb.from, "state-before-the-review", JSON.stringify(rb));
+    const kept = JSON.parse(readFileSync(driverDir(res.runDir, "post-repair-state.json"), "utf8"));
+    // WHAT THE CLIENT RECEIVES: the findings the review read, under a label that agrees with the run's verdict.
+    const fj = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+    assert.ok(Array.isArray(fj.findings) && fj.findings.length, "the delivered record has no findings");
+    assert.deepEqual(fj.findings.map((f) => f.net), JSON.parse(kept.findings).findings.map((f) => f.net), "the delivered record is not the state the review read");
+    assert.equal(text(synthesisCallPaths(res.runDir).accepted), kept.accepted, "the next patch's base is not the kept one");
+    for (const f of [join(res.runDir, "findings.json"), join(res.runDir, "narrative.md"), synthesisCallPaths(res.runDir).accepted, join(res.runDir, "report.md")])
+      assert.ok(!text(f).includes(MARK), `the failed correction's text survives in ${f}`);
+    assert.ok(text(join(res.runDir, "report.md")).includes("Mystery Owner"), "the delivered report carries no finding");
+    assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8")).verdict, res.verdict, "the label and the run's verdict disagree");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+
+  test(`${engine}: a save the duty that grew since refuses is restored as accepted work, not reported as lost, and the run delivers it`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,retained", MOCK_POST_REPAIR_OWES_MORE: "1",
+      MOCK_FAIL_STAGE: CORRECTION_OPENS }, engine);
+    const rb = rollbackOf(events);
+    assert.ok(rb, `no rollback: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
+    assert.deepEqual([rb.from, rb.duty], ["accepted-save", "relaxed"], JSON.stringify(rb));
+    assert.ok(!events.some((e) => e.event === "post-repair-correction-unrecoverable"), "a refused save was reported as lost storage");
+    const acc = JSON.parse(readFileSync(synthesisCallPaths(res.runDir).accepted, "utf8")).params;
+    const fj = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+    assert.equal(fj.findings[0].net, acc.findings.findings[0].net, "the delivered record is not the save the review read");
+    assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8")).verdict, res.verdict, "the label and the run's verdict disagree");
+    assert.equal(res.ok, true, JSON.stringify(res).slice(0, 300));
+  });
+
+  // THE PRECISE LIMIT: the record, the state kept before the review and both saves all lost, a storage failure.
+  // Delivering past it shipped a report with no findings under the verdict as it stood, so the pass keeps its
+  // failure, with nothing the failed correction wrote kept.
+  test(`${engine}: with every trusted copy lost, nothing the failed correction wrote is kept, and no report goes out without its record`, async () => {
+    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+      MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,accepted,repair-base,retained", MOCK_CORRECTION_MARKS: MARK,
       MOCK_FAIL_AFTER_WRITES: CORRECTION_OPENS }, engine);
     const lost = events.find((e) => e.event === "post-repair-correction-unrecoverable");
     assert.ok(lost, `the case was not recorded: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
