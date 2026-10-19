@@ -6591,6 +6591,29 @@ function correctionNamedSet(P, doc0 = null) {
 // record's version or framework changed. A rewrite with the same values is no change and no review runs.
 
 /** Which review the reviewer's staleness after a delivery-check repair calls for. Reads the run; never throws. */
+/**
+ * WHAT A REPAIR IN THE DELIVERY CHECK LEFT STALE, AND WHAT OF IT IS QUEUED. A stage is this repair's when it is stale now
+ * and was not before the repair, or is stale on an input that has moved since; a stage stale before for the same reasons
+ * is not, and stays the guard's. Every stage the repair left stale joins the chain, so its own re-run is followed in turn.
+ * Of those, a stage already queued ahead runs where it stands, and one this pass already re-did is re-done once more at
+ * most. PURE.
+ */
+export function whatTheRepairLeftStale({ before = [], after = [], repaired, ahead = new Set(), processed = new Set(), requeued = new Set() }) {   // @internal — driven by its test
+  const keys = (x) => (x?.changed ?? []).map((c) => `${c?.name}@${c?.now}`);
+  const was = new Map(before.map((x) => [x.label, new Set(keys(x))]));
+  const chain = [], queue = [], requeue = [];
+  for (const x of after) {
+    if (x.label === repaired) continue;
+    const prior = was.get(x.label);
+    if (prior && keys(x).every((k) => prior.has(k))) continue;   // stale before, for the same reasons: not this repair's
+    chain.push(x.label);
+    if (ahead.has(x.label)) continue;
+    if (processed.has(x.label)) { if (requeued.has(x.label)) continue; requeue.push(x.label); }
+    queue.push(x);
+  }
+  return { chain, queue, requeue };
+}
+
 export function postRepairScope(runDir, P, s2, { staleRepaired = [], baseKept = false } = {}) {   // @internal
   if (!baseKept) return { mode: "whole", why: "no-repair-base" };
   const narrative = basename(String(P?.narrative ?? "narrative.md"));
@@ -15690,27 +15713,25 @@ async function pipelineInner(job, opts = {}) {
         const requeuedLabels = new Set();
         // A CHANGED DECISION IS READ AGAIN IN THIS PASS. A repeated placement pass whose decisions moved leaves the reading
         // step, the writer and the review stale, and each of them leaves what reads it stale in turn. They are queued here,
-        // in dependency order after the stage that moved them, each re-done at most once more. The reviewer gets the whole
+        // in dependency order after the stage that moved them, each re-done at most once more; one already queued runs where
+        // it stands, and a stage stale before the repair for the same reasons is not the repair's. The reviewer gets the whole
         // review and its one correction, and the writer is judged again against its duty and the recall gate. The pass
         // then ends with all of them rebuilt from the decision that stands. The guard below used to park the run on them,
         // and the resume re-ran them, until the owner's ruling of 2026-10-19 that a run is never held. A stage still stale
         // after its re-run still falls to the guard: no approved sentence states that case yet.
         const chain = new Set();
-        const queueWhatItLeftStale = (s2) => {
+        const staleNow = () => staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
+        const queueWhatItLeftStale = (s2, before) => {
           const at = staleStages.indexOf(s2) + 1;
-          const ahead = new Set(staleStages.slice(at).map((x) => x.label));
-          const fresh = [];
-          for (const x of staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput })) {
-            if (x.label === s2.label || ahead.has(x.label)) continue;
-            if (processedLabels.has(x.label)) { if (requeuedLabels.has(x.label)) continue; requeuedLabels.add(x.label); }
-            fresh.push(x);
-            chain.add(x.label);
-          }
-          if (!fresh.length) return;
-          const rest = [...staleStages.slice(at), ...fresh];
+          const left = whatTheRepairLeftStale({ before, after: staleNow(), repaired: s2.label,
+            ahead: new Set(staleStages.slice(at).map((x) => x.label)), processed: processedLabels, requeued: requeuedLabels });
+          for (const l of left.chain) chain.add(l);
+          for (const l of left.requeue) requeuedLabels.add(l);
+          if (!left.queue.length) return;
+          const rest = [...staleStages.slice(at), ...left.queue];
           const order = dependencyOrder(rest.map((x) => x.label), P, { axes: ctx.axes });
           staleStages.splice(at, staleStages.length - at, ...order.map((l) => rest.find((x) => x.label === l)).filter(Boolean));
-          runLog(run.runDir, { event: "delivery-stale-requeued", after: s2.label, stages: fresh.map((x) => x.label) });
+          runLog(run.runDir, { event: "delivery-stale-requeued", after: s2.label, stages: left.queue.map((x) => x.label) });
         };
         for (const s2 of staleStages) {
           processedLabels.add(s2.label);
@@ -15802,6 +15823,7 @@ async function pipelineInner(job, opts = {}) {
             // it ahead of anything that reads what it writes, so the tail arms below rebuild from the
             // repaired artifact rather than from the one that moved.
             const reviewSeq0 = s2.label === "narrative-refutation" ? nextRefutationSeq(run.runDir) : null;
+            const staleBefore = s2.label === "placement-inquiry" || chain.has(s2.label) ? staleNow() : null;   // what was stale before this one
             const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
             // NOT A PASS: a reviewer that ends with no accepted call reads ok whenever the earlier review's file
             // stands, and its stamp is refreshed over the change it never read. The record says so, and the guard
@@ -15876,7 +15898,7 @@ async function pipelineInner(job, opts = {}) {
                 }
                 runLog(run.runDir, { event: "writer-duty-after-repair", was, now: verdict, named: clampReasons.length - named });
               }
-              if (s2.label === "placement-inquiry" || chain.has(s2.label)) queueWhatItLeftStale(s2);
+              if (staleBefore) queueWhatItLeftStale(s2, staleBefore);
             } else note(`stale-repair: ${s2.label} re-run failed (${r?.fail}) — stays stale, the guard below decides`);
           } else if (s2.label.startsWith("report-card:")) {
             const ord = Number(s2.label.slice("report-card:".length));
