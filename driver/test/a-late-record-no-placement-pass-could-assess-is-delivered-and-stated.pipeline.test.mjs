@@ -91,7 +91,7 @@ async function runMockPipeline(root, env, opts = {}, codename = null) {
 }
 
 for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
-  test(`${engine}: late records no placement pass could assess are delivered, each stated in its approved sentence, with the attempts on record`, async () => {
+  test(`${engine}: late records no placement pass could assess are delivered, with what stays open stated and the attempts on record`, async () => {
     const root = mkdtempSync(join(tmpdir(), "clearotron-unassessed-"));
     const planExecutor = executor([]);
     const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST }, { planExecutor });
@@ -155,6 +155,11 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     const summary = [];
     wb.getWorksheet("Summary")?.eachRow((row) => summary.push(row.values.slice(1).map((v) => (v == null ? "" : String(v)))));
     assert.equal(summary.find((r) => r[0] === "Verdict")?.[1], verdict.statement, "the workbook's verdict is not the verdict on record");
+    // the other late record is set aside where the client reads it: the delivered audit trail and the workbook's search log
+    assert.ok(readFileSync(join(published, "audit.md"), "utf8").includes(NEW_OTHER.record_id), "the delivered audit trail does not carry the other late record");
+    const searched = [];
+    wb.getWorksheet("What was searched")?.eachRow((row) => searched.push(row.values.slice(1).map((v) => (v == null ? "" : String(v))).join(" | ")));
+    assert.ok(searched.some((r) => r.includes(NEW_OTHER.record_id) && /screened out/.test(r)), "the workbook's search log does not set the other late record aside");
     assert.ok(readFileSync(join(rd, "audit.md"), "utf8").split("\n").some((l) => l.includes(NEW_FLOOR.record_id) && l.includes("unanswered at delivery")),
       "the audit trail does not list the late floor as open at delivery");
   });

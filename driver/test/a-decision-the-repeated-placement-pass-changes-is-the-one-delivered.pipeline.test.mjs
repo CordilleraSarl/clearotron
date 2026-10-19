@@ -25,7 +25,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -197,4 +197,38 @@ test(`${engine}: a writer that cannot re-run for the changed decision does not h
   assert.match(readFileSync(join(rd, "report.md"), "utf8"), new RegExp(`^overall_label:\\s*${verdict.tier}\\s*$`, "m"),
     "the report's own label is not the verdict on record's");
 });
+}
+
+for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
+  test(`${engine}: a review the changed decision queued that cannot run does not hold the run — it delivers, and the run record says the change went unreviewed`, async () => {
+    const root = mkdtempSync(join(tmpdir(), "clearotron-repeatground-unreviewed-"));
+    const planExecutor = executor([]);
+    const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
+    assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+    const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
+    const n1 = p1.events.length;
+    // The reviewer's re-run for the change is the one review dispatch told the repeat's ground, so failing that fails it alone.
+    const p2 = await runMockPipeline(root, { ...env, MOCK_SKEPTIC: ESCALATE_SATPROBE, MOCK_PLACEMENT_SET_ASIDE: G2,
+      MOCK_FAIL_STAGE: `narrative-refutation${sep}SKILL&&${G2}` }, { planExecutor }, codename);
+    const ev2 = p2.events.slice(n1);
+    assert.ok(ev2.some((e) => e.event === "delivery-stale-requeued" && e.after === "placement-inquiry" && e.stages.includes("narrative-refutation")),
+      "guard: the changed decision queued the reviewer");
+    assert.ok(ev2.some((e) => e.event === "stage" && e.stage === "synthesis" && e.trigger === "stale-repair" && e.ok === true), "guard: the writer re-ran for the change");
+    assert.equal(p2.res.ok, true, JSON.stringify({ fail: p2.res.fail, stage: p2.res.failedStage }));
+    assert.deepEqual(ev2.filter((e) => e.event === "delivery-stale-blocked"), [], "the run was held on a review that could not run");
+    const unread = ev2.filter((e) => e.event === "changed-decision-unread-delivered");
+    assert.deepEqual(unread.map((e) => e.stages.map((x) => x.label)), [["narrative-refutation"]], "the run record does not say the review went unread");
+    const rd = p2.res.runDir;
+    const json = (f) => JSON.parse(readFileSync(f, "utf8"));
+    assert.equal(json(driverDir(rd, "post-repair-review.json")).status, "unread", "the record of the review after the change does not say it was not reviewed");
+    // What the client is given: the writer's re-run is delivered, one result on every surface, and nothing on any of
+    // them says the change went unreviewed, because no approved sentence says so.
+    const status = json(join(rd, "status.json"));
+    const published = join(root, "pool", status.runId);
+    const verdict = json(driverDir(rd, "verdict.json"));
+    const data = json(join(published, "report-data.json"));
+    assert.deepEqual([p2.res.verdict, verdict.verdict, status.review.signoff, json(join(published, "settle.json")).signoff], Array(4).fill("CLEAR"));
+    assert.deepEqual([verdict.clauses, data.rating.conditions], [[], []], "a condition the run never states was delivered");
+    assert.equal(data.rating.statement, verdict.statement, "the delivered rating is not the verdict on record");
+  });
 }
