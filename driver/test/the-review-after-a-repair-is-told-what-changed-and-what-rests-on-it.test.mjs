@@ -115,11 +115,15 @@ const CLOSING = "REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS FLAG. Correct th
 test("the one correction after that review opens on where its flags come from and carries the first correction's rules", () => {
   const c = composer("synthesis:post-repair-corrective");
   assert.ok(c, "the composer is registered");
-  const [plain, renumbered] = c.samples.map((s) => c.compose(s.args).split("\n"));
+  const [plain, renumbered, whole] = c.samples.map((s) => c.compose(s.args).split("\n"));
   assert.deepEqual(plain.slice(0, 4), [CORRECTION_OPENING, ITEMS("finding 2, the coverage line for \"register / EU\""), NARROWED, NO_ITEM]);
   // With no item named, the line says so and points at the rule for an unplaced flag below it: "every flag is about the
   // document" would be false here, where an unplaced flag may be about a finding (design's wording, 2026-10-18).
   assert.deepEqual(renumbered.slice(0, 5), [CORRECTION_OPENING, ITEMS("(none named; apply each unplaced flag as described below)"), NARROWED, NO_ITEM, ON_NUMBER]);
+  // After a whole review the opening says so, and nothing else in the message changes (design's wording, 2026-10-18).
+  assert.equal(whole[0], CORRECTION_OPENING.replace("and an independent review then read only what the repair changed and what rests on it.",
+    "and the full independent review ran again."), "a whole review's correction is told the review read only the change");
+  assert.deepEqual(whole.slice(1), c.compose({ ...c.samples[2].args, whole: false }).split("\n").slice(1), "a whole review changed more than the opening");
   assert.ok(!plain.join("\n").includes("verify-flag for re-check"), "no re-check follows this pass, so the move is not offered");
   // THE RULES AND STEPS ARE THE FIRST CORRECTION'S: every line of the first correction from the narrowing rule
   // to its save line appears in this one, in the same order.

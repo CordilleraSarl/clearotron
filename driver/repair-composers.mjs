@@ -309,8 +309,10 @@ export const REPAIR_COMPOSERS = [
     // Its items line replaces the first correction's scope block, a changed coverage line may be narrowed, and a
     // flag that names no item is applied to the one it is about. The rules and steps are the first correction's,
     // from one shared text, and the flag list closes on the line for a pass nothing reviews.
-    compose: ({ narrative, findings, placement, rulingsTail, items, renumbered, worklist, review }) => lines(
-      `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. After the delivery check, that record was repaired, and an independent review then read only what the repair changed and what rests on it. It flagged the corrections below, and nothing reviews this pass again. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, or remove the sentence) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
+    // A WHOLE REVIEW SAYS SO (design's wording, 2026-10-18): its flags reach this correction too, when the narrowed
+    // review could not be read, when the change could not be narrowed, and on a resume after an unread review.
+    compose: ({ narrative, findings, placement, rulingsTail, items, renumbered, worklist, review, whole = false }) => lines(
+      `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. ${whole ? "After the delivery check, that record was repaired, and the full independent review ran again." : "After the delivery check, that record was repaired, and an independent review then read only what the repair changed and what rests on it."} It flagged the corrections below, and nothing reviews this pass again. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, or remove the sentence) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
       // An empty list does not reuse the first correction's "every flag is about the document": here an unplaced flag
       // may be about a finding, and the line below says how to apply one.
       `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : "(none named; apply each unplaced flag as described below)"}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
@@ -333,6 +335,9 @@ export const REPAIR_COMPOSERS = [
       { name: "a renumbered finding, a placement tail, and no item named", tail: "tool",
         args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md", rulingsTail: "| axis | ruling |",
           items: [], renumbered: true, worklist: "", review: "the flags, verbatim" } },
+      { name: "the flags of a whole review", tail: "tool",
+        args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md", rulingsTail: "",
+          items: [], renumbered: false, worklist: "", review: "the flags, verbatim", whole: true } },
     ],
   },
   {

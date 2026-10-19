@@ -64,6 +64,7 @@ import { squash } from "./doubt-ledger.mjs";
 //     ending: { kind, by, evidence, reasons, ts } | null,
 //     handoff: "<the surface a human reads an un-ended/handed-over ask on>" | null,
 //     part, family,                              // only on a request kept as parts: "ran" or "family", and that family's qid
+//     legacy_id,                                 // a frame request's ran part only: the short id it had before its hash
 //   }
 
 const clip = (s, n = 200) => { const t = String(s ?? "").replace(/\s+/g, " ").trim(); return t.length > n ? `${t.slice(0, n - 1)}…` : t; };
@@ -389,21 +390,25 @@ export function deriveAsks({
       const place = bornByKey[key] === "form-neighbourhood" ? "form-neighbourhood" : "frame-diff";
       const born = { place, artifact: "_driver/frame-reopen.json", ref: key, ts: fr.ts ?? null };
       const ask = { text: `${place === "form-neighbourhood" ? "mechanical form-oracle gap" : "blind frame-diff omission"}: ${key} — sweep it or say why not`, owner: "register", structured: null };
-      const id = `ask:frame:${slug(key)}`;
-      let parts = [{ id, qids, ending: null, handoff: null }];
+      // THE ID CARRIES A HASH OF THE WHOLE KEY. The slug cuts at 48 characters and folds punctuation, so two
+      // requests that differ only after the cut, or only in punctuation, gave one id, and the second was dropped.
+      // The short id stays on the ran part as `legacy_id`, for a closure written before the hash (applyAskClosure).
+      const id = `ask:frame:${slug(key)}-${fnv32(key)}`;
+      const legacy = `ask:frame:${slug(key)}`;
+      let parts = [{ id, qids, ending: null, handoff: null, legacy }];
       const d = deferrals.get(key);
       if (d) {
         parts = [{ id, qids, ending: mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts }),
-          handoff: "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission" }];
+          handoff: "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission", legacy }];
       } else if (swept.has(key) && !qids.length) {
-        parts = [{ id, qids, ending: mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts }) }];
+        parts = [{ id, qids, ending: mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts }), legacy }];
       } else if (swept.has(key)) {
         const settled = withheldOf.get(key) ?? new Map();
         const ran = qids.filter((q) => !settled.has(q));
         const families = [...new Set(qids.filter((q) => settled.has(q)).map((q) => settled.get(q)))];
         parts = [
           ran.length && { id, qids: ran, ending: endingForQids(ran.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts),   // null (open) when the execution record disagrees
-            ...(families.length ? { part: "ran" } : {}) },
+            ...(families.length ? { part: "ran" } : {}), legacy },
           ...families.map((fam) => ({
             id: `${id}:family:${slug(fam)}-${fnv32(fam)}`, qids: qids.filter((q) => settled.get(q) === fam), part: "family", family: fam,
             ending: String(withheldFamilies?.[fam]?.reason ?? "").trim() ? withheldEnding([fam], withheldFamilies, ts) : endingForQids([fam], join, ts),
@@ -411,7 +416,7 @@ export function deriveAsks({
         ].filter(Boolean);
       }
       for (const p of parts) push({ ask_id: p.id, born, ask, qids: p.qids, ending: p.ending, handoff: p.handoff ?? null,
-        ...(p.part ? { part: p.part } : {}), ...(p.family ? { family: p.family } : {}) });
+        ...(p.part ? { part: p.part } : {}), ...(p.family ? { family: p.family } : {}), ...(p.legacy ? { legacy_id: p.legacy } : {}) });
     }
   }
 
@@ -698,12 +703,23 @@ export function applyAskClosure(asks, closureLines, fileTexts = {}, { ts = null 
   const byId = new Map();
   for (const l of closureLines ?? []) if (l?.id && !byId.has(l.id)) byId.set(l.id, l);
   const unverified = [];
+  // A CLOSURE WRITTEN BEFORE FRAME IDS CARRIED THEIR HASH names a request by its short id. It settles the one ran
+  // part that still carries that short id, and none where two do: it cannot say which it meant, and settling either
+  // could end the obligation it did not judge. Such a citation is reported with the parts it could have meant.
+  const legacyOwners = new Map();
+  for (const a of asks ?? []) if (a?.legacy_id && a.legacy_id !== a.ask_id) legacyOwners.set(a.legacy_id, [...(legacyOwners.get(a.legacy_id) ?? []), a.ask_id]);
+  for (const [legacy, owners] of legacyOwners) {
+    const l = byId.get(legacy);
+    if (l && owners.length > 1) unverified.push({ ask_id: legacy, file: l.file, quote: l.quote, ambiguous: owners });
+  }
+  const lineFor = (a) => byId.get(a.ask_id)
+    ?? (a.legacy_id && legacyOwners.get(a.legacy_id)?.length === 1 ? byId.get(a.legacy_id) : undefined);
   const carryIntoFindings = [];
   let immaterialByStage = 0;
   const delivered = deliveredMarks(fileTexts?.["findings.json"]);
   const out = (asks ?? []).map((a) => {
     if (a?.ending) return a;                                    // the stage may never touch an ended ask
-    const l = byId.get(a.ask_id);
+    const l = lineFor(a);
     if (!l) return a;
     if (l.verdict === "OPEN") return { ...a, handoff: clip(l.reason, 300) || a.handoff };
     const hay = squash(fileTexts?.[l.file]);
