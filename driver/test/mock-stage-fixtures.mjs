@@ -5,7 +5,7 @@
 // makes the $0 mock pipeline ENGINE-PARAMETRIC: the same fixtures drove the retired gateway-bin mock and
 // drive =anthropic-agent today. The only difference between the mocks is the stdout envelope (a gateway --json envelope vs
 // claude stream-json); the FILE WRITES are this module. Env knobs are read from process.env (same in both).
-import { writeFileSync, mkdirSync, appendFileSync, readFileSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync, appendFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { dirname, basename, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { parseCoverageLedgerFull } from "../coverage-ledger.mjs";
@@ -38,7 +38,8 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
-import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall } from "../synthesis-record.mjs";
+import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall, synthesisCallPaths } from "../synthesis-record.mjs";
+import { repairBasePath } from "../repair-scope.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
 import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
@@ -1866,6 +1867,13 @@ export function applyStageWrites(msg, argv) {
           verdict: "The identical registration in the searched class drives the read, and the position is adverse on the current filing.",
           coverage: { read: reco },
       };
+      // MOCK_CORRECTION_MARKS=<text> — the correction after a post-repair review writes this text into finding 1's `net`
+      // and the verdict section, so a test can tell that save from every other; keyed on the correction's own opening.
+      if (process.env.MOCK_CORRECTION_MARKS && /After the delivery check, that record was repaired/.test(msg)) {
+        const f0 = (doc.findings ?? [])[0];
+        if (f0) f0.net = `${f0.net ?? ""} ${process.env.MOCK_CORRECTION_MARKS}`.trim();
+        sections.verdict = `${sections.verdict} ${process.env.MOCK_CORRECTION_MARKS}`;
+      }
       let r = recordSynthesis(runDir, { findings: doc, narrative: sections });
       // The refusal names the family. Re-derive with that family's heal phrase and restate once —
       // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
@@ -1934,6 +1942,11 @@ export function applyStageWrites(msg, argv) {
       }
       if (r && r.refused) return `mock synthesis REFUSED by record_synthesis: ${r.refused}`;
       if (r && r.write_failed) return `mock synthesis: record_synthesis could not store the call (${r.write_failed})`;
+      // MOCK_FAIL_AFTER_WRITES (with the exit in mock-claude and mock-codex): the save lands, and the turn then ends with
+      // the stage's output gone, so the driver cannot take the turn's artifact as stage truth and the pass fails with
+      // its save in place.
+      if (process.env.MOCK_FAIL_AFTER_WRITES && process.env.MOCK_FAIL_AFTER_WRITES.split("&&").every((part) => msg.includes(part)))
+        rmSync(join(runDir, "narrative.md"), { force: true });
       // The side-write the old narrative.md branch carried. Same guard it had — CANDSELF and the
       // reco knob both suppressed it there, and both still do.
       if (!process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) mockRegisterRecordWrite(runDir, argv);
@@ -2001,6 +2014,12 @@ export function applyStageWrites(msg, argv) {
         const flags = JSON.parse(process.env.MOCK_POST_REPAIR_FLAGS);
         const verdict = process.env.MOCK_POST_REPAIR_VERDICT ?? (flags.length ? "CONDITIONAL" : "CLEAR");
         const r = send({ verdict, flags, plan_audit: planAudit });
+        // MOCK_POST_REPAIR_LOSES=<findings,accepted,repair-base> — once that review is recorded, the named files are gone
+        // (a disk that lost them), so the correction after it starts with no readable record, or with no save behind it.
+        if (!bad(r) && runDir && process.env.MOCK_POST_REPAIR_LOSES) {
+          const lost = { findings: join(runDir, "findings.json"), accepted: synthesisCallPaths(runDir).accepted, "repair-base": repairBasePath(runDir) };
+          for (const k of process.env.MOCK_POST_REPAIR_LOSES.split(",").map((x) => x.trim()).filter(Boolean)) if (lost[k]) rmSync(lost[k], { force: true });
+        }
         return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
           : `mock reviewer recorded the review after the repair (${verdict}) through record_narrative_refutation`;
       }
