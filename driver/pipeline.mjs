@@ -1012,6 +1012,14 @@ function deriveBandShape(ctx, band) {
     note(`band-shape derivation failed (non-fatal — judgment still holds band_lookup over the band; machine checks read the complete band): ${String(e?.message ?? e).slice(0, 120)}`);
   }
   recordGoodsEvidenceFor(ctx, band, evidenceDoc);
+  // Placement's standing decisions are read off the shape, so a shape derived again can change them with no placement
+  // pass: a group's row checked again on the new shape may cover other lines, or stand no longer, and the floors it
+  // leaves can grow. The decisions file the reading step, the writer and the review declare is written again with the
+  // shape, so such a change makes a stage that already read them stale. Only once placement has written it.
+  if (existsSync(P.placementDecisions)) {
+    try { writePlacementDecisions(P); }
+    catch (e) { runLog(P.runDir, { event: "placement-decisions-failed", trigger: "band-shape", reason: String(e?.message ?? e).slice(0, 120) }); }
+  }
 }
 
 /**

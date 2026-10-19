@@ -24,7 +24,7 @@ writeFileSync(LEDGER, "");
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-const { placementSetAsideLines, messageCtxFor, standingPlacementDecisions, writePlacementDecisions } = await import("../pipeline.mjs");
+const { placementSetAsideLines, messageCtxFor, standingPlacementDecisions, writePlacementDecisions, DERIVATION_RUNNERS } = await import("../pipeline.mjs");
 const { writeStamp, staleOnPath } = await import("../stage-freshness.mjs");
 const { STAGES, paths, PLACEMENT_SET_ASIDES_INTRO, stageInputs } = await import("../stages.mjs");
 const { buildBandShape, deriveRegisterPositions } = await import("../band-shape.mjs");
@@ -192,6 +192,50 @@ test("a group's row that comes to cover another line at the same count leaves th
   for (const label of readers) writeStamp(P.runDir, label, inputsFor(label));
   writePlacementDecisions(P);
   assert.deepEqual(staleOnPath(P.runDir, readers, inputsFor), [], "the same members, written again, made a stage stale");
+});
+
+test("a shape derived again writes placement's decisions again, so a row it no longer supports reaches the stages that read them", (t) => {
+  const runDir = mkdtempSync(join(tmpdir(), "setasides-shape-"));
+  t.after(() => rmSync(runDir, { recursive: true, force: true }));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const P = paths(runDir);
+  writeFileSync(P.variantManifestModel, JSON.stringify({ schema_version: 1, mark: "QZORVAK", dominant_element: "QZORVAK",
+    elements: [{ value: "QZORVAK", kind: "distinctive" }], variants: [{ value: "QZORVAK", category: "core" }],
+    incumbent_classes: [], watchlist_owners: [], goods_words: ["joysticks"], product_words: ["joysticks"] }));
+  const withGoods = (r, text) => ({ ...r, raw: { classifications: [{ nice_class: 9, goods_services_text: text, goods_services_language: "en", goods_services_text_truncated: false }] } });
+  const band = [withGoods(rec("a1", "QZORVAK", "Alpha Ltd"), "joysticks"), withGoods(rec("r1", "Drellux", "Delta AG"), "printers"),
+    withGoods(rec("r2", "Vorrin", "Eta Kft"), "printers")];
+  const ctx = { paths: P, job: { markName: "Qzorvak", classes: [9] }, profile: null, run: { slug: "qz", codename: "shape" } };
+  const derive = (enumerated) => { writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated, crowds: [] })); assert.ok(DERIVATION_RUNNERS["band-shape"](ctx)); };
+  derive(band);
+  assert.ok(!existsSync(P.placementDecisions), "a shape derived before placement ran wrote placement's decisions");
+  // placement places the identical mark and sets the rest aside by its row, having read every line
+  const shape = JSON.parse(readFileSync(P.bandShape, "utf8"));
+  assert.deepEqual(shape.groups.rest.list.map((l) => l.record_id).sort(), ["/mark/eu/r1", "/mark/eu/r2"], "guard: two lines in the rest");
+  const read = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
+  writeFileSync(driverDir(runDir, "reading-log.jsonl"), JSON.stringify({ ts: "2026-10-19T00:00:00Z", tool: "band_shape", args: { format: "md" },
+    ok: true, part: 1, parts: 1, served_lines: read, session: "clearance-qz-shape-placement-inquiry" }) + "\n");
+  const { form } = unionPlacementForm(null, { rows: [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside_group: "rest", count: 2, ground: "similar to none of the mark's forms" },
+  ] }, readPlacementFormInput(runDir));
+  writePlacementForm(runDir, form);
+  writeFileSync(P.placementModel, JSON.stringify(renderPlacementsJson(form.rows)));
+  writePlacementDecisions(P);
+  assert.ok(standingPlacementDecisions(P).some((d) => d.kind === "group" && d.group === "rest"), "guard: the row on the rest stands");
+  const readers = ["register-digest", "synthesis", "narrative-refutation"];
+  const inputsFor = (label) => stageInputs(label, P, { axes: [] });
+  for (const label of readers) writeStamp(P.runDir, label, inputsFor(label));
+  // the same shape derived again changes nothing
+  derive(band);
+  assert.deepEqual(staleOnPath(P.runDir, readers, inputsFor), [], "the same shape, derived again, made a stage stale");
+  // the band gains a line in the rest that placement never read: the row taken for two records stands no longer
+  derive([...band, withGoods(rec("r3", "Zentrix", "Kappa Oy"), "printers")]);
+  assert.ok(!standingPlacementDecisions(P).some((d) => d.kind === "group" && d.group === "rest"), "guard: the row on the rest stands no longer");
+  assert.deepEqual(JSON.parse(readFileSync(P.placementDecisions, "utf8")).decisions.filter((d) => d.kind === "group"), [],
+    "the decisions file still holds a row the shape no longer supports");
+  assert.deepEqual(staleOnPath(P.runDir, readers, inputsFor).map((s2) => s2.label), readers,
+    "a stage that read the row was not made stale when the shape stopped supporting it");
 });
 
 // ── a whole run, on each engine: what the reading step and the writer were sent ──
