@@ -772,36 +772,10 @@ export function refreshSupplementalExecution(ctx) {   // @internal
   } catch (e) { note(`supplemental receipt refresh skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
 }
 
-/** One axis band's bytes, or null where it has none: what a re-run's change is measured against. */
-function bandBytesOf(P, axis) { try { return readFileSync(P.registerBand(axis), "utf8"); } catch { return null; } }
-
-/** A fingerprint of every axis band file, in axis order: what a merge read. */
-function axisBandsFingerprint(P, axes = []) {
-  const h = createHash("sha256");
-  for (const a of axes ?? []) { h.update(`${a}\0`); h.update(bandBytesOf(P, a) ?? "\0absent"); h.update("\0"); }
-  return h.digest("hex");
-}
-
-/**
- * THE NAMED BAND MERGED AGAIN WHEN AN AXIS BAND MOVED SINCE THE LAST MERGE. A unit re-run in its own session after the
- * fan-in (the cross-check's questions, a frame-reopen sweep, the skeptic's escalation, the envelope close) can add blocks
- * to its axis band whatever it does to its notes, and placement, the reading step and the writer read the named band.
- * Only the code-side recheck merged again, so the records those re-runs found reached none of the three. Code only:
- * nothing is dispatched. Returns whether the band was merged again.
- */
-export function remergeIfBandsMoved(ctx, why) {   // @internal — driven by its test with a run's own files
-  const P = ctx.paths;
-  if (ctx.bandsMergedAt == null) return false;   // nothing merged yet this pass: the fan-in merge reads every band
-  if (axisBandsFingerprint(P, ctx.axes) === ctx.bandsMergedAt) return false;
-  try { deriveNamedBand(ctx); runLog(P.runDir, { event: "named-band-remerged", why }); return true; }
-  catch (e) { note(`${why}: the named band could not be merged again (${String(e?.message ?? e).slice(0, 100)}) — the earlier merge stands`); return false; }
-}
-
-export function deriveNamedBand(ctx) {   // @internal — driven by its test with a run's own files
+function deriveNamedBand(ctx) {
   const P = ctx.paths;
   const axes = ctx.axes ?? [];
   const { band, axes: ok, invalid } = mergeRegisterBands(P, axes);
-  const mergedFrom = axisBandsFingerprint(P, axes);
   if (invalid.length) {
     const detail = invalid.map((x) => `${x.axis}:${x.reason}`).join("; ");
     runLog(P.runDir, { event: "named-band-invalid", invalid });
@@ -811,7 +785,6 @@ export function deriveNamedBand(ctx) {   // @internal — driven by its test wit
     const tmp = P.registerNamedBand + ".tmp";
     writeFileSync(tmp, JSON.stringify(band, null, 2) + "\n");
     renameSync(tmp, P.registerNamedBand);
-    ctx.bandsMergedAt = mergedFrom;
     runLog(P.runDir, { event: "named-band-merged", axes: ok, enumerated: band.enumerated.length, crowds: band.crowds.length });
   } catch (e) {
     note(`named-band merge write failed (non-fatal): ${String(e.message).slice(0, 100)}`);
@@ -10803,7 +10776,6 @@ async function pipelineInner(job, opts = {}) {
             const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })) });
             const r = await stage("register-unit", { ...ctx, axis }, { force: true, followup, sessionKey: unitKey[axis], trigger: "xcheck-decide" });
             asked = r?.ok === true;
-            remergeIfBandsMoved(ctx, "xcheck-decide");
           } catch (e) { runLog(run.runDir, { event: "register-xcheck-decide-failed", fail: String(e?.message ?? e).slice(0, 160) }); }
           const released = releasedFamilyQids(run.runDir), withheld = readWithheldFamilies(run.runDir);
           const ran = undecidedCrossChecks(ctx.registerPlan, { released, withheld });
@@ -11811,7 +11783,6 @@ async function pipelineInner(job, opts = {}) {
             const a = "primary-sweep";
             const regDom = regDirectives.filter((d) => d.severity === "dominant-element");
             const beforeUnit = existsSync(P.registerUnit(a)) ? readFileSync(P.registerUnit(a), "utf8") : null;
-            const beforeBand = bandBytesOf(P, a);   // a sweep that adds blocks moves the band, whatever it does to the notes
             note(`frame-reopen: ${regDirectives.length} register omission(s) → resuming ${a} to ${regDom.length ? "ENUMERATE the dominant-element floor to exhaustion" : "fold in a targeted supplemental sweep"}`);
             // Lane flag read from the SAME key the tool exclusion keys on (see the stage dispatcher) —
             // this arm is reachable on a lane run whenever the code-side dispatch arm above could not
@@ -11820,7 +11791,7 @@ async function pipelineInner(job, opts = {}) {
               supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
             const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "frame-reopen" });
             if (r.ok) {
-              if (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand) { changedAxes.push(a); regChanged = true; }
+              if (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit) { changedAxes.push(a); regChanged = true; }
               else note(`frame-reopen: ${a} unchanged after the supplemental sweep`);
             } else {
               regMechFail = r.fail; note(`frame-reopen: ${a} supplemental sweep failed mechanically (${r.fail})`);
@@ -11834,7 +11805,7 @@ async function pipelineInner(job, opts = {}) {
                 const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
                   supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
                 const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
-                if (r2.ok && existsSync(P.registerUnit(a)) && (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand)) {
+                if (r2.ok && existsSync(P.registerUnit(a)) && readFileSync(P.registerUnit(a), "utf8") !== beforeUnit) {
                   changedAxes.push(a); regChanged = true; regMechFail = null;
                   note(`frame-reopen: ${a} fresh scoped retry closed the gap`);
                 } else if (!r2.ok) {
@@ -11848,7 +11819,6 @@ async function pipelineInner(job, opts = {}) {
             regNoSession = true;
             note(`frame-reopen: ${regDirectives.length} register omission(s) — no resumable primary-sweep/digest session in this process`);
           }
-          if (regArm === "resume") remergeIfBandsMoved(ctx, "frame-reopen");
 
           // SOURCE channels: a warm RESUME is taken when the common-law session is live; with no
           // resumable session the omission becomes a DISCLOSED DEFERRAL (open coverage row + the
@@ -12363,7 +12333,6 @@ async function pipelineInner(job, opts = {}) {
         // Only axes whose unit file MATERIALLY changed stay in escalated[]; content-compare is conservative —
         // any byte difference re-fires, so a genuine recall fix is never skipped. Floor-neutral.
         const beforeUnit = existsSync(P.registerUnit(a)) ? readFileSync(P.registerUnit(a), "utf8") : null;
-        const beforeBand = bandBytesOf(P, a);   // a narrow sub-query adds blocks to the band, whatever it does to the notes
         note(`skeptic escalated ${a} → resuming its session to defend/adjust (warm, same tier)`);
         let followup = repairFollowup("register-unit:escalation", { paths: P, axis: a, flags,
           supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
@@ -12381,7 +12350,7 @@ async function pipelineInner(job, opts = {}) {
         const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "escalation" });
         if (!r.ok) return { axis: a, changed: false, ok: false };
         const afterUnit = readFileSync(P.registerUnit(a), "utf8");
-        const changed = afterUnit !== beforeUnit || bandBytesOf(P, a) !== beforeBand;
+        const changed = afterUnit !== beforeUnit;
         if (!changed) {
           note(`escalation ${a}: unit defended in place (unchanged) — Opus re-digest not needed`);
           runLog(run.runDir, { event: "escalation-noop", axis: a });
@@ -12389,7 +12358,6 @@ async function pipelineInner(job, opts = {}) {
         return { axis: a, changed, ok: true };
       });
       const escalated = escResults.filter((e) => e.changed).map((e) => e.axis);
-      remergeIfBandsMoved(ctx, "escalation");
       // W-3 input (D1): persist the escalation outcome so the client-export gate can WITHHOLD when a
       // load-bearing escalation the system ITSELF raised did not complete. requested = axes attempted this
       // session; failed = those whose register-unit stage returned !r.ok (never ran to a result). The
@@ -12481,7 +12449,6 @@ async function pipelineInner(job, opts = {}) {
       if (closeableAxes.length && decision.close && !digestLockedEnv) {
         const closeResults = await runBatched(closeableAxes, config.gatherConcurrency, async (a) => {
           const beforeUnit = existsSync(P.registerUnit(a)) ? readFileSync(P.registerUnit(a), "utf8") : null;
-          const beforeBand = bandBytesOf(P, a);   // a close that runs the deferred slices adds blocks to the band
           // quote the axis's own deferred ledger rows + ⭐-floor breach rows verbatim so the unit closes
           // exactly what was deferred (or mislabelled away). WS-A: the quoted rows come from the SAME
           // loadCoverageLedger read the gate decided on — never a separate prose grep that could diverge.
@@ -12503,9 +12470,8 @@ async function pipelineInner(job, opts = {}) {
           const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "envelope" });
           if (!r.ok) return { axis: a, changed: false, fail: r.fail };
           const afterUnit = readFileSync(P.registerUnit(a), "utf8");
-          return { axis: a, changed: afterUnit !== beforeUnit || bandBytesOf(P, a) !== beforeBand, fail: null };
+          return { axis: a, changed: afterUnit !== beforeUnit, fail: null };
         });
-        remergeIfBandsMoved(ctx, "envelope");
         const closedChanged = closeResults.filter((e) => e.changed).map((e) => e.axis);
         const closeFails = closeResults.filter((e) => e.fail);
         if (closedChanged.length) {
