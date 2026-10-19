@@ -308,6 +308,31 @@ for (const engine of Object.keys(ENGINES)) {
   });
 }
 
+test("a change no review read is reviewed whole on a resume, even when the resume's own repair could be narrowed", async () => {
+  // Pass 1 repairs the narrative, and neither review of that change is read: the run is held.
+  const { res: r1, events: e1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_UNREAD: "both" });
+  assert.equal(JSON.parse(readFileSync(driverDir(r1.runDir, "post-repair-review.json"), "utf8")).status, "unread", "premise: pass 1 left the change unreviewed");
+  // Between the passes the held record's first finding gains a search count in its own sentence, so the resume's
+  // delivery check sends a fault of its own to the writer, and that repair alone could be reviewed narrowed.
+  const SENTENCE = " The search ran 14 queries across the register.";
+  const { accepted } = synthesisCallPaths(r1.runDir);
+  const acc = JSON.parse(readFileSync(accepted, "utf8"));
+  acc.params.findings.findings[0].net = `${acc.params.findings.findings[0].net}${SENTENCE}`;
+  writeFileSync(accepted, JSON.stringify(acc, null, 2) + "\n");
+  const fj = JSON.parse(readFileSync(join(r1.runDir, "findings.json"), "utf8"));
+  fj.findings[0].net = `${fj.findings[0].net}${SENTENCE}`;
+  writeFileSync(join(r1.runDir, "findings.json"), JSON.stringify(fj, null, 2) + "\n");
+  const { res: r2, events: all2 } = await runPipeline({ MOCK_VERDICT: "CLEAR" }, "claude", { codename: codenameOf(r1.runDir) });
+  const e2 = all2.slice(e1.length);
+  assert.equal(stageEvents(e2, "synthesis", "lint-repair").length, 1, "premise: the resume repaired a fault of its own");
+  assert.deepEqual(e2.filter((e) => e.event === "post-repair-review").map((e) => [e.read, e.whole ?? false]), [[true, true]],
+    "the resume reviewed only its own change, and called the earlier change read");
+  assert.equal(stageEvents(e2, "narrative-refutation", "post-repair-review").length, 0, "the resume sent the review of its own repair alone");
+  const rec = JSON.parse(readFileSync(driverDir(r2.runDir, "post-repair-review.json"), "utf8"));
+  assert.deepEqual([rec.status, rec.whole], ["read", true]);
+  assert.equal(r2.ok, true, JSON.stringify(r2).slice(0, 300));
+});
+
 test("a change to the findings record alone is owed a review unless it saves the same values, even when it cannot be narrowed", async () => {
   const { recordChangeOwesReview } = await import("../pipeline.mjs");
   const runDir = tempDir("post-repair-owed-");
@@ -339,6 +364,10 @@ test("the scope decision: no base, another input moved or a re-synthesis keeps t
   assert.equal(postRepairScope(runDir, P, s2(["narrative.md"]), { baseKept: false }).mode, "whole", "no base kept");
   assert.equal(postRepairScope(runDir, P, s2(["narrative.md", "register-findings.md"]), { baseKept: true }).mode, "whole", "another input moved");
   assert.equal(postRepairScope(runDir, P, s2(["narrative.md"]), { baseKept: true, staleRepaired: ["synthesis"] }).mode, "whole", "a whole re-synthesis ran");
+  for (const upstream of ["placement-inquiry", "register-digest", "skeptic"])
+    assert.equal(postRepairScope(runDir, P, s2(["narrative.md"]), { baseKept: true, staleRepaired: [upstream] }).mode, "whole", `${upstream} re-ran ahead of the review`);
+  assert.equal(postRepairScope(runDir, P, s2(["narrative.md"]), { baseKept: true, staleRepaired: ["report-card:2", "report-overview"] }).mode, "narrowed",
+    "a rebuilt card or overview is no upstream change");
   const narrowed = postRepairScope(runDir, P, s2(["narrative.md"]), { baseKept: true });
   assert.equal(narrowed.mode, "narrowed");
   assert.deepEqual(narrowed.changed.sections.map((x) => x.title), ["Verdict"]);

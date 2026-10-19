@@ -6477,6 +6477,10 @@ export function postRepairScope(runDir, P, s2, { staleRepaired = [], baseKept = 
   const moved = (s2?.changed ?? []).filter((c) => c?.via !== "repair-record" && basename(String(c?.name ?? "")) !== narrative);
   if (moved.length) return { mode: "whole", why: "another-input-moved", moved: moved.map((c) => String(c?.name ?? "")) };
   if (staleRepaired.includes("synthesis")) return { mode: "whole", why: "re-synthesised" };
+  // Any other step this loop re-ran ahead of the reviewer (the digest, placement, the skeptic) moved what the review
+  // stands on beyond the repair's own change, so the scope the queue captured no longer says what changed.
+  const upstream = staleRepaired.filter((l) => l !== "narrative-refutation" && !/^report-(overview|card:)/.test(l));
+  if (upstream.length) return { mode: "whole", why: "upstream-re-run", upstream };
   let before = null, after = null;
   try { before = readRepairBase(runDir); after = lastAcceptedCall(runDir); } catch { /* read as no base */ }
   const changed = changedContent(before, after);
@@ -15505,7 +15509,12 @@ async function pipelineInner(job, opts = {}) {
             // THE REVIEW AFTER A DELIVERY-CHECK REPAIR (see runPostRepairReview). Reached where the scope is certain, and
             // where a change to the record, or one an earlier review could not read, is reviewed whole: that review's
             // flags go to the same one correction. Every other staleness of the reviewer takes the arm below, as before.
-            const scope = postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept });
+            // A CHANGE NO REVIEW READ IS REVIEWED WHOLE, whatever this pass's own repair changed: the base this pass
+            // kept follows the earlier change, so a narrowed review would read only the later one, and saving the same
+            // values again would settle a stamp over a change nobody read.
+            const unreadOnEntry = unreadRecordReview(run.runDir);
+            const narrowedScope = postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept });
+            const scope = unreadOnEntry && narrowedScope.mode !== "whole" ? { mode: "whole", why: "an earlier change went unreviewed" } : narrowedScope;
             if (scope.mode === "none") {
               // A FILE WRITTEN AGAIN WITH THE SAME VALUES IS NOT A CHANGE: no review runs, and the reviewer's stamp
               // takes the rewrite as accounted for, so the delivery guard does not block on it.
