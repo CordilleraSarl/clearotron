@@ -12,6 +12,7 @@
 // run's files; never writes them.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
+import { createHash } from "node:crypto";
 import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName } from "./placement-form.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput } from "./placement-form-io.mjs";
@@ -55,9 +56,11 @@ export function standingSetAside(entries, input, { placedUris = [], rows = [] } 
   if (!grouped.length) return named;
   // A group's row is taken again beside the lines placement placed (`rows`, the form's own) and the ones it named that
   // still stand, so the lines it covers and the floors it leaves are counted as the fate count reads them: neither a
-  // placed line nor a named one is the row's, and a placed floor is not one it leaves.
-  const { form } = unionPlacementForm({ rows: Array.isArray(rows) ? rows : [], set_aside: [...named, ...grouped] }, null, input);
-  return [...named, ...form.set_aside_groups];
+  // placed line nor a named one is the row's, and a placed floor is not one it leaves. Each row carries the keys of
+  // the lines it covers (`covered_lines`), which the form itself never says back.
+  const { form, covered_lines: covered } = unionPlacementForm({ rows: Array.isArray(rows) ? rows : [], set_aside: [...named, ...grouped] }, null, input,
+    { covered: true });
+  return [...named, ...form.set_aside_groups.map((e) => ({ ...e, covered_lines: covered?.[e.set_aside_group] ?? [] }))];
 }
 
 /** The set-aside grounds the placement form holds, by name and by group, as uri → entry, through the form's own selection index. */
@@ -102,7 +105,9 @@ export function placementFloorDecisionLines(P) {   // @internal — driven by it
  * band holds its record and no placement places its line). A name's entry gives the record the record tools open, its
  * mark and owner, its ground and, for a floor, what the ground is on; a group's row its name, the records in the group,
  * the lines it covers (the group's lines placement neither placed nor named) and its ground, with every floor it leaves
- * to be placed or named. [] when nothing stands or nothing can be read. IMPURE (reads the run).
+ * to be placed or named. A group's row also carries a hash of the keys of the lines it covers, so a row that comes to
+ * cover other lines at the same count is a changed decision to every stage that reads it, while the file stays small
+ * enough for a stage to open. [] when nothing stands or nothing can be read. IMPURE (reads the run).
  */
 export function standingPlacementDecisions(P) {   // @internal — driven by its test with a run's own files
   try {
@@ -113,7 +118,8 @@ export function standingPlacementDecisions(P) {   // @internal — driven by its
     return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri), rows: form.rows }).flatMap((e) => {
       if (!e?.ground) return [];
       if (isSetAsideGroupRow(e)) return [{ kind: "group", group: groupName(e.set_aside_group), records: Number(e.count ?? 0),
-        covers_lines: Number(e.covers_lines ?? 0), ground: e.ground, floors_not_covered: Array.isArray(e.floors_not_covered) ? e.floors_not_covered : [] }];
+        covers_lines: Number(e.covers_lines ?? 0), ground: e.ground, floors_not_covered: Array.isArray(e.floors_not_covered) ? e.floors_not_covered : [],
+        covered_lines_hash: createHash("sha256").update((e.covered_lines ?? []).join("\n")).digest("hex").slice(0, 16) }];
       const c = index.resolve(e.set_aside);
       return [{ kind: "name", record: e.set_aside, mark: c?.mark ?? null, owner: c?.owner ?? null, ground: e.ground,
         ...(e.on === "status" || e.on === "territory" ? { on: e.on } : {}) }];
