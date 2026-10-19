@@ -780,8 +780,13 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
       // A line the goods test could not place shows a record whose goods are on file where it has one, so
       // `band_record` opens the record the line names; `goods_on_file` says so of that record.
       record_id: (known ? best : (inGroup.find((x) => x.onFile) ?? best)).r?.record_id ?? null,
-      // What the goods of the record the line names rest on (goods-evidence.mjs), where the run recorded it.
-      ...(typeof evidenceOf === "function" ? { goods_evidence: evidenceOf((known ? best : (inGroup.find((x) => x.onFile) ?? best)).r)?.state ?? null } : {}),
+      // What the goods of the record the line names rest on (goods-evidence.mjs), where the run recorded it, and, where
+      // their completeness is not established, whether any goods text is held at all (`goods_text: false` where none is,
+      // as for a held record with no goods field).
+      ...(typeof evidenceOf === "function" ? (() => {
+        const ev = evidenceOf((known ? best : (inGroup.find((x) => x.onFile) ?? best)).r);
+        return { goods_evidence: ev?.state ?? null, ...(ev?.state === "unknown" && ev?.readable == null ? { goods_text: false } : {}) };
+      })() : {}),
       floors: l.recs.filter((x) => x.floor).length,
       ...(known ? {} : { goods_on_file: inGroup.some((x) => x.onFile) }),
       ...(offices.size && l.recs.every((x) => x.outside) ? { outside: true } : {}),
@@ -1103,7 +1108,10 @@ export const A_CROWDS_ONE_ROW = "Read the first page, carry forward any line a l
 export const AN_UNREAD_CROWDS_ONE_ROW = "Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded.";
 export const AN_UNREAD_CROWDS_FLOOR = "A floor here is placed or set aside by name on its status or its territory; this row never covers it.";
 export const AN_UNREAD_LISTS_FLOOR = "A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.";
-export const PLACEMENT_LINE_ORDERS = Object.freeze([FLOORS_BY_NAME_HERE, A_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_FLOOR, AN_UNREAD_LISTS_FLOOR]);
+// What placement does with a line of that list before its fate, by its marker (approved wording, 2026-10-19). Placement's
+// alone, as its other orders are: every other stage keeps the markers as evidence and is not told of a fate.
+export const AN_UNREAD_LINE_IS_CHECKED = 'A line marked "on file, not readable", "cut by the register, no goods word found", "goods held; completeness not established" or "no goods text held; completeness not established" must be checked with band_record before its fate. Read the evidence held for it, keeping its source and goods completeness clear. A line marked "no goods on file", "fetch failed, no goods on file" or "the register\'s record lists no goods" has no goods text on file. Missing goods do not establish that the goods are unrelated.';
+export const PLACEMENT_LINE_ORDERS = Object.freeze([FLOORS_BY_NAME_HERE, A_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_FLOOR, AN_UNREAD_LISTS_FLOOR, AN_UNREAD_LINE_IS_CHECKED]);
 const SHAPE_LISTS = ["a", "b", "c", "d", "rest", "no_goods"];
 const pageEveryOtherLine = (g) => `; page every other line with ${groupPageCall(g)}`;
 const pageWhereALineNeedsIt = (g) => `; page with ${groupPageCall(g)} only where a line needs reading`;
@@ -1142,13 +1150,13 @@ function renderGroupsMd(md, groups, rows = []) {
   const carrying = word ? `carrying «${cell(word)}»` : "carrying the searched word";
   const heading = (g) => (g === "c" ? `(c) The same family as the mark, or ${carrying}, for the client's goods` : GROUP_HEADINGS[g]);
   // A line the goods test could not place says why, from what its goods rest on: cut by the register, held but not
-  // established whole, the register's record listing none, a fetch that failed, or nothing held. Goods held whole
-  // that the test still could not read are in a language it cannot use. A shape derived with no record of the goods
-  // evidence reads as it always did.
+  // established whole (with goods text, or with none, as a held record with no goods field is), the register's
+  // record listing none, a fetch that failed, or nothing held. Goods held whole that the test still could not read
+  // are in a language it cannot use. A shape derived with no record of the goods evidence reads as it always did.
   const unread = (l) => {
     if (tested.source === "none") return "—";
     if (l.goods_evidence === "cut") return "cut by the register, no goods word found";
-    if (l.goods_evidence === "unknown") return "goods held; completeness not established";
+    if (l.goods_evidence === "unknown") return l.goods_text === false ? "no goods text held; completeness not established" : "goods held; completeness not established";
     if (l.goods_evidence === "absent") return "the register's record lists no goods";
     if (l.goods_evidence === "unavailable") return "fetch failed, no goods on file";
     if (l.goods_evidence === "complete") return "on file, not readable";
@@ -1207,7 +1215,7 @@ function renderGroupsMd(md, groups, rows = []) {
       : `**Goods the test could not read: ${count(ng)}.**`;
     md.push("", crowded
       ? `${lead} A thousand or more? ${firstPage}, the floors first, then the live ones in the ordered classes. ${AN_UNREAD_CROWDS_ONE_ROW} ${AN_UNREAD_CROWDS_FLOOR} ${pageTheFloorsLeft("no_goods")}`
-      : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} ${A_FATE_BY_NAME}${tested.source === "none" ? "" : ' A line marked "on file, not readable" has goods on file: open its record with band_record before its fate. A line marked "no goods on file" has nothing to open.'} ${AN_UNREAD_LISTS_FLOOR}`, "");
+      : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} ${A_FATE_BY_NAME}${tested.source === "none" ? "" : ` ${AN_UNREAD_LINE_IS_CHECKED}`} ${AN_UNREAD_LISTS_FLOOR}`, "");
     md.push(...head);
     for (const l of crowded ? ng.list.slice(0, groups.first_page) : ng.list) { rows.push([md.length, l.key]); md.push(row(l)); }
   }

@@ -98,7 +98,7 @@ function fixtureRun() {
 test("synthesis declares EXACTLY its inputs, and the plan-execution receipt + coverage ledger are two of them", () => {
   const P = paths("/RUN");
   const sorted = (a) => [...new Set(a)].sort();
-  const COMMON = [P.registerFindings, P.placement, P.placementModel, P.registerNamedBand, P.matterContext,
+  const COMMON = [P.registerFindings, P.placement, P.placementModel, P.placementDecisions, P.registerNamedBand, P.matterContext,
     P.variantManifest, P.skepticFlags, P.frameReopenReceipt, P.crowdContext, P.crowdContextMd,
     P.planExecution, P.registerCoverageLedger];
 

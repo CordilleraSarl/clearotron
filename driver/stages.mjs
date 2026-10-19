@@ -256,6 +256,10 @@ export function paths(runDir) {
     // accumulated rows, so the two are no longer two copies of one judgment: this is what the seat writes
     // and that is what the driver publishes.
     placementForm: p("placement-form.json"),
+    // — placement's set-asides that stand on the run's files, as the reading step and the writer are told them: one
+    // entry per decision, with its ground, the records it covers and its exceptions. Driver-written after every
+    // placement pass, with no clock in it, so it changes only when a decision does; both stages declare it.
+    placementDecisions: p(driverRel("placement-decisions.json")),
     // — the driver's own flag-by-flag account of the corrective pass: which findings each reviewer
     // flag names, and whether any of them actually moved. Handed to the recheck as data so it argues
     // with evidence rather than re-reading two documents to re-derive what the driver already knows.
@@ -921,13 +925,16 @@ export function resolveSkillReads(name, ctx = {}) {
  * blocks, then the input pointers. The instruction stays FIRST IN INTENT — the two reference lines that
  * bracket it are addressed to a session that has nothing, and neither states a task.
  */
-export function composeFollowup(name, ctx, { followup, extra = null, inputs = [], cleared = [], changedInputs = null } = {}) {
+export function composeFollowup(name, ctx, { followup, extra = null, inputs = [], cleared = [], changedInputs = null, decisions = null } = {}) {
   const skills = [...new Set([...resolveSkillReads(name, ctx), ...(STAGES[name]?.followupSkillReads?.(ctx) ?? [])])];
   return lines(
     skills.length ? readsForReference(skills) : "",
     followup,
     clearedConstraint(cleared),
     extra || "",
+    // A fresh session of the reading step or the writer is given placement's accepted set-asides as its first
+    // dispatch was, as evidence beside its own task: the placements its inputs name leave them out.
+    placementSetAsideBlock(decisions),
     inputs.length ? inputsForReference(inputs, { name, changedInputs }) : "",
   );
 }
@@ -4489,7 +4496,7 @@ export function stageInputs(name, P, { axes = [], axis = null, registerOnly = fa
     "placement-inquiry": [P.matterContext, P.commonLaw, P.registerNamedBand, ...units],
     // B2 — the structured placement mirror joins every placement consumer's declared inputs (OPTIONAL
     // like crowdContext: absent fingerprints as absent, so pre-B2 runs are byte-identical).
-    "register-digest": [P.variantManifest, P.matterContext, P.placement, P.placementModel, P.registerNamedBand, ...units],
+    "register-digest": [P.variantManifest, P.matterContext, P.placement, P.placementModel, P.placementDecisions, P.registerNamedBand, ...units],
     // A-4 (item 12) — planExecution and the coverage ledger are what skepticDeferralExtra is BUILT from,
     // and they were the two things this stage consumed without declaring, so they could change without
     // staling it. Declaring them was tried in Wave A and HELD BACK, because on its own it parks the run:
@@ -4521,9 +4528,9 @@ export function stageInputs(name, P, { axes = [], axis = null, registerOnly = fa
     // digest-funnel's settlement flush restamps the skeptic against both files and deliberately does
     // NOT restamp synthesis — "their staleness recompute is the contract" — which is the behaviour
     // this declaration extends, not a new one it introduces.
-    synthesis: [P.registerFindings, P.commonLaw, P.placement, P.placementModel, P.registerNamedBand, P.matterContext, P.variantManifest, P.skepticFlags, P.frameReopenReceipt, P.crowdContext, P.crowdContextMd, P.planExecution, P.registerCoverageLedger],   // A3/F8;
+    synthesis: [P.registerFindings, P.commonLaw, P.placement, P.placementModel, P.placementDecisions, P.registerNamedBand, P.matterContext, P.variantManifest, P.skepticFlags, P.frameReopenReceipt, P.crowdContext, P.crowdContextMd, P.planExecution, P.registerCoverageLedger],   // A3/F8;
     "case-law": [P.narrative],
-    "narrative-refutation": [P.narrative, P.registerFindings, P.commonLaw, P.placement, P.placementModel, P.matterContext, P.skepticFlags, P.frameReopenReceipt],   // A3/F8
+    "narrative-refutation": [P.narrative, P.registerFindings, P.commonLaw, P.placement, P.placementModel, P.placementDecisions, P.matterContext, P.skepticFlags, P.frameReopenReceipt],   // A3/F8
     // P2 clause 4 — P.findings joins the declared inputs of every stage that READS it. All three read it
     // today and none declared it, which is exactly how copper-vault's delivery gate came to be evaluated
     // over a findings set that had moved: findings.json is authored by synthesis but rewritten afterwards
@@ -4774,7 +4781,7 @@ export const placementSetAsideBlock = (decisions) => (Array.isArray(decisions) &
 
 export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null } = {}) => [
   PLACEMENT_BORDERLINE_NOTE,
-  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision already accounts for it under the placement rules. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, including floors marked on their lines; crowded groups may show only their first page), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision already accounts for it under the placement rules. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
   // The validated decisions themselves, written by the driver from the placement form (pipeline.mjs
   // placementFloorDecisionLines); none stands where the list is empty.
   ...(Array.isArray(floorDecisions) && floorDecisions.length ? floorDecisions : ["(none)"]),

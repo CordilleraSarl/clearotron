@@ -42,10 +42,15 @@ const shapeOf = (band) => buildBandShape({ enumerated: band, crowds: [] }, { tar
 
 test("placement's shape carries every order and page command, in the words it read before", () => {
   const { md } = shapeOf(BAND);
-  for (const s of PLACEMENT_LINE_ORDERS.filter((x) => !x.endsWith("its goods are unknown."))) assert.ok(md.includes(s), `placement's shape lost: ${s}`);
+  // Two orders print only in the short list the goods test could not read: its floors' fate, and what to do with a
+  // line of it by its marker. They are checked on that list below.
+  const shortListOnly = (x) => x.endsWith("its goods are unknown.") || x.startsWith('A line marked "on file, not readable"');
+  for (const s of PLACEMENT_LINE_ORDERS.filter((x) => !shortListOnly(x))) assert.ok(md.includes(s), `placement's shape lost: ${s}`);
   for (const c of COMMANDS) assert.ok(md.includes(c), `placement's shape lost: ${c}`);
   const { md: small } = shapeOf(BAND.slice(3 * N, 3 * N + 3));
   assert.ok(small.includes(PLACEMENT_LINE_ORDERS.find((x) => x.endsWith("its goods are unknown."))), "the short unread list's floor order");
+  assert.ok(small.includes(PLACEMENT_LINE_ORDERS.find((x) => x.startsWith('A line marked "on file, not readable"'))), "the short unread list's order by marker");
+  assert.ok(!withoutPlacementOrders(small).includes("before its fate"), "another stage is told of a fate");
 });
 
 test("every other stage reads the groups without placement's orders and commands, and without a line moving", () => {

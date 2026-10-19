@@ -187,7 +187,7 @@ rule.
 
 You are JUDGMENT (Layer B), not the funnel. The funnel handed up the band in **two states only**: `enumerated`
 (paged to `has_more:false` — complete) or `incomplete` (a crowd descriptor it could not exhaust). The funnel wrote
-**no** clearance verdict — **you** read the complete band and author this per-slice coverage reconciliation. The
+**no** clearance verdict — **you** author this per-slice coverage reconciliation from the band evidence and placement's recorded decisions. The
 decider of "does an `incomplete` gap matter" is your judgment on the risk picture, **never** a count threshold.
 There is **no re-search re-loop and no halt**: a material slice you could not fully clear ships as a **CONDITIONAL**
 with an honest, specific flag — a lawyer always gets a report unless something technically breaks.
@@ -372,12 +372,12 @@ loop and never a no-deliver halt.
 
 # MODE B — DIGEST (combine the complete named band → register findings)
 
-You are JUDGMENT, not the machine. The funnel (the unit-mode workers) either **enumerated** a search to completion or reported it **incomplete** (a crowd descriptor). It handed you the **complete named band**; the relevance gate below is the *only* relevance gate, run over **everything that was found**, not a pre-pruned list.
+You are JUDGMENT, not the machine. The funnel (the unit-mode workers) either **enumerated** a search to completion or reported it **incomplete** (a crowd descriptor). The complete named band remains available as evidence. Read the candidates placement carried forward and their supporting evidence through the band tools. Carry placement's accepted set-asides forward with their grounds and exceptions under the placement rules.
 
 Your task gives the paths to: the per-axis prose digests (`register-units/<axis>.md` — audit-trail summary only), the variant manifest, `matter-context.md`, and `placement-recommendations.md`. The **band itself is read through the band tools** — you hold `band_shape` / `band_lookup` / `band_record`, and every call you make lands in the run's reading audit (that on-the-record trail is the point: the reading layer is as auditable as the frozen search plan).
 
 **The band is the material you judge — read it through the band tools (never by slicing files with shell):**
-- **`band_shape` FIRST** — the deterministic shape of the complete merged band (all axes, de-duped): totals, mechanical similarity tiers, **THE FLOORS** (every live in-class identical/near-identical record, listed individually and unconditionally — every floor row must end up rated, placed, or explicitly reasoned away; the list is complete by construction and no lookup pattern excuses skipping one), the class/status/registry/recency census, owner concentrations, the crowd descriptors, and the blind spots the shape mechanically cannot see. The tiers are string mechanics, never a relevance call — Step 2's relevance gate is still yours, and still the only relevance judge. A floors-heavy shape is served in PARTS (the response labels itself part N/M and names the next call): read EVERY part before reasoning — a partial shape is never the shape, and the parts split at line boundaries so every floor row arrives intact.
+- **`band_shape` FIRST** — the deterministic shape of the complete merged band (all axes, de-duplicated): totals, mechanical similarity tiers, floors, class/status/registry/recency census, owner concentrations, crowd descriptors, and blind spots. A floor is marked on its line in the band; a crowded group may show only its first page. A large shape is served in parts. Read the parts and records your reasoning about the carried candidates and accepted placement decisions needs. The tiers are string mechanics, never a relevance or risk judgment. Use the existing placement rules when checking a floor's ending: a validated decision counts only for the records it covers, and an unsupported decision must be flagged.
 - **`band_lookup`** — pull the records your reasoning needs: by owner, class, tier, plan entry (`qid` — the exact join to the frozen plan's execution ledger), slice (`_query`), mark text, status. Records carry `record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict` (+ `_query`). These are the real records — the firewall is lifted, nothing was pre-gated. Matching un-enumerated crowds ride along on every lookup, so a counted-only zone can never read back as a clean.
 - **`band_record`** — the official registry record fetched into this run for a given `record_id`, when detail beyond the band row decides a point. Read-only: an unfetched record is an honest gap to state, never a value to guess.
 - **`incomplete` crowd descriptors** (`query, total_hits, fetched, reason` — in the shape, and riding along on lookups) are NOT findings and NOT clean negatives. Each is a slice the funnel could not exhaust; you (with `placement-inquiry`'s rulings) decide whether it matters → **cleared** (immaterial noise, `confirmed-clean`) or **material gap** (`coverage-limited` → CONDITIONAL) (see "Coverage ledger" below). Never render a material crowd descriptor as `confirmed-clean`.
@@ -414,7 +414,7 @@ apparel block merchandising plans even when target classes are clear. If no iden
 
 ### Step 2 — Relevance gate
 
-**The gate decides field-relevance, never filer-importance.** Run it over **every enumerated record in the complete band** (work tier by tier / slice by slice through `band_lookup` until the shape's totals are accounted for) — the funnel pre-gated nothing, so this is the only relevance judge. For each enumerated record, ask only: **is the mark on-point — identical / near-identical, sharing the dominant element —
+**The gate decides field-relevance, never filer-importance.** Run it over the candidates placement carried forward, using their supporting band evidence. Where a conclusion depends on an accepted set-aside, check its ground against the supporting evidence and flag an unsupported decision. For each carried candidate, ask only: **is the mark on-point — identical / near-identical, sharing the dominant element —
 and in or adjacent to the target field?** If yes, it is surfaced and characterised, full stop. **Who**
 filed it (a multinational, a one-person studio, a tail-market individual) and **how vulnerable** it
 looks (dormant, revocable, within the non-use grace period) are NOT gate criteria — they are Stage-2
@@ -583,12 +583,12 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 ## Checklist before handing off — digest mode
 
 **Digest mode:**
-- [ ] **Complete band read through the band tools** (`band_shape` first, then `band_lookup`/`band_record` until the shape's totals are accounted for — every floor row rated, placed, or reasoned away); any missing/unreadable band ruled a coverage failure (`coverage-limited`/`deferred` → CONDITIONAL), never called clean off the prose digest; identical-match test run over the band; class-25 merch slice checked in the band (or its absence written as an open Coverage row)
+- [ ] Candidates placement carried forward read through the band tools, and accepted set-asides carried forward with their grounds and exceptions under the placement rules; any missing/unreadable band ruled a coverage failure (`coverage-limited`/`deferred` → CONDITIONAL), never called clean off the prose digest; identical-match test run over the band; class-25 merch slice checked in the band (or its absence written as an open Coverage row)
 - [ ] **Band reconciled against the expectation for THIS mark** — saturated field with no enumerated exact-owner slice ruled a material gap (`coverage-limited` → CONDITIONAL), anything famous-missing surfaced, partner-as-headline flagged for de-prioritisation
 - [ ] `matter-context.md` read and informing placement (jurisdiction attribution, off-field framing, watchlist seeds)
 - [ ] `placement-recommendations.md` read and informing tiering; each candidate's graduated outcome adopted or counter-reasoned with audit-trail justification; its coverage-commands/open-questions carried forward
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail
-- [ ] Relevance gate applied per archetype over the **complete enumerated set** (field-relevance only — filer size/dormancy held for Stage-2, never a drop reason); drops logged
+- [ ] Relevance gate applied per archetype over the candidates placement carried forward (field-relevance only — filer size/dormancy held for Stage-2, never a drop reason); drops logged
 - [ ] Owner aggregation across the band; owner-identity conflicts flagged `Verify? ✅` (never silently picked)
 - [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); rolled-up `{sufficient, reason}` stated for synthesis to emit; genuine open judgment surfaced to ship (not a coverage gap)
 - [ ] Applicant own-rights sweep run **if priority is live** (tagged `applicant_own_rights`; never a conflict / Findings row / gate)
