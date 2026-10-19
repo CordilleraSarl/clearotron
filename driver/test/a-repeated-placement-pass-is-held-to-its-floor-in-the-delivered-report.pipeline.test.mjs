@@ -4,14 +4,15 @@
 //
 // A REPEATED PLACEMENT PASS IS HELD TO ITS OWN FLOOR, AND THE DELIVERED REPORT, ITS VERDICT AND THE RUN RECORD AGREE.
 //
-// On a resumed run the delivery gate repeats a placement pass whose inputs moved after it was inherited, and the
-// report is rebuilt from the repeat. The floor was judged on the earlier pass. Now the same floor is applied to the
-// repeat's account, through the same clamp, so the verdict the client reads, the floor it was held to and the
-// verdict on record describe the one pass the report was built from. The record-carry trace and the Audit Trail,
-// written before the repair, are written again after it, and the earlier pair is kept under _history. A repeat that
-// answers every floor changes nothing. Own file = own process + own workspace root; the workspace and the call ledger
-// are pinned before any driver module loads, so driver modules are imported dynamically. Every mark and owner is
-// invented.
+// A run parks after placement and resumes, and the code-side recheck moves the band placement read. When the band
+// gained a record placement never read, placement assesses it before the reading step's next pass and the writer, so
+// the report is built from that pass and the floor it leaves unanswered clamps the verdict the client reads, the
+// verdict on record and the run record alike. When only the counts moved, the delivery gate repeats placement over the
+// moved band, the same floor is applied to the repeat's account through the same clamp, and the record-carry trace and
+// the Audit Trail are written again with the earlier pair kept under _history; a repeat that answers every floor
+// changes nothing. A late pass that cannot complete is recorded, and the run goes on past it. Own file = own process +
+// own workspace root; the workspace and the call ledger are pinned before any driver module loads, so driver modules
+// are imported dynamically. Every mark and owner is invented.
 import { mkdtempSync as __mkdtemp, writeFileSync as __write } from "node:fs";
 import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";
 import { tmpdir as __tmpdir } from "node:os";
@@ -25,7 +26,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -46,6 +47,8 @@ const JOB = {
 const PARK_AT_DIGEST = "You are register DIGEST mode";
 // The skeptic flags the code-side axis, so the resume re-runs its dictated entries through the executor.
 const ESCALATE_SATPROBE = "- saturation-probe counts look thin\n\n## Escalation decisions\nESCALATE: saturation-probe — re-verify the crowd counts";
+// Placement's turn: failing it on the resume fails the pass that would assess the late record.
+const PLACEMENT_TURN = `placement-inquiry${sep}SKILL`;
 // The record the recheck brings in: live, in class, the mark itself, held by an owner the band did not carry before.
 const NEW_FLOOR = { record_id: "/mark/us/90000077", mark_text: "NOVAPULSE", classes: [9], status: "Registered",
   owner_name: "Second Owner GmbH", owner_country: "US", screen_verdict: "surface:in-scope-live" };
@@ -80,8 +83,8 @@ async function runMockPipeline(env, opts = {}, reuse = null) {
   return { res, events, root };
 }
 
-// Pass 1 parks after placement; pass 2 resumes with the skeptic's flag. On the resume the repeated placement hands back
-// nothing new, so the earlier pass's rows stand and a record the band gained since is a floor nobody answered.
+// Pass 1 parks after placement; pass 2 resumes with the skeptic's flag. On the resume placement's pass hands back nothing
+// new, so the earlier pass's rows stand and a record the band gained since is a floor nobody answered.
 async function parkAndResume({ withFloor }) {
   const calls = [];
   const planExecutor = executor(calls, { withFloor });
@@ -188,4 +191,20 @@ test("a repeated placement pass that answers every floor changes nothing: the ve
   for (const f of ["audit.md", "doubts.json"])
     assert.ok(existsSync(join(rd, "_history", kept[0], f)), `the ${f} written before the repair was not kept`);
   assert.deepEqual(ev2.filter((e) => e.event === "record-carry-doubts-again"), [], "a repair that changed nothing minted or dropped a doubt");
+});
+
+test("a late placement pass that cannot complete is recorded, and the run goes on past it to the reading step and the writer", async () => {
+  const planExecutor = executor([], { withFloor: true });
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_DIGEST }, { planExecutor });
+  assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+  const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
+  const n1 = p1.events.length;
+  const p2 = await runMockPipeline({ MOCK_SKEPTIC: ESCALATE_SATPROBE, MOCK_FAIL_STAGE: PLACEMENT_TURN }, { planExecutor }, { root: p1.root, codename });
+  const ev2 = p2.events.slice(n1);
+  assert.deepEqual(ev2.filter((e) => e.event === "late-evidence").map((e) => e.records), [1], "guard: the late record reached placement's pass");
+  const failed = ev2.findIndex((e) => e.event === "late-evidence-failed");
+  assert.ok(failed >= 0, "a late pass that did not complete was not recorded");
+  assert.equal(ev2[failed].records, 1, "the failure does not count the late record");
+  for (const stage of ["register-digest", "synthesis"])
+    assert.ok(ev2.slice(failed + 1).some((e) => e.event === "stage" && e.stage === stage), `the run did not go on to ${stage} after the late pass failed`);
 });

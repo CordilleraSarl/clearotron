@@ -12916,8 +12916,17 @@ async function pipelineInner(job, opts = {}) {
         if (late.length) {
           runLog(run.runDir, { event: "late-evidence", records: late.length });
           note(`late evidence: ${late.length} record(s) reached the band after placement's pass — placement assesses them before the reading step's next pass and the writer`);
-          const pass = recordPlacementPass(ctx, await stage("placement-inquiry", ctx, { force: true, trigger: "late-evidence" }), "late-evidence");
-          if (!pass?.ok) note(`late evidence: placement's pass did not complete (${String(pass?.fail ?? "").slice(0, 100)}) — its earlier account stands, and the floor and the recall gate state what it leaves open`);
+          // A PASS THAT FAILS, OR IS REFUSED BEFORE IT STARTS, DOES NOT END THE RUN HERE. A run is never held for a recovery
+          // that could not run (the owner's ruling of 2026-10-19): placement's earlier account stands, and the floor and the
+          // recall gate state what it leaves open. The stage can throw before it dispatches, as it does for a band past the
+          // size ceiling, so the throw is caught and recorded as the failure it is.
+          let pass;
+          try { pass = recordPlacementPass(ctx, await stage("placement-inquiry", ctx, { force: true, trigger: "late-evidence" }), "late-evidence"); }
+          catch (e) { pass = { ok: false, fail: String(e?.message ?? e) }; }
+          if (!pass?.ok) {
+            runLog(run.runDir, { event: "late-evidence-failed", records: late.length, fail: String(pass?.fail ?? "failed").slice(0, 200) });
+            note(`late evidence: placement's pass did not complete (${String(pass?.fail ?? "").slice(0, 100)}) — its earlier account stands, and the floor and the recall gate state what it leaves open`);
+          }
           if (!pendingItems(ctx.digestQueue).length) runLog(run.runDir, { event: "late-evidence-no-digest-work", records: late.length });
         }
       }
