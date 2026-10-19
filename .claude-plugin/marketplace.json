@@ -1,0 +1,13 @@
+{
+  "name": "clearotron",
+  "owner": {
+    "name": "Cordillera Sàrl"
+  },
+  "description": "Trademark clearance engine. Searches the registers and the open web, rates the conflicts, and delivers a written report with the record behind every finding.",
+  "plugins": [
+    {
+      "name": "clearotron",
+      "source": "./plugin"
+    }
+  ]
+}
