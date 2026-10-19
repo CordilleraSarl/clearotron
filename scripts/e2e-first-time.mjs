@@ -76,7 +76,7 @@ export const COUNTED_EVENTS = {
   "post-repair-correction-unrecoverable": FAILED,
   "digest-flush-timeout": FAILED, "document-coverage-render-failed": FAILED, "doubts-failed": FAILED,
   "evidence-claim-invariant": { kind: FAILED, when: (e) => e.ok === false || Number(e.violations) > 0 },
-  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
+  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
   "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
@@ -136,7 +136,7 @@ export const COUNTED_EVENTS = {
   "remedy-accounting": { kind: FAILED, when: (e) => e.computable === false },
   // asked or run again, where no dispatch records it
   "connotation-reissue": REASK, "plan-qids-missing": REASK, "plan-qids-deferred-suspect": REASK,
-  "screen-gate-violation": REASK, "stage-floor-duty-rerun": REASK, "lane-wedge-retry": RETRY,
+  "screen-gate-violation": REASK, "stage-floor-duty-rerun": REASK, "lane-wedge-retry": RETRY, "verdict-write-retried": RETRY,
   // code changed an answer it did not accept
   "band-truth-rebuilt": REPAIR, "client-condition-dropped": REPAIR, "common-law-downgrade-clamp": REPAIR,
   "commonlaw-channels-unstated": REPAIR, "commonlaw-channels-unusable": REPAIR,
@@ -216,7 +216,7 @@ export const NOT_COUNTED_EVENTS = {
     "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
-    "audit-not-built-no-findings", "recall-reconciliation-unended-delivered", "late-evidence-no-digest-work",
+    "audit-not-built-no-findings", "recall-reconciliation-unended-delivered", "late-evidence-no-digest-work", "changed-decision-unread-delivered", "ranking-changed-unread-delivered",
     "ask-closure-mark-owed", "classifier-gap", 
     "connotation-addressed-not-discharged", "connotation-ruling-drift", "default-territory-unrecognized", "delivery-flags",
     "enforcer-signals", "findings-actions-legacy", "findings-schema-legacy", "floor-duty-undischarged",

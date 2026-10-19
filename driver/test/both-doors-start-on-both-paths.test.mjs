@@ -42,7 +42,7 @@ test("the door is SPAWNED on the foreground path, not merely configured for", ()
     "the foreground path must actually start the door it composes an environment for");
   // Non-fatal, for the reason the worker is: an install that refuses to come up because one door could
   // not bind is worse than one serving the portal without it.
-  assert.match(START_SRC, /"mcp-server\/http-server-client\.mjs", envs\.client, \{ fatal: false \}/,
+  assert.match(START_SRC, /"mcp-server\/http-server-client\.mjs", envs\.client, \{ fatal: false, clientDoor: true \}/,
     "a door that cannot bind must not take the portal down with it");
 });
 

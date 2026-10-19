@@ -418,8 +418,8 @@
           "todos": 0
         },
         "a-decision-the-repeated-placement-pass-changes-is-the-one-delivered.pipeline.test.mjs": {
-          "tests": 1,
-          "asserts": 20,
+          "tests": 2,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -1295,7 +1295,7 @@
         },
         "a-record-a-unit-re-run-finds-reaches-the-named-band.pipeline.test.mjs": {
           "tests": 6,
-          "asserts": 51,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
@@ -1486,8 +1486,8 @@
           "todos": 0
         },
         "a-repair-in-the-delivery-check-queues-what-it-left-stale.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -5718,6 +5718,12 @@
         "start-refuses-on-a-box-that-has-the-services.test.mjs": {
           "tests": 6,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "start-says-what-is-true-of-a-client-door-that-is-not-up.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

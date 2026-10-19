@@ -379,6 +379,32 @@ function liveClientDoor(unitEnvFile = unitEnvPath(), run = execFileSync) {
 }
 
 /** The two ports, from the environment or the shipped defaults. Throws on a value that is not a port. */
+// ── WHAT `start` SAYS ABOUT A CLIENT DOOR THAT IS NOT UP (the owner's words, 2026-10-18) ──────────────
+//
+// The client door is non-fatal: the portal and the engine door serve without it. It drains no queue, so its
+// exit is not the queue worker's, whose line tells the reader to start one with `--watch`. And a door still
+// up when the 30-second wait ran out has printed nothing, so it does not send the reader to look at its
+// output for a reason. Each line says what is true of the client door.
+
+/** The line printed when a non-fatal child exits: the client door's own, else the queue worker's. PURE. */
+export function nonFatalExitLine({ name, script, code, signal, clientDoor = false }) {
+  const how = signal ? `on ${signal}` : `with code ${code}`;
+  return clientDoor
+    ? `\nstart: ${name} (${script}) exited ${how} — the portal and the engine door are unaffected; a client assistant cannot connect until it is up.\n`
+    : `\nstart: ${name} (${script}) exited ${how} — the portal is still up, but nothing is draining the queue now. Start one with:\n    node ${script} --watch\n`;
+}
+
+/**
+ * The summary's two lines for a client door that is not running. A door that exited printed why before it
+ * went; a door still up when the wait ran out did not answer. PURE.
+ */
+export function clientDoorDownLines({ host, port, exited }) {
+  return [
+    `  Client door  NOT RUNNING on ${host}:${port} — ${exited ? "its output above says why" : "it did not answer within 30s"}. The portal and`,
+    "               the engine door are unaffected; a client assistant cannot connect until it is up.",
+  ];
+}
+
 export function resolvePorts(env = {}) {
   const one = (name, dflt) => {
     const raw = String(env[name] ?? "").trim();
@@ -2208,7 +2234,7 @@ if (isMain) {
   const children = [];
   let stopping = false;
 
-  const start = (name, script, env, { args = [], fatal = true } = {}) => {
+  const start = (name, script, env, { args = [], fatal = true, clientDoor = false } = {}) => {
     const child = spawn(process.execPath, [join(REPO, script), ...args], {
       cwd: REPO,
       // Its OWN process group, so Ctrl-C reaches this supervisor alone and teardown is one ordered
@@ -2256,10 +2282,9 @@ if (isMain) {
       if (stopping) return;
       // REPORTED. Not absorbed into a panel that says a service is unreachable.
       if (!fatal) {
-        // Loudly, because the queue stops draining the instant this goes — but the portal keeps serving,
-        // which is the whole point of a child this install is supported without.
-        err(`\nstart: ${name} (${script}) exited ${signal ? `on ${signal}` : `with code ${code}`} — the portal is still up,`
-          + ` but nothing is draining the queue now. Start one with:\n    node ${script} --watch\n`);
+        // Loudly, because what this child did stops the instant it goes — but the portal keeps serving, which
+        // is the whole point of a child this install is supported without. The client door says its own line.
+        err(nonFatalExitLine({ name, script, code, signal, clientDoor }));
         return;
       }
       err(childExitReport({ name, script, code, signal, tail }));
@@ -2444,7 +2469,7 @@ if (isMain) {
   // assistant is correctly connected to. The unit IS the door; this path just does not add another.
   const clientDoor = adoptedClientDoor
     ? null
-    : start("the client door", "mcp-server/http-server-client.mjs", envs.client, { fatal: false });
+    : start("the client door", "mcp-server/http-server-client.mjs", envs.client, { fatal: false, clientDoor: true });
   // ── THE BANNER NAMES THIS DOOR ONLY ONCE IT ANSWERS ─────────────────────────────────────────────────
   //
   // The engine door and the portal are each awaited above before anything is printed. This door was
@@ -2492,8 +2517,8 @@ if (isMain) {
     else
       say(`               It refuses every caller until a key is issued: ${DEMO ? demoConnectCommand({ prefix: invocationPrefix(), base: paths.base }) : keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
   } else {
-    say(`  Client door  NOT RUNNING on ${HOST}:${ports.client} — its output above says why. The portal and`);
-    say("               the engine door are unaffected; a client assistant cannot connect until it is up.");
+    // A door that exited printed why; one still up when the wait ran out printed nothing, and is not sent there.
+    for (const line of clientDoorDownLines({ host: HOST, port: ports.client, exited: clientDoor?.child?.exitCode !== null })) say(line);
   }
   say(`  Engine door  http://${HOST}:${ports.mcp}/mcp   — the portal's Start button calls this. Staff.`);
   say("");

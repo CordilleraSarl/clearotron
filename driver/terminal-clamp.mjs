@@ -181,6 +181,12 @@ const unaccountedRecords = (n, m) =>
 const CLAUSE_AUTHORITY = Object.freeze({
   synthesis_unaccounted_delivered: unaccountedRecords,
   recall_reconciliation_unended: unaccountedRecords,
+  // The owner's words of 2026-10-19, for records a repeated placement pass re-ranked after the writer last wrote, when
+  // the writer's re-run for the change did not complete: his singular for one record, his plural for more. The second
+  // count is the population, kept for the run record.
+  ranking_changed_unread: (n) => (n === 1
+    ? "1 register record was re-ranked after this report was written; the audit trail gives its final ranking"
+    : `${n} register records were re-ranked after this report was written; the audit trail gives their final ranking`),
   floor_duty_undischarged: (n, m) =>
     `${n} of the ${m} live registrations identical or near-identical to the mark are not individually addressed in this report — each remains an open point a reader must weigh`,
 });

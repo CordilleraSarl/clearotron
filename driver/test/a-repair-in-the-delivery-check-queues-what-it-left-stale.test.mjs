@@ -18,7 +18,8 @@ writeFileSync(process.env.CLEAROTRON_REGISTER_CALL_LOG, "");
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-const { whatTheRepairLeftStale } = await import("../pipeline.mjs");
+const { whatTheRepairLeftStale, saveWithRetries } = await import("../pipeline.mjs");
+const { recordsReRanked, rankedRecords } = await import("../placement-decisions.mjs");
 
 const stale = (label, ...changed) => ({ label, changed: changed.map(([name, now]) => ({ name, was: "old", now })) });
 
@@ -56,4 +57,37 @@ test("a stage this pass already re-did is re-done once more at most", () => {
   const r = whatTheRepairLeftStale({ before: [], after, repaired: "synthesis", processed: new Set(["report-overview"]), requeued: new Set(["report-overview"]) });
   assert.deepEqual(r.queue, [], "a stage re-done twice was queued a third time");
   assert.deepEqual(r.chain, ["report-overview"]);
+});
+
+// The label the delivery check saves after a clamp is tried again before it is owed, and owed before it ends a run.
+test("a save that fails is tried again, and says how many tries it took or that every one failed", () => {
+  const waits = [];
+  const wait = (ms) => waits.push(ms);
+  let calls = 0;
+  const flaky = saveWithRetries(() => { if (++calls < 3) throw new Error("EIO: the disk hiccupped"); }, { wait });
+  assert.deepEqual([flaky.ok, flaky.attempts, calls, waits.length], [true, 3, 3, 2], "a save that succeeds on its third try is not saved");
+  waits.length = 0;
+  const broken = saveWithRetries(() => { throw new Error("ENOSPC: no space left"); }, { wait });
+  assert.deepEqual([broken.ok, broken.attempts, waits.length], [false, 3, 2], "a save that never succeeds is reported saved, or waited on after its last try");
+  assert.match(broken.error.message, /ENOSPC/, "the failure is not kept for the run record");
+  waits.length = 0;
+  assert.deepEqual([saveWithRetries(() => {}, { wait }).attempts, waits.length], [1, 0], "a save that succeeds at once was tried again");
+});
+
+// The records a repeated placement pass re-ranked, counted for the sentence the report then carries.
+test("the records a repeated placement pass re-ranked are counted once each, and a group's row by the records it holds", () => {
+  const ranking = (records, groups = {}) => ({ records: new Map(Object.entries(records)), groups: new Map(Object.entries(groups)) });
+  const before = ranking({ "/mark/eu/a1": "placed:top-slice", "/mark/eu/b1": "set aside on its status: the registration lapsed" },
+    { a: { key: "unrelated goods|12|h1", records: 40 } });
+  assert.equal(recordsReRanked(before, before), 0, "a ranking compared with itself re-ranked a record");
+  assert.equal(rankedRecords(before), 42);
+  // b1's ground changed, a1 moved tier, c1 was set aside anew: three records, each once
+  const named = ranking({ "/mark/eu/a1": "placed:residual", "/mark/eu/b1": "set aside on its status: the owner let its renewal pass",
+    "/mark/eu/c1": "set aside: a different class of goods" }, { a: { key: "unrelated goods|12|h1", records: 40 } });
+  assert.equal(recordsReRanked(before, named), 3);
+  // a group's row that covers other lines counts every record it holds; one that did not change counts none
+  const grouped = ranking({ "/mark/eu/a1": "placed:top-slice", "/mark/eu/b1": "set aside on its status: the registration lapsed" },
+    { a: { key: "unrelated goods|12|h2", records: 40 } });
+  assert.equal(recordsReRanked(before, grouped), 40);
+  assert.equal(recordsReRanked(ranking({}), ranking({}, {})), 0, "nothing on either side re-ranked a record");
 });
