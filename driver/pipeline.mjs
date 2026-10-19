@@ -6598,6 +6598,19 @@ function correctionNamedSet(P, doc0 = null) {
  * Of those, a stage already queued ahead runs where it stands, and one this pass already re-did is re-done once more at
  * most. PURE.
  */
+/**
+ * A SAVE TRIED AGAIN BEFORE IT IS GIVEN UP. Calls `save` up to `attempts` times, waiting `waitMs` between tries, and
+ * says how it went: `{ ok, attempts, error }`. Never throws. `wait` is injectable so a test does not sleep.
+ */
+export function saveWithRetries(save, { attempts = 3, waitMs = 250, wait = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms) } = {}) {   // @internal — driven by its test
+  let error = null;
+  for (let n = 1; n <= attempts; n++) {
+    try { save(); return { ok: true, attempts: n, error }; }
+    catch (e) { error = e; if (n < attempts) wait(waitMs); }
+  }
+  return { ok: false, attempts, error };
+}
+
 export function whatTheRepairLeftStale({ before = [], after = [], repaired, ahead = new Set(), processed = new Set(), requeued = new Set() }) {   // @internal — driven by its test
   const keys = (x) => (x?.changed ?? []).map((c) => `${c?.name}@${c?.now}`);
   const was = new Map(before.map((x) => [x.label, new Set(keys(x))]));
@@ -14139,7 +14152,7 @@ async function pipelineInner(job, opts = {}) {
     // MANDATORY now (was best-effort): the sidecar IS the single authority; a failed write is a run
     // failure, never a silent fallback to divergent labels. Re-invoked after findings consolidation
     // (the delivery block) so the sidecar always reflects the FINAL findings set.
-    const writeVerdictSidecar = () => {
+    const composeVerdictSidecar = () => {
       let findingsArr = [], sv = 1, actionsArr = null, actionsDropped = [];
       try {
         const doc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"));
@@ -14236,10 +14249,16 @@ async function pipelineInner(job, opts = {}) {
       // consumer keys on (never the statement's wording — the magic-string coupling is retired).
       const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: clausesOut,
         basis: isRegisterOnly(ctx.searchPolicy) ? "register-only" : null });
-      const tmp = driverDir(run.runDir, "verdict.json.tmp");
-      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,
+      return { derived, statement, doc: { ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,
         tier: derived.tier, badge: derived.badge, gaugeIndex: derived.gaugeIndex, maxComposite: derived.maxComposite,
-        band: derived.band ?? null, statement, stance: verdictStance(verdict) }, null, 2));
+        band: derived.band ?? null, statement, stance: verdictStance(verdict) } };
+    };
+    // The label, composed above and written here. Composing is apart so the delivery check can show the stages it re-runs
+    // the label it could not yet save.
+    const writeVerdictSidecar = () => {
+      const { derived, statement, doc } = composeVerdictSidecar();
+      const tmp = driverDir(run.runDir, "verdict.json.tmp");
+      writeFileSync(tmp, JSON.stringify(doc, null, 2));
       renameSync(tmp, driverDir(run.runDir, "verdict.json"));
       // — THE STATUS RECORD CARRIES THE BAND AND THE SENTENCE, so a reader of the run does not
       // have to reach for `verdict` to say something about the outcome. `verdict` is the gate's decision
@@ -14248,6 +14267,25 @@ async function pipelineInner(job, opts = {}) {
       // `verdict` and told the client "BLOCKING" beside a Medium rating, because status.json held no band.
       writeRunStatus(ctx, { tier: derived.tier ?? null, statement: statement ?? null });
       return derived;
+    };
+    // THE LABEL, SAVED AGAIN IN THE DELIVERY CHECK, WITHOUT ENDING THE RUN (2026-10-19). After a clamp there the label
+    // has to reach every surface the report is published from, and they all read it from the one file. A save that
+    // fails is tried again. One that still fails is owed: the stages the check re-runs are shown the label as composed,
+    // and the save is made once more before anything is published, so no surface is built from the label settled
+    // before the clamp. Returns whether it is saved.
+    let labelOwed = null;
+    const saveTheLabel = (why) => {
+      const saved = saveWithRetries(() => writeVerdictSidecar());
+      if (saved.ok) {
+        if (saved.attempts > 1) runLog(run.runDir, { event: "verdict-write-retried", why, attempts: saved.attempts });
+        try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
+        return true;
+      }
+      labelOwed = labelOwed ?? why;
+      runLog(run.runDir, { event: "verdict-write-deferred", why, attempts: saved.attempts, fail: String(saved.error?.message ?? saved.error).slice(0, 160) });
+      note(`delivery: the label could not be saved ${why} (${String(saved.error?.message ?? saved.error).slice(0, 100)}) — it is saved again before the report is published`);
+      try { displayVerdict = composeVerdictSidecar().doc; } catch { /* composed again when it is saved */ }
+      return false;
     };
     try { writeVerdictSidecar(); }
     catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
@@ -15841,16 +15879,8 @@ async function pipelineInner(job, opts = {}) {
               // same clamp, so the delivered verdict, its floor and its record describe one pass. It only tightens.
               if (s2.label === "placement-inquiry") {
                 const was = verdict;
-                if (clampOnTheFloorDuty()) {
-                  // A WRITE THAT FAILS HERE STILL ENDS THE RUN (2026-10-19). The clamp only tightens the verdict, so none of
-                  // the label's own checks can refuse it, and what fails is the disk. Delivering past it would publish the
-                  // label settled before the clamp, a clear result over a floor the report leaves unanswered, against the
-                  // run's own record, and no approved sentence states that gap. Until one does, this keeps the rule every
-                  // other write of the label follows.
-                  try { writeVerdictSidecar(); }
-                  catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed after the repeated placement pass: ${String(e.message).slice(0, 120)}`); }
-                  try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
-                }
+                // A save that fails here is tried again, then owed, never the end of the run: see saveTheLabel.
+                if (clampOnTheFloorDuty()) saveTheLabel("after the repeated placement pass");
                 runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
               }
               // A whole review that is read reviews the change an earlier unread one left: its record says so, and
@@ -15887,15 +15917,11 @@ async function pipelineInner(job, opts = {}) {
               }
               // THE WRITER, JUDGED AGAIN WHEN A CHANGED DECISION RE-RAN IT. Its duty and the recall gate were judged on the
               // writer before it; a gap this one opens is named through the same clamps, and one already named stays named.
-              // The label is written again as the floor's is above, and a write that fails ends the run for the same reason.
+              // The label is saved again as the floor's is above, through saveTheLabel.
               if (s2.label === "synthesis" && chain.has(s2.label)) {
                 const was = verdict, named = clampReasons.length;
                 clampOnTheWritersDuty({ again: true });
-                if (clampReasons.length !== named) {
-                  try { writeVerdictSidecar(); }
-                  catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed after the writer's re-run: ${String(e.message).slice(0, 120)}`); }
-                  try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
-                }
+                if (clampReasons.length !== named) saveTheLabel("after the writer's re-run");
                 runLog(run.runDir, { event: "writer-duty-after-repair", was, now: verdict, named: clampReasons.length - named });
               }
               if (staleBefore) queueWhatItLeftStale(s2, staleBefore);
@@ -15944,6 +15970,15 @@ async function pipelineInner(job, opts = {}) {
         // so the guard is handed it here and blocks as for any reviewer left stale.
         if (unreadRecordReview(run.runDir) && !staleStages.some((x) => x.label === "narrative-refutation"))
           staleStages.push({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
+        // THE LABEL OWED IS SAVED NOW, before anything is published from it, and the report's own label follows it. Only
+        // a run directory that refuses every save of it ends the run here, and then nothing the run writes can be published.
+        if (labelOwed) {
+          const owed = labelOwed;
+          labelOwed = null;
+          if (!saveTheLabel(`${owed}, saved again before delivery`))
+            throw new StageFailure("verdict", `the run directory refused every save of the result's label (${owed}) — no surface can be published with it`);
+          applyVerdictFrontMatter();
+        }
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
       // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw
