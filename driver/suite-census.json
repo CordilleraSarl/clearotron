@@ -94,8 +94,8 @@
           "todos": 0
         },
         "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
-          "tests": 12,
-          "asserts": 42,
+          "tests": 13,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -1294,8 +1294,8 @@
           "todos": 0
         },
         "a-record-a-unit-re-run-finds-reaches-the-named-band.pipeline.test.mjs": {
-          "tests": 4,
-          "asserts": 35,
+          "tests": 6,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
