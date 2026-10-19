@@ -347,7 +347,7 @@ export const E3_BACKLOG = [
     // (coverage-form.mjs coverageFormBrief) and the tool schema, with every row receiver-validated at
     // call time. Same dictated vocabulary, same authored site, new route — this row's evidence follows
     // the dictation so the row keeps describing something that exists.
-    where: "driver/stages.mjs:2670 (the digest message) + driver/coverage-form.mjs (coverageFormBrief — the dispatch block carrying the enum and the row shape)",
+    where: "driver/stages.mjs:2671 (the digest message) + driver/coverage-form.mjs (coverageFormBrief — the dispatch block carrying the enum and the row shape)",
     surface: "stage-message",
     evidence: "Record a \"status\" and a \"reason\" on EVERY row ONLY by calling the … tool — the driver validates each row as it arrives, holds the record itself, and renders both the ## Coverage ledger table and the coverage JSON from it",
     reparsedBy: "driver/coverage-call.mjs validateCoverageCall (receiver-validated at call time, the same predicates the gate judges with) + driver/coverage-form.mjs rowIsSettled via validators.registerFindings over the _driver/ accumulator",
@@ -670,7 +670,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:4781",
+    where: "driver/stages.mjs:4790",
     surface: "stage-message",
     // RE-QUOTED BY CONVERSION 9. The LINE-TOKEN half is gone — no "anywhere on the line", no "[kind: …]
     // token", no "a line with no token is treated as fact", because a kind is a typed field now and an
