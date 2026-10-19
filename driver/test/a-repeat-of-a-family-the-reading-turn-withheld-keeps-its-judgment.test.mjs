@@ -361,8 +361,10 @@ test("two open parts of one request: a closure naming one part settles that part
   const asks = asksFor(receipt, { planExecution: { executed: [] }, withheldFamilies: {} });
   assert.deepEqual(asks.map((a) => a.ending?.kind ?? "open"), ["open", "open"]);
   const [ran, fam] = asks;
-  assert.equal(ran.ask_id, `ask:frame:${key.replace(/[^a-z0-9]+/g, "-")}`, "the part that should have run keeps the request's own id");
-  assert.match(fam.ask_id, /^ask:frame:variant-inventedmark:family:primary-sweep-default-inventedmark-[0-9a-f]{8}$/, "the family's part is named for its family");
+  assert.match(ran.ask_id, /^ask:frame:variant-inventedmark-[0-9a-f]{8}$/, "the part that should have run keeps the request's own id");
+  assert.equal(ran.legacy_id, `ask:frame:${key.replace(/[^a-z0-9]+/g, "-")}`, "the ran part keeps the short id a closure written before the hash cites");
+  assert.match(fam.ask_id, /^ask:frame:variant-inventedmark-[0-9a-f]{8}:family:primary-sweep-default-inventedmark-[0-9a-f]{8}$/, "the family's part is named for its family");
+  assert.equal(fam.legacy_id, undefined, "a family part has no short id an old closure could have meant");
   assert.deepEqual([ran.part, fam.part, fam.family], ["ran", "family", FAMILY]);
   const files = { "findings.json": CITED };
   const one = applyAskClosure(asks, [immaterial(fam.ask_id)], files).asks;
@@ -373,6 +375,47 @@ test("two open parts of one request: a closure naming one part settles that part
   const settledOnly = asksFor({ ...receipt, directive_qids: { [key]: ["slice:released"] } }, { planExecution: { executed: [] }, withheldFamilies: {} });
   assert.equal(settledOnly.length, 1);
   assert.deepEqual(kinds(applyAskClosure(settledOnly, [immaterial(ran.ask_id)], files).asks), { [settledOnly[0].ask_id]: "open" });
+});
+
+// ── TWO REQUESTS NEVER SHARE AN ID ────────────────────────────────────────────────────────────────
+// The slug cuts at 48 characters and folds punctuation, so two directives that differ only after the cut, or only
+// in punctuation, gave one id, and the second request's obligation was dropped. Each id now carries a hash of the
+// whole directive. A closure written before the hash names the short id: it settles the one request still carrying
+// that short id, and none where two do.
+const CUT_A = "register:check the identical spelling in the ordered classes for the north american market";
+const CUT_B = "register:check the identical spelling in the ordered classes for the european union market";
+const FOLD_A = "variant:invented-mark";
+const FOLD_B = "variant:invented mark";
+const openRequests = (keys) => deriveAsks({ frameReopen: { requested: keys, swept: keys, deferrals: [],
+  directive_qids: Object.fromEntries(keys.map((k, i) => [k, [`slice:q${i}:${k.length}`]])) }, planExecution: { executed: [] } })
+  .filter((a) => a.born?.artifact === "_driver/frame-reopen.json");
+
+test("two requests that differ only after the slug's cut, or only in punctuation, keep two asks, whatever their order", () => {
+  for (const [a, b] of [[CUT_A, CUT_B], [FOLD_A, FOLD_B]]) {
+    const asks = openRequests([a, b]);
+    assert.equal(asks.length, 2, `one request was dropped: ${JSON.stringify(asks.map((x) => x.ask_id))}`);
+    assert.equal(asks[0].legacy_id, asks[1].legacy_id, "premise: the two requests shared the short id");
+    assert.notEqual(asks[0].ask_id, asks[1].ask_id, "the two requests share an id");
+    const reversed = openRequests([b, a]);
+    assert.deepEqual(Object.fromEntries(reversed.map((x) => [x.born.ref, x.ask_id])), Object.fromEntries(asks.map((x) => [x.born.ref, x.ask_id])),
+      "a request's id depends on the order the requests came in");
+    // A closure names one of them and settles that one alone.
+    const files = { "findings.json": CITED };
+    const one = applyAskClosure(asks, [immaterial(asks[1].ask_id)], files).asks;
+    assert.deepEqual(kinds(one), { [asks[0].ask_id]: "open", [asks[1].ask_id]: "judged-immaterial" });
+  }
+});
+
+test("a closure that names a request's short id settles the one request that has it, and none where two do", () => {
+  const files = { "findings.json": CITED };
+  const [only] = openRequests([CUT_A]);
+  const alone = applyAskClosure([only], [immaterial(only.legacy_id)], files);
+  assert.deepEqual(kinds(alone.asks), { [only.ask_id]: "judged-immaterial" }, "an old closure of an unambiguous request no longer settles it");
+  const both = openRequests([CUT_A, CUT_B]);
+  const shared = applyAskClosure(both, [immaterial(both[0].legacy_id)], files);
+  assert.deepEqual(kinds(shared.asks), { [both[0].ask_id]: "open", [both[1].ask_id]: "open" }, "an ambiguous old closure settled a request it may not have judged");
+  assert.deepEqual(shared.unverified.map((u) => [u.ask_id, [...u.ambiguous].sort()]), [[both[0].legacy_id, [both[0].ask_id, both[1].ask_id].sort()]],
+    "the ambiguous citation is not reported with the requests it could have meant");
 });
 
 test("a part's id does not depend on slice order, does not move when its family is released and runs, and survives a save and reload", () => {
