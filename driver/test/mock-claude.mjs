@@ -454,6 +454,12 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     // Pipeline mode: write the REAL stage fixtures (shared via mock-stage-fixtures.mjs)
     // so the $0 mock pipeline runs end-to-end on CLEAROTRON_AI=anthropic-agent.
     applyStageWrites(msg, argv);
+    // MOCK_FAIL_AFTER_WRITES: the turn's writes land, a save the tool accepted among them, and then the turn fails: a
+    // session that saved and was cut off before it ended. "&&"-separated parts must ALL appear in the message.
+    if (process.env.MOCK_FAIL_AFTER_WRITES && process.env.MOCK_FAIL_AFTER_WRITES.split("&&").every((part) => msg.includes(part))) {
+      process.stderr.write("mock forced failure after its writes\n");
+      process.exit(1);
+    }
     traceEnd();
   }
   function emitResult() {

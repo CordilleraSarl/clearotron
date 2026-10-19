@@ -130,7 +130,7 @@ import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse 
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
-import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
+import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
@@ -171,7 +171,7 @@ import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the str
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "./plain-register.mjs";
-import { snapshotRepairBase, readRepairBase, changedContent, isEmptyChange, restingOn, scopeItems, anyRenumbered, classifyPoints, changedInputsOf, listForReview, writePostRepairRecord, postRepairRecordPath, NARRATIVE_PROSE, sectionText } from "./repair-scope.mjs";
+import { snapshotRepairBase, readRepairBase, repairBasePath, changedContent, isEmptyChange, restingOn, scopeItems, anyRenumbered, classifyPoints, changedInputsOf, listForReview, writePostRepairRecord, postRepairRecordPath, NARRATIVE_PROSE, sectionText } from "./repair-scope.mjs";
 import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
@@ -6640,6 +6640,69 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
 }
 
 /**
+ * THE TRUSTED STATE BEFORE THE CORRECTION AFTER A POST-REPAIR REVIEW, for its rollback. The usual snapshot reads the
+ * findings record as it stands. Where that read fails, the state is rebuilt from an accepted save, through the driver's
+ * own acceptance, never from a save the correction may write afterwards: first the save the review read (`before`,
+ * read before the correction starts), then the save kept from before the delivery-check repair, the last record this
+ * run checked before it. The record, its narrative and the merge base the next patch builds on all come from that one
+ * save, so they agree. Null when none of the three can stand. Never throws.
+ */
+function trustedStateBeforeCorrection(Pv, runDir, before) {
+  const held = snapshotFindingsForCorrections(Pv, runDir);
+  if (held) return held;
+  const fromSave = (params, accepted, from) => {
+    if (!params || accepted == null) return null;
+    let v = null;
+    try { v = acceptSynthesis(params, driverReadsFor(runDir)); } catch { v = null; }
+    if (!v?.ok || typeof v.findings !== "string" || typeof v.narrative !== "string") return null;
+    const sha = createHash("sha256").update(v.findings).digest("hex");
+    return { raw: v.findings, sha, model: { raw: v.findings, sha }, fold: null, base: { accepted, narrative: v.narrative }, from };
+  };
+  const bytes = (at) => { try { return readFileSync(at, "utf8"); } catch { return null; } };
+  return fromSave(before, snapshotSynthesisBase(runDir).accepted, "accepted-save")
+    ?? fromSave(readRepairBase(runDir), bytes(repairBasePath(runDir)), "save-before-the-repair");
+}
+
+/**
+ * A FAILED CORRECTION AFTER A POST-REPAIR REVIEW NEVER ENDS THE RUN (the owner's ruling of 2026-10-19: a run is never
+ * held). The trusted state comes back whole: the record, its narrative and the merge base, then the fold and the seam's
+ * writes made again over a record rebuilt from a save, as after any save, so the delivered verdict is derived from the
+ * record that stands. The correction's points stay in the run's open-questions record. A rate-limited pass still waits
+ * for its reset, as every stage does.
+ *
+ * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER. The record, the save the review read and the save kept from before
+ * the repair are all unreadable, a storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
+ * go back to what they were, and the failed pass's record is set aside. A pass that went on from there delivered a
+ * report with no findings, labelled with the verdict as it stood (measured on the mock pipeline, 2026-10-19): a clear
+ * result over a record nobody can read. So this case alone keeps the failure it always had. Returns the rollback
+ * record, or null for a rate limit and for this case.
+ */
+async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore }) {
+  if (pass?.fail === "rate_limited" || pass?.resetsAt) return null;
+  if (pre?.raw) {
+    const rollback = rollbackCorrectivePass(Pv, runDir, pre, pass);
+    if (rollback && pre.from) {
+      // A record rebuilt from a save is folded, and given the seam's writes, as the save itself was.
+      try { foldAfterSave(runDir, Pv.findings); } catch (e) { note(`[post-repair] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
+      try { await ctx.afterSynthesisSave?.(); } catch (e) { note(`[post-repair] the seam's writes could not be made again over the restored record (${String(e?.message ?? e).slice(0, 100)})`); }
+      rollback.from = pre.from;
+    }
+    return rollback;
+  }
+  // NO TRUSTED STATE: nothing the failed pass wrote is adopted, and the pass ends as it always did.
+  const base = restoreSynthesisBase(runDir, baseBefore);
+  let findings = "unchanged";
+  if (!findingsBefore) {
+    let now = null;
+    try { now = readFileSync(Pv.findings, "utf8"); } catch { now = null; }
+    if (now != null) { try { rmSync(Pv.findings, { force: true }); findings = "set-aside"; } catch { findings = "failed"; } }
+  }
+  runLog(runDir, { event: "post-repair-correction-unrecoverable", reason: String(pass?.fail ?? "failed").slice(0, 200), findings, ...(base ? { base } : {}) });
+  note(`[post-repair] the correction after the review of the repair failed with no trusted state to restore (the record and both saves unreadable) — nothing it wrote is kept, and this pass does not deliver a report without its record`);
+  return null;
+}
+
+/**
  * The one correction after that review: every accepted point goes to it, whatever its class, and nothing
  * reviews it again. It runs the first correction's own backstops — the rollback, the put-back of a removal no
  * flag named, the follow-up when a correction missed the findings — on a view of the run's paths that points at
@@ -6658,15 +6721,19 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
     items: named, renumbered: anyRenumbered(items), worklist: correctionsWorklist(rows, { afterRepair: true }), review, whole,
   });
   const before = lastAcceptedCall(runDir);
-  const pre = snapshotFindingsForCorrections(Pv, runDir);
+  // What stood before the correction, held before it can alter any of it: the files as they are, for a pass that
+  // fails with no trusted state to restore, and the trusted state itself.
+  const baseBefore = snapshotSynthesisBase(runDir);
+  const findingsBefore = (() => { try { readFileSync(Pv.findings); return true; } catch { return false; } })();
+  const pre = trustedStateBeforeCorrection(Pv, runDir, before);
   prepareDeclinationSpec(ctx, P);
   const pass = await stage("synthesis", ctx, { force: true, followup: followup + stageCharter("synthesis", ctx.depth, ctx.framework), sessionKey: synthesisRef.key,
     model: synthesisRef.model, thinking: synthesisRef.thinking, trigger: "post-repair-corrective" });
   recordSynthesisSeam(ctx, pass, "post-repair-corrective");
-  const rollback = pass.ok ? null : rollbackCorrectivePass(Pv, runDir, pre, pass);
+  const rollback = pass.ok ? null : await recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore });
   if (rollback) {
-    runLog(runDir, { event: "corrective-rollback", reason: rollback.reason, restored: rollback.restored, pass: "post-repair" });
-    note(`[post-repair] the correction after the review of the repair failed (${rollback.reason}) — the record it started from is back, and the run delivers with the points printed`);
+    runLog(runDir, { event: "corrective-rollback", reason: rollback.reason, restored: rollback.restored, pass: "post-repair", from: rollback.from ?? "record" });
+    note(`[post-repair] the correction after the review of the repair failed (${rollback.reason}) — the record it started from is back, and the run delivers with the points recorded`);
   } else {
     must(pass, "synthesis(post-repair)");
     let preDocForNames = null;
@@ -15584,7 +15651,9 @@ async function pipelineInner(job, opts = {}) {
               try {
                 if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
               } catch { /* no case-law layer */ }
-              if (pass.ok) {
+              // After a correction, and after a rollback that rebuilt the record from a save, what reads the record is
+              // rebuilt from it; a rollback that put the same bytes back leaves nothing stale, and queues nothing.
+              if (pass.ok || pass.rollback) {
                 // A label not queued yet is appended; one this loop already re-done is re-queued ONCE, so the
                 // pass stays bounded and still ends with every surface rebuilt from the corrected record.
                 const queued = new Set(staleStages.map((x) => x.label));
