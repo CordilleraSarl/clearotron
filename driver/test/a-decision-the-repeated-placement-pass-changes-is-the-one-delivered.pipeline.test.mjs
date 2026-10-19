@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// @tier full — drives a mock pipeline through a park, a repeated placement pass and the pass that delivers, on both engines
+// @tier full — drives a mock pipeline through a park and a resumed pass that repeats placement and delivers, on both engines
 //
 // A DECISION THE REPEATED PLACEMENT PASS CHANGES IS THE ONE DELIVERED, IN THE REPORT'S RECORD AND ITS AUDIT TRAIL ALIKE.
 //
 // On a resumed run the delivery check repeats a placement pass whose inputs moved after it was inherited. Here the
 // repeat changes the ground of the set-aside the first pass made. The reading step, the writer and the review all read
-// that decision, so the check holds the run and nothing is published. The next pass runs the three again, and what it
-// delivers states the new ground everywhere it is recorded: the decisions the stages are told, the record-carry trace,
-// the Audit Trail delivered with the report, the floor and the verdict. The earlier audit, with the ground it then
-// stated, is kept under _history. Own file = own process + own workspace root; the workspace and the call ledger are
-// pinned before any driver module loads, so driver modules are imported dynamically. Every mark and owner is invented.
+// that decision, so the check runs the three again in the same pass, in that order, and the reviewer is given the whole
+// review. The run is not held. What it delivers states the new ground everywhere it is recorded: the decisions the
+// stages are told, the record-carry trace, the Audit Trail delivered with the report, the floor and the verdict. The
+// earlier audit, with the ground it then stated, is kept under _history. Own file = own process + own workspace root;
+// the workspace and the call ledger are pinned before any driver module loads, so driver modules are imported
+// dynamically. Every mark and owner is invented.
 import { mkdtempSync as __mkdtemp, writeFileSync as __write } from "node:fs";
 import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";
 import { tmpdir as __tmpdir } from "node:os";
@@ -81,7 +82,7 @@ const promptsOf = (root) => (existsSync(join(root, "engine-calls.jsonl"))
   ? readFileSync(join(root, "engine-calls.jsonl"), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l).prompt ?? "") : []);
 
 for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
-  test(`${engine}: the ground a repeated placement pass changes holds the run, and the pass that delivers states it everywhere`, async () => {
+  test(`${engine}: the ground a repeated placement pass changes is read again in the same pass, and what it delivers states it everywhere`, async () => {
     const root = mkdtempSync(join(tmpdir(), "clearotron-repeatground-"));
     const planExecutor = executor([]);
     // ── pass 1: placement sets the line aside on its status with G1, and the run parks at the reading step ──
@@ -89,26 +90,28 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
     const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
 
-    // ── pass 2: the recheck moves the band, the delivery check repeats placement, and the repeat states G2 ──
-    const n1 = p1.events.length;
+    // ── pass 2: the recheck moves the band, the delivery check repeats placement, the repeat states G2, and the three
+    //    stages that read the decision run again in the same pass ──
+    const n1 = p1.events.length, before = promptsOf(root).length;
     const p2 = await runMockPipeline(root, { ...env, MOCK_SKEPTIC: ESCALATE_SATPROBE, MOCK_PLACEMENT_SET_ASIDE: G2 }, { planExecutor }, codename);
     const ev2 = p2.events.slice(n1);   // run.jsonl is append-only across passes
     assert.ok(ev2.some((e) => e.event === "skip" && e.stage === "placement-inquiry"), "guard: the resume inherited placement");
-    assert.ok(ev2.some((e) => e.event === "stage" && e.stage === "placement-inquiry" && e.trigger === "stale-repair"), "guard: the delivery check repeated placement");
-    const held = ev2.filter((e) => e.event === "delivery-stale-blocked").flatMap((e) => e.stages ?? []);
-    assert.deepEqual(held.map((x) => x.label).sort(), ["narrative-refutation", "register-digest", "synthesis"],
-      `the three stages that read the decision were not held on it: ${JSON.stringify(held)}`);
-    assert.ok(held.every((x) => JSON.stringify(x.changed).includes("placement-decisions.json")), "the stages were held on something other than the changed decision");
-    assert.equal(p2.res.ok, false, "a run whose readers were told the earlier ground was delivered");
-    assert.ok(!existsSync(join(p2.res.runDir, ".delivered")), "the held pass published");
-
-    // ── pass 3: the three run again with G2, and the run delivers ──
-    const n2 = p2.events.length, before = promptsOf(root).length;
-    const p3 = await runMockPipeline(root, { ...env, MOCK_PLACEMENT_SET_ASIDE: G2 }, { planExecutor }, codename);
-    assert.equal(p3.res.ok, true, JSON.stringify({ fail: p3.res.fail, stage: p3.res.failedStage }));
-    const ev3 = p3.events.slice(n2), rd = p3.res.runDir;
-    for (const stage of ["register-digest", "synthesis", "narrative-refutation"])
-      assert.ok(ev3.some((e) => e.event === "stage" && e.stage === stage), `${stage} did not run again on the pass that delivered`);
+    const repeat = ev2.findIndex((e) => e.event === "stage" && e.stage === "placement-inquiry" && e.trigger === "stale-repair");
+    assert.ok(repeat >= 0, "guard: the delivery check repeated placement");
+    assert.equal(p2.res.ok, true, JSON.stringify({ fail: p2.res.fail, stage: p2.res.failedStage }));
+    assert.deepEqual(ev2.filter((e) => e.event === "delivery-stale-blocked"), [], "the run was held on the stages that read the decision");
+    const queued = ev2.filter((e) => e.event === "delivery-stale-requeued" && e.after === "placement-inquiry").flatMap((e) => e.stages);
+    assert.deepEqual([...queued].sort(), ["narrative-refutation", "register-digest", "synthesis"],
+      `the three stages that read the decision were not queued after the repeat: ${JSON.stringify(queued)}`);
+    const ranAt = ["register-digest", "synthesis", "narrative-refutation"]
+      .map((stage) => ev2.findIndex((e, i) => i > repeat && e.event === "stage" && e.stage === stage && e.trigger === "stale-repair"));
+    assert.ok(ranAt.every((i) => i > repeat) && ranAt[0] < ranAt[1] && ranAt[1] < ranAt[2],
+      `the reading step, the writer and the review did not run again after the repeat, in that order: ${JSON.stringify(ranAt)}`);
+    assert.ok(ev2.some((e, i) => i > ranAt[2] && e.event === "post-repair-review" && e.whole === true && e.read === true),
+      "the reviewer the changed decision queued was not given the whole review");
+    assert.deepEqual(ev2.filter((e) => e.event === "writer-duty-after-repair").map((e) => [e.was, e.now]), [["CLEAR", "CLEAR"]],
+      "the writer was not judged again against its duty and the recall gate");
+    const rd = p2.res.runDir;
     const sent = promptsOf(root).slice(before);
     for (const [who, marker] of [["the reading step", "You are register DIGEST mode"], ["the writer", "Produce the joint synthesis narrative"]]) {
       const p = sent.filter((x) => x.includes(marker)).at(-1) ?? "";
@@ -130,7 +133,7 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.ok(carry.includes(G2) && !carry.includes(G1), "the record-carry trace does not state the ground that stands");
     const duty = json(driverDir(rd, "floor-duty.json"));
     assert.equal(duty.totals.accounted, duty.totals.floors, `the floor on record is not answered: ${JSON.stringify(duty.totals)}`);
-    assert.equal(p3.res.verdict, "CLEAR");
+    assert.equal(p2.res.verdict, "CLEAR");
     assert.equal(json(driverDir(rd, "verdict.json")).verdict, "CLEAR");
     assert.equal(status.review.signoff, "CLEAR");
 

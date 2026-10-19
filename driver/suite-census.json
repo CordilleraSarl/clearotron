@@ -94,8 +94,8 @@
           "todos": 0
         },
         "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
-          "tests": 12,
-          "asserts": 42,
+          "tests": 13,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -1293,6 +1293,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-a-unit-re-run-finds-reaches-the-named-band.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
         "a-record-asked-for-and-never-delivered.test.mjs": {
           "tests": 6,
           "asserts": 22,
@@ -1479,6 +1485,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-repair-in-the-delivery-check-queues-what-it-left-stale.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -1492,8 +1504,8 @@
           "todos": 0
         },
         "a-repeated-placement-pass-is-held-to-its-floor-in-the-delivered-report.pipeline.test.mjs": {
-          "tests": 2,
-          "asserts": 50,
+          "tests": 3,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
@@ -6598,8 +6610,8 @@
           "todos": 0
         },
         "the-reading-step-and-the-writer-are-told-placements-set-asides.pipeline.test.mjs": {
-          "tests": 15,
-          "asserts": 56,
+          "tests": 16,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
