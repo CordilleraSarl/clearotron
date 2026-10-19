@@ -115,7 +115,7 @@ test("the delivery gate's repeat of placement goes through the one helper, as th
   assert.match(main, /recordPlacementPass\(ctx, placementPass\);/, "the main path records its pass through the same helper");
   // After a repeated placement pass the gate applies the floor again, through the one clamp the terminal checks use.
   const arm = src.slice(src.indexOf("} else if (UPSTREAM_STALE_REPAIR[s2.label]) {"), src.indexOf("} else if (s2.label.startsWith(\"report-card:\")) {"));
-  assert.match(arm, /if \(s2\.label === "placement-inquiry"\) \{[\s\S]*?if \(clampOnTheFloorDuty\(\)\) \{[\s\S]*?writeVerdictSidecar\(\);/,
-    "the repeated pass's floor account is not judged again before the report is rebuilt from it");
+  assert.match(arm, /if \(s2\.label === "placement-inquiry"\) \{[\s\S]*?if \(clampOnTheFloorDuty\(\)\) saveTheLabel\(/,
+    "the repeated pass's floor account is not judged again, and its label saved, before the report is rebuilt from it");
   assert.match(src, /const clampOnTheFloorDuty = \(\) => \{\n\s+\/\/ THE PREDICATE IS `floorDutyBlock`/, "the terminal checks and the repair share one clamp");
 });
