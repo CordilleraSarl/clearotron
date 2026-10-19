@@ -6,5 +6,6 @@
     "name": "Cordillera Sàrl"
   },
   "license": "AGPL-3.0-only",
-  "homepage": "https://github.com/CordilleraSarl/Clearotron"
+  "homepage": "https://github.com/CordilleraSarl/Clearotron",
+  "icon": "./icon.png"
 }
