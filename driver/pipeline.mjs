@@ -13870,7 +13870,11 @@ async function pipelineInner(job, opts = {}) {
     // could only be pinned by source text, and a source-text pin cannot tell an armed check from one
     // somebody disarmed while leaving its words in place. This closure is the wiring: run record, note,
     // clamp lists, status. The judgement is all in the module.
-    const deliverAndClamp = ({ event, defect, reason, clause, detail = {} }) => {
+    const deliverAndClamp = ({ event, defect, reason, clause, detail = {}, again = false }) => {
+      // A GUARD JUDGED AGAIN in this run says nothing new when its judgment is unchanged, and otherwise replaces its
+      // earlier clause of the same kind, so a record is never counted twice and no count stands from an earlier pass.
+      if (again && clampReasons.includes(String(reason ?? "").trim())) return;
+      if (again) replaceClauses(String(defect ?? "").split(":")[0]);
       // — reason and clause are SEPARATE inputs now: the run record and the ops note keep
       // the token sentence; the clause list (which riskStatement renders into the client's Verdict row)
       // receives only the reader's sentence. terminalClampDecision refuses a fused clause by shape.
@@ -13923,14 +13927,12 @@ async function pipelineInner(job, opts = {}) {
       const weighed = base + left.length;
       if (!records.length || !(weighed > 0)) return 0;
       const sample = [...unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`), ...left.slice(0, 2)].join("; ");
-      const reason = `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery${left.length ? `, ${left.length} of them found by a unit's re-run and left out of a band its readers could not have been dispatched over` : ""}: ${sample}. The report ships with these named rather than being withheld.`;
-      if (again && clampReasons.includes(reason)) return records.length;   // judged again, unchanged: nothing new to say
-      if (again) replaceClauses("recall_reconciliation_unended");   // judged again: the current count replaces the earlier
       deliverAndClamp({
         event: "recall-reconciliation-unended-delivered",
         defect: `recall_reconciliation_unended:${records.length}`,
         detail: { positions: unended.length, records: records.length, candidates: base, refused: left.length },
-        reason,
+        reason: `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery${left.length ? `, ${left.length} of them found by a unit's re-run and left out of a band its readers could not have been dispatched over` : ""}: ${sample}. The report ships with these named rather than being withheld.`,
+        again,
         clause: clauseForDefect("recall_reconciliation_unended", records.length, weighed),
       });
       return records.length;
@@ -13957,17 +13959,15 @@ async function pipelineInner(job, opts = {}) {
       const duty = synthesisDutyForRun(run.runDir);
       if (duty?.computable === true && duty.unaccounted.length) {
         const sample = duty.unaccounted.slice(0, 4).map((u) => `${u.mark ? `${u.mark} ` : ""}(${u.uri})`).join("; ");
-        const reason = `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.`;
-        const same = again && clampReasons.includes(reason);   // judged again, unchanged: nothing new to say
-        if (again && !same) replaceClauses("synthesis_unaccounted_delivered");   // judged again: the current count replaces the earlier
         // DELIVERS AND CLAMPS. It used to throw. The defect is real and stays
         // named — a record the run judged worth a reader's attention reached the document unaccounted —
         // but naming it to nobody was the worse outcome of the two.
-        if (!same) deliverAndClamp({
+        deliverAndClamp({
           event: "synthesis-duty-undischarged",
           defect: `synthesis_unaccounted_delivered:${duty.unaccounted.length}`,
           detail: { unaccounted: duty.unaccounted.length, owed: duty.totals.owed, uris: duty.unaccounted.slice(0, 6).map((u) => u.uri) },
-          reason,
+          reason: `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.`,
+          again,
           // — the READER's sentence: what is open, in a lawyer's nouns. Counts survive;
           // the token, the record ids and the engine's nouns stay in `reason` and the run record.
           // COMPOSED BY THE AUTHORITY, NOT SPELLED HERE. The same sentence has to be reachable from a
@@ -14017,17 +14017,15 @@ async function pipelineInner(job, opts = {}) {
         // working exactly as built, and the client received nothing instead of a report naming one gap.
         // The era stamp still gates it: `floorDutyArmed` means a placement pass ran under the code
         // carrying the order, so an archived run neither blocks nor is now accused of a defect.
-        const reason = `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: ${block.sample}${block.undischarged > 4 ? " …" : ""}`
-            + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
-            + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
-            + `. The report ships with these named rather than being withheld.`;
-        if (again && clampReasons.includes(reason)) return block;   // judged again, unchanged: nothing new to say
-        if (again) replaceClauses("floor_duty_undischarged");   // judged again after a repeat: one clause, the current count
         deliverAndClamp({
           event: "floor-duty-undischarged",
           defect: `floor_duty_undischarged:${block.undischarged}`,
           detail: { undischarged: block.undischarged, floors: block.floors, named_without_ground: block.named_without_ground ?? 0, unanswerable: block.unanswerable ?? 0 },
-          reason,
+          reason: `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: ${block.sample}${block.undischarged > 4 ? " …" : ""}`
+            + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
+            + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
+            + `. The report ships with these named rather than being withheld.`,
+          again,
           // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
           // lawyer: live registrations identical or near-identical to the mark that the report does not
           // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
