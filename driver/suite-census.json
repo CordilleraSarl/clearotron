@@ -1485,6 +1485,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-repair-in-the-delivery-check-queues-what-it-left-stale.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
           "asserts": 13,
