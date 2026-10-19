@@ -4728,8 +4728,10 @@ async function stageOnce(name, ctx, opts = {}) {
       // The review after a delivery-check repair names the files that repair changed; every other dispatch
       // passes nothing and keeps its own inputs line.
       changedInputs: opts.changedInputs ?? null,
-      // The reading step's and the writer's fresh sessions are given placement's accepted set-asides as they stand.
-      decisions: messageCtxFor(name, ctx)?.placementSetAsides ?? null,
+      // The reading step's and the writer's fresh sessions are given placement's accepted set-asides as they stand,
+      // except a narrow repair: it fixes only the faults or objects it names, and the general order to check each
+      // ground would widen it. Its inputs, the decisions file among them, are named as for any other.
+      decisions: NARROW_REPAIR_TRIGGERS.has(trigger) ? null : (messageCtxFor(name, ctx)?.placementSetAsides ?? null),
     })
     : (def.message(messageCtxFor(name, ctx)) + (opts.extra ? `\n\n${opts.extra}` : ""));
   // Every stage runs as the forwarding agent (derived from the queue location). An explicit opts.agent wins.
@@ -18004,6 +18006,13 @@ function cardsNeverBuilt(P, depth, firstPlan) {
     .filter((o) => !dispatched.has(o) && !readStamp(P.runDir, `report-card:${o}`))
     .map((o) => ({ label: `report-card:${o}`, changed: [{ name: `${o}.md`, was: null, now: null, via: "never-built" }] }));
 }
+
+/**
+ * The repairs that fix only what they name: a delivery lint fault, or an object of the writer's record that failed the
+ * strict parse. They are not told placement's set-asides with the order to check each ground (ruled 2026-10-19); every
+ * other follow-up of the reading step and the writer is.
+ */
+export const NARROW_REPAIR_TRIGGERS = new Set(["lint-repair", "finding-reemit", "action-reemit", "ask-answer-reemit"]);   // @internal — driven by its test
 
 /** The repaired stages whose output the record-carry trace or the Audit Trail reports. */
 const REBUILDS_THE_DELIVERED_RECORD = new Set(["placement-inquiry", "register-digest", "synthesis", "narrative-refutation"]);
