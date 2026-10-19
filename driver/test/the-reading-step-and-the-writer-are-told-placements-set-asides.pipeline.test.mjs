@@ -51,12 +51,14 @@ const rec = (id, mark, owner) => ({ record_id: `/mark/eu/${id}`, mark_text: mark
 const BAND = [rec("a1", "QZORVAK", "Alpha Ltd"), rec("a2", "Plimbo", "Alpha Ltd"), rec("r1", "Drellux", "Delta AG"), rec("r2", "Vorrin", "Eta Kft")];
 const GOODS = { a1: "joysticks", a2: "joysticks", r1: "printers", r2: "printers" };
 
-function seedRun(t, rows, { band = BAND, goodsOf = GOODS } = {}) {
-  const runDir = mkdtempSync(join(tmpdir(), "setasides-told-"));
-  t.after(() => rmSync(runDir, { recursive: true, force: true }));
+// `into` seeds an existing run again, as a later pass rewrites its files; a record whose goods are null has none on file.
+function seedRun(t, rows, { band = BAND, goodsOf = GOODS, into = null } = {}) {
+  const runDir = into ?? mkdtempSync(join(tmpdir(), "setasides-told-"));
+  if (!into) t.after(() => rmSync(runDir, { recursive: true, force: true }));
   mkdirSync(driverDir(runDir), { recursive: true });
   const positions = deriveRegisterPositions(band);
-  const goods = { of: (r) => [{ classes: ["9"], text: goodsOf[r.record_id.split("/").pop()] }], hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
+  const goodsText = (r) => goodsOf[r.record_id.split("/").pop()];
+  const goods = { of: (r) => (goodsText(r) == null ? null : [{ classes: ["9"], text: goodsText(r) }]), hits: goodsWordCounter(["joysticks"]), matched: goodsWordsMatched(["joysticks"]) };
   const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
   const read = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
   const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups, served: { lines: new Set(read), records: new Set() } };
@@ -153,6 +155,43 @@ test("a change to a decision alone leaves the reading step and the writer stale,
   const stale = staleOnPath(P.runDir, ["register-digest", "synthesis"], inputsFor);
   assert.deepEqual(stale.map((s2) => s2.label), ["register-digest", "synthesis"], "a reader that already ran was not made stale by the changed ground");
   assert.ok(stale.every((s2) => JSON.stringify(s2.changed).includes("placement-decisions.json")));
+});
+
+test("a group's row that comes to cover another line at the same count leaves the reading step, the writer and the review stale", (t) => {
+  // Two lines of other marks, one with goods on file and one without: the one with goods is the rest's only line, and
+  // the row on the rest covers it. Swapping which of the two has goods on file moves the other line into the rest and
+  // this one out, so the rest still holds one record and the row still covers one line, under the same ground.
+  const band = [rec("a1", "QZORVAK", "Alpha Ltd"), rec("r1", "Drellux", "Delta AG"), rec("r2", "Vorrin", "Eta Kft")];
+  const rows = [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside_group: "rest", count: 1, ground: "similar to none of the mark's forms" },
+  ];
+  const first = seedRun(t, rows, { band, goodsOf: { a1: "joysticks", r1: "printers", r2: null } });
+  const { P } = first;
+  assert.deepEqual(first.shape.groups.rest.list.map((l) => l.record_id), ["/mark/eu/r1"], "guard: the rest holds r1's line alone");
+  const readers = ["register-digest", "synthesis", "narrative-refutation"];
+  const inputsFor = (label) => stageInputs(label, P, { axes: [] });
+  writePlacementDecisions(P);
+  for (const label of readers) {
+    assert.ok(inputsFor(label).includes(P.placementDecisions), `guard: ${label} declares the decisions`);
+    writeStamp(P.runDir, label, inputsFor(label));
+  }
+  const before = readFileSync(P.placementDecisions, "utf8");
+  const second = seedRun(t, rows, { band, goodsOf: { a1: "joysticks", r1: null, r2: "printers" }, into: P.runDir });
+  assert.deepEqual(second.shape.groups.rest.list.map((l) => l.record_id), ["/mark/eu/r2"], "guard: the rest now holds r2's line alone");
+  writePlacementDecisions(P);
+  const rest = (text) => JSON.parse(text).decisions.find((d) => d.kind === "group" && d.group === "rest");
+  const [was, now] = [rest(before), rest(readFileSync(P.placementDecisions, "utf8"))];
+  assert.deepEqual([now.records, now.covers_lines, now.ground], [was.records, was.covers_lines, was.ground], "guard: the swap kept the count, the lines covered and the ground");
+  assert.deepEqual(placementSetAsideLines(P), ["- group (rest)'s row, 1 records in the group, covering 1 lines: similar to none of the mark's forms"],
+    "the line the stages are told changed with the members it does not name");
+  assert.notEqual(readFileSync(P.placementDecisions, "utf8"), before, "the decisions file stayed byte for byte when the row came to cover another line");
+  assert.deepEqual(staleOnPath(P.runDir, readers, inputsFor).map((s2) => s2.label), readers,
+    "a stage that read the row was not made stale by the change of what the row covers");
+  // the same members, written again, change nothing
+  for (const label of readers) writeStamp(P.runDir, label, inputsFor(label));
+  writePlacementDecisions(P);
+  assert.deepEqual(staleOnPath(P.runDir, readers, inputsFor), [], "the same members, written again, made a stage stale");
 });
 
 // ── a whole run, on each engine: what the reading step and the writer were sent ──
