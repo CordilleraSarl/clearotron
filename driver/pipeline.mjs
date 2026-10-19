@@ -12,7 +12,7 @@ import { join, dirname, basename, resolve } from "node:path";   // resolve: the 
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
-import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
+import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect, gapPositivelyClosed, verdictWithoutTheClosedGap } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
 import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
@@ -37,7 +37,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst } from "./verify.mjs";
+import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
 import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
@@ -129,7 +129,7 @@ import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presenc
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
-import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
+import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyClosed, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
@@ -6601,13 +6601,6 @@ function correctionNamedSet(P, doc0 = null) {
 
 /** Which review the reviewer's staleness after a delivery-check repair calls for. Reads the run; never throws. */
 /**
- * WHAT A REPAIR IN THE DELIVERY CHECK LEFT STALE, AND WHAT OF IT IS QUEUED. A stage is this repair's when it is stale now
- * and was not before the repair, or is stale on an input that has moved since; a stage stale before for the same reasons
- * is not, and stays the guard's. Every stage the repair left stale joins the chain, so its own re-run is followed in turn.
- * Of those, a stage already queued ahead runs where it stands, and one this pass already re-did is re-done once more at
- * most. PURE.
- */
-/**
  * A SAVE TRIED AGAIN BEFORE IT IS GIVEN UP. Calls `save` up to `attempts` times, waiting `waitMs` between tries, and
  * says how it went: `{ ok, attempts, error }`. Never throws. `wait` is injectable so a test does not sleep.
  */
@@ -6641,6 +6634,13 @@ export function withdrawByToken(reasons = [], clauses = [], guard = new Set(), t
   return out;
 }
 
+/**
+ * WHAT A REPAIR IN THE DELIVERY CHECK LEFT STALE, AND WHAT OF IT IS QUEUED. A stage is this repair's when it is stale now
+ * and was not before the repair, or is stale on an input that has moved since; a stage stale before for the same reasons
+ * is not, and stays the guard's. Every stage the repair left stale joins the chain, so its own re-run is followed in turn.
+ * Of those, a stage already queued ahead runs where it stands, and one this pass already re-did is re-done once more at
+ * most. PURE.
+ */
 export function whatTheRepairLeftStale({ before = [], after = [], repaired, ahead = new Set(), processed = new Set(), requeued = new Set() }) {   // @internal — driven by its test
   const keys = (x) => (x?.changed ?? []).map((c) => `${c?.name}@${c?.now}`);
   const was = new Map(before.map((x) => [x.label, new Set(keys(x))]));
@@ -13854,6 +13854,11 @@ async function pipelineInner(job, opts = {}) {
     // run earlier in this function. The sidecar write sorts guard clauses AFTER the opinion's, stated
     // there; this set is how it tells them apart without a parallel index to keep aligned.
     const guardClauses = new Set();
+    // THE ACCEPTED ASSESSMENT: the result the review reached, before any guard or floor clamped it. It moves with the
+    // review alone (the degenerate re-ask, a late review that is harsher), and a gap a guard judged again finds closed is
+    // withdrawn against it (ruled 2026-10-19).
+    let assessed = verdict;
+    let restoredClear = false;   // a closed gap took this run back to CLEAR, so a later writer's judgment meets the floor again
 
     /**
      * Deliver, clamp conservatively, and name the defect in the run record.
@@ -13892,13 +13897,29 @@ async function pipelineInner(job, opts = {}) {
     // A CLAUSE JUDGED AGAIN REPLACES THE ONE IT REPEATS. A guard judged a second time in this run, after a repeat or a
     // re-run, withdraws its earlier clause of the same kind before it states the current one, so a record is never
     // counted twice and a count never stands from an earlier judgment. Returns how many entries it withdrew.
-    const replaceClauses = (token) => {
+    const replaceClauses = (token, { event = "guard-clause-replaced" } = {}) => {
       const w = withdrawByToken(clampReasons, clampClauses, guardClauses, token);
       if (!w.withdrawn) return 0;
       clampReasons = w.reasons;
       clampClauses = w.clauses;
-      runLog(run.runDir, { event: "guard-clause-replaced", token, withdrawn: w.withdrawn });
+      runLog(run.runDir, { event, token, withdrawn: w.withdrawn });
       return w.withdrawn;
+    };
+
+    // A GAP JUDGED AGAIN AND POSITIVELY CLOSED takes its own clause with it, and the result is recomputed from the
+    // accepted assessment and the conditions still standing (ruled 2026-10-19). Only a CONDITIONAL that this run's
+    // guards alone made goes back to CLEAR, and that CLEAR then meets the same deliver-conditional floor any CLEAR meets.
+    // A gap whose account is absent, unreadable or not computable is not closed: its clause stands.
+    const withdrawClosedGap = (token) => {
+      if (!replaceClauses(token, { event: "guard-gap-closed" })) return;
+      const now = verdictWithoutTheClosedGap({ verdict, assessed, reasons: clampReasons });
+      if (now === verdict) return;
+      runLog(run.runDir, { event: "verdict-recomputed-gap-closed", token, from: verdict, to: now });
+      note(`the ${token.split("_")[0]} gap this run named is closed, and nothing else conditions the result — ${verdict} goes back to ${now}, the result the review reached`);
+      verdict = now;
+      restoredClear = now === "CLEAR";
+      writeRunStatus(ctx, signoffPatch(verdict));
+      applyCoverageFloor();   // the floor any CLEAR meets: the opinion's forward actions, the coverage gaps
     };
 
     // THE RECALL GATE, DELIVERED AND CLAMPED (the owner's ruling of 2026-10-19: a run is never held). A retrieved record still
@@ -13911,7 +13932,10 @@ async function pipelineInner(job, opts = {}) {
       // A RECORD A REFUSED MERGE LEFT OUT IS UNREAD, and it is counted here, in the same sentence, out of a total that
       // includes it: the band could not take it without passing the size its readers can be dispatched over.
       const left = refusedRecordsLeftOut(P);
-      if (!left.length && (!computable || !((rec.totals?.unended ?? 0) > 0))) return 0;
+      if (!left.length && (!computable || !((rec.totals?.unended ?? 0) > 0))) {
+        if (again && gapPositivelyClosed("recall_reconciliation_unended", { recall: rec, leftOut: left })) withdrawClosedGap("recall_reconciliation_unended");
+        return 0;
+      }
       // A record the writer's duty or the floor's clamp already names is left to that clause: one record, one sentence.
       // The floor's rows count only where its clamp fires, so a record is never left unnamed by both.
       const floorNames = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) })
@@ -13925,6 +13949,9 @@ async function pipelineInner(job, opts = {}) {
       // left out besides.
       const base = computable ? Number(rec.totals?.candidates ?? 0) : (safeReadJson(P.registerNamedBand)?.enumerated ?? []).length;
       const weighed = base + left.length;
+      // Every record the gate would name is named by a clause standing now: its own earlier clause goes, so the record
+      // is counted once. The gap is not closed, and the result is not recomputed.
+      if (again && !records.length && unended.length < (rec?.unended ?? []).length) replaceClauses("recall_reconciliation_unended", { event: "guard-clause-named-elsewhere" });
       if (!records.length || !(weighed > 0)) return 0;
       const sample = [...unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`), ...left.slice(0, 2)].join("; ");
       deliverAndClamp({
@@ -13950,8 +13977,7 @@ async function pipelineInner(job, opts = {}) {
     // was the one that was refused.
     //
     // JUDGED AGAIN after the delivery check repeats placement or re-runs the writer, with `again`: a gap that remains
-    // replaces its earlier clause with the current count, and a gap that closed keeps its clause until the owner's
-    // design rules on the verdict without it.
+    // replaces its earlier clause with the current count, and a gap positively closed withdraws it (withdrawClosedGap).
     //
     // NO ERA STAMP, and it needs none: an archived run carries no declination spec, so `owed` is null,
     // the reconcile is `computable:false` and this never blocks. Archive compatibility by construction.
@@ -13976,7 +14002,7 @@ async function pipelineInner(job, opts = {}) {
           // run and the republished archive cannot drift apart.
           clause: clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
         });
-      }
+      } else if (again && gapPositivelyClosed("synthesis_unaccounted_delivered", { duty })) withdrawClosedGap("synthesis_unaccounted_delivered");
       const recall = clampOnTheRecallGate(duty, { again });   // the recall gate's gap, beside the writer's duty
       return { duty, recall };
     };
@@ -14033,7 +14059,8 @@ async function pipelineInner(job, opts = {}) {
           // gives: a republished pre-split run has to reach the same sentence from the counts alone.
           clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
         });
-      }
+      } else if (again && gapPositivelyClosed("floor_duty_undischarged", { floorClosed: floorDutyClosed(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) }) }))
+        withdrawClosedGap("floor_duty_undischarged");
       return block;
     };
     {
@@ -14469,6 +14496,7 @@ async function pipelineInner(job, opts = {}) {
         reviewLedger.record("reviewer-degenerate-reask", run.codename, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: degenerateReaskMax });
         if (rr.ok) {
           verdict = parseVerdict(readReview()) ?? "BLOCKING";
+          assessed = verdict;   // the re-asked review is the assessment now
           runLog(run.runDir, { event: "verdict-3", verdict, trigger: "degenerate-reask" });
           writeRunStatus(ctx, signoffPatch(verdict));
           applyCoverageFloor();   // a re-asked CLEAR passes the same deliver-conditional floor
@@ -15817,6 +15845,9 @@ async function pipelineInner(job, opts = {}) {
         // the run carries in senior-eye-review.md.
         const adoptLateReview = (reviewNow, stageLabel) => {
           const { hardened, softened: reviewSays } = lateReviewAgainst(verdict, reviewNow);
+          // A late review harsher than the assessment is a ground of its own: a gap closed later never lifts it.
+          const says = parseVerdict(reviewNow);
+          if ((VERDICT_RANK[says] ?? -1) > (VERDICT_RANK[assessed] ?? -1)) assessed = says;
           // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
           // tightens, so a re-review that comes back softer leaves the settled verdict in force while
           // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
@@ -16008,7 +16039,7 @@ async function pipelineInner(job, opts = {}) {
                 clampOnTheFloorDuty({ again: true });
                 clampOnTheWritersDuty({ again: true });   // the recall gate leaves out the floor that now stands
                 // A save that fails here is tried again, then owed, never the end of the run: see saveTheLabel.
-                if (JSON.stringify(clampReasons) !== stood) saveTheLabel("after the repeated placement pass");
+                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the repeated placement pass");
                 runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
               }
               // A whole review that is read reviews the change an earlier unread one left: its record says so, and
@@ -16050,7 +16081,10 @@ async function pipelineInner(job, opts = {}) {
               if (s2.label === "synthesis" && chain.has(s2.label)) {
                 const was = verdict, stood = JSON.stringify(clampReasons);
                 const judged = clampOnTheWritersDuty({ again: true });
-                if (JSON.stringify(clampReasons) !== stood) saveTheLabel("after the writer's re-run");
+                // A CLEAR a closed gap gave back meets the floor again on what this writer now says: its forward actions
+                // are a ground of their own.
+                if (restoredClear && verdict === "CLEAR") applyCoverageFloor();
+                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the writer's re-run");
                 runLog(run.runDir, { event: "writer-duty-after-repair", was, now: verdict,
                   owed: judged.duty?.computable === true ? judged.duty.totals?.owed ?? null : null,
                   unaccounted: judged.duty?.computable === true ? judged.duty.unaccounted.length : null, recall: judged.recall });
@@ -16122,7 +16156,7 @@ async function pipelineInner(job, opts = {}) {
               clause: clauseForDefect("ranking_changed_unread", n, m),
             });
           }
-          if (JSON.stringify(clampReasons) !== stood && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
+          if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
           runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: verdict, named: clampReasons.length - named,
             stages: staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
           note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);

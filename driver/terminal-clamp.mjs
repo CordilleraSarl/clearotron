@@ -28,6 +28,30 @@
 const CAUTION = Object.freeze(["CLEAR", "CONDITIONAL", "BLOCKING"]);
 
 /**
+ * A GUARD'S GAP POSITIVELY CLOSED when it is judged again: its account was read, could be computed, and finds no gap.
+ * An account that is absent, unreadable or not computable is no proof that the gap closed, and the clause stands.
+ * `token` names the guard. The floor's account is judged in its own module (`floorDutyClosed`) and arrives as
+ * `floorClosed`; the writer's duty arrives as its reconciliation, and the recall gate as its reconciliation with the
+ * records a refused merge left out. PURE.
+ */
+export function gapPositivelyClosed(token, { floorClosed = false, duty = null, recall = null, leftOut = [] } = {}) {
+  if (token === "floor_duty_undischarged") return floorClosed === true;
+  if (token === "synthesis_unaccounted_delivered") return duty?.computable === true && Array.isArray(duty.unaccounted) && duty.unaccounted.length === 0;
+  if (token === "recall_reconciliation_unended") return recall?.computable === true && !((recall.totals?.unended ?? 0) > 0) && !leftOut.length;
+  return false;
+}
+
+/**
+ * THE RESULT ONCE A CLOSED GAP'S CLAUSE IS WITHDRAWN, recomputed from the accepted assessment and the conditions that
+ * still stand. A CONDITIONAL goes back to CLEAR only when the assessment was CLEAR and no condition is left; any other
+ * result stands, so a condition that still applies, a review that said CONDITIONAL or BLOCKING, or a result the guard
+ * never moved is never lifted. PURE.
+ */
+export function verdictWithoutTheClosedGap({ verdict, assessed, reasons = [] } = {}) {
+  return verdict === "CONDITIONAL" && assessed === "CLEAR" && !reasons.length ? "CLEAR" : verdict;
+}
+
+/**
  * The shape of an engine identifier: `word_word:N` tokens (`floor_duty_undischarged:22`) and the
  * `snake_case` defect vocabulary generally. The CLIENT'S clause may never carry one —:
  * two delivered reports opened their Verdict row with exactly such a token, because the run-record
