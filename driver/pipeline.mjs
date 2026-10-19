@@ -13623,7 +13623,7 @@ async function pipelineInner(job, opts = {}) {
 
     // ── P2-A pre-verdict floor: the reconciliation's hard discrepancy list ─────────────────────────
     // screened-live dominant-element candidates ∖ endings is read here as it always was, and it no longer THROWS:
-    // the owner's ruling of 2026-10-19 (874, "never hold a run") replaces the Round-2 rule that this one class never
+    // the owner's ruling of 2026-10-19 that a run is never held replaces the Round-2 rule that this one class never
     // ships. The run first recovers what it can in-run (the digest seam's warm followups; placement assessing late
     // evidence before the writer); whatever is still unended ships NAMED, through the terminal guards' deliver-and-clamp
     // (`clampOnTheRecallGate`, beside the floor duty's clamp below), never as a run that delivers nothing.
@@ -13682,7 +13682,7 @@ async function pipelineInner(job, opts = {}) {
       }
     };
 
-    // THE RECALL GATE, DELIVERED AND CLAMPED (owner's ruling 874, 2026-10-19: never hold a run). A retrieved record still
+    // THE RECALL GATE, DELIVERED AND CLAMPED (the owner's ruling of 2026-10-19: a run is never held). A retrieved record still
     // ending nowhere a reader can see after the run's recovery ships named, in the approved sentence for the same state,
     // counted in records out of the records the gate weighed. A record another clause already names (the writer's duty,
     // the floor) is left to it, so no record is counted twice. Returns the count it clamped on, or 0.
