@@ -19,6 +19,7 @@ writeFileSync(process.env.CLEAROTRON_REGISTER_CALL_LOG, "");
 import { test } from "node:test";
 import assert from "node:assert/strict";
 const { whatTheRepairLeftStale, saveWithRetries } = await import("../pipeline.mjs");
+const { recordsReRanked, rankedRecords } = await import("../placement-decisions.mjs");
 
 const stale = (label, ...changed) => ({ label, changed: changed.map(([name, now]) => ({ name, was: "old", now })) });
 
@@ -71,4 +72,22 @@ test("a save that fails is tried again, and says how many tries it took or that 
   assert.match(broken.error.message, /ENOSPC/, "the failure is not kept for the run record");
   waits.length = 0;
   assert.deepEqual([saveWithRetries(() => {}, { wait }).attempts, waits.length], [1, 0], "a save that succeeds at once was tried again");
+});
+
+// The records a repeated placement pass re-ranked, counted for the sentence the report then carries.
+test("the records a repeated placement pass re-ranked are counted once each, and a group's row by the records it holds", () => {
+  const ranking = (records, groups = {}) => ({ records: new Map(Object.entries(records)), groups: new Map(Object.entries(groups)) });
+  const before = ranking({ "/mark/eu/a1": "placed:top-slice", "/mark/eu/b1": "set aside on its status: the registration lapsed" },
+    { a: { key: "unrelated goods|12|h1", records: 40 } });
+  assert.equal(recordsReRanked(before, before), 0, "a ranking compared with itself re-ranked a record");
+  assert.equal(rankedRecords(before), 42);
+  // b1's ground changed, a1 moved tier, c1 was set aside anew: three records, each once
+  const named = ranking({ "/mark/eu/a1": "placed:residual", "/mark/eu/b1": "set aside on its status: the owner let its renewal pass",
+    "/mark/eu/c1": "set aside: a different class of goods" }, { a: { key: "unrelated goods|12|h1", records: 40 } });
+  assert.equal(recordsReRanked(before, named), 3);
+  // a group's row that covers other lines counts every record it holds; one that did not change counts none
+  const grouped = ranking({ "/mark/eu/a1": "placed:top-slice", "/mark/eu/b1": "set aside on its status: the registration lapsed" },
+    { a: { key: "unrelated goods|12|h2", records: 40 } });
+  assert.equal(recordsReRanked(before, grouped), 40);
+  assert.equal(recordsReRanked(ranking({}), ranking({}, {})), 0, "nothing on either side re-ranked a record");
 });

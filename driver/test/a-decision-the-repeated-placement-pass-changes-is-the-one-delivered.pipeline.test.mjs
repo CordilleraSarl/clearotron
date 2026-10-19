@@ -163,11 +163,28 @@ test("claude: a writer that cannot re-run for the changed decision does not hold
   assert.equal(unread.length, 1, "the run record does not say a changed decision went unread");
   assert.deepEqual(unread[0].stages.map((x) => x.label), ["synthesis"]);
   assert.ok(unread[0].stages[0].changed.some((c) => /placement/.test(c)), `the record does not name what the writer did not read: ${JSON.stringify(unread[0])}`);
-  // one result wherever it is read
+  // The report gives the ranking the writer last read, and says so in the owner's words: one record was re-ranked.
+  const { clauseForDefect } = await import("../terminal-clamp.mjs");
+  const clause = clauseForDefect("ranking_changed_unread", 1, 1);
+  assert.equal(clause, "1 register records were re-ranked after this report was written; the audit trail gives their final ranking");
+  assert.deepEqual(ev2.filter((e) => e.event === "ranking-changed-unread-delivered").map((e) => e.records), [1],
+    "the record the repeat re-ranked was not counted once");
+  assert.deepEqual(ev2.filter((e) => e.event === "terminal-guard-clamp" && /^ranking_changed_unread:/.test(e.defect)).map((e) => [e.from, e.to]),
+    [["CLEAR", "CONDITIONAL"]], "a clear result was not made conditional");
+  // one result, and one sentence, wherever they are read
   const rd = p2.res.runDir;
   const json = (f) => JSON.parse(readFileSync(f, "utf8"));
   const status = json(join(rd, "status.json"));
-  const settle = json(join(root, "pool", status.runId, "settle.json"));
-  assert.deepEqual([p2.res.verdict, json(driverDir(rd, "verdict.json")).verdict, status.review.signoff, settle.signoff],
-    Array(4).fill(p2.res.verdict), "the delivered result differs between the surfaces it is read from");
+  const published = join(root, "pool", status.runId);
+  const verdict = json(driverDir(rd, "verdict.json"));
+  const settle = json(join(published, "settle.json"));
+  assert.deepEqual([p2.res.verdict, verdict.verdict, status.review.signoff, settle.signoff], Array(4).fill("CONDITIONAL"),
+    "the delivered result differs between the surfaces it is read from");
+  assert.ok(verdict.clauses.includes(clause), `the verdict on record does not carry the sentence: ${JSON.stringify(verdict.clauses)}`);
+  const data = json(join(published, "report-data.json"));
+  assert.ok(data.rating.conditions.includes(clause), `the delivered rating does not list the sentence: ${JSON.stringify(data.rating.conditions)}`);
+  assert.equal(data.rating.statement, verdict.statement, "the delivered rating is not the verdict on record");
+  assert.ok(readFileSync(join(published, "report.html"), "utf8").includes(clause), "the report the client opens does not carry the sentence");
+  assert.match(readFileSync(join(rd, "report.md"), "utf8"), new RegExp(`^overall_label:\\s*${verdict.tier}\\s*$`, "m"),
+    "the report's own label is not the verdict on record's");
 });

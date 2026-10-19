@@ -128,6 +128,42 @@ export function standingPlacementDecisions(P) {   // @internal — driven by its
 }
 
 /**
+ * WHERE EACH RECORD STANDS IN PLACEMENT'S ACCOUNT: a placed record by its tier, a record set aside by name by its ground,
+ * and each group's row as one entry with the records it holds, which it does not name. Read before and after a repeated
+ * placement pass, it says how many records the pass re-ranked. IMPURE (reads the run).
+ */
+export function rankingNow(P) {   // @internal — driven by its test with a run's own files
+  const records = new Map();
+  for (const r of placedUriRows(P)) records.set(String(r.uri).toLowerCase(), `placed:${r.tier ?? ""}`);
+  const groups = new Map();
+  for (const d of standingPlacementDecisions(P)) {
+    if (d.kind === "group") groups.set(d.group, { key: `${d.ground}|${d.covers_lines}|${d.covered_lines_hash}`, records: d.records });
+    else records.set(String(d.record).toLowerCase(), `set aside${d.on ? ` on its ${d.on}` : ""}: ${d.ground}`);
+  }
+  return { records, groups };
+}
+
+/** How many records a ranking accounts for: each named record once, and every record a group's row holds. PURE. */
+export function rankedRecords(ranking) {
+  return (ranking?.records?.size ?? 0) + [...(ranking?.groups?.values() ?? [])].reduce((n, g) => n + (Number(g?.records) || 0), 0);
+}
+
+/**
+ * How many records stand differently in `after` than in `before`: a named record that moved, appeared or went counts
+ * once, and a group's row that changed counts every record it holds, as it names none of them. PURE.
+ */
+export function recordsReRanked(before, after) {
+  let n = 0;
+  for (const id of new Set([...(before?.records?.keys() ?? []), ...(after?.records?.keys() ?? [])]))
+    if (before?.records?.get(id) !== after?.records?.get(id)) n++;
+  for (const g of new Set([...(before?.groups?.keys() ?? []), ...(after?.groups?.keys() ?? [])])) {
+    const a = before?.groups?.get(g), b = after?.groups?.get(g);
+    if (a?.key !== b?.key || a?.records !== b?.records) n += Math.max(Number(a?.records) || 0, Number(b?.records) || 0);
+  }
+  return n;
+}
+
+/**
  * THE SAME DECISIONS, AS THE READING STEP AND THE WRITER ARE TOLD THEM: one line each, under the approved introduction.
  * A group's floors are listed up to twenty; beyond that the line says how many more there are and names the file that
  * holds every one of them (`writePlacementDecisions`), so a shortened list never stands in for the whole. IMPURE.

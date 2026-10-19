@@ -79,7 +79,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
-  placementRecallEndings, writePlacementDecisions } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
+  placementRecallEndings, writePlacementDecisions, rankingNow, rankedRecords, recordsReRanked } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
@@ -14274,6 +14274,7 @@ async function pipelineInner(job, opts = {}) {
     // and the save is made once more before anything is published, so no surface is built from the label settled
     // before the clamp. Returns whether it is saved.
     let labelOwed = null;
+    let rankingBeforeRepeat = null;   // where each record stood before the delivery check repeated placement
     const saveTheLabel = (why) => {
       const saved = saveWithRetries(() => writeVerdictSidecar());
       if (saved.ok) {
@@ -15862,6 +15863,7 @@ async function pipelineInner(job, opts = {}) {
             // repaired artifact rather than from the one that moved.
             const reviewSeq0 = s2.label === "narrative-refutation" ? nextRefutationSeq(run.runDir) : null;
             const staleBefore = s2.label === "placement-inquiry" || chain.has(s2.label) ? staleNow() : null;   // what was stale before this one
+            if (s2.label === "placement-inquiry" && !rankingBeforeRepeat) rankingBeforeRepeat = rankingNow(P);   // as the writer last read it
             const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
             // NOT A PASS: a reviewer that ends with no accepted call reads ok whenever the earlier review's file
             // stands, and its stamp is refreshed over the change it never read. The record says so, and the guard
@@ -15978,7 +15980,20 @@ async function pipelineInner(job, opts = {}) {
         if (staleStages.length && staleStages.every((x) => chain.has(x.label))) {
           const was = verdict, named = clampReasons.length;
           clampOnTheWritersDuty({ again: true });
-          if (clampReasons.length !== named) saveTheLabel("after a changed decision went unread");
+          // THE RECORDS RE-RANKED SINCE THE WRITER LAST WROTE, in the owner's words of 2026-10-19. The report states the
+          // ranking the writer last read; the audit trail, written again after the repeat, states the one that stands.
+          if (rankingBeforeRepeat && staleStages.some((x) => x.label === "synthesis")) {
+            const now = rankingNow(P), n = recordsReRanked(rankingBeforeRepeat, now);
+            const m = Math.max(rankedRecords(rankingBeforeRepeat), rankedRecords(now), n);
+            if (n > 0) deliverAndClamp({
+              event: "ranking-changed-unread-delivered",
+              defect: `ranking_changed_unread:${n}`,
+              detail: { records: n, of: m },
+              reason: `ranking_changed_unread:${n} of ${m} record(s) — the delivery check's repeat of placement changed where these records stand, and the writer's re-run for the change did not complete, so the report gives the ranking it last read and the audit trail the one that stands. The report ships with this named rather than being withheld.`,
+              clause: clauseForDefect("ranking_changed_unread", n, m),
+            });
+          }
+          if (clampReasons.length !== named && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
           runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: verdict, named: clampReasons.length - named,
             stages: staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
           note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
