@@ -6821,20 +6821,22 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
  * A FAILED CORRECTION AFTER A POST-REPAIR REVIEW NEVER ENDS THE RUN (the owner's ruling of 2026-10-19: a run is never
  * held). The trusted state comes back whole: the record, its narrative and the merge base, then the fold and the seam's
  * writes made again over a record rebuilt from a save, as after any save, so the delivered verdict is derived from the
- * record that stands. The correction's points stay in the run's open-questions record. A rate-limited pass still waits
- * for its reset, as every stage does.
+ * record that stands. The correction's points stay in the run's open-questions record. A rate-limited correction is
+ * not waited for either: it is rolled back as a failed one is, since the report it would correct is already reviewed,
+ * and waiting for the reset would hold the run.
  *
  * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER. The record, the save the review read and the save kept from before
  * the repair are all unreadable, a storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
- * go back to what they were, and the failed pass's record is set aside. A pass that went on from there delivered a
+ * go back to what they were, and the failed pass's record is set aside under `_driver/` as evidence. A pass that went on from there delivered a
  * report with no findings, labelled with the verdict as it stood (measured on the mock pipeline, 2026-10-19): a clear
  * result over a record nobody can read. So this case alone keeps the failure it always had. Returns the rollback
- * record, or null for a rate limit and for this case.
+ * record, or null for this case.
  */
 async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore }) {
-  if (pass?.fail === "rate_limited" || pass?.resetsAt) return null;
+  // A rate limit is a failure of this pass like any other here: the shared rollback would leave it to wait.
+  const failure = pass?.fail === "rate_limited" || pass?.resetsAt ? { fail: "rate_limited, not waited for" } : pass;
   if (pre?.raw) {
-    const rollback = rollbackCorrectivePass(Pv, runDir, pre, pass);
+    const rollback = rollbackCorrectivePass(Pv, runDir, pre, failure);
     if (rollback && pre.from) {
       // A record rebuilt from a save is folded, and given the seam's writes, as the save itself was.
       try { foldAfterSave(runDir, Pv.findings); } catch (e) { note(`[post-repair] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
@@ -6849,9 +6851,13 @@ async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBef
   if (!findingsBefore) {
     let now = null;
     try { now = readFileSync(Pv.findings, "utf8"); } catch { now = null; }
-    if (now != null) { try { rmSync(Pv.findings, { force: true }); findings = "set-aside"; } catch { findings = "failed"; } }
+    // Set aside, never deleted: the failed pass's record stays beside the run's record for whoever diagnoses the run.
+    if (now != null) {
+      try { renameSync(Pv.findings, driverDir(runDir, "findings-failed-correction.json")); findings = "set-aside"; }
+      catch { try { rmSync(Pv.findings, { force: true }); findings = "removed"; } catch { findings = "failed"; } }
+    }
   }
-  runLog(runDir, { event: "post-repair-correction-unrecoverable", reason: String(pass?.fail ?? "failed").slice(0, 200), findings, ...(base ? { base } : {}) });
+  runLog(runDir, { event: "post-repair-correction-unrecoverable", reason: String(failure?.fail ?? "failed").slice(0, 200), findings, ...(base ? { base } : {}) });
   note(`[post-repair] the correction after the review of the repair failed with no trusted state to restore (the record and both saves unreadable) — nothing it wrote is kept, and this pass does not deliver a report without its record`);
   return null;
 }
