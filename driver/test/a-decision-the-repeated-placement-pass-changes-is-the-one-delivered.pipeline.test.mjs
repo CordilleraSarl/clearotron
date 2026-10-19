@@ -163,10 +163,11 @@ test("claude: a writer that cannot re-run for the changed decision does not hold
   assert.equal(unread.length, 1, "the run record does not say a changed decision went unread");
   assert.deepEqual(unread[0].stages.map((x) => x.label), ["synthesis"]);
   assert.ok(unread[0].stages[0].changed.some((c) => /placement/.test(c)), `the record does not name what the writer did not read: ${JSON.stringify(unread[0])}`);
-  // The report gives the ranking the writer last read, and says so in the owner's words: one record was re-ranked.
+  // The report gives the ranking the writer last read, and says so in the owner's words, singular for one record.
   const { clauseForDefect } = await import("../terminal-clamp.mjs");
   const clause = clauseForDefect("ranking_changed_unread", 1, 1);
-  assert.equal(clause, "1 register records were re-ranked after this report was written; the audit trail gives their final ranking");
+  assert.equal(clause, "1 register record was re-ranked after this report was written; the audit trail gives its final ranking");
+  assert.equal(clauseForDefect("ranking_changed_unread", 3, 40), "3 register records were re-ranked after this report was written; the audit trail gives their final ranking");
   assert.deepEqual(ev2.filter((e) => e.event === "ranking-changed-unread-delivered").map((e) => e.records), [1],
     "the record the repeat re-ranked was not counted once");
   assert.deepEqual(ev2.filter((e) => e.event === "terminal-guard-clamp" && /^ranking_changed_unread:/.test(e.defect)).map((e) => [e.from, e.to]),
