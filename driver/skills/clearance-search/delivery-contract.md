@@ -59,9 +59,7 @@ note tripped that guard in conversion 4 and again in conversion 5 — describe t
 tools.)*
 
 
-**Curation (the judgment):** promote genuine **on-field** conflicts as headline cards (band-1 placement,
-top card `open: true`); identical-mark-but-different-customer findings go **off-field**; the rest go
-**out-of-scope**. Mirror the run's actual data. Do **not** emit every finding as a headline card — a run
+**Curation:** The finding's disposition chooses the report band a card renders in; it never recomputes the finding's rating. Mirror the run's actual data. Do **not** emit every finding as a headline card — a run
 with ~20–50 findings typically curates to a handful of headline cards. Rating vocabulary is the band words
 of the framework in force (`risk-framework.md` house default, or the profile-selected
 `risk-framework-<customer>.md`); synthesis discipline follows `synthesis-rules.md`.
