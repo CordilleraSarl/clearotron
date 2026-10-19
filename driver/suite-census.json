@@ -418,8 +418,8 @@
           "todos": 0
         },
         "a-decision-the-repeated-placement-pass-changes-is-the-one-delivered.pipeline.test.mjs": {
-          "tests": 2,
-          "asserts": 38,
+          "tests": 3,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
@@ -905,7 +905,7 @@
         },
         "a-late-record-no-placement-pass-could-assess-is-delivered-and-stated.pipeline.test.mjs": {
           "tests": 1,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
