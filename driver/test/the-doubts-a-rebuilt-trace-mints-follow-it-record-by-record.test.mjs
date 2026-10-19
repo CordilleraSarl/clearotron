@@ -59,3 +59,14 @@ test("a trace that cannot be computed mints nothing again, and a ledger without 
   assert.deepEqual(r.doubts, [OTHER], "doubts minted from a trace no longer held were kept");
   assert.deepEqual(recordCarryDoubtsAgain([OTHER], trace()).doubts, [OTHER]);
 });
+
+test("a record that keeps its doubt keeps it wherever the rebuilt trace lists it: the cap limits only the new doubts", () => {
+  // The pass minted 25 doubts, the cap's full count. The rebuilt trace lists five new records first and those 25 after them.
+  const kept = Array.from({ length: 25 }, (_, i) => row(`/mark/eu/k${i + 1}`, "QZORVAK", `Kept Owner ${i + 1}`));
+  const fresh = Array.from({ length: 5 }, (_, i) => row(`/mark/eu/n${i + 1}`, "QZORVAK", `New Owner ${i + 1}`));
+  const prior = mintRecordCarryDoubts(trace(...kept)).doubts;
+  assert.equal(prior.length, 25, "guard: the pass minted the cap's full count");
+  const r = recordCarryDoubtsAgain(prior, trace(...fresh, ...kept));
+  assert.deepEqual(r.doubts.map((d) => d.id).sort(), prior.map((d) => d.id).sort(), "a kept record lost its doubt to the cap");
+  assert.deepEqual([r.fresh, r.dropped, r.minted, r.omitted], [[], [], 25, 5], "the cap took a kept doubt, or the left-out records are miscounted");
+});
