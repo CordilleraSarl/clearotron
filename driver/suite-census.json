@@ -6741,6 +6741,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-and-the-report-writers-are-given-no-contrary-duty.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
           "tests": 8,
           "asserts": 20,
