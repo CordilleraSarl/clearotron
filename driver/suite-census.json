@@ -419,7 +419,7 @@
         },
         "a-decision-the-repeated-placement-pass-changes-is-the-one-delivered.pipeline.test.mjs": {
           "tests": 2,
-          "asserts": 36,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
