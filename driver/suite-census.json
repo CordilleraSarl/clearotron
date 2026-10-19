@@ -6580,8 +6580,8 @@
           "todos": 0
         },
         "the-reading-step-and-the-writer-are-told-placements-set-asides.pipeline.test.mjs": {
-          "tests": 12,
-          "asserts": 41,
+          "tests": 13,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
