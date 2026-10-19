@@ -22,7 +22,7 @@ process.env.CLEAROTRON_REGISTER_CALL_LOG = LEDGER;
 __write(LEDGER, "");
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, chmodSync, readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, chmodSync, readFileSync, writeFileSync, existsSync, rmSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -69,6 +69,41 @@ test("an axis band that moves while the unit's notes stand is merged again into 
   assert.equal(remergeIfBandsMoved(ctx, "escalation"), false, "the same band was merged again");
   const ev = readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
   assert.deepEqual(ev.filter((e) => e.event === "named-band-remerged").map((e) => e.why), ["escalation"]);
+});
+
+test("a band merged again that a reading stage would refuse is not adopted: the earlier merge stands, and the run record says so", async (t) => {
+  const { deriveNamedBand, remergeIfBandsMoved } = await import("../pipeline.mjs");
+  const { paths } = await import("../stages.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "remerge-ceiling-"));
+  t.after(() => rmSync(runDir, { recursive: true, force: true }));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const P = paths(runDir);
+  const rec = (id, owner) => ({ record_id: `/mark/eu/${id}`, mark_text: "QZORVAK", classes: [9], status: "Registered", owner_name: owner,
+    owner_country: "DE", screen_verdict: "surface:in-scope-live" });
+  const block = (n, records) => ({ state: "enumerated", qid: `supp:primary-sweep:t:${n}`, query: "primary-sweep / exact-in-class-live", total_hits: records.length, records });
+  mkdirSync(dirname(P.registerBand("primary-sweep")), { recursive: true });
+  writeFileSync(P.registerBand("primary-sweep"), JSON.stringify([block(1, [rec("a1", "Alpha Holdings Limited")])]));
+  writeFileSync(P.registerUnit("primary-sweep"), "# primary-sweep\n\nThe unit's notes.\n");
+  const ctx = { paths: P, axes: ["primary-sweep"], job: { markName: "QZORVAK", classes: [9] }, profile: null, run: { slug: "qz", codename: "remerge" } };
+  deriveNamedBand(ctx);
+  const first = readFileSync(P.registerNamedBand, "utf8");
+  // The ceiling stands just above the first merge, so the band the re-run grows is past it. The measure is handed the
+  // size of the band as it would be written.
+  const measured = [];
+  const refusing = (bytes) => { measured.push(bytes); return bytes > Buffer.byteLength(first) ? ["placement-inquiry"] : []; };
+  writeFileSync(P.registerBand("primary-sweep"), JSON.stringify([block(1, [rec("a1", "Alpha Holdings Limited")]), block(2, [rec("b1", "Beta GmbH")])]));
+  assert.equal(remergeIfBandsMoved(ctx, "escalation", { refusing }), false, "a band a reading stage would refuse was adopted");
+  assert.equal(readFileSync(P.registerNamedBand, "utf8"), first, "the earlier merge does not stand");
+  assert.equal(remergeIfBandsMoved(ctx, "escalation", { refusing }), false);
+  assert.equal(measured.length, 1, "the band refused as it stands was merged and measured again");
+  const ev = () => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+  assert.deepEqual(ev().filter((e) => e.event === "named-band-remerge-over-ceiling").map((e) => [e.why, e.stages, e.bytes > Buffer.byteLength(first)]),
+    [["escalation", ["placement-inquiry"], true]], "the run record does not say the band was refused, by whom and at what size");
+  // The band moves again and is back under the ceiling: it is merged, and the size measured is the size written.
+  writeFileSync(P.registerBand("primary-sweep"), JSON.stringify([block(1, [rec("a1", "Al")])]));
+  assert.equal(remergeIfBandsMoved(ctx, "escalation", { refusing }), true, "a band under the ceiling was not merged again");
+  assert.equal(statSync(P.registerNamedBand).size, measured.at(-1), "the size measured before adoption is not the size of the band written");
+  assert.deepEqual(ev().filter((e) => e.event === "named-band-remerged").map((e) => e.why), ["escalation"]);
 });
 
 // ── whole runs: a resumed run whose warm re-run adds a live identical record ──

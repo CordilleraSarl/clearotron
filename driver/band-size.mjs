@@ -118,6 +118,16 @@ export function limitExceedsCeiling(sec) {
   return Number.isFinite(sec) && sec > LIMIT_CEILING_SEC;
 }
 
+/**
+ * The band-reading stages whose dispatch would refuse a band of `bytes`: each stage's own base, derived from the band's
+ * bytes as `stageOnce` derives it, against the same ceiling. `baseOf` gives a stage's base (the stage table's
+ * `timeoutSec`). A band that cannot be measured refuses nothing, as its dispatch returns the base. PURE.
+ */
+export function stagesRefusingBand(bytes, baseOf) {
+  if (!Number.isFinite(bytes)) return [];
+  return [...BAND_READING_STAGES].filter((s) => limitExceedsCeiling(derivedLimitSec(baseOf(s), { bytes }).sec));
+}
+
 /** The refusal a dispatch past the ceiling carries — it NAMES the size, which is the finding. PURE. */
 export function ceilingRefusal(stage, derived) {
   const mb = Number.isFinite(derived?.inputBytes) ? (derived.inputBytes / (1024 * 1024)).toFixed(1) : "an unmeasured";

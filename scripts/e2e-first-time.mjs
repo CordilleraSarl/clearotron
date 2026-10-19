@@ -153,7 +153,7 @@ export const COUNTED_EVENTS = {
   "taint-quarantine": QUARANTINE,
   "ask-closure-unverified": REFUSED, "doubt-closure-unverified": REFUSED, "frame-reopen-fold-refused": REFUSED,
   "jx-entry-refused": REFUSED, "knockout-register-records-refused": REFUSED, "register-xcheck-refused": REFUSED,
-  "supplemental-fold-refused": REFUSED, "verdict-softening-not-adopted": REFUSED, "register-recall-refused": REFUSED,
+  "supplemental-fold-refused": REFUSED, "verdict-softening-not-adopted": REFUSED, "named-band-remerge-over-ceiling": REFUSED, "register-recall-refused": REFUSED,
   "auto-recovery-exhausted": RECOVERY, "auto-recovery-parked": RECOVERY, "corrective-rollback": RECOVERY,
   "parked-for-human": RECOVERY, "postponed": RECOVERY, "recovery-parked": RECOVERY, "taint-park": RECOVERY,
   "cancelled": "cancelled", "failed": "run failed", "form-repair": "form repair turn",

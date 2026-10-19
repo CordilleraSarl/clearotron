@@ -33,7 +33,7 @@ import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal } from "./band-size.mjs";
+  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
@@ -788,19 +788,44 @@ function axisBandsFingerprint(P, axes = []) {
  * to its axis band whatever it does to its notes, and placement, the reading step and the writer read the named band.
  * Only the code-side recheck merged again, so the records those re-runs found reached none of the three. Code only:
  * nothing is dispatched. Returns whether the band was merged again.
+ *
+ * A BAND A READING STAGE WOULD REFUSE IS NOT ADOPTED. Placement, the reading step and the writer each refuse a band past
+ * the size ceiling before they dispatch, and that refusal ends the run with no report. These re-runs alone can grow a
+ * band the first merge kept under it past it, where without this merge the run would have gone on reading the band as
+ * first merged. So the band is measured before it is adopted, by the test each stage applies at dispatch, and a band any
+ * of the three would refuse is not adopted: the earlier merge stands, and the records the re-runs found stay unread, as
+ * they were before this merge was made. The run record says so; the report does not, since no approved sentence states
+ * it. `refusing` is that test, injectable so a test can drive a refusal without a band of that size.
  */
-export function remergeIfBandsMoved(ctx, why) {   // @internal — driven by its test with a run's own files
+export function remergeIfBandsMoved(ctx, why, { refusing = (bytes) => stagesRefusingBand(bytes, (s) => STAGES[s]?.timeoutSec) } = {}) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
   if (ctx.bandsMergedAt == null) return false;   // nothing merged yet this pass: the fan-in merge reads every band
-  if (axisBandsFingerprint(P, ctx.axes) === ctx.bandsMergedAt) return false;
-  try { deriveNamedBand(ctx); runLog(P.runDir, { event: "named-band-remerged", why }); return true; }
+  const now = axisBandsFingerprint(P, ctx.axes);
+  if (now === ctx.bandsMergedAt || now === ctx.bandsRefusedAt) return false;   // unmoved, or already refused as it stands
+  try {
+    const merged = mergeRegisterBands(P, ctx.axes ?? []);
+    if (!merged.invalid.length) {
+      const bytes = Buffer.byteLength(namedBandText(merged.band));
+      const stages = refusing(bytes);
+      if (stages.length) {
+        ctx.bandsRefusedAt = now;
+        runLog(P.runDir, { event: "named-band-remerge-over-ceiling", why, bytes, stages });
+        note(`${why}: the band merged again would be ${(bytes / (1024 * 1024)).toFixed(1)} MB, more than ${stages.join(", ")} can be dispatched over — the earlier merge stands, and the records the re-run found stay unread`);
+        return false;
+      }
+    }
+    deriveNamedBand(ctx, merged); runLog(P.runDir, { event: "named-band-remerged", why }); return true;
+  }
   catch (e) { note(`${why}: the named band could not be merged again (${String(e?.message ?? e).slice(0, 100)}) — the earlier merge stands`); return false; }
 }
 
-export function deriveNamedBand(ctx) {   // @internal — driven by its test with a run's own files
+/** The named band as it is written to disk: what a dispatch over it measures. */
+const namedBandText = (band) => JSON.stringify(band, null, 2) + "\n";
+
+export function deriveNamedBand(ctx, merged = null) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
   const axes = ctx.axes ?? [];
-  const { band, axes: ok, invalid } = mergeRegisterBands(P, axes);
+  const { band, axes: ok, invalid } = merged ?? mergeRegisterBands(P, axes);   // a caller that measured the merge first hands it in
   const mergedFrom = axisBandsFingerprint(P, axes);
   if (invalid.length) {
     const detail = invalid.map((x) => `${x.axis}:${x.reason}`).join("; ");
@@ -809,7 +834,7 @@ export function deriveNamedBand(ctx) {   // @internal — driven by its test wit
   }
   try {
     const tmp = P.registerNamedBand + ".tmp";
-    writeFileSync(tmp, JSON.stringify(band, null, 2) + "\n");
+    writeFileSync(tmp, namedBandText(band));
     renameSync(tmp, P.registerNamedBand);
     ctx.bandsMergedAt = mergedFrom;
     runLog(P.runDir, { event: "named-band-merged", axes: ok, enumerated: band.enumerated.length, crowds: band.crowds.length });
