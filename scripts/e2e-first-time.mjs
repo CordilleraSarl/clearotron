@@ -196,7 +196,7 @@ export const NOT_COUNTED_EVENTS = {
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
     "knockout-sweep-total", "level-scope-note",
-    "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
+    "named-band-merged", "named-band-remerged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred",
     // the review after a delivery-check repair: its record, the record of its one correction, a reviewer queued
