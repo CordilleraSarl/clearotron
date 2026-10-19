@@ -323,6 +323,34 @@ test("claude: a change to a decision alone, after the reading step and the write
   }
 });
 
+// ── a narrow repair of the writer: no general order to check the grounds, the decisions file still among its inputs ──
+// Ruled 2026-10-19: the lint repair and the strict-parse re-emits fix only what they name, so they are not handed the
+// set-asides with the order to check each ground. A fresh correction still is (the tests below).
+for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
+  test(`${engine}: the writer's lint repair is not told placement's set-asides, and still names the decisions file among its inputs`, async () => {
+    const { prompts } = await runMockPipeline({ ...env, MOCK_NARRATIVE_OVER_CAP: "1", MOCK_PLACEMENT_SET_ASIDE: GROUND });
+    const repairs = prompts.filter((p) => p.includes("The deterministic pre-delivery checks found these faults"));
+    assert.ok(repairs.length, `guard: the ${engine} engine sent the writer its lint repair`);
+    for (const p of repairs) {
+      assert.ok(!p.includes(PLACEMENT_SET_ASIDES_INTRO), "the lint repair was handed the order to check each set-aside's ground");
+      assert.ok(p.includes("placement-decisions.json"), "the lint repair lost the decisions file from its inputs");
+    }
+    const writer = sent(prompts, "Produce the joint synthesis narrative");
+    assert.ok(writer.length && writer[0].includes(PLACEMENT_SET_ASIDES_INTRO), "guard: the writer's first dispatch was told the set-aside");
+  });
+}
+
+test("the four narrow repairs, and no other follow-up of the writer or the reading step, dispatch without the set-asides", async () => {
+  const { NARROW_REPAIR_TRIGGERS } = await import("../pipeline.mjs");
+  const { REPAIR_COMPOSERS, composerFor } = await import("../repair-composers.mjs");
+  const narrow = ["*:lint-repair", "synthesis:finding-reemit", "synthesis:action-reemit", "synthesis:ask-answer-reemit"];
+  assert.deepEqual(narrow.map((k) => composerFor(k)?.trigger).filter((t) => !NARROW_REPAIR_TRIGGERS.has(t)), [],
+    "a narrow repair dispatches with a trigger the set-asides switch does not know");
+  assert.deepEqual([...NARROW_REPAIR_TRIGGERS].sort(), narrow.map((k) => composerFor(k).trigger).sort(), "the switch holds a trigger no narrow repair uses");
+  const wider = REPAIR_COMPOSERS.filter((c) => !narrow.includes(c.key) && /^(synthesis|register-digest)(:|$)/.test(String(c.key)) && NARROW_REPAIR_TRIGGERS.has(c.trigger));
+  assert.deepEqual(wider.map((c) => c.key), [], "a substantive correction of the writer or the reading step would lose the set-asides");
+});
+
 // ── a fresh correction of the writer: given the decisions as they stand, on each engine ──
 const CORRECTION = "your earlier synthesis is not in your context, and you do NOT redo it from scratch";
 const REVIEW_ASKS = { MOCK_VERDICT: "CONDITIONAL", MOCK_VERDICT_DEFECTS: "- the first review's point about the coined element (probe)" };

@@ -135,7 +135,7 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.equal(status.review.signoff, "CLEAR");
 
     // the earlier state is history: an audit written before the repair, stating G1, is kept
-    const keptAudits = readdirSync(join(rd, "_history")).filter((d) => d.includes("-delivered-record-"))
+    const keptAudits = readdirSync(join(rd, "_history")).filter((d) => d.includes("-audit-and-trace-"))
       .map((d) => join(rd, "_history", d, "audit.md")).filter((f) => existsSync(f));
     assert.ok(keptAudits.some((f) => readFileSync(f, "utf8").includes(`- rationale: ${G1}`)), "the audit that stated the earlier ground was not kept");
   });

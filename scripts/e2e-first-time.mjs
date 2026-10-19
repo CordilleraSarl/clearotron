@@ -75,7 +75,7 @@ export const COUNTED_EVENTS = {
   "crowd-context-failed": FAILED, "delivery-stale-blocked": FAILED, "digest-flush-failed": FAILED,
   "digest-flush-timeout": FAILED, "document-coverage-render-failed": FAILED, "doubts-failed": FAILED,
   "evidence-claim-invariant": { kind: FAILED, when: (e) => e.ok === false || Number(e.violations) > 0 },
-  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "audit-rebuild-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
+  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
   "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
@@ -196,7 +196,7 @@ export const NOT_COUNTED_EVENTS = {
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
     "knockout-sweep-total", "level-scope-note",
-    "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
+    "named-band-merged", "named-band-remerged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred",
     // the review after a delivery-check repair: its record, the record of its one correction, a reviewer queued
@@ -226,7 +226,7 @@ export const NOT_COUNTED_EVENTS = {
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
     "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
-    "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "audit-rebuilt",
+    "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
