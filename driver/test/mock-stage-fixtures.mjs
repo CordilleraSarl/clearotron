@@ -1088,12 +1088,13 @@ export function mockUnitBandWrite(runDir, axis, msg = "") {
   // refresh over it) would then read the axis unexecuted. Merge: fresh blocks + any prior QID block this
   // re-emit did not restamp.
   const fresh = JSON.parse(namedBand(axis, msg));
-  // MOCK_ESCALATION_ADDS_FLOOR=<axis>: the escalation's re-run of that axis returns one more record, a floor (the same
-  // mark, live in the class, another owner), so the band placement read moves under it after placement ran.
+  // MOCK_ESCALATION_ADDS_FLOOR=<axis>: a warm re-run of that axis returns one more record, live in the class and held by
+  // another owner, so the band placement read moves under it after placement ran. Its mark is the mark itself, a floor,
+  // unless MOCK_ESCALATION_ADDS_MARK names another.
   const reRun = /RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg);
   if (reRun && process.env.MOCK_ESCALATION_ADDS_FLOOR === axis) {
     const block = fresh.find((b) => b?.state === "enumerated" && Array.isArray(b.records));
-    if (block) { block.records.push({ record_id: "/mark/us/90000077", mark_text: "NOVAPULSE", classes: [9], status: "Registered",
+    if (block) { block.records.push({ record_id: "/mark/us/90000077", mark_text: process.env.MOCK_ESCALATION_ADDS_MARK || "NOVAPULSE", classes: [9], status: "Registered",
       owner_name: "Second Owner GmbH", owner_country: "US", screen_verdict: "surface:in-scope-live" }); block.total_hits = block.records.length; }
   }
   const freshQids = new Set(fresh.filter((b) => b && b.qid).map((b) => b.qid));

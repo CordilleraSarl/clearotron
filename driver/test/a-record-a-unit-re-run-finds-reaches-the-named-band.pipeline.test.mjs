@@ -80,7 +80,7 @@ const PARK_AT_DIGEST = "You are register DIGEST mode";
 const ESCALATE = "- transliteration-numeric extra script group looks thin\n\n## Escalation decisions\nESCALATE: transliteration-numeric — sweep the extra script group";
 
 async function runMockPipeline(root, env, codename = null) {
-  for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_PLACEMENT_NO_SIBLING", "MOCK_ESCALATION_ADDS_FLOOR",
+  for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_PLACEMENT_NO_SIBLING", "MOCK_ESCALATION_ADDS_FLOOR", "MOCK_ESCALATION_ADDS_MARK",
     "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root,
@@ -127,10 +127,34 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.ok(r.ev2.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "the moved band did not queue the reading step's re-run");
     const recall = r.ev2.filter((e) => e.event === "recall-reconciliation");
     assert.ok(recall.some((e) => e.trigger === "settlement-flush" && e.candidates === 22), `the record did not reach the recall reconciliation: ${JSON.stringify(recall.map((e) => [e.trigger, e.candidates]))}`);
+    // assessed in the run, and never held (the owner's rulings of 2026-10-19): placement placed nothing new for it and the
+    // reading step left it unended, so the delivered report names it once, as the floor it is
+    assert.deepEqual(r.ev2.filter((e) => e.event === "late-evidence").map((e) => e.records), [1], "the late record was not assessed");
+    assert.equal(r.p2.res.ok, true, JSON.stringify({ fail: r.p2.res.fail, stage: r.p2.res.failedStage }));
+    assert.ok(!r.ev2.some((e) => e.event === "failed"), "the run was stopped");
+    assert.equal(r.verdict?.verdict, "CONDITIONAL");
+    assert.ok(r.duty.rows.some((f) => f.record_id === ADDED && f.disposition === "unanswered"), "the floor does not count the record");
+    assert.ok(!r.ev2.some((e) => e.event === "recall-reconciliation-unended-delivered"), "the recall gate named a record the floor's clause names");
   });
 }
 
-test("claude: a record the envelope close adds reaches the named band, the shape and the floor of the repeated placement pass", async () => {
+test("claude: a record the reading step leaves unended after the run's recovery is named in the delivered report, never a stopped run", async () => {
+  const { clauseForDefect } = await import("../terminal-clamp.mjs");
+  // a record of the mark's dominant element in a longer mark: a record the recall gate weighs, and not a floor
+  const r = await resumeWithAddedRecord({}, "transliteration-numeric", { MOCK_SKEPTIC: ESCALATE, MOCK_ESCALATION_ADDS_MARK: "NOVAPULSE MOBILE" });
+  assert.ok(r.inNamedBand, "guard: the record reached the named band");
+  assert.ok(!r.floorInShape, "guard: the record is not a floor");
+  assert.equal(r.p2.res.ok, true, JSON.stringify({ fail: r.p2.res.fail, stage: r.p2.res.failedStage }));
+  assert.ok(!r.ev2.some((e) => e.event === "failed"), "the run was stopped");
+  const gap = r.ev2.filter((e) => e.event === "recall-reconciliation-unended-delivered");
+  assert.equal(gap.length, 1, "the recall gate did not state the gap");
+  assert.equal(r.verdict?.verdict, "CONDITIONAL");
+  const clause = clauseForDefect("recall_reconciliation_unended", gap[0].records, gap[0].candidates);
+  assert.ok(r.verdict.clauses.includes(clause), `the verdict does not carry the approved sentence: ${JSON.stringify(r.verdict.clauses)}`);
+  assert.equal(clause, clauseForDefect("synthesis_unaccounted_delivered", gap[0].records, gap[0].candidates), "the gap is not said in the approved sentence");
+});
+
+test("claude: a record the envelope close adds reaches the named band, the shape and the floor of the placement pass that assesses it", async () => {
   const r = await resumeWithAddedRecord({}, "primary-sweep", {});
   assert.ok(r.ev2.some((e) => e.event === "stage" && e.stage === "register-unit:primary-sweep" && e.trigger === "envelope"), "guard: the envelope close re-ran the unit");
   assert.ok(r.inAxisBand, "guard: the re-run added the record to its axis band");

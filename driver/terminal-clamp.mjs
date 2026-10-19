@@ -173,9 +173,14 @@ export function orderClausesForLede(clauses, reasons, guardSet) {
  * after 5.55 hours and the client received nothing instead of a report naming one gap. The caller
  * decides what the absence means.
  */
+// The approved sentence for surfaced records the report neither addresses nor sets aside. The recall gate finds the
+// same state, a retrieved record ending nowhere a reader can see, and since the owner's ruling of 2026-10-19 (never hold
+// a run) it ships that state instead of stopping: it is said in this same sentence, not a new one.
+const unaccountedRecords = (n, m) =>
+  `${n} of the ${m} register records this search surfaced are neither addressed as findings nor expressly set aside in this report — they remain open points a reader must weigh`;
 const CLAUSE_AUTHORITY = Object.freeze({
-  synthesis_unaccounted_delivered: (n, m) =>
-    `${n} of the ${m} register records this search surfaced are neither addressed as findings nor expressly set aside in this report — they remain open points a reader must weigh`,
+  synthesis_unaccounted_delivered: unaccountedRecords,
+  recall_reconciliation_unended: unaccountedRecords,
   floor_duty_undischarged: (n, m) =>
     `${n} of the ${m} live registrations identical or near-identical to the mark are not individually addressed in this report — each remains an open point a reader must weigh`,
 });

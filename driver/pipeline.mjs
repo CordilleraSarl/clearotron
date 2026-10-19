@@ -3153,8 +3153,31 @@ export function recordPlacementPass(ctx, r, trigger = null) {   // @internal —
   // changes only a set-aside's ground or a group's membership leaves a reader that already ran stale.
   try { writePlacementDecisions(ctx.paths); }
   catch (e) { runLog(ctx.paths.runDir, { event: "placement-decisions-failed", trigger, reason: String(e?.message ?? e).slice(0, 120) }); }
+  if (r?.ok === true && r?.skipped !== true) recordPlacementBandIds(ctx.paths);
   if (r?.ok === true && r?.skipped !== true && trigger !== "stale-repair") armFloorDuty(ctx.paths.runDir);
   return r;
+}
+
+const bandRecordIds = (band) => [...new Set((band?.enumerated ?? []).map((r) => String(r?.record_id ?? "").toLowerCase()).filter(Boolean))];
+
+/** The named band's record ids a placement pass that ran read, so a record the band gains after it is known as new. */
+function recordPlacementBandIds(P) {
+  try {
+    const ids = bandRecordIds(safeReadJson(P.registerNamedBand)).sort();
+    atomicWrite(driverDir(P.runDir, "placement-band-ids.json"), JSON.stringify({ count: ids.length, ids }) + "\n");
+  } catch (e) { runLog(P.runDir, { event: "placement-band-ids-failed", reason: String(e?.message ?? e).slice(0, 120) }); }
+}
+
+/**
+ * The records the named band holds that the last placement pass that ran never read. [] when it read every one, and
+ * when no pass recorded what it read (a run predating the record assesses nothing late). Ids, never the band's bytes:
+ * a count that moved is not a record placement has not seen. PURE over the run's files.
+ */
+export function lateRecordIds(P) {   // @internal — driven by its test with a run's own files
+  const seen = safeReadJson(driverDir(P.runDir, "placement-band-ids.json"));
+  if (!Array.isArray(seen?.ids)) return [];
+  const had = new Set(seen.ids);
+  return bandRecordIds(safeReadJson(P.registerNamedBand)).filter((id) => !had.has(id));
 }
 
 /**
@@ -12882,6 +12905,22 @@ async function pipelineInner(job, opts = {}) {
     // never re-fire on any later resume.
     if (!ctx.digestSettled) {
       const digestLockedFlush = existsSync(P.narrative) && !forceFromActive(ctx, "synthesis");
+      // ── LATE EVIDENCE IS ASSESSED BEFORE THE READING STEP'S LAST PASS AND THE WRITER (owner's ruling, 2026-10-19) ──
+      // A record the band gained after placement's pass (a unit's re-run, the code-side recheck) is placed or set aside
+      // by placement itself, through its own stage, before the flush below hands the reading step the placements and
+      // before the writer reads them. The form is a union, so every row placement accepted stands. Only ids placement
+      // never read run it again: a band whose counts alone moved costs nothing. Every path that grows the band after
+      // placement queues the reading step's re-run, so the flush below follows; one that did not is recorded.
+      if (!digestLockedFlush) {
+        const late = lateRecordIds(P);
+        if (late.length) {
+          runLog(run.runDir, { event: "late-evidence", records: late.length });
+          note(`late evidence: ${late.length} record(s) reached the band after placement's pass — placement assesses them before the reading step's next pass and the writer`);
+          const pass = recordPlacementPass(ctx, await stage("placement-inquiry", ctx, { force: true, trigger: "late-evidence" }), "late-evidence");
+          if (!pass?.ok) note(`late evidence: placement's pass did not complete (${String(pass?.fail ?? "").slice(0, 100)}) — its earlier account stands, and the floor and the recall gate state what it leaves open`);
+          if (!pendingItems(ctx.digestQueue).length) runLog(run.runDir, { event: "late-evidence-no-digest-work", records: late.length });
+        }
+      }
       if (!digestLockedFlush) await flushDigestQueue("pre-synthesis");
       else if (pendingItems(ctx.digestQueue).length) await flushDigestQueue("late");
       ctx.digestSettled = true;
@@ -13582,31 +13621,12 @@ async function pipelineInner(job, opts = {}) {
     // are settled by now; the corrective ladder above re-emitted findings last).
     enrichFindingDeadlines(P, run.runDir, note);
 
-    // ── P2-A pre-verdict floor: the reconciliation's hard discrepancy list BLOCKS delivery ──────────
-    // screened-live dominant-element candidates ∖ endings must be EMPTY before a report ships. The
-    // digest seam already spent its warm followups (runDigest → enforceRecallReconciliation, re-run
-    // after every rewrite incl. flushes); a non-empty list here means the run kept losing screened
-    // records after repair — that is a defect to fail loudly on, never residue to disclose around
-    // (charter P2a; the Round-2 ruling: silent death of a retrieved record is the one class that
-    // never ships). Absent/not-computable artifacts never block (legacy runs, prose-only manifests,
-    // register-gap runs — the gate polices only what this code derived).
-    //
-    // ROUND-2 FIX (review problem 7): the throw stamps failClass "deterministic", like every other
-    // code-derived floor of this kind (the fan-in throws at :320/:3723/:4061). The list is computed
-    // from the run's own artifacts by pure code, so a fresh sample re-derives it identically — the
-    // park the "unknown" classification used to buy (this reason text misses repairs.mjs
-    // DETERMINISTIC_RE, so classifyFailureReason returned "unknown" and decideRecovery granted a full
-    // pipeline resume) is provably futile. Throw-site stamping always wins over the text guess, which
-    // is why the token is NOT added to DETERMINISTIC_RE.
-    {
-      const rec = safeReadJson(P.recallReconciliation);
-      if (rec?.computable === true && (rec.totals?.unended ?? 0) > 0) {
-        const sample = (rec.unended ?? []).slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`).join("; ");
-        throw new StageFailure("recall-reconciliation",
-          `recall_reconciliation_unended:${rec.totals.unended} — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling): ${sample}${rec.totals.unended > 4 ? " …" : ""} — a report never ships losing screened candidates silently`,
-          undefined, { failClass: "deterministic" });
-      }
-    }
+    // ── P2-A pre-verdict floor: the reconciliation's hard discrepancy list ─────────────────────────
+    // screened-live dominant-element candidates ∖ endings is read here as it always was, and it no longer THROWS:
+    // the owner's ruling of 2026-10-19 (874, "never hold a run") replaces the Round-2 rule that this one class never
+    // ships. The run first recovers what it can in-run (the digest seam's warm followups; placement assessing late
+    // evidence before the writer); whatever is still unended ships NAMED, through the terminal guards' deliver-and-clamp
+    // (`clampOnTheRecallGate`, beside the floor duty's clamp below), never as a run that delivers nothing.
 
     // ── — THE TERMINAL GUARDS DELIVER AND CLAMP; THEY DO NOT WITHHOLD ───────────
     //
@@ -13662,6 +13682,34 @@ async function pipelineInner(job, opts = {}) {
       }
     };
 
+    // THE RECALL GATE, DELIVERED AND CLAMPED (owner's ruling 874, 2026-10-19: never hold a run). A retrieved record still
+    // ending nowhere a reader can see after the run's recovery ships named, in the approved sentence for the same state,
+    // counted in records out of the records the gate weighed. A record another clause already names (the writer's duty,
+    // the floor) is left to it, so no record is counted twice. Returns the count it clamped on, or 0.
+    const clampOnTheRecallGate = (duty = null) => {
+      const rec = safeReadJson(P.recallReconciliation);
+      if (rec?.computable !== true || !((rec.totals?.unended ?? 0) > 0)) return 0;
+      // A record the writer's duty or the floor's clamp already names is left to that clause: one record, one sentence.
+      // The floor's rows count only where its clamp fires, so a record is never left unnamed by both.
+      const floorNames = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) })
+        ? (safeReadJson(P.floorDuty)?.rows ?? []).filter((r) => r?.disposition !== "accounted").map((r) => String(r?.record_id ?? "").toLowerCase())
+        : [];
+      const alreadyNamed = new Set([...(duty?.computable === true ? duty.unaccounted : []).map((u) => String(u?.uri ?? "").toLowerCase()), ...floorNames]);
+      const unended = (rec.unended ?? []).filter((u) => !(u.candidate_records ?? [u.record_id])
+        .some((x) => alreadyNamed.has(String(x).toLowerCase())));
+      const records = [...new Set(unended.flatMap((u) => u.candidate_records ?? [u.record_id]).map((x) => String(x).toLowerCase()))];
+      const weighed = Number(rec.totals?.candidates ?? 0);
+      if (!records.length || !(weighed > 0)) return 0;
+      const sample = unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`).join("; ");
+      deliverAndClamp({
+        event: "recall-reconciliation-unended-delivered",
+        defect: `recall_reconciliation_unended:${records.length}`,
+        detail: { positions: unended.length, records: records.length, candidates: weighed },
+        reason: `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery: ${sample}. The report ships with these named rather than being withheld.`,
+        clause: clauseForDefect("recall_reconciliation_unended", records.length, weighed),
+      });
+      return records.length;
+    };
     // ── — THE FLOOR DUTY, DISCLOSED AND CLAMPED AT DELIVERY (it BLOCKED until) ───
     //
     // The floors are placement-inquiry's one UNCAPPED obligation — every live in-class identical or
@@ -13753,6 +13801,7 @@ async function pipelineInner(job, opts = {}) {
           clause: clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
         });
       }
+      clampOnTheRecallGate(duty);   // the recall gate's gap, beside the writer's duty (defined above the floor's block)
     }
 
       clampOnTheFloorDuty();

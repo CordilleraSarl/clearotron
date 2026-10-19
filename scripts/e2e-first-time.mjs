@@ -75,7 +75,7 @@ export const COUNTED_EVENTS = {
   "crowd-context-failed": FAILED, "delivery-stale-blocked": FAILED, "digest-flush-failed": FAILED,
   "digest-flush-timeout": FAILED, "document-coverage-render-failed": FAILED, "doubts-failed": FAILED,
   "evidence-claim-invariant": { kind: FAILED, when: (e) => e.ok === false || Number(e.violations) > 0 },
-  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
+  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
   "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
@@ -196,7 +196,7 @@ export const NOT_COUNTED_EVENTS = {
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
     "knockout-sweep-total", "level-scope-note",
-    "named-band-merged", "named-band-remerged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
+    "named-band-merged", "named-band-remerged", "late-evidence", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred",
     // the review after a delivery-check repair: its record, the record of its one correction, a reviewer queued
@@ -215,7 +215,7 @@ export const NOT_COUNTED_EVENTS = {
     "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
-    "audit-not-built-no-findings",
+    "audit-not-built-no-findings", "recall-reconciliation-unended-delivered", "late-evidence-no-digest-work",
     "ask-closure-mark-owed", "classifier-gap", 
     "connotation-addressed-not-discharged", "connotation-ruling-drift", "default-territory-unrecognized", "delivery-flags",
     "enforcer-signals", "findings-actions-legacy", "findings-schema-legacy", "floor-duty-undischarged",
@@ -271,7 +271,7 @@ export const COUNTED_TRIGGERS = {
   // the blind frame or the form oracle named what the first frame and sweep missed
   "frame-reopen": REASK,
   "frame-reopen-retry": RETRY, "grid-ledger": REASK, "intake-asks-followup": REASK, "lint-repair": REPAIR,
-  "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR,
+  "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR, "late-evidence": REPAIR,
   // the review after a delivery-check repair re-reads what that repair changed; its one correction applies the
   // flags that review raised
   "post-repair-review": REPAIR, "post-repair-corrective": REASK,
