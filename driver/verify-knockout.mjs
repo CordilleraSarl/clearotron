@@ -3,8 +3,8 @@
 // verify-knockout.mjs — validators + gates for the KNOCKOUT (Depth 1) lane.
 // Same contract as verify.mjs validators: (file, text) -> {ok, reason?} for per-stage outputs (they ride
 // runStage's corrective ladder), plus code-side gates for the merged findings and the pre-publish lint.
-// The receipts discipline: every cited URL must appear in THAT mark's raw research payload — the knockout
-// analogue of the band-truth gate (a finding the driver cannot trace to held evidence is treated as
+// The receipts discipline: every cited URL must appear in THAT mark's raw research payload or in the register
+// records supplied for that mark — the knockout analogue of the band-truth gate (a finding the driver cannot trace to held evidence is treated as
 // fabricated). It runs at three doors and has NO off switch: CLEAROTRON_KNOCKOUT_URL_GATE is deleted.
 // An env var that disarms a gate makes the gate's absence look exactly like its pass, which is the one
 // failure mode this lane's gates exist to refuse.
@@ -127,8 +127,10 @@ export function knockoutReceipts(runDir, marks) {
       for (const url of cited) {
         checked.urls += 1;
         if (records != null && urlInPayload(url, records)) continue;   // a filing supplied for this mark
-        if (payload == null) { failures.push(`knockout_url_unreceipted:${m.name}: cites "${url}" but the mark has no research payload — a degraded mark cannot cite URLs`); continue; }
-        if (!urlInPayload(url, payload)) failures.push(`knockout_url_unreceipted:${m.name}: "${url}" does not appear in the mark's research payload — cite only held evidence`);
+        // One refusal for both branches (design's wording, 2026-10-19): the register records supplied for the mark are
+        // held evidence too, so a refusal never tells the model to drop one of them.
+        if (payload == null || !urlInPayload(url, payload))
+          failures.push(`knockout_url_unreceipted:${m.name}: "${url}" does not appear in the mark's own research payload or in the register records supplied for that mark — cite only held evidence`);
       }
     }
   }

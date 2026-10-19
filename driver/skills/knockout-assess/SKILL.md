@@ -31,9 +31,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
    `findings[]` record carries one conflicting name, its owner, its band, its evidence and its ground.
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
-   the band and renumbers, so what your order decides is the order inside a band. Every cited URL must appear in THAT mark's
-   research payload — the receipts gate refuses a citation the driver cannot trace, at the chunk, at
-   the merged artifact and again at publish.
+   the band and renumbers, so what your order decides is the order inside a band. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
 6. **RETIRED — you are given the filings now, so you do not estimate them.**
    This ordered an expectation sentence ("moderate volume of filings expected") and forbade a register
    conclusion, because this seat could not see the register lane. It can: the run's fetched records are
