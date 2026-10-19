@@ -10,7 +10,8 @@
 // reading step and the writer are given. Here rather than in the pipeline so that the MCP server's rebuild of a
 // missing audit, which loads no publishing code, delivers the same rows the driver's audit builder does. Reads the
 // run's files; never writes them.
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { dirname } from "node:path";
 import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName } from "./placement-form.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput } from "./placement-form-io.mjs";
@@ -39,9 +40,10 @@ export function placedUriRows(P) {
  * every line read, because the shape may have been derived again since: a resumed run derives it afresh, and a
  * record body fetched after placement can move a line out of the list the goods test could not place and into a
  * group. A row taken on the earlier shape then covers no line the later one added. `placedUris` are the records
- * the placements carry. Nothing is written back. PURE.
+ * the placements carry, and `rows` the form's own rows, from which the union reads the lines placement placed.
+ * Nothing is written back. PURE.
  */
-export function standingSetAside(entries, input, { placedUris = [] } = {}) {
+export function standingSetAside(entries, input, { placedUris = [], rows = [] } = {}) {
   const all = Array.isArray(entries) ? entries : [];
   const index = buildSelectionIndex(input);
   const placedLines = new Set([...placedUris].map((u) => lineKey(index.resolve(u))).filter(Boolean));
@@ -51,7 +53,10 @@ export function standingSetAside(entries, input, { placedUris = [] } = {}) {
   }).map((e) => ({ ...e, key: lineKey(index.resolve(e.set_aside)) }));
   const grouped = all.filter(isSetAsideGroupRow);
   if (!grouped.length) return named;
-  const { form } = unionPlacementForm({ rows: [], set_aside: grouped }, null, input);
+  // A group's row is taken again beside the lines placement placed (`rows`, the form's own) and the ones it named that
+  // still stand, so the lines it covers and the floors it leaves are counted as the fate count reads them: neither a
+  // placed line nor a named one is the row's, and a placed floor is not one it leaves.
+  const { form } = unionPlacementForm({ rows: Array.isArray(rows) ? rows : [], set_aside: [...named, ...grouped] }, null, input);
   return [...named, ...form.set_aside_groups];
 }
 
@@ -62,7 +67,7 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
     const placedUris = placedUriRows(P).map((r) => r.uri);
-    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris }), buildSelectionIndex(input), input.groups, input.floors,
+    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris, rows: form.rows }), buildSelectionIndex(input), input.groups, input.floors,
       { placedUris });
   } catch { return () => null; }
 }
@@ -92,32 +97,55 @@ export function placementFloorDecisionLines(P) {   // @internal — driven by it
 }
 
 /**
- * PLACEMENT'S ACCEPTED SET-ASIDES, AS THE READING STEP AND THE WRITER ARE TOLD THEM: one line per set-aside that
- * stands on the run's files (`standingSetAside`: a group's row checked again on the shape, a set-aside by name only
- * while the band holds its record and no placement places its line), each with its ground and the records it
- * covers. A name's line gives the record, as the record tools open it; a group's row its name, its count and the
- * lines it covers, which are the group's lines placement neither placed nor named, and the floors it leaves to be
- * placed or named, where there are any. [] when nothing stands or nothing can be read. IMPURE (reads the run).
+ * PLACEMENT'S ACCEPTED SET-ASIDES THAT STAND ON THE RUN'S FILES, as data: one entry per decision (`standingSetAside`: a
+ * group's row checked again on the shape beside what placement placed and named, a set-aside by name only while the
+ * band holds its record and no placement places its line). A name's entry gives the record the record tools open, its
+ * mark and owner, its ground and, for a floor, what the ground is on; a group's row its name, the records in the group,
+ * the lines it covers (the group's lines placement neither placed nor named) and its ground, with every floor it leaves
+ * to be placed or named. [] when nothing stands or nothing can be read. IMPURE (reads the run).
  */
-export function placementSetAsideLines(P) {   // @internal — driven by its test with a run's own files
+export function standingPlacementDecisions(P) {   // @internal — driven by its test with a run's own files
   try {
     const form = readPlacementForm(P.runDir);
     if (!form.set_aside?.length) return [];
     const input = readPlacementFormInput(P.runDir);
     const index = buildSelectionIndex(input);
-    const listed = (ids) => `${ids.slice(0, 20).join(", ")}${ids.length > 20 ? `, and ${ids.length - 20} more` : ""}`;
-    return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri) }).flatMap((e) => {
+    return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri), rows: form.rows }).flatMap((e) => {
       if (!e?.ground) return [];
-      if (isSetAsideGroupRow(e)) {
-        const left = Array.isArray(e.floors_not_covered) ? e.floors_not_covered : [];
-        return [`- group (${groupName(e.set_aside_group)})'s row, ${Number(e.count ?? 0).toLocaleString("en-US")} records, covering ${Number(e.covers_lines ?? 0).toLocaleString("en-US")} lines: ${e.ground}`
-          + (left.length ? `; the floors it does not cover: ${listed(left)}` : "")];
-      }
+      if (isSetAsideGroupRow(e)) return [{ kind: "group", group: groupName(e.set_aside_group), records: Number(e.count ?? 0),
+        covers_lines: Number(e.covers_lines ?? 0), ground: e.ground, floors_not_covered: Array.isArray(e.floors_not_covered) ? e.floors_not_covered : [] }];
       const c = index.resolve(e.set_aside);
-      const on = e.on === "status" || e.on === "territory" ? ` on its ${e.on}` : "";
-      return [`- ${c?.mark ?? e.set_aside}${c?.owner ? ` — ${c.owner}` : ""} (${e.set_aside}): set aside${on}: ${e.ground}`];
+      return [{ kind: "name", record: e.set_aside, mark: c?.mark ?? null, owner: c?.owner ?? null, ground: e.ground,
+        ...(e.on === "status" || e.on === "territory" ? { on: e.on } : {}) }];
     });
   } catch { return []; }
+}
+
+/**
+ * THE SAME DECISIONS, AS THE READING STEP AND THE WRITER ARE TOLD THEM: one line each, under the approved introduction.
+ * A group's floors are listed up to twenty; beyond that the line says how many more there are and names the file that
+ * holds every one of them (`writePlacementDecisions`), so a shortened list never stands in for the whole. IMPURE.
+ */
+export function placementSetAsideLines(P, decisions = standingPlacementDecisions(P)) {   // @internal — driven by its test with a run's own files
+  const n = (x) => Number(x ?? 0).toLocaleString("en-US");
+  const listed = (ids) => (ids.length > 20 ? `${ids.slice(0, 20).join(", ")}, and ${n(ids.length - 20)} more, all listed in ${P.placementDecisions}` : ids.join(", "));
+  return decisions.map((d) => (d.kind === "group"
+    ? `- group (${d.group})'s row, ${n(d.records)} records in the group, covering ${n(d.covers_lines)} lines: ${d.ground}`
+      + (d.floors_not_covered.length ? `; the floors it does not cover: ${listed(d.floors_not_covered)}` : "")
+    : `- ${d.mark ?? d.record}${d.owner ? ` — ${d.owner}` : ""} (${d.record}): set aside${d.on ? ` on its ${d.on}` : ""}: ${d.ground}`));
+}
+
+/**
+ * The standing decisions, written where the reading step and the writer declare them as an input, so a change to a
+ * decision alone (a reason, a group's membership) makes a reader that already ran stale, and the delivery loop repeats
+ * it, as it does when the placements change. No clock: the file changes only when a decision does. Returns the
+ * decisions written. IMPURE (writes `_driver/placement-decisions.json`).
+ */
+export function writePlacementDecisions(P) {   // @internal — driven by its test with a run's own files
+  const decisions = standingPlacementDecisions(P);
+  mkdirSync(dirname(P.placementDecisions), { recursive: true });
+  writeFileSync(P.placementDecisions, JSON.stringify({ schema_version: 1, decisions }, null, 2) + "\n");
+  return decisions;
 }
 
 /**
@@ -132,7 +160,7 @@ export function placementAuditRows(P) {   // @internal — driven by its test wi
     if (!form.set_aside?.length) return [];
     const input = readPlacementFormInput(P.runDir);
     const index = buildSelectionIndex(input);
-    return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri) }).flatMap((e) => {
+    return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri), rows: form.rows }).flatMap((e) => {
       if (!e?.ground) return [];
       if (isSetAsideGroupRow(e)) return [{ source_layer: "Register", step: "placement", query: `group (${groupName(e.set_aside_group)})`,
         rationale: e.ground, result_summary: `${Number(e.count ?? 0).toLocaleString("en-US")} records` }];

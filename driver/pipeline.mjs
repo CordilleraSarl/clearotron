@@ -79,8 +79,9 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
-  placementRecallEndings } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
-export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings } from "./placement-decisions.mjs";
+  placementRecallEndings, writePlacementDecisions } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
+export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
+  standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
@@ -3113,6 +3114,10 @@ function recordPlacementSeam(ctx, r, trigger = null) {
 export function recordPlacementPass(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
   recordPlacementSeam(ctx, r, trigger);
   deriveFloorDuty(ctx, r, trigger);
+  // The decisions as they stand after this pass, where the reading step and the writer declare them: a pass that
+  // changes only a set-aside's ground or a group's membership leaves a reader that already ran stale.
+  try { writePlacementDecisions(ctx.paths); }
+  catch (e) { runLog(ctx.paths.runDir, { event: "placement-decisions-failed", trigger, reason: String(e?.message ?? e).slice(0, 120) }); }
   if (r?.ok === true && r?.skipped !== true && trigger !== "stale-repair") armFloorDuty(ctx.paths.runDir);
   return r;
 }
@@ -3131,7 +3136,8 @@ export function placementOwnerFates(P, placements) {   // @internal — driven b
     const evidence = readGoodsEvidence(P.runDir);
     const stateOf = Array.isArray(evidence?.records) ? new Map(evidence.records.map((r) => [normalizeRecordUri(r?.uri), r?.state])) : null;
     const placedUris = (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : []));
-    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(readPlacementForm(P.runDir).set_aside, input, { placedUris }), index,
+    const held = readPlacementForm(P.runDir);
+    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(held.set_aside, input, { placedUris, rows: held.rows }), index,
       placedUris,
       served: servedLines(input.groups, input.served, index),
       lineEvidence: stateOf ? (l) => stateOf.get(normalizeRecordUri(l?.record_id)) ?? null : null });
