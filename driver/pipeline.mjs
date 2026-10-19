@@ -6532,9 +6532,11 @@ function unreadRecordFindingOnly(runDir) {
  * A review after a repair that could not be read, ON RECORD. Its change went unreviewed, and the reviewer's own stamp
  * cannot be trusted to say so: a findings-only change does not move the files the reviewer declares, and a stage
  * that ends with no accepted call still reads ok whenever the earlier review's file stands, so its stamp is
- * refreshed over the repaired narrative. The run delivers all the same, as the released engine delivers it: a run is
- * never held on an unread review (owner's ruling, 2026-10-19). The record keeps what went unreviewed, and a resume
- * for any other cause reviews that change whole, until a review that is read replaces the record.
+ * refreshed over the repaired narrative. This record is never handed to the delivery guard: a run is not held on an
+ * unread review (owner's ruling, 2026-10-19), and such a run delivers as the released engine delivers it. The one
+ * boundary is the released engine's own: a reviewer whose re-run fails outright leaves its stamp stale on a changed
+ * narrative, and the freshness guard decides that, as it always has. The record keeps what went unreviewed, and a
+ * resume for any other cause reviews that change whole, until a review that is read replaces the record.
  */
 export function unreadRecordReview(runDir) {   // @internal
   try { return JSON.parse(readFileSync(postRepairRecordPath(runDir), "utf8"))?.status === "unread"; }
@@ -6611,7 +6613,8 @@ async function runPostRepairReview(ctx, P, run, scope) {
  * narrowed at all (a change to the record the scope cannot compare, or one an earlier review could not read, as on
  * a resume). It returns what runPostRepairReview returns, so its points go to the same one correction; adopting its
  * verdict alone would leave its flags unapplied. When it cannot be read, the record says the change was not reviewed
- * (`unreadRecordReview`). No unread review is a pass, and none holds the run: it delivers, as the released engine does. `rerun`
+ * (`unreadRecordReview`). No unread review is a pass, and the record never holds the run; a re-run that failed outright
+ * leaves the reviewer's stamp as the released engine leaves it, for the freshness guard. `rerun`
  * is the reviewer's own stale-repair arm.
  */
 async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
@@ -6627,7 +6630,7 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
     const fail = r?.ok ? "no-accepted-call" : String(r?.fail ?? "failed");
     writePostRepairRecord(runDir, { status: "unread", ...base, fail });
     runLog(runDir, { event: "post-repair-review", read: false, whole: true, fail: fail.slice(0, 120) });
-    note(`[post-repair] neither review of what the repair changed could be read back — it was not reviewed; the run's record says so, and the run delivers`);
+    note(`[post-repair] neither review of what the repair changed could be read back — it was not reviewed, and the run's record says so; ${r?.ok ? "the run delivers" : "the reviewer's re-run failed, so its stamp stays as it was and the freshness guard decides, as in the released engine"}`);
     return { reviewed: false };
   }
   const reviewText = readFileSync(P.seniorEyeReview, "utf8");
@@ -15626,7 +15629,7 @@ async function pipelineInner(job, opts = {}) {
             // A narrowed review that could not be read falls back to the whole review, whose points go to the same one
             // correction below: neither the stamp of a findings-only change nor that of a stage that ends ok on the
             // earlier review's file can show the change unread. When the whole review cannot be read either, its
-            // record keeps the change no review read, and the run delivers.
+            // record keeps the change no review read; the record holds nothing (see `unreadRecordReview`).
             if (!review.reviewed && scope.mode !== "whole") review = await runWholeReviewForRecord(ctx, P, run, scope, rerun);
             if (!review.reviewed) continue;
             staleRepaired.push(s2.label);
@@ -15776,9 +15779,9 @@ async function pipelineInner(job, opts = {}) {
         lint = lintNow();
         autoCorrectRegistry();
         staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
-        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, AND THE RUN STILL DELIVERS, as the released engine
-        // delivers it. Its record says so (`unreadRecordReview`); the guard is never handed that record, because a run
-        // is never held on an unread review (owner's ruling, 2026-10-19).
+        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, and its record says so (`unreadRecordReview`). The guard
+        // is never handed that record: a run is not held on an unread review (owner's ruling, 2026-10-19). What the guard
+        // reads here is staleness alone, as in the released engine.
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
       // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw
