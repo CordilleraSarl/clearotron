@@ -14489,6 +14489,8 @@ async function pipelineInner(job, opts = {}) {
     // A2 — full audit: DETERMINISTIC CODE (parse the spine tables → audit.md, count-guarded). Replaces the LLM
     // audit-emit (output varied 47↔69 on identical input). NON-FATAL: if it fails, the report still ships (publish
     // renders the report with no xlsx when audit.md is absent), and the audit self-recovers on a re-run.
+    // `rebuildDeliveredRecord` is set by the block once the audit is written: the delivery check calls it after a repair.
+    let rebuildDeliveredRecord = null;
     try {
       // One resolution per claim: hand the builder the run's OWN dispositions so a withdrawn conflict reads
       // as withdrawn on the audit surface too (it already does on report + client summary). Best-effort —
@@ -14509,6 +14511,8 @@ async function pipelineInner(job, opts = {}) {
       // mint below, the predelivery lint's `recordCarry` arms) reads THIS artifact rather than deriving
       // its own: two derivations from different inputs is what let the doubt ledger be roughly right
       // while the artifact and every lint arm were inverted.
+      // A resumed pass writes both again: what the earlier pass wrote is kept under _history first.
+      keepDeliveredRecordAsHistory(P, "earlier-pass");
       deriveRecordCarry(ctx, "publish", { findings: auditRunFindings ?? [] });
       // ── — AND NOW THE JOIN BETWEEN THE TWO ARTIFACTS THAT WERE EACH RIGHT ────────
       //
@@ -14905,16 +14909,18 @@ async function pipelineInner(job, opts = {}) {
       // _driver/reading-log.jsonl). Passed on any run that derived a band shape — an EMPTY array renders
       // the honest zero ("no lookups recorded"), because a band-consuming stage that read nothing is a
       // fact the audit must show, not hide. Legacy runs (no shape) pass null → no section, byte-identical.
-      let readingLog = null;
-      if (existsSync(P.bandShape)) {
-        readingLog = [];
+      const readReadingLog = () => {
+        if (!existsSync(P.bandShape)) return null;
+        const log = [];
         try {
           for (const line of readFileSync(P.readingLog, "utf8").split("\n")) {
             if (!line.trim()) continue;
-            try { readingLog.push(JSON.parse(line)); } catch { /* a torn tail line never kills the audit */ }
+            try { log.push(JSON.parse(line)); } catch { /* a torn tail line never kills the audit */ }
           }
         } catch { /* no lookups recorded — the empty array IS the disclosure */ }
-      }
+        return log;
+      };
+      const readingLog = readReadingLog();
       // item 33 — hand the builder the machine grid so the common-law search log is derived from the
       // tool-written per-term cells rather than from a heading the tagger has to match. Absent (pre-grid
       // archive, register-only run) it falls back to the prose tables, which is honest: those runs have
@@ -14961,6 +14967,25 @@ async function pipelineInner(job, opts = {}) {
       if (!a.counts.findings) throw new Error("0 findings parsed from the spine tables");  // count-guard
       writeFileSync(P.audit, a.md);
       runLog(run.runDir, { event: "audit", ...a.counts });   // — counts now carry doubtsOmitted
+      // THE TRACE AND THE AUDIT TRAIL, WRITTEN AGAIN OVER A REPAIR. Both describe this pass before the delivery check
+      // repairs anything, and a stage that check re-runs can change what they report: a repeated placement pass can
+      // reverse a set-aside or change its ground. Called after such a repair, this keeps the earlier pair under
+      // _history and writes both again from the run's files as they now stand, so what is delivered describes the
+      // decision that stands at delivery. The doubts and asks stand as this pass raised and closed them: nothing is
+      // dispatched again for them.
+      rebuildDeliveredRecord = (trigger) => {
+        keepDeliveredRecordAsHistory(P, trigger);
+        let findingsNow = [];
+        try { if (existsSync(P.findings)) findingsNow = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).findings ?? []; }
+        catch { /* the audit still builds, as above */ }
+        deriveRecordCarry(ctx, trigger, { findings: findingsNow });
+        const again = buildAuditMd(readFileSync(P.registerFindings, "utf8"), commonLawText,
+          { findings: findingsNow, doubts: runDoubts, asks: runAsks, readingLog: readReadingLog(), commonLawGrid, doubtTruncations, registerPresence,
+            placementRows: placementAuditRows(P) });
+        if (!again.counts.findings) throw new Error("0 findings parsed from the spine tables");
+        writeFileSync(P.audit, again.md);
+        runLog(run.runDir, { event: "audit-rebuilt", trigger, ...again.counts });
+      };
       note(`audit (code): ${a.counts.findings} findings, ${a.counts.negatives} negatives, ${a.counts.audit} audit-trail${a.counts.withdrawnStamped ? `, ${a.counts.withdrawnStamped} withdrawn-stamped` : ""}${a.counts.resolutionStamped ? `, ${a.counts.resolutionStamped} resolution-stamped` : ""}${runDoubts ? `, doubts ${a.counts.doubtsSettled} settled / ${a.counts.doubtsOpen} open` : ""}${a.counts.presenceRows != null ? `, register presence ${a.counts.presenceRows} row(s)` : ""}`);
     } catch (e) {
       note(`audit build failed (NON-FATAL — report still ships, audit will regenerate on re-run): ${e.message}`);
@@ -15658,6 +15683,15 @@ async function pipelineInner(job, opts = {}) {
           writeScopeFacts();
           applyScopeFrontMatter();
           applyRatedUnderFrontMatter();
+          // A repair that re-ran a stage the trace and the Audit Trail report has both written again, before the lint
+          // below reads the trace. A rebuild that fails leaves the earlier audit standing, as a failed first build leaves none.
+          if (rebuildDeliveredRecord && staleRepaired.some((l) => REBUILDS_THE_DELIVERED_RECORD.has(l))) {
+            try { rebuildDeliveredRecord("stale-repair"); }
+            catch (e) {
+              runLog(run.runDir, { event: "audit-rebuild-failed", trigger: "stale-repair", reason: String(e?.message ?? e).slice(0, 160) });
+              note(`stale-repair: the audit could not be written again (${String(e?.message ?? e).slice(0, 100)}) — the one written before the repair stands`);
+            }
+          }
         }
         // The AD-2 in-pass stale-repair arm for client-summary is retired with the stage
         // (2026-08-01): nothing generates that label, so it can never turn up stale here.
@@ -17951,6 +17985,26 @@ function cardsNeverBuilt(P, depth, firstPlan) {
   return owedCardOrdinals(P, depth)
     .filter((o) => !dispatched.has(o) && !readStamp(P.runDir, `report-card:${o}`))
     .map((o) => ({ label: `report-card:${o}`, changed: [{ name: `${o}.md`, was: null, now: null, via: "never-built" }] }));
+}
+
+/** The repaired stages whose output the record-carry trace or the Audit Trail reports. */
+const REBUILDS_THE_DELIVERED_RECORD = new Set(["placement-inquiry", "register-digest", "synthesis", "narrative-refutation"]);
+
+/**
+ * Keep the delivered record as it stands, the Audit Trail and the record-carry trace, under _history/<ts>-delivered-record-
+ * <reason>/ before either is written again, so a pass that writes them over a repair or a resume never loses what the
+ * earlier state said. Returns the directory, or null when there was nothing to keep. Best-effort, like every snapshot.
+ */
+export function keepDeliveredRecordAsHistory(P, reason) {   // @internal — driven by its test with a run's own files
+  const files = [P.audit, P.recordCarry].filter((f) => existsSync(f));
+  if (!files.length) return null;
+  try {
+    const ts = new Date().toISOString().replace(/[:.]/g, "-");
+    const dest = join(P.runDir, "_history", `${ts}-delivered-record-${reason}`);
+    mkdirSync(dest, { recursive: true });
+    for (const f of files) copyFileSync(f, join(dest, basename(f)));
+    return dest;
+  } catch { return null; }
 }
 
 /**

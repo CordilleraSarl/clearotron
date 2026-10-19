@@ -7,9 +7,11 @@
 // On a resumed run the delivery gate repeats a placement pass whose inputs moved after it was inherited, and the
 // report is rebuilt from the repeat. The floor was judged on the earlier pass. Now the same floor is applied to the
 // repeat's account, through the same clamp, so the verdict the client reads, the floor it was held to and the
-// verdict on record describe the one pass the report was built from. A repeat that answers every floor changes
-// nothing. Own file = own process + own workspace root; the workspace and the call ledger are pinned before any
-// driver module loads, so driver modules are imported dynamically. Every mark and owner is invented.
+// verdict on record describe the one pass the report was built from. The record-carry trace and the Audit Trail,
+// written before the repair, are written again after it, and the earlier pair is kept under _history. A repeat that
+// answers every floor changes nothing. Own file = own process + own workspace root; the workspace and the call ledger
+// are pinned before any driver module loads, so driver modules are imported dynamically. Every mark and owner is
+// invented.
 import { mkdtempSync as __mkdtemp, writeFileSync as __write } from "node:fs";
 import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";
 import { tmpdir as __tmpdir } from "node:os";
@@ -21,7 +23,7 @@ process.env.CLEAROTRON_REGISTER_CALL_LOG = LEDGER;
 __write(LEDGER, "");
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, chmodSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { mkdtempSync, chmodSync, readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -102,14 +104,15 @@ async function parkAndResume({ withFloor }) {
   const json = (f) => JSON.parse(readFileSync(f, "utf8"));
   const status = json(join(rd, "status.json"));
   const published = join(p2.root, "pool", status.runId);
-  return { p2, duty1, ev2, rd, json, status, published,
+  const kept = readdirSync(join(rd, "_history")).filter((d) => d.endsWith("delivered-record-stale-repair"));
+  return { p2, duty1, ev2, rd, json, status, published, kept,
     duty2: json(driverDir(rd, "floor-duty.json")), verdict: json(driverDir(rd, "verdict.json")),
     html: readFileSync(join(published, "report.html"), "utf8"), data: json(join(published, "report-data.json")), settle: json(join(published, "settle.json")) };
 }
 
 test("a repeated placement pass that leaves a floor unanswered is clamped, and the report, its verdict and the run record say so alike", async () => {
   const { clauseForDefect } = await import("../terminal-clamp.mjs");
-  const { p2, duty1, ev2, rd, json, status, duty2, verdict, html, data, settle } = await parkAndResume({ withFloor: true });
+  const { p2, duty1, ev2, rd, json, status, duty2, verdict, html, data, settle, kept } = await parkAndResume({ withFloor: true });
   // the earlier pass answered every floor it was given
   assert.ok(duty1.totals.floors > 0, "guard: the earlier pass had floors to answer");
   assert.equal(duty1.totals.accounted, duty1.totals.floors, `the earlier pass answered every floor: ${JSON.stringify(duty1.totals)}`);
@@ -140,10 +143,24 @@ test("a repeated placement pass that leaves a floor unanswered is clamped, and t
   assert.ok(html.includes(clause), "the report the client opens names the unanswered floor");
   assert.ok(readFileSync(join(rd, "audit.md"), "utf8").split("\n").some((l) => l.includes(NEW_FLOOR.record_id) && l.includes("unanswered at delivery")),
     "the audit trail lists the record as open at delivery");
+
+  // the trace delivered is the repeated pass's: placement saw the record and placed nothing for it, which the trace
+  // written before the repair could not say; that earlier trace and audit are kept as they stood
+  const carry = json(driverDir(rd, "record-carry.json"));
+  assert.equal(carry.trigger, "stale-repair", "the trace was not written again after the repair");
+  const row = carry.rows.find((r) => r.uri === NEW_FLOOR.record_id);
+  assert.deepEqual([row?.reach, row?.stopped_at, row?.reason], ["screened", "placement", "placement:not-selected"],
+    `the trace describes the record as it stood before the repair: ${JSON.stringify(row)}`);
+  assert.equal(kept.length, 1, "the earlier trace and audit were not kept");
+  const earlier = json(join(rd, "_history", kept[0], "record-carry.json"));
+  assert.deepEqual([earlier.trigger, earlier.rows.find((r) => r.uri === NEW_FLOOR.record_id)?.reach], ["publish", "retrieved"],
+    "the trace kept is not the one written before the repair");
+  assert.ok(existsSync(join(rd, "_history", kept[0], "audit.md")), "the audit written before the repair was not kept");
+  assert.deepEqual(ev2.filter((e) => e.event === "audit-rebuilt").map((e) => e.trigger), ["stale-repair"]);
 });
 
 test("a repeated placement pass that answers every floor changes nothing: the verdict stands and no clause is added", async () => {
-  const { duty1, ev2, duty2, verdict, html, data, status, settle, p2 } = await parkAndResume({ withFloor: false });
+  const { duty1, ev2, duty2, verdict, html, data, status, settle, p2, rd, json, kept } = await parkAndResume({ withFloor: false });
   assert.equal(duty2.trigger, "stale-repair", "the control reached the same repeat");
   assert.equal(duty2.totals.floors, duty1.totals.floors);
   assert.equal(duty2.totals.accounted, duty2.totals.floors, `every floor is still answered: ${JSON.stringify(duty2.totals)}`);
@@ -157,4 +174,8 @@ test("a repeated placement pass that answers every floor changes nothing: the ve
   const floorClause = /identical or near-identical to the mark are not individually addressed/;
   assert.ok(!verdict.clauses.some((c) => floorClause.test(c)) && !data.rating.conditions.some((c) => floorClause.test(c)), "no floor clause on record");
   assert.ok(!floorClause.test(html), "the report carries no floor clause");
+  // the trace is written again after the repair, and with nothing changed it says what it said before
+  assert.equal(kept.length, 1, "guard: the repair kept the earlier trace");
+  const [earlier, now] = [json(join(rd, "_history", kept[0], "record-carry.json")), json(driverDir(rd, "record-carry.json"))];
+  assert.deepEqual(now.totals, earlier.totals, "a repair that changed nothing changed the trace's counts");
 });
