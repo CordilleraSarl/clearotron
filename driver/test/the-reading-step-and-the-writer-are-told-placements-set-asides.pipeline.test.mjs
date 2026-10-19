@@ -164,7 +164,8 @@ async function runMockPipeline(env) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-sat-"));
   const calls = join(root, "engine-calls.jsonl");
   writeFileSync(LEDGER, "");
-  for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_PLACEMENT_SET_ASIDE", "MOCK_CLAUDE_CALL_LOG", "MOCK_CODEX_CALL_LOG", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_VERDICT_DEFECTS", "MOCK_SKEPTIC", "MOCK_PLACEMENT_SET_ASIDE", "MOCK_CLAUDE_CALL_LOG", "MOCK_CODEX_CALL_LOG", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH",
+    "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH", "MOCK_CODEX_RATELIMIT", "MOCK_CODEX_RATELIMIT_MATCH"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -201,16 +202,19 @@ test("THE CONTROL: a run whose placement set nothing aside tells neither stage o
 // The reading step's turn is rate-limited on the first pass, so the run parks with placement's form on disk. Before
 // the resume, `between` may change that form as a later placement pass would. Claude's engine; the list is read from
 // the run's files, whatever engine sends it, and the arms above send it on both.
-async function parkAndResume(between = null, { parkAt = "You are register DIGEST mode" } = {}) {
+const PARK_KNOBS = ["MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH", "MOCK_CODEX_RATELIMIT", "MOCK_CODEX_RATELIMIT_MATCH"];
+async function parkAndResume(between = null, { parkAt = "You are register DIGEST mode", engine = "claude", env = {} } = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-sat-resume-"));
   const calls = join(root, "engine-calls.jsonl");
   writeFileSync(LEDGER, "");
-  for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_PLACEMENT_SET_ASIDE", "MOCK_CLAUDE_CALL_LOG", "MOCK_CODEX_CALL_LOG", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY",
-    "CLEAROTRON_CODEX_PATH", "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_VERDICT_DEFECTS", "MOCK_SKEPTIC", "MOCK_PLACEMENT_SET_ASIDE", "MOCK_CLAUDE_CALL_LOG", "MOCK_CODEX_CALL_LOG", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY",
+    "CLEAROTRON_CODEX_PATH", ...PARK_KNOBS]) delete process.env[k];
+  const park = engine === "codex" ? { ...ON_CODEX, MOCK_CODEX_RATELIMIT: "1", MOCK_CODEX_RATELIMIT_MATCH: parkAt }
+    : { MOCK_CLAUDE_RATELIMIT: String(Math.floor(Date.now() / 1000) + 3600), MOCK_CLAUDE_RATELIMIT_MATCH: parkAt };
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_CLAUDE_CALL_LOG: calls,
-    MOCK_PLACEMENT_SET_ASIDE: GROUND, MOCK_CLAUDE_RATELIMIT: String(Math.floor(Date.now() / 1000) + 3600), MOCK_CLAUDE_RATELIMIT_MATCH: parkAt,
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    MOCK_CLAUDE_CALL_LOG: calls, MOCK_CODEX_CALL_LOG: calls, MOCK_PLACEMENT_SET_ASIDE: GROUND, ...park, ...env,
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   let first = null;
@@ -219,7 +223,7 @@ async function parkAndResume(between = null, { parkAt = "You are register DIGEST
   assert.ok(runDir && existsSync(join(runDir, "status.json")), "guard: the first pass left a run to resume");
   const parkedAt = existsSync(calls) ? readFileSync(calls, "utf8").trim().split("\n").filter(Boolean).length : 0;
   if (between) between(runDir);
-  delete process.env.MOCK_CLAUDE_RATELIMIT; delete process.env.MOCK_CLAUDE_RATELIMIT_MATCH;
+  for (const k of PARK_KNOBS) delete process.env[k];
   const codename = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")).codename;
   const { pipeline: resume } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await resume({ ...JOB }, { codename });
@@ -279,3 +283,33 @@ test("claude: a change to a decision alone, after the reading step and the write
     assert.ok(!list.at(-1).includes(GROUND), `${who} was still told the old ground`);
   }
 });
+
+// ── a fresh correction of the writer: given the decisions as they stand, on each engine ──
+const CORRECTION = "your earlier synthesis is not in your context, and you do NOT redo it from scratch";
+const REVIEW_ASKS = { MOCK_VERDICT: "CONDITIONAL", MOCK_VERDICT_DEFECTS: "- the first review's point about the coined element (probe)" };
+
+for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
+  test(`${engine}: the writer's correction, a fresh session, is told placement's set-aside with its ground`, async () => {
+    const { res, prompts } = await runMockPipeline({ ...env, ...REVIEW_ASKS, MOCK_PLACEMENT_SET_ASIDE: GROUND });
+    assert.ok(res, "guard: the run ran");
+    const corrections = sent(prompts, CORRECTION);
+    assert.ok(corrections.length, `guard: the ${engine} engine sent the writer a correction`);
+    assert.ok(corrections[0].includes(PLACEMENT_SET_ASIDES_INTRO) && corrections[0].includes(`: set aside on its status: ${GROUND}`),
+      "the correction lost the set-aside its first dispatch was told");
+  });
+
+  test(`${engine}: a set-aside a later pass reversed is gone from the writer's correction after the resume`, async () => {
+    const { prompts } = await parkAndResume((runDir) => {
+      // A later placement pass places the line the first pass set aside, before the correction runs again.
+      const input = readPlacementFormInput(runDir);
+      const held = readPlacementForm(runDir);
+      const { form } = unionPlacementForm(held, { rows: [{ select: held.set_aside[0].set_aside, tier: "sheet-2", reason: "the same mark, live in the class" }] }, input);
+      writePlacementForm(runDir, form);
+      writeFileSync(paths(runDir).placementModel, JSON.stringify(renderPlacementsJson(form.rows)));
+      writePlacementDecisions(paths(runDir));
+    }, { parkAt: CORRECTION, engine, env: REVIEW_ASKS });
+    const corrections = sent(prompts, CORRECTION);
+    assert.ok(corrections.length, `guard: the resume on ${engine} sent the writer a correction`);
+    for (const p of corrections) assert.ok(!p.includes(GROUND), "a correction was told a set-aside the later pass reversed");
+  });
+}

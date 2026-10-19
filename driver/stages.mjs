@@ -925,13 +925,16 @@ export function resolveSkillReads(name, ctx = {}) {
  * blocks, then the input pointers. The instruction stays FIRST IN INTENT — the two reference lines that
  * bracket it are addressed to a session that has nothing, and neither states a task.
  */
-export function composeFollowup(name, ctx, { followup, extra = null, inputs = [], cleared = [], changedInputs = null } = {}) {
+export function composeFollowup(name, ctx, { followup, extra = null, inputs = [], cleared = [], changedInputs = null, decisions = null } = {}) {
   const skills = [...new Set([...resolveSkillReads(name, ctx), ...(STAGES[name]?.followupSkillReads?.(ctx) ?? [])])];
   return lines(
     skills.length ? readsForReference(skills) : "",
     followup,
     clearedConstraint(cleared),
     extra || "",
+    // A fresh session of the reading step or the writer is given placement's accepted set-asides as its first
+    // dispatch was, as evidence beside its own task: the placements its inputs name leave them out.
+    placementSetAsideBlock(decisions),
     inputs.length ? inputsForReference(inputs, { name, changedInputs }) : "",
   );
 }

@@ -4728,6 +4728,8 @@ async function stageOnce(name, ctx, opts = {}) {
       // The review after a delivery-check repair names the files that repair changed; every other dispatch
       // passes nothing and keeps its own inputs line.
       changedInputs: opts.changedInputs ?? null,
+      // The reading step's and the writer's fresh sessions are given placement's accepted set-asides as they stand.
+      decisions: messageCtxFor(name, ctx)?.placementSetAsides ?? null,
     })
     : (def.message(messageCtxFor(name, ctx)) + (opts.extra ? `\n\n${opts.extra}` : ""));
   // Every stage runs as the forwarding agent (derived from the queue location). An explicit opts.agent wins.
