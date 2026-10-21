@@ -189,7 +189,7 @@ Be aware these capabilities are missing, so the skill doesn't promise them:
 
 Sustained-burst behaviour is UNDECLARED.
 
-Session-key validation: send one cheap `register_search({ name: "EXAMPLEMARK", limit: 1 })` before doing any real work. If it returns 401/403, halt and surface to orchestrator immediately.
+Session-key validation: send one `register_search({ name: "EXAMPLEMARK", limit: 1 })` with `limit: 1` before doing any real work. If it returns 401/403, halt and surface to orchestrator immediately.
 
 ## Where the contract lives
 

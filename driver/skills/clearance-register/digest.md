@@ -109,7 +109,7 @@ additional legs: one leg per family is fetched either way — this only redirect
 VENZY defect: the report read "verified" from the junior AE 2015 leg while the senior TR 2009
 registration — the right an opponent would assert first — was never pulled. The driver's
 senior-right closure re-fetches the senior leg when the digest cites a junior one, so citing the
-junior leg wastes a paid call.
+junior leg makes an extra request.
 
 **Relevance-gate drops (provenance — floor-critical).** A candidate that PASSED the status filter but the
 relevance gate (Step 2) dropped as genuinely field-irrelevant is recorded the SAME way — one row per drop in

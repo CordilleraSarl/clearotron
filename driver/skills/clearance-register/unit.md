@@ -76,7 +76,7 @@ the client. You need not take every step on every crowd. A wider crowd that the 
 answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
 mark's market step did not read stay on its coverage row with their count, as today.
 
-Having read the list, ask whether looking wider would change what you tell the client: who could object, how weak the word is in this market, and what the client should do. If it would, widen one step and read. Stop only when you can say what more searching would not change, and write that down. Either way, record which questions you did not ask and why.
+Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have enough. Would more searching change what you tell the client: who could object, how weak the word is in this market, or what the client should do? If it would, widen one step, read, and decide again. If it would not, you are done. Write in one line why more searching would not change the advice, record which questions you did not ask and why, and move on. That is complete work.
 
 Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
 replaces stays on the record with its count. What was counted and not read is set aside with that count,
@@ -214,7 +214,7 @@ returns — no per-word list, no new keep/stop rule.
   when the worldwide question was a crowd, as the narrowing's market step. Each call writes its own band block —
   `enumerated` or `incomplete`. **Per the bound: a per-major slice
   that returns a crowd is decided like any other crowd, and for a common component write no block.**
-- **The exact name-list is the cheapest slice and always enumerates.** The exact mark token × in-scope
+- **The exact name-list is read first, and narrowed when it crowds.** The exact mark token × in-scope
   class (`match_mode:exact`) is the identical-mark question of the narrowing steps; a complete answer covers
   every jurisdiction in it — call
   `register_enumerate` on it; it returns `enumerated` (every exact-in-class record carried forward,

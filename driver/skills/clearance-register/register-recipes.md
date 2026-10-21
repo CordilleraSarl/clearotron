@@ -70,7 +70,7 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
    → name:<exact mark> match=exact classes 25 → register_enumerate
 ```
 
-**Why this order:** crowd descriptors first (cheap, informational — they describe the crowd, they do not clear it); then enumerate the distinctive element (highest-yield); then each common element's exact-in-class name-list; then the compound phrase; then merch. Every numbered enumeration crosses the firewall as a band block — none is sampled.
+**Why this order:** crowd descriptors first (one count each, informational — they describe the crowd, they do not clear it); then enumerate the distinctive element (highest-yield); then each common element's exact-in-class name-list; then the compound phrase; then merch. Every numbered enumeration crosses the firewall as a band block — none is sampled.
 
 **Expected output:** the complete enumerated band for the distinctive element + each named slice, plus crowd descriptors for the saturated common elements. Volume is judgment's to read, not the funnel's to prune.
 
@@ -117,8 +117,8 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
    → name:<mark> match=exact classes <target>                        → exact-in-class name-list
    → name:<mark> match=default classes <target>  (per major region)  → the substring band, per major
    (do NOT AND a product/industry term into the search text — that is a goods filter and drops
-    in-class-live records on a goods guess; the lawyer judges goods at selection. Scope by CLASS
-    and REGION only.)
+    in-class-live records on a goods guess; the lawyer judges goods at selection. Scope the search text by class and region; narrow a crowd by the
+    client's goods with the goods field, never by putting goods words into the search text.)
 
 3. ENUMERATE word-order / wildcard variant queries the manifest lists
    → name:"<mark> *" wildcard classes <target>  → register_enumerate
@@ -251,8 +251,8 @@ For each transliteration variant in the manifest:
      they are already present: derive the exact name-list by slicing Step 2 for records whose name matches the
      dominant token EXACTLY (live + dead, with status) — the Larkmoor recall guarantee is preserved by the
      complete set, no separate exact call needed.
-   → When Step 2 is `{state:"incomplete"}`, run the exact name-list per under-covered major (it is the cheapest,
-     always-enumerable slice — the guaranteed floor when the substring crowd could not be fully paged):
+   → When Step 2 is `{state:"incomplete"}`, narrow the exact name-list by the steps in `unit.md` (*Read the identical
+     mark first*): the client's goods first, then one main market at a time:
      `register_enumerate name:<dominant token> match=exact nice_classes:<target> regions:[<major>]` → returns
      every exact-in-class record (live + dead with status). Never sub-sampled, never rolled into a count.
 
@@ -266,7 +266,7 @@ For each transliteration variant in the manifest:
      so judgment sees provenance; identical-text rows carry their status like any other record
 ```
 
-**Why this order:** crowd descriptor first (cheap — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors region-scoped (the worldwide pass does not discharge them); then the exact name-list (cheapest, always enumerates); then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration on any `incomplete` it deems material, or halts. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
+**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer and asked region-scoped only when it was a crowd; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration on any `incomplete` it deems material, or halts. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
 
 **Meaning-axis extension — a saturated everyday-word meaning token (COLORA→色彩) runs the same enumeration.** When
 the saturation probe flags a `translit-*-meaning` variant and the frame says that market matters, add **one `register_enumerate` step on the

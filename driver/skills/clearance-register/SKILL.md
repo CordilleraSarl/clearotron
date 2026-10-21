@@ -65,7 +65,7 @@ Set by the orchestrator per mode (set `model` explicitly on the spawn — omitti
   (relevance gate, owner clustering, opposition interpretation, Option-D).
 
 The old "register sweep must be Opus or it truncates" lesson came from a *monolithic* single session
-doing searching **and** judgment at once. The work is now split: units execute (cheap tiers), the
+doing searching **and** judgment at once. The work is now split: units execute (smaller model tiers), the
 digest worker judges (Opus). If a unit shortcut its axis, the orchestrator's skeptic review catches
 it and re-spawns it escalated to Opus — that decision belongs to the orchestrator, not here.
 
@@ -86,9 +86,9 @@ Never tag it in the findings.
 
 The funnel runs each named query through **`register_enumerate`**, which owns the page loop and pages to
 `has_more:false`. **A budget ceiling is therefore NOT a "searched enough" knob and NEVER a reason to sample,
-top-N, or self-accept a slice.** Cost is bounded by the narrowing steps: each keeps the limits before it, and
+top-N, or self-accept a slice.** The narrowing steps bound the searching: each keeps the limits before it, and
 they end. A crowd still a crowd after the last step is recorded with its count, never cut further. A saturation crowd is **described** with one
-count-only call (`limit:1`), not enumerated. The expensive failure mode of the old funnel — deep-paging a
+count-only call (`limit:1`), not enumerated. The failure mode of the old funnel — deep-paging a
 saturated raw pile — does **not** exist: crowds are descriptors, named slices are bounded.
 
 **A genuine resource/time limit produces an `incomplete` block, never a sufficiency accept.** If
@@ -132,7 +132,7 @@ the client. You need not take every step on every crowd. A wider crowd that the 
 answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
 mark's market step did not read stay on its coverage row with their count, as today.
 
-Having read the list, ask whether looking wider would change what you tell the client: who could object, how weak the word is in this market, and what the client should do. If it would, widen one step and read. Stop only when you can say what more searching would not change, and write that down. Either way, record which questions you did not ask and why.
+Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have enough. Would more searching change what you tell the client: who could object, how weak the word is in this market, or what the client should do? If it would, widen one step, read, and decide again. If it would not, you are done. Write in one line why more searching would not change the advice, record which questions you did not ask and why, and move on. That is complete work.
 
 Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
 replaces stays on the record with its count. What was counted and not read is set aside with that count,

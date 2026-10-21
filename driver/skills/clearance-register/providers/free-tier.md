@@ -43,7 +43,7 @@ This is the one thing to internalise, because it is where a wrong assumption cos
 | `phonetic` predicate | **absent** | neither source has one |
 | oppositions | **not available** | EUIPO has them; the US index does not |
 | native-script index | **undeclared** | EUIPO holds the characters; the US index is unprobed |
-| count probe | one billable search | EUIPO's page-0 total is the costlier mode |
+| count probe | one search request | EUIPO counts by running the search itself |
 
 A capability one source lacks is not a capability of this register. Planning to the stronger source's
 ability would emit a query the other rejects — and the answer would come back looking ordinary.
@@ -93,10 +93,10 @@ territory in the matter is a deferred row. Never imply the sweep was worldwide.
 Citations carry each record's own office. There is no single public origin for this register — the two
 offices publish separately — so a link is built per record, never from a provider-wide prefix.
 
-## Cost
+## Requests
 
-One clearance costs both sources. EUIPO's count probe is a billable search against its daily request
-allowance; the US index is a local file and costs only wall time. Where a count is available it spans
+One clearance asks both sources. EUIPO's count probe is a search request against its daily request
+allowance; the US index is a local file and takes only time. Where a count is available it spans
 both offices and is reported as one number — or as `null` when one of them could not answer.
 
 ## Provenance

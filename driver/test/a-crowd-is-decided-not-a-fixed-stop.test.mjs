@@ -95,3 +95,26 @@ test("the write-up settles a crowd the narrowing steps closed as withheld by jud
   assert.ok(skill.includes("**The exact name-list is read first, and narrowed when it crowds.**"));
   assert.doesNotMatch(skill, /left as a crowd descriptor|small and cheap by construction/, "the shared manual still says the name-list can never stay a crowd");
 });
+
+test("both manuals stop on a lawyer's judgment, and the register manuals carry the approved words with no billing words", () => {
+  const flat = (rel) => read(rel).replace(/\s+/g, " ");
+  const STOP = "Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have enough. Would more searching "
+    + "change what you tell the client: who could object, how weak the word is in this market, or what the client should do? If it would, widen one step, "
+    + "read, and decide again. If it would not, you are done. Write in one line why more searching would not change the advice, record which questions you "
+    + "did not ask and why, and move on. That is complete work.";
+  for (const m of ["skills/clearance-register/SKILL.md", "skills/clearance-register/unit.md"]) {
+    assert.ok(flat(m).includes(STOP), `${m} does not stop on a lawyer's judgment`);
+    assert.doesNotMatch(flat(m), /Having read the list, ask whether looking wider/, `${m} keeps the old stopping paragraph`);
+  }
+  assert.ok(flat("skills/clearance-register/unit.md").includes("**The exact name-list is read first, and narrowed when it crowds.** The exact mark token × in-scope class (`match_mode:exact`) is the identical-mark question of the narrowing steps"));
+  assert.ok(flat("skills/clearance-register/SKILL.md").includes("The narrowing steps bound the searching: each keeps the limits before it, and they end."));
+  const recipes = flat("skills/clearance-register/register-recipes.md");
+  assert.ok(recipes.includes("then the majors, taken from a complete worldwide answer and asked region-scoped only when it was a crowd; then the exact name-list, narrowed by the steps in `unit.md` when it crowds"));
+  assert.ok(recipes.includes("Scope the search text by class and region; narrow a crowd by the client's goods with the goods field, never by putting goods words into the search text."));
+  // the billing and price words the approved set takes out
+  const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/corsearch.md", "providers/euipo.md",
+    "providers/free-tier.md", "providers/uspto-local.md"].map((f) => flat(`skills/clearance-register/${f}`)).join(" ");
+  for (const gone of ["wastes a paid call", "one billable search", "both paid vendors", "Queries are free", "metered provider", "cheap `/count`",
+    "cost breakdown", "send one cheap", "(cheap tiers)", "(cheap, informational", "(cheap — tells", "cheapest, always enumerates"])
+    assert.ok(!all.includes(gone), `the register manuals still say "${gone}"`);
+});
