@@ -115,7 +115,7 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 2. ENUMERATE the dangerous named slices (register_enumerate) — class + region scoped,
    the tool owns the page loop and returns enumerated|incomplete:
    → name:<mark> match=exact classes <target>                        → exact-in-class name-list
-   → name:<mark> match=default classes <target>  (per major region)  → the substring band, per major
+   → name:<mark> match=default classes <target>  → the substring band; a crowd is narrowed by the steps in unit.md
    (do NOT AND a product/industry term into the search text — that is a goods filter and drops
     in-class-live records on a goods guess; the lawyer judges goods at selection. Scope the search text by class and region; narrow a crowd by the
     client's goods with the goods field, never by putting goods words into the search text.)
@@ -237,23 +237,18 @@ For each transliteration variant in the manifest:
 2b. SLICE the majors from Step 2 when Step 2 is COMPLETE — do not re-enumerate per major redundantly.
    → If Step 2 returned `{state:"enumerated"}` (it paged to has_more:false), every in-scope major's
      substring-in-class records are ALREADY in that complete set. Slice them machine-side by each record's
-     `jurisdictions` (US/EU/UK/CN/JP …) for the per-major reconciliation — do NOT spend a redundant per-major
-     `register_enumerate`. A COMPLETE region-scoped set provably contains every in-scope major's records, so
+     `jurisdictions` (US/EU/UK/CN/JP …) for the per-major reconciliation — do NOT run a redundant per-major `register_enumerate`. A COMPLETE region-scoped set provably contains every in-scope major's records, so
      the slice is EXACT, not a sufficiency guess. (This removes the per-jurisdiction redundancy + its call-count
      / timeout fragility; a complete Step 2 still individuates every major.)
-   → Per-major enumerate ONLY for a major Step 2 left under-covered — i.e. Step 2 returned `{state:"incomplete"}`
-     (the crowd was over the ceiling, so a major may sit in the un-paged remainder): THAT is the guarded
-     crowd-narrow path. `register_enumerate name:<root> match=default nice_classes:<target> regions:[<major>]`
-     — region + class + substring ≈ a handful; each writes its own enumerated|incomplete block.
+   → When Step 2 returned `{state:"incomplete"}` as a crowd, narrow it by the steps in unit.md (*Read the identical mark first*). Their market step uses the one list your opening message names: `register_enumerate name:<root> match=default nice_classes:<target> regions:[<market>]`; each writes its own enumerated|incomplete block. A major the list does not name is not asked on its own; it stays in the crowd's count.
 
-2c. The exact name-list — slice it from the complete set, or enumerate per major when Step 2 is incomplete.
+2c. The exact name-list — slice it from the complete set, or narrow it by the steps in unit.md when Step 2 is incomplete.
    → The exact-in-class records are a SUBSET of the substring band, so when Step 2 is `{state:"enumerated"}`
      they are already present: derive the exact name-list by slicing Step 2 for records whose name matches the
      dominant token EXACTLY (live + dead, with status) — the Larkmoor recall guarantee is preserved by the
      complete set, no separate exact call needed.
    → When Step 2 is `{state:"incomplete"}`, narrow the exact name-list by the steps in `unit.md` (*Read the identical
-     mark first*): the client's goods first, then one main market at a time:
-     `register_enumerate name:<dominant token> match=exact nice_classes:<target> regions:[<major>]` → returns
+     mark first*): the client's goods first, then one market at a time from the one list your opening message names: `register_enumerate name:<dominant token> match=exact nice_classes:<target> regions:[<market>]` → returns
      every exact-in-class record (live + dead with status). Never sub-sampled, never rolled into a count.
 
 3. Slice B — phonetic-equivalent fringe (register_enumerate)
@@ -266,7 +261,7 @@ For each transliteration variant in the manifest:
      so judgment sees provenance; identical-text rows carry their status like any other record
 ```
 
-**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer and asked region-scoped only when it was a crowd; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration on any `incomplete` it deems material, or halts. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
+**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration on any `incomplete` it deems material, or halts. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
 
 **Meaning-axis extension — a saturated everyday-word meaning token (COLORA→色彩) runs the same enumeration.** When
 the saturation probe flags a `translit-*-meaning` variant and the frame says that market matters, add **one `register_enumerate` step on the

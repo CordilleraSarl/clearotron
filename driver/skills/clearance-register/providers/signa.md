@@ -131,7 +131,7 @@ difference is not a margin. On the same term:
 **So an EU trade mark that blocks use in France is now found**, and it never appears in the French
 register. Every covered territory reaches its Madrid layer this way and the EU members additionally reach
 the EU register; Switzerland, under no regional register, returns regional 0 either way and its Madrid
-layer arrives all the same. It is ONE call, not three — no extra spend.
+layer arrives all the same. It is ONE call, not three.
 
 Do not describe a covered territory's result as "the national register": it is the stack of rights in
 force there, and a finding may sit on any layer of it.

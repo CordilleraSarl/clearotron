@@ -71,8 +71,7 @@ step that gives you a list you can read.
 A list you have read answers the crowd it came from. Do not ask that crowd again without the limits that answered
 it.
 
-The same steps serve any other question that comes back as a crowd, when reading it would change what you tell
-the client. You need not take every step on every crowd. A wider crowd that the lists you have read already
+The same steps serve any other question that comes back as a crowd, when reading it would change what you tell the client. Before you narrow a wider crowd, write in the proposal what reading it would change. If you cannot, set it aside with its count and your reason. You need not take every step on every crowd. A wider crowd that the lists you have read already
 answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
 mark's market step did not read stay on its coverage row with their count, as today.
 
@@ -92,7 +91,7 @@ When you narrow a crowded question, name the crowd it replaces: put its qid on t
 its own count. A narrowing that does not name what it replaced leaves the crowd looking unanswered.
 
    - **Write each call's result as one block in `register-units/<axis>-band.json`** (the named-band array — see *Named-band artifact* below). One block per `register_enumerate` / count-probe call. An `enumerated` block carries its records; an `incomplete` block is carried forward **verbatim — never dropped, never "accepted", never silently re-narrowed-then-cleaned**.
-   - **The completeness contract is UNIFORM — it applies to the named band too.** "The exact mark, in-class, every major+material jurisdiction" is *usually* small and `enumerated` — but that is **not load-bearing**. If it ever runs to a few hundred and `register_enumerate` returns `incomplete`, it stays `incomplete` and crosses to judgment, exactly like the wider crowd. A search is done when it is `enumerated`, when a narrowed list has answered its crowd, or when a wider search's crowd is set aside with its count and a reason. The identical mark for the client's goods, still a crowd in a main market, is not done. A refused or failed search is never done. **Never self-accept "good enough" for a search that did not run.**
+   - **The completeness contract is UNIFORM — it applies to the named band too.** "The exact mark, in-class, every major+material jurisdiction" is *usually* small and `enumerated` — but that is **not load-bearing**. If it ever runs to a few hundred and `register_enumerate` returns `incomplete`, it stays `incomplete` and crosses to judgment, exactly like the wider crowd. A search is done when it is `enumerated`, when a narrowed list has answered its crowd, or when a wider search's crowd is set aside with its count and a reason. The identical mark for the client's goods, still a crowd in a market on the one list your opening message names, is not done. A refused or failed search is never done. **Never self-accept "good enough" for a search that did not run.**
 4. **For a SATURATION CROWD (a genuinely unbounded `contains` / character-indexed pile), write a COUNT-ONLY descriptor — do NOT enumerate it.** A saturated element solo (e.g. the everyday-word meaning token alone, the bare common element) is not a named band — it is noise the lawyer needs *described*, not *piled in*. Run `register_search` with `limit:1` (count-only, capturing `total_hits`) and write the result as an `{state:"incomplete", query, total_hits, fetched:0, sample:[], reason:"crowd descriptor — …"}` block. **Do NOT call `register_enumerate` on a saturation crowd, and do NOT call it clean.** The descriptor (count + why) is what crosses the firewall; the raw character-noise pile does not. Judgment reads the count and decides whether to command a narrower named enumeration inside it.
 5. **Mechanical facts only — read off the record.** `register_enumerate` returns each record already batch-screened: class membership, live/dead `status`, owner, dates, `jurisdictions`, and a closed-set `screen_verdict`. Those are **mechanical reads off the record** — keep them. You do **NOT**:
    - **off-field-drop on goods** — brand-json has no goods/services text; an in-scope-class live record is carried forward and the lawyer decides on its actual goods/services. (`screen_verdict` is enrichment for judgment, not a funnel drop authority.)
@@ -176,7 +175,7 @@ when N==M"): it is the same completeness contract applied to the dangerous slice
 discriminator, not the label.** Every substring slice here — the dominant token / formative root as a *contains*
 predicate, and each per-major and phonetic slice built on it — is **attempted once, class-scoped, and gated on
 its own result**. If it returns `enumerated` (tractable — a real named band: e.g. ≈257 exact-in-class-live; the phrase
-"QUIET FIELD" ≈ 99), keep it and run its per-major / phonetic passes. If it returns `incomplete` because the
+"QUIET FIELD" ≈ 99), keep it, take its majors from it by `jurisdictions`, and run its phonetic pass. If it returns `incomplete` because the
 slice is **itself a crowd over the ceiling** (a hyper-common word — GREAT ≈ 28k, OUTDOORS ≈ 2.7k),
 the ceiling is a call limit, never a decision point: decide on that crowd with [the same steps](#read-the-identical-mark-first-look-at-the-count-before-you-read-anything),
 only as far as reading it would change what you tell the client; record what stays a crowd with its count. Gate on the *result*, never the label: a token the manifest calls
@@ -202,18 +201,14 @@ returns — no per-word list, no new keep/stop rule.
   scoped to the matter's **in-scope classes** (the full Nice set — goods **AND** services, e.g. cl. 42/44;
   **never** a goods-only 1/5 subset — the VELTRI DIAGNOSTICS / VELTRI GENETICS conflicts hid in the services
   classes). The tool pages to `has_more:false` and returns `enumerated` (every record carried forward) **or**
-  `incomplete` (the substring is itself a crowd over the ceiling). On `enumerated`, keep it verbatim (never
-  sampled / truncated / cleaned) and run its per-major / phonetic passes. On `incomplete` the **bound above**
+  `incomplete` (the substring is itself a crowd over the ceiling). On `enumerated`, keep it verbatim (never sampled / truncated / cleaned), take its majors from it by `jurisdictions`, and run its phonetic pass. On `incomplete` the **bound above**
   governs: decide on the crowd, and write the `incomplete` block only when this
   is the **distinctive anchor / dominant category** (it crosses as a material could-not-finish) — for a stripped
   **common** component, `saturation-probe`'s count is the sole signal, so write no second block. (Goods-relevance is judged by Layer B
   after it reads the in-class band — never as a search-time text filter, so do **NOT** AND the matter's
   goods-vocabulary words into the search text.)
 - **Per major jurisdiction.** A complete worldwide answer provably contains every in-scope major: take each
-  major's records from it by `jurisdictions`, and do not ask them again. A major gets its own question only
-  when the worldwide question was a crowd, as the narrowing's market step. Each call writes its own band block —
-  `enumerated` or `incomplete`. **Per the bound: a per-major slice
-  that returns a crowd is decided like any other crowd, and for a common component write no block.**
+  major's records from it by `jurisdictions`, and do not ask them again. When the worldwide question is a crowd, its market step uses the one list your opening message names; a major the list does not name is not asked on its own and stays in the crowd's count. Each call writes its own band block — `enumerated` or `incomplete`. **Per the bound: a market slice that returns a crowd is decided like any other crowd, and for a common component write no block.**
 - **The exact name-list is read first, and narrowed when it crowds.** The exact mark token × in-scope
   class (`match_mode:exact`) is the identical-mark question of the narrowing steps; a complete answer covers
   every jurisdiction in it — call
@@ -244,7 +239,7 @@ halts.
 
 - [ ] Axis applicability confirmed (or "not applicable" band block written so the file lands)
 - [ ] Every named query (exact mark + each manifest variant × in-scope class × material/major jurisdiction) run via **`register_enumerate`** — never manual paginate-then-sample
-- [ ] **On a saturated unit (primary-sweep):** the dangerous-category named enumeration run via `register_enumerate` for the **distinctive anchor** — the exact name-list, the distinctive formative-root/dominant-token substring band, and the anchor's field-scoped meaning token (if flagged, and the frame says that market matters), **per in-scope major jurisdiction (US/EU/UK/CN/JP), taken from a complete worldwide answer by `jurisdictions`, and asked on its own only when the worldwide question was a crowd**; the phonetic fringe enumerated. **A COMMON component that is not the anchor (a stripped common word — GREAT / OUTDOORS) is count-only via `saturation-probe`, NOT enumerated or ground here; an all-common-words phrase mark is searched as the exact phrase + near-neighbours.** No sampling, no top-N, no per-class clean verdict — each call's `enumerated`/`incomplete` block written verbatim.
+- [ ] **On a saturated unit (primary-sweep):** the dangerous-category named enumeration run via `register_enumerate` for the **distinctive anchor** — the exact name-list, the distinctive formative-root/dominant-token substring band, and the anchor's field-scoped meaning token (if flagged, and the frame says that market matters), **with each in-scope major (US/EU/UK/CN/JP) taken from a complete worldwide answer by `jurisdictions`; when the worldwide question is a crowd, its market step uses the one list your opening message names**; the phonetic fringe enumerated. **A COMMON component that is not the anchor (a stripped common word — GREAT / OUTDOORS) is count-only via `saturation-probe`, NOT enumerated or ground here; an all-common-words phrase mark is searched as the exact phrase + near-neighbours.** No sampling, no top-N, no per-class clean verdict — each call's `enumerated`/`incomplete` block written verbatim.
 - [ ] Saturation crowds written as **count-only `incomplete` descriptor blocks** (`register_search limit:1`) — NOT enumerated, NOT called clean
 - [ ] Every `incomplete` result (crowd / window-cap / provider error) carried forward **verbatim** as an `incomplete` block (count + sample + reason) — never dropped, never re-narrowed-into-clean, never self-accepted
 - [ ] Dead records carried forward **with their status** (no date-cutoff drop, no dead-except-identical filter) — `recently-dead` is a status for judgment

@@ -161,7 +161,7 @@ Corsearch supports phoneme expansion via `register_expand_phoneme`. Returns `{ b
 
 Declared languages: `en_US`, `de_DE`, `fr_FR` — each returns a few dozen variants for a typical word. Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
 
-**Usage pattern:** for multi-language jurisdictions, call expand-phoneme once per relevant language, concatenate `aiVariants[]`, pass to a single search call. Don't run multiple separate phonetic searches — costs more, returns largely overlapping results.
+**Usage pattern:** for multi-language jurisdictions, call expand-phoneme once per relevant language, concatenate `aiVariants[]`, pass to a single search call. Don't run multiple separate phonetic searches — they make more requests and return largely overlapping results.
 
 ## Image fetch
 
@@ -185,7 +185,7 @@ Be aware these capabilities are missing, so the skill doesn't promise them:
 - Chinese status strings appear verbatim — apply substring dictionary in `../status-rules.md`
 - Madrid (`/mark/int/*`) records have non-trivial `onomaticsJurisdictionsStatuses` aggregation — see `../status-rules.md#madrid-protocol-designations`
 
-## API budget
+## Request limits
 
 Sustained-burst behaviour is UNDECLARED.
 

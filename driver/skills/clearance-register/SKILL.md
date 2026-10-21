@@ -77,8 +77,7 @@ SKILL.md applies whichever sits behind the neutral `register_*` tools. There is 
 no cross-check alongside it: where the active provider's coverage does not reach a territory, that is a
 **deferred coverage row** you disclose, never a gap you fill from elsewhere.
 
-**EUIPO covers the EU alone** and is free. Running it makes every non-EU territory a deferred row —
-the honest trade, not a fault. Sandbox and production hold different corpora and must never be
+**EUIPO covers the EU alone.** Running it makes every non-EU territory a deferred row — a known limit of that register, not a fault. Sandbox and production hold different corpora and must never be
 mistaken — so the DRIVER records which answered, on every receipt in `_driver/receipts.json`.
 Never tag it in the findings.
 
@@ -127,8 +126,7 @@ step that gives you a list you can read.
 A list you have read answers the crowd it came from. Do not ask that crowd again without the limits that answered
 it.
 
-The same steps serve any other question that comes back as a crowd, when reading it would change what you tell
-the client. You need not take every step on every crowd. A wider crowd that the lists you have read already
+The same steps serve any other question that comes back as a crowd, when reading it would change what you tell the client. Before you narrow a wider crowd, write in the proposal what reading it would change. If you cannot, set it aside with its count and your reason. You need not take every step on every crowd. A wider crowd that the lists you have read already
 answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
 mark's market step did not read stay on its coverage row with their count, as today.
 
@@ -149,14 +147,10 @@ its own count. A narrowing that does not name what it replaced leaves the crowd 
 
 
 **The per-major and per-jurisdiction named queries are breadth, not a budgeted sufficiency allowance.** Each
-in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is a **named slice
-the funnel COVERS** — and when the region-scoped in-scope sweep (Recipe 1 Step 2) returns `enumerated`
+in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is **part of the in-scope sweep** — and when the region-scoped in-scope sweep (Recipe 1 Step 2) returns `enumerated`
 (complete), that complete set provably contains every in-scope slice, so the per-major/per-jurisdiction slices
 are taken from it **machine-side by `jurisdictions`**, NOT re-run as redundant per-major `register_enumerate`
-calls (Recipe 1 §2b/§2c — this drops the per-jurisdiction call-count + timeout fragility). A slice gets its OWN
-`register_enumerate` call only on the guarded crowd-narrow path — when the in-scope sweep returned `incomplete`
-and a major/material jurisdiction may sit in the un-paged remainder. Either way no slice is sampled; the
-manifest/matter-frame chose the breadth (judgment, upstream); the funnel covers every such slice. There is **no "ring-fenced allowance" that breadth
+calls (Recipe 1 §2b/§2c — this drops the per-jurisdiction call-count + timeout fragility). When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked on its own; it stays in the crowd's count. Either way no slice is sampled; the manifest/matter-frame chose the breadth (judgment, upstream). There is **no "ring-fenced allowance" that breadth
 yields to** any more (that was a sufficiency trade — breadth-vs-coverage), because no slice is sampled: every
 named query enumerates or returns `incomplete`. If a declared jurisdiction's query genuinely cannot run
 (provider error), it surfaces as an `incomplete` block (a could-not-reach gap for judgment), never a silent
@@ -164,8 +158,7 @@ drop and never a sufficiency-accepted omission.
 
 **The dangerous-category named enumeration is the same contract, not a separate budget floor.** The
 `primary-sweep` unit's dangerous-category enumeration (`unit.md` → *the dangerous-category named enumeration*)
-runs **every** named slice through `register_enumerate` — the exact name-list, the substring band, the
-per-major region-scoped band, the phonetic fringe — **for the DISTINCTIVE anchor. A common saturated component
+runs **every** named slice through `register_enumerate` — the exact name-list, the substring band, the phonetic fringe — **for the DISTINCTIVE anchor. A common saturated component
 that is not the anchor (a stripped common word — GREAT / OUTDOORS) is count-only via `saturation-probe`, not
 enumerated here** (`unit.md` → *the dangerous-category named enumeration*; an all-common-words phrase mark is
 searched as the exact phrase + near-neighbours). It does **not** "detail-fetch every candidate up to a

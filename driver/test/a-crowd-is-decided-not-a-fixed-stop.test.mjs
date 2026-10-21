@@ -109,7 +109,7 @@ test("both manuals stop on a lawyer's judgment, and the register manuals carry t
   assert.ok(flat("skills/clearance-register/unit.md").includes("**The exact name-list is read first, and narrowed when it crowds.** The exact mark token × in-scope class (`match_mode:exact`) is the identical-mark question of the narrowing steps"));
   assert.ok(flat("skills/clearance-register/SKILL.md").includes("The narrowing steps bound the searching: each keeps the limits before it, and they end."));
   const recipes = flat("skills/clearance-register/register-recipes.md");
-  assert.ok(recipes.includes("then the majors, taken from a complete worldwide answer and asked region-scoped only when it was a crowd; then the exact name-list, narrowed by the steps in `unit.md` when it crowds"));
+  assert.ok(recipes.includes("then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds"));
   assert.ok(recipes.includes("Scope the search text by class and region; narrow a crowd by the client's goods with the goods field, never by putting goods words into the search text."));
   // the billing and price words the approved set takes out
   const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/corsearch.md", "providers/euipo.md",
