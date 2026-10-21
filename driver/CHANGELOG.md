@@ -1,5 +1,28 @@
 # clearotron-driver
 
+## 0.5.0-beta.0
+
+### Minor Changes
+
+- Fixed: Faults the final checks find in a finding's own summary sentence, a short entry or a grouped line are now corrected before delivery. Before, they shipped as found.
+
+### Patch Changes
+
+- Fixed: A record whose register lookup failed, or came back empty, no longer counts as retrieved. The clearance now fetches it again, or says it could not.
+- Fixed: A finding added by a late correction now appears with its own card in the delivered report.
+- Fixed: A repeated search can change the ranking after the report was written, too late to rewrite the report. The report now says how many register records were re-ranked, and that the audit trail gives their final ranking. A clear result becomes conditional.
+- Fixed: The report and the audit workbook now say a record was "retrieved from the register" rather than "read". The workbook's summary explains what that means.
+- Fixed: A clearance that resumes after a pause is now held to the same standard as one that never paused. The conditions on its result are those that apply to the report it delivers. A live registration identical or near-identical to the mark that the report leaves unaddressed makes the result conditional, and the report says so. One the clearance's own final pass answers no longer does.
+- Fixed: A result is no longer held at conditional just because a wider search that was rightly withheld was asked for again. Such a result can now read clear, and its goods category reads as searched.
+- Fixed: Knockout ratings now weigh the earlier filings found for the mark itself. The register review follows the same ranking of results as the step before it, so some ratings change.
+- Fixed: Knockout reports no longer carry two standing caveats. The caveat on a conditional result stays.
+- Fixed: A resumed clearance no longer shows the false line "A machine check on the report did not pass".
+- Fixed: A register record that a repeated search finds after the results were ranked is now ranked and reviewed before the report is written. If that cannot be done, the report is still delivered, and it counts the record among those left open. Before, such a record could be left out of the ranking, the review and the report.
+- Fixed: A clearance no longer stops without a report when register records it retrieved are still unaddressed at the end. The report is delivered, a clear result becomes conditional, and the report states once how many records remain open.
+- For operators: When a client door is not up, `clearotron start` now says what is true of it. Before, it gave the queue worker's advice, or pointed to output it never printed.
+- Fixed: After a late correction, the Audit Trail delivered with the report describes the corrected result, and its open questions agree with it. If it cannot be rebuilt, the earlier Audit Trail is withheld rather than shown as current. The audit workbook is still built from the current findings.
+- Fixed: The Audit Trail now lists each register record set aside while the results were ranked, with the reason given.
+
 ## 0.4.1
 
 ### Patch Changes
