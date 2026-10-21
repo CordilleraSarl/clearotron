@@ -55,7 +55,7 @@
 //
 // ── THE RULING, ALL THIRTY-FIVE AS CLASSIFIED — THIRTY-FOUR IN THE SWEEP TODAY, SEE THE CURE BELOW ──
 //
-//  AGREE (34) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (33) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · deriveRegisterPositions() in band-shape.mjs  `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
@@ -164,14 +164,6 @@
 //                               flag later: the record gates nothing, and its `unreadable` total is counted off the
 //                               same rows. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
-//   · `crowdNarrowing` declared in register-plan.mjs mints a crowd's `narrowing` in the SAME row object as the
-//                               evidence it rests on, `lists` (the retrieved lists) or `not_covered` (the cells
-//                               no list covers), off one map of blocks, in one call. No reader keeps it for later
-//                               blocks to contradict: the receipt's is minted by the join from the blocks it
-//                               joins, and the coverage form and the band shape each call it on the blocks they
-//                               are built from. Nothing enforces against it: it is data the reading step decides
-//                               on. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
-//
 //  DISAGREE (1), fixed here:
 //   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
 //                        answers `files.length ? files.some(…) : null`; the repair row answered
@@ -257,7 +249,6 @@ const RULED = new Map([
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
-  ["register-plan.mjs", 1],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");

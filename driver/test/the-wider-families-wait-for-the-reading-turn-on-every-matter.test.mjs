@@ -163,9 +163,13 @@ test("the shipped manual carries the words the model reads, not only the config 
       `${f} does not say the identical mark is read first on EVERY matter`);
     assert.match(src, /to the placements, to the off-register sweep and to the write-up alike/,
       `${f} does not name the five moments the rule applies at`);
-    // The decision after reading carries no crowd precondition: it is what the reading turn does with the
-    // list it has, whatever the count was. The owner's sentence, character for character, and no fixed stop.
-    assert.ok(src.includes("Having read the list, ask whether looking wider would change what you tell the client: who could object, how weak the word is in this market, and what the client should do. If it would, widen one step and read. Stop only when you can say what more searching would not change, and write that down. Either way, record which questions you did not ask and why."), f);
+    // The decision after reading carries no crowd precondition: once the identical mark for the client's goods has been
+    // read, the reading turn decides as a lawyer would whether it has enough. The owner's sentence (his 899),
+    // character for character, and no fixed stop.
+    assert.ok(src.replace(/\s+/g, " ").includes("Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have enough. "
+      + "Would more searching change what you tell the client: who could object, how weak the word is in this market, or what the client should do? "
+      + "If it would, widen one step, read, and decide again. If it would not, you are done. Write in one line why more searching would not change "
+      + "the advice, record which questions you did not ask and why, and move on. That is complete work."), `${f} does not carry the owner's stopping judgment`);
     assert.doesNotMatch(src, /stop widening|widen one step at a time/, `${f} still carries the fixed stop or the thin-list rule`);
   }
 });
