@@ -17,6 +17,9 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { proposeSupplemental } from "../engine/mcp/supplemental.mjs";
 import { deriveAsks } from "../ask-ledger.mjs";
+import { heldAnswers, refuseHeldQuestions } from "../engine/mcp/held-answers.mjs";
+import { blocksByQidOf } from "../register-plan.mjs";
+import { verifyRegisterDirectiveClose } from "../close-verify.mjs";
 
 const tctx = { kind: "propose_supplemental", sessionKey: "run-x" };
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -29,7 +32,7 @@ function runFolder(t) {
   writeFileSync(driverDir(run, "register-plan.json"), JSON.stringify({ regions: ["JP", "KR"], nice_classes: ["9"], entries: [
     { qid: "primary-sweep:exact:qzorvak", axis: "primary-sweep", predicate: "exact", term: "QZORVAK", provenance: "mark", nice_classes: [9] },
     { qid: "primary-sweep:wider:qzorvak-games", axis: "primary-sweep", predicate: "default", term: "QZORVAK GAMES", nice_classes: [9],
-      provenance: "model", when: { awaits: "reading-turn" } },
+      provenance: "model", when: { awaits_reading_turn: true } },
   ] }));
   const band = (axis) => join(run, "register-units", `${axis}-band.json`);
   const plan = (axis) => join(run, "register-units", `${axis}-supplemental-plan.json`);
@@ -141,4 +144,32 @@ test("a follow-up the allowance refuses leaves the plan, keeps its markets and g
   const re = await propose(f, "incumbent-class", [{ ...narrow, regions: ["JP"] }], third.executePlan);
   assert.equal(third.calls.length, 0);
   assert.deepEqual(re.held.map((h) => h.decision), ["outstanding"]);
+});
+
+test("second framing's re-sweep does not ask again a question another worker answered: it is checked on that worker's row", async (t) => {
+  const f = runFolder(t);
+  const { executePlan } = stand();
+  const a = await propose(f, "primary-sweep", [{ predicate: "exact", term: "QZORVEK", nice_classes: [9] }], executePlan);
+  const resweep = { qid: "supp:incumbent-class:exact:qzorvek:00000009", axis: "incumbent-class", predicate: "exact", term: "QZORVEK",
+    nice_classes: [9], regions: [], origin: "supplemental" };
+  const other = { ...resweep, qid: "supp:incumbent-class:exact:qzorvex:0000000a", term: "QZORVEX" };
+  const regions = ["JP", "KR"];
+  const { kept, refused } = refuseHeldQuestions([resweep, other], heldAnswers(f.run, { planRegions: regions }), regions);
+  assert.deepEqual(kept.map((e) => e.qid), [other.qid], "a question nobody answered was refused");
+  assert.deepEqual(refused.map((r) => [r.qid, r.kind, r.twin]), [[resweep.qid, "duplicate-question", a.minted[0]]]);
+  const v = verifyRegisterDirectiveClose({ qids: [resweep.qid], intendedClasses: ["9"], executedQids: new Set([a.minted[0]]),
+    blocksByQid: blocksByQidOf({ "primary-sweep": readJson(f.band("primary-sweep")) }), foldRefusals: new Map(refused.map((r) => [r.qid, r])) });
+  assert.deepEqual([v.closed, v.answered_by], [true, [{ qid: resweep.qid, twin: a.minted[0] }]], "the directive did not close on the row that answered it");
+});
+
+test("a family waiting for the reading turn is no held answer until it is released, whatever block its row carries", (t) => {
+  const f = runFolder(t);
+  // the waiting family's row carries a block, as a stand-in band can; the plan join still reads it as not asked
+  writeFileSync(f.band("primary-sweep"), JSON.stringify([{ qid: "primary-sweep:wider:qzorvak-games", state: "enumerated", total_hits: 1, records: [] }]));
+  const regions = ["JP", "KR"];
+  const ask = { qid: "supp:incumbent-class:default:qzorvak-games:0000000b", axis: "incumbent-class", predicate: "default", term: "QZORVAK GAMES", nice_classes: [9], regions: [] };
+  assert.deepEqual(refuseHeldQuestions([ask], heldAnswers(f.run, { planRegions: regions }), regions).kept.map((e) => e.qid), [ask.qid],
+    "a question repeating an unreleased family was refused as already answered");
+  const released = heldAnswers(f.run, { planRegions: regions, released: new Set(["primary-sweep:wider:qzorvak-games"]) });
+  assert.deepEqual(refuseHeldQuestions([ask], released, regions).refused.map((r) => r.twin), ["primary-sweep:wider:qzorvak-games"]);
 });

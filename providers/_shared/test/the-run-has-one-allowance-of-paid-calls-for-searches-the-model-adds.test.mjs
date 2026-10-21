@@ -88,7 +88,7 @@ test("outstanding questions are kept, the latest row for each", (t) => {
 test("only follow-ups count; the plan and the identical mark's required read never do", () => {
   const plan = { entries: [
     { qid: "primary-sweep:exact:qzorvak", predicate: "exact", term: "QZORVAK", provenance: "mark" },
-    { qid: "primary-sweep:exact:qzorvak-games", predicate: "exact", term: "QZORVAK GAMES", provenance: "model", when: { awaits: "reading-turn" } },
+    { qid: "primary-sweep:exact:qzorvak-games", predicate: "exact", term: "QZORVAK GAMES", provenance: "model", when: { awaits_reading_turn: true } },
   ] };
   const identicalTerms = identicalMarkTerms(plan);
   assert.deepEqual([...identicalTerms], ["qzorvak"]);

@@ -77,6 +77,7 @@ import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, cov
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
+import { heldAnswers, refuseHeldQuestions } from "./engine/mcp/held-answers.mjs";   // one answer per question per run, in the re-sweep too
 import { readOutstanding, RUN_CALL_LIMIT, spentCalls } from "../providers/_shared/call-allowance.mjs";
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
 // allowance refused, which join as questions not asked rather than missing (call-allowance.mjs), and the run's
@@ -12027,9 +12028,16 @@ async function pipelineInner(job, opts = {}) {
               // is read here, at the fold, so a family the turn has since released is asked as before.
               const withheldTwins = withheldFamilyTwins(ctx.registerPlan, readWithheldFamilies(run.runDir), releasedFamilyQids(run.runDir));
               const { kept: toFold, refused: withheldRefused } = refuseWithheldFamilies(allMinted, withheldTwins, ctx.registerPlan);
-              const folded = foldSupplementalEntries(ctx.registerPlan, toFold);
+              // ONE ANSWER PER QUESTION PER RUN (held-answers.mjs): a question another worker or pass has answered is
+              // refused as already asked, its twin the row that answered it, and the directive is checked on that row.
+              let toFoldHeld = toFold, heldRefused = [];
+              try {
+                const planRegions = (ctx.registerPlan.regions ?? []).map(String);
+                ({ kept: toFoldHeld, refused: heldRefused } = refuseHeldQuestions(toFold, heldAnswers(run.runDir, { planRegions, withheld: readWithheldFamilies(run.runDir) }), planRegions));
+              } catch { toFoldHeld = toFold; heldRefused = []; }   // an economy: without it every question is folded as before
+              const folded = foldSupplementalEntries(ctx.registerPlan, toFoldHeld);
               const { plan, added } = folded;
-              const refused = [...withheldRefused, ...folded.refused];
+              const refused = [...withheldRefused, ...heldRefused, ...folded.refused];
               if (added.length) {
                 writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
                 renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
@@ -12079,7 +12087,8 @@ async function pipelineInner(job, opts = {}) {
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
                 const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, joinOptions(ctx)).executed.map((x) => x.qid));
-                const blocksByQid = new Map((bands[a] ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
+                // every axis's blocks: a slice refused as already answered is checked on its twin, which may be another axis's row
+                const blocksByQid = blocksByQidOf(bands);
                 return { outcome, executedQids, blocksByQid };
               };
               // A slice the fold refused as already-asked is checked on the row that answered it, as the remedy

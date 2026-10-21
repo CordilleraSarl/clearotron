@@ -1043,6 +1043,8 @@ function briefRow(r) {
     r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
     r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
     r.receipt_reason ? `receipt: ${String(r.receipt_reason).slice(0, 160)}` : "",
+    // the crowd's ending (register-plan.mjs, crowdEndings), as data beside the counts it rests on
+    r.ending ? `ending: ${r.ending}${r.answered_by?.length ? ` by ${r.answered_by.slice(0, 6).join(", ")}` : ""}${r.markets_read?.length ? `; markets read: ${r.markets_read.join(", ")}` : ""}` : "",
   ].filter(Boolean).join("; ");
   const settled = String(r.status ?? "").trim() ? ` [settled: ${String(r.status).trim()}]` : "";
   return `  ${r.row_id}  (${r.kind}) ${r.unit}${facts ? ` — ${facts}` : ""}${r.open === true ? " — OPEN: never confirmed-clean" : ""}${settled}`;

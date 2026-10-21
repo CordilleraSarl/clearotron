@@ -12,7 +12,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { joinPlanToBands, deriveCoverageSkeleton, foldSupplementalEntries } from "../register-plan.mjs";
-import { coverageFormRows } from "../coverage-form.mjs";
+import { coverageFormRows, coverageFormBrief } from "../coverage-form.mjs";
 import { buildBandShape } from "../band-shape.mjs";
 import { verifyRegisterDirectiveClose } from "../close-verify.mjs";
 import { classifyRemedyTerm } from "../remedy-accounting.mjs";
@@ -86,6 +86,10 @@ test("the ending rides the crowd's coverage-form row and its band-shape descript
   assert.deepEqual([row("primary-sweep:exact:qzorvak").ending, row("primary-sweep:exact:qzorvak").answered_by], ["answered", ["supp:goods"]]);
   assert.equal(row("primary-sweep:contains:zorv").ending, "set-aside");
   assert.ok(rows.every((r) => r.open === true), "the ending decided a row the reading step owns");
+  // the reading step's only sight of the rows is its brief, so the ending is listed there, as data beside the count
+  const brief = coverageFormBrief({ rows });
+  assert.match(brief, /\(block\) [^\n]*900 hits; ending: answered by supp:goods — OPEN/);
+  assert.match(brief, /\(block\) [^\n]*900 hits; ending: set-aside — OPEN/);
   // the form works the endings out from the blocks it is built from, not from an older receipt
   const later = { [AXIS]: [...BANDS[AXIS], read("supp:zorv-late")] };
   const planLater = { ...PLAN, entries: [...PLAN.entries, sup("supp:zorv-late", "ZORV", "primary-sweep:contains:zorv", { predicate: "contains", regions: ["KR"] })] };
