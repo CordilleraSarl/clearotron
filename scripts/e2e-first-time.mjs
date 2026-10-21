@@ -205,7 +205,7 @@ export const NOT_COUNTED_EVENTS = {
     "post-repair-fix-pass", "post-repair-review", "post-repair-review-not-needed", "post-repair-review-queued",
     "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
     "profile-resolved", "profile-selection", "provider-usage", "quote",
-    "record-artifacts", "register-digest-facts-written", "register-follow-up-allowance",
+    "record-artifacts", "register-digest-facts-written", "register-follow-up-searches",
     "register-only", "register-plan", "register-plan-axis-deferred", "register-plan-deferred-coverage",
     "register-plan-variant-dropped", "register-positions-derived", "register-presence",
     "register-presence-skipped", "register-xcheck", "register-xcheck-decided", "run-integrity",

@@ -34,7 +34,7 @@ import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
-import { OUTSTANDING_REASON } from "../../../providers/_shared/call-allowance.mjs";
+import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
 import { heldAnswers, questionKey } from "./held-answers.mjs";
 import { readWithheldFamilies } from "../../withheld-families.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
@@ -528,7 +528,7 @@ export async function proposeSupplemental(params, tctx, deps) {
     try { summary = JSON.parse(text); } catch { summary = { raw: text.slice(0, 300) }; }
   }
 
-  // A FOLLOW-UP THE RUN'S ALLOWANCE REFUSED never ran and has no answer (call-allowance.mjs). One minted by this
+  // A FOLLOW-UP THE RUN'S SAFETY NET DID NOT SEND never ran and has no answer (follow-up-searches.mjs). One minted by this
   // call leaves the plan the fold reads, so it is never taken for a planned question that went missing, and is
   // kept as a question not asked: a rejected[] row, which the ask ledger keeps open. One that ran before keeps its
   // place and its answer.
@@ -571,5 +571,5 @@ export async function proposeSupplemental(params, tctx, deps) {
     }
   } catch { /* band unreadable — the executor summary still crosses */ }
 
-  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding, allowance: summary?.allowance ?? null } : {}), ...(held.length ? { held } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
+  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding } : {}), ...(held.length ? { held } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
 }

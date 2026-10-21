@@ -6,7 +6,7 @@
 // The register workers run in parallel and do not see each other's questions. On a test run of a crowded matter,
 // 178 follow-up proposals held 167 distinct questions, and the 11 copies cost 49 calls. A question another worker
 // has answered now gets that answer; one the run withheld, or one its allowance of paid follow-up calls refused,
-// gets that decision. And a follow-up the allowance refused leaves the plan the fold reads and stays an open
+// gets that decision. And a follow-up the run's safety net held back leaves the plan the fold reads and stays an open
 // question, with its markets. Offline: the executor is a stand-in that writes the band the way the real one does.
 // Every mark is invented.
 import { test } from "node:test";
@@ -58,7 +58,7 @@ function stand({ refuse = new Set(), fail = new Set() } = {}) {
     const owned = new Set(params.qids.filter((q) => !outstanding.includes(q)));
     writeFileSync(params.output_path, JSON.stringify([...blocks, ...prior.filter((b) => !owned.has(b.qid))]));
     return { type: "text", text: JSON.stringify({ executed: blocks.length,
-      ...(outstanding.length ? { outstanding, allowance: { spent: 250, limit: 250, reason: "run-call-limit" } } : {}) }) };
+      ...(outstanding.length ? { outstanding } : {}) }) };
   };
   return { executePlan, calls };
 }
@@ -121,20 +121,20 @@ test("a re-proposed question this worker has answered keeps its answer and is no
   assert.equal(again.results[first.minted[0]].total_hits, 3);
 });
 
-test("a follow-up the allowance refuses leaves the plan, keeps its markets and goods, and stays an open question", async (t) => {
+test("a follow-up the safety net holds back leaves the plan, keeps its markets and goods, and stays an open question", async (t) => {
   const f = runFolder(t);
   const { executePlan } = stand({ refuse: new Set(["QZORVEX"]) });
   const narrow = { predicate: "exact", term: "QZORVEX", nice_classes: [9], goods_words: ["video games"] };
   const first = await propose(f, "primary-sweep", [{ ...narrow, regions: ["JP"] }], executePlan);
   assert.deepEqual(first.minted, []);
   assert.equal(first.outstanding.length, 1);
-  assert.deepEqual(first.allowance, { spent: 250, limit: 250, reason: "run-call-limit" });
+  assert.equal(/allowance|limit|spent|paid|\bcap\b/i.test(JSON.stringify(first)), false, `the reply names the net: ${JSON.stringify(first)}`);
   // the same question for the other market, asked later when a call was free
   const later = stand();
   await propose(f, "primary-sweep", [{ ...narrow, regions: ["KR"] }], later.executePlan);
   const supp = readJson(f.plan("primary-sweep"));
   assert.ok(!supp.entries.some((e) => first.outstanding.includes(e.qid)), "a question never asked would be read as a planned question gone missing");
-  const row = supp.rejected.find((r) => r.issue === "run-call-limit");
+  const row = supp.rejected.find((r) => r.issue === "follow-up-not-sent");
   assert.deepEqual([row.proposal.regions, row.proposal.goods_text], [["JP"], ["video games"]]);
   const asks = deriveAsks({ supplementalPlans: [{ axis: "primary-sweep", ...supp }] });
   const open = asks.filter((a) => a.ask_id.startsWith("ask:supplemental-rejected:") && a.ending === null);

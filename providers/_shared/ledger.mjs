@@ -33,7 +33,6 @@ import { appendFileSync, mkdirSync, statSync, openSync, readSync, closeSync, rea
 import { dirname, basename } from "node:path";
 import { createHash } from "node:crypto";
 import { ledgerPath, RUN_RECORD_LOG_FILE } from "./ledger-path.mjs";
-import { runDriverDirOf, recordCountedCall } from "./call-allowance.mjs";
 
 export const CALL_LOG_PATH = ledgerPath("call");
 // Spec A1 (citation fidelity): every fetched record's BODY is persisted alongside the call ledger, so the
@@ -91,14 +90,6 @@ export function makeLedger(provider) {
         ...metrics,
       }));
     } catch { /* telemetry must never break a search */ }
-    // A paid call a model's decision caused draws on the run's allowance (call-allowance.mjs). The caller marks
-    // it `countedCall`; a call the run's memory answered, or one that never reached the register, costs nothing.
-    try {
-      if (tctx?.countedCall === true && metrics?.cache_hit !== true && Number(metrics?.http_status) > 0) {
-        recordCountedCall(runDriverDirOf(tctx?.recordLog), { provider, tool: tctx?.kind ?? null, sessionKey: tctx?.sessionKey ?? null,
-          qid: tctx?.qid ?? null, status: Number(metrics.http_status) });
-      }
-    } catch { /* the count must never break a search */ }
   };
   const logRecordBody = (tctx, target, body) => {
     try {

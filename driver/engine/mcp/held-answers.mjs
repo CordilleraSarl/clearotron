@@ -6,7 +6,7 @@
 // The register workers run in parallel and do not see each other's questions, so the same question was put to the
 // register again by another worker: on a test run of a crowded matter, 178 follow-up proposals held 167 distinct
 // questions, and the 11 copies cost 49 calls. A question the run has already answered now gets the held answer, and
-// one the run has already decided not to ask (a family withheld by judgment, or a follow-up the run's allowance
+// one the run has already decided not to ask (a family withheld by judgment, or a follow-up the run's safety net
 // refused) gets that decision. Nothing is asked again and no call is made.
 //
 // WHAT MAKES TWO QUESTIONS THE SAME: every field that changes what the register is asked — the predicate, the term
@@ -18,7 +18,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";
-import { OUTSTANDING_REASON } from "../../../providers/_shared/call-allowance.mjs";
+import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
 import { awaitsReadingTurn } from "../../../providers/_shared/plan-guards.mjs";
 import { releasedFamilyQids } from "../../withheld-families.mjs";
 
@@ -68,7 +68,7 @@ function readBlocks(path) {
  * question the plan already holds: `duplicate-question`, with the row that answered it as the twin. Second framing's
  * re-sweep calls this before its fold, because the fold sees only the plan's rows on the re-sweep's own axis, and a
  * question another worker answered is not asked again. Only an answer settles: a withheld family has its own refusal,
- * and a question the allowance refused would be refused again. PURE.
+ * and a follow-up the safety net did not send would not be sent again. PURE.
  * @returns {{ kept: object[], refused: {qid: string, term: string, kind: "duplicate-question", twin: string}[] }}
  */
 export function refuseHeldQuestions(entries, held, planRegions = []) {
@@ -117,7 +117,7 @@ export function heldAnswers(runDir, { planRegions = [], withheld = {}, released 
       if (b && b.error !== true) held.set(key, { qid: e.qid, axis: e.axis, decision: "answered", block: b });
       else if (withheld?.[e.qid]) held.set(key, { qid: e.qid, axis: e.axis, decision: "withheld" });
     }
-    // A follow-up the run's allowance refused is a decision too: asked again, it would be refused again.
+    // A follow-up the run's safety net did not send is a decision too: proposed again, it would not be sent again.
     for (const r of Array.isArray(plan?.rejected) ? plan.rejected : []) {
       if (r?.issue !== OUTSTANDING_REASON || !r?.proposal) continue;
       const key = questionKey(r.proposal, planRegions);

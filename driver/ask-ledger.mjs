@@ -54,7 +54,7 @@
 // DRIVER's instructed values appear in the model's frame, where this checks the MODEL's quote
 // appears in a driver-held file. Same expression, different question; it stays separate.
 import { squash } from "./doubt-ledger.mjs";
-import { OUTSTANDING_REASON } from "../providers/_shared/call-allowance.mjs";
+import { OUTSTANDING_REASON } from "../providers/_shared/follow-up-searches.mjs";
 //
 // Ask record shape (frozen — _driver/asks.json and the audit's Ask Ledger both render it):
 //   {
@@ -470,7 +470,7 @@ export function deriveAsks({
       // must show it working. So EVERY rejection attempts the join, and one that did not mint later
       // ends OPEN — a real unanswered question the closure stage settles with a citation or that ships
       // visibly. "judged-immaterial" is reserved for a materiality judgment somebody actually made.
-      // A follow-up the run's allowance refused is never superseded: the identity join ignores the regions, so a
+      // A follow-up the run's safety net did not send is never superseded: the identity join ignores the regions, so a
       // question minted for one market would otherwise bury the same question refused for another.
       const supersededBy = issue === OUTSTANDING_REASON ? null : (mintedByIdentity.get(proposalIdentity(r?.proposal)) ?? null);
       push({

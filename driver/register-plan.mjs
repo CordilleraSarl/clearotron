@@ -59,7 +59,7 @@ import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { bindingLayersFor, layerCoverageFor } from "./binding-layers.mjs";
 import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
 import { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid } from "../providers/_shared/plan-guards.mjs";
-import { asksIdenticalMark, identicalMarkTerms } from "../providers/_shared/call-allowance.mjs";
+import { asksIdenticalMark, identicalMarkTerms } from "../providers/_shared/follow-up-searches.mjs";
 import { territoryKey } from "./territory-tiers.mjs";
 import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { marketsFilingScriptOf } from "./registration-scripts.mjs";
 
@@ -2510,8 +2510,8 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), 
   for (const b of blocks) if (typeof b.qid === "string" && b.qid) byQid.set(b.qid, b);
 
   const executed = [], missing = [], skipped = [], deferred = [], awaiting = [], asked = [];
-  // A FOLLOW-UP THE RUN'S ALLOWANCE REFUSED (providers/_shared/call-allowance.mjs) that holds no answer is a question
-  // not asked, never one that went missing: missing sends a question back to be run, and the allowance would refuse
+  // A FOLLOW-UP THE RUN'S SAFETY NET DID NOT SEND (providers/_shared/follow-up-searches.mjs) that holds no answer is a
+  // question not asked, never one that went missing: missing sends a question back to be run, and the net would hold
   // it again. Only a follow-up can be refused; the plan's own questions never are.
   const notAsked = [];
   const refusedFollowUp = (e) => outstanding.has(e?.qid) && e?.origin === "supplemental";
@@ -2862,7 +2862,7 @@ export function deriveCoverageSkeleton(plan, join) {
     // where it ran; counting the family as executed too would count one question twice.
     if (askedQids.has(e.qid)) { a.asked++; continue; }
     if (skippedQids.has(e.qid)) { a.skipped++; continue; }
-    // a follow-up the run's allowance refused: not asked, so neither run nor missing
+    // a follow-up the run's safety net did not send: not asked, so neither run nor missing
     if (outstandingQids.has(e.qid)) { a.outstanding++; continue; }
     if (missing.has(e.qid)) { a.missing.push(e.qid); continue; }
     // a capability gap is NOT executed — it is a disclosed hole in the axis
@@ -2892,7 +2892,7 @@ export function deriveCoverageSkeleton(plan, join) {
         : (a.crowds ? "incomplete"
           : (a.executed === 0 && a.skipped > 0 ? "skipped"
             : (a.executed === 0 && a.awaiting > 0 ? "awaiting-judgment"
-              // nothing ran but follow-ups the allowance refused: no answer to rest a clean on, as when they joined missing
+              // nothing ran but follow-ups the safety net did not send: no answer to rest a clean on, as when they joined missing
               : (a.executed === 0 && a.outstanding > 0 ? "unexecuted" : "executed"))))),
     entries: a.entries, executed: a.executed, crowds: a.crowds, skipped: a.skipped, missing: a.missing,
     ...(a.awaiting ? { awaiting: a.awaiting } : {}),

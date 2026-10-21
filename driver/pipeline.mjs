@@ -78,9 +78,9 @@ import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { heldAnswers, refuseHeldQuestions } from "./engine/mcp/held-answers.mjs";   // one answer per question per run, in the re-sweep too
-import { readOutstanding, RUN_CALL_LIMIT, spentCalls } from "../providers/_shared/call-allowance.mjs";
+import { readOutstanding, FOLLOW_UP_SEARCH_LIMIT, followUpSearchesSent } from "../providers/_shared/follow-up-searches.mjs";
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
-// allowance refused, which join as questions not asked rather than missing (call-allowance.mjs), and the run's
+// safety net did not send, which join as questions not asked rather than missing (follow-up-searches.mjs), and the run's
 // main markets, the one market list a crowd of the identical mark is read in (crowdEndings): the order's
 // countries, else the customer's priority markets, else the major markets.
 const mainMarketsOf = (ctx) => {
@@ -618,23 +618,21 @@ export function writePlanExecutionReceipt(ctx, joinRes) {   // @internal
   // are instead of letting `missing: []` imply none.
   const answeredRows = (joinRes.executed ?? []).filter((e) => String(e?.state ?? "").toLowerCase() !== "incomplete");
   const census = { answered: answeredRows.length, incomplete: (joinRes.executed ?? []).length - answeredRows.length };
-  // THE RUN'S ALLOWANCE OF PAID FOLLOW-UP CALLS, on the run record once it has been drawn on: the limit, what the
-  // follow-ups spent and how many were not asked (call-allowance.mjs). Logged once each time those figures move.
-  let allowance = null;
+  // THE SAFETY NET UNDER THE FOLLOW-UP SEARCHES (follow-up-searches.mjs), on the run log and nowhere a model reads: the
+  // limit, the follow-up searches sent and how many follow-ups it did not send. Logged once each time those figures move.
   try {
-    const { spent } = spentCalls(driverDir(P.runDir));
-    // a question refused once and answered later (an allowance file unreadable for a moment) was asked
+    const { sent } = followUpSearchesSent(driverDir(P.runDir));
+    // a question held back once and asked later (a count file unreadable for a moment) was asked
     const answered = new Set((joinRes.executed ?? []).map((e) => String(e?.qid)));
-    const notAsked = readOutstanding(driverDir(P.runDir)).filter((r) => !answered.has(String(r.qid))).length;
-    if (spent > 0 || notAsked > 0) allowance = { limit: RUN_CALL_LIMIT, spent: Number.isFinite(spent) ? spent : null, reached: !Number.isFinite(spent) || spent >= RUN_CALL_LIMIT, not_asked: notAsked };
-    const seen = allowance ? `${allowance.spent}:${allowance.not_asked}` : null;
-    if (allowance && ctx.allowanceLogged !== seen) {
-      runLog(P.runDir, { event: "register-follow-up-allowance", ...allowance });
-      ctx.allowanceLogged = seen;
+    const notSent = readOutstanding(driverDir(P.runDir)).filter((r) => !answered.has(String(r.qid))).length;
+    if (sent > 0 || notSent > 0) {
+      const net = { limit: FOLLOW_UP_SEARCH_LIMIT, sent: Number.isFinite(sent) ? sent : null, reached: !Number.isFinite(sent) || sent >= FOLLOW_UP_SEARCH_LIMIT, not_sent: notSent };
+      const seen = `${net.sent}:${net.not_sent}`;
+      if (ctx.followUpNetLogged !== seen) { runLog(P.runDir, { event: "register-follow-up-searches", ...net }); ctx.followUpNetLogged = seen; }
     }
-  } catch { allowance = null; }
+  } catch { /* the run log line is a record only */ }
   // the run's main markets, the one market list its crowd endings were read against: a run constant the coverage form reads
-  const receipt = { plan_version: ctx.registerPlan.plan_version, ...joinRes, ...census, ...(supplemental.length ? { supplemental } : {}), ...(allowance ? { follow_up_allowance: allowance } : {}),
+  const receipt = { plan_version: ctx.registerPlan.plan_version, ...joinRes, ...census, ...(supplemental.length ? { supplemental } : {}),
     main_markets: mainMarketsOf(ctx), skeleton };
   writeFileSync(`${P.planExecution}.tmp`, JSON.stringify(receipt, null, 2) + "\n");
   renameSync(`${P.planExecution}.tmp`, P.planExecution);

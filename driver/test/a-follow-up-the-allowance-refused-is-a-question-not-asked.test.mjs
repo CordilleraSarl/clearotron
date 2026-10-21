@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A FOLLOW-UP THE RUN'S ALLOWANCE REFUSED IS A QUESTION NOT ASKED: NEVER MISSING, NEVER ANSWERED.
+// A FOLLOW-UP THE RUN'S SAFETY NET DID NOT SEND IS A QUESTION NOT ASKED: NEVER MISSING, NEVER ANSWERED.
 //
-// Ruled 2026-10-21: 250 paid follow-up register calls per run. A follow-up met with the allowance spent is not run,
-// and the run carries on to delivery with the gap stated. Joined as missing, it would be sent back to be run, and
-// the allowance would refuse it again until the run failed. Joined as nothing, it would vanish from the count.
-// It joins as outstanding: the class line says it could not be searched, in the words the line already uses, and
-// the run's receipt states the allowance. Every mark is invented.
+// A run's follow-up searches share one safety net in code, which no model reads. A follow-up met with the net full
+// is not sent, and the run carries on to delivery with the gap stated. Joined as missing, it would be sent back to
+// be run, and the net would hold it again until the run failed. Joined as nothing, it would vanish from the count.
+// It joins as outstanding: the class line says it could not be searched, in the words the line already uses. The
+// net's own figures go to the run log, never to the receipt a model may read. Every mark is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, appendFileSync, rmSync } from "node:fs";
@@ -17,7 +17,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { writePlanExecutionReceipt } from "../pipeline.mjs";
-import { ALLOWANCE_FILE, RUN_CALL_LIMIT, recordOutstanding } from "../../providers/_shared/call-allowance.mjs";
+import { SEARCHES_FILE, FOLLOW_UP_SEARCH_LIMIT, recordOutstanding } from "../../providers/_shared/follow-up-searches.mjs";
 
 const entry = (qid, term, extra = {}) => ({ qid, axis: "primary-sweep", predicate: "exact", term, nice_classes: ["9"], regions: ["jp"], expected_kind: "enumerate", ...extra });
 const PLAN = { schema: "register-plan/1", plan_version: 2, derived_from: { job_key: "k", variants_fingerprint: "f" }, nice_classes: ["9"], regions: ["jp"], entries: [
@@ -61,8 +61,8 @@ test("the class line says a refused follow-up could not be searched, in the word
   assert.equal(f.per_class["9"].outstanding, 2);
 });
 
-test("the receipt states the allowance once it is drawn on, logs it once per change, and counts only questions never answered", (t) => {
-  const run = mkdtempSync(join(tmpdir(), "allowance-receipt-"));
+test("the net's figures go to the run log once per change, never to the receipt, and count only questions never sent", (t) => {
+  const run = mkdtempSync(join(tmpdir(), "net-receipt-"));
   t.after(() => rmSync(run, { recursive: true, force: true }));
   mkdirSync(join(run, "register-units"), { recursive: true });
   mkdirSync(driverDir(run), { recursive: true });
@@ -70,19 +70,20 @@ test("the receipt states the allowance once it is drawn on, logs it once per cha
     planExecution: driverDir(run, "plan-execution.json"), registerBand: (a) => join(run, "register-units", `${a}-band.json`) } };
   writeFileSync(ctx.paths.registerPlan, JSON.stringify(PLAN));
   const join1 = () => joinPlanToBands(PLAN, BANDS, { outstanding: OUTSTANDING });
+  const events = () => { try { return readFileSync(driverDir(run, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).filter((e) => e.event === "register-follow-up-searches"); } catch { return []; } };
   writePlanExecutionReceipt(ctx, joinPlanToBands(PLAN, BANDS));
-  assert.equal("follow_up_allowance" in JSON.parse(readFileSync(ctx.paths.planExecution, "utf8")), false, "an allowance never drawn on is not on the receipt");
+  assert.deepEqual(events(), [], "a net never drawn on is not logged");
 
-  writeFileSync(driverDir(run, ALLOWANCE_FILE), Array.from({ length: RUN_CALL_LIMIT }, (_, i) => JSON.stringify({ qid: `q${i}` })).join("\n") + "\n");
+  writeFileSync(driverDir(run, SEARCHES_FILE), Array.from({ length: FOLLOW_UP_SEARCH_LIMIT }, (_, i) => JSON.stringify({ qid: `q${i}` })).join("\n") + "\n");
   for (const qid of ["supp:primary-sweep:exact:korvak:00000001", "supp:primary-sweep:exact:qorvak:00000002", "supp:primary-sweep:exact:zorvak:00000003"]) recordOutstanding(driverDir(run), { qid, axis: "primary-sweep" });
   writePlanExecutionReceipt(ctx, join1());
   writePlanExecutionReceipt(ctx, join1());
-  const receipt = JSON.parse(readFileSync(ctx.paths.planExecution, "utf8"));
-  // the third was refused once and answered later, so two were never asked
-  assert.deepEqual(receipt.follow_up_allowance, { limit: RUN_CALL_LIMIT, spent: RUN_CALL_LIMIT, reached: true, not_asked: 2 });
-  const events = () => readFileSync(driverDir(run, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).filter((e) => e.event === "register-follow-up-allowance");
-  assert.equal(events().length, 1, "the same figures were logged twice");
-  appendFileSync(driverDir(run, ALLOWANCE_FILE), JSON.stringify({ qid: "in-flight" }) + "\n");
+  const text = readFileSync(ctx.paths.planExecution, "utf8");
+  assert.equal(/follow_up|allowance|limit|paid|\bcap\b/i.test(text), false, "the receipt a model may read names the net");
+  // the third was held back once and asked later, so two were never sent
+  assert.deepEqual(events().map(({ limit, sent, reached, not_sent }) => ({ limit, sent, reached, not_sent })),
+    [{ limit: FOLLOW_UP_SEARCH_LIMIT, sent: FOLLOW_UP_SEARCH_LIMIT, reached: true, not_sent: 2 }], "the same figures were logged twice, or not at all");
+  appendFileSync(driverDir(run, SEARCHES_FILE), JSON.stringify({ qid: "in-flight" }) + "\n");
   writePlanExecutionReceipt(ctx, join1());
-  assert.deepEqual(events().map((e) => e.spent), [RUN_CALL_LIMIT, RUN_CALL_LIMIT + 1]);
+  assert.deepEqual(events().map((e) => e.sent), [FOLLOW_UP_SEARCH_LIMIT, FOLLOW_UP_SEARCH_LIMIT + 1]);
 });

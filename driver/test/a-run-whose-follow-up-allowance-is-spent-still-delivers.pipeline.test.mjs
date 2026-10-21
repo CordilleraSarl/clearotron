@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// @tier full — drives a mock pipeline whose allowance of paid follow-up calls is spent, on both engines
+// @tier full — drives a mock pipeline whose safety net on follow-up searches is full, on both engines
 //
-// A RUN WHOSE ALLOWANCE OF PAID FOLLOW-UP CALLS IS SPENT STILL DELIVERS, WITH THE QUESTIONS IT DID NOT ASK STATED.
+// A RUN WHOSE SAFETY NET ON FOLLOW-UP SEARCHES IS FULL STILL DELIVERS, WITH THE QUESTIONS IT DID NOT ASK STATED.
 //
-// Ruled 2026-10-21: 250 paid follow-up register calls per run, every worker and pass together. Reaching it stops
-// further paid follow-ups only: the run keeps what it has, records what it did not ask, and carries on to placement
-// and delivery with the gap stated. It is never killed, held or discarded. Here the run's follow-ups have spent the
-// allowance and one follow-up still owns no answer. The plan join sends it back to be run, the real plan executor
-// refuses it without asking the register, and the run delivers: the question is on the receipt as not asked, the
-// class line says it could not be searched, and its question stays open. Own file = own process + own workspace
+// The run's follow-up searches share one net in code, every worker and pass together, which no model reads. When it
+// is full, the run calls it: no further follow-up is sent, the run keeps what it has, records what it did not ask,
+// and carries on to placement and delivery with the gap stated. It is never killed, held or discarded. Here the
+// run's follow-ups have filled the net and one follow-up still owns no answer. The plan join sends it back to be
+// run, the real plan executor holds it back without asking the register, and the run delivers: the question is on
+// the receipt as not asked, the class line says it could not be searched, and its question stays open. Own file = own process + own workspace
 // root; the workspace and the call ledger are pinned before any driver module loads, so driver modules are imported
 // dynamically. Every mark is invented.
 import { mkdtempSync as __mkdtemp, writeFileSync as __write } from "node:fs";
@@ -54,7 +54,7 @@ const ok = (obj) => ({ type: "text", text: JSON.stringify(obj) });
 async function executor(asked) {
   const { makeExecutePlan } = await import("../../providers/_shared/execute-plan.mjs");
   const { makeLedger } = await import("../../providers/_shared/ledger.mjs");
-  const { ALLOWANCE_FILE, RUN_CALL_LIMIT } = await import("../../providers/_shared/call-allowance.mjs");
+  const { SEARCHES_FILE, FOLLOW_UP_SEARCH_LIMIT } = await import("../../providers/_shared/follow-up-searches.mjs");
   const { logCall } = makeLedger("stand-in");
   const answer = (p, t) => { asked.push(p.name ?? (p.names ?? []).join("+")); logCall(t, { http_status: 200, ok: true, cache_hit: false }); };
   const kernel = makeExecutePlan({
@@ -74,7 +74,7 @@ async function executor(asked) {
         derived_from: { job_key: `supplemental:${target}`, variants_fingerprint: "supplemental" }, regions: [], rejected: [], entries: [
           { qid, axis: target, predicate: "exact", term: FOLLOW_UP_TERM, nice_classes: ["9"], regions: [], expected_kind: "enumerate", origin: "supplemental" },
         ] }, null, 2));
-      writeFileSync(join(dirname(planPath), ALLOWANCE_FILE), Array.from({ length: RUN_CALL_LIMIT }, (_, i) => JSON.stringify({ qid: `earlier-${i}` })).join("\n") + "\n");
+      writeFileSync(join(dirname(planPath), SEARCHES_FILE), Array.from({ length: FOLLOW_UP_SEARCH_LIMIT }, (_, i) => JSON.stringify({ qid: `earlier-${i}` })).join("\n") + "\n");
     }
     const r = await kernel("auth", { plan_path: planPath, axis, output_path: outputPath, ...(qids?.length ? { qids } : {}) }, c);
     const text = String(r?.text ?? "");
@@ -97,7 +97,7 @@ async function runMockPipeline(root, env, opts = {}) {
 }
 
 for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
-  test(`${engine}: with the follow-up allowance spent, the run delivers and states the question it did not ask`, async () => {
+  test(`${engine}: with the follow-up net full, the run delivers and states the question it did not ask`, async () => {
     const root = mkdtempSync(join(tmpdir(), "clearotron-allowance-"));
     const asked = [];
     const ex = await executor(asked);
@@ -105,26 +105,27 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     const rd = res.runDir;
     const json = (f) => JSON.parse(readFileSync(f, "utf8"));
     const qid = ex.qid();
-    assert.ok(qid, "guard: the code-side unit never ran, so the allowance was never spent");
+    assert.ok(qid, "guard: the code-side unit never ran, so the net was never filled");
 
     // the join sent the follow-up back to be run, and the executor refused it without asking the register
     assert.ok(events.some((e) => e.event === "plan-qids-missing" && e.action === "plan-direct-execute" && e.qids.includes(qid)),
       "guard: the follow-up never reached the plan join's repair");
-    assert.ok(!asked.includes(FOLLOW_UP_TERM), "the register was asked a follow-up with the allowance spent");
-    const { readOutstanding, RUN_CALL_LIMIT } = await import("../../providers/_shared/call-allowance.mjs");
-    assert.deepEqual(readOutstanding(driverDir(rd)).map((r) => [r.qid, r.reason]), [[qid, "run-call-limit"]]);
+    assert.ok(!asked.includes(FOLLOW_UP_TERM), "the register was asked a follow-up with the net full");
+    const { readOutstanding, FOLLOW_UP_SEARCH_LIMIT } = await import("../../providers/_shared/follow-up-searches.mjs");
+    assert.deepEqual(readOutstanding(driverDir(rd)).map((r) => [r.qid, r.reason]), [[qid, "follow-up-not-sent"]]);
 
     // the run delivered, and was never held on the question it did not ask
     assert.equal(res.ok, true, JSON.stringify({ fail: res.fail, stage: res.failedStage }));
     assert.ok(existsSync(join(rd, ".delivered")), "the run did not deliver");
-    assert.deepEqual(events.filter((e) => e.event === "stage-failure" || e.event === "plan-unexecuted"), [], "the run failed on a question the allowance refused");
+    assert.deepEqual(events.filter((e) => e.event === "stage-failure" || e.event === "plan-unexecuted"), [], "the run failed on a question the net held back");
 
     // the receipt, the run record, the class line and the question all state it
     const receipt = json(driverDir(rd, "plan-execution.json"));
     assert.ok(!receipt.missing.includes(qid), "a question not asked was left as one gone missing");
     assert.deepEqual(receipt.outstanding?.map((x) => x.qid), [qid]);
-    assert.deepEqual(receipt.follow_up_allowance, { limit: RUN_CALL_LIMIT, spent: RUN_CALL_LIMIT, reached: true, not_asked: 1 });
-    assert.ok(events.some((e) => e.event === "register-follow-up-allowance" && e.reached === true && e.not_asked === 1), "the run record does not state the allowance");
+    assert.equal(/follow_up|allowance|limit|paid|\bcap\b/i.test(JSON.stringify(receipt)), false, "the receipt a model may read names the net");
+    assert.ok(events.some((e) => e.event === "register-follow-up-searches" && e.reached === true && e.not_sent === 1 && e.limit === FOLLOW_UP_SEARCH_LIMIT),
+      "the run log does not state the net");
     const facts = json(driverDir(rd, "scope-facts.json"));
     assert.equal(facts.per_class["9"]?.outstanding, 1, `the class does not count the question not asked: ${JSON.stringify(facts.per_class["9"])}`);
     assert.match(facts.coverage_line, /Class 9: [^·]*could not be searched/, facts.coverage_line);
