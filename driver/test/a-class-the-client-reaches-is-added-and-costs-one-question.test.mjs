@@ -5,8 +5,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { compileRegisterPlan, awaitsReadingTurn } from "../register-plan.mjs";
+import { compileRegisterPlan, awaitsReadingTurn, foldSupplementalEntries } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
+import { deriveDirectiveRemedy, addedClassBound, remedyProposals } from "../frame-diff-model.mjs";
+import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MARK = "VELTRIS";
@@ -113,4 +115,67 @@ test("the shipped frame manual carries the owner's bound, not the older adjacenc
     "the frame manual does not say an added class is searched like every other");
   assert.doesNotMatch(src, /economically-linked undertaking/,
     "the older adjacency test still stands beside the bound that replaced it");
+});
+
+// ── THE BOUND HOLDS AT SECOND FRAMING'S RE-SWEEP ──
+//
+// The re-sweep turns each register directive into questions by code, from the remedy the frame diff
+// dictates, and that remedy can name the added class beside the instructed ones. On a test run of a crowded
+// matter the re-sweep put the added class on 32 questions. The added class comes off every remedy, and a
+// remedy that names only the added class is the one question it costs, which the plan already asks. Held on
+// the re-sweep's own steps, as the pipeline takes them: the bound read off the plan, the remedy, the
+// proposals, the mint and the fold.
+
+/** The re-sweep's questions for one directive, through the pipeline's steps. */
+function resweep(plan, directive) {
+  const remedy = deriveDirectiveRemedy(directive, { dominantElement: MARK, inScope: INSTRUCTED, ...addedClassBound(plan) });
+  const base = { nice_classes: remedy?.nice_classes, regions: remedy?.regions, rationale: `frame-reopen ${directive.layer}: the second framing found it unsearched` };
+  const { minted } = mintSupplementalEntries("primary-sweep", remedyProposals(remedy, directive, base), {
+    existingQids: new Set(plan.entries.map((e) => e.qid)), capabilities: PROVIDER_CAPABILITIES.clarivate, priorityClasses: INSTRUCTED });
+  const folded = foldSupplementalEntries(plan, minted);
+  const byQid = new Map(folded.plan.entries.map((e) => [e.qid, e]));
+  return { remedy, minted, asked: folded.added.map((q) => byQid.get(q)), refused: folded.refused, plan: folded.plan };
+}
+const ALL_FIVE = ["9", "28", "38", "41", "42"];
+const variantDirective = (classes) => ({ layer: "variant", severity: "dominant-element", item: "VELTRISS",
+  remedy: { terms: ["VELTRISS"], nice_classes: classes } });
+
+test("the re-sweep asks a remedy naming the added class in the instructed classes alone", () => {
+  const plan = planWith([{ class: "28", reason: "the franchise sells video game accessories" }]);
+  const directive = variantDirective(ALL_FIVE);
+  assert.ok(deriveDirectiveRemedy(directive, { inScope: INSTRUCTED }).nice_classes.includes("28"),
+    "guard: the dictated remedy names the added class");
+
+  const { asked, plan: after } = resweep(plan, directive);
+  assert.deepEqual(asked.map((e) => e.predicate).sort(), ["default", "exact"], "the main-element directive is not asked exact and contains");
+  for (const e of asked) assert.deepEqual([...e.nice_classes].sort(), [...INSTRUCTED].sort(), `the re-sweep asked ${e.predicate} in ${e.nice_classes}`);
+  assert.equal(carrying(after, "28").length, 1, "the added class costs more than one question after the re-sweep");
+});
+
+test("a remedy naming only the added class is the question the plan already asks there", () => {
+  const plan = planWith([{ class: "28", reason: "the franchise sells video game accessories" }]);
+  const [own] = carrying(plan, "28");
+  for (const directive of [variantDirective(["28"]), { layer: "field", severity: "dominant-element", item: "Class 28 was never searched" }]) {
+    const { remedy, minted, asked, refused } = resweep(plan, directive);
+    assert.equal(remedy?.identicalOnly, true, `the ${directive.layer} remedy was not bounded to the added class's question`);
+    assert.equal(minted.length, 1, `the ${directive.layer} remedy minted ${minted.length} questions`);
+    assert.deepEqual(asked, [], `the ${directive.layer} remedy asked something new in the added class`);
+    assert.deepEqual(refused.map((r) => [r.kind, r.twin]), [["duplicate-question", own.qid]],
+      `the ${directive.layer} remedy did not close on the plan's own question`);
+  }
+});
+
+test("with no class added, a remedy is asked as the directive dictates", () => {
+  const { asked } = resweep(planWith([]), variantDirective(["9", "28"]));
+  for (const e of asked) assert.deepEqual([...e.nice_classes].sort(), ["28", "9"], `the re-sweep asked ${e.predicate} in ${e.nice_classes}`);
+  assert.equal(asked.length, 2);
+});
+
+test("the pipeline's re-sweep reads the bound off the plan", () => {
+  // The re-sweep is a block inside the pipeline with no seam of its own, so its two wiring points are read off the source.
+  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  assert.match(src, /const classBound = addedClassBound\(ctx\.registerPlan\);/, "the re-sweep does not read the bound off the plan");
+  assert.match(src, /deriveDirectiveRemedy\(d, \{ dominantElement: dominantEl, inScope, \.\.\.classBound \}\)/,
+    "the re-sweep's remedy does not take the bound");
+  assert.match(src, /const proposals = remedyProposals\(remedy, d, base\);/, "the re-sweep does not ask the bounded remedy's questions");
 });

@@ -202,7 +202,7 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
 import { boundDominantElementFrom } from "./frame-diff-record.mjs";
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
-import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, firingDirectivesLenient } from "./frame-diff-model.mjs";
+import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, addedClassBound, remedyProposals, firingDirectivesLenient } from "./frame-diff-model.mjs";
 import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions } from "./reasoning-tripwires.mjs";
@@ -11932,6 +11932,9 @@ async function pipelineInner(job, opts = {}) {
             // searching the dominant element in the matter's own classes just re-runs the primary sweep, so
             // it is DISCLOSED (regDeferReason), never minted-and-swept blind.
             const existingQids = new Set(ctx.registerPlan.entries.map((e) => e.qid));
+            // The frame's added classes, from the frozen plan: each costs one question, the identical mark in it, which the
+            // plan already asks, so no remedy puts an added class on another question (deriveDirectiveRemedy).
+            const classBound = addedClassBound(ctx.registerPlan);
             const directiveQids = new Map();       // reopenKey -> [qid]
             const directiveIntended = new Map();   // reopenKey -> intended nice_classes[]
             const allMinted = [];
@@ -11939,7 +11942,7 @@ async function pipelineInner(job, opts = {}) {
             let rejectedN = 0;
             for (const d of regDirectives) {
               const key = reopenKey(d);
-              const remedy = deriveDirectiveRemedy(d, { dominantElement: dominantEl, inScope });
+              const remedy = deriveDirectiveRemedy(d, { dominantElement: dominantEl, inScope, ...classBound });
               if (!remedy || !remedy.terms.length || !remedy.nice_classes.length) {
                 directiveQids.set(key, []);
                 // Per-case wording (A2): the variant fallback now also DISCLOSES a label-shaped item
@@ -11957,9 +11960,7 @@ async function pipelineInner(job, opts = {}) {
               }
               directiveIntended.set(key, remedy.nice_classes);
               const base = { nice_classes: remedy.nice_classes, regions: remedy.regions, rationale: `frame-reopen ${d.layer}: ${String(d.observation ?? "").slice(0, 120)}` };
-              const proposals = remedy.terms.flatMap((t) => d.severity === "dominant-element"
-                ? [{ ...base, predicate: "exact", term: t }, { ...base, predicate: "default", term: t }]
-                : [{ ...base, predicate: "exact", term: t }]);
+              const proposals = remedyProposals(remedy, d, base);
               const { minted, rejected } = mintSupplementalEntries(a, proposals, {
                 existingQids, perCall: proposals.length,
                 axisMax: ctx.registerPlan.entries.length + allMinted.length + proposals.length, existingCount: 0,
