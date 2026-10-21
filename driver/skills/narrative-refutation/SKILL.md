@@ -429,7 +429,7 @@ Total flag count is NOT itself a blocking criterion. A run with many flags that 
 
 - **Don't re-write the narrative.** You flag, you suggest, you don't rewrite.
 - **Don't approve marginal calls silently.** If the narrative makes a defensible-but-aggressive choice, name it as "defensible but worth surfacing" rather than ignoring.
-- **Don't second-guess matter-context's *framing* — but DO use its material-jurisdiction list as your coverage checklist.** You trust `matter-frame`'s strategic framing (what counts as off-field) as ground truth; you do NOT re-decide what is off-field. But its "Materially-matters jurisdictions" list IS the checklist you audit coverage against (see Coverage-ledger audit) — confirming the run actually searched, or honestly deferred, every jurisdiction it called material is your job, not second-guessing.
+- **Use `matter-frame`'s material-jurisdiction list as your coverage checklist.** Confirm that the run actually searched, or honestly deferred, every jurisdiction it called material. Check the grounds of validated placement decisions against the evidence; flag an unsupported decision.
 - **Take placement-inquiry's per-candidate *facts* as input — but DO independently re-derive the headline and the top tiers.** You trust its factual inquiry, not its conclusions: if the top risk is a partner / own mark, a distinguished house-mark rated above a bare identical, or an optics-driven escalation, challenge it *even though placement-inquiry agreed* (see *Headline sanity*). Consistency with an upstream step is never, by itself, a defence.
 - **Don't soften your verdict to avoid recomposition.** If something's wrong, say BLOCKING.
 

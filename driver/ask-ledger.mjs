@@ -63,10 +63,16 @@ import { squash } from "./doubt-ledger.mjs";
 //     qids:   [ ... ],                           // the plan qids that would answer it (may be [])
 //     ending: { kind, by, evidence, reasons, ts } | null,
 //     handoff: "<the surface a human reads an un-ended/handed-over ask on>" | null,
+//     part, family,                              // only on a request kept as parts: "ran" or "family", and that family's qid
+//     short_id,                                  // every part of a frame request: the request's short id from before its hash
+//     legacy_id,                                 // the one part an old closure of that short id may settle: the ran part
 //   }
 
 const clip = (s, n = 200) => { const t = String(s ?? "").replace(/\s+/g, " ").trim(); return t.length > n ? `${t.slice(0, n - 1)}…` : t; };
 const slug = (s) => String(s ?? "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) || "x";
+// A short, stable hash of an exact string (FNV-1a, 32 bits), beside a slug, so two qids the slug folds or cuts to
+// one spelling still give two ids. PURE: no import, no clock.
+const fnv32 = (s) => { let h = 0x811c9dc5; for (const c of String(s ?? "")) { h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, "0"); };
 
 export const ASK_ENDINGS = ["executed", "judged-immaterial", "recovery"];
 
@@ -170,6 +176,21 @@ function endingForQids(qids, join, ts) {
   return null;
 }
 
+/** The ending for a frame directive whose every slice repeated a family the reading turn withheld: that
+ *  judgment, in the turn's own recorded words, and nothing else — never `executed`, since nothing ran. A
+ *  family whose record cannot be read leaves the ask OPEN: there is no judgment to show, and an ending
+ *  without one would be invented. `withheld` is the record as readWithheldFamilies returns it. PURE. */
+function withheldEnding(families, withheld, ts) {
+  const reasons = families.map((f) => String(withheld?.[f]?.reason ?? "").trim());
+  if (!families.length || reasons.some((r) => !r)) return null;
+  const axes = [...new Set(families.map((f) => String(withheld?.[f]?.axis ?? "").trim()).filter(Boolean))];
+  return mkEnding("judged-immaterial", "reading-turn", {
+    reasons: [...new Set(reasons)],
+    evidence: axes.length ? axes.map((a) => `_driver/withheld-families-${a}.json`).join(", ") : "_driver/withheld-families",
+    ts,
+  });
+}
+
 /** The {ending, handoff} pair for one cross-check directive. Only `recall` is subject to the
  *  discharge rule; every other net keeps the ending it always had. PURE. */
 function recallEnding(name, qid, join, ts) {
@@ -195,7 +216,8 @@ function recallEnding(name, qid, join, ts) {
  *   3. escalation-skip      run.jsonl `escalation-skipped` events
  *   4. envelope             run.jsonl `envelope-decision` / `envelope-closed` events (+ state.failed)
  *   5. screen-gate          run.jsonl `screen-gate-violation` events + the unresolved sidecar
- *   6. frame-diff           _driver/frame-reopen.json (requested/swept/deferrals + directive_qids)
+ *   6. frame-diff           _driver/frame-reopen.json (requested/swept/deferrals + directive_qids), and the
+ *                           reading turn's withheld-family record for a slice its judgment settled
  *   7. form-neighbourhood   same receipt, rows the receipt's `born` map marks form-oracle-injected
  *   8. supplemental-proposal register-units/<axis>-supplemental-plan.json entries[] + rejected[]
  *   9. cross-check          _driver/register-xcheck.json + _driver/register-recall.json (+ overflow)
@@ -207,7 +229,7 @@ export function deriveAsks({
   escalationState = null, events = null,
   frameReopen = null, screenGateUnresolved = null,
   supplementalPlans = null, xcheck = null, recall = null,
-  planExecution = null,
+  planExecution = null, withheldFamilies = null,
 } = {}, { ts = null } = {}) {
   const join = planJoinFrom(planExecution);
   const evs = Array.isArray(events) ? events.filter((e) => e && typeof e === "object") : [];
@@ -346,25 +368,56 @@ export function deriveAsks({
     const twinOf = new Map((Array.isArray(fr.answered_elsewhere) ? fr.answered_elsewhere : [])
       .filter((x) => typeof x?.directive === "string")
       .map((x) => [x.directive, new Map((Array.isArray(x.slices) ? x.slices : []).filter((t) => t?.qid && t?.twin).map((t) => [t.qid, t.twin]))]));
+    // A slice refused as a family the reading turn withheld never ran either, and nothing answered it: the turn
+    // decided not to ask that family, and its record keeps why. The receipt names such slices
+    // (`withheld_by_judgment`). They are left out of the computed ending, which rests on the slices that ran,
+    // and a directive with no other slice ends on the turn's recorded judgment.
+    //
+    // EACH SLICE ENDS ON WHAT HAPPENED TO IT. A slice that ran ends on the execution record, through its twin
+    // where the fold refused it as already asked. A slice whose family the turn still withholds ends on the
+    // turn's recorded reason. A slice whose family the turn released after the fold is no longer withheld on
+    // record, so it ends on what the execution record says of the family itself: it ran, it was deferred, or it
+    // stays open; so does a slice whose record cannot be read, which has no judgment to end on.
+    //
+    // ONE RECORD PER PART, AND A PART KEEPS ITS ID. The slices that ran are one part, under the directive's own
+    // id. Each family the settled slices repeat is a part of its own, under an id made from that family, so its
+    // id never moves when the family's disposition changes (withheld, then released and run) or a sibling part
+    // disappears. A closure names one part, and settles only that part; an id no part carries settles nothing.
+    const withheldOf = new Map((Array.isArray(fr.withheld_by_judgment) ? fr.withheld_by_judgment : [])
+      .filter((x) => typeof x?.directive === "string")
+      .map((x) => [x.directive, new Map((Array.isArray(x.slices) ? x.slices : []).filter((t) => t?.qid && t?.family).map((t) => [t.qid, t.family]))]));
     for (const key of requested) {
       const qids = (Array.isArray(qidsByKey[key]) ? qidsByKey[key] : []).filter(Boolean);
       const place = bornByKey[key] === "form-neighbourhood" ? "form-neighbourhood" : "frame-diff";
-      let ending = null, handoff = null;
+      const born = { place, artifact: "_driver/frame-reopen.json", ref: key, ts: fr.ts ?? null };
+      const ask = { text: `${place === "form-neighbourhood" ? "mechanical form-oracle gap" : "blind frame-diff omission"}: ${key} — sweep it or say why not`, owner: "register", structured: null };
+      // THE ID CARRIES A HASH OF THE WHOLE KEY. The slug cuts at 48 characters and folds punctuation, so two
+      // requests that differ only after the cut, or only in punctuation, gave one id, and the second was dropped.
+      // The short id stays on the ran part as `legacy_id`, for a closure written before the hash (applyAskClosure).
+      const id = `ask:frame:${slug(key)}-${fnv32(key)}`;
+      const legacy = `ask:frame:${slug(key)}`;
+      let parts = [{ id, qids, ending: null, handoff: null, legacy }];
       const d = deferrals.get(key);
       if (d) {
-        ending = mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts });
-        handoff = "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission";
+        parts = [{ id, qids, ending: mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts }),
+          handoff: "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission", legacy }];
+      } else if (swept.has(key) && !qids.length) {
+        parts = [{ id, qids, ending: mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts }), legacy }];
       } else if (swept.has(key)) {
-        ending = qids.length
-          ? endingForQids(qids.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts)   // computed — null (open) when the execution record disagrees
-          : mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts });
+        const settled = withheldOf.get(key) ?? new Map();
+        const ran = qids.filter((q) => !settled.has(q));
+        const families = [...new Set(qids.filter((q) => settled.has(q)).map((q) => settled.get(q)))];
+        parts = [
+          ran.length && { id, qids: ran, ending: endingForQids(ran.map((q) => twinOf.get(key)?.get(q) ?? q), join, ts),   // null (open) when the execution record disagrees
+            ...(families.length ? { part: "ran" } : {}), legacy },
+          ...families.map((fam) => ({
+            id: `${id}:family:${slug(fam)}-${fnv32(fam)}`, qids: qids.filter((q) => settled.get(q) === fam), part: "family", family: fam,
+            ending: String(withheldFamilies?.[fam]?.reason ?? "").trim() ? withheldEnding([fam], withheldFamilies, ts) : endingForQids([fam], join, ts),
+          })),
+        ].filter(Boolean);
       }
-      push({
-        ask_id: `ask:frame:${slug(key)}`,
-        born: { place, artifact: "_driver/frame-reopen.json", ref: key, ts: fr.ts ?? null },
-        ask: { text: `${place === "form-neighbourhood" ? "mechanical form-oracle gap" : "blind frame-diff omission"}: ${key} — sweep it or say why not`, owner: "register", structured: null },
-        qids, ending, handoff,
-      });
+      for (const p of parts) push({ ask_id: p.id, born, ask, qids: p.qids, ending: p.ending, handoff: p.handoff ?? null,
+        ...(p.part ? { part: p.part } : {}), ...(p.family ? { family: p.family } : {}), short_id: legacy, ...(p.legacy ? { legacy_id: p.legacy } : {}) });
     }
   }
 
@@ -651,12 +704,30 @@ export function applyAskClosure(asks, closureLines, fileTexts = {}, { ts = null 
   const byId = new Map();
   for (const l of closureLines ?? []) if (l?.id && !byId.has(l.id)) byId.set(l.id, l);
   const unverified = [];
+  // A CLOSURE WRITTEN BEFORE FRAME IDS CARRIED THEIR HASH names a request by its short id. Every request that had that
+  // short id could be the one it meant, a request now kept only as family parts included. It settles the ran part of
+  // the one request that had it, and nothing where two did: settling either could end an obligation it never judged.
+  // An ambiguous citation is reported with the parts it could have meant, while any of them is still open.
+  const requestsOf = new Map(), partsOf = new Map();
+  for (const a of asks ?? []) {
+    const short = a?.short_id ?? a?.legacy_id;
+    if (!short || short === a.ask_id) continue;
+    requestsOf.set(short, new Set([...(requestsOf.get(short) ?? []), a.born?.ref ?? a.ask_id]));
+    partsOf.set(short, [...(partsOf.get(short) ?? []), a]);
+  }
+  for (const [short, requests] of requestsOf) {
+    const l = byId.get(short);
+    const parts = partsOf.get(short) ?? [];
+    if (l && requests.size > 1 && parts.some((a) => !a.ending)) unverified.push({ ask_id: short, file: l.file, quote: l.quote, ambiguous: parts.map((a) => a.ask_id) });
+  }
+  const lineFor = (a) => byId.get(a.ask_id)
+    ?? (a.legacy_id && requestsOf.get(a.legacy_id)?.size === 1 ? byId.get(a.legacy_id) : undefined);
   const carryIntoFindings = [];
   let immaterialByStage = 0;
   const delivered = deliveredMarks(fileTexts?.["findings.json"]);
   const out = (asks ?? []).map((a) => {
     if (a?.ending) return a;                                    // the stage may never touch an ended ask
-    const l = byId.get(a.ask_id);
+    const l = lineFor(a);
     if (!l) return a;
     if (l.verdict === "OPEN") return { ...a, handoff: clip(l.reason, 300) || a.handoff };
     const hay = squash(fileTexts?.[l.file]);

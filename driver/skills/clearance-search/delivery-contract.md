@@ -11,7 +11,7 @@
   record only** (it sees no other finding — so a card can never carry another finding's body/owner/dates/link).
 
 The driver concatenates the shell + the cards (ordered by rated severity — the framework band — then ordinal) under a `# Marks` heading
-into `report.md`, then `audit-emit` writes **`audit.md`** (the full audit record). Deterministic code then
+into `report.md`, then the deterministic audit builder writes **`audit.md`** (the full audit record). Deterministic code then
 renders these into a self-contained HTML report + a styled Excel workbook and publishes them. The combined
 `report.md` shape below is the ASSEMBLED result — `report-overview` owns everything down to `# Marks`, and each
 `## ` card is one `report-card`.
@@ -59,9 +59,7 @@ note tripped that guard in conversion 4 and again in conversion 5 — describe t
 tools.)*
 
 
-**Curation (the judgment):** promote genuine **on-field** conflicts as headline cards (band-1 placement,
-top card `open: true`); identical-mark-but-different-customer findings go **off-field**; the rest go
-**out-of-scope**. Mirror the run's actual data. Do **not** emit every finding as a headline card — a run
+**Curation:** The finding's disposition chooses the report band a card renders in; it never recomputes the finding's rating. Mirror the run's actual data. Do **not** emit every finding as a headline card — a run
 with ~20–50 findings typically curates to a handful of headline cards. Rating vocabulary is the band words
 of the framework in force (`risk-framework.md` house default, or the profile-selected
 `risk-framework-<customer>.md`); synthesis discipline follows `synthesis-rules.md`.
@@ -268,57 +266,3 @@ rules below can still be unreadable.
   unreachable by any search: their absence is never evidence. Name the legal test in plain words
   (*"applying the well-accepted framework for confusion"*), never a court's factor template. Cut filler
   (*"session-wide notice coverage"*, *"it is worth noting that"*).
-
----
-
-## `audit.md` — the full audit record (mechanical re-format; emit EVERY finding)
-
-Same forgiving labelled-block markdown. Three sections:
-
-```
-# Findings
-## <finding / mark text>             ← block title = the finding name
-- source_layer: Both                 ← Register | Common-law | Both | Cross-pollination
-- type: Direct Conflict
-- owner: <owner>
-- owner_country: SG
-- classes: 9
-- status: Live (Registered; …)
-- dates: filed … / renewed …
-← (no per-finding risk fields here — the audit is the factual record; the rating is the finding's band
-←  word, per the framework in force, carried in findings.json and the curated report)
-- source: <provider record refs>
-- url: <record base host>/mark/<cc>/<number>   ← the composed record URL (Record-URL contract: the ACTIVE provider's base host from `clearance-register/providers/<name>.md` + `uri`); emit the full URL, never a bare /mark/… path and never a host belonging to a register this run did not search
-- description: <one line>
-- key_factors: ELEVATION: …  MITIGATION: …
-- cross_ref: N/A
-- search_terms: <variants used>
-- verify: ✅
-
-## <next finding>  …                  ← ALL findings (register + common-law), not just the headline ones
-
-# Negative Results
-## NR1
-- source_layer: Register
-- search_term: PROJECT NAME (exact)
-- platform: <provider> — worldwide
-- result: 0 identical hits
-- notes: …
-## NR2  …
-
-# Audit Trail
-## AT1
-- source_layer: Variants
-- step: Step 0–6: Archetype + manifest
-- query: …
-- rationale: …
-- source: <stage / tool>
-- result_summary: …
-- tool_call: N/A
-- finding_ref: Manifest
-## AT2  …
-```
-
-Pull Findings/Negatives/Audit-Trail straight from `register-findings.md` + `common-law-findings.md`
-(+ placements). This is re-formatting existing analysis into the block shape — do not re-analyse or
-re-search. Omit a key if the source doesn't have it; `Mark` defaults to the report's title at render time.

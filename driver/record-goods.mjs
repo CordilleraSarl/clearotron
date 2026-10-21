@@ -77,12 +77,25 @@ export function recordGoods(body, { english = true } = {}) {
     }
   }
   if (out.length === 0 && Array.isArray(b?._raw?.classifications)) {
-    for (const c of b._raw.classifications) push([c?.nice_class], c?.goods_services_text, null, isEnglish(c?.goods_services_language) || (!tagged(c?.goods_services_language) && english));
+    for (const c of b._raw.classifications) {
+      const at = out.length;
+      push([c?.nice_class], c?.goods_services_text, null, isEnglish(c?.goods_services_language) || (!tagged(c?.goods_services_language) && english));
+      // The register's own flag, on the full record it serves (Signa, Retrieve Trademark, the classification
+      // object's `goods_services_text_truncated`): true is a cut, false is whole, and no flag establishes nothing.
+      if (out.length > at) {
+        if (c?.goods_services_text_truncated === true) out[at].cut = true;
+        else if (c?.goods_services_text_truncated !== false) out[at].unknown = true;
+      }
+    }
   }
   if (out.length === 0 && b.goodsAndServices != null) {
     const gs = b.goodsAndServices;
+    // One string is the register's own statement as this install's US index holds it, whole (uspto-local). A list
+    // is a register whose full-record operation this tree documents nowhere (EUIPO and the free tier): its goods
+    // are read, and their completeness is not established.
     if (typeof gs === "string") push([], gs, null, english);
     else if (Array.isArray(gs)) {
+      const from = out.length;
       for (const g of gs) {
         if (typeof g === "string") { push([], g, null, english); continue; }
         const d = g?.description;
@@ -91,9 +104,33 @@ export function recordGoods(body, { english = true } = {}) {
         push([g?.classNumber ?? g?.class ?? g?.niceClass ?? g?.nice_class], textOf(chosen ?? g?.text ?? g?.goods), null,
           Boolean(en) || (Array.isArray(d) ? !tagged(d[0]?.language) && english : english));
       }
+      for (let i = from; i < out.length; i++) out[i].unknown = true;
     }
   }
   return out;
+}
+
+/**
+ * WHAT A HELD RECORD'S GOODS REST ON: the operation its body came from, and whether that body supplies the goods
+ * field at all. PURE. `operation` is read off the body's shape, as `recordGoods` reads it:
+ *   · `record-text` — Clarivate's record text, the full record (its statements are whole: the accepted provenance);
+ *   · `retrieve` — Signa's Retrieve Trademark, the full record, each statement with the register's own flag;
+ *   · `bulk-register` — the register's own statement as this install's US index holds it, whole;
+ *   · `undocumented` — any other shape: its completeness is not established.
+ * `field` is `listed` (the field is there with goods), `empty` (there, listing none) or `none` (not there at
+ * all): a body whose goods field is missing, or that will not parse, is not one that lists no goods.
+ */
+export function recordGoodsProvenance(body) {
+  const b = Array.isArray(body) ? body[0] : body;
+  if (!b || typeof b !== "object") return { operation: "undocumented", field: "none" };
+  const said = (v) => String(textOf(v) ?? "").trim() !== "";
+  if (Array.isArray(b.goodsServices))
+    return { operation: "record-text", field: b.goodsServices.some((g) => said(g?.description) || said(g?.translation)) ? "listed" : "empty" };
+  if (Array.isArray(b?._raw?.classifications))
+    return { operation: "retrieve", field: b._raw.classifications.some((c) => said(c?.goods_services_text)) ? "listed" : "empty" };
+  if (typeof b.goodsAndServices === "string") return { operation: "bulk-register", field: b.goodsAndServices.trim() ? "listed" : "empty" };
+  if (b.goodsAndServices != null) return { operation: "undocumented", field: recordGoods(b).length ? "listed" : "empty" };
+  return { operation: "undocumented", field: "none" };
 }
 
 // THE RAW GOODS LIST SAYS NOTHING THE NORMALISED ONE DOES NOT. A Clarivate record holds its goods twice: as the
@@ -165,10 +202,18 @@ export const goodsFor = (index, record) => index?.get(normalizeRecordUri(record?
 
 /**
  * The goods a band row holds itself, where the register's search answer carries them: Signa sends each record's
- * class statements on the search row (`raw.classifications`), up to 280 characters, and flags a statement it cut.
- * Each statement is read as a held body's is (`recordGoods`) and marked `cut: true` where the register cut it, so a
- * statement that stops early is never read as the whole of its class. null when the row holds none. PURE.
+ * class statements on the search row (`raw.classifications`) and flags a statement it cut. Each statement is read as
+ * a held body's is (`recordGoods`) and marked `cut: true` where the register cut it, so a statement that stops early
+ * is never read as the whole of its class. null when the row holds none. PURE.
+ *
+ * WHOLE ONLY WHERE THE ANSWER SAYS SO. The search answer our request asks for is the register's default, which it
+ * documents as "the first 280 characters" of each statement (docs.signa.so, Search Trademarks, "Response options",
+ * `include`: "`full_goods_services` returns the full goods and services text instead of the first 280
+ * characters"); the request never asks for the full text. So a statement shorter than 280 characters is whole, a
+ * flagged one is cut, and an unflagged one of 280 characters or more is marked `unknown: true`: its completeness is
+ * not established, and missing words in it establish nothing.
  */
+export const DEFAULT_ANSWER_CUT = 280;
 export function rowGoods(row) {
   const classes = Array.isArray(row?.raw?.classifications) ? row.raw.classifications : null;
   if (!classes) return null;
@@ -176,7 +221,11 @@ export function rowGoods(row) {
   const out = [];
   for (const c of classes) {
     const [g] = recordGoods({ _raw: { classifications: [c] } }, { english });
-    if (g) out.push(c?.goods_services_text_truncated === true ? { ...g, cut: true } : g);
+    if (!g) continue;
+    const { cut: _cut, unknown: _unknown, ...whole } = g;   // the row's own rule below, not the full record's
+    if (c?.goods_services_text_truncated === true) out.push({ ...whole, cut: true });
+    else if ([...String(c?.goods_services_text ?? "")].length >= DEFAULT_ANSWER_CUT) out.push({ ...whole, unknown: true });
+    else out.push(whole);
   }
   return out.length ? out : null;
 }
@@ -188,13 +237,18 @@ export function rowGoods(row) {
  */
 export const statementCut = (goods) => (goods ?? []).some((g) => g?.cut === true);
 
-/** How many records rest on each kind of goods evidence: a held body, a row's whole statements, a row's statements cut short, or none. PURE. */
+/** Is a statement of these goods one whose completeness is not established (`rowGoods`, `recordGoods`)? PURE. */
+export const completenessUnknown = (goods) => (goods ?? []).some((g) => g?.unknown === true);
+/** Could words cut off, or not shown, from these goods be the client's? Then a statement matching none is unknown. PURE. */
+const notWhole = (goods) => statementCut(goods) || completenessUnknown(goods);
+
+/** How many records rest on each kind of goods evidence: a held body, a row's whole statements, a row's statements cut short or not established whole, or none. PURE. */
 export function goodsEvidence(records, goods) {
-  const out = { held: 0, complete: 0, cut: 0, none: 0 };
+  const out = { held: 0, complete: 0, cut: 0, unknown: 0, none: 0 };
   for (const r of Array.isArray(records) ? records : []) {
     if (goods?.held?.(r)) { out.held++; continue; }
     const g = goods ? goods.of(r) : null;
-    if (!g) out.none++; else if (statementCut(g)) out.cut++; else out.complete++;
+    if (!g) out.none++; else if (statementCut(g)) out.cut++; else if (completenessUnknown(g)) out.unknown++; else out.complete++;
   }
   return out;
 }
@@ -242,7 +296,7 @@ export function goodsWordCounter(words, { stems = false } = {}) {
     if (!res.length || !readable.length) return null;
     const text = fold(readable.map((g) => (g.alt ? `${g.text}\n${g.alt}` : g.text)).join("\n"));
     const n = res.filter((re) => re.test(text)).length;
-    return n === 0 && (classUnread(goods) || statementCut(goods)) ? null : n;
+    return n === 0 && (classUnread(goods) || notWhole(goods)) ? null : n;
   };
 }
 
@@ -274,7 +328,7 @@ export function goodsWordsMatched(words, { stems = false } = {}) {
   return (goods) => {
     if (!list.length || !(goods ?? []).some((g) => g.en !== false)) return null;
     const hit = tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
-    return hit.length === 0 && (classUnread(goods) || statementCut(goods)) ? null : hit;
+    return hit.length === 0 && (classUnread(goods) || notWhole(goods)) ? null : hit;
   };
 }
 

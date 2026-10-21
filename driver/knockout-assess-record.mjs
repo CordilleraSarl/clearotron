@@ -271,7 +271,7 @@ export function acceptKnockoutAssess(params, { boundOrdinal = null } = {}) {
 
   const chunkSummary = str(params?.chunkSummary);
   if (!chunkSummary)
-    return { ok: false, reason: "knockoutassess_summary_missing: chunkSummary (2–5 sentences covering THIS chunk's marks) is required — code composes the batch executive summary from the chunks, so a chunk without one vanishes from the summary" };
+    return { ok: false, reason: "knockoutassess_summary_missing: chunkSummary (the cross-mark read covering THIS chunk's marks) is required — code composes the batch executive summary from the chunks, so a chunk without one vanishes from the summary" };
 
   if (chunkNo === 0 && !str(params?.batch?.productContext))
     return { ok: false, reason: "knockoutassess_batch_missing: chunk 0 carries the batch object (productContext at minimum) — it is the only chunk that does, and the merged artifact takes it from there" };

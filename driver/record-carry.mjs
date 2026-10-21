@@ -703,6 +703,61 @@ export function mintRecordCarryDoubts(artifact, { max = 25 } = {}) {
 }
 
 /**
+ * THE RECORD-CARRY DOUBTS AGAIN, FROM A TRACE WRITTEN AGAIN after a repair. A doubt of this family names one record
+ * under a POSITIONAL id, and the closure step's verdicts are applied by id, so a closure recorded against an id must
+ * never move onto another record:
+ *   - a record still unreasoned keeps its doubt exactly as it stands: id, status and ending;
+ *   - a record newly unreasoned gets a new doubt, under an id past every one this family gave, stitched by `stitch` as
+ *     a fresh doubt is (in code; nothing is dispatched);
+ *   - a record the new trace POSITIVELY reasons, a row for it that is not unreasoned, loses its doubt;
+ *   - a record the new trace does not list at all keeps its doubt as it stands: an absence is not a ground.
+ * A trace that is missing or could not be computed (no readable band, among other causes) says nothing about any
+ * record, so it removes nothing and adds nothing: every doubt stands as the pass raised it (`unavailable: true`).
+ * Every other family's doubts stay exactly where they stood. The cap (`max`) limits only the new doubts: a record that
+ * keeps its doubt keeps it wherever the new trace lists it, or where it does not. Returns { doubts, fresh, dropped,
+ * minted, omitted, unavailable }: the ids of the new and the dropped doubts, the family's size, the records without a
+ * ground the cap left out, and whether the trace could be read at all. PURE.
+ */
+export function recordCarryDoubtsAgain(doubts, trace, { stitch = (ds) => ds, max = 25 } = {}) {
+  const FAMILY = /^doubt:record-carry:unreasoned:(\d+)$/;
+  const all = Array.isArray(doubts) ? doubts : [];
+  const inFamily = (d) => FAMILY.test(String(d?.id ?? ""));
+  const uriOf = (d) => String(d?.subject?.uris?.[0] ?? "").toLowerCase();
+  const old = all.filter(inFamily);
+  if (trace?.computable !== true) return { doubts: all, fresh: [], dropped: [], minted: old.length, omitted: 0, unavailable: true };
+  const oldByUri = new Map(old.filter((d) => uriOf(d)).map((d) => [uriOf(d), d]));
+  // Minted whole, then capped: a record that keeps its doubt keeps it wherever the new trace lists it, and the cap
+  // limits only the new doubts, filled in the trace's order up to what the kept ones leave.
+  const mint = mintRecordCarryDoubts(trace, { max: Infinity });
+  const unreasonedUris = new Set(mint.doubts.map(uriOf));
+  const listed = new Set((Array.isArray(trace?.rows) ? trace.rows : []).map((r) => String(r?.uri ?? "").toLowerCase()).filter(Boolean));
+  const reasoned = (uri) => listed.has(uri) && !unreasonedUris.has(uri);
+  const carried = old.filter((d) => !unreasonedUris.has(uriOf(d)) && !reasoned(uriOf(d)));   // not listed: kept as it stands
+  const keptCount = mint.doubts.filter((d) => oldByUri.has(uriOf(d))).length + carried.length;
+  let room = Math.max(0, max - keptCount);
+  let next = old.reduce((n, d) => Math.max(n, Number(FAMILY.exec(d.id)[1])), 0);
+  const family = [], fresh = [];
+  for (const d of mint.doubts) {
+    const prior = oldByUri.get(uriOf(d));
+    if (prior) family.push(prior);
+    else if (room > 0) { room--; const f = { ...d, id: `doubt:record-carry:unreasoned:${++next}` }; fresh.push(f); family.push(f); }
+  }
+  family.push(...carried);
+  const stitched = fresh.length ? new Map(stitch(fresh).map((d) => [d.id, d])) : new Map();
+  const members = family.map((d) => stitched.get(d.id) ?? d);
+  const keptIds = new Set(members.map((d) => d.id));
+  const out = [];
+  let placed = false;
+  for (const d of all) {
+    if (!inFamily(d)) { out.push(d); continue; }
+    if (!placed) { out.push(...members); placed = true; }
+  }
+  if (!placed) out.push(...members);
+  return { doubts: out, fresh: fresh.map((d) => d.id), dropped: old.filter((d) => !keptIds.has(d.id)).map((d) => d.id),
+    minted: members.length, omitted: Math.max(0, mint.doubts.length - (members.length - carried.length)), unavailable: false };
+}
+
+/**
  * The one-line reader answer to "where did this record stop, and why". Takes the artifact and a mark
  * text or uri; returns the matching rows. The acceptance question for — "does it say why 澜珀 did
  * not become a finding?" — is this function with `"澜珀"`. Substring, not the house token matcher, for
@@ -915,12 +970,7 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   // So the carry rows are the population — they are where a stated drop is RECORDED — and the
   // reconciliation is demoted to optional corroboration. Measured on that delivery, the correct
   // population is 70 rows over 34 distinct marks, all `digest:reasoned-negative`, and it contains both.
-  const arrived = new Set(["finding", "findings-surface"]);
-  const population = carryRows.filter((r) => r?.uri
-    && r.reason_source === "step-stated"           // the sibling owns step-silent; step-structural is mechanical
-    && !arrived.has(r.reach));                     // arrived, or arrived somewhere visible, is not a divergence
-
-  // Kept for corroboration only. `ended` no longer gates anything; where the reconciliation DOES name a
+  // Kept for corroboration. `ended` gates nothing but one exclusion below; where the reconciliation DOES name a
   // position it agrees with, that is recorded on the row so a reader can weigh it.
   const ended = [];
   for (const bucket of ["top_slice", "residual"]) {
@@ -930,6 +980,20 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
     }
   }
   const endedUris = new Set(ended.map((e) => e.uri));
+  const arrived = new Set(["finding", "findings-surface"]);
+  // PLACEMENT'S OWN SET-ASIDE IS NOT A LOST FINDING. A record placement set aside, by name or by its group's row,
+  // leaves the placement seam with the step's ground before the digest ever sees it: the ruled method's decision,
+  // recorded where it was made. Read as a stated drop it was listed as a divergence pointing at another artifact,
+  // and on a crowded band those rows buried the few this check is for. It stays in the population where the digest
+  // ended its position as a finding, because then the record did vanish: in the reconciliation, or in the finding
+  // rows the digest's own typed calls recorded, which the reconciliation's silence cannot erase.
+  const digestFound = new Set((Array.isArray(digestFindingUris) ? digestFindingUris : []).map(lc));
+  const placementSetAside = (r) => r.stopped_at === "placement" && r.reason === "placement:set-aside"
+    && !endedUris.has(lc(r.uri)) && !digestFound.has(lc(r.uri));
+  const population = carryRows.filter((r) => r?.uri
+    && r.reason_source === "step-stated"           // the sibling owns step-silent; step-structural is mechanical
+    && !arrived.has(r.reach)                       // arrived, or arrived somewhere visible, is not a divergence
+    && !placementSetAside(r));
   const byUri = new Map();
   for (const r of carryRows) if (r?.uri) byUri.set(lc(r.uri), r);
 

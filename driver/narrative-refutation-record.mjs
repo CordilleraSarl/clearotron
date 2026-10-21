@@ -34,8 +34,8 @@
 // `n` is the render's, taken from array order. A seat-supplied number is a value that can disagree with
 // the list it labels — duplicated, skipped, or renumbered by a corrective pass — and nothing downstream
 // would notice. Removing the field removes the defect (the doubt-closure `file_index` rule).
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
-import { captureCall, mergeCapture } from "./call-capture.mjs";
+import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
+import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS } from "./verify.mjs";
@@ -274,6 +274,44 @@ export function readAcceptedFlags(runDir) {
   if (doc?.accepted !== true) return null;
   const flags = doc?.params?.flags;
   return Array.isArray(flags) ? flags : null;
+}
+
+/**
+ * The sequence number the next review call will be captured under. A dispatch notes it BEFORE it runs, so the
+ * calls that dispatch makes are exactly those numbered from it on. Never throws.
+ */
+export function nextRefutationSeq(runDir) {
+  const { dir } = refutationCallPaths(String(runDir ?? ""));
+  const nameFor = (seq) => join(dir, `call-${String(seq).padStart(3, "0")}.json`);
+  let names = [];
+  try { names = readdirSync(dir); } catch { names = []; }
+  return nextSeq(names, nameFor) ?? 1000;
+}
+
+/**
+ * THE LAST ACCEPTED REVIEW CALL FROM `seq0` ON, AS TYPED: `{seq, verdict, flags, planAudit}`, or null.
+ *
+ * The review after a delivery-check repair is a later call than the first review's, so `readAcceptedFlags`
+ * (which opens the first call) cannot read it. A refused or unfinished call is skipped, as it is there: null
+ * means there is no review from that dispatch the driver can act on, and its caller says so rather than
+ * reading anything else in its place. Never throws.
+ */
+export function readAcceptedReviewSince(runDir, seq0) {
+  const { dir } = refutationCallPaths(String(runDir ?? ""));
+  let names = [];
+  try { names = readdirSync(dir); } catch { return null; }
+  const calls = names.map((n) => /^call-(\d+)\.json$/.exec(n)).filter(Boolean)
+    .map((m) => ({ seq: Number(m[1]), file: join(dir, m[0]) }))
+    .filter((c) => c.seq >= Number(seq0))
+    .sort((a, b) => b.seq - a.seq);
+  for (const c of calls) {
+    let doc;
+    try { doc = JSON.parse(readFileSync(c.file, "utf8")); } catch { continue; }
+    if (doc?.accepted !== true) continue;
+    const p = doc?.params ?? {};
+    return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null };
+  }
+  return null;
 }
 
 /** Read back what was written — the verdict view of the stored file, through the one parse. */

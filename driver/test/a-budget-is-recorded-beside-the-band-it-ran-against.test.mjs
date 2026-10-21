@@ -190,7 +190,7 @@ test("a named absence reaches the row as a reason, and a stage with no band carr
 // beside them. On a dense matter both died at their wall having written nothing, each sitting exactly
 // AT its ceiling — so what ended them was the budget expiring, not a guard firing, and the stall guards
 // had half an hour of quiet to fire in and could not because tokens were still moving.
-const { derivedLimitSec, limitExceedsCeiling, ceilingRefusal, LIMIT_REFERENCE_MB, LIMIT_CEILING_SEC } =
+const { derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand, LIMIT_REFERENCE_MB, LIMIT_CEILING_SEC } =
   await import("../band-size.mjs");
 
 const MB = 1024 * 1024;
@@ -245,4 +245,22 @@ test("a band past the ceiling is REFUSED at dispatch, with its size in the messa
   const dense = derivedLimitSec(PLACEMENT_BASE, { bytes: 8 * MB });
   assert.equal(limitExceedsCeiling(dense.sec), false,
     "the matter this was built for must RUN with a longer budget, not be refused — the ceiling is for the band that is itself the defect");
+});
+
+test("the stages that would refuse a band before it is adopted are the stages whose own dispatch would refuse it", () => {
+  // A band merged again after a unit's re-run is measured before it is adopted, so that a band no reading stage can be
+  // dispatched over never becomes the band they are dispatched over. The measure must be the dispatch's own: each stage's
+  // base from the stage table, derived from the band's bytes, against the one ceiling.
+  const baseOf = (s) => STAGES[s]?.timeoutSec;
+  const atDispatch = (bytes) => [...BAND_READING_STAGES].filter((s) => limitExceedsCeiling(derivedLimitSec(baseOf(s), { bytes }).sec));
+  for (const mb of [0.1, LIMIT_REFERENCE_MB, 8, 30, 36, 42, 45, 177])
+    assert.deepEqual(stagesRefusingBand(mb * MB, baseOf), atDispatch(mb * MB), `${mb} MB: the measure before adoption disagrees with the dispatch`);
+  // the dense matter's band refuses nothing; the 177 MB band is refused by all three; between them the stages part,
+  // because each has its own base
+  assert.deepEqual(stagesRefusingBand(8 * MB, baseOf), []);
+  assert.deepEqual(stagesRefusingBand(177 * MB, baseOf).sort(), [...BAND_READING_STAGES].sort());
+  const parted = [30, 36, 42, 45].map((mb) => stagesRefusingBand(mb * MB, baseOf).length);
+  assert.ok(parted.some((n) => n > 0 && n < BAND_READING_STAGES.size), `no size refuses some stages and not others: ${JSON.stringify(parted)}`);
+  // a band that cannot be measured refuses nothing, as its dispatch returns the base
+  for (const bytes of [null, undefined, Number.NaN]) assert.deepEqual(stagesRefusingBand(bytes, baseOf), []);
 });

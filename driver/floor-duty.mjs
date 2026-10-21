@@ -244,6 +244,15 @@ export function floorDutyBlock(artifact, { armed = false } = {}) {
   };
 }
 
+/**
+ * THE FLOOR'S GAP POSITIVELY CLOSED, judged as `floorDutyBlock` judges it: the floor is armed, its account was
+ * computed, and no floor is left undischarged. An account that is absent, unreadable or not computable is no proof
+ * that the gap closed, so it is false here, where `floorDutyBlock` is null for the same account. PURE.
+ */
+export function floorDutyClosed(artifact, { armed = false } = {}) {
+  return armed === true && artifact?.computable === true && !((artifact?.undischarged_by_seat ?? 0) > 0);
+}
+
 export const FLOOR_DUTY_EVENT_FIELDS = ["floors", "accounted", "named_without_ground", "unanswered"];
 
 /** The run.jsonl row. `computable:false` carries its reason and NO counts — a zero here would read as

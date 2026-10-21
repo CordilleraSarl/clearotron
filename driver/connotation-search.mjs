@@ -624,14 +624,12 @@ export function quoteJoins(quote, candidates) {
 const POINT_DIRECTIVE = [
   "On every row the tool's answer marks as owing one, give `segment_index` — the NUMBER of the passage",
   "you relied on, from the numbered passages of the receipt you ruled on.",
-  "And copy `fragment` — a few characters taken EXACTLY out of that same passage, in whatever script it",
-  "is written in.",
-  "The number says WHICH passage; the characters show you read it. The driver copies the passage into the",
+  "The driver copies the passage into the",
   "record for you, so never reproduce it, never translate it, and never join two passages together.",
-  "If the passage is not in your language, copy its characters as they are written — a translation or a",
-  "paraphrase is not a copy and will not be accepted.",
-  "A row owing these whose fragment does not appear in the passage it names is not counted as ruled, and",
-  "this stage fails while any remain.",
+  "`fragment` is OPTIONAL, and never refused: the driver extracts the quote it stores from `segment_index`",
+  "ALONE, so pointing at the passage is the whole obligation. If a few characters of that passage come",
+  "easily, send them and they are recorded as a transcription check; if the script is one you cannot",
+  "reproduce, omit it and nothing is lost.",
 ];
 
 // The anchor's own bar. SHORT ON PURPOSE — this is the piece a model must reproduce exactly, and every
@@ -1412,7 +1410,7 @@ export function renderConnotationObligations(ob, { ledgerPath = "your half ledge
       "your `ruling` and your `note`.",
       "Rows are validated as they arrive: rows that validate are KEPT even when others in the same call",
       "are refused, and the tool's answer names every obligation still outstanding and which of them owe",
-      "a `segment_index` and `fragment`. Your rulings ACCUMULATE across calls and across attempts — nothing",
+      "a `segment_index`. Your rulings ACCUMULATE across calls and across attempts — nothing",
       "already recorded",
       "needs re-sending. Send the rest in a further call until the answer reports nothing outstanding.",
       "",
@@ -1500,7 +1498,7 @@ export function meaningSweepReceiptsInstruction({
     "A row listed with exactly ONE receipt is already resolved: it takes no",
     "`receipt_index` — give that row only your `ruling` and `note`.",
     "Rows that validate are KEPT even when others in the same call are refused, and the tool's answer",
-    "names every obligation still outstanding and which of them owe a `segment_index` and `fragment`.",
+    "names every obligation still outstanding and which of them owe a `segment_index`.",
     "Your rulings ACCUMULATE",
     "across calls and across attempts: a row you have ruled on stays ruled, so nothing already answered",
     "needs redoing — send only what the answer reports outstanding.",

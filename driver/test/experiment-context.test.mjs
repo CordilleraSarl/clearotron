@@ -77,7 +77,12 @@ const FRESHNESS_GOLDEN = {
   "common-law-half": ["variant-manifest.md", "matter-context.md"],
   "register-unit": ["variant-manifest.md", "matter-context.md"],
   "placement-inquiry": ["matter-context.md", "common-law-findings.md", "register-named-band.json", "register-units/saturation-probe.md", "register-units/primary-sweep.md", "register-units/transliteration-numeric.md", "register-units/incumbent-class.md"],
-  "register-digest": ["variant-manifest.md", "matter-context.md", "placement-recommendations.md", "placements.json", "register-named-band.json", "register-units/saturation-probe.md", "register-units/primary-sweep.md", "register-units/transliteration-numeric.md", "register-units/incumbent-class.md"],
+  // _driver/placement-decisions.json — placement's standing set-asides, which the reading step, the writer and the
+  // review are told when their message is built. Declared so a change to a decision alone (a ground, a group's
+  // membership) leaves a reader that already ran stale, as a change to placements.json does. Written by every
+  // placement pass, which runs upstream of all three, and each has its repair arm on the delivery path; a stamp
+  // written before this ships records no entry for it, so a run already in flight reads no staleness from it.
+  "register-digest": ["variant-manifest.md", "matter-context.md", "placement-recommendations.md", "placements.json", "_driver/placement-decisions.json", "register-named-band.json", "register-units/saturation-probe.md", "register-units/primary-sweep.md", "register-units/transliteration-numeric.md", "register-units/incumbent-class.md"],
   skeptic: ["register-findings.md", "common-law-findings.md", "variant-manifest.md", "matter-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
   // — MOVED, and this is the golden doing its job. frame-diff now runs BEFORE placement-inquiry and
   // register-digest, so register-findings.md and register-coverage-ledger.json — both digest OUTPUTS — do
@@ -102,9 +107,9 @@ const FRESHNESS_GOLDEN = {
   // that file, so the ledger is a strict co-mover with an input this stage already stales on. And a
   // stamp written before this ships carries no entry for either path, so `diffFingerprint` — which walks
   // the RECORDED entries — manufactures no staleness on a run already in flight.
-  synthesis: ["register-findings.md", "common-law-findings.md", "placement-recommendations.md", "placements.json", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/frame-reopen.json", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
+  synthesis: ["register-findings.md", "common-law-findings.md", "placement-recommendations.md", "placements.json", "_driver/placement-decisions.json", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/frame-reopen.json", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
   "case-law": ["narrative.md"],
-  "narrative-refutation": ["narrative.md", "register-findings.md", "common-law-findings.md", "placement-recommendations.md", "placements.json", "matter-context.md", "skeptic-flags.md", "_driver/frame-reopen.json"],
+  "narrative-refutation": ["narrative.md", "register-findings.md", "common-law-findings.md", "placement-recommendations.md", "placements.json", "_driver/placement-decisions.json", "matter-context.md", "skeptic-flags.md", "_driver/frame-reopen.json"],
   // — NARROWED from nine to two, deliberately: the stage declared nine and opened two (the 08-02 R2
   // dependency graph), and its prompt asserted grounding in all nine. Declaration and citations now both
   // say narrative.md + findings.json, pinned together by the exact-set guard in operability.test.mjs.

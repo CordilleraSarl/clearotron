@@ -1082,7 +1082,7 @@ serve({
         findings_patch: {
           type: "array",
           description:
-            "A TARGETED CORRECTION, and the shape the repair prompts ask for. Send the complete corrected finding object(s), each carrying the `ordinal` of the finding it replaces, and send NOTHING else — no `findings`, no `narrative` unless you also corrected a section. The driver is holding every value you already sent and re-renders both files from them, so what you do not name comes back byte-identical. It cannot remove a finding: an ordinal names one to replace, and there is no way to express a deletion. Sending the whole `findings` document instead REPLACES the record, which is how fifteen findings were lost once — if you mean to correct four findings, send four rows here, not a document containing four.",
+            "A TARGETED CORRECTION, and the shape the repair prompts ask for. Send the complete corrected finding object(s), each carrying the `ordinal` of the finding it replaces, and send NOTHING else — no `findings[]` list, no `narrative` unless you also corrected a section, and a `findings` object only to carry the registers you changed or the \"corrections\" marker. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. It cannot remove a finding: an ordinal names one to replace, and there is no way to express a deletion. Sending a `findings` document that carries its `findings[]` list instead REPLACES the record, which is how fifteen findings were lost once — if you mean to correct four findings, send four rows here, not a document containing four.",
           items: {
             type: "object",
             required: ["ordinal"],
@@ -1109,7 +1109,11 @@ serve({
         narrative: {
           type: "object",
           description: "The cross-finding read, as sections. This is the material no other artifact on the run holds — NOT a second write-up of each finding, which lives on the report card. On a first call, send it complete. On a correction, send only the sections you changed — the rest are held.",
-          required: ["spine", "verdict"],
+          // NO `required` HERE EITHER. It refused a correction that sent only the sections it changed — the save
+          // this description and every repair prompt ask for — before the save code saw the call, and such a
+          // refusal left no call file, only a line in the server's log. The save code still refuses a FIRST
+          // call without the spine or the verdict, by name (`synthesis_spine_missing`, `synthesis_verdict_missing`),
+          // and a patch keeps the held ones.
           properties: {
             spine: { type: "string", description: "The dominant-element spine: what carries these marks and what a register would weigh. The core of the product." },
             verdict: { type: "string", description: "The verdict prose — what the findings together mean for this client." },
@@ -1133,7 +1137,7 @@ serve({
         findings: {
           type: "object",
           description:
-            "The findings document — schema_version, rated_under_framework, findings[], coverage[], ask_answers[] and the other top-level registers. Already typed values; it arrives here instead of being written as a file so the joins below can run, and it is validated through the shipped parser, which names its own defect tokens. " +
+            "The findings document — schema_version, rated_under_framework, findings[], coverage[], ask_answers[] and the other top-level registers. On a first call, send it whole. To correct part of the record, send no `findings[]` list (a finding is corrected through `findings_patch`) and only the registers you changed, each complete, with the \"corrections\" marker when the repair asks for it: every register you do not send is held. A `findings` object that carries a `findings[]` list replaces the whole record; so does one that changes `schema_version` or `rated_under_framework`, which must then carry its list. Already typed values; it arrives here instead of being written as a file so the joins below can run, and it is validated through the shipped parser, which names its own defect tokens. " +
             "TWO OF ITS FIELDS ALSO RENDER INTO THE NARRATIVE, which is why they are here and not on `narrative`: `coverage[]` becomes the readable coverage list (rows are {area, state, note}; `confirmed-clean` ASSERTS a search ran and is joined to this run's plan-execution receipt, so a clean claim over a slice that did not run is refused — name the area as the receipt names the slice, and the honest alternatives are coverage-limited and not-searched), and `ask_answers[]` becomes the labelled answer lines ({ask, answer}: the ask VERBATIM because the driver joins on it, and the ANSWER ALONE starting at its first word — the driver writes the \"- You asked: <ask> → \" label, so an answer that repeats the ask ships the question to the client twice).",
         },
       },
@@ -1165,7 +1169,7 @@ serve({
         chunkSummary: {
           type: "string",
           description:
-            "2–5 sentences covering THIS chunk's marks, as markdown narrative. EVERY chunk emits one: " +
+            "The cross-mark read covering THIS chunk's marks: a short opening line for what the batch as a whole shows, then one \"## <MARK NAME>\" sub-header per mark with its band and the one or two things that drive it, bullets where they help. EVERY chunk emits one: " +
             "the whole-batch executive summary is composed in code by concatenating them, so a chunk " +
             "without one vanishes from the summary a client reads.",
         },
@@ -1207,7 +1211,7 @@ serve({
               registerEstimate: { type: "string" },
               parodyNote: { type: ["string", "null"] },
               crowdedField: { type: "boolean" },
-              purpleNotes: { type: "array", items: { type: "string" }, description: "Internal notes — removed on export, never client-facing." },
+              purpleNotes: { type: "array", items: { type: "string" }, description: "Reviewer notes appear on the report page and are removed on export." },
               // — DECLARED HERE OR IT IS FOLKLORE.
               //
               // Both fields were built end to end for — instructed in the dispatch,
@@ -1409,7 +1413,7 @@ serve({
             inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
             places: {
               type: "array", items: { type: "string" },
-              description: "The 2 to 4 places every spelling is searched on: \"web\" for the whole web, and the client's stores and the sites where the kinds of use are listed, each a bare host. A host covers its subdomains.",
+              description: "THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.",
             },
             umbrellaBrandNote: { type: "string", description: "A note where an umbrella brand is in play, or omit it." },
             executionOrder: {

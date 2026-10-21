@@ -5,7 +5,7 @@
 // makes the $0 mock pipeline ENGINE-PARAMETRIC: the same fixtures drove the retired gateway-bin mock and
 // drive =anthropic-agent today. The only difference between the mocks is the stdout envelope (a gateway --json envelope vs
 // claude stream-json); the FILE WRITES are this module. Env knobs are read from process.env (same in both).
-import { writeFileSync, mkdirSync, appendFileSync, readFileSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync, appendFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { dirname, basename, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { parseCoverageLedgerFull } from "../coverage-ledger.mjs";
@@ -38,13 +38,15 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
-import { recordSynthesis, uncarriedCoverageLimits } from "../synthesis-record.mjs";
+import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall, synthesisCallPaths } from "../synthesis-record.mjs";
+import { repairBasePath } from "../repair-scope.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
 import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
 import { recordReportCard } from "../report-card-record.mjs";          // conversion 5 — the fan-out transport
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
+import { recordWithheldFamilies, recordReleasedFamilies } from "../withheld-families.mjs";       // the reading turn's withheld and released families — called, not copied
 import { recordRegisterDigest, readDigestFacts, joinKey } from "../register-digest-record.mjs";   // conversion 11 — the findings document, called not copied
 import { recordDeclinations } from "../declination-tool.mjs";   // — the mock declines through the REAL transport
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
@@ -62,6 +64,9 @@ import { coverageFormStamp, coverageFormPaths, readCoverageForm } from "../cover
 import { FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 import { kebab } from "../search-policy.mjs";   // — the mock cites what the mark's payload holds
 
+// The writer's delivery-check repair, by either opening its message has had: the old one every stage shares, and the
+// writer's own, which names the faults found in content rendered from its record.
+const WRITER_LINT_REPAIR = /the deterministic pre-delivery lint failed these checks|The deterministic pre-delivery checks found these faults in content rendered from that record/;
 const PAD = (s, n = 260) => (s.length >= n ? s : s + "\n" + "lorem ipsum ".repeat(Math.ceil((n - s.length) / 12)));
 
 // ── B — FIXTURE TRUTHFULNESS FOR THE CALL RECORDS ───────────────────────────────────────────────────
@@ -985,6 +990,31 @@ export function frameDiffModel() {
         observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38 — surfaced only via 9/28/41/42 co-classification", severity: "dominant-element" }],
       dominant_element_gap: true,
     });
+  // A main-element request on the main element: the re-sweep turns it into an exact and a contains
+  // question, and the contains one is the waiting family `primary-sweep:default:novapulse`. The scenarios
+  // pair it with MOCK_WITHHOLD_FAMILIES, which records that family withheld before the comparison runs.
+  if (process.env.MOCK_FRAME_DIFF === "dominant-on-waiting-family")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "NOVAPULSE", observation: "the main element's wider contains search was never read", severity: "dominant-element" }],
+      dominant_element_gap: true,
+    });
+  // An ordinary request whose one question is the waiting family `primary-sweep:exact:novapulse` itself.
+  if (process.env.MOCK_FRAME_DIFF === "waiting-family-only")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "the lower-case form of the main element", observation: "the case form was never searched",
+        severity: "material", remedy: { terms: ["novapulse"], nice_classes: ["9", "41"] } }],
+      dominant_element_gap: false,
+    });
+  // An ordinary request whose one question the plan already asks: the identical question, answered by its own row.
+  if (process.env.MOCK_FRAME_DIFF === "duplicate-only")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [{ layer: "variant", item: "the mark as ordered", observation: "the identical search should be confirmed",
+        severity: "material", remedy: { terms: ["PROJECT NOVAPULSE"], nice_classes: ["9", "41"] } }],
+      dominant_element_gap: false,
+    });
   // Two class-gap directives, so a re-attempt can be seen to re-send only the one that failed.
   if (process.env.MOCK_FRAME_DIFF === "field-classgap-two")
     return JSON.stringify({
@@ -1059,6 +1089,15 @@ export function mockUnitBandWrite(runDir, axis, msg = "") {
   // refresh over it) would then read the axis unexecuted. Merge: fresh blocks + any prior QID block this
   // re-emit did not restamp.
   const fresh = JSON.parse(namedBand(axis, msg));
+  // MOCK_ESCALATION_ADDS_FLOOR=<axis>: a warm re-run of that axis returns one more record, live in the class and held by
+  // another owner, so the band placement read moves under it after placement ran. Its mark is the mark itself, a floor,
+  // unless MOCK_ESCALATION_ADDS_MARK names another.
+  const reRun = /RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg);
+  if (reRun && process.env.MOCK_ESCALATION_ADDS_FLOOR === axis) {
+    const block = fresh.find((b) => b?.state === "enumerated" && Array.isArray(b.records));
+    if (block) { block.records.push({ record_id: "/mark/us/90000077", mark_text: process.env.MOCK_ESCALATION_ADDS_MARK || "NOVAPULSE", classes: [9], status: "Registered",
+      owner_name: "Second Owner GmbH", owner_country: "US", screen_verdict: "surface:in-scope-live" }); block.total_hits = block.records.length; }
+  }
   const freshQids = new Set(fresh.filter((b) => b && b.qid).map((b) => b.qid));
   let kept = [];
   try {
@@ -1221,11 +1260,36 @@ export function variantManifestModelFixture() {
  * moves a coverage note, the other an actual finding; without both, narrowing the freshness question
  * looks like a pass because it went quiet).
  *
- * Both key on the report-overview resume the redo ladder composes, which the conversion left intact: the
- * followup still opens "RESUMING your own report-overview session", it just orders a CALL now.
+ * Both key on the report-overview repair the redo ladder composes: the followup opens "your earlier
+ * report-overview work is not in your context", and it orders a CALL.
  */
+/**
+ * THE SAVE-AFTER-THE-CARDS KNOBS. A synthesis save once the report cards have been started (their folder exists)
+ * changes the record the cards were built from, the way a late repair does. Each knob is keyed on that run state,
+ * never on a repair message's wording, and leaves every earlier save as it was:
+ *   MOCK_LATE_SAVE_EDITS=<ordinal>     that finding's owner name gains " (post-redo)", which its card echoes;
+ *   MOCK_LATE_SAVE_ADDS=1              the record carries one more finding, cloned as MOCK_FINDINGS_N clones;
+ *   MOCK_LATE_SAVE_WITHDRAWS=<ordinal> that finding is withdrawn, so no card is owed for it.
+ * Ordinals are the model's, the numbering the record is written in, before any fold.
+ */
+function savedAfterTheCards(runDir, buildRecord) {
+  if (!runDir || !existsSync(join(runDir, "report-cards"))) return buildRecord();
+  const n = Math.max(1, Number(process.env.MOCK_FINDINGS_N || 1));
+  const adds = Boolean(process.env.MOCK_LATE_SAVE_ADDS);
+  if (adds) process.env.MOCK_FINDINGS_N = String(n + 1);
+  let doc;
+  try { doc = buildRecord(); } finally { if (adds) process.env.MOCK_FINDINGS_N = String(n); }
+  const edit = Number(process.env.MOCK_LATE_SAVE_EDITS || 0);
+  const withdraw = Number(process.env.MOCK_LATE_SAVE_WITHDRAWS || 0);
+  for (const f of Array.isArray(doc?.findings) ? doc.findings : []) {
+    if (f?.ordinal === edit && f.owner && !String(f.owner.name ?? "").includes("(post-redo)")) f.owner.name = `${f.owner.name ?? ""} (post-redo)`.trim();
+    if (f?.ordinal === withdraw) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review flag on this invented finding withdrew it."; }
+  }
+  return doc;
+}
+
 function stalefindingsOnLintRepair(dir, msg) {
-  if (!/RESUMING your own report-overview session/.test(msg)) return;
+  if (!/your earlier report-overview work is not in your context/.test(msg)) return;
   const fp = join(dir, "findings.json");
   // AD-2 A1 (E2E-R2): the redo ALSO rewrites findings.json — the exact incident shape (the redo turn moved
   // the input every report card was built from, staling the whole delivery tail). The rewrite stays
@@ -1579,7 +1643,7 @@ export function applyStageWrites(msg, argv) {
     // DIFFERS from the prior one, or the driver's byte-diff sees no change and skips the re-digest the
     // escalation asked for. MOCK_ESCALATION_NOOP suppresses it — that knob's whole job is to force the
     // byte-identical re-emit whose skip is the thing under test.
-    const resume = /RESUMING your own register-unit session/.test(msg);
+    const resume = /RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg);
     const marker = resume && !process.env.MOCK_ESCALATION_NOOP
       ? (/frame-INDEPENDENT re-derivation/.test(msg)
         ? " Re-derived independently of the blind frame on a supplemental sweep."
@@ -1592,6 +1656,23 @@ export function applyStageWrites(msg, argv) {
     });
     if (r.refused) return `mock unit-note REFUSED by record_unit_note: ${r.refused}`;
     if (r.write_failed) return `mock unit-note: record_unit_note could not store the note (${r.write_failed})`;
+    // MOCK_WITHHOLD_FAMILIES — the reading turn's judgment on its waiting families, `{ "<qid>": "<reason>" }`,
+    // recorded through the production record exactly as the turn's own tool records it. The first pass only:
+    // a resume is the same turn reconsidering, which this knob does not model. The record itself refuses a
+    // family that is not waiting on the bound axis, so one knob serves every seat.
+    if (process.env.MOCK_WITHHOLD_FAMILIES && !resume) {
+      const families = Object.entries(JSON.parse(process.env.MOCK_WITHHOLD_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
+      const w = recordWithheldFamilies(runDir, { axis: bound, families });
+      if (w.refused || w.write_failed) return `mock unit-note: the withheld families were not recorded (${w.refused ?? w.write_failed})`;
+    }
+    // MOCK_RELEASE_FAMILIES — the same turn releasing waiting families, `{ "<qid>": "<reason>" }`, through the
+    // production record. It records the release only: the turn's own ask of a released family is not modelled, so
+    // the family stays unlanded until something else asks it.
+    if (process.env.MOCK_RELEASE_FAMILIES && !resume) {
+      const families = Object.entries(JSON.parse(process.env.MOCK_RELEASE_FAMILIES)).map(([qid, reason]) => ({ qids: [qid], reason }));
+      const w = recordReleasedFamilies(runDir, { axis: bound, families });
+      if (w.refused || w.write_failed) return `mock unit-note: the released families were not recorded (${w.refused ?? w.write_failed})`;
+    }
     return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"})`;
   }
   if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
@@ -1654,6 +1735,21 @@ export function applyStageWrites(msg, argv) {
     // post-hoc validator to the call, and a mock that stops at the refusal models a seat that ignores an
     // error response — reporting the stage as exhausted where the PRODUCT withheld nothing.
     if (/record_synthesis/.test(msg)) {
+      // MOCK_LINT_REPAIR_SAME_VALUES — the writer's delivery-check repair saves its accepted record again with
+      // the same values and its verdict spaced differently: the narrative's bytes move, its values do not.
+      if (process.env.MOCK_LINT_REPAIR_SAME_VALUES && WRITER_LINT_REPAIR.test(msg)) {
+        const held = lastAcceptedCall(runDir);
+        if (held) {
+          const call = structuredClone(held);
+          // "finding": the repair changes one finding's legal position and nothing the narrative renders.
+          const f0 = (call.findings?.findings ?? [])[0];
+          if (process.env.MOCK_LINT_REPAIR_SAME_VALUES === "finding" && f0) f0.legal_position = `${f0.legal_position ?? ""} The repair restates the specification.`.trim();
+          else if (typeof call.narrative?.verdict === "string") call.narrative.verdict = call.narrative.verdict.replace(" ", "  ");
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, call);
+          return r.refused ? `mock writer refused re-saving the same values: ${r.refused}` : "mock writer re-saved the same values";
+        }
+      }
       // THE WRITER. The mock drives the PRODUCTION receiver rather than writing the two files, for the
       // same reason every arm here does: a fixture that wrote narrative.md and findings.json would be
       // the mock taking the path this conversion deleted, and it would hide the one thing the
@@ -1685,10 +1781,17 @@ export function applyStageWrites(msg, argv) {
       // three tests whose whole subject is that the run RECOVERS. So the mock restates once, the way a
       // competent seat does, by re-deriving with the family's own heal phrase. It restates ONCE: a
       // second refusal is returned, so a genuinely unfixable call still fails rather than looping.
-      const build = (m) => JSON.parse(synthesisFindings(runDir, m));
+      const build = (m) => savedAfterTheCards(runDir, () => JSON.parse(synthesisFindings(runDir, m)));
       let doc;
       try { doc = build(msg); }
       catch (e) { return `mock synthesis: could not build the findings record (${String(e?.message ?? e).slice(0, 120)})`; }
+      // MOCK_SENTENCE_SCOPE_COUNT=<ordinal> — that finding's own sentence, which the report composes from the record,
+      // states a search count the delivery check refuses as `scope-numbers-in-prose`, on every save but the writer's
+      // delivery-check repair, which is clean.
+      if (process.env.MOCK_SENTENCE_SCOPE_COUNT && !WRITER_LINT_REPAIR.test(msg)) {
+        const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_SENTENCE_SCOPE_COUNT));
+        if (f) f.net = `${String(f.net ?? f.legal_position ?? "").trim()} The search ran 14 queries across the register.`.trim();
+      }
       // THE MOCK CARRIES THE RUN'S OWN LIMITS, because a compliant seat does. The receiver refuses a
       // coverage account that is clean throughout when the register ledger records a slice as less than
       // clean — doctrine, not a new rule: "a unit recorded coverage-limited can never be written as a
@@ -1729,7 +1832,10 @@ export function applyStageWrites(msg, argv) {
       // Keyed on narrative.md not yet existing, so the redo is recognised by run state rather than by
       // matching the repair prompt's wording, which the composer is free to change. It goes in the
       // SPINE because that is the section the write-up prose renders into.
-      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && !existsSync(join(runDir, "narrative.md")))
+      // "until-lint-repair": the over-cap write-up survives every save but the delivery-check repair's, so a
+      // run whose first review is not CLEAR still reaches the repair; any other value heals after the first.
+      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && (process.env.MOCK_NARRATIVE_OVER_CAP === "until-lint-repair"
+        ? !WRITER_LINT_REPAIR.test(msg) : !existsSync(join(runDir, "narrative.md"))))
         ? " " + "the cited registration covers the identical mark in the searched class and remains material here. ".repeat(40)
         : "";
       // MOCK_CANDSELF — the applicant-unknown note, on the same condition the fixture used.
@@ -1761,6 +1867,13 @@ export function applyStageWrites(msg, argv) {
           verdict: "The identical registration in the searched class drives the read, and the position is adverse on the current filing.",
           coverage: { read: reco },
       };
+      // MOCK_CORRECTION_MARKS=<text> — the correction after a post-repair review writes this text into finding 1's `net`
+      // and the verdict section, so a test can tell that save from every other; keyed on the correction's own opening.
+      if (process.env.MOCK_CORRECTION_MARKS && /After the delivery check, that record was repaired/.test(msg)) {
+        const f0 = (doc.findings ?? [])[0];
+        if (f0) f0.net = `${f0.net ?? ""} ${process.env.MOCK_CORRECTION_MARKS}`.trim();
+        sections.verdict = `${sections.verdict} ${process.env.MOCK_CORRECTION_MARKS}`;
+      }
       let r = recordSynthesis(runDir, { findings: doc, narrative: sections });
       // The refusal names the family. Re-derive with that family's heal phrase and restate once —
       // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
@@ -1829,6 +1942,11 @@ export function applyStageWrites(msg, argv) {
       }
       if (r && r.refused) return `mock synthesis REFUSED by record_synthesis: ${r.refused}`;
       if (r && r.write_failed) return `mock synthesis: record_synthesis could not store the call (${r.write_failed})`;
+      // MOCK_FAIL_AFTER_WRITES (with the exit in mock-claude and mock-codex): the save lands, and the turn then ends with
+      // the stage's output gone, so the driver cannot take the turn's artifact as stage truth and the pass fails with
+      // its save in place.
+      if (process.env.MOCK_FAIL_AFTER_WRITES && process.env.MOCK_FAIL_AFTER_WRITES.split("&&").every((part) => msg.includes(part)))
+        rmSync(join(runDir, "narrative.md"), { force: true });
       // The side-write the old narrative.md branch carried. Same guard it had — CANDSELF and the
       // reco knob both suppressed it there, and both still do.
       if (!process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) mockRegisterRecordWrite(runDir, argv);
@@ -1870,6 +1988,52 @@ export function applyStageWrites(msg, argv) {
         return r;
       };
 
+      // MOCK_POST_REPAIR_UNREAD — the review after a delivery-check repair ends without recording a review
+      // ("narrowed"), and with "both" so does the whole review the driver then falls back to. MOCK_WHOLE_FALLBACK_FLAGS
+      // gives that whole review its flags (a JSON array; CONDITIONAL when there are any, or MOCK_WHOLE_FALLBACK_VERDICT,
+      // which can make it a call the tool refuses). A marker beside the run, outside it, tells that fallback from the
+      // run's first whole review.
+      const unreadMarker = runDir ? `${runDir}.mock-post-repair-unread` : null;
+      if (process.env.MOCK_POST_REPAIR_UNREAD && /This is a review of a repair, not a full review\./.test(msg)) {
+        if (unreadMarker) writeFileSync(unreadMarker, "1\n");
+        return "mock reviewer ended without recording a review of the repair";
+      }
+      if (process.env.MOCK_POST_REPAIR_UNREAD && unreadMarker && existsSync(unreadMarker)) {
+        if (process.env.MOCK_POST_REPAIR_UNREAD === "both") return "mock reviewer ended without recording the whole review either";
+        if (process.env.MOCK_WHOLE_FALLBACK_FLAGS) {
+          const flags = JSON.parse(process.env.MOCK_WHOLE_FALLBACK_FLAGS);
+          const r = send({ verdict: process.env.MOCK_WHOLE_FALLBACK_VERDICT ?? (flags.length ? "CONDITIONAL" : "CLEAR"), flags, plan_audit: planAudit });
+          return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
+            : "mock reviewer recorded the whole review after the unread one through record_narrative_refutation";
+        }
+      }
+      // MOCK_POST_REPAIR_FLAGS — the review after a delivery-check repair, recognised by its own opening line:
+      // these flags (a JSON array), under MOCK_POST_REPAIR_VERDICT or, by default, CONDITIONAL when there are
+      // flags and CLEAR when there are none. Every other review this run makes answers as the knobs below say.
+      if (process.env.MOCK_POST_REPAIR_FLAGS && /This is a review of a repair, not a full review\./.test(msg)) {
+        const flags = JSON.parse(process.env.MOCK_POST_REPAIR_FLAGS);
+        const verdict = process.env.MOCK_POST_REPAIR_VERDICT ?? (flags.length ? "CONDITIONAL" : "CLEAR");
+        const r = send({ verdict, flags, plan_audit: planAudit });
+        // MOCK_POST_REPAIR_LOSES=<findings,accepted,repair-base> — once that review is recorded, the named files are gone
+        // (a disk that lost them), so the correction after it starts with no readable record, or with no save behind it.
+        if (!bad(r) && runDir && process.env.MOCK_POST_REPAIR_LOSES) {
+          const lost = { findings: join(runDir, "findings.json"), accepted: synthesisCallPaths(runDir).accepted, "repair-base": repairBasePath(runDir),
+            retained: driverDir(runDir, "post-repair-state.json") };
+          for (const k of process.env.MOCK_POST_REPAIR_LOSES.split(",").map((x) => x.trim()).filter(Boolean)) if (lost[k]) rmSync(lost[k], { force: true });
+        }
+        // MOCK_POST_REPAIR_OWES_MORE=1 — once that review is recorded, the run owes one more record a finding or a
+        // declination: the duty grew after the save the review read, so that save no longer meets it as it stands.
+        if (!bad(r) && runDir && process.env.MOCK_POST_REPAIR_OWES_MORE) {
+          const at = driverDir(runDir, "declination-spec.json");
+          let spec = null;
+          try { spec = JSON.parse(readFileSync(at, "utf8")); } catch { spec = null; }
+          const rows = Array.isArray(spec?.rows) ? spec.rows : [];
+          rows.push({ uri: "/mark/us/90000099", mark: "NOVAPULSE", owner: "Owed Later LLC", tier: "high", classes: [9], status: "Registered" });
+          writeFileSync(at, JSON.stringify({ ...(spec ?? {}), rows }, null, 2) + "\n");
+        }
+        return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
+          : `mock reviewer recorded the review after the repair (${verdict}) through record_narrative_refutation`;
+      }
       if (process.env.MOCK_REVIEW_BLOCKS_AFTER_VERDICT && runDir && existsSync(driverDir(runDir, "verdict.json"))) {
         // The audit rides UNCONDITIONALLY here. The stale-repair dispatch does not re-demand it, so a
         // msg-conditional mock would fail that pass on `plan_audit_missing` and the arm would go
@@ -1978,6 +2142,17 @@ export function applyStageWrites(msg, argv) {
         const cfg = i >= 0 && argv[i + 1] ? JSON.parse(argv[i + 1]) : null;
         bound = cfg?.mcpServers?.["recording-report-card"]?.env?.CLEAROTRON_RECORD_AXIS ?? null;
       } catch { /* malformed config — `bound` stays null and the receiver refuses by name */ }
+      // The codex channel: the same server's table in the rendered `$CODEX_HOME/config.toml`, where the engine writes
+      // what claude carries on argv (recordAxisFromWiring, above). Without it no card was ever written on the openai
+      // engine, and every card there rendered structured-only, a harness gap that read as the product's behaviour.
+      if (!bound && process.env.CODEX_HOME) {
+        try {
+          const table = readFileSync(join(process.env.CODEX_HOME, "config.toml"), "utf8").split(/^\[/m)
+            .find((t) => t.startsWith("mcp_servers.recording-report-card]"));
+          const m = table?.match(/CLEAROTRON_RECORD_AXIS\s*=\s*"((?:[^"\\]|\\.)*)"/);
+          if (m) bound = JSON.parse(`"${m[1]}"`);
+        } catch { /* no config.toml — `bound` stays null and the receiver refuses by name */ }
+      }
       if (!bound) return "mock report-card: no CLEAROTRON_RECORD_AXIS in the resolved mcp config — the driver did not bind a card index";
       recordMockToolCall(runDir, "record_report_card", "recording-report-card");
       // The fixture's own prose, sent as VALUES. `reportCardFixture` still exists and still writes the
@@ -1999,10 +2174,15 @@ export function applyStageWrites(msg, argv) {
         const fj = JSON.parse(readFileSync(join(runDir, "findings.json"), "utf8"));
         owner = (fj.findings ?? []).find((x) => String(x.ordinal) === String(bound))?.owner?.name || owner;
       } catch { /* no findings yet — the default names the fixture's own owner */ }
+      // MOCK_CARD_SCOPE_COUNT=<ordinal> — that card's FIRST rendering states a search count in its own prose, which the
+      // delivery check refuses as `scope-numbers-in-prose`, a fault that names no finding; a later rendering of the same
+      // card is clean. Keyed on the card's own file, never on a repair message's wording.
+      const scopeCount = String(process.env.MOCK_CARD_SCOPE_COUNT ?? "") === String(bound) && !existsSync(join(runDir, "report-cards", `${bound}.md`));
       const r = recordReportCard(runDir, {
         ordinal: String(bound),
         full_detail: [
           { lead: "Filing", text: `Mock filing detail for ${owner}.` },
+          ...(scopeCount ? [{ lead: "Scope", text: "The search ran 14 queries across the register." }] : []),
           // D3 — the read bullet is REQUIRED of a real seat (reportcard_read_lead_missing), so the
           // mock that stands in for one carries it. A fixture that would be refused in production is not
           // a mock of production: without this the acceptance change reds every mocked card run, and
@@ -2027,10 +2207,19 @@ export function applyStageWrites(msg, argv) {
       // which is the honest post-conversion shape of the same defect.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
-      const r = recordReportOverview(runDir, {
+      // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
+      // of MOCK_CARD_SCOPE_COUNT; a later rendering is clean. Keyed on the overview's own file, never on a message.
+      const scopeCountNote = process.env.MOCK_OVERVIEW_SCOPE_COUNT && !existsSync(join(runDir, "report-overview.md"))
+        ? "The search ran 14 queries across the register." : "";
+      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption, an empty actions list, and
+      // no methodology. The driver renders it with no section heading.
+      const r = recordReportOverview(runDir, process.env.MOCK_OVERVIEW_BARE ? {
+        overall_caption: "The identical registration in class 9 is the one finding that conditions reliance on this mark; nothing else in the field blocks it.",
+        actions: [],
+      } : {
         overall_caption: "mock composite 3",
         actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
+        methodology: [permNote, scopeCountNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
           .filter(Boolean).join(" "),
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.
@@ -2402,7 +2591,7 @@ export function applyStageWrites(msg, argv) {
       // a session resume with NO tool call — the plugin does not re-run, so the ledger MUST NOT move. Same
       // rule, same reason as the routed common-law followups; keep this guard broad (over-matching only
       // suppresses a write, under-matching fabricates a pass).
-      const resuming = /RESUMING your own common-law session/.test(msg) || /^You are RESUMING your own session for this stage/.test(msg);
+      const resuming = /RESUMING your own common-law session|your earlier common-law work is not in your context/.test(msg) || /^You are RESUMING your own session for this stage/.test(msg);
       if (process.env.MOCK_CL_APPEND_MALFORMED && /APPEND the supplementary call/.test(msg)) {
         const target = msg.match(/APPEND the supplementary call's stdout JSON to ((?:[A-Za-z]:)?[\\/]\S+common-law-grid[^\s]*\.json)/)?.[1] ?? mainLedger;
         writeFileSync(target, malformedAppend(msg, dirname(out)));
@@ -2427,7 +2616,7 @@ export function applyStageWrites(msg, argv) {
     if (content == null) return `mock turn completed without writing ${basename(out)}`;
     // A frame-reopen resume carries a DISTINCT marker so its re-emit differs from any prior escalation/
     // envelope re-emit of the same unit (else the byte-diff guard would see no change and skip it).
-    if (/RESUMING your own register-unit session/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
+    if (/RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
       content += /frame-INDEPENDENT re-derivation/.test(msg)
         ? "\n<!-- frame-reopen: supplemental sweep -->\n"
         : "\n<!-- escalation: revised in place -->\n";
@@ -2489,12 +2678,16 @@ export function applyStageWrites(msg, argv) {
         const pos = JSON.parse(readFileSync(driverDir(dir, "register-positions.json"), "utf8"));
         selectable = (pos?.positions ?? []).flatMap((x) => (Array.isArray(x?.records) ? x.records : []))[0] ?? null;
       } catch { /* no fold in reach — fall through to a seat-authored row, which is the honest shape then */ }
-      const rows = selectable
+      // MOCK_PLACEMENT_SET_ASIDE=<ground>: the step sets that record's line aside by name, on its status, instead of
+      // placing it (the fixture's band is one line, so a set-aside beside the placement would be on a placed line).
+      const setAside = process.env.MOCK_PLACEMENT_SET_ASIDE && selectable
+        ? [{ set_aside: selectable, ground: process.env.MOCK_PLACEMENT_SET_ASIDE, on: "status" }] : null;
+      const rows = setAside ? [] : selectable
         ? [{ select: selectable, tier: "headline-candidate",
              reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }]
         : [{ kind: "seat", mark: "LUMENGARDE", owner: "Acme", jurisdiction: "DK", records: [], tier: "headline-candidate",
              reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }];
-      writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows }, null, 2) + "\n");
+      writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows: [...rows, ...(setAside ?? [])] }, null, 2) + "\n");
     }
     if (basename(out) === "narrative.md" && !process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) {
       writeFileSync(join(dirname(out), "findings.json"), synthesisFindings(dirname(out), msg));
@@ -2568,4 +2761,22 @@ export function applyStageWrites(msg, argv) {
     }
   }
   return summary;
+}
+
+/**
+ * MOCK_POST_REPAIR_OWES_MORE=persist — the record owed after the review is still owed when the correction after it is
+ * cut off: the run's declination list, which the driver builds again before that correction, holds it once more. Called
+ * by mock-claude and mock-codex just before a forced failure, so the restored record meets a duty it does not answer.
+ */
+export function beforeForcedFailure(argv, msg) {
+  if (process.env.MOCK_POST_REPAIR_OWES_MORE !== "persist" || !/After the delivery check, that record was repaired/.test(msg)) return;
+  const dir = runDirFromWiring(argv);
+  if (!dir) return;
+  const at = driverDir(dir, "declination-spec.json");
+  let spec = null;
+  try { spec = JSON.parse(readFileSync(at, "utf8")); } catch { spec = null; }
+  const rows = Array.isArray(spec?.rows) ? spec.rows : [];
+  if (!rows.some((r) => r?.uri === "/mark/us/90000099"))
+    rows.push({ uri: "/mark/us/90000099", mark: "NOVAPULSE", owner: "Owed Later LLC", tier: "high", classes: [9], status: "Registered" });
+  writeFileSync(at, JSON.stringify({ ...(spec ?? {}), rows }, null, 2) + "\n");
 }

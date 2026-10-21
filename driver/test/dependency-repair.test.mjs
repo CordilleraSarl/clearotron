@@ -117,8 +117,8 @@ test("placement-inquiry declares the band material, and has a stale-repair arm; 
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /"placement-inquiry":/, "the arm exists");
-  assert.match(map, /"placement-inquiry": \(ctx\) => stage\("placement-inquiry", ctx, \{ force: true/,
-    "it re-runs the stage — a repair that did not force would skip on the artifact it is repairing");
+  assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true/,
+    "it re-runs the stage — a repair that did not force would skip on the artifact it is repairing — and records the pass as the main path does");
   // frame-diff's remedy must NOT transfer: placement's outputs are declared inputs of three stages that
   // run after the mutation, so blessing its stamp would hide staleness with live consumers.
   for (const consumer of ["register-digest", "synthesis", "narrative-refutation"]) {

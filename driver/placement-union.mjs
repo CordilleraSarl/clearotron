@@ -91,9 +91,11 @@ function indexRows(rows, { bySelection = true, uriLeg = true } = {}) {
  * @returns {{form, total, settled, outstanding, carried, seat_rows}}
  *   carried — settled rows this attempt's own submission would NOT have carried on its own: exactly the
  *             work a killed or cold re-dispatch used to destroy.
+ *   covered_lines — with `{ covered: true }` only: each set-aside group's covered line keys, sorted. Kept off
+ *             the form, so the step is never said back a list of the lines its row covers.
  * PURE; never throws.
  */
-export function unionPlacementForm(prior, submitted, input) {
+export function unionPlacementForm(prior, submitted, input, { covered = false } = {}) {
   const index = buildSelectionIndex(input);
   const priorRows = Array.isArray(prior) ? prior : (Array.isArray(prior?.rows) ? prior.rows : []);
   const submittedRows = Array.isArray(submitted) ? submitted : (Array.isArray(submitted?.rows) ? submitted.rows : null);
@@ -314,12 +316,15 @@ export function unionPlacementForm(prior, submitted, input) {
   const placedLines = new Set(form.rows.filter((row) => row.kind === "register" && rowIsSettled(row, row)).map((row) => lineKey(row)).filter(Boolean));
   const groupOf = groupOfKeys(groups);
   const lineOf = (g, key) => (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).find((l) => l.key === key) ?? null;
-  const covers = new Map(), floorsLeft = new Map();
+  const covers = new Map(), floorsLeft = new Map(), coveredKeys = new Map();
   for (const [key, g] of groupOf) {
     if (!setAsideGroups.has(g) || placedLines.has(key) || setAside.has(key)) continue;
     const line = lineOf(g, key);
     if ((line?.floors ?? 0) > 0 && !groupRowCoversFloors(groups, g)) floorsLeft.set(g, [...(floorsLeft.get(g) ?? []), line.record_id ?? key]);
-    else covers.set(g, (covers.get(g) ?? 0) + 1);
+    else {
+      covers.set(g, (covers.get(g) ?? 0) + 1);
+      if (covered) { if (!coveredKeys.has(g)) coveredKeys.set(g, []); coveredKeys.get(g).push(key); }
+    }
   }
   for (const [g, e] of setAsideGroups) {
     e.covers_lines = covers.get(g) ?? 0;
@@ -331,9 +336,11 @@ export function unionPlacementForm(prior, submitted, input) {
   // or more, stands on its row and its count. Said back once the step has answered, on this turn or an earlier one:
   // the form written before any answer would list every floor of the band, and a turn whose form will not parse
   // leaves the earlier answer standing, its floors still owed.
-  const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors);
+  const rendered = renderPlacementsJson(form.rows).placements;
+  const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors,
+    { placedUris: rendered.flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
   const duty = reconcileFloorDuty({ floors: Array.isArray(input?.floors) ? input.floors : [],
-    placements: renderPlacementsJson(form.rows).placements, setAsideGroundOf: groundOf });
+    placements: rendered, setAsideGroundOf: groundOf });
   const unfated = new Map();
   for (const r of duty.rows) {
     if (r.disposition !== "unanswered" && r.disposition !== "named-without-ground") continue;
@@ -349,7 +356,8 @@ export function unionPlacementForm(prior, submitted, input) {
   if (answered && unfated.size) form.floors_without_fate = [...unfated.values()];
   return { form, total: form.rows.length, settled, outstanding: form.rows.length - settled,
     carried, seat_rows: carriedSeat.length, unresolved: unresolved.length, set_aside: setAside.size, set_aside_groups: setAsideGroups.size,
-    floors_without_fate: [...unfated.values()].reduce((n, e) => n + e.floors.length, 0) };
+    floors_without_fate: [...unfated.values()].reduce((n, e) => n + e.floors.length, 0),
+    ...(covered ? { covered_lines: Object.fromEntries([...coveredKeys].map(([g, keys]) => [g, [...keys].sort()])) } : {}) };
 }
 
 /** How many rows of an already-unioned form the render would still omit. PURE. */

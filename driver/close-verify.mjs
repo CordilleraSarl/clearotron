@@ -72,6 +72,24 @@ export function answeredAs(qid, foldRefusals) {
 }
 
 /**
+ * The reading turn's judgment that settles a minted slice, or null. The frame reopen's re-sweep refuses a slice
+ * that repeats exactly a waiting family the reading turn WITHHELD (register-plan.mjs, refuseWithheldFamilies), and
+ * its twin is that family. The twin never ran, by the turn's decision, so nothing answers the slice: it is settled
+ * by the turn's recorded reason instead, and it is never read as a question that ran, was answered or came back
+ * clean. `answeredAs` above stays the duplicate rule alone, and resolves such a slice to nothing.
+ *
+ * ONLY THE WHOLE RECORD SETTLES: the `withheld-by-judgment` kind, the family it repeats, and the reason on the
+ * family's record. Anything less is a slice nobody judged, and it stays a slice that never ran. One rule for the
+ * directive below and the remedy term ledger, so the two cannot read a slice apart. PURE.
+ * @returns {{family: string, reason: string}|null}
+ */
+export function withheldAs(qid, foldRefusals) {
+  const r = foldRefusals?.get?.(qid);
+  const reason = String(r?.reason ?? "").trim();
+  return r && r.kind === "withheld-by-judgment" && r.twin && reason ? { family: String(r.twin), reason } : null;
+}
+
+/**
  * Verify a register frame-reopen directive was actually SEARCHED as intended (Part B, arm #1). A directive
  * is closed ONLY if EVERY minted qid clears three checks:
  *   1. qid-landed — the qid joined as an EXECUTED band block (joinPlanToBands). An error/missing/skipped
@@ -85,7 +103,12 @@ export function answeredAs(qid, foldRefusals) {
  *
  * A slice the fold refused as already-asked is checked on the row that answered it (`answeredAs`), on the same
  * three checks, and a directive closed that way names each such row in `answered_by`.
- * @returns {{closed: boolean, reason: string|null, answered_by?: {qid: string, twin: string}[]}}
+ *
+ * A slice refused as a family the reading turn withheld (`withheldAs`) is not checked at all, because nothing ran
+ * for it: it is settled by that judgment, and a directive closed with one names it, and the family, in
+ * `withheld_by_judgment`, never in `answered_by`. It settles only itself. Every other slice must still clear the
+ * three checks, so a search that failed is never excused by a withheld sibling.
+ * @returns {{closed: boolean, reason: string|null, answered_by?: {qid: string, twin: string}[], withheld_by_judgment?: {qid: string, family: string}[]}}
  */
 export function verifyRegisterDirectiveClose({ qids, intendedClasses = [], executedQids, blocksByQid, foldRefusals = new Map() } = {}) {
   const list = qids ?? [];
@@ -94,7 +117,10 @@ export function verifyRegisterDirectiveClose({ qids, intendedClasses = [], execu
   const executed = executedQids ?? new Set();
   const byQid = blocksByQid ?? new Map();
   const answeredBy = [];
+  const withheld = [];
   for (const qid of list) {
+    const settled = withheldAs(qid, foldRefusals);
+    if (settled) { withheld.push({ qid, family: settled.family }); continue; }
     const q = answeredAs(qid, foldRefusals);
     const as = q === qid ? qid : `${qid} (answered by ${q})`;
     if (!executed.has(q)) return { closed: false, reason: `slice-not-landed:${as}` };
@@ -106,5 +132,6 @@ export function verifyRegisterDirectiveClose({ qids, intendedClasses = [], execu
       return { closed: false, reason: `wrong-scope:${as} searched[${searched.join(",")}]⊉intended[${want.join(",")}]` };
     if (q !== qid) answeredBy.push({ qid, twin: q });
   }
-  return { closed: true, reason: null, ...(answeredBy.length ? { answered_by: answeredBy } : {}) };
+  return { closed: true, reason: null, ...(answeredBy.length ? { answered_by: answeredBy } : {}),
+    ...(withheld.length ? { withheld_by_judgment: withheld } : {}) };
 }

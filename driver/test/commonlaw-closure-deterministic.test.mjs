@@ -69,7 +69,7 @@ test("guard: no lane instructs an agent ledger append; the closure cell arm dict
   assert.doesNotMatch(src, /APPEND the supplementary call/, "the agent-authored ledger append is deleted from every lane");
   // dynamic: a split run with closable cells routes the closure followup through a supplementary grid spec
   const { messages } = await run({ MOCK_CL_GAPS: "1" }, "guard");
-  const closure = messages.filter((m) => /RESUMING your own common-law session/.test(m) && /supplementary search-as-code grid/.test(m));
+  const closure = messages.filter((m) => /This is a fresh session: your earlier common-law work is not in your context/.test(m) && /supplementary search-as-code grid/.test(m));
   assert.ok(closure.length >= 1, "a closure followup was issued");
   for (const m of closure) {
     assert.match(m, /grid_spec_path:\s*\S+supp-closure\.json/, "the cell arm points grid_spec_path at a driver-written supplementary spec");

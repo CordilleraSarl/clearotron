@@ -252,7 +252,10 @@ export function scopeDrift(rows, preDoc, postDoc) {
   return { scoped: true, named: [...named], moved, unbound };
 }
 
-export function buildCorrectionsApplied(rows, preDoc, postDoc) {
+// `sections`, optional: the flags whose target is a narrative section, as `{n, label, before, after}` with the
+// section's text before and after the pass. The review after a delivery-check repair names sections as items,
+// so a flag on one can be checked; with no `sections` the output is what it always was.
+export function buildCorrectionsApplied(rows, preDoc, postDoc, { sections = null } = {}) {
   // THE UNION OF BOTH SIDES, deliberately. Reading the post doc alone loses a finding the pass REMOVED —
   // and a removal is exactly when the flag would stop naming anything, so the post doc alone cannot even
   // see the event.: what that removal is EVIDENCE of is the question this module used to get wrong.
@@ -286,12 +289,15 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc) {
     // — A LINE THAT IS NOT A FINDING, asked before the name match. A flag that names or quotes a coverage
     // note, an action or the mark assessment is about that line, and a mark or owner named inside the
     // line it quotes is incidental. Asked only where no ordinal was declared: a declaration still wins.
-    const hit = preDoc && !declaredOrds.length ? linesOf(r.text, preLines) : [];
+    const sec = !declaredOrds.length ? (sections ?? []).find((x) => x.n === r.n) ?? null : null;
+    const hit = preDoc && !declaredOrds.length && !sec ? linesOf(r.text, preLines) : [];
     const targets = declaredOrds.length ? declaredOrds.map(label)
+      : sec ? [sec.label]
       : hit.length ? hit.map((l) => l.label) : targetsOf(r.text, known);
     let outcome;
     let removed = [];
-    if (!preDoc) outcome = "not-checkable";
+    if (sec) outcome = squash(sec.after ?? "") !== squash(sec.before ?? "") ? "section-changed" : "section-unchanged";
+    else if (!preDoc) outcome = "not-checkable";
     else if (hit.length) {
       // The same three answers a finding gets, asked of the line's own text. REMOVAL WINS, as it does
       // for a finding: a line gone after the pass was answered by deletion, and that is the question.
@@ -374,7 +380,7 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc) {
  *
  * PURE.
  */
-export const RESOLVED_OUTCOMES = Object.freeze(["findings-changed", "line-changed"]);
+export const RESOLVED_OUTCOMES = Object.freeze(["findings-changed", "line-changed", "section-changed"]);
 
 /** The rows to print. Anything not positively resolved, including a row of an outcome nobody has met. */
 export const unresolvedFlags = (rows) =>
@@ -387,7 +393,7 @@ export const unresolvedFlags = (rows) =>
  * twelve mixed lines has to re-derive that grouping for itself every time. The raw review still rides
  * below it in the followup: this is a better index of the same evidence, not a replacement for it. PURE.
  */
-export function correctionsWorklist(rows) {
+export function correctionsWorklist(rows, { afterRepair = false } = {}) {
   if (!rows?.length) return "";
   const byKind = new Map();
   for (const r of rows) { if (!byKind.has(r.kind)) byKind.set(r.kind, []); byKind.get(r.kind).push(r); }
@@ -400,9 +406,13 @@ export function correctionsWorklist(rows) {
   // it rather than correcting it: the flag went away and the report did not become true. Stated as a
   // constraint on the worklist itself, where the moves are chosen, rather than left to the recheck to
   // catch afterwards — the recheck that caught it did so once, and once is luck.
+  //
+  // AFTER A DELIVERY-CHECK REPAIR NO REVIEW FOLLOWS THE CORRECTION, so "standing for the reviewer" would be
+  // false there: a point left standing is recorded for the reviewing lawyer instead.
   out.push("",
     "REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS FLAG. Correct the fact, or say why it cannot be corrected "
-    + "and leave it standing for the reviewer. A finding you believe should not be there is WITHDRAWN with its "
+    + (afterRepair ? "and leave it standing; the point is recorded for the reviewing lawyer. " : "and leave it standing for the reviewer. ")
+    + "A finding you believe should not be there is WITHDRAWN with its "
     + "reason recorded, never deleted — a flag that stops naming anything reads as resolved, and the driver "
     + "reports the deletion by name either way.");
   return out.join("\n");

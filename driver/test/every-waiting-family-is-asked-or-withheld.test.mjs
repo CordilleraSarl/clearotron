@@ -107,13 +107,26 @@ test("the form the driver builds from the run carries the receipt's waiting fami
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the turn's judgment survives the union, and the digest may still re-judge it", () => {
+test("the turn's judgment survives the union, and a later digest cannot replace it: its reading is kept beside the turn's", () => {
   const withheld = { [waiting[0].qid]: { axis: AXIS, reason: REASON } };
   const u = unionCoverageForm({ rows: [] }, { rows: null }, input(withheld));
   const row = u.form.rows.find((r) => r.qid === waiting[0].qid);
   assert.equal(row.status, "withheld-by-judgment", "the union dropped the reading turn's judgment");
+  assert.equal(row.reason_from, `_driver/withheld-families-${AXIS}.json`, "the row names the record its judgment came from");
   const again = unionCoverageForm({ rows: u.form.rows }, { rows: [{ row_id: row.row_id, status: "withheld-by-judgment", reason: "A second reason." }] }, input(withheld));
-  assert.equal(again.form.rows.find((r) => r.qid === waiting[0].qid).reason, "A second reason.");
+  const kept = again.form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.deepEqual([kept.status, kept.reason, kept.digest_reason], ["withheld-by-judgment", REASON, "A second reason."],
+    "the turn's reason stays the row's, and the digest's words ride beside it");
+  // The digest's reading survives a pass that sends nothing, and a pass that repeats the turn's own words adds nothing.
+  const quiet = unionCoverageForm({ rows: again.form.rows }, { rows: null }, input(withheld)).form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.equal(quiet.digest_reason, "A second reason.");
+  const same = unionCoverageForm({ rows: [] }, { rows: [{ row_id: row.row_id, status: "withheld-by-judgment", reason: REASON }] }, input(withheld)).form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.equal(same.digest_reason, undefined);
+  // Released, the family leaves the turn's record: the next pass builds the row without that judgment, and the
+  // digest settles it as any row, in its own words.
+  const released = unionCoverageForm({ rows: again.form.rows }, { rows: [{ row_id: row.row_id, status: "withheld-by-judgment", reason: "A digest's own reason." }] }, input({}));
+  const r2 = released.form.rows.find((r) => r.qid === waiting[0].qid);
+  assert.deepEqual([r2.reason, r2.reason_from], ["A digest's own reason.", undefined]);
 });
 
 test("a family's reason is kept out of everything the report is built from", () => {
@@ -125,17 +138,29 @@ test("a family's reason is kept out of everything the report is built from", () 
   assert.match(coverageFormBrief({ rows }), /A `family` row is a waiting family the reading turn did not ask/);
 });
 
-test("the audit workbook's coverage sheet carries the withheld family and its reason", async () => {
+test("the audit workbook's coverage sheet carries the withheld family as a recorded judgment, a Note with the reading turn's own reason, and never beside its release", async () => {
   const { withheldFamilyRows } = await import("../publish/index.mjs");
   const dir = runDir();
   try {
     const { rows } = coverageFormRows(input({ [waiting[0].qid]: { axis: AXIS, reason: REASON } }));
     writeFileSync(coverageFormPaths(dir).sidecar, JSON.stringify({ rows }));
+    // Without the turn's own record the form's own settlement is the judgment, the same one the register coverage
+    // line counts as withheld (waitingFamilyStates): a Note too, with the form's reason, never open work.
+    const unjudged = withheldFamilyRows(dir);
+    assert.deepEqual([unjudged.length, unjudged[0].state, unjudged[0].note, unjudged[0].left], [1, "note", REASON, ""]);
+    // With it, the row is the turn's judgment, in the shipped Note presentation, and claims no work done or left.
+    writeFileSync(driverDir(dir, `withheld-families-${AXIS}.json`), JSON.stringify({ axis: AXIS, families: { [waiting[0].qid]: { axis: AXIS, reason: REASON } } }));
     const out = withheldFamilyRows(dir);
     assert.equal(out.length, 1);
-    assert.equal(out[0].note, REASON);
-    assert.equal(out[0].state, "not-searched");
+    assert.deepEqual([out[0].state, out[0].note, out[0].done, out[0].left], ["note", REASON, REASON, ""]);
     assert.match(out[0].area, /^main register sweep \/ /, "the area is not the driver's reader label");
+    // A later digest that re-words the form's row does not replace the turn's reason.
+    writeFileSync(coverageFormPaths(dir).sidecar, JSON.stringify({ rows: rows.map((r) => (r.kind === "family" ? { ...r, reason: "an invented later wording" } : r)) }));
+    assert.equal(withheldFamilyRows(dir)[0].note, REASON, "the reason shown is the reading turn's, not the digest's");
+    // A family the turn released after the form settled it ran, and the release's own row says so: the form's stale
+    // withheld row is not shown beside it.
+    writeFileSync(driverDir(dir, `released-families-${AXIS}.json`), JSON.stringify({ axis: AXIS, families: { [waiting[0].qid]: { axis: AXIS, reason: "an invented release reason" } } }));
+    assert.deepEqual(withheldFamilyRows(dir), [], "a released family is shown once, as released");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

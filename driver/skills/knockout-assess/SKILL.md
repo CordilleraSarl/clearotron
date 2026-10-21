@@ -7,7 +7,7 @@ description: Rate every mark of a KNOCKOUT batch from its raw research payload, 
 
 You rate each mark of the batch for **triage**: "is there an obvious blocker to USING this name in
 the market?" — from the mark's raw common-law research payload (`research/<mark>.md`), the frame's
-context framing, and nothing else. This is NOT a clearance: no register conclusions, no filing
+context framing, the filings and owner searches you are handed, and nothing else. This is NOT a clearance: no register conclusions, no filing
 advice. Ratings use **the frozen framework's band vocabulary** (`_driver/framework.json` — the
 customer's own ladder when configured, else the house triage ladder). State the band WORD. The only
 sub-gradation is `ratingQualifier: "low"` — it CAPS a band ("Medium (low)", calibration rule 6) and
@@ -31,9 +31,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
    `findings[]` record carries one conflicting name, its owner, its band, its evidence and its ground.
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
-   the band and renumbers, so what your order decides is the order inside a band. Every cited URL must appear in THAT mark's
-   research payload — the receipts gate refuses a citation the driver cannot trace, at the chunk, at
-   the merged artifact and again at publish.
+   the band and renumbers, so what your order decides is the order inside a band. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
 6. **RETIRED — you are given the filings now, so you do not estimate them.**
    This ordered an expectation sentence ("moderate volume of filings expected") and forbade a register
    conclusion, because this seat could not see the register lane. It can: the run's fetched records are
@@ -120,8 +118,8 @@ there is no other value: a band that needs sharpening is the band above it, stat
 ## Assert nothing you did not examine (non-optional at every depth)
 
 This lane screens; it does not enumerate. It holds the marketplace and common-law research payload for
-each mark, and — when the register component is configured — two counts per mark: how many filings are
-identical to the name, and how many contain it. That is the whole evidence base. Everything below
+each mark, and — when the register component is configured — the filings it fetched and the owner searches
+made for them. That is the whole evidence base. Everything below
 follows from writing only what it supports.
 
 1. **A survivor is never "clear".** Never "clear", "clean", "no conflicts found", "clear to proceed".
@@ -130,14 +128,14 @@ follows from writing only what it supports.
    empty there — "no exact-name energy drink was identified in the supplement and grocery
    marketplaces screened" is supportable; "there is no conflicting use" is not. `negatives[]` is
    where a scoped absence belongs, and every entry carries the `source` that bounds it.
-3. **Register statements stay inside the counts.** The counts are two totals; they enumerate nothing.
-   So no claim that the register is clear, and equally none that it is crowded — a count cannot see a
-   field. `registerEstimate` is an EXPECTATION and must label itself as one, ending with a sentence in
+3. **No claim that the register is clear, and equally none that it is crowded.** Weigh the register
+   evidence supplied for each mark. The report states search coverage from the run's recorded results.
+   `registerEstimate` is an EXPECTATION and must label itself as one, ending with a sentence in
    the shape of "This is an expectation only, not a search result."
 4. **Crowded-field reasoning is about the field you actually screened.** Rule 2 of the calibration
    rules is judgment over the marketplace and common-law evidence in this mark's own payload and its
    `findings[]` — cite that evidence. It is never a claim about filings, families, or how many marks
-   share a token, none of which this lane retrieves. `crowdedField: true` means "the payload I read
+   share a token. `crowdedField: true` means "the payload I read
    shows a crowded field", and if the payload does not show one, it is `false`.
 
 The engine appends the depth boundary to `batch.standardCaveats` itself, so never write your own
@@ -337,9 +335,6 @@ looked identical afterwards. `setAside` is where the judgment goes.
   **It stays the SHORTER digest above the per-mark assessments** — a reader opens it to decide which
   name to read about, and the mark's own page carries the full read. Keep it tighter than any one
   mark's `assessment`.
-  The standing caveats ride `batch.standardCaveats` (chunk 0) verbatim:
-  - "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."
-  - When ratings feel cautious: "Some ratings may appear cautious; they reflect worst-case common-law exposure pending register confirmation."
 - **`knockout-findings.json`** (strict, closed keys — one entry per SEARCHED mark; per-CHUNK files
   carry `chunkSummary` + this chunk's `marks`, chunk 0 also `batch` + `framework`):
 
@@ -347,7 +342,7 @@ looked identical afterwards. `setAside` is where the judgment goes.
 { "schema_version": 1,
   "framework": { "source": "<framework_key>", "ladder": ["<highest>", "..."] },
   "batch": { "productContext": "...", "standardCaveats": ["..."] },
-  "chunkSummary": "<markdown narrative for THIS chunk's marks>",
+  "chunkSummary": "<markdown for THIS chunk's marks>",
   "marks": [ { "ref": null, "name": "<verbatim>", "classesSearched": [8], "beltAndBraces": [35],
                "contextFraming": "...", "rating": "<band word>", "ratingQualifier": null,
                "classesDriving": [8], "bullets": ["..."], "purpleNotes": ["..."],

@@ -2820,14 +2820,16 @@ test("a provider hard-error refuses ONCE, then ships as a disclosed deferral —
 //   · the derivation runs at BOTH seams — after synthesis AND before delivery. Re-derived on the four
 //     delivered findings.json files the old pass measured, its own stamp counts did not hold (35→37,
 //     28→31, 37→38, 41→40): stamps entered the deliverable after the only check that policed them.
+//     It also settles at the delivery seam, before the cards are built, so a corrective pass that
+//     re-sent the record cannot leave the cards built on stamps the next settle demotes.
 //   · no synthesis dispatch carries `trigger: "read-verification"` any more. That is the ~10 minutes.
 test("the basis derivation runs at both seams, and no third synthesis pass runs at all", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   assert.equal(res.ok, true, JSON.stringify(res));
 
   const seams = events.filter((e) => e.event === "basis-derivation").map((e) => e.at);
-  assert.deepEqual(seams, ["post-synthesis", "pre-delivery"],
-    "both seams, in order — one settle before refutation reads the findings, one after the corrective pass has written to them");
+  assert.deepEqual(seams, ["post-synthesis", "seam", "pre-delivery"],
+    "every seam, in order — one settle before refutation reads the findings, one before the cards are built on them, one after the corrective pass has written to them");
 
   assert.ok(!events.some((e) => e.event === "stage" && e.trigger === "read-verification"),
     "the third synthesis pass is GONE — this is the ~10 serial minutes the issue costed");

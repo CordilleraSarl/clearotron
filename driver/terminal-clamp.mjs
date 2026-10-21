@@ -28,6 +28,46 @@
 const CAUTION = Object.freeze(["CLEAR", "CONDITIONAL", "BLOCKING"]);
 
 /**
+ * A GUARD'S GAP POSITIVELY CLOSED when it is judged again: its account was read, could be computed, and finds no gap.
+ * An account that is absent, unreadable or not computable is no proof that the gap closed, and the clause stands.
+ * `token` names the guard. The floor's account is judged in its own module (`floorDutyClosed`) and arrives as
+ * `floorClosed`; the writer's duty arrives as its reconciliation, and the recall gate as its reconciliation with the
+ * records a refused merge left out. PURE.
+ */
+export function gapPositivelyClosed(token, { floorClosed = false, duty = null, recall = null, leftOut = [] } = {}) {
+  if (token === "floor_duty_undischarged") return floorClosed === true;
+  if (token === "synthesis_unaccounted_delivered") return duty?.computable === true && Array.isArray(duty.unaccounted) && duty.unaccounted.length === 0;
+  if (token === "recall_reconciliation_unended") return recall?.computable === true && !((recall.totals?.unended ?? 0) > 0) && !leftOut.length;
+  return false;
+}
+
+/**
+ * THE RESULT ONCE A CLOSED GAP'S CLAUSE IS WITHDRAWN, recomputed from the accepted assessment and the conditions that
+ * still stand. A CONDITIONAL goes back to CLEAR only when the assessment was CLEAR and no condition is left; any other
+ * result stands, so a condition that still applies, a review that said CONDITIONAL or BLOCKING, or a result the guard
+ * never moved is never lifted. PURE.
+ */
+export function verdictWithoutTheClosedGap({ verdict, assessed, reasons = [] } = {}) {
+  return verdict === "CONDITIONAL" && assessed === "CLEAR" && !reasons.length ? "CLEAR" : verdict;
+}
+
+/**
+ * ONE SENTENCE WHEN THE WRITER'S DUTY AND THE RECALL GATE BOTH FIND RECORDS UNADDRESSED. Both state the approved
+ * sentence for records neither addressed nor set aside, each out of its own population: the records the writer was
+ * owed, and the records the recall gate weighed. Stated twice, the same words would give two totals for "the register
+ * records this search surfaced". Stated once, N is the records either names and M the records either required to be
+ * assessed, each counted once: never a sum of overlapping records, and never a record neither required. Null when
+ * either side names no record or either population is unknown; each then states its own count. PURE.
+ */
+export function jointUnaccounted({ dutyIds = [], owedIds = null, recallIds = [], weighedIds = null } = {}) {
+  if (!Array.isArray(owedIds) || !Array.isArray(weighedIds) || !dutyIds.length || !recallIds.length) return null;
+  const ids = (...lists) => new Set(lists.flat().map((x) => String(x ?? "").trim().toLowerCase()).filter(Boolean));
+  const n = ids(dutyIds, recallIds).size;
+  const m = ids(owedIds, weighedIds, dutyIds, recallIds).size;
+  return { n, m };
+}
+
+/**
  * The shape of an engine identifier: `word_word:N` tokens (`floor_duty_undischarged:22`) and the
  * `snake_case` defect vocabulary generally. The CLIENT'S clause may never carry one —:
  * two delivered reports opened their Verdict row with exactly such a token, because the run-record
@@ -173,9 +213,20 @@ export function orderClausesForLede(clauses, reasons, guardSet) {
  * after 5.55 hours and the client received nothing instead of a report naming one gap. The caller
  * decides what the absence means.
  */
+// The approved sentence for surfaced records the report neither addresses nor sets aside. The recall gate finds the
+// same state, a retrieved record ending nowhere a reader can see, and since the owner's ruling of 2026-10-19 (never hold
+// a run) it ships that state instead of stopping: it is said in this same sentence, not a new one.
+const unaccountedRecords = (n, m) =>
+  `${n} of the ${m} register records this search surfaced are neither addressed as findings nor expressly set aside in this report — they remain open points a reader must weigh`;
 const CLAUSE_AUTHORITY = Object.freeze({
-  synthesis_unaccounted_delivered: (n, m) =>
-    `${n} of the ${m} register records this search surfaced are neither addressed as findings nor expressly set aside in this report — they remain open points a reader must weigh`,
+  synthesis_unaccounted_delivered: unaccountedRecords,
+  recall_reconciliation_unended: unaccountedRecords,
+  // The owner's words of 2026-10-19, for records a repeated placement pass re-ranked after the writer last wrote, when
+  // the writer's re-run for the change did not complete: his singular for one record, his plural for more. The second
+  // count is the population, kept for the run record.
+  ranking_changed_unread: (n) => (n === 1
+    ? "1 register record was re-ranked after this report was written; the audit trail gives its final ranking"
+    : `${n} register records were re-ranked after this report was written; the audit trail gives their final ranking`),
   floor_duty_undischarged: (n, m) =>
     `${n} of the ${m} live registrations identical or near-identical to the mark are not individually addressed in this report — each remains an open point a reader must weigh`,
 });

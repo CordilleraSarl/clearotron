@@ -36,7 +36,7 @@ import { MODEL_FILE as FRAME_DIFF_MODEL_FILE, PROSE_FILE as FRAME_DIFF_PROSE_FIL
 import { MATTER_CONTEXT_FILE } from "./matter-frame-record.mjs";
 import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./clearance-variants-record.mjs";
 import { PROSE_FILE as REPORT_OVERVIEW_FILE } from "./report-overview-record.mjs";
-import { NARRATIVE_FILE, FINDINGS_FILE, refusalsFor } from "./synthesis-record.mjs";
+import { NARRATIVE_FILE, FINDINGS_FILE, refusalsFor, synthesisCallPaths } from "./synthesis-record.mjs";
 import { FINDINGS_FILE as REGISTER_FINDINGS_FILE, refusalsFor as registerDigestRefusalsFor } from "./register-digest-record.mjs";
 
 // artifact basename -> the tool that is now its only writer. A repair for one of these is a CALL, never a
@@ -2277,7 +2277,7 @@ export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { 
       `\n\nCORRECTION: ${budget}${requiredFileClause(inner, { names, toolWritten })}`;
   return baseMessage +
     `\n\nCORRECTION: your previous attempt failed file validation (${inner}). ${budget}Re-do the task and make sure ` +
-    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane, undispatchable: frameDiffUndispatchable(expectFile, inner) })}. ` +
+    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane, undispatchable: frameDiffUndispatchable(expectFile, inner), heldRecord: heldSynthesisRecord(files) })}. ` +
     requiredFileClause(inner, { names, toolWritten });
 }
 
@@ -2362,7 +2362,22 @@ export function frameDiffUndispatchable(expectFile, lastFail = "framediff_direct
 // clearance writer's.
 const CLEARANCE_FINDINGS_TOKEN_RE = /(?<!knockout_|knockoutassess_)findings?_/;
 
-export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null } = {}) {
+// THE WRITER'S RETRY, WHEN THE DRIVER HOLDS ITS RECORD. A save the tool accepted can still fail the stage's own check
+// of the written files, and the driver then holds the record that save left: the retry sends only the change, in the
+// patch the follow-ups above it ask for. A record nobody saved yet, or one whose version is being replaced, still
+// takes the complete save.
+const HELD_RECORD_RETRY = "Fix exactly that in ONE `record_synthesis` PATCH call, sending only the change: `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces, and `findings` carrying any register you corrected, complete, and never a `findings[]` list; leave the narrative prose unchanged";
+const VERSION_FAILURE_RE = /finding_legacy_scale_forbidden|schema_version/;
+/**
+ * Does the driver hold an accepted synthesis record for the run these files belong to? Read from either of the files
+ * the writer's call renders: the stage's own expected file is the narrative, and a caller may name the findings.
+ */
+export const heldSynthesisRecord = (files) => {
+  const f = (Array.isArray(files) ? files : [files]).find((x) => typeof x === "string" && [NARRATIVE_FILE, FINDINGS_FILE].includes(basename(x)));
+  return Boolean(f) && existsSync(synthesisCallPaths(dirname(f)).accepted);
+};
+
+export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false } = {}) {
   // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
   // new hint has one thing to append rather than a branch to reproduce.
   const resaveClause = toolWritten
@@ -2457,8 +2472,9 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `composite/level/dispute_type are RETIRED and forbidden), owner.registrations[] (ONE entry per ` +
       `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the four ` +
       `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
-      `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} Fix exactly that, re-save ` +
-      `the COMPLETE findings.json, and leave the narrative prose unchanged`;
+      `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} ` +
+      (heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? HELD_RECORD_RETRY
+        : `Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged`);
   } else if (/coverage_status_offenum/.test(lastFail)) {
     // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON
     // mirror's token): the defect lives in register-findings.md's own Coverage-ledger table, so the
@@ -2827,8 +2843,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       ? diagnosis +
         `On this run the TOOLS own every band block: if the collapsed slice belongs to a DICTATED plan entry ` +
         `(it carries a qid from the frozen plan), close it by calling register_execute_plan ONCE with the exact ` +
-        `{"plan_path", "axis", "output_path"} from your stage instructions — that is the tool's whole call form ` +
-        `(it takes no per-qid argument); it re-runs this axis's dictated entries and refreshes their blocks, ` +
+        `{"plan_path", "axis", "output_path"} from your stage instructions; it re-runs this axis's dictated entries and refreshes their blocks, ` +
         `qid-stamped. If the collapsed slice ` +
         `was a judgment addition, RE-PROPOSE that EXACT slice through register_propose_supplemental with the same ` +
         `predicate, term(s), nice_classes and regions — the tool re-executes it and merges the corrected block ` +
@@ -2878,9 +2893,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `the bridge killed it, so the band was never written. This is NOT a missing-structure defect and ` +
       `NOT something you did wrong. Call register_execute_plan ONCE more with the exact ` +
       `{"plan_path", "axis", "output_path"} from your stage instructions. If it is killed again, do ` +
-      `NOT author band blocks by hand and do NOT narrate coverage you did not get — record the timeout ` +
-      `in your .md, state the scope you attempted, and flag CROSS-CHECK REQUIRED. That note is the ` +
-      `correct answer to a tool that will not return, and it is what the reader needs`;
+      `NOT author band blocks by hand and do NOT narrate coverage you did not get — the driver's own call ` +
+      `log records that the call never returned`;
   } else if (/named_band_missing/.test(lastFail)) {
     // 2026-07-14 (copper-keystone): the unit's .md narrated success but the band file was NEVER WRITTEN —
     // the model skipped its one register_execute_plan call and fabricated the narrative. Unlike the
@@ -3516,7 +3530,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
     const band = join(dirname(files[0]), basename(files[0]).replace(/\.md$/i, "-band.json"));
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo your digest prose (${names} already passed validation).\n` +
       `Your register tool call WAS MADE and never returned — it was still running when the bridge killed it, so ${band} was never written. Nothing about your turn was wrong. Call register_execute_plan ONCE more with the exact {"plan_path", "axis", "output_path"} from your original stage instructions (output_path = ${band}), then stop.\n` +
-      `If it is killed again: do NOT author band blocks by hand and do NOT narrate coverage you did not obtain. Record the timeout in your .md, state the scope you attempted, and flag CROSS-CHECK REQUIRED. That is the correct answer to a tool that will not return.`;
+      `If it is killed again: do NOT author band blocks by hand and do NOT narrate coverage you did not obtain. The driver's own call log records that the call never returned.`;
   }
   // Sibling-JSON defects (WS-A coverage mirror / common-law grid): the FINDINGS file already passed
   // its prose checks — telling the model to rewrite it "in full" on a patch turn risks degrading
@@ -3616,7 +3630,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
       ? `Do NOT redo the work from scratch. This stage's own output is the driver's — it is rendered from your \`${outIsToolWritten.tool}\` call and you hold no tool that writes it, so there is nothing there for you to rewrite or protect.`
       : `Do NOT redo the work from scratch, and do NOT rewrite ${names || "the findings file"} (it already passed validation).`;
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. ${standsClause}\n` +
-      `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail) })}.\n` +
+      `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files) })}.\n` +
       `Re-save the COMPLETE corrected JSON at ${sib}. Do not stop until it exists and is valid.`;
   }
   // — A BLIND-FRAME REPAIR IS A TOOL CALL, NOT A FILE WRITE, and this branch is what stops the two
@@ -3668,7 +3682,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
         // DIRECTIVES again, which is the 2026-07-29 reopen loss. Caught by frame-diff-model.test.mjs's
         // cardinality pin, which asserts the warm path carries the full list without the caller passing
         // anything.
-        : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), toolWritten: toolWritten.tool })}.\n`) +
+        : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), toolWritten: toolWritten.tool, heldRecord: heldSynthesisRecord(files) })}.\n`) +
       `Call \`${toolWritten.tool}\` with the values from the work already in your context — never by writing or editing any file. ` +
       `Do not stop until the tool accepts the call.`;
   }
@@ -3688,7 +3702,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   }
   const defective = failingTarget(lastFail, files) ?? files[0] ?? null;
   return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo the work from scratch.\n` +
-    `Your saved ${defective ? rel(defective) : names || "output"} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail) })}.\n` +
+    `Your saved ${defective ? rel(defective) : names || "output"} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files) })}.\n` +
     editRepairTail(defective || names || "the stage output");
 }
 

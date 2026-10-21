@@ -156,7 +156,7 @@ export const DIGEST_OWN_PASS_EXEMPTIONS = Object.freeze([
 // The standard digest-resume preamble every warm re-digest opens with (verbatim from the legacy
 // escalation/envelope/frame-reopen followups — shared so the OFF path stays byte-identical).
 export const DIGEST_RESUME_PREAMBLE =
-  "You are RESUMING your earlier register-digest session — your prior digest and all unit files are already in your context. Do NOT redo it from scratch.";
+  "This is a fresh session: your earlier register-digest work is not in your context, and the unit files are among the inputs listed below. Your prior digest is the findings file named below. Do NOT redo it from scratch.";
 
 /**
  * The standard settlement repair contract: every consolidated flush ends with THIS.

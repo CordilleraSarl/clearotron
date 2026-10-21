@@ -46,8 +46,8 @@
           "todos": 0
         },
         "a-band-record-carries-its-goods-from-the-records-on-file.test.mjs": {
-          "tests": 13,
-          "asserts": 51,
+          "tests": 14,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -94,8 +94,8 @@
           "todos": 0
         },
         "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
-          "tests": 12,
-          "asserts": 42,
+          "tests": 13,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -132,6 +132,12 @@
         "a-capability-is-named-before-the-report-names-it.test.mjs": {
           "tests": 6,
           "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-caption-only-overview-the-save-accepts-passes-its-own-file-check.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -309,9 +315,33 @@
           "skips": 1,
           "todos": 0
         },
+        "a-correction-is-checked-against-the-delivered-record.test.mjs": {
+          "tests": 9,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-correction-patches-what-it-carries.test.mjs": {
+          "tests": 48,
+          "asserts": 88,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-correction-session-is-told-it-is-fresh-and-sends-only-the-change.test.mjs": {
+          "tests": 11,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
           "tests": 7,
           "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-corrective-pass-builds-the-cards-on-the-settled-record.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -352,8 +382,8 @@
           "todos": 0
         },
         "a-cross-check-waits-for-the-reading-step.test.mjs": {
-          "tests": 5,
-          "asserts": 21,
+          "tests": 6,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -370,8 +400,8 @@
           "todos": 0
         },
         "a-crowd-is-narrowed-by-goods-and-class-then-by-market.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -390,6 +420,12 @@
         "a-cut-refuses-a-version-already-out.test.mjs": {
           "tests": 4,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-decision-the-repeated-placement-pass-changes-is-the-one-delivered.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
@@ -457,6 +493,12 @@
           "tests": 3,
           "asserts": 11,
           "skips": 1,
+          "todos": 0
+        },
+        "a-demoted-stamp-survives-the-next-patch.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
           "todos": 0
         },
         "a-deprecate-only-dispatch-publishes-nothing.test.mjs": {
@@ -543,6 +585,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-fetch-or-an-empty-record-does-not-answer-the-screen-gate.pipeline.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-failed-fetch-or-an-empty-record-is-not-a-retrieval.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-filings-search-says-so-in-plain-words.test.mjs": {
           "tests": 9,
           "asserts": 28,
@@ -585,6 +639,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-fault-inside-a-card-is-repaired-in-that-card.test.mjs": {
+          "tests": 4,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "a-finding-is-checked-by-its-rungs-risk-not-its-place-on-the-ladder.test.mjs": {
           "tests": 3,
           "asserts": 16,
@@ -600,6 +660,12 @@
         "a-floor-row-whose-owner-was-set-aside-is-answered.test.mjs": {
           "tests": 2,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-floor-the-repeated-placement-pass-answers-is-withdrawn-and-the-result-recomputed.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -639,6 +705,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-gap-a-guard-finds-closed-gives-back-only-the-result-it-moved.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-generic-run-is-filed-and-capped-at-the-claim.test.mjs": {
           "tests": 2,
           "asserts": 12,
@@ -648,6 +720,12 @@
         "a-gone-session-meets-a-door-not-a-json-body.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-goods-drop-says-what-it-rests-on-and-who-read-it.test.mjs": {
+          "tests": 7,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -789,6 +867,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-rating-may-cite-the-filings-it-was-handed.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -819,9 +903,27 @@
           "skips": 0,
           "todos": 0
         },
+        "a-late-reassembly-keeps-the-write-ups-the-first-assembly-made.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-late-record-no-placement-pass-could-assess-is-delivered-and-stated.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-late-record-the-report-does-not-address-is-counted.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-late-review-that-softens-is-recorded-not-adopted.test.mjs": {
           "tests": 3,
-          "asserts": 12,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -1071,8 +1173,20 @@
           "skips": 0,
           "todos": 0
         },
+        "a-placement-decision-reads-alike-at-every-count.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-placement-pass-that-lost-its-answers-does-not-succeed.test.mjs": {
           "tests": 8,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
+          "tests": 4,
           "asserts": 19,
           "skips": 0,
           "todos": 0
@@ -1209,9 +1323,27 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-a-unit-re-run-finds-reaches-the-named-band.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
         "a-record-asked-for-and-never-delivered.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-record-placement-set-aside-is-not-a-lost-finding.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-recorded-deadline-survives-a-later-save.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -1371,9 +1503,45 @@
           "skips": 0,
           "todos": 0
         },
+        "a-repair-after-the-cards-owes-a-card-to-the-record-it-delivers.test.mjs": {
+          "tests": 2,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repair-after-the-cards-rebuilds-only-the-cards-it-changed.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repair-in-the-delivery-check-queues-what-it-left-stale.test.mjs": {
+          "tests": 8,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repeat-of-a-family-the-reading-turn-withheld-keeps-its-judgment.test.mjs": {
+          "tests": 32,
+          "asserts": 146,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repeated-placement-pass-is-held-to-its-floor-in-the-delivered-report.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -1398,6 +1566,12 @@
         "a-right-kept-on-a-sheet-is-not-dropped-by-its-copies.test.mjs": {
           "tests": 7,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-rollback-puts-back-the-base-the-next-patch-builds-on.test.mjs": {
+          "tests": 9,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -1869,6 +2043,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-write-up-list-the-goods-source-cannot-reach-says-so.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "ab-tooling-honesty.test.mjs": {
           "tests": 16,
           "asserts": 78,
@@ -1956,6 +2136,12 @@
         "an-audit-lists-only-its-own-companys-recall-checks.test.mjs": {
           "tests": 4,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-audit-that-no-longer-describes-the-run-is-never-published-as-current.test.mjs": {
+          "tests": 3,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -2085,6 +2271,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-unread-crowd-is-counted-as-unread.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "an-unread-probe-is-not-a-failed-measurement.test.mjs": {
           "tests": 5,
           "asserts": 11,
@@ -2105,7 +2297,7 @@
         },
         "anchor-directive.test.mjs": {
           "tests": 4,
-          "asserts": 8,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -3171,9 +3363,21 @@
           "skips": 0,
           "todos": 0
         },
+        "each-registers-fetch-row-names-its-own-record.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "each-stable-npm-serves-is-listed-in-the-mcp-registry.test.mjs": {
           "tests": 11,
           "asserts": 61,
+          "skips": 0,
+          "todos": 0
+        },
+        "each-stage-is-told-what-a-records-goods-rest-on.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -3357,6 +3561,18 @@
           "skips": 0,
           "todos": 0
         },
+        "every-model-stage-is-handed-its-tools-on-both-engines.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-model-stage-is-handed-the-instruction-files-it-declares.test.mjs": {
+          "tests": 8,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "every-own-pass-digest-is-declared.test.mjs": {
           "tests": 5,
           "asserts": 11,
@@ -3407,7 +3623,7 @@
         },
         "every-waiting-family-is-asked-or-withheld.test.mjs": {
           "tests": 8,
-          "asserts": 32,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -3514,8 +3730,8 @@
           "todos": 0
         },
         "first-time-is-read-from-the-whole-run-record.test.mjs": {
-          "tests": 9,
-          "asserts": 57,
+          "tests": 10,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -3624,6 +3840,12 @@
         "giving-access-to-everything-is-a-switch-not-a-point.test.mjs": {
           "tests": 1,
           "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "goods-not-established-whole-are-never-read-as-a-mismatch.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4221,6 +4443,12 @@
           "skips": 0,
           "todos": 0
         },
+        "pipeline.mock.withheldfamily.test.mjs": {
+          "tests": 7,
+          "asserts": 71,
+          "skips": 0,
+          "todos": 0
+        },
         "pipeline.openai.test.mjs": {
           "tests": 2,
           "asserts": 54,
@@ -4248,6 +4476,12 @@
         "placement-model.test.mjs": {
           "tests": 14,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "placements-decisions-reach-the-audit-and-end-a-recall-position.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -4905,6 +5139,12 @@
           "skips": 0,
           "todos": 0
         },
+        "repair-scope.test.mjs": {
+          "tests": 10,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "repair-write-mode.test.mjs": {
           "tests": 15,
           "asserts": 66,
@@ -5511,6 +5751,12 @@
           "skips": 0,
           "todos": 0
         },
+        "start-says-what-is-true-of-a-client-door-that-is-not-up.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "status-and-stop-see-a-foreground-start.test.mjs": {
           "tests": 7,
           "asserts": 30,
@@ -5727,6 +5973,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-band-shape-derivation-writes-what-the-goods-rest-on.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "the-bands-box-shows-the-whole-band.test.mjs": {
           "tests": 9,
           "asserts": 22,
@@ -5847,6 +6099,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-delivered-files-say-what-was-retrieved-not-what-was-read.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-demo-account-shows-a-configured-customer.test.mjs": {
           "tests": 4,
           "asserts": 24,
@@ -5922,6 +6180,12 @@
         "the-doubt-carries-its-placement-tier.test.mjs": {
           "tests": 17,
           "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-doubts-a-rebuilt-trace-mints-follow-it-record-by-record.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -6003,6 +6267,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-finding-sentence-is-the-approved-standard.test.mjs": {
+          "tests": 7,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
         "the-first-hour-reads-true.test.mjs": {
           "tests": 8,
           "asserts": 42,
@@ -6063,6 +6333,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-goods-record-reads-a-search-rows-goods-through-the-shared-reader.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-grant-sentence-and-its-carve-out-hold-per-provider.test.mjs": {
           "tests": 6,
           "asserts": 7,
@@ -6081,6 +6357,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-groups-fates-are-placements-and-the-groups-stay-every-stages.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "the-heartbeat-stays-fresh-while-a-run-is-in-flight.test.mjs": {
           "tests": 4,
           "asserts": 8,
@@ -6089,7 +6371,7 @@
         },
         "the-hit-list-owes-one-fate-per-line.test.mjs": {
           "tests": 16,
-          "asserts": 55,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -6363,6 +6645,12 @@
           "skips": 2,
           "todos": 0
         },
+        "the-reading-step-and-the-writer-are-told-placements-set-asides.pipeline.test.mjs": {
+          "tests": 16,
+          "asserts": 64,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reading-turn-narrows-the-same-way-on-every-register.test.mjs": {
           "tests": 5,
           "asserts": 20,
@@ -6489,6 +6777,30 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-after-a-repair-is-told-what-changed-and-what-rests-on-it.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-after-a-repair-reads-only-what-the-repair-changed.pipeline.test.mjs": {
+          "tests": 24,
+          "asserts": 190,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-and-the-report-writers-are-given-no-contrary-duty.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reviewer-asks-the-clients-question-first.test.mjs": {
           "tests": 3,
           "asserts": 5,
@@ -6525,6 +6837,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-ruled-reading-paragraph-reaches-the-sweep-and-the-write-up.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-run-key-is-unique-where-it-is-read.test.mjs": {
           "tests": 5,
           "asserts": 12,
@@ -6534,6 +6852,12 @@
         "the-run-records-a-stored-territory-it-cannot-search.test.mjs": {
           "tests": 3,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-run-records-what-each-records-goods-rest-on.test.mjs": {
+          "tests": 7,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -6558,6 +6882,12 @@
         "the-scorer-withholds-names-unless-asked.test.mjs": {
           "tests": 32,
           "asserts": 63,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-screen-gate-records-what-its-drops-rest-on.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -6717,6 +7047,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-writers-duty-and-the-recall-gate-are-stated-once.test.mjs": {
+          "tests": 3,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-writing-standard-backlog-is-a-floor.test.mjs": {
           "tests": 3,
           "asserts": 9,
@@ -6761,7 +7097,7 @@
         },
         "tool-timeout-attribution.test.mjs": {
           "tests": 12,
-          "asserts": 29,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
@@ -7017,6 +7353,12 @@
           "skips": 0,
           "todos": 0
         },
+        "what-a-band-tool-serves-does-not-change-with-the-goods-record.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 15,
           "asserts": 49,
@@ -7257,14 +7599,14 @@
           "todos": 0
         },
         "events.test.mjs": {
-          "tests": 9,
-          "asserts": 31,
+          "tests": 13,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
         "findings-backstop.test.mjs": {
-          "tests": 6,
-          "asserts": 13,
+          "tests": 7,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },

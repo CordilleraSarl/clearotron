@@ -175,7 +175,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
   assert.equal(res.ok, true, JSON.stringify(res));   // the in-function re-merge gate did NOT false-fail the happy path
   // concurrency: BOTH half followups were dispatched (each targets its own half findings file)
   for (const h of GRID_HALVES)
-    assert.ok(messages.some((m) => new RegExp(`common-law-findings\\.half-${h}\\.md`).test(m) && /RESUMING your own common-law session/.test(m)),
+    assert.ok(messages.some((m) => new RegExp(`common-law-findings\\.half-${h}\\.md`).test(m) && /This is a fresh session: your earlier common-law work is not in your context/.test(m)),
       `a half-${h} common-law followup was issued`);
   // the re-merge ran more than once (fan-in + at least one supplementary re-merge), each now gated
   assert.ok(events.filter((e) => e.event === "common-law-merged").length >= 2, "the re-merge fired on a supplementary lane, not only fan-in");

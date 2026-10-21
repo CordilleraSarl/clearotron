@@ -10,6 +10,9 @@
 // market in that order. Driven through the real order door and the real message builder.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { validateJob } from "../enqueue-schema.mjs";
 import { STAGES } from "../stages.mjs";
@@ -33,8 +36,9 @@ test("a worldwide order narrows by goods and class, then the priority markets, t
   assert.ok(line, "the reading step is not told how to narrow a crowd");
   const at = (s) => line.indexOf(s);
   assert.ok(at("the order's classes [9, 41]") > 0, "the classes are not named");
-  assert.ok(at("the order's classes") < at("then the classes the crowding owners file in"), "class before the owners' classes");
-  assert.ok(at("the crowding owners") < at(`the customer's priority markets (${DEFAULTS.join(", ")})`), "goods and class before any market");
+  assert.ok(at("the order's classes") < at("then one of those classes at a time"), "the order's classes, then one of them at a time");
+  assert.doesNotMatch(line, /crowding owners/, "no class the crowding owners file in is asked about");
+  assert.ok(at("one of those classes at a time") < at(`the customer's priority markets (${DEFAULTS.join(", ")})`), "goods and class before any market");
   assert.ok(at("the customer's priority markets") < at("the markets the customer's field and brand point to"));
   assert.ok(at("field and brand") < at(`the major markets (${MAJOR_MARKETS.join(", ")})`));
   assert.match(line, /set aside, never clean\.$/);
@@ -62,4 +66,13 @@ test("a customer with nothing set up narrows by the order's classes and then the
   const line = narrowingLine(unitMessage(job, []));
   assert.doesNotMatch(line, /priority markets/);
   assert.match(line, /the markets the customer's field and brand point to \(judge them from the matter frame\), else the major markets \(US, EU, GB, CN, JP\)/);
+});
+
+test("both register manuals narrow a crowd one class at a time in the instructed classes, never in the classes the crowding owners file in", () => {
+  const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
+  for (const name of ["SKILL.md", "unit.md"]) {
+    const text = readFileSync(join(dir, name), "utf8").replace(/\s+/g, " ");
+    assert.ok(text.includes("Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the instructed classes. Read each list."), name);
+    assert.doesNotMatch(text, /the owners crowding the list file in|then the incumbent's/, name);
+  }
 });

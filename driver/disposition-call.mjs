@@ -881,7 +881,7 @@ export function callAnswer({ accepted, refused, overflow }, outstanding) {
     const owed = !r.evidence_owed ? ""
       : r.evidence_unsatisfiable === true
         ? " — this row CANNOT be evidenced: no passage on its candidates is long enough to quote from, so no `fragment` will ever bind. Do not keep re-sending it. Rule it and send `obstacle` saying the snippet carries nothing quotable."
-        : (r.ruled ? " — RULED, but this row now also needs `segment_index` (the number of the passage you relied on, from the ruled receipt's numbered passages) and `fragment` (a few characters copied exactly out of that passage)"
+        : (r.ruled ? " — RULED, but this row now also needs `segment_index` (the number of the passage you relied on, from the ruled receipt's numbered passages)"
                    : " — needs `segment_index` (the number of the passage you rely on, from the ruled receipt's numbered passages) and `fragment` (a few characters copied exactly out of that passage)");
     lines.push(`  ${name(r)}${owed}`);
   }

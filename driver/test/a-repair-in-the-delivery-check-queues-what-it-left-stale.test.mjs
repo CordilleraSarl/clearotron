@@ -1,0 +1,121 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// A REPAIR IN THE DELIVERY CHECK QUEUES WHAT IT LEFT STALE, AND ONLY THAT.
+//
+// When the delivery check's repeat of placement changes a decision, the stages that read it are re-run in the same pass,
+// and each of those re-runs is followed in turn. Which stages a repair left stale is read from the staleness before and
+// after it. A stage stale before for the same reasons is not the repair's, and stays the guard's. A stage already queued
+// ahead joins the chain, so its own re-run is followed, and runs where it stands. One this pass already re-did is re-done
+// once more at most. Own file, so the call ledger is pinned before the driver loads.
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || mkdtempSync(join(tmpdir(), "clearotron-testroot-")));
+process.env.CLEAROTRON_REGISTER_CALL_LOG = join(mkdtempSync(join(tmpdir(), "repair-left-stale-calls-")), "register-calls.jsonl");
+writeFileSync(process.env.CLEAROTRON_REGISTER_CALL_LOG, "");
+
+import { test } from "node:test";
+import assert from "node:assert/strict";
+const { whatTheRepairLeftStale, saveWithRetries, stagesStaleOnPlacement, withdrawByToken } = await import("../pipeline.mjs");
+const { recordsReRanked, rankedRecords } = await import("../placement-decisions.mjs");
+
+const stale = (label, ...changed) => ({ label, changed: changed.map(([name, now]) => ({ name, was: "old", now })) });
+
+test("the stages a repeated placement pass left stale are queued, and the repair itself is not", () => {
+  const after = [stale("register-digest", ["placement-decisions.json", "d2"]), stale("synthesis", ["placement-decisions.json", "d2"]),
+    stale("narrative-refutation", ["placement-decisions.json", "d2"]), stale("placement-inquiry", ["register-named-band.json", "b2"])];
+  const r = whatTheRepairLeftStale({ before: [stale("placement-inquiry", ["register-named-band.json", "b2"])], after, repaired: "placement-inquiry" });
+  assert.deepEqual(r.queue.map((x) => x.label), ["register-digest", "synthesis", "narrative-refutation"]);
+  assert.deepEqual(r.chain, ["register-digest", "synthesis", "narrative-refutation"]);
+  assert.deepEqual(r.requeue, []);
+});
+
+test("a stage already queued ahead joins the chain and is not queued twice", () => {
+  // The writer was stale on entry, on the reading step's record. The repeat moves the decision it also reads.
+  const before = [stale("synthesis", ["register-findings.md", "f2"])];
+  const after = [stale("synthesis", ["register-findings.md", "f2"], ["placement-decisions.json", "d2"])];
+  const r = whatTheRepairLeftStale({ before, after, repaired: "placement-inquiry", ahead: new Set(["synthesis"]) });
+  assert.deepEqual(r.chain, ["synthesis"], "the writer the repeat left stale is not followed: its re-run would leave the overview and the cards to the guard");
+  assert.deepEqual(r.queue, [], "a stage already queued ahead was queued again");
+});
+
+test("a stage stale before the repair for the same reasons is not the repair's, and stays the guard's", () => {
+  // A card whose re-render failed earlier in the pass: the repeat of placement changed nothing it reads.
+  const card = stale("report-card:3", ["findings.json", "x1"]);
+  const r = whatTheRepairLeftStale({ before: [card], after: [card], repaired: "placement-inquiry", processed: new Set(["report-card:3"]) });
+  assert.deepEqual([r.chain, r.queue, r.requeue], [[], [], []], "a stage stale for another reason was taken as the repair's");
+  // the same card, once the writer's re-run moves what it reads, is the writer's: re-done once more
+  const moved = stale("report-card:3", ["findings.json", "x2"]);
+  const w = whatTheRepairLeftStale({ before: [card], after: [moved], repaired: "synthesis", processed: new Set(["report-card:3"]) });
+  assert.deepEqual([w.chain, w.queue.map((x) => x.label), w.requeue], [["report-card:3"], ["report-card:3"], ["report-card:3"]]);
+});
+
+test("a stage this pass already re-did is re-done once more at most", () => {
+  const after = [stale("report-overview", ["findings.json", "x3"])];
+  const r = whatTheRepairLeftStale({ before: [], after, repaired: "synthesis", processed: new Set(["report-overview"]), requeued: new Set(["report-overview"]) });
+  assert.deepEqual(r.queue, [], "a stage re-done twice was queued a third time");
+  assert.deepEqual(r.chain, ["report-overview"]);
+});
+
+// The label the delivery check saves after a clamp is tried again before it is owed, and owed before it ends a run.
+test("a save that fails is tried again, and says how many tries it took or that every one failed", () => {
+  const waits = [];
+  const wait = (ms) => waits.push(ms);
+  let calls = 0;
+  const flaky = saveWithRetries(() => { if (++calls < 3) throw new Error("EIO: the disk hiccupped"); }, { wait });
+  assert.deepEqual([flaky.ok, flaky.attempts, calls, waits.length], [true, 3, 3, 2], "a save that succeeds on its third try is not saved");
+  waits.length = 0;
+  const broken = saveWithRetries(() => { throw new Error("ENOSPC: no space left"); }, { wait });
+  assert.deepEqual([broken.ok, broken.attempts, waits.length], [false, 3, 2], "a save that never succeeds is reported saved, or waited on after its last try");
+  assert.match(broken.error.message, /ENOSPC/, "the failure is not kept for the run record");
+  waits.length = 0;
+  assert.deepEqual([saveWithRetries(() => {}, { wait }).attempts, waits.length], [1, 0], "a save that succeeds at once was tried again");
+});
+
+// The records a repeated placement pass re-ranked, counted for the sentence the report then carries.
+test("the records a repeated placement pass re-ranked are counted once each, and a group's row by the records it holds", () => {
+  const ranking = (records, groups = {}) => ({ records: new Map(Object.entries(records)), groups: new Map(Object.entries(groups)) });
+  const before = ranking({ "/mark/eu/a1": "placed:top-slice", "/mark/eu/b1": "set aside on its status: the registration lapsed" },
+    { a: { key: "unrelated goods|12|h1", records: 40 } });
+  assert.equal(recordsReRanked(before, before), 0, "a ranking compared with itself re-ranked a record");
+  assert.equal(rankedRecords(before), 42);
+  // b1's ground changed, a1 moved tier, c1 was set aside anew: three records, each once
+  const named = ranking({ "/mark/eu/a1": "placed:residual", "/mark/eu/b1": "set aside on its status: the owner let its renewal pass",
+    "/mark/eu/c1": "set aside: a different class of goods" }, { a: { key: "unrelated goods|12|h1", records: 40 } });
+  assert.equal(recordsReRanked(before, named), 3);
+  // a group's row that covers other lines counts every record it holds; one that did not change counts none
+  const grouped = ranking({ "/mark/eu/a1": "placed:top-slice", "/mark/eu/b1": "set aside on its status: the registration lapsed" },
+    { a: { key: "unrelated goods|12|h2", records: 40 } });
+  assert.equal(recordsReRanked(before, grouped), 40);
+  assert.equal(recordsReRanked(ranking({}), ranking({}, {})), 0, "nothing on either side re-ranked a record");
+});
+
+// A stage stale on what placement wrote is a changed decision's, whoever moved the file.
+test("a stage stale on what placement wrote joins the chain, and one stale on anything else does not", () => {
+  const placementWrote = new Set(["placement.md", "placements.json", "placement-form.json", "placement-decisions.json"]);
+  const stale = [stale_("register-digest", ["placement-decisions.json", "d2"]), stale_("synthesis", ["register-findings.md", "f2"], ["placements.json", "p2"]),
+    stale_("report-card:2", ["findings.json", "x2"]), stale_("narrative-refutation", ["narrative.md", "n2"])];
+  assert.deepEqual(stagesStaleOnPlacement(stale, placementWrote), ["register-digest", "synthesis"]);
+  assert.deepEqual(stagesStaleOnPlacement([], placementWrote), []);
+  function stale_(label, ...changed) { return { label, changed: changed.map(([name, now]) => ({ name, now })) }; }
+});
+
+// A guard judged again replaces its earlier clause; nothing else moves.
+test("a clause judged again withdraws the earlier one of its kind, and only that kind", () => {
+  const reasons = ["floor_duty_undischarged:1 of 9 floor row(s) — …", "the opinion's own condition", "recall_reconciliation_unended:2 of 30 record(s) — …"];
+  const clauses = ["1 of the 9 live registrations …", "a condition the opinion states", "2 of the 30 register records …"];
+  const guard = new Set(["1 of the 9 live registrations …", "2 of the 30 register records …"]);
+  const w = withdrawByToken(reasons, clauses, guard, "floor_duty_undischarged");
+  assert.deepEqual(w.reasons, reasons.slice(1));
+  assert.deepEqual(w.clauses, clauses.slice(1), "the reasons and the clauses no longer line up");
+  assert.equal(w.withdrawn, 1);
+  assert.deepEqual([...guard], ["2 of the 30 register records …"], "the withdrawn clause is still marked as a guard's");
+  const none = withdrawByToken(w.reasons, w.clauses, guard, "synthesis_unaccounted_delivered");
+  assert.deepEqual([none.reasons, none.clauses, none.withdrawn], [w.reasons, w.clauses, 0], "a kind that is not there moved something");
+  // a clause another entry still carries stays a guard's
+  const twin = new Set(["same"]);
+  withdrawByToken(["floor_duty_undischarged:1 of 9 …", "recall_reconciliation_unended:1 of 9 …"], ["same", "same"], twin, "floor_duty_undischarged");
+  assert.deepEqual([...twin], ["same"]);
+});

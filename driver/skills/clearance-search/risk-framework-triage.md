@@ -3,7 +3,7 @@
 - **Applies to:** Knockout search runs for customers with **no configured framework** (`frameworkPath` absent). A customer's own doc-50 framework, when configured, rates their knockouts instead — this ladder is only the house fallback.
 - **Source:** ported from the interactive `knockout-searches` skill (the 5-tier rating system the reviewing lawyer calibrated), unchanged.
 - **Bands, highest to lowest:** Very High · High · Medium · Manageable · **Low**.
-- **What this rates:** a *triage* judgment per mark for **the client** — "is there an obvious blocker to USING this name in the market?" — from common-law/marketplace evidence only. It is NOT a clearance verdict, NOT a registrability opinion, and every rating is framed as pending register overlay.
+- **What this rates:** a *triage* judgment per mark for **the client** — "is there an obvious blocker to USING this name in the market?" — from common-law/marketplace evidence and any register filings the run fetched. It is NOT a clearance verdict, NOT a registrability opinion.
 
 *The band words are the output. Sub-gradation qualifiers are allowed beside them ("Medium (low)") when a mark sits at a boundary.*
 

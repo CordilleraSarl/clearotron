@@ -73,9 +73,10 @@ export const COUNTED_EVENTS = {
   "connotation-unfinished-disclosed": FAILED, "core-artifact-invalid": FAILED, "corrections-applied-failed": FAILED,
   "coverage-form-absent": FAILED, "coverage-ledger-fallback": FAILED, "coverage-ledger-render-failed": FAILED,
   "crowd-context-failed": FAILED, "delivery-stale-blocked": FAILED, "digest-flush-failed": FAILED,
+  "post-repair-correction-unrecoverable": FAILED, "post-repair-state-not-kept": FAILED,
   "digest-flush-timeout": FAILED, "document-coverage-render-failed": FAILED, "doubts-failed": FAILED,
   "evidence-claim-invariant": { kind: FAILED, when: (e) => e.ok === false || Number(e.violations) > 0 },
-  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "house-element-ownership-failed": FAILED,
+  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
   "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
@@ -86,7 +87,7 @@ export const COUNTED_EVENTS = {
   "record-carry-failed": FAILED, "record-discard-failed": FAILED, "register-digest-facts-failed": FAILED,
   "register-plan-infeasible": FAILED, "register-positions-failed": FAILED, "register-presence-failed": FAILED,
   "remedy-accounting-failed": FAILED, "report-cards-rate-limited": FAILED, "restamp-miss": FAILED,
-  "reviewer-degenerate": FAILED, "salvage-lane-no-target": FAILED, "searched-jurisdictions-unresolved": FAILED, "foreign-record-links-recheck": FAILED,
+  "reviewer-degenerate": FAILED, "salvage-lane-no-target": FAILED, "screen-gate-evidence-failed": FAILED, "searched-jurisdictions-unresolved": FAILED, "foreign-record-links-recheck": FAILED,
   "skeptic-skipped": FAILED, "stage-input-over-ceiling": FAILED, "status-write-failed": FAILED,
   "stale-repair-entry-done": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : Number(e.failed)) > 0 },
   // written only where the step threw
@@ -120,6 +121,9 @@ export const COUNTED_EVENTS = {
   "registry-record-closure": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : 0) > 0 },
   "silently-lost-findings": { kind: FAILED, when: (e) => Number(e.lost) > 0 },
   "correction-kinds": { kind: FAILED, when: (e) => e.ok === false },
+  // the delivery check of the reviewer's corrections could not read the record the report was built from;
+  // its outcomes themselves are a note about the answer's content, which the quality read judges
+  "corrections-delivered": { kind: FAILED, when: (e) => e.ok === false },
   "reasoning-integrity": { kind: FAILED, when: (e) => e.ok === false },
   "screen-gate-postflush": [{ kind: FAILED, when: (e) => Number(e.count) > 0 }, { kind: REPAIR, when: (e) => e.recovered === true }],
   // a duty or carry the run could not compute, or whose arithmetic does not reconcile
@@ -132,7 +136,7 @@ export const COUNTED_EVENTS = {
   "remedy-accounting": { kind: FAILED, when: (e) => e.computable === false },
   // asked or run again, where no dispatch records it
   "connotation-reissue": REASK, "plan-qids-missing": REASK, "plan-qids-deferred-suspect": REASK,
-  "screen-gate-violation": REASK, "stage-floor-duty-rerun": REASK, "lane-wedge-retry": RETRY,
+  "screen-gate-violation": REASK, "stage-floor-duty-rerun": REASK, "lane-wedge-retry": RETRY, "verdict-write-retried": RETRY,
   // code changed an answer it did not accept
   "band-truth-rebuilt": REPAIR, "client-condition-dropped": REPAIR, "common-law-downgrade-clamp": REPAIR,
   "commonlaw-channels-unstated": REPAIR, "commonlaw-channels-unusable": REPAIR,
@@ -140,12 +144,17 @@ export const COUNTED_EVENTS = {
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
   "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR, "foreign-record-links-blanked": REPAIR,
   "verdict-hardened-by-repair": REPAIR, "verdict-rederive-repair": REPAIR,
+  // The synthesis transport decoded a marker sent as a JSON string, or lifted rows sent inside the findings
+  // object, on a call it then accepted. Its other notes — an override the merge has always applied, keys and
+  // rows a whole call carries and the transport ignores — changed nothing that was accepted.
+  "synthesis-call-normalised": { kind: REPAIR, when: (e) => e.accepted === true
+    && ((Array.isArray(e.decoded) && e.decoded.length > 0) || Number(e.lifted) > 0) },
   "common-law-half-quarantined": QUARANTINE, "coverage-ledger-quarantined": QUARANTINE,
   "findings-actions-quarantined": QUARANTINE, "named-band-state-quarantined": QUARANTINE, "quarantine": QUARANTINE,
   "taint-quarantine": QUARANTINE,
   "ask-closure-unverified": REFUSED, "doubt-closure-unverified": REFUSED, "frame-reopen-fold-refused": REFUSED,
   "jx-entry-refused": REFUSED, "knockout-register-records-refused": REFUSED, "register-xcheck-refused": REFUSED,
-  "supplemental-fold-refused": REFUSED, "verdict-softening-not-adopted": REFUSED, "register-recall-refused": REFUSED,
+  "supplemental-fold-refused": REFUSED, "verdict-softening-not-adopted": REFUSED, "named-band-remerge-over-ceiling": REFUSED, "register-recall-refused": REFUSED,
   "auto-recovery-exhausted": RECOVERY, "auto-recovery-parked": RECOVERY, "corrective-rollback": RECOVERY,
   "parked-for-human": RECOVERY, "postponed": RECOVERY, "recovery-parked": RECOVERY, "taint-park": RECOVERY,
   "cancelled": "cancelled", "failed": "run failed", "form-repair": "form repair turn",
@@ -170,7 +179,7 @@ export const NOT_COUNTED_EVENTS = {
     "escalation-skipped", "experiment", "experiment-refused", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
-    "framework", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
+    "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
     "house-element-ownership", "intake-artifacts", "intake-asks", "jurisdiction-scope", "jurisdiction-scope-register-deferred",
     "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
@@ -188,21 +197,26 @@ export const NOT_COUNTED_EVENTS = {
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
     "knockout-sweep-total", "level-scope-note",
-    "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
+    "named-band-merged", "named-band-remerged", "late-evidence", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
-    "plan-execution-refresh", "plan-qids-deferred", "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
+    "plan-execution-refresh", "plan-qids-deferred",
+    // the review after a delivery-check repair: its record, the record of its one correction, a reviewer queued
+    // for a change to the findings record only, and a repair that saved the same values again (no review run)
+    "post-repair-fix-pass", "post-repair-review", "post-repair-review-not-needed", "post-repair-review-queued",
+    "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
     "profile-resolved", "profile-selection", "provider-usage", "quote",
     "record-artifacts", "register-digest-facts-written",
     "register-only", "register-plan", "register-plan-axis-deferred", "register-plan-deferred-coverage",
     "register-plan-variant-dropped", "register-positions-derived", "register-presence",
     "register-presence-skipped", "register-xcheck", "register-xcheck-decided", "run-integrity",
-    "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean",
+    "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean", "screen-gate-evidence",
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
     "turnaround-reconciliation", "verdict", "verdict-conditions-recorded", "verdict-frontmatter",
     "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
+    "audit-not-built-no-findings", "recall-reconciliation-unended-delivered", "late-evidence-no-digest-work", "changed-decision-unread-delivered", "ranking-changed-unread-delivered", "late-evidence-unassessed-delivered",
     "ask-closure-mark-owed", "classifier-gap", 
     "connotation-addressed-not-discharged", "connotation-ruling-drift", "default-territory-unrecognized", "delivery-flags",
     "enforcer-signals", "findings-actions-legacy", "findings-schema-legacy", "floor-duty-undischarged",
@@ -214,11 +228,11 @@ export const NOT_COUNTED_EVENTS = {
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
     "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
-    "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "envelope-close-rows", "escalation-noop",
+    "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
-    "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped-structural",
+    "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
-    "recovery-classified", "record-discard", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
+    "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
     "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3",
   ],
   "read from its own record: the stage records, the dispatch records and the tool-call log": [
@@ -258,7 +272,10 @@ export const COUNTED_TRIGGERS = {
   // the blind frame or the form oracle named what the first frame and sweep missed
   "frame-reopen": REASK,
   "frame-reopen-retry": RETRY, "grid-ledger": REASK, "intake-asks-followup": REASK, "lint-repair": REPAIR,
-  "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR,
+  "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR, "late-evidence": REPAIR,
+  // the review after a delivery-check repair re-reads what that repair changed; its one correction applies the
+  // flags that review raised
+  "post-repair-review": REPAIR, "post-repair-corrective": REASK,
   "stale-repair-entry": REPAIR, "taint-rerun": REASK, "verdict-recheck": REASK,
 };
 // The two reasons built at run time: a recall reconciliation re-asking the digest, and a flush retried.

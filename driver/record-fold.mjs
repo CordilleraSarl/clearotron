@@ -153,6 +153,20 @@ export function modelRecordPath(runDir, findingsPath) {
   return readFold(runDir)?.map && existsSync(at) ? at : findingsPath;
 }
 
+/**
+ * The model's ordinal behind a finding of findings.json as it stands, given the fold state `readFold` returns.
+ * With no fold in force the file is the model's record, so the ordinal is its own. Under a fold a folded finding
+ * IS the object of the member the fold kept, so that member is the answer. Null when a fold is in force and its
+ * map does not name the finding: a caller then leaves it alone rather than guessing. PURE.
+ */
+export function keptModelOrdinal(state, ordinal) {
+  if (!state?.map) return ordinal;
+  const members = state.map.foldedToModel?.[String(ordinal)];
+  if (!Array.isArray(members) || !members.length) return null;
+  if (members.length === 1) return members[0];
+  return (state.merges ?? []).find((m) => members.includes(m?.kept))?.kept ?? null;
+}
+
 /** The fold as it stands, to put back if a pass that changed it is rolled back. Never throws. */
 export function snapshotFold(runDir) {
   const state = readFold(runDir);

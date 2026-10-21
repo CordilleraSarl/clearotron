@@ -245,7 +245,7 @@ export function recordsNeverDelivered(readingLog) {
     .sort((a, b) => b.misses - a.misses || a.record_id.localeCompare(b.record_id));
 }
 
-export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = null, doubts = null, asks = null, readingLog = null, commonLawGrid = null, doubtTruncations = null, registerPresence = null } = {}) {
+export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = null, doubts = null, asks = null, readingLog = null, commonLawGrid = null, doubtTruncations = null, registerPresence = null, placementRows = null } = {}) {
   const reg = parseTables(registerMd);
   const cl = parseTables(commonLawMd);
 
@@ -301,7 +301,10 @@ export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = 
       result_summary: get(r, "Result Summary", "Result", "Summary"),
       tool_call: get(r, "Tool Call #", "Tool Call", "Call"),
       finding_ref: get(r, "Finding Reference", "Finding Ref", "Ref"),
-    })));
+    })))
+    // Placement's decisions, in the same fields: the reference, the ground and a group row's count, as the run
+    // recorded them (pipeline.mjs placementAuditRows), so a set-aside is traceable in the delivered audit.
+    .concat(Array.isArray(placementRows) ? placementRows : []);
 
   // One resolution per claim, GENERALIZED (2026-07-22, doubt-stitch): a block that joins a findings.json
   // finding of ANY disposition gets the run's own recorded resolution stamped onto it. The withdrawn

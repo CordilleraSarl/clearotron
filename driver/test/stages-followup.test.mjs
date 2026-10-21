@@ -30,7 +30,8 @@ const CUSTOM = {
 
 test("A-1 — the composed followup carries the methodology pointer for every stage that declares one", () => {
   for (const [name, def] of Object.entries(STAGES)) {
-    const skills = resolveSkillReads(name, { profile: null, job: {} });
+    // A follow-up also reads what its stage names for follow-ups alone (the register search's provider manual).
+    const skills = [...new Set([...resolveSkillReads(name, { profile: null, job: {} }), ...(def.followupSkillReads?.({ profile: null, job: {} }) ?? [])])];
     const msg = composeFollowup(name, { profile: null, job: {} }, { followup: FOLLOWUP });
     if (!skills.length) {
       assert.deepEqual(skillRefsIn(msg), [], `${name}: declares no skill reads, so the composed message must not invent one`);
