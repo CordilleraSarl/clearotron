@@ -109,7 +109,7 @@ additional legs: one leg per family is fetched either way — this only redirect
 VENZY defect: the report read "verified" from the junior AE 2015 leg while the senior TR 2009
 registration — the right an opponent would assert first — was never pulled. The driver's
 senior-right closure re-fetches the senior leg when the digest cites a junior one, so citing the
-junior leg wastes a paid call.
+junior leg makes an extra request.
 
 **Relevance-gate drops (provenance — floor-critical).** A candidate that PASSED the status filter but the
 relevance gate (Step 2) dropped as genuinely field-irrelevant is recorded the SAME way — one row per drop in
@@ -254,7 +254,7 @@ reconciliation reads the crowd token and the member count out of that `unit` cel
 with a bare integer is load-bearing. Drop it and the ruling covers nothing and the run blocks delivery.
 The other three labels are yours to phrase; only the leading axis is dictated.
 
-**A row marked `open` cannot be `confirmed-clean`, and its own `open_because` says why.** There are two
+**A row marked `open` cannot be `confirmed-clean`, and its own `open_because` says why.** There are three
 kinds and they take different statuses:
 
 - **A never-searched slice.** The active register provider cannot express it at all — it was never
@@ -264,8 +264,13 @@ kinds and they take different statuses:
   enumerated nor itself a ruled crowd. That search RAN and saturated, so the honest status is
   `coverage-limited`. Do **not** call it `deferred`: that means a slice which could not run at all, and
   it clamps the run's verdict to CONDITIONAL.
+- **A crowd the narrowing steps closed.** A narrowed list that was read answered it, or the reading step set
+  it aside with its count and a reason. That is finished work, not a gap. Status `withheld-by-judgment`, with
+  that reason. A crowd left by the identical mark's own narrowing is not this kind: one still a crowd after
+  the last step, or in a country its market step did not read, is an unaccounted crowd block.
 
-Either way the gap is an OPEN, disclosed question for the lawyer, never a clean negative.
+For the first two kinds the gap is an OPEN, disclosed question for the lawyer, never a clean negative. The
+third is never a clean negative either: its count stays on the record.
 
 **Each open row is discharged only by ITSELF.** A `coverage-limited` row about one slice does not
 account for a different slice's block, however plainly its reason discusses the axis — so set the status

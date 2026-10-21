@@ -20,7 +20,7 @@ them: what `match_mode: "phonetic"` maps to, which office codes are legal, what 
 | Tool | What it does here |
 |---|---|
 | `register_search` | One `/search` call → the **COMPLETE** matching set. No pagination exists and none is needed. Fails loud past 30 000 hits. |
-| `register_enumerate` | The completeness primitive: cheap `/count` probe **first**, then (if under the ceiling) one `/search`, then screening. Returns `enumerated` or `incomplete` — never a partial list dressed as a clean. |
+| `register_enumerate` | The completeness primitive: a one-request `/count` probe **first**, then (if under the ceiling) one `/search`, then screening. Returns `enumerated` or `incomplete` — never a partial list dressed as a clean. |
 | `register_execute_plan` | Runs the frozen plan for one axis and writes the band itself, qid-stamped. Count entries probe `/count`; enumerate entries run the full funnel. |
 | `register_propose_supplemental` | Judgment-addition queries: you propose, **code** mints qids, executes and writes the band. |
 | `register_record_fetch` | `/text`, batched at exactly 100 ids → normalized records (+ full `_raw`). |
@@ -102,8 +102,8 @@ wider stack with. `register_enumerate` chunks wider stacks for you at that bound
 ### Multi-class is ONE call — the fan-out is gone
 
 `INT_CLASS_NUMBER` value `"9 OR 28 OR 41 OR 42"` returns the deduplicated union of what four per-class
-calls returned — the comma form `"9,28,41,42"` is the same. The old per-class fan-out and its `warnings[]` cost
-breakdown have been **deleted from the core**. N classes cost one call; budget accordingly, and ignore
+calls returned — the comma form `"9,28,41,42"` is the same. The old per-class fan-out and its `warnings[]`
+breakdown have been **deleted from the core**. N classes take one call; and ignore
 any older guidance that told you to size a class fan-out.
 
 ### Office codes — `EM`, not `EU`
@@ -131,7 +131,7 @@ a narrower one. The result carries an `owner_resolution` note; cite it when the 
 any size below the ceiling. **The ceiling is 30 000**, and past it the search **fails loud** with a
 `tooManyResults` HTTP 400 naming that maximum and how many results the search reached.
 
-`register_enumerate` therefore probes `POST /count` first. `/count` is cheap, takes the same body, works
+`register_enumerate` therefore probes `POST /count` first. `/count` is one request, takes the same body, works
 at **any** magnitude, and returns a `counts` object keyed by office code in one call.
 
 **A `tooManyResults` / over-ceiling band is `state:"incomplete"` — a CROWD DESCRIPTOR, never an error and

@@ -19,6 +19,7 @@ import { dirname, join } from "node:path";
 import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
+import { runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
@@ -362,6 +363,15 @@ export function makeExecutePlan(deps) {
     try { released = new Set(Object.keys(JSON.parse(readFileSync(join(dirname(planPath), releasedFamiliesFile(axis)), "utf8"))?.families ?? {})); }
     catch { released = new Set(); }
 
+    // THE SAFETY NET UNDER THE FOLLOW-UP SEARCHES (follow-up-searches.mjs). Read before each follow-up is sent, which
+    // counts it once: a follow-up met with the count at its limit is not sent, is recorded as outstanding, and keeps any
+    // answer it already had. The run's folder comes from its record log; a search outside a run has no net.
+    const driverDir = runDriverDirOf(tctx?.recordLog);
+    let identicalTerms = identicalMarkTerms(plan);
+    if (driverDir && !identicalTerms.size) {
+      try { identicalTerms = identicalMarkTerms(JSON.parse(readFileSync(join(driverDir, "register-plan.json"), "utf8"))); } catch { /* no frozen plan: no identical terms known */ }
+    }
+    const refused = [];
     const stateByQid = new Map();
     const seeded = new Set();
     if (qidsFilter) {
@@ -598,6 +608,17 @@ export function makeExecutePlan(deps) {
     // transient reading. The reason names it an EXECUTOR fault so it is never read as something the
     // register said — a block that fabricated a provider response would be the worse defect.
     const runEntry = async (e) => {
+      if (driverDir && followUpClass(e, { identicalTerms }) === "counted") {
+        const room = followUpRoom(driverDir);
+        if (!room.open) {
+          refused.push(e.qid);
+          let query = String(e?.qid ?? "");
+          try { query = describeEntry(e); } catch { /* the qid stands for it */ }
+          recordOutstanding(driverDir, { qid: e.qid, axis, query, sent: room.sent, limit: room.limit, ...(room.unreadable ? { unreadable: true } : {}) });
+          return;
+        }
+        recordFollowUpSearch(driverDir, { qid: e.qid, axis });
+      }
       try {
         await dispatchEntry(e);
       } catch (err) {
@@ -639,7 +660,9 @@ export function makeExecutePlan(deps) {
     // owned qid's old block is replaced by the fresh result; an owned-but-SKIPPED qid (crowd-gated
     // fringe) gets no block and any stale one is dropped (a fringe slice must never outlive its
     // parent's crowd verdict). This makes the initial call and every warm followup the SAME call.
-    const owned = new Set(targeted.map((e) => e.qid));
+    // A follow-up the net did not send is not owned by this call: whatever answer it already had stands.
+    const refusedSet = new Set(refused);
+    const owned = new Set(targeted.map((e) => e.qid).filter((q) => !refusedSet.has(q)));
     let preserved = [];
     try {
       const existing = JSON.parse(readFileSync(outPath, "utf8"));
@@ -675,6 +698,7 @@ export function makeExecutePlan(deps) {
       written: outPath, blocks: blocks.length + preserved.length, executed: blocks.length, preserved: preserved.length, skipped,
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),
       ...(Object.keys(spellingCounts).length ? { spelling_counts: spellingCounts } : {}),
+      ...(refused.length ? { outstanding: refused } : {}),
     }, null, 2) };
   };
 }

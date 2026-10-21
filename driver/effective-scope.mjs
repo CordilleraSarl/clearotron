@@ -192,19 +192,24 @@ export function orderTerritories(job, profile) {
 /**
  * THE NARROWING ORDER, as the register reading step is told it (ruled 2026-09-26): goods and class
  * first, then the markets in turn, with the markets the driver knows filled in. One line. PURE.
+ *
+ * ONE MARKET LIST, the one that applies: the order's countries; else the customer's priority markets; else the
+ * markets the customer's field and brand point to, with the major markets as their fallback. The line used to
+ * print all three as a chain of "else", and the reading step was left to pick among them. Each step keeps the
+ * limits before it, and a crowd still a crowd after the markets is recorded with its count: the narrowing ends.
  */
 export function narrowingOrderLine(job, profile, inScopeClasses = null) {
   const { scope, priorities, major } = narrowingMarkets(job, profile);
   const markets = scope.length
     ? `one question per market of the order's scope (${scope.join(", ")}); nothing outside it was ordered`
-    : `one question per market: ${[
-      priorities.length ? `the customer's priority markets (${priorities.join(", ")})` : "",
-      "the markets the customer's field and brand point to (judge them from the matter frame)",
-      `the major markets (${major.join(", ")})`,
-    ].filter(Boolean).join(", else ")}`;
+    : priorities.length
+      ? `one question per market: the customer's priority markets (${priorities.join(", ")})`
+      : `one question per market: the markets the customer's field and brand point to (judge them from the matter frame), else the major markets (${major.join(", ")})`;
   return `NARROWING A CROWD, in this order: first the goods and the classes, the client's goods words in `
-    + `${inScopeClasses ? `the order's classes [${inScopeClasses}]` : "the order's classes"}, then one of those classes at a time; `
-    + `still a crowd, then the markets, ${markets}. From the narrowed lists, read what a lawyer would raise. `
+    + `${inScopeClasses ? `the order's classes [${inScopeClasses}]` : "the order's classes"}, then one of those classes at a time, `
+    + `each step keeping the limits before it and stopping at the first list you can read; `
+    + `still a crowd, then the markets, ${markets}. Still a crowd after the markets: record it with its count. `
+    + `From the narrowed lists, read what a lawyer would raise. `
     + `What was counted and not read stays on its coverage row with its count: set aside, never clean.`;
 }
 

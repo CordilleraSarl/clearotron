@@ -59,6 +59,8 @@ import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { bindingLayersFor, layerCoverageFor } from "./binding-layers.mjs";
 import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
 import { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid } from "../providers/_shared/plan-guards.mjs";
+import { asksIdenticalMark, identicalMarkTerms } from "../providers/_shared/follow-up-searches.mjs";
+import { territoryKey } from "./territory-tiers.mjs";
 import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { marketsFilingScriptOf } from "./registration-scripts.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
@@ -2408,6 +2410,110 @@ export function parseRegisterPlan(raw) {
   return { ...p };
 }
 
+// ── WHAT THE RUN RETRIEVED UNDER EACH CROWD ──────────────────────────────────────────────────────────
+//
+// A crowd is a question that ran and counted more than it read. This records, from the run's own blocks and plan,
+// what was retrieved under it, and nothing more: whether the reading happened, and whether a crowd is set aside, are
+// the reading step's and the write-up's judgments, recorded in their own places. Retrieving a list is not reading it.
+//
+// A NARROWING ASKS THE SAME QUESTION WITH TIGHTER LIMITS: the same predicate and the same terms, classes and markets
+// within the parent's, and the parent's goods words or fewer of them (a parent with none takes the client's goods
+// words, as the plan holds them), with the same owner. A list counts when its block is `enumerated`: complete, with no
+// error. Only lists reached through such narrowings count, at any depth.
+//   list-retrieved          a wider question with at least one narrowed list retrieved in full (named in `lists`).
+//   no-list                 a wider question with none: the reading step decides it, with its count on the record.
+//   required-covered        the identical mark's own question, with a retrieved list in every class it asks, in
+//                           every main market (the order's countries, else the customer's priority markets, else the
+//                           major markets), or worldwide where the run names none.
+//   required-not-covered    the identical mark's own question without that: the class and market cells no retrieved
+//                           list covers are named in `not_covered`.
+// A refused or failed question is not a crowd: the join keeps those as `outstanding` and `missing`. Each reader (the
+// receipt, the coverage form, the band shape) works this out from the blocks it reads itself. It changes no row's
+// state and no sentence. PURE.
+const WORLDWIDE = "worldwide";
+export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
+  const entries = Array.isArray(plan?.entries) ? plan.entries : [];
+  const identicalTerms = identicalMarkTerms(plan);
+  const childrenOf = new Map();
+  for (const e of entries) {
+    const parent = typeof e?.narrows === "string" ? e.narrows.trim() : "";
+    if (!parent || !e?.qid) continue;
+    if (!childrenOf.has(parent)) childrenOf.set(parent, []);
+    childrenOf.get(parent).push(e);
+  }
+  const strs = (v) => (Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : []);
+  const fold = (s) => String(s ?? "").normalize("NFKC").trim().toLowerCase().replace(/\s+/g, " ");
+  const marketsOf = (v) => [...new Set(strs(v).map((t) => territoryKey(t) || t.toUpperCase()))];
+  const regionsOf = (e) => (strs(e?.regions).length ? marketsOf(e.regions) : marketsOf(plan?.regions));
+  const classesOf = (e) => [...new Set(strs(e?.nice_classes))];
+  const termsOf = (e) => [...new Set((Array.isArray(e?.terms) && e.terms.length ? e.terms : [e?.term]).map(fold).filter(Boolean))].sort();
+  const goodsOf = (e) => [...new Set(goodsTermsList(e).map(fold).filter(Boolean))];
+  // the client's goods words, as the plan's own goods questions carry them
+  const clientGoods = new Set(entries.filter((e) => e?.provenance === "mark").flatMap(goodsOf));
+  const within = (inner, outer) => !outer.length || (inner.length > 0 && inner.every((x) => outer.includes(x)));
+  const sameTerms = (a, b) => a.length === b.length && a.every((t, i) => t === b[i]);
+  const narrows = (parent, child) => {
+    if (String(child.predicate ?? "") !== String(parent.predicate ?? "") || !sameTerms(termsOf(child), termsOf(parent))) return false;
+    if (!within(classesOf(child), classesOf(parent)) || !within(regionsOf(child), regionsOf(parent))) return false;
+    if (String(parent.owner ?? "").trim() !== String(child.owner ?? "").trim()) return false;
+    const pg = goodsOf(parent), cg = goodsOf(child);
+    if (pg.length) return cg.length > 0 && cg.every((g) => pg.includes(g));
+    return !cg.length || !clientGoods.size || cg.every((g) => clientGoods.has(g));
+  };
+  const stateOf = (qid) => { const b = byQid.get(qid); return b && b.error !== true ? String(b.state ?? "").toLowerCase() : null; };
+  const retrievedUnder = (e, seen) => {
+    const out = [];
+    for (const c of childrenOf.get(e.qid) ?? []) {
+      if (seen.has(c.qid) || !narrows(e, c)) continue;
+      seen.add(c.qid);
+      if (stateOf(c.qid) === "enumerated") out.push(c);
+      out.push(...retrievedUnder(c, seen));
+    }
+    return out;
+  };
+  const main = marketsOf(mainMarkets);
+  const rows = [];
+  for (const e of entries) {
+    if (!e?.qid || e.expected_kind === "count" || stateOf(e.qid) !== "incomplete") continue;
+    const lists = retrievedUnder(e, new Set([e.qid]));
+    const total = byQid.get(e.qid)?.total_hits;
+    const row = { qid: e.qid, axis: e.axis ?? null, ...(Number.isFinite(Number(total)) && total != null ? { total_hits: Number(total) } : {}) };
+    const named = lists.length ? { lists: lists.map((c) => c.qid).slice(0, 12) } : {};
+    if (!asksIdenticalMark(e, identicalTerms)) {
+      rows.push({ ...row, narrowing: lists.length ? "list-retrieved" : "no-list", ...named });
+      continue;
+    }
+    // THE REQUIRED READ, CELL BY CELL: every class the question asks, in every main market inside its scope, or the
+    // whole scope where the run names no main market. A worldwide scope is one cell per class, and only a worldwide
+    // list covers it: an empty market list is never read as "every market covered".
+    const scope = regionsOf(e);
+    const inScope = main.length ? (scope.length ? main.filter((m) => scope.includes(m)) : main) : [];
+    const cellMarkets = inScope.length ? inScope : (scope.length ? scope : [WORLDWIDE]);
+    const cellClasses = classesOf(e).length ? classesOf(e) : ["*"];
+    const covers = (c, m) => lists.some((d) => {
+      const dc = classesOf(d), dr = regionsOf(d);
+      const classOk = c === "*" ? !dc.length : (!dc.length || dc.includes(c));
+      const marketOk = m === WORLDWIDE ? !dr.length : (!dr.length || dr.includes(m));
+      return classOk && marketOk;
+    });
+    const notCovered = [];
+    for (const c of cellClasses) for (const m of cellMarkets) if (!covers(c, m)) notCovered.push(c === "*" ? m : `${c}/${m}`);
+    rows.push(notCovered.length
+      ? { ...row, narrowing: "required-not-covered", ...named, not_covered: notCovered.slice(0, 40) }
+      : { ...row, narrowing: "required-covered", ...named });
+  }
+  const count = (k) => rows.filter((r) => r.narrowing === k).length;
+  return { list_retrieved: count("list-retrieved"), no_list: count("no-list"), required_covered: count("required-covered"),
+    required_not_covered: count("required-not-covered"), rows };
+}
+
+/** Every band block with a qid, by qid, across the axes: the blocks a crowd's ending is read from. PURE. */
+export function blocksByQidOf(bandBlocksByAxis) {
+  const byQid = new Map();
+  for (const arr of Object.values(bandBlocksByAxis ?? {})) for (const b of arr ?? []) if (b && typeof b.qid === "string" && b.qid) byQid.set(b.qid, b);
+  return byQid;
+}
+
 // ── fan-in: identity join plan ⇄ band blocks ────────────────────────────────────────────────────
 
 /**
@@ -2423,7 +2529,7 @@ export function parseRegisterPlan(raw) {
  * An entry whose `when` guard resolves FALSE (parent crowd/absent) is `skipped`, never `missing`.
  * Blocks with no qid join nothing (legacy bands) and surface as unplanned only when they carry one.
  */
-export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() } = {}) {
+export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), outstanding = new Set(), mainMarkets = [] } = {}) {
   const blocks = [];
   for (const [axis, arr] of Object.entries(bandBlocksByAxis ?? {})) {
     for (const b of arr ?? []) if (b && typeof b === "object") blocks.push({ ...b, _axis: axis });
@@ -2432,6 +2538,11 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
   for (const b of blocks) if (typeof b.qid === "string" && b.qid) byQid.set(b.qid, b);
 
   const executed = [], missing = [], skipped = [], deferred = [], awaiting = [], asked = [];
+  // A FOLLOW-UP THE RUN'S SAFETY NET DID NOT SEND (providers/_shared/follow-up-searches.mjs) that holds no answer is a
+  // question not asked, never one that went missing: missing sends a question back to be run, and the net would hold
+  // it again. Only a follow-up can be refused; the plan's own questions never are.
+  const notAsked = [];
+  const refusedFollowUp = (e) => outstanding.has(e?.qid) && e?.origin === "supplemental";
   // A WAITING FAMILY THE READING TURN ASKED IS NOT WAITING. Its ask arrives as an ordinary entry — a
   // supplemental with the same question — and the family's own row stays guarded forever, so without this
   // link every family asked read as never asked. Matched on the question (entryQuestionKey), against
@@ -2441,6 +2552,12 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
     if (e?.unsupported === true || awaitsReadingTurn(e?.when)) continue;
     const k = entryQuestionKey(e, plan);
     if (k && !askedBy.has(k)) askedBy.set(k, e.qid);
+    // A LIST ASKS EACH OF ITS SPELLINGS, with the list's own scope: a family asked inside a batch that went to the
+    // register as one list is asked by that list.
+    if (Array.isArray(e?.terms) && e.terms.length > 1) for (const t of e.terms) {
+      const kt = entryQuestionKey({ ...e, terms: undefined, term: t }, plan);
+      if (kt && !askedBy.has(kt)) askedBy.set(kt, e.qid);
+    }
   }
   for (const e of plan.entries) {
     if (e.when) {
@@ -2480,7 +2597,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       }
     }
     const b = byQid.get(e.qid);
-    if (!b) { missing.push(e.qid); continue; }
+    if (!b) { if (refusedFollowUp(e)) { notAsked.push({ qid: e.qid, axis: e.axis }); continue; } missing.push(e.qid); continue; }
     // A DETERMINISTIC CAPABILITY GAP (providers/_shared/execute-plan.mjs stamps `deferred:true` next to
     // `error:true`): the active provider genuinely cannot express this slice — a predicate it lacks, an
     // office outside its vocabulary, a term its query language cannot state. Retrying is pointless: the
@@ -2494,7 +2611,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
     // incomplete shape — the dictated slice never really ran. It joins as MISSING (→ the warm
     // followup re-invokes the executor; exhaustion is an honest StageFailure), never as an
     // "executed" crowd — a transient must not ship indistinguishable from a sanctioned descriptor.
-    if (b.error === true) { missing.push(e.qid); continue; }
+    if (b.error === true) { if (refusedFollowUp(e)) { notAsked.push({ qid: e.qid, axis: e.axis }); continue; } missing.push(e.qid); continue; }
     // — WHAT THE SLICE RETURNED RIDES WITH THE FACT THAT IT RAN.
     //
     // "executed" answers "did the query run". It has never answered "did anything come back", and the
@@ -2536,7 +2653,10 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
   const planQids = new Set(plan.entries.map((e) => e.qid));
   const unplanned = blocks.filter((b) => typeof b.qid === "string" && b.qid && !planQids.has(b.qid))
     .map((b) => ({ qid: b.qid, query: String(b.query ?? "").slice(0, 80) }));
-  return { executed, missing, skipped, deferred, awaiting, asked, unplanned };
+  // what was retrieved under each crowd, worked out from the same blocks (crowdNarrowing, above): on the receipt only when there is a crowd
+  const crowds = crowdNarrowing(plan, byQid, { mainMarkets });
+  return { executed, missing, skipped, deferred, awaiting, asked, unplanned, ...(notAsked.length ? { outstanding: notAsked } : {}),
+    ...(crowds.rows.length ? { crowd_narrowing: crowds } : {}) };
 }
 
 // ──: the slice the provider ACCEPTED and then hard-errored at RUN time ──────────────────────────
@@ -2739,6 +2859,7 @@ export function deriveCoverageSkeleton(plan, join) {
   const skippedQids = new Set(join.skipped.map((x) => x.qid));
   const deferredQids = new Set((join.deferred ?? []).map((x) => x.qid));
   const awaitingQids = new Set((join.awaiting ?? []).map((x) => x.qid));
+  const outstandingQids = new Set((join.outstanding ?? []).map((x) => x.qid));
   const askedQids = new Set((join.asked ?? []).map((x) => x.qid));
   // ── A COUNT THE PLAN ALSO READ IN FULL IS NOT A CROWD ──────────────────────────────────────────
   // A count-only descriptor (the saturation probe's shape) sizes a question and reads none of its
@@ -2763,7 +2884,7 @@ export function deriveCoverageSkeleton(plan, join) {
     && readInFull.get(question(e)) === totalByQid.get(e.qid);
   const axes = new Map();
   for (const e of plan.entries) {
-    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0, readElsewhere: 0 });
+    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0, readElsewhere: 0, outstanding: 0 });
     const a = axes.get(e.axis);
     a.entries++;
     // COUNTED BEFORE `skipped`, and separately from it. With the families waiting on every matter this is the ordinary state of
@@ -2775,6 +2896,8 @@ export function deriveCoverageSkeleton(plan, join) {
     // where it ran; counting the family as executed too would count one question twice.
     if (askedQids.has(e.qid)) { a.asked++; continue; }
     if (skippedQids.has(e.qid)) { a.skipped++; continue; }
+    // a follow-up the run's safety net did not send: not asked, so neither run nor missing
+    if (outstandingQids.has(e.qid)) { a.outstanding++; continue; }
     if (missing.has(e.qid)) { a.missing.push(e.qid); continue; }
     // a capability gap is NOT executed — it is a disclosed hole in the axis
     if (deferredQids.has(e.qid)) { a.deferred.push(e.qid); continue; }
@@ -2802,9 +2925,12 @@ export function deriveCoverageSkeleton(plan, join) {
       : (a.deferred.length ? "deferred"
         : (a.crowds ? "incomplete"
           : (a.executed === 0 && a.skipped > 0 ? "skipped"
-            : (a.executed === 0 && a.awaiting > 0 ? "awaiting-judgment" : "executed")))),
+            : (a.executed === 0 && a.awaiting > 0 ? "awaiting-judgment"
+              // nothing ran but follow-ups the safety net did not send: no answer to rest a clean on, as when they joined missing
+              : (a.executed === 0 && a.outstanding > 0 ? "unexecuted" : "executed"))))),
     entries: a.entries, executed: a.executed, crowds: a.crowds, skipped: a.skipped, missing: a.missing,
     ...(a.awaiting ? { awaiting: a.awaiting } : {}),
+    ...(a.outstanding ? { outstanding: a.outstanding } : {}),
     ...(a.asked ? { asked: a.asked } : {}),
     ...(a.readElsewhere ? { read_elsewhere: a.readElsewhere } : {}),
     ...(a.deferred.length ? { deferred: a.deferred } : {}),

@@ -78,7 +78,7 @@ the classifier knows them. The plugin drops an unqueryable token from the filter
 `decisions[]` appear only on `register_record_fetch`, and are **omitted when empty**. So:
 
 - on a **fetched record**, an empty list means *none are recorded* — a real answer, and this
-  provider's edge over both paid vendors, which cannot answer the question at all;
+  provider's edge over the other two registers, which cannot answer the question at all;
 - on a **search row**, the absence means *nothing whatsoever*. Never report it.
 
 ## Status vocabulary — what gets dropped, and what does not
@@ -105,11 +105,11 @@ finding can cite an address the reader can open.
 right in its own right. It is never merged with the same IR's designation in another territory: those
 are two rights in two territories.
 
-## Cost
+## Requests
 
-Free to query, but not free of limits: a daily request allowance (25,000 on the subscription tier this adapter targets).
+Queries count against a daily request allowance (25,000 on the tier this adapter targets).
 `register_batch_screen` resolves a whole candidate list in one call, and screening off the search row
-costs nothing extra — the row already carries status, classes and applicants.
+needs no extra request — the row already carries status, classes and applicants.
 
 ## Record base host
 

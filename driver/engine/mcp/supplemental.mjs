@@ -32,9 +32,17 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
-import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
+import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, planExactOrWidth, planPhoneticOrWidth, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
+import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
+import { heldAnswers, questionKey } from "./held-answers.mjs";
+import { readWithheldFamilies } from "../../withheld-families.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
+
+// THE ONE SENTENCE THE MODEL READS WHEN THE RUN'S SAFETY NET HOLDS A FOLLOW-UP BACK (follow-up-searches.mjs). It names
+// no limit and no cost: the model is never told of the net. It rides the reply whenever a question was not sent, now
+// or by an earlier decision held for the run.
+export const OUTSTANDING_NOTE = "Not asked in this run. Keep it as an open question with your reason, and continue with what you have read.";
 
 const slug = (s) => String(s ?? "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 32) || "q";
 
@@ -57,17 +65,20 @@ const compactProposal = (p) => ({
 const inPriority = (p, prio) =>
   (Array.isArray(p?.nice_classes) ? p.nice_classes : []).some((c) => prio.has(String(c).trim()));
 
-// A SOUND-ALIKE BATCH GOES AS LISTS where the register takes one (`phoneticOrWidth`, ruled 2026-10-09): up to
-// that many spellings per question, within its word budget, each long enough for the ranked search. A
-// spelling below that floor is its own question, as every name of a batch was before. Each list is one
-// question with one receipt row, so a list that crowds or fails takes no other list down with it. PURE.
+// A BATCH OF SPELLINGS GOES AS THE PLANNER'S LISTS where the register takes one: exact spellings up to
+// `exactOrWidth`, sound-alike ones up to `phoneticOrWidth` within the register's word budget (ruled 2026-10-09
+// for sound-alikes; the exact width is the one the plan's own spelling band already uses), each spelling long
+// enough for the ranked search. A spelling below that floor is its own question, and so is every name of a batch
+// with an owner or on any other predicate, as before. Each list is one question with one receipt row, so a list
+// that crowds or fails takes no other list down with it. PURE.
 function splitBatch(p, names, capabilities) {
   const { terms: _batch, ...rest } = p;
   const single = (t) => ({ ...rest, term: t });
-  const width = Math.floor(Number(capabilities?.phoneticOrWidth));
-  if (String(p?.predicate ?? "") !== "phonetic" || !(width >= 2)) return names.map(single);
+  const predicate = String(p?.predicate ?? "");
+  const width = predicate === "exact" ? planExactOrWidth(capabilities) : predicate === "phonetic" ? planPhoneticOrWidth(capabilities) : 1;
+  if (!(width >= 2) || (typeof p?.owner === "string" && p.owner.trim())) return names.map(single);
   const floor = Number(capabilities?.rankedMinLength) || 0;
-  const budget = Number(capabilities?.listWordBudget) || Infinity;
+  const budget = predicate === "phonetic" ? (Number(capabilities?.listWordBudget) || Infinity) : Infinity;
   const words = (t) => t.split(/\s+/).filter(Boolean).length;
   const folded = (t) => [...t.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, "")].length;
   const out = [];
@@ -427,8 +438,28 @@ export async function proposeSupplemental(params, tctx, deps) {
   if (!offered.length)
     return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, executed: false }, null, 2) };
   const existingQids = new Set(supp.entries.map((e) => e.qid));
-  const { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, offered,
+  let { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, offered,
     { existingQids, capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
+
+  // ── ONE ANSWER PER QUESTION PER RUN (held-answers.mjs) ───────────────────────────────────────────
+  // A question another worker or pass has already answered gets that answer, and one the run has decided not to ask
+  // gets that decision: it is not minted, not run, and costs no call. A failed answer is no answer, so it is asked again.
+  const held = [];
+  try {
+    const runDir = dirname(dirname(outPath));
+    const index = heldAnswers(runDir, { planRegions, withheld: readWithheldFamilies(runDir) });
+    if (index.size) {
+      const fresh = [];
+      for (const e of minted) {
+        const h = index.get(questionKey(e, planRegions));
+        if (!h || h.qid === e.qid) { fresh.push(e); continue; }
+        held.push({ question: compactProposal(e), decision: h.decision, ...(h.qid ? { answered_by: h.qid, axis: h.axis } : {}),
+          ...(h.block ? { state: h.block.state ?? null, total_hits: h.block.total_hits ?? null,
+            count: h.block.count ?? (Array.isArray(h.block.records) ? h.block.records.length : null), records_preview: preview(h.block.records) } : {}) });
+      }
+      minted = fresh;
+    }
+  } catch { /* the held index is an economy: without it every question is asked as before */ }
 
   // Field-level romanisation enrichment of a REUSED qid (2026-07-30 review round): the natural retry —
   // a bare non-Latin proposal deferred at the wire, the model re-proposes it WITH the romanisation —
@@ -486,7 +517,15 @@ export async function proposeSupplemental(params, tctx, deps) {
     renameSync(`${suppPath}.tmp`, suppPath);
   }
 
-  const qids = [...minted.map((e) => e.qid), ...reused];
+  // A question this worker re-proposes that already holds an answer is not run again: the answer stands. One with no
+  // answer, a failed one, or one this call enriched or gave its markets runs as before.
+  let reusedHeld = [];
+  try {
+    const own = new Map();
+    for (const b of JSON.parse(readFileSync(outPath, "utf8"))) if (b?.qid) own.set(String(b.qid), b);
+    reusedHeld = reused.filter((q) => { const b = own.get(String(q)); return b && b.error !== true && !enrichedQids.includes(q) && !staleOnDisk; });
+  } catch { reusedHeld = []; }
+  const qids = [...minted.map((e) => e.qid), ...reused.filter((q) => !reusedHeld.includes(q))];
   let summary = null;
   if (qids.length) {
     const r = await executePlan({ plan_path: suppPath, axis, output_path: outPath, qids }, tctx);
@@ -497,13 +536,36 @@ export async function proposeSupplemental(params, tctx, deps) {
     try { summary = JSON.parse(text); } catch { summary = { raw: text.slice(0, 300) }; }
   }
 
+  // A FOLLOW-UP THE RUN'S SAFETY NET DID NOT SEND never ran and has no answer (follow-up-searches.mjs). One minted by this
+  // call leaves the plan the fold reads, so it is never taken for a planned question that went missing, and is
+  // kept as a question not asked: a rejected[] row, which the ask ledger keeps open. One that ran before keeps its
+  // place and its answer.
+  const outstanding = Array.isArray(summary?.outstanding) ? summary.outstanding.map(String) : [];
+  const mintedHere = new Map(minted.map((e) => [e.qid, e]));
+  const refusedHere = outstanding.filter((q) => mintedHere.has(q));
+  if (refusedHere.length) {
+    let cur = supp;
+    try { cur = JSON.parse(readFileSync(suppPath, "utf8")); } catch { /* the in-memory plan is what was written */ }
+    const gone = new Set(refusedHere);
+    cur = withRejected({ ...cur, entries: (Array.isArray(cur?.entries) ? cur.entries : []).filter((e) => !gone.has(e?.qid)) },
+      // The markets and goods ride on the row: the ask ledger keeps one ask per (issue, proposal), and the compact
+      // proposal alone would fold the same question refused for several markets into one ask naming none.
+      refusedHere.map((q) => { const e = mintedHere.get(q); return { issue: OUTSTANDING_REASON, proposal: { ...compactProposal(e),
+        ...(Array.isArray(e?.regions) && e.regions.length ? { regions: e.regions.map(String).slice(0, 200) } : {}),
+        ...(Array.isArray(e?.goods_text) && e.goods_text.length ? { goods_text: e.goods_text.map((g) => String(g).slice(0, 80)).slice(0, 20) } : {}) } }; }),
+      { ts: new Date().toISOString(), origin: "propose-tool" });
+    mkdirSync(dirname(suppPath), { recursive: true });
+    writeFileSync(`${suppPath}.tmp`, JSON.stringify(cur, null, 2) + "\n");
+    renameSync(`${suppPath}.tmp`, suppPath);
+  }
+
   // read the results BACK FROM THE BAND — the reasoning payload is never model-transcribed
   const results = {};
   try {
     const band = JSON.parse(readFileSync(outPath, "utf8"));
     const blocks = Array.isArray(band) ? band : [];
     for (const b of blocks) {
-      if (!b || typeof b !== "object" || !b.qid || !qids.includes(b.qid)) continue;
+      if (!b || typeof b !== "object" || !b.qid || !(qids.includes(b.qid) || reusedHeld.includes(b.qid))) continue;
       results[b.qid] = {
         state: b.state ?? null,
         total_hits: b.total_hits ?? null,
@@ -517,5 +579,5 @@ export async function proposeSupplemental(params, tctx, deps) {
     }
   } catch { /* band unreadable — the executor summary still crosses */ }
 
-  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
+  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding } : {}), ...(held.length ? { held } : {}), ...(outstanding.length || held.some((h) => h.decision === "outstanding") ? { outstanding_note: OUTSTANDING_NOTE } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
 }

@@ -17,9 +17,9 @@ by `USPTO_LOCAL_DB`. Three consequences change how you read its answers:
    than returning a number. Read that as UNKNOWN. It is never "0 while we re-sync".
 2. **It holds ONE office.** US only. Any other jurisdiction in the matter is a `deferred` coverage row,
    decided at plan time — see *Coverage* below.
-3. **Queries are free, and that changes nothing about completeness.** A cheap query is still a query that
+3. **Queries are local, and that changes nothing about completeness.** A quick query is still a query that
    can be the wrong one. The ceiling, the crowd descriptor and the count-first rescue all apply exactly as
-   they do on a metered provider.
+   they do on any other register.
 
 ## Plugin reference
 
@@ -80,7 +80,7 @@ would read as a clean negative.
 ## OR-stack width — 25, and it is set by the worst predicate
 
 `names[]` is an OR stack, and the plan caps it at 25. Not a round number: `exact` and the two anchored
-wildcards are index-narrowed and stay cheap at any width, but the unanchored `default` scan costs the same
+wildcards are index-narrowed and stay fast at any width, but the unanchored `default` scan takes the same time
 per term whether it is batched or not, so a wide stack on that one predicate is near-linear. Do not
 re-chunk a stack the plan dictated — the chunk boundary is what joins a qid to its query.
 

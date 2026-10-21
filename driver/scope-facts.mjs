@@ -91,6 +91,8 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
   // too. In no bucket, both fell to the fail-closed "missing" below and printed as searches that "did not
   // complete", which none of them was. A waiting family nobody judged stays there: it is still unread.
   const askedSet = new Set((planExecution?.asked ?? []).map((x) => x.qid));
+  // A follow-up the run's allowance refused could not be searched: said in the words the remainder already uses.
+  const outstandingSet = new Set((planExecution?.outstanding ?? []).map((x) => x.qid));
   const withheldSet = new Set(Array.isArray(withheldQids) ? withheldQids : []);
 
   // ledger rows joined per class: structured classes[] wins; a legacy free-text row falls back to the
@@ -103,7 +105,7 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
 
   const per_class = {};
   for (const c of instructedClasses) {
-    const a = { entries: 0, dispatched_qids: [], enumerated: 0, incomplete: 0, deferred: [], missing: [], skipped: 0, deferred_script: 0,
+    const a = { entries: 0, dispatched_qids: [], enumerated: 0, incomplete: 0, deferred: [], missing: [], skipped: 0, deferred_script: 0, outstanding: 0,
       count_slices: 0, counts_taken: 0, count_deferred: [], withheld: 0, asked_elsewhere: 0,
       // The three splits, each read off a reason the run recorded and this reader used to discard.
       skipped_after_failure: 0, incomplete_found_nothing: 0 };
@@ -141,6 +143,7 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
         if (parent && (parent.error || (parent.state && parent.state !== "incomplete"))) a.skipped_after_failure++;
         continue;
       }
+      if (outstandingSet.has(e.qid)) { a.outstanding++; continue; }
       if (missingSet.has(e.qid)) { a.missing.push(e.qid); continue; }
       if (deferredByQid.has(e.qid)) {
         a.deferred.push(e.qid);
@@ -206,6 +209,7 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
       skipped: a.skipped,
       skipped_after_failure: a.skipped_after_failure,
       incomplete_found_nothing: a.incomplete_found_nothing,
+      ...(a.outstanding ? { outstanding: a.outstanding } : {}),
       count_slices: a.count_slices,
       counts_taken: a.counts_taken,
       state: classState(a),
@@ -333,7 +337,7 @@ function remainderBuckets(pc, remaining) {
   // rather than a crowd, and the listings that came back with nothing rather than with too much.
   const skippedAfterCrowd = Math.max(0, (pc.skipped ?? 0) - (pc.skipped_after_failure ?? 0));
   const overflowed = Math.max(0, (pc.incomplete ?? 0) - (pc.incomplete_found_nothing ?? 0));
-  const couldNotBeSearched = deferredOther + (pc.skipped_after_failure ?? 0) + (pc.incomplete_found_nothing ?? 0);
+  const couldNotBeSearched = deferredOther + (pc.skipped_after_failure ?? 0) + (pc.incomplete_found_nothing ?? 0) + (pc.outstanding ?? 0);
   const parts = [];
   if (unfinished) parts.push(`${unfinished} did not complete`);
   if (couldNotBeSearched) parts.push(`${couldNotBeSearched} could not be searched`);

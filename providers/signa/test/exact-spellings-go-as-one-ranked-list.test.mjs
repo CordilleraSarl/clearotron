@@ -80,9 +80,8 @@ test("a sound-alike band goes as lists of 10 on the sound-alike channels", async
   } finally { await reg.close(); }
 });
 
-test("a list the register refuses as too complex is asked again one spelling at a time, never left unsearched", async () => {
-  // Which lists the register refuses depends on the spellings, so a refused list costs one free refusal and
-  // then the searches one spelling at a time would have made: the band is answered either way.
+/** A register that refuses as too complex any list holding one of `refuses`, and answers every other request. */
+async function refusingRegister(refuses) {
   const seen = [];
   const server = createServer((req, res) => {
     let raw = "";
@@ -90,25 +89,46 @@ test("a list the register refuses as too complex is asked again one spelling at 
     req.on("end", () => {
       const body = JSON.parse(raw || "{}");
       seen.push(body);
-      if (Array.isArray(body.q)) {
+      const terms = Array.isArray(body.q) ? body.q : [body.q];
+      if (Array.isArray(body.q) && terms.some((t) => refuses(t))) {
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: { detail: "The search query is too complex to run." } }));
         return;
       }
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ object: "list", has_more: false,
-        data: [{ id: `tm_${body.q}`, jurisdiction_code: "US", mark_text: body.q, status: { primary: "active" } }],
-        pagination: { cursor: null, total_count: 1, total_count_approximate: false }, search_meta: { similarity_applied: body.similarity ?? [] } }));
+        data: terms.map((t) => ({ id: `tm_${t}`, jurisdiction_code: "US", mark_text: t, status: { primary: "active" },
+          match: { tier: "identical", via: ["identical"], terms: Array.isArray(body.q) ? [t] : [] } })),
+        pagination: { cursor: null, total_count: terms.length, total_count_approximate: false }, search_meta: { similarity_applied: body.similarity ?? [] } }));
     });
   });
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  return { seen, base: `http://127.0.0.1:${server.address().port}`, close: () => new Promise((r) => server.close(r)) };
+}
+
+test("a list the register refuses as too complex is asked again in halves, so one spelling it will not take costs a few requests", async () => {
+  // Which lists the register refuses depends on the spellings. Asked again in halves, the list keeps every
+  // spelling the register takes in a list, and the one it will not take is found and asked on its own.
+  const names = spellings(8);
+  const reg = await refusingRegister((t) => t === names[5]);
   try {
-    const names = spellings(3);
-    const out = JSON.parse((await doEnumerate("k", `http://127.0.0.1:${server.address().port}`, { names, match_mode: "phonetic", nice_classes: [9] }, null)).text);
-    assert.deepEqual(seen.map((b) => b.q), [names, ...names], "the refused list was not asked again one spelling at a time");
+    const out = JSON.parse((await doEnumerate("k", reg.base, { names, match_mode: "phonetic", nice_classes: [9] }, null)).text);
+    assert.deepEqual(reg.seen.map((b) => b.q), [names, names.slice(0, 4), names.slice(4), names.slice(4, 6), names[4], names[5], names.slice(6)],
+      "the refused list was not asked again in halves");
+    assert.equal(out.state, "enumerated", `the band was left unsearched: ${out.reason ?? ""}`);
+    assert.equal(out.records.length, 8);
+  } finally { await reg.close(); }
+});
+
+test("a register that refuses every list still has every spelling asked, one at a time at the end of the halving", async () => {
+  const names = spellings(3);
+  const reg = await refusingRegister(() => true);
+  try {
+    const out = JSON.parse((await doEnumerate("k", reg.base, { names, match_mode: "phonetic", nice_classes: [9] }, null)).text);
+    assert.deepEqual(reg.seen.map((b) => b.q), [names, names.slice(0, 2), names[0], names[1], names[2]]);
     assert.equal(out.state, "enumerated", `the band was left unsearched: ${out.reason ?? ""}`);
     assert.equal(out.records.length, 3);
-  } finally { await new Promise((r) => server.close(r)); }
+  } finally { await reg.close(); }
 });
 
 test("CONTROL: a typo band and a starts-with band stay one term per request", async () => {

@@ -65,7 +65,7 @@ Set by the orchestrator per mode (set `model` explicitly on the spawn — omitti
   (relevance gate, owner clustering, opposition interpretation, Option-D).
 
 The old "register sweep must be Opus or it truncates" lesson came from a *monolithic* single session
-doing searching **and** judgment at once. The work is now split: units execute (cheap tiers), the
+doing searching **and** judgment at once. The work is now split: units execute (smaller model tiers), the
 digest worker judges (Opus). If a unit shortcut its axis, the orchestrator's skeptic review catches
 it and re-spawns it escalated to Opus — that decision belongs to the orchestrator, not here.
 
@@ -86,10 +86,9 @@ Never tag it in the findings.
 
 The funnel runs each named query through **`register_enumerate`**, which owns the page loop and pages to
 `has_more:false`. **A budget ceiling is therefore NOT a "searched enough" knob and NEVER a reason to sample,
-top-N, or self-accept a slice.** Cost is bounded structurally: the named slices (the exact mark, the
-class+region-scoped substring band, the phonetic fringe, the per-jurisdiction named queries) are **small and
-cheap by construction**, so they enumerate fully and cheaply. A saturation crowd is **described** with one
-count-only call (`limit:1`), not enumerated. The expensive failure mode of the old funnel — deep-paging a
+top-N, or self-accept a slice.** The narrowing steps bound the searching: each keeps the limits before it, and
+they end. A crowd still a crowd after the last step is recorded with its count, never cut further. A saturation crowd is **described** with one
+count-only call (`limit:1`), not enumerated. The failure mode of the old funnel — deep-paging a
 saturated raw pile — does **not** exist: crowds are descriptors, named slices are bounded.
 
 **A genuine resource/time limit produces an `incomplete` block, never a sufficiency accept.** If
@@ -114,17 +113,26 @@ On every matter the identical mark, in the instructed classes, is the first thin
 wider is asked until you have read it. The register tells you how many filings answer a question before it
 hands you any. Take a look: how bad is it? If the list is one you can read record by record, read it in
 full. If it is not, do not read it and do not leave it: narrow the same question, in this order, until it
-is, then read that list in full and decide.
+is, then read that list in full and decide. Each step keeps the limits of the steps before it. Stop at the first
+step that gives you a list you can read.
 
 1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
    that list.
 2. Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the instructed
    classes. Read each list.
-3. Still a crowd? Ask again one question per market, in the order your dispatch names: the order's own countries;
-   on a worldwide order, the customer's priority markets, else the markets the customer's field and brand
-   point to, else the major markets. Read those lists.
+3. Still a crowd? Ask again one question per market, from the one list your opening message names. Read those
+   lists.
+4. Still a crowd after step 3? The narrowing ends. Record it with its count: the field is crowded there.
 
-Having read the list, ask whether looking wider would change what you tell the client: who could object, how weak the word is in this market, and what the client should do. If it would, widen one step and read. Stop only when you can say what more searching would not change, and write that down. Either way, record which questions you did not ask and why.
+A list you have read answers the crowd it came from. Do not ask that crowd again without the limits that answered
+it.
+
+The same steps serve any other question that comes back as a crowd, when reading it would change what you tell
+the client. You need not take every step on every crowd. A wider crowd that the lists you have read already
+answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
+mark's market step did not read stay on its coverage row with their count, as today.
+
+Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have enough. Would more searching change what you tell the client: who could object, how weak the word is in this market, or what the client should do? If it would, widen one step, read, and decide again. If it would not, you are done. Write in one line why more searching would not change the advice, record which questions you did not ask and why, and move on. That is complete work.
 
 Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
 replaces stays on the record with its count. What was counted and not read is set aside with that count,
@@ -197,12 +205,12 @@ states, and **the state IS the coverage signal**:
   **commands a narrower named enumeration** (which the funnel runs) or **halts to a human**. The funnel's job
   is only to surface the `incomplete` honestly — count + sample + reason — never to decide it is tolerable.
 
-**The exact name-list is always an `enumerated` block.** The dominant element's `match_mode:exact` × in-scope
-class × per major+material jurisdiction slice is small and cheap by construction, so `register_enumerate`
-returns it `enumerated`. A bare-exact incumbent in a filed class is the highest-relevance category — it can
-**never** be sampled, rolled into a count, or left as a crowd descriptor; if it ever came back `incomplete`,
-that block crosses to judgment which commands its closure. (The funnel does not author a "closeable vs
-accepted" judgment on it — it just enumerates it.)
+**The exact name-list is read first, and narrowed when it crowds.** The dominant element's `match_mode:exact`
+× in-scope class slice is the identical-mark question of the narrowing steps; a complete answer covers every
+jurisdiction in it. A bare-exact incumbent in a filed class is the highest-relevance category — it can
+**never** be sampled or rolled into a count; if it comes back `incomplete`, it is narrowed by the steps in
+`unit.md`, and what stays a crowd after the last step stays on its coverage row with its count, as a required
+read not completed. (The funnel does not author a "closeable vs accepted" judgment on it — it just enumerates it.)
 
 **Count-only crowd descriptors describe, they do not clear.** The `saturation-probe` axis (`limit:1`, no
 enumeration) measures how crowded an element is — it is written as an `incomplete` crowd-descriptor block

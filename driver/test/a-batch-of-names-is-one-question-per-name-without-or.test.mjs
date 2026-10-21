@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// ON A REGISTER WITHOUT OR, A BATCH OF NAMES IS ONE QUESTION PER NAME.
+// ON A REGISTER WITHOUT OR, A BATCH OF NAMES IS ONE QUESTION PER NAME, OR PER LIST WHERE IT TAKES ONE.
 //
 // The reading turn asked for batches of names — 80, 53 and 7 on one delivered run — and a register that
 // takes one name per request ran each batch as windows of one name under a single question. The
 // enumerate kernel stopped the whole batch at the first name that crowded or failed, so 116 names were
 // never sent, among them every one-letter variant the turn had asked for. Ruled: split. Each name is its
 // own question with its own count, crowd decision and receipt row, and the batch still spends one slot of
-// the mint's caps, as it did.
+// the mint's caps, as it did. Where the register takes a list for a predicate, the batch goes as the planner's
+// lists instead: exact spellings up to 100, sound-alike ones up to 10 within the word budget.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mintSupplementalEntries, supplementalSlots } from "../engine/mcp/supplemental.mjs";
@@ -17,7 +18,8 @@ import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { CAPABILITIES as SIGNA } from "../../providers/signa/src/capabilities.js";
 import { CAPABILITIES as CLARIVATE } from "../../providers/clarivate/src/capabilities.js";
 
-const batch = (names, extra = {}) => ({ predicate: "exact", terms: names, nice_classes: ["9"], rationale: "the close forms, read as a list", ...extra });
+// `default` is a predicate the fixture register takes no list for, so its batches go one name per question
+const batch = (names, extra = {}) => ({ predicate: "default", terms: names, nice_classes: ["9"], rationale: "the close forms, read as a list", ...extra });
 const NAMES = ["VELTRINA", "VELTRINE", "VELTRINO"];
 
 test("a batch becomes one single-name question per name, each with its own qid", () => {
@@ -79,9 +81,15 @@ test("a sound-alike batch goes as lists of 10 where the register takes one; a sp
   assert.deepEqual(mintSupplementalEntries("primary-sweep", [batch(longer, { predicate: "phonetic" })], { capabilities: SIGNA }).minted.map((e) => (e.terms ?? [e.term]).length), [7, 3]);
 });
 
-test("THE CONTROL: an exact batch on the same register is still one question per name", () => {
-  const { minted } = mintSupplementalEntries("primary-sweep", [batch(NAMES)], { capabilities: SIGNA });
-  assert.deepEqual(minted.map((e) => e.term), NAMES);
+test("an exact batch goes as the planner's exact lists, up to 100 spellings each; a spelling too short for a list goes alone", () => {
+  assert.equal(SIGNA.exactOrWidth, 100, "the fixture register takes no exact list — this arm asserts nothing");
+  const names = Array.from({ length: 130 }, (_, k) => `VELTRIN${String.fromCharCode(65 + (k % 26))}${Math.floor(k / 26)}`);
+  const { minted, rejected } = mintSupplementalEntries("primary-sweep", [batch(["Q", ...names.slice(0, 33)], { predicate: "exact" })], { capabilities: SIGNA });
+  assert.deepEqual(rejected, []);
+  assert.deepEqual(minted.map((e) => e.terms ?? e.term), ["Q", names.slice(0, 33)], "33 exact names went other than as one list");
+  assert.equal(supplementalSlots(minted), 1);
+  // with an owner the register takes no list, so the batch stays one question per name
+  assert.deepEqual(mintSupplementalEntries("primary-sweep", [batch(NAMES, { predicate: "exact", owner: "Lumen Arbor Ltd" })], { capabilities: SIGNA }).minted.map((e) => e.term), NAMES);
 });
 
 test("a waiting family the reading turn asked inside a batch is recorded as asked", () => {
