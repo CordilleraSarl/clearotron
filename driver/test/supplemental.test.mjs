@@ -94,7 +94,8 @@ test("proposeSupplemental: persists the per-axis plan, executes via the injected
   assert.equal(res.term_counts.FROSTBERRY.disposition, "enumerated", "per-term truth crosses back to the model");
   assert.equal(res.records_preview[0].record_id, "/mark/us/90491258", "the rare record is in the reasoning payload");
 
-  // second call, same proposal: reused qid, still executed (refresh), no duplicate entry
+  // second call, same proposal: reused qid, no duplicate entry, and the answer it already holds is handed back
+  // without asking the register again
   const r2 = await proposeSupplemental({
     axis: "primary-sweep", output_path: bandPath,
     proposals: [{ predicate: "exact", terms: ["FROSTBERRY", "ICEBERRY"], nice_classes: [32], rationale: "near-form pair" }],
@@ -102,6 +103,8 @@ test("proposeSupplemental: persists the per-axis plan, executes via the injected
   const out2 = JSON.parse(r2.text);
   assert.equal(out2.minted.length, 0);
   assert.equal(out2.reused.length, 1);
+  assert.equal(calls.length, 1, "a question already answered was put to the register again");
+  assert.equal(out2.results[supp.entries[0].qid].records_preview[0].record_id, "/mark/us/90491258");
   assert.equal(JSON.parse(readFileSync(suppPath, "utf8")).entries.length, 1, "no duplicate entries on a re-propose");
 });
 

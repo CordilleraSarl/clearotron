@@ -675,6 +675,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-follow-up-the-allowance-refused-is-a-question-not-asked.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-foreign-record-link-is-named-once-and-blanked-at-salvage.test.mjs": {
           "tests": 8,
           "asserts": 31,
@@ -1263,6 +1269,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-question-the-run-has-answered-or-decided-is-not-asked-again.test.mjs": {
+          "tests": 5,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -1608,6 +1620,12 @@
         "a-run-that-never-published-can-still-be-retired.test.mjs": {
           "tests": 5,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-whose-follow-up-allowance-is-spent-still-delivers.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -5825,7 +5843,7 @@
         },
         "supplemental.test.mjs": {
           "tests": 24,
-          "asserts": 153,
+          "asserts": 155,
           "skips": 0,
           "todos": 0
         },
@@ -8279,6 +8297,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/_shared/test/a-follow-up-met-with-the-allowance-spent-is-not-asked-and-the-run-goes-on.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/a-question-with-no-regions-is-asked-to-the-orders-scope.test.mjs": {
           "tests": 3,
           "asserts": 6,
@@ -8390,6 +8414,12 @@
         "providers/_shared/test/territory-codes.test.mjs": {
           "tests": 15,
           "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/the-run-has-one-allowance-of-paid-calls-for-searches-the-model-adds.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },

@@ -19,6 +19,7 @@ import { dirname, join } from "node:path";
 import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
+import { runDriverDirOf, allowanceOpen, allowanceClass, identicalMarkTerms, recordOutstanding, RUN_CALL_LIMIT } from "./call-allowance.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
@@ -362,6 +363,16 @@ export function makeExecutePlan(deps) {
     try { released = new Set(Object.keys(JSON.parse(readFileSync(join(dirname(planPath), releasedFamiliesFile(axis)), "utf8"))?.families ?? {})); }
     catch { released = new Set(); }
 
+    // THE RUN'S ALLOWANCE OF PAID FOLLOW-UP CALLS (call-allowance.mjs, ruled 2026-10-21). Read before each follow-up,
+    // never once per call: a follow-up met with the allowance spent is not run, is recorded as outstanding, and keeps
+    // any answer it already had. The run's folder comes from its record log; a call outside a run has no allowance.
+    const driverDir = runDriverDirOf(tctx?.recordLog);
+    let identicalTerms = identicalMarkTerms(plan);
+    if (driverDir && !identicalTerms.size) {
+      try { identicalTerms = identicalMarkTerms(JSON.parse(readFileSync(join(driverDir, "register-plan.json"), "utf8"))); } catch { /* no frozen plan: no identical terms known */ }
+    }
+    const refused = [];
+    let allowanceSeen = null;
     const stateByQid = new Map();
     const seeded = new Set();
     if (qidsFilter) {
@@ -378,7 +389,7 @@ export function makeExecutePlan(deps) {
       } catch { /* no/unreadable prior band — when-guards fall back to skip (parent state unknown) */ }
     }
     const blocks = [];
-    const dispatchEntry = async (e) => {
+    const dispatchEntry = async (e, etctx = tctx) => {
       const base = { qid: e.qid, query: describeEntry(e) };
       // ── phase 3: a slice the ACTIVE PROVIDER CANNOT EXECUTE never becomes a weaker query ──────────
       // The compiler stamped `unsupported` (predicate with no mapping on this provider, or a
@@ -465,10 +476,10 @@ export function makeExecutePlan(deps) {
         const coveredBy = Array.isArray(e.covered_by) && e.covered_by.length ? e.covered_by : null;
         // — built by the exported helper, never inlined, so a test can read the PRODUCT's sentence.
         const descriptorReason = ownerPortfolioDescriptorReason(coveredBy);
-        let r = await search(auth, { ...query, ...countParams }, tctx);
+        let r = await search(auth, { ...query, ...countParams }, etctx);
         let parsed = (!r?.isError && typeof r?.text === "string" && !r.text.startsWith("ERROR")) ? (() => { try { return JSON.parse(r.text); } catch { return null; } })() : null;
         if (!parsed) {
-          r = await search(auth, { ...query, ...countParams }, tctx);
+          r = await search(auth, { ...query, ...countParams }, etctx);
           parsed = (!r?.isError && typeof r?.text === "string" && !r.text.startsWith("ERROR")) ? (() => { try { return JSON.parse(r.text); } catch { return null; } })() : null;
         }
         // The deferral lane exists on THIS arm too (audit item 5a): a count-descriptor refusal carrying
@@ -530,7 +541,7 @@ export function makeExecutePlan(deps) {
       const providerErrored = (p) => !p || typeof p !== "object" || !p.state
         || (p.state === "incomplete" && /provider error/i.test(String(p.reason ?? "")));
       const runEnumerate = async () => {
-        const rr = await enumerate(auth, { ...query, in_scope_classes: query.nice_classes }, tctx);
+        const rr = await enumerate(auth, { ...query, in_scope_classes: query.nice_classes }, etctx);
         try { return { r: rr, parsed: JSON.parse(rr?.text ?? "") }; } catch { return { r: rr, parsed: null }; }
       };
       let { r, parsed } = await runEnumerate();
@@ -598,8 +609,24 @@ export function makeExecutePlan(deps) {
     // transient reading. The reason names it an EXECUTOR fault so it is never read as something the
     // register said — a block that fabricated a provider response would be the worse defect.
     const runEntry = async (e) => {
+      let etctx = tctx;
+      if (driverDir) {
+        const cls = allowanceClass(e, { identicalTerms });
+        if (cls === "counted") {
+          const gate = allowanceOpen(driverDir);
+          allowanceSeen = gate;
+          if (!gate.open) {
+            refused.push(e.qid);
+            let query = String(e?.qid ?? "");
+            try { query = describeEntry(e); } catch { /* the qid stands for it */ }
+            recordOutstanding(driverDir, { qid: e.qid, axis, query, spent: gate.spent, limit: gate.limit, ...(gate.unreadable ? { unreadable: true } : {}) });
+            return;
+          }
+          etctx = { ...tctx, countedCall: true, qid: e.qid };
+        }
+      }
       try {
-        await dispatchEntry(e);
+        await dispatchEntry(e, etctx);
       } catch (err) {
         // `describeEntry` is itself one of the things that can throw here, so the recovery block must
         // not depend on it succeeding — a backstop that can fail is not a backstop.
@@ -639,7 +666,9 @@ export function makeExecutePlan(deps) {
     // owned qid's old block is replaced by the fresh result; an owned-but-SKIPPED qid (crowd-gated
     // fringe) gets no block and any stale one is dropped (a fringe slice must never outlive its
     // parent's crowd verdict). This makes the initial call and every warm followup the SAME call.
-    const owned = new Set(targeted.map((e) => e.qid));
+    // A question the allowance refused is not owned by this call: whatever answer it already had stands.
+    const refusedSet = new Set(refused);
+    const owned = new Set(targeted.map((e) => e.qid).filter((q) => !refusedSet.has(q)));
     let preserved = [];
     try {
       const existing = JSON.parse(readFileSync(outPath, "utf8"));
@@ -675,6 +704,7 @@ export function makeExecutePlan(deps) {
       written: outPath, blocks: blocks.length + preserved.length, executed: blocks.length, preserved: preserved.length, skipped,
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),
       ...(Object.keys(spellingCounts).length ? { spelling_counts: spellingCounts } : {}),
+      ...(refused.length ? { outstanding: refused, allowance: { spent: allowanceSeen?.spent ?? null, limit: allowanceSeen?.limit ?? RUN_CALL_LIMIT, reason: "run-call-limit" } } : {}),
     }, null, 2) };
   };
 }

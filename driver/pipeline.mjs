@@ -77,6 +77,10 @@ import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, cov
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
+import { readOutstanding, RUN_CALL_LIMIT, spentCalls } from "../providers/_shared/call-allowance.mjs";
+// The plan join's options, one place: the families the reading turn released, and the follow-ups the run's
+// allowance refused, which join as questions not asked rather than missing (call-allowance.mjs).
+const joinOptions = (runDir) => ({ released: releasedFamilyQids(runDir), outstanding: new Set(readOutstanding(driverDir(runDir)).map((r) => String(r.qid))) });
 import { unionPlacementForm } from "./placement-union.mjs";
 import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
   placementRecallEndings, writePlacementDecisions, rankingNow, rankedRecords, recordsReRanked, rankingToJson, rankingFromJson } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
@@ -606,7 +610,22 @@ export function writePlanExecutionReceipt(ctx, joinRes) {   // @internal
   // are instead of letting `missing: []` imply none.
   const answeredRows = (joinRes.executed ?? []).filter((e) => String(e?.state ?? "").toLowerCase() !== "incomplete");
   const census = { answered: answeredRows.length, incomplete: (joinRes.executed ?? []).length - answeredRows.length };
-  const receipt = { plan_version: ctx.registerPlan.plan_version, ...joinRes, ...census, ...(supplemental.length ? { supplemental } : {}), skeleton };
+  // THE RUN'S ALLOWANCE OF PAID FOLLOW-UP CALLS, on the run record once it has been drawn on: the limit, what the
+  // follow-ups spent and how many were not asked (call-allowance.mjs). Logged once each time those figures move.
+  let allowance = null;
+  try {
+    const { spent } = spentCalls(driverDir(P.runDir));
+    // a question refused once and answered later (an allowance file unreadable for a moment) was asked
+    const answered = new Set((joinRes.executed ?? []).map((e) => String(e?.qid)));
+    const notAsked = readOutstanding(driverDir(P.runDir)).filter((r) => !answered.has(String(r.qid))).length;
+    if (spent > 0 || notAsked > 0) allowance = { limit: RUN_CALL_LIMIT, spent: Number.isFinite(spent) ? spent : null, reached: !Number.isFinite(spent) || spent >= RUN_CALL_LIMIT, not_asked: notAsked };
+    const seen = allowance ? `${allowance.spent}:${allowance.not_asked}` : null;
+    if (allowance && ctx.allowanceLogged !== seen) {
+      runLog(P.runDir, { event: "register-follow-up-allowance", ...allowance });
+      ctx.allowanceLogged = seen;
+    }
+  } catch { allowance = null; }
+  const receipt = { plan_version: ctx.registerPlan.plan_version, ...joinRes, ...census, ...(supplemental.length ? { supplemental } : {}), ...(allowance ? { follow_up_allowance: allowance } : {}), skeleton };
   writeFileSync(`${P.planExecution}.tmp`, JSON.stringify(receipt, null, 2) + "\n");
   renameSync(`${P.planExecution}.tmp`, P.planExecution);
   ctx.planExecution = receipt;
@@ -766,7 +785,7 @@ export function refreshSupplementalExecution(ctx) {   // @internal
     const added = foldSupplementalProposals(ctx);
     const stale = ctx.planExecution && ctx.planExecution.plan_version !== ctx.registerPlan.plan_version;
     if (added.length || stale) {
-      writePlanExecutionReceipt(ctx, joinPlanToBands(ctx.registerPlan, readRegisterBands(ctx.paths, ctx.axes ?? []), { released: releasedFamilyQids(ctx.paths.runDir) }));
+      writePlanExecutionReceipt(ctx, joinPlanToBands(ctx.registerPlan, readRegisterBands(ctx.paths, ctx.axes ?? []), joinOptions(ctx.paths.runDir)));
       runLog(ctx.paths.runDir, { event: "plan-execution-refresh", added: added.length });
     }
   } catch (e) { note(`supplemental receipt refresh skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
@@ -11167,7 +11186,7 @@ async function pipelineInner(job, opts = {}) {
             await dispatchPlanQids(axis, qids, "early-envelope-close", 2);
           } : null,
           rejoin: planExec ? async () => {
-            writeExecution(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
+            writeExecution(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
             deriveNamedBand(ctx);   // a close landed band blocks — re-merge so Layer B reads them
             return readPlanExecution(ctx);
           } : null,
@@ -11208,7 +11227,7 @@ async function pipelineInner(job, opts = {}) {
         if (held !== j) runLog(run.runDir, { event: "plan-qids-sticky-gap", qids: j.missing.filter((q) => !held.missing.includes(q)), action: "held-from-missing" });
         return held;
       };
-      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
+      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
       const missingEntriesByAxis = () => {
         const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
         const m = new Map();
@@ -11230,7 +11249,7 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids, action: "plan-direct-execute" });
           await dispatchPlanQids(a, qids, "plan-direct-execute", 2);
         }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
         if (!joinRes.missing.length) deriveNamedBand(ctx);   // dispatch landed blocks — re-merge so Layer B reads them
       }
       if (joinRes.missing.length) {
@@ -11255,7 +11274,7 @@ async function pipelineInner(job, opts = {}) {
           const wf = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "plan-join" });
           if (!wf.ok) note(`register-unit ${a}: warm plan-join followup failed (${wf.fail}) — the plan-unexecuted StageFailure below holds the line`);
         }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
         deriveNamedBand(ctx);   // the followup appended band blocks — re-merge so Layer B reads them
       }
       const skeleton = writeExecution(joinRes);
@@ -12045,7 +12064,7 @@ async function pipelineInner(job, opts = {}) {
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
-                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, { released: releasedFamilyQids(ctx.paths.runDir) }).executed.map((x) => x.qid));
+                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, joinOptions(ctx.paths.runDir)).executed.map((x) => x.qid));
                 const blocksByQid = new Map((bands[a] ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
                 return { outcome, executedQids, blocksByQid };
               };

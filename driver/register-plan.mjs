@@ -2423,7 +2423,7 @@ export function parseRegisterPlan(raw) {
  * An entry whose `when` guard resolves FALSE (parent crowd/absent) is `skipped`, never `missing`.
  * Blocks with no qid join nothing (legacy bands) and surface as unplanned only when they carry one.
  */
-export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() } = {}) {
+export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), outstanding = new Set() } = {}) {
   const blocks = [];
   for (const [axis, arr] of Object.entries(bandBlocksByAxis ?? {})) {
     for (const b of arr ?? []) if (b && typeof b === "object") blocks.push({ ...b, _axis: axis });
@@ -2432,6 +2432,11 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
   for (const b of blocks) if (typeof b.qid === "string" && b.qid) byQid.set(b.qid, b);
 
   const executed = [], missing = [], skipped = [], deferred = [], awaiting = [], asked = [];
+  // A FOLLOW-UP THE RUN'S ALLOWANCE REFUSED (providers/_shared/call-allowance.mjs) that holds no answer is a question
+  // not asked, never one that went missing: missing sends a question back to be run, and the allowance would refuse
+  // it again. Only a follow-up can be refused; the plan's own questions never are.
+  const notAsked = [];
+  const refusedFollowUp = (e) => outstanding.has(e?.qid) && e?.origin === "supplemental";
   // A WAITING FAMILY THE READING TURN ASKED IS NOT WAITING. Its ask arrives as an ordinary entry — a
   // supplemental with the same question — and the family's own row stays guarded forever, so without this
   // link every family asked read as never asked. Matched on the question (entryQuestionKey), against
@@ -2480,7 +2485,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       }
     }
     const b = byQid.get(e.qid);
-    if (!b) { missing.push(e.qid); continue; }
+    if (!b) { if (refusedFollowUp(e)) { notAsked.push({ qid: e.qid, axis: e.axis }); continue; } missing.push(e.qid); continue; }
     // A DETERMINISTIC CAPABILITY GAP (providers/_shared/execute-plan.mjs stamps `deferred:true` next to
     // `error:true`): the active provider genuinely cannot express this slice — a predicate it lacks, an
     // office outside its vocabulary, a term its query language cannot state. Retrying is pointless: the
@@ -2494,7 +2499,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
     // incomplete shape — the dictated slice never really ran. It joins as MISSING (→ the warm
     // followup re-invokes the executor; exhaustion is an honest StageFailure), never as an
     // "executed" crowd — a transient must not ship indistinguishable from a sanctioned descriptor.
-    if (b.error === true) { missing.push(e.qid); continue; }
+    if (b.error === true) { if (refusedFollowUp(e)) { notAsked.push({ qid: e.qid, axis: e.axis }); continue; } missing.push(e.qid); continue; }
     // — WHAT THE SLICE RETURNED RIDES WITH THE FACT THAT IT RAN.
     //
     // "executed" answers "did the query run". It has never answered "did anything come back", and the
@@ -2536,7 +2541,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
   const planQids = new Set(plan.entries.map((e) => e.qid));
   const unplanned = blocks.filter((b) => typeof b.qid === "string" && b.qid && !planQids.has(b.qid))
     .map((b) => ({ qid: b.qid, query: String(b.query ?? "").slice(0, 80) }));
-  return { executed, missing, skipped, deferred, awaiting, asked, unplanned };
+  return { executed, missing, skipped, deferred, awaiting, asked, unplanned, ...(notAsked.length ? { outstanding: notAsked } : {}) };
 }
 
 // ──: the slice the provider ACCEPTED and then hard-errored at RUN time ──────────────────────────
@@ -2739,6 +2744,7 @@ export function deriveCoverageSkeleton(plan, join) {
   const skippedQids = new Set(join.skipped.map((x) => x.qid));
   const deferredQids = new Set((join.deferred ?? []).map((x) => x.qid));
   const awaitingQids = new Set((join.awaiting ?? []).map((x) => x.qid));
+  const outstandingQids = new Set((join.outstanding ?? []).map((x) => x.qid));
   const askedQids = new Set((join.asked ?? []).map((x) => x.qid));
   // ── A COUNT THE PLAN ALSO READ IN FULL IS NOT A CROWD ──────────────────────────────────────────
   // A count-only descriptor (the saturation probe's shape) sizes a question and reads none of its
@@ -2763,7 +2769,7 @@ export function deriveCoverageSkeleton(plan, join) {
     && readInFull.get(question(e)) === totalByQid.get(e.qid);
   const axes = new Map();
   for (const e of plan.entries) {
-    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0, readElsewhere: 0 });
+    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0, readElsewhere: 0, outstanding: 0 });
     const a = axes.get(e.axis);
     a.entries++;
     // COUNTED BEFORE `skipped`, and separately from it. With the families waiting on every matter this is the ordinary state of
@@ -2775,6 +2781,8 @@ export function deriveCoverageSkeleton(plan, join) {
     // where it ran; counting the family as executed too would count one question twice.
     if (askedQids.has(e.qid)) { a.asked++; continue; }
     if (skippedQids.has(e.qid)) { a.skipped++; continue; }
+    // a follow-up the run's allowance refused: not asked, so neither run nor missing
+    if (outstandingQids.has(e.qid)) { a.outstanding++; continue; }
     if (missing.has(e.qid)) { a.missing.push(e.qid); continue; }
     // a capability gap is NOT executed — it is a disclosed hole in the axis
     if (deferredQids.has(e.qid)) { a.deferred.push(e.qid); continue; }
@@ -2802,9 +2810,12 @@ export function deriveCoverageSkeleton(plan, join) {
       : (a.deferred.length ? "deferred"
         : (a.crowds ? "incomplete"
           : (a.executed === 0 && a.skipped > 0 ? "skipped"
-            : (a.executed === 0 && a.awaiting > 0 ? "awaiting-judgment" : "executed")))),
+            : (a.executed === 0 && a.awaiting > 0 ? "awaiting-judgment"
+              // nothing ran but follow-ups the allowance refused: no answer to rest a clean on, as when they joined missing
+              : (a.executed === 0 && a.outstanding > 0 ? "unexecuted" : "executed"))))),
     entries: a.entries, executed: a.executed, crowds: a.crowds, skipped: a.skipped, missing: a.missing,
     ...(a.awaiting ? { awaiting: a.awaiting } : {}),
+    ...(a.outstanding ? { outstanding: a.outstanding } : {}),
     ...(a.asked ? { asked: a.asked } : {}),
     ...(a.readElsewhere ? { read_elsewhere: a.readElsewhere } : {}),
     ...(a.deferred.length ? { deferred: a.deferred } : {}),
