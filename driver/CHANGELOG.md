@@ -1,5 +1,14 @@
 # clearotron-driver
 
+## 0.5.0-beta.1
+
+### Patch Changes
+
+- Fixed: A search with more similar marks than can be read now narrows step by step, and stops once the lists it has read answer it. Before, it could keep searching far past what the advice needed.
+- Fixed: A crowded search that the lists already read have answered no longer appears among the report's coverage limits. Its count is still recorded.
+- For operators: A clearance now stops asking further follow-up searches after 120, and delivers its report with what it has read.
+- For operators: On the Signa register, follow-up searches now send spellings as lists, so a clearance makes fewer requests.
+
 ## 0.5.0-beta.0
 
 ### Minor Changes
