@@ -94,7 +94,8 @@ saturated raw pile — does **not** exist: crowds are descriptors, named slices 
 **A genuine resource/time limit produces an `incomplete` block, never a sufficiency accept.** If
 `register_enumerate` hits the provider 5000-record window or a resource ceiling on a slice, it returns
 `{state:"incomplete", …, reason}` — the funnel writes that block verbatim and **stops there for that slice**.
-That `incomplete` is the signal to **judgment (Layer B)**, which decides whether the crowd is material and either **commands a narrower named enumeration** by the narrowing steps (which the funnel then runs) or **records the crowd with its count and moves on**. The
+That `incomplete` is the signal to **judgment (Layer B)**, which decides whether the crowd is material and
+either **commands a narrower named enumeration** (which the funnel then runs) or **halts to a human**. The
 funnel never converts a resource limit into a clean negative and never re-adds a record/count ceiling that
 says "searched N, ship clean".
 
@@ -179,7 +180,7 @@ category is **structurally impossible** now: there is no sampling verb in the fu
 `incomplete` block verbatim** and letting judgment act on it.
 
 - **Provider session-key invalid** → halt; surface to orchestrator with one-line diagnostic (no band can be written).
-- **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment, which commands a narrower named enumeration by the narrowing steps, or records it and moves on: a crowd with its count, a failed search as a gap.
+- **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment, which commands a narrower named enumeration or halts.
 - **Rate-limit signal (429 or sustained 5xx)** → handled inside the primitive (back off); a persistent failure surfaces as an `incomplete` block with the error in `reason`.
 - **A unit's axis is not applicable** to this manifest (e.g. transliteration-numeric with an English-only mark) → write a single "not applicable" `incomplete` block (`reason:"not applicable — <why>"`, `total_hits:0`) so the band file lands, and return cleanly. Do NOT fabricate work.
 ## Coverage = the band blocks (the funnel emits NO clearance verdict)
@@ -200,7 +201,8 @@ states, and **the state IS the coverage signal**:
   could not reach its data (provider error, tool absent) OR is a count-only crowd descriptor. **The funnel
   never grades an `incomplete` as an "accepted limit" vs a "closeable gap"** — that grading was a sufficiency
   judgment (is this gap OK to ship over?) and now belongs to **judgment (Layer B)**: the lawyer reads the
-  `incomplete` block (its `total_hits` / `sample` / `reason`), decides whether it is material, and either **commands a narrower named enumeration** by the narrowing steps (which the funnel runs) or **records it with its count and moves on**. The funnel's job
+  `incomplete` block (its `total_hits` / `sample` / `reason`), decides whether it is material, and either
+  **commands a narrower named enumeration** (which the funnel runs) or **halts to a human**. The funnel's job
   is only to surface the `incomplete` honestly — count + sample + reason — never to decide it is tolerable.
 
 **The exact name-list is read first, and narrowed when it crowds.** The dominant element's `match_mode:exact`

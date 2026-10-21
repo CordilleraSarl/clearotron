@@ -118,17 +118,3 @@ test("both manuals stop on a lawyer's judgment, and the register manuals carry t
     "cost breakdown", "send one cheap", "(cheap tiers)", "(cheap, informational", "(cheap — tells", "cheapest, always enumerates"])
     assert.ok(!all.includes(gone), `the register manuals still say "${gone}"`);
 });
-
-test("judgment on a crowd narrows by the steps or records it with its count and moves on: it never halts", () => {
-  const flat = (rel) => read(rel).replace(/\s+/g, " ");
-  const skill = flat("skills/clearance-register/SKILL.md");
-  const unit = flat("skills/clearance-register/unit.md");
-  const recipes = flat("skills/clearance-register/register-recipes.md");
-  assert.ok(skill.includes("either **commands a narrower named enumeration** by the narrowing steps (which the funnel then runs) or **records the crowd with its count and moves on**."));
-  assert.ok(skill.includes("which commands a narrower named enumeration by the narrowing steps, or records it and moves on: a crowd with its count, a failed search as a gap."));
-  assert.ok(unit.includes("judgment decides whether to command a narrower enumeration by the narrowing steps, or to record it with its count and move on."));
-  assert.ok(recipes.includes("the lawyer decides whether to command a narrower named enumeration by the narrowing steps (which the funnel then runs), or to record it with its count and move on."));
-  for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]])
-    assert.doesNotMatch(text, /halts to a human|, or halts\.| or halt\./, `${name} still lets judgment halt on a crowd`);
-  assert.doesNotMatch(flat("skills/clearance-register/providers/corsearch.md"), /cheapest count-only/);
-});

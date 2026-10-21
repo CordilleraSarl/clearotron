@@ -394,8 +394,8 @@
           "todos": 0
         },
         "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
-          "tests": 6,
-          "asserts": 31,
+          "tests": 5,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
