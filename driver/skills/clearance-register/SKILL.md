@@ -205,12 +205,12 @@ states, and **the state IS the coverage signal**:
   **commands a narrower named enumeration** (which the funnel runs) or **halts to a human**. The funnel's job
   is only to surface the `incomplete` honestly — count + sample + reason — never to decide it is tolerable.
 
-**The exact name-list is always an `enumerated` block.** The dominant element's `match_mode:exact` × in-scope
-class × per major+material jurisdiction slice is small and cheap by construction, so `register_enumerate`
-returns it `enumerated`. A bare-exact incumbent in a filed class is the highest-relevance category — it can
-**never** be sampled, rolled into a count, or left as a crowd descriptor; if it ever came back `incomplete`,
-that block crosses to judgment which commands its closure. (The funnel does not author a "closeable vs
-accepted" judgment on it — it just enumerates it.)
+**The exact name-list is read first, and narrowed when it crowds.** The dominant element's `match_mode:exact`
+× in-scope class slice is the identical-mark question of the narrowing steps; a complete answer covers every
+jurisdiction in it. A bare-exact incumbent in a filed class is the highest-relevance category — it can
+**never** be sampled or rolled into a count; if it comes back `incomplete`, it is narrowed by the steps in
+`unit.md`, and what stays a crowd after the last step stays on its coverage row with its count, as a required
+read not completed. (The funnel does not author a "closeable vs accepted" judgment on it — it just enumerates it.)
 
 **Count-only crowd descriptors describe, they do not clear.** The `saturation-probe` axis (`limit:1`, no
 enumeration) measures how crowded an element is — it is written as an `incomplete` crowd-descriptor block
