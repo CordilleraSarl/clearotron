@@ -19,7 +19,7 @@ import { dirname, join } from "node:path";
 import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
-import { runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
+import { FOLLOW_UP_SEARCH_LIMIT, runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
@@ -609,7 +609,7 @@ export function makeExecutePlan(deps) {
     // register said — a block that fabricated a provider response would be the worse defect.
     const runEntry = async (e) => {
       if (driverDir && followUpClass(e, { identicalTerms }) === "counted") {
-        const room = followUpRoom(driverDir);
+        const room = followUpRoom(driverDir, FOLLOW_UP_SEARCH_LIMIT, e);
         if (!room.open) {
           refused.push(e.qid);
           let query = String(e?.qid ?? "");
@@ -617,7 +617,9 @@ export function makeExecutePlan(deps) {
           recordOutstanding(driverDir, { qid: e.qid, axis, query, sent: room.sent, limit: room.limit, ...(room.unreadable ? { unreadable: true } : {}) });
           return;
         }
-        recordFollowUpSearch(driverDir, { qid: e.qid, axis });
+        // A question the run has asked already is sent as before and adds nothing: each question counts once.
+        if (!room.repeat) recordFollowUpSearch(driverDir, { qid: e.qid, axis,
+          ...(Array.isArray(e.romanizedTerms) && e.romanizedTerms.length ? { romanized: e.romanizedTerms.map(String) } : {}) });
       }
       try {
         await dispatchEntry(e);
