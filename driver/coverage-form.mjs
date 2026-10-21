@@ -31,7 +31,7 @@
 import { REGISTER_AXES, COVERAGE_STATUSES, normalizeAxis, CROWD_RULING_TOKEN,
   CROWD_RULING_UNIT_GRAMMAR } from "./coverage-ledger.mjs";
 import { shortId } from "./connotation-search.mjs";
-import { openBlocksByAxis, crowdEndings, blocksByQidOf } from "./register-plan.mjs";
+import { openBlocksByAxis, crowdNarrowing, blocksByQidOf } from "./register-plan.mjs";
 import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
@@ -346,13 +346,14 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
   bandBlocksByAxis = {}, deferredReasons = {}, bandsUnreadable = [],
   orderedTerritories = [], capabilities = null, awaiting = [], withheld = {}, mainMarkets = [] } = {}) {
   const skel = Array.isArray(skeleton) ? skeleton.filter((s) => s && typeof s === "object") : [];
-  // EACH CROWD'S ENDING (register-plan.mjs, crowdEndings), worked out from the same blocks these rows are built from
-  // and carried on its row as data: answered by a read list (and which), set aside, or the identical mark's required
-  // read not completed (and the markets it did read). The row stays open either way; the reading step decides on it.
-  const endingByQid = new Map(crowdEndings(plan, blocksByQidOf(bandBlocksByAxis), { mainMarkets }).rows.map((r) => [String(r.qid), r]));
+  // WHAT WAS RETRIEVED UNDER EACH CROWD (register-plan.mjs, crowdNarrowing), worked out from the same blocks these rows
+  // are built from and carried on its row as data: a narrowed list retrieved in full (and which), none, or for the
+  // identical mark whether retrieved lists cover every class in every main market (and the cells they do not). The
+  // row stays open either way: reading the lists and deciding the crowd are the reading step's.
+  const narrowingByQid = new Map(crowdNarrowing(plan, blocksByQidOf(bandBlocksByAxis), { mainMarkets }).rows.map((r) => [String(r.qid), r]));
   const endingOf = (qid) => {
-    const r = endingByQid.get(String(qid));
-    return r ? { ending: r.ending, ...(r.answered_by?.length ? { answered_by: r.answered_by } : {}), ...(r.markets_read?.length ? { markets_read: r.markets_read } : {}) } : {};
+    const r = narrowingByQid.get(String(qid));
+    return r ? { narrowing: r.narrowing, ...(r.lists?.length ? { lists: r.lists } : {}), ...(r.not_covered?.length ? { not_covered: r.not_covered } : {}) } : {};
   };
   const entriesByQid = new Map((plan?.entries ?? []).map((e) => [e.qid, e]));
   const open = openBlocksByAxis(skel, bandBlocksByAxis, plan);
@@ -1043,8 +1044,8 @@ function briefRow(r) {
     r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
     r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
     r.receipt_reason ? `receipt: ${String(r.receipt_reason).slice(0, 160)}` : "",
-    // the crowd's ending (register-plan.mjs, crowdEndings), as data beside the counts it rests on
-    r.ending ? `ending: ${r.ending}${r.answered_by?.length ? ` by ${r.answered_by.slice(0, 6).join(", ")}` : ""}${r.markets_read?.length ? `; markets read: ${r.markets_read.join(", ")}` : ""}` : "",
+    // what was retrieved under the crowd (register-plan.mjs, crowdNarrowing), as data beside the counts it rests on
+    r.narrowing ? `narrowing: ${r.narrowing}${r.lists?.length ? ` (${r.lists.slice(0, 6).join(", ")})` : ""}${r.not_covered?.length ? `; not covered: ${r.not_covered.slice(0, 12).join(", ")}` : ""}` : "",
   ].filter(Boolean).join("; ");
   const settled = String(r.status ?? "").trim() ? ` [settled: ${String(r.status).trim()}]` : "";
   return `  ${r.row_id}  (${r.kind}) ${r.unit}${facts ? ` — ${facts}` : ""}${r.open === true ? " — OPEN: never confirmed-clean" : ""}${settled}`;

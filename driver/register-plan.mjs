@@ -2410,23 +2410,28 @@ export function parseRegisterPlan(raw) {
   return { ...p };
 }
 
-// ── THE THREE ENDINGS OF A CROWD ────────────────────────────────────────────────────────────────
+// ── WHAT THE RUN RETRIEVED UNDER EACH CROWD ──────────────────────────────────────────────────────────
 //
-// A crowd is a question that ran and counted more than it read. The crowded-field method gives each one of
-// three endings, and this is the run's record of which, worked out from the run's own files and never from a
-// model's account:
-//   answered      a narrowed list that was read in full answered it. The list is the evidence: complete,
-//                 and keeping the limits of every step above it (classes, markets, the client's goods, the
-//                 owner), at any depth of the narrowing. What the list left unread is set aside with its count.
-//   set-aside     a wider question no read list answered. Its count stays on the record; the reading step
-//                 gives the reason.
-//   required-read-not-completed
-//                 the identical mark's own question with no read list in every main market, or one covering
-//                 its whole scope. It keeps today's consequence, and the markets it did read are named.
-// A refused or failed question is not a crowd: the join keeps those as `outstanding` and `missing`.
-// It is data for the coverage form, the band shape and the receipt, and each of them works it out from the blocks it
-// reads itself, so none holds an ending older than its blocks. It changes no sentence. PURE.
-export function crowdEndings(plan, byQid, { mainMarkets = [] } = {}) {
+// A crowd is a question that ran and counted more than it read. This records, from the run's own blocks and plan,
+// what was retrieved under it, and nothing more: whether the reading happened, and whether a crowd is set aside, are
+// the reading step's and the write-up's judgments, recorded in their own places. Retrieving a list is not reading it.
+//
+// A NARROWING ASKS THE SAME QUESTION WITH TIGHTER LIMITS: the same predicate and the same terms, classes and markets
+// within the parent's, and the parent's goods words or fewer of them (a parent with none takes the client's goods
+// words, as the plan holds them), with the same owner. A list counts when its block is `enumerated`: complete, with no
+// error. Only lists reached through such narrowings count, at any depth.
+//   list-retrieved          a wider question with at least one narrowed list retrieved in full (named in `lists`).
+//   no-list                 a wider question with none: the reading step decides it, with its count on the record.
+//   required-covered        the identical mark's own question, with a retrieved list in every class it asks, in
+//                           every main market (the order's countries, else the customer's priority markets, else the
+//                           major markets), or worldwide where the run names none.
+//   required-not-covered    the identical mark's own question without that: the class and market cells no retrieved
+//                           list covers are named in `not_covered`.
+// A refused or failed question is not a crowd: the join keeps those as `outstanding` and `missing`. Each reader (the
+// receipt, the coverage form, the band shape) works this out from the blocks it reads itself. It changes no row's
+// state and no sentence. PURE.
+const WORLDWIDE = "worldwide";
+export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
   const identicalTerms = identicalMarkTerms(plan);
   const childrenOf = new Map();
@@ -2437,46 +2442,69 @@ export function crowdEndings(plan, byQid, { mainMarkets = [] } = {}) {
     childrenOf.get(parent).push(e);
   }
   const strs = (v) => (Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : []);
-  const markets = (v) => [...new Set(strs(v).map((t) => territoryKey(t) || t.toUpperCase()))];
-  const regionsOf = (e) => (strs(e?.regions).length ? markets(e.regions) : markets(plan?.regions));
+  const fold = (s) => String(s ?? "").normalize("NFKC").trim().toLowerCase().replace(/\s+/g, " ");
+  const marketsOf = (v) => [...new Set(strs(v).map((t) => territoryKey(t) || t.toUpperCase()))];
+  const regionsOf = (e) => (strs(e?.regions).length ? marketsOf(e.regions) : marketsOf(plan?.regions));
+  const classesOf = (e) => [...new Set(strs(e?.nice_classes))];
+  const termsOf = (e) => [...new Set((Array.isArray(e?.terms) && e.terms.length ? e.terms : [e?.term]).map(fold).filter(Boolean))].sort();
+  const goodsOf = (e) => [...new Set(goodsTermsList(e).map(fold).filter(Boolean))];
+  // the client's goods words, as the plan's own goods questions carry them
+  const clientGoods = new Set(entries.filter((e) => e?.provenance === "mark").flatMap(goodsOf));
   const within = (inner, outer) => !outer.length || (inner.length > 0 && inner.every((x) => outer.includes(x)));
-  const keepsLimits = (parent, child) => within(strs(child.nice_classes), strs(parent.nice_classes))
-    && within(regionsOf(child), regionsOf(parent))
-    && (!goodsTermsList(parent).length || goodsTermsList(child).length > 0)
-    && String(parent.owner ?? "").trim() === String(child.owner ?? "").trim();
+  const sameTerms = (a, b) => a.length === b.length && a.every((t, i) => t === b[i]);
+  const narrows = (parent, child) => {
+    if (String(child.predicate ?? "") !== String(parent.predicate ?? "") || !sameTerms(termsOf(child), termsOf(parent))) return false;
+    if (!within(classesOf(child), classesOf(parent)) || !within(regionsOf(child), regionsOf(parent))) return false;
+    if (String(parent.owner ?? "").trim() !== String(child.owner ?? "").trim()) return false;
+    const pg = goodsOf(parent), cg = goodsOf(child);
+    if (pg.length) return cg.length > 0 && cg.every((g) => pg.includes(g));
+    return !cg.length || !clientGoods.size || cg.every((g) => clientGoods.has(g));
+  };
   const stateOf = (qid) => { const b = byQid.get(qid); return b && b.error !== true ? String(b.state ?? "").toLowerCase() : null; };
-  const readUnder = (e, seen) => {
+  const retrievedUnder = (e, seen) => {
     const out = [];
     for (const c of childrenOf.get(e.qid) ?? []) {
-      if (seen.has(c.qid) || !keepsLimits(e, c)) continue;
+      if (seen.has(c.qid) || !narrows(e, c)) continue;
       seen.add(c.qid);
       if (stateOf(c.qid) === "enumerated") out.push(c);
-      out.push(...readUnder(c, seen));
+      out.push(...retrievedUnder(c, seen));
     }
     return out;
   };
-  const main = markets(mainMarkets);
+  const main = marketsOf(mainMarkets);
   const rows = [];
   for (const e of entries) {
     if (!e?.qid || e.expected_kind === "count" || stateOf(e.qid) !== "incomplete") continue;
-    const read = readUnder(e, new Set([e.qid]));
+    const lists = retrievedUnder(e, new Set([e.qid]));
     const total = byQid.get(e.qid)?.total_hits;
     const row = { qid: e.qid, axis: e.axis ?? null, ...(Number.isFinite(Number(total)) && total != null ? { total_hits: Number(total) } : {}) };
-    if (asksIdenticalMark(e, identicalTerms)) {
-      const scope = regionsOf(e);
-      const readMarkets = [...new Set(read.flatMap((c) => regionsOf(c)))];
-      const whole = read.some((c) => scope.every((m) => regionsOf(c).includes(m)));
-      const needed = main.length ? main.filter((m) => !scope.length || scope.includes(m)) : scope;
-      const answered = whole || (needed.length > 0 && needed.every((m) => readMarkets.includes(m)));
-      rows.push(answered
-        ? { ...row, ending: "answered", answered_by: read.map((c) => c.qid).slice(0, 12) }
-        : { ...row, ending: "required-read-not-completed", ...(readMarkets.length ? { markets_read: readMarkets.slice(0, 60) } : {}) });
+    const named = lists.length ? { lists: lists.map((c) => c.qid).slice(0, 12) } : {};
+    if (!asksIdenticalMark(e, identicalTerms)) {
+      rows.push({ ...row, narrowing: lists.length ? "list-retrieved" : "no-list", ...named });
       continue;
     }
-    rows.push(read.length ? { ...row, ending: "answered", answered_by: read.map((c) => c.qid).slice(0, 12) } : { ...row, ending: "set-aside" });
+    // THE REQUIRED READ, CELL BY CELL: every class the question asks, in every main market inside its scope, or the
+    // whole scope where the run names no main market. A worldwide scope is one cell per class, and only a worldwide
+    // list covers it: an empty market list is never read as "every market covered".
+    const scope = regionsOf(e);
+    const inScope = main.length ? (scope.length ? main.filter((m) => scope.includes(m)) : main) : [];
+    const cellMarkets = inScope.length ? inScope : (scope.length ? scope : [WORLDWIDE]);
+    const cellClasses = classesOf(e).length ? classesOf(e) : ["*"];
+    const covers = (c, m) => lists.some((d) => {
+      const dc = classesOf(d), dr = regionsOf(d);
+      const classOk = c === "*" ? !dc.length : (!dc.length || dc.includes(c));
+      const marketOk = m === WORLDWIDE ? !dr.length : (!dr.length || dr.includes(m));
+      return classOk && marketOk;
+    });
+    const notCovered = [];
+    for (const c of cellClasses) for (const m of cellMarkets) if (!covers(c, m)) notCovered.push(c === "*" ? m : `${c}/${m}`);
+    rows.push(notCovered.length
+      ? { ...row, narrowing: "required-not-covered", ...named, not_covered: notCovered.slice(0, 40) }
+      : { ...row, narrowing: "required-covered", ...named });
   }
-  const count = (k) => rows.filter((r) => r.ending === k).length;
-  return { answered: count("answered"), set_aside: count("set-aside"), required_read_not_completed: count("required-read-not-completed"), rows };
+  const count = (k) => rows.filter((r) => r.narrowing === k).length;
+  return { list_retrieved: count("list-retrieved"), no_list: count("no-list"), required_covered: count("required-covered"),
+    required_not_covered: count("required-not-covered"), rows };
 }
 
 /** Every band block with a qid, by qid, across the axes: the blocks a crowd's ending is read from. PURE. */
@@ -2619,10 +2647,10 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), 
   const planQids = new Set(plan.entries.map((e) => e.qid));
   const unplanned = blocks.filter((b) => typeof b.qid === "string" && b.qid && !planQids.has(b.qid))
     .map((b) => ({ qid: b.qid, query: String(b.query ?? "").slice(0, 80) }));
-  // each crowd's ending, worked out from the same blocks (crowdEndings, above): on the receipt only when there is a crowd
-  const crowds = crowdEndings(plan, byQid, { mainMarkets });
+  // what was retrieved under each crowd, worked out from the same blocks (crowdNarrowing, above): on the receipt only when there is a crowd
+  const crowds = crowdNarrowing(plan, byQid, { mainMarkets });
   return { executed, missing, skipped, deferred, awaiting, asked, unplanned, ...(notAsked.length ? { outstanding: notAsked } : {}),
-    ...(crowds.rows.length ? { crowd_endings: crowds } : {}) };
+    ...(crowds.rows.length ? { crowd_narrowing: crowds } : {}) };
 }
 
 // ──: the slice the provider ACCEPTED and then hard-errored at RUN time ──────────────────────────

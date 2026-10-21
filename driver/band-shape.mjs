@@ -830,7 +830,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
  *                             (charter P2d); the band itself stays per-registration
  * @returns { shape, md }      deterministic — same band + inputs ⇒ same bytes (no timestamps)
  */
-export function buildBandShape(band, { crowdEndings = [], targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, goodsTest = null, goodsWordCount = 0, dominantTerm = "", manifestDominant = "", keysOf = null, markets = [], territories = [], evidenceOf = null } = {}) {
+export function buildBandShape(band, { crowdNarrowing = [], targets = [], inScopeClasses = [], crowdContext = null, caps = {}, positions = null, goods = null, goodsTest = null, goodsWordCount = 0, dominantTerm = "", manifestDominant = "", keysOf = null, markets = [], territories = [], evidenceOf = null } = {}) {
   const prepared = prepareTargets(Array.isArray(targets) && targets.every(isPrepared) ? targets.map((t) => t.text) : targets);
   const records = Array.isArray(band?.enumerated) ? band.enumerated : [];
   const crowds = Array.isArray(band?.crowds) ? band.crowds : [];
@@ -914,8 +914,8 @@ export function buildBandShape(band, { crowdEndings = [], targets = [], inScopeC
   // context slice joins a crowd when one of its terms appears in the crowd's query (case-folded).
   const ccSlices = Array.isArray(crowdContext?.slices) ? crowdContext.slices : [];
   const fold = (s) => foldDiacritics(String(s ?? "")).toLowerCase();
-  // each crowd's ending, from the plan join (register-plan.mjs, crowdEndings): data on the descriptor, by its qid
-  const endingByQid = new Map((Array.isArray(crowdEndings) ? crowdEndings : []).filter((r) => r?.qid && r?.ending).map((r) => [String(r.qid), r]));
+  // what was retrieved under each crowd (register-plan.mjs, crowdNarrowing): data on the descriptor, by its qid
+  const endingByQid = new Map((Array.isArray(crowdNarrowing) ? crowdNarrowing : []).filter((r) => r?.qid && r?.narrowing).map((r) => [String(r.qid), r]));
   const shapeCrowds = crowds.map((c) => {
     const q = fold(c.query);
     const end = c.qid ? endingByQid.get(String(c.qid)) : null;
@@ -932,7 +932,7 @@ export function buildBandShape(band, { crowdEndings = [], targets = [], inScopeC
       // executor and judgment, and dropping them here would undo the first carry silently.
       ...(c.error === true ? { error: true } : {}),
       ...(c.deferred === true ? { deferred: true } : {}),
-      ...(end ? { ending: end.ending, ...(end.answered_by?.length ? { answered_by: end.answered_by } : {}) } : {}),
+      ...(end ? { narrowing: end.narrowing, ...(end.lists?.length ? { lists: end.lists } : {}), ...(end.not_covered?.length ? { not_covered: end.not_covered } : {}) } : {}),
       crowd_context_slice: joined.length ? joined : null,
     };
   });

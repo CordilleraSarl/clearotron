@@ -59,7 +59,7 @@ import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordU
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
 import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdEndings, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
@@ -81,7 +81,7 @@ import { heldAnswers, refuseHeldQuestions } from "./engine/mcp/held-answers.mjs"
 import { readOutstanding, FOLLOW_UP_SEARCH_LIMIT, followUpSearchesSent } from "../providers/_shared/follow-up-searches.mjs";
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
 // safety net did not send, which join as questions not asked rather than missing (follow-up-searches.mjs), and the run's
-// main markets, the one market list a crowd of the identical mark is read in (crowdEndings): the order's
+// main markets, the one market list a crowd of the identical mark is read in (crowdNarrowing): the order's
 // countries, else the customer's priority markets, else the major markets.
 const mainMarketsOf = (ctx) => {
   try { const { scope, priorities, major } = narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile); return scope.length ? scope : priorities.length ? priorities : major; }
@@ -1107,12 +1107,12 @@ function deriveBandShape(ctx, band) {
     try { evidenceDoc = goodsEvidenceDocFor(ctx, band, shapeGoods.goods); } catch { evidenceDoc = null; }
     const evidenceBy = evidenceDoc ? new Map(evidenceDoc.records.map((r) => [r.uri, r])) : null;
     const evidenceOf = evidenceBy ? (r) => evidenceBy.get(normalizeRecordUri(r?.record_id) || String(r?.record_id ?? "")) ?? null : null;
-    // each crowd's ending, from the per-axis blocks on disk now: the shape never carries an ending older than its band
+    // what was retrieved under each crowd, from the per-axis blocks on disk now: the shape never carries a record older than its band
     const endings = (() => {
       if (!ctx.registerPlan || !(band?.crowds?.length)) return [];
-      try { return crowdEndings(ctx.registerPlan, blocksByQidOf(readRegisterBands(P, ctx.axes ?? [])), { mainMarkets: mainMarketsOf(ctx) }).rows; } catch { return []; }
+      try { return crowdNarrowing(ctx.registerPlan, blocksByQidOf(readRegisterBands(P, ctx.axes ?? [])), { mainMarkets: mainMarketsOf(ctx) }).rows; } catch { return []; }
     })();
-    const { shape, md } = buildBandShape(band, { crowdEndings: endings, targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null), evidenceOf });
+    const { shape, md } = buildBandShape(band, { crowdNarrowing: endings, targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null), evidenceOf });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");

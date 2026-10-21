@@ -164,13 +164,13 @@
 //                               flag later: the record gates nothing, and its `unreadable` total is counted off the
 //                               same rows. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
-//   · `crowdEndings` declared in register-plan.mjs mints a crowd's `ending` in the SAME row object as the
-//                               evidence it rests on, `answered_by` (the read lists) or `markets_read`, off
-//                               one map of blocks, in one call. No reader keeps an ending for later blocks to
-//                               contradict: the receipt's are minted by the join from the blocks it joins,
-//                               and the coverage form and the band shape each call it on the blocks they are
-//                               built from. Nothing enforces against the ending: it is data the reading step
-//                               decides on. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `crowdNarrowing` declared in register-plan.mjs mints a crowd's `narrowing` in the SAME row object as the
+//                               evidence it rests on, `lists` (the retrieved lists) or `not_covered` (the cells
+//                               no list covers), off one map of blocks, in one call. No reader keeps it for later
+//                               blocks to contradict: the receipt's is minted by the join from the blocks it
+//                               joins, and the coverage form and the band shape each call it on the blocks they
+//                               are built from. Nothing enforces against it: it is data the reading step decides
+//                               on. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
 //   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
