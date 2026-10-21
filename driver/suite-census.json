@@ -65,7 +65,7 @@
         },
         "a-batch-of-names-is-one-question-per-name-without-or.test.mjs": {
           "tests": 6,
-          "asserts": 28,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -393,15 +393,9 @@
           "skips": 0,
           "todos": 0
         },
-        "a-crowd-ends-answered-set-aside-or-as-a-required-read-not-completed.test.mjs": {
-          "tests": 6,
-          "asserts": 27,
-          "skips": 0,
-          "todos": 0
-        },
         "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -7389,6 +7383,12 @@
           "skips": 0,
           "todos": 0
         },
+        "what-a-run-retrieved-under-each-crowd-is-recorded-and-nothing-more.test.mjs": {
+          "tests": 7,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 15,
           "asserts": 49,
@@ -8305,7 +8305,7 @@
         },
         "providers/_shared/test/a-follow-up-met-with-the-allowance-spent-is-not-asked-and-the-run-goes-on.test.mjs": {
           "tests": 6,
-          "asserts": 23,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -8324,6 +8324,12 @@
         "providers/_shared/test/a-register-floor-is-too-many-to-read.test.mjs": {
           "tests": 8,
           "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/a-run-counts-the-follow-up-searches-its-model-adds-on-any-register.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -8420,12 +8426,6 @@
         "providers/_shared/test/territory-codes.test.mjs": {
           "tests": 15,
           "asserts": 45,
-          "skips": 0,
-          "todos": 0
-        },
-        "providers/_shared/test/the-run-has-one-allowance-of-paid-calls-for-searches-the-model-adds.test.mjs": {
-          "tests": 6,
-          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -8556,8 +8556,8 @@
           "todos": 0
         },
         "providers/signa/test/exact-spellings-go-as-one-ranked-list.test.mjs": {
-          "tests": 11,
-          "asserts": 39,
+          "tests": 12,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
