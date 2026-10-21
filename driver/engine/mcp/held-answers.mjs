@@ -19,6 +19,8 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";
 import { OUTSTANDING_REASON } from "../../../providers/_shared/call-allowance.mjs";
+import { awaitsReadingTurn } from "../../../providers/_shared/plan-guards.mjs";
+import { releasedFamilyQids } from "../../withheld-families.mjs";
 
 const QUESTION_FIELDS = ["predicate", "term", "terms", "romanizedTerms", "term_literal", "nice_classes", "regions", "goods_text", "owner", "expected_kind"];
 const sorted = (v) => [...v].map((x) => String(x)).sort();
@@ -62,10 +64,33 @@ function readBlocks(path) {
 }
 
 /**
+ * Refuse the minted entries whose question the run has already answered on another row, the way the fold refuses a
+ * question the plan already holds: `duplicate-question`, with the row that answered it as the twin. Second framing's
+ * re-sweep calls this before its fold, because the fold sees only the plan's rows on the re-sweep's own axis, and a
+ * question another worker answered is not asked again. Only an answer settles: a withheld family has its own refusal,
+ * and a question the allowance refused would be refused again. PURE.
+ * @returns {{ kept: object[], refused: {qid: string, term: string, kind: "duplicate-question", twin: string}[] }}
+ */
+export function refuseHeldQuestions(entries, held, planRegions = []) {
+  const kept = [], refused = [];
+  for (const e of Array.isArray(entries) ? entries : []) {
+    const h = held?.get?.(questionKey(e, planRegions));
+    if (e?.qid && h?.decision === "answered" && h.qid && String(h.qid) !== String(e.qid))
+      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "duplicate-question", twin: String(h.qid) });
+    else kept.push(e);
+  }
+  return { kept, refused };
+}
+
+/**
  * The run's held answers and decisions, by question key. IMPURE (reads the run's register files).
  * @returns {Map<string, { qid: string, axis: string, decision: "answered"|"withheld"|"outstanding", block?: object }>}
  */
-export function heldAnswers(runDir, { planRegions = [], withheld = {} } = {}) {
+export function heldAnswers(runDir, { planRegions = [], withheld = {}, released = null } = {}) {
+  // A FAMILY WAITING FOR THE READING TURN IS ANSWERED ONLY ONCE IT IS RELEASED AND RUN, the plan join's own rule: until
+  // then it was not asked, whatever block its qid may carry, and a question repeating it is asked as the join expects.
+  let releasedQids = released;
+  if (!(releasedQids instanceof Set)) { try { releasedQids = releasedFamilyQids(runDir); } catch { releasedQids = new Set(); } }
   const held = new Map();
   const units = join(runDir, "register-units");
   const blocksByQid = new Map();
@@ -84,6 +109,10 @@ export function heldAnswers(runDir, { planRegions = [], withheld = {} } = {}) {
       if (!e?.qid) continue;
       const key = questionKey(e, planRegions);
       if (held.has(key)) continue;
+      if (awaitsReadingTurn(e.when) && !releasedQids.has(String(e.qid))) {
+        if (withheld?.[e.qid]) held.set(key, { qid: e.qid, axis: e.axis, decision: "withheld" });
+        continue;
+      }
       const b = blocksByQid.get(String(e.qid));
       if (b && b.error !== true) held.set(key, { qid: e.qid, axis: e.axis, decision: "answered", block: b });
       else if (withheld?.[e.qid]) held.set(key, { qid: e.qid, axis: e.axis, decision: "withheld" });

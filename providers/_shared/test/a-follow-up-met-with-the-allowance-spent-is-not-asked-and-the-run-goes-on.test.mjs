@@ -93,7 +93,7 @@ test("with the allowance spent, the plan's questions and the identical mark's na
   const { reply } = await execute(executePlan, f, [
     { qid: `${AXIS}:default:qzorva`, axis: AXIS, predicate: "default", term: "QZORVA", nice_classes: [9], expected_kind: "enumerate" },
     { qid: `${AXIS}:wider:qzorvak`, axis: AXIS, predicate: "default", term: "QZORVAK GAMES", nice_classes: [9], expected_kind: "enumerate",
-      provenance: "model", when: { awaits: "reading-turn" } },
+      provenance: "model", when: { awaits_reading_turn: true } },
     followUp("sup:goods", "Qzorvak", { predicate: "exact", goods_text: ["video games"] }),
     followUp("sup:goods-jp", "QZORVAK", { predicate: "exact", goods_text: ["video games"], regions: ["JP"] }),
     followUp("sup:wider", "QZORVAK", { predicate: "exact" }),

@@ -59,6 +59,8 @@ import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { bindingLayersFor, layerCoverageFor } from "./binding-layers.mjs";
 import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
 import { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid } from "../providers/_shared/plan-guards.mjs";
+import { asksIdenticalMark, identicalMarkTerms } from "../providers/_shared/call-allowance.mjs";
+import { territoryKey } from "./territory-tiers.mjs";
 import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { marketsFilingScriptOf } from "./registration-scripts.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
@@ -2408,6 +2410,82 @@ export function parseRegisterPlan(raw) {
   return { ...p };
 }
 
+// ── THE THREE ENDINGS OF A CROWD ────────────────────────────────────────────────────────────────
+//
+// A crowd is a question that ran and counted more than it read. The crowded-field method gives each one of
+// three endings, and this is the run's record of which, worked out from the run's own files and never from a
+// model's account:
+//   answered      a narrowed list that was read in full answered it. The list is the evidence: complete,
+//                 and keeping the limits of every step above it (classes, markets, the client's goods, the
+//                 owner), at any depth of the narrowing. What the list left unread is set aside with its count.
+//   set-aside     a wider question no read list answered. Its count stays on the record; the reading step
+//                 gives the reason.
+//   required-read-not-completed
+//                 the identical mark's own question with no read list in every main market, or one covering
+//                 its whole scope. It keeps today's consequence, and the markets it did read are named.
+// A refused or failed question is not a crowd: the join keeps those as `outstanding` and `missing`.
+// It is data for the coverage form, the band shape and the receipt, and each of them works it out from the blocks it
+// reads itself, so none holds an ending older than its blocks. It changes no sentence. PURE.
+export function crowdEndings(plan, byQid, { mainMarkets = [] } = {}) {
+  const entries = Array.isArray(plan?.entries) ? plan.entries : [];
+  const identicalTerms = identicalMarkTerms(plan);
+  const childrenOf = new Map();
+  for (const e of entries) {
+    const parent = typeof e?.narrows === "string" ? e.narrows.trim() : "";
+    if (!parent || !e?.qid) continue;
+    if (!childrenOf.has(parent)) childrenOf.set(parent, []);
+    childrenOf.get(parent).push(e);
+  }
+  const strs = (v) => (Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : []);
+  const markets = (v) => [...new Set(strs(v).map((t) => territoryKey(t) || t.toUpperCase()))];
+  const regionsOf = (e) => (strs(e?.regions).length ? markets(e.regions) : markets(plan?.regions));
+  const within = (inner, outer) => !outer.length || (inner.length > 0 && inner.every((x) => outer.includes(x)));
+  const keepsLimits = (parent, child) => within(strs(child.nice_classes), strs(parent.nice_classes))
+    && within(regionsOf(child), regionsOf(parent))
+    && (!goodsTermsList(parent).length || goodsTermsList(child).length > 0)
+    && String(parent.owner ?? "").trim() === String(child.owner ?? "").trim();
+  const stateOf = (qid) => { const b = byQid.get(qid); return b && b.error !== true ? String(b.state ?? "").toLowerCase() : null; };
+  const readUnder = (e, seen) => {
+    const out = [];
+    for (const c of childrenOf.get(e.qid) ?? []) {
+      if (seen.has(c.qid) || !keepsLimits(e, c)) continue;
+      seen.add(c.qid);
+      if (stateOf(c.qid) === "enumerated") out.push(c);
+      out.push(...readUnder(c, seen));
+    }
+    return out;
+  };
+  const main = markets(mainMarkets);
+  const rows = [];
+  for (const e of entries) {
+    if (!e?.qid || e.expected_kind === "count" || stateOf(e.qid) !== "incomplete") continue;
+    const read = readUnder(e, new Set([e.qid]));
+    const total = byQid.get(e.qid)?.total_hits;
+    const row = { qid: e.qid, axis: e.axis ?? null, ...(Number.isFinite(Number(total)) && total != null ? { total_hits: Number(total) } : {}) };
+    if (asksIdenticalMark(e, identicalTerms)) {
+      const scope = regionsOf(e);
+      const readMarkets = [...new Set(read.flatMap((c) => regionsOf(c)))];
+      const whole = read.some((c) => scope.every((m) => regionsOf(c).includes(m)));
+      const needed = main.length ? main.filter((m) => !scope.length || scope.includes(m)) : scope;
+      const answered = whole || (needed.length > 0 && needed.every((m) => readMarkets.includes(m)));
+      rows.push(answered
+        ? { ...row, ending: "answered", answered_by: read.map((c) => c.qid).slice(0, 12) }
+        : { ...row, ending: "required-read-not-completed", ...(readMarkets.length ? { markets_read: readMarkets.slice(0, 60) } : {}) });
+      continue;
+    }
+    rows.push(read.length ? { ...row, ending: "answered", answered_by: read.map((c) => c.qid).slice(0, 12) } : { ...row, ending: "set-aside" });
+  }
+  const count = (k) => rows.filter((r) => r.ending === k).length;
+  return { answered: count("answered"), set_aside: count("set-aside"), required_read_not_completed: count("required-read-not-completed"), rows };
+}
+
+/** Every band block with a qid, by qid, across the axes: the blocks a crowd's ending is read from. PURE. */
+export function blocksByQidOf(bandBlocksByAxis) {
+  const byQid = new Map();
+  for (const arr of Object.values(bandBlocksByAxis ?? {})) for (const b of arr ?? []) if (b && typeof b.qid === "string" && b.qid) byQid.set(b.qid, b);
+  return byQid;
+}
+
 // ── fan-in: identity join plan ⇄ band blocks ────────────────────────────────────────────────────
 
 /**
@@ -2423,7 +2501,7 @@ export function parseRegisterPlan(raw) {
  * An entry whose `when` guard resolves FALSE (parent crowd/absent) is `skipped`, never `missing`.
  * Blocks with no qid join nothing (legacy bands) and surface as unplanned only when they carry one.
  */
-export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), outstanding = new Set() } = {}) {
+export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), outstanding = new Set(), mainMarkets = [] } = {}) {
   const blocks = [];
   for (const [axis, arr] of Object.entries(bandBlocksByAxis ?? {})) {
     for (const b of arr ?? []) if (b && typeof b === "object") blocks.push({ ...b, _axis: axis });
@@ -2541,7 +2619,10 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), 
   const planQids = new Set(plan.entries.map((e) => e.qid));
   const unplanned = blocks.filter((b) => typeof b.qid === "string" && b.qid && !planQids.has(b.qid))
     .map((b) => ({ qid: b.qid, query: String(b.query ?? "").slice(0, 80) }));
-  return { executed, missing, skipped, deferred, awaiting, asked, unplanned, ...(notAsked.length ? { outstanding: notAsked } : {}) };
+  // each crowd's ending, worked out from the same blocks (crowdEndings, above): on the receipt only when there is a crowd
+  const crowds = crowdEndings(plan, byQid, { mainMarkets });
+  return { executed, missing, skipped, deferred, awaiting, asked, unplanned, ...(notAsked.length ? { outstanding: notAsked } : {}),
+    ...(crowds.rows.length ? { crowd_endings: crowds } : {}) };
 }
 
 // ──: the slice the provider ACCEPTED and then hard-errored at RUN time ──────────────────────────
