@@ -6099,6 +6099,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-cut-reads-its-version-pull-request-with-fields-gh-accepts.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-delivered-files-say-what-was-retrieved-not-what-was-read.test.mjs": {
           "tests": 3,
           "asserts": 11,
