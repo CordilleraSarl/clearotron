@@ -400,14 +400,14 @@
           "todos": 0
         },
         "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
-          "tests": 3,
-          "asserts": 13,
+          "tests": 4,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
         "a-crowd-is-narrowed-by-goods-and-class-then-by-market.test.mjs": {
           "tests": 5,
-          "asserts": 17,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -1277,7 +1277,7 @@
         },
         "a-question-the-run-has-answered-or-decided-is-not-asked-again.test.mjs": {
           "tests": 7,
-          "asserts": 34,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },

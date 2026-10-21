@@ -54,12 +54,12 @@ test("the unit's manual and dispatch decide on a crowd, and point at the order t
     /STOP the per-major \/ phonetic fan-out/, /tractable distinctive/, /\(tractable distinctive token only\)/])
     assert.doesNotMatch(unit, stop, `the unit manual still stops on a crowd: ${stop}`);
   assert.ok(unit.includes("### Read the identical mark first. Look at the count before you read anything"), "guard: the order the crowd rule points at");
-  assert.match(unit, /the ceiling is a call limit, never a decision point: decide on that crowd as on the identical mark's,\s+narrowing it \[in that order\]\(#read-the-identical-mark-first-look-at-the-count-before-you-read-anything\)/);
+  assert.match(unit, /the ceiling is a call limit, never a decision point: decide on that crowd with \[the same steps\]\(#read-the-identical-mark-first-look-at-the-count-before-you-read-anything\),\s+only as far as reading it would change what you tell the client; record what stays a crowd with its count\./);
   const plan = compile("clarivate");
   const P = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`, registerUnit: (a) => `unit-${a}.md`, registerPlan: "plan.json" };
   const dispatch = STAGES["register-unit"].message({ paths: P, axis: "primary-sweep", job: { classes: [9] }, registerPlan: plan, capabilities: null });
   assert.doesNotMatch(dispatch, /TERMINAL: STOP|do NOT fan it out per-major|do NOT phonetic-fringe it/, "the dispatch still stops on a crowd");
-  assert.match(dispatch, /→ the ceiling is a call limit, never a decision point: decide on that crowd as on the identical mark's/);
+  assert.match(dispatch, /→ the ceiling is a call limit, never a decision point: decide on that crowd with the same steps \(unit\.md, "Read the identical mark first"\), only as far as reading it would change what you tell the client; record what stays a crowd with its count\./);
   // The fringe is listed to the turn as a family it decides.
   const fringeLine = dispatch.split("\n").find((l) => /: wildcard "/.test(l)) ?? "";
   assert.match(fringeLine, /WAITING FOR YOU/, `the fringe is not handed to the turn: ${fringeLine}`);
@@ -81,4 +81,17 @@ test("a fringe the reading turn withheld is an explained absence to the form ora
   writeFileSync(join(run, "_driver", "withheld-families-primary-sweep.json"), JSON.stringify({ axis: "primary-sweep",
     families: Object.fromEntries(fringe.map((e) => [e.qid, { reason: "The identical mark's list already answers who could object here." }])) }));
   assert.deepEqual(family(mechanicalFormGapDirectives(ctx)), [], "a fringe withheld with its reason was ordered searched over the turn's decision");
+});
+
+test("the write-up settles a crowd the narrowing steps closed as withheld by judgment, and the shared manual narrows a crowded name-list", () => {
+  const digest = read("skills/clearance-register/digest.md").replace(/\s+/g, " ");
+  assert.ok(digest.includes("There are three kinds and they take different statuses:"), "the open-row paragraph still names two kinds");
+  assert.ok(digest.includes("**A crowd the narrowing steps closed.** A narrowed list that was read answered it, or the reading step set it aside "
+    + "with its count and a reason. That is finished work, not a gap. Status `withheld-by-judgment`, with that reason. A crowd left by the identical "
+    + "mark's own narrowing is not this kind: one still a crowd after the last step, or in a country its market step did not read, is an unaccounted crowd block."));
+  assert.ok(digest.includes("For the first two kinds the gap is an OPEN, disclosed question for the lawyer, never a clean negative. "
+    + "The third is never a clean negative either: its count stays on the record."));
+  const skill = read("skills/clearance-register/SKILL.md").replace(/\s+/g, " ");
+  assert.ok(skill.includes("**The exact name-list is read first, and narrowed when it crowds.**"));
+  assert.doesNotMatch(skill, /left as a crowd descriptor|small and cheap by construction/, "the shared manual still says the name-list can never stay a crowd");
 });

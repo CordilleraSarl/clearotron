@@ -15,7 +15,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { proposeSupplemental } from "../engine/mcp/supplemental.mjs";
+import { proposeSupplemental, OUTSTANDING_NOTE } from "../engine/mcp/supplemental.mjs";
 import { deriveAsks } from "../ask-ledger.mjs";
 import { heldAnswers, refuseHeldQuestions } from "../engine/mcp/held-answers.mjs";
 import { blocksByQidOf } from "../register-plan.mjs";
@@ -81,6 +81,7 @@ test("a question another worker has answered is handed that answer, and the regi
   assert.equal(b.held[0].axis, "primary-sweep");
   assert.equal(b.held[0].total_hits, 3);
   assert.equal(b.held[0].records_preview[0].record_id, "/mark/jp/qzorvek-1", "the worker gets the records, not just a pointer");
+  assert.equal(b.outstanding_note, undefined, "an answered question carries the refusal's sentence");
   assert.ok(!(readJson(f.plan("incumbent-class"))?.entries ?? []).length, "the held question was minted into a second plan");
 });
 
@@ -129,6 +130,8 @@ test("a follow-up the safety net holds back leaves the plan, keeps its markets a
   assert.deepEqual(first.minted, []);
   assert.equal(first.outstanding.length, 1);
   assert.equal(/allowance|limit|spent|paid|\bcap\b/i.test(JSON.stringify(first)), false, `the reply names the net: ${JSON.stringify(first)}`);
+  assert.equal(first.outstanding_note, "Not asked in this run. Keep it as an open question with your reason, and continue with what you have read.");
+  assert.equal(first.outstanding_note, OUTSTANDING_NOTE);
   // the same question for the other market, asked later when a call was free
   const later = stand();
   await propose(f, "primary-sweep", [{ ...narrow, regions: ["KR"] }], later.executePlan);
@@ -144,6 +147,7 @@ test("a follow-up the safety net holds back leaves the plan, keeps its markets a
   const re = await propose(f, "incumbent-class", [{ ...narrow, regions: ["JP"] }], third.executePlan);
   assert.equal(third.calls.length, 0);
   assert.deepEqual(re.held.map((h) => h.decision), ["outstanding"]);
+  assert.equal(re.outstanding_note, OUTSTANDING_NOTE, "a question held back earlier is not given the line");
 });
 
 test("second framing's re-sweep does not ask again a question another worker answered: it is checked on that worker's row", async (t) => {

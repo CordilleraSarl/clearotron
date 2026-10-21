@@ -39,6 +39,11 @@ import { heldAnswers, questionKey } from "./held-answers.mjs";
 import { readWithheldFamilies } from "../../withheld-families.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
 
+// THE ONE SENTENCE THE MODEL READS WHEN THE RUN'S SAFETY NET HOLDS A FOLLOW-UP BACK (follow-up-searches.mjs). It names
+// no limit and no cost: the model is never told of the net. It rides the reply whenever a question was not sent, now
+// or by an earlier decision held for the run.
+export const OUTSTANDING_NOTE = "Not asked in this run. Keep it as an open question with your reason, and continue with what you have read.";
+
 const slug = (s) => String(s ?? "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 32) || "q";
 
 const PREVIEW_FIELDS = ["record_id", "mark_text", "classes", "status", "owner_name", "owner_country", "screen_verdict"];
@@ -571,5 +576,5 @@ export async function proposeSupplemental(params, tctx, deps) {
     }
   } catch { /* band unreadable — the executor summary still crosses */ }
 
-  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding } : {}), ...(held.length ? { held } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
+  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding } : {}), ...(held.length ? { held } : {}), ...(outstanding.length || held.some((h) => h.decision === "outstanding") ? { outstanding_note: OUTSTANDING_NOTE } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
 }
