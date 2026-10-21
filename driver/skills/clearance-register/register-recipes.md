@@ -266,7 +266,7 @@ For each transliteration variant in the manifest:
      so judgment sees provenance; identical-text rows carry their status like any other record
 ```
 
-**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer and asked region-scoped only when it was a crowd; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration on any `incomplete` it deems material, or halts. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
+**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer and asked region-scoped only when it was a crowd; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration by the narrowing steps on any `incomplete` it deems material, or records it with its count and moves on. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
 
 **Meaning-axis extension — a saturated everyday-word meaning token (COLORA→色彩) runs the same enumeration.** When
 the saturation probe flags a `translit-*-meaning` variant and the frame says that market matters, add **one `register_enumerate` step on the
@@ -302,8 +302,7 @@ hand-paginate. These rules describe what the primitive guarantees and how the fu
   The funnel **never** decides a page-through was "enough" — there is no top-N, no "stop at record N and call
   it clean". `enumerated` or `incomplete` are the only two outcomes, and both cross the firewall verbatim.
 - **A crowd over the window/ceiling returns `incomplete`** (count + sample + reason) — **never a silent
-  truncation and never a self-accepted limit.** That `incomplete` block is the signal to judgment; the lawyer
-  decides whether to command a narrower named enumeration (which the funnel then runs) or halt. The funnel does
+  truncation and never a self-accepted limit.** That `incomplete` block is the signal to judgment; the lawyer decides whether to command a narrower named enumeration by the narrowing steps (which the funnel then runs), or to record it with its count and move on. The funnel does
   not "narrow and re-probe until tractable, then call it clean" — it surfaces the descriptor and lets judgment
   command.
 - **Retry / provider error** is handled inside the primitive; a persistent failure returns `incomplete` with
