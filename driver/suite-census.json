@@ -401,7 +401,7 @@
         },
         "a-crowd-is-narrowed-by-goods-and-class-then-by-market.test.mjs": {
           "tests": 5,
-          "asserts": 17,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -1271,7 +1271,7 @@
         },
         "a-question-the-run-has-answered-or-decided-is-not-asked-again.test.mjs": {
           "tests": 5,
-          "asserts": 29,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },

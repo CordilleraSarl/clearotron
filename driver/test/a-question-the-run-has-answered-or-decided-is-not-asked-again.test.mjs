@@ -15,7 +15,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { proposeSupplemental } from "../engine/mcp/supplemental.mjs";
+import { proposeSupplemental, OUTSTANDING_NOTE } from "../engine/mcp/supplemental.mjs";
 import { deriveAsks } from "../ask-ledger.mjs";
 
 const tctx = { kind: "propose_supplemental", sessionKey: "run-x" };
@@ -78,6 +78,7 @@ test("a question another worker has answered is handed that answer, and the regi
   assert.equal(b.held[0].axis, "primary-sweep");
   assert.equal(b.held[0].total_hits, 3);
   assert.equal(b.held[0].records_preview[0].record_id, "/mark/jp/qzorvek-1", "the worker gets the records, not just a pointer");
+  assert.equal(b.outstanding_note, undefined, "an answered question carries the refusal's sentence");
   assert.ok(!(readJson(f.plan("incumbent-class"))?.entries ?? []).length, "the held question was minted into a second plan");
 });
 
@@ -126,6 +127,9 @@ test("a follow-up the allowance refuses leaves the plan, keeps its markets and g
   assert.deepEqual(first.minted, []);
   assert.equal(first.outstanding.length, 1);
   assert.deepEqual(first.allowance, { spent: 250, limit: 250, reason: "run-call-limit" });
+  assert.equal(first.outstanding_note, "Not run: this run has reached its limit of 250 paid follow-up register calls. "
+    + "The question is kept as outstanding with your reason; the clearance continues with what has been read.");
+  assert.equal(first.outstanding_note, OUTSTANDING_NOTE);
   // the same question for the other market, asked later when a call was free
   const later = stand();
   await propose(f, "primary-sweep", [{ ...narrow, regions: ["KR"] }], later.executePlan);
@@ -141,4 +145,5 @@ test("a follow-up the allowance refuses leaves the plan, keeps its markets and g
   const re = await propose(f, "incumbent-class", [{ ...narrow, regions: ["JP"] }], third.executePlan);
   assert.equal(third.calls.length, 0);
   assert.deepEqual(re.held.map((h) => h.decision), ["outstanding"]);
+  assert.equal(re.outstanding_note, OUTSTANDING_NOTE, "a question refused earlier is not told why it was not run");
 });

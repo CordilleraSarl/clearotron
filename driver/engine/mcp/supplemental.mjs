@@ -34,10 +34,15 @@ import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
-import { OUTSTANDING_REASON } from "../../../providers/_shared/call-allowance.mjs";
+import { OUTSTANDING_REASON, RUN_CALL_LIMIT } from "../../../providers/_shared/call-allowance.mjs";
 import { heldAnswers, questionKey } from "./held-answers.mjs";
 import { readWithheldFamilies } from "../../withheld-families.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
+
+// THE ONE SENTENCE THE MODEL READS WHEN THE RUN'S ALLOWANCE REFUSES A FOLLOW-UP (call-allowance.mjs). It rides the
+// reply whenever a question was not run for that reason, now or by an earlier refusal held for the run.
+export const OUTSTANDING_NOTE = `Not run: this run has reached its limit of ${RUN_CALL_LIMIT} paid follow-up register calls. `
+  + "The question is kept as outstanding with your reason; the clearance continues with what has been read.";
 
 const slug = (s) => String(s ?? "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 32) || "q";
 
@@ -571,5 +576,5 @@ export async function proposeSupplemental(params, tctx, deps) {
     }
   } catch { /* band unreadable — the executor summary still crosses */ }
 
-  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding, allowance: summary?.allowance ?? null } : {}), ...(held.length ? { held } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
+  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding, allowance: summary?.allowance ?? null } : {}), ...(held.length ? { held } : {}), ...(outstanding.length || held.some((h) => h.decision === "outstanding") ? { outstanding_note: OUTSTANDING_NOTE } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
 }

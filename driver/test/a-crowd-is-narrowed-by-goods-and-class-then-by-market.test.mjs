@@ -8,6 +8,10 @@
 // customer's priority markets, else the markets the customer's field and brand point to, else the major
 // markets. The register reading step's message had no territory line at all, so it could not narrow by
 // market in that order. Driven through the real order door and the real message builder.
+//
+// The line names ONE market list, the one that applies: printed as a chain of "else", all three lists reached the
+// reading step and it was left to pick among them. Each step keeps the limits before it, and a crowd still a crowd
+// after the markets is recorded with its count.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -29,7 +33,7 @@ const unitMessage = (job, defaults = DEFAULTS) => STAGES["register-unit"].messag
   job, profile: { defaultJurisdictions: defaults }, registerPlan: PLAN });
 const narrowingLine = (msg) => msg.split("\n").find((l) => l.startsWith("NARROWING A CROWD")) ?? "";
 
-test("a worldwide order narrows by goods and class, then the priority markets, the field's markets and the major markets, in that order", () => {
+test("a worldwide order narrows by goods and class, then the customer's priority markets, the one list that applies", () => {
   const job = order({ jurisdictions: ["Global"] });
   validateJob(job);
   const line = narrowingLine(unitMessage(job));
@@ -38,9 +42,10 @@ test("a worldwide order narrows by goods and class, then the priority markets, t
   assert.ok(at("the order's classes [9, 41]") > 0, "the classes are not named");
   assert.ok(at("the order's classes") < at("then one of those classes at a time"), "the order's classes, then one of them at a time");
   assert.doesNotMatch(line, /crowding owners/, "no class the crowding owners file in is asked about");
-  assert.ok(at("one of those classes at a time") < at(`the customer's priority markets (${DEFAULTS.join(", ")})`), "goods and class before any market");
-  assert.ok(at("the customer's priority markets") < at("the markets the customer's field and brand point to"));
-  assert.ok(at("field and brand") < at(`the major markets (${MAJOR_MARKETS.join(", ")})`));
+  assert.ok(at("one of those classes at a time") < at("each step keeping the limits before it and stopping at the first list you can read"));
+  assert.ok(at("stopping at the first list you can read") < at(`the customer's priority markets (${DEFAULTS.join(", ")})`), "goods and class before any market");
+  assert.doesNotMatch(line, /field and brand|major markets/, "a second market list reached the reading step");
+  assert.ok(at(`priority markets (${DEFAULTS.join(", ")})`) < at("Still a crowd after the markets: record it with its count."), "the narrowing does not end");
   assert.match(line, /set aside, never clean\.$/);
 });
 
@@ -65,7 +70,7 @@ test("a customer with nothing set up narrows by the order's classes and then the
   validateJob(job);
   const line = narrowingLine(unitMessage(job, []));
   assert.doesNotMatch(line, /priority markets/);
-  assert.match(line, /the markets the customer's field and brand point to \(judge them from the matter frame\), else the major markets \(US, EU, GB, CN, JP\)/);
+  assert.match(line, new RegExp(`the markets the customer's field and brand point to \\(judge them from the matter frame\\), else the major markets \\(${MAJOR_MARKETS.join(", ")}\\)`));
 });
 
 test("both register manuals narrow a crowd one class at a time in the instructed classes, never in the classes the crowding owners file in", () => {
@@ -73,6 +78,8 @@ test("both register manuals narrow a crowd one class at a time in the instructed
   for (const name of ["SKILL.md", "unit.md"]) {
     const text = readFileSync(join(dir, name), "utf8").replace(/\s+/g, " ");
     assert.ok(text.includes("Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the instructed classes. Read each list."), name);
+    assert.ok(text.includes("Still a crowd? Ask again one question per market, from the one list your opening message names. Read those lists."), name);
+    assert.ok(text.includes("4. Still a crowd after step 3? The narrowing ends. Record it with its count: the field is crowded there."), name);
     assert.doesNotMatch(text, /the owners crowding the list file in|then the incumbent's/, name);
   }
 });
