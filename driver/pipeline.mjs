@@ -59,7 +59,7 @@ import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordU
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
 import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdEndings, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
@@ -78,9 +78,16 @@ import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { readOutstanding, RUN_CALL_LIMIT, spentCalls } from "../providers/_shared/call-allowance.mjs";
-// The plan join's options, one place: the families the reading turn released, and the follow-ups the run's
-// allowance refused, which join as questions not asked rather than missing (call-allowance.mjs).
-const joinOptions = (runDir) => ({ released: releasedFamilyQids(runDir), outstanding: new Set(readOutstanding(driverDir(runDir)).map((r) => String(r.qid))) });
+// The plan join's options, one place: the families the reading turn released, the follow-ups the run's
+// allowance refused, which join as questions not asked rather than missing (call-allowance.mjs), and the run's
+// main markets, the one market list a crowd of the identical mark is read in (crowdEndings): the order's
+// countries, else the customer's priority markets, else the major markets.
+const mainMarketsOf = (ctx) => {
+  try { const { scope, priorities, major } = narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile); return scope.length ? scope : priorities.length ? priorities : major; }
+  catch { return []; }
+};
+const joinOptions = (ctx) => ({ released: releasedFamilyQids(ctx.paths.runDir),
+  outstanding: new Set(readOutstanding(driverDir(ctx.paths.runDir)).map((r) => String(r.qid))), mainMarkets: mainMarketsOf(ctx) });
 import { unionPlacementForm } from "./placement-union.mjs";
 import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
   placementRecallEndings, writePlacementDecisions, rankingNow, rankedRecords, recordsReRanked, rankingToJson, rankingFromJson } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
@@ -96,7 +103,7 @@ import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driv
 // CLIENT REPORT through the script-scope coverage row, which is why it is imported rather than typed:
 // the row used to name "Depth 5 (clearance-jx)" — a retired key on a retired ladder — as its remedy.
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
-import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
+import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories, narrowingMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
 import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
@@ -625,7 +632,9 @@ export function writePlanExecutionReceipt(ctx, joinRes) {   // @internal
       ctx.allowanceLogged = seen;
     }
   } catch { allowance = null; }
-  const receipt = { plan_version: ctx.registerPlan.plan_version, ...joinRes, ...census, ...(supplemental.length ? { supplemental } : {}), ...(allowance ? { follow_up_allowance: allowance } : {}), skeleton };
+  // the run's main markets, the one market list its crowd endings were read against: a run constant the coverage form reads
+  const receipt = { plan_version: ctx.registerPlan.plan_version, ...joinRes, ...census, ...(supplemental.length ? { supplemental } : {}), ...(allowance ? { follow_up_allowance: allowance } : {}),
+    main_markets: mainMarketsOf(ctx), skeleton };
   writeFileSync(`${P.planExecution}.tmp`, JSON.stringify(receipt, null, 2) + "\n");
   renameSync(`${P.planExecution}.tmp`, P.planExecution);
   ctx.planExecution = receipt;
@@ -785,7 +794,7 @@ export function refreshSupplementalExecution(ctx) {   // @internal
     const added = foldSupplementalProposals(ctx);
     const stale = ctx.planExecution && ctx.planExecution.plan_version !== ctx.registerPlan.plan_version;
     if (added.length || stale) {
-      writePlanExecutionReceipt(ctx, joinPlanToBands(ctx.registerPlan, readRegisterBands(ctx.paths, ctx.axes ?? []), joinOptions(ctx.paths.runDir)));
+      writePlanExecutionReceipt(ctx, joinPlanToBands(ctx.registerPlan, readRegisterBands(ctx.paths, ctx.axes ?? []), joinOptions(ctx)));
       runLog(ctx.paths.runDir, { event: "plan-execution-refresh", added: added.length });
     }
   } catch (e) { note(`supplemental receipt refresh skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
@@ -1099,7 +1108,12 @@ function deriveBandShape(ctx, band) {
     try { evidenceDoc = goodsEvidenceDocFor(ctx, band, shapeGoods.goods); } catch { evidenceDoc = null; }
     const evidenceBy = evidenceDoc ? new Map(evidenceDoc.records.map((r) => [r.uri, r])) : null;
     const evidenceOf = evidenceBy ? (r) => evidenceBy.get(normalizeRecordUri(r?.record_id) || String(r?.record_id ?? "")) ?? null : null;
-    const { shape, md } = buildBandShape(band, { targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null), evidenceOf });
+    // each crowd's ending, from the per-axis blocks on disk now: the shape never carries an ending older than its band
+    const endings = (() => {
+      if (!ctx.registerPlan || !(band?.crowds?.length)) return [];
+      try { return crowdEndings(ctx.registerPlan, blocksByQidOf(readRegisterBands(P, ctx.axes ?? [])), { mainMarkets: mainMarketsOf(ctx) }).rows; } catch { return []; }
+    })();
+    const { shape, md } = buildBandShape(band, { crowdEndings: endings, targets: targets.slice(0, 64), inScopeClasses, crowdContext, positions, ...shapeGoods, markets: clientMarkets(instructedOrder(P, ctx.job), ctx.profile), territories: orderTerritories(instructedOrder(P, ctx.job), ctx.profile), keysOf: setAsideKeysOf(positions?.positions ?? null), evidenceOf });
     mkdirSync(dirname(P.bandShape), { recursive: true });
     atomicWrite(P.bandShape, JSON.stringify(shape, null, 2) + "\n");
     atomicWrite(P.bandShapeMd, md + "\n");
@@ -11186,7 +11200,7 @@ async function pipelineInner(job, opts = {}) {
             await dispatchPlanQids(axis, qids, "early-envelope-close", 2);
           } : null,
           rejoin: planExec ? async () => {
-            writeExecution(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
+            writeExecution(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
             deriveNamedBand(ctx);   // a close landed band blocks — re-merge so Layer B reads them
             return readPlanExecution(ctx);
           } : null,
@@ -11227,7 +11241,7 @@ async function pipelineInner(job, opts = {}) {
         if (held !== j) runLog(run.runDir, { event: "plan-qids-sticky-gap", qids: j.missing.filter((q) => !held.missing.includes(q)), action: "held-from-missing" });
         return held;
       };
-      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
+      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
       const missingEntriesByAxis = () => {
         const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
         const m = new Map();
@@ -11249,7 +11263,7 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids, action: "plan-direct-execute" });
           await dispatchPlanQids(a, qids, "plan-direct-execute", 2);
         }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
         if (!joinRes.missing.length) deriveNamedBand(ctx);   // dispatch landed blocks — re-merge so Layer B reads them
       }
       if (joinRes.missing.length) {
@@ -11274,7 +11288,7 @@ async function pipelineInner(job, opts = {}) {
           const wf = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "plan-join" });
           if (!wf.ok) note(`register-unit ${a}: warm plan-join followup failed (${wf.fail}) — the plan-unexecuted StageFailure below holds the line`);
         }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx.paths.runDir)));
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
         deriveNamedBand(ctx);   // the followup appended band blocks — re-merge so Layer B reads them
       }
       const skeleton = writeExecution(joinRes);
@@ -12064,7 +12078,7 @@ async function pipelineInner(job, opts = {}) {
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
-                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, joinOptions(ctx.paths.runDir)).executed.map((x) => x.qid));
+                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, joinOptions(ctx)).executed.map((x) => x.qid));
                 const blocksByQid = new Map((bands[a] ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
                 return { outcome, executedQids, blocksByQid };
               };

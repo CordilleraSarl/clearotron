@@ -149,7 +149,8 @@ export function coverageFormInput(runDir) {
   const orderedTerritories = Array.isArray(plan.ordered_jurisdictions) ? plan.ordered_jurisdictions : [];
   return { input: { skeleton: exec.skeleton, plan, bandBlocksByAxis, deferredReasons, activeAxes,
     bandsUnreadable, orderedTerritories, capabilities, unknownAxisUnits,
-    awaiting: Array.isArray(exec.awaiting) ? exec.awaiting : [], withheld: readWithheldFamilies(runDir) }, absent: null };
+    awaiting: Array.isArray(exec.awaiting) ? exec.awaiting : [], withheld: readWithheldFamilies(runDir),
+    mainMarkets: Array.isArray(exec.main_markets) ? exec.main_markets : [] }, absent: null };
 }
 
 /**

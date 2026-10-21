@@ -120,6 +120,11 @@ export function identicalMarkTerms(frozenPlan) {
   return out;
 }
 
+/** Whether an entry asks the identical mark's own question: an exact question on one of its terms. PURE. */
+export function asksIdenticalMark(e, identicalTerms = new Set()) {
+  return String(e?.predicate ?? "") === "exact" && identicalTerms.has(normTerm(e?.term));
+}
+
 /**
  * How an entry stands against the allowance, before it runs. PURE.
  *   "required" — the identical mark's own read: never counted, never refused.
@@ -129,7 +134,6 @@ export function identicalMarkTerms(frozenPlan) {
  * @param {{ identicalTerms?: Set<string> }} ctx
  */
 export function allowanceClass(e, { identicalTerms = new Set() } = {}) {
-  const identical = String(e?.predicate ?? "") === "exact" && identicalTerms.has(normTerm(e?.term));
-  if (identical && (e?.origin !== "supplemental" || hasGoods(e))) return "required";
+  if (asksIdenticalMark(e, identicalTerms) && (e?.origin !== "supplemental" || hasGoods(e))) return "required";
   return e?.origin === "supplemental" ? "counted" : "plan";
 }
