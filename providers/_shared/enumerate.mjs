@@ -257,8 +257,10 @@ export function makeEnumerate(deps) {
     // declare one keeps the previous behaviour exactly.
     cardinalityRefusal = null,
     // — the provider's own words for refusing a LIST of spellings it would answer one by one (a ranked list
-    // judged too complex to run). Such a list is asked again one spelling at a time, as it was before lists
-    // were sent at all, never reported as a search that could not be made. Optional: absent, nothing changes.
+    // judged too complex to run). Such a list is asked again in halves, and a half the register refuses in
+    // halves again, so the spelling it will not take in a list is found in a few requests and every other
+    // spelling is still asked in a list. Never reported as a search that could not be made. Optional: absent,
+    // nothing changes.
     listRefusal = null,
   } = capabilities;
 
@@ -490,7 +492,7 @@ export function makeEnumerate(deps) {
     return stampTotalCounts(await enumerateQuestion(auth, params, tctx, opts, said), said.totalCounts);
   }
 
-  async function enumerateQuestion(auth, params, tctx, { split = true, oneByOne = false } = {}, said = { totalCounts: null }) {
+  async function enumerateQuestion(auth, params, tctx, { split = true, width = null } = {}, said = { totalCounts: null }) {
     if (!hasAnyElement(params)) return { type: "text", text: missingElementError };
     const hear = (p) => { if (typeof p?.total_counts === "string") said.totalCounts = p.total_counts; };
 
@@ -526,7 +528,8 @@ export function makeEnumerate(deps) {
     // descriptor total — `count` is the deduped truth); the resource ceiling applies to the RUNNING total
     // so a crowd still returns an incomplete descriptor. ANY chunk error/incomplete makes the WHOLE slice
     // incomplete — a clean can never ship over a partially-executed slice.
-    const shapeChunk = oneByOne ? 1 : typeof namesChunkFor === "function" ? namesChunkFor(params) : null;
+    // `width` is set only when a refused list is asked again in halves (the list refusal below).
+    const shapeChunk = Number.isFinite(width) ? width : typeof namesChunkFor === "function" ? namesChunkFor(params) : null;
     const namesChunk = Number.isFinite(shapeChunk) && shapeChunk >= 1
       ? Math.floor(shapeChunk) : envInt("CLEAROTRON_ENUMERATE_NAMES_CHUNK", namesChunkDefault);
     const allNames = Array.isArray(params[namesKey]) ? params[namesKey].filter(Boolean) : null;
@@ -661,8 +664,11 @@ export function makeEnumerate(deps) {
     for (let page = 0; ; page += 1) {
       const r = await search(auth, { ...params, ...pageParams(page, pageSize, prevParsed) }, tctx);
       if (isToolError(r)) {
-        if (page === 0 && !oneByOne && allNames && allNames.length > 1 && listRefusal?.test(String(r.text ?? ""))) {
-          return enumerateQuestion(auth, params, tctx, { split, oneByOne: true }, said);
+        // A LIST THE REGISTER REFUSES IS ASKED AGAIN IN HALVES. Each half goes through the whole enumerate, so a
+        // half it refuses is halved again, down to a spelling on its own. Asked one spelling at a time instead, a
+        // list of 100 cost 100 requests to find the one spelling the register would not take in a list.
+        if (page === 0 && allNames && allNames.length > 1 && listRefusal?.test(String(r.text ?? ""))) {
+          return enumerateQuestion(auth, params, tctx, { split, width: Math.ceil(allNames.length / 2) }, said);
         }
         if (splittable && isGatewayTimeout(r.text)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(r.text), hear });
         return incomplete(total, results.length, results, `provider error during enumeration (page ${page}): ${String(r.text ?? "")}`, timeoutMark(r.text));

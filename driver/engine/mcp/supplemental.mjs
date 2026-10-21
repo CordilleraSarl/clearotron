@@ -32,7 +32,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
-import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
+import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, planExactOrWidth, planPhoneticOrWidth, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
 import { heldAnswers, questionKey } from "./held-answers.mjs";
@@ -65,17 +65,20 @@ const compactProposal = (p) => ({
 const inPriority = (p, prio) =>
   (Array.isArray(p?.nice_classes) ? p.nice_classes : []).some((c) => prio.has(String(c).trim()));
 
-// A SOUND-ALIKE BATCH GOES AS LISTS where the register takes one (`phoneticOrWidth`, ruled 2026-10-09): up to
-// that many spellings per question, within its word budget, each long enough for the ranked search. A
-// spelling below that floor is its own question, as every name of a batch was before. Each list is one
-// question with one receipt row, so a list that crowds or fails takes no other list down with it. PURE.
+// A BATCH OF SPELLINGS GOES AS THE PLANNER'S LISTS where the register takes one: exact spellings up to
+// `exactOrWidth`, sound-alike ones up to `phoneticOrWidth` within the register's word budget (ruled 2026-10-09
+// for sound-alikes; the exact width is the one the plan's own spelling band already uses), each spelling long
+// enough for the ranked search. A spelling below that floor is its own question, and so is every name of a batch
+// with an owner or on any other predicate, as before. Each list is one question with one receipt row, so a list
+// that crowds or fails takes no other list down with it. PURE.
 function splitBatch(p, names, capabilities) {
   const { terms: _batch, ...rest } = p;
   const single = (t) => ({ ...rest, term: t });
-  const width = Math.floor(Number(capabilities?.phoneticOrWidth));
-  if (String(p?.predicate ?? "") !== "phonetic" || !(width >= 2)) return names.map(single);
+  const predicate = String(p?.predicate ?? "");
+  const width = predicate === "exact" ? planExactOrWidth(capabilities) : predicate === "phonetic" ? planPhoneticOrWidth(capabilities) : 1;
+  if (!(width >= 2) || (typeof p?.owner === "string" && p.owner.trim())) return names.map(single);
   const floor = Number(capabilities?.rankedMinLength) || 0;
-  const budget = Number(capabilities?.listWordBudget) || Infinity;
+  const budget = predicate === "phonetic" ? (Number(capabilities?.listWordBudget) || Infinity) : Infinity;
   const words = (t) => t.split(/\s+/).filter(Boolean).length;
   const folded = (t) => [...t.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, "")].length;
   const out = [];

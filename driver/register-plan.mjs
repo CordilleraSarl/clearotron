@@ -2552,6 +2552,12 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), 
     if (e?.unsupported === true || awaitsReadingTurn(e?.when)) continue;
     const k = entryQuestionKey(e, plan);
     if (k && !askedBy.has(k)) askedBy.set(k, e.qid);
+    // A LIST ASKS EACH OF ITS SPELLINGS, with the list's own scope: a family asked inside a batch that went to the
+    // register as one list is asked by that list.
+    if (Array.isArray(e?.terms) && e.terms.length > 1) for (const t of e.terms) {
+      const kt = entryQuestionKey({ ...e, terms: undefined, term: t }, plan);
+      if (kt && !askedBy.has(kt)) askedBy.set(kt, e.qid);
+    }
   }
   for (const e of plan.entries) {
     if (e.when) {
