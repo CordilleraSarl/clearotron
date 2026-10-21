@@ -117,7 +117,7 @@ On `/search/trademark`, only 3 fields are reliably populated on search rows rega
 - `name`
 - `representativeName`
 
-Everything else (`niceClassification`, `owners`, `corsearchStatusCode`, dates, jurisdictions, mark feature, image path) requires `register_record_fetch`. Plugin defaults to requesting the 3 working fields; callers can override via `fields[]` param to e.g. `["uri"]` for cheapest count-only probes.
+Everything else (`niceClassification`, `owners`, `corsearchStatusCode`, dates, jurisdictions, mark feature, image path) requires `register_record_fetch`. Plugin defaults to requesting the 3 working fields; callers can override via `fields[]` param to e.g. `["uri"]` for count-only probes.
 
 ## Detail-record fields (46+ fields)
 
