@@ -218,10 +218,12 @@ function conclusionOf(c) {
 export async function readVersionPr(number, { run = ((args) => execFileSync("gh", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] })) } = {}) {
   if (!number) return null;
   try {
+    // `state` and `mergedAt`, never `merged`: the runner's gh refuses that field ("Unknown JSON field"), and a
+    // refused read made every expired wait report the pull request as unreadable.
     const j = JSON.parse(run(["pr", "view", String(number), "--repo", "CordilleraSarl/clearotron",
-      "--json", "merged,mergeable,statusCheckRollup"]));
+      "--json", "state,mergedAt,mergeable,statusCheckRollup"]));
     return {
-      merged: Boolean(j.merged),
+      merged: String(j.state ?? "").toUpperCase() === "MERGED" || Boolean(j.mergedAt),
       mergeable: j.mergeable === "MERGEABLE" ? true : j.mergeable === "CONFLICTING" ? false : null,
       checks: (j.statusCheckRollup ?? []).map((c) => ({
         context: String(c.name ?? c.context ?? "a check"),
