@@ -6825,6 +6825,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-provider-manuals-follow-the-ruled-method.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "the-proving-question-names-no-engines-model.test.mjs": {
           "tests": 2,
           "asserts": 5,

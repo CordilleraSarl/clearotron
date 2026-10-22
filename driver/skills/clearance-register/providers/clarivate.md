@@ -141,7 +141,7 @@ weigh materiality. (Exception: a `names` stack wider than the 500 chunk bound is
 window-by-window, so no whole-stack per-office count exists — the field is then null with a stated
 reason, because a mislabelled per-jurisdiction figure is worse than none.)
 
-Narrow by: office set, class list, date range, `active_only`. Never by "take the first N".
+Narrow a crowd by the steps in `unit.md` (*Read the identical mark first*). Never by "take the first N".
 
 ## Status — read `statusClass`, and let it fail open
 
@@ -151,9 +151,9 @@ confidently dead signal yields `dead`; an unrecognised token becomes `unknown` a
 deep-fetch it. `status.active` is the vendor's own boolean, used as the second-rank signal.
 
 `activeOnly` filters server-side and strictly. Applied naïvely it drops the dead records
-[../status-rules.md](../status-rules.md)'s invalid-but-keep-if-identical rule *keeps*. For any
-identical-match probe, run the identity leg with `active_only: false` and **without** the class filter —
-identical-match is class-agnostic.
+[../status-rules.md](../status-rules.md)'s invalid-but-keep-if-identical rule *keeps*. Leave it off:
+dead identical records then come back in the named band with their status, and no separate identity
+leg is run.
 
 ## Records — `register_record_fetch` / `register_batch_screen`
 
@@ -181,7 +181,7 @@ comes from the search's `ids{}` key, never from the guid.
 An international (WO) registration reaches **only its designated countries** — read
 `madridDesignations`; never imply "international = global".
 
-**`test_mode: true` is dev-only.** Bodies are obfuscated, unbilled, and **not persisted** to the record
+**`test_mode: true` is dev-only.** Bodies are obfuscated and **not persisted** to the record
 ledger — so a test-mode fetch can never back a real finding.
 
 ## Opposition data — NOT AVAILABLE (never "none found")
@@ -204,7 +204,9 @@ silently omit the dimension.
 - **No public per-record URL** — cite the office register plus the `/mark/<office>/<guid>` ref; there is no link to resolve.
 - **No sort parameter** — sort after fetch.
 - **No regex** — wildcards and booleans cover the plan vocabulary.
-- **No cross-language single query** — run the variant manifest per script.
+- **No cross-language single query** — ask one script question per market the frame names, by its
+  romanised form (below); where that romanised form is a Latin question the plan already asks, do not
+  ask it again.
 - **No native-script search — send the ROMANISATION instead.** This index holds non-Latin marks by
   their transliteration and does not hold the characters at all. A native-script term answers nothing;
   its own transliteration answers records that carry those very characters. Universal — every non-Latin
@@ -218,7 +220,8 @@ silently omit the dimension.
     romanisation, so it returns every character set filed under that pronunciation and not only the one
     you meant, which is the shape most Chinese squatting takes.
 
-Each of these, when it blocks a dictated slice, is a **`deferred` coverage row** — escalate and disclose.
+Each of these, when it blocks a dictated slice, is a **`deferred` coverage row** — disclose it; no
+search on this register can close it, so it is not escalated, and it is never clean.
 Never substitute a weaker query under the same heading.
 
 ## Provider-specific behaviour
@@ -227,7 +230,6 @@ Never substitute a weaker query under the same heading.
 - `/image` body is singular `{ id: <guid> }`; the adapter loops.
 - Upstream dates are bare `YYYYMMDD`; the normalizer converts to ISO. `_raw` keeps the original.
 - `EXACT_APPLICANT_NAME` exists but is documented as un-combinable with other fields — not wired.
-- `INT_GOODS_SERVICES_DESCRIPTION` is searchable server-side; not wired yet, a real narrowing lever.
 - `POST /filingdate` reports per-register data freshness (`recordLastUpdated`) — a coverage claim is only
   as good as the register behind it.
 - Sustained-burst limits are UNDECLARED — a stated unknown, not an absence of limits.
