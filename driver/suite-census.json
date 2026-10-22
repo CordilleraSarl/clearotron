@@ -1773,6 +1773,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-spelling-the-reading-turn-left-on-a-list-is-not-asked-again-by-the-re-sweep.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stable-cut-moves-the-plugin-pin.test.mjs": {
           "tests": 4,
           "asserts": 13,

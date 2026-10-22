@@ -190,7 +190,7 @@ export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids 
     if (settled) return { ...sliceRow(q, null, false), refused_at_fold: "withheld-by-judgment", withheld_as: settled.family };
     const via = landsAs.get(q);
     const slice = sliceRow(q, blockFor(q), ranAs(q));
-    return via && via !== q ? { ...slice, answered_by: via, refused_at_fold: "duplicate-question" } : slice;
+    return via && via !== q ? { ...slice, answered_by: via, refused_at_fold: foldRefusals.get(q)?.kind ?? "duplicate-question" } : slice;
   });
   const asked = qids.filter((q) => !settledBy.has(q));
   if (!qids.length) {

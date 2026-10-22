@@ -44,6 +44,7 @@ export function questionKey(e, planRegions = []) {
 // back is kept, the first records among it, so a worker's process does not hold every band whole.
 const BAND_CACHE = new Map();
 const HELD_RECORDS = 25;
+const spelling = (t) => String(t ?? "").normalize("NFC").trim().toLowerCase();
 function readBlocks(path) {
   let st;
   try { st = statSync(path); } catch { return []; }
@@ -57,6 +58,8 @@ function readBlocks(path) {
       qid: b.qid, state: b.state ?? null, error: b.error === true, total_hits: b.total_hits ?? null,
       count: b.count ?? (Array.isArray(b.records) ? b.records.length : null),
       records: Array.isArray(b.records) ? b.records.slice(0, HELD_RECORDS) : [],
+      // the names a list's answer counted one by one: only their spellings are kept
+      ...(b.term_counts && typeof b.term_counts === "object" ? { counted_terms: Object.keys(b.term_counts).map(spelling) } : {}),
     }));
   } catch { blocks = []; }
   BAND_CACHE.set(path, { stamp, blocks });
@@ -82,16 +85,9 @@ export function refuseHeldQuestions(entries, held, planRegions = []) {
   return { kept, refused };
 }
 
-/**
- * The run's held answers and decisions, by question key. IMPURE (reads the run's register files).
- * @returns {Map<string, { qid: string, axis: string, decision: "answered"|"withheld"|"outstanding", block?: object }>}
- */
-export function heldAnswers(runDir, { planRegions = [], withheld = {}, released = null } = {}) {
-  // A FAMILY WAITING FOR THE READING TURN IS ANSWERED ONLY ONCE IT IS RELEASED AND RUN, the plan join's own rule: until
-  // then it was not asked, whatever block its qid may carry, and a question repeating it is asked as the join expects.
-  let releasedQids = released;
-  if (!(releasedQids instanceof Set)) { try { releasedQids = releasedFamilyQids(runDir); } catch { releasedQids = new Set(); } }
-  const held = new Map();
+// The run's questions and answers as its files hold them: the frozen plan, each worker's supplemental plan, and every
+// band's blocks by qid. IMPURE.
+function readRunQuestions(runDir) {
   const units = join(runDir, "register-units");
   const blocksByQid = new Map();
   const plans = [];
@@ -104,6 +100,20 @@ export function heldAnswers(runDir, { planRegions = [], withheld = {}, released 
       try { plans.push({ axis: f.slice(0, -"-supplemental-plan.json".length), plan: JSON.parse(readFileSync(join(units, f), "utf8")) }); } catch { /* torn: skipped */ }
     }
   }
+  return { plans, blocksByQid };
+}
+
+/**
+ * The run's held answers and decisions, by question key. IMPURE (reads the run's register files).
+ * @returns {Map<string, { qid: string, axis: string, decision: "answered"|"withheld"|"outstanding", block?: object }>}
+ */
+export function heldAnswers(runDir, { planRegions = [], withheld = {}, released = null } = {}) {
+  // A FAMILY WAITING FOR THE READING TURN IS ANSWERED ONLY ONCE IT IS RELEASED AND RUN, the plan join's own rule: until
+  // then it was not asked, whatever block its qid may carry, and a question repeating it is asked as the join expects.
+  let releasedQids = released;
+  if (!(releasedQids instanceof Set)) { try { releasedQids = releasedFamilyQids(runDir); } catch { releasedQids = new Set(); } }
+  const held = new Map();
+  const { plans, blocksByQid } = readRunQuestions(runDir);
   for (const { plan } of plans) {
     for (const e of Array.isArray(plan?.entries) ? plan.entries : []) {
       if (!e?.qid) continue;
@@ -125,4 +135,72 @@ export function heldAnswers(runDir, { planRegions = [], withheld = {}, released 
     }
   }
   return held;
+}
+
+// ── A SPELLING COUNTED ON A LIST THE READING TURN READ IS LEFT AS THE TURN LEFT IT ──
+//
+// The plan asks the mark's spellings as exact lists, and a crowded list comes back with a count for each name on it.
+// The reading turn reads that list before second framing runs. A spelling it neither narrowed nor asked on its own it
+// left on the list's row with its count: a crowd it set aside. On a test run of a crowded matter, second framing's
+// re-sweep asked seven such spellings again, each exact and as contains: fourteen questions, each spelling counted at
+// 100 or more on the list. The re-sweep already keeps a family the reading turn withheld, and it now keeps these too.
+// A re-sweep question on a spelling counted on such a list, and asked nowhere on its own, is not asked: it is refused
+// as `counted-on-list`, with the list as its twin, and checked on the list's row. A list whose answer failed, a name
+// it did not count, a spelling the plan asks on its own anywhere, and a question beyond the list's classes or markets
+// are asked as before.
+
+/**
+ * The spellings the run counted on an exact list it read and asked nowhere on their own, by spelling: each list that
+ * counted it, with its classes and markets (a list naming none is asked to the plan's). PURE.
+ * @returns {Map<string, {qid: string, classes: string[], regions: string[]}[]>}
+ */
+export function countedOnListsOf(plans, blocksByQid, planRegions = []) {
+  const askedAlone = new Set();
+  const lists = [];
+  for (const { plan } of Array.isArray(plans) ? plans : []) {
+    for (const e of Array.isArray(plan?.entries) ? plan.entries : []) {
+      if (!e?.qid) continue;
+      if (typeof e.term === "string" && e.term.trim()) askedAlone.add(spelling(e.term));
+      if (Array.isArray(e.terms) && e.terms.length > 1 && String(e.predicate ?? "") === "exact" && !e.goods_text && !e.owner) lists.push(e);
+    }
+  }
+  const counted = new Map();
+  for (const l of lists) {
+    const b = blocksByQid?.get?.(String(l.qid));
+    if (!b || b.error === true || !Array.isArray(b.counted_terms)) continue;
+    const onList = new Set(l.terms.map(spelling));
+    const regions = (Array.isArray(l.regions) && l.regions.length ? l.regions : planRegions).map(String);
+    for (const t of new Set(b.counted_terms)) {
+      if (!onList.has(t) || askedAlone.has(t)) continue;
+      if (!counted.has(t)) counted.set(t, []);
+      counted.get(t).push({ qid: String(l.qid), classes: (l.nice_classes ?? []).map(String), regions });
+    }
+  }
+  return counted;
+}
+
+/** The same, read off the run's files. IMPURE. */
+export function countedOnLists(runDir, { planRegions = [] } = {}) {
+  const { plans, blocksByQid } = readRunQuestions(runDir);
+  return countedOnListsOf(plans, blocksByQid, planRegions);
+}
+
+/**
+ * Refuse the minted entries that ask, on its own and within a list's classes and markets, a spelling that list
+ * counted (`countedOnListsOf`): `counted-on-list`, with the list as the twin. PURE.
+ * @returns {{ kept: object[], refused: {qid: string, term: string, kind: "counted-on-list", twin: string}[] }}
+ */
+export function refuseCountedOnList(entries, counted, planRegions = []) {
+  const kept = [], refused = [];
+  for (const e of Array.isArray(entries) ? entries : []) {
+    const alone = typeof e?.term === "string" && !(Array.isArray(e.terms) && e.terms.length) && !e.goods_text && !e.owner;
+    const classes = (e?.nice_classes ?? []).map(String);
+    const regions = (Array.isArray(e?.regions) && e.regions.length ? e.regions : planRegions).map(String);
+    const list = alone && classes.length
+      ? (counted?.get?.(spelling(e.term)) ?? []).find((l) => classes.every((c) => l.classes.includes(c)) && regions.every((r) => l.regions.includes(r)))
+      : null;
+    if (e?.qid && list) refused.push({ qid: e.qid, term: String(e.term), kind: "counted-on-list", twin: list.qid });
+    else kept.push(e);
+  }
+  return { kept, refused };
 }

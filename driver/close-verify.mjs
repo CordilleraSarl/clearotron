@@ -62,13 +62,14 @@ export function blockCollapsed(block) {
 /**
  * The plan row that answers a minted slice: the slice itself, or, where the fold refused it as already-asked, the
  * row it duplicates. Such a slice is never frozen into the plan and never runs; its question was asked by the twin.
- * ONLY THE DUPLICATE KIND RESOLVES: an identity collision or a malformed term asked a question nothing else asked.
+ * So does a spelling the re-sweep left on a list the reading turn read (`counted-on-list`): the list's row holds its
+ * count. ONLY THOSE TWO KINDS RESOLVE: an identity collision or a malformed term asked a question nothing else asked.
  * `foldRefusals` maps a refused qid to `{kind, twin}`, as `foldSupplementalEntries` records it. One rule for the
  * directive below and the remedy term ledger (remedy-accounting.mjs), so the two cannot read a slice apart. PURE.
  */
 export function answeredAs(qid, foldRefusals) {
   const r = foldRefusals?.get?.(qid);
-  return r && r.kind === "duplicate-question" && r.twin ? String(r.twin) : qid;
+  return r && (r.kind === "duplicate-question" || r.kind === "counted-on-list") && r.twin ? String(r.twin) : qid;
 }
 
 /**

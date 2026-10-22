@@ -77,7 +77,7 @@ import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, cov
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
-import { heldAnswers, refuseHeldQuestions } from "./engine/mcp/held-answers.mjs";   // one answer per question per run, in the re-sweep too
+import { heldAnswers, refuseHeldQuestions, countedOnLists, refuseCountedOnList } from "./engine/mcp/held-answers.mjs";   // one answer per question per run, in the re-sweep too
 import { readOutstanding, FOLLOW_UP_SEARCH_LIMIT, followUpSearchesSent } from "../providers/_shared/follow-up-searches.mjs";
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
 // safety net did not send, which join as questions not asked rather than missing (follow-up-searches.mjs), and the run's
@@ -12034,9 +12034,16 @@ async function pipelineInner(job, opts = {}) {
                 const planRegions = (ctx.registerPlan.regions ?? []).map(String);
                 ({ kept: toFoldHeld, refused: heldRefused } = refuseHeldQuestions(toFold, heldAnswers(run.runDir, { planRegions, withheld: readWithheldFamilies(run.runDir) }), planRegions));
               } catch { toFoldHeld = toFold; heldRefused = []; }   // an economy: without it every question is folded as before
+              // A SPELLING THE READING TURN LEFT ON A LIST IT READ, with its count, is left there (held-answers.mjs): the
+              // re-sweep's question on it is checked on the list's row instead of being asked again.
+              let listRefused = [];
+              try {
+                const planRegions = (ctx.registerPlan.regions ?? []).map(String);
+                ({ kept: toFoldHeld, refused: listRefused } = refuseCountedOnList(toFoldHeld, countedOnLists(run.runDir, { planRegions }), planRegions));
+              } catch { listRefused = []; }   // without it the spelling is asked as before
               const folded = foldSupplementalEntries(ctx.registerPlan, toFoldHeld);
               const { plan, added } = folded;
-              const refused = [...withheldRefused, ...heldRefused, ...folded.refused];
+              const refused = [...withheldRefused, ...heldRefused, ...listRefused, ...folded.refused];
               if (added.length) {
                 writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
                 renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
@@ -12066,8 +12073,10 @@ async function pipelineInner(job, opts = {}) {
                 // A withheld family's refusal is neither: it is the reading turn's decision standing, recorded on
                 // the run log row above with its kind and its family, and settled by that turn's reason.
                 const dupes = refused.filter((r) => r.kind === "duplicate-question");
-                const faults = refused.filter((r) => r.kind !== "duplicate-question" && r.kind !== "withheld-by-judgment");
+                const onLists = refused.filter((r) => r.kind === "counted-on-list");
+                const faults = refused.filter((r) => !["duplicate-question", "withheld-by-judgment", "counted-on-list"].includes(r.kind));
                 if (dupes.length) note(`frame-reopen: ${dupes.length} minted entr${dupes.length === 1 ? "y" : "ies"} refused at the fold as already-asked — the plan row${dupes.length === 1 ? "" : "s"} ${dupes.map((r) => `"${r.twin ?? "(twin unstated)"}"`).join(", ")} carr${dupes.length === 1 ? "ies" : "y"} that coverage; the term is answered, not unsearched`);
+                if (onLists.length) note(`frame-reopen: ${onLists.length} minted entr${onLists.length === 1 ? "y" : "ies"} not asked: ${onLists.length === 1 ? "it names a spelling" : "each names a spelling"} the run counted on a list the reading turn read, and is checked on that list's row (${[...new Set(onLists.map((r) => `"${r.twin}"`))].join(", ")})`);
                 if (faults.length) note(`frame-reopen: ${faults.length} minted entr${faults.length === 1 ? "y" : "ies"} REFUSED at the fold (${[...new Set(faults.map((r) => r.kind ?? "unstated"))].join(", ")}) — the mint screen and the fold screen disagree, which is a wiring finding`);
               }
               // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
