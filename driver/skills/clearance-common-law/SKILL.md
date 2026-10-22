@@ -55,7 +55,7 @@ the artifacts this stage writes, so there is nothing here to call and nothing to
 
 ## Search approval (HITL exception)
 
-The full HITL exception covering this workflow is declared **once** in the orchestrator at [clearance-search/SKILL.md](../clearance-search/SKILL.md#hitl-exception-shared-across-sub-skills). It is pre-approved at workflow trigger time when the requesting lawyer or a staff lawyer forwards the request email.
+This workflow's searches are pre-approved at workflow trigger time, when the requesting lawyer or a staff lawyer forwards the request email.
 
 Operative rules for this sub-skill (Perplexity-side):
 - **Include in queries:** mark name, product type, relevant industry context

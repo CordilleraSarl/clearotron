@@ -47,9 +47,8 @@ if its axis is empty, so running a non-applicable one is harmless):
 - `incumbent-class` — if the manifest has an `industry_incumbent_alert`.
 
 Each unit is given: the sub-skill + axis (`clearance-register` unit mode — see `clearance-register/unit.md`), the
-variant manifest path, the request context, the **active register provider** (see
-[SKILL.md → Register sources](SKILL.md#register-sources--the-vendor-is-the-source-of-truth-euipo-is-a-free-eu-cross-check)),
-the sub-budget and its output path (`register-units/<axis>.md`). `clearance-common-law` runs
+variant manifest path, the request context, the **active register provider**
+and its output path (`register-units/<axis>.md`). `clearance-common-law` runs
 alongside the units against the same manifest.
 
 ### Step 2C — Touchpoint 2: placement-inquiry

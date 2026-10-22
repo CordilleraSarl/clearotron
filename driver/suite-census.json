@@ -4401,6 +4401,12 @@
           "skips": 0,
           "todos": 0
         },
+        "no-stage-is-pointed-at-the-old-spine.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "no-test-account-reaches-the-package.test.mjs": {
           "tests": 17,
           "asserts": 31,
