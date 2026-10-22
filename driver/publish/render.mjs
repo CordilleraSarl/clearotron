@@ -490,17 +490,18 @@ function regionCode(f) {
   return COMMON_LAW;
 }
 
-// Every country a finding holds a registration in, read as regionCode reads the first one; a finding with no
-// registration country keeps regionCode's own answer.
+// The country regionCode gives a finding, the one the cards file it under, and every other country it holds a
+// registration in, each read as regionCode reads the first. Starting from regionCode's answer means no country loses
+// the band it had: a first registration with no office in its address leaves regionCode on the owner's country.
 function registeredRegionCodes(f) {
-  const codes = new Set();
+  const codes = new Set([regionCode(f)]);
   for (const reg of Array.isArray(f.owner?.registrations) ? f.owner.registrations : []) {
     if (reg?.jurisdiction) { codes.add(normRegion(reg.jurisdiction)); continue; }
     const uri = reg?.uri || '';
     const m = uri.match(/\/mark\/([a-z]{2,3})\//i) || uri.match(/\/([a-z]{2})\/[A-Za-z0-9]/);
     if (m) codes.add(normRegion(m[1]));
   }
-  return codes.size ? [...codes] : [regionCode(f)];
+  return [...codes];
 }
 
 // groupByRegion: ordered regions, each { code, name, count, hasOnField, chip, findings[] }. Region order =

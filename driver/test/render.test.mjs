@@ -3127,6 +3127,15 @@ test("every country a finding holds a registration in takes its band where it st
   const chips = [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
   assert.deepEqual(rows.sort(), ["AM:Moderate", "GR:Moderate", "SA:Moderate"], `a registered country lost its band: ${JSON.stringify(rows)}`);
   assert.deepEqual(chips, ["Japan"], `a country holding a finding's registration was chipped Nothing found: ${JSON.stringify(chips)}`);
+
+  // THE COUNTRY THE CARDS FILE IT UNDER KEEPS ITS BAND. A first registration whose address names no office leaves the
+  // finding on its owner's country; a later registration naming an office must add that office, not replace it.
+  const noOfficeFirst = [{ ...threeCountries[0], owner: { ...threeCountries[0].owner, country: "GR", registrations: [
+    { uri: "https://tm.example/10203040", classes: ["9"], status: "Registered" },
+    { uri: "https://tm.example/mark/sa/2002", classes: ["9"], status: "Registered" } ] } }];
+  const kept = panelOf(renderHtml(parsedOf(REPORT), noOfficeFirst, [], { searchDepth: depth, planTerritories: plan }));
+  const keptRows = [...kept.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]).sort();
+  assert.deepEqual(keptRows, ["GR", "SA"], `the owner's country lost its band to a later registration: ${JSON.stringify(keptRows)}`);
 });
 
 // ── THE LOCAL-LANGUAGE ROW SAYS HOW DEEP THE INVESTIGATION WENT, IN WORDS ALREADY ON THE PAGE ──────

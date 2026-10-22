@@ -1804,7 +1804,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // could-not-be-retrieved line. Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: every country a finding holds a registration in
 // takes its band where it stands. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "aae650ef43571174f59a15106801bddc13154d37cc931a38d447bf45496d5cdb";
+// Advanced again by the same break's second edit, recorded above the FROZEN constant: the cards' own country stays
+// in the set. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "648a2bc00b1bced348af2598631205e97048d1a3d5c4fb863c7a80217659f8da";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2758,7 +2760,15 @@ const FROZEN_BEFORE_SPDX = "aae650ef43571174f59a15106801bddc13154d37cc931a38d447
 //   2. Could it live in report.css or brand.mjs? No: it decides which countries are rows and which are chips.
 //   3. Why it had to move here: the section is composed in this file and nowhere else. The portal draws no such
 //      section, and report-data.json carries no search depth.
-const FROZEN = "ebe6d2af5105efb1e1afaada7aadf3e81cc748437b4097853ea526b5d4244fcd";
+//
+// Same break, second edit (one commit later on the same branch). Review found a case the first edit missed: a
+// finding whose first registration names no office in its address is filed by the cards under its owner's country,
+// and the set of registered countries began without that country, so it could lose its band to a later registration
+// and be chipped "Nothing found". The set now starts from the country the cards use, so no country loses the band it
+// had under the previous renderer. Measured again on the same run's saved files: this edit renders byte-identically to
+// the first, the page still differs from the previous renderer only inside the section, and the one-country control
+// still renders byte-identically through both. The new arm in render.test.mjs holds the reviewed case.
+const FROZEN = "30d243d165f4a61971a9af5db1e9c81dfa5deef85d08f5481d421b8155a9e0fe";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
