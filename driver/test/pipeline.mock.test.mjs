@@ -1818,21 +1818,23 @@ test("repair-first A1: a missing dictated qid is closed by DIRECT executor dispa
   assert.deepEqual(exec.missing, [], "the dispatch closed every dictated hole");
 });
 
-test("repair-first A1: a 414-shaped dispatch failure is terminal with ZERO parks and quotes the provider error", async () => {
+test("repair-first A1: a 414-shaped dispatch failure buys no recovery: its slices are taken out at once, and the record quotes the provider error", async () => {
   // The production 414-wedge shape end-to-end: dispatch fails deterministically (URI too long), the LLM
-  // followup can't close it either (sticky drop) → ONE enriched fan-in failure, no recovery parks
-  // despite budget, and the terminal diagnosis carries the provider's verbatim error.
+  // followup can't close it either (sticky drop) → ONE enriched fan-in failure and no recovery parks despite
+  // budget. The run no longer ends on it: the slices are the searches not completed, taken out of the band and
+  // delivered open on the resumed pass (a-search-a-check-cannot-prove-is-delivered-as-not-searched), and the
+  // provider's verbatim error rides on that record.
   const planExecutor = async () => ({ ok: false, cause: "provider error during enumeration (page 0): ERROR: corsearch_search HTTP 414 URI Too Long" });
   try {
     const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
       MOCK_PLAN_DROP_QID: "+merch", MOCK_PLAN_DROP_STICKY: "1", CLEAROTRON_RECOVERY_MAX: "3" }, {}, { planExecutor });
-    assert.equal(res.ok, false);
-    assert.equal(res.postponed, undefined, "deterministic class buys ZERO parks despite recovery budget 3");
-    assert.ok(existsSync(join(res.runDir, ".failed")), "terminal .failed on the first pass");
-    const failed = JSON.parse(readFileSync(join(res.runDir, ".failed"), "utf8"));
-    assert.equal(failed.terminalKind, "deterministic");
-    assert.match(failed.reason, /HTTP 414/, "the provider's verbatim error reaches the terminal diagnosis");
-    assert.match(failed.reason, /direct dispatch \+ followup/);
+    assert.equal(res.postponed, true, `the slices were not taken out for the delivery: ${JSON.stringify(res).slice(0, 300)}`);
+    assert.ok(!existsSync(join(res.runDir, ".failed")), "the run ended over slices it can deliver open");
+    const record = JSON.parse(readFileSync(driverDir(res.runDir, "not-completed", "searches.json"), "utf8"));
+    assert.equal(record.terminalKind, "deterministic");
+    assert.match(record.reason, /HTTP 414/, "the provider's verbatim error reaches the record");
+    assert.match(record.reason, /direct dispatch \+ followup/);
+    assert.ok(record.slices.length > 0 && record.slices.every((x) => x.qid.endsWith("+merch")), `the record names a slice that landed: ${JSON.stringify(record.slices)}`);
     const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
     assert.equal(status.recoveryAttempts ?? 0, 0, "no recovery attempt was burned");
   } finally { delete process.env.MOCK_PLAN_DROP_STICKY; delete process.env.CLEAROTRON_RECOVERY_MAX; }

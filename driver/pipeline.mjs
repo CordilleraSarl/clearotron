@@ -11833,12 +11833,17 @@ async function pipelineInner(job, opts = {}) {
           if (r.quote) return `${r.qid} ← ${r.quote.slice(0, 160)}`;
           return `${r.qid} ← no error block and no repair outcome — nothing ran this slice`;
         });
-        throw new StageFailure("fan-in", `register plan unexecuted after direct dispatch + followup — ${joinRes.missing.length} dictated qid(s) own no band block: ${detail.join("; ")}${joinRes.missing.length > 6 ? " …" : ""} (a clean can never ship over a slice the plan dictated and nothing ran)`, undefined,
+        // Once their recovery is spent, these are the searches not completed: each is added to its axis's band as the
+        // executor's deferred block and delivered as an open row, reading that it was planned and never reached the
+        // register (parts-not-completed.mjs).
+        throw Object.assign(new StageFailure("fan-in", `register plan unexecuted after direct dispatch + followup — ${joinRes.missing.length} dictated qid(s) own no band block: ${detail.join("; ")}${joinRes.missing.length > 6 ? " …" : ""} (a clean can never ship over a slice the plan dictated and nothing ran)`, undefined,
           // `quantity` is the missing count — what CONVERGES across attempts (5 → 3 → 1 is a run closing
           // on the hole; 5 → 5 → 5 is one that has stopped). repairs.mjs progressQuantity cannot read it
           // out of this prose: its census table is an allowlist and this template is not in it, so the
           // ladder has been reading `unknown` here and a converging run looked plateaued.
-          { failClass, repairs: fanInRepairs, quantity: joinRes.missing.length });
+          { failClass, repairs: fanInRepairs, quantity: joinRes.missing.length }),
+          { notCompletedPart: "searches", excludedSlices: joinRes.missing.map((qid) => ({ axis: byQid.get(qid)?.axis, qid, reason: plainDeferralReason("slice-not-landed") }))
+            .filter((x) => x.axis) });
       }
       runLog(run.runDir, { event: "plan-execution", executed: joinRes.executed.length, skipped: joinRes.skipped.length, unplanned: joinRes.unplanned.length,
         awaiting: joinRes.awaiting?.length ?? 0, asked: joinRes.asked?.length ?? 0,

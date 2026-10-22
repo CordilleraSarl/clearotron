@@ -47,7 +47,7 @@ const ENGINES = {
   codex: { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: CODEX, CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-dummy" },
 };
 const KEYS = ["CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE",
-  "CLEAROTRON_BAND_TRUTH_GATE", "CLEAROTRON_REGISTER_CALL_LOG"];
+  "CLEAROTRON_BAND_TRUTH_GATE", "CLEAROTRON_REGISTER_CALL_LOG", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY"];
 const NOT_VERIFIED = plainDeferralReason("not-verified-closed");
 const NOT_COMPLETED = "it could not be completed this run, so it is left open here rather than reported as clean";
 
@@ -126,6 +126,34 @@ for (const engine of Object.keys(ENGINES)) {
     assert.ok(events(rd).some((e) => e.event === "coverage-floor-clamp"), "the clamp did not hold the verdict");
     const row = json(driverDir(rd, "degraded-parts.json")).rows.find((r) => /(^|\/ )Register$/.test(r.area));
     assert.match(row?.note ?? "", /it could not be completed this run, so it is left open here rather than reported as clean$/, "the workbook's row is not the shipped gap row");
+  });
+}
+
+const NOT_LANDED = plainDeferralReason("slice-not-landed");
+for (const engine of Object.keys(ENGINES)) {
+  test(`${engine}: a planned slice that never reached the register is added to the band open, and the run delivers the rest`, async () => {
+    const root = tempDir("clearotron-not-landed-");
+    // The slice's block never lands, and its follow-up does not land it either.
+    const knobs = { CLEAROTRON_BAND_TRUTH_GATE: "0", CLEAROTRON_REGISTER_GAP_CLAMP: "1", MOCK_PLAN_DROP_QID: "+merch", MOCK_PLAN_DROP_STICKY: "1" };
+    try {
+      const p1 = await runPass(root, engine, knobs);
+      assert.equal(p1.postponed, true, `pass 1 did not park: ${JSON.stringify(p1).slice(0, 300)}`);
+      const routed = events(p1.runDir).filter((e) => e.event === "part-not-completed");
+      assert.deepEqual(routed.map((e) => [e.part, e.stage]), [["searches", "fan-in"]], "the slice was not taken in one park");
+      const record = json(driverDir(p1.runDir, "not-completed", "searches.json"));
+      assert.ok(record.slices.length > 0 && record.slices.every((x) => x.qid.endsWith("+merch") && x.reason === NOT_LANDED),
+        `the record does not hold the slice that never landed, with its reason: ${JSON.stringify(record.slices)}`);
+      const p2 = await runPass(root, engine, knobs, p1.codename);
+      assert.equal(p2.ok, true, `the run did not deliver: ${JSON.stringify(p2).slice(0, 300)}`);
+      const receipt = json(driverDir(p2.runDir, "plan-execution.json"));
+      const qids = new Set(record.slices.map((x) => x.qid));
+      assert.deepEqual((receipt.missing ?? []).filter((q) => qids.has(q)), [], "the slice still reads as missing");
+      assert.deepEqual((receipt.deferred ?? []).filter((d) => qids.has(d.qid)).map((d) => d.reason), record.slices.map(() => NOT_LANDED),
+        "the slice is not deferred with its reason");
+      const band = json(join(p2.runDir, "register-units", `${record.slices[0].axis}-band.json`));
+      assert.ok(record.slices.every((x) => band.some((b) => b.qid === x.qid && b.error === true && b.deferred === true)), "the slice was not added to its band as a deferred block");
+      assert.notEqual(p2.verdict, "CLEAR", "the verdict stayed CLEAR over a slice nobody searched");
+    } finally { delete process.env.MOCK_PLAN_DROP_STICKY; }
   });
 }
 
