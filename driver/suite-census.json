@@ -477,6 +477,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-deferred-row-says-why-it-is-open.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-delivered-blocking-run-keeps-its-grounds-off-the-clients-conditions.test.mjs": {
           "tests": 4,
           "asserts": 9,

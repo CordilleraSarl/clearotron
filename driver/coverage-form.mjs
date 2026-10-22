@@ -31,7 +31,7 @@
 import { REGISTER_AXES, COVERAGE_STATUSES, normalizeAxis, CROWD_RULING_TOKEN,
   CROWD_RULING_UNIT_GRAMMAR } from "./coverage-ledger.mjs";
 import { shortId } from "./connotation-search.mjs";
-import { openBlocksByAxis, crowdNarrowing, blocksByQidOf } from "./register-plan.mjs";
+import { openBlocksByAxis, crowdNarrowing, blocksByQidOf, isProviderHardErrorReason } from "./register-plan.mjs";
 import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
@@ -342,6 +342,18 @@ export function blockOpenBecause(b, narrowings = []) {
  *          deferredReasons?: object}} input
  * @returns {{rows: Array, derived_from: object}} — PURE; never throws.
  */
+// WHY A DEFERRED SLICE IS OPEN, read off what the run holds about it, never off the reason's prose. A slice the executor
+// marked a gateway timeout was asked and timed out, and the envelope close's one further ask did not answer either; a
+// provider error the repair ladder could not mend was asked and failed. Every other deferral is a slice the active
+// provider cannot express. The write-up reads the row's reason, and quotes it when it refuses a clean claim.
+export const DEFERRED_OPEN_BECAUSE = Object.freeze({
+  capability: "the active register provider cannot express this query — it was never searched and no re-run can reach it",
+  timeout: "the register's gateway timed out on this query, and the envelope close's one further ask did not answer — it was asked but never answered, and it is not asked again in this run",
+  hardError: "the register returned an error on this query, and the envelope close's one further ask did not answer — it was asked but never answered, and it is not asked again in this run",
+});
+const deferredOpenBecause = (block, receiptReason) => block?.gateway_timeout === true ? DEFERRED_OPEN_BECAUSE.timeout
+  : isProviderHardErrorReason(receiptReason) ? DEFERRED_OPEN_BECAUSE.hardError : DEFERRED_OPEN_BECAUSE.capability;
+
 export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null,
   bandBlocksByAxis = {}, deferredReasons = {}, bandsUnreadable = [],
   orderedTerritories = [], capabilities = null, awaiting = [], withheld = {}, mainMarkets = [] } = {}) {
@@ -350,7 +362,8 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
   // are built from and carried on its row as data: a narrowed list retrieved in full (and which), none, or for the
   // identical mark whether retrieved lists cover every class in every main market (and the cells they do not). The
   // row stays open either way: reading the lists and deciding the crowd are the reading step's.
-  const narrowingByQid = new Map(crowdNarrowing(plan, blocksByQidOf(bandBlocksByAxis), { mainMarkets }).rows.map((r) => [String(r.qid), r]));
+  const blockByQid = blocksByQidOf(bandBlocksByAxis);
+  const narrowingByQid = new Map(crowdNarrowing(plan, blockByQid, { mainMarkets }).rows.map((r) => [String(r.qid), r]));
   const endingOf = (qid) => {
     const r = narrowingByQid.get(String(qid));
     return r ? { narrowing: r.narrowing, ...(r.lists?.length ? { lists: r.lists } : {}), ...(r.not_covered?.length ? { not_covered: r.not_covered } : {}) } : {};
@@ -417,10 +430,10 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
         unit: unitLabel(axis, entriesByQid.get(qid)),
         qid,
         receipt_reason: String(deferredReasons?.[qid] ?? "").replace(/\s+/g, " ").trim(),
-        // The active provider cannot express this query at all. It was never searched and nothing can
-        // make it run, so a clean claim over it is not a judgment the seat gets to make.
+        // It was never searched, or it was asked and never answered, and nothing in this run asks it again, so a clean
+        // claim over it is not a judgment the seat gets to make.
         open: true,
-        open_because: "the active register provider cannot express this query — it was never searched and no re-run can reach it",
+        open_because: deferredOpenBecause(blockByQid.get(qid), deferredReasons?.[qid]),
         status: null, reason: null,
       });
     }
