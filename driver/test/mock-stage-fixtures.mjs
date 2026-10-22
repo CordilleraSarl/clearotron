@@ -1923,8 +1923,9 @@ export function applyStageWrites(msg, argv) {
           // consolidate the other registrations of that mark under it. Before the instructed scope listed a
           // lone `markName`, this rule never fired on the mock's own job, and every row could be declined as
           // unrelated goods.
+          // A position a finding delivers through any of its records is answered; the rest are declined.
           const declinations = rows.map((row, i) => ({ row, i }))
-            .filter(({ row }) => !delivered.has(normalizeRecordUri(row?.uri)))
+            .filter(({ row }) => !(Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri]).some((u) => delivered.has(normalizeRecordUri(u))))
             .map(({ row, i }) => (contradictionFor("unrelated-goods", row, scope)
               ? { row_index: i, reason: "duplicate-of-delivered",
                 grounds: "The identical registration is already delivered as finding 1, so this one is consolidated "

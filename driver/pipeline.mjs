@@ -148,7 +148,7 @@ import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whati
 import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presence-or-reason (2026-07-22 — the unjoined-Sheet-2 leak)
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
-import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
+import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris, parseCarrySurfaces, classifyPlacement } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyClosed, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
@@ -3310,7 +3310,9 @@ export function lateRecordsUnaddressed(P, alreadyNamed = new Set()) {   // @inte
 function owedUrisFor(runDir) {
   try {
     const owed = driverReadsFor(runDir).owed;
-    return Array.isArray(owed) ? owed.map((row) => String(normalizeRecordUri(row?.uri ?? row?.record_id) ?? "").toLowerCase()).filter(Boolean) : null;
+    // An entry's row owes every record it holds.
+    return Array.isArray(owed) ? owed.flatMap((row) => (Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri ?? row?.record_id]))
+      .map((u) => String(normalizeRecordUri(u) ?? "").toLowerCase()).filter(Boolean) : null;
   } catch { return null; }
 }
 
@@ -3407,30 +3409,40 @@ function recordDigestSeam(ctx, r, trigger = null) {
 function findingsSurfaceRows(P) {
   try {
     const placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-    const idx = placementIndex(placements, existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "");
-    // THE BAND JOIN, AND IT IS LOAD-BEARING RATHER THAN DECORATIVE. `placementIndex` carries
-    // {tier, mark, owner, carry, ended_by} and NOTHING ELSE — no classes, no status. Both of the tool's
-    // contradiction refusals rest on exactly those two fields, so a row built from the placement alone
-    // would arrive with `classes: []` and `status: null`, every check would find nothing to contradict,
-    // and the tool would accept every declination while looking like it was guarding them. A guard that
-    // cannot fire is worse than none, because it reads as one. The band record is where the run's own
-    // class list and status live (`traceRecordCarry` reads the same two fields off the same rows).
+    const text = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
+    // THE BAND JOIN, AND IT IS LOAD-BEARING RATHER THAN DECORATIVE. A placement carries no classes and no status. Both of
+    // the tool's contradiction refusals rest on exactly those two fields, so a row built from the placement alone would
+    // arrive with `classes: []` and `status: null`, every check would find nothing to contradict, and the tool would
+    // accept every declination while looking like it was guarding them. A guard that cannot fire is worse than none,
+    // because it reads as one. The band record is where the run's own class list and status live.
     const band = new Map();
     try {
       const b = safeReadJson(P.registerNamedBand);
       for (const rec of Array.isArray(b?.enumerated) ? b.enumerated : []) {
         const u = bandRecordUri(rec);
-        if (u) band.set(u, rec);
+        if (u) band.set(String(u).toLowerCase(), rec);
       }
-    } catch { /* an unreadable band leaves the refusals with nothing to rest on; see below */ }
+    } catch { /* an unreadable band leaves the refusals with nothing to rest on; see above */ }
+    // THE WRITER IS OWED POSITIONS, NOT RECORDS. A position is one placement entry: an owner's mark with its records.
+    // Every entry the write-up carried is owed, whatever its tier: a headline entry, a sheet-2 entry the write-up adopted
+    // or kept, and one it promoted. An entry the write-up dropped carries its own ending and is not owed. A finding naming
+    // any record of an entry ends it, or one declination of its row, which the report lists once among the set-asides.
+    // The row is the entry's first live record, else its first; its records ride with it, and each one's classes and
+    // status, for the refusals to read.
+    const surfaces = parseCarrySurfaces(text);
     const rows = [];
-    for (const [uri, seat] of idx) {
-      if (seat.carry !== "carried") continue;
+    for (const e of Array.isArray(placements) ? placements : []) {
+      const uris = entryUris(e);
+      if (!uris.length || classifyPlacement(e, surfaces).class !== "carried") continue;
+      const uri = uris.find((u) => band.has(u) && isLiveRecord(band.get(u))) ?? uris[0];
       const rec = band.get(uri);
       rows.push({
-        uri, mark: seat.mark ?? null, owner: seat.owner ?? null, tier: seat.tier ?? null,
+        uri, mark: e?.mark ?? null, owner: e?.owner ?? null, tier: e?.tier ?? null,
         classes: Array.isArray(rec?.classes) ? rec.classes : [],
         status: rec?.status ?? null,
+        uris,
+        ...(uris.length > 1 ? { members: uris.map((u) => ({ uri: u, mark: band.get(u)?.mark_text ?? e?.mark ?? null,
+          classes: Array.isArray(band.get(u)?.classes) ? band.get(u).classes : [], status: band.get(u)?.status ?? null })) } : {}),
       });
     }
     return rows;
@@ -3507,7 +3519,7 @@ function keepRankingReadByWriter(P) {
   catch (e) { runLog(P.runDir, { event: "ranking-read-by-writer-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
 }
 
-function recordSynthesisSeam(ctx, r, trigger = null) {
+export function recordSynthesisSeam(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
   if (r?.ok) keepRankingReadByWriter(P);   // where each record stood as this writer read it
   const declined = readDeclinations(P.runDir);   // — three-valued: absent ledger ≠ empty ledger
@@ -3525,11 +3537,31 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
       for (const [uri] of findingUris(parsed.findings ?? [])) delivered.push({ uri });
     }
   } catch { /* validators.findings' business; this seam records what it can */ }
+  // A POSITION IS SEEN WHOLE AND ENDS WHOLE. Each row the writer was handed is a position, one placement entry: every
+  // record of it was seen. A record a finding names is carried. A finding naming any record of a position delivers it,
+  // and its other records end with it on that ground; the row's declination is each record's. Only a named record
+  // reads as carried, because the trace holds a carried record to a finding that names it.
+  const key = (u) => String(normalizeRecordUri(u) ?? "");
+  const deliveredKeys = new Set(delivered.map((d) => key(d.uri)));
+  const rowOf = new Map(), namedWith = new Map();
+  const sawRecords = [];
+  for (const row of saw) {
+    const members = Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri];
+    const named = members.find((u) => deliveredKeys.has(key(u)));
+    for (const u of members) {
+      sawRecords.push({ ...row, uri: u });
+      rowOf.set(key(u), row?.uri);
+      if (named) namedWith.set(key(u), named);
+    }
+  }
   return recordSeamDiscards(ctx, {
     seam: "synthesis", stage: "synthesis", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
-    saw, carried: delivered,
+    saw: sawRecords, carried: delivered,
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
+      const named = namedWith.get(key(uri));
+      if (named) return { reason: "synthesis:delivered-with-its-position", reason_source: "step-stated",
+        detail: `delivered with its position: a finding names ${named}, another record of the same placement entry` };
       // — THE 102. This callback used to be zero-arity and constant: every record this pass
       // discarded got the same sentence and `step-silent`, whatever it was. One of them was KORPHIC,
       // a lawyer-named gold mark placed on sheet-2 and stamped `carry: "carried"`, and the trace could
@@ -3538,7 +3570,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
       // had nothing to read until `record_declination` gave synthesis somewhere to say it.
       // The judgment itself is `seamReasonFor`, pure and next door, so the guarantee has an arm
       // that does not need a run directory. This callback is now only the plumbing around it.
-      return seamReasonFor(declined, uri);
+      return seamReasonFor(declined, rowOf.get(key(uri)) ?? uri);
     },
   });
 }
@@ -14509,8 +14541,13 @@ async function pipelineInner(job, opts = {}) {
       // THE TWO GAPS STATED ONCE when both name records: the approved sentence, with each record counted once out of the
       // records either required to be assessed (ruled 2026-10-19). The run record keeps each gap's own counts.
       const gap = recallGapNow(duty);
+      // THE DUTY IS THE ENTRY'S, AND THE READER IS TOLD ITS RECORDS: every record of each entry left unaccounted, out of
+      // the records the owed entries hold (a duty with no record counts is a row per record, as before).
+      const dutyIds = duty?.computable === true ? duty.unaccounted.flatMap((u) => (Array.isArray(u.uris) ? u.uris : [u.uri])) : [];
+      const recordsOpen = duty?.records?.unaccounted ?? dutyIds.length;
+      const recordsOwed = duty?.records?.owed ?? duty?.totals?.owed;
       const joint = duty?.computable === true && duty.unaccounted.length
-        ? jointUnaccounted({ dutyIds: duty.unaccounted.map((u) => u.uri), owedIds: owedUrisFor(run.runDir), recallIds: gap.records, weighedIds: gap.population })
+        ? jointUnaccounted({ dutyIds, owedIds: owedUrisFor(run.runDir), recallIds: gap.records, weighedIds: gap.population })
         : null;
       if (duty?.computable === true && duty.unaccounted.length) {
         const sample = duty.unaccounted.slice(0, 4).map((u) => `${u.mark ? `${u.mark} ` : ""}(${u.uri})`).join("; ");
@@ -14519,9 +14556,9 @@ async function pipelineInner(job, opts = {}) {
         // but naming it to nobody was the worse outcome of the two.
         deliverAndClamp({
           event: "synthesis-duty-undischarged",
-          defect: `synthesis_unaccounted_delivered:${duty.unaccounted.length}`,
-          detail: { unaccounted: duty.unaccounted.length, owed: duty.totals.owed, uris: duty.unaccounted.slice(0, 6).map((u) => u.uri) },
-          reason: `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.${joint ? ` Stated with the recall gate's records, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
+          defect: `synthesis_unaccounted_delivered:${recordsOpen}`,
+          detail: { unaccounted: recordsOpen, owed: recordsOwed, uris: dutyIds.slice(0, 6) },
+          reason: `synthesis_unaccounted_delivered:${recordsOpen} of ${recordsOwed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.${joint ? ` Stated with the recall gate's records, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
           again,
           // — the READER's sentence: what is open, in a lawyer's nouns. Counts survive;
           // the token, the record ids and the engine's nouns stay in `reason` and the run record.
@@ -14530,7 +14567,7 @@ async function pipelineInner(job, opts = {}) {
           // counts survive; `terminal-clamp.mjs` composes it from the counts either way, so the fresh
           // run and the republished archive cannot drift apart.
           clause: joint ? clauseForDefect("synthesis_unaccounted_delivered", joint.n, joint.m)
-            : clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
+            : clauseForDefect("synthesis_unaccounted_delivered", recordsOpen, recordsOwed),
         });
       } else if (again && gapPositivelyClosed("synthesis_unaccounted_delivered", { duty })) withdrawClosedGap("synthesis_unaccounted_delivered");
       const recall = clampOnTheRecallGate(duty, { again, gap, joint });   // the recall gate's gap, beside the writer's duty
