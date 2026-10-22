@@ -11249,6 +11249,7 @@ async function pipelineInner(job, opts = {}) {
     // resumed-past leniency → degrade-with-note → ship.
     const anyBands = axes.some((x) => existsSync(P.registerBand(x)));
     const unprovenBands = [];   // every axis whose band the ledger cannot evidence, failed on together below
+    const collapsedSlices = [];   // every axis's qid-stamped slices that claimed hits and carried no record, likewise
     for (const a of axes) {
       if ((unitKey[a] || anyBands) && !existsSync(P.registerBand(a)))
         throw new StageFailure("fan-in", `missing named band for axis "${a}" — the funnel produced no complete band (a clean can never ship over an unsearched band)`, undefined, { detail: `${P.registerBand(a)}${unitKey[a] ? "" : " — resumed-past axis on a run that carries bands: a hole, not legacy"}` });
@@ -11265,8 +11266,11 @@ async function pipelineInner(job, opts = {}) {
         // collapsed slices already had their re-run via the validator ladder — they stay terminal.
         const collapsedQids = collapsed.map((x) => x.qid).filter(Boolean);
         if (collapsedQids.length && (await dispatchPlanQids(a, collapsedQids, "collapsed-reexecute")) === "ok") collapsed = readCollapsed();
-        if (collapsed.length)
+        // A collapsed slice with no qid has no plan row to carry a deferral, so it ends the run as before. The qid-stamped
+        // ones are the searches not completed, failed on with every axis's below.
+        if (collapsed.length && collapsed.some((x) => !x.qid))
           throw new StageFailure("fan-in", `collapsed named band for axis "${a}" — ${collapsed.length} enumerated slice(s) claimed hits but carried ZERO records into the band (a clean can never ship over a collapsed slice)`, undefined, { failClass: "deterministic", repairs: fanInRepairs, detail: `${P.registerBand(a)} — ${collapsed.slice(0, 6).map((x) => `${(x.query || "slice").slice(0, 40)}~${x.total_hits}`).join("; ")}${collapsed.length > 6 ? ` (+${collapsed.length - 6} more)` : ""}` });
+        if (collapsed.length) collapsedSlices.push({ axis: a, collapsed });
       }
       // ── band-truth gate (2026-07-14, teal-foundry): the band must be EVIDENCED, not just well-formed ──
       // A qid-stamped band whose unit lane logged ZERO real provider calls was AUTHORED, not executed —
@@ -11306,15 +11310,28 @@ async function pipelineInner(job, opts = {}) {
         }
       }
     }
-    // THE BANDS NO LEDGER CALL EVIDENCES, failed on together, so one park takes every such axis. Their slices are the
-    // searches not completed: once this is terminal they are taken out of the band and delivered as open rows, with the
-    // shipped reason "nothing in the run's own record confirms it was searched".
-    const notCompleted = unprovenBands.flatMap((u) => u.qids.map((qid) => ({ axis: u.axis, qid, reason: plainDeferralReason("not-verified-closed") })));
+    // THE SLICES THE BAND'S CHECKS COULD NOT PROVE RAN, failed on together, so one park takes every axis's. They are the
+    // searches not completed: once this is terminal they are taken out of the band and delivered as open rows, each with
+    // its shipped reason. A band no ledger call evidences reads "nothing in the run's own record confirms it was
+    // searched"; a slice that claimed hits and carried no record reads "it could not be completed this run". A slice that
+    // is both keeps the first.
+    const notCompleted = [
+      ...unprovenBands.flatMap((u) => u.qids.map((qid) => ({ axis: u.axis, qid, reason: plainDeferralReason("not-verified-closed") }))),
+      ...collapsedSlices.flatMap((c) => c.collapsed.map((x) => ({ axis: c.axis, qid: x.qid, reason: plainDeferralReason("collapsed-slice") }))),
+    ];
     if (unprovenBands.length) {
       const [first] = unprovenBands, more = unprovenBands.length - 1;
       throw Object.assign(new StageFailure("fan-in", `fabricated named band for ${more ? `${unprovenBands.length} axes` : `axis "${first.axis}"`} — qid-stamped blocks, ZERO provider calls in the ledger, re-execution not evidenced (a clean can never ship over an unexecuted band)`,
         undefined, { failClass: "deterministic", repairs: fanInRepairs,
           detail: `${P.registerBand(first.axis)} — lane "${first.laneKey}", re-execution ${first.outcome ?? "no executor lane"}${more ? `; ${more} more axis(es): ${unprovenBands.slice(1).map((u) => u.axis).join(", ")}` : ""}` }),
+        { notCompletedPart: "searches", excludedSlices: notCompleted });
+    }
+    if (collapsedSlices.length) {
+      const [{ axis: a, collapsed }] = collapsedSlices;
+      const n = collapsedSlices.reduce((k, c) => k + c.collapsed.length, 0);
+      throw Object.assign(new StageFailure("fan-in", `collapsed named band for axis "${a}" — ${n} enumerated slice(s) claimed hits but carried ZERO records into the band (a clean can never ship over a collapsed slice)`,
+        undefined, { failClass: "deterministic", repairs: fanInRepairs,
+          detail: `${P.registerBand(a)} — ${collapsed.slice(0, 6).map((x) => `${(x.query || "slice").slice(0, 40)}~${x.total_hits}`).join("; ")}${collapsedSlices.length > 1 ? `; and on ${collapsedSlices.length - 1} more axis(es)` : ""}` }),
         { notCompletedPart: "searches", excludedSlices: notCompleted });
     }
 

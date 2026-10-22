@@ -49,6 +49,7 @@ const ENGINES = {
 const KEYS = ["CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE",
   "CLEAROTRON_BAND_TRUTH_GATE", "CLEAROTRON_REGISTER_CALL_LOG"];
 const NOT_VERIFIED = plainDeferralReason("not-verified-closed");
+const NOT_COMPLETED = "it could not be completed this run, so it is left open here rather than reported as clean";
 
 async function runPass(root, engine, knobs = {}, codename = null) {
   for (const k of KEYS) delete process.env[k];
@@ -127,6 +128,11 @@ for (const engine of Object.keys(ENGINES)) {
     assert.match(row?.note ?? "", /it could not be completed this run, so it is left open here rather than reported as clean$/, "the workbook's row is not the shipped gap row");
   });
 }
+
+test("the reason codes the band's checks name render as the shipped sentences, never as a code", () => {
+  assert.equal(plainDeferralReason("collapsed-slice"), NOT_COMPLETED, "a collapsed slice's code did not render the shipped sentence");
+  assert.equal(NOT_VERIFIED, "nothing in the run's own record confirms it was searched, so it is left open rather than assumed done");
+});
 
 test("the searches' record grows only by slices it does not hold, so a failure naming none new ends the run", () => {
   const held = { slices: [{ axis: "primary-sweep", qid: "q1", reason: NOT_VERIFIED }] };
