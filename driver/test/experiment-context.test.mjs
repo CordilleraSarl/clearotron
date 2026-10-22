@@ -157,11 +157,19 @@ async function canonicalRun() {
   // leaves every artefact the arms below need — the merged band, the derived shape, the grid specs, the
   // placement pair, the coverage ledger — on a live run dir, which is also the state an operator is
   // actually in when they reach for --experiment.
+  //
+  // A RECOVERY PARK, NOT A TERMINAL FAILURE. A synthesis failure whose recovery is spent no longer ends the run: it
+  // is recorded as the assessment not completed and the resumed pass delivers what the run holds. So the canonical
+  // run is given one recovery park to take instead, which leaves the same live run dir and records nothing as not
+  // completed.
   process.env.MOCK_FAIL_STAGE = "joint synthesis narrative";
+  process.env.CLEAROTRON_RECOVERY_MAX = "1";
   const job = jobFor("TMPEXPCTX1");
-  const res = await PL.pipeline(job);
-  assert.equal(res.ok, false, "the canonical mock run parks at synthesis so its run dir stays live");
-  assert.equal(res.failedStage, "synthesis");
+  let res;
+  try { res = await PL.pipeline(job); } finally { process.env.CLEAROTRON_RECOVERY_MAX = "0"; }
+  assert.equal(res.postponed, true, "the canonical mock run parks at synthesis so its run dir stays live");
+  assert.equal(JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage, "synthesis");
+  assert.equal(existsSync(driverDir(res.runDir, "not-completed")), false, "the park recorded a part as not completed");
   delete process.env.MOCK_FAIL_STAGE;
   CANON = { job, runDir: res.runDir, codename: codenameOf(res.runDir) };
   return CANON;

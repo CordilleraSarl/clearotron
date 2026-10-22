@@ -1806,7 +1806,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // takes its band where it stands. Not licence-only, so this constant moves with the other one.
 // Advanced again by the same break's second edit, recorded above the FROZEN constant: the cards' own country stays
 // in the set. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "648a2bc00b1bced348af2598631205e97048d1a3d5c4fb863c7a80217659f8da";
+// Advanced again by the break recorded above the FROZEN constant: a report whose overall assessment was not completed
+// draws no rating. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "cb4fccf30d505b59322ef7ce787d825b7bc0bb1c4c79732e9a63ea1b62c4661c";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2768,7 +2770,27 @@ const FROZEN_BEFORE_SPDX = "648a2bc00b1bced348af2598631205e97048d1a3d5c4fb863c7a
 // had under the previous renderer. Measured again on the same run's saved files: this edit renders byte-identically to
 // the first, the page still differs from the previous renderer only inside the section, and the one-country control
 // still renders byte-identically through both. The new arm in render.test.mjs holds the reviewed case.
-const FROZEN = "30d243d165f4a61971a9af5db1e9c81dfa5deef85d08f5481d421b8155a9e0fe";
+// ── BREAK (2026-10-22 — a report whose overall assessment was not completed draws no rating) ──────────────────────────
+//
+// WHAT MOVED: a run whose synthesis could not be completed once its recovery was spent is now delivered with what it
+// holds instead of ending with no report, and its publisher passes `assessmentNotCompleted`. With no rating to show, this
+// file fell back to the CLEAR stop in two places, the top bar's risk pill and the hero's gauge, and "Where it stands"
+// chipped every planned country "Nothing found": a clean answer the run never reached. Under that one option the pill,
+// the gauge, "Where it stands", "Also considered" and the provenance note about the cards are not drawn; the hero prints
+// the report's conclusion whole, since its second sentence is the action the reader is asked to take and the fold's
+// label names a chart that report does not have; and the open coverage rows lose their lead line, which says the
+// material ones are carried in the verdict above. No sentence is added; one shipped line and one shipped label are left
+// out in that state.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Only for a run that carries the record of its assessment not completed, which no run
+//      before this change does. Measured: the three demo runs published through the previous tree and this one give
+//      byte-identical pages, the issue date aside. The same run with the record present renders with no pill, gauge
+//      or rating, so the comparison can tell the two inputs apart.
+//   2. Could it live in report.css or brand.mjs? No: it decides which sections are drawn at all.
+//   3. Why it had to move here: the pill, the gauge and the sections are composed in this file and nowhere else, and
+//      the portal frames this page rather than drawing its own.
+const FROZEN = "43b62b526376c61ddcbee81ee88af06282fdc7eb41abff9a4453611e6a83e471";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

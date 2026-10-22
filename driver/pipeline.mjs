@@ -8,7 +8,7 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs"; import { recordStatusesFromFindings } from "./common-law-coverage-status.mjs";   // side effect: raise undici headersTimeout (code-side fetches); the second records a common-law ledger's statuses in code
 import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
+import { join, dirname, basename, resolve, relative } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
@@ -34,7 +34,8 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
-import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
+import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
+import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
@@ -73,7 +74,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 // — the register coverage form: the driver writes it before the digest dispatches, renders the
 // `## Coverage ledger` table and the machine ledger FROM it after the pass, and unions it across passes.
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
-import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel } from "./coverage-form.mjs";
+import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
@@ -107,7 +108,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories, narrowingMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -147,7 +148,7 @@ import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, reco
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
 import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
-import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
+import { readDeclinations, declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
 // — the committed ratchet floor. Read at module load like any other frozen contract object; a
@@ -214,7 +215,7 @@ import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's 
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { RunCancelled, isCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
-import { CLIENT_ACTION } from "../shared/client-failure-note.mjs";   // — the action, worded once; this surface names the mark itself
+import { CLIENT_ACTION, assessmentNotCompletedNote } from "../shared/client-failure-note.mjs";   // — the action, worded once; this surface names the mark itself
 import { stopReason } from "../shared/stop-reason.mjs";   // — one builder, four cancel sites
 
 // Fix-1 (deterministic common-law closure): the lanes that dictate a supplementary grid SPEC (the driver
@@ -420,6 +421,15 @@ export { parseCoverageLedger, parseCoverageLedgerFull } from "./coverage-ledger.
 // Called FRESH at each gate — register-findings.md AND the JSON are rewritten by re-digests, so a
 // cached read could span a rewrite. An unreadable machine ledger here is near-impossible (the file
 // passed the stage validator) — fall back to prose rather than crash; the validator owns that failure.
+/**
+ * The relabels every coverage consumer reads rows through: a tool-absence relabelled deferred, a clean on a
+ * timeout-tainted axis downgraded, and the open channels the run dictated and nobody ran. One function, so a ledger
+ * read from any source is relabelled alike. IMPURE (reads the run's taint and grid receipts).
+ */
+export function relabelCoverageRows(runDir, rows) {   // @internal
+  return [...applyTaintDeferred(coerceToolAbsenceDeferred(rows), readActiveTaintAxes(runDir)), ...openChannelRows(runDir)];
+}
+
 export function loadCoverageLedger(runDir) {   // @internal
   // Keystone (#1): every consumer reads through here, so the tool-absence→deferred relabel applies ONCE,
   // at the single choke point — the escalation-skip gate, the deadline envelope, and the U1 clamp all then
@@ -428,8 +438,7 @@ export function loadCoverageLedger(runDir) {   // @internal
   // Timeout-taint (copper-lattice): the sibling relabel — a confirmed-clean row on an axis whose winning
   // pass was kill-touched (register-taint.mjs) is downgraded to deferred at the same choke point, so the
   // envelope re-runs it and the verdict floor clamps over it, whatever the prose self-reported.
-  const taintAxes = readActiveTaintAxes(runDir);
-  const relabel = (rows) => [...applyTaintDeferred(coerceToolAbsenceDeferred(rows), taintAxes), ...openChannelRows(runDir)];
+  const relabel = (rows) => relabelCoverageRows(runDir, rows);
   const jsonPath = join(runDir, "register-coverage-ledger.json");
   if (existsSync(jsonPath)) {
     try { return { rows: relabel(parseCoverageLedgerJson(readFileSync(jsonPath, "utf8"))), source: "machine", dropped: [] }; }
@@ -5210,6 +5219,20 @@ async function stageWithChain(name, ctx, opts = {}) {
   // On a SKIP, stageOnce already recovered the WINNING model/key from telemetry into r — do NOT clobber it
   // with this call's model/thinking. On a fresh success, this call's model IS the winner.
   return r.ok && !r.skipped ? { ...r, model, thinking } : r;
+}
+
+/**
+ * A COVERED PART'S FAILURE IS NAMED WHERE IT IS THROWN (parts-not-completed.mjs). Runs `fn`, and a StageFailure it
+ * throws is named as `part`, so the run-level catch, once the recovery is spent, records the part as not completed and
+ * delivers without it instead of ending the run. A rate limit is not a failure and is left to its postpone; a failure
+ * a throw site already named keeps its name.
+ */
+async function asPartNotCompleted(part, fn) {
+  try { return await fn(); }
+  catch (e) {
+    if (e instanceof StageFailure && !e.rateLimited && !e.notCompletedPart) e.notCompletedPart = part;
+    throw e;
+  }
 }
 
 function must(r, name) {
@@ -10072,6 +10095,318 @@ async function pipelineInner(job, opts = {}) {
   if (ctx.quote) runLog(run.runDir, { event: "quote", ...ctx.quote });
   note(`\n=== clearotron-driver: ${run.slug} / ${run.date}-${run.codename} (agent=${agent}) ===`);
 
+  // ── PUBLISHING AND DELIVERING: ONE PATH, FOR EVERY RUN THAT DELIVERS ─────────────────────────────────
+  //
+  // The run's last steps, from publishing the report to the delivered state, the packet and the archive. A run whose
+  // overall assessment completed reaches them at the end of the stage sequence. A run whose assessment could not be
+  // completed reaches them from deliverWithoutTheAssessment below, with no verdict: the same publish, the same packet
+  // and the same terminal, so the two deliveries cannot drift apart. `verdict` is the review's sign-off word, or null.
+  async function publishAndDeliver(verdict) {
+    let published;
+    if (existsSync(join(run.runDir, ".published"))) {
+      published = JSON.parse(readFileSync(join(run.runDir, ".published"), "utf8"));
+      note(`publish skip — already published → ${published.url}`);
+    } else {
+      // THE LAST READ OF THE STOP FLAG, and it sits HERE rather than above the branch: a run that has
+      // already published has delivered, and refusing at that point would record a delivered run as
+      // cancelled — the same defect pointed the other way.
+      assertNotCancelledBeforePublish(run.runDir, "clearance");
+      // Same fact, same moment, same words as the knockout lane: past this line a stop cannot prevent
+      // delivery, and the screen is told so rather than working it out.
+      writeRunStatus(ctx, { stoppable: false });
+      // THE PARTS THAT FAILED AND STILL SHIP (ruling 498): read from the run as it stands now, so a failure a
+      // retry or a resume recovered writes nothing, and written for the audit workbook in the shipped
+      // deferral row's words. The run's record keeps each raw cause; the reader's cell never carries one.
+      try {
+        const localLanguage = await localLanguageStateOf(run.runDir);
+        const degraded = writeDegradedParts(run.runDir, degradedParts(run.runDir, { localLanguage }));
+        runLog(run.runDir, { event: "degraded-parts", parts: degraded.parts.map((d) => ({ part: d.part, cause: d.cause })) });
+      } catch (e) { runLog(run.runDir, { event: "degraded-parts-failed", cause: String(e?.message ?? e).slice(0, 200) }); }
+      published = await publishReport({
+        runId: `${run.slug}-${run.date}-${run.codename}`, codename: run.codename,
+        reportMd: P.report, auditMd: P.audit, findingsJson: P.findings, poolRoot: config.poolRoot, poolUrl: config.poolUrl,
+        // WS-B/D3: the resolved account key (frozen sidecar) buckets the per-customer portal index and
+        // stamps meta.json; delivery selects the render/banner variant. Both default safe for old sidecars.
+        customerKey: ctx.profile?.profileKey ?? "generic", delivery: deliveryForRun(ctx),
+        // Instance #6 — the source run dir whose _records/ the render reads identifiers from (records were
+        // materialized into run.runDir/_records by the lint-pass assembleRunRecords). NOT the pool dir.
+        runDir: run.runDir,
+      });
+      sentinel(run.runDir, ".published", { runId: published.runId, url: published.url, counts: published.counts,
+        clientGate: published.clientGate });   // machine-QC record (observability) — decides nothing
+      // WHAT THE TWO GATES EACH SAID, in the run's own log, under names that say whose they are.
+      // `.published` carries `clientGate.released` beside `counts.gateViolations`, which are the verdicts
+      // of DIFFERENT gates: the first is the client-export refusal (evaluateClientGate), the second is the
+      // audit workbook's own build check (validateAudit), which is advisory by design and decides nothing
+      // about the release. Read as one gate they contradict each other — released, with a list of
+      // violations beside it — and a delivered run shipped looking exactly like that. Named separately
+      // here, with the advisory COUNT and the absences the gate did not close on, so the log a person
+      // reads after a run answers "what did the checks say" without opening the sentinel and knowing
+      // which field belongs to which gate.
+      runLog(run.runDir, { event: "publish-gates",
+        clientExport: published.clientGate?.released === false ? "closed" : "released",
+        clientExportReasons: published.clientGate?.reasons ?? [],
+        releasedDespiteAbsentInputs: (published.clientGate?.notClosing ?? []).map((n) => n.input),
+        auditWorkbookAdvisory: published.counts?.gateViolations?.length ?? 0,
+        // A workbook that failed to build cannot say so itself, so its failure is recorded here. Without
+        // these two fields the advisory's 0 read as a clean workbook when there was none.
+        auditWorkbook: published.auditFile ? "built" : published.auditError ? "failed" : "not built",
+        auditWorkbookError: published.auditError ? String(published.auditError).slice(0, 300) : null });
+      note(`published → ${published.url}`);
+    }
+    // Lifecycle honesty (charter P1 §4): publish is CODE, not a stage() call, so nothing ever advanced the
+    // displayed step past "Drafting the report" — advance it here (monotonic; the delivered terminal below
+    // completes the stepper). The skip branch advances too: a resumed run with .published is equally at 8/9.
+    recordTransition(ctx, "publish");
+    // ONE report: the two-bit delivery (clientReady/defects) is deleted. The machine-QC result is
+    // telemetry — the reviewer reads it on the audit workbook. A4: the
+    // stable reason codes still ride the event, so a classifier reading the spine never hashes prose.
+    if (published.clientGate && published.clientGate.released === false) {
+      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}),
+        ...(published.clientGate.evaluationError ? { evaluationError: published.clientGate.evaluationError } : {}) });
+      note(`machine QC failed (${(published.clientGate.reasons ?? []).length} check(s)) — recorded on the audit workbook; the report is delivered as usual: ${(published.clientGate.reasons ?? []).join("; ")}`);
+    }
+    ctx.publishedUrl = published.url;
+    writeRunStatus(ctx, { url: published.url });
+
+    // Provider-usage rollup — billing-grade per-run Corsearch call counts from the plugin chokepoint
+    // ledger (every API call flows through it; all of a run's calls are done by the time we publish).
+    // Best-effort: a telemetry rollup must never affect a delivered run. `duplicate_fetches[_same/cross]`
+    // measures the Workstream-B dedup opportunity (and which scope matters) directly from data.
+    let providerTally = null;
+    try {
+      const provider = activeProvider().id;
+      const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
+      // ── A WHOLE-RUN TALLY FILED UNDER ONE REGISTER SAYS SO WHEN THE RUN SERVED MORE THAN ONE ──────
+      //
+      // This label is resolved HERE, at publish, while the tally it labels spans the whole run. On a run
+      // whose register changed part-way that key is whichever register happened to be active at publish,
+      // and every call is filed under it — the confident-and-wrong shape the served field exists to end.
+      //
+      // The key's SHAPE is untouched because a ledger reads this map. What is added is the caveat, in the
+      // same record, so the two register fields in one status cannot silently disagree: the served list
+      // says two, and this says the tally covers both and could only be filed under one. Splitting the
+      // tally by register is a second question and is not answered here.
+      // ── THE LEDGER IS WHAT KNOWS, SO ASK IT BEFORE READING THE RECORD ───────────────────────────
+      //
+      // `registersServed` was written from ONE place: the adapter wrapper the record fetcher, the record
+      // lister and a gated plan executor pass through. A clearance that takes counts and never fetches a
+      // record went through none of them and recorded no register at all — the run could not say which
+      // vendor answered it, and `registersServedFrom` returned [] for a run that had called a register
+      // hundreds of times.
+      //
+      // Every one of those calls wrote a ledger row, and every row carries the vendor that produced it, so
+      // the tally just computed already holds the answer per call. Noting them here is not a second source
+      // of truth competing with the first: it is the same memoised setter, which unions and writes only on
+      // change, so the eager note during the run and this reconciliation at publish cannot disagree.
+      //
+      // WHY NOT `activeProvider()` HERE. That resolves the register active at publish, which is the
+      // confident-and-wrong answer this whole field exists to end — and on a run that changed register it
+      // would name one vendor while the rows name two. The rows are per call; the resolver is per moment.
+      for (const id of usage.providers) noteRegisterServed(run.runDir, id);
+      const served = registersServedFrom(readRunStatus(run.runDir));
+      const spans = providerUsageCaveat(served);
+      runLog(run.runDir, { event: "provider-usage", provider, ...(served.length > 1 ? { spans: served } : {}), ...usage });
+      writeRunStatus(ctx, { providerUsage: { [provider]: usage }, ...spans });
+      providerTally = { [provider]: usage };
+      // AD-4: the line prints the complete by_tool census, not a hand-picked subset — the R2 run printed
+      // "search=0" while 286 execute_plan calls carried the whole register workload, and the subset read
+      // as "no searches happened". An unclassified count is called out loudly: it means the KINDS list in
+      // provider-usage.mjs has fallen behind a tool name again.
+      const byTool = Object.entries(usage.by_tool ?? {}).map(([k, v]) => `${k}=${v}`).join(" ") || "(none)";
+      // …and the LEDGER's own state rides the same line (post-merge audit, problem 4). A missing or
+      // mis-pointed call ledger used to print `total=0 ((none))` — a clean-looking measurement of a
+      // measurement that never happened. `total=0` is only believable when the ledger was read.
+      // The PATH is named here and only here: note() is the driver's own stderr, internal by construction,
+      // while the tally itself rides status.json and the MCP tool responses (see emptyTally's ledger note).
+      const led = usage.ledger ?? null;
+      const ledgerNote = !led ? ""
+        : !led.configured ? " ledger=NOT-CONFIGURED — the zeros above are NOT a measurement"
+        : !led.present ? ` ledger=MISSING (${DEFAULT_LEDGER_PATH}) — the zeros above are NOT a measurement`
+        : !led.readable ? ` ledger=UNREADABLE (${DEFAULT_LEDGER_PATH}) — the zeros above are NOT a measurement`
+        : ` ledger=read ${led.rowsScanned} row(s)`;
+      note(`${provider} calls: total=${usage.total} (${byTool})${usage.unclassified ? ` UNCLASSIFIED=${usage.unclassified} — a tool name the KINDS list doesn't know` : ""} retries=${usage.retries} errors=${usage.errors} dup_fetch=${usage.duplicate_fetches} [same=${usage.duplicate_fetches_same_session} cross=${usage.duplicate_fetches_cross_session}]${ledgerNote}`);
+    } catch (e) {
+      note(`provider-usage rollup failed (non-fatal): ${e.message}`);
+    }
+
+    // Register calls are the SECOND cost axis and may dominate the LLM one at some depths, so the ledger
+    // row carries both or it cannot answer "what did this run cost us" on its own.
+    recordRunConsumption(ctx, { phase: "delivered", tokens: stampTokenRollup(run.runDir, "delivered"), providerUsage: providerTally });
+
+    // AD-4 — quoted-vs-actual turnaround. The consumption row already pairs the two figures on one line
+    // (quote + wallSec); nothing ever computed the comparison, which is how "quoted 1.5h, took 5.68h"
+    // stayed a forensic discovery instead of a logged fact. Unconditional: a missing quote is recorded as
+    // quotedHours:null (the run was never sized), never as silence. Every OTHER terminal writes the same
+    // row with its own `state` — see logTurnaroundReconciliation.
+    logTurnaroundReconciliation(run.runDir, ctx.quote, "delivered");
+
+    // C — compose the email body in CODE: a single inline-HTML fragment (the cover note — headline
+    // tier, the report link, and any surviving machine-check/scope/verdict flags). The mail tool passes
+    // a fully-HTML body through unchanged. The notify leaf only sends it
+    // verbatim. Non-fatal: the report is already published.
+    const emailNames = [...new Set([job.markName, job.name,
+      ...(Array.isArray(job.marks) ? job.marks.map((m) => m?.name) : [])].filter(Boolean))];
+    // — THE PRODUCT NAME, off the run's own frozen policy row, for the cover note and the subject.
+    // The same resolver the report itself renders from, so the covering email and the document cannot
+    // name two different products. Null on a run with no sidecar ⇒ both surfaces say nothing rather
+    // than asserting one.
+    const emailProductName = reportIdentityFor(ctx.searchPolicy ?? null).identity;
+    // A2 — thread the code-carried verdict + its conditions into the e-mail composer.
+    let emailVerdictOpts = { productName: emailProductName ?? undefined };
+    // SPREAD, never reassign: this used to replace the whole object, which would now drop productName
+    // above on every run that has a verdict sidecar — i.e. on every healthy run, and on no test.
+    try { const v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
+    // wp50 — thread the findings too: the table overlay's rating cells are code-bound to the canonical
+    // ratings (joinFindingToBlock), never the summary's own words.
+    try { emailVerdictOpts.findings = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? undefined; } catch { /* no findings — table falls back to the summary words */ }
+    // doc 50 — the run's band ladder: the email table colours + sorts by the framework in force's own
+    // vocabulary (one framework's "Medium", the house's "Moderate", another's five bands) instead of the fixed table.
+    if (ctx.framework) emailVerdictOpts.bands = ctx.framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
+    // ONE report (spec 2026-07-30 §6): the cover note is a cover note — verdict, one-line summary, link.
+    // A10 (addendum, 2026-07-30) NARROWS the old "machine-QC never on the email" rule rather than
+    // restating it: surviving predelivery machine-check failures are enumerated on BOTH delivery
+    // surfaces — the workbook Summary and this cover note — because deleted the closed-gate block
+    // that used to carry them and they were left living only in a _driver sink nobody reads. What the
+    // rule still forbids is the ENGINE'S OWN WORDS getting there: composeEmailHtml enumerates
+    // predelivery-lint's code-owned projection (deliveryFlagLines), never the checks' raw `detail` —
+    // this mail is addressed to job.forwarderEmail, which on a client-principal run is the client.
+    // THE REVIEWER'S OPEN POINTS NO LONGER RIDE THE EMAIL (owner ruling, 2026-10-01). This line read them
+    // out of the run record and handed them to the cover, which is how the sentence naming the independent
+    // reviewer reached a client after the 2026-09-24 ruling had already taken it off the report page: the
+    // section stopped being spliced into the body and started being posted to the email instead. Measured
+    // on the last thirty days of production, the report carries neither the heading nor that sentence since
+    // that ruling, and the email carries both. The record is still written beside the report for the
+    // reviewing lawyer; nothing reads it onto a client surface.
+    writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
+    // ctx.verdict is set BEFORE the packet is composed, because the packet's copy reads it.
+    ctx.verdict = verdict;
+    // DELIVERY (Phase 2). The driver writes a self-contained delivery packet and leaves
+    // status.sendPending; the integrator sends off it. The report is ALREADY published by this point,
+    // so nothing here can lose it. There is no second delivery mode and no send stage: what used to sit
+    // behind `CLEAROTRON_DELIVERY=stage` asked a gateway agent to send the mail and a chat ping, and that
+    // gateway is not part of this product.
+    {
+      const mark = job.markName ?? job.name ?? job.ref ?? "the matter";
+      const ref = job.ref ? ` (${job.ref})` : "";
+      const vtag = emailVerdictOpts.tier ? ` Overall risk: ${emailVerdictOpts.tier}.` : "";   // the rating, never the reviewer's sign-off word (ruled 2026-09-22)
+      // self-contained packet (the email body HTML is embedded so the courier needs no path resolution
+      // across the archive move). The courier sends EXACTLY this — same subject, text and recipient the
+      // deleted send stages composed, now composed in code.
+      // ONE report: the packet carries no readiness bits — every delivered run routes the same way.
+      const packet = {
+        // ONE canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — the same id status.json,
+        // the pool and the knockout lane carry ("one format across every consumer"). The packet's runId
+        // NAMES the outbox marker below, and the dateless `<slug>-<codename>` form this lane used to mint
+        // is what split one delivery into TWO markers two minutes apart (the outbox rescan re-drops from
+        // status.runId, saw no marker under the dated name, and minted a second one — the 2026-07-19
+        // runId-form split recurring). resolveRun still accepts the dateless legacy form for historical
+        // packets; the .sent orphan guard (outbox-backoff.mjs) stays as defence and matches both forms.
+        runId: `${run.slug}-${run.date}-${run.codename}`, agent,
+        forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
+        conversationId: job.conversationId ?? null,   // reply-lane fallback when msgId is not a Graph id
+        subject: deliverySubject(emailProductName, job),
+        emailBodyHtml: readFileSync(P.emailBody, "utf8"),
+        // — the notice goes to whoever ASKED, with the operator's copy beside it and a
+        // stated reason when no number is held. It used to go to AGENT_WHATSAPP[agent], which is the
+        // operator on every run because every user shares one agent id.
+        ...whatsappRouting(job, agent),
+        whatsappText: `✅ Clearotron search for ${mark}${ref} is done.${vtag} Report: ${published.url}`,
+        url: published.url, verdict, markName: job.markName ?? job.name ?? null,
+      };
+      // A NEW send supersedes any previous one: .sent is PER-SEND idempotence, not per-run-lifetime.
+      // A run that terminally failed (notice sent → .sent written) and was then resumed to success
+      // would otherwise be SKIPPED by clearotron-deliver's .sent guard — the report would never send.
+      // The stale failure packet goes too, so the run dir tells exactly one delivery story. B4: the
+      // per-channel send receipts are per-SEND state exactly like .sent — a stale email receipt from
+      // the superseded send would make clearotron-deliver skip THIS packet's email, so they reset together.
+      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
+      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+      try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
+      writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
+      note(`delivery: handoff → wrote _driver/delivery.json (the forwarding agent's completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
+      // Workstream B — instant delivery: drop a marker in the fixed outbox so the prelim-outbox.path unit
+      // wakes the forwarder agent NOW (vs ≤55m on the HEARTBEAT completion-watch, which stays as the
+      // backstop). The marker only names the agent to wake; status.sendPending + the run's .sent guard
+      // remain the source of truth, so a lost/cleared marker never double-sends nor loses a delivery.
+      // Best-effort — a marker-write failure must never break the run (the backstop still delivers).
+      try {
+        mkdirSync(config.outboxDir, { recursive: true });
+        writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
+        note(`delivery: outbox marker → ${join(config.outboxDir, `${packet.runId}.pending`)} (instant wake)`);
+      } catch (e) {
+        note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)}) — HEARTBEAT backstop still delivers`);
+      }
+    }
+
+    // Final status BEFORE archive so the renamed status.json carries the delivered state into the archive;
+    // then rebuild STATUS.md (which scans the archive too).
+    // spec 64 — the delivered status carries THE one risk statement too, so the run-status surface can
+    // speak the same sentence as every other surface (never a bare "CLEAR" beside an index "High").
+    // ONE report: the terminal state is "delivered", full stop — the delivery.{clientReady,defects}
+    // second bit is deleted with the split it narrated (machine QC lives on the workbook + telemetry).
+    // Lifecycle honesty (charter P1 §4): the terminal state advances the stepper — a delivered run with
+    // .published + .delivered on disk must never read "7/9" on any status surface (nothing runs after
+    // the packet, so no stage transition would ever finish the display sequence). finalStepFields ⇒ 9/9.
+    const deliveredAt = new Date().toISOString();
+    writeRunStatus(ctx, { state: "delivered", ...signoffPatch(verdict), statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
+    // — THE POOL COPY LEARNS ITS OWN TERMINAL STATE, HERE AND NOWHERE ELSE.
+    // `meta.json` cannot carry this: it is composed inside publish, before this line runs, so the state
+    // did not exist yet when it was written. This is the one moment where the terminal state and the
+    // pool directory are both in hand. Best-effort by construction — the report is already published
+    // and the run is already settled, so a failure to stamp is logged and the delivery proceeds.
+    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
+    if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
+    endAnswerMemory(run.runDir);   // the held answers do not travel into the archive
+    const archived = archive(run);
+    rollupStatus(run.studioRoot);
+    // `notified: "pending"` and `sendPending: true` unconditionally, which is what the KNOCKOUT lane has
+    // always written one file over. They used to be three-valued because a send STAGE could report
+    // success, failure or "no chat binding" here; with the packet as the only lane the integrator owns
+    // the outcome, and a field that can hold exactly one value is not evidence of anything. `notifiedChat`
+    // is gone for the same reason rather than pinned to false — a key that is always there and always
+    // says no reads as a measurement.
+    sentinel(archived ?? run.runDir, ".delivered", { verdict, url: published.url, notified: "pending", archived, sendPending: true });
+    note(`=== DELIVERED (verdict ${verdict}) → ${published.url}${archived ? ` — archived → ${archived}` : ""} ===\n`);
+    return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
+  }
+
+  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS (874) ──────────────────────
+  //
+  // Reached from the synthesis site on the pass that resumes a run whose synthesis failed once its recovery was spent:
+  // the catch recorded the assessment as not completed and parked the run (parts-not-completed.mjs). The run holds
+  // everything except the assessment, and delivers the same page, workbook and email, built from that:
+  //   · every assessment artifact an earlier pass left is set aside, so no rejected draft and no earlier verdict can
+  //     reach a surface, and the run's status drops the rating it may still carry;
+  //   · the audit is the search log the run holds, without the records the assessment would have rated and without
+  //     placement's set-asides, which beside no finding would read as a list of only dismissals;
+  //   · the coverage rows are the register's own coverage ledger, each with its recorded status;
+  //   · report.md carries the run's identity and, as its conclusion, the one sentence for this state and the shipped
+  //     action line, which the page, the email and the run list all read;
+  //   · the workbook's "Findings" row says the part was not completed (degraded-parts.mjs).
+  // Then it publishes and delivers as every run does. A failure from here on is an ordinary failure: the record exists,
+  // so the catch does not route it again, and the run ends with the stop notice.
+  async function deliverWithoutTheAssessment(open) {
+    note(`[assessment] the overall assessment was not completed at ${open.stage ?? "an unrecorded stage"} — delivering what the run holds, with the gap stated`);
+    const setAside = setAsideTheAssessment(P, run.runDir);
+    writeRunStatus(ctx, { tier: null, statement: null, ...signoffPatch(null) });
+    let audit = null;
+    try {
+      const a = searchLogAuditMd(P);
+      writeFileSync(P.audit, a.md);
+      audit = a.counts;
+    } catch (e) { runLog(run.runDir, { event: "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
+    const coverageRows = assessmentCoverageOfRun(run.runDir);
+    atomicWrite(driverDir(run.runDir, NOT_COMPLETED_DIR, "assessment-coverage.json"), JSON.stringify({ rows: coverageRows }, null, 2) + "\n");
+    writeFileSync(P.report, renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [], methodology: null },
+      reportIdentityRecord(job, ctx, run.runDir, null)));
+    writeScopeFactsOf(ctx, P, run.runDir);
+    applyScopeFrontMatterOf(P, run.runDir);
+    runLog(run.runDir, { event: "assessment-not-completed-delivery", stage: open.stage ?? null, sig: open.sig ?? null,
+      setAside, coverageRows: coverageRows.length, audit });
+    return await publishAndDeliver(null);
+  }
+
   try {
     // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
     must(await stage("matter-frame", ctx), "matter-frame");
@@ -12549,15 +12884,22 @@ async function pipelineInner(job, opts = {}) {
     }
 
     // Step 2C placement → Step 2D digest
+    //
+    // THE PASS THAT RESUMES A RUN WHOSE ASSESSMENT COULD NOT BE COMPLETED delivers what the run holds, here, at the
+    // assessment's first step and before anything that exists only to feed it runs. See deliverWithoutTheAssessment.
+    const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
+    if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
     await assertReceiptSettled(ctx, "placement-inquiry");
-    const placementPass = await stage("placement-inquiry", ctx);
+    // Placement and the register write-up are the assessment's first two steps. A failure of either, a band too large
+    // to dispatch over included, is named as the assessment, as synthesis's own is below.
+    const placementPass = await asPartNotCompleted("assessment", () => stage("placement-inquiry", ctx));
     // What THIS pass did, recorded before anything else can overwrite placements.json, and ahead of `must`
     // deliberately: a pass that failed or skipped on a partial artifact is exactly the pass whose account is
     // worth having, and `must` throws. The delivery gate's repeat of this stage records through the same helper.
     recordPlacementPass(ctx, placementPass);
-    must(placementPass, "placement-inquiry");
+    await asPartNotCompleted("assessment", async () => must(placementPass, "placement-inquiry"));
     await checkLateBind("pre-digest");   // B5b checkpoint 2: a bind here rides the digest message as a re-classification block
-    const digestKey = must(await runDigest(ctx), "register-digest").sessionKey;
+    const digestKey = (await asPartNotCompleted("assessment", async () => must(await runDigest(ctx), "register-digest"))).sessionKey;
     ctx.digestKey = digestKey;           // B5b: the warm-redigest late-bind path resumes this session
 
     // Step 2.6 skeptic → code-decided escalation. The skeptic poses its flags as a QUESTION back to each
@@ -13405,7 +13747,12 @@ async function pipelineInner(job, opts = {}) {
     // dispatch and now composes them, for the reason recorded there.
     prepareDeclinationSpec(ctx, P);   // — the findings-surface list, printed forward and written for the tool
     const { text: synthExtra } = composeDispatchExtra("synthesis", ctx);
-    const synth = await quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
+    // THE OVERALL ASSESSMENT'S OWN FAILURE IS NAMED WHERE IT IS THROWN. Only this call: the corrective and post-repair
+    // passes below run on a record that exists, and their failures are theirs. A failure named here, once its recovery
+    // is spent, is recorded as the assessment not completed and delivered without it (the run-level catch), never
+    // ended on.
+    const synth = await asPartNotCompleted("assessment", async () =>
+      quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis"));   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
     recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
     // The corrective re-synthesis is dispatched on the WINNING attempt's key AND model/thinking. A followup's first
     // attempt starts fresh, and it never resumes the synthesis session (no engine resumes by key); but if synthesis
@@ -13572,9 +13919,16 @@ async function pipelineInner(job, opts = {}) {
       // could-not-look rather than as a source this deployment does not have.
       ctx.caseLawSources = caseLawSourceRows(caseLawInventory(process.env));
     } catch { ctx.caseLawSources = []; }
+    // THE FIRST REVIEW, WHERE IT COULD NOT BE COMPLETED (parts-not-completed.mjs). Its recovery was spent, so the report
+    // delivers the rated findings with the band alone and no verdict sentence, as a review that signs nothing already
+    // renders. No sign-off is recorded, because nobody gave one, and the corrective pass, which answers a review's
+    // flags, has none to answer. The workbook's shipped "Machine QC" row records the review as not completed: it reads
+    // the review's last attempt, which failed, and nothing runs it again on this pass.
+    const reviewOpen = readPartNotCompleted(run.runDir, "review");
+    if (reviewOpen) runLog(run.runDir, { event: "review-not-completed-delivery", stage: reviewOpen.stage ?? null });
     const [caseLawRes, firstRef] = await Promise.all([
       needCaseLaw ? stage("case-law", ctx) : Promise.resolve(null),   // non-fatal: a citation gap degrades, not blocks
-      refute(ctx),
+      reviewOpen ? Promise.resolve({ ok: true, verdict: null, notCompleted: true }) : refute(ctx),
     ]);
     if (caseLawRes && !caseLawRes.ok) note(`case-law grounding failed (non-fatal): ${caseLawRes.fail}`);
 
@@ -13586,10 +13940,10 @@ async function pipelineInner(job, opts = {}) {
     // The fallback branch is deliberate and not decoration: when the ladder truly recorded no condition,
     // saying so is honest, and inventing one would be the same guess in a more confident voice.
     if (!firstRef.ok)
-      throw new StageFailure("narrative-refutation", firstRef.fail
+      throw Object.assign(new StageFailure("narrative-refutation", firstRef.fail
         ? `${firstRef.fail} — the refutation ladder exhausted retries and fallback on it`
-        : "failed after retries + fallback (the ladder recorded no condition)");
-    let verdict = firstRef.verdict;
+        : "failed after retries + fallback (the ladder recorded no condition)"), { notCompletedPart: "review" });
+    let verdict = firstRef.verdict;   // null where the review was not completed: no sign-off, the band alone
     runLog(run.runDir, { event: "verdict", verdict });
     writeRunStatus(ctx, signoffPatch(verdict));
     note(`refutation verdict: ${verdict}`);
@@ -14806,24 +15160,21 @@ async function pipelineInner(job, opts = {}) {
     // overall_label/overall_badge. This removes the SEAT from those keys; it does not touch the driver's
     // own authority over them.
     try {
-      const idMarks = Array.isArray(job.marks) ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean) : [];
-      const clRan = !ctx.registerOnly;
-      let runDate = null;
-      try { runDate = String(JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8"))?.startedAt ?? "").slice(0, 10) || null; } catch { /* no status yet — the date half is omitted rather than invented */ }
       ensureDriverDir(run.runDir);
-      writeFileSync(join(run.runDir, REPORT_IDENTITY_FILE), JSON.stringify({
-        schema_version: 1,
-        matter: job.ref ?? job.tmp ?? null,
-        title: job.name ?? job.markName ?? idMarks[0] ?? null,
-        client: job.customer ?? ctx.profile?.name ?? null,
-        use: job.goods ?? null,
-        classes: Array.isArray(job.classes) ? job.classes.join(", ") : (job.classes ?? null),
-        run: [runDate, PROVIDER_META.label].filter(Boolean).join(" · ") + (clRan ? " + common-law" : ""),
-        overall_label: displayVerdict?.tier ?? null,
-        overall_badge: displayVerdict?.badge ?? null,
-      }, null, 2) + "\n");
+      writeFileSync(join(run.runDir, REPORT_IDENTITY_FILE), JSON.stringify(reportIdentityRecord(job, ctx, run.runDir, displayVerdict), null, 2) + "\n");
     } catch (e) { note(`report identity write failed (non-fatal — the shell renders the keys it has): ${e.message}`); }
-    const rov = must(await stage("report-overview", { ...ctx, displayVerdict }, {}), "report-overview");   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
+    // THE REPORT OVERVIEW, WHERE IT COULD NOT BE COMPLETED (parts-not-completed.mjs). Its recovery was spent, so the report
+    // delivers its rating and its cards without the overview's conclusion, and the workbook's shipped "Summary" row says
+    // so. The shell the overview would have written is the driver's own, with the run's identity and no conclusion, and
+    // no overview is dispatched again on this pass: not here, not by the lint's redo, not by the delivery check's repair.
+    const overviewOpen = readPartNotCompleted(run.runDir, "overview");
+    if (overviewOpen) {
+      writeFileSync(P.reportOverview, renderReportOverview({ overall_caption: null, handling_note: null, actions: [], methodology: null },
+        reportIdentityRecord(job, ctx, run.runDir, displayVerdict)));
+      runLog(run.runDir, { event: "overview-not-completed-delivery", stage: overviewOpen.stage ?? null });
+    }
+    const rov = overviewOpen ? null
+      : await asPartNotCompleted("overview", async () => must(await stage("report-overview", { ...ctx, displayVerdict }, {}), "report-overview"));   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
     const findingsRead = readFindingsForReport(P);
     const findingsForCards = findingsRead.findings;
     //: a rejected findings.json is a defect, not an emptiness. Say so HERE, where the file was read,
@@ -14968,39 +15319,8 @@ async function pipelineInner(job, opts = {}) {
     // and injects `coverage_line:` from it. Recomputed + re-applied after every lint-repair
     // reassembly (same discipline as applyVerdictFrontMatter); ZERO render.mjs change — the frozen
     // renderer keeps rendering fm.classes verbatim, we changed WHO AUTHORS the value.
-    const writeScopeFacts = () => {
-      const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
-      const plan = ctx.registerPlan ?? readJson(P.registerPlan);
-      const instructed = readJson(P.instructedScope);
-      if (!plan && !Array.isArray(instructed?.classes)) return null;   // a run with no register layer and no instructed classes has no scope fact to state
-      const planExecution = ctx.planExecution ?? readJson(P.planExecution);
-      const facts = deriveScopeFacts({
-        instructedScope: instructed,
-        plan,
-        planExecution,
-        coverageRows: loadCoverageLedger(run.runDir).rows,
-        withheldQids: waitingFamilyStates(run.runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
-      });
-      facts.derived_from = Object.fromEntries([
-        ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],
-        ["plan_execution", P.planExecution], ["coverage_ledger", P.registerCoverageLedger],
-      ].filter(([, p]) => existsSync(p)).map(([k, p]) => [k, fileMeta(p)]));
-      try {
-        atomicWrite(P.scopeFacts, JSON.stringify({ ts: new Date().toISOString(), ...facts }, null, 2) + "\n");
-        runLog(run.runDir, { event: "scope-facts", classes: facts.classes_line, states: Object.fromEntries(Object.entries(facts.per_class).map(([c, v]) => [c, v.state])) });
-      } catch (e) { note(`scope-facts write failed (non-fatal): ${e.message}`); }
-      return facts;
-    };
-    const applyScopeFrontMatter = () => {
-      let facts = null;
-      try { facts = JSON.parse(readFileSync(P.scopeFacts, "utf8")); } catch { return; }
-      const fields = {};
-      if (facts?.classes_line) fields.classes = facts.classes_line;
-      if (facts?.coverage_line) fields.coverage_line = facts.coverage_line;
-      if (!Object.keys(fields).length) return;
-      const wrote = injectFrontMatter(P.report, fields, run.runDir);
-      if (wrote) runLog(run.runDir, { event: "scope-frontmatter", classes: facts.classes_line ?? null, coverage_line: Boolean(facts.coverage_line) });
-    };
+    const writeScopeFacts = () => writeScopeFactsOf(ctx, P, run.runDir);
+    const applyScopeFrontMatter = () => applyScopeFrontMatterOf(P, run.runDir);
     writeScopeFacts();
     applyScopeFrontMatter();
     // T9 (K3) — DISCLOSE which profile/framework rated this run (+ the verifiable sha).
@@ -15885,7 +16205,7 @@ async function pipelineInner(job, opts = {}) {
           if (rc.ok) { repaired.push(`report-card:${ord}`); reassembled = true; }
         }
         const shellFixable = targets.overview;
-        if (shellFixable.length) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
+        if (shellFixable.length && rov) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
         // narrative that broke the rules is the run shipping the defect with a note attached. ONE warm
@@ -15941,7 +16261,11 @@ async function pipelineInner(job, opts = {}) {
         const axis = label.includes(":") ? label.slice(label.indexOf(":") + 1) : null;
         try { return stageInputs(bare, P, { axes: ctx.axes, axis, registerOnly: ctx.registerOnly }); } catch { return []; }
       };
-      staleStages = [...staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput }),
+      // A part not completed has no stage to be stale: the overview's shell is the driver's own, the review is not run
+      // again, and nothing re-runs either.
+      const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview")
+        && !(reviewOpen && l === "narrative-refutation"));
+      staleStages = [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
         ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
       // A DELIVERY-CHECK REPAIR THAT CHANGED ONLY THE FINDINGS RECORD leaves the narrative's bytes, and so the
       // reviewer, fresh — the reviewer does not declare findings.json. The change is still content no review has
@@ -16314,7 +16638,7 @@ async function pipelineInner(job, opts = {}) {
         // freshness question — one bounded pass; anything still stale blocks below, exactly as before.
         lint = lintNow();
         autoCorrectRegistry();
-        staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
+        staleStages = staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput });
         // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, and its record says so (`unreadRecordReview`). The guard
         // is never handed that record: a run is not held on an unread review (owner's ruling, 2026-10-19). What the guard
         // reads here is staleness alone, as in the released engine.
@@ -16555,15 +16879,28 @@ async function pipelineInner(job, opts = {}) {
       // Doc-17 C-2: open floors at delivery = deferred rows ∪ surviving ⭐-floor breaches (the label
       // never demotes floor work). Stated with the mechanical cause, never silently shipped.
       const ledgerLoadFinal = loadCoverageLedger(run.runDir);   // WS-A: third gate consumer — same source as the other two
-      const ledgerFinal = ledgerLoadFinal.rows;
+      let ledgerFinal = ledgerLoadFinal.rows;
       // T3 (H3, the owner-refined line): the machine-ledger DEGRADE is
       // sanctioned only while the gates could actually READ coverage — the prose table is the source
       // of truth and its rows kept every gate functioning. A run whose coverage-honesty floor had
       // ZERO usable rows (machine mirror unavailable AND the prose parse yielded nothing) has no
       // functioning coverage receipts at all — it FAILS instead of stamping a verdict over unread
       // coverage (the retired D1 clamp used to ship this as a finished-looking CONDITIONAL).
-      if (ctx.machineLedgerNote && ledgerLoadFinal.source !== "machine" && ledgerFinal.length === 0 && existsSync(P.registerFindings))
-        throw new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`);
+      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER (874). The machine ledger
+      // and the prose table are renders of the driver's coverage form, whose statuses the write-up recorded. With both
+      // renders unreadable, the form's ruled rows still let the coverage-honesty floor run, through the same relabels,
+      // so the run is not ended with no report over a render it lost. With no ruled row there either, see below.
+      if (ctx.machineLedgerNote && ledgerLoadFinal.source !== "machine" && ledgerFinal.length === 0 && existsSync(P.registerFindings)) {
+        const formRows = formLedgerRows(readCoverageForm(run.runDir).rows ?? []);
+        if (formRows.length) {
+          ledgerFinal = relabelCoverageRows(run.runDir, formRows);
+          runLog(run.runDir, { event: "coverage-ledger-from-form", rows: ledgerFinal.length, note: abbrev(String(ctx.machineLedgerNote), 200) });
+          note(`coverage ledger: the machine ledger and the prose table are unreadable — the coverage floor reads the coverage form's ${formRows.length} ruled row(s)`);
+        } else
+          // With no ruled row anywhere, no verdict can ship over coverage nobody read (spec-49 T3), and the run is not
+          // ended for it either (874): the failure is the assessment's, recorded as not completed and delivered without it.
+          throw Object.assign(new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`), { notCompletedPart: "assessment" });
+      }
       // — the designation comes from the VALIDATED model, not the rendered manifest. `manifestFinal`
       // is gone from this call: it was the retired mechanism's text-scanning input and reading it here
       // again would be the token matching that made the original impossible to carry forward.
@@ -16660,7 +16997,17 @@ async function pipelineInner(job, opts = {}) {
       // failClass "stale": the remedy is a DETERMINISTIC recompute of the stale stage(s) (a resume recomputes
       // them — the stamps were left stale for exactly this, see reconcileStamps' exclude), so this must not be
       // starved by the shared one-park "unknown" budget. The repeat-signature backstop still caps it.
-      throw new StageFailure("delivery", `the report was assembled from material that has since changed: ${detail} — re-run needed (nothing published)`, undefined, { failClass: "stale" });
+      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE (874). A first staleness parks and the resume repairs
+      // it, as always. Where the repeat would end the run, the check is named as its own part: the run parks once more,
+      // and the resumed pass repairs and checks again from the material as it then stands. Still stale then, it ends as
+      // it always did; this check never delivers past staleness.
+      throw Object.assign(new StageFailure("delivery", `the report was assembled from material that has since changed: ${detail} — re-run needed (nothing published)`, undefined, { failClass: "stale" }), { notCompletedPart: "delivery" });
+    }
+
+    // The changed-material check passed: a record the last pass left for it is answered.
+    if (readPartNotCompleted(run.runDir, "delivery")) {
+      clearPartNotCompleted(run.runDir, "delivery");
+      runLog(run.runDir, { event: "part-completed", part: "delivery" });
     }
 
     // ONE report (spec 2026-07-30 §5) — the client gate's preflight is gone with the readiness state it
@@ -16672,273 +17019,7 @@ async function pipelineInner(job, opts = {}) {
     // about the document.
     // B — publish: DETERMINISTIC CODE → cannot hang. The durable deliverable: the report ships even if the audit
     // failed above (publishReport renders report.html regardless; the xlsx is best-effort inside it).
-    let published;
-    if (existsSync(join(run.runDir, ".published"))) {
-      published = JSON.parse(readFileSync(join(run.runDir, ".published"), "utf8"));
-      note(`publish skip — already published → ${published.url}`);
-    } else {
-      // THE LAST READ OF THE STOP FLAG, and it sits HERE rather than above the branch: a run that has
-      // already published has delivered, and refusing at that point would record a delivered run as
-      // cancelled — the same defect pointed the other way.
-      assertNotCancelledBeforePublish(run.runDir, "clearance");
-      // Same fact, same moment, same words as the knockout lane: past this line a stop cannot prevent
-      // delivery, and the screen is told so rather than working it out.
-      writeRunStatus(ctx, { stoppable: false });
-      // THE PARTS THAT FAILED AND STILL SHIP (ruling 498): read from the run as it stands now, so a failure a
-      // retry or a resume recovered writes nothing, and written for the audit workbook in the shipped
-      // deferral row's words. The run's record keeps each raw cause; the reader's cell never carries one.
-      try {
-        const localLanguage = await localLanguageStateOf(run.runDir);
-        const degraded = writeDegradedParts(run.runDir, degradedParts(run.runDir, { localLanguage }));
-        runLog(run.runDir, { event: "degraded-parts", parts: degraded.parts.map((d) => ({ part: d.part, cause: d.cause })) });
-      } catch (e) { runLog(run.runDir, { event: "degraded-parts-failed", cause: String(e?.message ?? e).slice(0, 200) }); }
-      published = await publishReport({
-        runId: `${run.slug}-${run.date}-${run.codename}`, codename: run.codename,
-        reportMd: P.report, auditMd: P.audit, findingsJson: P.findings, poolRoot: config.poolRoot, poolUrl: config.poolUrl,
-        // WS-B/D3: the resolved account key (frozen sidecar) buckets the per-customer portal index and
-        // stamps meta.json; delivery selects the render/banner variant. Both default safe for old sidecars.
-        customerKey: ctx.profile?.profileKey ?? "generic", delivery: deliveryForRun(ctx),
-        // Instance #6 — the source run dir whose _records/ the render reads identifiers from (records were
-        // materialized into run.runDir/_records by the lint-pass assembleRunRecords). NOT the pool dir.
-        runDir: run.runDir,
-      });
-      sentinel(run.runDir, ".published", { runId: published.runId, url: published.url, counts: published.counts,
-        clientGate: published.clientGate });   // machine-QC record (observability) — decides nothing
-      // WHAT THE TWO GATES EACH SAID, in the run's own log, under names that say whose they are.
-      // `.published` carries `clientGate.released` beside `counts.gateViolations`, which are the verdicts
-      // of DIFFERENT gates: the first is the client-export refusal (evaluateClientGate), the second is the
-      // audit workbook's own build check (validateAudit), which is advisory by design and decides nothing
-      // about the release. Read as one gate they contradict each other — released, with a list of
-      // violations beside it — and a delivered run shipped looking exactly like that. Named separately
-      // here, with the advisory COUNT and the absences the gate did not close on, so the log a person
-      // reads after a run answers "what did the checks say" without opening the sentinel and knowing
-      // which field belongs to which gate.
-      runLog(run.runDir, { event: "publish-gates",
-        clientExport: published.clientGate?.released === false ? "closed" : "released",
-        clientExportReasons: published.clientGate?.reasons ?? [],
-        releasedDespiteAbsentInputs: (published.clientGate?.notClosing ?? []).map((n) => n.input),
-        auditWorkbookAdvisory: published.counts?.gateViolations?.length ?? 0,
-        // A workbook that failed to build cannot say so itself, so its failure is recorded here. Without
-        // these two fields the advisory's 0 read as a clean workbook when there was none.
-        auditWorkbook: published.auditFile ? "built" : published.auditError ? "failed" : "not built",
-        auditWorkbookError: published.auditError ? String(published.auditError).slice(0, 300) : null });
-      note(`published → ${published.url}`);
-    }
-    // Lifecycle honesty (charter P1 §4): publish is CODE, not a stage() call, so nothing ever advanced the
-    // displayed step past "Drafting the report" — advance it here (monotonic; the delivered terminal below
-    // completes the stepper). The skip branch advances too: a resumed run with .published is equally at 8/9.
-    recordTransition(ctx, "publish");
-    // ONE report: the two-bit delivery (clientReady/defects) is deleted. The machine-QC result is
-    // telemetry — the reviewer reads it on the audit workbook. A4: the
-    // stable reason codes still ride the event, so a classifier reading the spine never hashes prose.
-    if (published.clientGate && published.clientGate.released === false) {
-      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}),
-        ...(published.clientGate.evaluationError ? { evaluationError: published.clientGate.evaluationError } : {}) });
-      note(`machine QC failed (${(published.clientGate.reasons ?? []).length} check(s)) — recorded on the audit workbook; the report is delivered as usual: ${(published.clientGate.reasons ?? []).join("; ")}`);
-    }
-    ctx.publishedUrl = published.url;
-    writeRunStatus(ctx, { url: published.url });
-
-    // Provider-usage rollup — billing-grade per-run Corsearch call counts from the plugin chokepoint
-    // ledger (every API call flows through it; all of a run's calls are done by the time we publish).
-    // Best-effort: a telemetry rollup must never affect a delivered run. `duplicate_fetches[_same/cross]`
-    // measures the Workstream-B dedup opportunity (and which scope matters) directly from data.
-    let providerTally = null;
-    try {
-      const provider = activeProvider().id;
-      const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
-      // ── A WHOLE-RUN TALLY FILED UNDER ONE REGISTER SAYS SO WHEN THE RUN SERVED MORE THAN ONE ──────
-      //
-      // This label is resolved HERE, at publish, while the tally it labels spans the whole run. On a run
-      // whose register changed part-way that key is whichever register happened to be active at publish,
-      // and every call is filed under it — the confident-and-wrong shape the served field exists to end.
-      //
-      // The key's SHAPE is untouched because a ledger reads this map. What is added is the caveat, in the
-      // same record, so the two register fields in one status cannot silently disagree: the served list
-      // says two, and this says the tally covers both and could only be filed under one. Splitting the
-      // tally by register is a second question and is not answered here.
-      // ── THE LEDGER IS WHAT KNOWS, SO ASK IT BEFORE READING THE RECORD ───────────────────────────
-      //
-      // `registersServed` was written from ONE place: the adapter wrapper the record fetcher, the record
-      // lister and a gated plan executor pass through. A clearance that takes counts and never fetches a
-      // record went through none of them and recorded no register at all — the run could not say which
-      // vendor answered it, and `registersServedFrom` returned [] for a run that had called a register
-      // hundreds of times.
-      //
-      // Every one of those calls wrote a ledger row, and every row carries the vendor that produced it, so
-      // the tally just computed already holds the answer per call. Noting them here is not a second source
-      // of truth competing with the first: it is the same memoised setter, which unions and writes only on
-      // change, so the eager note during the run and this reconciliation at publish cannot disagree.
-      //
-      // WHY NOT `activeProvider()` HERE. That resolves the register active at publish, which is the
-      // confident-and-wrong answer this whole field exists to end — and on a run that changed register it
-      // would name one vendor while the rows name two. The rows are per call; the resolver is per moment.
-      for (const id of usage.providers) noteRegisterServed(run.runDir, id);
-      const served = registersServedFrom(readRunStatus(run.runDir));
-      const spans = providerUsageCaveat(served);
-      runLog(run.runDir, { event: "provider-usage", provider, ...(served.length > 1 ? { spans: served } : {}), ...usage });
-      writeRunStatus(ctx, { providerUsage: { [provider]: usage }, ...spans });
-      providerTally = { [provider]: usage };
-      // AD-4: the line prints the complete by_tool census, not a hand-picked subset — the R2 run printed
-      // "search=0" while 286 execute_plan calls carried the whole register workload, and the subset read
-      // as "no searches happened". An unclassified count is called out loudly: it means the KINDS list in
-      // provider-usage.mjs has fallen behind a tool name again.
-      const byTool = Object.entries(usage.by_tool ?? {}).map(([k, v]) => `${k}=${v}`).join(" ") || "(none)";
-      // …and the LEDGER's own state rides the same line (post-merge audit, problem 4). A missing or
-      // mis-pointed call ledger used to print `total=0 ((none))` — a clean-looking measurement of a
-      // measurement that never happened. `total=0` is only believable when the ledger was read.
-      // The PATH is named here and only here: note() is the driver's own stderr, internal by construction,
-      // while the tally itself rides status.json and the MCP tool responses (see emptyTally's ledger note).
-      const led = usage.ledger ?? null;
-      const ledgerNote = !led ? ""
-        : !led.configured ? " ledger=NOT-CONFIGURED — the zeros above are NOT a measurement"
-        : !led.present ? ` ledger=MISSING (${DEFAULT_LEDGER_PATH}) — the zeros above are NOT a measurement`
-        : !led.readable ? ` ledger=UNREADABLE (${DEFAULT_LEDGER_PATH}) — the zeros above are NOT a measurement`
-        : ` ledger=read ${led.rowsScanned} row(s)`;
-      note(`${provider} calls: total=${usage.total} (${byTool})${usage.unclassified ? ` UNCLASSIFIED=${usage.unclassified} — a tool name the KINDS list doesn't know` : ""} retries=${usage.retries} errors=${usage.errors} dup_fetch=${usage.duplicate_fetches} [same=${usage.duplicate_fetches_same_session} cross=${usage.duplicate_fetches_cross_session}]${ledgerNote}`);
-    } catch (e) {
-      note(`provider-usage rollup failed (non-fatal): ${e.message}`);
-    }
-
-    // Register calls are the SECOND cost axis and may dominate the LLM one at some depths, so the ledger
-    // row carries both or it cannot answer "what did this run cost us" on its own.
-    recordRunConsumption(ctx, { phase: "delivered", tokens: stampTokenRollup(run.runDir, "delivered"), providerUsage: providerTally });
-
-    // AD-4 — quoted-vs-actual turnaround. The consumption row already pairs the two figures on one line
-    // (quote + wallSec); nothing ever computed the comparison, which is how "quoted 1.5h, took 5.68h"
-    // stayed a forensic discovery instead of a logged fact. Unconditional: a missing quote is recorded as
-    // quotedHours:null (the run was never sized), never as silence. Every OTHER terminal writes the same
-    // row with its own `state` — see logTurnaroundReconciliation.
-    logTurnaroundReconciliation(run.runDir, ctx.quote, "delivered");
-
-    // C — compose the email body in CODE: a single inline-HTML fragment (the cover note — headline
-    // tier, the report link, and any surviving machine-check/scope/verdict flags). The mail tool passes
-    // a fully-HTML body through unchanged. The notify leaf only sends it
-    // verbatim. Non-fatal: the report is already published.
-    const emailNames = [...new Set([job.markName, job.name,
-      ...(Array.isArray(job.marks) ? job.marks.map((m) => m?.name) : [])].filter(Boolean))];
-    // — THE PRODUCT NAME, off the run's own frozen policy row, for the cover note and the subject.
-    // The same resolver the report itself renders from, so the covering email and the document cannot
-    // name two different products. Null on a run with no sidecar ⇒ both surfaces say nothing rather
-    // than asserting one.
-    const emailProductName = reportIdentityFor(ctx.searchPolicy ?? null).identity;
-    // A2 — thread the code-carried verdict + its conditions into the e-mail composer.
-    let emailVerdictOpts = { productName: emailProductName ?? undefined };
-    // SPREAD, never reassign: this used to replace the whole object, which would now drop productName
-    // above on every run that has a verdict sidecar — i.e. on every healthy run, and on no test.
-    try { const v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
-    // wp50 — thread the findings too: the table overlay's rating cells are code-bound to the canonical
-    // ratings (joinFindingToBlock), never the summary's own words.
-    try { emailVerdictOpts.findings = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? undefined; } catch { /* no findings — table falls back to the summary words */ }
-    // doc 50 — the run's band ladder: the email table colours + sorts by the framework in force's own
-    // vocabulary (one framework's "Medium", the house's "Moderate", another's five bands) instead of the fixed table.
-    if (ctx.framework) emailVerdictOpts.bands = ctx.framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
-    // ONE report (spec 2026-07-30 §6): the cover note is a cover note — verdict, one-line summary, link.
-    // A10 (addendum, 2026-07-30) NARROWS the old "machine-QC never on the email" rule rather than
-    // restating it: surviving predelivery machine-check failures are enumerated on BOTH delivery
-    // surfaces — the workbook Summary and this cover note — because deleted the closed-gate block
-    // that used to carry them and they were left living only in a _driver sink nobody reads. What the
-    // rule still forbids is the ENGINE'S OWN WORDS getting there: composeEmailHtml enumerates
-    // predelivery-lint's code-owned projection (deliveryFlagLines), never the checks' raw `detail` —
-    // this mail is addressed to job.forwarderEmail, which on a client-principal run is the client.
-    // THE REVIEWER'S OPEN POINTS NO LONGER RIDE THE EMAIL (owner ruling, 2026-10-01). This line read them
-    // out of the run record and handed them to the cover, which is how the sentence naming the independent
-    // reviewer reached a client after the 2026-09-24 ruling had already taken it off the report page: the
-    // section stopped being spliced into the body and started being posted to the email instead. Measured
-    // on the last thirty days of production, the report carries neither the heading nor that sentence since
-    // that ruling, and the email carries both. The record is still written beside the report for the
-    // reviewing lawyer; nothing reads it onto a client surface.
-    writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
-    // ctx.verdict is set BEFORE the packet is composed, because the packet's copy reads it.
-    ctx.verdict = verdict;
-    // DELIVERY (Phase 2). The driver writes a self-contained delivery packet and leaves
-    // status.sendPending; the integrator sends off it. The report is ALREADY published by this point,
-    // so nothing here can lose it. There is no second delivery mode and no send stage: what used to sit
-    // behind `CLEAROTRON_DELIVERY=stage` asked a gateway agent to send the mail and a chat ping, and that
-    // gateway is not part of this product.
-    {
-      const mark = job.markName ?? job.name ?? job.ref ?? "the matter";
-      const ref = job.ref ? ` (${job.ref})` : "";
-      const vtag = emailVerdictOpts.tier ? ` Overall risk: ${emailVerdictOpts.tier}.` : "";   // the rating, never the reviewer's sign-off word (ruled 2026-09-22)
-      // self-contained packet (the email body HTML is embedded so the courier needs no path resolution
-      // across the archive move). The courier sends EXACTLY this — same subject, text and recipient the
-      // deleted send stages composed, now composed in code.
-      // ONE report: the packet carries no readiness bits — every delivered run routes the same way.
-      const packet = {
-        // ONE canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — the same id status.json,
-        // the pool and the knockout lane carry ("one format across every consumer"). The packet's runId
-        // NAMES the outbox marker below, and the dateless `<slug>-<codename>` form this lane used to mint
-        // is what split one delivery into TWO markers two minutes apart (the outbox rescan re-drops from
-        // status.runId, saw no marker under the dated name, and minted a second one — the 2026-07-19
-        // runId-form split recurring). resolveRun still accepts the dateless legacy form for historical
-        // packets; the .sent orphan guard (outbox-backoff.mjs) stays as defence and matches both forms.
-        runId: `${run.slug}-${run.date}-${run.codename}`, agent,
-        forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
-        conversationId: job.conversationId ?? null,   // reply-lane fallback when msgId is not a Graph id
-        subject: deliverySubject(emailProductName, job),
-        emailBodyHtml: readFileSync(P.emailBody, "utf8"),
-        // — the notice goes to whoever ASKED, with the operator's copy beside it and a
-        // stated reason when no number is held. It used to go to AGENT_WHATSAPP[agent], which is the
-        // operator on every run because every user shares one agent id.
-        ...whatsappRouting(job, agent),
-        whatsappText: `✅ Clearotron search for ${mark}${ref} is done.${vtag} Report: ${published.url}`,
-        url: published.url, verdict, markName: job.markName ?? job.name ?? null,
-      };
-      // A NEW send supersedes any previous one: .sent is PER-SEND idempotence, not per-run-lifetime.
-      // A run that terminally failed (notice sent → .sent written) and was then resumed to success
-      // would otherwise be SKIPPED by clearotron-deliver's .sent guard — the report would never send.
-      // The stale failure packet goes too, so the run dir tells exactly one delivery story. B4: the
-      // per-channel send receipts are per-SEND state exactly like .sent — a stale email receipt from
-      // the superseded send would make clearotron-deliver skip THIS packet's email, so they reset together.
-      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
-      writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
-      note(`delivery: handoff → wrote _driver/delivery.json (the forwarding agent's completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
-      // Workstream B — instant delivery: drop a marker in the fixed outbox so the prelim-outbox.path unit
-      // wakes the forwarder agent NOW (vs ≤55m on the HEARTBEAT completion-watch, which stays as the
-      // backstop). The marker only names the agent to wake; status.sendPending + the run's .sent guard
-      // remain the source of truth, so a lost/cleared marker never double-sends nor loses a delivery.
-      // Best-effort — a marker-write failure must never break the run (the backstop still delivers).
-      try {
-        mkdirSync(config.outboxDir, { recursive: true });
-        writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
-        note(`delivery: outbox marker → ${join(config.outboxDir, `${packet.runId}.pending`)} (instant wake)`);
-      } catch (e) {
-        note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)}) — HEARTBEAT backstop still delivers`);
-      }
-    }
-
-    // Final status BEFORE archive so the renamed status.json carries the delivered state into the archive;
-    // then rebuild STATUS.md (which scans the archive too).
-    // spec 64 — the delivered status carries THE one risk statement too, so the run-status surface can
-    // speak the same sentence as every other surface (never a bare "CLEAR" beside an index "High").
-    // ONE report: the terminal state is "delivered", full stop — the delivery.{clientReady,defects}
-    // second bit is deleted with the split it narrated (machine QC lives on the workbook + telemetry).
-    // Lifecycle honesty (charter P1 §4): the terminal state advances the stepper — a delivered run with
-    // .published + .delivered on disk must never read "7/9" on any status surface (nothing runs after
-    // the packet, so no stage transition would ever finish the display sequence). finalStepFields ⇒ 9/9.
-    const deliveredAt = new Date().toISOString();
-    writeRunStatus(ctx, { state: "delivered", ...signoffPatch(verdict), statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
-    // — THE POOL COPY LEARNS ITS OWN TERMINAL STATE, HERE AND NOWHERE ELSE.
-    // `meta.json` cannot carry this: it is composed inside publish, before this line runs, so the state
-    // did not exist yet when it was written. This is the one moment where the terminal state and the
-    // pool directory are both in hand. Best-effort by construction — the report is already published
-    // and the run is already settled, so a failure to stamp is logged and the delivery proceeds.
-    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
-    if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
-    endAnswerMemory(run.runDir);   // the held answers do not travel into the archive
-    const archived = archive(run);
-    rollupStatus(run.studioRoot);
-    // `notified: "pending"` and `sendPending: true` unconditionally, which is what the KNOCKOUT lane has
-    // always written one file over. They used to be three-valued because a send STAGE could report
-    // success, failure or "no chat binding" here; with the packet as the only lane the integrator owns
-    // the outcome, and a field that can hold exactly one value is not evidence of anything. `notifiedChat`
-    // is gone for the same reason rather than pinned to false — a key that is always there and always
-    // says no reads as a measurement.
-    sentinel(archived ?? run.runDir, ".delivered", { verdict, url: published.url, notified: "pending", archived, sendPending: true });
-    note(`=== DELIVERED (verdict ${verdict}) → ${published.url}${archived ? ` — archived → ${archived}` : ""} ===\n`);
-    return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
+    return await publishAndDeliver(verdict);
   } catch (e) {
     // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
     // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
@@ -17223,6 +17304,45 @@ async function pipelineInner(job, opts = {}) {
       // not a status surface — it stays under the machinery name deliberately.
       return { ok: false, postponed: true, recovery: true, attempt, resetsAt: recoveryResumesAt, codename: run.codename, runDir: run.runDir };
     }
+    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON (874) ────────────────────────
+    //
+    // A failure the throw site named as a covered part (`notCompletedPart`, parts-not-completed.mjs) reaches here once
+    // the decision above has nothing left to buy: every recovery lane spent, a repeated signature, or a deterministic
+    // refusal such as a band too large to dispatch. The run holds everything but that part, so it is not ended with the
+    // stop notice: the part is recorded as not completed, and the run parks for an immediate resume. The resumed pass
+    // reaches the part, finds the record, and delivers without it, with the gap stated.
+    //
+    // ONCE PER PART: a part whose record already exists is not routed again, so a failure on the pass that delivers
+    // without it ends the run below, as every failure did. Written before `.failed` and before the failure packet, so
+    // a run that delivers carries neither. A rate limit and a stop never reach this line (both are handled above), and
+    // a storage failure is not a covered part: no throw site names one.
+    const coveredPart = e instanceof StageFailure ? (e.notCompletedPart ?? null) : null;
+    if (coveredPart && run?.runDir && !readPartNotCompleted(run.runDir, coveredPart)) {
+      let parked = null;
+      try {
+        writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind });
+        const resumesAt = new Date().toISOString();
+        // The payload the runner's self-resume needs (job, agent, codename), and the recovery kind, whose stated
+        // clock it keeps exactly: now. No recovery attempt is counted, because nothing is being retried.
+        sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt: resumesAt, postponedAt: resumesAt,
+          codename: run.codename, job, agent, attempt: priorAttempts, reason: String(reason).slice(0, 300), sig: failSig.sig,
+          class: failClass, notCompleted: coveredPart });
+        writeRunStatus(ctx, { state: "recovering", failedStage, ...terminalReasonFields(reason), recoveryResumesAt: resumesAt, resetsAt: null });
+        rollupStatus(run.studioRoot);
+        runLog(run.runDir, { event: "part-not-completed", part: coveredPart, stage: failedStage, sig: failSig.sig, class: failClass,
+          terminalKind: terminalKind ?? null, resumesAt });
+        logTurnaroundReconciliation(run.runDir, ctx?.quote, "recovery-parked");
+        recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") });
+        note(`[pipeline] ${failedStage} could not be completed once its recovery was spent — recorded as the ${coveredPart} not completed; the run resumes now and delivers what it holds`);
+        parked = { ok: false, postponed: true, recovery: true, attempt: priorAttempts, resetsAt: resumesAt, codename: run.codename, runDir: run.runDir };
+      } catch (rErr) {
+        note(`[pipeline] the ${coveredPart} could not be recorded as not completed (${String(rErr?.message ?? rErr).slice(0, 120)}) — the run ends with the stop notice`);
+      }
+      if (parked) return parked;
+    }
+    // A RUN THAT ENDS WITH THE STOP NOTICE CARRIES NO RECORD OF A PART NOT COMPLETED: nothing was delivered without it,
+    // and a later resume should try the part again.
+    if (run?.runDir) clearPartsNotCompleted(run.runDir);
     // Both lane ceilings end the run, and both say so. "weather-exhausted" is the honest terminal for
     // a provider that was still refusing after the whole weather ladder — the run did not break, the
     // far end never came back, and the notice must not read as a defect in the run's own output.
@@ -17379,6 +17499,162 @@ async function pipelineInner(job, opts = {}) {
     // field it had already computed. It costs one word to stop computing a diagnostic and dropping it.
     return { ok: false, failedStage, reason, terminalKind, codename: run.codename, runDir: run.runDir };
   }
+}
+
+// ── A DELIVERY WITHOUT THE OVERALL ASSESSMENT: WHAT IT SETS ASIDE AND WHAT IT READS ───────────────────────────────
+
+/** Every artifact of the overall assessment an earlier pass can leave in the run, as a path. */
+function assessmentArtifacts(P, runDir) {
+  return [
+    P.findings, P.narrative, P.report, P.reportOverview, P.reportCardsDir, P.audit, P.seniorEyeReview, P.caseLaw,
+    P.caseLawCitations, P.doubtClosure, P.clientSummary, P.emailBody, P.correctionsApplied,
+    join(runDir, REPORT_IDENTITY_FILE), join(runDir, ".published"),
+    ...["verdict.json", "senior-rights.json", "corrections-state.json", "corrective-cycle.json", "predelivery-lint.json",
+      "reasoning-integrity.json"].map((n) => driverDir(runDir, n)),
+    declinationCallPaths(runDir, 0).ledger,
+  ].filter(Boolean);
+}
+
+/**
+ * Move every assessment artifact an earlier pass left under `_driver/not-completed/set-aside/`, so no rejected draft,
+ * earlier verdict, overview or published record can reach a surface of a delivery made without the assessment. Kept,
+ * not deleted: the run's record still holds them. Returns the names moved. IMPURE (moves files in the run).
+ */
+export function setAsideTheAssessment(P, runDir) {   // @internal
+  const dest = driverDir(runDir, NOT_COMPLETED_DIR, "set-aside");
+  const moved = [];
+  for (const src of assessmentArtifacts(P, runDir)) {
+    if (!existsSync(src)) continue;
+    mkdirSync(dest, { recursive: true });
+    const name = relative(runDir, src).replace(/[\\/]/g, "__");
+    const to = join(dest, name);
+    rmSync(to, { recursive: true, force: true });
+    renameSync(src, to);
+    moved.push(name);
+  }
+  return moved;
+}
+
+// The register ledger's closed statuses as the shipped coverage states of a delivery made without the assessment.
+// "Confirmed-clean" is the write-up's claim that every right it found is reported, and with no assessment nothing is
+// reported, so the row is an open item, with the shipped gap reason. A slice the provider could not express was not
+// run. A family the reading turn chose not to ask takes the "Note" state its withheld families already take.
+const LEDGER_STATE = { "confirmed-clean": "open", "coverage-limited": "coverage-limited",
+  deferred: "not-searched", "withheld-by-judgment": "note" };
+// The note an open row carries: the shipped gap row's own reason (deferral-row.mjs), never the write-up's text.
+const OPEN_ROW_NOTE = plainDeferralReason(NOT_COMPLETED);
+
+/**
+ * The register coverage ledger's rows as the report's coverage rows, in a delivery made without the assessment: each
+ * row's recorded status as a shipped state (LEDGER_STATE), its unit in the reader's label, and no row clean. The row's
+ * reason is not printed: the write-up wrote it for the assessment, in the engine's own words, and in a normal run
+ * synthesis writes the reader's note in its place. An open row carries the shipped gap reason; every other row carries
+ * no note, and nothing replaces the reason. PURE.
+ */
+export function assessmentCoverageRows(ledgerRows) {   // @internal
+  return (Array.isArray(ledgerRows) ? ledgerRows : []).map((r) => {
+    const state = LEDGER_STATE[String(r?.status ?? "").trim().toLowerCase()];
+    const unit = String(r?.unit ?? r?.axis ?? "").trim();
+    return state && unit ? { area: coverageUnitLabel(unit), state, note: state === "open" ? OPEN_ROW_NOTE : "" } : null;
+  }).filter(Boolean);
+}
+
+/**
+ * The coverage rows a delivery without the assessment states. The register write-up's own ledger where it saved one;
+ * where it never did, because placement or the write-up is the step that failed, the driver's own coverage form, whose
+ * rows the frozen plan, the plan receipt and the bands give, and whose statuses the write-up records as it rules. A
+ * row it never ruled is an open item, with the shipped gap reason and no words of the engine's. IMPURE (reads the run).
+ */
+export function assessmentCoverageOfRun(runDir) {   // @internal
+  const ledger = loadCoverageLedger(runDir);
+  const fromLedger = assessmentCoverageRows(ledger.rows);
+  if (fromLedger.length) return fromLedger;
+  let rows = readCoverageForm(runDir).rows;
+  if (!Array.isArray(rows)) {
+    const { input } = coverageFormInput(runDir);
+    rows = input ? buildCoverageForm(input).rows : [];
+  }
+  const ruled = assessmentCoverageRows(formLedgerRows(rows));
+  const unruled = (rows ?? []).filter((r) => r && r.kind !== "family" && !LEDGER_STATE[String(r.status ?? "").trim().toLowerCase()])
+    .map((r) => String(r.unit ?? r.axis ?? "").trim()).filter(Boolean)
+    .map((unit) => ({ area: coverageUnitLabel(unit), state: "open", note: OPEN_ROW_NOTE }));
+  return [...ruled, ...unruled];
+}
+
+/**
+ * The audit a run delivers without its assessment: the search log it holds, from the register write-up and the web
+ * search, with no record the assessment would have rated and no placement set-aside. PURE apart from reading the run.
+ */
+export function searchLogAuditMd(P) {   // @internal
+  const read = (p) => { try { return existsSync(p) ? readFileSync(p, "utf8") : ""; } catch { return ""; } };
+  const commonLawGrid = read(P.commonLawGrid) || null;
+  return buildAuditMd(read(P.registerFindings), read(P.commonLaw),
+    { findings: [], readingLog: readReadingLog(P), commonLawGrid, placementRows: [], searchLogOnly: true });
+}
+
+/**
+ * THE MASTHEAD'S SCOPE FACT, derived and written: `_driver/scope-facts.json`, the pure join of the instructed scope, the
+ * frozen plan, the band states and the coverage ledger (scope-facts.mjs). One author for both reports: the one the
+ * assessment completed and the one delivered without it. Returns the facts, or null with no scope to state. IMPURE.
+ */
+export function writeScopeFactsOf(ctx, P, runDir) {   // @internal
+  const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+  const plan = ctx.registerPlan ?? readJson(P.registerPlan);
+  const instructed = readJson(P.instructedScope);
+  if (!plan && !Array.isArray(instructed?.classes)) return null;   // a run with no register layer and no instructed classes has no scope fact to state
+  const planExecution = ctx.planExecution ?? readJson(P.planExecution);
+  const facts = deriveScopeFacts({
+    instructedScope: instructed,
+    plan,
+    planExecution,
+    coverageRows: loadCoverageLedger(runDir).rows,
+    withheldQids: waitingFamilyStates(runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
+  });
+  facts.derived_from = Object.fromEntries([
+    ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],
+    ["plan_execution", P.planExecution], ["coverage_ledger", P.registerCoverageLedger],
+  ].filter(([, p]) => existsSync(p)).map(([k, p]) => [k, fileMeta(p)]));
+  try {
+    atomicWrite(P.scopeFacts, JSON.stringify({ ts: new Date().toISOString(), ...facts }, null, 2) + "\n");
+    runLog(runDir, { event: "scope-facts", classes: facts.classes_line, states: Object.fromEntries(Object.entries(facts.per_class).map(([c, v]) => [c, v.state])) });
+  } catch (e) { note(`scope-facts write failed (non-fatal): ${e.message}`); }
+  return facts;
+}
+
+/** Stamp the driver-owned `classes:` and `coverage_line:` from the scope fact onto report.md. IMPURE. */
+export function applyScopeFrontMatterOf(P, runDir) {   // @internal
+  let facts = null;
+  try { facts = JSON.parse(readFileSync(P.scopeFacts, "utf8")); } catch { return; }
+  const fields = {};
+  if (facts?.classes_line) fields.classes = facts.classes_line;
+  if (facts?.coverage_line) fields.coverage_line = facts.coverage_line;
+  if (!Object.keys(fields).length) return;
+  const wrote = injectFrontMatter(P.report, fields, runDir);
+  if (wrote) runLog(runDir, { event: "scope-frontmatter", classes: facts.classes_line ?? null, coverage_line: Boolean(facts.coverage_line) });
+}
+
+/**
+ * THE REPORT'S IDENTITY, as the driver states it: the nine front-matter keys of `_driver/report-identity.json`,
+ * which the overview's shell and the report read. `displayVerdict` supplies the rating's two keys; a run whose
+ * overall assessment was not completed passes null, and the two keys are then null, so no surface is handed a rating
+ * the run never reached. PURE apart from reading the run's status for its start date.
+ */
+export function reportIdentityRecord(job, ctx, runDir, displayVerdict = null) {   // @internal
+  const idMarks = Array.isArray(job.marks) ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean) : [];
+  const clRan = !ctx.registerOnly;
+  let runDate = null;
+  try { runDate = String(JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"))?.startedAt ?? "").slice(0, 10) || null; } catch { /* no status yet — the date half is omitted rather than invented */ }
+  return {
+    schema_version: 1,
+    matter: job.ref ?? job.tmp ?? null,
+    title: job.name ?? job.markName ?? idMarks[0] ?? null,
+    client: job.customer ?? ctx.profile?.name ?? null,
+    use: job.goods ?? null,
+    classes: Array.isArray(job.classes) ? job.classes.join(", ") : (job.classes ?? null),
+    run: [runDate, PROVIDER_META.label].filter(Boolean).join(" · ") + (clRan ? " + common-law" : ""),
+    overall_label: displayVerdict?.tier ?? null,
+    overall_badge: displayVerdict?.badge ?? null,
+  };
 }
 
 // ---- operability: resolve / reconstruct / single-stage re-run / sandboxed experiment -----------------

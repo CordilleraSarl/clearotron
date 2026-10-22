@@ -58,11 +58,15 @@ async function canonicalRun() {
   if (CANON) return CANON;
   process.env.MOCK_VERDICT = "CLEAR";
   process.env.MOCK_SKEPTIC = "no flags surfaced";
+  // A RECOVERY PARK, NOT A TERMINAL FAILURE: a synthesis failure whose recovery is spent is delivered without the
+  // assessment, so the canonical run is given the one park it takes, which leaves the same live run dir.
   process.env.MOCK_FAIL_STAGE = "joint synthesis narrative";
+  process.env.CLEAROTRON_RECOVERY_MAX = "1";
   const job = jobFor("TMPABHON1");
-  const res = await PL.pipeline(job);
-  assert.equal(res.ok, false, "the canonical mock run parks at synthesis so its run dir stays live");
-  assert.equal(res.failedStage, "synthesis");
+  let res;
+  try { res = await PL.pipeline(job); } finally { process.env.CLEAROTRON_RECOVERY_MAX = "0"; }
+  assert.equal(res.postponed, true, "the canonical mock run parks at synthesis so its run dir stays live");
+  assert.equal(JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage, "synthesis");
   delete process.env.MOCK_FAIL_STAGE;
   CANON = { job, runDir: res.runDir, codename: codenameOf(res.runDir) };
   return CANON;

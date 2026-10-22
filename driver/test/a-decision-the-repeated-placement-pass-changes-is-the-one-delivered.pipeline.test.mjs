@@ -47,6 +47,9 @@ const ON_CODEX = { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: CODEX, 
 
 // Pass 1 parks on the reading step's turn, so placement has run and the resume inherits it.
 const PARK_AT_DIGEST = "You are register DIGEST mode";
+// A write-up failure whose recovery is spent is delivered without the assessment, so pass 1 takes a recovery park
+// instead, and the stage it stopped at is the one its status records.
+const parkedAt = (res) => JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage;
 // The skeptic flags the code-side axis, so the resume re-runs its dictated entries and the band placement read moves.
 const ESCALATE_SATPROBE = "- saturation-probe counts look thin\n\n## Escalation decisions\nESCALATE: saturation-probe — re-verify the crowd counts";
 const G1 = "the registration lapsed before the client's first use";
@@ -86,8 +89,8 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     const root = mkdtempSync(join(tmpdir(), "clearotron-repeatground-"));
     const planExecutor = executor([]);
     // ── pass 1: placement sets the line aside on its status with G1, and the run parks at the reading step ──
-    const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
-    assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+    const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, CLEAROTRON_RECOVERY_MAX: "1", MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
+    assert.equal(parkedAt(p1.res), "register-digest", `guard: pass 1 parks at the reading step (parked at ${parkedAt(p1.res)})`);
     const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
 
     // ── pass 2: the recheck moves the band, the delivery check repeats placement, the repeat states G2, and the three
@@ -155,8 +158,8 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
 test(`${engine}: a writer that cannot re-run for the changed decision does not hold the run — it delivers, and the run record names what went unread`, async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-repeatground-unread-"));
   const planExecutor = executor([]);
-  const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
-  assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+  const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, CLEAROTRON_RECOVERY_MAX: "1", MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
+  assert.equal(parkedAt(p1.res), "register-digest", `guard: pass 1 parks at the reading step (parked at ${parkedAt(p1.res)})`);
   const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
   const n1 = p1.events.length;
   // The writer's re-run is the one dispatch told the repeat's ground, so failing that fails it alone.
@@ -203,8 +206,8 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
   test(`${engine}: a review the changed decision queued that cannot run does not hold the run — it delivers, and the run record says the change went unreviewed`, async () => {
     const root = mkdtempSync(join(tmpdir(), "clearotron-repeatground-unreviewed-"));
     const planExecutor = executor([]);
-    const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
-    assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+    const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, CLEAROTRON_RECOVERY_MAX: "1", MOCK_PLACEMENT_SET_ASIDE: G1 }, { planExecutor });
+    assert.equal(parkedAt(p1.res), "register-digest", `guard: pass 1 parks at the reading step (parked at ${parkedAt(p1.res)})`);
     const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
     const n1 = p1.events.length;
     // The reviewer's re-run for the change is the one review dispatch told the repeat's ground, so failing that fails it alone.

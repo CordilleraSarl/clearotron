@@ -13,7 +13,7 @@ import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
-import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
+import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
@@ -714,8 +714,16 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // were the same delivered artifact. Recording is the whole fix here — the gate withholds nothing
   // (spec 2026-07-30 §5) and the report's own face is the frozen renderer's, not this file's.
   const inputsAbsent = [];
-  const fj = readStore(dirname(reportMd), 'findings.json',
-    { path: (findingsJson && existsSync(findingsJson)) ? findingsJson : null });
+  // THE OVERALL ASSESSMENT NOT COMPLETED (driver/parts-not-completed.mjs). A stated state, read from the run's own
+  // record and never inferred from an absence: the report is built from what the run held, with no rating, no
+  // finding and no verdict word on any surface. Read once, here, above every surface, so a republish gives the same
+  // report. A record that is there and damaged still states it: its presence is the state.
+  const assessmentNotCompleted = readStore(runDir ?? dirname(reportMd), '_driver/not-completed/assessment.json').state !== 'absent';
+  // In that state no assessment is read, even one an earlier pass left behind: its findings failed the checks that
+  // make them deliverable, or were never written.
+  const fj = assessmentNotCompleted ? { state: 'absent', path: null, raw: null }
+    : readStore(dirname(reportMd), 'findings.json',
+      { path: (findingsJson && existsSync(findingsJson)) ? findingsJson : null });
   const fjPath = fj.path;
   if (fj.state === 'absent') {
     inputsAbsent.push('findings.json');
@@ -742,6 +750,15 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
         } else { findingsError = e.message; }
       } catch { findingsError = e.message; }
     }
+  }
+  // THE COVERAGE ROWS, IN THAT STATE, ARE THE RUN'S OWN RECORDS. The assessment normally copies them into
+  // findings.json; with no assessment the delivery read them from the register's coverage ledger and wrote them in
+  // the row shape the report renders, each with its recorded status and no coverage judgment.
+  if (assessmentNotCompleted) {
+    const rows = readStore(runDir ?? dirname(reportMd), '_driver/not-completed/assessment-coverage.json').value?.rows;
+    coverage = Array.isArray(rows)
+      ? rows.filter((r) => r && typeof r.area === 'string' && r.area.trim() && COVERAGE_AREA_STATES.includes(r.state))
+      : [];
   }
   // PR-9 (E9) — the STRING PROJECTION for coverage_judgment stays. mark_assessment is NO LONGER
   // projected on the RENDER path (spec 2026-07-30 §3): render.mjs takes the structured object and shows
@@ -787,12 +804,12 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // WP-receipts W3/W4 — the senior-right sidecar: the render code-adds the plain-English open item on
   // any verdict-driving card whose senior right went unverified. Absent on legacy runs → no lines.
   let seniorRights = null;
-  try { const sr = JSON.parse(readFileSync(driverDir(runDir, 'senior-rights.json'), 'utf8')); if (Array.isArray(sr?.rows)) seniorRights = sr.rows; } catch { /* legacy run */ }
+  if (!assessmentNotCompleted) try { const sr = JSON.parse(readFileSync(driverDir(runDir, 'senior-rights.json'), 'utf8')); if (Array.isArray(sr?.rows)) seniorRights = sr.rows; } catch { /* legacy run */ }
   // D1 — the code-carried verdict + clamp reasons/kinds (A2 sidecar): the report bound line
   // distinguishes a machinery/coverage-clamped CONDITIONAL from a genuine legal read (which lives in
   // the narrative, never in a status line). Best-effort; legacy runs have no sidecar.
   let verdictInfo = null;
-  try { verdictInfo = JSON.parse(readFileSync(driverDir(runDir, 'verdict.json'), 'utf8')); } catch { /* legacy */ }
+  if (!assessmentNotCompleted) try { verdictInfo = JSON.parse(readFileSync(driverDir(runDir, 'verdict.json'), 'utf8')); } catch { /* legacy */ }
   // Every surface below reads the statement from here, so its count of further conditions is made true here, to
   // the list the client reads (terminal-clamp.mjs clientStatement). The stored record is not touched.
   if (typeof verdictInfo?.statement === 'string') verdictInfo = { ...verdictInfo, statement: clientStatement(verdictInfo) };
@@ -885,7 +902,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the ledger the report is built from, so this sheet is their one reader-facing place. Same builder,
   // same four columns and the same state as the probes above; the area is the driver's own label and the
   // words are the reading turn's reason. The stores the matter frame set aside join them the same way (web-grid.mjs).
-  const withheldFamilies = [...withheldFamilyRows(runDir ?? dirname(reportMd)), ...frameSetAsideRows(runDir ?? dirname(reportMd))]; const setAside = setAsideRows(runDir ?? dirname(reportMd));
+  const withheldFamilies = [...withheldFamilyRows(runDir ?? dirname(reportMd)), ...frameSetAsideRows(runDir ?? dirname(reportMd))]; // The records the assessment set aside are the assessment's own: in the state where it did not complete, an earlier
+  // draft's set-asides are not its answer, so none is listed.
+  const setAside = assessmentNotCompleted ? [] : setAsideRows(runDir ?? dirname(reportMd));
 
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
@@ -1157,7 +1176,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   }
   const auditParsed = (auditMd && existsSync(auditMd)) ? parseAudit(auditMd) : null;
   if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
-  if (findings.length || auditParsed) {
+  // In the state the workbook is built even with no finding and no search log: it carries the part that was not
+  // completed, and the coverage the run did record.
+  if (findings.length || auditParsed || assessmentNotCompleted) {
     try {
       auditFile = `${runId}-audit.xlsx`;
       // A10 — the failing predelivery checks ride into the workbook and are ENUMERATED on its Summary
@@ -1169,7 +1190,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ degradedParts: mergeDegradedRows(runDir ? readDegradedPartRows(runDir) : [], degradedPartRows(publishParts)), droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ degradedParts: mergeDegradedRows(runDir ? readDegradedPartRows(runDir) : [], degradedPartRows(publishParts)), droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1266,7 +1287,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1343,6 +1364,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       engineCommit: engineCommit(), servedModels: served,
       framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
       actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption: fm.overall_caption ?? null,
+      assessmentNotCompleted,
     });
     writeRO('report-data.json', JSON.stringify(data, null, 2));
     reportSchema = 'report-data/1';
@@ -1384,7 +1406,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     template: deliv?.template ?? 'standard',
     // T2 (H5): the derived display verdict is THE authority when the sidecar exists; the
     // model-authored fm fields are the pre-A2 legacy fallback only.
-    overall: verdictInfo?.tier ?? fm.overall_label, badge: verdictInfo?.badge ?? fm.overall_badge, run: fm.run, date: dateOf(fm.run), auditFile,
+    // No rating at all in the state where the assessment was not completed, whatever a report's front matter says.
+    overall: assessmentNotCompleted ? undefined : (verdictInfo?.tier ?? fm.overall_label),
+    badge: assessmentNotCompleted ? undefined : (verdictInfo?.badge ?? fm.overall_badge), run: fm.run, date: dateOf(fm.run), auditFile,
     // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
     auditError: auditError ?? undefined,
     // THE PARTS PUBLISHING FOUND DEGRADED, with their raw causes, which no cell carries. Absent when none.
@@ -1394,6 +1418,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // null-guard and old rows render byte-identically.
     statement: verdictInfo?.statement ?? undefined,
     caption: fm.overall_caption || undefined,   // the report's own conclusion, which the run list quotes
+    // The run's overall assessment could not be completed, so it carries no rating: a stated state, for every reader
+    // of the pool that has no run directory. Absent on every other run, so its meta is unchanged.
+    assessment: assessmentNotCompleted ? 'not-completed' : undefined,
     review: verdictInfo?.verdict ? { signoff: verdictInfo.verdict } : undefined,   // the reviewer's sign-off, not the clearance's answer (ruled 2026-09-22)
     // doc 50 — which framework rated this run (custom vs Generic default) + its ladder, for the archive
     // card, the email table sort/colour and the per-customer index; absent on archived runs forever.

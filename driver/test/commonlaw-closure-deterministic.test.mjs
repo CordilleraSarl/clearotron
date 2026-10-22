@@ -122,10 +122,14 @@ async function runNonSplitClosure(id) {
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_REGISTER_RECORD_LOG: join(root, "records.jsonl"), MOCK_CALL_LOG: callLog, MOCK_CLAUDE_CALL_LOG: callLog,
     MOCK_CL_GAPS: "1", MOCK_FAIL_STAGE: "joint synthesis narrative",
+    // A recovery park: a synthesis failure whose recovery is spent is delivered without the assessment, so the seed is
+    // given the one park it takes, and the resume below runs synthesis again.
+    CLEAROTRON_RECOVERY_MAX: "1",
   })) pinEnv(process.env, k, v);
   const { pipeline: seedPipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const seed = await seedPipeline({ ...JOB, id });
-  assert.equal(seed.ok, false, `the seed must stop after the gather, with a run dir left to resume: ${JSON.stringify(seed)}`);
+  pinEnv(process.env, "CLEAROTRON_RECOVERY_MAX", "0");
+  assert.equal(seed.postponed, true, `the seed must stop after the gather, with a run dir left to resume: ${JSON.stringify(seed)}`);
   assert.ok(existsSync(join(seed.runDir, "common-law-findings.half-a.md")),
     "the seed really SPLIT — if no half exists the surgery below removes nothing and proves nothing");
   const readJournal = (dir) => { try { return readFileSync(driverDir(dir, "run.jsonl"), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
