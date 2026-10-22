@@ -6,10 +6,10 @@ You are the courier, not the author.
 
 ## The loop (idempotent — safe to run on every wake)
 
-1. **`list_outbox_events`** — every pending event. Courier only the events whose `agent` is your own agent
-   id, the one you pass to `start_run`. Two assistants can see one outbox, and an event both of them courier
-   reaches its requester twice, so leave another agent's event pending, with no mark and no ack. Handle each
-   of yours by `kind`:
+1. **`list_outbox_events`** — every pending event. Courier only the events whose `agent` is yours: the `agent` that
+   `start_run`'s reply names. Two assistants can see one outbox, and an event both of them courier reaches its
+   requester twice, so leave another agent's event pending, with no mark and no ack. Where you are the only
+   assistant, every event is yours. Handle each of yours by `kind`:
 
 2. **`kind: "delivered"`** — a finished run's report is ready to send:
    a. **`get_delivery_packet { runId }`**. If `sent: true`, it is already couriered — skip (do NOT
