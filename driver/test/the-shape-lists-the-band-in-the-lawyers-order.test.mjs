@@ -103,7 +103,7 @@ test("the readable section states each group's count in lines, carries goods wor
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS);
   assert.equal(shape.groups.b.list.length, CROWDED_GROUP_RECORDS, "the machine shape keeps every line");
   const section = md.slice(md.indexOf("## The band in the lawyer's order"), md.indexOf("### By Nice class"));
-  assert.ok(section.includes("1,000 records in 1,000 lines from 1,000 owners. A thousand or more? The field is crowded. These are identical marks in the ordered classes for other goods than the client's. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. The first 5 lines are below; page with band_lookup {\"group\":\"b\"} only where a line needs reading."), "the crowded sentence, in (b)'s own words");
+  assert.ok(section.includes("1,000 records in 1,000 lines from 1,000 owners. A thousand or more? The field is crowded. These are identical marks in the ordered classes whose goods name none of the client's product words. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. The first 5 lines are below; page with band_lookup {\"group\":\"b\"} only where a line needs reading."), "the crowded sentence, in (b)'s own words");
   assert.equal((section.match(/\| Qzorvak \| Owner \d{4} Ltd \|/g) ?? []).length, 5, "the readable mirror shows (b)'s first page only");
   assert.equal((section.match(/\| QZORVAK \| Theta \d Ltd \|/g) ?? []).length, 7, "a group under a thousand is listed whole");
   assert.match(section, /7 records in 7 lines from 7 owners\./);
