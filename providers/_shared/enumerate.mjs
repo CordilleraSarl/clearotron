@@ -741,7 +741,7 @@ export function makeEnumerate(deps) {
       if (!parsed.has_more) break;
       if (page + 1 >= pageGuard) {
         return incomplete(total, results.length, results,
-          `pagination guard hit (${pageGuard} pages) before has_more:false — the provider's reachable window (${capWarning ?? providerWindow}) is exhausted; the remainder is unreachable by paging. This is an incomplete crowd descriptor, never a clean: decide on it with the narrowing steps in unit.md, only as far as reading it would change what you tell the client.`);
+          `pagination guard hit (${pageGuard} pages) before has_more:false — the provider's reachable window (${capWarning ?? providerWindow}) is exhausted; the remainder is unreachable by paging. This is an incomplete crowd descriptor, never a clean.`);
       }
     }
 
@@ -899,5 +899,7 @@ function stampTotalCounts(r, totalCounts) {
   return { ...r, text: JSON.stringify({ ...parsed, total_counts: totalCounts }, null, 2) };
 }
 
-// What a crowd is, in the words every crowd's reason ends with: a band the funnel hands up, never a clean.
-const CROWD_IS = "this is a CROWD, not a named exact/near band, and never a clean. Decide on it with the narrowing steps in unit.md, only as far as reading it would change what you tell the client; what stays a crowd is recorded with its count.";
+// What a crowd is, in the words every crowd's reason ends with. FACTS ONLY: the recorded reason is data the write-up,
+// placement and the writer read too, none of which has the unit's manual. How the unit decides on a crowd rides its
+// tool answer instead (driver/engine/mcp/crowd-note.mjs), once per answer that carries one.
+const CROWD_IS = "this is a CROWD, not a named exact/near band, and never a clean; what stays a crowd is recorded with its count.";

@@ -7,6 +7,7 @@
 // session key (tctx.sessionKey) — we thread the run's session key via CLEAROTRON_GATHER_SESSION_KEY so the
 // $0 provider-usage diff still attributes calls to the run.
 import { serve } from "./stdio-server.mjs";
+import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import { CAPABILITIES, doSearch, doRecordFetch, doImageFetch, doExpandPhoneme, doBatchScreen, doEnumerate, doExecutePlan } from "../../../providers/corsearch/src/core.js";
 import { proposeSupplemental } from "./supplemental.mjs";
 import { narrowingFields } from "./proposal-fields.mjs";
@@ -25,7 +26,7 @@ const guard = (fn) => async (args) => {
 };
 
 serve({
-  name: "register", version: "0.2.0",
+  name: "register", version: "0.2.0", noteFor: crowdNoteFor,
   tools: [
     {
       name: "register_search",

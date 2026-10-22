@@ -28,6 +28,7 @@
 //   `GET /trademarks/{n}/image` answers 200 with real image bytes. The tool returns metadata + the
 //   Vienna figurative-element codes rather than the bytes; see the core for why.
 import { serve } from "./stdio-server.mjs";
+import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import {
   CAPABILITIES, CRED_ENV, doSearch, doRecordFetch, doBatchScreen, doImageFetch,
   doEnumerate, doExecutePlan,
@@ -80,7 +81,7 @@ const QUERY_PROPS = {
 };
 
 serve({
-  name: "register", version: "0.1.0",
+  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
   tools: [
     {
       name: "register_search",

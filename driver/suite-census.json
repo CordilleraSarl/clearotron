@@ -209,7 +209,7 @@
         },
         "a-clarivate-run-asks-each-question-and-fetches-each-record-once.test.mjs": {
           "tests": 11,
-          "asserts": 32,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -7155,6 +7155,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-unit-is-told-how-to-decide-a-crowd-beside-the-answer.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "the-updater-that-deploys-this-box-says-what-it-is.test.mjs": {
           "tests": 18,
           "asserts": 61,
@@ -8497,7 +8503,7 @@
         },
         "providers/_shared/test/a-total-that-counts-records-says-so-on-every-answer.test.mjs": {
           "tests": 4,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

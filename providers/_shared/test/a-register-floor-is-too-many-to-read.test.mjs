@@ -103,7 +103,7 @@ test("CONTROL — an exact total over the ceiling keeps today's crowd sentence, 
   const { at } = await run((p) => EXACT(12000)(p.limit), { entries: [LISTING] });
   const b = at(LISTING.qid);
   assert.equal(b.total_hits, 12000);
-  assert.equal(b.reason, "total_hits 12000 exceeds the enumerate ceiling 600 — this is a CROWD, not a named exact/near band, and never a clean. Decide on it with the narrowing steps in unit.md, only as far as reading it would change what you tell the client; what stays a crowd is recorded with its count.");
+  assert.equal(b.reason, "total_hits 12000 exceeds the enumerate ceiling 600 — this is a CROWD, not a named exact/near band, and never a clean; what stays a crowd is recorded with its count.");
   assert.equal("total_floor" in b, false);
   assert.equal("crowd_basis" in b, false);
 });
