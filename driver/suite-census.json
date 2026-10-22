@@ -405,6 +405,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-crowd-narrowed-in-its-field-markets-is-not-owed-the-major-markets.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-crowd-narrows-in-the-one-market-list-and-says-what-reading-it-would-change.test.mjs": {
           "tests": 3,
           "asserts": 12,
