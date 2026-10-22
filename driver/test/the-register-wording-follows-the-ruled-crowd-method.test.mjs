@@ -45,3 +45,13 @@ test("the unit's opening message judges the band by the manual's steps, and no l
     "If a slice is not covered, PROPOSE it"])
     assert.ok(!message.includes(gone), `the opening message still says "${gone}"`);
 });
+
+test("the crowd bound takes a crowd's majors from it by jurisdictions, and no longer sends it to each major on its own", () => {
+  const line = unitMessage().split("\n").find((l) => l.includes("CROWD BOUND")) ?? "";
+  assert.ok(line, "guard: the opening message carries the crowd bound");
+  assert.ok(line.includes("(the dominant token / formative root as a contains predicate + its phonetic slice)"));
+  assert.ok(line.includes("→ keep it, take its majors from it by jurisdictions, and run its phonetic pass."));
+  assert.ok(line.includes("it never writes coverage-limited and never drives CONDITIONAL."));
+  for (const gone of ["+ its per-major + phonetic slices", "run its per-major / phonetic", "materiality is judgment's call (Layer B)"])
+    assert.ok(!line.includes(gone), `the crowd bound still says "${gone}"`);
+});
