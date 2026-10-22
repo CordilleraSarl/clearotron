@@ -6627,6 +6627,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-adds-a-class-only-for-the-clients-goods.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-names-every-ordered-territory.test.mjs": {
           "tests": 3,
           "asserts": 5,

@@ -319,8 +319,9 @@ looked identical afterwards. `setAside` is where the judgment goes.
   reading. A run that returns fifty results and raises one finding has one finding, no negatives and a
   set-aside record.
 
-> **Optional, and omitting a row is always safe — but a result you looked at and put down has a ground,
-> so write it.** Never invent one to fill the list, and never write "not relevant" on its own: that is
+> **Optional, and omitting a row is always safe.** A result your reading took for a possible conflict and
+> then put down gets a ground, one row per owner's set or group of like results, never one per result.
+> Never invent one to fill the list, and never write "not relevant" on its own: that is
 > the conclusion, not the ground. What the result turned out to be is the ground.
 
 ## Batch outputs
