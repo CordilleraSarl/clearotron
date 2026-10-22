@@ -26,8 +26,10 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
 
 export const NOT_COMPLETED_DIR = "not-completed";
 
-// The covered parts. `assessment` is the run's overall assessment: synthesis, and everything built from it.
-export const NOT_COMPLETED_PARTS = Object.freeze(["assessment"]);
+// The covered parts. `assessment` is the run's overall assessment: placement, the register write-up and synthesis, and
+// everything built from them. `delivery` is the changed-material check before publishing: it never delivers past
+// staleness, and its record buys the report one more assembly from the current material instead of the stop notice.
+export const NOT_COMPLETED_PARTS = Object.freeze(["assessment", "delivery"]);
 
 /** The record's path for `part`. */
 export function notCompletedPath(runDir, part) {
@@ -70,6 +72,11 @@ export function partsNotCompleted(runDir) {
   let names = [];
   try { names = readdirSync(driverDir(runDir, NOT_COMPLETED_DIR)); } catch { return []; }
   return NOT_COMPLETED_PARTS.filter((p) => names.includes(`${p}.json`)).map((p) => readPartNotCompleted(runDir, p));
+}
+
+/** Remove one part's record, once that part has completed after all. */
+export function clearPartNotCompleted(runDir, part) {
+  try { rmSync(notCompletedPath(runDir, part), { force: true }); } catch { /* none */ }
 }
 
 /** Remove every part's record, when the run ends with the stop notice instead of a delivery. */

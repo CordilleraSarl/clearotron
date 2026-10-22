@@ -253,3 +253,26 @@ test("without the record: the strict parse refuses an empty record, a clean matt
   assert.equal(meta.assessment, undefined, "a run with no record is stated as not completed");
   assert.equal(meta.overall, "Low", "a run with no record lost the rating its report states");
 });
+
+// ── THE CHANGED-MATERIAL CHECK GIVES ITS REPEAT ONE MORE ASSEMBLY ───────────────────────────────────────────────────
+//
+// Staleness at delivery comes from a repair inside the pass, which the pass then repairs once more; a first staleness the
+// repair cannot clear parks, and its repeat used to end the run. The repeat is now named as the check's own part, so the
+// run parks once more and the resumed pass assembles again from the current material; still stale then, it ends as
+// before, and the check never delivers past staleness. A mock run cannot make a repair fail twice and then succeed, so
+// the naming is read from the source, and the record's answer is driven: a pass that clears the check removes it.
+test("the changed-material check's repeat is named as its own part, and a pass that clears the check answers its record", async () => {
+  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  assert.match(src, /throw Object\.assign\(new StageFailure\("delivery", `the report was assembled from material that has since changed[^\n]*\{ failClass: "stale" \}\), \{ notCompletedPart: "delivery" \}\);/,
+    "the check's repeat is not named as its own part, so it ends the run");
+  const root = tempDir("clearotron-open-delivery-");
+  const p1 = await runPass(root, "claude", { MOCK_FAIL_STAGE: OVERVIEW_TURN, CLEAROTRON_RECOVERY_MAX: "1" });
+  assert.equal(p1.postponed, true, `pass 1 did not park: ${JSON.stringify(p1)}`);
+  const { writePartNotCompleted } = await import("../parts-not-completed.mjs");
+  writePartNotCompleted(p1.runDir, "delivery", { stage: "delivery", reason: "the report was assembled from material that has since changed" });
+  const p2 = await runPass(root, "claude", { CLEAROTRON_RECOVERY_MAX: "1" }, p1.codename);
+  assert.equal(p2.ok, true, JSON.stringify(p2));
+  assert.ok(!existsSync(driverDir(p2.runDir, "not-completed", "delivery.json")), "the check passed and its record still stands");
+  assert.ok(events(p2.runDir).some((e) => e.event === "part-completed" && e.part === "delivery"), "the record's answer is not on the run's record");
+  assert.equal(json(join(p2.runDir, "status.json")).review?.signoff, "CONDITIONAL", "a run whose check passed lost its rating");
+});

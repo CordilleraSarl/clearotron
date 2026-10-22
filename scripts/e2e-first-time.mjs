@@ -230,7 +230,7 @@ export const NOT_COUNTED_EVENTS = {
     "stray-matter", "synthesis-duty-undischarged", "verdict-blocking-delivered",
   ],
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
-    "assessment-not-completed-delivery",
+    "assessment-not-completed-delivery", "part-completed",
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
     "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",

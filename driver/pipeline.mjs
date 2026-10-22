@@ -35,7 +35,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
-import { writePartNotCompleted, readPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
+import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
@@ -16975,7 +16975,17 @@ async function pipelineInner(job, opts = {}) {
       // failClass "stale": the remedy is a DETERMINISTIC recompute of the stale stage(s) (a resume recomputes
       // them — the stamps were left stale for exactly this, see reconcileStamps' exclude), so this must not be
       // starved by the shared one-park "unknown" budget. The repeat-signature backstop still caps it.
-      throw new StageFailure("delivery", `the report was assembled from material that has since changed: ${detail} — re-run needed (nothing published)`, undefined, { failClass: "stale" });
+      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE (874). A first staleness parks and the resume repairs
+      // it, as always. Where the repeat would end the run, the check is named as its own part: the run parks once more,
+      // and the resumed pass repairs and checks again from the material as it then stands. Still stale then, it ends as
+      // it always did; this check never delivers past staleness.
+      throw Object.assign(new StageFailure("delivery", `the report was assembled from material that has since changed: ${detail} — re-run needed (nothing published)`, undefined, { failClass: "stale" }), { notCompletedPart: "delivery" });
+    }
+
+    // The changed-material check passed: a record the last pass left for it is answered.
+    if (readPartNotCompleted(run.runDir, "delivery")) {
+      clearPartNotCompleted(run.runDir, "delivery");
+      runLog(run.runDir, { event: "part-completed", part: "delivery" });
     }
 
     // ONE report (spec 2026-07-30 §5) — the client gate's preflight is gone with the readiness state it
