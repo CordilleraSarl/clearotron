@@ -712,8 +712,8 @@
           "todos": 0
         },
         "a-frame-reopen-follow-up-asks-across-the-orders-scope.test.mjs": {
-          "tests": 2,
-          "asserts": 5,
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

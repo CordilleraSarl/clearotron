@@ -32,3 +32,7 @@ test("a supplemental-lane unit is not capped on reading record detail it cannot 
     assert.match(compose(build, false), /at most 4 records/, `${name} off the lane lost its detail-fetch cap`);
   }
 });
+
+test("a supplemental-lane unit's frame-reopen messages carry no price words", () => {
+  for (const [name, build] of ARMS) assert.doesNotMatch(compose(build, true), /\bcheap\b/i, `${name} on the lane still tells the model what a pass costs`);
+});
