@@ -549,11 +549,11 @@ not a fresh Opus spawn). You do NOT re-run anything.
 **Rule the coverage form and reconcile the complete band against `matter-context`.** Rule every
 crowd descriptor (cleared / material-gap) by recording that row's status and reason through
 `record_coverage` — and write the rolled-up sufficiency line. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
-every material jurisdiction must be accounted for. A material jurisdiction whose exact-in-class-live slice was
-**enumerated** and judged clear is `confirmed-clean`. A material jurisdiction the band shows as an **`incomplete`
-crowd** — OR one with **no `enumerated` block and no crowd descriptor at all** (the funnel never reached it) — is
-an **unsearched dangerous slice**: rule it material and write it `coverage-limited` (or `deferred` if it could not
-reach its data at all), with a reason that NAMES the slice — `sufficient:false` → the run ships **CONDITIONAL**
+every material jurisdiction must be accounted for. One covered by a complete worldwide or regional answer, or by a
+narrowed list that was read, is accounted for by that answer. One the identical mark's narrowing left inside a crowd,
+because the one market list did not name it, stays in that crowd's count on the crowd's own row. Only a material
+jurisdiction no question reached at all is an **unsearched dangerous slice**: write it `deferred` if it could not
+reach its data, else `coverage-limited`, with a reason that NAMES the slice — `sufficient:false` → the run ships **CONDITIONAL**
 and the gap surfaces in # Actions. **Never** write a missing material jurisdiction as a self-accepted clean — but
 it is a delivered conditional, not a re-search loop and not a halt. Each slice is prefixed by the axis that ran
 (or owes) its sweep — `primary-sweep / CH (material)`, never a bare `CH (material)`. Do not re-judge a unit's
