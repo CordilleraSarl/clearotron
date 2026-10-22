@@ -26,11 +26,8 @@ test("both frame-reopen messages ask across the order's scope, on both lanes, an
   assert.match(compose(buildFrameReopenFollowup, true), /a slice that comes back a crowd is narrowed by the steps in unit\.md/);
 });
 
-test("a supplemental-lane unit is not capped on reading record detail it cannot fetch, and the other arms keep their cap", () => {
-  for (const [name, build] of ARMS) {
-    assert.doesNotMatch(compose(build, true), /at most 4 records/, `${name} on the lane still caps reading record detail`);
-    assert.match(compose(build, false), /at most 4 records/, `${name} off the lane lost its detail-fetch cap`);
-  }
+test("a supplemental-lane unit is not capped on reading record detail it cannot fetch", () => {
+  for (const [name, build] of ARMS) assert.doesNotMatch(compose(build, true), /at most 4 records/, `${name} on the lane still caps reading record detail`);
 });
 
 test("a supplemental-lane unit's frame-reopen messages carry no price words", () => {

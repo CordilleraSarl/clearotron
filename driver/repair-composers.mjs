@@ -813,15 +813,15 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:frame-reopen-directive",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }) =>
-      buildFrameReopenFollowup({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }),
+    compose: ({ paths, axis, directives, supplementalLane, job, profile }) =>
+      buildFrameReopenFollowup({ paths, axis, directives, supplementalLane, job, profile }),
     samples: [
       { name: "the main lane", tail: "declared-by-the-composer",
-        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false } },
+        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: false } },
       { name: "the supplemental lane", tail: "declared-by-the-composer",
-        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: true } },
+        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: true } },
       { name: "the supplemental lane, with the order's markets and classes", tail: "declared-by-the-composer",
-        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: true, ...SAMPLE_SCOPE } },
+        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: true, ...SAMPLE_SCOPE } },
     ],
   },
   {
@@ -858,12 +858,12 @@ export const REPAIR_COMPOSERS = [
     key: "register-unit:frame-reopen-retry",
     route: "freshMessage",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }) =>
-      buildFrameReopenRetryMessage({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }),
+    compose: ({ paths, axis, directives, supplementalLane, job, profile }) =>
+      buildFrameReopenRetryMessage({ paths, axis, directives, supplementalLane, job, profile }),
     samples: [{ name: "the retry after a reopen", tail: "declared-by-the-composer",
-      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false } },
+      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: false } },
     { name: "the retry after a reopen, with the order's markets and classes", tail: "declared-by-the-composer",
-      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false, ...SAMPLE_SCOPE } }],
+      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: false, ...SAMPLE_SCOPE } }],
   },
   {
     trigger: "grid-ledger",

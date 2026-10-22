@@ -12524,7 +12524,7 @@ async function pipelineInner(job, opts = {}) {
             // Lane flag read from the SAME key the tool exclusion keys on (see the stage dispatcher) —
             // this arm is reachable on a lane run whenever the code-side dispatch arm above could not
             // take it (no executePlan adapter, or CLEAROTRON_PLAN_DISPATCH=off).
-            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
+            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives,
               supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
             const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "frame-reopen" });
             if (r.ok) {
@@ -12539,7 +12539,7 @@ async function pipelineInner(job, opts = {}) {
               // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
               if (/timeout/.test(String(regMechFail))) {
                 note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
-                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
+                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives,
                   supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
                 const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
                 if (r2.ok && existsSync(P.registerUnit(a)) && (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand)) {

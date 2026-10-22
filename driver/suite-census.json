@@ -713,7 +713,13 @@
         },
         "a-frame-reopen-follow-up-asks-across-the-orders-scope.test.mjs": {
           "tests": 3,
-          "asserts": 6,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-frame-reopen-follow-up-reads-what-could-change-the-advice.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
