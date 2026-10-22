@@ -239,7 +239,7 @@ Pick one **primary** archetype. Pick zero or more **modifiers**. Write a one-lin
 
 Produce the scope statement that opens the deliverable narrative, plus per-mark diligence allocation.
 
-1. **Classes:** start from the request form, then **reason about the goods**. Propose (advisory — the staff lawyer confirms scope) the **direct class of any collaborated / actual goods** beyond the filing classes. For a gaming **collaboration**, search the gaming classes (9/28/41/42) **plus the direct class of the collaborated goods** — e.g. Class 30 for a pizza tie-in, Class 32 for a drink — scoped to the specific goods in the brief (staff-lawyer redline, Project NOVA PULSE). The direct collab-class is the mandatory addition; wider belt-and-braces (e.g. 29/43 food, 35 retail, 39 delivery) is an optional case-by-case side-glance. Note what each class covers; flag class tensions. Emit the proposed class set in the manifest's Classes field, marking advisory additions.
+1. **Classes:** start from the request form, then **reason about the goods**. Propose (advisory — the staff lawyer confirms scope) the **direct class of any collaborated / actual goods** beyond the filing classes. For a **collaboration**, propose the direct class of the collaborated goods. Add a class only for the client's own goods, never for what a competitor might hold, with one sentence saying why. Note what each class covers; flag class tensions. Emit the proposed class set in the manifest's Classes field, marking advisory additions.
 2. **Context:** product/service, industry/market, target consumer, dual contexts if any.
 3. **Graduated diligence:** how many marks? Are any obviously descriptive vs distinctive? Compound? Allocate effort accordingly.
 
@@ -464,7 +464,7 @@ Downstream skills do NOT generate their own variants — the manifest is authori
 - [ ] **Archetype classified** (primary + modifiers + reasoning)
 - [ ] **Dominant element named** + proposed-mark distinctiveness/registrability read (spectrum placement + obvious flags incl. deceptive/offensive, or "plainly distinctive — no flag")
 - [ ] **Risk theory written** (2–4 sentences)
-- [ ] Scope statement written, with **class scope reasoned** (collab direct-class / belt-and-braces proposed where applicable; advisory additions marked)
+- [ ] Scope statement written, with **class scope reasoned** (collab direct-class proposed where applicable; a class added only for the client's own goods, with its reason)
 - [ ] Every element has a row: role, saturation, famous-mark flag, notes
 - [ ] Industry-incumbent alerts captured where applicable
 - [ ] Variants generated across archetype-appropriate axes

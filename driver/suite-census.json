@@ -207,6 +207,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-class-is-added-only-for-the-clients-own-goods.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": {
           "tests": 9,
           "asserts": 30,
