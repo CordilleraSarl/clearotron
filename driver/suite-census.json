@@ -1415,7 +1415,7 @@
         },
         "a-record-a-unit-re-run-finds-reaches-the-named-band.pipeline.test.mjs": {
           "tests": 6,
-          "asserts": 55,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },

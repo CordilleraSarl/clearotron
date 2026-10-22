@@ -169,8 +169,11 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.ok(r.inNamedBand, "the record the escalation found is not in the named band");
     assert.ok(r.floorInShape, "the band shape does not list the record as a floor");
     assert.ok(r.ev2.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "the moved band did not queue the reading step's re-run");
+    // Counted against the resumed pass's own fresh reconciliation, so the arm does not move when the plan's size does.
     const recall = r.ev2.filter((e) => e.event === "recall-reconciliation");
-    assert.ok(recall.some((e) => e.trigger === "settlement-flush" && e.candidates === 22), `the record did not reach the recall reconciliation: ${JSON.stringify(recall.map((e) => [e.trigger, e.candidates]))}`);
+    const fresh = recall.find((e) => e.trigger === "fresh")?.candidates;
+    assert.ok(Number.isInteger(fresh), `guard: the resumed pass reconciled no fresh digest: ${JSON.stringify(recall.map((e) => [e.trigger, e.candidates]))}`);
+    assert.ok(recall.some((e) => e.trigger === "settlement-flush" && e.candidates === fresh + 1), `the record did not reach the recall reconciliation: ${JSON.stringify(recall.map((e) => [e.trigger, e.candidates]))}`);
     // assessed in the run, and never held (the owner's rulings of 2026-10-19): placement placed nothing new for it and the
     // reading step left it unended, so the delivered report names it once, as the floor it is
     assert.deepEqual(r.ev2.filter((e) => e.event === "late-evidence").map((e) => e.records), [1], "the late record was not assessed");
