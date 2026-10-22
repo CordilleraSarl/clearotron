@@ -89,7 +89,7 @@ If a mark genuinely doesn't fit any archetype, document the reasoning and fall b
 
 ## Scope statement
 
-Preliminary clearance for "Dusk: Tales of Lumengarde" as a game title, Classes 9/28/41/42, worldwide. Industry-incumbent parallel sweeps apply for LUMENGARDE (lighting electronics).
+Preliminary clearance for "Dusk: Tales of Lumengarde" as a game title, Classes 9/28/41/42, worldwide. The industry incumbent (LUMENGARDE; lighting electronics) is an owner question in the ordered classes.
 
 ---
 
@@ -117,7 +117,7 @@ LUMENGARDE is the distinctive anchor — risk concentrates on coined-word axes a
 |---|---|---|---|---|
 | DUSK | common-word | high | no | Evening / sunset; fantasy / adventure |
 | TALES | common-word | very-high | no | Story / myth; epic / fantasy |
-| LUMENGARDE | distinctive | low | no | Industry incumbent: **Lumengarde Electronics Co.** (lighting / LED / semiconductors, classes 9 + 11) — triggers parallel sweep |
+| LUMENGARDE | distinctive | low | no | Industry incumbent: **Lumengarde Electronics Co.** (lighting / LED / semiconductors, classes 9 + 11) — an owner question in the ordered classes |
 
 ### Variants
 
@@ -171,9 +171,9 @@ silently narrows what was searched, and the deferred row is the honest outcome.
 | variant | compound | applied | 1 variant — tokenisation split (Lumengarde) | — |
 | variant | translation | applied | the everyday-first meaning SET on the `translit-zh-meaning` row (common word first, then technical/adjacent) — LUMENGARDE has clear semantic content; a saturated everyday word is narrowed downstream by class-scope, never dropped here | — |
 | variant | plural-root | dropped | LUMENGARDE is not a plural; the singular root IS the mark | a shortened or plural root of the dominant element collides in class 9/11 |
-| field | lighting / class-11 fixtures | applied | goods-overlap with the product's lighting use | — |
+| field | lighting / class-11 fixtures | dropped | class 11 is the incumbent's goods, not the client's | the client's goods include lighting |
 | field | telecoms / broadcast enforcers | dropped | off-field: no goods-overlap with the lighting/gaming use | an LUMENGARDE mark in the product's OWN goods held by a telecoms enforcer |
-| source | register worldwide + class-11 incumbents | applied | the product's primary collision surface | — |
+| source | register worldwide, ordered classes | applied | the product's primary collision surface | — |
 | source | consumer storefronts + general web | applied | the product reaches consumers there | — |
 
 ### Watchlists
@@ -188,7 +188,7 @@ None for this mark.
 
 ### Diligence notes
 
-LUMENGARDE carries coined-word axes (phonetic + transliteration) despite the descriptive-compound primary archetype. Industry-incumbent alert triggers a parallel-class 11 sweep. DUSK and TALES are saturated commons — still generated as single-word vectors; their saturation tells the downstream register search to **narrow** (class-scope the token and enumerate), it is never a reason to skip the vector here or to pre-judge the crowd clean.
+LUMENGARDE carries coined-word axes (phonetic + transliteration) despite the descriptive-compound primary archetype. The industry-incumbent alert makes the incumbent an owner question in the ordered classes; it adds no class. DUSK and TALES are saturated commons — still generated as single-word vectors; their saturation tells the downstream register search to **narrow** (class-scope the token and enumerate), it is never a reason to skip the vector here or to pre-judge the crowd clean.
 
 ---
 
@@ -275,7 +275,7 @@ For each element, classify volume baseline:
 
 **Saturation narrows the search; it never drops a variant.** These ratings tell the downstream register search how to *probe* a token (class-scope the in-scope slice and enumerate it) — post-funnel the register layer enumerates the dangerous band for the **distinctive anchor** and its forms; a **common** component (a stripped common word, not the distinctive anchor) it **counts**, not enumerates, handing that count up as dilution (a hyper-common word is dilution the lawyer uses, never a coverage gap). A `high` / `very-high` rating is **never** grounds to omit the element from the manifest, to collapse or skip its meaning / transliteration set, or to pre-judge its crowd clean. (See the Step-4 generation boundary.)
 
-**Industry-incumbent alert** (per element when applicable): non-target-industry incumbent owns the element. Capture owner pattern, primary industry, primary class set. Triggers parallel-class sweep in `clearance-register`.
+**Industry-incumbent alert** (per element when applicable): non-target-industry incumbent owns the element. Capture owner pattern, primary industry, primary class set. It adds no class: the register asks this owner's marks in the client's classes and markets, and anything wider only as a stated question about this owner.
 
 **Dominant element + proposed-mark registrability read** (feeds the synthesis spine and the deliverable; the staff lawyer's "flag obvious issues"):
 
