@@ -1174,8 +1174,8 @@
           "todos": 0
         },
         "a-part-not-completed-is-a-stated-state.test.mjs": {
-          "tests": 4,
-          "asserts": 30,
+          "tests": 6,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },

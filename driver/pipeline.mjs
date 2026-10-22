@@ -421,6 +421,15 @@ export { parseCoverageLedger, parseCoverageLedgerFull } from "./coverage-ledger.
 // Called FRESH at each gate — register-findings.md AND the JSON are rewritten by re-digests, so a
 // cached read could span a rewrite. An unreadable machine ledger here is near-impossible (the file
 // passed the stage validator) — fall back to prose rather than crash; the validator owns that failure.
+/**
+ * The relabels every coverage consumer reads rows through: a tool-absence relabelled deferred, a clean on a
+ * timeout-tainted axis downgraded, and the open channels the run dictated and nobody ran. One function, so a ledger
+ * read from any source is relabelled alike. IMPURE (reads the run's taint and grid receipts).
+ */
+export function relabelCoverageRows(runDir, rows) {   // @internal
+  return [...applyTaintDeferred(coerceToolAbsenceDeferred(rows), readActiveTaintAxes(runDir)), ...openChannelRows(runDir)];
+}
+
 export function loadCoverageLedger(runDir) {   // @internal
   // Keystone (#1): every consumer reads through here, so the tool-absence→deferred relabel applies ONCE,
   // at the single choke point — the escalation-skip gate, the deadline envelope, and the U1 clamp all then
@@ -429,8 +438,7 @@ export function loadCoverageLedger(runDir) {   // @internal
   // Timeout-taint (copper-lattice): the sibling relabel — a confirmed-clean row on an axis whose winning
   // pass was kill-touched (register-taint.mjs) is downgraded to deferred at the same choke point, so the
   // envelope re-runs it and the verdict floor clamps over it, whatever the prose self-reported.
-  const taintAxes = readActiveTaintAxes(runDir);
-  const relabel = (rows) => [...applyTaintDeferred(coerceToolAbsenceDeferred(rows), taintAxes), ...openChannelRows(runDir)];
+  const relabel = (rows) => relabelCoverageRows(runDir, rows);
   const jsonPath = join(runDir, "register-coverage-ledger.json");
   if (existsSync(jsonPath)) {
     try { return { rows: relabel(parseCoverageLedgerJson(readFileSync(jsonPath, "utf8"))), source: "machine", dropped: [] }; }
@@ -16849,15 +16857,28 @@ async function pipelineInner(job, opts = {}) {
       // Doc-17 C-2: open floors at delivery = deferred rows ∪ surviving ⭐-floor breaches (the label
       // never demotes floor work). Stated with the mechanical cause, never silently shipped.
       const ledgerLoadFinal = loadCoverageLedger(run.runDir);   // WS-A: third gate consumer — same source as the other two
-      const ledgerFinal = ledgerLoadFinal.rows;
+      let ledgerFinal = ledgerLoadFinal.rows;
       // T3 (H3, the owner-refined line): the machine-ledger DEGRADE is
       // sanctioned only while the gates could actually READ coverage — the prose table is the source
       // of truth and its rows kept every gate functioning. A run whose coverage-honesty floor had
       // ZERO usable rows (machine mirror unavailable AND the prose parse yielded nothing) has no
       // functioning coverage receipts at all — it FAILS instead of stamping a verdict over unread
       // coverage (the retired D1 clamp used to ship this as a finished-looking CONDITIONAL).
-      if (ctx.machineLedgerNote && ledgerLoadFinal.source !== "machine" && ledgerFinal.length === 0 && existsSync(P.registerFindings))
-        throw new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`);
+      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER (874). The machine ledger
+      // and the prose table are renders of the driver's coverage form, whose statuses the write-up recorded. With both
+      // renders unreadable, the form's ruled rows still let the coverage-honesty floor run, through the same relabels,
+      // so the run is not ended with no report over a render it lost. With no ruled row there either, see below.
+      if (ctx.machineLedgerNote && ledgerLoadFinal.source !== "machine" && ledgerFinal.length === 0 && existsSync(P.registerFindings)) {
+        const formRows = formLedgerRows(readCoverageForm(run.runDir).rows ?? []);
+        if (formRows.length) {
+          ledgerFinal = relabelCoverageRows(run.runDir, formRows);
+          runLog(run.runDir, { event: "coverage-ledger-from-form", rows: ledgerFinal.length, note: abbrev(String(ctx.machineLedgerNote), 200) });
+          note(`coverage ledger: the machine ledger and the prose table are unreadable — the coverage floor reads the coverage form's ${formRows.length} ruled row(s)`);
+        } else
+          // With no ruled row anywhere, no verdict can ship over coverage nobody read (spec-49 T3), and the run is not
+          // ended for it either (874): the failure is the assessment's, recorded as not completed and delivered without it.
+          throw Object.assign(new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`), { notCompletedPart: "assessment" });
+      }
       // — the designation comes from the VALIDATED model, not the rendered manifest. `manifestFinal`
       // is gone from this call: it was the retired mechanism's text-scanning input and reading it here
       // again would be the token matching that made the original impossible to carry forward.
@@ -17508,7 +17529,8 @@ export function assessmentCoverageRows(ledgerRows) {   // @internal
  */
 export function assessmentCoverageOfRun(runDir) {   // @internal
   const ledger = loadCoverageLedger(runDir);
-  if (ledger.source !== "none") return assessmentCoverageRows(ledger.rows);
+  const fromLedger = assessmentCoverageRows(ledger.rows);
+  if (fromLedger.length) return fromLedger;
   let rows = readCoverageForm(runDir).rows;
   if (!Array.isArray(rows)) {
     const { input } = coverageFormInput(runDir);

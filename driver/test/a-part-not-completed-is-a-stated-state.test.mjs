@@ -15,7 +15,8 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { writePartNotCompleted, readPartNotCompleted, partsNotCompleted, clearPartsNotCompleted, notCompletedPath } from "../parts-not-completed.mjs";
 import { degradedParts, degradedPartRows, PART_NAMES, NOT_COMPLETED } from "../degraded-parts.mjs";
-import { assessmentCoverageRows } from "../pipeline.mjs";
+import { assessmentCoverageRows, assessmentCoverageOfRun, relabelCoverageRows, loadCoverageLedger } from "../pipeline.mjs";
+import { coverageFormPaths } from "../coverage-form-io.mjs";
 import { assessmentNotCompletedNote } from "../../shared/client-failure-note.mjs";
 
 const runDir = (t) => {
@@ -107,4 +108,34 @@ test("publishing in the state reads no assessment: no finding, no verdict, the d
   assert.ok(html.includes("Field-size count"), "the delivery's coverage rows did not reach the page");
   assert.ok(res.auditFile, `the workbook was not built: ${res.auditError ?? ""}`);
   assert.ok(!(res.counts?.gateViolations ?? []).some((v) => /Verdict/.test(v)), `the workbook's own check wants a verdict: ${JSON.stringify(res.counts?.gateViolations)}`);
+});
+
+test("with no write-up ledger, the delivery's coverage rows come from the driver's coverage form: ruled rows keep their status, the rest are open", (t) => {
+  const dir = runDir(t);
+  writeFileSync(coverageFormPaths(dir).sidecar, JSON.stringify({ rows: [
+    { axis: "primary-sweep", unit: "primary-sweep / worldwide", status: "confirmed-clean", reason: "paged to completion" },
+    { axis: "saturation-probe", unit: "saturation-probe", open: true },
+    { axis: "incumbent-class", unit: "incumbent-class", kind: "family" }] }));
+  const rows = assessmentCoverageOfRun(dir);
+  assert.deepEqual(rows.map((r) => r.state), ["confirmed-clean", "open"], `the form's rows were read wrong: ${JSON.stringify(rows)}`);
+  assert.equal(rows[1].note, "", "a row nobody ruled carries words");
+  assert.ok(rows.every((r) => !/primary-sweep|saturation-probe/.test(r.area)), `an engine axis name reached a reader's row: ${JSON.stringify(rows)}`);
+  // A saved ledger is the write-up's own record and wins over the form.
+  writeFileSync(join(dir, "register-coverage-ledger.json"), JSON.stringify([{ axis: "primary-sweep", scope: "worldwide", status: "coverage-limited", reason: "counted" }]));
+  assert.deepEqual(assessmentCoverageOfRun(dir).map((r) => r.state).filter((s) => s !== "not-searched"), ["coverage-limited"], "the saved ledger did not win over the form");
+});
+
+test("the coverage form's rows are relabelled as every ledger is, and the floor's last resort is held to the assessment", (t) => {
+  const dir = runDir(t);
+  const rows = [{ axis: "primary-sweep", status: "confirmed-clean", unit: "primary-sweep / worldwide", reason: "paged" }];
+  writeFileSync(join(dir, "register-coverage-ledger.json"), JSON.stringify([{ axis: "primary-sweep", scope: "worldwide", status: "confirmed-clean", reason: "paged" }]));
+  assert.deepEqual(relabelCoverageRows(dir, rows).map((r) => r.status), loadCoverageLedger(dir).rows.map((r) => r.status), "the two sources are relabelled differently");
+  // The run reaches this only with no ruled row in either render and none in the form: no verdict can ship over coverage
+  // nobody read, and the failure is the assessment's, so the run delivers without it instead of ending.
+  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const at = src.indexOf('event: "coverage-ledger-from-form"');
+  assert.ok(at > 0, "the form fallback is gone");
+  const tail = src.slice(at, src.indexOf("\n      }\n", at));
+  assert.match(tail, /throw Object\.assign\(new StageFailure\("coverage-ledger",[\s\S]*\{ notCompletedPart: "assessment" \}\);/,
+    "a coverage floor with nothing to read ends the run instead of delivering without the assessment");
 });

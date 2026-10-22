@@ -144,6 +144,8 @@ export const COUNTED_EVENTS = {
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
   "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR, "foreign-record-links-blanked": REPAIR,
   "verdict-hardened-by-repair": REPAIR, "verdict-rederive-repair": REPAIR,
+  // the coverage floor read the coverage form because both of its renders were unreadable
+  "coverage-ledger-from-form": REPAIR,
   // The synthesis transport decoded a marker sent as a JSON string, or lifted rows sent inside the findings
   // object, on a call it then accepted. Its other notes — an override the merge has always applied, keys and
   // rows a whole call carries and the transport ignores — changed nothing that was accepted.
