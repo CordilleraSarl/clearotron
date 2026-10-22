@@ -434,7 +434,7 @@ every (variant × platform) cell and returns per-cell receipts plus the executed
 **Search-as-code marketplace grid** template in [perplexity-prompts.md](perplexity-prompts.md),
 filling in:
 
-- The variants the frame's grid names (the program's SEARCH TERMS array)
+- The terms your task message's GRID KEYS names (the program's SEARCH TERMS array)
 - Every store domain in the task message's PLATFORMS block + the general-web cell (never a remembered list)
 - **Field-scoped general-web cell (when the frame names a field outside the customer's own):** one extra cell for the mark
   combined with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza

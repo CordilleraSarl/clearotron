@@ -35,7 +35,7 @@ variants — tag their findings `Verify? ✅` downstream).
 ```
 Write and run a sandbox program that executes a marketplace search grid for a proposed trademark.
 
-SEARCH TERMS ([N]): [JSON array of the variants the frame's grid names]
+SEARCH TERMS ([N]): [JSON array of the terms your task message's GRID KEYS names]
 
 PLATFORMS ([M]): domain-restricted search for each store domain in YOUR TASK MESSAGE's
 PLATFORMS block (dictated per customer — copy that list verbatim; a gaming profile is one example:

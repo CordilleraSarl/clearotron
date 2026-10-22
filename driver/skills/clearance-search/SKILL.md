@@ -396,7 +396,7 @@ key artifacts:
   - <absolute path to senior-eye-review.md in its archive location> (internal audit — refutation review, [VERDICT])
 ```
 
-Every ⏭ or ⚠ MUST have a stated reason. A line without one still sends, with its gap named.
+Every ⏭ or ⚠ MUST have a stated reason. A line that shows ⏭ or ⚠ without a stated reason still sends, with its gap named.
 
 The key-artifacts list takes absolute paths only. Always include the xlsx (the client deliverable) AND `senior-eye-review.md` (the internal audit artifact the reviewing lawyer always sees regardless of verdict — see Phase 3 pre-gate). If Phase 3 did not produce an xlsx (which should not happen — see Phase 3 above), state that explicitly as a delivery failure rather than emitting an empty list.
 

@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE LEGACY WEB PATH SEARCHES WHAT THE FRAME NAMES.
+// THE LEGACY WEB PATH SEARCHES WHAT IT IS GIVEN, AND THE FIELD THE FRAME NAMES.
 //
 // Without a grid spec, the web manual's legacy path took every variant in the manifest as a search term, made a
 // field-scoped search mandatory whenever the matter left the customer's field and ran it for every term, and said the
-// narrative reviewer would block delivery. The search terms are the variants the frame's grid names; the field search
-// runs once, for the mark, where the frame names a field outside the customer's own; and the reviewer flags in the
-// audit workbook rather than blocks. This holds the ruled lines and that the old ones are gone.
+// narrative reviewer would block delivery. On that path the task message dictates the terms as its GRID KEYS, so the
+// manual names those; the field search runs once, for the mark, where the frame names a field outside the customer's
+// own; and the reviewer flags in the audit workbook rather than blocks. This holds the ruled lines and that the old
+// ones are gone.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -19,9 +20,9 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 const manual = flat("SKILL.md");
 const prompts = flat("perplexity-prompts.md");
 
-test("the legacy grid takes the variants the frame's grid names", () => {
-  assert.ok(manual.includes("- The variants the frame's grid names (the program's SEARCH TERMS array)"));
-  assert.ok(prompts.includes("SEARCH TERMS ([N]): [JSON array of the variants the frame's grid names]"));
+test("the legacy grid takes the terms the task message's GRID KEYS names", () => {
+  assert.ok(manual.includes("- The terms your task message's GRID KEYS names (the program's SEARCH TERMS array)"));
+  assert.ok(prompts.includes("SEARCH TERMS ([N]): [JSON array of the terms your task message's GRID KEYS names]"));
   assert.ok(!manual.includes("ALL variants from the Variants table"), "the web manual still takes every variant");
   assert.ok(!prompts.includes("every variant from the manifest's Variants table"), "the grid prompt still takes every variant");
 });

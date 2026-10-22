@@ -15,6 +15,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, dirname, resolve, relative } from "node:path";
 
 import { DRIVER, SKILLS, everyModelStageDispatch } from "./model-stage-dispatches.mjs";
+import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const SPINE = resolve(SKILLS, "clearance-search", "SKILL.md");
 const flat = (rel) => readFileSync(join(SKILLS, rel), "utf8").replace(/\s+/g, " ");
@@ -23,7 +24,7 @@ test("no chain of links from a file any stage declares reaches the spine", () =>
   const declared = new Set(everyModelStageDispatch("/nonexistent/invented-run").flatMap((d) => d.declared).map((rel) => resolve(DRIVER, rel)));
   // The register search reads whichever provider's manual is active; every one is a starting point.
   const providers = join(SKILLS, "clearance-register", "providers");
-  for (const name of readdirSync(providers)) if (name.endsWith(".md")) declared.add(resolve(providers, name));
+  for (const name of nonEmpty(readdirSync(providers), "the provider manuals")) if (name.endsWith(".md")) declared.add(resolve(providers, name));
   assert.ok(declared.size > 20, "guard: the stages' declared files were found");
   assert.ok(!declared.has(SPINE), "a stage declares the spine");
   const seen = new Set(), queue = [...declared], reached = [];
@@ -65,7 +66,7 @@ test("the spine says no stage reads it, and its lines follow the ruled method", 
       + "of a crowd the identical mark's narrowing left;",
     "Detail-fetch: ✅ <count> URIs",
     "Downstream (Phase 1 variants, Phase 2 register units, Touchpoint 2 placement, Touchpoint 3 refutation)",
-    "Every ⏭ or ⚠ MUST have a stated reason. A line without one still sends, with its gap named.",
+    "Every ⏭ or ⚠ MUST have a stated reason. A line that shows ⏭ or ⚠ without a stated reason still sends, with its gap named.",
   ]) assert.ok(spine.includes(now), now);
   for (const gone of ["is read by the pipeline stages", "per-jurisdiction sub-queries", "Per-jurisdiction sub-queries", "free EU cross-check",
     "free / citation tools", "*paid vendors*", "escalated to opus", "coverage check against floors", "material jurisdiction has a row",
