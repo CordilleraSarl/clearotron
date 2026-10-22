@@ -2628,6 +2628,7 @@ export const STAGES = {
       // handed to it AS DATA by the driver (runDigest appends the PLACEMENT RULINGS TAIL block), never
       // left to the model to remember or to fetch back.
       `Adopt or override each placement BY ENGAGING ITS reason — an override quotes the reason it contradicts (never silently re-tiers), and a kept tier may still tighten a label while reusing the reason. On a corrective/repair pass, do NOT re-read the whole placement file: the tiers are in ${P.placementModel}, and the md's rulings tail is handed to you verbatim in this dispatch (the PLACEMENT RULINGS TAIL block) — adjudicate against it there.`,
+      `A sheet-2 placement is adopted as it stands — the driver writes its Sheet-2 row with placement's reason — unless you override it; you send rows for the headline positions and for the placements you override.`,
       // judgment-relocation (2026-06-23): the COMPLETE named band — run the relevance gate over the REAL
       // material. PR-8: read via the band tools (shape whole + logged lookups), never by slicing the raw file.
       placementSetAsideBlock(placementSetAsides),

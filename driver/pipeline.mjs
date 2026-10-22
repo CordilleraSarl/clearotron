@@ -53,7 +53,7 @@ import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
   digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
-import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
+import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey, isLiveRecord } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
 import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
   unprovableRecordBases, applyDerivedBases,
@@ -2278,8 +2278,9 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     let readIds = [];
     try { readIds = [...readOkRecordUris(readFileSync(P.readingLog, "utf8"))]; } catch { readIds = []; }
 
-    // THE OWED SET: every record placement carried into this stage — the population `record-carry.mjs`
-    // judges this seam against, so the refusal and the ledger are counting the same thing.
+    // THE OWED SET: the records of the entries placement carried into this stage that the write-up must end, the
+    // population the refusal judges. `record-carry.mjs` judges the seam against every placed record, and an adopted
+    // entry is carried by its row.
     // ── AN ABSENT FILE IS THE ONLY BENIGN WAY TO HAVE NO OWED SET ────────────────────────────────
     //
     // This was one bare `catch {}` around the whole block, and it hid a `ReferenceError`: `entryUris`
@@ -2295,18 +2296,33 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     // which the transport already refuses by name as a driver fault rather than a model one. Never
     // silently empty: "the driver told me none" and "the driver could not tell me" are different facts
     // and only the first may be checked against.
+    //
+    // WHAT THE WRITE-UP OWES IS PLACEMENT'S HEADLINE ENTRIES, judged per entry: a row naming any record of an entry ends
+    // the whole entry. A sheet-2 entry is adopted as placed (`adopt`): the render writes its row on the entry's first
+    // live record, else its first, with placement's reason, unless the write-up overrides it with any row naming any of
+    // its records. Watchlist and out-of-scope entries owe nothing and keep their own tabs. An entry with no records owes
+    // nothing and gets no row.
     const owed = [];
+    const owedEntries = [];
+    const adopt = [];
     let owedFailed = null;
     if (existsSync(P.placementModel)) {
       try {
         const placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-        for (const e of Array.isArray(placements) ? placements : []) for (const u of entryUris(e)) owed.push(u);
+        const live = new Map(records.map((r) => [bandRecordUri(r).toLowerCase(), isLiveRecord(r)]));
+        for (const e of Array.isArray(placements) ? placements : []) {
+          const uris = entryUris(e);
+          if (!uris.length) continue;
+          if (e?.tier === "headline-candidate") { owedEntries.push({ uris }); owed.push(...uris); }
+          else if (e?.tier === "sheet-2") adopt.push({ uri: uris.find((u) => live.get(u) === true) ?? uris[0], uris, reason: String(e?.reason ?? "") });
+        }
       } catch (e) { owedFailed = String(e?.message ?? e).slice(0, 160); }
     }
 
     const facts = {
       schema_version: 1,
       owed: owedFailed ? null : [...new Set(owed)],
+      ...(owedFailed ? {} : { owed_entries: owedEntries, adopt }),
       identity: {
         mark: ctx.job?.markName ?? ctx.run?.slug ?? null,
         date: ctx.job?.filedDate ?? ctx.run?.startedAt?.slice?.(0, 10) ?? null,

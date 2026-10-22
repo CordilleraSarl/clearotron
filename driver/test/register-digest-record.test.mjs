@@ -417,9 +417,10 @@ const { writeRegisterDigestFacts } = await import("../pipeline.mjs");
 const { paths: runPaths } = await import("../stages.mjs");
 const { ACCOUNTING_STAMP, accountingArmed } = await import("../register-digest-record.mjs");
 
+// A headline entry: the write-up owes placement's headline entries, and adopts its sheet-2 entries as placed.
 const PLACEMENT = {
   mark: "VOLTMAX", owner: "Synth Beverages GmbH", jurisdiction: "EU",
-  records: ["/mark/eu/000000001"], tier: "sheet-2",
+  records: ["/mark/eu/000000001"], tier: "headline-candidate",
   reason: "A regional bottler whose class-32 leg reads as private-label energy drinks sold through grocery.",
 };
 const BAND_REC = { record_id: "/mark/eu/000000001", mark_text: "VOLTMAX", owner_name: "Synth Beverages GmbH", classes: [32] };
@@ -667,11 +668,13 @@ function densRunDir(n) {
   writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: recs }) + "\n");
   writeFileSync(P.placementModel, JSON.stringify({
     schema_version: 1,
-    placements: [{
-      mark: "DENSEMARK", owner: "Holder AG", jurisdiction: "EU", tier: "sheet-2",
-      records: recs.map((r) => r.record_id),
+    // One headline entry per record: the write-up owes headline entries and ends each by any row naming one of its
+    // records, so with one record an entry, every record is owed on its own and the batches are judged as before.
+    placements: recs.map((r, i) => ({
+      mark: `DENSEMARK ${i}`, owner: `Holder ${i} AG`, jurisdiction: "EU", tier: "headline-candidate",
+      records: [r.record_id],
       reason: "A dense band: every record placement carried into the digest.",
-    }],
+    })),
   }) + "\n");
   const ctx = { paths: P, job: { markName: "DENSEMARK" }, run: { slug: "s", codename: "c" } };
   writeRegisterDigestFacts(ctx, "test");
