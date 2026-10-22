@@ -67,7 +67,7 @@ async function runPass(root, engine, knobs = {}, codename = null) {
 
 const json = (p) => JSON.parse(readFileSync(p, "utf8"));
 const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
-const pageText = (html) => String(html).replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<script[\s\S]*?<\/script>/g, " ");
+const pageText = (html) => String(html).replace(/<style\b[^>]*>[\s\S]*?<\/style[^>]*>/gi, " ").replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, " ");
 
 async function workbookRows(path) {
   const ExcelJS = (await import("exceljs")).default;
