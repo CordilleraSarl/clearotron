@@ -12906,8 +12906,8 @@ async function pipelineInner(job, opts = {}) {
     // D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the
     // never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED; every ESCALATE line still re-runs its axis.
     // Audit-trail-aware escalation skip (Lever 4). A skeptic flag against an axis whose coverage-ledger
-    // row(s) are ALL `coverage-limited` is a DOCUMENTED/ACCEPTED structural limit (budget overrun, ring-fenced
-    // jurisdiction yield, phonetic-fringe sampled, count-only saturation) — a warm re-run cannot close it; it
+    // row(s) are ALL `coverage-limited` is a DOCUMENTED/ACCEPTED structural limit (a crowd recorded with its
+    // count) — a warm re-run cannot close it; it
     // would only re-spend the fat gather context (the ~343K cold-write) + a 2nd Opus re-digest for no recall
     // gain, so we skip it. CONSERVATIVE predicate: skip ONLY when the axis owns ≥1 ledger row AND every owned
     // row is `coverage-limited` (a `deferred` row = real outstanding work → re-run closes it; a `confirmed-clean`

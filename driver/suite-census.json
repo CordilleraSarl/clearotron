@@ -7197,6 +7197,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-skeptic-is-told-a-limited-row-is-a-counted-crowd.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-source-offer-names-a-commit-on-a-packaged-install.test.mjs": {
           "tests": 4,
           "asserts": 10,

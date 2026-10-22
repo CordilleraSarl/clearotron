@@ -98,9 +98,8 @@ table — do **not** reconstruct the ledger by reading the findings prose. (On t
 reconstruction burned 28,592 thinking tokens, 95% of the stage's emission, and still got the answer wrong.)
 
 Two classes of gap are **not** escalation triggers:
-- a gap the **Coverage ledger records as `coverage-limited`** — a documented/accepted structural limit a warm
-  re-run cannot close (budget overrun, ring-fenced jurisdiction yield, phonetic-fringe sampled, count-only
-  saturation);
+- a gap the **Coverage ledger records as `coverage-limited`** — a crowd recorded with its count, which a
+  warm re-run cannot close;
 - a **capability-gap deferral**, marked `NOT CLOSEABLE` in the table — the active provider cannot express those
   slices at all (a predicate it lacks, an office outside its coverage, a script its index cannot hold, an owner
   surface it does not have), so a re-run re-derives the identical refusal at full cost. **A capability-gap

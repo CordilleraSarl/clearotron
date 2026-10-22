@@ -2758,9 +2758,8 @@ export const STAGES = {
       // re-run would actually fix (not for an axis you merely mention or that is fine). Naming an axis in prose
       // above does NOT escalate it; only these lines do.
       `Then decide, per register axis, which must be re-run. Valid axes: ${(axes ?? REGISTER_AXES).join(", ")}.`,
-      // Do NOT escalate a gap the Coverage ledger already documents as `coverage-limited` (a documented/accepted
-      // structural limit — budget overrun, ring-fenced jurisdiction yield, phonetic-fringe sampled, count-only
-      // saturation — that a warm re-run cannot close). Escalate only genuinely closeable gaps (a `deferred` row,
+      // Do NOT escalate a gap the Coverage ledger already documents as `coverage-limited` (a crowd recorded with
+      // its count, which a warm re-run cannot close). Escalate only genuinely closeable gaps (a `deferred` row,
       // or a new concern on a row the ledger marks `confirmed-clean`). The driver enforces this too, but keep the
       // ESCALATE list clean. Re-running a documented limit only re-spends gather + re-digest for no recall gain.
       `Do NOT emit ESCALATE for an axis whose only Coverage-ledger gap is already recorded as "coverage-limited".`,
