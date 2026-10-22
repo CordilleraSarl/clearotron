@@ -56,7 +56,7 @@
 //                               detected via the engine-agnostic patch message ("RESUMING your own session").
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
-import { applyStageWrites, beforeForcedFailure } from "./mock-stage-fixtures.mjs";
+import { applyStageWrites, beforeForcedFailure, breakFindingsAfterWrites } from "./mock-stage-fixtures.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -455,6 +455,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     // Pipeline mode: write the REAL stage fixtures (shared via mock-stage-fixtures.mjs)
     // so the $0 mock pipeline runs end-to-end on CLEAROTRON_AI=anthropic-agent.
     applyStageWrites(msg, argv);
+    breakFindingsAfterWrites(msg, argv);   // MOCK_BREAK_FINDINGS_AFTER (mock-stage-fixtures.mjs)
     // MOCK_FAIL_AFTER_WRITES: the turn's writes land, a save the tool accepted among them, and then the turn fails: a
     // session that saved and was cut off before it ended. "&&"-separated parts must ALL appear in the message.
     if (process.env.MOCK_FAIL_AFTER_WRITES && process.env.MOCK_FAIL_AFTER_WRITES.split("&&").every((part) => msg.includes(part))) {

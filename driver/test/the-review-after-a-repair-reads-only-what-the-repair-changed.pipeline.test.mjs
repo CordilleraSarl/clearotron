@@ -411,12 +411,14 @@ for (const engine of Object.keys(ENGINES)) {
   });
 
   // THE PRECISE LIMIT: the record, the state kept before the review and both saves all lost, a storage failure.
-  // Delivering past it shipped a report with no findings under the verdict as it stood, so the pass keeps its
-  // failure, with nothing the failed correction wrote kept.
-  test(`${engine}: with every trusted copy lost, nothing the failed correction wrote is kept, and no report goes out without its record`, async () => {
-    const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
+  // Delivering past it shipped a report with no findings under the verdict as it stood, so nothing the failed
+  // correction wrote is kept, and the assessment is not completed: the resumed pass delivers what the run holds
+  // without it, with no rating (parts-not-completed.mjs).
+  test(`${engine}: with every trusted copy lost, nothing the failed correction wrote is kept, and the run delivers without the assessment`, async () => {
+    const knobs = { MOCK_VERDICT: "CLEAR", MOCK_NARRATIVE_OVER_CAP: "1", MOCK_POST_REPAIR_FLAGS: JSON.stringify(FLAG_ON_1),
       MOCK_POST_REPAIR_VERDICT: "CLEAR", MOCK_POST_REPAIR_LOSES: "findings,accepted,repair-base,retained", MOCK_CORRECTION_MARKS: MARK,
-      MOCK_FAIL_AFTER_WRITES: CORRECTION_OPENS }, engine);
+      MOCK_FAIL_AFTER_WRITES: CORRECTION_OPENS };
+    const { res, events } = await runPipeline(knobs, engine);
     const lost = events.find((e) => e.event === "post-repair-correction-unrecoverable");
     assert.ok(lost, `the case was not recorded: ${JSON.stringify(events.map((e) => e.event).slice(-15))}`);
     assert.equal(lost.findings, "set-aside", JSON.stringify(lost));
@@ -425,6 +427,12 @@ for (const engine of Object.keys(ENGINES)) {
       assert.ok(!text(f).includes(MARK), `the failed correction's text was kept in ${f}`);
     assert.ok(text(driverDir(res.runDir, "findings-failed-correction.json")).includes(MARK), "the failed pass's record was not kept aside as evidence");
     assert.notEqual(res.ok, true, "a report went out with its record unreadable");
+    assert.ok(events.some((e) => e.event === "part-not-completed" && e.part === "assessment"), "the assessment was not recorded as not completed");
+    const { res: r2 } = await runPipeline(knobs, engine, { codename: codenameOf(res.runDir) });
+    assert.equal(r2.ok, true, `the run did not deliver: ${JSON.stringify(r2).slice(0, 300)}`);
+    const runId = JSON.parse(readFileSync(join(r2.runDir, "status.json"), "utf8")).runId;
+    const meta = JSON.parse(readFileSync(join(process.env.CLEAROTRON_REPORTS_DIR, runId, "meta.json"), "utf8"));
+    assert.deepEqual([meta.assessment, meta.overall], ["not-completed", undefined], "a rating was delivered over a record nobody could read");
   });
 }
 

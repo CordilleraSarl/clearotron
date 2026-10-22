@@ -6956,6 +6956,16 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
         base: { accepted: k.accepted, narrative: k.narrative }, from: "state-before-the-review" };
     }
   } catch { /* no state kept, or it does not read: the saves below */ }
+  return recordFromTheSaves(Pv, runDir, before);
+}
+
+/**
+ * THE LAST RECORD A SAVE PASSED, rebuilt through the driver's own acceptance: the save the review read (`before`), then
+ * the save kept from before the delivery-check repair (sources 3 and 4 of `trustedStateBeforeCorrection`, with the
+ * same duty rule). Null when neither stands. Never throws.
+ */
+function recordFromTheSaves(Pv, runDir, before) {
+  const sha = (t) => createHash("sha256").update(t).digest("hex");
   const reads = (() => { try { return driverReadsFor(runDir); } catch { return null; } })();
   const fromSave = (params, accepted, from) => {
     if (!params || accepted == null || !reads) return null;
@@ -6977,6 +6987,46 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
 }
 
 /**
+ * A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED AT DELIVERY, NOT ENDED ON (874). The delivery checks
+ * find the record broken at the top level, so a write after synthesis broke it. The record comes back from the
+ * last save that passed, by the corrective rollback's own search (`recordFromTheSaves`): the save the review read, then
+ * the save kept from before the delivery-check repair. It is folded, and given the seam's writes, as after any save, and
+ * the check runs again on the record that now stands. The broken record is kept under `_driver/` as evidence. Returns
+ * {from, duty}, or null where no save stands or the record restored fails the check too. IMPURE (writes the run).
+ */
+async function restoreTheRecordThatPassed(ctx, P, runDir, check) {
+  const pre = recordFromTheSaves(P, runDir, lastAcceptedCall(runDir));
+  if (!pre?.raw) return null;
+  try { copyFileSync(P.findings, driverDir(runDir, "findings-broken-at-delivery.json")); } catch { /* the evidence is best-effort */ }
+  atomicWrite(P.findings, pre.raw);
+  restoreSynthesisBase(runDir, pre.base);
+  try { foldAfterSave(runDir, P.findings); } catch (e) { note(`[core-artifact] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
+  try { await ctx.afterSynthesisSave?.(); } catch (e) { note(`[core-artifact] the seam's writes could not be made again over the restored record (${String(e?.message ?? e).slice(0, 100)})`); }
+  try { check(readFileSync(P.findings, "utf8")); } catch { return null; }
+  return { from: pre.from, duty: pre.duty ?? "current" };
+}
+
+// A correction row's outcomes that say the pass changed the record or the narrative (corrections-feedforward.mjs).
+const CORRECTION_CHANGED = new Set(["section-changed", "line-removed", "line-changed", "findings-removed", "findings-changed"]);
+
+/**
+ * THE CORRECTIONS A RECORD RESTORED FROM THE SAVE BEFORE THE REPAIR DOES NOT CARRY: what the correction after the review
+ * of that repair changed, by the names its points targeted. The corrections' state is judged once, when the correction
+ * runs, so nothing else would see that the restored record predates it. Written as that state, the client gate's
+ * "findings-stale" reason closes the client export over it, as when a correction did not reach the findings. [] when
+ * the record came from the accepted save, or no correction after the repair changed anything. Never throws.
+ */
+export function correctionsTheRestoreLacks(runDir, from) {   // @internal
+  if (from !== "save-before-the-repair") return [];
+  try {
+    const rec = JSON.parse(readFileSync(postRepairCorrectionsPath(runDir), "utf8"));
+    const named = (r) => (Array.isArray(r.targets) && r.targets.length ? r.targets : [(rec.classes ?? []).find((c) => c?.n === r.n)?.target]);
+    return [...new Set((rec.rows ?? []).filter((r) => CORRECTION_CHANGED.has(r?.outcome)).flatMap(named)
+      .map((t) => String(t ?? "").trim()).filter(Boolean))];
+  } catch { return []; }
+}
+
+/**
  * A FAILED CORRECTION AFTER A POST-REPAIR REVIEW NEVER ENDS THE RUN (the owner's ruling of 2026-10-19: a run is never
  * held). The trusted state comes back whole: the record, its narrative and the merge base, then the fold and the seam's
  * writes made again over a record rebuilt from a save, as after any save, so the delivered verdict is derived from the
@@ -6984,13 +7034,14 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
  * not waited for either: it is rolled back as a failed one is, since the report it would correct is already reviewed,
  * and waiting for the reset would hold the run.
  *
- * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER. That is the precise limit: the record, the state kept whole before
- * the review, the save the review read and the save kept from before the repair are all unreadable or refused, a
- * storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
+ * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER THE ASSESSMENT. That is the precise limit: the record, the state
+ * kept whole before the review, the save the review read and the save kept from before the repair are all unreadable
+ * or refused, a storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
  * go back to what they were, and the failed pass's record is set aside under `_driver/` as evidence. A pass that went on from there delivered a
  * report with no findings, labelled with the verdict as it stood (measured on the mock pipeline, 2026-10-19): a clear
- * result over a record nobody can read. So this case alone keeps the failure it always had. Returns the rollback
- * record, or null for this case.
+ * result over a record nobody can read. So the failure is the assessment not completed (parts-not-completed.mjs): once
+ * its recovery is spent, the run delivers what it holds without the assessment. Returns the rollback record, or null
+ * for this case.
  */
 async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore }) {
   // A rate limit is a failure of this pass like any other here: the shared rollback would leave it to wait.
@@ -7057,7 +7108,7 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
       ...(rollback.duty ? { duty: rollback.duty } : {}) });
     note(`[post-repair] the correction after the review of the repair failed (${rollback.reason}) — the record it started from is back, and the run delivers with the points recorded`);
   } else {
-    must(pass, "synthesis(post-repair)");
+    await asPartNotCompleted("assessment", async () => must(pass, "synthesis(post-repair)"));
     let preDocForNames = null;
     try { preDocForNames = pre ? parseFindingsJsonLenient(pre.raw) : null; } catch { /* fall back to the file */ }
     const repaired = repairUnnamedRemovals(Pv, runDir, pre, correctionNamedOrdinals(Pv), correctionNamedSet(Pv, preDocForNames), correctionNamedLines(Pv, preDocForNames));
@@ -14045,7 +14096,9 @@ async function pipelineInner(job, opts = {}) {
           + `${correctiveRollback.restored ? "findings.json restored to the version the reviewer read" : "findings.json was never changed"}`
           + `; the run delivers with the reviewer's points printed rather than failing`);
       } else {
-        must(correctivePass, `synthesis(${verdict.toLowerCase()})`);
+        // The rollback declined: a rate limit, which waits, or no record from before the pass to trust, which is the
+        // assessment not completed, as for the correction after the review of a repair.
+        await asPartNotCompleted("assessment", async () => must(correctivePass, `synthesis(${verdict.toLowerCase()})`));
         // ── — THE THIRD BRANCH, AND IT IS ON THE SUCCESS SIDE ON PURPOSE ─────────
         //
         // A repair is not a rollback and must never be reached by falling through to one. The rollback
@@ -15183,6 +15236,7 @@ async function pipelineInner(job, opts = {}) {
     // P2 clause 3 — assigned in the lint block below, consumed by the freshness precondition before the
     // client gate. Declared here so both live in the same scope regardless of the lint block's nesting.
     let staleStages = [];
+    let staleOnTheDeliveryPath = () => staleStages;   // the same question, asked again: set where the lint block asks it
     // ── §9 — THE CARD SET IS `fullProseOrdinals ∧ form === "full"` ───────────────────────────
     //
     // On one country every form is `full`, so this reduces to `fullProseOrdinals` — the same list, in the
@@ -15363,6 +15417,46 @@ async function pipelineInner(job, opts = {}) {
     // five dispatches, three of them failing identically until the ladder exhausted.
     // composeEmailHtml now takes its headline tier from the verdict sidecar and its conditions from
     // the report's own `# Actions`.
+
+    // A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED, NOT ENDED ON (874). It is checked as the delivery
+    // gate checks it, before the audit and the delivery checks are built from it, and again at that gate. A broken record
+    // comes back from the last save that passed (restoreTheRecordThatPassed). A save rebuilt with the duty set aside is
+    // judged again here, as after a rollback, and the corrections a save from before the repair lacks close the client
+    // export (correctionsTheRestoreLacks). With no save to restore, the failure is the assessment not completed: its
+    // recovery re-runs synthesis, which a broken record does not let skip, and once that is spent the run delivers
+    // without the assessment. Returns the restore, or null where no save passes.
+    const restoreTheBrokenRecord = async (failures, where) => {
+      const restored = await restoreTheRecordThatPassed(ctx, P, run.runDir, (raw) => { parseFindingsJsonLenient(raw); });
+      if (!restored) {
+        note(`core-artifact (${where}): ${failures.join("; ")} — no save passes either, so the assessment is not completed`);
+        return null;
+      }
+      const lacks = correctionsTheRestoreLacks(run.runDir, restored.from);
+      if (lacks.length) {
+        // Joined to what the state already holds: an earlier correction's names stay in the reason.
+        const at = driverDir(run.runDir, "corrections-state.json");
+        const held = (() => { try { const s = JSON.parse(readFileSync(at, "utf8"))?.stale; return Array.isArray(s) ? s : []; } catch { return []; } })();
+        try { atomicWrite(at, JSON.stringify({ ts: new Date().toISOString(), stale: [...new Set([...held, ...lacks])] }, null, 2)); }
+        catch { /* the event below records it */ }
+      }
+      runLog(run.runDir, { event: "core-artifact-restored", where, from: restored.from, duty: restored.duty, ...(lacks.length ? { correctionsLacked: lacks.length } : {}) });
+      note(`core-artifact (${where}): ${failures.join("; ")} — the record is restored from the ${restored.from}, and the run delivers from it`);
+      if (restored.duty === "relaxed") {
+        const was = verdict, stood = JSON.stringify(clampReasons);
+        clampOnTheWritersDuty({ again: true });
+        if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after the record was restored")) applyVerdictFrontMatter();
+      }
+      return restored;
+    };
+    if (existsSync(P.findings)) {
+      let broken = null;
+      try { parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch (e) { broken = `findings.json — ${String(e.message).replace(/\s+/g, " ").slice(0, 140)}`; }
+      if (broken) {
+        runLog(run.runDir, { event: "core-artifact-invalid", failures: [broken], where: "delivery-checks" });
+        if (!(await restoreTheBrokenRecord([broken], "delivery-checks")))
+          throw Object.assign(new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${broken}`), { notCompletedPart: "assessment" });
+      }
+    }
 
     // A2 — full audit: DETERMINISTIC CODE (parse the spine tables → audit.md, count-guarded). Replaces the LLM
     // audit-emit (output varied 47↔69 on identical input). NON-FATAL: if it fails, the report still ships (publish
@@ -16265,8 +16359,9 @@ async function pipelineInner(job, opts = {}) {
       // again, and nothing re-runs either.
       const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview")
         && !(reviewOpen && l === "narrative-refutation"));
-      staleStages = [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
+      staleOnTheDeliveryPath = () => [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
         ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
+      staleStages = staleOnTheDeliveryPath();
       // A DELIVERY-CHECK REPAIR THAT CHANGED ONLY THE FINDINGS RECORD leaves the narrative's bytes, and so the
       // reviewer, fresh — the reviewer does not declare findings.json. The change is still content no review has
       // read, so the reviewer is queued for the review after a repair, marked as the record's change.
@@ -16945,8 +17040,9 @@ async function pipelineInner(job, opts = {}) {
     // doc-44 Fix C — machine-file DELIVERY gate (mechanism + a pluggable core-artifact seam). A top-level-invalid
     // CORE machine artifact must NOT ship: it is repaired UPSTREAM (the synthesis quarantine + the corrective
     // must() re-synthesis already fail a top-level-invalid findings.json), and THIS is the final backstop before
-    // publish so nothing invalid slips through a post-synthesis mutation. Fails LOUDLY via the technical-failure
-    // path — never quarantine-and-ship. We validate with the LENIENT parser so a legitimate PER-FINDING quarantine
+    // publish so nothing invalid slips through a post-synthesis mutation. Never quarantine-and-ship: a broken
+    // findings.json is restored from the last save that passed (restoreTheRecordThatPassed), and with none to restore
+    // the failure is the assessment not completed. We validate with the LENIENT parser so a legitimate PER-FINDING quarantine
     // (one bad finding dropped, the rest shipped) still passes — THAT (whether a dropped finding is a core failure)
     // is a POLICY call the definition-of-done (spec 45) owns, not this gate. The CORE_ARTIFACTS list is the SEAM:
     // spec 45 owns its contents; it is seeded with the machine findings file doc-44 names. This enforces machine-
@@ -16962,8 +17058,13 @@ async function pipelineInner(job, opts = {}) {
     }
     if (coreInvalid.length) {
       runLog(run.runDir, { event: "core-artifact-invalid", failures: coreInvalid });
-      note(`core-artifact gate: ${coreInvalid.join("; ")} — failing the run (a report cannot ship over a broken machine artifact)`);
-      throw new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${coreInvalid.join("; ")}`);
+      // The record, broken after the delivery checks first read it, is restored as it is there (restoreTheBrokenRecord),
+      // and what was built from it is judged again against the record that stands: the freshness check below parks a
+      // stage it left stale, and the resumed pass rebuilds it.
+      const failure = new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${coreInvalid.join("; ")}`);
+      if (!coreInvalid.every((f) => f.startsWith("findings.json "))) throw failure;   // only the findings record is the assessment's
+      if (!(await restoreTheBrokenRecord(coreInvalid, "delivery-gate"))) throw Object.assign(failure, { notCompletedPart: "assessment" });
+      staleStages = staleOnTheDeliveryPath();
     }
 
     // P2 clause 3 — FRESHNESS PRECONDITION, immediately before the client gate. copper-vault's gate
