@@ -212,6 +212,7 @@ test("a search over the register's ceiling is a crowd that sends the reading ste
   const parsed = JSON.parse((await doEnumerate("key", BASE, { name: "ORBANTIQ", nice_classes: [9], regions: ["US"] }, tctx)).text);
   assert.equal(parsed.state, "incomplete", `guard: the ceiling did not make a crowd: ${JSON.stringify(parsed).slice(0, 300)}`);
   assert.match(parsed.reason, /tooManyResults/, "guard: the crowd is not the register's ceiling");
-  assert.ok(parsed.reason.includes("Decide on it with the narrowing steps in unit.md, only as far as reading it would change what you tell the client."), parsed.reason);
+  assert.ok(parsed.reason.endsWith("This is a CROWD descriptor for judgment — dilution the lawyer reads, not a provider fault and not a clean negative."), parsed.reason);
+  assert.ok(!parsed.reason.includes("unit.md"), `the recorded reason carries an instruction for the unit: ${parsed.reason}`);
   assert.ok(!/self-narrow-and-retry|judgment's call \(Layer B\)/.test(parsed.reason), `the crowd still hands itself up: ${parsed.reason}`);
 });

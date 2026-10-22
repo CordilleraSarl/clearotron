@@ -1907,7 +1907,7 @@ export async function doEnumerate(apiKey, base, params, tctx) {
     const tooMany = /tooManyResults/i.test(String(parsed.reason ?? "")) ? tooManyResultsCount(parsed.reason) : null;
     if (tooMany != null) {
       if (tooMany > 0) parsed.total_hits = tooMany;
-      parsed.reason = `the provider returned tooManyResults: ${tooMany || "the band"} records exceed its ${CAPABILITIES.resultCeiling}-result search ceiling, so the complete guid set is unreachable in one call. This is a CROWD descriptor for judgment — dilution the lawyer reads, not a provider fault and not a clean negative. Decide on it with the narrowing steps in unit.md, only as far as reading it would change what you tell the client.`;
+      parsed.reason = `the provider returned tooManyResults: ${tooMany || "the band"} records exceed its ${CAPABILITIES.resultCeiling}-result search ceiling, so the complete guid set is unreachable in one call. This is a CROWD descriptor for judgment — dilution the lawyer reads, not a provider fault and not a clean negative.`;
     }
     // Per-office counts from the WHOLE-STACK /count probe — richer than corsearch can offer, and the
     // per-jurisdiction shape of the crowd is exactly what judgment needs to weigh materiality.

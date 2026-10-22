@@ -84,7 +84,10 @@ export function requiredFieldViolations(schema, args, path = "") {
   return out;
 }
 
-export function serve({ name, version = "0.1.0", tools = [] }) {
+// `noteFor(toolName, text)` — optional: a line to hand over beside an answer, as a block of its own, or null. A register
+// server passes crowd-note.mjs's, so the unit is told how to decide on a crowd where it reads one, and the answer itself
+// stays the data every later stage reads. Given once per answer: with the first part when the answer is served in parts.
+export function serve({ name, version = "0.1.0", tools = [], noteFor = null }) {
   // Pairs the two lines of one call. Per PROCESS, and a register server is spawned per stage, so a
   // reader must key on (server, seq) and never on seq alone.
   let callSeq = 0;
@@ -208,12 +211,14 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
         const code = isError ? complaintCode(text) : null;
         logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: !isError,
           ...(isError ? { failure: "server", ...(code ? { reason: code } : {}) } : {}) });
+        const note = !isError && typeof noteFor === "function" ? noteFor(tool.name, text) : null;
+        const noted = typeof note === "string" && note ? [{ type: "text", text: note }] : [];
         const pieces = budget && !isError ? answerPieces(text, budget, tool.name) : null;
         if (pieces && pieces.length > 1) {
           held.hold(tool.name, args, pieces);
-          return ok(id, { content: [{ type: "text", text: servedPart(tool.name, pieces, 1) }] });
+          return ok(id, { content: [{ type: "text", text: servedPart(tool.name, pieces, 1) }, ...noted] });
         }
-        ok(id, { isError: isError || undefined, content: [{ type: "text", text }] });
+        ok(id, { isError: isError || undefined, content: [{ type: "text", text }, ...noted] });
       } else if (id != null) {
         err(id, -32601, `method not found: ${method}`);
       }

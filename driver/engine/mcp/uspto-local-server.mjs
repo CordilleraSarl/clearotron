@@ -32,6 +32,7 @@
 // visible where a spawn and a reviewer each actually look — the tool list here, the REGISTER_SERVERS
 // filter in gather-config.mjs, and the exact-six pin in driver/test/engine.gather.test.mjs.
 import { serve } from "./stdio-server.mjs";
+import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import {
   CAPABILITIES, DEFAULT_DB_ENV, doSearch, doRecordFetch, doBatchScreen, doEnumerate, doExecutePlan,
 } from "../../../providers/uspto-local/src/core.js";
@@ -75,7 +76,7 @@ const QUERY_PROPS = {
 };
 
 serve({
-  name: "register", version: "0.1.0",
+  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
   tools: [
     {
       name: "register_search",
