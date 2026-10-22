@@ -4029,6 +4029,12 @@
           "skips": 0,
           "todos": 0
         },
+        "in-grid-mode-the-web-worker-runs-no-fixed-extras.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "install-doc-describes-this-machine.test.mjs": {
           "tests": 7,
           "asserts": 14,

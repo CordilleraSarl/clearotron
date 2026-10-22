@@ -421,11 +421,10 @@ The variants table is the source of truth for what to search. The skill does NOT
 > re-emitting ~100 cells through your turn output — is exactly what truncated/dropped cells before), and
 > you do **NOT** re-emit the grid JSON. The tool returns the candidate hits that need judgment.
 > **This mode changes ONLY the Step-2 grid mechanics — nothing else about common-law.** You STILL run
-> **Step 3 (the famous-mark check)** and the **extras** (competitor-intel / PR-risk / crowded-field)
-> exactly as normal, then judge all candidates into the taxonomy (Step 4) and write the COMPLETE findings
-> file with every section (Findings, famous-mark, extras, Negative results matrix, Coverage ledger, Audit
-> trail). Skipping Step 3 or the extras leaves the deliverable missing a core search layer and the
-> pre-delivery lint will HOLD client export. The only things you skip are authoring the grid program and
+> **Step 3 (the famous-mark check)**, then judge all candidates — the meaning questions' answers among them — into
+> the taxonomy (Step 4) and write the COMPLETE findings file with every section (Findings, famous-mark, Negative
+> results matrix, Coverage ledger, Audit trail). Skipping Step 3 leaves the deliverable missing a core search
+> layer. The only things you skip are authoring the grid program and
 > saving the grid ledger — the tool owns those. The program template and the verbatim-save step below are
 > the **LEGACY path**, used only when the task gives no `grid_spec_path`.
 
@@ -441,8 +440,7 @@ filling in:
   combining it with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza
   collab, `"<term> pizza"` cells. Scope to the specific goods, not a fixed per-field platform list
   (staff-lawyer redline, Project NOVA PULSE).
-- The extras searches: competitor-intel probes from the manifest's watchlists, PR-risk probes per
-  core element, crowded-field probes per pattern
+- The meaning questions the frame wrote, as the grid spec carries them.
 
 The tool returns the program's stdout JSON (`cells` + `extras` + `gaps`) and the program code as an
 audit receipt. **Trademark-register lookups stay out of scope** — the grid only searches
@@ -470,7 +468,7 @@ After the grid call, run the gate:
 4. Are there any dual-meaning terms where a descriptive reading may be masking a trademark?
 5. For compound marks: would the average consumer recognise any element as a brand name?
 
-If any answer is "no" or "unsure," fire a targeted `perplexity_research` follow-up (`depth: "pro-search"`) focused on the specific gap.
+If an answer is "no" or "unsure" and closing it could change what you tell the client, fire a targeted `perplexity_research` follow-up (`depth: "pro-search"`) focused on the specific gap.
 
 ### Step 5 — Judge the grid output into structured tables
 
