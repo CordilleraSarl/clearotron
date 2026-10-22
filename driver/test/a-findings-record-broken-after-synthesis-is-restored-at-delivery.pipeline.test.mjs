@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a mock pipeline whose findings record breaks after synthesis passed it, on both engines
 //
-// A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED AT DELIVERY (874).
+// A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED AT DELIVERY.
 //
 // A write after synthesis left findings.json broken at the top level, and the run ended with the stop notice: at the
 // delivery checks' first strict read of it, or at the delivery gate. Now the record is restored from the last save that

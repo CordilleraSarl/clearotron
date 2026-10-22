@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a mock pipeline whose register band no ledger call evidences, on both engines
 //
-// A SEARCH A CHECK CANNOT PROVE RAN IS DELIVERED AS NOT SEARCHED, NEVER AS CLEAN (874).
+// A SEARCH A CHECK CANNOT PROVE RAN IS DELIVERED AS NOT SEARCHED, NEVER AS CLEAN.
 //
 // A band check whose recovery was spent ended the run with the stop notice, though the run held every other slice.
 // Now the slices the check could not prove ran are recorded, taken out of the band and delivered as open rows: the

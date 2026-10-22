@@ -7062,7 +7062,7 @@ function recordFromTheSaves(Pv, runDir, before) {
 }
 
 /**
- * A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED AT DELIVERY, NOT ENDED ON (874). The delivery checks
+ * A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED AT DELIVERY, NOT ENDED ON. The delivery checks
  * find the record broken at the top level, so a write after synthesis broke it. The record comes back from the
  * last save that passed, by the corrective rollback's own search (`recordFromTheSaves`): the save the review read, then
  * the save kept from before the delivery-check repair. It is folded, and given the seam's writes, as after any save, and
@@ -11251,7 +11251,7 @@ async function pipelineInner(job, opts = {}) {
     for (const f of [...(runCommonLaw ? [P.commonLaw] : []), ...axes.map((a) => P.registerUnit(a))]) {
       if (!existsSync(f)) throw new StageFailure("fan-in", `missing ${f}`);
     }
-    // THE SLICES A CHECK COULD NOT PROVE RAN, ONCE ITS RECOVERY WAS SPENT (912): each is taken out of its axis's band and
+    // THE SLICES A CHECK COULD NOT PROVE RAN, ONCE ITS RECOVERY WAS SPENT: each is taken out of its axis's band and
     // delivered as an open row, before the band's checks and the plan join read the band. The checks below name the
     // slices they fail on, and the run-level catch records them (parts-not-completed.mjs).
     const searchesOpen = readPartNotCompleted(run.runDir, "searches");
@@ -15547,7 +15547,7 @@ async function pipelineInner(job, opts = {}) {
     // composeEmailHtml now takes its headline tier from the verdict sidecar and its conditions from
     // the report's own `# Actions`.
 
-    // A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED, NOT ENDED ON (874). It is checked as the delivery
+    // A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED, NOT ENDED ON. It is checked as the delivery
     // gate checks it, before the audit and the delivery checks are built from it, and again at that gate. A broken record
     // comes back from the last save that passed (restoreTheRecordThatPassed). A save rebuilt with the duty set aside is
     // judged again here, as after a rollback, and the corrections a save from before the repair lacks close the client
