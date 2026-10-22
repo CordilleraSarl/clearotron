@@ -18,6 +18,7 @@ import { compileRegisterPlan } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { formNeighbourhood } from "../form-neighbourhood.mjs";
 import { STAGES } from "../stages.mjs";
+import { coverageFormBrief } from "../coverage-form.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -89,4 +90,20 @@ test("the unit manual asks across the order's scope, and owes no question per ma
     assert.ok(unit.includes(after), `the unit manual does not say "${after}"`);
     assert.ok(!unit.includes(before), `the unit manual still says "${before}"`);
   }
+});
+
+test("the write-up's coverage brief and manual give a crowd the narrowing closed withheld-by-judgment, and keep coverage-limited for one still open", () => {
+  // An unaccounted crowd block on an invented matter's primary sweep, as the form gives the write-up one.
+  const brief = coverageFormBrief({ rows: [{ row_id: "CB-1", axis: "primary-sweep", kind: "block", unit: "primary-sweep / ORBANTIQ (contains)",
+    qid: "primary-sweep:contains:orbantiq", total_hits: 2416, open: true, open_because: "a crowd the band left unaccounted", status: null, reason: null }] })
+    .replace(/\s+/g, " ");
+  assert.ok(brief.includes("row(s) are UNACCOUNTED CROWD BLOCKS"), "guard: the brief carries the crowd block's paragraph");
+  assert.ok(brief.includes("Say in the reason what stayed open. Where a narrowed list you have read answered the crowd, or the reading step set it "
+    + "aside with its count and a reason, the status is `withheld-by-judgment` with that reason: that is finished work, not a gap. A crowd the "
+    + "identical mark's own narrowing left, still a crowd after the last step or in a country its market step did not read, stays `coverage-limited`."));
+  const skill = flat("SKILL.md");
+  assert.ok(skill.includes("a waiting family the reading turn chose not to ask, so it was never searched; or a crowd the narrowing steps closed (a "
+    + "narrowed list that was read answered it, or the reading step set it aside with its count and a reason). Its reason goes into the audit "
+    + "workbook, not the report."));
+  assert.ok(!skill.includes("Only a `family` row takes it"), "the register manual still keeps withheld-by-judgment for a family row alone");
 });
