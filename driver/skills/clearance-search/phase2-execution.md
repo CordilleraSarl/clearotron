@@ -47,9 +47,8 @@ if its axis is empty, so running a non-applicable one is harmless):
 - `incumbent-class` — if the manifest has an `industry_incumbent_alert`.
 
 Each unit is given: the sub-skill + axis (`clearance-register` unit mode — see `clearance-register/unit.md`), the
-variant manifest path, the request context, the **active register provider** (see
-[SKILL.md → Register sources](SKILL.md#register-sources--the-vendor-is-the-source-of-truth-euipo-is-a-free-eu-cross-check)),
-the sub-budget and its output path (`register-units/<axis>.md`). `clearance-common-law` runs
+variant manifest path, the request context, the **active register provider**
+and its output path (`register-units/<axis>.md`). `clearance-common-law` runs
 alongside the units against the same manifest.
 
 ### Step 2C — Touchpoint 2: placement-inquiry
@@ -88,7 +87,7 @@ array IS the clean answer and an EMPTY `escalations` array IS a decision — omi
 
 Escalation is decided by the `escalations` field and by nothing else. Naming an axis in a flag does **not**
 escalate it, and typing an `ESCALATE:` token inside a flag or a reason is REFUSED rather than parsed — so a
-passing mention never triggers a paid re-run, and a real gap is never missed because the axis name happened to be
+passing mention never triggers a re-run, and a real gap is never missed because the axis name happened to be
 absent from prose.
 
 **Coverage is DATA here, never a re-derivation.** The dispatch carries a driver-computed table built from
@@ -99,9 +98,8 @@ table — do **not** reconstruct the ledger by reading the findings prose. (On t
 reconstruction burned 28,592 thinking tokens, 95% of the stage's emission, and still got the answer wrong.)
 
 Two classes of gap are **not** escalation triggers:
-- a gap the **Coverage ledger records as `coverage-limited`** — a documented/accepted structural limit a warm
-  re-run cannot close (budget overrun, ring-fenced jurisdiction yield, phonetic-fringe sampled, count-only
-  saturation);
+- a gap the **Coverage ledger records as `coverage-limited`** — a crowd recorded with its count, which a
+  warm re-run cannot close;
 - a deferral marked `NOT CLOSEABLE` in the table — the active provider cannot express the slice (a predicate it
   lacks, an office outside its coverage, a script its index cannot hold, an owner surface it does not have), the
   envelope close has already asked it again, it was not asked in this run, or it names no search at all — so a
@@ -191,7 +189,7 @@ record the gap in the Audit Trail and narrative so the staff lawyer sees it. Log
 in the Audit Trail.
 
 This review replaces the old single-session "Opus + max thinking does it all" guard — quality now
-comes from a cheap fresh-eyes audit plus targeted Opus escalation, not from one giant session.
+comes from a fresh-eyes audit plus targeted escalation, not from one giant session.
 
 ## Step 3 — Cross-pollination (Option D — deterministic cross-checks, cap N=10)
 

@@ -380,7 +380,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "exactly-these-keys",
-    where: "driver/skills/clearance-register/digest.md:233-241",
+    where: "driver/skills/clearance-register/digest.md:236-244",
     surface: "skill-file",
     evidence: "- `axis` — EXACTLY one bare token of: `saturation-probe` / `primary-sweep` / `transliteration-numeric` / `incumbent-class`. **That vocabulary is CLOSED** and a row whose axis is outside it is refused.",
     reparsedBy: "driver/coverage-form.mjs (seat-row contract; SEAT_ROW_CONTRACT rides the accumulator) — and, since the typed-transport conversion, driver/coverage-call.mjs validateCoverageCall refuses an off-vocabulary axis AT CALL TIME (axis_invalid), so the dictation is receiver-checked in the same turn it is obeyed",
@@ -400,7 +400,7 @@ export const E3_BACKLOG = [
     // closed vocabulary sent through the `record_coverage` typed call (the transport conversion, B's
     // pattern). The seat opens no file and writes no table; the dictated shape is the call's own two
     // values, receiver-validated as they arrive.
-    where: "driver/skills/clearance-register/digest.md:216-218",
+    where: "driver/skills/clearance-register/digest.md:219-221",
     surface: "skill-file",
     evidence: "- `status` — EXACTLY one bare token: `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment`. Qualifiers never go in the status; they go in the reason.",
     reparsedBy: "driver/coverage-call.mjs validateCoverageCall (status_invalid at call time) + driver/coverage-form.mjs rowIsSettled via validators.registerFindings; the archived-era prose-table reader (coverage-ledger.mjs parseCoverageLedgerFull) survives for replay only",

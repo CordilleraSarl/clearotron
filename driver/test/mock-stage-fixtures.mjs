@@ -193,7 +193,8 @@ const prResultsArmedFor = (q) => {
 };
 
 // P2-A (recall spine): a COMPLIANT digest ends every screened-live dominant-element record somewhere
-// a reader can see — the driver's recall-reconciliation gate blocks delivery otherwise. The mock
+// a reader can see — otherwise the driver's recall-reconciliation gate ships those records named and clamps
+// the verdict. The mock
 // mirrors that compliant behaviour: read the merged band from the run dir and mint one individually-
 // reasoned Negative-results drop row per surfaced NOVAPULSE record (one record per row, URI cited —
 // the digest.md ending form 2). The result/notes wording deliberately avoids the goods/field tokens

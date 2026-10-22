@@ -75,7 +75,6 @@ The plugin's `register_search` tool maps these from snake_case params (e.g., `ni
 
 The `register_search` tool accepts `owner: "<free-text>"` as a top-level parameter mapping to the `owner:` field. Useful for:
 
-- Watchlist-driven proactive sweeps (competitors / aggressive enforcers from the variant manifest)
 - Cross-pollination Trigger 1 (every common-law owner → register check)
 - Targeted "does competitor X have a related mark?" probes
 
@@ -174,7 +173,7 @@ Only invoke for marks where `markFeature: "Figurative"` or `markFeature: "Stylis
 Be aware these capabilities are missing, so the skill doesn't promise them:
 
 - **POCA scoring** — not available through this adapter. Skill returns `null`
-- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `clearance-variants` and querying each separately.
+- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `clearance-variants`, with one script question per market the frame names.
 - **Server-side stem-folding** — present but not configurable (the default match-mode tokenizer catches LEGEND ↔ LEGENDS). The variant manifest's `plural-root` category encodes this — search the root form to catch inflected forms.
 
 ## Provider-specific behaviour

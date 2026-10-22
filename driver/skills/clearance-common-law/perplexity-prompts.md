@@ -5,8 +5,7 @@ Templates for the `perplexity_research` calls in `clearance-common-law`. Prompts
 ## Depth routing (mandatory)
 
 Every `perplexity_research` call in this skill MUST pass an explicit `depth`. Never rely on the
-plugin's auto-detection (it guesses from prompt formatting and routes grid-shaped prompts to the most
-expensive tier).
+plugin's auto-detection (it guesses from prompt formatting and routes grid-shaped prompts to the deepest tier).
 
 | Call | `depth` | Other params |
 |---|---|---|
@@ -36,15 +35,14 @@ variants — tag their findings `Verify? ✅` downstream).
 ```
 Write and run a sandbox program that executes a marketplace search grid for a proposed trademark.
 
-SEARCH TERMS ([N]): [JSON array of every variant from the manifest's Variants table]
+SEARCH TERMS ([N]): [JSON array of the variants the frame's grid names]
 
 PLATFORMS ([M]): domain-restricted search for each store domain in YOUR TASK MESSAGE's
 PLATFORMS block (dictated per customer — copy that list verbatim; a gaming profile is one example:
 ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com",
 "apps.microsoft.com", "itch.io"]), plus one unrestricted general-web search per term
 (platform name "web").
-[IF the matter goes outside the customer's core field — collab / out-of-field goods:]
-Additionally, for each search term run one general-web search of the term combined with
+Where the frame names a field outside the customer's own, run one general-web search of the mark combined with
 "[COLLABORATED GOODS, e.g. pizza]" (platform name "web-field:[goods]").
 
 For EVERY (term, platform) cell run a web search and record up to 8 returned candidate listings —
@@ -90,7 +88,7 @@ query is recorded, and a clean PR claim with no recorded search is rejected (`co
 ### What comes back, and what you do with it
 
 The tool returns: the stdout JSON (cells + extras + gaps) → the **SANDBOX PROGRAM audit receipt**
-(the exact code that ran) → a metadata footer (tokens, cost). Then:
+(the exact code that ran) → a metadata footer. Then:
 
 0. **Save the stdout JSON verbatim to `common-law-grid.json` first** (machine receipts — see the
    skill's Writes section): the object exactly as returned; batched grids → a JSON array of the

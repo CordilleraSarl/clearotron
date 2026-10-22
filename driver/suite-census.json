@@ -1761,6 +1761,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-saturation-crowd-that-would-change-the-advice-is-narrowed.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "a-save-that-cannot-commit-says-so.test.mjs": {
           "tests": 4,
           "asserts": 19,
@@ -2436,6 +2442,12 @@
         "an-owners-set-leaves-the-picking-step-with-one-ground.test.mjs": {
           "tests": 4,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-unended-position-is-delivered-stated.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -4401,6 +4413,12 @@
           "skips": 0,
           "todos": 0
         },
+        "no-stage-is-pointed-at-the-old-spine.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "no-test-account-reaches-the-package.test.mjs": {
           "tests": 17,
           "asserts": 31,
@@ -6201,6 +6219,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-case-law-manuals-say-what-is-wired.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-caveat-is-owed-only-when-it-is-true.test.mjs": {
           "tests": 12,
           "asserts": 25,
@@ -6621,6 +6645,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-adds-a-class-only-for-the-clients-goods.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-names-every-ordered-territory.test.mjs": {
           "tests": 3,
           "asserts": 5,
@@ -6654,6 +6684,12 @@
         "the-knockout-searches-every-spelling-on-every-place.test.mjs": {
           "tests": 13,
           "asserts": 91,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-legacy-web-path-searches-what-the-frame-names.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -6819,6 +6855,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-provider-manuals-follow-the-ruled-method.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "the-proving-question-names-no-engines-model.test.mjs": {
           "tests": 2,
           "asserts": 5,
@@ -6849,6 +6891,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-reading-step-decides-on-a-crowd.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reading-turn-narrows-the-same-way-on-every-register.test.mjs": {
           "tests": 5,
           "asserts": 20,
@@ -6864,6 +6912,18 @@
         "the-reaper-signals-before-it-removes.test.mjs": {
           "tests": 2,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reasoning-notes-follow-the-ruled-method.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-recipes-narrow-a-crowd-and-ask-a-script-per-named-market.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -6999,9 +7059,21 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-counts-a-wider-answer-as-covering-a-market.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
           "tests": 9,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reviewer-and-the-prompts-are-given-no-price.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -7149,6 +7221,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-skeptic-is-told-a-limited-row-is-a-counted-crowd.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-source-offer-names-a-commit-on-a-packaged-install.test.mjs": {
           "tests": 4,
           "asserts": 10,
@@ -7284,6 +7362,12 @@
         "the-write-up-owes-headline-entries-and-adopts-sheet-two-as-placed.test.mjs": {
           "tests": 5,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-write-up-reads-what-placement-carried-forward.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },

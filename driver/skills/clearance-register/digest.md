@@ -145,8 +145,8 @@ screen-surfaced records whose mark carries the dominant element** — as a stand
 token, or concatenated inside a longer word (`WAVOTONK`-class) — against your endings. **The unit is
 the POSITION, the same collapse Sheet-1 rows follow**: the driver groups those records by
 `_driver/register-positions.json` and an ending on ANY ONE constituent URI ends the whole position.
-A position with NO ending is a hard discrepancy: one warm follow-up, then the run **blocks
-delivery**. An ENDING is exactly one of:
+A position with NO ending is a hard discrepancy: one warm follow-up, then the run delivers with the
+unended positions stated. An ENDING is exactly one of:
 
 1. **a finding row** — a constituent URI in a findings-table row (Risk-relevant / Incumbent-context /
    watchlist / out-of-scope), or
@@ -165,7 +165,7 @@ delivery**. An ENDING is exactly one of:
 
    **`<N>` goes in the `unit` value and NOWHERE else.** The driver's reconciliation reads the count out
    of that value only — a count you write into the `reason` instead reads as ZERO, the crowd then covers
-   no position, and delivery blocks over a ruling you did make. Write it as a bare integer. The count
+   no position, and the run delivers with those positions stated as unended, over a ruling you did make. Write it as a bare integer. The count
    must be at least the number of POSITIONS you did not individually end, the same denominator the
    driver counts, and the follow-up always states the current number. (The shape's Positions section
    and `band_lookup` give you the numbers; the driver verifies the count and re-verifies after every
@@ -176,6 +176,9 @@ delivery**. An ENDING is exactly one of:
    You do NOT type this as a markdown table row. The driver renders the table from what the tool
    records, replacing whatever is in that section — so a row typed into the table is erased before
    anything reads it.
+
+4. **placement's own set-aside of that position** — by name, or, for a residual position, by its group's row. The
+   driver counts it; you add nothing.
 
 The **code-ranked top slice** (closest positions: registered rights first, then the freshest in-class
 pendings) must ALWAYS end individually (1 or 2) — the crowd never ends a top-slice position. The
@@ -251,7 +254,7 @@ Worked examples, one per shape you are likely to add:
 
 The last row is the compulsory one and its label is not free text: the driver's dominant-element
 reconciliation reads the crowd token and the member count out of that `unit` cell, so `(<N> members)`
-with a bare integer is load-bearing. Drop it and the ruling covers nothing and the run blocks delivery.
+with a bare integer is load-bearing. Drop it and the ruling covers nothing, and the run delivers with those positions stated as unended.
 The other three labels are yours to phrase; only the leading axis is dictated.
 
 **A row marked `open` cannot be `confirmed-clean`, and its own `open_because` says why.** There are three

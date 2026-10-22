@@ -55,7 +55,7 @@ the artifacts this stage writes, so there is nothing here to call and nothing to
 
 ## Search approval (HITL exception)
 
-The full HITL exception covering this workflow is declared **once** in the orchestrator at [clearance-search/SKILL.md](../clearance-search/SKILL.md#hitl-exception-shared-across-sub-skills). It is pre-approved at workflow trigger time when the requesting lawyer or a staff lawyer forwards the request email.
+This workflow's searches are pre-approved at workflow trigger time, when the requesting lawyer or a staff lawyer forwards the request email.
 
 Operative rules for this sub-skill (Perplexity-side):
 - **Include in queries:** mark name, product type, relevant industry context
@@ -87,7 +87,7 @@ so there is **no partial-delivery fallback**:
 
 - Internet-based marketplace searches (Google, Amazon, social media, industry platforms)
 - **The dictated platforms** — your task message's PLATFORMS block names the exact store domains for this customer's profile. A gaming profile is one example of such a list — Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io — illustrative only; never substitute the example for the dictated list
-- **Field-scoped general search** — when the matter goes outside the customer's core field (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also mandatory (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the matter goes outside the customer's core field. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
+- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the frame names a field outside the customer's own. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
 - Domain name presence
 - Social media presence and commercial use
 - Industry press and trade publications
@@ -434,11 +434,11 @@ every (variant × platform) cell and returns per-cell receipts plus the executed
 **Search-as-code marketplace grid** template in [perplexity-prompts.md](perplexity-prompts.md),
 filling in:
 
-- ALL variants from the Variants table (the program's SEARCH TERMS array)
+- The variants the frame's grid names (the program's SEARCH TERMS array)
 - Every store domain in the task message's PLATFORMS block + the general-web cell (never a remembered list)
-- **Field-scoped general-web cells (mandatory when the matter goes outside the customer's core field):** one extra cell per term
-  combining it with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza
-  collab, `"<term> pizza"` cells. Scope to the specific goods, not a fixed per-field platform list
+- **Field-scoped general-web cell (when the frame names a field outside the customer's own):** one extra cell for the mark
+  combined with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza
+  collab, a `"<mark> pizza"` cell. Scope to the specific goods, not a fixed per-field platform list
   (staff-lawyer redline, Project NOVA PULSE).
 - The meaning questions the frame wrote, as the grid spec carries them.
 
@@ -504,7 +504,7 @@ For every Consumer-confusion-risks row that is a **game title** (Steam game, Mic
 - Add the candidate to the Open verification flags section with the specific gap
 - DO NOT GUESS by inferring from prior-frequent gaming companies (Bandai Namco, Tencent, Capcom, Behold Studios, etc.) — even when the title's genre or style suggests a likely publisher, leave the field as `not extracted` rather than confabulating
 
-The downstream orchestrator's `placement-inquiry` (Phase 2 Step 2C) will place any game-title with `developer_of_record: not extracted` at **sheet-2** with a verify-publisher flag — never at headline-candidate. The `narrative-refutation` gate (Phase 2 Step 4.7) will BLOCK delivery if the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
+The downstream orchestrator's `placement-inquiry` (Phase 2 Step 2C) will place any game-title with `developer_of_record: not extracted` at **sheet-2** with a verify-publisher flag — never at headline-candidate. The `narrative-refutation` gate (Phase 2 Step 4.7) will flag in the audit workbook any case where the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
 
 This requirement applies even when the model running this skill is at the Haiku tier (per the live workflow config). Treat `developer_of_record` and `publisher_of_record` as required, unambiguous columns; mark them `not extracted` when uncertain rather than confabulating.
 
@@ -533,7 +533,7 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 - [ ] Famous-mark check judged for every flagged element from its general-web results (or "None" documented)
 - [ ] Post-search 5-question checklist run; any "no/unsure" gaps closed via follow-up calls
 - [ ] Every DICTATED platform appears in the audit trail (the list from your task message's PLATFORMS block)
-- [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the matter goes outside the customer's core field)
+- [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the frame names a field outside the customer's own)
 - [ ] Every finding has a URL (or is in Open verification flags)
 - [ ] Findings categorised: consumer-confusion / commercial-awareness / competitor-intel / PR-risk
 - [ ] **Every game-title finding in Consumer-confusion-risks has both `developer_of_record` and `publisher_of_record` columns populated** — with the extracted value when known, or the literal string `not extracted` when uncertain. Never confabulated.

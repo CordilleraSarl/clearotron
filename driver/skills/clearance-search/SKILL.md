@@ -7,12 +7,11 @@ description: Orchestrator for preliminary trademark search requests with registe
 
 - [Spawned session](#spawned-session)
 - [Trigger](#trigger)
-- [Register sources — the vendor is the source of truth; EUIPO is a free EU cross-check](#register-sources--the-vendor-is-the-source-of-truth-euipo-is-a-free-eu-cross-check)
+- [Register sources — the active vendor is the source of truth](#register-sources--the-active-vendor-is-the-source-of-truth)
 - [Model](#model)
 - [Upfront instructions (per-mark guidance from the reviewing lawyer)](#upfront-instructions-per-mark-guidance-from-the-reviewing-lawyer)
 - [Scope discipline — "stop if manageable"](#scope-discipline--stop-if-manageable)
 - [Process overview](#process-overview)
-- [Tool call budget](#tool-call-budget)
 - [HITL exception (shared across sub-skills)](#hitl-exception-shared-across-sub-skills)
 - [Failure fallbacks](#failure-fallbacks)
 - [Phase 0 — Workspace hygiene + matter-frame + template selection (run-start)](#phase-0--workspace-hygiene--matter-frame--template-selection-run-start)
@@ -26,7 +25,7 @@ description: Orchestrator for preliminary trademark search requests with registe
 
 ## Spawned session
 
-This file is the **driver's compute orchestration spec** — it lives in `driver/skills/` (co-located with the driver) and is read by the pipeline stages, NOT by the integrator agent. The integrator's clearotron role is only **intake** (recognise the request, resolve the client, submit the job — `../../docs/INTAKE.md`) and **delivery** (courier the outbox packets — `../../docs/DELIVERY.md`); everything between is the driver's.
+This file is the **driver's compute orchestration spec** — it lives in `driver/skills/` (co-located with the driver) and is NOT read by the integrator agent. No stage reads this file; each stage's message names the manual it reads. The integrator's clearotron role is only **intake** (recognise the request, resolve the client, submit the job — `../../docs/INTAKE.md`) and **delivery** (courier the outbox packets — `../../docs/DELIVERY.md`); everything between is the driver's.
 
 This workflow is run by the **deterministic driver** (`driver/`): an intake path (the `enqueue` CLI or the ops-MCP `start_run` tool) enqueues a job and the driver invokes each stage as a standalone compute turn (the `anthropic-agent` engine — a headless `claude -p` process off the gateway; sequencing, fan-in, gating, retries all in code). The judgment content + companion files below are what the stages read; the driver passes each stage its run-dir paths + the job context (email message id, forwarder, instructions, mark names).
 
@@ -49,7 +48,7 @@ Sub-skills used during the workflow:
 - `clearance-common-law` — runs as a **spawned isolated worker** (Phase 2 Step 2): Perplexity
   execution against the manifest (produces the common-law findings file with `developer_of_record` / `publisher_of_record` extracted per game-title finding).
 - `clearance-register` — runs as a **spawned isolated worker** (Phase 2 Step 2): register-search
-  execution against the manifest; consumes `matter-context.md` for materially-matters jurisdictions in per-jurisdiction sub-queries; consumes `placement-recommendations.md` (MODE B digest) for per-candidate placements.
+  execution against the manifest; consumes `placement-recommendations.md` (MODE B digest) for per-candidate placements.
 
 The two gather workers run in their **own isolated sessions** so their raw search payloads
 (Perplexity results, register records) never enter this orchestrator's context. The orchestrator
@@ -60,18 +59,18 @@ reads only their compact findings files. This is the workflow's primary cost con
 
 The requesting or reviewing lawyer forwards an email containing a **Trademark Search Request Form** to the intake mailbox. The forwarded email is typically structured as a request form ("Worldwide preliminary trademark search — TMP<n>", "Please run this through a preliminary search", or similar). When the request is recognisable as a clearotron search ask, this skill invokes.
 
-## Register sources — the vendor is the source of truth; EUIPO is a free EU cross-check
+## Register sources — the active vendor is the source of truth
 
-Your tool surface binds **one paid register vendor** plus free / citation tools — use each for its purpose:
+Your tool surface binds **one register vendor** plus case-law citation tools — use each for its purpose:
 
-- **Paid vendor = the register source of truth** (global coverage, phonetic). The tools are always `register_*`; the vendor behind them is whichever REGISTER_PROVIDER selects — **one vendor at a time** (gated via `agents.list[].tools.allow`, swapped by the operator). Record which one in the audit trail + the scope statement.
+- **Register vendor = the register source of truth** (global coverage, phonetic). The tools are always `register_*`; the vendor behind them is whichever REGISTER_PROVIDER selects — **one vendor at a time** (gated via `agents.list[].tools.allow`, swapped by the operator). Record which one in the audit trail + the scope statement.
 - **EUIPO is one of the four register providers, not a cross-check alongside one.** When it is active
   it IS the register, covering the EU alone; every other territory is a disclosed deferred gap.
   `clearance-register/providers/euipo.md` carries the detail.
 - **Case-law tools (`courtlistener__*` / `legaldatahunter__*`) are a separate layer** — precedent grounding via the `case-law-citation` skill at Step 4.5, **not** register search.
   *(Tool-naming note: the double-underscore prefix is the MCP-bridge naming convention (`<server>__<tool>`) — see `providers/oauth-mcp-bridge/bridge.mjs`. Keep the names exactly as written; bare names without the prefix would not resolve at the tool layer.)*
 
-The old "exactly one register provider; you will never see both" referred to the two *paid vendors* — it does **not** mean EUIPO or the case-law tools are absent. **Attribute every finding to its true source** in the Findings sheet's Source/Platform column (vendor record vs. EUIPO record vs. case-law authority).
+The old "exactly one register provider; you will never see both" referred to the two vendors of that time — it does **not** mean EUIPO or the case-law tools are absent. **Attribute every finding to its true source** in the Findings sheet's Source/Platform column (vendor record vs. EUIPO record vs. case-law authority).
 
 ## Model
 
@@ -128,7 +127,7 @@ Three phases, all complete before a single reply is sent to the forwarder.
 2. **Gather** — common-law + the applicable register units run as batched stages against the manifest
 3. **Touchpoint 2: placement-inquiry** — structured inquiry per candidate; produces `placement-recommendations.md` (each candidate placed headline / sheet-2 / watchlist / out-of-scope with reasoning)
 4. **Register digest** — combines the unit digests into `register-findings.md`; consumes `placement-recommendations.md`
-5. **Skeptic review** — coverage check against floors; a flagged thin unit is re-run escalated to opus
+5. **Skeptic review** — a fresh-eyes coverage check; a unit with a gap its register can close is re-run
 6. **Cross-pollination** — Option D deterministic cross-checks (cap N=10) using both layers' findings
 7. **Synthesis** — joint risk analysis using [risk-framework.md](risk-framework.md) and [synthesis-rules.md](synthesis-rules.md)
 8. **Touchpoint 3: narrative-refutation** — refutes the narrative against the source files; produces `senior-eye-review.md` (verdict CLEAR / CONDITIONAL / BLOCKING)
@@ -142,19 +141,6 @@ Three phases, all complete before a single reply is sent to the forwarder.
 - Cross-person deadline flag
 - Mark as read, log handoff, done message
 - Archive the run dir (move `studio/clearance-search/<slug>/<date>/` → `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/`)
-
-## Tool call budget
-
-The orchestrator itself makes few direct tool calls. Most calls happen inside sub-skills under their own budgets:
-
-- `clearance-common-law`: **15** `perplexity_research` per workflow
-  *(rationale: cost-based overflow protection against a looping worker — the API is usage-billed; a search-as-code grid call ≈ $0.06, prose follow-ups ≈ $0.01–0.15 each (measured 2026-06-10). Typical workflow uses 2–6 calls/mark; 15 leaves headroom for thinness re-spawns)*
-- `clearance-register`: **150** provider calls per workflow, across all marks
-  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each)*
-- This skill: file read/write and memory write — bounded by workflow steps. It builds no workbook and sends no mail: the driver does both at publish, in code.
-
-Cross-pollination dispatches add at most **10** calls split across the two sub-skills (Option D cap).
-*(rationale: cost ceiling on dispatched cross-checks — each is one Perplexity or one provider call. Calibrated against May runs where 4–8 triggers fired naturally; 10 catches over-firing without truncating below the typical fire-count)*
 
 ## HITL exception (shared across sub-skills)
 
@@ -198,7 +184,7 @@ On every invocation, before Phase 1:
 
 1. **Generate the run codename** — a random `<adjective>-<noun>` (lowercase, single hyphen; pick freshly, never reuse a prior run's). This fixes your run-dir leaf `<date>-<codename>` for the entire run.
 2. **Create the run-dir by WRITING into it.** The `write` tool creates parent dirs automatically, so your first write (the matter-context.md in step 3, then `register-units/<axis>.md` files as Phase 2 needs them) creates `studio/clearance-search/<slug>/<date>/`. The unique codename already guarantees a clean, collision-free dir, so there is **nothing to inspect** — do not `read` or list a directory to check or create it; track every file by its known path.
-3. **Run `matter-frame` inline** to produce `studio/clearance-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register-unit per-jurisdiction sub-queries, Touchpoint 2 placement, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays cheaply in context.
+3. **Run `matter-frame` inline** to produce `studio/clearance-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register units, Touchpoint 2 placement, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays in context.
 4. **Per-customer delivery is driven by the RESOLVED CUSTOMER PROFILE, not the sender domain.** The intake
    AI resolves which customer this is for and stamps `profileKey` on the job (email-loop §B3.2a); the driver
    freezes that profile into `_driver/profile.json`, and the deterministic publish code reads its `delivery`
@@ -360,7 +346,7 @@ be audited without touching the engine.
 - [ ] **No confabulated game-publisher attributions** — every game-title finding's publisher / developer traces to `developer_of_record` / `publisher_of_record` in common-law-findings, or shows "(developer unverified)"
 - [ ] Register findings include opposition history verbatim when present
 - [ ] Negative results documented for all variant × platform combinations (common-law), the field-scoped general search for collaborated / non-gaming goods, and all variant × class queries that returned no live results (register)
-- [ ] **Coverage ledger honoured:** both findings files carry a `## Coverage ledger`; every `matter-context` material jurisdiction has a row; the variant manifest's `### Scope ledger` section was read as the variants-stage coverage input and any `dropped` variant / field / source surfaced as a recall limitation; no `deferred` / `coverage-limited` ledger row and no `dropped` scope-ledger row is rendered as a clean negative in the narrative (the `narrative-refutation` coverage audit passed — `coverage-overclaim` / `missing-coverage-row` clear)
+- [ ] **Coverage ledger honoured:** both findings files carry a `## Coverage ledger`; every `matter-context` material jurisdiction is accounted for — by a ledger row, by a complete worldwide answer, or inside the count of a crowd the identical mark's narrowing left; the variant manifest's `### Scope ledger` section was read as the variants-stage coverage input and any `dropped` variant / field / source surfaced as a recall limitation; no `deferred` / `coverage-limited` ledger row and no `dropped` scope-ledger row is rendered as a clean negative in the narrative (the `narrative-refutation` coverage audit passed — `coverage-overclaim` / `missing-coverage-row` clear)
 - [ ] Audit trail is complete across all layers (variants / common-law / register / cross-pollination)
 - [ ] Cross-mark references identified (if multi-mark request)
 - [ ] Competitor intelligence section present in narrative
@@ -389,15 +375,13 @@ Format — one line per phase + each major search category, marked ✅ (done), �
 ✅ PHASE 2 — RESEARCH:
    Variants: N variants in manifest from clearance-variants
    Common-law: X findings ([N]/[N] dictated platforms covered); developer_of_record on <N>/<M> game-titles
-   Register: Y findings; Z detail-fetched from W total URIs
-     Per-jurisdiction sub-queries: ✅ <count> on <named jurisdictions>
-     Macro probes: ✅ <count>
+   Register: Y findings; Z detail-fetched from W total URIs     Macro probes: ✅ <count>
      Compound-phrase 3-mode sweeps: ✅ exact/phrase/default OR ⏭ <reason>
      Single-word coverage: ✅ <count> OR ⏭ <reason>
      Wildcard reorders: ✅ <count> OR ⏭ <reason>
      Numeric-substitution: ✅ <count> OR ⏭ <reason>
      Transliteration: ✅ <count>/<expected> core scripts; ⏭ <skipped scripts> (<reason>)
-     Detail-fetch: ✅ <count> URIs OR ⚠ under-25 (<reason>)
+     Detail-fetch: ✅ <count> URIs
    Touchpoint 2 placement-inquiry: <N> headline / <N> sheet-2 / <N> watchlist-annex / <N> out-of-scope-filtered
    Cross-pollination: <count> executed, <count> cap-overflow flagged
    Synthesis: risk assessments on <count> findings
@@ -412,7 +396,7 @@ key artifacts:
   - <absolute path to senior-eye-review.md in its archive location> (internal audit — refutation review, [VERDICT])
 ```
 
-Every ⏭ or ⚠ MUST have a stated reason. If any line shows ⏭ or ⚠ without a stated reason, re-run the missing step rather than send.
+Every ⏭ or ⚠ MUST have a stated reason. A line without one still sends, with its gap named.
 
 The key-artifacts list takes absolute paths only. Always include the xlsx (the client deliverable) AND `senior-eye-review.md` (the internal audit artifact the reviewing lawyer always sees regardless of verdict — see Phase 3 pre-gate). If Phase 3 did not produce an xlsx (which should not happen — see Phase 3 above), state that explicitly as a delivery failure rather than emitting an empty list.
 
