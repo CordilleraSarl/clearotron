@@ -7,8 +7,9 @@
 // sends questions, so it closes a row only when the run's own record holds a question it would send. On a test run of a
 // crowded matter the table listed as closeable rows with nothing left to send: follow-ups the safety net had already
 // refused, and the review sent the work back for them. Now the plan-execution receipt decides. An axis's missing
-// questions, planned and never sent or failed at the provider, keep its rows closeable; with none, they are held. A row
-// carrying its question's qid follows that question. With no receipt the split answers as before. Every mark is invented.
+// questions, planned and never sent or failed at the provider, keep the axis's own row closeable; with none, it is held.
+// A row carrying its question's qid follows that question, and any other row names no search, so it is held whatever its
+// axis holds. With no receipt the split answers as before. Every mark is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
@@ -29,14 +30,24 @@ const RECEIPT = {
   ],
 };
 const ROWS = [
-  row("transliteration-numeric", "QZORVAK in Chinese", "the gateway timed out on both tries"),
+  row("transliteration-numeric", "QZORVAK in Chinese", "the gateway timed out on both tries", "transliteration-numeric:exact:qzorvak-cn"),
   row("incumbent-class", "Example Holdings, owner reading", "the owner's records were not read as a set; the corrective follow-ups were returned outstanding"),
   row("primary-sweep", "QZORVAK in ER", "outside the register's office vocabulary", "supp:primary-sweep:exact:qzorvak-er"),
 ];
 const split = (axis, askable) => splitDeferredByCloseability(ROWS, axis, new Set(), { askable });
 
-test("a row on an axis whose receipt holds a question to send again stays closeable", () => {
+test("a row whose question is missing, and the axis's own row, stay closeable", () => {
   assert.deepEqual(split("transliteration-numeric", askableOf(RECEIPT)).closeable.map((r) => r.scope), ["QZORVAK in Chinese"]);
+  const own = splitDeferredByCloseability([row("transliteration-numeric", "", "not run")], "transliteration-numeric", new Set(), { askable: askableOf(RECEIPT) });
+  assert.deepEqual([own.closeable.length, own.held.length], [1, 0], "the axis's own row, standing for its planned questions, was held");
+});
+
+test("a row naming no search is held even where its axis holds a missing question", () => {
+  // The seat's own label names no question, so a re-run of the axis has nothing to send for it: sending the axis back
+  // for it would re-run what cannot close it.
+  const seat = [row("transliteration-numeric", "QZORVAK owner reading", "the owner's records were not read as a set")];
+  const s = splitDeferredByCloseability(seat, "transliteration-numeric", new Set(), { askable: askableOf(RECEIPT) });
+  assert.deepEqual([s.closeable.length, s.held.length], [0, 1], "a row naming no search was offered for a re-run");
 });
 
 test("a row on an axis with nothing left to send is held, and a row follows its own question", () => {

@@ -550,7 +550,9 @@ export function parseCoverageLedgerJson(raw, { allowedAxes = REGISTER_AXES, acti
       if (classes.some((c) => !/^\d{1,2}$/.test(c) || Number(c) < 1 || Number(c) > 45))
         throw new Error(`coverage_classes_invalid:${short(r.classes.join(","))} (each entry is a Nice class number 1–45)`);
     }
-    rows.push({ axis, scope, status, reason, ...(classes ? { classes } : {}), unit: scope ? `${axis} / ${scope}` : axis });
+    // The qid a driver-written row names rides it: the closeability split follows a row's own question by it.
+    const qid = typeof r.qid === "string" ? r.qid.trim() : "";
+    rows.push({ axis, scope, status, reason, ...(classes ? { classes } : {}), ...(qid ? { qid } : {}), unit: scope ? `${axis} / ${scope}` : axis });
   }
   if (activeAxes?.length) {
     const present = new Set(rows.map((r) => r.axis));

@@ -4437,9 +4437,11 @@ export function envelopeHeldNote(rows) {
  * Whether a deferred coverage row names a question a re-run can still send, read off the plan-execution receipt as a
  * predicate for the closeability split. An axis's `missing` questions are the ones a re-run sends: planned and never
  * sent, or failed at the provider. A capability gap is not among them, and neither is a follow-up the safety net
- * refused (joinPlanToBands). A row carrying its question's qid can be sent when that question is missing; a row that
- * names no question can be when its axis holds a missing one. Null for an axis the receipt does not cover, or with no
- * receipt, so the split keeps its old answer. PURE.
+ * refused (joinPlanToBands). A row carrying its question's qid can be sent when that question is missing. The axis's
+ * own row, which names the axis and no slice of it, stands for the axis's planned questions, and can be sent when the
+ * axis holds a missing one. Any other row that names no question names no search: a re-run has nothing to send for
+ * it, whatever else its axis holds. Null for an axis the receipt does not cover, or with no receipt, so the split keeps
+ * its old answer. PURE.
  */
 export function askableOf(receipt) {   // @internal
   const missingByAxis = new Map();
@@ -4453,7 +4455,8 @@ export function askableOf(receipt) {   // @internal
   return (row) => {
     const missing = missingByAxis.get(String(row?.axis ?? "").toLowerCase());
     if (!missing) return null;
-    return row?.qid ? missing.has(String(row.qid)) : missing.size > 0;
+    if (row?.qid) return missing.has(String(row.qid));
+    return !String(row?.scope ?? "").trim() && missing.size > 0;
   };
 }
 
