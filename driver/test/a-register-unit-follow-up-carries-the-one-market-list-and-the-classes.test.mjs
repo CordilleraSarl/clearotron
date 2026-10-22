@@ -27,8 +27,8 @@ const DIRECTIVES = [{ item: "QZORVA", observation: "unsearched", severity: "domi
 const followUps = (lane, scope = { job: JOB, profile: PROFILE }) => ({
   escalation: repairFollowup("register-unit:escalation", { paths: P, axis: AXIS, flags: "- the crowd on QZORVA was not narrowed", supplementalLane: lane, ...scope }),
   "envelope-close": repairFollowup("register-unit:envelope-close", { paths: P, axis: AXIS, rows: "- QZORVA, class 9: deferred", supplementalLane: lane, ...scope }),
-  "frame-reopen": repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 4, supplementalLane: lane, ...scope }),
-  "frame-reopen retry": repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 4, supplementalLane: lane, ...scope }),
+  "frame-reopen": repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: lane, ...scope }),
+  "frame-reopen retry": repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: lane, ...scope }),
   "cross-check decision": repairFollowup("register-unit:xcheck-decide", { axis: AXIS, registerPlan: P.registerPlan, bandPath: P.registerBand(AXIS),
     entries: [{ qid: "xcheck-owner-qzorva", predicate: "owner", term: "Example Holdings", nice_classes: [9] }], supplementalLane: lane, ...scope }),
 });
