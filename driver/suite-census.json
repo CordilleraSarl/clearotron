@@ -777,6 +777,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-goods-test-miss-is-not-called-other-goods.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-grid-too-big-for-one-print-comes-back-in-steps.test.mjs": {
           "tests": 7,
           "asserts": 31,
