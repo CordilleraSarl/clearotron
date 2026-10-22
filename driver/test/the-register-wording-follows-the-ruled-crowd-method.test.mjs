@@ -63,3 +63,11 @@ test("the unit manual lets a narrowing stop at the first list it can read", () =
   for (const gone of ["no \"narrow to tractable and stop\"", "there is no in-between for you to author"])
     assert.ok(!unit.includes(gone), `the unit manual still says "${gone}"`);
 });
+
+test("the unit manual records what stays a crowd with its count, and leaves no state for a search that did not run", () => {
+  const unit = flat("unit.md");
+  assert.ok(unit.includes("There is **no \"good enough\" for a search that did not run** — no sampling, no top-N, no \"narrow to tractable and call it "
+    + "clean\". A crowd is narrowed by the steps below, and what stays a crowd is recorded with its count. Placement reads your **complete named band**."));
+  for (const gone of ["no third \"good enough\" state", "no \"coverage-limited and move on\"", "The lawyer (Layer B — the digest / synthesis stages downstream)"])
+    assert.ok(!unit.includes(gone), `the unit manual still says "${gone}"`);
+});
