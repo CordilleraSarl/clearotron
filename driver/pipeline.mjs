@@ -36,6 +36,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed } from "./parts-not-completed.mjs";
+import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // a band read with the slices a check could not prove ran taken out
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
@@ -451,14 +452,6 @@ export function loadCoverageLedger(runDir) {   // @internal
 }
 
 /**
- * THE SLICES A RUN COULD NOT PROVE IT SEARCHED, TAKEN OUT OF ITS BAND (912). Each recorded slice's block becomes the
- * executor's own deferred block (providers/_shared/execute-plan.mjs), carrying the slice's reason, or is added as one
- * where the band holds none for it. The plan join files it as deferred, the coverage form gives it an open row the
- * write-up may not call clean, and the axis's other blocks stand. The band as it was is kept beside it the first time,
- * as evidence. An axis whose band is absent or unreadable is left to the band's own checks. Returns the slices taken
- * out on this call. IMPURE (rewrites the bands).
- */
-/**
  * Which still-tainted axes are disclosed and which are parked. Every axis once synthesis is done (the audit spine is
  * locked); an axis the searches record lists, whose recovery is spent; and the rest parked, to be run again. PURE.
  */
@@ -484,37 +477,9 @@ export function undoTaintRenames(renames) {   // @internal
 // envelope, the escalation or the taint chain, writes its axis's band whole, and a slice the searches' record took
 // out would come back with the records nobody could prove were searched. So the band's two readers, the merge and the
 // plan join, take the recorded slices out of what they read, in memory and never by writing the file: a unit or the
-// executor may be writing that band at the same moment.
-function recordedSlicesByAxis(P) {
-  const byAxis = new Map();
-  for (const s of (P?.runDir ? readPartNotCompleted(P.runDir, "searches")?.slices : null) ?? []) {
-    if (!s?.axis || (!s?.qid && !s?.query)) continue;
-    if (!byAxis.has(s.axis)) byAxis.set(s.axis, []);
-    byAxis.get(s.axis).push(s);
-  }
-  return byAxis;
-}
-
-/**
- * A band's blocks with `slices` taken out: each becomes the executor's deferred block, or is added as one. A slice with
- * no qid is named by its query: the block with no qid on that query becomes a deferred block on it, and nothing is
- * added where the band holds none. PURE.
- */
-export function bandWithSlicesOut(blocks, slices) {   // @internal
-  const out = Array.isArray(blocks) ? [...blocks] : [];
-  const taken = [];
-  for (const s of Array.isArray(slices) ? slices : []) {
-    const i = s.qid ? out.findIndex((b) => b?.qid === s.qid) : out.findIndex((b) => b && !b.qid && b.query === s.query);
-    if (!s.qid && i < 0) continue;
-    const was = i >= 0 ? out[i] : null;
-    if (was?.error === true && was.deferred === true && was.reason === s.reason) continue;
-    const block = { state: "incomplete", ...(s.qid ? { qid: s.qid } : {}), query: String(was?.query ?? s.query ?? s.qid), total_hits: 0, fetched: 0,
-      sample: [], error: true, deferred: true, reason: String(s.reason) };
-    if (i >= 0) out[i] = block; else out.push(block);
-    taken.push(s);
-  }
-  return { blocks: out, taken };
-}
+// executor may be writing that band at the same moment. Every other reader of a band as answers does the same, from
+// the one definition (shared/slices-taken-out.mjs).
+const recordedSlicesByAxis = (P) => slicesTakenOutByAxis(P?.runDir);
 
 // A band's text with the slices taken out, for a reader that parses text. Text that does not parse is handed on whole,
 // for the reader's own parse to refuse. PURE.
@@ -528,6 +493,14 @@ function withSlicesOut(raw, slices) {
   } catch { return raw; }
 }
 
+/**
+ * THE SLICES A RUN COULD NOT PROVE IT SEARCHED, TAKEN OUT OF ITS BAND. Each recorded slice's block becomes the
+ * executor's own deferred block (providers/_shared/execute-plan.mjs), carrying the slice's reason, or is added as one
+ * where the band holds none for it. The plan join files it as deferred, the coverage form gives it an open row the
+ * write-up may not call clean, and the axis's other blocks stand. The band as it was is kept beside it the first time,
+ * as evidence. An axis whose band is absent or unreadable is left to the band's own checks. Returns the slices taken
+ * out on this call. IMPURE (rewrites the bands).
+ */
 export function takeSlicesOutOfTheBand(P, slices) {   // @internal
   const taken = [];
   const byAxis = new Map();

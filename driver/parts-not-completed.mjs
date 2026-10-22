@@ -21,12 +21,14 @@
 // prove ran, and a failure that names a slice the record does not hold yet adds it; one that names none new ends the
 // run, so the run still ends.
 //
-// A pure leaf: node:fs, node:path and shared/driver-dir.mjs only.
+// A pure leaf: node:fs, node:path, shared/driver-dir.mjs and shared/slices-taken-out.mjs (node:fs and the same) only.
 import { readFileSync, writeFileSync, renameSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
+// Where the record sits is stated with the band readers outside the driver, which read the searches' record too.
+import { NOT_COMPLETED_DIR, notCompletedPath } from "../shared/slices-taken-out.mjs";
 
-export const NOT_COMPLETED_DIR = "not-completed";
+export { NOT_COMPLETED_DIR, notCompletedPath };
 
 // The covered parts. `assessment` is the run's overall assessment: placement, the register write-up and synthesis, and
 // everything built from them. `review` is the first review of the assessment, whose verdict the sign-off is. `overview`
@@ -37,11 +39,6 @@ export const NOT_COMPLETED_DIR = "not-completed";
 // delivered as open rows; and the axes whose pass was killed at its time limit, read as the last pass left them and
 // disclosed, their clean claims open (`disclosed_axes`).
 export const NOT_COMPLETED_PARTS = Object.freeze(["assessment", "review", "overview", "delivery", "searches"]);
-
-/** The record's path for `part`. */
-export function notCompletedPath(runDir, part) {
-  return driverDir(runDir, NOT_COMPLETED_DIR, `${part}.json`);
-}
 
 /**
  * Record that `part` could not be completed. `stage` is the stage that failed, `reason` its cause for the run's record

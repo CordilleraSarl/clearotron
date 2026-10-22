@@ -1737,6 +1737,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-search-taken-out-of-the-band-is-never-read-as-answered.test.mjs": {
+          "tests": 5,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "a-search-the-engine-chose-not-to-run-is-not-reported-as-unfinished.test.mjs": {
           "tests": 5,
           "asserts": 13,

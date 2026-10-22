@@ -260,7 +260,7 @@ test("the wiring: a disclosed axis is neither re-dispatched nor re-run, the park
 });
 
 test("a collapsed slice with no qid is named by its query and becomes a deferred block on it, and the band still parses", async () => {
-  const { bandWithSlicesOut } = await import("../pipeline.mjs");
+  const { bandWithSlicesOut } = await import("../../shared/slices-taken-out.mjs");
   const { parseNamedBand } = await import("../named-band.mjs");
   const reason = plainDeferralReason("collapsed-slice");
   const blocks = [

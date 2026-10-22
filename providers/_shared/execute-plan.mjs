@@ -20,6 +20,7 @@ import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, more
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { FOLLOW_UP_SEARCH_LIMIT, runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
+import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../shared/slices-taken-out.mjs";   // a band read as answers, with the slices a check could not prove ran taken out
 
 /** How soon after an answer lands it is written to the band, while the call goes on (see `keepAnswers` below). */
 export const KEEP_ANSWERS_AFTER_MS = 2000;
@@ -375,14 +376,22 @@ export function makeExecutePlan(deps) {
       try { identicalTerms = identicalMarkTerms(JSON.parse(readFileSync(join(driverDir, "register-plan.json"), "utf8"))); } catch { /* no frozen plan: no identical terms known */ }
     }
     const refused = [];
+    // THE BAND AS ANSWERS, for the checks below that read it so: a slice the run's searches record took out of the band,
+    // because a check could not prove it ran, is read as the open slice it was delivered as, whatever wrote the band
+    // since (shared/slices-taken-out.mjs). The run is the band's own, as the propose tool reads it. The writes below
+    // still merge the file as it stands.
+    const bandAsAnswers = () => {
+      const prior = JSON.parse(readFileSync(outPath, "utf8"));
+      return Array.isArray(prior) ? bandWithSlicesOut(prior, slicesTakenOutByAxis(dirname(dirname(outPath))).get(axis)).blocks : prior;
+    };
     // The follow-ups this axis's band already answers, read once and only when the net meets a question sent before:
-    // an answered one adds nothing when it is sent again, and a failed one counts again.
+    // an answered one adds nothing when it is sent again, and a failed one counts again, as does one taken out.
     let answeredQids = null;
     const answeredBefore = (qid) => {
       if (!answeredQids) {
         answeredQids = new Set();
         try {
-          const prior = JSON.parse(readFileSync(outPath, "utf8"));
+          const prior = bandAsAnswers();
           for (const b of Array.isArray(prior) ? prior : []) if (b?.qid && b.error !== true) answeredQids.add(String(b.qid));
         } catch { /* no band yet: nothing answered */ }
       }
@@ -392,7 +401,7 @@ export function makeExecutePlan(deps) {
     const seeded = new Set();
     if (qidsFilter) {
       try {
-        const existing = JSON.parse(readFileSync(outPath, "utf8"));
+        const existing = bandAsAnswers();   // a parent taken out of the band releases no child
         if (Array.isArray(existing)) {
           for (const b of existing) {
             if (b && typeof b === "object" && b.qid && typeof b.state === "string" && !qidsFilter.has(b.qid)) {
