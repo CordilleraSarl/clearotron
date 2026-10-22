@@ -461,10 +461,44 @@ export function loadCoverageLedger(runDir) {   // @internal
 // THE BANDS ARE READ WITH THE RECORDED SLICES OUT, whatever wrote them since. A unit re-run after the fan-in, by the
 // envelope, the escalation or the taint chain, writes its axis's band whole, and a slice the searches' record took
 // out would come back with the records nobody could prove were searched. So the band's two readers, the merge and the
-// plan join, take the recorded slices out again first: a band already clean of them is not written. IMPURE.
-function takeRecordedSlicesOut(P) {
-  const slices = P?.runDir ? readPartNotCompleted(P.runDir, "searches")?.slices : null;
-  if (Array.isArray(slices) && slices.length) takeSlicesOutOfTheBand(P, slices);
+// plan join, take the recorded slices out of what they read, in memory and never by writing the file: a unit or the
+// executor may be writing that band at the same moment.
+function recordedSlicesByAxis(P) {
+  const byAxis = new Map();
+  for (const s of (P?.runDir ? readPartNotCompleted(P.runDir, "searches")?.slices : null) ?? []) {
+    if (!s?.axis || !s?.qid) continue;
+    if (!byAxis.has(s.axis)) byAxis.set(s.axis, []);
+    byAxis.get(s.axis).push(s);
+  }
+  return byAxis;
+}
+
+/** A band's blocks with `slices` taken out: each becomes the executor's deferred block, or is added as one. PURE. */
+export function bandWithSlicesOut(blocks, slices) {   // @internal
+  const out = Array.isArray(blocks) ? [...blocks] : [];
+  const taken = [];
+  for (const s of Array.isArray(slices) ? slices : []) {
+    const i = out.findIndex((b) => b?.qid === s.qid);
+    const was = i >= 0 ? out[i] : null;
+    if (was?.error === true && was.deferred === true && was.reason === s.reason) continue;
+    const block = { state: "incomplete", qid: s.qid, query: String(was?.query ?? s.query ?? s.qid), total_hits: 0, fetched: 0, sample: [],
+      error: true, deferred: true, reason: String(s.reason) };
+    if (i >= 0) out[i] = block; else out.push(block);
+    taken.push(s);
+  }
+  return { blocks: out, taken };
+}
+
+// A band's text with the slices taken out, for a reader that parses text. Text that does not parse is handed on whole,
+// for the reader's own parse to refuse. PURE.
+function withSlicesOut(raw, slices) {
+  if (!Array.isArray(slices) || !slices.length) return raw;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return raw;
+    const { blocks, taken } = bandWithSlicesOut(parsed, slices);
+    return taken.length ? JSON.stringify(blocks) : raw;
+  } catch { return raw; }
 }
 
 export function takeSlicesOutOfTheBand(P, slices) {   // @internal
@@ -480,20 +514,11 @@ export function takeSlicesOutOfTheBand(P, slices) {   // @internal
     let blocks;
     try { blocks = JSON.parse(readFileSync(at, "utf8")); } catch { continue; }
     if (!Array.isArray(blocks)) continue;
-    let changed = false;
-    for (const s of list) {
-      const i = blocks.findIndex((b) => b?.qid === s.qid);
-      const was = i >= 0 ? blocks[i] : null;
-      if (was?.error === true && was.deferred === true && was.reason === s.reason) continue;
-      const block = { state: "incomplete", qid: s.qid, query: String(was?.query ?? s.query ?? s.qid), total_hits: 0, fetched: 0, sample: [],
-        error: true, deferred: true, reason: String(s.reason) };
-      if (i >= 0) blocks[i] = block; else blocks.push(block);
-      changed = true;
-      taken.push(s);
-    }
-    if (!changed) continue;
+    const out = bandWithSlicesOut(blocks, list);
+    if (!out.taken.length) continue;
+    taken.push(...out.taken);
     try { if (!existsSync(`${at}.before-taken-out`)) copyFileSync(at, `${at}.before-taken-out`); } catch { /* the evidence is best-effort */ }
-    atomicWrite(at, JSON.stringify(blocks, null, 2) + "\n");
+    atomicWrite(at, JSON.stringify(out.blocks, null, 2) + "\n");
   }
   return taken;
 }
@@ -506,7 +531,7 @@ export function takeSlicesOutOfTheBand(P, slices) {   // @internal
 // de-dups enumerated records by record_id and preserves every crowd descriptor. Returns the merged band
 // object {enumerated, crowds} plus { axes:[…], invalid:[{axis,reason}] } so the caller can flag a bad axis.
 export function mergeRegisterBands(P, axes = []) {   // @internal
-  takeRecordedSlicesOut(P);
+  const recorded = recordedSlicesByAxis(P);
   const bands = [];
   const merged = [];
   const invalid = [];
@@ -514,7 +539,7 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
     const bandPath = P.registerBand(a);
     if (!existsSync(bandPath)) continue;   // an axis that found nothing may legitimately write no band
     try {
-      const band = parseNamedBand(readFileSync(bandPath, "utf8"));   // throws named_band_* on a malformed artifact
+      const band = parseNamedBand(withSlicesOut(readFileSync(bandPath, "utf8"), recorded.get(a)));   // throws named_band_* on a malformed artifact
       bands.push(band);
       merged.push(a);
     } catch (e) {
@@ -530,7 +555,7 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
             writeFileSync(`${bandPath}.tmp`, JSON.stringify(blocks, null, 2) + "\n");
             renameSync(`${bandPath}.tmp`, bandPath);
             runLog(P.runDir, { event: "named-band-state-quarantined", axis: a, states: quarantined.map((q) => q.state), site: "merge" });
-            const band = parseNamedBand(readFileSync(bandPath, "utf8"));
+            const band = parseNamedBand(withSlicesOut(readFileSync(bandPath, "utf8"), recorded.get(a)));
             bands.push(band);
             merged.push(a);
             continue;
@@ -562,13 +587,13 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
 // chain, the clean-gates, and dispatchPlanQids cover them with zero extra code. Run-local only: the
 // slug store is never written (clearances run once; senior lawyer 2026-07-10).
 export function readRegisterBands(P, axes) {   // @internal
-  takeRecordedSlicesOut(P);
+  const recorded = recordedSlicesByAxis(P);
   const byAxis = {};
   for (const a of axes ?? []) {
     if (!existsSync(P.registerBand(a))) continue;
     try {
       const parsed = JSON.parse(readFileSync(P.registerBand(a), "utf8"));
-      byAxis[a] = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.blocks) ? parsed.blocks : []);
+      byAxis[a] = bandWithSlicesOut(Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.blocks) ? parsed.blocks : []), recorded.get(a)).blocks;
     } catch { byAxis[a] = []; }
   }
   return byAxis;

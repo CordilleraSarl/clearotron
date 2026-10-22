@@ -85,9 +85,12 @@ for (const engine of Object.keys(ENGINES)) {
     const rd = p2.runDir;
     assert.ok(!existsSync(join(rd, ".failed")), "a delivered run carries a failure");
     const qids = new Set(record.slices.map((s) => s.qid));
-    // Each slice is the executor's own deferred block, with the shipped reason, and the band as it was is kept.
+    // Each slice is the executor's own deferred block, with the shipped reason, as the band's readers see it: a unit the
+    // envelope re-ran may since have written the file whole. The band as it was is kept.
+    const { readRegisterBands } = await import("../pipeline.mjs");
+    const seen = readRegisterBands({ runDir: rd, registerBand: (axis) => join(rd, "register-units", `${axis}-band.json`) }, gated);
     for (const axis of gated) {
-      const band = json(join(rd, "register-units", `${axis}-band.json`));
+      const band = seen[axis] ?? [];
       const taken = band.filter((b) => qids.has(b.qid));
       assert.ok(taken.length > 0 && taken.every((b) => b.error === true && b.deferred === true && b.reason === NOT_VERIFIED && (b.sample ?? []).length === 0),
         `${axis}: a slice was not taken out as a deferred block: ${JSON.stringify(taken.slice(0, 2))}`);
