@@ -305,7 +305,7 @@ export function addedClassBound(plan) {
 // is left is asked in the instructed classes as before. A remedy that named only added classes becomes the one question
 // an added class allows, the compiler's own (`identicalOnly`, with the question in `questions`), so the fold finds it
 // already in the plan. PURE.
-function boundAddedClasses(remedy, addedClasses, addedClassQuestions) {
+export function boundAddedClasses(remedy, addedClasses, addedClassQuestions) {
   if (!remedy) return remedy;
   const added = new Set((addedClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
   if (!added.size) return remedy;
