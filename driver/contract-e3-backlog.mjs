@@ -218,7 +218,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "dictated-line-shape",
-    where: "driver/skills/clearance-common-law/SKILL.md:192 (restated at driver/skills/clearance-search/synthesis-rules.md:391)",
+    where: "driver/skills/clearance-common-law/SKILL.md:192 (restated at driver/skills/clearance-search/synthesis-rules.md:392)",
     surface: "skill-file",
     evidence: "A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | \"perplexity_research — no result\">` line.",
     reparsedBy: "driver/connotation-search.mjs — validators.commonLaw rejects a clean claim with no such line (connotation_search_missing); the hint is re-dictated by correctionHint() in gateway.mjs",
@@ -591,7 +591,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3129 (restated at driver/skills/clearance-search/synthesis-rules.md:425)",
+    where: "driver/stages.mjs:3129 (restated at driver/skills/clearance-search/synthesis-rules.md:426)",
     surface: "stage-message",
     evidence: "END that finding's actual-use line with a literal \"- **Use-check source:** <result URL | \"perplexity_research — no result\">\" line",
     reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal in correctionHint() in gateway.mjs",
@@ -600,7 +600,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3142 (restated at driver/skills/clearance-search/synthesis-rules.md:472)",
+    where: "driver/stages.mjs:3142 (restated at driver/skills/clearance-search/synthesis-rules.md:473)",
     surface: "stage-message",
     evidence: "END that finding's reasoning with a literal \"- **Own-rights source:** <record URI(s) | \"no applicant-owned registrations in the searched register material\">\" line",
     reparsedBy: "driver/own-rights.mjs, in its header — \"This module only requires the 'Own-rights source:' line to exist\"; repair hint in correctionHint() in gateway.mjs (the `own_rights_missing` branch; re-verified 2026-08-29 — the old :1736 predated this branch and pointed into the A4 repeat-signature block)",

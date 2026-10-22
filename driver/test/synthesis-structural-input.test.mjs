@@ -401,7 +401,7 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
   assert.match(repaired, /DISPATCH RECORD — the REGISTER layer's, authoritative and driver-written/,
     "and its prompt's claim about what it carries is true, exactly as the fresh pass's is");
   // The list of records the seat must answer is re-read from the findings that moved, not left out.
-  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried \d+ record\(s\)/;
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried \d+ position\(s\)/;
   assert.match(fresh, DECLINATIONS, "the fresh pass carries the list, so the repair owes it too");
   assert.match(repaired, DECLINATIONS, "the repair re-dispatch carries the list the recorder holds it to");
   // The original justification for withholding was that a repair must not carry a different prompt from

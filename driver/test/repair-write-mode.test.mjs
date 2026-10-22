@@ -133,7 +133,7 @@ test("the envelope-close followup orders the unit-note CALL and still names the 
 });
 
 test("frame-reopen WARM resume orders the digest CALL — and the band prohibition survives the Edit it qualified", () => {
-  const lane = buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 120, supplementalLane: true });
+  const lane = buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: true });
   ordersTheCall(lane, UNIT, "frame-reopen warm (lane)");
   // Introducing the Edit tool into a prompt whose band is TOOL-OWNED is the one new hazard this conversion
   // creates: "you may edit" must not read as "you may edit the band". The scope is stated in the sentence
@@ -147,7 +147,7 @@ test("frame-reopen WARM resume orders the digest CALL — and the band prohibiti
     "the qualification survived the direction it qualified — a sentence pointing at nothing teaches a "
     + "seat that an edit direction is somewhere below");
 
-  const legacy = buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 120, supplementalLane: false });
+  const legacy = buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: false });
   ordersTheCall(legacy, UNIT, "frame-reopen warm (legacy)");
   // On the legacy lane the model owns its own band, and this arm used to order "APPEND each call's result
   // as a block" and then, three lines later, a COMPLETE re-emission of the band "with the new blocks folded
@@ -170,7 +170,7 @@ test("frame-reopen WARM resume orders the digest CALL — and the band prohibiti
 // half of the legacy lane is untouched — that file is still the seat's on that lane, and it still appends.
 test("frame-reopen COLD retry orders the note CALL, and the kill-torn reasoning is still stated", () => {
   for (const lane of [false, true]) {
-    const m = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 90, supplementalLane: lane });
+    const m = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: lane });
     ordersTheCall(m, UNIT, `cold retry (lane=${lane})`);
     // WHY the session is fresh at all, restated as an assertion so the reasoning is not folklore.
     assert.match(m, /TIMED OUT at the hard wall, so start clean/);
@@ -178,7 +178,7 @@ test("frame-reopen COLD retry orders the note CALL, and the kill-torn reasoning 
       `cold retry (lane=${lane}) — says why a torn artifact needs no repair from the seat`);
   }
   // The LEGACY lane still owns its band, and the append order there is untouched by the note conversion.
-  const legacy = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 90, supplementalLane: false });
+  const legacy = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: false });
   assert.match(legacy, /APPEND each result as a block/, "the legacy lane's band order is not the note's");
   // and the source says the same thing to the next reader, so a consistency sweep does not "fix" it
   const t = src("stages.mjs");

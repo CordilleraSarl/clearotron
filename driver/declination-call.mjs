@@ -113,13 +113,13 @@ export const DECLINATION_REASONS = Object.freeze({
   },
   "off-field-not-major": {
     discretionary: true,
-    rules: "synthesis-rules.md:275-277",
+    rules: "synthesis-rules.md:276-278",
     gloss: "an off-field name that is not a major brand, an active dispute or proceeding, or a "
       + "well-known enforcer — omitted, never listed for completeness",
   },
   "not-worth-the-line": {
     discretionary: true,
-    rules: "synthesis-rules.md:272-274",
+    rules: "synthesis-rules.md:273-275",
     gloss: "promote-or-omit: it fits none of the four manageable categories and is not relevant enough "
       + "to drive the read, so it is not worth the lawyer's line",
   },
@@ -201,6 +201,16 @@ export function groundsProblem(grounds, reason) {
 export function contradictionFor(reason, row, scope) {
   const spec = DECLINATION_REASONS[reason];
   if (!spec || !spec.discretionary) return "";
+  // AN ENTRY IS REFUSED WHEN ANY OF ITS RECORDS WOULD BE. The writer declines an entry, an owner's mark with its records,
+  // as one row, and declining it omits every record in it: so a ground closed to one live registration in an instructed
+  // class is closed to the entry that holds it. Each record is judged on its own mark, status and classes.
+  if (Array.isArray(row?.members) && row.members.length) {
+    for (const m of row.members) {
+      const clash = contradictionFor(reason, { mark: m?.mark ?? row.mark, status: m?.status ?? null, classes: m?.classes ?? [] }, scope);
+      if (clash) return clash;
+    }
+    return "";
+  }
   const shared = sharedClasses(row?.classes, scope?.classes);
   // A scope written for a job that named its mark only as `markName` carries the mark as one string, and
   // every run recorded before the writer listed it still does. It is the applied-for mark either way, so it

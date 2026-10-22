@@ -27,8 +27,8 @@ const DIRECTIVES = [{ item: "QZORVA", observation: "unsearched", severity: "domi
 const followUps = (lane, scope = { job: JOB, profile: PROFILE }) => ({
   escalation: repairFollowup("register-unit:escalation", { paths: P, axis: AXIS, flags: "- the crowd on QZORVA was not narrowed", supplementalLane: lane, ...scope }),
   "envelope-close": repairFollowup("register-unit:envelope-close", { paths: P, axis: AXIS, rows: "- QZORVA, class 9: deferred", supplementalLane: lane, ...scope }),
-  "frame-reopen": repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 4, supplementalLane: lane, ...scope }),
-  "frame-reopen retry": repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 4, supplementalLane: lane, ...scope }),
+  "frame-reopen": repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: lane, ...scope }),
+  "frame-reopen retry": repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: AXIS, directives: DIRECTIVES, supplementalLane: lane, ...scope }),
   "cross-check decision": repairFollowup("register-unit:xcheck-decide", { axis: AXIS, registerPlan: P.registerPlan, bandPath: P.registerBand(AXIS),
     entries: [{ qid: "xcheck-owner-qzorva", predicate: "owner", term: "Example Holdings", nice_classes: [9] }], supplementalLane: lane, ...scope }),
 });
@@ -41,6 +41,24 @@ test("every register-unit follow-up names the customer's priority markets as its
       assert.ok(text.includes(market), `the ${name} follow-up (lane ${lane}) carries no market list`);
       assert.ok(text.includes(inScopeClassLine("9, 42", lane)), `the ${name} follow-up (lane ${lane}) carries no class line`);
       assert.doesNotMatch(text, /else the major markets/, `the ${name} follow-up hands the model the major markets as its list`);
+    }
+  }
+});
+
+test("every register-unit follow-up gives the market list before the step that searches or settles across it", () => {
+  const market = narrowingOrderLine(JOB, PROFILE, "9, 42");
+  const STEP = {
+    escalation: () => /Skeptic concerns:/,
+    "envelope-close": () => /Run ONLY those deferred sub-queries/,
+    "frame-reopen": (lane) => (lane ? /Then reconcile your account/ : /GROWS BY APPENDING/),
+    "frame-reopen retry": (lane) => (lane ? /Then hand the audit note back/ : /APPEND each result/),
+    "cross-check decision": () => /Return ONLY/,
+  };
+  for (const lane of [true, false]) {
+    for (const [name, text] of Object.entries(followUps(lane))) {
+      const at = text.indexOf(market), step = text.search(STEP[name](lane));
+      assert.ok(at >= 0 && step >= 0, `guard: the ${name} follow-up (lane ${lane}) carries the list and the step`);
+      assert.ok(at < step, `the ${name} follow-up (lane ${lane}) gives the market list after the step it governs`);
     }
   }
 });

@@ -164,7 +164,8 @@ Before rating individual findings, **rank and select them by the consumer-confus
    same/related G&S. Bare-dominant-element-in-field = top; dominant-element-plus-distinctive-matter
    (a third-party house mark in front of the shared element) = lower; unrelated-G&S = excluded as a legal
    finding (commercial awareness only).
-2. **Never drop an on-point identical / near-identical mark in the relevant class** — even if it looks
+2. **Never drop an on-point identical / near-identical mark in the relevant class** — a position placement put on
+   sheet 2 is written up where it changes the advice, and otherwise set aside with its ground — even if it looks
    revocable or shelved. The staff lawyer: *"until it has actually been revoked it remains a live legal
    risk."* Surface it, rank it high, flag the non-use vulnerability as a Stage-2 mitigation. **Non-use is
    a revocation DEFENCE, never an injunction shield (spec-48 C5): a registered right can support an
