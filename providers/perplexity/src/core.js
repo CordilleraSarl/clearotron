@@ -172,9 +172,11 @@ export function isRetryableStatus(status) {
 // A 429 says "not now", not "this request is wrong". On a test run of a crowded matter, a retried stage sent
 // its research questions in a burst; the provider refused 66 of them with 429 over fourteen minutes, and each
 // refusal failed after one retry 1.5 seconds later. A 429 now waits first: as long as the provider's
-// Retry-After asks, or else 10, 30 and 60 seconds, each with a tenth either way so parallel callers do not
-// return together, and never more than RATE_LIMIT_MAX_WAIT_MS in all for one call. The waits do not spend
-// the preset's retries; once they are spent, a 429 is retried as before.
+// Retry-After asks, up to the longest step (a longer Retry-After is cut to it), or else 10, 30 and 60 seconds,
+// each with a tenth either way so parallel callers do not return together. One call waits at most three times
+// and never more than RATE_LIMIT_MAX_WAIT_MS in all; the count matters because a Retry-After of 0, or a date
+// already past, waits nothing. The waits do not spend the preset's retries; once they are spent, a 429 is
+// retried as before.
 export const RATE_LIMIT_WAITS_MS = Object.freeze([10_000, 30_000, 60_000]);
 export const RATE_LIMIT_MAX_WAIT_MS = 120_000;
 
@@ -239,7 +241,7 @@ export async function callAgentAPI(apiKey, body, opts = {}) {
     // "Perplexity API 429: …" matches neither of them and a rate-limit reads as an ordinary defect.
     lastErr.status = response.status;
     lastErr.retryable = isRetryableStatus(response.status);
-    if (response.status === 429) {
+    if (response.status === 429 && maxRateLimitWaitMs > 0 && rateLimitWaits < RATE_LIMIT_WAITS_MS.length) {
       const wait = rateLimitWaitMs(rateLimitWaits, response.headers?.get?.("retry-after"));
       if (waitedMs + wait <= maxRateLimitWaitMs) {
         rateLimitWaits += 1;

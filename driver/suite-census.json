@@ -8532,8 +8532,8 @@
           "todos": 0
         },
         "providers/perplexity/test/a-rate-limited-question-waits-before-it-is-asked-again.test.mjs": {
-          "tests": 4,
-          "asserts": 16,
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

@@ -23,9 +23,11 @@ import { fileURLToPath } from "node:url";
 import { callAgentAPI } from "../../providers/perplexity/src/core.js";
 import { StageFailure } from "../pipeline.mjs";
 
+// The stand-in provider asks to be retried at once, so a 429 here takes its bounded waits without sleeping.
 const reply = (status, body = "upstream said no") => ({
   ok: status >= 200 && status < 300,
   status,
+  headers: { get: (k) => (String(k).toLowerCase() === "retry-after" ? "0" : null) },
   text: async () => body,
   json: async () => ({ choices: [{ message: { content: "fine" } }] }),
 });

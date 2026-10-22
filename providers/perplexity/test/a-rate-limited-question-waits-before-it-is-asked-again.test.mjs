@@ -68,3 +68,15 @@ test("any other failure keeps its policy: a 5xx retries after the linear backoff
   assert.equal(err.status, 401);
   assert.equal(bad.calls(), 1);
 });
+
+test("a Retry-After of 0, or a date already past, still ends: three waits at most, then the old retries", async () => {
+  for (const after of ["0", "Thu, 01 Jan 2026 00:00:00 GMT"]) {
+    const waits = [];
+    const t = scripted(reply(429, { "retry-after": after }));
+    const err = await callAgentAPI("k", { preset: "medium" }, { retries: 1, backoffMs: 0, fetchImpl: t.fetchImpl, sleep: async (ms) => { waits.push(ms); } })
+      .then(() => null, (e) => e);
+    assert.equal(err?.status, 429, `a Retry-After of ${after} never let the call end`);
+    assert.equal(t.calls(), 1 + RATE_LIMIT_WAITS_MS.length + 1, `Retry-After ${after}: ${t.calls()} calls`);
+    assert.ok(waits.every((ms) => ms === 0));
+  }
+});
