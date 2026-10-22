@@ -66,7 +66,7 @@ test("the spine says no stage reads it, and its lines follow the ruled method", 
       + "of a crowd the identical mark's narrowing left;",
     "Detail-fetch: ✅ <count> URIs",
     "Downstream (Phase 1 variants, Phase 2 register units, Touchpoint 2 placement, Touchpoint 3 refutation)",
-    "Every ⏭ or ⚠ MUST have a stated reason. A line without one still sends, with its gap named.",
+    "Every ⏭ or ⚠ MUST have a stated reason. A line that shows ⏭ or ⚠ without a stated reason still sends, with its gap named.",
   ]) assert.ok(spine.includes(now), now);
   for (const gone of ["is read by the pipeline stages", "per-jurisdiction sub-queries", "Per-jurisdiction sub-queries", "free EU cross-check",
     "free / citation tools", "*paid vendors*", "escalated to opus", "coverage check against floors", "material jurisdiction has a row",
