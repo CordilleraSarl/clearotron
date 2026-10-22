@@ -118,6 +118,9 @@ const JOB = {
   ref: "TMP8921", markName: "PROJECT NOVAPULSE", classes: [9, 41], provider: "corsearch",
 };
 const PARK_AT_DIGEST = "You are register DIGEST mode";
+// A write-up failure whose recovery is spent is delivered without the assessment, so pass 1 takes a recovery park
+// instead, and the stage it stopped at is the one its status records.
+const parkedAt = (res) => JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage;
 const ESCALATE = "- transliteration-numeric extra script group looks thin\n\n## Escalation decisions\nESCALATE: transliteration-numeric — sweep the extra script group";
 
 async function runMockPipeline(root, env, codename = null) {
@@ -138,8 +141,8 @@ async function runMockPipeline(root, env, codename = null) {
 // pass hands back nothing new, so the record is a floor nobody answered.
 async function resumeWithAddedRecord(engineEnv, axis, extra) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-remerge-"));
-  const p1 = await runMockPipeline(root, { ...engineEnv, MOCK_FAIL_STAGE: PARK_AT_DIGEST });
-  assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+  const p1 = await runMockPipeline(root, { ...engineEnv, MOCK_FAIL_STAGE: PARK_AT_DIGEST, CLEAROTRON_RECOVERY_MAX: "1" });
+  assert.equal(parkedAt(p1.res), "register-digest", `guard: pass 1 parks at the reading step (parked at ${parkedAt(p1.res)})`);
   const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
   const n1 = p1.events.length;
   const p2 = await runMockPipeline(root, { ...engineEnv, ...extra, MOCK_ESCALATION_ADDS_FLOOR: axis, MOCK_PLACEMENT_NO_SIBLING: "1" }, codename);
@@ -201,8 +204,8 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
 test(`${engine}: a record a refused merge left out is counted in the delivered report's recall sentence, out of a total that includes it`, async () => {
   const { clauseForDefect } = await import("../terminal-clamp.mjs");
   const root = mkdtempSync(join(tmpdir(), "clearotron-remerge-refused-"));
-  const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST });
-  assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+  const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, CLEAROTRON_RECOVERY_MAX: "1" });
+  assert.equal(parkedAt(p1.res), "register-digest", `guard: pass 1 parks at the reading step (parked at ${parkedAt(p1.res)})`);
   const rd = p1.res.runDir;
   const codename = JSON.parse(readFileSync(join(rd, "status.json"), "utf8")).codename;
   // What a refused merge leaves on record: one record outside the band, and one a later merge took in, which is read.

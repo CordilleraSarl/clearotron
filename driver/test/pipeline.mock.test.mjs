@@ -627,7 +627,7 @@ test("WS-A (Map #3): the derived JSON validates as machine-ledger and round-trip
   assert.deepEqual(v, { ok: true, reason: "machine-ledger" }, "validator accepts the code-derived JSON, no mirror cross-check");
 });
 
-test("spec-49 T3 (H3): a digest that settles NO coverage row → the run FAILS (the D1 ship-as-CONDITIONAL clamp is retired)", async () => {
+test("spec-49 T3 (H3): a digest that settles NO coverage row ships no verdict — the write-up fails, naming the rows (the D1 ship-as-CONDITIONAL clamp is retired)", async () => {
   // The doctrine is unchanged: machinery that leaves the coverage-honesty floor unable to run FAILS the
   // run, and never ships a finished-looking CONDITIONAL (the retired spec-48 D1 behaviour).
   //
@@ -636,14 +636,19 @@ test("spec-49 T3 (H3): a digest that settles NO coverage row → the run FAILS (
   // digest's own validator and only died at the pre-verdict floor, after the whole run had been spent.
   // The seat no longer writes that table: it fills in a form the driver wrote, and a form with no status
   // on any row is refused BY THE DIGEST'S OWN VALIDATOR (coverage_no_status) through the whole corrective
-  // ladder. The run still fails and still delivers nothing; it fails at the stage that produced the
-  // defect, naming it.
+  // ladder. It fails at the stage that produced the defect, naming it.
+  //
+  // AND NO VERDICT SHIPS, but the run is no longer ended with nothing delivered (874): once the write-up's recovery
+  // is spent the assessment is recorded as not completed, and the resumed pass delivers what the run holds with no
+  // rating anywhere — never a finished-looking CONDITIONAL. That delivery is held by
+  // a-run-whose-register-reading-cannot-finish-delivers-what-it-holds.pipeline.test.mjs.
   const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_UNPARSEABLE_LEDGER: "1" });
   assert.equal(res.ok, false, "no settled coverage judgment ⇒ no verdict can ship");
-  assert.equal(res.failedStage, "register-digest");
-  assert.match(String(res.reason), /coverage_no_status/, "the failure NAMES the rows that carry no status");
-  assert.ok(!existsSync(join(res.runDir, ".delivered")), "nothing delivered");
-  assert.ok(existsSync(join(res.runDir, ".failed")), "the failure record is written");
+  const record = JSON.parse(readFileSync(driverDir(res.runDir, "not-completed", "assessment.json"), "utf8"));
+  assert.equal(record.stage, "register-digest", "the run did not stop at the stage that produced the defect");
+  assert.match(String(record.reason), /coverage_no_status/, "the failure NAMES the rows that carry no status");
+  assert.ok(!existsSync(join(res.runDir, ".delivered")), "a verdict was delivered over coverage nobody settled");
+  assert.ok(!existsSync(join(res.runDir, ".failed")), "the run was ended instead of delivered without the assessment");
 });
 
 test("WS-A: a forced re-digest DROPS the stale JSON first and the driver re-derives it (escalation)", async () => {

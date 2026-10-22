@@ -1659,6 +1659,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-whose-register-reading-cannot-finish-delivers-what-it-holds.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-running-demo-connects-by-its-folder.test.mjs": {
           "tests": 4,
           "asserts": 18,

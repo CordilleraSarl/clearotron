@@ -155,6 +155,11 @@ function register(runDir, log) {
     ["digest-flush", "digest-flush-failed", "the digest flush"],
   ];
   const failed = steps.map(([ok, bad, what]) => [failedStep(log, ok, bad), what]).filter(([e]) => e);
+  // The register's reading itself, where the run delivered without its assessment because placement or the write-up
+  // is the step that failed: the register was searched, and nothing ruled what it returned.
+  const open = readPartNotCompleted(runDir, "assessment");
+  if (open && ["placement-inquiry", "register-digest"].includes(open.stage))
+    failed.push([{ fail: `${open.stage} did not complete: ${open.reason ?? "no cause recorded"}` }, "the register write-up"]);
   let reopen = null;
   try { reopen = JSON.parse(readFileSync(driverDir(runDir, "frame-reopen.json"), "utf8")); } catch { reopen = null; }
   if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)

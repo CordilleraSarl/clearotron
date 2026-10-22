@@ -74,7 +74,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 // — the register coverage form: the driver writes it before the digest dispatches, renders the
 // `## Coverage ledger` table and the machine ledger FROM it after the pass, and unions it across passes.
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
-import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel } from "./coverage-form.mjs";
+import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
@@ -5211,6 +5211,20 @@ async function stageWithChain(name, ctx, opts = {}) {
   // On a SKIP, stageOnce already recovered the WINNING model/key from telemetry into r — do NOT clobber it
   // with this call's model/thinking. On a fresh success, this call's model IS the winner.
   return r.ok && !r.skipped ? { ...r, model, thinking } : r;
+}
+
+/**
+ * A COVERED PART'S FAILURE IS NAMED WHERE IT IS THROWN (parts-not-completed.mjs). Runs `fn`, and a StageFailure it
+ * throws is named as `part`, so the run-level catch, once the recovery is spent, records the part as not completed and
+ * delivers without it instead of ending the run. A rate limit is not a failure and is left to its postpone; a failure
+ * a throw site already named keeps its name.
+ */
+async function asPartNotCompleted(part, fn) {
+  try { return await fn(); }
+  catch (e) {
+    if (e instanceof StageFailure && !e.rateLimited && !e.notCompletedPart) e.notCompletedPart = part;
+    throw e;
+  }
 }
 
 function must(r, name) {
@@ -10374,7 +10388,7 @@ async function pipelineInner(job, opts = {}) {
       writeFileSync(P.audit, a.md);
       audit = a.counts;
     } catch (e) { runLog(run.runDir, { event: "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
-    const coverageRows = assessmentCoverageRows(loadCoverageLedger(run.runDir).rows);
+    const coverageRows = assessmentCoverageOfRun(run.runDir);
     atomicWrite(driverDir(run.runDir, NOT_COMPLETED_DIR, "assessment-coverage.json"), JSON.stringify({ rows: coverageRows }, null, 2) + "\n");
     writeFileSync(P.report, renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [], methodology: null },
       reportIdentityRecord(job, ctx, run.runDir, null)));
@@ -12862,15 +12876,22 @@ async function pipelineInner(job, opts = {}) {
     }
 
     // Step 2C placement → Step 2D digest
+    //
+    // THE PASS THAT RESUMES A RUN WHOSE ASSESSMENT COULD NOT BE COMPLETED delivers what the run holds, here, at the
+    // assessment's first step and before anything that exists only to feed it runs. See deliverWithoutTheAssessment.
+    const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
+    if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
     await assertReceiptSettled(ctx, "placement-inquiry");
-    const placementPass = await stage("placement-inquiry", ctx);
+    // Placement and the register write-up are the assessment's first two steps. A failure of either, a band too large
+    // to dispatch over included, is named as the assessment, as synthesis's own is below.
+    const placementPass = await asPartNotCompleted("assessment", () => stage("placement-inquiry", ctx));
     // What THIS pass did, recorded before anything else can overwrite placements.json, and ahead of `must`
     // deliberately: a pass that failed or skipped on a partial artifact is exactly the pass whose account is
     // worth having, and `must` throws. The delivery gate's repeat of this stage records through the same helper.
     recordPlacementPass(ctx, placementPass);
-    must(placementPass, "placement-inquiry");
+    await asPartNotCompleted("assessment", async () => must(placementPass, "placement-inquiry"));
     await checkLateBind("pre-digest");   // B5b checkpoint 2: a bind here rides the digest message as a re-classification block
-    const digestKey = must(await runDigest(ctx), "register-digest").sessionKey;
+    const digestKey = (await asPartNotCompleted("assessment", async () => must(await runDigest(ctx), "register-digest"))).sessionKey;
     ctx.digestKey = digestKey;           // B5b: the warm-redigest late-bind path resumes this session
 
     // Step 2.6 skeptic → code-decided escalation. The skeptic poses its flags as a QUESTION back to each
@@ -13671,11 +13692,6 @@ async function pipelineInner(job, opts = {}) {
     // case-law and refutation are independent siblings of synthesis (case-law reads narrative.md;
     // refutation reads the source files, NOT case-law), so they run concurrently — saves ~one stage's
     // wall. The verdict-gated corrective re-synthesis below stays strictly AFTER this join.
-    // THE PASS THAT RESUMES A RUN WHOSE ASSESSMENT COULD NOT BE COMPLETED delivers what the run holds, here, before
-    // anything that exists only to feed synthesis runs (the late bind's re-digest, the enforcer and native-read
-    // material). See deliverWithoutTheAssessment.
-    const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
-    if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
     await checkLateBind("pre-synthesis");   // B5b checkpoint 3: a bind here re-classifies via one warm re-digest
     // D2 — surface provider enforcement telemetry (onomaticsAggression / onomaticsOppositions
     // on fetched records) as a structured aim-attention artifact for synthesis. Best-effort; NEVER a
@@ -13726,14 +13742,9 @@ async function pipelineInner(job, opts = {}) {
     // THE OVERALL ASSESSMENT'S OWN FAILURE IS NAMED WHERE IT IS THROWN. Only this call: the corrective and post-repair
     // passes below run on a record that exists, and their failures are theirs. A failure named here, once its recovery
     // is spent, is recorded as the assessment not completed and delivered without it (the run-level catch), never
-    // ended on. A rate limit is not a failure and is left to its postpone.
-    let synth;
-    try {
-      synth = await quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
-    } catch (e) {
-      if (e instanceof StageFailure && !e.rateLimited) e.notCompletedPart = "assessment";
-      throw e;
-    }
+    // ended on.
+    const synth = await asPartNotCompleted("assessment", async () =>
+      quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis"));   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
     recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
     // The corrective re-synthesis is dispatched on the WINNING attempt's key AND model/thinking. A followup's first
     // attempt starts fresh, and it never resumes the synthesis session (no engine resumes by key); but if synthesis
@@ -17487,6 +17498,27 @@ export function assessmentCoverageRows(ledgerRows) {   // @internal
     const unit = String(r?.unit ?? r?.axis ?? "").trim();
     return state && unit ? { area: coverageUnitLabel(unit), state, note: String(r?.reason ?? "").trim() } : null;
   }).filter(Boolean);
+}
+
+/**
+ * The coverage rows a delivery without the assessment states. The register write-up's own ledger where it saved one;
+ * where it never did, because placement or the write-up is the step that failed, the driver's own coverage form, whose
+ * rows the frozen plan, the plan receipt and the bands give, and whose statuses the write-up records as it rules. A
+ * row it never ruled is an open item, with no words of the engine's on it. IMPURE (reads the run).
+ */
+export function assessmentCoverageOfRun(runDir) {   // @internal
+  const ledger = loadCoverageLedger(runDir);
+  if (ledger.source !== "none") return assessmentCoverageRows(ledger.rows);
+  let rows = readCoverageForm(runDir).rows;
+  if (!Array.isArray(rows)) {
+    const { input } = coverageFormInput(runDir);
+    rows = input ? buildCoverageForm(input).rows : [];
+  }
+  const ruled = assessmentCoverageRows(formLedgerRows(rows));
+  const unruled = (rows ?? []).filter((r) => r && r.kind !== "family" && !LEDGER_STATE[String(r.status ?? "").trim().toLowerCase()])
+    .map((r) => String(r.unit ?? r.axis ?? "").trim()).filter(Boolean)
+    .map((unit) => ({ area: coverageUnitLabel(unit), state: "open", note: "" }));
+  return [...ruled, ...unruled, ...assessmentCoverageRows(ledger.rows)];
 }
 
 /**
