@@ -589,7 +589,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 
 **Digest mode:**
 - [ ] Candidates placement carried forward read through the band tools, and accepted set-asides carried forward with their grounds and exceptions under the placement rules; any missing/unreadable band ruled a coverage failure (`coverage-limited`/`deferred` → CONDITIONAL), never called clean off the prose digest; identical-match test run over the band; class-25 merch slice checked in the band (or its absence written as an open Coverage row)
-- [ ] **Band reconciled against the expectation for THIS mark** — saturated field with no enumerated exact-owner slice ruled a material gap (`coverage-limited` → CONDITIONAL), anything famous-missing surfaced, partner-as-headline flagged for de-prioritisation
+- [ ] **Band reconciled against the expectation for THIS mark** — saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, ruled a material gap (`coverage-limited` → CONDITIONAL), anything famous-missing surfaced, partner-as-headline flagged for de-prioritisation
 - [ ] `matter-context.md` read and informing placement (jurisdiction attribution, off-field framing, watchlist seeds)
 - [ ] `placement-recommendations.md` read and informing tiering; each candidate's graduated outcome adopted or counter-reasoned with audit-trail justification; its coverage-commands/open-questions carried forward
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail
