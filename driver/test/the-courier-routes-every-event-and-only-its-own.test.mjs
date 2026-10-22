@@ -44,9 +44,13 @@ test("a failed run's notice settles with mark_sent, and a request that became no
   assert.match(step("pre-run-failed"), /Then \*\*`ack_event \{ file \}`\*\*/);
 });
 
-test("the courier takes only its own agent's events", () => {
-  assert.ok(COURIER.includes("Courier only the events whose `agent` is your own agent id, the one you pass to `start_run`."));
+test("the courier takes only its own agent's events, and an only assistant takes them all", () => {
+  // Its own agent is the one start_run's reply names (ops start_run returns `agent`, the default when none is
+  // passed), so an assistant that passes none still knows it; one that is alone never leaves an event uncouriered.
+  assert.ok(COURIER.includes("Courier only the events whose `agent` is yours: the `agent` that `start_run`'s reply names."));
   assert.ok(COURIER.includes("leave another agent's event pending, with no mark and no ack"));
+  assert.ok(COURIER.includes("Where you are the only assistant, every event is yours."), "an assistant alone on its deployment may courier nothing");
+  assert.ok(!COURIER.includes("the one you pass to `start_run`"), "the courier still ties its own events to an agent it may never pass");
 });
 
 test("the delivery loop and the reference wake say the same", () => {
