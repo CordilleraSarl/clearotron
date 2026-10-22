@@ -11305,7 +11305,7 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "band-truth-rebuilt", axis: a, outcome, calls: callsNow ?? 0 });
             note(`register-unit ${a}: band re-executed from the frozen plan (dispatch ${outcome ?? "unavailable"}, ${callsNow ?? 0} ledger call(s)) — fan-in continues over executor data`);
           } else {
-            unprovenBands.push({ axis: a, laneKey, outcome, qids: qidBlocks.map((x) => x.qid) });
+            unprovenBands.push({ axis: a, laneKey, reexecution: outcome, qids: qidBlocks.map((x) => x.qid) });
           }
         }
       }
@@ -11323,7 +11323,7 @@ async function pipelineInner(job, opts = {}) {
       const [first] = unprovenBands, more = unprovenBands.length - 1;
       throw Object.assign(new StageFailure("fan-in", `fabricated named band for ${more ? `${unprovenBands.length} axes` : `axis "${first.axis}"`} — qid-stamped blocks, ZERO provider calls in the ledger, re-execution not evidenced (a clean can never ship over an unexecuted band)`,
         undefined, { failClass: "deterministic", repairs: fanInRepairs,
-          detail: `${P.registerBand(first.axis)} — lane "${first.laneKey}", re-execution ${first.outcome ?? "no executor lane"}${more ? `; ${more} more axis(es): ${unprovenBands.slice(1).map((u) => u.axis).join(", ")}` : ""}` }),
+          detail: `${P.registerBand(first.axis)} — lane "${first.laneKey}", re-execution ${first.reexecution ?? "no executor lane"}${more ? `; ${more} more axis(es): ${unprovenBands.slice(1).map((u) => u.axis).join(", ")}` : ""}` }),
         { notCompletedPart: "searches", excludedSlices: notCompleted });
     }
     if (collapsedSlices.length) {
