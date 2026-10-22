@@ -71,3 +71,22 @@ test("the unit manual records what stays a crowd with its count, and leaves no s
   for (const gone of ["no third \"good enough\" state", "no \"coverage-limited and move on\"", "The lawyer (Layer B — the digest / synthesis stages downstream)"])
     assert.ok(!unit.includes(gone), `the unit manual still says "${gone}"`);
 });
+
+// The unit manual's six places that owed a question per major or material market, before and after.
+const R5 = [
+  ["in the in-scope classes, per material+major jurisdiction (per-axis specifics below)", "in the in-scope classes, across the order's scope (per-axis specifics below)"],
+  ["Search **bounded to the matter's in-scope jurisdictions** (the matter frame's *Scope jurisdictions*: the instructed territories + rights effective in them).",
+    "Search **the order's scope**: worldwide on a worldwide order, otherwise the instructed territories + rights effective in them."],
+  ["(the exact mark + each specific variant × in-scope class × material/major jurisdiction)", "(the exact mark + each specific variant × in-scope class, across the order's scope)"],
+  ["\"The exact mark, in-class, every major+material jurisdiction\" is *usually* small", "\"The exact mark, in-class\" is *usually* small"],
+  ["named slice, per major+material jurisdiction, plus the phonetic fringe", "named slice, its majors taken from it by jurisdictions, plus the phonetic fringe"],
+  ["(exact mark + each manifest variant × in-scope class × material/major jurisdiction)", "(exact mark + each manifest variant × in-scope class, across the order's scope)"],
+];
+
+test("the unit manual asks across the order's scope, and owes no question per major or material market", () => {
+  const unit = flat("unit.md");
+  for (const [before, after] of R5) {
+    assert.ok(unit.includes(after), `the unit manual does not say "${after}"`);
+    assert.ok(!unit.includes(before), `the unit manual still says "${before}"`);
+  }
+});
