@@ -80,7 +80,7 @@ const JOB = {
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   // hermetic: clear the mock knobs so one test's MOCK_* never bleeds into the next (env is process-global).
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_SEAT_DEFERS", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", ...env })) pinEnv(process.env, k, v);
   await opts.seed?.(root);   // config is all getters now (access-time env) — seed INSIDE this run's root
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -232,13 +232,8 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   assert.ok(!events.some((e) => e.event === "case-law-trigger"), "nothing claims the pass was triggered");
   // verdict event recorded
   assert.ok(events.some((e) => e.event === "verdict" && e.verdict === "CLEAR"));
-  // Spec A3 — the mock ledger carries a deferred NZ row and the job has no deadline ⇒ the envelope rule
-  // closes it in-loop: decision logged, the owning unit re-run warm, and (spec-66 funnel) the re-digest
-  // rides the ONE pre-synthesis settlement flush instead of firing its own pass.
-  assert.ok(events.some((e) => e.event === "envelope-decision" && e.close === true), "envelope decision logged");
-  assert.ok(events.some((e) => e.event === "envelope-closed" && e.axes.includes("primary-sweep")), "deferred floor closed in-loop");
-  assert.ok(events.some((e) => e.event === "digest-queued" && e.trigger === "envelope"), "envelope minted a durable digest receipt");
-  assert.ok(events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "settlement-flush"), "the settlement flush paid the receipt down");
+  // Spec A3 — a mock run carries no standing deferral, so the envelope has nothing to close here. Its in-loop close is
+  // driven by the test below, on an axis the plan-execution receipt does not cover.
   // Spec A2 — the pre-delivery lint receipt is ALWAYS written (here: all checks pass, no flags).
   const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8"));
   assert.ok(Array.isArray(receipt.checks) && receipt.checks.length > 0, "lint receipt carries named checks");
@@ -264,6 +259,29 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   assert.ok(events.some((e) => e.event === "frame-diff" && e.firing === 0), "clean frame-diff: zero firing directives");
   assert.ok(!events.some((e) => e.event === "frame-reopen"), "no reopen on a clean diff");
   assert.ok(!events.some((e) => e.event === "stage" && e.trigger === "frame-reopen"), "no frame-reopen re-digest on a clean diff");
+});
+
+test("on an axis the receipt does not cover, the envelope closes a deferred row in-loop, as before", async () => {
+  // A deferral the run's plan-execution receipt says nothing about: the seat defers one row on an axis the receipt does
+  // not cover (MOCK_SEAT_DEFERS), so the closeability split cannot tell whether a re-run could send anything and answers
+  // as it did before it read the receipt. The job has no deadline, so the envelope closes the row in-loop: decision
+  // logged, the owning unit re-run warm, and (spec-66 funnel) the re-digest rides the ONE pre-synthesis settlement flush
+  // instead of firing its own pass.
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_SEAT_DEFERS: "incumbent-class" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "plan-execution.json"), "utf8"));
+  assert.ok(!(receipt.skeleton ?? []).some((s) => s.axis === "incumbent-class"), "guard: the receipt covers the axis, so this arm tests the receipt rule");
+  assert.ok(events.some((e) => e.event === "envelope-decision" && e.close === true), "envelope decision logged");
+  assert.ok(events.some((e) => e.event === "envelope-closed" && e.axes.includes("incumbent-class")), "the deferred row was not closed in-loop");
+  // The re-opened unit is told not to run the whole axis again: a register_execute_plan call without qids asks every
+  // entry again. Read off the prompt the run actually dispatched, not off the builder.
+  const prompts = readdirSync(driverDir(res.runDir)).filter((f) => /\.dispatch\.txt(\.prev-[0-9a-f]+)?$/.test(f))
+    .map((f) => readFileSync(driverDir(res.runDir, f), "utf8")).filter((t) => t.includes("records DEFERRED (planned but never run)"));
+  assert.equal(prompts.length, 1, "the envelope's follow-up was dispatched once, and its text was recorded");
+  const { PLAN_ENTRY_RERUN_RULE } = await import("../stages.mjs");
+  assert.ok(prompts[0].includes(PLAN_ENTRY_RERUN_RULE), "the follow-up carries the rule against a whole-axis re-run");
+  assert.ok(events.some((e) => e.event === "digest-queued" && e.trigger === "envelope"), "envelope minted a durable digest receipt");
+  assert.ok(events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "settlement-flush"), "the settlement flush paid the receipt down");
 });
 
 // B5 (atomic-writes): the CANONICAL _driver/grid-spec.json — the file the fail-closed validator/receipts
@@ -521,25 +539,27 @@ test("escalation skipped: an axis whose ledger gap is a documented coverage-limi
   assert.equal(res.ok, true);
   assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "transliteration-numeric"), "escalation-skipped recorded");
   assert.ok(!events.some((e) => e.event === "skeptic-escalation"), "no axis actually escalated (the only flagged one was skipped)");
-  // no SKEPTIC re-digest fired — the only extra digest is the A3 envelope's deferred-NZ close (trigger
-  // "envelope", standing mock fixture), never an escalation one.
+  // no SKEPTIC re-digest fired.
   assert.ok(!events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "escalation"),
     "no escalation re-digest");
   const digests = events.filter((e) => e.event === "stage" && e.stage === "register-digest");
-  assert.equal(digests.length, 2, `expected fresh + envelope digests only, got ${digests.length}`);
+  // A mock run carries no standing deferral, so there is no envelope digest either: the fresh one alone.
+  assert.equal(digests.length, 1, `expected the fresh digest only, got ${digests.length}`);
 });
 
 test("escalation NOT skipped: an axis with a `deferred` gap still re-runs even alongside the skip path (floor guard)", async () => {
-  // primary-sweep keeps its `deferred` NZ row (a real closeable gap) while transliteration-numeric is a
-  // documented coverage-limit. Escalating BOTH: only the documented limit is skipped; the deferred axis fires.
+  // incumbent-class carries the seat's own `deferred` row (MOCK_SEAT_DEFERS) on an axis the plan-execution receipt does
+  // not cover, so it reads as a real closeable gap, while transliteration-numeric is a documented coverage-limit.
+  // Escalating BOTH: only the documented limit is skipped; the deferred axis fires.
   const { res, events } = await runPipeline({
     MOCK_VERDICT: "CLEAR",
     MOCK_LEDGER_LIMITED: "transliteration-numeric",
-    MOCK_SKEPTIC: "- two gaps\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the NZ sub-query\nESCALATE: transliteration-numeric — extra script group",
+    MOCK_SEAT_DEFERS: "incumbent-class",
+    MOCK_SKEPTIC: "- two gaps\n\n## Escalation decisions\nESCALATE: incumbent-class — read the owner's records\nESCALATE: transliteration-numeric — extra script group",
   });
   assert.equal(res.ok, true);
   assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "transliteration-numeric"), "documented limit skipped");
-  assert.ok(events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("primary-sweep")), "deferred axis still escalates");
+  assert.ok(events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("incumbent-class")), "deferred axis still escalates");
   assert.ok(events.some((e) => e.event === "skeptic-escalation" && !e.escalated.includes("transliteration-numeric")), "skipped axis is not in the escalated set");
 });
 
@@ -702,7 +722,7 @@ test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM
   // alone is the whole setup. The driver's lint-pass assembleRunRecords materializes
   // _records/us-90000001.json from it, and the publish render must source the registry IDs from that body.
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_SEAT_DEFERS", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -1541,7 +1561,7 @@ test("applicant-unknown e2e: identity-band hit delivered as an ORDINARY finding 
 
 test("B5b e2e: pre-seeded customer-bind.json folds at pre-matter-frame (normal path) + event logged", async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_SEAT_DEFERS", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -1570,7 +1590,7 @@ test("B5b e2e: pre-seeded customer-bind.json folds at pre-matter-frame (normal p
 test("B5b ack: every consumed bind writes the plain-language confirmation packet (event logged)", async () => {
   // piggybacks the bind-fold flow: the ack is a best-effort outbox packet, written by code.
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_SEAT_DEFERS", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -1676,8 +1696,10 @@ test("the plan-join follow-up hands the tool only the missing qids", async () =>
 const DEFERRED_SLICE = "+merch";
 
 test("envelope-settle: a provider-refused slice is DECIDED at the fan-in — before placement, before any digest", async () => {
+  // MOCK_SEAT_DEFERS gives the envelope a row to close on an axis the receipt does not cover, so the run takes the
+  // settlement flush whose dispatch the last arm reads.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    MOCK_PLAN_DEFERRED: DEFERRED_SLICE });
+    MOCK_PLAN_DEFERRED: DEFERRED_SLICE, MOCK_SEAT_DEFERS: "incumbent-class" });
   assert.equal(res.ok, true, JSON.stringify(res));   // a disclosed gap is delivered, never a halt
   const exec = JSON.parse(readFileSync(driverDir(res.runDir, "plan-execution.json"), "utf8"));
   assert.equal(exec.deferred.length, 1, "the refusal joined the receipt's deferred bucket");

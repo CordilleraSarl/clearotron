@@ -44,7 +44,7 @@ import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince } from ".
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
-import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
+import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
@@ -4420,6 +4420,30 @@ export function officeGapOf(plan) {   // @internal
 }
 
 /**
+ * Whether a deferred coverage row names a question a re-run can still send, read off the plan-execution receipt as a
+ * predicate for the closeability split. An axis's `missing` questions are the ones a re-run sends: planned and never
+ * sent, or failed at the provider. A capability gap is not among them, and neither is a follow-up the safety net
+ * refused (joinPlanToBands). A row carrying its question's qid can be sent when that question is missing; a row that
+ * names no question can be when its axis holds a missing one. Null for an axis the receipt does not cover, or with no
+ * receipt, so the split keeps its old answer. PURE.
+ */
+export function askableOf(receipt) {   // @internal
+  const missingByAxis = new Map();
+  for (const s of Array.isArray(receipt?.skeleton) ? receipt.skeleton : []) {
+    const ax = String(s?.axis ?? "").toLowerCase();
+    if (!ax) continue;
+    const set = missingByAxis.get(ax) ?? new Set();
+    for (const q of Array.isArray(s?.missing) ? s.missing : []) set.add(String(q?.qid ?? q));
+    missingByAxis.set(ax, set);
+  }
+  return (row) => {
+    const missing = missingByAxis.get(String(row?.axis ?? "").toLowerCase());
+    if (!missing) return null;
+    return row?.qid ? missing.has(String(row.qid)) : missing.size > 0;
+  };
+}
+
+/**
  * The axes the plan-execution receipt indicts with >=1 DETERMINISTIC deferral (joinPlanToBands'
  * `deferred` bucket — the executor's own client-side refusals), plus the axes the frozen plan says are
  * deferred end to end. The AUTHORITY half of the capability-gap split; prose only ever narrows inside
@@ -7233,7 +7257,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
     const ledgerLines = coverageLedgerTableRows(rows);
     const held = [], closeable = [];
     for (const a of axes) {
-      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a), heldUnits, uncovered: officeGapOf(ctx.registerPlan) });
+      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a), heldUnits, uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(receipt) });
       for (const r of s.held) held.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
       for (const r of s.closeable) closeable.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
     }
@@ -7267,7 +7291,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
         ? `CLOSEABLE floor obligations (a warm re-run reaches these — escalate them if they are material): ${closeable.join("; ")}.`
         : "CLOSEABLE floor obligations: none.",
       held.length
-        ? `NOT CLOSEABLE — a capability-gap deferral is never closeable by time or by re-running: ${held.join("; ")}. Do NOT emit ESCALATE for these; the provider cannot express those slices at all, so a re-run re-derives the identical refusal at full cost. They stay open, disclosed gaps for the lawyer, and the coverage floor is right to refuse a clean verdict over them — say so in a flag if the findings read them as clean, but never as an escalation.`
+        ? `NOT CLOSEABLE — a re-run cannot close these: the provider cannot express the slice, the envelope close has already asked it again, it was not asked in this run, or it names no search at all: ${held.join("; ")}. Do NOT emit ESCALATE for these. They stay open, disclosed gaps for the lawyer, and the coverage floor is right to refuse a clean verdict over them — say so in a flag if the findings read them as clean, but never as an escalation.`
         : "NOT CLOSEABLE: none.",
       // the owner screen's own receipt rides the same block — the audit claim it replaces ("no record
       // anywhere in the band carries an incumbent-class qid") was false on the evidence run.
@@ -12917,7 +12941,8 @@ async function pipelineInner(job, opts = {}) {
     const ledger = loadCoverageLedger(run.runDir).rows;   // WS-A: machine ledger when present, else prose
     // A2 — the capability-gap inputs the skip below decides on, read once (same authority-then-prose
     // ordering as the envelope: the receipt indicts an axis, the row reason splits inside it).
-    const escalationGapAxes = capabilityGapAxes(ctx.registerPlan, readPlanExecution(ctx));
+    const escalationReceipt = readPlanExecution(ctx);
+    const escalationGapAxes = capabilityGapAxes(ctx.registerPlan, escalationReceipt);
     // — the floor axes this mark designated, and the axes whose floor work was excused rather than
     // executed. Read once, beside the other inputs the skip decides on, in the same authority ordering.
     const floorBreachAxes = new Set(findFloorBreaches(ledger, readFloorAxes(P)).map((b) => b.axis));
@@ -12969,11 +12994,16 @@ async function pipelineInner(job, opts = {}) {
       // that designates no floor.
       if (owned.length > 0 && !floorBreachAxes.has(a.toLowerCase())) {
         const split = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan) });
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) });
         const openNonDeferred = owned.some((r) => r.status !== "deferred" && r.status !== "coverage-limited");
         if (split.held.length > 0 && split.closeable.length === 0 && !openNonDeferred) {
-          note(`escalation skipped ${a} — capability-gap deferral: the active register provider cannot express those slices, so a re-run re-derives the same refusal (the gap stays open and disclosed)`);
-          runLog(run.runDir, { event: "escalation-skipped", axis: a, reason: "capability-gap deferral (nothing a re-run can close)" });
+          // Held only because none of its rows has a question left to send is not a capability gap, and says so.
+          const nothingToSend = heldForNothingToSend(split);
+          note(nothingToSend
+            ? `escalation skipped ${a} — no question is left to send, so a re-run cannot close it (the gap stays open and disclosed)`
+            : `escalation skipped ${a} — capability-gap deferral: the active register provider cannot express those slices, so a re-run re-derives the same refusal (the gap stays open and disclosed)`);
+          runLog(run.runDir, { event: "escalation-skipped", axis: a,
+            reason: nothingToSend ? "no question left to send (nothing a re-run can close)" : "capability-gap deferral (nothing a re-run can close)" });
           return false;
         }
       }
@@ -13046,7 +13076,7 @@ async function pipelineInner(job, opts = {}) {
         // while ALSO carrying held rows — and the resumed unit must not be left to think those are
         // work it failed to do. Name them, exactly as the envelope's close followup does.
         const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan) }).held;
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) }).held;
         if (escHeld.length) {
           followup += `\n\nNOT YOURS TO CLOSE — the active register provider cannot express these slices at all, so no re-run can reach them. Leave these Coverage-ledger rows exactly as they are (\`deferred\`, same reason), and do not restate them as searched or clean:\n${escHeld.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`;
         }
@@ -13121,12 +13151,13 @@ async function pipelineInner(job, opts = {}) {
       // The plan-execution receipt is the authority (capabilityGapAxes); the row reason only splits
       // INSIDE an indicted axis. An axis with nothing closeable is HELD: never re-run, never closed by
       // time, still deferred, still an open floor, still disclosed.
-      const gapAxes = capabilityGapAxes(ctx.registerPlan, readPlanExecution(ctx));
+      const envelopeReceipt = readPlanExecution(ctx);
+      const gapAxes = capabilityGapAxes(ctx.registerPlan, envelopeReceipt);
       const fullyDeferred = new Set((ctx.registerPlan ? fullyDeferredAxes(ctx.registerPlan) : []).map((a) => String(a.axis).toLowerCase()));
       const stickyUnitsNow = stickyGapUnits(P);   // a gap this run already accepted is held whatever its row's reason says
       const closeabilityByAxis = new Map(deferredAxes.map((a) => [a,
         splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()), heldUnits: stickyUnitsNow,
-          uncovered: officeGapOf(ctx.registerPlan) })]));
+          uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(envelopeReceipt) })]));
       const heldAxes = deferredAxes.filter((a) => {
         const s = closeabilityByAxis.get(a);
         // The `!hasBreach &&` term is retired with the ⭐ floor: it kept an axis carrying a
@@ -13147,8 +13178,13 @@ async function pipelineInner(job, opts = {}) {
       runLog(run.runDir, { event: "envelope-decision", deferredAxes, estCloseSec, deadline: job.deadline ?? null,
         held_rows: heldAxes.map((a) => ({ axis: a, rows: (closeabilityByAxis.get(a)?.held ?? []).map((r) => ({ unit: r.unit, reason: String(r.reason ?? "").slice(0, 200) })) })),
         ...decision });
+      // An axis held only because none of its rows has a question left to send is not a capability gap: the client's
+      // note below names the capability-held axes alone, and the open-floor line discloses the rest.
+      const nothingToSendOnly = (a) => heldForNothingToSend(closeabilityByAxis.get(a));
       for (const a of heldAxes) {
-        note(`envelope: ${a} HELD — a capability-gap deferral is never closeable by time; the floor stays open and ships disclosed`);
+        note(nothingToSendOnly(a)
+          ? `envelope: ${a} HELD — no question is left to send, so a re-run cannot close it; the floor stays open and ships disclosed`
+          : `envelope: ${a} HELD — a capability-gap deferral is never closeable by time; the floor stays open and ships disclosed`);
       }
       // V4-1: same digest-lock semantics as the escalation block — a --from synthesis fork's inherited
       // narrative does not lock the digest (synthesis is about to re-run over it).
@@ -13256,8 +13292,9 @@ async function pipelineInner(job, opts = {}) {
       // A2 — held axes are DISCLOSED, never silently absent: the note is what the report's front matter
       // renders, and a gap nothing can close is precisely the gap the lawyer must be told about. It
       // rides beside any close note rather than replacing it.
-      if (heldAxes.length) {
-        const heldNote = `deferred coverage (${heldAxes.join(", ")}) cannot be closed by any re-run — the active register provider cannot express those slices; the gap stays open and disclosed`;
+      const capabilityHeldAxes = heldAxes.filter((a) => !nothingToSendOnly(a));
+      if (capabilityHeldAxes.length) {
+        const heldNote = `deferred coverage (${capabilityHeldAxes.join(", ")}) cannot be closed by any re-run — the active register provider cannot express those slices; the gap stays open and disclosed`;
         ctx.envelopeNote = ctx.envelopeNote ? `${ctx.envelopeNote}; ${heldNote}` : heldNote;
       }
       refreshSupplementalExecution(ctx);   // envelope closes may have PROPOSED supplementals — account for them

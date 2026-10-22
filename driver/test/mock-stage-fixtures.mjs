@@ -225,13 +225,22 @@ function dominantElementDropRows(dir) {
 // What the seat still authors is its OWN coverage units — the per-jurisdiction reconciliation, the
 // ring-fenced script group. Those are judgment, they carry no identifier anything
 // joins on, and the ledger a lawyer reads has always had them. They ride as `kind: "seat"` rows.
+//
+// The seat used to add a per-market row, "NZ (material)" deferred as "not run", which the deadline envelope closed in
+// every run. It named no question the run planned, so a re-run had nothing to send for it, and the ruled method asks no
+// question per market: it is gone, and a mock run carries no standing deferral.
+//
+// MOCK_SEAT_DEFERS=<axis>: the seat writes one deferred row of its own on that axis, which the envelope's close turns
+// confirmed-clean. On an axis the run's plan-execution receipt does not cover, nothing says whether a re-run could send
+// anything, so the closeability split answers as it did before it read the receipt, and the envelope closes it in-loop.
 function mockCoverageSlices(msg) {
   const rows = [
     { axis: "primary-sweep", unit: "primary-sweep / worldwide", status: "confirmed-clean", reason: "full" },
-    /CLOSED their deferred/.test(msg)
-      ? { axis: "primary-sweep", unit: "primary-sweep / NZ (material)", status: "confirmed-clean", reason: "deferred sub-query closed (envelope)" }
-      : { axis: "primary-sweep", unit: "primary-sweep / NZ (material)", status: "deferred", reason: "not run" },
   ];
+  const deferring = process.env.MOCK_SEAT_DEFERS;
+  if (deferring) rows.push(/CLOSED their deferred/.test(msg)
+    ? { axis: deferring, unit: `${deferring} / owner reading`, status: "confirmed-clean", reason: "deferred work closed (envelope)" }
+    : { axis: deferring, unit: `${deferring} / owner reading`, status: "deferred", reason: "not run" });
   if (process.env.MOCK_LEDGER_LIMITED)
     rows.push({ axis: process.env.MOCK_LEDGER_LIMITED, unit: `${process.env.MOCK_LEDGER_LIMITED} / extra script group`,
       status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" });

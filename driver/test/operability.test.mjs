@@ -47,7 +47,7 @@ const PL = await import("../pipeline.mjs");
 const CMP = await import("../compare.mjs");
 const { composeEmailHtml } = await import("../publish/index.mjs");
 
-const KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SOFT_FAIL_STAGE", "MOCK_SOFT_FAIL_STATUS", "MOCK_ESCALATION_NOOP", "MOCK_PLACEMENT_NO_SIBLING"];
+const KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SOFT_FAIL_STAGE", "MOCK_SOFT_FAIL_STATUS", "MOCK_ESCALATION_NOOP", "MOCK_PLACEMENT_NO_SIBLING", "MOCK_SEAT_DEFERS"];
 function setKnobs(env = {}) {
   for (const k of KNOBS) delete process.env[k];
   const { STOP_AT_PUBLISH: stop, ...knobs } = env;
@@ -928,7 +928,9 @@ test("a forced placement re-run cannot present a prior pass's tiers, and a silen
 // warm (A-1: attempt 1 of a fresh session), and its message now COMPOSES with `extra` rather than
 // replacing it. So the dispatch least able to reconstruct the tail is no longer the one refused it.
 test("AD-2 A9 + A-2: every non-fresh digest dispatch carries placement's rulings tail as data — the FLUSH included; a fresh pass does not", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
+  // The seat defers a row on an axis the plan-execution receipt does not cover (MOCK_SEAT_DEFERS), so the envelope's
+  // close mints the settlement flush this arm reads: a mock run carries no standing deferral.
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_SEAT_DEFERS: "incumbent-class", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPTAIL1");
   const r1 = await PL.pipeline(job);
   const codename = codenameOf(r1.runDir);

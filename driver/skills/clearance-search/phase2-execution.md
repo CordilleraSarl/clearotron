@@ -102,10 +102,11 @@ Two classes of gap are **not** escalation triggers:
 - a gap the **Coverage ledger records as `coverage-limited`** — a documented/accepted structural limit a warm
   re-run cannot close (budget overrun, ring-fenced jurisdiction yield, phonetic-fringe sampled, count-only
   saturation);
-- a **capability-gap deferral**, marked `NOT CLOSEABLE` in the table — the active provider cannot express those
-  slices at all (a predicate it lacks, an office outside its coverage, a script its index cannot hold, an owner
-  surface it does not have), so a re-run re-derives the identical refusal at full cost. **A capability-gap
-  deferral is never closeable by time**, and the deadline envelope will not close it either. It stays an open,
+- a deferral marked `NOT CLOSEABLE` in the table — the active provider cannot express the slice (a predicate it
+  lacks, an office outside its coverage, a script its index cannot hold, an owner surface it does not have), the
+  envelope close has already asked it again, it was not asked in this run, or it names no search at all — so a
+  re-run cannot close it. **A `NOT CLOSEABLE` deferral is never closeable by time**, and the deadline envelope will
+  not close it either. It stays an open,
   disclosed gap, and the coverage floor is right to refuse a clean verdict over it — if a findings surface reads
   such a slice as clean, that IS a flag; it is never an escalation.
 

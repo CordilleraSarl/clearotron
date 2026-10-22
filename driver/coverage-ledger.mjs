@@ -273,12 +273,15 @@ export const isCapabilityGapReason = (reason) => CAPABILITY_GAP_REASON_RE.test(S
  *          sticky set, matched through the coverage form's qid) — held whatever the seat wrote in the reason
  * @param opts.uncovered    (row) → whether the row names a territory the active provider's office vocabulary cannot
  *          express (register-plan.mjs rowOutsideProviderOffices) — held whatever the seat wrote in the reason
- * @returns {{closeable: rows[], held: rows[]}} — `held` rows stay `deferred` and stay disclosed:
+ * @param opts.askable      (row) → true when the plan-execution receipt holds a question this row can still send again
+ *          (pipeline.mjs askableOf), false when it holds none, null when there is no receipt to read — a row with no
+ *          question left to send is held whatever the seat wrote in the reason
+ * @returns {{closeable: rows[], held: rows[], nothingToSend: rows[]}} — `held` rows stay `deferred` and stay disclosed:
  *          the coverage floor keeps its right to hold on them (computeOpenFloors → envelope_note,
  *          the registerGap clamp stays armed). They are simply never re-run and never closed by time.
  * PURE.
  */
-export function splitDeferredByCloseability(rows, axis, capabilityGapAxes, { fullyDeferred = false, heldUnits = null, uncovered = null } = {}) {
+export function splitDeferredByCloseability(rows, axis, capabilityGapAxes, { fullyDeferred = false, heldUnits = null, uncovered = null, askable = null } = {}) {
   const ax = String(axis ?? "").toLowerCase();
   const indicted = new Set([...(capabilityGapAxes ?? [])].map((a) => String(a).toLowerCase()));
   const owned = (rows ?? []).filter((r) => r && r.status === "deferred" && String(r.axis ?? "").toLowerCase() === ax);
@@ -286,9 +289,24 @@ export function splitDeferredByCloseability(rows, axis, capabilityGapAxes, { ful
   const sticky = (r) => Boolean(heldUnits?.has(ledgerUnitKey(r.axis, r.scope)));
   // An office the provider cannot express is held as a capability gap is: a re-run would be refused the same way.
   const outside = (r) => Boolean(uncovered?.(r));
-  if (!indicted.has(ax) && !owned.some(sticky) && !owned.some(outside)) return { closeable: owned, held: [] };
-  const isHeld = (r) => isCapabilityGapReason(r.reason) || sticky(r) || outside(r);
-  return { closeable: owned.filter((r) => !isHeld(r)), held: owned.filter(isHeld) };
+  // A ROW IS CLOSEABLE ONLY WHILE A QUESTION IT NAMES CAN STILL BE SENT. A re-run sends questions, so a deferral is
+  // closed by one only when the run's own record holds a question the re-run would send: one planned and never sent,
+  // because the unit's time ran out, or one the register failed on. A question the safety net refused, a refusal a
+  // re-run meets again, and work that is no register question (reading an owner's records as a set) leave nothing to
+  // send, and the row is held, as a capability gap is. With no record to read, the split answers as it did.
+  const unaskable = (r) => askable?.(r) === false;
+  if (!indicted.has(ax) && !owned.some(sticky) && !owned.some(outside))
+    return { closeable: owned.filter((r) => !unaskable(r)), held: owned.filter(unaskable), nothingToSend: owned.filter(unaskable) };
+  const capability = (r) => isCapabilityGapReason(r.reason) || sticky(r) || outside(r);
+  const isHeld = (r) => capability(r) || unaskable(r);
+  // `nothingToSend`: the held rows held only because no question is left to send, which the provider could express.
+  return { closeable: owned.filter((r) => !isHeld(r)), held: owned.filter(isHeld), nothingToSend: owned.filter((r) => unaskable(r) && !capability(r)) };
+}
+
+/** Whether a split holds rows only because none has a question left to send: no capability gap among them. PURE. */
+export function heldForNothingToSend(split) {
+  const held = split?.held?.length ?? 0;
+  return held > 0 && (split?.nothingToSend?.length ?? 0) === held;
 }
 
 /**
