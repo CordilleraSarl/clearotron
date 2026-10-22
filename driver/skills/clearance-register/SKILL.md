@@ -232,9 +232,10 @@ lets judgment decide.
   count-only saturation descriptor, a volume/pagination ceiling. A re-run cannot close it, so the escalation
   gate skips it and it does not on its own make the run unfinished.
 - **`deferred`** — the search could not run or could not reach its data: tool absent, provider error, fetch
-  blocked, a predicate or an office the active provider cannot express. It is a CLOSEABLE gap — escalate and
-  disclose — and it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these `coverage-limited` and a
-  fixable hole disappears into an accepted limit.
+  blocked, a predicate or an office the active provider cannot express. A provider error or a blocked fetch is a
+  CLOSEABLE gap — escalate and disclose; a predicate or an office the provider cannot express is never closeable,
+  and stays open and disclosed. Either way it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these
+  `coverage-limited` and a fixable hole disappears into an accepted limit.
 - **`confirmed-clean`** — the slice ran to completion and judgment cleared it.
 - **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched;
   or a crowd the narrowing steps closed (a narrowed list that was read answered it, or the reading step set it

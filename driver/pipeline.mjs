@@ -124,7 +124,8 @@ import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, fr
 import { bandShapeGoods, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
-import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
+import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT, rowOutsideProviderOffices } from "./register-plan.mjs";
+import { capabilitiesFor } from "./register-capabilities.mjs";
 import { waitingCrossCheck, undecidedCrossChecks, withoutWait } from "./cross-check-wait.mjs";   // the cross-checks wait for the reading step   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
 import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
@@ -4369,6 +4370,16 @@ export function envelopeDecision({ deferredAxes, deadline, now, estCloseSec, hel
 }
 
 /**
+ * Whether a coverage row names an office the plan's provider cannot express, as a predicate for the closeability split.
+ * A plan with no provider, or one the capability contract does not know, names nothing outside. PURE.
+ */
+export function officeGapOf(plan) {   // @internal
+  let capabilities = null;
+  try { capabilities = plan?.provider ? capabilitiesFor(plan.provider) : null; } catch { capabilities = null; }
+  return capabilities ? (row) => rowOutsideProviderOffices(row, capabilities) : () => false;
+}
+
+/**
  * The axes the plan-execution receipt indicts with >=1 DETERMINISTIC deferral (joinPlanToBands'
  * `deferred` bucket — the executor's own client-side refusals), plus the axes the frozen plan says are
  * deferred end to end. The AUTHORITY half of the capability-gap split; prose only ever narrows inside
@@ -7175,7 +7186,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
     const ledgerLines = coverageLedgerTableRows(rows);
     const held = [], closeable = [];
     for (const a of axes) {
-      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a), heldUnits });
+      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a), heldUnits, uncovered: officeGapOf(ctx.registerPlan) });
       for (const r of s.held) held.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
       for (const r of s.closeable) closeable.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
     }
@@ -12995,7 +13006,7 @@ async function pipelineInner(job, opts = {}) {
       // that designates no floor.
       if (owned.length > 0 && !floorBreachAxes.has(a.toLowerCase())) {
         const split = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P) });
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan) });
         const openNonDeferred = owned.some((r) => r.status !== "deferred" && r.status !== "coverage-limited");
         if (split.held.length > 0 && split.closeable.length === 0 && !openNonDeferred) {
           note(`escalation skipped ${a} — capability-gap deferral: the active register provider cannot express those slices, so a re-run re-derives the same refusal (the gap stays open and disclosed)`);
@@ -13072,7 +13083,7 @@ async function pipelineInner(job, opts = {}) {
         // while ALSO carrying held rows — and the resumed unit must not be left to think those are
         // work it failed to do. Name them, exactly as the envelope's close followup does.
         const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P) }).held;
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan) }).held;
         if (escHeld.length) {
           followup += `\n\nNOT YOURS TO CLOSE — the active register provider cannot express these slices at all, so no re-run can reach them. Leave these Coverage-ledger rows exactly as they are (\`deferred\`, same reason), and do not restate them as searched or clean:\n${escHeld.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`;
         }
@@ -13151,7 +13162,8 @@ async function pipelineInner(job, opts = {}) {
       const fullyDeferred = new Set((ctx.registerPlan ? fullyDeferredAxes(ctx.registerPlan) : []).map((a) => String(a.axis).toLowerCase()));
       const stickyUnitsNow = stickyGapUnits(P);   // a gap this run already accepted is held whatever its row's reason says
       const closeabilityByAxis = new Map(deferredAxes.map((a) => [a,
-        splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()), heldUnits: stickyUnitsNow })]));
+        splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()), heldUnits: stickyUnitsNow,
+          uncovered: officeGapOf(ctx.registerPlan) })]));
       const heldAxes = deferredAxes.filter((a) => {
         const s = closeabilityByAxis.get(a);
         // The `!hasBreach &&` term is retired with the ⭐ floor: it kept an axis carrying a

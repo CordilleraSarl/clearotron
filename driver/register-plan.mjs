@@ -431,6 +431,32 @@ export function predicateGap(predicate, term, capabilities) {
 }
 
 /**
+ * The territory a coverage row names, read from its scope: the scope with its bracketed class list and its bracketed
+ * qualifiers set aside and anything after a dash, read whole as a territory's name or code, or its first word where
+ * that is a two-letter code. Null where the scope names no territory, so a row about a mark or a class list is never
+ * read as a country. PURE.
+ */
+export function territoryOfRow(row) {
+  const bare = String(row?.scope ?? "").replace(/\[[^\]]*\]|\([^)]*\)/g, " ").split(/\s[—–-]\s/)[0].replace(/[\s:;,.]+$/, "").trim();
+  if (!bare) return null;
+  const known = (c) => (c && isKnownJurisdictionCode(c) ? c : null);
+  const whole = known(normalizeTerritory(bare));
+  if (whole) return whole;
+  const first = bare.split(/\s+/)[0];
+  return /^[A-Z]{2}$/.test(first) ? known(normalizeTerritory(first)) : null;
+}
+
+/**
+ * Whether a coverage row names a territory the active provider's office vocabulary cannot express, by the plan's own
+ * rule (resolveRegions). Such a row is never closeable: a re-run would put the same office to the same register and be
+ * refused, exactly as a plan capability gap is. False where the row names no territory. PURE.
+ */
+export function rowOutsideProviderOffices(row, capabilities) {
+  const t = territoryOfRow(row);
+  return t ? resolveRegions([t], capabilities).deferred.length > 0 : false;
+}
+
+/**
  * Translate the matter's jurisdictions into the provider's office vocabulary and split off the ones the
  * provider genuinely does not cover. TRANSLATE FIRST, THEN membership-check.
  * Returns { regions: [translated…], deferred: [{ jurisdiction, reason }] }.

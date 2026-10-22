@@ -2301,6 +2301,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-office-the-register-cannot-express-is-never-closeable.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "an-older-reports-statement-counts-only-what-the-client-reads.test.mjs": {
           "tests": 1,
           "asserts": 5,
