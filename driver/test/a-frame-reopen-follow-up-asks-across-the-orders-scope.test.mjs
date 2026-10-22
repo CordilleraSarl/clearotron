@@ -14,7 +14,7 @@ import { buildFrameReopenFollowup, buildFrameReopenRetryMessage } from "../stage
 
 const P = { registerBand: (a) => `register-units/${a}-band.json`, registerUnit: (a) => `register-units/${a}.md` };
 const DIRECTIVES = [{ item: "QZORVA", observation: "unsearched", severity: "dominant-element" }, { item: "QZORVEN", observation: "unsearched" }];
-const compose = (build, lane) => build({ paths: P, axis: "primary-sweep", directives: DIRECTIVES, reopenFetchCap: 4, supplementalLane: lane });
+const compose = (build, lane) => build({ paths: P, axis: "primary-sweep", directives: DIRECTIVES, supplementalLane: lane });
 const ARMS = [["the follow-up", buildFrameReopenFollowup], ["the cold retry", buildFrameReopenRetryMessage]];
 
 test("both frame-reopen messages ask across the order's scope, on both lanes, and never per material or major market", () => {

@@ -3010,8 +3010,8 @@
           "todos": 0
         },
         "coverage-ledger.test.mjs": {
-          "tests": 32,
-          "asserts": 111,
+          "tests": 31,
+          "asserts": 103,
           "skips": 0,
           "todos": 0
         },

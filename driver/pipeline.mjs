@@ -1764,21 +1764,6 @@ export function decideCaseLaw({ job, narrative, policy } = {}) {   // @internal
   };
 }
 
-// #5a — the detail-fetch ceiling for the frame-reopen "enumerate the dominant-element floor to EXHAUSTION"
-// closure pass. The batch-screen (≤100/call, no detail-fetch) stays UNBOUNDED — it screens the full crowd
-// cheaply; only the expensive per-record detail-fetch is capped, so the pass returns a BOUNDED coverage-limited
-// result instead of grinding every survivor to the hard-wall SIGKILL (which produces NOTHING — the resume is
-// killed mid-fetch, no file written, and the directive logs a deferral with zero new coverage). Generous by
-// design: the default only bites a pathological saturated crowd; a normal reopen fetches far fewer survivors and
-// never sees the ceiling. Env-tunable for the rare matter that needs deeper closure. PURE + exported for test.
-// T1 (J2): default 500→150. 500 detail-fetches cannot fit the 1500s stage wall — the old default
-// contradicted the prompt's own "a bounded WRITTEN band beats an exhaustive one killed mid-fetch" and drove
-// the 48% reopen-timeout class ( F5). 150 fits the wall with margin; env-tunable for deep closure.
-export function reopenFetchCeiling(envVal) {   // @internal
-  const n = Number(envVal);
-  return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 150;
-}
-
 // ── WS-B: the run's frozen profile + the sidecar spine ──────────────────────────────────────────────
 // Resolve the customer profile ONCE and freeze it into _driver/profile.json (temp+rename, BEFORE any
 // validated stage). Resume / --experiment load FROM the sidecar — a profiles/ edit between
@@ -12219,9 +12204,6 @@ async function pipelineInner(job, opts = {}) {
           const regDirectives = firing.filter((d) => d.layer === "variant" || d.layer === "field");
           const srcDirectives = firing.filter((d) => d.layer === "source");
           const changedAxes = [];
-          // #5a: the detail-fetch ceiling for the dominant-element CLOSURE pass (below). Bounds the pass to a
-          // returnable coverage-limited result rather than a hard-wall SIGKILL on a runaway crowd.
-          const reopenFetchCap = reopenFetchCeiling(process.env.CLEAROTRON_REOPEN_MAX_FETCH);
 
           // CLOSURE-FIRST (register). The dominant-element crowd lives on the register and a Corsearch sweep is
           // far cheaper than the common-law grid, so by DEFAULT we try to CLOSE it: re-cover the dominant element
@@ -12266,7 +12248,7 @@ async function pipelineInner(job, opts = {}) {
           // pure code: mint supplemental plan entries from the directives, dispatch the deterministic
           // executor (count-first, ceiling, error stamping — code writes the band, qids stamped), fold +
           // refresh the receipt, re-merge the named band. No LLM sweep turn, no session needed, and the
-          // reopenFetchCeiling concern retires with the arm (the executor batch-screens, never
+          // detail-fetch ceiling concern retires with the arm (the executor batch-screens, never
           // detail-fetches; the enumerate ceiling bounds records). The unit .md prose stays as-is —
           // audit-only; where it differs from the band, the band wins. The ONE warm re-digest below is
           // where judgment reasons over the completed band, unchanged.
@@ -12805,7 +12787,7 @@ async function pipelineInner(job, opts = {}) {
           const answered = swept.filter((k) => regAnsweredBy.has(k)).map((k) => ({ directive: k, slices: regAnsweredBy.get(k) }));
           const withheldBy = swept.filter((k) => regWithheldBy.has(k)).map((k) => ({ directive: k, slices: regWithheldBy.get(k) }));
           writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered, withheldBy);
-          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed, reopenFetchCap: regDirectives.some((d) => d.severity === "dominant-element") ? reopenFetchCap : undefined });
+          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed });
           // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
           // unlocked path demotes verified-closed directives inline when its pre-synthesis flush
           // fails (above); under the lock the reconcile rides the LATE flush AFTER this receipt is

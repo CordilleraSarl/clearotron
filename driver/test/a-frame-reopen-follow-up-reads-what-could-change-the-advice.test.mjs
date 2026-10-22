@@ -16,7 +16,7 @@ import { buildFrameReopenFollowup, buildFrameReopenRetryMessage } from "../stage
 const P = { registerBand: (a) => `register-units/${a}-band.json`, registerUnit: (a) => `register-units/${a}.md` };
 const DIRECTIVES = [{ item: "QZORVA", observation: "unsearched", severity: "dominant-element" }, { item: "QZORVEN", observation: "unsearched" }];
 const ARMS = [["the follow-up", buildFrameReopenFollowup], ["the cold retry", buildFrameReopenRetryMessage]];
-const compose = (build, lane) => build({ paths: P, axis: "primary-sweep", directives: DIRECTIVES, reopenFetchCap: 4, supplementalLane: lane });
+const compose = (build, lane) => build({ paths: P, axis: "primary-sweep", directives: DIRECTIVES, supplementalLane: lane });
 
 test("no frame-reopen message gives the model a fixed fetch cap or a price", () => {
   for (const [name, build] of ARMS) for (const lane of [true, false]) {
