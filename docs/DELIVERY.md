@@ -142,7 +142,7 @@ drives the whole delivery side over the ops MCP face — mint its token verb-sco
    `sendPending` until a send is confirmed, whichever lane wrote the packet, and `mark_sent` is the only
    thing that clears it. Acknowledging the event instead removes the marker and leaves the run owed, so
    the backstop scan re-arms it and the requester is told again on the next sweep.
-4. For the remaining kinds — `intake-rejected`, `duplicate-skipped`, `late-bind-ack` — route the
+4. For the remaining kinds — `intake-rejected`, `duplicate-skipped`, `pre-run-failed`, `late-bind-ack` — route the
    packet's `text` → **`ack_event(file)`** (idempotent; validated as a bare `*.pending` name). These
    describe something that did not become a run, so there is no run to settle.
 

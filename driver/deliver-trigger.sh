@@ -35,7 +35,7 @@ DRAIN_WAIT="${CLEAROTRON_OUTBOX_DRAIN_WAIT:-180}"
 # (openclaw models); set CLEAROTRON_OUTBOX_WAKE_MODEL="" to fall back to the agent default. `-` (not `:-`) so
 # an explicit empty value disables the override, while unset keeps the Haiku default.
 WAKE_MODEL="${CLEAROTRON_OUTBOX_WAKE_MODEL-anthropic/claude-haiku-4-5}"
-MSG="The trademark engine's outbox has pending events. Run the clearotron-deliver skill now: list_outbox_events, route each event (delivered → get_delivery_packet + send VERBATIM + mark_sent; every other kind → relay its text + ack_event)."
+MSG="The trademark engine's outbox has pending events. Run the clearotron-deliver skill now: list_outbox_events, route each event (delivered → get_delivery_packet + send VERBATIM + mark_sent; run-failed → relay its text + mark_sent; every other kind → relay its text + ack_event; only the events whose agent is you)."
 
 # THE WALL, RESOLVED ONCE AND NAMED WHEN IT IS ABSENT.
 #
