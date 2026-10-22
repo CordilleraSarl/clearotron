@@ -5,8 +5,7 @@ Templates for the `perplexity_research` calls in `clearance-common-law`. Prompts
 ## Depth routing (mandatory)
 
 Every `perplexity_research` call in this skill MUST pass an explicit `depth`. Never rely on the
-plugin's auto-detection (it guesses from prompt formatting and routes grid-shaped prompts to the most
-expensive tier).
+plugin's auto-detection (it guesses from prompt formatting and routes grid-shaped prompts to the deepest tier).
 
 | Call | `depth` | Other params |
 |---|---|---|
@@ -90,7 +89,7 @@ query is recorded, and a clean PR claim with no recorded search is rejected (`co
 ### What comes back, and what you do with it
 
 The tool returns: the stdout JSON (cells + extras + gaps) → the **SANDBOX PROGRAM audit receipt**
-(the exact code that ran) → a metadata footer (tokens, cost). Then:
+(the exact code that ran) → a metadata footer. Then:
 
 0. **Save the stdout JSON verbatim to `common-law-grid.json` first** (machine receipts — see the
    skill's Writes section): the object exactly as returned; batched grids → a JSON array of the

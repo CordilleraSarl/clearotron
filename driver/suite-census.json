@@ -7023,6 +7023,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-reviewer-and-the-prompts-are-given-no-price.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reviewer-asks-the-clients-question-first.test.mjs": {
           "tests": 3,
           "asserts": 5,

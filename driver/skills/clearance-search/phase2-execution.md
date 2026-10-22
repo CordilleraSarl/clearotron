@@ -88,7 +88,7 @@ array IS the clean answer and an EMPTY `escalations` array IS a decision — omi
 
 Escalation is decided by the `escalations` field and by nothing else. Naming an axis in a flag does **not**
 escalate it, and typing an `ESCALATE:` token inside a flag or a reason is REFUSED rather than parsed — so a
-passing mention never triggers a paid re-run, and a real gap is never missed because the axis name happened to be
+passing mention never triggers a re-run, and a real gap is never missed because the axis name happened to be
 absent from prose.
 
 **Coverage is DATA here, never a re-derivation.** The dispatch carries a driver-computed table built from
@@ -190,7 +190,7 @@ record the gap in the Audit Trail and narrative so the staff lawyer sees it. Log
 in the Audit Trail.
 
 This review replaces the old single-session "Opus + max thinking does it all" guard — quality now
-comes from a cheap fresh-eyes audit plus targeted Opus escalation, not from one giant session.
+comes from a fresh-eyes audit plus targeted escalation, not from one giant session.
 
 ## Step 3 — Cross-pollination (Option D — deterministic cross-checks, cap N=10)
 

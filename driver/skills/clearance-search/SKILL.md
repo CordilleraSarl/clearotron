@@ -12,7 +12,6 @@ description: Orchestrator for preliminary trademark search requests with registe
 - [Upfront instructions (per-mark guidance from the reviewing lawyer)](#upfront-instructions-per-mark-guidance-from-the-reviewing-lawyer)
 - [Scope discipline — "stop if manageable"](#scope-discipline--stop-if-manageable)
 - [Process overview](#process-overview)
-- [Tool call budget](#tool-call-budget)
 - [HITL exception (shared across sub-skills)](#hitl-exception-shared-across-sub-skills)
 - [Failure fallbacks](#failure-fallbacks)
 - [Phase 0 — Workspace hygiene + matter-frame + template selection (run-start)](#phase-0--workspace-hygiene--matter-frame--template-selection-run-start)
@@ -62,9 +61,9 @@ The requesting or reviewing lawyer forwards an email containing a **Trademark Se
 
 ## Register sources — the vendor is the source of truth; EUIPO is a free EU cross-check
 
-Your tool surface binds **one paid register vendor** plus free / citation tools — use each for its purpose:
+Your tool surface binds **one register vendor** plus free / citation tools — use each for its purpose:
 
-- **Paid vendor = the register source of truth** (global coverage, phonetic). The tools are always `register_*`; the vendor behind them is whichever REGISTER_PROVIDER selects — **one vendor at a time** (gated via `agents.list[].tools.allow`, swapped by the operator). Record which one in the audit trail + the scope statement.
+- **Register vendor = the register source of truth** (global coverage, phonetic). The tools are always `register_*`; the vendor behind them is whichever REGISTER_PROVIDER selects — **one vendor at a time** (gated via `agents.list[].tools.allow`, swapped by the operator). Record which one in the audit trail + the scope statement.
 - **EUIPO is one of the four register providers, not a cross-check alongside one.** When it is active
   it IS the register, covering the EU alone; every other territory is a disclosed deferred gap.
   `clearance-register/providers/euipo.md` carries the detail.
@@ -142,19 +141,6 @@ Three phases, all complete before a single reply is sent to the forwarder.
 - Cross-person deadline flag
 - Mark as read, log handoff, done message
 - Archive the run dir (move `studio/clearance-search/<slug>/<date>/` → `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/`)
-
-## Tool call budget
-
-The orchestrator itself makes few direct tool calls. Most calls happen inside sub-skills under their own budgets:
-
-- `clearance-common-law`: **15** `perplexity_research` per workflow
-  *(rationale: cost-based overflow protection against a looping worker — the API is usage-billed; a search-as-code grid call ≈ $0.06, prose follow-ups ≈ $0.01–0.15 each (measured 2026-06-10). Typical workflow uses 2–6 calls/mark; 15 leaves headroom for thinness re-spawns)*
-- `clearance-register`: **150** provider calls per workflow, across all marks
-  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each)*
-- This skill: file read/write and memory write — bounded by workflow steps. It builds no workbook and sends no mail: the driver does both at publish, in code.
-
-Cross-pollination dispatches add at most **10** calls split across the two sub-skills (Option D cap).
-*(rationale: cost ceiling on dispatched cross-checks — each is one Perplexity or one provider call. Calibrated against May runs where 4–8 triggers fired naturally; 10 catches over-firing without truncating below the typical fire-count)*
 
 ## HITL exception (shared across sub-skills)
 
