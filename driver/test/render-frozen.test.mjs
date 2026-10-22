@@ -2796,17 +2796,17 @@ const FROZEN_BEFORE_SPDX = "21c4c4d56f9b31d423edd2be7af98c9079ed7864d506401692c2
 // ── BREAK (2026-10-22 — a territory an open row covers is never chipped "Nothing found") ──────────────────────────────
 //
 // WHAT MOVED: "Where it stands" chipped every planned country with no banded finding "Nothing found", reading the
-// plan alone. A planned slice the run deferred was never searched, so a country it covers was chipped clean over a
-// search that did not happen. The publisher now hands this file the territories of the slices the plan-execution
-// receipt deferred (`planTerritories.open`), and a country among them with no finding is left out of the chips. A
-// country where a finding sits keeps its band row. No sentence is added or removed. It holds for every deferred slice:
-// those a check could not prove ran, and the slices the provider could not express, which already deferred.
+// plan alone. A slice a check could not prove ran is taken out of the band and delivered open, so a country it covers
+// was chipped clean over a search nobody can show happened. The publisher now hands this file the territories of the
+// slices the run's searches record took out (`planTerritories.open`), and a country among them with no finding is
+// left out of the chips. A country where a finding sits keeps its band row. No sentence is added or removed. A slice
+// the provider could not express is not among them: whether its countries leave the chips too is the owner's to rule.
 //
 // THE THREE QUESTIONS.
-//   1. Reachable from republish? Yes, for an archived run whose receipt deferred a slice: its chips lose the countries
-//      that slice covers. Measured: the three demo runs, which carry no receipt, publish byte-identical through the
-//      previous tree and this one, the issue date aside. The global demo given a receipt deferring its first slice, a
-//      worldwide query, keeps 255 chips through the previous tree and 80 through this one.
+//   1. Reachable from republish? Only for a run that carries a searches record, which no run before this change does.
+//      Measured: the three demo runs publish byte-identical through the previous tree and this one, the issue date
+//      aside, and so does the global demo given a receipt deferring its first slice. Given a searches record taking
+//      that slice out, a worldwide query, it keeps 255 chips through the previous tree and 80 through this one.
 //   2. Could it live in report.css or brand.mjs? No: it decides which countries are drawn.
 //   3. Why it had to move here: the chips are composed in this file and nowhere else.
 const FROZEN = "edeaa5683a0c186be1a5a2448b6e64e78f1ea5db588ad6c0b1a42cd22ef59456";

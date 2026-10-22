@@ -952,7 +952,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     if (!searchedJurisdictions.length && Array.isArray(plan?.regions)) searchedJurisdictions = [...new Set(plan.regions)];
     // Derived here, BEFORE the worldwide clearing below — that clearing exists for the header and would
     // otherwise empty this on exactly the runs that cover the most ground.
-    planTerritories = planTerritoriesOf(plan, readStore(runDir ?? dirname(reportMd), '_driver/plan-execution.json').value ?? null);
+    planTerritories = planTerritoriesOf(plan, (readStore(runDir ?? dirname(reportMd), '_driver/not-completed/searches.json').value?.slices ?? []).map((s) => s?.qid));
   } catch { /* no plan sidecar — try the instructed scope */ }
   if (!searchedJurisdictions.length) {
     try {
