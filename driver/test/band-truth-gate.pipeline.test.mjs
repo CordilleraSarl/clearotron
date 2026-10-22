@@ -53,8 +53,7 @@ const healingExecutor = (ledgerPath, calls = []) => async ({ planPath, axis, out
   return { ok: true, executed: blocks.length, states: {} };
 };
 
-async function runMockPipeline(env, opts = {}) {
-  const root = mkdtempSync(join(tmpdir(), "clearotron-btg-"));
+async function runMockPipeline(env, opts = {}, root = mkdtempSync(join(tmpdir(), "clearotron-btg-"))) {
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root,
@@ -83,13 +82,15 @@ test("gate + heal: fabricated bands (zero ledger rows) are re-executed in place 
   assert.ok(ledgerRows.length >= fired.length, "the rebuild left real ledger evidence");
 });
 
-test("gate fail-closed: fabricated bands with NO executor lane kill the run at fan-in with the fabrication signature", async () => {
+test("gate with NO executor lane: the fabricated bands are taken out of the band, and the run delivers the rest with the fabrication on its record", async () => {
   const ledger = join(mkdtempSync(join(tmpdir(), "btg-ledger-")), "calls.jsonl");
   writeFileSync(ledger, "");
-  const { res } = await runMockPipeline({ CLEAROTRON_REGISTER_CALL_LOG: ledger });   // no planExecutor + dispatch off
-  assert.equal(res.ok, false);
-  assert.match(String(res.reason ?? res.fail ?? ""), /fabricated named band/, JSON.stringify({ fail: res.fail, reason: res.reason, stage: res.failedStage }));
-  assert.equal(res.failedStage, "fan-in");
+  const root = mkdtempSync(join(tmpdir(), "clearotron-btg-"));
+  // No planExecutor and dispatch off: nothing can evidence the bands. Once that is terminal the slices are the searches
+  // not completed (parts-not-completed.mjs): pass 1 parks with them recorded, and the resumed pass delivers the rest.
+  const { res } = await runMockPipeline({ CLEAROTRON_REGISTER_CALL_LOG: ledger }, {}, root);
+  assert.equal(res.postponed, true, JSON.stringify({ ok: res.ok, fail: res.fail, reason: res.reason, stage: res.failedStage }));
+  assert.equal(JSON.parse(readFileSync(driverDir(res.runDir, "not-completed", "searches.json"), "utf8")).stage, "fan-in");
 
   // ── — THE POINTER IS READ OFF THE RECORD AND OPENED ────────────────────────────
   //
@@ -117,6 +118,9 @@ test("gate fail-closed: fabricated bands with NO executor lane kill the run at f
   // the fix that passes both arms and changes nothing about the cap.
   assert.doesNotMatch(String(status.reason), /[\\/]/,
     `no path may remain in the sentence: ${status.reason}`);
+  assert.match(String(status.reason), /fabricated named band/, "the record lost the fabrication signature");
+  const { res: r2 } = await runMockPipeline({ CLEAROTRON_REGISTER_CALL_LOG: ledger }, { codename: res.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-") }, root);
+  assert.equal(r2.ok, true, JSON.stringify({ ok: r2.ok, fail: r2.fail, reason: r2.reason, stage: r2.failedStage }));
 });
 
 test("gate inert without a ledger: absent call-log file → cannot judge → run delivers exactly as before", async () => {

@@ -274,9 +274,13 @@ export function caseLawPassRecord({ attemptsJsonl = null, ledgerRaw = null, read
  * Null for a run with no plan to read, which is an archived or legacy run: that is "cannot say", and it
  * is not the same answer as a plan that named nothing.
  *
- * @param {object|null} plan  the parsed `register-plan.json`, or null when there is none
+ * `open`, given the run's plan-execution receipt: every territory of a planned slice the receipt deferred. That slice
+ * was never searched, so the page never chips its territory "Nothing found". Absent when nothing was deferred.
+ *
+ * @param {object|null} plan     the parsed `register-plan.json`, or null when there is none
+ * @param {object|null} receipt  the parsed `_driver/plan-execution.json`, or null when there is none
  */
-export function planTerritoriesOf(plan) {
+export function planTerritoriesOf(plan, receipt = null) {
   if (!plan || typeof plan !== "object") return null;
   const entryRegions = (plan.entries ?? []).flatMap((e) => (Array.isArray(e?.regions) ? e.regions : []));
   // `plan.regions` is the older shape and is the fallback, not a second source: a plan carrying entries
@@ -295,7 +299,10 @@ export function planTerritoriesOf(plan) {
   const unreached = (Array.isArray(plan.deferred_coverage) ? plan.deferred_coverage : [])
     .map((d) => ({ jurisdiction: String(d?.jurisdiction ?? "").trim(), reason: String(d?.reason ?? "").trim() }))
     .filter((d) => d.jurisdiction);
-  return { searched, unreached };
+  const deferredQids = new Set((Array.isArray(receipt?.deferred) ? receipt.deferred : []).map((d) => String(d?.qid ?? "")).filter(Boolean));
+  const open = [...new Set((plan.entries ?? []).filter((e) => deferredQids.has(String(e?.qid ?? "")))
+    .flatMap((e) => (Array.isArray(e?.regions) ? e.regions : [])).map(String))];
+  return { searched, unreached, ...(open.length ? { open } : {}) };
 }
 
 /**

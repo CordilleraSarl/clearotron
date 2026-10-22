@@ -37,6 +37,7 @@
 import { existsSync, readFileSync, writeFileSync, renameSync } from "node:fs";
 import { isCapabilityGapReason } from "./coverage-ledger.mjs";
 import { fullyDeferredAxes } from "./register-plan.mjs";
+import { readPartNotCompleted } from "./parts-not-completed.mjs";
 
 export const SETTLE_SCHEMA_VERSION = 1;
 
@@ -194,9 +195,18 @@ export function settleTriedAfter(prior, dispatched, planVersion) {
   return [...out.values()];
 }
 
-/** The run's sticky capability gaps, by qid → row. Absent or unreadable decision ⇒ none. */
+/**
+ * The run's sticky gaps, by qid → row: the capability gaps it accepted, and the slices a check could not prove ran,
+ * which the searches' record took out of the band once their recovery was spent (parts-not-completed.mjs). Neither is
+ * sent to the provider again, settled again or re-run to close. Absent or unreadable decision and record ⇒ none.
+ */
 export function readStickyGaps(P) {
-  return new Map((readEnvelopeDecision(P)?.sticky_gaps ?? []).map((g) => [String(g?.qid ?? ""), g]).filter(([q]) => q));
+  const out = new Map((readEnvelopeDecision(P)?.sticky_gaps ?? []).map((g) => [String(g?.qid ?? ""), g]).filter(([q]) => q));
+  for (const s of (P?.runDir ? readPartNotCompleted(P.runDir, "searches")?.slices : null) ?? []) {
+    const qid = String(s?.qid ?? "");
+    if (qid && !out.has(qid)) out.set(qid, { qid, axis: String(s.axis ?? ""), reason: String(s.reason ?? "").slice(0, 400) });
+  }
+  return out;
 }
 
 /** One history entry per superseded decision. Returns the prior history with the old decision appended. */
@@ -225,7 +235,7 @@ export function supersede(prior, source) {
 export async function settleReceipt({ P, plan, receipt, dispatch = null, rejoin = null, now = null }) {
   const deferred = receipt?.deferred ?? [];
   const prior = readEnvelopeDecision(P);
-  const sticky = new Set((prior?.sticky_gaps ?? []).map((g) => String(g?.qid ?? "")));
+  const sticky = new Set(readStickyGaps(P).keys());
   let { accepted, suspect } = partitionReceiptDeferrals(plan, receipt, { sticky });
   const closed = [], closeFailed = [];
   const tried = new Map((prior?.settle_tried ?? []).map((t) => [String(t?.qid ?? ""), t]));

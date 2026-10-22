@@ -17,7 +17,9 @@
 //
 // ONCE PER PART. The catch never writes a part whose record already exists: a failure on the pass that delivers
 // without it ends the run as it always did, with the stop notice, and the record is removed then, so a later resume
-// tries the part again.
+// tries the part again. The searches are the one part whose record grows: each failure names the slices it could not
+// prove ran, and a failure that names a slice the record does not hold yet adds it; one that names none new ends the
+// run, so the run still ends.
 //
 // A pure leaf: node:fs, node:path and shared/driver-dir.mjs only.
 import { readFileSync, writeFileSync, renameSync, rmSync, readdirSync } from "node:fs";
@@ -30,8 +32,10 @@ export const NOT_COMPLETED_DIR = "not-completed";
 // everything built from them. `review` is the first review of the assessment, whose verdict the sign-off is. `overview`
 // is the report overview, the conclusion under the rating. `delivery` is the
 // changed-material check before publishing: it never delivers past staleness, and its record buys the report one more
-// assembly from the current material instead of the stop notice.
-export const NOT_COMPLETED_PARTS = Object.freeze(["assessment", "review", "overview", "delivery"]);
+// assembly from the current material instead of the stop notice. `searches` is the register's searches: the slices a
+// check could not prove ran, each with its axis, its qid and the reason it is open, taken out of the band and
+// delivered as open rows.
+export const NOT_COMPLETED_PARTS = Object.freeze(["assessment", "review", "overview", "delivery", "searches"]);
 
 /** The record's path for `part`. */
 export function notCompletedPath(runDir, part) {
@@ -43,10 +47,10 @@ export function notCompletedPath(runDir, part) {
  * (never a reader's cell), `sig` and `terminalKind` what the recovery decision said. Written through a temporary file
  * and a rename, so a reader never sees half a record. Returns the record.
  */
-export function writePartNotCompleted(runDir, part, { stage = null, reason = null, sig = null, terminalKind = null } = {}) {
+export function writePartNotCompleted(runDir, part, { stage = null, reason = null, sig = null, terminalKind = null, slices = null } = {}) {
   if (!NOT_COMPLETED_PARTS.includes(part)) throw new Error(`parts-not-completed: "${part}" is not a covered part`);
   const record = { part, stage, reason: reason == null ? null : String(reason).slice(0, 600), sig, terminalKind,
-    ts: new Date().toISOString() };
+    ...(Array.isArray(slices) ? { slices } : {}), ts: new Date().toISOString() };
   const path = notCompletedPath(runDir, part);
   ensureDriverDir(runDir, NOT_COMPLETED_DIR);
   writeFileSync(`${path}.tmp`, JSON.stringify(record, null, 2) + "\n");
@@ -74,6 +78,22 @@ export function partsNotCompleted(runDir) {
   let names = [];
   try { names = readdirSync(driverDir(runDir, NOT_COMPLETED_DIR)); } catch { return []; }
   return NOT_COMPLETED_PARTS.filter((p) => names.includes(`${p}.json`)).map((p) => readPartNotCompleted(runDir, p));
+}
+
+/**
+ * The slices of `failed` that `record` does not hold yet, each `{axis, qid, reason}`: what a failure of the searches
+ * adds to their record. [] when it adds none. PURE.
+ */
+export function slicesNotYetRecorded(record, failed) {
+  const held = new Set((Array.isArray(record?.slices) ? record.slices : []).map((s) => `${s?.axis}\u0000${s?.qid}`));
+  const out = [];
+  for (const s of Array.isArray(failed) ? failed : []) {
+    const key = `${s?.axis}\u0000${s?.qid}`;
+    if (!s?.axis || !s?.qid || held.has(key)) continue;
+    held.add(key);
+    out.push({ axis: String(s.axis), qid: String(s.qid), reason: String(s.reason ?? "") });
+  }
+  return out;
 }
 
 /** Remove one part's record, once that part has completed after all. */

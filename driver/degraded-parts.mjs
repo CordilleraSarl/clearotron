@@ -171,6 +171,9 @@ function register(runDir, log) {
   const open = readPartNotCompleted(runDir, "assessment");
   if (open && ["placement-inquiry", "register-digest"].includes(open.stage))
     failed.push([{ fail: `${open.stage} did not complete: ${open.reason ?? "no cause recorded"}` }, "the register write-up"]);
+  // The searches a check could not prove ran, taken out of the band and delivered as open rows (parts-not-completed.mjs).
+  const searches = readPartNotCompleted(runDir, "searches");
+  if (searches) failed.push([{ fail: `${(searches.slices ?? []).length} slice(s) taken out of the band: ${searches.reason ?? "no cause recorded"}` }, "the searches"]);
   let reopen = null;
   try { reopen = JSON.parse(readFileSync(driverDir(runDir, "frame-reopen.json"), "utf8")); } catch { reopen = null; }
   if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)
@@ -326,6 +329,7 @@ export const STORE_PARTS = {
   "_driver/framework.json": "findings",
   "_driver/register-recall.json": "coverage",
   "_driver/register-plan.json": "register",
+  "_driver/plan-execution.json": "register",
   "register-named-band.json": "register",
   "_driver/instructed-scope.json": "register",
   "_driver/jx-lanes.json": "localLanguage",

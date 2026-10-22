@@ -35,7 +35,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
-import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
+import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded } from "./parts-not-completed.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
@@ -450,6 +450,54 @@ export function loadCoverageLedger(runDir) {   // @internal
   return { rows: relabel(rows), source: "prose", dropped };
 }
 
+/**
+ * THE SLICES A RUN COULD NOT PROVE IT SEARCHED, TAKEN OUT OF ITS BAND (912). Each recorded slice's block becomes the
+ * executor's own deferred block (providers/_shared/execute-plan.mjs), carrying the slice's reason, or is added as one
+ * where the band holds none for it. The plan join files it as deferred, the coverage form gives it an open row the
+ * write-up may not call clean, and the axis's other blocks stand. The band as it was is kept beside it the first time,
+ * as evidence. An axis whose band is absent or unreadable is left to the band's own checks. Returns the slices taken
+ * out on this call. IMPURE (rewrites the bands).
+ */
+// THE BANDS ARE READ WITH THE RECORDED SLICES OUT, whatever wrote them since. A unit re-run after the fan-in, by the
+// envelope, the escalation or the taint chain, writes its axis's band whole, and a slice the searches' record took
+// out would come back with the records nobody could prove were searched. So the band's two readers, the merge and the
+// plan join, take the recorded slices out again first: a band already clean of them is not written. IMPURE.
+function takeRecordedSlicesOut(P) {
+  const slices = P?.runDir ? readPartNotCompleted(P.runDir, "searches")?.slices : null;
+  if (Array.isArray(slices) && slices.length) takeSlicesOutOfTheBand(P, slices);
+}
+
+export function takeSlicesOutOfTheBand(P, slices) {   // @internal
+  const taken = [];
+  const byAxis = new Map();
+  for (const s of Array.isArray(slices) ? slices : []) {
+    if (!s?.axis || !s?.qid) continue;
+    if (!byAxis.has(s.axis)) byAxis.set(s.axis, []);
+    byAxis.get(s.axis).push(s);
+  }
+  for (const [axis, list] of byAxis) {
+    const at = P.registerBand(axis);
+    let blocks;
+    try { blocks = JSON.parse(readFileSync(at, "utf8")); } catch { continue; }
+    if (!Array.isArray(blocks)) continue;
+    let changed = false;
+    for (const s of list) {
+      const i = blocks.findIndex((b) => b?.qid === s.qid);
+      const was = i >= 0 ? blocks[i] : null;
+      if (was?.error === true && was.deferred === true && was.reason === s.reason) continue;
+      const block = { state: "incomplete", qid: s.qid, query: String(was?.query ?? s.query ?? s.qid), total_hits: 0, fetched: 0, sample: [],
+        error: true, deferred: true, reason: String(s.reason) };
+      if (i >= 0) blocks[i] = block; else blocks.push(block);
+      changed = true;
+      taken.push(s);
+    }
+    if (!changed) continue;
+    try { if (!existsSync(`${at}.before-taken-out`)) copyFileSync(at, `${at}.before-taken-out`); } catch { /* the evidence is best-effort */ }
+    atomicWrite(at, JSON.stringify(blocks, null, 2) + "\n");
+  }
+  return taken;
+}
+
 // ── judgment-relocation (2026-06-23): the COMPLETE NAMED BAND flow (lift the firewall) ───────────────
 // The register-unit funnel writes register-units/<axis>-band.json (a JSON ARRAY of named-band blocks). The
 // driver MERGES the per-axis bands into one complete band (register-named-band.json) and feeds it to Layer B
@@ -458,6 +506,7 @@ export function loadCoverageLedger(runDir) {   // @internal
 // de-dups enumerated records by record_id and preserves every crowd descriptor. Returns the merged band
 // object {enumerated, crowds} plus { axes:[…], invalid:[{axis,reason}] } so the caller can flag a bad axis.
 export function mergeRegisterBands(P, axes = []) {   // @internal
+  takeRecordedSlicesOut(P);
   const bands = [];
   const merged = [];
   const invalid = [];
@@ -513,6 +562,7 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
 // chain, the clean-gates, and dispatchPlanQids cover them with zero extra code. Run-local only: the
 // slug store is never written (clearances run once; senior lawyer 2026-07-10).
 export function readRegisterBands(P, axes) {   // @internal
+  takeRecordedSlicesOut(P);
   const byAxis = {};
   for (const a of axes ?? []) {
     if (!existsSync(P.registerBand(a))) continue;
@@ -11176,6 +11226,16 @@ async function pipelineInner(job, opts = {}) {
     for (const f of [...(runCommonLaw ? [P.commonLaw] : []), ...axes.map((a) => P.registerUnit(a))]) {
       if (!existsSync(f)) throw new StageFailure("fan-in", `missing ${f}`);
     }
+    // THE SLICES A CHECK COULD NOT PROVE RAN, ONCE ITS RECOVERY WAS SPENT (912): each is taken out of its axis's band and
+    // delivered as an open row, before the band's checks and the plan join read the band. The checks below name the
+    // slices they fail on, and the run-level catch records them (parts-not-completed.mjs).
+    const searchesOpen = readPartNotCompleted(run.runDir, "searches");
+    if (Array.isArray(searchesOpen?.slices) && searchesOpen.slices.length) {
+      const taken = takeSlicesOutOfTheBand(P, searchesOpen.slices);
+      runLog(run.runDir, { event: "searches-not-completed-delivery", slices: searchesOpen.slices.length, taken: taken.length,
+        reasons: [...new Set(searchesOpen.slices.map((s) => s.reason))] });
+      note(`register: ${searchesOpen.slices.length} slice(s) a check could not prove ran are taken out of the band and delivered as open rows`);
+    }
     // judgment-relocation LINCHPIN (2026-06-24): the load-bearing funnel artifact is the COMPLETE NAMED BAND
     // (register-units/<axis>-band.json) — the real material that crosses the lifted firewall. A unit that RAN
     // THIS process (unitKey[a] set) MUST have written it; a missing band would merge to empty and let a clean
@@ -11188,6 +11248,7 @@ async function pipelineInner(job, opts = {}) {
     // archived) keeps the lenient path. copper-spire's shipping path was exactly fail → manual resume →
     // resumed-past leniency → degrade-with-note → ship.
     const anyBands = axes.some((x) => existsSync(P.registerBand(x)));
+    const unprovenBands = [];   // every axis whose band the ledger cannot evidence, failed on together below
     for (const a of axes) {
       if ((unitKey[a] || anyBands) && !existsSync(P.registerBand(a)))
         throw new StageFailure("fan-in", `missing named band for axis "${a}" — the funnel produced no complete band (a clean can never ship over an unsearched band)`, undefined, { detail: `${P.registerBand(a)}${unitKey[a] ? "" : " — resumed-past axis on a run that carries bands: a hole, not legacy"}` });
@@ -11225,10 +11286,12 @@ async function pipelineInner(job, opts = {}) {
       if (process.env.CLEAROTRON_BAND_TRUTH_GATE !== "0"
         && unitKey[a] && existsSync(P.registerBand(a)) && (ctx.registerPlan?.entries ?? []).some((e) => e?.axis === a)) {
         const laneKey = `clearance-${run.slug}-${run.codename}-register-unit-${a}`;
-        const bandHasQids = (() => {
-          try { const b = JSON.parse(readFileSync(P.registerBand(a), "utf8")); return Array.isArray(b) && b.some((x) => x && typeof x === "object" && x.qid); }
-          catch { return false; /* parse defects are the stage validator's problem, not this gate's */ }
+        // A slice taken out of the band, or one the provider could not express, is a deferred block that made no call.
+        const qidBlocks = (() => {
+          try { const b = JSON.parse(readFileSync(P.registerBand(a), "utf8")); return Array.isArray(b) ? b.filter((x) => x && typeof x === "object" && x.qid && !(x.error === true && x.deferred === true)) : []; }
+          catch { return []; /* parse defects are the stage validator's problem, not this gate's */ }
         })();
+        const bandHasQids = qidBlocks.length > 0;
         if (bandHasQids && countLaneCalls(laneKey) === 0) {
           note(`register-unit ${a}: band carries qid blocks but its lane logged ZERO provider calls — authored, not executed; direct re-execution from the frozen plan`);
           runLog(run.runDir, { event: "band-truth-gate", axis: a, lane: laneKey, calls: 0 });
@@ -11238,10 +11301,21 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "band-truth-rebuilt", axis: a, outcome, calls: callsNow ?? 0 });
             note(`register-unit ${a}: band re-executed from the frozen plan (dispatch ${outcome ?? "unavailable"}, ${callsNow ?? 0} ledger call(s)) — fan-in continues over executor data`);
           } else {
-            throw new StageFailure("fan-in", `fabricated named band for axis "${a}" — qid-stamped blocks, ZERO provider calls in the ledger, re-execution not evidenced (a clean can never ship over an unexecuted band)`, undefined, { failClass: "deterministic", repairs: fanInRepairs, detail: `${P.registerBand(a)} — lane "${laneKey}", re-execution ${outcome ?? "no executor lane"}` });
+            unprovenBands.push({ axis: a, laneKey, outcome, qids: qidBlocks.map((x) => x.qid) });
           }
         }
       }
+    }
+    // THE BANDS NO LEDGER CALL EVIDENCES, failed on together, so one park takes every such axis. Their slices are the
+    // searches not completed: once this is terminal they are taken out of the band and delivered as open rows, with the
+    // shipped reason "nothing in the run's own record confirms it was searched".
+    const notCompleted = unprovenBands.flatMap((u) => u.qids.map((qid) => ({ axis: u.axis, qid, reason: plainDeferralReason("not-verified-closed") })));
+    if (unprovenBands.length) {
+      const [first] = unprovenBands, more = unprovenBands.length - 1;
+      throw Object.assign(new StageFailure("fan-in", `fabricated named band for ${more ? `${unprovenBands.length} axes` : `axis "${first.axis}"`} — qid-stamped blocks, ZERO provider calls in the ledger, re-execution not evidenced (a clean can never ship over an unexecuted band)`,
+        undefined, { failClass: "deterministic", repairs: fanInRepairs,
+          detail: `${P.registerBand(first.axis)} — lane "${first.laneKey}", re-execution ${first.outcome ?? "no executor lane"}${more ? `; ${more} more axis(es): ${unprovenBands.slice(1).map((u) => u.axis).join(", ")}` : ""}` }),
+        { notCompletedPart: "searches", excludedSlices: notCompleted });
     }
 
     // ── timeout-taint chain (copper-lattice 2026-07-08): unfinished ⇒ deferred ⇒ recover ⇒ converge ──────
@@ -11691,7 +11765,9 @@ async function pipelineInner(job, opts = {}) {
       // The rows are excluded here and announced by their own note: they are NOT slices the provider
       // cannot express — it accepted them and then failed — and one note claiming both would make the
       // run's own record of WHY a territory went unsearched wrong.
-      const capabilityDeferred = (joinRes.deferred ?? []).filter((d) => !isProviderHardErrorReason(d.reason));
+      // And the slices a check could not prove ran, taken out of the band (searchesOpen above): announced on their own.
+      const takenOut = new Set((Array.isArray(searchesOpen?.slices) ? searchesOpen.slices : []).map((s) => s.qid));
+      const capabilityDeferred = (joinRes.deferred ?? []).filter((d) => !isProviderHardErrorReason(d.reason) && !takenOut.has(d.qid));
       if (capabilityDeferred.length) {
         runLog(run.runDir, { event: "plan-qids-deferred", count: capabilityDeferred.length,
           qids: capabilityDeferred.slice(0, 8).map((d) => d.qid) });
@@ -17418,17 +17494,23 @@ async function pipelineInner(job, opts = {}) {
     // a run that delivers carries neither. A rate limit and a stop never reach this line (both are handled above), and
     // a storage failure is not a covered part: no throw site names one.
     const coveredPart = e instanceof StageFailure ? (e.notCompletedPart ?? null) : null;
-    if (coveredPart && run?.runDir && !readPartNotCompleted(run.runDir, coveredPart)) {
+    const heldRecord = coveredPart && run?.runDir ? readPartNotCompleted(run.runDir, coveredPart) : null;
+    // THE SEARCHES' RECORD GROWS: a failure is routed again while it names a slice the record does not hold yet.
+    const addedSlices = coveredPart === "searches" ? slicesNotYetRecorded(heldRecord, e.excludedSlices) : [];
+    if (coveredPart && run?.runDir && (coveredPart === "searches" ? addedSlices.length > 0 : !heldRecord)) {
       let parked = null;
       try {
-        writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind });
+        writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind,
+          ...(coveredPart === "searches" ? { slices: [...(Array.isArray(heldRecord?.slices) ? heldRecord.slices : []), ...addedSlices] } : {}) });
         const resumesAt = new Date().toISOString();
         // The payload the runner's self-resume needs (job, agent, codename), and the recovery kind, whose stated
         // clock it keeps exactly: now. No recovery attempt is counted, because nothing is being retried.
         sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt: resumesAt, postponedAt: resumesAt,
           codename: run.codename, job, agent, attempt: priorAttempts, reason: String(reason).slice(0, 300), sig: failSig.sig,
           class: failClass, notCompleted: coveredPart });
-        writeRunStatus(ctx, { state: "recovering", failedStage, ...terminalReasonFields(reason), recoveryResumesAt: resumesAt, resetsAt: null });
+        // The cause's payload rides beside the sentence, as on the stop it replaces, so the record still points at it.
+        writeRunStatus(ctx, { state: "recovering", failedStage, ...terminalReasonFields(reason), recoveryResumesAt: resumesAt, resetsAt: null,
+          reasonDetail: reasonDetail ? abbrev(String(reasonDetail).replace(/\s+/g, " ").trim(), 600) : null });
         rollupStatus(run.studioRoot);
         runLog(run.runDir, { event: "part-not-completed", part: coveredPart, stage: failedStage, sig: failSig.sig, class: failClass,
           terminalKind: terminalKind ?? null, resumesAt });

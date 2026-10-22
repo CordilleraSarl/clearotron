@@ -1173,9 +1173,13 @@ function whereItStandsSection(findings, opts) {
     if (!rawByKey.has(key)) rawByKey.set(key, []);
     rawByKey.get(key).push(c);
   }
+  // A TERRITORY AN OPEN ROW COVERS IS NEVER CHIPPED "Nothing found": a planned slice there was never searched, so it
+  // reads as clean nowhere. A territory where a finding sits keeps its band row.
+  const open = new Set((plan && Array.isArray(plan.open) ? plan.open : []).map(String));
   const withF = [], clean = [];
   for (const [key, raws] of rawByKey) {
     const c = raws.find((r) => bandBy.has(r)) ?? raws[0];
+    if (!(bandBy.has(c) || bandBy.has(key)) && (open.has(key) || raws.some((r) => open.has(r)))) continue;
     // THE NAME IS LOOKED UP ON THE ALIASED KEY, NOT THE RAW CODE. The register writes the EUIPO and
     // ISO spellings — EM and GB — and `alias` maps those to the codes a reader knows, EU and UK. The
     // name was resolved from the RAW code, which has no entry under either spelling, so it fell back
