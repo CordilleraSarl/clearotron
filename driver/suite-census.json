@@ -1917,6 +1917,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-synthesis-retry-is-handed-the-research-its-earlier-attempt-got.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-taken-port-is-retried-whatever-shape-the-result-has.test.mjs": {
           "tests": 4,
           "asserts": 16,

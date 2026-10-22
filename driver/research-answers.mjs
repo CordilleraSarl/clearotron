@@ -18,9 +18,15 @@
 // key of a retry of it (`<key>-rerun<n>`). Another stage's answers, or another session that merely shares a suffix, are
 // never a stage's own.
 //
+// A LATER ATTEMPT IS HANDED THEM AS A FILE, never in its message. On that test run the first attempt's answers came to
+// about 280 KB with their questions, beside a 268 KB message, and a resumed pass after two failed attempts would carry
+// both. So they are written to `research-answers.md` in the run folder, one question and its answer per line, and the
+// message says how many there are and how to find one: by the owner's name, with the artifact search the stage holds.
+// A first attempt has none, and its message is unchanged.
+//
 // A pure leaf: node:fs, node:path and shared/driver-dir.mjs only, so the research server can import it.
-import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { appendFileSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 
 export const RESEARCH_ANSWERS_FILE = "research-answers.jsonl";
@@ -62,4 +68,41 @@ export function researchAnswersFor(runDir, sessionKey) {
     byTask.set(row.task, { task: row.task, text: row.text, ts: String(row.ts ?? "") });
   }
   return [...byTask.values()].sort((a, b) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0));
+}
+
+/** The file a later attempt is handed, in the run folder, where the artifact search reaches and `_driver/` is not. */
+export const RESEARCH_ANSWERS_MD = "research-answers.md";
+
+const oneLine = (s) => String(s ?? "").replace(/\s*\n\s*/g, " ").trim();
+
+/** One question and its answer on one line, as the artifact search hands back a line: line breaks become spaces. PURE. */
+export const researchAnswerLine = (n, { task, text }) => `Question ${n}: ${oneLine(task)} Answer ${n}: ${oneLine(text)}`;
+
+/**
+ * Hand a later attempt of the stage the answers its earlier attempts got: write them to `research-answers.md` in the run
+ * folder, one question and its answer per line, and return how many. Nothing is written when there are none, and 0 is
+ * returned when the file could not be written: a message must never name a file that is not there. IMPURE.
+ */
+export function handResearchAnswers(runDir, sessionKey) {
+  const answers = researchAnswersFor(runDir, sessionKey);
+  if (!answers.length) return 0;
+  try {
+    const p = join(runDir, RESEARCH_ANSWERS_MD);
+    writeFileSync(`${p}.tmp`, answers.map((a, i) => researchAnswerLine(i + 1, a)).join("\n") + "\n");
+    renameSync(`${p}.tmp`, p);
+  } catch { return 0; }
+  return answers.length;
+}
+
+/**
+ * The block a later attempt's message ends with, or "" when it was handed no answers. The model reads it, so its words
+ * change only as model-facing wording does. PURE.
+ */
+export function researchAnsweredBlock(n) {
+  if (!(n > 0)) return "";
+  const asked = n === 1 ? "asked 1 question and got its answer" : `asked ${n} questions and got their answers`;
+  return `RESEARCH THIS RUN HAS ALREADY ANSWERED: an earlier attempt of this stage ${asked}. They are in ${RESEARCH_ANSWERS_MD}, `
+    + "one question and its answer per line. Before you ask about a finding's owner and mark, search that file for the owner's name "
+    + "with search_run_artifacts. Where one of them asked about that owner and mark for the same field and country, use its answer as "
+    + "that finding's check, cite its URL and record it as you would a fresh one; ask only what none of them covers.";
 }

@@ -34,6 +34,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+import { handResearchAnswers } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
@@ -4735,9 +4736,16 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
-  if (name === "register-digest" || name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  // The writer is also handed the research its earlier attempts got (research-answers.mjs), written to the run folder when
+  // the message is built: none on a first attempt, so its message is unchanged.
+  if (name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths),
+    researchAnswered: ctx.run ? handResearchAnswers(ctx.paths.runDir, stageSessionKey(ctx, name)) : 0 };
   return ctx;
 }
+
+/** A stage's session key, which its retries extend with `-rerun<n>`. One statement, read where a stage is dispatched. */
+export const stageSessionKey = (ctx, name, keyAxis = "") => `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`;   // @internal
 
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
@@ -4972,7 +4980,7 @@ async function stageOnce(name, ctx, opts = {}) {
     thinking,
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
     // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
-    sessionKey: opts.sessionKey ?? `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`,
+    sessionKey: opts.sessionKey ?? stageSessionKey(ctx, name, keyAxis),
     timeoutSec: derivedLimit.sec ?? def.timeoutSec,
     derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
     stallSec: def.stallSec,     // per-stage stall override (heavy stages); undefined → global CLEAROTRON_STALL_MS
