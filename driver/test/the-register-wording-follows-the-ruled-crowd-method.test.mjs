@@ -55,3 +55,11 @@ test("the crowd bound takes a crowd's majors from it by jurisdictions, and no lo
   for (const gone of ["+ its per-major + phonetic slices", "run its per-major / phonetic", "materiality is judgment's call (Layer B)"])
     assert.ok(!line.includes(gone), `the crowd bound still says "${gone}"`);
 });
+
+test("the unit manual lets a narrowing stop at the first list it can read", () => {
+  const unit = flat("unit.md");
+  assert.ok(unit.includes("- **sample or self-accept** — no top-N, no per-jurisdiction 3-fetch ceiling, no switch-to-exact-standalone-as-enumeration. "
+    + "The tool enumerates or reports incomplete; a crowd is narrowed by the steps above, and the narrowing stops at the first list you can read."));
+  for (const gone of ["no \"narrow to tractable and stop\"", "there is no in-between for you to author"])
+    assert.ok(!unit.includes(gone), `the unit manual still says "${gone}"`);
+});
