@@ -14,8 +14,8 @@
 // blocks, replace owned qids, drop stale skipped-fringe blocks, temp+rename write), the error:true stamp
 // (a provider error is never confusable with a sanctioned crowd), and the one in-tool retry per call.
 
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
@@ -376,15 +376,22 @@ export function makeExecutePlan(deps) {
     }
     const refused = [];
     // The follow-ups this axis's band already answers, read once and only when the net meets a question sent before:
-    // an answered one adds nothing when it is sent again, and a failed one counts again.
+    // an answered one adds nothing when it is sent again, and a failed one counts again. A unit whose pass was killed at
+    // its time limit is parked: its band is renamed (`<band>.tainted-<n>`) so the resume runs the unit again, and the
+    // re-run sends the same follow-ups. Their answers are in the renamed band, so they count nothing either.
     let answeredQids = null;
     const answeredBefore = (qid) => {
       if (!answeredQids) {
         answeredQids = new Set();
-        try {
-          const prior = JSON.parse(readFileSync(outPath, "utf8"));
-          for (const b of Array.isArray(prior) ? prior : []) if (b?.qid && b.error !== true) answeredQids.add(String(b.qid));
-        } catch { /* no band yet: nothing answered */ }
+        let parked = [];
+        try { parked = readdirSync(dirname(outPath)).filter((f) => /^\.tainted-\d+$/.test(f.slice(basename(outPath).length)) && f.startsWith(basename(outPath))); }
+        catch { parked = []; }
+        for (const band of [outPath, ...parked.map((f) => join(dirname(outPath), f))]) {
+          try {
+            const prior = JSON.parse(readFileSync(band, "utf8"));
+            for (const b of Array.isArray(prior) ? prior : []) if (b?.qid && b.error !== true) answeredQids.add(String(b.qid));
+          } catch { /* no band yet: nothing answered */ }
+        }
       }
       return answeredQids.has(qid);
     };
