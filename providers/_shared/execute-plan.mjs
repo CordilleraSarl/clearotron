@@ -20,6 +20,9 @@ import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, more
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { FOLLOW_UP_SEARCH_LIMIT, runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
+
+/** How soon after an answer lands it is written to the band, while the call goes on (see `keepAnswers` below). */
+export const KEEP_ANSWERS_AFTER_MS = 2000;
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
@@ -401,6 +404,33 @@ export function makeExecutePlan(deps) {
       } catch { /* no/unreadable prior band — when-guards fall back to skip (parent state unknown) */ }
     }
     const blocks = [];
+    // A CALL CUT OFF MID-WAY KEEPS THE ANSWERS IT HAD. The band used to be written once, when the call ended, so a
+    // call that never ended lost every answer it had received. On a test run of a crowded matter a follow-up call
+    // answered four questions, then kept retrying a search the register's gateway timed out until the worker's time
+    // limit ended it, and the worker's retry asked the four again. Shortly after an answer lands, the band is now
+    // written with every answer the call holds, merged as the final write merges, at most once per interval. The
+    // final write below still applies the whole rule.
+    let keepTimer = null;
+    const keepAnswers = () => {
+      keepTimer = null;
+      if (!blocks.length) return;
+      try {
+        const have = new Set(blocks.map((b) => b?.qid).filter(Boolean));
+        let others = [];
+        try {
+          const existing = JSON.parse(readFileSync(outPath, "utf8"));
+          if (Array.isArray(existing)) others = existing.filter((b) => b && typeof b === "object" && !have.has(b.qid));
+        } catch { /* no band yet */ }
+        mkdirSync(dirname(outPath), { recursive: true });
+        writeFileSync(`${outPath}.tmp`, JSON.stringify([...blocks, ...others], null, 2) + "\n");
+        renameSync(`${outPath}.tmp`, outPath);
+      } catch { /* keeping answers early must never break a search: the final write still runs */ }
+    };
+    const keepAnswersSoon = () => {
+      if (keepTimer || !blocks.length) return;
+      keepTimer = setTimeout(keepAnswers, KEEP_ANSWERS_AFTER_MS);
+      keepTimer.unref?.();
+    };
     const dispatchEntry = async (e) => {
       const base = { qid: e.qid, query: describeEntry(e) };
       // ── phase 3: a slice the ACTIVE PROVIDER CANNOT EXECUTE never becomes a weaker query ──────────
@@ -647,6 +677,7 @@ export function makeExecutePlan(deps) {
           reason: `provider error — unhandled executor fault on this entry, which was degraded so the rest of the plan could run: ${faultText(err, "plan entry")}`.slice(0, 400) });
         stateByQid.set(e?.qid, "error");
       }
+      keepAnswersSoon();
     };
 
     for (const e of targeted.filter((x) => !x.when)) await runEntry(e);
@@ -686,6 +717,7 @@ export function makeExecutePlan(deps) {
       if (Array.isArray(existing)) preserved = existing.filter((b) => b && typeof b === "object" && !owned.has(b.qid));
     } catch { /* no/unreadable prior band — fresh write */ }
 
+    if (keepTimer) { clearTimeout(keepTimer); keepTimer = null; }
     mkdirSync(dirname(outPath), { recursive: true });
     // temp+rename: a fail-closed reader sees the old complete band or the new one, never a torn write.
     writeFileSync(`${outPath}.tmp`, JSON.stringify([...blocks, ...preserved], null, 2) + "\n");
