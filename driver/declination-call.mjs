@@ -113,13 +113,13 @@ export const DECLINATION_REASONS = Object.freeze({
   },
   "off-field-not-major": {
     discretionary: true,
-    rules: "synthesis-rules.md:276-278",
+    rules: 'synthesis-rules.md, "Commercial awareness is majors only"',
     gloss: "an off-field name that is not a major brand, an active dispute or proceeding, or a "
       + "well-known enforcer — omitted, never listed for completeness",
   },
   "not-worth-the-line": {
     discretionary: true,
-    rules: "synthesis-rules.md:273-275",
+    rules: 'synthesis-rules.md, "Promote-or-omit"',
     gloss: "promote-or-omit: it fits none of the four manageable categories and is not relevant enough "
       + "to drive the read, so it is not worth the lawyer's line",
   },
