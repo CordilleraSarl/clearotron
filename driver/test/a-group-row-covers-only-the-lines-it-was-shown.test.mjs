@@ -158,13 +158,15 @@ test("band_lookup pages the lines the goods test could not place, and logs them 
 });
 
 test("a group's row answers a floor only in a group of a thousand records or more", async () => {
-  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
+  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm, servedLines } = await import("../placement-form.mjs");
   const { reconcileFloorDuty } = await import("../floor-duty.mjs");
   const { shape, input } = crowded();
   const served = { lines: new Set(shape.groups.b.list.map((l) => l.key)), records: new Set() };
   const u = unionPlacementForm(null, { rows: [ROW] }, { ...input, served });
   const entries = parsePlacementForm(JSON.stringify(u.form)).set_aside;
-  const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(entries, buildSelectionIndex(input), input.groups, input.floors) });
+  // Every line was served, so the row covers every floor: a floor is covered only once its line has been read.
+  const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(entries, buildSelectionIndex(input), input.groups, input.floors,
+    { served: servedLines(input.groups, served, buildSelectionIndex(input)) }) });
   assert.equal(input.floors.length, CROWDED_GROUP_RECORDS, "guard: every line of the crowded (b) is a floor");
   assert.equal(duty.undischarged_by_seat, 0, "a crowded group's row is the crowded field's block: it answers its floors");
 });

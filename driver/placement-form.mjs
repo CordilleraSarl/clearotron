@@ -220,12 +220,12 @@ export const groupRowCoversFloors = (groups, g) => g === "b" && (groups?.b?.reco
 
 /**
  * May the group's row answer for THIS floor line? Where `groupRowCoversFloors` allows a row to cover floors, and
- * only once the line has been read: the page listing it was served (`servedLines`). On a delivered test run, a crowd's
- * row stood on its first page for two identical live marks on its second and seventh pages, which placement never
- * read. Given no record of what was served, the group rule the run was placed under stands. PURE.
+ * only once the line has been read: the page listing it was served (`servedLines`, which is empty where placement
+ * read nothing or the run kept no record of its reading). On a delivered test run, a crowd's row stood on its first
+ * page for two identical live marks on its second and seventh pages, which placement never read. PURE.
  */
-export const groupRowCoversFloorLine = (groups, g, key, served = null) =>
-  groupRowCoversFloors(groups, g) && (served == null || Boolean(served.has?.(key)));
+export const groupRowCoversFloorLine = (groups, g, key, served) =>
+  groupRowCoversFloors(groups, g) && Boolean(served?.has?.(key));
 
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run

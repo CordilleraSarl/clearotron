@@ -59,12 +59,12 @@ test("once every page is read the row covers every floor, and nothing is owed", 
   assert.equal(owed(input, served, u.form), 0);
 });
 
-test("the cover is per line: only a crowded (b) may cover a floor, only once read, and with no record of reading the group rule stands", () => {
+test("the cover is per line: only a crowded (b) may cover a floor, and only once its line was read", () => {
   const { shape, input } = crowded();
   const key = shape.groups.b.list[0].key;
   assert.equal(groupRowCoversFloorLine(input.groups, "b", key, new Set([key])), true);
   assert.equal(groupRowCoversFloorLine(input.groups, "b", key, new Set()), false);
-  assert.equal(groupRowCoversFloorLine(input.groups, "b", key, null), true, "a run with no record of what was read keeps its group rule");
+  assert.equal(groupRowCoversFloorLine(input.groups, "b", key, null), false, "no record of reading is nothing read");
   assert.equal(groupRowCoversFloorLine(input.groups, "a", key, new Set([key])), false, "a row on (a) never answers a floor");
 });
 
