@@ -27,10 +27,11 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
 export const NOT_COMPLETED_DIR = "not-completed";
 
 // The covered parts. `assessment` is the run's overall assessment: placement, the register write-up and synthesis, and
-// everything built from them. `overview` is the report overview, the conclusion under the rating. `delivery` is the
+// everything built from them. `review` is the first review of the assessment, whose verdict the sign-off is. `overview`
+// is the report overview, the conclusion under the rating. `delivery` is the
 // changed-material check before publishing: it never delivers past staleness, and its record buys the report one more
 // assembly from the current material instead of the stop notice.
-export const NOT_COMPLETED_PARTS = Object.freeze(["assessment", "overview", "delivery"]);
+export const NOT_COMPLETED_PARTS = Object.freeze(["assessment", "review", "overview", "delivery"]);
 
 /** The record's path for `part`. */
 export function notCompletedPath(runDir, part) {

@@ -212,7 +212,9 @@ function checks(runDir, log) {
   const skeptic = stageEnded(runDir, "skeptic");
   if (skeptic) failed.push(["the reviewer's pass", skeptic.fail]);
   const recheck = stageEnded(runDir, "narrative-refutation");
-  if (recheck) failed.push(["the review's re-check", recheck.fail]);
+  const reviewOpen = readPartNotCompleted(runDir, "review");
+  if (reviewOpen) failed.push(["the review, not completed", reviewOpen.reason ?? recheck?.fail]);
+  else if (recheck) failed.push(["the review's re-check", recheck.fail]);
   const rollback = failedStep(log, "corrective-cycle-receipt", "corrective-rollback");
   if (rollback) failed.push(["the corrective pass, rolled back", rollback.reason]);
   const crowd = failedStep(log, "crowd-context", "crowd-context-failed");

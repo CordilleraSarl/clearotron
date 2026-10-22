@@ -13919,9 +13919,16 @@ async function pipelineInner(job, opts = {}) {
       // could-not-look rather than as a source this deployment does not have.
       ctx.caseLawSources = caseLawSourceRows(caseLawInventory(process.env));
     } catch { ctx.caseLawSources = []; }
+    // THE FIRST REVIEW, WHERE IT COULD NOT BE COMPLETED (parts-not-completed.mjs). Its recovery was spent, so the report
+    // delivers the rated findings with the band alone and no verdict sentence, as a review that signs nothing already
+    // renders. No sign-off is recorded, because nobody gave one, and the corrective pass, which answers a review's
+    // flags, has none to answer. The workbook's shipped "Machine QC" row records the review as not completed: it reads
+    // the review's last attempt, which failed, and nothing runs it again on this pass.
+    const reviewOpen = readPartNotCompleted(run.runDir, "review");
+    if (reviewOpen) runLog(run.runDir, { event: "review-not-completed-delivery", stage: reviewOpen.stage ?? null });
     const [caseLawRes, firstRef] = await Promise.all([
       needCaseLaw ? stage("case-law", ctx) : Promise.resolve(null),   // non-fatal: a citation gap degrades, not blocks
-      refute(ctx),
+      reviewOpen ? Promise.resolve({ ok: true, verdict: null, notCompleted: true }) : refute(ctx),
     ]);
     if (caseLawRes && !caseLawRes.ok) note(`case-law grounding failed (non-fatal): ${caseLawRes.fail}`);
 
@@ -13933,10 +13940,10 @@ async function pipelineInner(job, opts = {}) {
     // The fallback branch is deliberate and not decoration: when the ladder truly recorded no condition,
     // saying so is honest, and inventing one would be the same guess in a more confident voice.
     if (!firstRef.ok)
-      throw new StageFailure("narrative-refutation", firstRef.fail
+      throw Object.assign(new StageFailure("narrative-refutation", firstRef.fail
         ? `${firstRef.fail} — the refutation ladder exhausted retries and fallback on it`
-        : "failed after retries + fallback (the ladder recorded no condition)");
-    let verdict = firstRef.verdict;
+        : "failed after retries + fallback (the ladder recorded no condition)"), { notCompletedPart: "review" });
+    let verdict = firstRef.verdict;   // null where the review was not completed: no sign-off, the band alone
     runLog(run.runDir, { event: "verdict", verdict });
     writeRunStatus(ctx, signoffPatch(verdict));
     note(`refutation verdict: ${verdict}`);
@@ -16254,8 +16261,10 @@ async function pipelineInner(job, opts = {}) {
         const axis = label.includes(":") ? label.slice(label.indexOf(":") + 1) : null;
         try { return stageInputs(bare, P, { axes: ctx.axes, axis, registerOnly: ctx.registerOnly }); } catch { return []; }
       };
-      // The overview not completed has no stage to be stale: its shell is the driver's own, and nothing re-runs it.
-      const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview"));
+      // A part not completed has no stage to be stale: the overview's shell is the driver's own, the review is not run
+      // again, and nothing re-runs either.
+      const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview")
+        && !(reviewOpen && l === "narrative-refutation"));
       staleStages = [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
         ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
       // A DELIVERY-CHECK REPAIR THAT CHANGED ONLY THE FINDINGS RECORD leaves the narrative's bytes, and so the

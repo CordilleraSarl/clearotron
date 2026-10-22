@@ -1659,6 +1659,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-whose-first-review-cannot-finish-delivers-its-rated-findings.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-whose-follow-up-allowance-is-spent-still-delivers.pipeline.test.mjs": {
           "tests": 1,
           "asserts": 16,
