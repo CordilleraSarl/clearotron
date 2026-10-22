@@ -405,6 +405,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-crowd-narrowed-in-its-field-markets-is-not-owed-the-major-markets.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-crowd-narrows-in-the-one-market-list-and-says-what-reading-it-would-change.test.mjs": {
           "tests": 3,
           "asserts": 12,
@@ -702,6 +708,18 @@
         "a-frame-call-with-places-per-name-passes-the-gate.test.mjs": {
           "tests": 2,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-frame-reopen-follow-up-asks-across-the-orders-scope.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-frame-reopen-follow-up-reads-what-could-change-the-advice.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -1491,6 +1509,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-with-no-record-page-is-cited-not-linked.test.mjs": {
           "tests": 2,
           "asserts": 8,
@@ -1590,6 +1614,12 @@
         "a-report-whose-overview-cannot-finish-delivers-its-rating-and-cards.pipeline.test.mjs": {
           "tests": 2,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-research-answer-is-kept-in-the-run-for-a-later-attempt-of-its-stage.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -1914,6 +1944,12 @@
         "a-switched-off-feature-says-so-and-says-what-to-change.test.mjs": {
           "tests": 4,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-synthesis-retry-is-handed-the-research-its-earlier-attempt-got.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -2986,8 +3022,8 @@
           "todos": 0
         },
         "coverage-ledger.test.mjs": {
-          "tests": 32,
-          "asserts": 111,
+          "tests": 31,
+          "asserts": 103,
           "skips": 0,
           "todos": 0
         },
@@ -5147,7 +5183,7 @@
         },
         "register-steering.test.mjs": {
           "tests": 9,
-          "asserts": 72,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },
@@ -6898,8 +6934,8 @@
           "todos": 0
         },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
-          "tests": 8,
-          "asserts": 20,
+          "tests": 9,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -7158,6 +7194,12 @@
         "the-worklist-comes-from-the-call-not-the-document.test.mjs": {
           "tests": 3,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-write-up-owes-headline-entries-and-adopts-sheet-two-as-placed.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -8396,6 +8438,12 @@
         "providers/_shared/test/a-crowded-stack-is-counted-and-the-reading-step-decides.test.mjs": {
           "tests": 5,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/a-follow-up-answered-before-a-park-counts-once-after-the-resume.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

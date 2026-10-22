@@ -2450,14 +2450,17 @@ export function parseRegisterPlan(raw) {
 //   no-list                 a wider question with none: the reading step decides it, with its count on the record.
 //   required-covered        the identical mark's own question, with a retrieved list in every class it asks, in
 //                           every main market (the order's countries, else the customer's priority markets, else the
-//                           major markets), or worldwide where the run names none.
+//                           markets its market step used, marketStepMarkets, else the major markets), or worldwide
+//                           where the run names none.
 //   required-not-covered    the identical mark's own question without that: the class and market cells no retrieved
 //                           list covers are named in `not_covered`.
 // A refused or failed question is not a crowd: the join keeps those as `outstanding` and `missing`. Each reader (the
 // receipt, the coverage form, the band shape) works this out from the blocks it reads itself. It changes no row's
 // state and no sentence. PURE.
 const WORLDWIDE = "worldwide";
-export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
+// What a narrowing is, read off a plan: its questions by the question each narrows, and the test of one. Shared by the
+// crowd's record below and by the markets a market step used. PURE.
+function narrowingOf(plan) {
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
   const identicalTerms = identicalMarkTerms(plan);
   const childrenOf = new Map();
@@ -2486,6 +2489,34 @@ export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
     if (pg.length) return cg.length > 0 && cg.every((g) => pg.includes(g));
     return !cg.length || !clientGoods.size || cg.every((g) => clientGoods.has(g));
   };
+  return { entries, identicalTerms, childrenOf, marketsOf, regionsOf, classesOf, narrows };
+}
+
+/**
+ * THE MARKETS THE IDENTICAL MARK'S MARKET STEP USED. An order that names no countries, for a customer who names no
+ * priority markets, is narrowed in the markets the customer's field and brand point to, with the major markets as
+ * their fallback (W8). These are the markets of every narrowing, at any depth, of the identical mark's own questions
+ * that asks fewer markets than the question it narrows; [] when no market step ran, and the major markets then stand.
+ * PURE.
+ */
+export function marketStepMarkets(plan) {
+  const { entries, identicalTerms, childrenOf, regionsOf, narrows } = narrowingOf(plan);
+  const used = new Set();
+  const walk = (parent, seen) => {
+    for (const c of childrenOf.get(parent.qid) ?? []) {
+      if (seen.has(c.qid) || !narrows(parent, c)) continue;
+      seen.add(c.qid);
+      const pr = regionsOf(parent), cr = regionsOf(c);
+      if (cr.length && (!pr.length || cr.length < pr.length)) for (const m of cr) used.add(m);
+      walk(c, seen);
+    }
+  };
+  for (const e of entries) if (e?.qid && asksIdenticalMark(e, identicalTerms)) walk(e, new Set([e.qid]));
+  return [...used];
+}
+
+export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
+  const { entries, identicalTerms, childrenOf, marketsOf, regionsOf, classesOf, narrows } = narrowingOf(plan);
   const stateOf = (qid) => { const b = byQid.get(qid); return b && b.error !== true ? String(b.state ?? "").toLowerCase() : null; };
   const retrievedUnder = (e, seen) => {
     const out = [];

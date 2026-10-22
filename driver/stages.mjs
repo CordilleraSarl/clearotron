@@ -16,6 +16,7 @@
 
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
+import { researchAnsweredBlock } from "./research-answers.mjs";   // the research an earlier attempt got, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
@@ -2190,7 +2191,7 @@ export const STAGES = {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
-    const inScope = Array.isArray(job?.classes) && job.classes.length ? job.classes.map(String).join(", ") : null;
+    const inScope = inScopeClassesOf(job);
     // WS2 (B4) — in plan mode the frozen register plan DICTATES this axis's calls (the model
     // reasoned once at variants time; the funnel executes, it never re-improvises the queries — THE
     // F2 fix). Band blocks carry the qid so fan-in identity-joins plan⇄band. Legacy (no plan): the
@@ -2278,9 +2279,7 @@ export const STAGES = {
       // ION/copper-foundry: these lines name the tool the unit is expected to class-scope, so they MUST
       // follow the lane too — naming register_enumerate to a unit that cannot call it is what taught ION's
       // incumbent-class pass that the tool was broken.
-      inScope
-        ? `IN-SCOPE NICE CLASSES = [${inScope}]. Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to these — pass nice_classes:[${inScope}] AND in_scope_classes:[${inScope}] on every ${supplementalLane ? "proposal" : "call"}. ${supplementalLane ? "A proposal" : "An enumerate"} WITHOUT nice_classes (all-class default / starts_with / ends_with / phonetic / fuzzy) is FORBIDDEN: it pulls an all-45-class crowd that floods the band and times the stage out — it is not breadth. A bare saturated element with no class filter is a COUNT-ONLY descriptor (register_search limit:1), never enumerated. ONLY exception: the exact-IDENTICAL cross-class merch check (nice_classes:[25], match_mode:exact).`
-        : `Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to the matter's in-scope Nice classes (from the matter frame) via nice_classes — an unscoped all-class ${supplementalLane ? "proposal" : "enumerate"} is FORBIDDEN (it floods the band + times out the stage). Only exception: the exact-identical cross-class merch check (nice_classes:[25]).`,
+      inScopeClassLine(inScope, supplementalLane),
       // CROWD BOUND: gate the dangerous-category substring enumeration on the class-scoped RESULT (tractable
       // vs crowd), not the manifest label. A slice that returns a crowd is no longer terminal (ruled 2026-09-25):
       // the listing ceiling is a call limit, never a decision point, and the unit decides on the crowd as on the
@@ -2629,6 +2628,7 @@ export const STAGES = {
       // handed to it AS DATA by the driver (runDigest appends the PLACEMENT RULINGS TAIL block), never
       // left to the model to remember or to fetch back.
       `Adopt or override each placement BY ENGAGING ITS reason — an override quotes the reason it contradicts (never silently re-tiers), and a kept tier may still tighten a label while reusing the reason. On a corrective/repair pass, do NOT re-read the whole placement file: the tiers are in ${P.placementModel}, and the md's rulings tail is handed to you verbatim in this dispatch (the PLACEMENT RULINGS TAIL block) — adjudicate against it there.`,
+      `A sheet-2 placement is adopted as it stands — the driver writes its Sheet-2 row with placement's reason — unless you override it; you send rows for the headline positions and for the placements you override.`,
       // judgment-relocation (2026-06-23): the COMPLETE named band — run the relevance gate over the REAL
       // material. PR-8: read via the band tools (shape whole + logged lookups), never by slicing the raw file.
       placementSetAsideBlock(placementSetAsides),
@@ -3100,7 +3100,7 @@ export const STAGES = {
         why: "THE SECOND frame_scope_missing. The driver holds the value in _driver/framework.json, writes it into the dispatch, asks the model to retype it, and fails the file when the retyping does not match its own copy. The audit table groups it under the tool-written envelope row; pre-bound is the sharper discharge and either removes it from the model",
       },
     },
-    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth, placementSetAsides }) => lines(
+    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth, placementSetAsides, researchAnswered }) => lines(
       // C4 — pharma matters (class 5 / pharma-shaped goods) FORCE-READ the field module: the
       // therapeutic-goods discipline, no-use ≠ safety (pipelines run 5-10y), practitioner/pharmacist
       // confusion. Conditional read (frameworkFor pattern); doctrine TABLES live elsewhere, untouched.
@@ -3443,7 +3443,15 @@ export const STAGES = {
       `THE PER-FINDING WRITE-UPS ARE NOT A FIELD, and that is a ruling rather than an omission: the report card holds the single authored wording for a finding and the typed fields carry the reads it is written from. Do not restate a finding's reasoning in the narrative sections — the spine is what the findings mean TOGETHER, which is the read no other artifact on this run holds.`,
       `COVERAGE ROWS AND ASK ANSWERS ARE SENT ONCE, ON THE RECORD, AND THE DRIVER RENDERS THEM INTO THE NARRATIVE TOO. Do not repeat them as narrative sections — a second authored copy is refused, because two copies of one statement can disagree and it is the record's copy that ships to the report, the workbook and the portal.`,
       `YOUR COVERAGE ROWS ARE JOINED TO THIS RUN'S PLAN-EXECUTION RECEIPT AS YOU SEND THEM. \`confirmed-clean\` asserts a search ran and came back empty, so a confirmed-clean row naming a slice the receipt does not record as executed is REFUSED — in this turn, where restating it costs nothing, rather than at a gate whose only repair is re-asking this whole stage. Name the area as the receipt names the slice. The honest alternatives are \`coverage-limited\` and \`not-searched\`, and neither is a worse answer than a clean claim that is not true.`,
+      // THE RESEARCH AN EARLIER ATTEMPT GOT, handed on as a file (research-answers.mjs). Last, and absent on a first
+      // attempt, whose message is unchanged.
+      researchAnsweredBlock(researchAnswered),
     ),
+    // A FRESH RETRY IS REBUILT, so it is handed the research its earlier attempts got. Nothing else in this stage's
+    // context changes between attempts: the findings surface and its positions are frozen for the stage, and placement's
+    // set-asides do not move while it writes. So a rebuilt first attempt is the message it replaces, byte for byte, and a
+    // retry's differs only by the block; the answers are re-read where the message is built (pipeline.mjs messageCtxFor).
+    refreshCtx: (ctx) => ctx,
   },
 
   "case-law": {
@@ -4184,14 +4192,36 @@ export const supplementalLaneResumeLine = (P, axis) =>
 // questions they sent had been asked before in the same run.
 export const PLAN_ENTRY_RERUN_RULE = `This axis's plan has already run. Do not call register_execute_plan without "qids": that runs every entry on the axis again. To ask one plan entry again, name only that entry in "qids".`;
 
+// THE REGISTER UNIT'S CLASS LINE, the same in its opening message and in every follow-up (a follow-up is a fresh
+// session, and a class it is never told is a class it cannot pin). PURE.
+export const inScopeClassesOf = (job) => (Array.isArray(job?.classes) && job.classes.length ? job.classes.map(String).join(", ") : null);
+export function inScopeClassLine(inScope, supplementalLane) {
+  return inScope
+    ? `IN-SCOPE NICE CLASSES = [${inScope}]. Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to these — pass nice_classes:[${inScope}] AND in_scope_classes:[${inScope}] on every ${supplementalLane ? "proposal" : "call"}. ${supplementalLane ? "A proposal" : "An enumerate"} WITHOUT nice_classes (all-class default / starts_with / ends_with / phonetic / fuzzy) is FORBIDDEN: it pulls an all-45-class crowd that floods the band and times the stage out — it is not breadth. A bare saturated element with no class filter is a COUNT-ONLY descriptor (register_search limit:1), never enumerated. ONLY exception: the exact-IDENTICAL cross-class merch check (nice_classes:[25], match_mode:exact).`
+    : `Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to the matter's in-scope Nice classes (from the matter frame) via nice_classes — an unscoped all-class ${supplementalLane ? "proposal" : "enumerate"} is FORBIDDEN (it floods the band + times out the stage). Only exception: the exact-identical cross-class merch check (nice_classes:[25]).`;
+}
+
+/**
+ * A REGISTER-UNIT FOLLOW-UP CARRIES THE ONE MARKET LIST AND THE CLASS LINE. The manual's narrowing step reads "from
+ * the one list your opening message names", and a follow-up is a fresh session that never saw the opening message:
+ * without these lines the step points at nothing, and the markets are the model's to pick. Empty when the caller has
+ * no order to read them from. PURE.
+ */
+export function followupScopeLines({ job = null, profile = null, supplementalLane = false } = {}) {
+  if (!job) return [];
+  const inScope = inScopeClassesOf(job);
+  return [narrowingOrderLine(job, profile, inScope), inScopeClassLine(inScope, supplementalLane)];
+}
+
 // Step-2.6 skeptic escalated this axis → resume its session to defend or adjust.
-export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLane = false }) {
+export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLane = false, job = null, profile = null }) {
   return lines(
     `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior search is in your band artifact (${P.registerBand(axis)}), and your output file is ${P.registerUnit(axis)}.`,
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
     `Do NOT restart the search from scratch. The Step-2.6 skeptic raised the concerns below. For EACH concern relevant to THIS axis: either (a) defend your existing finding using evidence already in your band artifact, or (b) run ONLY the narrow additional sub-query the concern requires, then revise.`,
     `Every finding the concerns do not touch stays exactly as it is.`,
     PLAN_ENTRY_RERUN_RULE,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     ``,
     `Skeptic concerns:`,
     flags,
@@ -4203,7 +4233,7 @@ export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLan
 }
 
 // The deadline envelope permits closing this axis's DEFERRED coverage rows before the analysis is written.
-export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalLane = false }) {
+export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalLane = false, job = null, profile = null }) {
   return lines(
     `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior search is in your band artifact (${P.registerBand(axis)}), and your output file is ${P.registerUnit(axis)}.`,
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
@@ -4211,6 +4241,7 @@ export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalL
     rows || `(deferred row(s) for ${axis} — see the Coverage ledger)`,
     PLAN_ENTRY_RERUN_RULE,
     `Run ONLY those deferred sub-queries and update each closed row to confirmed-clean or coverage-limited with the honest reason. Nothing else in the digest changes.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     UNIT_NOTE_REPAIR_TAIL,
   );
 }
@@ -4222,7 +4253,7 @@ export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalL
 // and where band_block_unplanned kills a hand-authored block. It is reached on a lane run whenever the
 // code-side dispatch arm above it cannot run (no executePlan adapter for the active provider, or
 // CLEAROTRON_PLAN_DISPATCH=off), so the contradiction was dispatchable, not theoretical.
-export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false }) {
+export function buildFrameReopenFollowup({ paths: P, axis, directives, supplementalLane = false, job = null, profile = null }) {
   const dom = (directives ?? []).filter((d) => d.severity === "dominant-element");
   const other = (directives ?? []).filter((d) => d.severity !== "dominant-element");
   if (supplementalLane) return lines(
@@ -4230,10 +4261,11 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
     `A blind, frame-INDEPENDENT re-derivation (it never saw this run's framing) found these threats the run did NOT fully scope or search:`,
     ...(directives ?? []).map(directiveLine),
     dom.length
-      ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — PROPOSE the dominant element (and its formative root) via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}): the match_mode-exact NAME-LIST slice AND the contains band, one proposal per material+major in-scope jurisdiction (regions), every proposal pinned to the in-scope classes via nice_classes. The tool runs each proposal through the SAME deterministic executor as the dictated plan and MERGES its qid-stamped block into ${P.registerBand(axis)} ITSELF — it owns the page loop and carries live AND recently-dead records with their status (never date-cut), so there is nothing to sample and nothing to stop at page 0 / top-N. What you must still bound is YOUR OWN per-record detail reading: at most ${reopenFetchCap} records across this whole closure pass, then stop reading detail and reason from the screened band as it stands (a BOUNDED band that is WRITTEN beats an exhaustive one killed at the hard wall that writes NOTHING). A slice the executor cannot exhaust comes back as an "incomplete" block (count + sample + reason) — a descriptor for judgment, NEVER a clean negative. You author NO clearance verdict and NO "confirmed-clean" floor row: the band IS the coverage signal; judgment (Layer B) reads it and decides sufficiency.`
+      ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — PROPOSE the dominant element (and its formative root) via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}): the match_mode-exact NAME-LIST slice AND the contains band, across the order's scope, every proposal pinned to the in-scope classes via nice_classes; a slice that comes back a crowd is narrowed by the steps in unit.md. The tool runs each proposal through the SAME deterministic executor as the dictated plan and MERGES its qid-stamped block into ${P.registerBand(axis)} ITSELF — it owns the page loop and carries live AND recently-dead records with their status (never date-cut), so there is nothing to sample and nothing to stop at page 0 / top-N. A slice the executor cannot exhaust comes back as an "incomplete" block (count + sample + reason) — a descriptor for judgment, NEVER a clean negative. You author NO clearance verdict and NO "confirmed-clean" floor row: the band IS the coverage signal; you decide on each "incomplete" block by the narrowing steps in unit.md, and the write-up rules each slice's coverage.`
       : "",
     other.length ? `For the other item(s), PROPOSE ONLY the narrow additional slice each requires — same register_propose_supplemental call, class-scoped and region-scoped; the tool merges each block into ${P.registerBand(axis)}.` : "",
     `Then reconcile your account of this axis against the band the tools just wrote — the driver renders ${P.registerUnit(axis)} from your call and takes its counts from that band, so the reconciliation is what you SEND, not a file you re-open. You never author, edit, append to or re-save ${P.registerBand(axis)} yourself — the tools own every block and its qid stamp, and a hand-authored block fails the stage. Hand the reconciled note back with \`record_unit_note\`; you open neither file.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     UNIT_NOTE_REPAIR_TAIL,
     SUPPLEMENTAL_LANE_STEERING,
   );
@@ -4242,7 +4274,7 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
     `A blind, frame-INDEPENDENT re-derivation (it never saw this run's framing) found these threats the run did NOT fully scope or search:`,
     ...(directives ?? []).map(directiveLine),
     dom.length
-      ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — re-ENUMERATE the dominant element (and its formative root) with register_enumerate: the match_mode:exact name-list AND the contains band, region-scoped PER material+major in-scope jurisdiction, filtered to the in-scope classes, carrying live AND recently-dead records (with status — never date-cut). register_enumerate owns the page loop for SCREENING: do NOT sample, do NOT stop at page 0 / top-N while screening the crowd (that batch-screen pass is cheap). BUT BOUND the expensive per-record detail-fetch to at most ${reopenFetchCap} records across this whole closure pass — once ${reopenFetchCap} records have been detail-fetched, STOP fetching and record the remaining screened survivors as an "incomplete" block (count + sample + reason: "detail-fetch ceiling ${reopenFetchCap} reached — bounded to fit the time budget"). A BOUNDED coverage-limited band that is WRITTEN beats an exhaustive one that is killed at the hard wall mid-fetch and writes NOTHING. APPEND each call's result as a block to your ${P.registerBand(axis)} band artifact — an "enumerated" block (EVERY record, with its screening facts) for a band you paged to has_more:false, or an honest "incomplete" block (count + sample + reason) for a band/crowd you genuinely could not exhaust. You author NO clearance verdict and NO "confirmed-clean" floor row — the band IS the coverage signal; judgment (Layer B) reads it and decides sufficiency. An "incomplete" block is a descriptor for judgment, NEVER a clean negative. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`
+      ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — re-ENUMERATE the dominant element (and its formative root) with register_enumerate: the match_mode:exact name-list AND the contains band, across the order's scope, filtered to the in-scope classes, carrying live AND recently-dead records (with status — never date-cut). register_enumerate owns the page loop for SCREENING: do NOT sample, do NOT stop at page 0 / top-N while screening the crowd. Read the detail of the records that could change what you tell the client, and record the remaining screened survivors as an "incomplete" block (count + sample + reason). APPEND each call's result as a block to your ${P.registerBand(axis)} band artifact — an "enumerated" block (EVERY record, with its screening facts) for a band you paged to has_more:false, or an honest "incomplete" block (count + sample + reason) for a band/crowd you genuinely could not exhaust. You author NO clearance verdict and NO "confirmed-clean" floor row — the band IS the coverage signal; you decide on each "incomplete" block by the narrowing steps in unit.md, and the write-up rules each slice's coverage. An "incomplete" block is a descriptor for judgment, NEVER a clean negative. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`
       : "",
     other.length ? `For the other item(s), run ONLY the narrow additional sub-query each requires (via register_enumerate) and APPEND its block(s) to ${P.registerBand(axis)}.` : "",
     // The band half of this arm was self-contradictory: the paragraph above orders each result APPENDED as
@@ -4254,6 +4286,7 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
     // so their qids cannot be lost in transcription.
     `Your ${P.registerBand(axis)} band artifact GROWS BY APPENDING: add each new block to the array already on disk and leave every block already in it exactly as it stands, each keeping its "qid" field byte-identical — never re-emit the band whole, because a block you re-type is a block whose qid can be lost, and the plan-execution receipt joins on it (a dropped qid corrupts the audit trail and reads as an axis that never ran).`,
     `Then reconcile the ${P.registerUnit(axis)} digest with the blocks you just appended, preserving everything else.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     UNIT_NOTE_REPAIR_TAIL,
   );
 }
@@ -4267,19 +4300,21 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
 // session never wrote the digest, and the digest it would be patching was left behind by a resume that died
 // at the hard wall — the kill-torn class the run-level rescue refuses to trust as a base. Re-stating the
 // whole contract and writing the whole file is the honest shape for a session starting from nothing.
-export function buildFrameReopenRetryMessage({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false }) {
+export function buildFrameReopenRetryMessage({ paths: P, axis, directives, supplementalLane = false, job = null, profile = null }) {
   if (supplementalLane) return lines(
     `Run a SCOPED register sweep for axis "${axis}" — cover ONLY the near-form threats below. A prior warm resume of this axis TIMED OUT at the hard wall, so start clean; the band artifact for this axis is ${P.registerBand(axis)}.`,
     ...(directives ?? []).map(directiveLine),
-    `PROPOSE each of them via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}) — one proposal per threat, each pinned to the in-scope classes via nice_classes and region-scoped per material+major in-scope jurisdiction. The tool runs every proposal through the deterministic executor and MERGES its qid-stamped block into the band itself, live AND recently-dead records carried with their status (never date-cut). Screen what comes back in full (that pass is cheap), but BOUND YOUR OWN per-record detail reading to at most ${reopenFetchCap} records; a slice the executor cannot exhaust comes back as an honest "incomplete" block (count + sample + reason). A WRITTEN bounded band beats an exhaustive one killed mid-fetch.`,
-    `Then hand the audit note back with \`record_unit_note\` — there is no digest file to re-emit and nothing you write by hand is read; the driver renders ${P.registerUnit(axis)} from your call and takes its counts from the band, so the note is reconciled against the band by construction rather than by you re-typing it. You never author, edit, append to or re-save band blocks yourself either — the tool owns every block and its qid stamp, and a hand-authored block fails the stage. Author NO clearance verdict: the band is the coverage signal; judgment reads it.`,
+    `PROPOSE each of them via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}) — one proposal per threat, each pinned to the in-scope classes via nice_classes and across the order's scope. The tool runs every proposal through the deterministic executor and MERGES its qid-stamped block into the band itself, live AND recently-dead records carried with their status (never date-cut). Screen what comes back in full; a slice the executor cannot exhaust comes back as an honest "incomplete" block (count + sample + reason).`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
+    `Then hand the audit note back with \`record_unit_note\` — there is no digest file to re-emit and nothing you write by hand is read; the driver renders ${P.registerUnit(axis)} from your call and takes its counts from the band, so the note is reconciled against the band by construction rather than by you re-typing it. You never author, edit, append to or re-save band blocks yourself either — the tool owns every block and its qid stamp, and a hand-authored block fails the stage. Author NO clearance verdict: the band is the coverage signal; you decide on each "incomplete" block by the narrowing steps in unit.md, and the write-up rules each slice's coverage.`,
     SUPPLEMENTAL_LANE_STEERING,
   );
   return lines(
     `Run a SCOPED register sweep for axis "${axis}" — cover ONLY the near-form threats below. A prior warm resume of this axis TIMED OUT at the hard wall, so start clean; your band artifact is ${P.registerBand(axis)}.`,
     ...(directives ?? []).map(directiveLine),
-    `Enumerate each via register_enumerate, region-scoped per material+major in-scope jurisdiction, filtered to the in-scope classes, live AND recently-dead (status carried, never date-cut). Screen the crowd fully (cheap), but BOUND the per-record detail-fetch to at most ${reopenFetchCap} records, then write the remaining screened survivors as an "incomplete" block (count + sample + reason). A WRITTEN bounded band beats an exhaustive one killed mid-fetch.`,
-    `APPEND each result as a block to ${P.registerBand(axis)} — that file is yours on this lane and the full write of it is deliberate, because a warm resume died at the hard wall and what is on disk may be kill-torn. The NOTE is not yours: hand it back with \`record_unit_note\` and the driver renders ${P.registerUnit(axis)} from your call. A torn note needs no repair from you — the next accepted call re-renders it whole. Author NO clearance verdict — the band is the coverage signal; judgment reads it. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`,
+    `Enumerate each via register_enumerate, across the order's scope, filtered to the in-scope classes, live AND recently-dead (status carried, never date-cut). Screen the crowd fully; read the detail of the records that could change what you tell the client, then write the remaining screened survivors as an "incomplete" block (count + sample + reason).`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
+    `APPEND each result as a block to ${P.registerBand(axis)} — that file is yours on this lane and the full write of it is deliberate, because a warm resume died at the hard wall and what is on disk may be kill-torn. The NOTE is not yours: hand it back with \`record_unit_note\` and the driver renders ${P.registerUnit(axis)} from your call. A torn note needs no repair from you — the next accepted call re-renders it whole. Author NO clearance verdict — the band is the coverage signal; you decide on each "incomplete" block by the narrowing steps in unit.md, and the write-up rules each slice's coverage. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`,
   );
 }
 

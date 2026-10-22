@@ -41,9 +41,9 @@ If an element triggers Step 2's famous-mark check, you flag it and the web searc
 
 ## Core thesis — archetype-driven analysis
 
-A paralegal looking at "CHART YOUR COURSE" doesn't run a checklist — they recognise the shape (slogan, weak, family is the risk) and search accordingly. This skill does the same.
+A paralegal looking at "SET YOUR PACE" doesn't run a checklist — they recognise the shape (slogan, weak, family is the risk) and search accordingly. This skill does the same.
 
-Classify the mark archetype first. From the archetype, *derive* what matters for THIS mark. Specifics (CHART * COURSE family probes, leet for coined words, transliteration for global scope) are downstream consequences, not separately-mandated rules.
+Classify the mark archetype first. From the archetype, *derive* what matters for THIS mark. Specifics (SET * PACE family probes, leet for coined words, transliteration for global scope) are downstream consequences, not separately-mandated rules.
 
 The manifest is therefore a **mark-search strategy document**, not a checklist output. Archetype + risk theory drive the variant generation; the variant table is the artefact, not the thinking.
 
@@ -55,7 +55,7 @@ These are starting points. A mark can fit a primary archetype and pick up one or
 |---|---|---|---|
 | 1 | **Coined word** | Invented term, no real-world meaning (e.g., LUMENGARDE, XYRELL, KODAK) | Phonetic / visual variants; transliteration; leet substitution; coined-word collisions in unrelated industries; phoneme expansion |
 | 2 | **Descriptive compound** | Multiple real words combining to describe goods/services (e.g., "Arcade Party", "Cavern Crates", "Jelly Royale") | Element-by-element analysis; semantic neighbours; common-combination saturation; crowded-field documentation |
-| 3 | **Slogan** | Imperative or grammatically-complete phrase (e.g., "CHART YOUR COURSE", "RAISE YOUR PLAY", "JUST DO IT") | Family patterns (`X YOUR COURSE`, `CHART * COURSE`, `CHART YOUR *`); verb-swap variants; slang spellings; co-brand wildcards. Tiered: identical/near-identical → same-structure-close-concept → conceptual customisation |
+| 3 | **Slogan** | Imperative or grammatically-complete phrase (e.g., "SET YOUR PACE", "SHARPEN YOUR AIM", "JUST DO IT") | Family patterns (`X YOUR PACE`, `SET * PACE`, `SET YOUR *`); verb-swap variants; slang spellings; co-brand wildcards. Tiered: identical/near-identical → same-structure-close-concept → conceptual customisation |
 | 4 | **Acronym / initialism** | Short letter strings (e.g., "RAIZ8", "CYC", "EA") | Letter-collision searches in target classes; expansion forms (what does it spell out?); ambiguity with stock acronyms |
 | 5 | **Device-led** | Figurative/logo dominant, verbal element secondary or absent | Image searches; dominant verbal element (if any); design-code searches. Often layered as a modifier on top of a primary archetype |
 | 6 | **Famous-element-masked** | Mark contains a real word that is ALSO a famous brand (e.g., "Bloodguard Sabatons" — Sabatons = Swedish metal band; "Twilight Saga" — Saga = published RPG game line) | Dedicated famous-mark search per masked element; dual-meaning analysis; sector-crossover check. Layered as a modifier on top of a primary archetype |
@@ -228,7 +228,7 @@ Pick one **primary** archetype. Pick zero or more **modifiers**. Write a one-lin
 
 - "LUMENGARDE" (single mark) → Coined word. No modifier. Risk: phonetic, transliteration, leet, coined-word collisions.
 - "Dusk: Tales of Lumengarde" → Descriptive compound (DUSK + TALES commons, LUMENGARDE distinctive anchor). No modifier. Risk concentrates on LUMENGARDE element + compound-phrase hit.
-- "CHART YOUR COURSE" → Slogan. No modifier. Risk: family patterns (CHART * COURSE, * YOUR COURSE, CHART YOUR *), verb swaps, slang.
+- "SET YOUR PACE" → Slogan. No modifier. Risk: family patterns (SET * PACE, * YOUR PACE, SET YOUR *), verb swaps, slang.
 - "Bloodguard Sabatons" → Descriptive compound + famous-element-masked (Sabatons = Swedish metal band). Risk: per-element famous-mark search on Sabatons; descriptive-compound axes on the rest.
 - "RAIZ8" → Acronym/initialism (leet form of RAISE). Risk: letter-collision; expansion-form search on RAISE.
 - A logo-led brand with a coined verbal element → Coined word + device-led. Risk: phonetic/transliteration + image search.
@@ -330,8 +330,8 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 
 For multi-word marks where the structure carries meaning (slogans, descriptive compounds), substitute each stem-formative back into the phrase template:
 
-- "RAISE YOUR PLAY" → "LIFTING YOUR PLAY", "RAISE THE PLAY", "RAISING YOUR PLAY", etc.
-- "CHART YOUR COURSE" → "CHARTING YOUR COURSE", "CHART MY COURSE", "CHART THE COURSE", "PLOT YOUR COURSE" (verb swap)
+- "SHARPEN YOUR AIM" → "HONING YOUR AIM", "SHARPEN THE AIM", "SHARPENING YOUR AIM", etc.
+- "SET YOUR PACE" → "SETTING YOUR PACE", "SET MY PACE", "SET THE PACE", "FIND YOUR PACE" (verb swap)
 
 Drop ungrammatical or semantically broken strings. Default: generate liberally; macro-count probes filter.
 

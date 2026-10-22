@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a mock pipeline whose synthesis cannot finish through its park and its resume, on both engines
 //
-// A RUN WHOSE OVERALL ASSESSMENT CANNOT FINISH DELIVERS WHAT IT HOLDS, WITH THE GAP STATED (874).
+// A RUN WHOSE OVERALL ASSESSMENT CANNOT FINISH DELIVERS WHAT IT HOLDS, WITH THE GAP STATED.
 //
 // Synthesis failed, its recovery was spent, and the run used to end with the stop notice and nothing delivered, though
 // it held the register write-up, the web search, the coverage records and the plan. Now the run-level catch records the

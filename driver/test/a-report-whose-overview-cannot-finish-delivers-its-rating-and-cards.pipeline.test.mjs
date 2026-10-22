@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a mock pipeline whose report overview cannot finish through its park and its resume, on both engines
 //
-// A REPORT WHOSE OVERVIEW CANNOT FINISH DELIVERS ITS RATING AND ITS CARDS (874).
+// A REPORT WHOSE OVERVIEW CANNOT FINISH DELIVERS ITS RATING AND ITS CARDS.
 //
 // The report overview writes the conclusion under the rating. When it failed and its recovery was spent, the run ended with
 // the stop notice, though it held the findings, the review and the rating. Now the part is recorded as not completed and

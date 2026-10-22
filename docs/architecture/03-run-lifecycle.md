@@ -244,8 +244,7 @@ Reading order for the phases, with what code decides at each:
    by receipt; survivors become a front-matter coverage note, not a halt.
 6. **Frame-diff + bounded reopen** — the blind frame is diffed against the run's own framing;
    directives (including deterministic mechanical form-gap directives) can reopen register and
-   source arms once, under a fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`, default 150), with
-   per-directive closure verification. The whole block is non-fatal; unclosed directives demote to
+   source arms once, with per-directive closure verification. The whole block is non-fatal; unclosed directives demote to
    disclosed deferrals that later clamp the verdict.
 7. **Placement → register-digest** — both fatal. Every digest pass (fresh, escalation, envelope,
    late-bind, stale-repair) goes through the single `runDigest` chokepoint, which drops stale ledgers,

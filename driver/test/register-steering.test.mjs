@@ -123,8 +123,12 @@ test("the diagnosis survives the lane branch — a lane prompt still says WHAT t
   assert.match(reopen, /Cl\.35\/38/);
   assert.match(reopen, /DOMINANT-ELEMENT item\(s\) this is a CLOSURE pass/);
   assert.match(reopen, /nice_classes/, "class scoping still lands");
-  assert.match(reopen, /regions/, "region scoping still lands");
-  assert.match(reopen, /120 records/, "the fetch bound survives");
+  // The markets are the order's scope, and a crowd is narrowed by the manual's steps: the ruled method asks a worldwide
+  // order worldwide, never once per material and major market. A lane unit holds no record-fetch tool, so no cap on
+  // reading record detail governs it, and none is given.
+  assert.match(reopen, /across the order's scope/, "scope still lands: the order's, not one market at a time");
+  assert.match(reopen, /a slice that comes back a crowd is narrowed by the steps in unit\.md/, "the crowd's next step still lands");
+  assert.doesNotMatch(reopen, /120 records/, "a lane unit is capped on reading record detail it cannot fetch");
   assert.match(reopen, /"incomplete" block \(count \+ sample \+ reason\)/, "incomplete-descriptor honesty survives");
   // — THE DIGEST IS A CALL, so the reconciliation is what the seat SENDS rather than a
   // file it re-opens, and the three assertions that pinned the Edit direction go with it. The one that
@@ -145,7 +149,7 @@ test("the diagnosis survives the lane branch — a lane prompt still says WHAT t
   const retry = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 90, supplementalLane: true });
   assert.match(retry, /TIMED OUT at the hard wall/, "a fresh session still gets the whole contract");
   assert.match(retry, /HALCYON/);
-  assert.match(retry, /90 records/);
+  assert.doesNotMatch(retry, /90 records/, "a lane unit is capped on reading record detail it cannot fetch");
   assert.doesNotMatch(retry, /"state":"enumerated"/);
 });
 

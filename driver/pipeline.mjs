@@ -34,6 +34,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+import { handResearchAnswers } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
@@ -52,7 +53,7 @@ import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
   digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
-import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
+import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey, isLiveRecord } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
 import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
   unprovableRecordBases, applyDerivedBases,
@@ -60,7 +61,7 @@ import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordU
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
 import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, marketStepMarkets, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
@@ -83,10 +84,16 @@ import { readOutstanding, FOLLOW_UP_SEARCH_LIMIT, followUpSearchesSent } from ".
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
 // safety net did not send, which join as questions not asked rather than missing (follow-up-searches.mjs), and the run's
 // main markets, the one market list a crowd of the identical mark is read in (crowdNarrowing): the order's
-// countries, else the customer's priority markets, else the major markets.
-const mainMarketsOf = (ctx) => {
-  try { const { scope, priorities, major } = narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile); return scope.length ? scope : priorities.length ? priorities : major; }
-  catch { return []; }
+// countries, else the customer's priority markets, else the markets the customer's field and brand point to, as the
+// identical mark's market step used them (W8), else the major markets, where no market step ran.
+export const mainMarketsOf = (ctx) => {   // @internal
+  try {
+    const { scope, priorities, major } = narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile);
+    if (scope.length) return scope;
+    if (priorities.length) return priorities;
+    const used = marketStepMarkets(ctx.registerPlan);
+    return used.length ? used : major;
+  } catch { return []; }
 };
 const joinOptions = (ctx) => ({ released: releasedFamilyQids(ctx.paths.runDir),
   outstanding: new Set(readOutstanding(driverDir(ctx.paths.runDir)).map((r) => String(r.qid))), mainMarkets: mainMarketsOf(ctx) });
@@ -1758,21 +1765,6 @@ export function decideCaseLaw({ job, narrative, policy } = {}) {   // @internal
   };
 }
 
-// #5a — the detail-fetch ceiling for the frame-reopen "enumerate the dominant-element floor to EXHAUSTION"
-// closure pass. The batch-screen (≤100/call, no detail-fetch) stays UNBOUNDED — it screens the full crowd
-// cheaply; only the expensive per-record detail-fetch is capped, so the pass returns a BOUNDED coverage-limited
-// result instead of grinding every survivor to the hard-wall SIGKILL (which produces NOTHING — the resume is
-// killed mid-fetch, no file written, and the directive logs a deferral with zero new coverage). Generous by
-// design: the default only bites a pathological saturated crowd; a normal reopen fetches far fewer survivors and
-// never sees the ceiling. Env-tunable for the rare matter that needs deeper closure. PURE + exported for test.
-// T1 (J2): default 500→150. 500 detail-fetches cannot fit the 1500s stage wall — the old default
-// contradicted the prompt's own "a bounded WRITTEN band beats an exhaustive one killed mid-fetch" and drove
-// the 48% reopen-timeout class ( F5). 150 fits the wall with margin; env-tunable for deep closure.
-export function reopenFetchCeiling(envVal) {   // @internal
-  const n = Number(envVal);
-  return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 150;
-}
-
 // ── WS-B: the run's frozen profile + the sidecar spine ──────────────────────────────────────────────
 // Resolve the customer profile ONCE and freeze it into _driver/profile.json (temp+rename, BEFORE any
 // validated stage). Resume / --experiment load FROM the sidecar — a profiles/ edit between
@@ -2287,8 +2279,9 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     let readIds = [];
     try { readIds = [...readOkRecordUris(readFileSync(P.readingLog, "utf8"))]; } catch { readIds = []; }
 
-    // THE OWED SET: every record placement carried into this stage — the population `record-carry.mjs`
-    // judges this seam against, so the refusal and the ledger are counting the same thing.
+    // THE OWED SET: the records of the entries placement carried into this stage that the write-up must end, the
+    // population the refusal judges. `record-carry.mjs` judges the seam against every placed record, and an adopted
+    // entry is carried by its row.
     // ── AN ABSENT FILE IS THE ONLY BENIGN WAY TO HAVE NO OWED SET ────────────────────────────────
     //
     // This was one bare `catch {}` around the whole block, and it hid a `ReferenceError`: `entryUris`
@@ -2304,18 +2297,33 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     // which the transport already refuses by name as a driver fault rather than a model one. Never
     // silently empty: "the driver told me none" and "the driver could not tell me" are different facts
     // and only the first may be checked against.
+    //
+    // WHAT THE WRITE-UP OWES IS PLACEMENT'S HEADLINE ENTRIES, judged per entry: a row naming any record of an entry ends
+    // the whole entry. A sheet-2 entry is adopted as placed (`adopt`): the render writes its row on the entry's first
+    // live record, else its first, with placement's reason, unless the write-up overrides it with any row naming any of
+    // its records. Watchlist and out-of-scope entries owe nothing and keep their own tabs. An entry with no records owes
+    // nothing and gets no row.
     const owed = [];
+    const owedEntries = [];
+    const adopt = [];
     let owedFailed = null;
     if (existsSync(P.placementModel)) {
       try {
         const placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-        for (const e of Array.isArray(placements) ? placements : []) for (const u of entryUris(e)) owed.push(u);
+        const live = new Map(records.map((r) => [bandRecordUri(r).toLowerCase(), isLiveRecord(r)]));
+        for (const e of Array.isArray(placements) ? placements : []) {
+          const uris = entryUris(e);
+          if (!uris.length) continue;
+          if (e?.tier === "headline-candidate") { owedEntries.push({ uris }); owed.push(...uris); }
+          else if (e?.tier === "sheet-2") adopt.push({ uri: uris.find((u) => live.get(u) === true) ?? uris[0], uris, reason: String(e?.reason ?? "") });
+        }
       } catch (e) { owedFailed = String(e?.message ?? e).slice(0, 160); }
     }
 
     const facts = {
       schema_version: 1,
       owed: owedFailed ? null : [...new Set(owed)],
+      ...(owedFailed ? {} : { owed_entries: owedEntries, adopt }),
       identity: {
         mark: ctx.job?.markName ?? ctx.run?.slug ?? null,
         date: ctx.job?.filedDate ?? ctx.run?.startedAt?.slice?.(0, 10) ?? null,
@@ -4746,9 +4754,16 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
-  if (name === "register-digest" || name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  // The writer is also handed the research its earlier attempts got (research-answers.mjs), written to the run folder when
+  // the message is built: none on a first attempt, so its message is unchanged.
+  if (name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths),
+    researchAnswered: ctx.run ? handResearchAnswers(ctx.paths.runDir, stageSessionKey(ctx, name)) : 0 };
   return ctx;
 }
+
+/** A stage's session key, which its retries extend with `-rerun<n>`. One statement, read where a stage is dispatched. */
+export const stageSessionKey = (ctx, name, keyAxis = "") => `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`;   // @internal
 
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
@@ -4983,7 +4998,7 @@ async function stageOnce(name, ctx, opts = {}) {
     thinking,
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
     // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
-    sessionKey: opts.sessionKey ?? `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`,
+    sessionKey: opts.sessionKey ?? stageSessionKey(ctx, name, keyAxis),
     timeoutSec: derivedLimit.sec ?? def.timeoutSec,
     derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
     stallSec: def.stallSec,     // per-stage stall override (heavy stages); undefined → global CLEAROTRON_STALL_MS
@@ -10382,7 +10397,7 @@ async function pipelineInner(job, opts = {}) {
     return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
   }
 
-  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS (874) ──────────────────────
+  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS ──────────────────────
   //
   // Reached from the synthesis site on the pass that resumes a run whose synthesis failed once its recovery was spent:
   // the catch recorded the assessment as not completed and parked the run (parts-not-completed.mjs). The run holds
@@ -11486,7 +11501,8 @@ async function pipelineInner(job, opts = {}) {
           if (unitKey[axis]) try {
             const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
             const from = new Map([...(Array.isArray(prior?.directives) ? prior.directives : []), ...kept].map((d) => [d.qid, d.source?.url ?? null]));
-            const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })) });
+            const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })),
+              job: ctx.job, profile: ctx.profile, supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
             const r = await stage("register-unit", { ...ctx, axis }, { force: true, followup, sessionKey: unitKey[axis], trigger: "xcheck-decide" });
             asked = r?.ok === true;
             remergeIfBandsMoved(ctx, "xcheck-decide");
@@ -12215,9 +12231,6 @@ async function pipelineInner(job, opts = {}) {
           const regDirectives = firing.filter((d) => d.layer === "variant" || d.layer === "field");
           const srcDirectives = firing.filter((d) => d.layer === "source");
           const changedAxes = [];
-          // #5a: the detail-fetch ceiling for the dominant-element CLOSURE pass (below). Bounds the pass to a
-          // returnable coverage-limited result rather than a hard-wall SIGKILL on a runaway crowd.
-          const reopenFetchCap = reopenFetchCeiling(process.env.CLEAROTRON_REOPEN_MAX_FETCH);
 
           // CLOSURE-FIRST (register). The dominant-element crowd lives on the register and a Corsearch sweep is
           // far cheaper than the common-law grid, so by DEFAULT we try to CLOSE it: re-cover the dominant element
@@ -12262,7 +12275,7 @@ async function pipelineInner(job, opts = {}) {
           // pure code: mint supplemental plan entries from the directives, dispatch the deterministic
           // executor (count-first, ceiling, error stamping — code writes the band, qids stamped), fold +
           // refresh the receipt, re-merge the named band. No LLM sweep turn, no session needed, and the
-          // reopenFetchCeiling concern retires with the arm (the executor batch-screens, never
+          // detail-fetch ceiling concern retires with the arm (the executor batch-screens, never
           // detail-fetches; the enumerate ceiling bounds records). The unit .md prose stays as-is —
           // audit-only; where it differs from the band, the band wins. The ONE warm re-digest below is
           // where judgment reasons over the completed band, unchanged.
@@ -12520,8 +12533,8 @@ async function pipelineInner(job, opts = {}) {
             // Lane flag read from the SAME key the tool exclusion keys on (see the stage dispatcher) —
             // this arm is reachable on a lane run whenever the code-side dispatch arm above could not
             // take it (no executePlan adapter, or CLEAROTRON_PLAN_DISPATCH=off).
-            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives,
+              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
             const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "frame-reopen" });
             if (r.ok) {
               if (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand) { changedAxes.push(a); regChanged = true; }
@@ -12535,8 +12548,8 @@ async function pipelineInner(job, opts = {}) {
               // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
               if (/timeout/.test(String(regMechFail))) {
                 note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
-                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives,
+                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
                 const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
                 if (r2.ok && existsSync(P.registerUnit(a)) && (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand)) {
                   changedAxes.push(a); regChanged = true; regMechFail = null;
@@ -12801,7 +12814,7 @@ async function pipelineInner(job, opts = {}) {
           const answered = swept.filter((k) => regAnsweredBy.has(k)).map((k) => ({ directive: k, slices: regAnsweredBy.get(k) }));
           const withheldBy = swept.filter((k) => regWithheldBy.has(k)).map((k) => ({ directive: k, slices: regWithheldBy.get(k) }));
           writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered, withheldBy);
-          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed, reopenFetchCap: regDirectives.some((d) => d.severity === "dominant-element") ? reopenFetchCap : undefined });
+          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed });
           // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
           // unlocked path demotes verified-closed directives inline when its pre-synthesis flush
           // fails (above); under the lock the reconcile rides the LATE flush AFTER this receipt is
@@ -13077,7 +13090,7 @@ async function pipelineInner(job, opts = {}) {
         const beforeBand = bandBytesOf(P, a);   // a narrow sub-query adds blocks to the band, whatever it does to the notes
         note(`skeptic escalated ${a} → resuming its session to defend/adjust (warm, same tier)`);
         let followup = repairFollowup("register-unit:escalation", { paths: P, axis: a, flags,
-          supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+          supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
         // A2, per-row: the skip above only catches an axis whose ENTIRE outstanding work is a
         // capability gap. An axis is often escalated for a good reason (a flagged confirmed-clean row)
         // while ALSO carrying held rows — and the resumed unit must not be left to think those are
@@ -13211,7 +13224,7 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "envelope-close-rows", axis: a,
             closeable: split.closeable.map((r) => String(r.unit ?? "")), held: split.held.map((r) => String(r.unit ?? "")) });
           const followup = repairFollowup("register-unit:envelope-close", { paths: P, axis: a, rows: rows + heldRows,
-            supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+            supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
           const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "envelope" });
           if (!r.ok) return { axis: a, changed: false, fail: r.fail };
           const afterUnit = readFileSync(P.registerUnit(a), "utf8");
@@ -16898,7 +16911,7 @@ async function pipelineInner(job, opts = {}) {
       // ZERO usable rows (machine mirror unavailable AND the prose parse yielded nothing) has no
       // functioning coverage receipts at all — it FAILS instead of stamping a verdict over unread
       // coverage (the retired D1 clamp used to ship this as a finished-looking CONDITIONAL).
-      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER (874). The machine ledger
+      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER. The machine ledger
       // and the prose table are renders of the driver's coverage form, whose statuses the write-up recorded. With both
       // renders unreadable, the form's ruled rows still let the coverage-honesty floor run, through the same relabels,
       // so the run is not ended with no report over a render it lost. With no ruled row there either, see below.
@@ -16910,7 +16923,7 @@ async function pipelineInner(job, opts = {}) {
           note(`coverage ledger: the machine ledger and the prose table are unreadable — the coverage floor reads the coverage form's ${formRows.length} ruled row(s)`);
         } else
           // With no ruled row anywhere, no verdict can ship over coverage nobody read (spec-49 T3), and the run is not
-          // ended for it either (874): the failure is the assessment's, recorded as not completed and delivered without it.
+          // ended for it either: the failure is the assessment's, recorded as not completed and delivered without it.
           throw Object.assign(new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`), { notCompletedPart: "assessment" });
       }
       // — the designation comes from the VALIDATED model, not the rendered manifest. `manifestFinal`
@@ -17009,7 +17022,7 @@ async function pipelineInner(job, opts = {}) {
       // failClass "stale": the remedy is a DETERMINISTIC recompute of the stale stage(s) (a resume recomputes
       // them — the stamps were left stale for exactly this, see reconcileStamps' exclude), so this must not be
       // starved by the shared one-park "unknown" budget. The repeat-signature backstop still caps it.
-      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE (874). A first staleness parks and the resume repairs
+      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE. A first staleness parks and the resume repairs
       // it, as always. Where the repeat would end the run, the check is named as its own part: the run parks once more,
       // and the resumed pass repairs and checks again from the material as it then stands. Still stale then, it ends as
       // it always did; this check never delivers past staleness.
@@ -17316,7 +17329,7 @@ async function pipelineInner(job, opts = {}) {
       // not a status surface — it stays under the machinery name deliberately.
       return { ok: false, postponed: true, recovery: true, attempt, resetsAt: recoveryResumesAt, codename: run.codename, runDir: run.runDir };
     }
-    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON (874) ────────────────────────
+    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON ────────────────────────
     //
     // A failure the throw site named as a covered part (`notCompletedPart`, parts-not-completed.mjs) reaches here once
     // the decision above has nothing left to buy: every recovery lane spent, a repeated signature, or a deterministic

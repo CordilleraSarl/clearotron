@@ -142,6 +142,28 @@ export function accountedUris(model, owed = []) {
   return accounted;
 }
 
+/**
+ * THE SHEET-2 ROWS THE DRIVER WRITES. A sheet-2 entry is adopted as placement placed it: one row, on the entry's first
+ * live record (else its first), carrying placement's reason word for word, with verify "yes" because nothing has checked
+ * it against the live register. An entry the write-up overrode gets none: any row of its own naming any of the entry's
+ * records, or a disagreement resolution naming one, is its ending instead. An entry whose record the band does not
+ * hold gets none. PURE.
+ */
+export function adoptedRows(model, facts = emptyFacts()) {
+  const adopt = Array.isArray(facts?.adopt) ? facts.adopt : [];
+  if (!adopt.length) return [];
+  const named = accountedUris(model, adopt.flatMap((e) => e.uris));
+  const out = [];
+  for (const e of adopt) {
+    if (e.uris.some((u) => named.has(u))) continue;
+    const rec = facts.recordsByUri instanceof Map ? facts.recordsByUri.get(e.uri) : null;
+    if (!rec) continue;
+    const cells = identifierCells(rec, facts.recordHost);
+    out.push({ uri: cells.uri, cells, flag_reason: e.reason, verify: "yes", adopted: true });
+  }
+  return out;
+}
+
 /** Every record uri a raw call carries, across the three row lists. PURE. */
 export function callUris(call) {
   const out = [];
@@ -230,6 +252,14 @@ export function digestAccountingGap(runDir) {
   const facts = readDigestFacts(runDir);
   if (!Array.isArray(facts.owed)) return { armed: true, owed: null, accounted: [], unaccounted: null };
   const model = lastAcceptedModel(runDir);
+  // Per entry where the driver owes entries: each entry stands in the lists by its first record.
+  if (Array.isArray(facts.owedEntries)) {
+    const firsts = facts.owedEntries.map((e) => e.uris[0]);
+    if (!model) return { armed: true, owed: firsts, accounted: [], unaccounted: firsts, no_model: true };
+    const named = accountedUris(model, facts.owed);
+    const ended = facts.owedEntries.filter((e) => e.uris.some((u) => named.has(u))).map((e) => e.uris[0]);
+    return { armed: true, owed: firsts, accounted: ended, unaccounted: firsts.filter((u) => !ended.includes(u)) };
+  }
   if (!model) return { armed: true, owed: facts.owed, accounted: [], unaccounted: facts.owed, no_model: true };
   const accounted = accountedUris(model, facts.owed);
   return { armed: true, owed: facts.owed, accounted: [...accounted],
@@ -386,7 +416,7 @@ const table = (columns, rows) => [row(columns), `|${columns.map(() => "---").joi
  */
 export function emptyFacts() {
   return { identity: {}, recordsByUri: new Map(), recordHost: "", counts: null, auditRows: [], readIds: [],
-    positions: [], owed: null, armed: false };
+    positions: [], owed: null, owedEntries: null, adopt: [], armed: false };
 }
 
 /** The canonical join key both sides use. Band uris and seat-sent uris meet here and nowhere else. */
@@ -421,6 +451,15 @@ export function readDigestFacts(runDir) {
   // carries none, because "the driver did not tell me" and "the driver told me none" are different
   // facts and only the second may be checked against.
   facts.owed = Array.isArray(raw?.owed) ? raw.owed.map(joinKey).filter(Boolean) : null;
+  // THE OWED ENTRIES: placement's headline entries, each with its records, when the driver wrote them. A row naming any
+  // record of an entry ends the whole entry. Absent on a run written before entries were owed, which is judged per record.
+  const keys = (v) => (Array.isArray(v) ? v.map(joinKey).filter(Boolean) : []);
+  facts.owedEntries = Array.isArray(raw?.owed_entries)
+    ? raw.owed_entries.map((e) => ({ uris: keys(e?.uris) })).filter((e) => e.uris.length) : null;
+  // THE ENTRIES ADOPTED AS PLACED: placement's sheet-2 entries, each with the record its row is written on and
+  // placement's reason. The write-up overrides one by sending any row that names any of its records.
+  facts.adopt = Array.isArray(raw?.adopt)
+    ? raw.adopt.map((e) => ({ uri: joinKey(e?.uri), uris: keys(e?.uris), reason: str(e?.reason) })).filter((e) => e.uri && e.reason) : [];
   facts.armed = accountingArmed(runDir);
   for (const rec of Array.isArray(raw?.records) ? raw.records : []) {
     const key = joinKey(rec?.record_id ?? rec?.uri);
@@ -519,8 +558,9 @@ export function renderRegisterFindings(model, facts = emptyFacts()) {
     ? "_This run's register band carries no records, so no position could earn a row and none could be dropped. This is a declared absence of findings, not a clean result: no coverage claim is made here._"
     : model.findings_rows.length ? table(FINDING_COLUMNS, model.findings_rows.map(findingRow))
       : "_No position earned a Sheet-1 row._", "");
-  if (model.incumbent_rows.length) {
-    out.push(DIGEST_SECTIONS.incumbent, "", table(FINDING_COLUMNS, model.incumbent_rows.map(findingRow)), "");
+  const sheet2 = [...model.incumbent_rows, ...adoptedRows(model, facts)];   // the write-up's own rows, then the entries adopted as placed
+  if (sheet2.length) {
+    out.push(DIGEST_SECTIONS.incumbent, "", table(FINDING_COLUMNS, sheet2.map(findingRow)), "");
   }
   for (const [heading, body] of [[DIGEST_SECTIONS.opposition, model.opposition], [DIGEST_SECTIONS.merch, model.merch_sweep]])
     if (body) out.push(heading, "", body, "");
@@ -798,7 +838,19 @@ export function acceptRegisterDigest(params, facts = emptyFacts()) {
       scope = slice;
       where = `batch ${batch} of ${plan.length} carried`;
     }
-    const unaccounted = scope.filter((k) => !accounted.has(k));
+    // PER ENTRY, where the driver owes entries: a row naming any record of a headline entry ends the whole entry, and the
+    // refusal lists each entry left open by its first record. A run written before entries were owed is judged per record.
+    if (Array.isArray(facts.owedEntries)) {
+      const inScope = new Set(scope);
+      const entries = facts.owedEntries.filter((e) => e.uris.some((u) => inScope.has(u)));
+      const open = entries.filter((e) => !e.uris.some((u) => accounted.has(u)));
+      if (open.length) {
+        const cap = batch !== null ? DIGEST_BATCH_RECORDS : 5;
+        const show = open.slice(0, cap).map((e) => e.uris[0]).join(", ");
+        return { ok: false, reason: `registerdigest_unaccounted_records:${open.length} of ${entries.length} position(s) ${where} into the digest end nowhere — no findings row, Negative-results drop or Disagreement resolution names any of their records: ${show}${open.length > cap ? ` (+${open.length - cap} more)` : ""}. Each needs one of the three, naming any one of its records, and a drop needs its ground token. Send ONLY these — everything you have already recorded is kept` };
+      }
+    }
+    const unaccounted = Array.isArray(facts.owedEntries) ? [] : scope.filter((k) => !accounted.has(k));
     if (unaccounted.length) {
       // THE REFUSAL IS THE WORK LIST. It used to show five of them and leave the seat to infer the rest,
       // which is what made "retry the digest" the only move it could read off the refusal. A batch is at
@@ -810,7 +862,7 @@ export function acceptRegisterDigest(params, facts = emptyFacts()) {
     }
   }
 
-  const judged = model.findings_rows.length + model.incumbent_rows.length + model.negative_rows.length;
+  const judged = model.findings_rows.length + model.incumbent_rows.length + model.negative_rows.length + adoptedRows(model, facts).length;
   if (judged < MIN_JUDGED_ROWS && byUri.size > 0)
     return { ok: false, reason: `registerdigest_nothing_judged:0 rows against ${byUri.size} record(s) in this run's band — no Sheet-1 row, no incumbent row and no negative-results drop. Every screened-live record must END somewhere a reader can see; a digest that ends none of them has not read the band` };
   model.band_empty = byUri.size === 0 && judged === 0;
