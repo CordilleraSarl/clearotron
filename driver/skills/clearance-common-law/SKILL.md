@@ -43,17 +43,11 @@ coverage, it is re-spawned escalated to Opus.
 
 ## Tool call budget
 
-Per input mark:
-- `perplexity_research` calls: **5** (1 search-as-code grid call + up to 3 targeted follow-ups + any
-  famous-mark query flagged by the manifest)
-
-Per workflow run total: **15** (covers multi-mark requests).
+One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client,
+and a famous-mark query when the manifest flags one.
 
 **Every call passes an explicit `depth`** — see the routing table at the top of
-[perplexity-prompts.md](perplexity-prompts.md). *(Budget rationale: cost-based overflow protection
-against a looping worker — a full grid call ≈ $0.06, follow-ups ≈ $0.01–0.15 each, measured
-2026-06-10. The old "Perplexity Pro rate-limit headroom" rationale is obsolete: the plugin is
-API-key billed.)*
+[perplexity-prompts.md](perplexity-prompts.md).
 
 Other tools (file read/write, memory write) are bounded by workflow steps — no cap needed. The audit
 workbook is NOT one of them: the driver builds it in code at publish (`driver/publish/xlsx.mjs`) from
@@ -83,7 +77,7 @@ so there is **no partial-delivery fallback**:
    a final message reporting the tool failure and the exact errors seen. The driver detects the
    missing file, re-runs the stage on a fresh session, and — if the layer still cannot run — fails
    the whole run and surfaces it. That is the correct outcome.
-3. If Perplexity worked for some calls and the budget/coverage is merely incomplete: that is NOT a
+3. If Perplexity worked for some calls and coverage is merely incomplete: that is NOT a
    failure — write the real findings file with honest `coverage-limited` / `deferred` ledger rows
    for the parts that did not run.
 
