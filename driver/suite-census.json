@@ -6807,6 +6807,12 @@
           "skips": 5,
           "todos": 0
         },
+        "the-propose-tool-asks-an-added-class-only-the-identical-mark.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-prose-cannot-claim-coverage-the-run-never-searched.test.mjs": {
           "tests": 9,
           "asserts": 16,
