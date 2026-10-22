@@ -258,3 +258,23 @@ test("the wiring: a disclosed axis is neither re-dispatched nor re-run, the park
   assert.match(src, /\{ notCompletedPart: "searches", taintedAxes: toPark, undoRenames \}/, "the park does not name its axes and renames on the failure");
   assert.match(src, /if \(addedAxes\.length\) undoTaintRenames\(e\.undoRenames\);/, "the catch does not put the renames back");
 });
+
+test("a collapsed slice with no qid is named by its query and becomes a deferred block on it, and the band still parses", async () => {
+  const { bandWithSlicesOut } = await import("../pipeline.mjs");
+  const { parseNamedBand } = await import("../named-band.mjs");
+  const reason = plainDeferralReason("collapsed-slice");
+  const blocks = [
+    { state: "enumerated", qid: "q-kept", query: "ORBANTIQ (exact)", total_hits: 1, fetched: 1, records: [{ record_id: "/mark/em/1" }] },
+    { state: "enumerated", query: "primary-sweep / exact near-name slice", total_hits: 212, records: [] },
+  ];
+  const slices = [{ axis: "primary-sweep", query: "primary-sweep / exact near-name slice", reason }, { axis: "primary-sweep", query: "not in this band", reason }];
+  const { blocks: out, taken } = bandWithSlicesOut(blocks, slices);
+  assert.equal(taken.length, 1, "a query the band does not hold was added as a block");
+  assert.deepEqual(out[0], blocks[0], "the axis's other block moved");
+  assert.deepEqual([out[1].qid, out[1].query, out[1].error, out[1].deferred, out[1].reason, out[1].state],
+    [undefined, "primary-sweep / exact near-name slice", true, true, reason, "incomplete"], `the slice was not deferred on its query: ${JSON.stringify(out[1])}`);
+  assert.equal(out.length, 2);
+  assert.doesNotThrow(() => parseNamedBand(JSON.stringify(out)), "the band no longer parses with the slice taken out");
+  assert.deepEqual(slicesNotYetRecorded({ slices: [slices[0]] }, [slices[0], { axis: "primary-sweep", qid: "q2", reason }]),
+    [{ axis: "primary-sweep", qid: "q2", reason }], "a slice named by its query was recorded twice, or a qid slice was lost beside it");
+});

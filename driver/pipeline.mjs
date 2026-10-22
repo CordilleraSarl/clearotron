@@ -488,23 +488,28 @@ export function undoTaintRenames(renames) {   // @internal
 function recordedSlicesByAxis(P) {
   const byAxis = new Map();
   for (const s of (P?.runDir ? readPartNotCompleted(P.runDir, "searches")?.slices : null) ?? []) {
-    if (!s?.axis || !s?.qid) continue;
+    if (!s?.axis || (!s?.qid && !s?.query)) continue;
     if (!byAxis.has(s.axis)) byAxis.set(s.axis, []);
     byAxis.get(s.axis).push(s);
   }
   return byAxis;
 }
 
-/** A band's blocks with `slices` taken out: each becomes the executor's deferred block, or is added as one. PURE. */
+/**
+ * A band's blocks with `slices` taken out: each becomes the executor's deferred block, or is added as one. A slice with
+ * no qid is named by its query: the block with no qid on that query becomes a deferred block on it, and nothing is
+ * added where the band holds none. PURE.
+ */
 export function bandWithSlicesOut(blocks, slices) {   // @internal
   const out = Array.isArray(blocks) ? [...blocks] : [];
   const taken = [];
   for (const s of Array.isArray(slices) ? slices : []) {
-    const i = out.findIndex((b) => b?.qid === s.qid);
+    const i = s.qid ? out.findIndex((b) => b?.qid === s.qid) : out.findIndex((b) => b && !b.qid && b.query === s.query);
+    if (!s.qid && i < 0) continue;
     const was = i >= 0 ? out[i] : null;
     if (was?.error === true && was.deferred === true && was.reason === s.reason) continue;
-    const block = { state: "incomplete", qid: s.qid, query: String(was?.query ?? s.query ?? s.qid), total_hits: 0, fetched: 0, sample: [],
-      error: true, deferred: true, reason: String(s.reason) };
+    const block = { state: "incomplete", ...(s.qid ? { qid: s.qid } : {}), query: String(was?.query ?? s.query ?? s.qid), total_hits: 0, fetched: 0,
+      sample: [], error: true, deferred: true, reason: String(s.reason) };
     if (i >= 0) out[i] = block; else out.push(block);
     taken.push(s);
   }
@@ -527,7 +532,7 @@ export function takeSlicesOutOfTheBand(P, slices) {   // @internal
   const taken = [];
   const byAxis = new Map();
   for (const s of Array.isArray(slices) ? slices : []) {
-    if (!s?.axis || !s?.qid) continue;
+    if (!s?.axis || (!s?.qid && !s?.query)) continue;
     if (!byAxis.has(s.axis)) byAxis.set(s.axis, []);
     byAxis.get(s.axis).push(s);
   }
@@ -11313,10 +11318,8 @@ async function pipelineInner(job, opts = {}) {
         // collapsed slices already had their re-run via the validator ladder — they stay terminal.
         const collapsedQids = collapsed.map((x) => x.qid).filter(Boolean);
         if (collapsedQids.length && (await dispatchPlanQids(a, collapsedQids, "collapsed-reexecute")) === "ok") collapsed = readCollapsed();
-        // A collapsed slice with no qid has no plan row to carry a deferral, so it ends the run as before. The qid-stamped
-        // ones are the searches not completed, failed on with every axis's below.
-        if (collapsed.length && collapsed.some((x) => !x.qid))
-          throw new StageFailure("fan-in", `collapsed named band for axis "${a}" — ${collapsed.length} enumerated slice(s) claimed hits but carried ZERO records into the band (a clean can never ship over a collapsed slice)`, undefined, { failClass: "deterministic", repairs: fanInRepairs, detail: `${P.registerBand(a)} — ${collapsed.slice(0, 6).map((x) => `${(x.query || "slice").slice(0, 40)}~${x.total_hits}`).join("; ")}${collapsed.length > 6 ? ` (+${collapsed.length - 6} more)` : ""}` });
+        // The collapsed slices are the searches not completed, failed on with every axis's below. One with no qid is named by
+        // its query, and its block becomes a deferred block on that query (6335279737).
         if (collapsed.length) collapsedSlices.push({ axis: a, collapsed });
       }
       // ── band-truth gate (2026-07-14, teal-foundry): the band must be EVIDENCED, not just well-formed ──
@@ -11364,7 +11367,8 @@ async function pipelineInner(job, opts = {}) {
     // is both keeps the first.
     const notCompleted = [
       ...unprovenBands.flatMap((u) => u.qids.map((qid) => ({ axis: u.axis, qid, reason: plainDeferralReason("not-verified-closed") }))),
-      ...collapsedSlices.flatMap((c) => c.collapsed.map((x) => ({ axis: c.axis, qid: x.qid, reason: plainDeferralReason("collapsed-slice") }))),
+      ...collapsedSlices.flatMap((c) => c.collapsed.map((x) => (x.qid ? { axis: c.axis, qid: x.qid, reason: plainDeferralReason("collapsed-slice") }
+        : { axis: c.axis, query: String(x.query ?? ""), reason: plainDeferralReason("collapsed-slice") }))),
     ];
     if (unprovenBands.length) {
       const [first] = unprovenBands, more = unprovenBands.length - 1;

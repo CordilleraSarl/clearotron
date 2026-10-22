@@ -83,17 +83,19 @@ export function partsNotCompleted(runDir) {
 }
 
 /**
- * The slices of `failed` that `record` does not hold yet, each `{axis, qid, reason}`: what a failure of the searches
- * adds to their record. [] when it adds none. PURE.
+ * The slices of `failed` that `record` does not hold yet, each `{axis, qid, reason}`, or `{axis, query, reason}` for a
+ * slice with no qid, which its query names: what a failure of the searches adds to their record. [] when it adds
+ * none. PURE.
  */
 export function slicesNotYetRecorded(record, failed) {
-  const held = new Set((Array.isArray(record?.slices) ? record.slices : []).map((s) => `${s?.axis}\u0000${s?.qid}`));
+  const keyOf = (s) => `${s?.axis}\u0000${s?.qid ? `qid:${s.qid}` : `query:${s?.query}`}`;
+  const held = new Set((Array.isArray(record?.slices) ? record.slices : []).map(keyOf));
   const out = [];
   for (const s of Array.isArray(failed) ? failed : []) {
-    const key = `${s?.axis}\u0000${s?.qid}`;
-    if (!s?.axis || !s?.qid || held.has(key)) continue;
-    held.add(key);
-    out.push({ axis: String(s.axis), qid: String(s.qid), reason: String(s.reason ?? "") });
+    if (!s?.axis || (!s?.qid && !s?.query) || held.has(keyOf(s))) continue;
+    held.add(keyOf(s));
+    out.push(s.qid ? { axis: String(s.axis), qid: String(s.qid), reason: String(s.reason ?? "") }
+      : { axis: String(s.axis), query: String(s.query), reason: String(s.reason ?? "") });
   }
   return out;
 }

@@ -1726,8 +1726,8 @@
           "todos": 0
         },
         "a-search-a-check-cannot-prove-is-delivered-as-not-searched.pipeline.test.mjs": {
-          "tests": 10,
-          "asserts": 60,
+          "tests": 11,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
