@@ -6897,6 +6897,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-reviewer-sends-the-register-units-to-the-unit-manual.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reviewers-open-points-stay-in-the-run-record.test.mjs": {
           "tests": 6,
           "asserts": 16,
