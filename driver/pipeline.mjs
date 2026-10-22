@@ -2991,8 +2991,8 @@ function noteCoverageLedgerAbsent(ctx, trigger) {
 // derivation — unended:0 is ASSERTED, never absent. Enforcement: unended ⇒ ONE warm followup on the
 // winning digest session dictating the three ending forms (at most RECALL_FOLLOWUP_MAX attempts per
 // unended-set signature, so a park/resume gets a fresh attempt without ever looping); what remains
-// unended after that blocks delivery at the pre-verdict floor (StageFailure → the bounded recovery
-// ladder — a repeated identical signature goes terminal there, never a silent ship).
+// unended after that ships NAMED from the pre-verdict floor, through the terminal guards' deliver-and-clamp (the
+// owner's ruling of 2026-10-19 that a run is never held), never a silent ship.
 const RECALL_FOLLOWUP_MAX = 2;
 
 // amendment 2 — the follow-up bound is a DEPTH ROW (2 / 1 / 1), not a constant. The constant stays
@@ -4005,7 +4005,7 @@ async function enforceRecallReconciliation(ctx, r, trigger) {
   if (artifact?.computable && artifact.totals.unended) {
     runLog(P.runDir, { event: "recall-reconciliation-unended", trigger, unended: artifact.totals.unended,
       uris: artifact.unended.slice(0, 8).map((u) => u.record_id) });
-    note(`recall-reconciliation: ${artifact.totals.unended} position(s) STILL unended after the followup — the pre-verdict floor will block delivery`);
+    note(`recall-reconciliation: ${artifact.totals.unended} position(s) STILL unended after the followup — the run delivers with them stated, clamped at the pre-verdict floor`);
   }
 }
 

@@ -2433,6 +2433,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-unended-position-is-delivered-stated.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "an-unread-crowd-is-counted-as-unread.test.mjs": {
           "tests": 3,
           "asserts": 9,

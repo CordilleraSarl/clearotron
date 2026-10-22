@@ -207,7 +207,7 @@ export function paths(runDir) {
     readingLog: p(driverRel("reading-log.jsonl")),   // band-server appends every lookup — audit.md "# Reading audit" renders from it
     // P2-A (the recall spine) — three driver-derived sidecars:
     // the retrieved→judgment reconciliation (recall-reconciliation.mjs join, re-derived after EVERY
-    // digest pass; unended > 0 blocks delivery), the exact-identity positions projection (charter
+    // digest pass; an unended position ships named and clamps the verdict), the exact-identity positions projection (charter
     // P2d — same right → one position, territories listed; the band stays per-registration), and the
     // read-before-rate join (charter P2c — verified-from-record stamps × _records × reading log).
     recallReconciliation: p(driverRel("recall-reconciliation.json")),
@@ -2644,7 +2644,7 @@ export const STAGES = {
       // delivery. ONE contract, ONE unit (review problem 2): the join groups records by the same
       // register-positions.json projection Sheet-1 rows follow, so a compliant one-URI position row is a
       // complete ending. See digest.md "Dominant-element reconciliation" for the three ending forms.
-      `EVERY live, in-scope record the screen surfaced whose mark carries the dominant element must END somewhere a reader can see — counted by POSITION, so ONE ending covers every constituent of that position: a findings-table row, a Negative-results drop row citing any one constituent URI, or membership of the explicitly ruled, counted dominant-element crowd (one Coverage-ledger row: `+"`<axis> / dominant-element crowd (<N> members): <label>`"+` with the ruling as its reason, `+"`<N>`"+` counted in POSITIONS). The code-ranked closest positions must end individually — the driver's reconciliation gate re-checks after every rewrite and an unended position blocks delivery.`,
+      `EVERY live, in-scope record the screen surfaced whose mark carries the dominant element must END somewhere a reader can see — counted by POSITION, so ONE ending covers every constituent of that position: a findings-table row, a Negative-results drop row citing any one constituent URI, or membership of the explicitly ruled, counted dominant-element crowd (one Coverage-ledger row: `+"`<axis> / dominant-element crowd (<N> members): <label>`"+` with the ruling as its reason, `+"`<N>`"+` counted in POSITIONS). The code-ranked closest positions must end individually — the driver's reconciliation gate re-checks after every rewrite, and the run delivers with any unended position stated.`,
       // B5b checkpoint 2 (code-built when a customer bound after matter-frame but before this digest):
       // exclusion is a CLASSIFICATION filter — never a reason to re-run searches.
       lateBind ? `APPLICANT LATE-BOUND (mid-run reply): the applicant is ${lateBind.customer}.${lateBind.exclusions?.length ? ` Affiliate/exclusion set: ${lateBind.exclusions.join(", ")}.` : ""} Classify marks owned by the applicant/exclusion set as the client's OWN rights (own-rights context, not conflicts). Do NOT run any additional searches because of this — it is a classification filter only.` : "",
