@@ -171,6 +171,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-channel-the-frame-diff-names-is-disclosed-never-swept.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-check-does-not-read-another-accounts-processes.test.mjs": {
           "tests": 6,
           "asserts": 15,
@@ -2789,7 +2795,7 @@
         },
         "commonlaw-closure-deterministic.test.mjs": {
           "tests": 8,
-          "asserts": 45,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -4558,8 +4564,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 103,
-          "asserts": 870,
+          "tests": 101,
+          "asserts": 859,
           "skips": 0,
           "todos": 0
         },
