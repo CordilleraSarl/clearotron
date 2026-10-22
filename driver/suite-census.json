@@ -202,8 +202,8 @@
           "todos": 0
         },
         "a-clarivate-run-asks-each-question-and-fetches-each-record-once.test.mjs": {
-          "tests": 10,
-          "asserts": 28,
+          "tests": 11,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1026,6 +1026,12 @@
         "a-mark-two-edits-from-a-variant-is-of-its-family.test.mjs": {
           "tests": 3,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-material-market-an-answer-reached-is-accounted-for.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -2334,6 +2340,12 @@
         "an-observed-model-id-says-whether-it-is-pinned.test.mjs": {
           "tests": 4,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-office-the-register-cannot-express-is-never-closeable.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -4584,6 +4596,12 @@
         "placement-model.test.mjs": {
           "tests": 14,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "placement-reads-a-narrowed-answer-as-an-answer.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -6927,6 +6945,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-reviewer-sends-the-register-units-to-the-unit-manual.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reviewers-open-points-stay-in-the-run-record.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -8466,8 +8490,8 @@
           "todos": 0
         },
         "providers/_shared/test/a-total-that-counts-records-says-so-on-every-answer.test.mjs": {
-          "tests": 3,
-          "asserts": 13,
+          "tests": 4,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -8479,7 +8503,7 @@
         },
         "providers/_shared/test/count-kernel.test.mjs": {
           "tests": 10,
-          "asserts": 45,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
