@@ -6597,6 +6597,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-install-ships-no-outbox-watcher-and-says-so.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-installer-advice-matches-the-box-it-is-given.test.mjs": {
           "tests": 9,
           "asserts": 26,

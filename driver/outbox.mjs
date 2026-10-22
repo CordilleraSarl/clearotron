@@ -5,7 +5,8 @@
 // never sends anything: every requester-facing event — delivered, run-failed, intake-rejected,
 // duplicate-skipped, late-bind-ack, pre-run-failed — is written here as one SELF-CONTAINED JSON packet the integrator
 // consumes (routing keys + human-ready text embedded; no path resolution into run dirs required).
-// A `.path`-style watcher on config.outboxDir gets an instant wake; a periodic sweep is the backstop.
+// The packaged install runs no watcher on config.outboxDir: the integrator wakes itself and drains it over MCP
+// (list_outbox_events), or watches the directory with its own `.path`, inotify or poll.
 // Packet schema + lifecycle: docs/DELIVERY.md.
 
 import { mkdirSync, writeFileSync, renameSync } from "node:fs";

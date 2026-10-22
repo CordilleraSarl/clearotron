@@ -1,5 +1,6 @@
 #!/bin/bash
-# Outbox wake for the OPENCLAW-ADJACENT reference integration (paired with prelim-outbox.path/.service/.timer).
+# Outbox wake for the OPENCLAW-ADJACENT reference integration. Its prelim-outbox.path/.service/.timer units no
+# longer ship, and the packaged install runs no outbox watcher: an integrator that wants this wake installs its own.
 #
 # v2 (pure-MCP courier, docs/DELIVERY.md): the outbox carries EVERY requester-facing event — delivered
 # markers (body = the forwarding agent id) AND self-contained JSON packets (run-failed / intake-rejected /
