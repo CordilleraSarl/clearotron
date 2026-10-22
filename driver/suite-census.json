@@ -7113,6 +7113,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-workbook-summary-counts-every-row-it-shows-open.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-worker-holds-no-signing-key.test.mjs": {
           "tests": 6,
           "asserts": 17,
