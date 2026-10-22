@@ -27,8 +27,7 @@ is a **count-only crowd descriptor** (`limit:1`); a recipe step that names a var
 **Execution note:** `clearance-register` now runs as a worker that decomposes these axes into isolated
 search **units** (saturation-probe / primary-sweep / transliteration-numeric / incumbent-class /
 merch-sweep), each executing one axis and writing its named-band array (`register-units/<axis>-band.json`).
-If you are a unit, run only your assigned axis from the recipe below; the judgment worker (Layer B) performs
-the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation over the combined bands. See
+If you are a unit, run only your assigned axis from the recipe below; the write-up (Layer B) performs the cross-cutting relevance / owner-aggregation / prioritisation over the candidates placement carried forward. See
 [SKILL.md](SKILL.md).
 
 ## Contents
@@ -195,7 +194,7 @@ Ask one script question per market the frame names. Where the register files for
 7. ENUMERATE a cross-class merch query if identical match
 ```
 
-**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). The lawyer reads the complete band + the crowd descriptors and decides sufficiency.
+**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). Placement reads the band; a crowd is narrowed by the steps in unit.md.
 
 **Expected output:** the enumerated band for every named slice + crowd descriptors for the bare elements. The lawyer prioritises; the funnel surfaces everything.
 
@@ -260,7 +259,7 @@ Ask one script question per market the frame names. Where the register files for
      so judgment sees provenance; identical-text rows carry their status like any other record
 ```
 
-**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration by the narrowing steps on any `incomplete` it deems material, or records it with its count and moves on. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
+**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. You decide on each `incomplete` by the narrowing steps; placement reads the band and decides relevance. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
 
 **Meaning-axis extension — a saturated everyday-word meaning token (COLORA→色彩) runs the same enumeration.** When
 the saturation probe flags a `translit-*-meaning` variant and the frame says that market matters, add **one `register_enumerate` step on the

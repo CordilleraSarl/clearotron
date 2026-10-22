@@ -59,8 +59,7 @@ Set by the orchestrator per mode (set `model` explicitly on the spawn — omitti
 
 - **Unit mode** — `saturation-probe` → **`haiku`**, thinking off (count-only, pure data-pull). The
   three sweep axes (`primary-sweep`, `transliteration-numeric`, `incumbent-class`) → **`sonnet`**,
-  adaptive thinking (run the manifest's given searches, detail-fetch, apply the rule-based status
-  filter — nuanced rule-following, not open analysis).
+  adaptive thinking (run the plan, read each answer, narrow a crowd by the steps in unit.md, and decide whether more searching would change the advice).
 - **Digest mode** — **`opus`**, thinking medium. All the precision-critical judgment lives here
   (relevance gate, owner clustering, opposition interpretation, Option-D).
 
