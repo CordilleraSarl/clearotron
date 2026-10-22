@@ -10379,7 +10379,7 @@ async function pipelineInner(job, opts = {}) {
     return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
   }
 
-  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS (874) ──────────────────────
+  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS ──────────────────────
   //
   // Reached from the synthesis site on the pass that resumes a run whose synthesis failed once its recovery was spent:
   // the catch recorded the assessment as not completed and parked the run (parts-not-completed.mjs). The run holds
@@ -16894,7 +16894,7 @@ async function pipelineInner(job, opts = {}) {
       // ZERO usable rows (machine mirror unavailable AND the prose parse yielded nothing) has no
       // functioning coverage receipts at all — it FAILS instead of stamping a verdict over unread
       // coverage (the retired D1 clamp used to ship this as a finished-looking CONDITIONAL).
-      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER (874). The machine ledger
+      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER. The machine ledger
       // and the prose table are renders of the driver's coverage form, whose statuses the write-up recorded. With both
       // renders unreadable, the form's ruled rows still let the coverage-honesty floor run, through the same relabels,
       // so the run is not ended with no report over a render it lost. With no ruled row there either, see below.
@@ -16906,7 +16906,7 @@ async function pipelineInner(job, opts = {}) {
           note(`coverage ledger: the machine ledger and the prose table are unreadable — the coverage floor reads the coverage form's ${formRows.length} ruled row(s)`);
         } else
           // With no ruled row anywhere, no verdict can ship over coverage nobody read (spec-49 T3), and the run is not
-          // ended for it either (874): the failure is the assessment's, recorded as not completed and delivered without it.
+          // ended for it either: the failure is the assessment's, recorded as not completed and delivered without it.
           throw Object.assign(new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`), { notCompletedPart: "assessment" });
       }
       // — the designation comes from the VALIDATED model, not the rendered manifest. `manifestFinal`
@@ -17005,7 +17005,7 @@ async function pipelineInner(job, opts = {}) {
       // failClass "stale": the remedy is a DETERMINISTIC recompute of the stale stage(s) (a resume recomputes
       // them — the stamps were left stale for exactly this, see reconcileStamps' exclude), so this must not be
       // starved by the shared one-park "unknown" budget. The repeat-signature backstop still caps it.
-      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE (874). A first staleness parks and the resume repairs
+      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE. A first staleness parks and the resume repairs
       // it, as always. Where the repeat would end the run, the check is named as its own part: the run parks once more,
       // and the resumed pass repairs and checks again from the material as it then stands. Still stale then, it ends as
       // it always did; this check never delivers past staleness.
@@ -17312,7 +17312,7 @@ async function pipelineInner(job, opts = {}) {
       // not a status surface — it stays under the machinery name deliberately.
       return { ok: false, postponed: true, recovery: true, attempt, resetsAt: recoveryResumesAt, codename: run.codename, runDir: run.runDir };
     }
-    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON (874) ────────────────────────
+    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON ────────────────────────
     //
     // A failure the throw site named as a covered part (`notCompletedPart`, parts-not-completed.mjs) reaches here once
     // the decision above has nothing left to buy: every recovery lane spent, a repeated signature, or a deterministic

@@ -638,7 +638,7 @@ test("spec-49 T3 (H3): a digest that settles NO coverage row ships no verdict â€
   // on any row is refused BY THE DIGEST'S OWN VALIDATOR (coverage_no_status) through the whole corrective
   // ladder. It fails at the stage that produced the defect, naming it.
   //
-  // AND NO VERDICT SHIPS, but the run is no longer ended with nothing delivered (874): once the write-up's recovery
+  // AND NO VERDICT SHIPS, but the run is no longer ended with nothing delivered: once the write-up's recovery
   // is spent the assessment is recorded as not completed, and the resumed pass delivers what the run holds with no
   // rating anywhere â€” never a finished-looking CONDITIONAL. That delivery is held by
   // a-run-whose-register-reading-cannot-finish-delivers-what-it-holds.pipeline.test.mjs.

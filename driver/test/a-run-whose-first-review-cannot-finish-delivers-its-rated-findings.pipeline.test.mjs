@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a mock pipeline whose first review cannot finish through its park and its resume, on both engines
 //
-// A RUN WHOSE FIRST REVIEW CANNOT FINISH DELIVERS ITS RATED FINDINGS, WITH THE BAND ALONE (874).
+// A RUN WHOSE FIRST REVIEW CANNOT FINISH DELIVERS ITS RATED FINDINGS, WITH THE BAND ALONE.
 //
 // The first review reads the assessment and signs it. When it failed and its recovery was spent, the run ended with the
 // stop notice, though it held the rated findings. Now the part is recorded as not completed, and the resumed pass delivers

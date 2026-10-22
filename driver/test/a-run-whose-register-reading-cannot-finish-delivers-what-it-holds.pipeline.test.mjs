@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives a mock pipeline whose placement or register write-up cannot finish, on both engines, with invented names
 //
-// A RUN WHOSE PLACEMENT OR REGISTER WRITE-UP CANNOT FINISH DELIVERS WHAT IT HOLDS, WITH THE GAP STATED (874).
+// A RUN WHOSE PLACEMENT OR REGISTER WRITE-UP CANNOT FINISH DELIVERS WHAT IT HOLDS, WITH THE GAP STATED.
 //
 // Placement and the register write-up are the overall assessment's first two steps. When either fails once its recovery
 // is spent, the run holds the register band and the web search but no reading of the register, and no assessment. It is
