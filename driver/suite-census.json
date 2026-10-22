@@ -6795,6 +6795,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-register-wording-follows-the-ruled-crowd-method.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-release-note-guard-reads-a-pull-request-and-never-main.test.mjs": {
           "tests": 4,
           "asserts": 13,
