@@ -1587,6 +1587,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-research-answer-is-kept-in-the-run-for-a-later-attempt-of-its-stage.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
           "tests": 3,
           "asserts": 13,
