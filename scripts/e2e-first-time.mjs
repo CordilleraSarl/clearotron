@@ -144,6 +144,8 @@ export const COUNTED_EVENTS = {
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
   "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR, "foreign-record-links-blanked": REPAIR,
   "verdict-hardened-by-repair": REPAIR, "verdict-rederive-repair": REPAIR,
+  // the coverage floor read the coverage form because both of its renders were unreadable
+  "coverage-ledger-from-form": REPAIR,
   // The synthesis transport decoded a marker sent as a JSON string, or lifted rows sent inside the findings
   // object, on a call it then accepted. Its other notes — an override the merge has always applied, keys and
   // rows a whole call carries and the transport ignores — changed nothing that was accepted.
@@ -157,6 +159,8 @@ export const COUNTED_EVENTS = {
   "supplemental-fold-refused": REFUSED, "verdict-softening-not-adopted": REFUSED, "named-band-remerge-over-ceiling": REFUSED, "register-recall-refused": REFUSED,
   "auto-recovery-exhausted": RECOVERY, "auto-recovery-parked": RECOVERY, "corrective-rollback": RECOVERY,
   "parked-for-human": RECOVERY, "postponed": RECOVERY, "recovery-parked": RECOVERY, "taint-park": RECOVERY,
+  // a covered part whose recovery was spent, parked to be delivered without (driver/parts-not-completed.mjs)
+  "part-not-completed": RECOVERY,
   "cancelled": "cancelled", "failed": "run failed", "form-repair": "form repair turn",
   "attempt-prevented": "attempt the ladder cut",
   // A rung that reached the model is an attempt past the first, which the stage record lists as a retry.
@@ -226,6 +230,7 @@ export const NOT_COUNTED_EVENTS = {
     "stray-matter", "synthesis-duty-undischarged", "verdict-blocking-delivered",
   ],
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
+    "assessment-not-completed-delivery", "part-completed", "overview-not-completed-delivery", "review-not-completed-delivery",
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
     "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",

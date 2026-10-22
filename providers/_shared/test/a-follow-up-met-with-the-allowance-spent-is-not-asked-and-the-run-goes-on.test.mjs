@@ -137,3 +137,36 @@ test("two workers sending at once share the one count, and none sends past it", 
   assert.equal(ran, 5, "the net let through more or fewer searches than it had room for");
   assert.equal(followUpSearchesSent(f.driver).sent, LIMIT);
 });
+
+test("a follow-up asked again counts once, and the full net still sends it", async (t) => {
+  const f = runFolder(t, { sent: LIMIT - 1 });
+  const { executePlan, asked } = executor();
+  await execute(executePlan, f, [followUp("sup:a", "QZORVA")]);
+  assert.equal(followUpSearchesSent(f.driver).sent, LIMIT, "guard: the first asking filled the net");
+  const { reply, band } = await execute(executePlan, f, [followUp("sup:a", "QZORVA")]);
+  assert.deepEqual(asked, ["QZORVA", "QZORVA"], "the question asked again was not sent");
+  assert.equal(followUpSearchesSent(f.driver).sent, LIMIT, "the question asked again was counted again");
+  assert.equal(reply.outstanding, undefined, "the full net held back a question it had already counted");
+  assert.deepEqual(band.map((b) => b.qid), ["sup:a"]);
+  assert.equal(readFileSync(join(f.driver, SEARCHES_FILE), "utf8").split("\n").filter(Boolean).length, LIMIT, "the repeat wrote a line of its own");
+});
+
+test("a follow-up whose send failed counts again each time it is sent again, so the net still stops it", async (t) => {
+  const f = runFolder(t, { sent: LIMIT - 2 });
+  const { logCall } = makeLedger("stand-in");
+  const asked = [];
+  const executePlan = makeExecutePlan({
+    search: async (_a, p, tctx) => { asked.push(p.name); logCall(tctx, { http_status: 400, ok: false }); throw new Error("400 the register refused the query"); },
+    enumerate: async (_a, p, tctx) => { asked.push(p.name); logCall(tctx, { http_status: 400, ok: false }); throw new Error("400 the register refused the query"); },
+    capabilities: { id: "a-register-that-needs-no-office" },
+  });
+  const first = await execute(executePlan, f, [followUp("sup:a", "QZORVA")]);
+  assert.ok(first.band.find((b) => b.qid === "sup:a")?.error, "guard: the stand-in register failed the question");
+  assert.equal(followUpSearchesSent(f.driver).sent, LIMIT - 1);
+  await execute(executePlan, f, [followUp("sup:a", "QZORVA")]);
+  assert.equal(followUpSearchesSent(f.driver).sent, LIMIT, "a failed question sent again was not counted again");
+  const calls = asked.length;
+  const third = await execute(executePlan, f, [followUp("sup:a", "QZORVA")]);
+  assert.deepEqual(third.reply.outstanding, ["sup:a"], "the full net let a failing question through again");
+  assert.equal(asked.length, calls, "the register was asked after the net was full");
+});

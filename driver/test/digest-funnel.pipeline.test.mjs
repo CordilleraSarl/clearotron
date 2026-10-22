@@ -60,7 +60,7 @@ const landingFetcher = (fetched = []) => async (uri, { sessionKey }) => {
 async function runMockPipeline(env, opts = {}, reuse = null) {
   const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "clearotron-funnel-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF",
-    "MOCK_ESCALATION_NOOP", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CLAUDE_CALL_LOG"]) delete process.env[k];
+    "MOCK_ESCALATION_NOOP", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CLAUDE_CALL_LOG", "MOCK_SEAT_DEFERS"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root,
     CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
@@ -126,15 +126,18 @@ const digestPicture = (events) => {
     + "\n    no-drop-rows / all-fetched / unnamed-drops-unarmed mean the gate was genuinely clean and"
     + "\n    the fault is upstream of it. #1215.";
 };
-// The skeptic escalates transliteration-numeric (NOT primary-sweep, whose unit the envelope close must
-// still byte-change) — so escalation + envelope + screen-gate ALL fire in one run.
+// The skeptic escalates transliteration-numeric (NOT incumbent-class, whose unit the envelope close must
+// still byte-change) — so escalation + envelope + screen-gate ALL fire in one run. The envelope fires on the seat's own
+// deferred row (MOCK_SEAT_DEFERS), on an axis the plan-execution receipt does not cover: a mock run carries no standing
+// deferral, and a row on an axis the receipt covers has no question left to send, so the envelope would hold it.
+const SEAT_DEFERS = "incumbent-class";
 const ESCALATE_SKEPTIC = "- transliteration-numeric extra script group looks thin\n\n## Escalation decisions\nESCALATE: transliteration-numeric — sweep the extra script group";
 
 test("multi-trigger settlement: escalation + envelope + screen-gate all MINT; exactly ONE consolidated flush carries all three sections + the full re-emission contract", async () => {
   const callLog = join(mkdtempSync(join(tmpdir(), "funnel-calllog-")), "argv.jsonl");
   const fetched = [];
   const { res, events } = await runMockPipeline(
-    { MOCK_SKEPTIC: ESCALATE_SKEPTIC, MOCK_SCREEN_DROP: "1", MOCK_CLAUDE_CALL_LOG: callLog },
+    { MOCK_SKEPTIC: ESCALATE_SKEPTIC, MOCK_SCREEN_DROP: "1", MOCK_CLAUDE_CALL_LOG: callLog, MOCK_SEAT_DEFERS: SEAT_DEFERS },
     { recordFetcher: landingFetcher(fetched) });
   assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
 
@@ -160,7 +163,7 @@ test("multi-trigger settlement: escalation + envelope + screen-gate all MINT; ex
   assert.ok(events.some((e) => e.event === "screen-gate-clean" && e.recovered === true), "gate clean after the code-fetch");
   // …and the envelope's closure verification ran POST-FLUSH over the re-digested ledger.
   const closed = events.find((e) => e.event === "envelope-closed");
-  assert.ok(closed && closed.axes.includes("primary-sweep"), "envelope-closed verified after the flush landed");
+  assert.ok(closed && closed.axes.includes(SEAT_DEFERS), "envelope-closed verified after the flush landed");
   const flushIdx = events.findIndex((e) => e.event === "digest-flush");
   assert.ok(events.findIndex((e) => e.event === "envelope-closed") > flushIdx, "verification strictly after the flush");
 
@@ -209,7 +212,7 @@ test("multi-resume re-entry (the 13-pass probe): an unretrievable drop no longer
   // a real mid-delivery crash leaves behind.
   const failingFetcher = async () => ({ ok: false, cause: "record 404 (mock — unretrievable)" });
   const p1 = await runMockPipeline(
-    { MOCK_SKEPTIC: ESCALATE_SKEPTIC, MOCK_SCREEN_DROP: "persist", MOCK_FAIL_STAGE: "record_report_overview" },
+    { MOCK_SKEPTIC: ESCALATE_SKEPTIC, MOCK_SCREEN_DROP: "persist", MOCK_FAIL_STAGE: "record_report_overview", MOCK_SEAT_DEFERS: SEAT_DEFERS },
     { recordFetcher: failingFetcher });
   assert.equal(p1.res.ok, false, "pass 1 parks at report-overview");
   assert.notEqual(p1.res.failedStage, "screen-gate", "NOT at the screen-gate — disclose-and-continue, never a dead run");
@@ -232,7 +235,7 @@ test("multi-resume re-entry (the 13-pass probe): an unretrievable drop no longer
   const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
   const n1 = p1.events.length;
   const p2 = await runMockPipeline(
-    { MOCK_SKEPTIC: ESCALATE_SKEPTIC, MOCK_SCREEN_DROP: "persist" },
+    { MOCK_SKEPTIC: ESCALATE_SKEPTIC, MOCK_SCREEN_DROP: "persist", MOCK_SEAT_DEFERS: SEAT_DEFERS },
     { recordFetcher: failingFetcher },
     { root: p1.root, codename });
   assert.equal(p2.res.ok, true, JSON.stringify({ ok: p2.res.ok, fail: p2.res.fail, stage: p2.res.failedStage }));
@@ -444,7 +447,7 @@ test("LATE flush (resume past synthesis): a durable pending item gets AT MOST ON
   // pass 1: funnel ON, envelope mints + settles pre-synthesis, synthesis runs, then the run dies at
   // report-overview — narrative.md exists, so the NEXT pass is digest-LOCKED (escalation stays locked
   // out exactly as today).
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "record_report_overview" }, {});
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "record_report_overview", MOCK_SEAT_DEFERS: SEAT_DEFERS }, {});
   assert.equal(p1.res.ok, false, "pass 1 dies after synthesis");
   assert.ok(existsSync(join(p1.res.runDir, "narrative.md")), "narrative exists — the digest is locked on resume");
   // Plant a POST-SYNTHESIS-CLASS pending item in the durable sidecar — the shape a prior session's

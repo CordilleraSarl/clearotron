@@ -85,6 +85,6 @@ test("the pipeline derives the summary line with the withheld families from wait
   const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
   assert.equal(src.split("deriveScopeFacts({").length - 1, 1, "one derivation of the summary line");
   const site = src.slice(src.indexOf("deriveScopeFacts({"), src.indexOf("deriveScopeFacts({") + 600);
-  assert.match(site, /withheldQids: waitingFamilyStates\(run\.runDir, planExecution\?\.awaiting\)\.withheld\.map\(\(f\) => f\.qid\)/);
+  assert.match(site, /withheldQids: waitingFamilyStates\(runDir, planExecution\?\.awaiting\)\.withheld\.map\(\(f\) => f\.qid\)/);
   assert.match(src, /const \{ withheld, awaiting \} = waitingFamilyStates\(P\.runDir, exec\.awaiting\);/, "the reviewer's table reads through the same helper");
 });

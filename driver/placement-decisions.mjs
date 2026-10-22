@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { createHash } from "node:crypto";
-import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName, servedLines } from "./placement-form.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput } from "./placement-form-io.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
@@ -70,17 +70,20 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
     const placedUris = placedUriRows(P).map((r) => r.uri);
-    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris, rows: form.rows }), buildSelectionIndex(input), input.groups, input.floors,
-      { placedUris });
+    const index = buildSelectionIndex(input);
+    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris, rows: form.rows }), index, input.groups, input.floors,
+      { placedUris, served: servedLines(input.groups, input.served, index) });
   } catch { return () => null; }
 }
 
 /**
- * THE FLOORS PLACEMENT SET ASIDE, AS THE REVIEW IS TOLD THEM: one line per floor of the shape now on disk whose
- * set-aside stands, by name on its status or its territory, or under a crowd's row, with placement's ground. Only
- * decisions that stand on the current shape are listed (`placementSetAsideGrounds`, which checks a group's row
- * again); a floor with no standing decision is not listed, so the review flags it as before. [] when nothing stands
- * or nothing can be read. IMPURE (reads the run).
+ * THE FLOORS PLACEMENT SET ASIDE, AS THE REVIEW IS TOLD THEM: one line per standing decision on the shape now on disk,
+ * with placement's ground once. A set-aside by name, on its status or its territory, covers one floor and names it. A
+ * crowd's row names its ground once and then every floor it covers, by record: the ground is the group's, so it was
+ * never the floors' to repeat, and on a test run of a crowded matter repeating it on each of 1,177 floors made the
+ * review's opening message 866 KB of its 899. Only decisions that stand on the current shape are listed
+ * (`placementSetAsideGrounds`, which checks a group's row again); a floor with no standing decision is not listed, so
+ * the review flags it as before. [] when nothing stands or nothing can be read. IMPURE (reads the run).
  */
 export function placementFloorDecisionLines(P) {   // @internal — driven by its test with a run's own files
   try {
@@ -88,14 +91,19 @@ export function placementFloorDecisionLines(P) {   // @internal — driven by it
     if (!Array.isArray(floors) || !floors.length) return [];
     const groundOf = placementSetAsideGrounds(P);
     const out = [];
+    const rows = new Map();   // a crowd's row, by its group and ground: listed where its first floor falls
     for (const f of floors) {
       const g = f?.record_id ? groundOf(f.record_id) : null;
       if (!g?.ground) continue;
-      const who = `${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id})`;
-      if (g.by === "group") out.push(`- ${who}: covered by group (${g.group})'s row: ${g.ground}`);
-      else if (g.on === "status" || g.on === "territory") out.push(`- ${who}: set aside on its ${g.on}: ${g.ground}`);
+      if (g.by === "group") {
+        const key = `${g.group}\u0000${g.ground}`;
+        if (!rows.has(key)) { rows.set(key, { group: g.group, ground: g.ground, ids: [] }); out.push(rows.get(key)); }
+        rows.get(key).ids.push(f.record_id);
+      } else if (g.on === "status" || g.on === "territory") {
+        out.push(`- ${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id}): set aside on its ${g.on}: ${g.ground}`);
+      }
     }
-    return out;
+    return out.map((e) => (typeof e === "string" ? e : `- covered by group (${e.group})'s row: ${e.ground} (${e.ids.join(", ")})`));
   } catch { return []; }
 }
 

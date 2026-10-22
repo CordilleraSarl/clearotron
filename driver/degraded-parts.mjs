@@ -19,14 +19,15 @@
 // deferral row translates into its reader's words. The row is that builder's, so this module writes no
 // sentence, and no raw cause reaches a reader's cell: the cause stays on the run's record.
 //
-// A pure leaf: node:fs, node:path, shared/driver-dir.mjs, the row's own module and the publisher's table of
-// stores (itself node:fs and node:path only), so it cannot drag driver.config.mjs, whose unset-env defaults
+// A pure leaf: node:fs, node:path, shared/driver-dir.mjs, the row's own module, the publisher's table of
+// stores (itself node:fs and node:path only) and the record of a part not completed (parts-not-completed.mjs, the same), so it cannot drag driver.config.mjs, whose unset-env defaults
 // are PRODUCTION, into anything that imports it.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   // a card's label carries a colon, which Windows writes %3A
 import { deferralCoverageRow } from "./deferral-row.mjs";
 import { PUBLISH_INPUTS, readStore } from "./publish/publish-inputs.mjs";
+import { readPartNotCompleted } from "./parts-not-completed.mjs";
 
 // The name each part is given: a label the report or the workbook already prints. Never a new phrase.
 export const PART_NAMES = {
@@ -35,6 +36,7 @@ export const PART_NAMES = {
   register: "Register",                // the report's search-coverage row (publish/render.mjs)
   localLanguage: "Local-language investigation",   // the report's search-coverage row (publish/render.mjs)
   findings: "Findings",                // the workbook's tab (publish/xlsx.mjs)
+  summary: "Summary",                  // the report's own top section, in its section strip (publish/render.mjs)
   machineQc: "Machine QC",             // the workbook's Summary row for the checks (publish/xlsx.mjs)
   conditions: "Conditions",            // the gaps sheet's area for a condition that reaches no page (publish/index.mjs)
   coverage: "Coverage & gaps",         // the workbook's tab (publish/xlsx.mjs)
@@ -94,6 +96,27 @@ const reasonFor = (fail) => (/timeout|timed out/i.test(String(fail ?? "")) ? TIM
 // ── The checks. Each returns null, or {part, name, reason, cause}: `cause` is the raw fact for the run's
 // record and never reaches a cell.
 
+// The overall assessment, where the run recorded it as not completed (parts-not-completed.mjs): synthesis failed once
+// its recovery was spent, and the run delivered what it held. It shares the workbook tab's name with a failed card,
+// so the two are one reader's line.
+function assessment(runDir) {
+  const open = readPartNotCompleted(runDir, "assessment");
+  if (!open) return null;
+  return { part: "assessment", name: PART_NAMES.findings, reason: NOT_COMPLETED,
+    cause: open.damaged ? "the record of the assessment not completed is present and cannot be read"
+      : `the overall assessment did not complete at ${open.stage ?? "an unrecorded stage"}: ${open.reason ?? "no cause recorded"}` };
+}
+
+// The report overview, where the run recorded it as not completed: the report carries its rating and its cards without
+// the overview's conclusion, which sits in the report's top section, so the part is that section's name.
+function overview(runDir) {
+  const open = readPartNotCompleted(runDir, "overview");
+  if (!open) return null;
+  return { part: "overview", name: PART_NAMES.summary, reason: NOT_COMPLETED,
+    cause: open.damaged ? "the record of the overview not completed is present and cannot be read"
+      : `the report overview did not complete: ${open.reason ?? "no cause recorded"}` };
+}
+
 // Court decisions, on a run that was due them: the stage ended failed, or its file is absent or empty. An
 // empty file reads "not in scope" on the report (publish/search-depth.mjs), so nothing else says it.
 function courtDecisions(runDir, log) {
@@ -143,6 +166,11 @@ function register(runDir, log) {
     ["digest-flush", "digest-flush-failed", "the digest flush"],
   ];
   const failed = steps.map(([ok, bad, what]) => [failedStep(log, ok, bad), what]).filter(([e]) => e);
+  // The register's reading itself, where the run delivered without its assessment because placement or the write-up
+  // is the step that failed: the register was searched, and nothing ruled what it returned.
+  const open = readPartNotCompleted(runDir, "assessment");
+  if (open && ["placement-inquiry", "register-digest"].includes(open.stage))
+    failed.push([{ fail: `${open.stage} did not complete: ${open.reason ?? "no cause recorded"}` }, "the register write-up"]);
   let reopen = null;
   try { reopen = JSON.parse(readFileSync(driverDir(runDir, "frame-reopen.json"), "utf8")); } catch { reopen = null; }
   if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)
@@ -184,7 +212,9 @@ function checks(runDir, log) {
   const skeptic = stageEnded(runDir, "skeptic");
   if (skeptic) failed.push(["the reviewer's pass", skeptic.fail]);
   const recheck = stageEnded(runDir, "narrative-refutation");
-  if (recheck) failed.push(["the review's re-check", recheck.fail]);
+  const reviewOpen = readPartNotCompleted(runDir, "review");
+  if (reviewOpen) failed.push(["the review, not completed", reviewOpen.reason ?? recheck?.fail]);
+  else if (recheck) failed.push(["the review's re-check", recheck.fail]);
   const rollback = failedStep(log, "corrective-cycle-receipt", "corrective-rollback");
   if (rollback) failed.push(["the corrective pass, rolled back", rollback.reason]);
   const crowd = failedStep(log, "crowd-context", "crowd-context-failed");
@@ -233,7 +263,7 @@ function officialRecords(runDir, log) {
     cause: `the fetch ledger could not be read: ${last.ledgerError}` };
 }
 
-const CHECKS = [courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords];
+const CHECKS = [assessment, overview, courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords];
 
 /**
  * Every part of this clearance run that failed and still ships, read from the run directory as it stands
@@ -307,6 +337,8 @@ export const STORE_PARTS = {
   "_driver/reasoning-integrity.json": "machineQc",
   "_driver/corrections-state.json": "machineQc",
   "common-law-grid.json": "marketplaceWeb",
+  "_driver/not-completed/assessment.json": "findings",
+  "_driver/not-completed/assessment-coverage.json": "coverage",
 };
 
 /** The stores no row describes honestly, each with its reason. */

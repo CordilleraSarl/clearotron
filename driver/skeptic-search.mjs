@@ -36,6 +36,8 @@
 import { readFileSync, realpathSync, statSync } from "node:fs";
 import { resolve, sep, isAbsolute } from "node:path";
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
+import { answerBudget } from "../shared/answer-parts.mjs";   // the reply size this server was given
+import { RESEARCH_ANSWERS_MD } from "./research-answers.mjs";   // the one artifact whose lines come back whole
 
 /**
  * Which refusal a failed path resolution earns, from the error's CODE.
@@ -57,7 +59,17 @@ export const SEARCH_LIMITS = Object.freeze({
   maxMatches: 50,      // the measured calls bounded themselves with `| head -5` when they expected many
   maxLineChars: 400,
   maxFileBytes: 5 * 1024 * 1024,  // the measured targets were ~100KB findings files
+  wholeLinesChars: 60000,  // the answers file's lines in one reply: well under the engine's ~100KB cap on a tool result
 });
+
+// THE ANSWERS FILE HANDS BACK WHOLE LINES. A later attempt of the writer is handed the research its earlier attempts got
+// as `research-answers.md`, one question and its answer per line, and finds one by the owner's name (research-answers.mjs).
+// A line cut at `maxLineChars` would hand back the question and drop the answer, so that file's matching lines come
+// back whole, as many as one reply holds. The reply stops between lines, never inside one, and says it left lines out.
+const wholeLinesCap = (limits) => {
+  const budget = answerBudget();
+  return Math.min(limits.wholeLinesChars ?? SEARCH_LIMITS.wholeLinesChars, budget ? Math.floor(budget * 0.75) : Infinity);
+};
 
 /**
  * Search ONE run artifact for OR-matched literal substrings. Returns bounded matches with 1-based line
@@ -168,13 +180,17 @@ export function searchRunArtifacts(runDir, params, { limits = SEARCH_LIMITS } = 
   const lines = readFileSync(real, "utf8").split("\n");
   const matches = [];
   let total = 0;
+  const whole = realRel === RESEARCH_ANSWERS_MD ? wholeLinesCap(limits) : 0;
+  let replyChars = 0, replyFull = false;
   for (let i = 0; i < lines.length; i++) {
     const hay = caseSensitive ? lines[i] : lines[i].toLowerCase();
     if (!needles.some((n) => hay.includes(n))) continue;
     total++;
-    if (matches.length < limits.maxMatches) {
-      matches.push({ line: i + 1, text: lines[i].slice(0, limits.maxLineChars) });
-    }
+    if (matches.length >= limits.maxMatches || replyFull) continue;
+    if (!whole) { matches.push({ line: i + 1, text: lines[i].slice(0, limits.maxLineChars) }); continue; }
+    if (matches.length && replyChars + lines[i].length > whole) { replyFull = true; continue; }
+    matches.push({ line: i + 1, text: lines[i].slice(0, whole) });
+    replyChars += Math.min(lines[i].length, whole);
   }
   return {
     file,

@@ -14,15 +14,18 @@
 // blocks, replace owned qids, drop stale skipped-fringe blocks, temp+rename write), the error:true stamp
 // (a provider error is never confusable with a sanctioned crowd), and the one in-tool retry per call.
 
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
-import { runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
+import { FOLLOW_UP_SEARCH_LIMIT, runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
+
+/** How soon after an answer lands it is written to the band, while the call goes on (see `keepAnswers` below). */
+export const KEEP_ANSWERS_AFTER_MS = 2000;
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
-import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
+import { isGatewayStall, isGatewayTimeout, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
 
 // plan predicate → provider query params. "wildcard" patterns compile to the provider's anchored
 // modes (trailing * → starts_with, leading * → ends_with); there is deliberately NO `contains`
@@ -372,6 +375,53 @@ export function makeExecutePlan(deps) {
       try { identicalTerms = identicalMarkTerms(JSON.parse(readFileSync(join(driverDir, "register-plan.json"), "utf8"))); } catch { /* no frozen plan: no identical terms known */ }
     }
     const refused = [];
+    // The follow-ups this axis's band already answers, read once and only when the net meets a question sent before:
+    // an answered one adds nothing when it is sent again, and a failed one counts again. A unit whose pass was killed at
+    // its time limit is parked: its band is renamed (`<band>.tainted-<n>`) so the resume runs the unit again, and the
+    // re-run sends the same follow-ups. Their answers are in the renamed band, so they count nothing either.
+    let answeredQids = null;
+    // This axis's band, and the bands a parked pass left (`<band>.tainted-<n>`), oldest first and the band's own last.
+    const bandsOnRecord = () => {
+      let parked = [];
+      try { parked = readdirSync(dirname(outPath)).filter((f) => /^\.tainted-\d+$/.test(f.slice(basename(outPath).length)) && f.startsWith(basename(outPath))); }
+      catch { parked = []; }
+      const n = (f) => Number(f.slice(f.lastIndexOf("-") + 1));
+      return [...parked.sort((a, b) => n(a) - n(b)).map((f) => join(dirname(outPath), f)), outPath];
+    };
+    const answeredBefore = (qid) => {
+      if (!answeredQids) {
+        answeredQids = new Set();
+        for (const band of bandsOnRecord()) {
+          try {
+            const prior = JSON.parse(readFileSync(band, "utf8"));
+            for (const b of Array.isArray(prior) ? prior : []) if (b?.qid && b.error !== true) answeredQids.add(String(b.qid));
+          } catch { /* no band yet: nothing answered */ }
+        }
+      }
+      return answeredQids.has(qid);
+    };
+    // ── A QUESTION THAT TIMED OUT AT THE GATEWAY IS ASKED AGAIN ONCE, AT THE ENVELOPE CLOSE, AND ON NO OTHER RUNG ──
+    // A timeout is not answered by asking the same slow question again soon: on a test run of a crowded matter, 11
+    // questions timed out 24 times, at two minutes each, as the unit's cold retry, the envelope close and the review
+    // each sent them again, and only the envelope close's ask ever answered. So a question whose latest answer on
+    // record is a gateway timeout is not sent: its answer stands, carried into this call as it is. A unit's retry
+    // after its pass was parked reads the parked band, so it does not ask it either. The envelope close's dispatch,
+    // and only that, asks it again (`reaskTimedOut` on the driver's own call context, which no tool argument
+    // reaches), once per run (envelope-settle.mjs, settle_tried).
+    let latestByQid = null;
+    const timedOutBefore = (qid) => {
+      if (!latestByQid) {
+        latestByQid = new Map();
+        for (const band of bandsOnRecord()) {
+          try {
+            const prior = JSON.parse(readFileSync(band, "utf8"));
+            for (const b of Array.isArray(prior) ? prior : []) if (b?.qid) latestByQid.set(String(b.qid), b);
+          } catch { /* no band yet: nothing on record */ }
+        }
+      }
+      const b = latestByQid.get(String(qid));
+      return b && b.error === true && b.gateway_timeout === true ? b : null;
+    };
     const stateByQid = new Map();
     const seeded = new Set();
     if (qidsFilter) {
@@ -388,8 +438,41 @@ export function makeExecutePlan(deps) {
       } catch { /* no/unreadable prior band — when-guards fall back to skip (parent state unknown) */ }
     }
     const blocks = [];
+    // A CALL CUT OFF MID-WAY KEEPS THE ANSWERS IT HAD. The band used to be written once, when the call ended, so a
+    // call that never ended lost every answer it had received. On a test run of a crowded matter a follow-up call
+    // answered four questions, then kept retrying a search the register's gateway timed out until the worker's time
+    // limit ended it, and the worker's retry asked the four again. Shortly after an answer lands, the band is now
+    // written with every answer the call holds, merged as the final write merges, at most once per interval. The
+    // final write below still applies the whole rule.
+    let keepTimer = null;
+    const keepAnswers = () => {
+      keepTimer = null;
+      if (!blocks.length) return;
+      try {
+        const have = new Set(blocks.map((b) => b?.qid).filter(Boolean));
+        let others = [];
+        try {
+          const existing = JSON.parse(readFileSync(outPath, "utf8"));
+          if (Array.isArray(existing)) others = existing.filter((b) => b && typeof b === "object" && !have.has(b.qid));
+        } catch { /* no band yet */ }
+        mkdirSync(dirname(outPath), { recursive: true });
+        writeFileSync(`${outPath}.tmp`, JSON.stringify([...blocks, ...others], null, 2) + "\n");
+        renameSync(`${outPath}.tmp`, outPath);
+      } catch { /* keeping answers early must never break a search: the final write still runs */ }
+    };
+    const keepAnswersSoon = () => {
+      if (keepTimer || !blocks.length) return;
+      keepTimer = setTimeout(keepAnswers, KEEP_ANSWERS_AFTER_MS);
+      keepTimer.unref?.();
+    };
     const dispatchEntry = async (e) => {
       const base = { qid: e.qid, query: describeEntry(e) };
+      const timedOut = tctx?.reaskTimedOut === true ? null : timedOutBefore(e.qid);
+      if (timedOut) {
+        blocks.push({ ...timedOut });
+        stateByQid.set(e.qid, "error");
+        return;
+      }
       // ── phase 3: a slice the ACTIVE PROVIDER CANNOT EXECUTE never becomes a weaker query ──────────
       // The compiler stamped `unsupported` (predicate with no mapping on this provider, or a
       // jurisdiction outside its coverage — see register-plan.mjs). Defense in depth for doctrine
@@ -488,6 +571,7 @@ export function makeExecutePlan(deps) {
         // over a refusal that re-derives identically. Same classification, same stamps as the enumerate
         // arm: error kept (never a sanctioned crowd), deferred added (joinPlanToBands' disclosed bucket).
         const countGap = !parsed && isCapabilityGap(String(r?.text ?? ""));
+        const countTimedOut = !parsed && isGatewayTimeout(String(r?.text ?? ""));
         // ── the UNVERIFIED bare-owner zero (see ownerNameResolved above) ─────────────────────────
         // Only a BARE-owner descriptor (the entry's own predicate, so this reads the question that was
         // asked rather than guessing from the built query), only a counted 0, and only where the
@@ -522,7 +606,8 @@ export function makeExecutePlan(deps) {
           ...(floor !== null ? { total_floor: floor, crowd_basis: "register-floor" } : {}),
           sample: (parsed?.results ?? []).slice(0, 5),
           ...(counted ? {} : { error: true }),
-          ...(countGap || ownerUnverified ? { deferred: true } : {}),
+          ...(countGap || ownerUnverified || countTimedOut ? { deferred: true } : {}),
+          ...(countTimedOut ? { gateway_timeout: true } : {}),
           ...(coveredBy ? { covered_by: coveredBy } : {}),
           // the resolution the sweep actually ran on, verbatim — a reader must be able to see WHICH
           // applicant styling was asked for, on a verified zero as much as on an unverified one.
@@ -558,9 +643,12 @@ export function makeExecutePlan(deps) {
         // …and like a capability gap it is deferred, disclosed, and the run goes on: asking the same slow
         // question again on a later rung would meet the same wall.
         const gap = isCapabilityGap(detail) || stalled(parsed);
+        // A question that timed out at the gateway, after its one in-tool retry or as a stall, is deferred like a stall,
+        // so no rung of the repair ladder sends it again; the envelope close asks it once (timedOutBefore, above).
+        const timedOut = stalled(parsed) || parsed?.gateway_timeout === true || isGatewayTimeout(detail);
         blocks.push({ state: "incomplete", ...base,
           total_hits: parsed?.total_hits ?? 0, fetched: parsed?.fetched ?? 0, sample: (parsed?.sample ?? []).slice(0, 5),
-          error: true, ...(gap ? { deferred: true } : {}),
+          error: true, ...(gap || timedOut ? { deferred: true } : {}), ...(timedOut ? { gateway_timeout: true } : {}),
           reason: `${stalled(parsed) ? "provider error (not asked again)" : "provider error (after one in-tool retry)"}: ${clipProviderText(detail, 240)}` });
         stateByQid.set(e.qid, "error");
         return;
@@ -609,7 +697,7 @@ export function makeExecutePlan(deps) {
     // register said — a block that fabricated a provider response would be the worse defect.
     const runEntry = async (e) => {
       if (driverDir && followUpClass(e, { identicalTerms }) === "counted") {
-        const room = followUpRoom(driverDir);
+        const room = followUpRoom(driverDir, FOLLOW_UP_SEARCH_LIMIT, e, { answered: answeredBefore });
         if (!room.open) {
           refused.push(e.qid);
           let query = String(e?.qid ?? "");
@@ -617,7 +705,11 @@ export function makeExecutePlan(deps) {
           recordOutstanding(driverDir, { qid: e.qid, axis, query, sent: room.sent, limit: room.limit, ...(room.unreadable ? { unreadable: true } : {}) });
           return;
         }
-        recordFollowUpSearch(driverDir, { qid: e.qid, axis });
+        // A question the run has asked and answered already is sent as before and adds nothing; one whose earlier send
+        // failed counts again, under a line of its own.
+        if (!room.repeat) recordFollowUpSearch(driverDir, { qid: e.qid, axis,
+          ...(Array.isArray(e.romanizedTerms) && e.romanizedTerms.length ? { romanized: e.romanizedTerms.map(String) } : {}),
+          ...(room.retry ? { retry: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` } : {}) });
       }
       try {
         await dispatchEntry(e);
@@ -630,6 +722,7 @@ export function makeExecutePlan(deps) {
           reason: `provider error — unhandled executor fault on this entry, which was degraded so the rest of the plan could run: ${faultText(err, "plan entry")}`.slice(0, 400) });
         stateByQid.set(e?.qid, "error");
       }
+      keepAnswersSoon();
     };
 
     for (const e of targeted.filter((x) => !x.when)) await runEntry(e);
@@ -669,6 +762,7 @@ export function makeExecutePlan(deps) {
       if (Array.isArray(existing)) preserved = existing.filter((b) => b && typeof b === "object" && !owned.has(b.qid));
     } catch { /* no/unreadable prior band — fresh write */ }
 
+    if (keepTimer) { clearTimeout(keepTimer); keepTimer = null; }
     mkdirSync(dirname(outPath), { recursive: true });
     // temp+rename: a fail-closed reader sees the old complete band or the new one, never a torn write.
     writeFileSync(`${outPath}.tmp`, JSON.stringify([...blocks, ...preserved], null, 2) + "\n");

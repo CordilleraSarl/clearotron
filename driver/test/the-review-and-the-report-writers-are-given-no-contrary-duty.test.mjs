@@ -24,7 +24,7 @@ test("the reviewer checks the coverage list and placement's grounds, and is no l
   const manuals = manualsOf("narrative-refutation");
   assert.ok(manuals.some((m) => m.rel === "skills/narrative-refutation/SKILL.md"), "premise: the reviewer reads its own manual");
   const all = flat(manuals.map((m) => m.text).join("\n"));
-  assert.ok(all.includes("**Use `matter-frame`'s material-jurisdiction list as your coverage checklist.** Confirm that the run actually searched, or honestly deferred, every jurisdiction it called material. Check the grounds of validated placement decisions against the evidence; flag an unsupported decision."),
+  assert.ok(all.includes("**Use `matter-frame`'s material-jurisdiction list as your coverage checklist.** Confirm that the run searched every jurisdiction it called material — by its own question, by a complete worldwide answer, or inside the count of a crowd the identical mark's narrowing left — or honestly deferred it. Check the grounds of validated placement decisions against the evidence; flag an unsupported decision."),
     "the reviewer does not read the reconciled coverage and grounds duty");
   assert.doesNotMatch(all, /second-guess matter-context|do NOT re-decide what is off-field/, "the reviewer is still told the frame's off-field call is beyond question");
 });

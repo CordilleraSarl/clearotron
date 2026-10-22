@@ -443,9 +443,12 @@ test("a narrative repair whose review is refused, on a stage that still reads ok
 // it, with the mock's mark that the narrowed review of that repair went unread.
 const STOP_AT_OVERVIEW = "record_report_overview";
 async function stoppedWithAnUnreadChange(engine) {
-  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: STOP_AT_OVERVIEW }, engine);
+  // A recovery park: an overview failure whose recovery is spent is delivered without the overview, so pass 1 is given the
+  // one park it takes, and the stage it stopped at is the one its status records.
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: STOP_AT_OVERVIEW, CLEAROTRON_RECOVERY_MAX: "1" }, engine);
   assert.notEqual(res.ok, true, "premise: pass 1 stopped before delivery");
-  assert.equal(res.failedStage, "report-overview", `premise: pass 1 stopped at the overview, after the first full review (stopped at ${res.failedStage})`);
+  const stoppedAt = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage;
+  assert.equal(stoppedAt, "report-overview", `premise: pass 1 stopped at the overview, after the first full review (stopped at ${stoppedAt})`);
   writePostRepairRecord(res.runDir, { status: "unread", whole: true, findingOnly: false, fail: "no-accepted-call" });
   writeFileSync(`${res.runDir}.mock-post-repair-unread`, "1\n");
   return { res, events };

@@ -87,6 +87,9 @@ Extract from the request, faithfully (verbatim beats paraphrase):
 - **The mark(s)** (`markName` / `marks`) and **`classes` or `goods`** — at least one of the two.
 - **`forwarder`** (+ `forwarderEmail`) — the requester/reply route. REQUIRED, no default: this is
   where the report goes; a wrong route misdelivers a confidential document.
+- **`agent`** — your own agent id, on every start. A run's events name the agent of the queue it started
+  in, and a courier takes only its own. Without `agent` the job starts in the deployment's default queue,
+  which on a box with more than one assistant may be another one's.
 - **`profileKey`** — call **`list_profiles`** and resolve by JUDGMENT: an explicit name, a
   misspelling (a name typed as it sounds), or an implicit reference ("our functional-beverage client") all
   map to a key. OMIT it for a new/unknown customer: the search runs under the neutral **generic**

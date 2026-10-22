@@ -52,7 +52,7 @@ import { basename } from "node:path";
 // These six are already named, exported, and living beside the subject they repair. Moving them into
 // this file would trade locality for nothing: what was missing was never their location, it was that
 // nothing enumerated them, so the guard could not walk them. They are imported and registered.
-import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES } from "./stages.mjs";
+import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES, followupScopeLines } from "./stages.mjs";
 import { refutationStandingLines, refutationOpenItemsLine, REFUTATION_RECORDING_LINES } from "./stages.mjs";
 import { buildReconcileFollowup } from "./recall-reconciliation.mjs";
 import { buildFlushFollowup } from "./digest-queue.mjs";
@@ -88,6 +88,9 @@ const SAMPLE_PATHS = Object.freeze({
   commonLawHalf: (h) => `common-law-${h}.md`, gridSpecHalf: (h) => `grid-${h}.json`,
   commonLawGridHalf: (h) => `grid-ledger-${h}.json`, registerUnit: (a) => `units/${a}.md`,
 });
+// An invented order and profile, so a register-unit follow-up's samples carry the market list and the class line the
+// pipeline hands it, and the guard reads them too. Never reachable from `compose`, like the paths above.
+const SAMPLE_SCOPE = Object.freeze({ job: { jobKey: "sample", classes: ["9"], geography: { mode: "worldwide" } }, profile: { defaultJurisdictions: ["CA"] } });
 
 // ── THE CORRECTION'S RULES AND STEPS, ONE TEXT FOR BOTH CORRECTIONS ──────────────────────────────────
 //
@@ -642,16 +645,19 @@ export const REPAIR_COMPOSERS = [
     trigger: "xcheck-decide",
     stage: "register-unit",
     key: "register-unit:xcheck-decide",
-    // A fresh session cannot infer the tool's arguments, so the caller supplies all three.
-    compose: ({ axis, registerPlan, bandPath, entries }) => lines(
+    // A fresh session cannot infer the tool's arguments, so the caller supplies all three; and it never saw the opening
+    // message, so the caller supplies the order and the profile its market list and class line are read from.
+    compose: ({ axis, registerPlan, bandPath, entries, job = null, profile = null, supplementalLane = false }) => lines(
         `This is a fresh session: your earlier register-unit work (axis "${axis}") is not in your context. Your unit digest stands — do NOT redo it.`,
         `The web search's findings named these register questions after your reading. They wait for you like the families in your plan:`,
         ...entries.map((e) => `- qid "${e.qid}": ${e.predicate} "${e.term}" · nice_classes ${JSON.stringify(e.nice_classes)}${e.from ? ` · from ${e.from}` : ""}`),
         `For \`register_execute_plan\`, use \`plan_path: ${JSON.stringify(registerPlan)}\`, \`axis: ${JSON.stringify(axis)}\`, and \`output_path: ${JSON.stringify(bandPath)}\`; pass only the qids you released.`,
         DECIDE_WAITING_FAMILIES,
+        ...followupScopeLines({ job, profile, supplementalLane }),
         `Return ONLY: the band path + the tool's summary line.`,
       ),
-    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] } }],
+    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] }  },
+      { name: "a cross-check the web search named, with the order's markets and classes", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }], supplementalLane: true, ...SAMPLE_SCOPE } }],
   },
   {
     trigger: "grid-ledger",
@@ -668,11 +674,10 @@ export const REPAIR_COMPOSERS = [
     trigger: "coverage-closure",
     stage: "common-law",
     key: "common-law:coverage-closure",
-    compose: ({ findingsFile, suppSpec, suppSpecPath, closable, cellKey, sourceChannels }) => lines(
+    compose: ({ findingsFile, suppSpec, suppSpecPath, closable, cellKey }) => lines(
         `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep.`,
         suppSpec ? `These ${closable.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? closable.map((c) => `- ${cellKey(c)}`) : []),
-        sourceChannels.length ? `IN-SCOPE CHANNELS not searched this run (the blind frame-diff flagged them as applied-but-unsearched distribution/discovery surfaces — CLOSE them, never recommend them): ${sourceChannels.join("; ")}. For EVERY manifest variant, run the appropriate search of each channel — its real domain(s) (e.g. github.com / nuget.org / npmjs.com, or the relevant store/registry) or a general-web search scoped to it — and ADD one Negative-results matrix row per (variant × channel) with its receipt, then reconcile the matching Scope-ledger / Coverage rows from not-searched to searched.` : "",
         // The edit direction has to be SCOPED here: this prompt already forbids saving the grid JSON,
         // and the tail below is the first thing in it that hands over the Edit tool. A model that reads
         // "use the Edit tool" as covering the machine ledger produces grid_ledger_unparseable /
@@ -680,47 +685,20 @@ export const REPAIR_COMPOSERS = [
         `Then update ONLY those Negative-results matrix rows with their real receipts ("No results" / "No similar listings (N candidates reviewed)" / "Similar listing(s) found — see Findings") and reconcile the Coverage ledger rows they close, preserving everything else. The driver validates grid completeness from the ledgers the tool wrote — never from your prose. The edit direction below covers ${findingsFile} ONLY; the machine ledgers stay the tool's.`,
         editRepairTail(findingsFile),
       ),
-    samples: [{ name: "closable cells plus unsearched channels", tail: "edit", args: { findingsFile: "common-law.md", suppSpec: true, suppSpecPath: "grid-supp.json", closable: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}`, sourceChannels: ["npmjs.com"] } }],
+    samples: [{ name: "closable cells", tail: "edit", args: { findingsFile: "common-law.md", suppSpec: true, suppSpecPath: "grid-supp.json", closable: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}` } }],
   },
   {
     trigger: "coverage-closure",
     stage: "common-law-half",
     key: "common-law-half:coverage-closure",
-    compose: ({ findingsFile, gridSpecPath, suppSpec, suppSpecPath, cells, cellKey, chans, scopes }) => lines(
+    compose: ({ findingsFile, gridSpecPath, suppSpec, suppSpecPath, cells, cellKey }) => lines(
         `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
         suppSpec ? `These ${cells.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? cells.map((c) => `- ${cellKey(c)}`) : []),
-        chans.length ? `IN-SCOPE CHANNELS not searched this run (the blind frame-diff flagged them as applied-but-unsearched distribution/discovery surfaces — CLOSE them, never recommend them): ${chans.join("; ")}. For EACH of these variants — ${scopes.join("; ")} — (the driver dictates this list; it may include the sibling half's terms re-routed to you because its session is unavailable), run the appropriate search of each channel — its real domain(s) (e.g. github.com / nuget.org / npmjs.com, or the relevant store/registry) or a general-web search scoped to it — and ADD one Negative-results matrix row per (variant × channel) with its receipt, then reconcile the matching Scope-ledger / Coverage rows from not-searched to searched.` : "",
         `Then update ONLY those Negative-results matrix rows with their real receipts ("No results" / "No similar listings (N candidates reviewed)" / "Similar listing(s) found — see Findings") and reconcile the Coverage ledger rows they close, preserving everything else. The driver validates grid completeness from the ledgers the tool wrote — never from your prose. The edit direction below covers ${findingsFile} ONLY; the machine ledgers stay the tool's.`,
         editRepairTail(findingsFile),
       ),
-    samples: [{ name: "the half-grid form, with re-routed scopes", tail: "edit", args: { findingsFile: "common-law-a.md", gridSpecPath: "grid-a.json", suppSpec: true, suppSpecPath: "grid-supp-a.json", cells: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}`, chans: ["npmjs.com"], scopes: ["NOVA", "NOVAPULSE"] } }],
-  },
-  {
-    trigger: "frame-reopen",
-    stage: "common-law",
-    key: "common-law:frame-reopen",
-    compose: ({ findingsFile, gridLedger, directives }) => lines(
-        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep.`,
-        `A blind, frame-INDEPENDENT re-derivation found these SOURCE CHANNELS the run did NOT search. Run a supplementary search over them (enable_sandbox: true, depth: "pro-search") — resolve each channel to its real domain(s) or a general-web search scoped to it:`,
-        ...directives.map((d) => `- ${d.item} — ${d.observation}`),
-        `Then update the Negative-results matrix + Coverage ledger for what you searched, preserving everything else. Do NOT hand-edit ${gridLedger} — the driver owns the machine ledger. The edit direction below covers ${findingsFile} ONLY.`,
-        editRepairTail(findingsFile),
-      ),
-    samples: [{ name: "one blind-frame source directive", tail: "edit", args: { findingsFile: "common-law.md", gridLedger: "grid-ledger.json", directives: [{ item: "itch.io", observation: "an applied distribution surface, unsearched" }] } }],
-  },
-  {
-    trigger: "frame-reopen",
-    stage: "common-law-half",
-    key: "common-law-half:frame-reopen",
-    compose: ({ findingsFile, gridSpecPath, gridLedger, directives, scopes }) => lines(
-        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
-        `A blind, frame-INDEPENDENT re-derivation found these SOURCE CHANNELS the run did NOT search. For EACH of these variants — ${scopes.join("; ")} — (the driver dictates this list; it may include the sibling half's terms re-routed to you because its session is unavailable), run a supplementary search over them (enable_sandbox: true, depth: "pro-search") — resolve each channel to its real domain(s) or a general-web search scoped to it:`,
-        ...directives.map((d) => `- ${d.item} — ${d.observation}`),
-        `Then update the Negative-results matrix + Coverage ledger for what you searched, preserving everything else. Do NOT hand-edit ${gridLedger} — the driver owns the machine ledger. The edit direction below covers ${findingsFile} ONLY.`,
-        editRepairTail(findingsFile),
-      ),
-    samples: [{ name: "the half form, with the sweep scopes it dictates", tail: "edit", args: { findingsFile: "common-law-a.md", gridSpecPath: "grid-a.json", gridLedger: "grid-ledger-a.json", directives: [{ item: "itch.io", observation: "an applied distribution surface, unsearched" }], scopes: ["NOVA", "NOVAPULSE"] } }],
+    samples: [{ name: "the half-grid form", tail: "edit", args: { findingsFile: "common-law-a.md", gridSpecPath: "grid-a.json", suppSpec: true, suppSpecPath: "grid-supp-a.json", cells: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}` } }],
   },
   {
     trigger: "draft-carry",
@@ -807,13 +785,15 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:frame-reopen-directive",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane }) =>
-      buildFrameReopenFollowup({ paths, axis, directives, reopenFetchCap, supplementalLane }),
+    compose: ({ paths, axis, directives, supplementalLane, job, profile }) =>
+      buildFrameReopenFollowup({ paths, axis, directives, supplementalLane, job, profile }),
     samples: [
       { name: "the main lane", tail: "declared-by-the-composer",
-        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false } },
+        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: false } },
       { name: "the supplemental lane", tail: "declared-by-the-composer",
-        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: true } },
+        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: true } },
+      { name: "the supplemental lane, with the order's markets and classes", tail: "declared-by-the-composer",
+        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: true, ...SAMPLE_SCOPE } },
     ],
   },
   {
@@ -821,13 +801,15 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:escalation",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, flags, supplementalLane }) =>
-      buildEscalationFollowup({ paths, axis, flags, supplementalLane }),
+    compose: ({ paths, axis, flags, supplementalLane, job, profile }) =>
+      buildEscalationFollowup({ paths, axis, flags, supplementalLane, job, profile }),
     samples: [
       { name: "the main lane", tail: "declared-by-the-composer",
         args: { paths: SAMPLE_PATHS, axis: "eu", flags: [{ axis: "eu", reason: "coverage-limited" }], supplementalLane: false } },
       { name: "the supplemental lane", tail: "declared-by-the-composer",
         args: { paths: SAMPLE_PATHS, axis: "eu", flags: [{ axis: "eu", reason: "coverage-limited" }], supplementalLane: true } },
+      { name: "the supplemental lane, with the order's markets and classes", tail: "declared-by-the-composer",
+        args: { paths: SAMPLE_PATHS, axis: "eu", flags: [{ axis: "eu", reason: "coverage-limited" }], supplementalLane: true, ...SAMPLE_SCOPE } },
     ],
   },
   {
@@ -835,10 +817,12 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:envelope-close",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, rows, supplementalLane }) =>
-      buildEnvelopeCloseFollowup({ paths, axis, rows, supplementalLane }),
+    compose: ({ paths, axis, rows, supplementalLane, job, profile }) =>
+      buildEnvelopeCloseFollowup({ paths, axis, rows, supplementalLane, job, profile }),
     samples: [{ name: "two outstanding rows", tail: "declared-by-the-composer",
-      args: { paths: SAMPLE_PATHS, axis: "eu", rows: 2, supplementalLane: false } }],
+      args: { paths: SAMPLE_PATHS, axis: "eu", rows: 2, supplementalLane: false } },
+    { name: "two outstanding rows, with the order's markets and classes", tail: "declared-by-the-composer",
+      args: { paths: SAMPLE_PATHS, axis: "eu", rows: 2, supplementalLane: false, ...SAMPLE_SCOPE } }],
   },
   {
     trigger: "frame-reopen-retry",
@@ -846,10 +830,12 @@ export const REPAIR_COMPOSERS = [
     key: "register-unit:frame-reopen-retry",
     route: "freshMessage",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane }) =>
-      buildFrameReopenRetryMessage({ paths, axis, directives, reopenFetchCap, supplementalLane }),
+    compose: ({ paths, axis, directives, supplementalLane, job, profile }) =>
+      buildFrameReopenRetryMessage({ paths, axis, directives, supplementalLane, job, profile }),
     samples: [{ name: "the retry after a reopen", tail: "declared-by-the-composer",
-      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false } }],
+      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: false } },
+    { name: "the retry after a reopen, with the order's markets and classes", tail: "declared-by-the-composer",
+      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], supplementalLane: false, ...SAMPLE_SCOPE } }],
   },
   {
     trigger: "grid-ledger",
@@ -877,7 +863,7 @@ export const composerFor = (key) => REPAIR_COMPOSERS.find((c) => c.key === key);
 /**
  * Every registered key, for the discovery census to compare the source against.
  *
- * THE KEY IS `stage:trigger`, NOT the trigger alone. `coverage-closure` and `frame-reopen` each exist on
+ * THE KEY IS `stage:trigger`, NOT the trigger alone. `coverage-closure` exists on
  * `common-law` AND on `common-law-half` with genuinely different composers, so a trigger-only key would
  * resolve both halves to whichever entry came first — the guard would then walk one composer twice and
  * never see the other. That is this issue's own failure mode, rebuilt inside its fix.

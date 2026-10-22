@@ -338,7 +338,9 @@ test("a real dispatch carries both blocks — read out of the recorded synthesis
     ref: "TMP447D", markName: "MARK TMP447D", classes: [9, 41], provider: "corsearch" };
   const res = await PL.pipeline(job);
   delete process.env.MOCK_FAIL_STAGE;
-  assert.equal(res.failedStage, "synthesis", "the run must reach and dispatch synthesis for this to be testing anything");
+  // The run stops at synthesis: it parks, and its status names the stage.
+  assert.equal(JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage, "synthesis",
+    "the run must reach and dispatch synthesis for this to be testing anything");
 
   const recorded = readFileSync(driverDir(res.runDir, "synthesis.attempt1.dispatch.txt"), "utf8");
   assert.match(recorded, /DETERMINISTIC PLAN-EXECUTION CHECK/,
@@ -399,7 +401,7 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
   assert.match(repaired, /DISPATCH RECORD — the REGISTER layer's, authoritative and driver-written/,
     "and its prompt's claim about what it carries is true, exactly as the fresh pass's is");
   // The list of records the seat must answer is re-read from the findings that moved, not left out.
-  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried \d+ record\(s\)/;
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried \d+ position\(s\)/;
   assert.match(fresh, DECLINATIONS, "the fresh pass carries the list, so the repair owes it too");
   assert.match(repaired, DECLINATIONS, "the repair re-dispatch carries the list the recorder holds it to");
   // The original justification for withholding was that a repair must not carry a different prompt from

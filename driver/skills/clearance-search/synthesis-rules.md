@@ -164,7 +164,8 @@ Before rating individual findings, **rank and select them by the consumer-confus
    same/related G&S. Bare-dominant-element-in-field = top; dominant-element-plus-distinctive-matter
    (a third-party house mark in front of the shared element) = lower; unrelated-G&S = excluded as a legal
    finding (commercial awareness only).
-2. **Never drop an on-point identical / near-identical mark in the relevant class** — even if it looks
+2. **Never drop an on-point identical / near-identical mark in the relevant class** — a position placement put on
+   sheet 2 is written up where it changes the advice, and otherwise set aside with its ground — even if it looks
    revocable or shelved. The staff lawyer: *"until it has actually been revoked it remains a live legal
    risk."* Surface it, rank it high, flag the non-use vulnerability as a Stage-2 mitigation. **Non-use is
    a revocation DEFENCE, never an injunction shield (spec-48 C5): a registered right can support an
@@ -536,7 +537,7 @@ The common-law layer searches narrowly: identical or near-identical mark in iden
 When judging which common-law hits to include in the Findings sheet:
 
 - Include: identical mark in the same field, near-identical mark (one-word swap, plural variation, phonetic equivalent) in the same field, identical mark in a directly-adjacent field with channel overlap.
-- Exclude: conceptually similar but lexically different marks (e.g. "Chart My Course" surfacing for a "Chart Your Course" clearance is borderline — include only with very-similar / same-field overlap).
+- Exclude: conceptually similar but lexically different marks (e.g. "Set My Pace" surfacing for a "Set Your Pace" clearance is borderline — include only with very-similar / same-field overlap).
 - Document the scope decision in the narrative's Methodology note so the staff lawyer can see what was and wasn't searched.
 
 ## Watchlist findings

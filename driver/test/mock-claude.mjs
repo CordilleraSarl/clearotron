@@ -176,8 +176,8 @@ if (process.env.MOCK_BARRIER_FILE && /matter-context\.md/.test(msg)) {
 // event → the engine's close handler sets failed (!resultEvent) → code=(childCode||1)=1 → `nonzero_exit_1`,
 // the SAME runStage taxonomy branch the retired gateway mock hit. Used by pipeline.mock / operability failedStage tests.
 // MOCK_FAIL_STAGE: "&&"-separated substrings must ALL appear in the message (a single substring is the
-// degenerate case) — lets a test fail ONLY the reopen followup ("SOURCE CHANNELS&&half-b") without also
-// failing half-b's original gather turn. Mirrors the retired gateway mock exactly.
+// degenerate case) — lets a test fail ONLY a follow-up turn (a phrase from the follow-up && "half-b") without
+// also failing half-b's original gather turn. Mirrors the retired gateway mock exactly.
 if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part))) {
   beforeForcedFailure(argv, msg);
   process.stderr.write("mock forced failure\n");

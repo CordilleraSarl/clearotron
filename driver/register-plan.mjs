@@ -61,7 +61,7 @@ import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWi
 import { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid } from "../providers/_shared/plan-guards.mjs";
 import { asksIdenticalMark, identicalMarkTerms } from "../providers/_shared/follow-up-searches.mjs";
 import { territoryKey } from "./territory-tiers.mjs";
-import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { marketsFilingScriptOf } from "./registration-scripts.mjs";
+import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { scriptQuestionsByMarket } from "./registration-scripts.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
 export const EXPECTED_KINDS = ["enumerate", "count"];
@@ -428,6 +428,32 @@ export function predicateGap(predicate, term, capabilities) {
   const mode = capabilities.predicates[key];
   if (typeof mode === "string" && mode) return null;
   return unsupportedPredicateReason(predicate === "wildcard" ? `wildcard (${key})` : predicate, capabilities.id ?? "unknown");
+}
+
+/**
+ * The territory a coverage row names, read from its scope: the scope with its bracketed class list and its bracketed
+ * qualifiers set aside and anything after a dash, read whole as a territory's name or code, or its first word where
+ * that is a two-letter code. Null where the scope names no territory, so a row about a mark or a class list is never
+ * read as a country. PURE.
+ */
+export function territoryOfRow(row) {
+  const bare = String(row?.scope ?? "").replace(/\[[^\]]*\]|\([^)]*\)/g, " ").split(/\s[—–-]\s/)[0].replace(/[\s:;,.]+$/, "").trim();
+  if (!bare) return null;
+  const known = (c) => (c && isKnownJurisdictionCode(c) ? c : null);
+  const whole = known(normalizeTerritory(bare));
+  if (whole) return whole;
+  const first = bare.split(/\s+/)[0];
+  return /^[A-Z]{2}$/.test(first) ? known(normalizeTerritory(first)) : null;
+}
+
+/**
+ * Whether a coverage row names a territory the active provider's office vocabulary cannot express, by the plan's own
+ * rule (resolveRegions). Such a row is never closeable: a re-run would put the same office to the same register and be
+ * refused, exactly as a plan capability gap is. False where the row names no territory. PURE.
+ */
+export function rowOutsideProviderOffices(row, capabilities) {
+  const t = territoryOfRow(row);
+  return t ? resolveRegions([t], capabilities).deferred.length > 0 : false;
 }
 
 /**
@@ -964,7 +990,7 @@ export function withoutHouseElementTerms(entry, house) {
   return isHouseElementTerm(entry.term, house) ? null : entry;
 }
 
-export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null, addedClasses = [], frameMarkets = null }) {
+export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null, addedClasses = [], frameMarkets = null, marketList = null }) {
   // ── AN EXCLUDED ELEMENT'S FORM BAND MUST BE UNREACHABLE, NOT MERELY UNASKED-FOR ─────────────────
   //
   // THE DEFECT THIS CLOSES, found by following the seam rather than by a failing arm. `bandFor` falls
@@ -1553,29 +1579,34 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // stamps each non-Latin term with the manifest's romanisation of it (romanStamp, above); a `numeric`
   // variant is Latin and the manifest carries none for it, so the axis is unchanged for that member.
   //
-  // A SCRIPT QUESTION IS SCOPED TO THE MARKETS THAT FILE IN IT, AND NEVER DROPPED HERE. A variant in
-  // another script is scoped to the markets the matter frame names whose row in the registrable-scripts
-  // table lists that script. Where no named market's row does, it compiles where it always did: the table
-  // lists what a market must be asked, not everything its register holds, so a missing row is no reason
-  // to leave a question out. Every script question then waits for the reading turn, which releases or
-  // withholds it with a reason. The manual tells that turn not to ask again what the Latin question
-  // covers, and on a register that files the romanised form the dispatch shows it the romanised form each
-  // one is searched by, with the Latin question that already asks it (latinQuestionsOfRomanisedForm).
-  // A question dropped here would save no search, since it waits anyway, and would leave no line saying
-  // it was not asked. Latin transliterations and numeric variants are asked as before. With no frame on
-  // record and a worldwide scope there is no market to scope to, and the variant compiles as it always did.
+  // ONE SCRIPT QUESTION PER MARKET THE FRAME NAMES, PUT TO THAT MARKET'S OFFICES, as the ruled method has it. A variant in
+  // another script is asked only for a market on the list whose buyers read that script: each market takes the
+  // manifest's first form in each non-Latin script it reads (scriptQuestionsByMarket; EU reads two), a script it only
+  // also registers in where it has no form in its own, and the form goes to that market's offices. A form no market
+  // takes is not compiled; the plan keeps it under `scripts_set_aside` with its reason, and it reaches no coverage row,
+  // since a question nobody is owed is scope, not a gap. On a test run of
+  // a crowded matter, 26 of 33 script questions went to all 186 offices for markets the frame never named, and one
+  // market got three. The list is the frame's markets, within the instructed ones where the client named territories
+  // (the instructed ones if the two do not meet); the frame's alone on a worldwide scope; and with no frame on record,
+  // the one market list the opening message names (`marketList`: the priority markets, else the majors). A market this
+  // register cannot reach keeps the entry as it was, so its deferral is still disclosed. Every script question then
+  // waits for the reading turn, as before. Latin transliterations and numeric variants are asked as before.
   const canon = (list) => (Array.isArray(list) ? list : []).map((j) => normalizeTerritory(String(j ?? "").trim())).filter(Boolean);
-  // The markets: the frame's, within the instructed ones where the client named territories (the
-  // instructed ones if the two do not meet); the frame's alone on a worldwide scope; none known, none used.
   const instructedMarkets = scopeIsWorldwide ? [] : canon(job?.jurisdictions);
   const named = canon(frameMarkets);
   const both = instructedMarkets.filter((m) => named.includes(m));
-  const scriptMarkets = instructedMarkets.length ? (both.length ? both : instructedMarkets) : (named.length ? named : null);
+  const listed = canon(marketList?.priorities?.length ? marketList.priorities : marketList?.major);
+  const scriptMarkets = instructedMarkets.length ? (both.length ? both : instructedMarkets) : (named.length ? named : (listed.length ? listed : null));
+  const scriptVariants = manifest.variants.filter((v) => v.category === "transliteration" && isNonLatinTerm(v.value));
+  const scriptPlan = scriptMarkets ? scriptQuestionsByMarket(scriptVariants.map((v) => v.value), scriptMarkets) : null;
+  const scriptAsked = new Map((scriptPlan?.asked ?? []).map((q) => [q.value, q.markets]));
+  const scriptsSetAside = (scriptPlan?.setAside ?? []).map((s) => ({ term: s.value, reason: s.reason }));
   for (const v of manifest.variants) {
     if (v.category !== "transliteration" && v.category !== "numeric") continue;
     const entry = { axis: "transliteration-numeric", predicate: markPredicate(v.value), term: v.value, expected_kind: "enumerate", provenance: "model", dropIssue: variantTermIssue(v.value) };
-    const markets = v.category === "transliteration" && isNonLatinTerm(v.value) && scriptMarkets
-      ? marketsFilingScriptOf(v.value, scriptMarkets) : [];
+    const isScript = v.category === "transliteration" && isNonLatinTerm(v.value);
+    if (isScript && scriptPlan && !scriptAsked.has(v.value)) continue;
+    const markets = isScript && scriptPlan ? scriptAsked.get(v.value) : [];
     // A market this register cannot reach keeps the entry as it was, so its deferral is still disclosed.
     const scoped = markets.length ? resolveRegions(markets, caps).regions.filter((r) => !regions.length || regions.includes(r)) : [];
     push(scoped.length ? { ...entry, regions: scoped } : entry);
@@ -1726,6 +1757,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // ask does not have to walk the entries to find out. Absent when nothing was dropped, so every
     // plan that sends its whole list stays byte-identical.
     ...(goodsOmitted.length ? { goods_text_not_asked: goodsOmitted, goods_text_not_asked_reason: goodsOmittedReason } : {}),
+    // THE SCRIPT FORMS NOT ASKED, EACH WITH ITS REASON, AND THE MARKETS A SCRIPT QUESTION SERVES, whenever they are known,
+    // with or without a script form in the manifest. The propose tool reads the markets and the questions already asked,
+    // to hold a worker's own script proposal to the same rule.
+    ...(scriptsSetAside.length ? { scripts_set_aside: scriptsSetAside } : {}),
+    ...(scriptMarkets ? { script_markets: scriptMarkets, script_questions_asked: (scriptPlan?.asked ?? []).flatMap((q) => q.keys) } : {}),
     // A term the compiler ASKED IN A DIFFERENT SHAPE than it was written. The register reads AND, OR,
     // NOT, ADJ and NEAR as operators inside the value and has no escape syntax, so the word comes out
     // and the rest of the item is still asked — "near field communication" goes as "field
@@ -2424,14 +2460,17 @@ export function parseRegisterPlan(raw) {
 //   no-list                 a wider question with none: the reading step decides it, with its count on the record.
 //   required-covered        the identical mark's own question, with a retrieved list in every class it asks, in
 //                           every main market (the order's countries, else the customer's priority markets, else the
-//                           major markets), or worldwide where the run names none.
+//                           markets its market step used, marketStepMarkets, else the major markets), or worldwide
+//                           where the run names none.
 //   required-not-covered    the identical mark's own question without that: the class and market cells no retrieved
 //                           list covers are named in `not_covered`.
 // A refused or failed question is not a crowd: the join keeps those as `outstanding` and `missing`. Each reader (the
 // receipt, the coverage form, the band shape) works this out from the blocks it reads itself. It changes no row's
 // state and no sentence. PURE.
 const WORLDWIDE = "worldwide";
-export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
+// What a narrowing is, read off a plan: its questions by the question each narrows, and the test of one. Shared by the
+// crowd's record below and by the markets a market step used. PURE.
+function narrowingOf(plan) {
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
   const identicalTerms = identicalMarkTerms(plan);
   const childrenOf = new Map();
@@ -2460,6 +2499,34 @@ export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
     if (pg.length) return cg.length > 0 && cg.every((g) => pg.includes(g));
     return !cg.length || !clientGoods.size || cg.every((g) => clientGoods.has(g));
   };
+  return { entries, identicalTerms, childrenOf, marketsOf, regionsOf, classesOf, narrows };
+}
+
+/**
+ * THE MARKETS THE IDENTICAL MARK'S MARKET STEP USED. An order that names no countries, for a customer who names no
+ * priority markets, is narrowed in the markets the customer's field and brand point to, with the major markets as
+ * their fallback (W8). These are the markets of every narrowing, at any depth, of the identical mark's own questions
+ * that asks fewer markets than the question it narrows; [] when no market step ran, and the major markets then stand.
+ * PURE.
+ */
+export function marketStepMarkets(plan) {
+  const { entries, identicalTerms, childrenOf, regionsOf, narrows } = narrowingOf(plan);
+  const used = new Set();
+  const walk = (parent, seen) => {
+    for (const c of childrenOf.get(parent.qid) ?? []) {
+      if (seen.has(c.qid) || !narrows(parent, c)) continue;
+      seen.add(c.qid);
+      const pr = regionsOf(parent), cr = regionsOf(c);
+      if (cr.length && (!pr.length || cr.length < pr.length)) for (const m of cr) used.add(m);
+      walk(c, seen);
+    }
+  };
+  for (const e of entries) if (e?.qid && asksIdenticalMark(e, identicalTerms)) walk(e, new Set([e.qid]));
+  return [...used];
+}
+
+export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
+  const { entries, identicalTerms, childrenOf, marketsOf, regionsOf, classesOf, narrows } = narrowingOf(plan);
   const stateOf = (qid) => { const b = byQid.get(qid); return b && b.error !== true ? String(b.state ?? "").toLowerCase() : null; };
   const retrievedUnder = (e, seen) => {
     const out = [];

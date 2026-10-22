@@ -71,6 +71,7 @@ export function clearanceReportData({
   runId, codename, matter, markName, title, customerKey, issued, url, auditFile, engineCommit = null, servedModels = null,
   searchLevel, stageLabel, framework, verdictInfo, findings, coverage, contextNotes,
   markAssessment, fourAnswers, askAnswers, actions, jurisdiction, searchedJurisdictions, scopeBasis, caption,
+  assessmentNotCompleted = false,
 } = {}) {
   const live = (Array.isArray(findings) ? findings : []).filter((f) => f && f.disposition !== 'withdrawn');
   const { conditionActions, advisoryActions } = deriveActionConditions(actions ?? [], findings ?? []);
@@ -109,6 +110,9 @@ export function clearanceReportData({
       conditions: clientConditions(verdictInfo).map(clientText).filter(Boolean),
     } : null,
     caption: clientText(caption),
+    // The run's overall assessment could not be completed, so there is no rating and no finding: a stated state, never
+    // read from their absence. Absent on every other run, so its data file is unchanged.
+    ...(assessmentNotCompleted ? { assessment: 'not-completed' } : {}),
     jurisdiction: clientText(jurisdiction),
     scopeBasis: scopeBasis ?? null,
     searchedJurisdictions: Array.isArray(searchedJurisdictions) ? searchedJurisdictions : [],

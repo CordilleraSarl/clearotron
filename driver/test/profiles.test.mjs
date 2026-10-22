@@ -246,10 +246,12 @@ test("the open rows are WIRED at the ledger chokepoint — a row nothing reads i
   // A pure function nothing calls would leave the gap exactly where it was, and the earlier draft of
   // this change failed the fold instead, which nobody wanted. The chokepoint is the one place every
   // consumer reads the ledger through — the escalation gate, the deadline envelope and the verdict
-  // clamp all act on what it returns — so the rows join there, beside the two relabels already applied.
+  // clamp all act on what it returns — so the rows join there, beside the two relabels already applied. The three
+  // are one function, which the chokepoint and the floor's read of the coverage form both call.
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
-  assert.match(src, /const relabel = \(rows\) => \[\.\.\.applyTaintDeferred\(coerceToolAbsenceDeferred\(rows\), taintAxes\), \.\.\.openChannelRows\(runDir\)\]/,
+  assert.match(src, /export function relabelCoverageRows\(runDir, rows\) \{[^\n]*\n\s+return \[\.\.\.applyTaintDeferred\(coerceToolAbsenceDeferred\(rows\), readActiveTaintAxes\(runDir\)\), \.\.\.openChannelRows\(runDir\)\];/,
     "the coverage chokepoint no longer adds the open-channel rows");
+  assert.match(src, /const relabel = \(rows\) => relabelCoverageRows\(runDir, rows\);/, "the ledger loader no longer reads its rows through the one relabel");
   assert.doesNotMatch(src, /findPlatformIdentityViolations\([^)]*wholeGrid: true/,
     "the fold is failing on an unrun channel again — it is a disclosed gap, not a dead clearance");
 });

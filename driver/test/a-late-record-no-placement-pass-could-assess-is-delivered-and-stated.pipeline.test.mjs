@@ -50,6 +50,9 @@ const ON_CODEX = { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: CODEX, 
 
 // Pass 1 parks on the reading step's turn, so placement has run and the resume inherits it.
 const PARK_AT_DIGEST = "You are register DIGEST mode";
+// A write-up failure whose recovery is spent is delivered without the assessment, so pass 1 takes a recovery park
+// instead, and the stage it stopped at is the one its status records.
+const parkedAt = (res) => JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage;
 // The skeptic flags the code-side axis, so the resume re-runs its dictated entries through the executor.
 const ESCALATE_SATPROBE = "- saturation-probe counts look thin\n\n## Escalation decisions\nESCALATE: saturation-probe — re-verify the crowd counts";
 // Placement's turn: failing it fails the late pass and the delivery check's repeat alike.
@@ -94,8 +97,8 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
   test(`${engine}: late records no placement pass could assess are delivered, with what stays open stated and the attempts on record`, async () => {
     const root = mkdtempSync(join(tmpdir(), "clearotron-unassessed-"));
     const planExecutor = executor([]);
-    const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST }, { planExecutor });
-    assert.equal(p1.res.failedStage, "register-digest", `guard: pass 1 parks at the reading step (parked at ${p1.res.failedStage})`);
+    const p1 = await runMockPipeline(root, { ...env, MOCK_FAIL_STAGE: PARK_AT_DIGEST, CLEAROTRON_RECOVERY_MAX: "1" }, { planExecutor });
+    assert.equal(parkedAt(p1.res), "register-digest", `guard: pass 1 parks at the reading step (parked at ${parkedAt(p1.res)})`);
     const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
     const n1 = p1.events.length;
     const p2 = await runMockPipeline(root, { ...env, MOCK_SKEPTIC: ESCALATE_SATPROBE, MOCK_FAIL_STAGE: PLACEMENT_TURN }, { planExecutor }, codename);

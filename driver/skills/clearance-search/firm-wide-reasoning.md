@@ -76,7 +76,7 @@ High filing volume in a field is evidence of crowding (see *Crowded field analys
 
 ### When the crowded-field frame is available as a mitigant (gating precondition)
 
-Crowding is neutral-to-mitigating, but it does not become an active **mitigant** automatically — applying the dilution frame requires earning it. **Durable principle: a saturated element raises the search bar BEFORE it can lower the risk** — you may not invoke "crowded field → dilution → lower risk" until the crowd has been *enumerated*, filtered by goods, worldwide. The crowded-field / dilution frame is available to mitigate a finding **ONLY when all three of the following are surfaced in that finding's Key Factors**:
+Crowding is neutral-to-mitigating, but it does not become an active **mitigant** automatically — applying the dilution frame requires earning it. **Durable principle: a saturated element raises the search bar BEFORE it can lower the risk** — you may not invoke "crowded field → dilution → lower risk" until the crowd has been counted, narrowed by goods, and its survivors named. The crowded-field / dilution frame is available to mitigate a finding **ONLY when all three of the following are surfaced in that finding's Key Factors**:
 
 1. **The crowded-field count** — the actual volume **in THAT conflict's jurisdiction × goods lane** (dilution is earned per conflict: volume in another jurisdiction, or an adjacent goods lane, earns nothing against this right), taken from the `saturation-probe` axis (the macro count), a band block's `total_hits` (an `incomplete` crowd descriptor's `total_hits` **IS the counted field** — spec-49: a crowd over the enumerate ceiling is *definitionally* un-enumerable, that is why it is a descriptor; enumeration is NOT required to earn the dilution frame), or the register findings' `## Summary`. Not "the field feels crowded" — the number. A paginated top-N **sample with no total** is still not a count ("top-50, total unknown" earns nothing); a descriptor carrying the worldwide `total_hits` does. Whether an un-enumerable dominant-element crowd is MATERIAL is your `coverage_judgment` call (per-mark reasoning), never an automatic block. (In the report, write "crowded field" / "many similar marks", never "saturation" — rule 8.)
 2. **The named narrowing mechanism** — the specific G&S or jurisdiction filter that makes the field *tractable in this lane* (e.g. "545 live JELLY filings worldwide, but only 6 in Class 9 gaming software in the target markets"). Volume in an adjacent lane does not dilute the lane the conflict actually sits in.
@@ -291,8 +291,8 @@ thinness is a Stage-2 mitigant, never a reason to omit it. The staff lawyer deci
 
 Player-created content on platforms like Fortnite Creative, Roblox experiences, Minecraft user-made worlds,
 etc. is **almost never a legal blocker** (the platform terms typically vest no commercial rights in the
-creator for the named experience). It is still **useful commercial context** — surface it in the Findings
-sheet and the narrative, but mark it Low priority / Of Interest. Do not omit it.
+creator for the named experience). It is still **useful commercial context** — where a lawyer would raise it, surface it in the
+Findings sheet and the narrative as Low priority / Of Interest; otherwise set it aside with its ground.
 
 ### Common law risk can outrank filing risk
 

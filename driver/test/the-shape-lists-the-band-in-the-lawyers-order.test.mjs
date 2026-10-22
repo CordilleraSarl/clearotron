@@ -93,7 +93,7 @@ test("a line the goods test placed while its records carry no goods on file is l
   assert.deepEqual(g.by_group.rest.lines.map((l) => l.owner_name), ["Eta Kft"], "a dead mark with no goods is in the rest on what the line shows");
 });
 
-test("the readable section states each group's count in lines, carries goods words not goods text, and shows a crowded group by its first page", () => {
+test("the readable section states each group's count in lines, carries goods words and only a (b) floor's goods text, and shows a crowded group by its first page", () => {
   const records = [];
   for (let i = 0; i < CROWDED_GROUP_RECORDS; i++) records.push(rec(`n${i}`, "Qzorvak", `Owner ${String(i).padStart(4, "0")} Ltd`, ["9"]));
   for (let i = 0; i < 7; i++) records.push(rec(`x${i}`, "QZORVAK", `Theta ${i} Ltd`, ["9"]));
@@ -103,12 +103,13 @@ test("the readable section states each group's count in lines, carries goods wor
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS);
   assert.equal(shape.groups.b.list.length, CROWDED_GROUP_RECORDS, "the machine shape keeps every line");
   const section = md.slice(md.indexOf("## The band in the lawyer's order"), md.indexOf("### By Nice class"));
-  assert.ok(section.includes("1,000 records in 1,000 lines from 1,000 owners. A thousand or more? The field is crowded. These are identical marks in the ordered classes for other goods than the client's. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. The first 5 lines are below; page with band_lookup {\"group\":\"b\"} only where a line needs reading."), "the crowded sentence, in (b)'s own words");
+  assert.ok(section.includes("1,000 records in 1,000 lines from 1,000 owners. A thousand or more? The field is crowded. These are identical marks in the ordered classes whose goods name none of the client's product words. Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded. The first 5 lines are below; page with band_lookup {\"group\":\"b\"} only where a line needs reading."), "the crowded sentence, in (b)'s own words");
   assert.equal((section.match(/\| Qzorvak \| Owner \d{4} Ltd \|/g) ?? []).length, 5, "the readable mirror shows (b)'s first page only");
   assert.equal((section.match(/\| QZORVAK \| Theta \d Ltd \|/g) ?? []).length, 7, "a group under a thousand is listed whole");
   assert.match(section, /7 records in 7 lines from 7 owners\./);
   assert.match(section, /\| QZORVAK \| Theta 0 Ltd \| 9 \| 1 of 1 \| EU \| 1 of 2: joysticks \| yes \| \/mark\/eu\/x0 \|/, "a line: classes, live of records, territories, the words matched, whether it is a floor");
-  assert.doesNotMatch(section, /printers/, "no goods text on a line");
+  assert.equal((section.match(/ «printers» /g) ?? []).length, 5, "a floor line in (b) shows the goods the test read");
+  assert.doesNotMatch(section.replace(/«[^»]*»/g, ""), /printers/, "no other goods text on a line");
   assert.match(section, /The client's markets: EU\./);
   assert.match(section, /Sorted on «Qzorv», the word the register's goods-narrowed search asked for \(the variants stage named «Qzorvak»\)\./);
   assert.match(section, /\*\*The rest: 0 records in 0 lines from 0 owners\*\* — every record in none of \(a\) to \(d\) above\. Write down what you set aside and why: one row, with this count\./);
@@ -124,7 +125,7 @@ test("the served shape marks each floor on its line and lists none a second time
   assert.ok(md.includes("**Floors: 3 records in 2 lines** — every live in-class identical or near-identical record, each marked on its line in the band below."));
   assert.ok(!md.includes("## Floors") && !md.includes("| mark | tier | target |"), "no per-record floors section");
   assert.match(md, /\| QZORVAK \| Alpha Ltd \| 9 \| 2 of 2 \| CH,EU \| 1 of 1: joysticks \| yes \| /, "Alpha's two floor records are one line, marked");
-  assert.match(md, /\| QZORVAK \| Beta GmbH \| 9 \| 1 of 1 \| EU \| 0 of 1 \| yes \| /, "a floor in (b) is marked too");
+  assert.match(md, /\| QZORVAK \| Beta GmbH \| 9 \| 1 of 1 \| EU \| 0 of 1 «printers» \| yes \| /, "a floor in (b) is marked too, with the goods the test read");
   assert.match(md, /\| Drellux \| Gamma SA \| 9 \| 1 of 1 \| EU \| 1 of 1: joysticks \| no \| /, "a line holding no floor says so");
 });
 

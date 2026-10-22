@@ -30,6 +30,13 @@ process.env.CLEAROTRON_AI = "anthropic-agent";   // stage compute on claude -p (
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", CLAUDE);
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
+// A STOP THAT KEEPS A RUN LIVE, ON EVERY PASS IT IS ARMED. These arms used to fail the report overview by its skill's
+// name. An overview whose recovery is spent is now delivered without (parts-not-completed.mjs), so that stop no longer
+// holds a second pass. The publish step is the stop instead: with the pool a file, publishing throws once every stage
+// before it is valid on disk, and the run stays live. `STOP_AT_PUBLISH` in setKnobs arms it for one pass.
+const POOL = join(ROOT, "pool");
+const BLOCKED_POOL = join(ROOT, "pool-is-a-file");
+writeFileSync(BLOCKED_POOL, "");
 process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";   // terminal semantics under test — auto-recovery exercised in pipeline.mock
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
@@ -40,8 +47,13 @@ const PL = await import("../pipeline.mjs");
 const CMP = await import("../compare.mjs");
 const { composeEmailHtml } = await import("../publish/index.mjs");
 
-const KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SOFT_FAIL_STAGE", "MOCK_SOFT_FAIL_STATUS", "MOCK_ESCALATION_NOOP", "MOCK_PLACEMENT_NO_SIBLING"];
-function setKnobs(env = {}) { for (const k of KNOBS) delete process.env[k]; for (const [k, v] of Object.entries(env)) pinEnv(process.env, k, v); }
+const KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SOFT_FAIL_STAGE", "MOCK_SOFT_FAIL_STATUS", "MOCK_ESCALATION_NOOP", "MOCK_PLACEMENT_NO_SIBLING", "MOCK_SEAT_DEFERS"];
+function setKnobs(env = {}) {
+  for (const k of KNOBS) delete process.env[k];
+  const { STOP_AT_PUBLISH: stop, ...knobs } = env;
+  pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", stop ? BLOCKED_POOL : POOL);
+  for (const [k, v] of Object.entries(knobs)) pinEnv(process.env, k, v);
+}
 const jobFor = (ref) => ({ id: `job-${ref}`, msgId: `<${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com", ref, markName: `MARK ${ref}`, classes: [9, 41], provider: "corsearch" });
 const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 const sinceLastStart = (ev) => { let i = ev.map((e) => e.event).lastIndexOf("start"); return ev.slice(i); };
@@ -73,29 +85,25 @@ test("WS1a: a clean run makes ONE attempt per stage — nothing re-dispatches wh
 
 // ---- WS1b-core — resume from failure -----------------------------------------------------------------
 
-test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthesis→delivery re-run", async () => {
-  // Run 1: hard-fail synthesis (non-eligible) so the run fails AFTER the 7 upstream stages are valid on disk.
+// A synthesis failure whose recovery is spent is no longer the run's end: it is recorded as the assessment not completed
+// and the resumed pass delivers without it. So the stop that leaves synthesis to re-run on a resume is a RECOVERY PARK,
+// and the run is given the one attempt it takes; the terminal hand-off below is driven at a stage whose failure still
+// ends a run, the matter frame.
+async function parkAtSynthesis(job) {
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  process.env.CLEAROTRON_RECOVERY_MAX = "1";
+  try { return await PL.pipeline(job); } finally { process.env.CLEAROTRON_RECOVERY_MAX = "0"; }
+}
+
+test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthesis→delivery re-run", async () => {
+  // Run 1: synthesis fails and the run parks AFTER the 7 upstream stages are valid on disk.
   const job = jobFor("TMPRES1");
-  const r1 = await PL.pipeline(job);
-  assert.equal(r1.ok, false);
-  assert.equal(r1.failedStage, "synthesis");
-  // — THE RETURN IS A SINK, AND THIS IS THE HOP THAT PROVES IT. The terminal's own `terminalKind`
-  // has to survive `pipeline()`'s wrapper to the caller, because runner.mjs stringifies exactly this
-  // object into `<base>.failed.result` — the record scripts/e2e.mjs falls back to when it cannot resolve
-  // the run dir. A projection added to either wrapper would drop it here, silently, and both lanes'
-  // discriminators would die one hop short of the sink.
-  assert.ok(r1.terminalKind, "the terminal kind reaches the caller (here: exhausted, CLEAROTRON_RECOVERY_MAX=0)");
+  const r1 = await parkAtSynthesis(job);
+  assert.equal(r1.postponed, true, JSON.stringify(r1));
+  assert.equal(JSON.parse(readFileSync(join(r1.runDir, "status.json"), "utf8")).failedStage, "synthesis");
+  assert.ok(existsSync(join(r1.runDir, ".postponed")), ".postponed sentinel written");
+  assert.ok(!existsSync(join(r1.runDir, ".failed")), "a park is not a terminal");
   const codename = codenameOf(r1.runDir);
-  assert.ok(existsSync(join(r1.runDir, ".failed")), ".failed sentinel written");
-  // Handoff mode (the default): the failure event rides the outbox — a run-failed packet lands in the run
-  // dir AND as a self-contained outbox copy (the engine has no message tool; no notify-fail-chat turn).
-  const failPacket = JSON.parse(readFileSync(driverDir(r1.runDir, "failure.json"), "utf8"));
-  assert.equal(failPacket.kind, "run-failed");
-  assert.equal(failPacket.failedStage, "synthesis");
-  assert.match(failPacket.text, /nothing was delivered/i);
-  const outboxCopy = JSON.parse(readFileSync(join(ROOT, "clearance-outbox", `${failPacket.runId}.failed.pending`), "utf8"));
-  assert.equal(outboxCopy.failedStage, "synthesis");
 
   // Run 2: resume (clear knobs so synthesis succeeds). Idempotency skips the valid upstream stages.
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
@@ -111,6 +119,28 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
   assert.ok(underDir(r2.runDir, "archive"), "resumed run delivered + archived");
 });
 
+test("WS1b-core: a run that ends with nothing delivered hands its terminal kind to the caller and owes the failure notice", async () => {
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "record_matter_frame" });
+  const r1 = await PL.pipeline(jobFor("TMPRES0"));
+  assert.equal(r1.ok, false);
+  assert.equal(r1.failedStage, "matter-frame");
+  // — THE RETURN IS A SINK, AND THIS IS THE HOP THAT PROVES IT. The terminal's own `terminalKind`
+  // has to survive `pipeline()`'s wrapper to the caller, because runner.mjs stringifies exactly this
+  // object into `<base>.failed.result` — the record scripts/e2e.mjs falls back to when it cannot resolve
+  // the run dir. A projection added to either wrapper would drop it here, silently, and both lanes'
+  // discriminators would die one hop short of the sink.
+  assert.ok(r1.terminalKind, "the terminal kind reaches the caller (here: exhausted, CLEAROTRON_RECOVERY_MAX=0)");
+  assert.ok(existsSync(join(r1.runDir, ".failed")), ".failed sentinel written");
+  // Handoff mode (the default): the failure event rides the outbox — a run-failed packet lands in the run
+  // dir AND as a self-contained outbox copy (the engine has no message tool; no notify-fail-chat turn).
+  const failPacket = JSON.parse(readFileSync(driverDir(r1.runDir, "failure.json"), "utf8"));
+  assert.equal(failPacket.kind, "run-failed");
+  assert.equal(failPacket.failedStage, "matter-frame");
+  assert.match(failPacket.text, /nothing was delivered/i);
+  const outboxCopy = JSON.parse(readFileSync(join(ROOT, "clearance-outbox", `${failPacket.runId}.failed.pending`), "utf8"));
+  assert.equal(outboxCopy.failedStage, "matter-frame");
+});
+
 // ── post-merge audit, N2 — the contract the babysit surface STATES, on a real resume ─────────
 // `get_run` folds run.jsonl `stage` and `skip` rows into ONE stages[] list, and mcp-server/server.mjs
 // states that surface's contract unqualified: an output that was expected and is not there arrives as
@@ -123,10 +153,9 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
 // The assertion that would have caught it is universally quantified over a REAL resumed run's rows —
 // asserting on one hand-written row only ever proves the row you thought to write.
 test("AUDIT #175/N2 — every stage/skip row a RESUMED run writes satisfies the get_run stages[] contract", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   const job = jobFor("TMPCONTRACT1");
-  const r1 = await PL.pipeline(job);
-  assert.equal(r1.ok, false, "run 1 fails at synthesis, leaving the upstream stages valid on disk");
+  const r1 = await parkAtSynthesis(job);
+  assert.equal(r1.postponed, true, "run 1 parks at synthesis, leaving the upstream stages valid on disk");
   const codename = codenameOf(r1.runDir);
 
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
@@ -203,10 +232,9 @@ test("P2 crash-resume: a crash changes no input bytes, so the resume stays as ch
   // (the reason the skip exists at all) exactly as cheap as it was. A resume that changed nothing upstream
   // must fire ZERO `stage-stale` events and must still skip its upstream stages. Freshness is
   // unconditional — there is no flag to arm, so this is the production code path.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   const job = jobFor("TMPFRESH1");
-  const r1 = await PL.pipeline(job);
-  assert.equal(r1.ok, false);
+  const r1 = await parkAtSynthesis(job);
+  assert.equal(r1.postponed, true);
   const codename = codenameOf(r1.runDir);
 
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
@@ -253,11 +281,11 @@ function tamperWinningSynthesisModel(runDir) {
 
 test("WS1b (review fix, adapted): a stage that SKIPS on resume reports the model that PRODUCED it (attempt telemetry), not the configured primary", async () => {
   // Run 1: synthesis succeeds, then report-synthesis hard-fails → live run-dir; narrative.md valid on disk.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPWIN1");
   const r1 = await PL.pipeline(job);
   assert.equal(r1.ok, false);
-  assert.equal(r1.failedStage, "report-overview");
+  assert.equal(r1.failedStage, "pipeline");
   const codename = codenameOf(r1.runDir);
   tamperWinningSynthesisModel(r1.runDir);
 
@@ -277,11 +305,15 @@ test("WS1b (review fix, adapted): corrective re-synthesis on resume RESUMES the 
   // senior-eye-review.md absent (so refute re-runs on resume rather than skipping a stale CLEAR verdict).
   // The engine rewrites the prompt's skill reference to an absolute native path before the mock sees
   // it, so the stage is named with this platform's separator.
+  // A recovery park: a first review whose recovery is spent is delivered without it, so run 1 is given the one park it
+  // takes, and the stage it stopped at is the one its status records.
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: join("narrative-refutation", "SKILL") });
   const job = jobFor("TMPWIN2");
-  const r1 = await PL.pipeline(job);
+  process.env.CLEAROTRON_RECOVERY_MAX = "1";
+  let r1;
+  try { r1 = await PL.pipeline(job); } finally { process.env.CLEAROTRON_RECOVERY_MAX = "0"; }
   assert.equal(r1.ok, false);
-  assert.equal(r1.failedStage, "narrative-refutation");
+  assert.equal(JSON.parse(readFileSync(join(r1.runDir, "status.json"), "utf8")).failedStage, "narrative-refutation");
   const codename = codenameOf(r1.runDir);
   tamperWinningSynthesisModel(r1.runDir);
 
@@ -381,11 +413,11 @@ test("every documented flag still parses — the refusal did not narrow the CLI"
 
 test("WS1b-ext --from: re-runs the stage and downstream (incl. the refutation seam); earlier stages skip", async () => {
   // Run 1: fail report-synthesis (fatal) so synthesis + refutation are VALID on disk but the run-dir stays live.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPFROM1");
   const r1 = await PL.pipeline(job);
   assert.equal(r1.ok, false);
-  assert.equal(r1.failedStage, "report-overview");
+  assert.equal(r1.failedStage, "pipeline");
   const codename = codenameOf(r1.runDir);
 
   // Run 2: --from synthesis → synthesis..end re-run even though their outputs are valid; matter-frame..skeptic skip.
@@ -407,7 +439,7 @@ test("WS1b-ext --from: re-runs the stage and downstream (incl. the refutation se
 // frame-reopen, stale-repair, --from) rides the same call site. `--from skeptic` is used here purely as
 // the cheapest way to force one stage to re-emit over a canonical that already exists.
 test("PR-4: a forced re-dispatch snapshots the prior output to _history, overwrites the canonical, and trips on growth", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPRR1");
   const r1 = await PL.pipeline(job);
   assert.equal(r1.ok, false);
@@ -417,9 +449,9 @@ test("PR-4: a forced re-dispatch snapshots the prior output to _history, overwri
 
   // MOCK_FAIL_STAGE stays armed on every pass: the run must stay LIVE (an archived run has no codename
   // to resolve) so the second forced re-dispatch below can run against the same run-dir.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "delivery-contract", MOCK_SKEPTIC: "DIFFERENT flags v2\n\n## Escalation decisions\nESCALATE: none" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", STOP_AT_PUBLISH: "1", MOCK_SKEPTIC: "DIFFERENT flags v2\n\n## Escalation decisions\nESCALATE: none" });
   const rr = await PL.pipeline(job, { codename, fromStage: "skeptic" });
-  assert.equal(rr.failedStage, "report-overview", "the re-dispatch reached the armed delivery failure — skeptic itself re-ran");
+  assert.equal(rr.failedStage, "pipeline", "the re-dispatch reached the armed delivery failure — skeptic itself re-ran");
   const after = readFileSync(skepticPath, "utf8");
   assert.notEqual(after, before, "canonical output was overwritten by the re-run");
   assert.match(after, /DIFFERENT flags v2/);
@@ -436,7 +468,7 @@ test("PR-4: a forced re-dispatch snapshots the prior output to _history, overwri
   // Its `_driver/delivery-stale.json` is written for real by the blocked delivery pass (pipeline.mjs
   // ~8162); the shape here is that writer's, so the entry point is driven exactly as production drives it.
   const bloat = `BLOATED flags v3 ${"lorem ipsum dolor sit amet ".repeat(1200)}\n\n## Escalation decisions\nESCALATE: none`;
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "delivery-contract", MOCK_SKEPTIC: bloat });
+  setKnobs({ MOCK_VERDICT: "CLEAR", STOP_AT_PUBLISH: "1", MOCK_SKEPTIC: bloat });
   writeFileSync(driverDir(r1.runDir, "delivery-stale.json"), JSON.stringify({
     ts: new Date().toISOString(), labels: ["skeptic"], changed: { skeptic: ["register-findings.md"] },
   }, null, 2));
@@ -451,7 +483,7 @@ test("PR-4: a forced re-dispatch snapshots the prior output to _history, overwri
 });
 
 test("WS1b-ext --experiment: sandboxed — canonical run is byte-identical, output lands only in _experiments", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPEXP1");
   const r1 = await PL.pipeline(job);
   assert.equal(r1.ok, false);
@@ -474,7 +506,7 @@ test("WS1b-ext --experiment: sandboxed — canonical run is byte-identical, outp
 });
 
 test("WS1b-ext (review fix): --experiment register-unit without --axis is refused (no null.md corruption)", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPAXIS1");
   const r1 = await PL.pipeline(job);
   const codename = codenameOf(r1.runDir);
@@ -515,7 +547,7 @@ test("WS1b-ext: --experiment --axis rejects a value outside REGISTER_AXES, befor
 
 test("WS1b (Drop 1.1 fix): skeptic escalation does NOT re-fire on a resume past synthesis (audit-safe, no re-spend)", async () => {
   // Run 1: escalate primary-sweep, reach synthesis (narrative.md written), then hard-fail report-synthesis → live.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "flag\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "flag\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPESC1");
   const r1 = await PL.pipeline(job);
   assert.equal(r1.ok, false);
@@ -577,11 +609,11 @@ test("WS-T compare: diffStageOutputs + telemetryDelta render; compareCmd diffs c
   assert.match(CMP.diffStageOutputs("a\nb\nc", "a\nX\nc"), /-\s*b[\s\S]*\+\s*X/);
   assert.match(CMP.telemetryDelta({ modelUsed: "opus", wall: 100, output: { sha: "aaa", size: 1 } }, { modelUsed: "gpt", wall: 50, output: { sha: "bbb", size: 2 } }), /model[\s\S]*opus[\s\S]*gpt/);
   // end-to-end: force skeptic to re-emit over its canonical, then compare canonical vs the snapshot
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPCMP1");
   const r1 = await PL.pipeline(job);
   const codename = codenameOf(r1.runDir);
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "delivery-contract", MOCK_SKEPTIC: "v2 skeptic output\n\n## Escalation decisions\nESCALATE: none" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", STOP_AT_PUBLISH: "1", MOCK_SKEPTIC: "v2 skeptic output\n\n## Escalation decisions\nESCALATE: none" });
   await PL.pipeline(job, { codename, fromStage: "skeptic" });
   const out = CMP.compareCmd({ runDir: r1.runDir, stage: "skeptic" });
   assert.ok(out.diff && out.diff.length > 0, "non-empty diff between canonical and the snapshot");
@@ -857,7 +889,7 @@ test("blind-frame's out() IS blind-frame-model.json, and blind-frame.md is gone 
 // current fold on every pass, so a stale-tier file is UNREACHABLE rather than deleted — and a pass that
 // hands back nothing loses nothing, because the accumulator still holds every tier already placed.
 test("a forced placement re-run cannot present a prior pass's tiers, and a silent pass loses none", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPSIB1");
   const r1 = await PL.pipeline(job);
   const codename = codenameOf(r1.runDir);
@@ -867,7 +899,7 @@ test("a forced placement re-run cannot present a prior pass's tiers, and a silen
   assert.match(before.placements[0].tier, /headline-candidate/);
 
   // The re-dispatch hands back NOTHING — the shape that used to destroy the record.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract", MOCK_PLACEMENT_NO_SIBLING: "1" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1", MOCK_PLACEMENT_NO_SIBLING: "1" });
   const rr = await PL.pipeline(job, { codename, fromStage: "placement-inquiry" });
   assert.notEqual(rr.failedStage, "placement-inquiry",
     "a silent pass is no longer a failed pass — the seat does not owe a file the driver writes");
@@ -876,9 +908,9 @@ test("a forced placement re-run cannot present a prior pass's tiers, and a silen
     "and the tier the FIRST pass placed is still in the deliverable, rendered from the accumulator");
 
   // The ordinary path is unaffected: a re-run that DOES answer re-renders over it.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", STOP_AT_PUBLISH: "1" });
   const rr2 = await PL.pipeline(job, { codename, fromStage: "placement-inquiry" });
-  assert.equal(rr2.failedStage, "report-overview", "placement re-ran clean — the run reached the armed delivery failure");
+  assert.equal(rr2.failedStage, "pipeline", "placement re-ran clean — the run reached the armed delivery failure");
   assert.ok(existsSync(sibPath), "the deliverable is there, and it is the driver's");
 });
 
@@ -896,7 +928,9 @@ test("a forced placement re-run cannot present a prior pass's tiers, and a silen
 // warm (A-1: attempt 1 of a fresh session), and its message now COMPOSES with `extra` rather than
 // replacing it. So the dispatch least able to reconstruct the tail is no longer the one refused it.
 test("AD-2 A9 + A-2: every non-fresh digest dispatch carries placement's rulings tail as data — the FLUSH included; a fresh pass does not", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  // The seat defers a row on an axis the plan-execution receipt does not cover (MOCK_SEAT_DEFERS), so the envelope's
+  // close mints the settlement flush this arm reads: a mock run carries no standing deferral.
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_SEAT_DEFERS: "incumbent-class", STOP_AT_PUBLISH: "1" });
   const job = jobFor("TMPTAIL1");
   const r1 = await PL.pipeline(job);
   const codename = codenameOf(r1.runDir);

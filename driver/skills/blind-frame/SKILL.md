@@ -47,7 +47,7 @@ If the dominant element is saturated (a crowded field), rank what to surface by 
 ## The durable principles (these always hold — everything else is per-matter reasoning)
 
 1. **Defend your omissions.** Anything you would *not* search — a dropped variant, an off-field boundary, a skipped channel — carries the observation that would reopen it. A dropped item with no reopen trigger is itself a gap.
-2. **A saturated or famous element raises the search bar before it can lower the risk.** You may not treat "crowded field → dilution → lower risk" as a mitigant until the crowd has been *enumerated*, filtered by goods, worldwide. Saturation is a reason to look harder first, not to look less.
+2. **A saturated or famous element raises the search bar before it can lower the risk.** You may not treat "crowded field → dilution → lower risk" as a mitigant until the crowd has been counted, narrowed by goods, and its survivors named. Saturation is a reason to look harder first, not to look less.
 3. **Scope by goods and channel, not class-number and storefront.** Field = goods-overlap with the actual product; sources = the product's real channel; ranking = goods-overlap, not class + registration status.
 4. **Search depth is set by the cost of a miss, never by the posture on the result.** "We won't block on the US" governs the *advice*, never how hard you look. Thin coverage of a high-cost-of-miss element is a gap, not a clean field.
 

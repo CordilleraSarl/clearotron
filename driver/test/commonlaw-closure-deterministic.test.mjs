@@ -122,10 +122,14 @@ async function runNonSplitClosure(id) {
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_REGISTER_RECORD_LOG: join(root, "records.jsonl"), MOCK_CALL_LOG: callLog, MOCK_CLAUDE_CALL_LOG: callLog,
     MOCK_CL_GAPS: "1", MOCK_FAIL_STAGE: "joint synthesis narrative",
+    // A recovery park: a synthesis failure whose recovery is spent is delivered without the assessment, so the seed is
+    // given the one park it takes, and the resume below runs synthesis again.
+    CLEAROTRON_RECOVERY_MAX: "1",
   })) pinEnv(process.env, k, v);
   const { pipeline: seedPipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const seed = await seedPipeline({ ...JOB, id });
-  assert.equal(seed.ok, false, `the seed must stop after the gather, with a run dir left to resume: ${JSON.stringify(seed)}`);
+  pinEnv(process.env, "CLEAROTRON_RECOVERY_MAX", "0");
+  assert.equal(seed.postponed, true, `the seed must stop after the gather, with a run dir left to resume: ${JSON.stringify(seed)}`);
   assert.ok(existsSync(join(seed.runDir, "common-law-findings.half-a.md")),
     "the seed really SPLIT — if no half exists the surgery below removes nothing and proves nothing");
   const readJournal = (dir) => { try { return readFileSync(driverDir(dir, "run.jsonl"), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
@@ -206,19 +210,21 @@ test("e2e (non-split): the new code fold yields a {cells,extras,gaps} canonical 
 // ── the incident's exact mechanism: closure THEN frame-reopen on the same split run ────────────────────
 // RUN2 was the interaction, not either lane alone: coverage-closure had closed cells, then a frame-reopen
 // re-dispatch ran and the corrupt hand-appended half ledger re-derived the closed cells as gaps → re-fire →
-// thrash. Here the supp-closure ledger persists on disk and readHalfLedger re-reads it on EVERY merge, so
-// the frame-reopen re-merge must keep the closed cells closed.
-test("e2e (split): coverage-closure THEN frame-reopen source — closed cells STAY closed through the reopen re-merge", async () => {
+// thrash. A source directive no longer re-dispatches the halves at all: a channel the frame-diff names is
+// disclosed as an open row, never swept. The closed cells must still be closed when the run ends.
+test("e2e (split): coverage-closure THEN a frame-reopen source directive — closed cells STAY closed, and the channel is disclosed, not swept", async () => {
   const { res, events } = await run({ MOCK_CL_GAPS: "1", MOCK_FRAME_DIFF: "source", MOCK_CL_APPEND_MALFORMED: "1" }, "closure-then-reopen");
   assert.equal(res.ok, true, JSON.stringify(res));
   assert.ok(!hasUnparseable(events), "no unparseable-ledger event across the combined lanes");
   const closure = events.find((e) => e.event === "coverage-closure");
   assert.deepEqual({ closed: closure.closed, remaining: closure.remaining }, { closed: 2, remaining: 0 }, "coverage-closure closed the cells");
   const reopen = events.find((e) => e.event === "frame-reopen");
-  assert.ok(reopen && reopen.swept >= 1, "the frame-reopen source directive swept (re-dispatched the halves)");
-  // the load-bearing assertion: the frame-reopen re-merge did NOT re-open the cells coverage-closure closed
+  assert.ok(reopen && reopen.swept === 0 && reopen.deferred >= 1, "the frame-reopen source directive is disclosed, not swept");
+  assert.ok(!events.some((e) => e.event === "stage" && e.trigger === "frame-reopen" && /^common-law/.test(String(e.stage))),
+    "no web-search half was re-dispatched for the channel");
+  // the load-bearing assertion: nothing after the closure re-opened the cells it closed
   const grid = JSON.parse(readFileSync(join(res.runDir, "common-law-grid.json"), "utf8"));
-  assert.equal(grid.gaps.length, 0, "the reopen re-merge preserved the closed cells (supp-closure re-read each merge) — no re-open, no re-thrash");
+  assert.equal(grid.gaps.length, 0, "the closed cells stayed closed (supp-closure re-read on every merge) — no re-open, no re-thrash");
 });
 
 // ── false-clean guard: a cell the supp did NOT return stays a disclosed plugin-recorded gap ─────────────

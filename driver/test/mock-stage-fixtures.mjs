@@ -193,7 +193,8 @@ const prResultsArmedFor = (q) => {
 };
 
 // P2-A (recall spine): a COMPLIANT digest ends every screened-live dominant-element record somewhere
-// a reader can see — the driver's recall-reconciliation gate blocks delivery otherwise. The mock
+// a reader can see — otherwise the driver's recall-reconciliation gate ships those records named and clamps
+// the verdict. The mock
 // mirrors that compliant behaviour: read the merged band from the run dir and mint one individually-
 // reasoned Negative-results drop row per surfaced NOVAPULSE record (one record per row, URI cited —
 // the digest.md ending form 2). The result/notes wording deliberately avoids the goods/field tokens
@@ -225,13 +226,22 @@ function dominantElementDropRows(dir) {
 // What the seat still authors is its OWN coverage units — the per-jurisdiction reconciliation, the
 // ring-fenced script group. Those are judgment, they carry no identifier anything
 // joins on, and the ledger a lawyer reads has always had them. They ride as `kind: "seat"` rows.
+//
+// The seat used to add a per-market row, "NZ (material)" deferred as "not run", which the deadline envelope closed in
+// every run. It named no question the run planned, so a re-run had nothing to send for it, and the ruled method asks no
+// question per market: it is gone, and a mock run carries no standing deferral.
+//
+// MOCK_SEAT_DEFERS=<axis>: the seat writes one deferred row of its own on that axis, which the envelope's close turns
+// confirmed-clean. On an axis the run's plan-execution receipt does not cover, nothing says whether a re-run could send
+// anything, so the closeability split answers as it did before it read the receipt, and the envelope closes it in-loop.
 function mockCoverageSlices(msg) {
   const rows = [
     { axis: "primary-sweep", unit: "primary-sweep / worldwide", status: "confirmed-clean", reason: "full" },
-    /CLOSED their deferred/.test(msg)
-      ? { axis: "primary-sweep", unit: "primary-sweep / NZ (material)", status: "confirmed-clean", reason: "deferred sub-query closed (envelope)" }
-      : { axis: "primary-sweep", unit: "primary-sweep / NZ (material)", status: "deferred", reason: "not run" },
   ];
+  const deferring = process.env.MOCK_SEAT_DEFERS;
+  if (deferring) rows.push(/CLOSED their deferred/.test(msg)
+    ? { axis: deferring, unit: `${deferring} / owner reading`, status: "confirmed-clean", reason: "deferred work closed (envelope)" }
+    : { axis: deferring, unit: `${deferring} / owner reading`, status: "deferred", reason: "not run" });
   if (process.env.MOCK_LEDGER_LIMITED)
     rows.push({ axis: process.env.MOCK_LEDGER_LIMITED, unit: `${process.env.MOCK_LEDGER_LIMITED} / extra script group`,
       status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" });
@@ -416,14 +426,6 @@ export function fixture(name, msg, dir = null) {
     const gapCell = (v, pl) => gapsActive && v === gapVariant && (pl === gapStore || pl === "web");
     let matrix = variants.flatMap((v) => PLATFORMS.map((pl) =>
       gapCell(v, pl) ? `| ${v} | ${pl} | not executed — coverage-limited (see ledger) |` : `| ${v} | ${pl} | No results |`)).join("\n");
-    // A source-channel sweep followup (frame-reopen / closure channel arm) ADDS matrix rows for the
-    // DICTATED variant scope — mirror the real contract so the merged canonical file actually changes
-    // when (and only when) a sweep turn completed. The dictated scope is the explicit "For EACH of
-    // these variants — a; b —" list when present (split arms), else every variant (single member).
-    if (/SOURCE CHANNELS|IN-SCOPE CHANNELS/.test(msg)) {
-      const dictated = msg.match(/For EACH of these variants — ([^—]+) —/)?.[1]?.split(";").map((s) => s.trim()).filter(Boolean);
-      matrix += "\n" + (dictated ?? variants).map((v) => `| ${v} | github.com | No results — supplemental source-channel sweep |`).join("\n");
-    }
     const exemptRow = gapsMode === "exempt"
       ? `\n| non-Latin reach (转码) | coverage-limited | TimeoutError('store cell') on ${gapStore} and web calls |`
       : "";
@@ -1923,8 +1925,9 @@ export function applyStageWrites(msg, argv) {
           // consolidate the other registrations of that mark under it. Before the instructed scope listed a
           // lone `markName`, this rule never fired on the mock's own job, and every row could be declined as
           // unrelated goods.
+          // A position a finding delivers through any of its records is answered; the rest are declined.
           const declinations = rows.map((row, i) => ({ row, i }))
-            .filter(({ row }) => !delivered.has(normalizeRecordUri(row?.uri)))
+            .filter(({ row }) => !(Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri]).some((u) => delivered.has(normalizeRecordUri(u))))
             .map(({ row, i }) => (contradictionFor("unrelated-goods", row, scope)
               ? { row_index: i, reason: "duplicate-of-delivered",
                 grounds: "The identical registration is already delivered as finding 1, so this one is consolidated "

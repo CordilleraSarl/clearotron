@@ -102,6 +102,11 @@ export const PUBLISH_INPUTS = {
   "common-law-grid.json": "optional",
   // spec 62 — the frozen project/profile stamp carried into the pool.
   "_driver/profile.json": "optional",
+  // The record that the run's overall assessment could not be completed (driver/parts-not-completed.mjs), and the
+  // coverage rows its delivery read from the run's own coverage records in place of the assessment's copy. Optional:
+  // every run whose assessment completed has neither, and its report reads exactly as before.
+  "_driver/not-completed/assessment.json": "optional",
+  "_driver/not-completed/assessment-coverage.json": "optional",
 };
 
 // The other half of the partition, and the half without which this check could only run one way. These
