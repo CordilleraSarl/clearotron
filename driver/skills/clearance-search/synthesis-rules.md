@@ -536,7 +536,7 @@ The common-law layer searches narrowly: identical or near-identical mark in iden
 When judging which common-law hits to include in the Findings sheet:
 
 - Include: identical mark in the same field, near-identical mark (one-word swap, plural variation, phonetic equivalent) in the same field, identical mark in a directly-adjacent field with channel overlap.
-- Exclude: conceptually similar but lexically different marks (e.g. "Chart My Course" surfacing for a "Chart Your Course" clearance is borderline — include only with very-similar / same-field overlap).
+- Exclude: conceptually similar but lexically different marks (e.g. "Set My Pace" surfacing for a "Set Your Pace" clearance is borderline — include only with very-similar / same-field overlap).
 - Document the scope decision in the narrative's Methodology note so the staff lawyer can see what was and wasn't searched.
 
 ## Watchlist findings

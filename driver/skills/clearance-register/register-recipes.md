@@ -162,36 +162,36 @@ For each transliteration variant in the manifest:
 
 ## Recipe 6 — Multi-word descriptive tagline (0 distinctive elements)
 
-**When to use:** mark is 2+ words, ALL elements are common-words with high or very-high saturation, no distinctive anchor. Examples: "Raise Your Play", "Level Up Your Skills", "Step Into The Play".
+**When to use:** mark is 2+ words, ALL elements are common-words with high or very-high saturation, no distinctive anchor. Examples: "Sharpen Your Aim", "Level Up Your Skills", "Push Your Limits".
 
 **Pattern:**
 
 ```
 1. Crowd descriptors — count-only probes on the saturated common elements (limit=1, fields=[uri])
-   → name:RAISE classes 9/28/41/42 → `incomplete` crowd-descriptor block
-   → name:PLAY classes 9/28/41/42 → `incomplete` crowd-descriptor block
+   → name:SHARPEN classes 9/28/41/42 → `incomplete` crowd-descriptor block
+   → name:AIM classes 9/28/41/42 → `incomplete` crowd-descriptor block
 
 2. Crowd descriptor — partial-phrase prefix count (the narrative anchor)
-   → phrase:"RAISE YOUR" classes <target> limit=1 → `incomplete` block ("234 live RAISE YOUR ___")
+   → phrase:"SHARPEN YOUR" classes <target> limit=1 → `incomplete` block ("234 live SHARPEN YOUR ___")
 
 3. ENUMERATE the compound phrase, 3 match-modes (register_enumerate each)
-   → exact:"RAISE YOUR PLAY" classes <target>   → identical-mark band
-   → phrase:"RAISE YOUR PLAY" classes <target>  → embedded-in-compound band
-   → default:"RAISE YOUR PLAY" classes <target> → tokenisation-split band
+   → exact:"SHARPEN YOUR AIM" classes <target>   → identical-mark band
+   → phrase:"SHARPEN YOUR AIM" classes <target>  → embedded-in-compound band
+   → default:"SHARPEN YOUR AIM" classes <target> → tokenisation-split band
 
 4. ENUMERATE phrase-substitution variant queries (per manifest)
-   → name:"RAISING YOUR PLAY" match=default classes <target> → register_enumerate
-   → name:"RAISE YOUR PLAYS" match=default classes <target>  → register_enumerate
-   → name:"RAISE THE PLAY"   match=default classes <target>  → register_enumerate
+   → name:"SHARPENING YOUR AIM" match=default classes <target> → register_enumerate
+   → name:"SHARPEN YOUR AIMS" match=default classes <target>  → register_enumerate
+   → name:"SHARPEN THE AIM"   match=default classes <target>  → register_enumerate
    → ...
 
 5. ENUMERATE wildcard variant queries (per manifest)
-   → name:"Raise * play"  classes <target>     → register_enumerate
-   → name:"Raise your *"   classes <target>     → register_enumerate
-   → name:"* your play"     classes <target>     → register_enumerate
+   → name:"Sharpen * aim" classes <target>     → register_enumerate
+   → name:"Sharpen your *" classes <target>     → register_enumerate
+   → name:"* your aim"      classes <target>     → register_enumerate
 
 6. ENUMERATE each common element's exact-in-class name-list (register_enumerate)
-   → name:RAISE match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
+   → name:SHARPEN match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
 
 7. ENUMERATE a cross-class merch query if identical match
 ```

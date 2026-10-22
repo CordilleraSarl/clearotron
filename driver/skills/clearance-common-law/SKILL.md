@@ -165,15 +165,15 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| "Raising Your Play" | Brightwick marketing | https://... | Brightwick uses tagline for gaming hardware; no register protection found (flagged for clearance-register cross-check) |
+| "Sharpening Your Aim" | Brightwick marketing | https://... | Brightwick uses tagline for gaming hardware; no register protection found (flagged for clearance-register cross-check) |
 | 1,600+ "Dusk" titles on Steam | Steam | https://... | Crowded field — supportive evidence |
 
 ### Competitor intelligence
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| Veltrona "Pulse Raise" portfolio | Veltrona products | https://... | Veltrona uses "Raise" in audio products; flagged for clearance-register cross-check |
-| Foxglade "Borealis" console "Raise Your Play" tagline (prior usage) | Foxglade Interactive marketing | https://... | Client's own prior use — note as supportive |
+| Veltrona "Pulse Aim" portfolio | Veltrona products | https://... | Veltrona uses "Aim" in audio products; flagged for clearance-register cross-check |
+| Foxglade "Borealis" console "Sharpen Your Aim" tagline (prior usage) | Foxglade Interactive marketing | https://... | Client's own prior use — note as supportive |
 
 ### PR / reputational risk
 
@@ -366,8 +366,8 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 
 | Trigger | Suggested cross-check |
 |---|---|
-| Brightwick appears using "RAISING YOUR PLAY" | Check register: does Brightwick have any raise-related trademark in target classes? |
-| Veltrona "Pulse Raise" portfolio | Check register: any Veltrona raise filings in target classes? |
+| Brightwick appears using "SHARPENING YOUR AIM" | Check register: does Brightwick have any aim-related trademark in target classes? |
+| Veltrona "Pulse Aim" portfolio | Check register: any Veltrona aim filings in target classes? |
 | Thornfall Games "Thornmantle" (itch.io) | Check register: any Thornfall trademark protection? |
 
 ### Audit trail
@@ -377,8 +377,8 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 |---|---|---|---|
 | 1 | Grid (sandbox) | Search-as-code grid: 9 variants × 7 platforms + extras | 63 cells, 0 gaps, 487 candidates recorded; 12 risk-relevant after judgment |
 | 2 | Famous-mark | None flagged in manifest | (not run) |
-| 3 | Follow-up | Brightwick gaming portfolio + "raising your play" deeper trace | 3 additional findings |
-| 4 | Follow-up | Veltrona pulse-raise portfolio | 2 additional findings |
+| 3 | Follow-up | Brightwick gaming portfolio + "sharpening your aim" deeper trace | 3 additional findings |
+| 4 | Follow-up | Veltrona pulse-aim portfolio | 2 additional findings |
 
 **Grid program receipt** — the executed sandbox program returned by the tool, verbatim:
 
@@ -389,7 +389,7 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 ### Open verification flags
 
 - Thornfall Games "Thornmantle" itch.io listing — URL needs re-verification (404'd during follow-up call)
-- Brightwick "Raising Your Play" marketing presence in EU — coverage was thin, may need a region-specific follow-up
+- Brightwick "Sharpening Your Aim" marketing presence in EU — coverage was thin, may need a region-specific follow-up
 ```
 
 ## At every step: look at what you have before you work on it
