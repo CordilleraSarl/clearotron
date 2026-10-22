@@ -1485,6 +1485,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-with-no-record-page-is-cited-not-linked.test.mjs": {
           "tests": 2,
           "asserts": 8,

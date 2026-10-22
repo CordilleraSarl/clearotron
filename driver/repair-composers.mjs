@@ -52,7 +52,7 @@ import { basename } from "node:path";
 // These six are already named, exported, and living beside the subject they repair. Moving them into
 // this file would trade locality for nothing: what was missing was never their location, it was that
 // nothing enumerated them, so the guard could not walk them. They are imported and registered.
-import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES } from "./stages.mjs";
+import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES, followupScopeLines } from "./stages.mjs";
 import { refutationStandingLines, refutationOpenItemsLine, REFUTATION_RECORDING_LINES } from "./stages.mjs";
 import { buildReconcileFollowup } from "./recall-reconciliation.mjs";
 import { buildFlushFollowup } from "./digest-queue.mjs";
@@ -88,6 +88,9 @@ const SAMPLE_PATHS = Object.freeze({
   commonLawHalf: (h) => `common-law-${h}.md`, gridSpecHalf: (h) => `grid-${h}.json`,
   commonLawGridHalf: (h) => `grid-ledger-${h}.json`, registerUnit: (a) => `units/${a}.md`,
 });
+// An invented order and profile, so a register-unit follow-up's samples carry the market list and the class line the
+// pipeline hands it, and the guard reads them too. Never reachable from `compose`, like the paths above.
+const SAMPLE_SCOPE = Object.freeze({ job: { jobKey: "sample", classes: ["9"], geography: { mode: "worldwide" } }, profile: { defaultJurisdictions: ["CA"] } });
 
 // ── THE CORRECTION'S RULES AND STEPS, ONE TEXT FOR BOTH CORRECTIONS ──────────────────────────────────
 //
@@ -642,16 +645,19 @@ export const REPAIR_COMPOSERS = [
     trigger: "xcheck-decide",
     stage: "register-unit",
     key: "register-unit:xcheck-decide",
-    // A fresh session cannot infer the tool's arguments, so the caller supplies all three.
-    compose: ({ axis, registerPlan, bandPath, entries }) => lines(
+    // A fresh session cannot infer the tool's arguments, so the caller supplies all three; and it never saw the opening
+    // message, so the caller supplies the order and the profile its market list and class line are read from.
+    compose: ({ axis, registerPlan, bandPath, entries, job = null, profile = null, supplementalLane = false }) => lines(
         `This is a fresh session: your earlier register-unit work (axis "${axis}") is not in your context. Your unit digest stands — do NOT redo it.`,
         `The web search's findings named these register questions after your reading. They wait for you like the families in your plan:`,
         ...entries.map((e) => `- qid "${e.qid}": ${e.predicate} "${e.term}" · nice_classes ${JSON.stringify(e.nice_classes)}${e.from ? ` · from ${e.from}` : ""}`),
         `For \`register_execute_plan\`, use \`plan_path: ${JSON.stringify(registerPlan)}\`, \`axis: ${JSON.stringify(axis)}\`, and \`output_path: ${JSON.stringify(bandPath)}\`; pass only the qids you released.`,
         DECIDE_WAITING_FAMILIES,
+        ...followupScopeLines({ job, profile, supplementalLane }),
         `Return ONLY: the band path + the tool's summary line.`,
       ),
-    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] } }],
+    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] }  },
+      { name: "a cross-check the web search named, with the order's markets and classes", tail: "tool", args: { axis: "primary-sweep", registerPlan: "register-plan.json", bandPath: "bands/primary-sweep.md", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }], supplementalLane: true, ...SAMPLE_SCOPE } }],
   },
   {
     trigger: "grid-ledger",
@@ -807,13 +813,15 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:frame-reopen-directive",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane }) =>
-      buildFrameReopenFollowup({ paths, axis, directives, reopenFetchCap, supplementalLane }),
+    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }) =>
+      buildFrameReopenFollowup({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }),
     samples: [
       { name: "the main lane", tail: "declared-by-the-composer",
         args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false } },
       { name: "the supplemental lane", tail: "declared-by-the-composer",
         args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: true } },
+      { name: "the supplemental lane, with the order's markets and classes", tail: "declared-by-the-composer",
+        args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: true, ...SAMPLE_SCOPE } },
     ],
   },
   {
@@ -821,13 +829,15 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:escalation",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, flags, supplementalLane }) =>
-      buildEscalationFollowup({ paths, axis, flags, supplementalLane }),
+    compose: ({ paths, axis, flags, supplementalLane, job, profile }) =>
+      buildEscalationFollowup({ paths, axis, flags, supplementalLane, job, profile }),
     samples: [
       { name: "the main lane", tail: "declared-by-the-composer",
         args: { paths: SAMPLE_PATHS, axis: "eu", flags: [{ axis: "eu", reason: "coverage-limited" }], supplementalLane: false } },
       { name: "the supplemental lane", tail: "declared-by-the-composer",
         args: { paths: SAMPLE_PATHS, axis: "eu", flags: [{ axis: "eu", reason: "coverage-limited" }], supplementalLane: true } },
+      { name: "the supplemental lane, with the order's markets and classes", tail: "declared-by-the-composer",
+        args: { paths: SAMPLE_PATHS, axis: "eu", flags: [{ axis: "eu", reason: "coverage-limited" }], supplementalLane: true, ...SAMPLE_SCOPE } },
     ],
   },
   {
@@ -835,10 +845,12 @@ export const REPAIR_COMPOSERS = [
     stage: "register-unit",
     key: "register-unit:envelope-close",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, rows, supplementalLane }) =>
-      buildEnvelopeCloseFollowup({ paths, axis, rows, supplementalLane }),
+    compose: ({ paths, axis, rows, supplementalLane, job, profile }) =>
+      buildEnvelopeCloseFollowup({ paths, axis, rows, supplementalLane, job, profile }),
     samples: [{ name: "two outstanding rows", tail: "declared-by-the-composer",
-      args: { paths: SAMPLE_PATHS, axis: "eu", rows: 2, supplementalLane: false } }],
+      args: { paths: SAMPLE_PATHS, axis: "eu", rows: 2, supplementalLane: false } },
+    { name: "two outstanding rows, with the order's markets and classes", tail: "declared-by-the-composer",
+      args: { paths: SAMPLE_PATHS, axis: "eu", rows: 2, supplementalLane: false, ...SAMPLE_SCOPE } }],
   },
   {
     trigger: "frame-reopen-retry",
@@ -846,10 +858,12 @@ export const REPAIR_COMPOSERS = [
     key: "register-unit:frame-reopen-retry",
     route: "freshMessage",
     inPlace: "driver/stages.mjs",
-    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane }) =>
-      buildFrameReopenRetryMessage({ paths, axis, directives, reopenFetchCap, supplementalLane }),
+    compose: ({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }) =>
+      buildFrameReopenRetryMessage({ paths, axis, directives, reopenFetchCap, supplementalLane, job, profile }),
     samples: [{ name: "the retry after a reopen", tail: "declared-by-the-composer",
-      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false } }],
+      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false } },
+    { name: "the retry after a reopen, with the order's markets and classes", tail: "declared-by-the-composer",
+      args: { paths: SAMPLE_PATHS, axis: "eu", directives: [{ item: "itch.io", observation: "unsearched" }], reopenFetchCap: 4, supplementalLane: false, ...SAMPLE_SCOPE } }],
   },
   {
     trigger: "grid-ledger",

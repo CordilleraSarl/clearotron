@@ -2191,7 +2191,7 @@ export const STAGES = {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
-    const inScope = Array.isArray(job?.classes) && job.classes.length ? job.classes.map(String).join(", ") : null;
+    const inScope = inScopeClassesOf(job);
     // WS2 (B4) — in plan mode the frozen register plan DICTATES this axis's calls (the model
     // reasoned once at variants time; the funnel executes, it never re-improvises the queries — THE
     // F2 fix). Band blocks carry the qid so fan-in identity-joins plan⇄band. Legacy (no plan): the
@@ -2279,9 +2279,7 @@ export const STAGES = {
       // ION/copper-foundry: these lines name the tool the unit is expected to class-scope, so they MUST
       // follow the lane too — naming register_enumerate to a unit that cannot call it is what taught ION's
       // incumbent-class pass that the tool was broken.
-      inScope
-        ? `IN-SCOPE NICE CLASSES = [${inScope}]. Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to these — pass nice_classes:[${inScope}] AND in_scope_classes:[${inScope}] on every ${supplementalLane ? "proposal" : "call"}. ${supplementalLane ? "A proposal" : "An enumerate"} WITHOUT nice_classes (all-class default / starts_with / ends_with / phonetic / fuzzy) is FORBIDDEN: it pulls an all-45-class crowd that floods the band and times the stage out — it is not breadth. A bare saturated element with no class filter is a COUNT-ONLY descriptor (register_search limit:1), never enumerated. ONLY exception: the exact-IDENTICAL cross-class merch check (nice_classes:[25], match_mode:exact).`
-        : `Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to the matter's in-scope Nice classes (from the matter frame) via nice_classes — an unscoped all-class ${supplementalLane ? "proposal" : "enumerate"} is FORBIDDEN (it floods the band + times out the stage). Only exception: the exact-identical cross-class merch check (nice_classes:[25]).`,
+      inScopeClassLine(inScope, supplementalLane),
       // CROWD BOUND: gate the dangerous-category substring enumeration on the class-scoped RESULT (tractable
       // vs crowd), not the manifest label. A slice that returns a crowd is no longer terminal (ruled 2026-09-25):
       // the listing ceiling is a call limit, never a decision point, and the unit decides on the crowd as on the
@@ -4193,14 +4191,36 @@ export const supplementalLaneResumeLine = (P, axis) =>
 // questions they sent had been asked before in the same run.
 export const PLAN_ENTRY_RERUN_RULE = `This axis's plan has already run. Do not call register_execute_plan without "qids": that runs every entry on the axis again. To ask one plan entry again, name only that entry in "qids".`;
 
+// THE REGISTER UNIT'S CLASS LINE, the same in its opening message and in every follow-up (a follow-up is a fresh
+// session, and a class it is never told is a class it cannot pin). PURE.
+export const inScopeClassesOf = (job) => (Array.isArray(job?.classes) && job.classes.length ? job.classes.map(String).join(", ") : null);
+export function inScopeClassLine(inScope, supplementalLane) {
+  return inScope
+    ? `IN-SCOPE NICE CLASSES = [${inScope}]. Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to these — pass nice_classes:[${inScope}] AND in_scope_classes:[${inScope}] on every ${supplementalLane ? "proposal" : "call"}. ${supplementalLane ? "A proposal" : "An enumerate"} WITHOUT nice_classes (all-class default / starts_with / ends_with / phonetic / fuzzy) is FORBIDDEN: it pulls an all-45-class crowd that floods the band and times the stage out — it is not breadth. A bare saturated element with no class filter is a COUNT-ONLY descriptor (register_search limit:1), never enumerated. ONLY exception: the exact-IDENTICAL cross-class merch check (nice_classes:[25], match_mode:exact).`
+    : `Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to the matter's in-scope Nice classes (from the matter frame) via nice_classes — an unscoped all-class ${supplementalLane ? "proposal" : "enumerate"} is FORBIDDEN (it floods the band + times out the stage). Only exception: the exact-identical cross-class merch check (nice_classes:[25]).`;
+}
+
+/**
+ * A REGISTER-UNIT FOLLOW-UP CARRIES THE ONE MARKET LIST AND THE CLASS LINE. The manual's narrowing step reads "from
+ * the one list your opening message names", and a follow-up is a fresh session that never saw the opening message:
+ * without these lines the step points at nothing, and the markets are the model's to pick. Empty when the caller has
+ * no order to read them from. PURE.
+ */
+export function followupScopeLines({ job = null, profile = null, supplementalLane = false } = {}) {
+  if (!job) return [];
+  const inScope = inScopeClassesOf(job);
+  return [narrowingOrderLine(job, profile, inScope), inScopeClassLine(inScope, supplementalLane)];
+}
+
 // Step-2.6 skeptic escalated this axis → resume its session to defend or adjust.
-export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLane = false }) {
+export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLane = false, job = null, profile = null }) {
   return lines(
     `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior search is in your band artifact (${P.registerBand(axis)}), and your output file is ${P.registerUnit(axis)}.`,
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
     `Do NOT restart the search from scratch. The Step-2.6 skeptic raised the concerns below. For EACH concern relevant to THIS axis: either (a) defend your existing finding using evidence already in your band artifact, or (b) run ONLY the narrow additional sub-query the concern requires, then revise.`,
     `Every finding the concerns do not touch stays exactly as it is.`,
     PLAN_ENTRY_RERUN_RULE,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     ``,
     `Skeptic concerns:`,
     flags,
@@ -4212,7 +4232,7 @@ export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLan
 }
 
 // The deadline envelope permits closing this axis's DEFERRED coverage rows before the analysis is written.
-export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalLane = false }) {
+export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalLane = false, job = null, profile = null }) {
   return lines(
     `This is a fresh session: your earlier register-unit work for axis "${axis}" is not in your context. Your prior search is in your band artifact (${P.registerBand(axis)}), and your output file is ${P.registerUnit(axis)}.`,
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
@@ -4220,6 +4240,7 @@ export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalL
     rows || `(deferred row(s) for ${axis} — see the Coverage ledger)`,
     PLAN_ENTRY_RERUN_RULE,
     `Run ONLY those deferred sub-queries and update each closed row to confirmed-clean or coverage-limited with the honest reason. Nothing else in the digest changes.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     UNIT_NOTE_REPAIR_TAIL,
   );
 }
@@ -4231,7 +4252,7 @@ export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalL
 // and where band_block_unplanned kills a hand-authored block. It is reached on a lane run whenever the
 // code-side dispatch arm above it cannot run (no executePlan adapter for the active provider, or
 // CLEAROTRON_PLAN_DISPATCH=off), so the contradiction was dispatchable, not theoretical.
-export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false }) {
+export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false, job = null, profile = null }) {
   const dom = (directives ?? []).filter((d) => d.severity === "dominant-element");
   const other = (directives ?? []).filter((d) => d.severity !== "dominant-element");
   if (supplementalLane) return lines(
@@ -4243,6 +4264,7 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
       : "",
     other.length ? `For the other item(s), PROPOSE ONLY the narrow additional slice each requires — same register_propose_supplemental call, class-scoped and region-scoped; the tool merges each block into ${P.registerBand(axis)}.` : "",
     `Then reconcile your account of this axis against the band the tools just wrote — the driver renders ${P.registerUnit(axis)} from your call and takes its counts from that band, so the reconciliation is what you SEND, not a file you re-open. You never author, edit, append to or re-save ${P.registerBand(axis)} yourself — the tools own every block and its qid stamp, and a hand-authored block fails the stage. Hand the reconciled note back with \`record_unit_note\`; you open neither file.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     UNIT_NOTE_REPAIR_TAIL,
     SUPPLEMENTAL_LANE_STEERING,
   );
@@ -4263,6 +4285,7 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
     // so their qids cannot be lost in transcription.
     `Your ${P.registerBand(axis)} band artifact GROWS BY APPENDING: add each new block to the array already on disk and leave every block already in it exactly as it stands, each keeping its "qid" field byte-identical — never re-emit the band whole, because a block you re-type is a block whose qid can be lost, and the plan-execution receipt joins on it (a dropped qid corrupts the audit trail and reads as an axis that never ran).`,
     `Then reconcile the ${P.registerUnit(axis)} digest with the blocks you just appended, preserving everything else.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     UNIT_NOTE_REPAIR_TAIL,
   );
 }
@@ -4276,11 +4299,12 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFet
 // session never wrote the digest, and the digest it would be patching was left behind by a resume that died
 // at the hard wall — the kill-torn class the run-level rescue refuses to trust as a base. Re-stating the
 // whole contract and writing the whole file is the honest shape for a session starting from nothing.
-export function buildFrameReopenRetryMessage({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false }) {
+export function buildFrameReopenRetryMessage({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false, job = null, profile = null }) {
   if (supplementalLane) return lines(
     `Run a SCOPED register sweep for axis "${axis}" — cover ONLY the near-form threats below. A prior warm resume of this axis TIMED OUT at the hard wall, so start clean; the band artifact for this axis is ${P.registerBand(axis)}.`,
     ...(directives ?? []).map(directiveLine),
     `PROPOSE each of them via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}) — one proposal per threat, each pinned to the in-scope classes via nice_classes and region-scoped per material+major in-scope jurisdiction. The tool runs every proposal through the deterministic executor and MERGES its qid-stamped block into the band itself, live AND recently-dead records carried with their status (never date-cut). Screen what comes back in full (that pass is cheap), but BOUND YOUR OWN per-record detail reading to at most ${reopenFetchCap} records; a slice the executor cannot exhaust comes back as an honest "incomplete" block (count + sample + reason). A WRITTEN bounded band beats an exhaustive one killed mid-fetch.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     `Then hand the audit note back with \`record_unit_note\` — there is no digest file to re-emit and nothing you write by hand is read; the driver renders ${P.registerUnit(axis)} from your call and takes its counts from the band, so the note is reconciled against the band by construction rather than by you re-typing it. You never author, edit, append to or re-save band blocks yourself either — the tool owns every block and its qid stamp, and a hand-authored block fails the stage. Author NO clearance verdict: the band is the coverage signal; judgment reads it.`,
     SUPPLEMENTAL_LANE_STEERING,
   );
@@ -4288,6 +4312,7 @@ export function buildFrameReopenRetryMessage({ paths: P, axis, directives, reope
     `Run a SCOPED register sweep for axis "${axis}" — cover ONLY the near-form threats below. A prior warm resume of this axis TIMED OUT at the hard wall, so start clean; your band artifact is ${P.registerBand(axis)}.`,
     ...(directives ?? []).map(directiveLine),
     `Enumerate each via register_enumerate, region-scoped per material+major in-scope jurisdiction, filtered to the in-scope classes, live AND recently-dead (status carried, never date-cut). Screen the crowd fully (cheap), but BOUND the per-record detail-fetch to at most ${reopenFetchCap} records, then write the remaining screened survivors as an "incomplete" block (count + sample + reason). A WRITTEN bounded band beats an exhaustive one killed mid-fetch.`,
+    ...followupScopeLines({ job, profile, supplementalLane }),
     `APPEND each result as a block to ${P.registerBand(axis)} — that file is yours on this lane and the full write of it is deliberate, because a warm resume died at the hard wall and what is on disk may be kill-torn. The NOTE is not yours: hand it back with \`record_unit_note\` and the driver renders ${P.registerUnit(axis)} from your call. A torn note needs no repair from you — the next accepted call re-renders it whole. Author NO clearance verdict — the band is the coverage signal; judgment reads it. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`,
   );
 }

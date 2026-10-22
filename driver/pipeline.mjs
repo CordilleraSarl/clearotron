@@ -11483,7 +11483,8 @@ async function pipelineInner(job, opts = {}) {
           if (unitKey[axis]) try {
             const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
             const from = new Map([...(Array.isArray(prior?.directives) ? prior.directives : []), ...kept].map((d) => [d.qid, d.source?.url ?? null]));
-            const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })) });
+            const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })),
+              job: ctx.job, profile: ctx.profile, supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
             const r = await stage("register-unit", { ...ctx, axis }, { force: true, followup, sessionKey: unitKey[axis], trigger: "xcheck-decide" });
             asked = r?.ok === true;
             remergeIfBandsMoved(ctx, "xcheck-decide");
@@ -12518,7 +12519,7 @@ async function pipelineInner(job, opts = {}) {
             // this arm is reachable on a lane run whenever the code-side dispatch arm above could not
             // take it (no executePlan adapter, or CLEAROTRON_PLAN_DISPATCH=off).
             const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
             const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "frame-reopen" });
             if (r.ok) {
               if (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand) { changedAxes.push(a); regChanged = true; }
@@ -12533,7 +12534,7 @@ async function pipelineInner(job, opts = {}) {
               if (/timeout/.test(String(regMechFail))) {
                 note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
                 const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
                 const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
                 if (r2.ok && existsSync(P.registerUnit(a)) && (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand)) {
                   changedAxes.push(a); regChanged = true; regMechFail = null;
@@ -13074,7 +13075,7 @@ async function pipelineInner(job, opts = {}) {
         const beforeBand = bandBytesOf(P, a);   // a narrow sub-query adds blocks to the band, whatever it does to the notes
         note(`skeptic escalated ${a} → resuming its session to defend/adjust (warm, same tier)`);
         let followup = repairFollowup("register-unit:escalation", { paths: P, axis: a, flags,
-          supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+          supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
         // A2, per-row: the skip above only catches an axis whose ENTIRE outstanding work is a
         // capability gap. An axis is often escalated for a good reason (a flagged confirmed-clean row)
         // while ALSO carrying held rows — and the resumed unit must not be left to think those are
@@ -13207,7 +13208,7 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "envelope-close-rows", axis: a,
             closeable: split.closeable.map((r) => String(r.unit ?? "")), held: split.held.map((r) => String(r.unit ?? "")) });
           const followup = repairFollowup("register-unit:envelope-close", { paths: P, axis: a, rows: rows + heldRows,
-            supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+            supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
           const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "envelope" });
           if (!r.ok) return { axis: a, changed: false, fail: r.fail };
           const afterUnit = readFileSync(P.registerUnit(a), "utf8");
