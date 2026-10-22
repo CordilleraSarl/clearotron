@@ -127,7 +127,7 @@ test("judgment on a crowd narrows by the steps or records it with its count and 
   assert.ok(skill.includes("either **commands a narrower named enumeration** by the narrowing steps (which the funnel then runs) or **records the crowd with its count and moves on**."));
   assert.ok(skill.includes("which commands a narrower named enumeration by the narrowing steps, or records it and moves on: a crowd with its count, a failed search as a gap."));
   assert.ok(unit.includes("an incomplete result crosses the firewall as an incomplete block, and you decide on it by the narrowing steps: narrow it, or record it with its count and move on."));
-  assert.ok(recipes.includes("the lawyer decides whether to command a narrower named enumeration by the narrowing steps (which the funnel then runs), or to record it with its count and move on."));
+  assert.ok(recipes.includes("That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it with its count and move on."));
   for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]])
     assert.doesNotMatch(text, /halts to a human|, or halts\.| or halt\./, `${name} still lets judgment halt on a crowd`);
   assert.doesNotMatch(flat("skills/clearance-register/providers/corsearch.md"), /cheapest count-only/);

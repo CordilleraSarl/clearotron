@@ -42,7 +42,10 @@ test("the recipes give the write-up and placement their own work, and the crowd 
     "the write-up (Layer B) performs the cross-cutting relevance / owner-aggregation / prioritisation over the candidates placement carried forward.",
     "Placement reads the band; a crowd is narrowed by the steps in unit.md.",
     "You decide on each `incomplete` by the narrowing steps; placement reads the band and decides relevance.",
+    "That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it with its count and "
+      + "move on. The funnel does not \"narrow and re-probe until tractable, then call it clean\" — it surfaces the descriptor, and you decide on it.",
   ]) assert.ok(recipes.includes(ruled), `the recipes do not say "${ruled.slice(0, 80)}…"`);
-  for (const gone of ["relevance / sufficiency / owner-aggregation", "The lawyer reads the complete band"])
+  for (const gone of ["relevance / sufficiency / owner-aggregation", "The lawyer reads the complete band", "the signal to judgment",
+    "lets judgment command"])
     assert.ok(!recipes.includes(gone), `the recipes still say "${gone}"`);
 });
