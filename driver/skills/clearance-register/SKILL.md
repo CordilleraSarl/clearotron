@@ -236,8 +236,9 @@ lets judgment decide.
   disclose — and it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these `coverage-limited` and a
   fixable hole disappears into an accepted limit.
 - **`confirmed-clean`** — the slice ran to completion and judgment cleared it.
-- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched.
-  Only a `family` row takes it, and its reason goes into the audit workbook, not the report.
+- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched;
+  or a crowd the narrowing steps closed (a narrowed list that was read answered it, or the reading step set it
+  aside with its count and a reason). Its reason goes into the audit workbook, not the report.
 
 **HOW those statuses are recorded is not yours to assume — the dispatch states it, and it is one route,
 the `record_coverage` tool.** The driver computes the form before every digest dispatch and enumerates
