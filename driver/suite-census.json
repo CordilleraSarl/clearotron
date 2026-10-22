@@ -1510,8 +1510,8 @@
           "todos": 0
         },
         "a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": {
-          "tests": 3,
-          "asserts": 8,
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },

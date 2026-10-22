@@ -45,6 +45,24 @@ test("every register-unit follow-up names the customer's priority markets as its
   }
 });
 
+test("every register-unit follow-up gives the market list before the step that searches or settles across it", () => {
+  const market = narrowingOrderLine(JOB, PROFILE, "9, 42");
+  const STEP = {
+    escalation: () => /Skeptic concerns:/,
+    "envelope-close": () => /Run ONLY those deferred sub-queries/,
+    "frame-reopen": (lane) => (lane ? /Then reconcile your account/ : /GROWS BY APPENDING/),
+    "frame-reopen retry": (lane) => (lane ? /Then hand the audit note back/ : /APPEND each result/),
+    "cross-check decision": () => /Return ONLY/,
+  };
+  for (const lane of [true, false]) {
+    for (const [name, text] of Object.entries(followUps(lane))) {
+      const at = text.indexOf(market), step = text.search(STEP[name](lane));
+      assert.ok(at >= 0 && step >= 0, `guard: the ${name} follow-up (lane ${lane}) carries the list and the step`);
+      assert.ok(at < step, `the ${name} follow-up (lane ${lane}) gives the market list after the step it governs`);
+    }
+  }
+});
+
 test("a follow-up composed with no order to read adds nothing", () => {
   assert.deepEqual(followupScopeLines({ job: null, profile: PROFILE }), []);
   for (const [name, text] of Object.entries(followUps(true, {}))) assert.doesNotMatch(text, /NARROWING A CROWD/, `the ${name} follow-up invented a market list`);

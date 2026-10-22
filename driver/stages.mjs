@@ -4240,8 +4240,8 @@ export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalL
     `The Coverage ledger records DEFERRED (planned but never run) work owned by this axis — the deadline envelope permits closing it NOW, before the analysis is written:`,
     rows || `(deferred row(s) for ${axis} — see the Coverage ledger)`,
     PLAN_ENTRY_RERUN_RULE,
-    `Run ONLY those deferred sub-queries and update each closed row to confirmed-clean or coverage-limited with the honest reason. Nothing else in the digest changes.`,
     ...followupScopeLines({ job, profile, supplementalLane }),
+    `Run ONLY those deferred sub-queries and update each closed row to confirmed-clean or coverage-limited with the honest reason. Nothing else in the digest changes.`,
     UNIT_NOTE_REPAIR_TAIL,
   );
 }
@@ -4264,8 +4264,8 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, supplemen
       ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — PROPOSE the dominant element (and its formative root) via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}): the match_mode-exact NAME-LIST slice AND the contains band, across the order's scope, every proposal pinned to the in-scope classes via nice_classes; a slice that comes back a crowd is narrowed by the steps in unit.md. The tool runs each proposal through the SAME deterministic executor as the dictated plan and MERGES its qid-stamped block into ${P.registerBand(axis)} ITSELF — it owns the page loop and carries live AND recently-dead records with their status (never date-cut), so there is nothing to sample and nothing to stop at page 0 / top-N. A slice the executor cannot exhaust comes back as an "incomplete" block (count + sample + reason) — a descriptor for judgment, NEVER a clean negative. You author NO clearance verdict and NO "confirmed-clean" floor row: the band IS the coverage signal; you decide on each "incomplete" block by the narrowing steps in unit.md, and the write-up rules each slice's coverage.`
       : "",
     other.length ? `For the other item(s), PROPOSE ONLY the narrow additional slice each requires — same register_propose_supplemental call, class-scoped and region-scoped; the tool merges each block into ${P.registerBand(axis)}.` : "",
-    `Then reconcile your account of this axis against the band the tools just wrote — the driver renders ${P.registerUnit(axis)} from your call and takes its counts from that band, so the reconciliation is what you SEND, not a file you re-open. You never author, edit, append to or re-save ${P.registerBand(axis)} yourself — the tools own every block and its qid stamp, and a hand-authored block fails the stage. Hand the reconciled note back with \`record_unit_note\`; you open neither file.`,
     ...followupScopeLines({ job, profile, supplementalLane }),
+    `Then reconcile your account of this axis against the band the tools just wrote — the driver renders ${P.registerUnit(axis)} from your call and takes its counts from that band, so the reconciliation is what you SEND, not a file you re-open. You never author, edit, append to or re-save ${P.registerBand(axis)} yourself — the tools own every block and its qid stamp, and a hand-authored block fails the stage. Hand the reconciled note back with \`record_unit_note\`; you open neither file.`,
     UNIT_NOTE_REPAIR_TAIL,
     SUPPLEMENTAL_LANE_STEERING,
   );
@@ -4277,6 +4277,7 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, supplemen
       ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — re-ENUMERATE the dominant element (and its formative root) with register_enumerate: the match_mode:exact name-list AND the contains band, across the order's scope, filtered to the in-scope classes, carrying live AND recently-dead records (with status — never date-cut). register_enumerate owns the page loop for SCREENING: do NOT sample, do NOT stop at page 0 / top-N while screening the crowd. Read the detail of the records that could change what you tell the client, and record the remaining screened survivors as an "incomplete" block (count + sample + reason). APPEND each call's result as a block to your ${P.registerBand(axis)} band artifact — an "enumerated" block (EVERY record, with its screening facts) for a band you paged to has_more:false, or an honest "incomplete" block (count + sample + reason) for a band/crowd you genuinely could not exhaust. You author NO clearance verdict and NO "confirmed-clean" floor row — the band IS the coverage signal; you decide on each "incomplete" block by the narrowing steps in unit.md, and the write-up rules each slice's coverage. An "incomplete" block is a descriptor for judgment, NEVER a clean negative. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`
       : "",
     other.length ? `For the other item(s), run ONLY the narrow additional sub-query each requires (via register_enumerate) and APPEND its block(s) to ${P.registerBand(axis)}.` : "",
+    ...followupScopeLines({ job, profile, supplementalLane }),
     // The band half of this arm was self-contradictory: the paragraph above orders each result APPENDED as
     // a block, and the sentence here then ordered the whole band artifact re-emitted "with the new blocks
     // folded in". A re-emission is not an append — it is a rewrite of blocks the model did not author, and
@@ -4286,7 +4287,6 @@ export function buildFrameReopenFollowup({ paths: P, axis, directives, supplemen
     // so their qids cannot be lost in transcription.
     `Your ${P.registerBand(axis)} band artifact GROWS BY APPENDING: add each new block to the array already on disk and leave every block already in it exactly as it stands, each keeping its "qid" field byte-identical — never re-emit the band whole, because a block you re-type is a block whose qid can be lost, and the plan-execution receipt joins on it (a dropped qid corrupts the audit trail and reads as an axis that never ran).`,
     `Then reconcile the ${P.registerUnit(axis)} digest with the blocks you just appended, preserving everything else.`,
-    ...followupScopeLines({ job, profile, supplementalLane }),
     UNIT_NOTE_REPAIR_TAIL,
   );
 }
