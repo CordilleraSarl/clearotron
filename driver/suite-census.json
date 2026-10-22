@@ -6981,6 +6981,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-counts-a-wider-answer-as-covering-a-market.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
           "tests": 9,
           "asserts": 25,
