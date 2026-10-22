@@ -217,3 +217,44 @@ test("a slice taken out of the band keeps the axis's other blocks, and taking it
   assert.ok(readFileSync(`${at}.before-taken-out`, "utf8").includes("/mark/em/2"), "the band as it was is not kept");
   assert.equal(takeSlicesOutOfTheBand(P, slices).length, 0, "a slice already taken out was taken out again");
 });
+
+// ── A TIMED-OUT AXIS, ONCE ITS RECOVERY IS SPENT, IS READ AS THE LAST PASS LEFT IT AND DISCLOSED ──────────────────────
+//
+// No harness drives the taint park end to end (coverage-form-taint-park.test.mjs says so too), so its parts are held one
+// by one: which axes are disclosed and which parked, the record's growth by axis, the park's renames put back, and the
+// wiring that ties them, read from the source.
+test("a timed-out axis whose recovery is spent is disclosed, never parked again, and the rest still park", async () => {
+  const { taintDisposition } = await import("../pipeline.mjs");
+  assert.deepEqual(taintDisposition(["primary-sweep", "incumbent-class"], { digestLocked: false, disclosedAxes: new Set() }),
+    { disclose: [], park: ["primary-sweep", "incumbent-class"] }, "with recovery left, every tainted axis parks, as before");
+  assert.deepEqual(taintDisposition(["primary-sweep", "incumbent-class"], { digestLocked: false, disclosedAxes: new Set(["primary-sweep"]) }),
+    { disclose: ["primary-sweep"], park: ["incumbent-class"] }, "an axis the record lists is not parked again");
+  assert.deepEqual(taintDisposition(["primary-sweep"], { digestLocked: true, disclosedAxes: new Set() }),
+    { disclose: ["primary-sweep"], park: [] }, "after synthesis every tainted axis is disclosed, as before");
+});
+
+test("the searches' record grows by a timed-out axis it does not list yet", async () => {
+  const { axesNotYetDisclosed } = await import("../parts-not-completed.mjs");
+  assert.deepEqual(axesNotYetDisclosed(null, ["primary-sweep", "primary-sweep", ""]), ["primary-sweep"]);
+  assert.deepEqual(axesNotYetDisclosed({ disclosed_axes: ["primary-sweep"] }, ["primary-sweep"]), [], "an axis listed was added again");
+  assert.deepEqual(axesNotYetDisclosed({ disclosed_axes: ["primary-sweep"] }, ["primary-sweep", "incumbent-class"]), ["incumbent-class"]);
+});
+
+test("the park's renames are put back where nothing has been written since, so the band is read as the last pass left it", async () => {
+  const { undoTaintRenames } = await import("../pipeline.mjs");
+  const root = tempDir("clearotron-taint-undo-");
+  const band = join(root, "primary-sweep-band.json"), unit = join(root, "primary-sweep.md");
+  writeFileSync(`${band}.tainted-1`, "[]"); writeFileSync(`${unit}.tainted-1`, "unit"); writeFileSync(unit, "written since");
+  const back = undoTaintRenames([{ from: band, to: `${band}.tainted-1` }, { from: unit, to: `${unit}.tainted-1` }]);
+  assert.deepEqual(back, [band], "a renamed copy whose original was written since was put back over it");
+  assert.equal(readFileSync(band, "utf8"), "[]");
+  assert.equal(readFileSync(unit, "utf8"), "written since");
+});
+
+test("the wiring: a disclosed axis is neither re-dispatched nor re-run, the park names its axes and renames, and the catch puts them back", () => {
+  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  assert.match(src, /const dispatched = disclosedAxes\.has\(a\) \? null : await dispatchPlanQids\(a, null, "taint-dispatch"\);/, "a disclosed axis is re-dispatched");
+  assert.match(src, /if \(!digestLocked && !disclosedAxes\.has\(a\) && repairLedger\.canAttempt\("taint-rerun"/, "a disclosed axis is re-run");
+  assert.match(src, /\{ notCompletedPart: "searches", taintedAxes: toPark, undoRenames \}/, "the park does not name its axes and renames on the failure");
+  assert.match(src, /if \(addedAxes\.length\) undoTaintRenames\(e\.undoRenames\);/, "the catch does not put the renames back");
+});

@@ -173,7 +173,10 @@ function register(runDir, log) {
     failed.push([{ fail: `${open.stage} did not complete: ${open.reason ?? "no cause recorded"}` }, "the register write-up"]);
   // The searches a check could not prove ran, taken out of the band and delivered as open rows (parts-not-completed.mjs).
   const searches = readPartNotCompleted(runDir, "searches");
-  if (searches) failed.push([{ fail: `${(searches.slices ?? []).length} slice(s) taken out of the band: ${searches.reason ?? "no cause recorded"}` }, "the searches"]);
+  if (searches) failed.push([{ fail: [
+    (searches.slices ?? []).length ? `${searches.slices.length} slice(s) taken out of the band` : "",
+    (searches.disclosed_axes ?? []).length ? `the pass on ${searches.disclosed_axes.join(", ")} timed out, read as it stands with its clean claims open` : "",
+  ].filter(Boolean).join("; ") + `: ${searches.reason ?? "no cause recorded"}` }, "the searches"]);
   let reopen = null;
   try { reopen = JSON.parse(readFileSync(driverDir(runDir, "frame-reopen.json"), "utf8")); } catch { reopen = null; }
   if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)

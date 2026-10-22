@@ -35,7 +35,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
-import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded } from "./parts-not-completed.mjs";
+import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed } from "./parts-not-completed.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
@@ -458,6 +458,28 @@ export function loadCoverageLedger(runDir) {   // @internal
  * as evidence. An axis whose band is absent or unreadable is left to the band's own checks. Returns the slices taken
  * out on this call. IMPURE (rewrites the bands).
  */
+/**
+ * Which still-tainted axes are disclosed and which are parked. Every axis once synthesis is done (the audit spine is
+ * locked); an axis the searches record lists, whose recovery is spent; and the rest parked, to be run again. PURE.
+ */
+export function taintDisposition(stillTainted, { digestLocked = false, disclosedAxes = new Set() } = {}) {   // @internal
+  const disclose = (stillTainted ?? []).filter((a) => digestLocked || disclosedAxes.has(a));
+  return { disclose, park: (stillTainted ?? []).filter((a) => !disclose.includes(a)) };
+}
+
+/**
+ * Put back what a taint park renamed, so the band and the digest are read as the last pass left them. A renamed copy
+ * whose original has since been written again stays where it is. Returns the paths put back. IMPURE.
+ */
+export function undoTaintRenames(renames) {   // @internal
+  const back = [];
+  for (const r of Array.isArray(renames) ? renames : []) {
+    try { if (r?.to && r?.from && existsSync(r.to) && !existsSync(r.from)) { renameSync(r.to, r.from); back.push(r.from); } }
+    catch { /* best-effort: what stays renamed is re-run on the resume, as before */ }
+  }
+  return back;
+}
+
 // THE BANDS ARE READ WITH THE RECORDED SLICES OUT, whatever wrote them since. A unit re-run after the fan-in, by the
 // envelope, the escalation or the taint chain, writes its axis's band whole, and a slice the searches' record took
 // out would come back with the records nobody could prove were searched. So the band's two readers, the merge and the
@@ -11383,6 +11405,8 @@ async function pipelineInner(job, opts = {}) {
       const taintedNow = axes.filter((a) => taint0[a]?.tainted);
       if (taintedNow.length) {
         const recoveryAttempts = (() => { try { return Number(JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")).recoveryAttempts) || 0; } catch { return 0; } })();
+        // The axes whose recovery is spent: the searches record lists them, and each is read as it stands and disclosed.
+        const disclosedAxes = new Set(Array.isArray(searchesOpen?.disclosed_axes) ? searchesOpen.disclosed_axes : []);
         const axesRec = {};
         const digestLocked = existsSync(P.narrative);   // synthesis done — the audit spine is locked; disclose, never mutate under it
         for (const a of taintedNow) {
@@ -11401,8 +11425,9 @@ async function pipelineInner(job, opts = {}) {
               }
             }
           } catch (e) { note(`register-unit ${a}: taint quarantine not applicable (${String(e.message).slice(0, 100)})`); }
-          // T0.5 — deterministic re-execution of the dictated half (repair-ledger bounded)
-          const dispatched = await dispatchPlanQids(a, null, "taint-dispatch");
+          // T0.5 — deterministic re-execution of the dictated half (repair-ledger bounded). Not for an axis the searches
+          // record discloses: its recovery is spent, and its band is read as the last pass left it.
+          const dispatched = disclosedAxes.has(a) ? null : await dispatchPlanQids(a, null, "taint-dispatch");
           if (dispatched) repairs.push(`taint-dispatch:${dispatched}`);
           // T1 — ONE fresh in-loop re-run, pre-synthesis only (a fresh full pass, full fallback chain)
           // — held until the real result is in hand; see the push below the taint re-read.
@@ -11410,7 +11435,7 @@ async function pipelineInner(job, opts = {}) {
 // — ONE ceiling, named once and read by BOTH ends. A literal repeated at the record site is a
           // second statement of the same rule, and two ends stating the same rule is how they drift apart.
           const taintRerunMax = 1;
-          if (!digestLocked && repairLedger.canAttempt("taint-rerun", a, { max: taintRerunMax, epoch: repairEpoch })) {
+          if (!digestLocked && !disclosedAxes.has(a) && repairLedger.canAttempt("taint-rerun", a, { max: taintRerunMax, epoch: repairEpoch })) {
             note(`register-unit ${a}: taint-rerun — one fresh re-run (fresh session; a killed session is never warm-resumed)`);
             const r = await stage("register-unit", { ...ctx, axis: a },
               { force: true, trigger: "taint-rerun", sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}-taint-rerun-${recoveryAttempts}` });
@@ -11455,34 +11480,18 @@ async function pipelineInner(job, opts = {}) {
         const stillTainted = Object.entries(axesRec)
           .filter(([a, v]) => v.status === "active" && !NON_MATERIAL_AXES.includes(String(a).toLowerCase()))
           .map(([a]) => a);
-        if (stillTainted.length && !digestLocked) {
-          // PARK — the converging outer net. Rename (never delete — forensics) so stageOnce's
-          // exists-and-validates skip MISSES and the resume genuinely re-executes the tainted units;
-          // drop the plan-execution receipt so the re-join runs over the fresh bands; a digest already
-          // derived from tainted material is renamed too, else its skip would ship stale rows.
-          for (const a of stillTainted) {
-            for (const f of [P.registerUnit(a), P.registerBand(a)]) {
-              try { if (existsSync(f)) renameSync(f, `${f}.tainted-${recoveryAttempts}`); } catch { /* best-effort */ }
-            }
-          }
-          try { if (existsSync(P.planExecution)) rmSync(P.planExecution); } catch { /* best-effort */ }
-          for (const f of taintParkJudgmentArtifacts(P, run.runDir)) {
-            try { if (existsSync(f)) renameSync(f, `${f}.tainted-${recoveryAttempts}`); } catch { /* best-effort */ }
-          }
-          runLog(run.runDir, { event: "taint-park", axes: stillTainted, attempt: recoveryAttempts });
-          throw new StageFailure(`register-unit:${stillTainted[0]}`,
-            `register slice timeout-tainted and unrecovered — an unfinished pass cannot ship self-reported clean (axes: ${stillTainted.join(", ")})`,
-            undefined, { failClass: "transient", repairs: fanInRepairs });
-        }
-        if (stillTainted.length && digestLocked) {
-          // DISCLOSE — the sanctioned post-synthesis lever: the client export is withheld until the
-          // search is re-run to closure (the same class as a failed escalation/envelope), the internal
-          // report ships CONDITIONAL via the ledger relabel + registerGap clamp.
+        // Disclosed: every axis once synthesis is done, and an axis the searches record lists once its recovery is spent.
+        // Parked: the rest, while the run can still re-run them.
+        const { disclose: toDisclose, park: toPark } = taintDisposition(stillTainted, { digestLocked, disclosedAxes });
+        if (toDisclose.length) {
+          // DISCLOSE — the sanctioned lever once synthesis is done, and once an axis's recovery is spent: the client
+          // export is withheld until the search is re-run to closure (the same class as a failed escalation/envelope),
+          // the internal report ships CONDITIONAL via the ledger relabel + registerGap clamp.
           try {
             const escPath = driverDir(run.runDir, "escalation-state.json");
             let esc = {}; try { esc = JSON.parse(readFileSync(escPath, "utf8")); } catch { /* fresh */ }
             const failed = Array.isArray(esc.failed) ? esc.failed : [];
-            for (const a of stillTainted) if (!failed.includes(`taint:${a}`)) failed.push(`taint:${a}`);
+            for (const a of toDisclose) if (!failed.includes(`taint:${a}`)) failed.push(`taint:${a}`);
             atomicWrite(escPath, JSON.stringify({ ...esc, ts: new Date().toISOString(), failed }, null, 2) + "\n");   // B5 — the client-gate reads this: never truncated
           } catch (e) { note(`taint disclose: escalation-state append failed (${String(e.message).slice(0, 80)})`); }
           // Receipt status → "disclosed": the LEDGER keeps treating the axis as a gap (deferred → clamp +
@@ -11491,11 +11500,31 @@ async function pipelineInner(job, opts = {}) {
           try {
             const tp = driverDir(run.runDir, "register-taint.json");
             const rec = JSON.parse(readFileSync(tp, "utf8"));
-            for (const a of stillTainted) if (rec?.axes?.[a]) rec.axes[a] = { ...rec.axes[a], status: "disclosed" };
+            for (const a of toDisclose) if (rec?.axes?.[a]) rec.axes[a] = { ...rec.axes[a], status: "disclosed" };
             writeFileSync(`${tp}.tmp`, JSON.stringify(rec, null, 2) + "\n"); renameSync(`${tp}.tmp`, tp);
           } catch (e) { note(`register-taint receipt disclose update failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-          runLog(run.runDir, { event: "taint-disclose", axes: stillTainted });
-          note(`timeout-taint on ${stillTainted.join(", ")} past the locked audit spine — disclosed: client export withheld, verdict clamps CONDITIONAL (internal report still ships)`);
+          runLog(run.runDir, { event: "taint-disclose", axes: toDisclose });
+          note(`timeout-taint on ${toDisclose.join(", ")} ${digestLocked ? "past the locked audit spine" : "with its recovery spent"} — disclosed: client export withheld, verdict clamps CONDITIONAL (internal report still ships)`);
+        }
+        if (toPark.length) {
+          // PARK — the converging outer net. Rename (never delete — forensics) so stageOnce's
+          // exists-and-validates skip MISSES and the resume genuinely re-executes the tainted units;
+          // drop the plan-execution receipt so the re-join runs over the fresh bands; a digest already
+          // derived from tainted material is renamed too, else its skip would ship stale rows. The renames ride the
+          // failure: once its recovery is spent, the run-level catch puts them back and the axes are disclosed instead.
+          const undoRenames = [];
+          const parkRename = (f) => {
+            try { if (existsSync(f)) { renameSync(f, `${f}.tainted-${recoveryAttempts}`); undoRenames.push({ from: f, to: `${f}.tainted-${recoveryAttempts}` }); } }
+            catch { /* best-effort */ }
+          };
+          for (const a of toPark) for (const f of [P.registerUnit(a), P.registerBand(a)]) parkRename(f);
+          try { if (existsSync(P.planExecution)) rmSync(P.planExecution); } catch { /* best-effort */ }
+          for (const f of taintParkJudgmentArtifacts(P, run.runDir)) parkRename(f);
+          runLog(run.runDir, { event: "taint-park", axes: toPark, attempt: recoveryAttempts });
+          throw Object.assign(new StageFailure(`register-unit:${toPark[0]}`,
+            `register slice timeout-tainted and unrecovered — an unfinished pass cannot ship self-reported clean (axes: ${toPark.join(", ")})`,
+            undefined, { failClass: "transient", repairs: fanInRepairs }),
+            { notCompletedPart: "searches", taintedAxes: toPark, undoRenames });
         }
       }
     }
@@ -17544,11 +17573,16 @@ async function pipelineInner(job, opts = {}) {
     const heldRecord = coveredPart && run?.runDir ? readPartNotCompleted(run.runDir, coveredPart) : null;
     // THE SEARCHES' RECORD GROWS: a failure is routed again while it names a slice the record does not hold yet.
     const addedSlices = coveredPart === "searches" ? slicesNotYetRecorded(heldRecord, e.excludedSlices) : [];
-    if (coveredPart && run?.runDir && (coveredPart === "searches" ? addedSlices.length > 0 : !heldRecord)) {
+    const addedAxes = coveredPart === "searches" ? axesNotYetDisclosed(heldRecord, e.taintedAxes) : [];
+    if (coveredPart && run?.runDir && (coveredPart === "searches" ? addedSlices.length + addedAxes.length > 0 : !heldRecord)) {
       let parked = null;
       try {
+        // A TIMED-OUT AXIS IS READ AS THE LAST PASS LEFT IT: the park renamed its unit, band and digest so a resume would
+        // run it again, and with its recovery spent nothing will, so they are put back.
+        if (addedAxes.length) undoTaintRenames(e.undoRenames);
         writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind,
-          ...(coveredPart === "searches" ? { slices: [...(Array.isArray(heldRecord?.slices) ? heldRecord.slices : []), ...addedSlices] } : {}) });
+          ...(coveredPart === "searches" ? { slices: [...(Array.isArray(heldRecord?.slices) ? heldRecord.slices : []), ...addedSlices],
+            disclosedAxes: [...(Array.isArray(heldRecord?.disclosed_axes) ? heldRecord.disclosed_axes : []), ...addedAxes] } : {}) });
         const resumesAt = new Date().toISOString();
         // The payload the runner's self-resume needs (job, agent, codename), and the recovery kind, whose stated
         // clock it keeps exactly: now. No recovery attempt is counted, because nothing is being retried.

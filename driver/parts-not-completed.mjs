@@ -34,7 +34,8 @@ export const NOT_COMPLETED_DIR = "not-completed";
 // changed-material check before publishing: it never delivers past staleness, and its record buys the report one more
 // assembly from the current material instead of the stop notice. `searches` is the register's searches: the slices a
 // check could not prove ran, each with its axis, its qid and the reason it is open, taken out of the band and
-// delivered as open rows.
+// delivered as open rows; and the axes whose pass was killed at its time limit, read as the last pass left them and
+// disclosed, their clean claims open (`disclosed_axes`).
 export const NOT_COMPLETED_PARTS = Object.freeze(["assessment", "review", "overview", "delivery", "searches"]);
 
 /** The record's path for `part`. */
@@ -47,10 +48,11 @@ export function notCompletedPath(runDir, part) {
  * (never a reader's cell), `sig` and `terminalKind` what the recovery decision said. Written through a temporary file
  * and a rename, so a reader never sees half a record. Returns the record.
  */
-export function writePartNotCompleted(runDir, part, { stage = null, reason = null, sig = null, terminalKind = null, slices = null } = {}) {
+export function writePartNotCompleted(runDir, part, { stage = null, reason = null, sig = null, terminalKind = null, slices = null, disclosedAxes = null } = {}) {
   if (!NOT_COMPLETED_PARTS.includes(part)) throw new Error(`parts-not-completed: "${part}" is not a covered part`);
   const record = { part, stage, reason: reason == null ? null : String(reason).slice(0, 600), sig, terminalKind,
-    ...(Array.isArray(slices) ? { slices } : {}), ts: new Date().toISOString() };
+    ...(Array.isArray(slices) ? { slices } : {}), ...(Array.isArray(disclosedAxes) && disclosedAxes.length ? { disclosed_axes: disclosedAxes } : {}),
+    ts: new Date().toISOString() };
   const path = notCompletedPath(runDir, part);
   ensureDriverDir(runDir, NOT_COMPLETED_DIR);
   writeFileSync(`${path}.tmp`, JSON.stringify(record, null, 2) + "\n");
@@ -94,6 +96,15 @@ export function slicesNotYetRecorded(record, failed) {
     out.push({ axis: String(s.axis), qid: String(s.qid), reason: String(s.reason ?? "") });
   }
   return out;
+}
+
+/**
+ * The axes of `failed` that `record` does not list as disclosed yet: a pass on each was killed at its time limit and its
+ * recovery is spent, so the delivering pass reads its band as it stands and discloses it. [] when it adds none. PURE.
+ */
+export function axesNotYetDisclosed(record, failed) {
+  const held = new Set(Array.isArray(record?.disclosed_axes) ? record.disclosed_axes : []);
+  return [...new Set((Array.isArray(failed) ? failed : []).map((a) => String(a ?? "").trim()).filter((a) => a && !held.has(a)))];
 }
 
 /** Remove one part's record, once that part has completed after all. */
