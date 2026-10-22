@@ -490,6 +490,19 @@ function regionCode(f) {
   return COMMON_LAW;
 }
 
+// Every country a finding holds a registration in, read as regionCode reads the first one; a finding with no
+// registration country keeps regionCode's own answer.
+function registeredRegionCodes(f) {
+  const codes = new Set();
+  for (const reg of Array.isArray(f.owner?.registrations) ? f.owner.registrations : []) {
+    if (reg?.jurisdiction) { codes.add(normRegion(reg.jurisdiction)); continue; }
+    const uri = reg?.uri || '';
+    const m = uri.match(/\/mark\/([a-z]{2,3})\//i) || uri.match(/\/([a-z]{2})\/[A-Za-z0-9]/);
+    if (m) codes.add(normRegion(m[1]));
+  }
+  return codes.size ? [...codes] : [regionCode(f)];
+}
+
 // groupByRegion: ordered regions, each { code, name, count, hasOnField, chip, findings[] }. Region order =
 // ascending lowest ordinal in the region (preserves the run's exposure ranking). chip = fixed two-state
 // (C3 if the region holds an on-field finding, else C2) per the spec — NOT the literal max composite.
@@ -1098,15 +1111,22 @@ const isFullCountry = (opts) => /full country/i.test(searchStage(opts));
 // Every country the run READ, with its outcome: the band where a finding sits there, and the clean ones
 // named. A list built from the findings alone would name only countries with a conflict, which is the
 // gap this closes — the reader cannot otherwise see that the rest came back clean.
+//
+// EVERY COUNTRY A FINDING HOLDS A REGISTRATION IN takes its band, not only the first. A finding is filed under the
+// country of its first registration everywhere else on the page, and this section read that one country too: on a
+// delivered test run, a finding holding rights in three countries was drawn under the first, and the other two were
+// chipped "Nothing found" on the same page that asked the client who owns the rights there.
 function whereItStandsSection(findings, opts) {
   const sd = opts && opts.searchDepth;
   if (!sd || !sd.counts || isFullCountry(opts)) return '';
   const byC = sd.counts.recordsByCountry || {};
   const bandBy = new Map();
   for (const f of findings) {
-    const c = regionCode(f);
-    if (!c || c === COMMON_LAW || !f.band) continue;
-    if (!bandBy.has(c)) bandBy.set(c, f.band);
+    if (!f.band) continue;
+    for (const c of registeredRegionCodes(f)) {
+      if (!c || c === COMMON_LAW) continue;
+      if (!bandBy.has(c)) bandBy.set(c, f.band);
+    }
   }
   // WHICH COUNTRIES THIS SECTION IS ABOUT COMES FROM THE SEARCH PLAN, NOT FROM THE RECORD ARCHIVE.
   //

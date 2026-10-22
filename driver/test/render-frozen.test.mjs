@@ -1802,7 +1802,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: no cause in brackets on the card's
 // could-not-be-retrieved line. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "1052908ba0933f011ac3c10b9ffa46999ff75bce6fd71bcd389a279b19aa14fc";
+// Advanced again by the break recorded above the FROZEN constant: every country a finding holds a registration in
+// takes its band where it stands. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "aae650ef43571174f59a15106801bddc13154d37cc931a38d447bf45496d5cdb";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2736,7 +2738,27 @@ const FROZEN_BEFORE_SPDX = "1052908ba0933f011ac3c10b9ffa46999ff75bce6fd71bcd389a
 //      this line and its comment alone.
 //   2. Could it live in report.css or brand.mjs? No: it is the line's text, not its look.
 //   3. Why it had to move here: the line is composed in this file and nowhere else.
-const FROZEN = "e6691f9e3a04e66ddf1de44d359a965c4a8064cf129f4118d2b8decacb77beaf";
+// ── BREAK (2026-10-22 — every country a finding holds a registration in takes its band where it stands) ──
+//
+// WHAT MOVED: "Where it stands" gave each finding one country, the country of its first registration, the same
+// one the cards file it under. A finding holding registrations in several countries had its band drawn under the
+// first, and the others, being in the search plan, were chipped "Nothing found". On a delivered test run, a
+// finding holding rights in three countries was drawn under the first, and the other two were chipped "Nothing
+// found" on the same page that asked the client who owns the rights there. Every country a finding holds a
+// registration in now takes its band, read as the first one always was; a finding with no registration country
+// keeps the one country it had. Nothing else in the file moved, and no sentence is added.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, and it changes only that section, only where a finding holds registrations
+//      in more than one country. Measured on that run's saved files through the previous file and this one:
+//      the pages differ, and they are byte-identical outside the section; 47 countries move from "Nothing found"
+//      to a banded row and none moves the other way. The same findings cut to one registration country each
+//      render byte-identically through both files, and the two inputs hash apart, so the comparison can tell
+//      renders apart.
+//   2. Could it live in report.css or brand.mjs? No: it decides which countries are rows and which are chips.
+//   3. Why it had to move here: the section is composed in this file and nowhere else. The portal draws no such
+//      section, and report-data.json carries no search depth.
+const FROZEN = "ebe6d2af5105efb1e1afaada7aadf3e81cc748437b4097853ea526b5d4244fcd";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
