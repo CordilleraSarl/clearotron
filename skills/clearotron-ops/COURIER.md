@@ -6,7 +6,10 @@ You are the courier, not the author.
 
 ## The loop (idempotent — safe to run on every wake)
 
-1. **`list_outbox_events`** — every pending event. Handle each by `kind`:
+1. **`list_outbox_events`** — every pending event. Courier only the events whose `agent` is your own agent
+   id, the one you pass to `start_run`. Two assistants can see one outbox, and an event both of them courier
+   reaches its requester twice, so leave another agent's event pending, with no mark and no ack. Handle each
+   of yours by `kind`:
 
 2. **`kind: "delivered"`** — a finished run's report is ready to send:
    a. **`get_delivery_packet { runId }`**. If `sent: true`, it is already couriered — skip (do NOT
@@ -23,8 +26,10 @@ You are the courier, not the author.
    e. There is ONE report and one routing. An archived packet may still carry a `clientReady` field —
       the engine no longer emits it and nothing gates on it; ignore it and route exactly as above.
 
-3. **`kind: "run-failed"`** — relay the packet's `text` to the forwarder (nothing was delivered;
-   the engine usually parks resumable state). Then **`ack_event { file }`**.
+3. **`kind: "run-failed"`** — relay the packet's `text` to the forwarder (nothing was delivered; the engine
+   usually parks resumable state). Then **`mark_sent { runId, messageId }`**, not `ack_event`: the requester
+   is owed this notice as they are owed a report, and only `mark_sent` settles it. An `ack_event` leaves it
+   owed, and the notice goes out again on the next sweep.
 
 4. **`kind: "intake-rejected"`** — a request died at validation; `text` says why. For a `clarify`,
    the fix is a question back to the requester — thread it on the packet's `msgId`. Then
@@ -35,6 +40,9 @@ You are the courier, not the author.
 
 6. **`kind: "late-bind-ack"`** — a mid-run context binding was folded in; relay the one-liner.
    Then **`ack_event { file }`**.
+
+7. **`kind: "pre-run-failed"`** — a request failed before its run could start, so nothing was searched or
+   delivered. Relay the packet's `text` to the forwarder. Then **`ack_event { file }`**.
 
 ## Discipline
 

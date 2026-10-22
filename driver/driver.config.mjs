@@ -575,10 +575,10 @@ export const config = {
   // silently exceeded rather than enforced. Ruling.
   get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || [join(this.workspaceRoot, "prelim-run-locks"), join(this.workspaceRoot, "clearance-run-locks")].find((d, i) => i === 1 || existsSync(d)); },   // the name the install already has wins
 
-  // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
-  // the forwarder agent); the systemd-user prelim-outbox.path unit fires an INSTANT clearotron-deliver wake off
-  // it, so a finished run sends in seconds instead of waiting ≤55m for the HEARTBEAT completion-watch (which
-  // stays as the backstop). Mirrors runLockDir's derivation; env-overridable for dev/prod parity.
+  // Delivery outbox (Workstream B). On a finish the driver drops <runId>.pending here (naming the forwarder
+  // agent). The packaged install runs no watcher on it: the integrator wakes itself and drains the outbox
+  // over MCP (docs/DELIVERY.md). driver/deliver-trigger.sh is one agent platform's reference wake, and its
+  // prelim-outbox units no longer ship. Mirrors runLockDir's derivation; env-overridable for dev/prod parity.
   // Phase 2: the outbox is ALSO the event seam for every other requester-facing event (run-failed,
   // intake-rejected, duplicate-skipped, late-bind-ack) — self-contained JSON packets via outbox.mjs.
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
