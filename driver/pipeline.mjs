@@ -11184,8 +11184,11 @@ async function pipelineInner(job, opts = {}) {
       // 6m45s seam was three of them, against 1.1s of driver compute in the same window.
       const dispatchStartedMs = Date.now();
       try {
+        // The envelope close's own dispatch is the one rung that asks a question that timed out at the gateway again
+        // (execute-plan.mjs, timedOutBefore); every other dispatch leaves its timeout standing.
         const r = await planExec({ planPath: P.registerPlan, axis: a, outputPath: P.registerBand(a), ...(qids?.length ? { qids } : {}) },
-          { agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}`, recordLog: runRecordLogPath(run.runDir) });
+          { agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}`, recordLog: runRecordLogPath(run.runDir),
+            ...(repairId === "early-envelope-close" ? { reaskTimedOut: true } : {}) });
         outcome = r?.ok ? "ok" : `failed: ${String(r?.cause ?? "unknown").slice(0, 140)}`;
       } catch (err) { outcome = `threw: ${String(err?.message ?? err).slice(0, 140)}`; }
       // — MEASURE WHETHER THE HOLE CLOSED, not whether the phone was answered. `outcome` is the

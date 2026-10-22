@@ -13,7 +13,9 @@
 // or terms, their romanised forms, the classes, the markets, the goods words, the owner and the kind of answer —
 // and none that only records where a question came from. A question with no markets is asked to the plan's, so it
 // is the same as one naming them. Owner names are compared as written, never merged. A different scope is a
-// different question, and an earlier answer that failed is no answer: both are asked again.
+// different question, and an earlier answer that failed is no answer: both are asked again. A question that timed out
+// at the gateway is the one failure held, by the executor rather than here: its timeout stands until the envelope
+// close asks it once more (execute-plan.mjs, timedOutBefore).
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
