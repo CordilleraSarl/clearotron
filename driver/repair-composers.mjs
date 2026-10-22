@@ -674,11 +674,10 @@ export const REPAIR_COMPOSERS = [
     trigger: "coverage-closure",
     stage: "common-law",
     key: "common-law:coverage-closure",
-    compose: ({ findingsFile, suppSpec, suppSpecPath, closable, cellKey, sourceChannels }) => lines(
+    compose: ({ findingsFile, suppSpec, suppSpecPath, closable, cellKey }) => lines(
         `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep.`,
         suppSpec ? `These ${closable.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? closable.map((c) => `- ${cellKey(c)}`) : []),
-        sourceChannels.length ? `IN-SCOPE CHANNELS not searched this run (the blind frame-diff flagged them as applied-but-unsearched distribution/discovery surfaces — CLOSE them, never recommend them): ${sourceChannels.join("; ")}. For EVERY manifest variant, run the appropriate search of each channel — its real domain(s) (e.g. github.com / nuget.org / npmjs.com, or the relevant store/registry) or a general-web search scoped to it — and ADD one Negative-results matrix row per (variant × channel) with its receipt, then reconcile the matching Scope-ledger / Coverage rows from not-searched to searched.` : "",
         // The edit direction has to be SCOPED here: this prompt already forbids saving the grid JSON,
         // and the tail below is the first thing in it that hands over the Edit tool. A model that reads
         // "use the Edit tool" as covering the machine ledger produces grid_ledger_unparseable /
@@ -686,47 +685,20 @@ export const REPAIR_COMPOSERS = [
         `Then update ONLY those Negative-results matrix rows with their real receipts ("No results" / "No similar listings (N candidates reviewed)" / "Similar listing(s) found — see Findings") and reconcile the Coverage ledger rows they close, preserving everything else. The driver validates grid completeness from the ledgers the tool wrote — never from your prose. The edit direction below covers ${findingsFile} ONLY; the machine ledgers stay the tool's.`,
         editRepairTail(findingsFile),
       ),
-    samples: [{ name: "closable cells plus unsearched channels", tail: "edit", args: { findingsFile: "common-law.md", suppSpec: true, suppSpecPath: "grid-supp.json", closable: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}`, sourceChannels: ["npmjs.com"] } }],
+    samples: [{ name: "closable cells", tail: "edit", args: { findingsFile: "common-law.md", suppSpec: true, suppSpecPath: "grid-supp.json", closable: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}` } }],
   },
   {
     trigger: "coverage-closure",
     stage: "common-law-half",
     key: "common-law-half:coverage-closure",
-    compose: ({ findingsFile, gridSpecPath, suppSpec, suppSpecPath, cells, cellKey, chans, scopes }) => lines(
+    compose: ({ findingsFile, gridSpecPath, suppSpec, suppSpecPath, cells, cellKey }) => lines(
         `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
         suppSpec ? `These ${cells.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? cells.map((c) => `- ${cellKey(c)}`) : []),
-        chans.length ? `IN-SCOPE CHANNELS not searched this run (the blind frame-diff flagged them as applied-but-unsearched distribution/discovery surfaces — CLOSE them, never recommend them): ${chans.join("; ")}. For EACH of these variants — ${scopes.join("; ")} — (the driver dictates this list; it may include the sibling half's terms re-routed to you because its session is unavailable), run the appropriate search of each channel — its real domain(s) (e.g. github.com / nuget.org / npmjs.com, or the relevant store/registry) or a general-web search scoped to it — and ADD one Negative-results matrix row per (variant × channel) with its receipt, then reconcile the matching Scope-ledger / Coverage rows from not-searched to searched.` : "",
         `Then update ONLY those Negative-results matrix rows with their real receipts ("No results" / "No similar listings (N candidates reviewed)" / "Similar listing(s) found — see Findings") and reconcile the Coverage ledger rows they close, preserving everything else. The driver validates grid completeness from the ledgers the tool wrote — never from your prose. The edit direction below covers ${findingsFile} ONLY; the machine ledgers stay the tool's.`,
         editRepairTail(findingsFile),
       ),
-    samples: [{ name: "the half-grid form, with re-routed scopes", tail: "edit", args: { findingsFile: "common-law-a.md", gridSpecPath: "grid-a.json", suppSpec: true, suppSpecPath: "grid-supp-a.json", cells: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}`, chans: ["npmjs.com"], scopes: ["NOVA", "NOVAPULSE"] } }],
-  },
-  {
-    trigger: "frame-reopen",
-    stage: "common-law",
-    key: "common-law:frame-reopen",
-    compose: ({ findingsFile, gridLedger, directives }) => lines(
-        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep.`,
-        `A blind, frame-INDEPENDENT re-derivation found these SOURCE CHANNELS the run did NOT search. Run a supplementary search over them (enable_sandbox: true, depth: "pro-search") — resolve each channel to its real domain(s) or a general-web search scoped to it:`,
-        ...directives.map((d) => `- ${d.item} — ${d.observation}`),
-        `Then update the Negative-results matrix + Coverage ledger for what you searched, preserving everything else. Do NOT hand-edit ${gridLedger} — the driver owns the machine ledger. The edit direction below covers ${findingsFile} ONLY.`,
-        editRepairTail(findingsFile),
-      ),
-    samples: [{ name: "one blind-frame source directive", tail: "edit", args: { findingsFile: "common-law.md", gridLedger: "grid-ledger.json", directives: [{ item: "itch.io", observation: "an applied distribution surface, unsearched" }] } }],
-  },
-  {
-    trigger: "frame-reopen",
-    stage: "common-law-half",
-    key: "common-law-half:frame-reopen",
-    compose: ({ findingsFile, gridSpecPath, gridLedger, directives, scopes }) => lines(
-        `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
-        `A blind, frame-INDEPENDENT re-derivation found these SOURCE CHANNELS the run did NOT search. For EACH of these variants — ${scopes.join("; ")} — (the driver dictates this list; it may include the sibling half's terms re-routed to you because its session is unavailable), run a supplementary search over them (enable_sandbox: true, depth: "pro-search") — resolve each channel to its real domain(s) or a general-web search scoped to it:`,
-        ...directives.map((d) => `- ${d.item} — ${d.observation}`),
-        `Then update the Negative-results matrix + Coverage ledger for what you searched, preserving everything else. Do NOT hand-edit ${gridLedger} — the driver owns the machine ledger. The edit direction below covers ${findingsFile} ONLY.`,
-        editRepairTail(findingsFile),
-      ),
-    samples: [{ name: "the half form, with the sweep scopes it dictates", tail: "edit", args: { findingsFile: "common-law-a.md", gridSpecPath: "grid-a.json", gridLedger: "grid-ledger-a.json", directives: [{ item: "itch.io", observation: "an applied distribution surface, unsearched" }], scopes: ["NOVA", "NOVAPULSE"] } }],
+    samples: [{ name: "the half-grid form", tail: "edit", args: { findingsFile: "common-law-a.md", gridSpecPath: "grid-a.json", suppSpec: true, suppSpecPath: "grid-supp-a.json", cells: [{ variant: "NOVA", channel: "github" }], cellKey: (c) => `${c.variant} × ${c.channel}` } }],
   },
   {
     trigger: "draft-carry",
@@ -891,7 +863,7 @@ export const composerFor = (key) => REPAIR_COMPOSERS.find((c) => c.key === key);
 /**
  * Every registered key, for the discovery census to compare the source against.
  *
- * THE KEY IS `stage:trigger`, NOT the trigger alone. `coverage-closure` and `frame-reopen` each exist on
+ * THE KEY IS `stage:trigger`, NOT the trigger alone. `coverage-closure` exists on
  * `common-law` AND on `common-law-half` with genuinely different composers, so a trigger-only key would
  * resolve both halves to whichever entry came first — the guard would then walk one composer twice and
  * never see the other. That is this issue's own failure mode, rebuilt inside its fix.

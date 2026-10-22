@@ -416,14 +416,6 @@ export function fixture(name, msg, dir = null) {
     const gapCell = (v, pl) => gapsActive && v === gapVariant && (pl === gapStore || pl === "web");
     let matrix = variants.flatMap((v) => PLATFORMS.map((pl) =>
       gapCell(v, pl) ? `| ${v} | ${pl} | not executed — coverage-limited (see ledger) |` : `| ${v} | ${pl} | No results |`)).join("\n");
-    // A source-channel sweep followup (frame-reopen / closure channel arm) ADDS matrix rows for the
-    // DICTATED variant scope — mirror the real contract so the merged canonical file actually changes
-    // when (and only when) a sweep turn completed. The dictated scope is the explicit "For EACH of
-    // these variants — a; b —" list when present (split arms), else every variant (single member).
-    if (/SOURCE CHANNELS|IN-SCOPE CHANNELS/.test(msg)) {
-      const dictated = msg.match(/For EACH of these variants — ([^—]+) —/)?.[1]?.split(";").map((s) => s.trim()).filter(Boolean);
-      matrix += "\n" + (dictated ?? variants).map((v) => `| ${v} | github.com | No results — supplemental source-channel sweep |`).join("\n");
-    }
     const exemptRow = gapsMode === "exempt"
       ? `\n| non-Latin reach (转码) | coverage-limited | TimeoutError('store cell') on ${gapStore} and web calls |`
       : "";

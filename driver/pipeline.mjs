@@ -181,7 +181,7 @@ import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconci
 import { locateReportFaults, reportPartsOf } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
-  routeHalfTermScopes, findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
+  findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
@@ -11829,35 +11829,25 @@ async function pipelineInner(job, opts = {}) {
       };
       let { exempt, closable } = cellsOf();
       const cellKey = (c) => `${c.variant} × ${c.platform}`;
-      // doc-35 closure-the-loop: an in-scope SOURCE channel the blind frame-diff flagged as un-swept (a
-      // developer ecosystem / distribution surface marked `applied` in the scope ledger but never gridded —
-      // the github/nuget miss) is a CLOSE target, not a caveat. Fold it into the SAME supplementary common-law
-      // pass (the model resolves the channel's real domains), so a searchable in-scope channel is closed
-      // in-run, never shipped as a "[channel] not searched" item.
-      const sourceChannels = (() => {
-        try {
-          const rp = driverDir(run.runDir, "frame-reopen.json");
-          const rec = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null;
-          const defs = Array.isArray(rec?.deferrals) ? rec.deferrals : [];
-          return [...new Set(defs.filter((d) => String(d.layer || "").toLowerCase() === "source" && d.directive).map((d) => String(d.directive)))];
-        } catch { return []; }
-      })();
+      // A CHANNEL THE FRAME-DIFF NAMED IS NOT FOLDED IN HERE. It is disclosed as an open row, never swept (the
+      // frame-reopen above defers it as a channel never swept), so this pass closes grid cells and nothing else.
+      // The signature keeps its second slot, empty, so a receipt written for the same cells still matches.
       const priorReceipt = existsSync(closureReceiptPath) ? JSON.parse(readFileSync(closureReceiptPath, "utf8")) : null;
-      const closureSig = JSON.stringify([closable.map(cellKey).sort(), [...sourceChannels].sort()]);
+      const closureSig = JSON.stringify([closable.map(cellKey).sort(), []]);
       const alreadyAttempted = priorReceipt && (priorReceipt.sig === closureSig ||
-        // back-compat: a pre-doc-35 receipt keyed only on the cell set (no source channels)
-        (priorReceipt.sig == null && !sourceChannels.length &&
+        // back-compat: a pre-doc-35 receipt keyed only on the cell set
+        (priorReceipt.sig == null &&
           JSON.stringify((priorReceipt.requested ?? []).map(cellKey).sort()) === JSON.stringify(closable.map(cellKey).sort())));
       // SIZED BY THE CELLS A CLOSURE GRID RUNS, as the main grid is (gridBatchFor): its spec carries only the
       // platforms of the cells it closes.
       const closureBatch = (cells) => gridBatchFor(ctx.profile, new Set(cells.map((c) => c.platform)).size);
-      if ((closable.length || sourceChannels.length) && !alreadyAttempted) {
+      if (closable.length && !alreadyAttempted) {
         const requested = closable;
         const variants = [...new Set(closable.map((c) => c.variant))];
         const batchSize = closureBatch(closable);
         const batches = Math.max(1, Math.ceil(variants.length / batchSize));
-        const gridCalls = batches + (sourceChannels.length ? 1 : 0);   // grid call(s) + a channel-sweep call (tokens-only: no $ estimate)
-        note(`coverage closure: ${closable.length} machine-closable cell(s)${sourceChannels.length ? ` + ${sourceChannels.length} un-swept in-scope channel(s) [${sourceChannels.join(", ")}]` : ""} — one supplementary grid pass (${gridCalls} grid call(s))`);
+        const gridCalls = batches;   // grid call(s) (tokens-only: no $ estimate)
+        note(`coverage closure: ${closable.length} machine-closable cell(s) — one supplementary grid pass (${gridCalls} grid call(s))`);
         // Fix-1: the driver DICTATES a supplementary grid SPEC for a set of closable cells (a subset of the
         // canonical grid) and the PLUGIN writes the ledger from the API response — never an agent hand-append
         // (the grid_ledger_unparseable class). Connotation is OMITTED (caveat 4): meaning was swept in the
@@ -11882,9 +11872,9 @@ async function pipelineInner(job, opts = {}) {
         };
         if (!clSplit) {
           const suppSpec = closable.length ? buildSuppSpec(closable, null) : null;
-          const followup = repairFollowup("common-law:coverage-closure", { findingsFile: P.commonLaw, suppSpec, suppSpecPath: P.gridSpecSupp(null, "closure"), closable, cellKey, sourceChannels });
+          const followup = repairFollowup("common-law:coverage-closure", { findingsFile: P.commonLaw, suppSpec, suppSpecPath: P.gridSpecSupp(null, "closure"), closable, cellKey });
           const r = await stage("common-law", ctx, { force: true, followup, sessionKey: clMember()?.sessionKey, trigger: "coverage-closure" });
-          if (!r.ok) note(`coverage closure pass failed mechanically (${r.fail}) — surviving cells/channels ship as the genuine limitation`);
+          if (!r.ok) note(`coverage closure pass failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
           // Fold AFTER the stage returns ok (caveat 3): the stage re-validated the UNCHANGED canonical ledger
           // (the plugin never touched it — it wrote only the supp), so grid_ledger_unparseable is structurally
           // impossible on this lane. Now union the plugin-written supp into the canonical in code. The full spec
@@ -11908,15 +11898,10 @@ async function pipelineInner(job, opts = {}) {
           // (the deterministic partition, via ctx.clHalfTerms); a cell whose owner half has no usable
           // session this process (quarantined) re-routes to the OTHER live half — any live common-law
           // session can run a dictated supplementary cell, and the merge unions by term|platform
-          // regardless of which half's ledger carries it. Source-channel sweeps span the WHOLE grid, so
-          // they go to EVERY usable half over an explicit term scope (routeHalfTermScopes — the cell
-          // re-route's mirror): a usable half covers its own partition terms PLUS any unusable sibling's
-          // terms, so a dead half can never leave its variants unsearched on a flagged channel while the
-          // scope-ledger reconciliation reads the channel as closed (the unsplit contract is EVERY
-          // manifest variant). Every followup targets the HALF artifacts (the halves stay the source of
-          // truth); the code re-merge below refreshes the canonical pair before cellsOf() re-reads it.
+          // regardless of which half's ledger carries it. Every followup targets the HALF artifacts (the
+          // halves stay the source of truth); the code re-merge below refreshes the canonical pair before
+          // cellsOf() re-reads it.
           const usable = (h) => Boolean(clHalves[h].sessionKey && !clHalves[h].quarantined);
-          const chanScopes = routeHalfTermScopes(ctx.clHalfTerms, GRID_HALVES.filter(usable));
           // item 25 — the closure set is partitioned EVENLY at dispatch, not routed through halfOfTerm.
           //
           // halfOfTerm is right for the FRESH gather: it is a pure function of the term, every followup
@@ -11944,12 +11929,11 @@ async function pipelineInner(job, opts = {}) {
           // independent, so serializing them only doubled the closure wall.
           await runBatched(GRID_HALVES, config.gatherConcurrency, async (h) => {
             const cells = cellJobs[h];
-            const chans = sourceChannels.length && chanScopes[h]?.length ? sourceChannels : [];
-            if (!cells.length && !chans.length) return;
-            const suppSpec = cells.length ? buildSuppSpec(cells, h) : null;
-            const followup = repairFollowup("common-law-half:coverage-closure", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), suppSpec, suppSpecPath: P.gridSpecSupp(h, "closure"), cells, cellKey, chans, scopes: chanScopes[h] });
+            if (!cells.length) return;
+            const suppSpec = buildSuppSpec(cells, h);
+            const followup = repairFollowup("common-law-half:coverage-closure", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), suppSpec, suppSpecPath: P.gridSpecSupp(h, "closure"), cells, cellKey });
             const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "coverage-closure" });
-            if (!r.ok) note(`coverage closure pass (half ${h}) failed mechanically (${r.fail}) — surviving cells/channels ship as the genuine limitation`);
+            if (!r.ok) note(`coverage closure pass (half ${h}) failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
           });
           // The plugin wrote each half's supplementary ledger; the extended readHalfLedger folds it with the
           // UNCHANGED main half ledger (both plugin-written) into the canonical pair — fold-after-stage, so the
@@ -11959,10 +11943,10 @@ async function pipelineInner(job, opts = {}) {
           await mergeWithConnotationRemedy();   // the halves changed — re-derive the canonical pair before re-reading
         }
         ({ exempt, closable } = cellsOf());
-        const receipt = { ts: new Date().toISOString(), requested: requested, sig: closureSig, sourceChannels,
+        const receipt = { ts: new Date().toISOString(), requested: requested, sig: closureSig,
           closed: requested.length - closable.length, remaining: closable, exempt, gridCalls };
         writeFileSync(closureReceiptPath, JSON.stringify(receipt, null, 2) + "\n");
-        runLog(run.runDir, { event: "coverage-closure", requested: requested.length, sourceChannels: sourceChannels.length || undefined,
+        runLog(run.runDir, { event: "coverage-closure", requested: requested.length,
           closed: receipt.closed, remaining: closable.length, exempt: exempt.length, gridCalls });
       } else if (closable.length || exempt.length) {
         runLog(run.runDir, { event: "coverage-closure", requested: 0, closed: 0,
@@ -12599,79 +12583,13 @@ async function pipelineInner(job, opts = {}) {
           }
           if (regArm === "resume") remergeIfBandsMoved(ctx, "frame-reopen");
 
-          // SOURCE channels: a warm RESUME is taken when the common-law session is live; with no
-          // resumable session the omission becomes a DISCLOSED DEFERRAL (open coverage row + the
-          // CLEAR→CONDITIONAL clamp) — "can't close → disclose", never a silent drop. There is
-          // deliberately NO fresh-sweep arm: the grid is the expensive (~$40) layer, and a fresh
-          // re-sweep on a dead session is a feature decision to be deployed always-on, not a knob.
-          let srcSwept = false, srcReason = null;
+          // A SOURCE DIRECTIVE NAMING A CHANNEL IS DISCLOSED, NEVER SWEPT. The frame-diff manual says so ("disclosed
+          // rather than swept blind — they end as an open coverage row"), and this arm used to do the opposite: it
+          // resumed the web-search sessions to sweep the channel for every variant. No web-search session is resumed
+          // for a channel now. Each source directive is deferred as a channel never swept, so it reaches the reader as
+          // an open row in the shipped words, and the coverage closure below no longer folds it in either.
           // (Register-only never reaches this arm: source-layer directives are dropped before `firing`.)
-          // C2: the source sweeps are WARM arms (model resumes rewriting common-law findings) — they
-          // stay behind the digest lock even when the register dispatch arm ran under it.
-          if (srcDirectives.length && digestLockedReopen) {
-            srcReason = "digest-locked-resume";
-            note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — digest locked on a resume past synthesis (warm arms stay locked by design)`);
-          } else if (srcDirectives.length && !clSplit) {
-            const canResume = clMember()?.sessionKey && !clMember()?.skipped;
-            if (canResume) {
-              const beforeCl = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null;
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) → resuming common-law for a supplemental sweep`);
-              // Fix-1: source-channel closure stays PROSE/byte-diff-verified — the channel must be model-
-              // resolved to its real domains (github.com/nuget.org/…), never a spec-shaped grid platform, so
-              // unlike the closable grid cells it does not route through a driver-dictated grid spec. The
-              // append line is DELETED (it corrupted canonical ledgers); the channel receipts land in the
-              // findings prose and `srcSwept` is decided by the byte-diff below, exactly as before.
-              const followup = repairFollowup("common-law:frame-reopen", { findingsFile: P.commonLaw, gridLedger: P.commonLawGrid, directives: srcDirectives });
-              const r = await stage("common-law", ctx, { force: true, followup, sessionKey: clMember()?.sessionKey, trigger: "frame-reopen" });
-              if (r.ok) {
-                if (readFileSync(P.commonLaw, "utf8") !== beforeCl) srcSwept = true;
-                else { srcReason = "unchanged-after-resume"; note(`frame-reopen: common-law unchanged after the supplemental sweep`); }
-              } else { srcReason = `mechanical-fail:${r.fail}`; note(`frame-reopen: common-law supplemental sweep failed mechanically (${r.fail})`); }
-            } else {
-              srcReason = "no-resumable-session";
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — no resumable common-law session (the grid is the expensive layer; disclose rather than spend)`);
-            }
-          } else if (srcDirectives.length) {
-            // A1 SPLIT — a source-channel sweep spans the WHOLE grid, so the followup goes to EVERY live
-            // half-session (same warm-resume-only doctrine as the single-member arm: skipped/quarantined
-            // halves are not live in this process, and there is deliberately no fresh-sweep arm — the
-            // grid is the expensive layer). Each live half sweeps an EXPLICIT term scope
-            // (routeHalfTermScopes): its own partition terms plus any dead sibling's terms re-routed to
-            // it, so the union of the sweeps is ALWAYS the full manifest — the unsplit contract. SWEPT
-            // requires every routed followup to succeed mechanically AND the merged canonical file to
-            // change; a mechanical failure on ANY half means part of the grid's variants were never
-            // searched on the flagged channels, so the directive stays a DISCLOSED DEFERRAL (open
-            // coverage row + the CLEAR→CONDITIONAL clamp), exactly like the single-member arm's !r.ok
-            // branch — never closed on a partial byte-diff.
-            const live = GRID_HALVES.filter((h) => clHalves[h].sessionKey && !clHalves[h].skipped && !clHalves[h].quarantined);
-            const sweepScopes = routeHalfTermScopes(ctx.clHalfTerms, live);
-            if (live.length) {
-              const beforeCl = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null;
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) → resuming ${live.length} common-law half-session(s) for a supplemental sweep`);
-              // CONCURRENCY (2026-07-13): the live half followups run CONCURRENTLY (runBatched — each on its
-              // own warm half-session), then ONE re-merge folds the results. First mechanical failure in half
-              // order wins (runBatched preserves input order) — identical to the prior sequential first-fail.
-              const sweepFails = await runBatched(live, config.gatherConcurrency, async (h) => {
-                // Fix-1: same as the single-member arm — channels are model-resolved, not grid platforms, so
-                // this stays prose/byte-diff; the append that corrupted the half ledger is DELETED. The half
-                // findings change (channel rows) drive the merged byte-diff via mergeCommonLawArtifacts below.
-                const followup = repairFollowup("common-law-half:frame-reopen", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), gridLedger: P.commonLawGridHalf(h), directives: srcDirectives, scopes: sweepScopes[h] });
-                const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "frame-reopen" });
-                if (!r.ok) { note(`frame-reopen: common-law half ${h} supplemental sweep failed mechanically (${r.fail})`); return `mechanical-fail:${r.fail}`; }
-                return null;
-              });
-              let mechFail = sweepFails.find(Boolean) ?? null;
-              // Through the connotation-remedy wrapper (one shared round per run): a half re-emit that
-              // dropped its disposition rows gets the routed repair instead of a terminal merge throw.
-              await mergeWithConnotationRemedy();
-              if (mechFail) { srcReason = mechFail; note(`frame-reopen: source-channel omission stays a disclosed deferral — a half sweep failed mechanically, so part of the grid was never searched on the flagged channel(s)`); }
-              else if (readFileSync(P.commonLaw, "utf8") !== beforeCl) srcSwept = true;
-              else { srcReason = "unchanged-after-resume"; note(`frame-reopen: common-law unchanged after the supplemental half sweeps`); }
-            } else {
-              srcReason = "no-resumable-session";
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — no resumable common-law half-session (the grid is the expensive layer; disclose rather than spend)`);
-            }
-          }
+          if (srcDirectives.length) note(`frame-reopen: ${srcDirectives.length} source-channel directive(s) disclosed as open rows, not swept`);
 
           // ONE warm re-digest if a register axis materially changed (re-derives register-coverage-ledger.json,
           // and surfaces the newly-enumerated conflicts as findings — this block runs BEFORE synthesis).
@@ -12771,12 +12689,12 @@ async function pipelineInner(job, opts = {}) {
           // axis byte-diff (lower stakes, not a clamp input — broadening them would manufacture false defers).
           // Whether the now-searched band is COMPLETE enough is judgment's call downstream (coverage_judgment).
           const { swept, deferrals } = partitionFiring(firing,
-            (d) => d.layer === "source" ? srcSwept
+            (d) => d.layer === "source" ? false
                  : regArm === "dispatch" ? regSwept.has(reopenKey(d))
                  : d.severity === "dominant-element" ? false
                  : regChanged,
             (d) => {
-              if (d.layer === "source") return srcReason || "source-not-swept";
+              if (d.layer === "source") return "source-not-swept";
               if (regArm === "dispatch") {
                 const base = regDeferReason.get(reopenKey(d)) || "not-verified-closed";
                 const partial = regPartialMint.get(reopenKey(d));
@@ -12808,7 +12726,7 @@ async function pipelineInner(job, opts = {}) {
               : [];
             const outOfScope = [
               ...srcDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
-                reason: "source-channel directive — the common-law sweep is verified by a prose byte-diff on the findings file, so it has no term unit and no per-query record to account" })),
+                reason: "source-channel directive — disclosed as an open row and never swept, so it has no term unit and no per-query record to account" })),
               ...(regArm === "dispatch" ? [] : regDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
                 reason: `register directive handled by the ${regArm ?? "no"} arm, which stamps no per-slice execution receipt — no term-level record exists to account` }))),
             ];
@@ -12925,12 +12843,12 @@ async function pipelineInner(job, opts = {}) {
         // that parks the run. Best-effort by construction: a miss just leaves the delivery gate as strict
         // as it is today.
         //
-        // COMMON-LAW JOINED THIS LIST ON 2026-08-04 ( follow-up). It was missing: the source-layer arm
-        // above resumes the common-law session and re-saves common-law.md (it tracks the rewrite in
-        // `srcSwept`), and frame-diff declares that file too — so a reopen that swept a SOURCE directive
-        // rather than a variant one left exactly the staleness this block exists to prevent. The seam
-        // below covers the arms that run after placement; this one covers the crash window between the
-        // sweeps and that seam.
+        // COMMON-LAW JOINED THIS LIST ON 2026-08-04, when the source-layer arm above still resumed the
+        // common-law session and re-saved common-law.md. That arm no longer sweeps (a channel is disclosed,
+        // never swept), so the reopen does not move the file now; it stays listed because frame-diff
+        // declares it, and a file that did not move fingerprints the same on both sides. The seam below
+        // covers the arms that run after placement; this one covers the crash window between the sweeps
+        // and that seam.
         // P.commonLaw unconditionally: stageInputs["frame-diff"] declares it on every run type, and an
         // absent file fingerprints as absent on both sides — a register-only run is a no-op here.
         settleOneShotStamp(run.runDir, "frame-diff",
