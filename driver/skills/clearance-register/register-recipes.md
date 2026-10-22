@@ -295,9 +295,9 @@ hand-paginate. These rules describe what the primitive guarantees and how the fu
   The funnel **never** decides a page-through was "enough" — there is no top-N, no "stop at record N and call
   it clean". `enumerated` or `incomplete` are the only two outcomes, and both cross the firewall verbatim.
 - **A crowd over the window/ceiling returns `incomplete`** (count + sample + reason) — **never a silent
-  truncation and never a self-accepted limit.** That `incomplete` block is the signal to judgment; the lawyer decides whether to command a narrower named enumeration by the narrowing steps (which the funnel then runs), or to record it with its count and move on. The funnel does
-  not "narrow and re-probe until tractable, then call it clean" — it surfaces the descriptor and lets judgment
-  command.
+  truncation and never a self-accepted limit.** That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it
+  with its count and move on. The funnel does not "narrow and re-probe until tractable, then call it clean" — it
+  surfaces the descriptor, and you decide on it.
 - **Retry / provider error** is handled inside the primitive; a persistent failure returns `incomplete` with
   the error in `reason` (a `deferred`-class gap for judgment), never a fabricated empty.
 
