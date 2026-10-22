@@ -1211,7 +1211,7 @@
         },
         "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
           "tests": 4,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
