@@ -165,7 +165,7 @@ silently narrows what was searched, and the deferred row is the honest outcome.
 | Layer | Item | Status | Reason | Reopen trigger |
 |---|---|---|---|---|
 | variant | phonetic | applied | 2 variants — distinctive anchor LUMENGARDE carries the sound-alike axis | — |
-| variant | foreign-transliteration | applied | 6 variants — worldwide scope, JP/ZH/KR/AR/CY scripts | — |
+| variant | foreign-transliteration | applied | one per market the frame names whose buyers read a non-Latin script | — |
 | variant | numeric-substitution | applied | 1 variant — leet on the coined anchor (EV3RLIGHT) | — |
 | variant | visual-substitution | dropped | typographic-neighbour space yielded no real-word / famous look-alike worth a sweep | a look-alike of LUMENGARDE surfaces as a live mark in class 9/11 |
 | variant | compound | applied | 1 variant — tokenisation split (Lumengarde) | — |
@@ -322,7 +322,7 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 
 | Category | Notes |
 |---|---|
-| foreign-transliteration | Always for worldwide/multi-region scope. Coined-word archetype: prioritise. Slogan archetype: skip unless mark targets a non-English market. Scripts per [transliteration-scripts.md](transliteration-scripts.md). |
+| foreign-transliteration | One script form per market the frame names whose buyers read a non-Latin script. Coined-word archetype: prioritise. Slogan archetype: skip unless mark targets a non-English market. Scripts per [transliteration-scripts.md](transliteration-scripts.md). |
 | component-isolation | When `clearance-common-law` needs to isolate an element for platform-specific search. |
 | competitor-intel | Driven by Watchlist, NOT by variant table. |
 
@@ -401,7 +401,7 @@ Every `dropped` row MUST carry its `Reopen trigger` — the concrete observation
 Make `numeric-substitution` and `foreign-transliteration` explicitly profile-aware: the matter profile drives them, and the row names the decision either way —
 
 - **numeric-substitution (leet):** runs for coined-word / acronym anchors; drop for saturated common-word marks (no squatter incentive) — say which and why.
-- **foreign-transliteration:** runs for worldwide / multi-region scope or a non-Latin mark; drop for single-jurisdiction Latin scopes (per the transliteration rule above) — name the jurisdiction read that decided it.
+- **foreign-transliteration:** runs for each market the frame names whose buyers read a non-Latin script, or for a non-Latin mark; drop where no such market is named (per the transliteration rule above) — name the jurisdiction read that decided it.
 
 These rows ARE the variants-stage coverage statement — phrase each `reason` as a coverage record, not a tick. The driver writes `scope-ledger.json` from them directly; the blind frame-diff diffs it against an independent re-derivation; synthesis (in `clearance-search`) consumes it as the variants-stage coverage input.
 
@@ -469,7 +469,7 @@ Downstream skills do NOT generate their own variants — the manifest is authori
 - [ ] Industry-incumbent alerts captured where applicable
 - [ ] Variants generated across archetype-appropriate axes
 - [ ] **`scope_ledger` rows sent** — `{layer, item, status, reason, reopen_trigger}` across variant (incl. `plural-root`) + field (on/off-field by goods-overlap) + source (channels swept/set-aside) + jurisdiction (one `applied` row per in-scope territory, one `dropped` row per territory considered and excluded) layers; every `dropped` row carries its reopen trigger; numeric-substitution + transliteration decision named either way
-- [ ] Foreign transliterations generated for worldwide/multi-region scope
+- [ ] Foreign transliterations generated, one per market the frame names whose buyers read a non-Latin script
 - [ ] Verify? column ticked on transliteration rows
 - [ ] Watchlists populated (with client-exclusion applied)
 - [ ] Famous-mark Perplexity calls flagged (or "None")

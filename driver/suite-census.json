@@ -1743,6 +1743,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-script-form-is-generated-for-a-market-the-frame-names.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-script-is-asked-once-per-market-that-files-in-it.test.mjs": {
           "tests": 6,
           "asserts": 28,
