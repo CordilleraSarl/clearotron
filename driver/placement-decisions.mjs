@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { createHash } from "node:crypto";
-import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName, servedLines } from "./placement-form.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput } from "./placement-form-io.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
@@ -70,8 +70,9 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
     if (!form.set_aside?.length) return () => null;
     const input = readPlacementFormInput(P.runDir);
     const placedUris = placedUriRows(P).map((r) => r.uri);
-    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris, rows: form.rows }), buildSelectionIndex(input), input.groups, input.floors,
-      { placedUris });
+    const index = buildSelectionIndex(input);
+    return setAsideGrounds(standingSetAside(form.set_aside, input, { placedUris, rows: form.rows }), index, input.groups, input.floors,
+      { placedUris, served: servedLines(input.groups, input.served, index) });
   } catch { return () => null; }
 }
 

@@ -664,11 +664,12 @@ export function recordGroup({ tier, live, inScope, hits, dominant = false }) {
  * EACH GROUP RUNS IN THE ORDER THE OWNER RULED (2026-10-12): a line with the client's goods on a live record
  * in the ordered classes first; then more live records in those classes; then more goods words; then a
  * client market; then more records. Code sorts on fields the records carry and judges nothing. A line
- * carries the goods words it matched, never the goods text, which is one lookup away.
+ * carries the goods words it matched, and not the goods text, which is one lookup away, except a floor in (b):
+ * it matched none of the client's words, so it shows the goods the test read, cut short.
  *
  * A line sits in the best group its records in scope reach. `keysOf` gives a record's line and its owner's
  * set-aside key, both read through the positions fold, so a line covers exactly what a row naming one of
- * its records reaches. A line carries the words matched, so nothing on it is cut; the one line that cannot
+ * its records reaches. A line carries the words matched, so nothing on it is cut but a (b) floor's goods; the one line that cannot
  * be judged from itself is one the goods test placed while its records carry no goods on file.
  *
  * @param records    the band's enumerated records
@@ -706,6 +707,19 @@ function bindingOffices(territories, code) {
   if (out.has("WO")) out.add("IB");   // the International Bureau is the Madrid register by another name
   if (BENELUX.some((c) => out.has(c))) { for (const c of BENELUX) out.add(c); out.add("EU"); out.add("WO"); out.add("IB"); }
   return out;
+}
+
+// The goods text the test read for a record: the reader hands it as text, or as one statement per class, each with its
+// text. Then that text cut short for a line.
+const goodsReadText = (g) => (Array.isArray(g) ? g.map((x) => (typeof x === "string" ? x : x?.text)) : [typeof g === "string" ? g : g?.text])
+  .filter((t) => typeof t === "string" && t.trim()).join("; ").replace(/\s+/g, " ").trim() || null;
+export const FLOOR_GOODS_SHOWN = 140;
+function cutGoods(text) {
+  const t = String(text ?? "");
+  if (t.length <= FLOOR_GOODS_SHOWN) return t;
+  const head = t.slice(0, FLOOR_GOODS_SHOWN);
+  const space = head.lastIndexOf(" ");
+  return `${(space > FLOOR_GOODS_SHOWN / 2 ? head.slice(0, space) : head).replace(/[\s,;:.]+$/, "")}…`;
 }
 
 export function bandGroups(records, { classify, inScope, goods = null, dominantTerm = "", keysOf = null, markets = [], territories = [], evidenceOf = null } = {}) {
@@ -746,7 +760,8 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     const group = outside && !floor ? "rest" : recordGroup({ tier, live, inScope: s, hits, dominant });
     // "On file" is a body `band_record` can open: goods read off the band row decide the group, never that.
     const onFile = goods?.held ? goods.held(r) : Boolean(g);
-    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, onFile, territories: ts, inMarket: ts.some((t) => market.has(t)) };
+    const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, onFile, territories: ts, inMarket: ts.some((t) => market.has(t)),
+      ...(floor ? { read: goodsReadText(g) } : {}) };
     const keys = typeof keysOf === "function" ? keysOf(r) : null;
     const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
     const key = keys?.line ?? `line:${ownerKey}|${normMark(r?.mark_text) || String(r?.record_id ?? "").trim().toLowerCase()}`;
@@ -788,6 +803,9 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
         return { goods_evidence: ev?.state ?? null, ...(ev?.state === "unknown" && ev?.readable == null ? { goods_text: false } : {}) };
       })() : {}),
       floors: l.recs.filter((x) => x.floor).length,
+      // A FLOOR IN (b) SHOWS THE GOODS THE TEST READ, cut short: a (b) line matched none of the client's words, so
+      // without them a page of floors could not be judged without opening each record.
+      ...(group === "b" && known ? (() => { const read = l.recs.find((x) => x.floor && x.read)?.read; return read ? { floor_goods: cutGoods(read) } : {}; })() : {}),
       ...(known ? {} : { goods_on_file: inGroup.some((x) => x.onFile) }),
       ...(offices.size && l.recs.every((x) => x.outside) ? { outside: true } : {}),
     };
@@ -1109,13 +1127,14 @@ export const PLACEMENT_GROUP_ORDERS = Object.freeze([SORT_THE_NEAR_ONES, ONE_SET
 // group's identity, members and count stay, and so does the fact that a crowded group prints only its first page.
 export const FLOORS_BY_NAME_HERE = "Every floor here is placed or set aside by name; this group's row covers only its other lines.";
 export const A_CROWDS_ONE_ROW = "Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded.";
+export const A_CROWDS_ROW_COVERS_A_READ_FLOOR = "This row covers a floor only once you have read its line.";
 export const AN_UNREAD_CROWDS_ONE_ROW = "Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded.";
 export const AN_UNREAD_CROWDS_FLOOR = "A floor here is placed or set aside by name on its status or its territory; this row never covers it.";
 export const AN_UNREAD_LISTS_FLOOR = "A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.";
 // What placement does with a line of that list before its fate, by its marker (approved wording, 2026-10-19). Placement's
 // alone, as its other orders are: every other stage keeps the markers as evidence and is not told of a fate.
 export const AN_UNREAD_LINE_IS_CHECKED = 'A line marked "on file, not readable", "cut by the register, no goods word found", "goods held; completeness not established" or "no goods text held; completeness not established" must be checked with band_record before its fate. Read the evidence held for it, keeping its source and goods completeness clear. A line marked "no goods on file", "fetch failed, no goods on file" or "the register\'s record lists no goods" has no goods text on file. Missing goods do not establish that the goods are unrelated.';
-export const PLACEMENT_LINE_ORDERS = Object.freeze([FLOORS_BY_NAME_HERE, A_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_FLOOR, AN_UNREAD_LISTS_FLOOR, AN_UNREAD_LINE_IS_CHECKED]);
+export const PLACEMENT_LINE_ORDERS = Object.freeze([FLOORS_BY_NAME_HERE, A_CROWDS_ONE_ROW, A_CROWDS_ROW_COVERS_A_READ_FLOOR, AN_UNREAD_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_FLOOR, AN_UNREAD_LISTS_FLOOR, AN_UNREAD_LINE_IS_CHECKED]);
 const SHAPE_LISTS = ["a", "b", "c", "d", "rest", "no_goods"];
 const pageEveryOtherLine = (g) => `; page every other line with ${groupPageCall(g)}`;
 const pageWhereALineNeedsIt = (g) => `; page with ${groupPageCall(g)} only where a line needs reading`;
@@ -1166,7 +1185,8 @@ function renderGroupsMd(md, groups, rows = []) {
     if (l.goods_evidence === "complete") return "on file, not readable";
     return l.goods_on_file ? "on file, not readable" : "no goods on file";
   };
-  const words = (l) => (l.goods_words == null ? unread(l) : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}`);
+  const words = (l) => (l.goods_words == null ? unread(l)
+    : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}${l.floor_goods ? ` «${l.floor_goods}»` : ""}`);
   const count = (grp) => `${fmtN(grp.records)} records in ${fmtN(grp.lines)} lines from ${fmtN(grp.owners)} owners`;
   const where = (l) => `${l.territories.join(",")}${l.outside ? " (outside the order)" : ""}`;
   const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(where(l))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
@@ -1186,7 +1206,8 @@ function renderGroupsMd(md, groups, rows = []) {
         ? `${count(grp)}. ${readA} ${firstPage}${pageEveryOtherLine(g)}. ${FLOORS_BY_NAME_HERE}`
         : grp.lines <= READ_ALL_LINES ? `${count(grp)}. Fifty? Read them all.` : `${count(grp)}. ${readA}`)
       : crowded
-        ? `${count(grp)}. A thousand or more? The field is crowded. These are ${crowd[g]}. ${A_CROWDS_ONE_ROW} ${firstPage}${pageWhereALineNeedsIt(g)}.`
+        ? `${count(grp)}. A thousand or more? The field is crowded. These are ${crowd[g]}. ${A_CROWDS_ONE_ROW} ${firstPage}${pageWhereALineNeedsIt(g)}.${
+          g === "b" ? ` ${A_CROWDS_ROW_COVERS_A_READ_FLOOR} ${pageTheFloorsLeft(g)}` : ""}`
         : grp.lines <= READ_ALL_LINES
           ? `${count(grp)}. Fifty? Read them all.`
           : `${count(grp)}. ${SORT_THE_NEAR_ONES}`, "");
