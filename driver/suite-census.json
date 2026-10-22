@@ -6633,6 +6633,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-narrative-review-flags-only-a-market-no-question-reached.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "the-narrative-seat-does-not-describe-the-fetch-lane.test.mjs": {
           "tests": 8,
           "asserts": 23,

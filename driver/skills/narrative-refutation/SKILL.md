@@ -273,7 +273,7 @@ For each definitive negative statement in the narrative ("no X identified", "no 
 
 This is the check for what was *never searched* — the gap a narrative-vs-files read alone cannot see. The driver's blind frame-diff now flags and reopens this class of omission *before* you run; you remain the **backstop** — keep the check, it is cheap insurance against a diff that missed something. Read the `## Coverage ledger` in `register-findings.md` and `common-law-findings.md`, and the "Materially-matters jurisdictions" list in `matter-context.md`.
 
-- For every material jurisdiction named in `matter-context`: is there a ledger row? If a material jurisdiction has no row, **FLAG (missing-coverage-row)** — the run cannot account for a jurisdiction it called material.
+- For every material jurisdiction named in `matter-context`: is it accounted for — by a ledger row, by a complete worldwide answer, or inside the count of a crowd the identical mark's narrowing left? If no question reached it at all, **FLAG (missing-coverage-row)** — the run cannot account for a jurisdiction it called material.
 - For every `deferred` or `coverage-limited` row: does the narrative anywhere convert it into a clean negative ("no conflicts in [X]", "clean worldwide", "no live filings")? If yes, **FLAG (coverage-overclaim)** — BLOCKING. This is the overconfident-negative failure on a *known* gap.
 - **Aggregate (whole-run) check.** The bullet above is per-row — it catches a *single* gap row dressed up as a clean negative. This one is the headline: if **any** coverage unit / axis in either ledger is `coverage-limited` or `deferred` AND the synthesis still declares a clean / `confirmed-clean` verdict **overall** (a headline like "CLEAR", "clean worldwide", "no conflicts"), that is a FAIL — **FLAG (coverage-overclaim, aggregate)**, BLOCKING. A clean *overall* verdict claims recall the run did not achieve; the headline must not outrun the weakest coverage unit. Even when no individual row was misrendered, the aggregate verdict cannot be cleaner than the ledger that backs it.
 - A `deferred` row on a material jurisdiction with NO corresponding narrative caveat is itself **BLOCKING** even when the narrative is merely silent — silence on a known gap reads to the client as clean.
@@ -419,7 +419,7 @@ forbids a word, and a word list would catch the brand and miss the next coinage.
   - `coverage-overclaim` — a `deferred`/`coverage-limited` ledger row rendered as a clean negative (or a `deferred` material jurisdiction the narrative is silent on)
   - `coverage-overclaim` (aggregate) — a clean / `confirmed-clean` verdict declared **overall** ("CLEAR", "clean worldwide", "no conflicts") while any coverage unit / axis is `coverage-limited` or `deferred` — the headline outrunning the weakest coverage unit
   - `use-negative-unsupported` — a Composite 3+ finding asserting a use-negative (non-use / "not in actual use" / "no marketplace use found" / "use unknown") with no `**Use-check source:**` line: the pivotal use question inferred from the owner's profile instead of searched
-  - `missing-coverage-row` — a `matter-context` material jurisdiction with no ledger row at all
+  - `missing-coverage-row` — a `matter-context` material jurisdiction no question reached at all
   - `missing-variant` on a **one-letter-off famous mark in the proposed mark's field** that the manifest never searched (the canonical recall miss)
   - Missing-named-owner on a senior-lawyer-required incumbent
 
