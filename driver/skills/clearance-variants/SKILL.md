@@ -89,7 +89,7 @@ If a mark genuinely doesn't fit any archetype, document the reasoning and fall b
 
 ## Scope statement
 
-Preliminary clearance for "Dusk: Tales of Lumengarde" as a game title, Classes 9/28/41/42, worldwide. Industry-incumbent parallel sweeps apply for LUMENGARDE (lighting electronics).
+Preliminary clearance for "Dusk: Tales of Lumengarde" as a game title, Classes 9/28/41/42, worldwide. The industry incumbent (LUMENGARDE; lighting electronics) is an owner question in the ordered classes.
 
 ---
 
@@ -117,7 +117,7 @@ LUMENGARDE is the distinctive anchor — risk concentrates on coined-word axes a
 |---|---|---|---|---|
 | DUSK | common-word | high | no | Evening / sunset; fantasy / adventure |
 | TALES | common-word | very-high | no | Story / myth; epic / fantasy |
-| LUMENGARDE | distinctive | low | no | Industry incumbent: **Lumengarde Electronics Co.** (lighting / LED / semiconductors, classes 9 + 11) — triggers parallel sweep |
+| LUMENGARDE | distinctive | low | no | Industry incumbent: **Lumengarde Electronics Co.** (lighting / LED / semiconductors, classes 9 + 11) — an owner question in the ordered classes |
 
 ### Variants
 
@@ -165,15 +165,15 @@ silently narrows what was searched, and the deferred row is the honest outcome.
 | Layer | Item | Status | Reason | Reopen trigger |
 |---|---|---|---|---|
 | variant | phonetic | applied | 2 variants — distinctive anchor LUMENGARDE carries the sound-alike axis | — |
-| variant | foreign-transliteration | applied | 6 variants — worldwide scope, JP/ZH/KR/AR/CY scripts | — |
+| variant | foreign-transliteration | applied | one per market the frame names whose buyers read a non-Latin script | — |
 | variant | numeric-substitution | applied | 1 variant — leet on the coined anchor (EV3RLIGHT) | — |
 | variant | visual-substitution | dropped | typographic-neighbour space yielded no real-word / famous look-alike worth a sweep | a look-alike of LUMENGARDE surfaces as a live mark in class 9/11 |
 | variant | compound | applied | 1 variant — tokenisation split (Lumengarde) | — |
 | variant | translation | applied | the everyday-first meaning SET on the `translit-zh-meaning` row (common word first, then technical/adjacent) — LUMENGARDE has clear semantic content; a saturated everyday word is narrowed downstream by class-scope, never dropped here | — |
 | variant | plural-root | dropped | LUMENGARDE is not a plural; the singular root IS the mark | a shortened or plural root of the dominant element collides in class 9/11 |
-| field | lighting / class-11 fixtures | applied | goods-overlap with the product's lighting use | — |
+| field | lighting / class-11 fixtures | dropped | class 11 is the incumbent's goods, not the client's | the client's goods include lighting |
 | field | telecoms / broadcast enforcers | dropped | off-field: no goods-overlap with the lighting/gaming use | an LUMENGARDE mark in the product's OWN goods held by a telecoms enforcer |
-| source | register worldwide + class-11 incumbents | applied | the product's primary collision surface | — |
+| source | register worldwide, ordered classes | applied | the product's primary collision surface | — |
 | source | consumer storefronts + general web | applied | the product reaches consumers there | — |
 
 ### Watchlists
@@ -188,7 +188,7 @@ None for this mark.
 
 ### Diligence notes
 
-LUMENGARDE carries coined-word axes (phonetic + transliteration) despite the descriptive-compound primary archetype. Industry-incumbent alert triggers a parallel-class 11 sweep. DUSK and TALES are saturated commons — still generated as single-word vectors; their saturation tells the downstream register search to **narrow** (class-scope the token and enumerate), it is never a reason to skip the vector here or to pre-judge the crowd clean.
+LUMENGARDE carries coined-word axes (phonetic + transliteration) despite the descriptive-compound primary archetype. The industry-incumbent alert makes the incumbent an owner question in the ordered classes; it adds no class. DUSK and TALES are saturated commons — still generated as single-word vectors; their saturation tells the downstream register search to **narrow** (class-scope the token and enumerate), it is never a reason to skip the vector here or to pre-judge the crowd clean.
 
 ---
 
@@ -208,7 +208,7 @@ N/A — single-mark request.
   - **variant** rows — one per variant category considered: `phonetic`, `foreign-transliteration`, `numeric-substitution`, `visual-substitution` (the space-split/join + typographic-neighbour mechanic; an upstream brief's "separator-spacing" maps here), `compound` (compound-token-split), `translation` (literal-meaning), and `plural-root` (the shortest morphological / drop-letter root of the dominant element — applied when the mark is a plural/compound, dropped with a reopen trigger when it is not). `numeric-substitution` and `foreign-transliteration` are matter-profile-driven; the row NAMES that decision either way.
   - **field** rows — each on-field boundary you keep (goods-overlap with the product) and each adjacent sector you push off-field, by goods-overlap reasoning (not class number alone).
   - **source** rows — each search channel you sweep and each you set aside (e.g. a developer ecosystem on a consumer-storefront sweep), by the product's real channel.
-  - **jurisdiction** rows — carry the matter frame's *Scope jurisdictions* here: one `applied` row per in-scope territory (the instructed set + any `in-scope-by-reach`; the reason names the route — filed there / Madrid designation / EUTM reach / treaty), and one `dropped` row per territory considered and excluded (reason + a reopen trigger such as "a right effective in a named territory surfaces"). This is the authoritative scope the register sweep is bounded to and that `frame-diff` checks for over-reach / under-coverage. Use the codes the matter frame emitted (EU / US / CN …); never widen here.
+  - **jurisdiction** rows — carry the matter frame's *Scope jurisdictions* here: one `applied` row per in-scope territory (the instructed set + any `in-scope-by-reach`; the reason names the route — filed there / Madrid designation / EUTM reach / treaty), and one `dropped` row per territory considered and excluded (reason + a reopen trigger such as "a right effective in a named territory surfaces"). On a worldwide order the scope is worldwide: one `applied` row. Markets named for narrowing a crowd are priorities, never scope. Use the codes the matter frame emitted (EU / US / CN …); never widen here.
   - Every `dropped` row carries a `Reopen trigger` — the concrete observation that should reopen it. **Defend your omissions:** a dropped row with no reopen trigger is itself a coverage gap — and the rule covers fields and sources, not just variants. This is the variants-stage coverage statement: a coverage record, not a checklist. The driver writes `scope-ledger.json` from the rows you send — it no longer recovers them by parsing a table back out of your prose; the frame-diff diffs it against an independent blind re-derivation, and synthesis consumes it directly — so the dropped set is load-bearing.
 - **Watchlists, famous-mark calls, diligence notes** — unchanged from prior shape.
 
@@ -239,7 +239,7 @@ Pick one **primary** archetype. Pick zero or more **modifiers**. Write a one-lin
 
 Produce the scope statement that opens the deliverable narrative, plus per-mark diligence allocation.
 
-1. **Classes:** start from the request form, then **reason about the goods**. Propose (advisory — the staff lawyer confirms scope) the **direct class of any collaborated / actual goods** beyond the filing classes. For a gaming **collaboration**, search the gaming classes (9/28/41/42) **plus the direct class of the collaborated goods** — e.g. Class 30 for a pizza tie-in, Class 32 for a drink — scoped to the specific goods in the brief (staff-lawyer redline, Project NOVA PULSE). The direct collab-class is the mandatory addition; wider belt-and-braces (e.g. 29/43 food, 35 retail, 39 delivery) is an optional case-by-case side-glance. Note what each class covers; flag class tensions. Emit the proposed class set in the manifest's Classes field, marking advisory additions.
+1. **Classes:** start from the request form, then **reason about the goods**. Propose (advisory — the staff lawyer confirms scope) the **direct class of any collaborated / actual goods** beyond the filing classes. For a **collaboration**, propose the direct class of the collaborated goods. Add a class only for the client's own goods, never for what a competitor might hold, with one sentence saying why. Note what each class covers; flag class tensions. Emit the proposed class set in the manifest's Classes field, marking advisory additions.
 2. **Context:** product/service, industry/market, target consumer, dual contexts if any.
 3. **Graduated diligence:** how many marks? Are any obviously descriptive vs distinctive? Compound? Allocate effort accordingly.
 
@@ -275,7 +275,7 @@ For each element, classify volume baseline:
 
 **Saturation narrows the search; it never drops a variant.** These ratings tell the downstream register search how to *probe* a token (class-scope the in-scope slice and enumerate it) — post-funnel the register layer enumerates the dangerous band for the **distinctive anchor** and its forms; a **common** component (a stripped common word, not the distinctive anchor) it **counts**, not enumerates, handing that count up as dilution (a hyper-common word is dilution the lawyer uses, never a coverage gap). A `high` / `very-high` rating is **never** grounds to omit the element from the manifest, to collapse or skip its meaning / transliteration set, or to pre-judge its crowd clean. (See the Step-4 generation boundary.)
 
-**Industry-incumbent alert** (per element when applicable): non-target-industry incumbent owns the element. Capture owner pattern, primary industry, primary class set. Triggers parallel-class sweep in `clearance-register`.
+**Industry-incumbent alert** (per element when applicable): non-target-industry incumbent owns the element. Capture owner pattern, primary industry, primary class set. It adds no class: the register asks this owner's marks in the client's classes and markets, and anything wider only as a stated question about this owner.
 
 **Dominant element + proposed-mark registrability read** (feeds the synthesis spine and the deliverable; the staff lawyer's "flag obvious issues"):
 
@@ -322,7 +322,7 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 
 | Category | Notes |
 |---|---|
-| foreign-transliteration | Always for worldwide/multi-region scope. Coined-word archetype: prioritise. Slogan archetype: skip unless mark targets a non-English market. Scripts per [transliteration-scripts.md](transliteration-scripts.md). |
+| foreign-transliteration | One script form per market the frame names whose buyers read a non-Latin script. Coined-word archetype: prioritise. Slogan archetype: skip unless mark targets a non-English market. Scripts per [transliteration-scripts.md](transliteration-scripts.md). |
 | component-isolation | When `clearance-common-law` needs to isolate an element for platform-specific search. |
 | competitor-intel | Driven by Watchlist, NOT by variant table. |
 
@@ -401,7 +401,7 @@ Every `dropped` row MUST carry its `Reopen trigger` — the concrete observation
 Make `numeric-substitution` and `foreign-transliteration` explicitly profile-aware: the matter profile drives them, and the row names the decision either way —
 
 - **numeric-substitution (leet):** runs for coined-word / acronym anchors; drop for saturated common-word marks (no squatter incentive) — say which and why.
-- **foreign-transliteration:** runs for worldwide / multi-region scope or a non-Latin mark; drop for single-jurisdiction Latin scopes (per the transliteration rule above) — name the jurisdiction read that decided it.
+- **foreign-transliteration:** runs for each market the frame names whose buyers read a non-Latin script, or for a non-Latin mark; drop where no such market is named (per the transliteration rule above) — name the jurisdiction read that decided it.
 
 These rows ARE the variants-stage coverage statement — phrase each `reason` as a coverage record, not a tick. The driver writes `scope-ledger.json` from them directly; the blind frame-diff diffs it against an independent re-derivation; synthesis (in `clearance-search`) consumes it as the variants-stage coverage input.
 
@@ -464,12 +464,12 @@ Downstream skills do NOT generate their own variants — the manifest is authori
 - [ ] **Archetype classified** (primary + modifiers + reasoning)
 - [ ] **Dominant element named** + proposed-mark distinctiveness/registrability read (spectrum placement + obvious flags incl. deceptive/offensive, or "plainly distinctive — no flag")
 - [ ] **Risk theory written** (2–4 sentences)
-- [ ] Scope statement written, with **class scope reasoned** (collab direct-class / belt-and-braces proposed where applicable; advisory additions marked)
+- [ ] Scope statement written, with **class scope reasoned** (collab direct-class proposed where applicable; a class added only for the client's own goods, with its reason)
 - [ ] Every element has a row: role, saturation, famous-mark flag, notes
 - [ ] Industry-incumbent alerts captured where applicable
 - [ ] Variants generated across archetype-appropriate axes
-- [ ] **`scope_ledger` rows sent** — `{layer, item, status, reason, reopen_trigger}` across variant (incl. `plural-root`) + field (on/off-field by goods-overlap) + source (channels swept/set-aside) + jurisdiction (one `applied` row per in-scope territory, one `dropped` row per territory considered and excluded) layers; every `dropped` row carries its reopen trigger; numeric-substitution + transliteration decision named either way
-- [ ] Foreign transliterations generated for worldwide/multi-region scope
+- [ ] **`scope_ledger` rows sent** — `{layer, item, status, reason, reopen_trigger}` across variant (incl. `plural-root`) + field (on/off-field by goods-overlap) + source (channels swept/set-aside) + jurisdiction (on a worldwide order one `applied` worldwide row; otherwise one `applied` row per instructed territory, one `dropped` row per territory considered and excluded) layers; every `dropped` row carries its reopen trigger; numeric-substitution + transliteration decision named either way
+- [ ] Foreign transliterations generated, one per market the frame names whose buyers read a non-Latin script
 - [ ] Verify? column ticked on transliteration rows
 - [ ] Watchlists populated (with client-exclusion applied)
 - [ ] Famous-mark Perplexity calls flagged (or "None")

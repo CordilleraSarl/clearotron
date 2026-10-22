@@ -209,7 +209,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "literal-json-skeleton",
-    where: "driver/skills/clearance-common-law/SKILL.md:123-170",
+    where: "driver/skills/clearance-common-law/SKILL.md:117-164",
     surface: "skill-file",
     evidence: "### Format\\n```markdown\\n# Common-law findings — Dusk: Tales of Thornmantle (2026-05-11)\\n\\n## Summary\\n\\n- Perplexity calls executed: 4 …",
     reparsedBy: "driver/publish/audit-from-spine.mjs:14 parseTables → parseSpineFindingBlocks (audit-from-spine.mjs:123) re-parses the common-law finding tables into audit.md",
@@ -218,7 +218,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "dictated-line-shape",
-    where: "driver/skills/clearance-common-law/SKILL.md:192 (restated at driver/skills/clearance-search/synthesis-rules.md:392)",
+    where: "driver/skills/clearance-common-law/SKILL.md:186 (restated at driver/skills/clearance-search/synthesis-rules.md:392)",
     surface: "skill-file",
     evidence: "A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | \"perplexity_research — no result\">` line.",
     reparsedBy: "driver/connotation-search.mjs — validators.commonLaw rejects a clean claim with no such line (connotation_search_missing); the hint is re-dictated by correctionHint() in gateway.mjs",

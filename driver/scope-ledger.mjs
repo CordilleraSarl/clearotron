@@ -156,13 +156,20 @@ export function scopeLedgerJsonFromRows(rows) {
  * model that under-flags `dominant_element_gap` cannot suppress the gap on the spine. PURE.
  */
 // Round 2 Change 1 — the run's IN-SCOPE jurisdictions = the `applied` jurisdiction-layer rows (the instructed
-// territories + any the model judged effective-in-them). Normalized upper-case tokens (US, EU, CN…). The
-// register dispatch + the frame-diff jurisdiction selector read this as the authoritative scope. PURE.
+// territories + any the model judged effective-in-them). Normalized upper-case tokens (US, EU, CN…). The frame-reopen's
+// jurisdiction check reads this as the scope, and the form neighbourhood as its markets, which narrow nothing.
+//
+// A WORLDWIDE ORDER IS ONE `applied` WORLDWIDE ROW, AND ITS SCOPE IS NO TERRITORY LIST. Where any applied row names the
+// world ("worldwide" or "global", in any case) this returns [], the empty list every reader already takes as "no
+// territorial framing": read as a territory, the row made the check disclose WORLDWIDE as unsearched and every
+// territory searched as over-reach. An applied territory beside it is a market named for narrowing a crowd, a priority
+// and never scope. A named order is read as before. PURE.
+const NAMES_THE_WORLD = /^(worldwide|global)$/i;
 export function scopeJurisdictions(rows) {
-  return (rows ?? [])
-    .filter((r) => r && String(r.layer).toLowerCase() === "jurisdiction" && String(r.status).toLowerCase() === "applied")
-    .map((r) => String(r.item || "").trim().toUpperCase())
-    .filter(Boolean);
+  const applied = (rows ?? [])
+    .filter((r) => r && String(r.layer).toLowerCase() === "jurisdiction" && String(r.status).toLowerCase() === "applied");
+  if (applied.some((r) => NAMES_THE_WORLD.test(String(r.item ?? "").trim()))) return [];
+  return applied.map((r) => String(r.item || "").trim().toUpperCase()).filter(Boolean);
 }
 // Jurisdictions the matter CONSIDERED and EXCLUDED (dropped jurisdiction rows) — carried so a frame-diff
 // over-reach flag can tell "deliberately excluded, with a reason" from "wandered in unjustified". PURE.

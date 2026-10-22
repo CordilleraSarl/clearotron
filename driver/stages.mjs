@@ -1572,7 +1572,7 @@ export const STAGES = {
       // lever 3 — the manifest rung. Empty on a one-country run; `lines` drops it.
       variantRungDirective(depth),
       `Read the matter frame: ${P.matterContext}.`,
-      `Generate the variant manifest (elements, archetype, per-axis searches, per-jurisdiction sub-queries).`,
+      `Generate the variant manifest (elements, archetype, per-axis searches).`,
       // WS2 (B2) — the STRUCTURED sibling the register-plan compiler consumes (the
       // blind-frame-model precedent): the model reasons ONCE here; code compiles + freezes the
       // deterministic search plan from this JSON. Dictated keys + closed enums; the validator

@@ -213,6 +213,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-class-is-added-only-for-the-clients-own-goods.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": {
           "tests": 9,
           "asserts": 30,
@@ -1755,6 +1761,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-script-form-is-generated-for-a-market-the-frame-names.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-script-is-asked-once-per-market-that-files-in-it.test.mjs": {
           "tests": 6,
           "asserts": 28,
@@ -2163,6 +2175,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-worldwide-orders-scope-is-worldwide.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-write-free-stage-hands-paths-over-to-read.test.mjs": {
           "tests": 4,
           "asserts": 14,
@@ -2328,6 +2346,12 @@
         "an-experiment-receipt-names-its-engine.test.mjs": {
           "tests": 8,
           "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-incumbent-alert-adds-no-class.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },
@@ -4032,6 +4056,12 @@
         "identity-seed-before-refusal.test.mjs": {
           "tests": 5,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "in-grid-mode-the-web-worker-runs-no-fixed-extras.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -6645,6 +6675,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-narrative-review-flags-only-a-market-no-question-reached.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "the-narrative-seat-does-not-describe-the-fetch-lane.test.mjs": {
           "tests": 8,
           "asserts": 23,
@@ -7179,9 +7215,21 @@
           "skips": 0,
           "todos": 0
         },
+        "the-variants-stage-is-not-asked-for-a-question-per-market.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-verb-table-resolves-to-files-that-ship.test.mjs": {
           "tests": 6,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-web-worker-is-given-no-call-count-and-no-price.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
