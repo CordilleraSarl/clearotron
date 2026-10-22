@@ -26,6 +26,9 @@ import { mergeShape, verdictOf, parseArgs } from "../../scripts/merge-shape-chec
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
+/** Remove a throwaway repository, retrying a removal that races a late write under `.git`. */
+const removeRepo = (r) => rmSync(r.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+
 /** A throwaway repository with one commit on `main`, and a `git` bound to it. Hooks off — see the header. */
 function repo() {
   const dir = mkdtempSync(join(tmpdir(), "mshape-"));
@@ -34,6 +37,10 @@ function repo() {
   git("init", "-q", "-b", "main");
   git("config", "user.email", "t@example.invalid");
   git("config", "user.name", "t");
+  // No background upkeep: a detached gc or maintenance run could still be writing under .git when the test removes the
+  // directory, which is how the removal once failed with ENOTEMPTY on CI.
+  git("config", "gc.auto", "0");
+  git("config", "maintenance.auto", "false");
   const write = (rel, body) => {
     mkdirSync(dirname(join(dir, rel)), { recursive: true });
     writeFileSync(join(dir, rel), body);
@@ -78,7 +85,7 @@ test("a merge that restores a note the cut consumed is refused, and the deleting
   assert.match(s.resurrected[0].deletedIn, /Release 1\.0\.0/,
     "…with the commit that deleted it, so a reader judges it without a second command");
   assert.equal(verdictOf(s), 1, "a resurrected note refuses");
-  rmSync(r.dir, { recursive: true, force: true });
+  removeRepo(r);
 });
 
 // ── SHAPE TWO: TWO OF ONE NAME ───────────────────────────────────────────────────────────────────────
@@ -108,7 +115,7 @@ test("a note in both .changeset and .changeset/pre is refused, whatever the merg
   assert.equal(s.duplicated.length, 1, "the pair holding one name twice must be found");
   assert.deepEqual(s.duplicated[0].names, ["dup.md"]);
   assert.equal(verdictOf(s), 1, "two of one name refuses");
-  rmSync(r.dir, { recursive: true, force: true });
+  removeRepo(r);
 });
 
 // ── SHAPE THREE: A MERGE THAT DELETES FROM THE TARGET — REPORTED, NEVER REFUSED ──────────────────────
@@ -129,7 +136,7 @@ test("a merge that deletes from the target is reported and does NOT refuse", () 
   const s = r.shape();
   assert.deepEqual(s.removed, ["doomed.mjs"], "the removal must be visible to a reader");
   assert.equal(verdictOf(s), 0, "…and must not refuse: a deliberate deletion is legitimate");
-  rmSync(r.dir, { recursive: true, force: true });
+  removeRepo(r);
 });
 
 // ── AND THE SCOPE IS LOAD-BEARING, NOT A FIRST CUT SOMEBODY FORGOT TO WIDEN ──────────────────────────
@@ -159,7 +166,7 @@ test("a file restored OUTSIDE the scope is not refused — a revert is an honest
     "a file outside the scope is not a finding: restoring one is what a revert does, and refusing that "
     + "gets the whole check switched off");
   assert.equal(verdictOf(s), 0);
-  rmSync(r.dir, { recursive: true, force: true });
+  removeRepo(r);
 });
 
 // ── THE CONTROLS, so a green reading means something ─────────────────────────────────────────────────
@@ -186,7 +193,7 @@ test("a clean merge is clean, and a commit that is not a merge says it examined 
   const unreadable = mergeShape({ repo: r.dir, commit: "no-such-ref" });
   assert.equal(unreadable.readable, false, "an unreadable commit is a stated could-not-look");
   assert.equal(verdictOf(unreadable), 2, "…and exits differently from both a pass and a finding");
-  rmSync(r.dir, { recursive: true, force: true });
+  removeRepo(r);
 });
 
 test("the check is wired into the tree it ships in", () => {
