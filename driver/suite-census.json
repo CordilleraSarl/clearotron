@@ -1655,7 +1655,7 @@
         },
         "a-run-whose-assessment-cannot-finish-delivers-what-it-holds.pipeline.test.mjs": {
           "tests": 7,
-          "asserts": 72,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },

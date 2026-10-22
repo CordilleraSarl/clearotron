@@ -18,6 +18,7 @@ import { degradedParts, degradedPartRows, PART_NAMES, NOT_COMPLETED } from "../d
 import { assessmentCoverageRows, assessmentCoverageOfRun, relabelCoverageRows, loadCoverageLedger } from "../pipeline.mjs";
 import { coverageFormPaths } from "../coverage-form-io.mjs";
 import { assessmentNotCompletedNote } from "../../shared/client-failure-note.mjs";
+import { plainDeferralReason } from "../deferral-row.mjs";
 
 const runDir = (t) => {
   const dir = mkdtempSync(join(tmpdir(), "part-not-completed-"));
@@ -60,7 +61,7 @@ test("the record gives the workbook the shipped Findings row, and nothing withou
   assert.ok(degradedParts(dir).some((d) => d.part === "assessment"), "a damaged record dropped the row");
 });
 
-test("the register's coverage ledger becomes the report's coverage rows, each with its recorded status", () => {
+test("the register's coverage ledger becomes the report's coverage rows: no row clean, and none in the write-up's words", () => {
   const rows = assessmentCoverageRows([
     { axis: "primary-sweep", scope: "worldwide", unit: "primary-sweep / worldwide", status: "confirmed-clean", reason: "paged to completion" },
     { axis: "saturation-probe", scope: "", unit: "saturation-probe", status: "coverage-limited", reason: "counted, not listed" },
@@ -69,9 +70,13 @@ test("the register's coverage ledger becomes the report's coverage rows, each wi
     { axis: "primary-sweep", scope: "", unit: "primary-sweep", status: "no-such-status", reason: "x" },
     { axis: "", scope: "", unit: "", status: "confirmed-clean", reason: "no unit" },
   ]);
-  assert.deepEqual(rows.map((r) => r.state), ["confirmed-clean", "coverage-limited", "not-searched", "not-searched"],
+  // With no assessment nothing is reported, so the write-up's "confirmed-clean" is an open item; the rest keep the shipped
+  // state their status names (as amended on the issue, 2026-10-22).
+  assert.deepEqual(rows.map((r) => r.state), ["open", "coverage-limited", "not-searched", "note"],
     "a status was read as something it is not, or an unreadable row was kept");
-  assert.deepEqual(rows.map((r) => r.note), ["paged to completion", "counted, not listed", "the provider could not express it", "not opened: answered"]);
+  // The write-up's reasons are its own words for the assessment, and none reaches a reader: an open row carries the shipped
+  // gap reason, and every other row carries no note.
+  assert.deepEqual(rows.map((r) => r.note), [plainDeferralReason("unfinished"), "", "", ""], "a write-up's reason reached a reader's row");
   assert.ok(rows.every((r) => r.area && !/^[a-z]+-[a-z]+( \/|$)/.test(r.area)), `an engine axis name reached a reader's row: ${JSON.stringify(rows.map((r) => r.area))}`);
   assert.deepEqual(assessmentCoverageRows(null), []);
 });
@@ -117,8 +122,9 @@ test("with no write-up ledger, the delivery's coverage rows come from the driver
     { axis: "saturation-probe", unit: "saturation-probe", open: true },
     { axis: "incumbent-class", unit: "incumbent-class", kind: "family" }] }));
   const rows = assessmentCoverageOfRun(dir);
-  assert.deepEqual(rows.map((r) => r.state), ["confirmed-clean", "open"], `the form's rows were read wrong: ${JSON.stringify(rows)}`);
-  assert.equal(rows[1].note, "", "a row nobody ruled carries words");
+  assert.deepEqual(rows.map((r) => r.state), ["open", "open"], `the form's rows were read wrong: ${JSON.stringify(rows)}`);
+  assert.deepEqual(rows.map((r) => r.note), [plainDeferralReason("unfinished"), plainDeferralReason("unfinished")],
+    "an open row does not carry the shipped gap reason, or carries the write-up's words");
   assert.ok(rows.every((r) => !/primary-sweep|saturation-probe/.test(r.area)), `an engine axis name reached a reader's row: ${JSON.stringify(rows)}`);
   // A saved ledger is the write-up's own record and wins over the form.
   writeFileSync(join(dir, "register-coverage-ledger.json"), JSON.stringify([{ axis: "primary-sweep", scope: "worldwide", status: "coverage-limited", reason: "counted" }]));

@@ -24,6 +24,7 @@ import { fileURLToPath } from "node:url";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { ASSESSMENT_NOT_COMPLETED, CLIENT_ACTION, assessmentNotCompletedNote } from "../../shared/client-failure-note.mjs";
+import { plainDeferralReason } from "../deferral-row.mjs";
 
 const TEMP_DIRS = [];
 const tempDir = (prefix) => { const d = mkdtempSync(join(tmpdir(), prefix)); TEMP_DIRS.push(d); return d; };
@@ -127,6 +128,12 @@ async function assertDeliveredWithoutTheAssessment(root, res, label) {
   assert.ok(!/^# Findings\b/m.test(audit), `${label}: the delivered audit lists records the assessment would have rated`);
   assert.ok(/^# Negative Results\b/m.test(audit), `${label}: the delivered audit lost its search log`);
 
+  // No coverage row reads clean, and none carries the write-up's words: an open row carries the shipped gap reason.
+  const stated = json(driverDir(rd, "not-completed", "assessment-coverage.json")).rows;
+  assert.ok(stated.length > 0, `${label}: guard: the delivery stated no coverage row, so this proves nothing`);
+  assert.deepEqual(stated.filter((r) => r.state === "confirmed-clean"), [], `${label}: a coverage row reads clean with no assessment`);
+  assert.deepEqual(stated.filter((r) => r.note && r.note !== plainDeferralReason("unfinished")), [], `${label}: a coverage row carries the write-up's words`);
+  assert.ok(!html.includes("Searched — clean"), `${label}: the page calls a slice clean with no assessment`);
   const degraded = json(driverDir(rd, "degraded-parts.json"));
   assert.ok(degraded.parts.some((d) => d.part === "assessment" && d.name === "Findings"), `${label}: the part is not on the record`);
   const book = await workbookRows(join(pool, meta.auditFile));

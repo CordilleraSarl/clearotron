@@ -108,7 +108,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories, narrowingMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -17535,21 +17535,27 @@ export function setAsideTheAssessment(P, runDir) {   // @internal
   return moved;
 }
 
-// The register ledger's closed statuses in the report's own coverage states, by what each status says it is
-// (coverage-ledger.mjs): a slice the provider could not express, and a family the reading turn chose not to ask,
-// were neither of them searched.
-const LEDGER_STATE = { "confirmed-clean": "confirmed-clean", "coverage-limited": "coverage-limited",
-  deferred: "not-searched", "withheld-by-judgment": "not-searched" };
+// The register ledger's closed statuses as the shipped coverage states of a delivery made without the assessment.
+// "Confirmed-clean" is the write-up's claim that every right it found is reported, and with no assessment nothing is
+// reported, so the row is an open item, with the shipped gap reason. A slice the provider could not express was not
+// run. A family the reading turn chose not to ask takes the "Note" state its withheld families already take.
+const LEDGER_STATE = { "confirmed-clean": "open", "coverage-limited": "coverage-limited",
+  deferred: "not-searched", "withheld-by-judgment": "note" };
+// The note an open row carries: the shipped gap row's own reason (deferral-row.mjs), never the write-up's text.
+const OPEN_ROW_NOTE = plainDeferralReason(NOT_COMPLETED);
 
 /**
- * The register coverage ledger's rows as the report's coverage rows: each row's recorded status in the report's state
- * words, its reason as the note, its unit in the reader's label. No coverage judgment is added. PURE.
+ * The register coverage ledger's rows as the report's coverage rows, in a delivery made without the assessment: each
+ * row's recorded status as a shipped state (LEDGER_STATE), its unit in the reader's label, and no row clean. The row's
+ * reason is not printed: the write-up wrote it for the assessment, in the engine's own words, and in a normal run
+ * synthesis writes the reader's note in its place. An open row carries the shipped gap reason; every other row carries
+ * no note, and nothing replaces the reason. PURE.
  */
 export function assessmentCoverageRows(ledgerRows) {   // @internal
   return (Array.isArray(ledgerRows) ? ledgerRows : []).map((r) => {
     const state = LEDGER_STATE[String(r?.status ?? "").trim().toLowerCase()];
     const unit = String(r?.unit ?? r?.axis ?? "").trim();
-    return state && unit ? { area: coverageUnitLabel(unit), state, note: String(r?.reason ?? "").trim() } : null;
+    return state && unit ? { area: coverageUnitLabel(unit), state, note: state === "open" ? OPEN_ROW_NOTE : "" } : null;
   }).filter(Boolean);
 }
 
@@ -17557,7 +17563,7 @@ export function assessmentCoverageRows(ledgerRows) {   // @internal
  * The coverage rows a delivery without the assessment states. The register write-up's own ledger where it saved one;
  * where it never did, because placement or the write-up is the step that failed, the driver's own coverage form, whose
  * rows the frozen plan, the plan receipt and the bands give, and whose statuses the write-up records as it rules. A
- * row it never ruled is an open item, with no words of the engine's on it. IMPURE (reads the run).
+ * row it never ruled is an open item, with the shipped gap reason and no words of the engine's. IMPURE (reads the run).
  */
 export function assessmentCoverageOfRun(runDir) {   // @internal
   const ledger = loadCoverageLedger(runDir);
@@ -17571,8 +17577,8 @@ export function assessmentCoverageOfRun(runDir) {   // @internal
   const ruled = assessmentCoverageRows(formLedgerRows(rows));
   const unruled = (rows ?? []).filter((r) => r && r.kind !== "family" && !LEDGER_STATE[String(r.status ?? "").trim().toLowerCase()])
     .map((r) => String(r.unit ?? r.axis ?? "").trim()).filter(Boolean)
-    .map((unit) => ({ area: coverageUnitLabel(unit), state: "open", note: "" }));
-  return [...ruled, ...unruled, ...assessmentCoverageRows(ledger.rows)];
+    .map((unit) => ({ area: coverageUnitLabel(unit), state: "open", note: OPEN_ROW_NOTE }));
+  return [...ruled, ...unruled];
 }
 
 /**

@@ -452,7 +452,8 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
   // THE ASSESSMENT NOT COMPLETED LEADS. With no assessment there is no verdict, no rated finding and no count of
   // them: the Summary says first what was left open, in the shipped gap row's own words, and prints no row whose
   // value would be a rating or a zero read as a result.
-  const notCompletedRow = assessmentNotCompleted ? (degradedParts || []).find(d => d.area === 'Findings') : null;
+  // The shipped gap row for the Findings part, whose area is the deferral row's own: "Follow-up / Findings".
+  const notCompletedRow = assessmentNotCompleted ? (degradedParts || []).find(d => /(^|\/ )Findings$/.test(String(d?.area ?? ''))) : null;
   const caveat = (notCompletedRow && plainNote(notCompletedRow.note)) || plainNote(coverageJudgment?.reason) ||
     (coverage || []).find(c => c.state === 'open' || c.state === 'coverage-limited')?.note ||
     (degradedParts || [])[0]?.note ||
