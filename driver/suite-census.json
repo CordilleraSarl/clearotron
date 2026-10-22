@@ -6657,6 +6657,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-legacy-web-path-searches-what-the-frame-names.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-link-we-send-opens.test.mjs": {
           "tests": 6,
           "asserts": 14,

@@ -35,15 +35,14 @@ variants — tag their findings `Verify? ✅` downstream).
 ```
 Write and run a sandbox program that executes a marketplace search grid for a proposed trademark.
 
-SEARCH TERMS ([N]): [JSON array of every variant from the manifest's Variants table]
+SEARCH TERMS ([N]): [JSON array of the variants the frame's grid names]
 
 PLATFORMS ([M]): domain-restricted search for each store domain in YOUR TASK MESSAGE's
 PLATFORMS block (dictated per customer — copy that list verbatim; a gaming profile is one example:
 ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com",
 "apps.microsoft.com", "itch.io"]), plus one unrestricted general-web search per term
 (platform name "web").
-[IF the matter goes outside the customer's core field — collab / out-of-field goods:]
-Additionally, for each search term run one general-web search of the term combined with
+Where the frame names a field outside the customer's own, run one general-web search of the mark combined with
 "[COLLABORATED GOODS, e.g. pizza]" (platform name "web-field:[goods]").
 
 For EVERY (term, platform) cell run a web search and record up to 8 returned candidate listings —
