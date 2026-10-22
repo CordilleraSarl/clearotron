@@ -2733,6 +2733,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // it always was, and `addedClasses` only ever appends.
       job: { jobKey: ctx.run.slug, classes: inScopeClassList(ctx.job, ctx.profile).map(String), jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
       addedClasses: frameIdentifiedClassRows(P.runDir), frameMarkets: lastAcceptedMatterFrame(P.runDir)?.scope_jurisdictions ?? null,
+      marketList: narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile),
       form, skillVersion: "clearance-register@spec48",
       // — WHICH ELEMENT THE EXCLUSION TOOK OUT, so the compile can make its form band unreachable
       // rather than merely unasked-for. Null unless the ownership receipt verified, which is the same

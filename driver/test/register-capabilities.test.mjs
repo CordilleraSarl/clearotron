@@ -640,8 +640,13 @@ test("a jurisdiction outside the provider's coverage becomes a deferred row, nev
   assert.ok(cla.entries.every((e) => e.unsupported === undefined),
     "clarivate maps every plan predicate — nothing defers on capability grounds");
   // Every entry carries the plan's own region list — the executor's scope comes from here, so an entry
-  // that kept the pre-change three would search fewer registers than the plan claims to have covered.
-  assert.ok(cla.entries.every((e) => JSON.stringify(e.regions) === JSON.stringify(["US", "EM", "CH", "WO", ...EU_NATIONALS])));
+  // that kept the pre-change three would search fewer registers than the plan claims to have covered. A script
+  // question is the one exception: it goes to the offices of the market whose buyers read its script, here the EU's.
+  const script = (e) => e.term === "ЛЮМЕНГАРД";
+  assert.ok(cla.entries.filter((e) => !script(e)).every((e) => JSON.stringify(e.regions) === JSON.stringify(["US", "EM", "CH", "WO", ...EU_NATIONALS])));
+  const cyrillic = cla.entries.filter(script);
+  assert.ok(cyrillic.length && cyrillic.every((e) => e.regions.includes("EM") && !e.regions.includes("US") && !e.regions.includes("CH")),
+    `the Cyrillic form is not the EU's question: ${JSON.stringify(cyrillic.map((e) => e.regions))}`);
 });
 
 // ── mechanism A: the ledger relabel (coverage-limited → deferred) ─────────────────────────────────

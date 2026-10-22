@@ -61,7 +61,7 @@ import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWi
 import { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid } from "../providers/_shared/plan-guards.mjs";
 import { asksIdenticalMark, identicalMarkTerms } from "../providers/_shared/follow-up-searches.mjs";
 import { territoryKey } from "./territory-tiers.mjs";
-import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { marketsFilingScriptOf } from "./registration-scripts.mjs";
+import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { scriptQuestionsByMarket } from "./registration-scripts.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
 export const EXPECTED_KINDS = ["enumerate", "count"];
@@ -990,7 +990,7 @@ export function withoutHouseElementTerms(entry, house) {
   return isHouseElementTerm(entry.term, house) ? null : entry;
 }
 
-export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null, addedClasses = [], frameMarkets = null }) {
+export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null, addedClasses = [], frameMarkets = null, marketList = null }) {
   // ── AN EXCLUDED ELEMENT'S FORM BAND MUST BE UNREACHABLE, NOT MERELY UNASKED-FOR ─────────────────
   //
   // THE DEFECT THIS CLOSES, found by following the seam rather than by a failing arm. `bandFor` falls
@@ -1579,29 +1579,34 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // stamps each non-Latin term with the manifest's romanisation of it (romanStamp, above); a `numeric`
   // variant is Latin and the manifest carries none for it, so the axis is unchanged for that member.
   //
-  // A SCRIPT QUESTION IS SCOPED TO THE MARKETS THAT FILE IN IT, AND NEVER DROPPED HERE. A variant in
-  // another script is scoped to the markets the matter frame names whose row in the registrable-scripts
-  // table lists that script. Where no named market's row does, it compiles where it always did: the table
-  // lists what a market must be asked, not everything its register holds, so a missing row is no reason
-  // to leave a question out. Every script question then waits for the reading turn, which releases or
-  // withholds it with a reason. The manual tells that turn not to ask again what the Latin question
-  // covers, and on a register that files the romanised form the dispatch shows it the romanised form each
-  // one is searched by, with the Latin question that already asks it (latinQuestionsOfRomanisedForm).
-  // A question dropped here would save no search, since it waits anyway, and would leave no line saying
-  // it was not asked. Latin transliterations and numeric variants are asked as before. With no frame on
-  // record and a worldwide scope there is no market to scope to, and the variant compiles as it always did.
+  // ONE SCRIPT QUESTION PER MARKET THE FRAME NAMES, PUT TO THAT MARKET'S OFFICES, as the ruled method has it. A variant in
+  // another script is asked only for a market on the list whose buyers read that script: each market takes the
+  // manifest's first form in each non-Latin script it reads (scriptQuestionsByMarket; EU reads two), a script it only
+  // also registers in where it has no form in its own, and the form goes to that market's offices. A form no market
+  // takes is not compiled; the plan keeps it under `scripts_set_aside` with its reason, and it reaches no coverage row,
+  // since a question nobody is owed is scope, not a gap. On a test run of
+  // a crowded matter, 26 of 33 script questions went to all 186 offices for markets the frame never named, and one
+  // market got three. The list is the frame's markets, within the instructed ones where the client named territories
+  // (the instructed ones if the two do not meet); the frame's alone on a worldwide scope; and with no frame on record,
+  // the one market list the opening message names (`marketList`: the priority markets, else the majors). A market this
+  // register cannot reach keeps the entry as it was, so its deferral is still disclosed. Every script question then
+  // waits for the reading turn, as before. Latin transliterations and numeric variants are asked as before.
   const canon = (list) => (Array.isArray(list) ? list : []).map((j) => normalizeTerritory(String(j ?? "").trim())).filter(Boolean);
-  // The markets: the frame's, within the instructed ones where the client named territories (the
-  // instructed ones if the two do not meet); the frame's alone on a worldwide scope; none known, none used.
   const instructedMarkets = scopeIsWorldwide ? [] : canon(job?.jurisdictions);
   const named = canon(frameMarkets);
   const both = instructedMarkets.filter((m) => named.includes(m));
-  const scriptMarkets = instructedMarkets.length ? (both.length ? both : instructedMarkets) : (named.length ? named : null);
+  const listed = canon(marketList?.priorities?.length ? marketList.priorities : marketList?.major);
+  const scriptMarkets = instructedMarkets.length ? (both.length ? both : instructedMarkets) : (named.length ? named : (listed.length ? listed : null));
+  const scriptVariants = manifest.variants.filter((v) => v.category === "transliteration" && isNonLatinTerm(v.value));
+  const scriptPlan = scriptMarkets ? scriptQuestionsByMarket(scriptVariants.map((v) => v.value), scriptMarkets) : null;
+  const scriptAsked = new Map((scriptPlan?.asked ?? []).map((q) => [q.value, q.markets]));
+  const scriptsSetAside = (scriptPlan?.setAside ?? []).map((s) => ({ term: s.value, reason: s.reason }));
   for (const v of manifest.variants) {
     if (v.category !== "transliteration" && v.category !== "numeric") continue;
     const entry = { axis: "transliteration-numeric", predicate: markPredicate(v.value), term: v.value, expected_kind: "enumerate", provenance: "model", dropIssue: variantTermIssue(v.value) };
-    const markets = v.category === "transliteration" && isNonLatinTerm(v.value) && scriptMarkets
-      ? marketsFilingScriptOf(v.value, scriptMarkets) : [];
+    const isScript = v.category === "transliteration" && isNonLatinTerm(v.value);
+    if (isScript && scriptPlan && !scriptAsked.has(v.value)) continue;
+    const markets = isScript && scriptPlan ? scriptAsked.get(v.value) : [];
     // A market this register cannot reach keeps the entry as it was, so its deferral is still disclosed.
     const scoped = markets.length ? resolveRegions(markets, caps).regions.filter((r) => !regions.length || regions.includes(r)) : [];
     push(scoped.length ? { ...entry, regions: scoped } : entry);
@@ -1752,6 +1757,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // ask does not have to walk the entries to find out. Absent when nothing was dropped, so every
     // plan that sends its whole list stays byte-identical.
     ...(goodsOmitted.length ? { goods_text_not_asked: goodsOmitted, goods_text_not_asked_reason: goodsOmittedReason } : {}),
+    // THE SCRIPT FORMS NOT ASKED, EACH WITH ITS REASON, AND THE MARKETS A SCRIPT QUESTION SERVES, whenever they are known,
+    // with or without a script form in the manifest. The propose tool reads the markets and the questions already asked,
+    // to hold a worker's own script proposal to the same rule.
+    ...(scriptsSetAside.length ? { scripts_set_aside: scriptsSetAside } : {}),
+    ...(scriptMarkets ? { script_markets: scriptMarkets, script_questions_asked: (scriptPlan?.asked ?? []).flatMap((q) => q.keys) } : {}),
     // A term the compiler ASKED IN A DIFFERENT SHAPE than it was written. The register reads AND, OR,
     // NOT, ADJ and NEAR as operators inside the value and has no escape syntax, so the word comes out
     // and the rest of the item is still asked — "near field communication" goes as "field

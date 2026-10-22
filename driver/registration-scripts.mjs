@@ -150,3 +150,59 @@ export function marketsFilingScriptOf(value, markets) {
   return (markets ?? []).map((m) => String(m ?? "").trim().toUpperCase())
     .filter((m, i, all) => m && all.indexOf(m) === i && files(m).some((s) => scripts.includes(s)));
 }
+
+/**
+ * Scripts a market's buyers read that its row above does not demand of a manifest: the plan asks a form in one of them
+ * when the manifest has one, and the script floor never requires it. The EU register holds Greek and Cyrillic marks
+ * (Greece and Cyprus read Greek, Bulgaria Cyrillic), and an EU matter asked both before the plan held a script question
+ * to a market; demanding them of every EU manifest would be a new duty no ruling sets.
+ */
+export const SCRIPTS_ASKED_IN = Object.freeze({
+  EU: Object.freeze(["greek", "cyrillic"]),
+});
+
+/** Why a script form is not asked: no market on the list reads its script, or each that does has its question. */
+export const SCRIPT_NOT_READ_REASON = "no market the frame names reads this script";
+export const SCRIPT_ALREADY_ASKED_REASON = "this market already has its script question";
+
+/**
+ * ONE SCRIPT QUESTION PER MARKET ON THE LIST, FOR EACH SCRIPT ITS BUYERS READ. Given script forms in the manifest's order
+ * and the markets, each market takes, for each non-Latin script it registers marks in (its row, and SCRIPTS_ASKED_IN),
+ * the first form written in that script; a market that took none takes the first form in a script it also registers in.
+ * A form serving several markets is asked once, in all of them. A form no market takes is set aside with its reason.
+ * `taken` holds the questions already asked, as "<market>:<script>". PURE.
+ * @returns {{ asked: {value: string, markets: string[], keys: string[]}[], setAside: {value: string, reason: string}[] }}
+ */
+export function scriptQuestionsByMarket(values, markets, { taken = [] } = {}) {
+  const list = Array.isArray(values) ? values.map((v) => String(v ?? "")) : [];
+  const ms = [...new Set((markets ?? []).map((m) => String(m ?? "").trim().toUpperCase()).filter(Boolean))];
+  const scriptsOf = list.map((v) => Object.keys(SCRIPT_TESTS).filter((s) => s !== "latin" && isInScript(v, s)));
+  const reads = (m) => [...new Set([...(REGISTRABLE_SCRIPTS[m] ?? []), ...(SCRIPTS_ASKED_IN[m] ?? [])])].filter((s) => s !== "latin");
+  const has = new Set([...(taken ?? [])].map((k) => String(k ?? "").trim()));
+  const hasMarket = (m) => [...has].some((k) => k.startsWith(`${m}:`));
+  const marketsOf = new Map(), keysOf = new Map();
+  const assign = (i, m, key) => {
+    has.add(key);
+    marketsOf.set(i, [...new Set([...(marketsOf.get(i) ?? []), m])]);
+    keysOf.set(i, [...(keysOf.get(i) ?? []), key]);
+  };
+  for (const m of ms) {
+    for (const s of reads(m)) {
+      if (has.has(`${m}:${s}`)) continue;
+      const i = scriptsOf.findIndex((ss) => ss.includes(s));
+      if (i >= 0) assign(i, m, `${m}:${s}`);
+    }
+    if (hasMarket(m)) continue;
+    for (const s of ALSO_REGISTERED_IN[m] ?? []) {
+      const i = scriptsOf.findIndex((ss) => ss.includes(s));
+      if (i >= 0) { assign(i, m, `${m}:${s}`); break; }
+    }
+  }
+  const readOnList = (i) => ms.some((m) => [...reads(m), ...(ALSO_REGISTERED_IN[m] ?? [])].some((s) => scriptsOf[i].includes(s)));
+  const asked = [], setAside = [];
+  list.forEach((value, i) => {
+    if (marketsOf.has(i)) asked.push({ value, markets: marketsOf.get(i), keys: keysOf.get(i) });
+    else setAside.push({ value, reason: readOnList(i) ? SCRIPT_ALREADY_ASKED_REASON : SCRIPT_NOT_READ_REASON });
+  });
+  return { asked, setAside };
+}

@@ -38,6 +38,7 @@ import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searche
 import { heldAnswers, questionKey } from "./held-answers.mjs";
 import { readWithheldFamilies } from "../../withheld-families.mjs";
 import { addedClassBound, boundAddedClasses } from "../../frame-diff-model.mjs";   // an added class takes one question, the identical mark
+import { scriptQuestionsByMarket } from "../../registration-scripts.mjs";   // one script question per market on the plan's list
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
 
 // THE ONE SENTENCE THE MODEL READS WHEN THE RUN'S SAFETY NET HOLDS A FOLLOW-UP BACK (follow-up-searches.mjs). It names
@@ -405,11 +406,12 @@ export async function proposeSupplemental(params, tctx, deps) {
   // execute-plan kernel fills every entry that declares none from the plan's regions, on every provider
   // (withPlanRegions). A proposal that DOES declare regions is untouched, and qid fingerprints are
   // unchanged.
-  let planRegions = [], planClasses = [], house = null, bound = { addedClasses: [], addedClassQuestions: [] };
+  let planRegions = [], planClasses = [], house = null, bound = { addedClasses: [], addedClassQuestions: [] }, scriptMarkets = null, scriptQuestionsAsked = [];
   try {
     const frozen = JSON.parse(readFileSync(driverDir(dirname(dirname(outPath)), "register-plan.json"), "utf8"));
     house = houseElementOf(frozen);
     bound = addedClassBound(frozen);
+    if (Array.isArray(frozen?.script_markets)) { scriptMarkets = frozen.script_markets; scriptQuestionsAsked = Array.isArray(frozen?.script_questions_asked) ? frozen.script_questions_asked : []; }
     planRegions = (Array.isArray(frozen?.regions) ? frozen.regions : []).map((r) => String(r).trim()).filter(Boolean);
     // C3 — the frozen plan's own class list is the priority set: proposals intersecting it compete
     // for any cap a caller sets first (mintSupplementalEntries stable-sorts; this tool sets none).
@@ -458,11 +460,40 @@ export async function proposeSupplemental(params, tctx, deps) {
     const keep = new Set(b.nice_classes);
     bounded.push({ ...p, nice_classes: classes.filter((c) => keep.has(String(c).trim())) });
   }
-  const leftOut = { ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(excludedAddedClass.length ? { excluded_added_class: excludedAddedClass } : {}) };
-  if (!bounded.length)
-    return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, ...(excludedAddedClass.length ? { excluded_added_class: excludedAddedClass } : {}), executed: false }, null, 2) };
+  // ── ONE SCRIPT QUESTION PER MARKET ON THE PLAN'S LIST, PUT TO THAT MARKET'S OFFICES ───────────────────────
+  // The plan compiles a script form only for a market on its list whose buyers read that script, one per script the
+  // market reads (compileRegisterPlan). A worker's own script proposal is held to the same rule: it is asked only where a
+  // market on the list has no question in its script yet, in that market's offices, and otherwise left out, as the
+  // client's own element is. A script form an earlier call on this axis asked holds its markets' places, and proposing
+  // it again asks the same question, in the same offices. A plan compiled with no market list records none, and the
+  // proposal goes as written.
+  const excludedScript = [];
+  const scripted = [];
+  const askedKeys = [...scriptQuestionsAsked];
+  const marketsOfForm = new Map();
+  const askIn = (term) => {
+    if (marketsOfForm.has(term)) return marketsOfForm.get(term);
+    const [a] = scriptQuestionsByMarket([term], scriptMarkets, { taken: askedKeys }).asked;
+    if (!a) return null;
+    askedKeys.push(...a.keys);
+    marketsOfForm.set(term, a.markets);
+    return a.markets;
+  };
+  if (scriptMarkets) for (const e of supp.entries) { const t = String(e?.term ?? ""); if (t && isNonLatinTerm(t)) askIn(t); }
+  for (const p of bounded) {
+    const term = String(p?.term ?? "");
+    if (!scriptMarkets || !term || !isNonLatinTerm(term)) { scripted.push(p); continue; }
+    const markets = askIn(term);
+    if (!markets) { excludedScript.push(term); continue; }
+    const offices = deps.capabilities ? resolveRegions(markets, deps.capabilities).regions : markets;
+    scripted.push(offices.length ? { ...p, regions: offices } : p);
+  }
+  const leftOut = { ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(excludedAddedClass.length ? { excluded_added_class: excludedAddedClass } : {}),
+    ...(excludedScript.length ? { excluded_script: excludedScript } : {}) };
+  if (!scripted.length)
+    return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, ...leftOut, executed: false }, null, 2) };
   const existingQids = new Set(supp.entries.map((e) => e.qid));
-  let { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, bounded,
+  let { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, scripted,
     { existingQids, capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
 
   // ── ONE ANSWER PER QUESTION PER RUN (held-answers.mjs) ───────────────────────────────────────────
