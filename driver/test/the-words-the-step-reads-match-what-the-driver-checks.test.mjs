@@ -54,7 +54,7 @@ test("no sentence the step reads lets a group's row answer a floor below a thous
   assert.match(MANUAL, /A group's row is refused until every line of the group was read/);
   assert.doesNotMatch(MANUAL, /you were served|covers only the lines/, "the manual still says a row covers a subset of a group");
   assert.match(MANUAL, /left to the group's row with the reason, except a floor, which is placed or set aside by name/);
-  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in such a crowd in \(b\); a floor among the lines the goods test could not place, like any other floor, is placed or set aside by name/);
+  assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in such a crowd in \(b\), and only once you have read the floor's line; a floor among the lines the goods test could not place, like any other floor, is placed or set aside by name/);
   assert.match(DICTATION, /A floor is placed, sheet-2 at the least, or set aside by name on its status or its territory; only a crowd's row in \(b\) may leave it to the row/);
   assert.doesNotMatch(MANUAL + DICTATION, /among the lines the goods test could not place, covers a floor|or in those lines/, "no sentence lets the no-goods row cover a floor");
 });
@@ -127,6 +127,6 @@ test("no part banner or role text orders a whole read, and the manual's identica
   assert.doesNotMatch(SERVER, /COMPLETE only once|is complete once parts/, "a record's banner still orders a whole read");
   assert.ok(SERVER.includes("This record is served in ${total} parts; the next part continues it."));
   assert.doesNotMatch(SHAPE_SRC, /reads THIS whole/);
-  assert.ok(MANUAL.includes("An identical mark live in an ordered or added class is placed, sheet 2 at the least, unless it is set aside by name on its status or territory, or sits in a crowd of a thousand or more identical marks for other goods, where the crowd's row and count stand for it; it is never out-of-scope-filtered."));
+  assert.ok(MANUAL.includes("An identical mark live in an ordered or added class is placed, sheet 2 at the least, unless it is set aside by name on its status or territory, or sits in a crowd of a thousand or more identical marks for other goods, where the crowd's row stands for it once its line has been read; it is never out-of-scope-filtered."));
   assert.doesNotMatch(MANUAL, /is never out-of-scope-filtered: sheet 2 at the least\./, "the old line 172 still stands beside the by-name rule");
 });

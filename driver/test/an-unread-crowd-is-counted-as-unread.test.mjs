@@ -10,7 +10,9 @@
 // many of the lines a group's row covers were never served to placement, and, where the run recorded what each
 // record's goods rest on, what the goods of the covered lines rest on. Nothing is refused or clamped: this is the
 // run's own record of an uncertainty the ruled method accepts, in the floor duty's artifact where the fate count
-// already lives. Every mark and owner is invented.
+// already lives. The crowd here is of lapsed marks, which sit in (b) without being floors: a floor in a crowd is
+// covered only once its line is read (a-crowds-row-covers-a-floor-only-once-its-line-is-read.test.mjs). Every mark and
+// owner is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
@@ -25,7 +27,7 @@ import { placementOwnerFates } from "../pipeline.mjs";
 import { paths } from "../stages.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
-const rec = (i) => ({ record_id: `/mark/eu/c${i}`, mark_text: "QZORVAK", owner_name: `Owner ${String(i).padStart(4, "0")} Ltd`, classes: ["9"], status: "registered", jurisdictions: ["EU"] });
+const rec = (i) => ({ record_id: `/mark/eu/c${i}`, mark_text: "QZORVAK", owner_name: `Owner ${String(i).padStart(4, "0")} Ltd`, classes: ["9"], status: "expired", jurisdictions: ["EU"] });
 function crowded() {
   const band = { enumerated: Array.from({ length: CROWDED_GROUP_RECORDS }, (_, i) => rec(i)), crowds: [] };
   const positions = deriveRegisterPositions(band.enumerated);

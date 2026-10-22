@@ -154,8 +154,8 @@ export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
     + "the goods test could not place: one row sets aside every line in it that you neither place nor set aside "
     + "by name. Below a thousand records, and in (a) at any size, it waits until you have read every line; in a "
     + "crowd of a thousand or more outside (a), it stands on the first page read and the count. It covers a "
-    + "floor only in such a crowd in (b); a floor among the lines the goods test could not place, like any other "
-    + "floor, is placed or set aside by name.",
+    + "floor only in such a crowd in (b), and only once you have read the floor's line; a floor among the lines the "
+    + "goods test could not place, like any other floor, is placed or set aside by name.",
   fields: SET_ASIDE_GROUP_FIELDS,
   set_aside_group: `the group's letter as the shape gives it, "rest", or "no_goods" at a thousand records or more: one of ${ROW_GROUPS.join(", ")}.`,
   count: "the group's record count: the N the shape gives beside it.",
@@ -165,7 +165,7 @@ export const SET_ASIDE_GROUP_CONTRACT = Object.freeze({
     + "{\"retract\":\"group:<letter, rest or no_goods>\"}.",
   unresolved: "A group the shape does not list, a count that does not match the shape's, a row with no "
     + "ground, a no_goods row under a thousand records, or a group with lines you have not read (its first "
-    + "page, in a crowd outside (a)), is reported back to you with how to read them.",
+    + "page, in a crowd outside (a), and in (b) every floor), is reported back to you with how to read them.",
   said_back: "The driver writes back `covers_lines`, the lines the row covers, and `floors_not_covered`, one "
     + "record id for each line of the group holding a floor the row does not cover: place each or set it "
     + "aside by name.",
@@ -217,6 +217,15 @@ export function servedLines(groups, served, index) {
  * duty, so the three cannot drift apart. PURE.
  */
 export const groupRowCoversFloors = (groups, g) => g === "b" && (groups?.b?.records ?? 0) >= (groups?.crowded_at ?? Infinity);
+
+/**
+ * May the group's row answer for THIS floor line? Where `groupRowCoversFloors` allows a row to cover floors, and
+ * only once the line has been read: the page listing it was served (`servedLines`). On a delivered test run, a crowd's
+ * row stood on its first page for two identical live marks on its second and seventh pages, which placement never
+ * read. Given no record of what was served, the group rule the run was placed under stands. PURE.
+ */
+export const groupRowCoversFloorLine = (groups, g, key, served = null) =>
+  groupRowCoversFloors(groups, g) && (served == null || Boolean(served.has?.(key)));
 
 /**
  * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run
@@ -274,7 +283,7 @@ export function setAsideKeysOf(positions) {
  * line other than a floor, given `placedUris`, the records the form placed. A floor there keeps the answer it had,
  * because the floor duty counts floors one by one and the delivery floor is read from it.
  */
-export function setAsideGrounds(entries, index, groups = null, floors = null, { placedUris = null } = {}) {
+export function setAsideGrounds(entries, index, groups = null, floors = null, { placedUris = null, served = null } = {}) {
   const byKey = new Map(), byGroup = new Map();
   for (const e of Array.isArray(entries) ? entries : []) {
     if (isSetAsideGroupRow(e)) { const g = groupName(e.set_aside_group); if (g && e?.ground) byGroup.set(g, e); }
@@ -299,7 +308,7 @@ export function setAsideGrounds(entries, index, groups = null, floors = null, { 
     const group = line ? groupOf.get(line) : null, row = group ? byGroup.get(group) : null;
     if (!row) return null;
     const isFloor = floorUris.has(uriKey(uri));
-    if ((isFloor || floorLines.has(line)) && !groupRowCoversFloors(groups, group)) return null;
+    if ((isFloor || floorLines.has(line)) && !groupRowCoversFloorLine(groups, group, line, served)) return null;
     if (!isFloor && placedLines.has(line)) return null;
     return { set_aside: null, key: line, owner: null, ground: row.ground, by: "group", group };
   };
@@ -333,7 +342,7 @@ export function ownerFates({ groups, entries = [], index, placedUris = [], serve
     for (const l of lines) {
       const byName = named.has(l.key);
       const rowMay = (list !== "no_goods" || (groups.no_goods?.records ?? 0) >= (groups.crowded_at ?? Infinity))
-        && grouped.has(list) && (!(l.floors > 0) || groupRowCoversFloors(groups, list));
+        && grouped.has(list) && (!(l.floors > 0) || groupRowCoversFloorLine(groups, list, l.key, served));
       const fate = placed.has(l.key) ? "placed" : byName ? "by_name" : rowMay ? "by_group" : "unfated";
       c.lines++; c[fate]++; totals.lines++; totals[fate]++;
       if (fate === "unfated") unfated_lines.push({ list, key: l.key });

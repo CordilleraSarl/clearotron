@@ -27,7 +27,7 @@ import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
   SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, namedKey, lineKey, servedLines,
-  groupRowCoversFloors, FLOOR_GROUND_ON, FLOOR_GROUND_REFUSED, ROW_GROUPS, renderPlacementsJson, setAsideGrounds } from "./placement-form.mjs";
+  groupRowCoversFloors, groupRowCoversFloorLine, FLOOR_GROUND_ON, FLOOR_GROUND_REFUSED, ROW_GROUPS, renderPlacementsJson, setAsideGrounds } from "./placement-form.mjs";
 import { groupPageCall } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { reconcileFloorDuty } from "./floor-duty.mjs";
@@ -320,7 +320,7 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
   for (const [key, g] of groupOf) {
     if (!setAsideGroups.has(g) || placedLines.has(key) || setAside.has(key)) continue;
     const line = lineOf(g, key);
-    if ((line?.floors ?? 0) > 0 && !groupRowCoversFloors(groups, g)) floorsLeft.set(g, [...(floorsLeft.get(g) ?? []), line.record_id ?? key]);
+    if ((line?.floors ?? 0) > 0 && !groupRowCoversFloorLine(groups, g, key, servedSet)) floorsLeft.set(g, [...(floorsLeft.get(g) ?? []), line.record_id ?? key]);
     else {
       covers.set(g, (covers.get(g) ?? 0) + 1);
       if (covered) { if (!coveredKeys.has(g)) coveredKeys.set(g, []); coveredKeys.get(g).push(key); }
@@ -338,7 +338,7 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
   // leaves the earlier answer standing, its floors still owed.
   const rendered = renderPlacementsJson(form.rows).placements;
   const groundOf = setAsideGrounds([...setAside.values(), ...setAsideGroups.values()], index, groups, input?.floors,
-    { placedUris: rendered.flatMap((p) => (Array.isArray(p?.records) ? p.records : [])) });
+    { placedUris: rendered.flatMap((p) => (Array.isArray(p?.records) ? p.records : [])), served: servedSet });
   const duty = reconcileFloorDuty({ floors: Array.isArray(input?.floors) ? input.floors : [],
     placements: rendered, setAsideGroundOf: groundOf });
   const unfated = new Map();
@@ -346,7 +346,7 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     if (r.disposition !== "unanswered" && r.disposition !== "named-without-ground") continue;
     const key = lineKey(index.resolve(r.record_id));
     const g = key ? groupOf.get(key) ?? null : null;
-    if (g && groupRowCoversFloors(groups, g)) continue;
+    if (g && groupRowCoversFloorLine(groups, g, key, servedSet)) continue;
     const k = key ?? `record:${r.record_id}`;
     const e = unfated.get(k) ?? { group: g, line: (g ? lineOf(g, key)?.record_id : null) ?? r.record_id, floors: [] };
     e.floors.push(r.record_id);
