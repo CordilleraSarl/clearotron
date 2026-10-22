@@ -56,14 +56,14 @@ successfully fetch and verify.
 
 ## Coverage and scope — state it honestly
 
-- **CJEU + General Court judgments**, full text, free, no account. This is the EU court gap CourtListener
+- **CJEU + General Court judgments**, full text, no account. This is the EU court gap CourtListener
   (US-federal only) cannot reach and LDH covers only partially.
 - **No native keyword search here.** This adapter is strongest when you already have a case
   **name or number** (from the finding, from LDH, or from a `perplexity_research` lead). For open-ended
   "find any EU precedent on X" discovery with no lead, recall is weak — say so, and lean on LDH /
   perplexity for the lead, then fetch the verbatim judgment here. (A dedicated EU case-law search tool
   would close this gap; none is wired today.)
-- **Not** the EUIPO administrative layer: **EUIPO Boards-of-Appeal decisions** have no free API and are
+- **Not** the EUIPO administrative layer: **EUIPO Boards-of-Appeal decisions** have no API wired here and are
   not searched — report that as a coverage gap. EUIPO *register* lookups are a different layer
   (`clearance-register`), not this skill.
 

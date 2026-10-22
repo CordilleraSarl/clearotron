@@ -6207,6 +6207,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-case-law-manuals-say-what-is-wired.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-caveat-is-owed-only-when-it-is-true.test.mjs": {
           "tests": 12,
           "asserts": 25,
