@@ -1371,6 +1371,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-re-run-unit-is-told-why-a-row-is-not-its-to-close.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-read-the-engine-could-not-answer-names-the-check.test.mjs": {
           "tests": 4,
           "asserts": 14,

@@ -4419,6 +4419,19 @@ export function officeGapOf(plan) {   // @internal
   return capabilities ? (row) => rowOutsideProviderOffices(row, capabilities) : () => false;
 }
 
+// WHAT A RE-RUN CANNOT CLOSE, in the words the review's table, the review's manual and both re-run follow-ups share, so
+// the unit that is told to leave a row and the review that is told not to send it back read one reason.
+export const NOT_CLOSEABLE_KINDS = "the provider cannot express the slice, the envelope close has already asked it again, it was not asked in this run, or it names no search at all";   // @internal
+const heldRowLines = (rows) => rows.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n");
+/** The rows an escalated unit must leave as they are, and why; empty when there are none. @internal */
+export function escalationHeldNote(rows) {
+  return rows?.length ? `\n\nNOT YOURS TO CLOSE — a re-run cannot close these: ${NOT_CLOSEABLE_KINDS}. Leave these Coverage-ledger rows exactly as they are (\`deferred\`, same reason), and do not restate them as searched or clean:\n${heldRowLines(rows)}` : "";
+}
+/** The rows a unit the envelope re-opens must leave as they are, and why; empty when there are none. @internal */
+export function envelopeHeldNote(rows) {
+  return rows?.length ? `\n\nThese rows on this axis are NOT yours to close and must stay exactly as they are — a re-run cannot close them: ${NOT_CLOSEABLE_KINDS}. Leave them \`deferred\`, keep their reason, and do not restate them as searched or clean:\n${heldRowLines(rows)}` : "";
+}
+
 /**
  * Whether a deferred coverage row names a question a re-run can still send, read off the plan-execution receipt as a
  * predicate for the closeability split. An axis's `missing` questions are the ones a re-run sends: planned and never
@@ -7291,7 +7304,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
         ? `CLOSEABLE floor obligations (a warm re-run reaches these — escalate them if they are material): ${closeable.join("; ")}.`
         : "CLOSEABLE floor obligations: none.",
       held.length
-        ? `NOT CLOSEABLE — a re-run cannot close these: the provider cannot express the slice, the envelope close has already asked it again, it was not asked in this run, or it names no search at all: ${held.join("; ")}. Do NOT emit ESCALATE for these. They stay open, disclosed gaps for the lawyer, and the coverage floor is right to refuse a clean verdict over them — say so in a flag if the findings read them as clean, but never as an escalation.`
+        ? `NOT CLOSEABLE — a re-run cannot close these: ${NOT_CLOSEABLE_KINDS}: ${held.join("; ")}. Do NOT emit ESCALATE for these. They stay open, disclosed gaps for the lawyer, and the coverage floor is right to refuse a clean verdict over them — say so in a flag if the findings read them as clean, but never as an escalation.`
         : "NOT CLOSEABLE: none.",
       // the owner screen's own receipt rides the same block — the audit claim it replaces ("no record
       // anywhere in the band carries an incumbent-class qid") was false on the evidence run.
@@ -13071,15 +13084,13 @@ async function pipelineInner(job, opts = {}) {
         note(`skeptic escalated ${a} → resuming its session to defend/adjust (warm, same tier)`);
         let followup = repairFollowup("register-unit:escalation", { paths: P, axis: a, flags,
           supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
-        // A2, per-row: the skip above only catches an axis whose ENTIRE outstanding work is a
-        // capability gap. An axis is often escalated for a good reason (a flagged confirmed-clean row)
+        // A2, per-row: the skip above only catches an axis whose ENTIRE outstanding work is held (a
+        // capability gap, or nothing left to send). An axis is often escalated for a good reason (a flagged confirmed-clean row)
         // while ALSO carrying held rows — and the resumed unit must not be left to think those are
         // work it failed to do. Name them, exactly as the envelope's close followup does.
         const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
           { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) }).held;
-        if (escHeld.length) {
-          followup += `\n\nNOT YOURS TO CLOSE — the active register provider cannot express these slices at all, so no re-run can reach them. Leave these Coverage-ledger rows exactly as they are (\`deferred\`, same reason), and do not restate them as searched or clean:\n${escHeld.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`;
-        }
+        followup += escalationHeldNote(escHeld);
         // No opts.model → stays on this axis's original tier (axisTier: sonnet/haiku) so the resume is a warm
         // cache hit. sessionKey: unitKey[a] resumes the EXACT key the unit won on. force bypasses idempotency.
         const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "escalation" });
@@ -13201,9 +13212,7 @@ async function pipelineInner(job, opts = {}) {
           const split = closeabilityByAxis.get(a) ?? { closeable: [], held: [] };
           const rows = split.closeable
             .map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n");
-          const heldRows = split.held.length
-            ? `\n\nThese rows on this axis are NOT yours to close and must stay exactly as they are — the active register provider cannot express those slices at all, so no re-run can reach them. Leave them \`deferred\`, keep their reason, and do not restate them as searched or clean:\n${split.held.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`
-            : "";
+          const heldRows = envelopeHeldNote(split.held);
           note(`envelope: closing deferred coverage on ${a} (deadline permits — ${decision.reason})`);
           // What the re-opened unit is asked to close, and what it is told to leave: the record of the split
           // this close acted on, so a gap handed back as work is visible in the run's own log.
