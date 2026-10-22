@@ -2709,39 +2709,6 @@ test("P2-C split cross-half: the half that OWNS the receipt now catches it at IT
   assert.ok(events.filter((e) => e.event === "common-law-merged").length >= 1, "the canonical pair was derived and passed the merge gate");
 });
 
-test("A1 split frame-reopen: a source-channel omission sweeps EVERY live half over its dictated term scope and closes", async () => {
-  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FRAME_DIFF: "source" });
-  assert.equal(res.ok, true, JSON.stringify(res));
-  const sweeps = events.filter((e) => e.event === "stage" && e.trigger === "frame-reopen" && e.stage.startsWith("common-law-half"));
-  assert.deepEqual(sweeps.map((s) => s.stage).sort(), ["common-law-half:a", "common-law-half:b"], "BOTH live halves swept");
-  const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "frame-reopen.json"), "utf8"));
-  assert.ok(receipt.swept.some((k) => /^source:/.test(k)), "the source directive is SWEPT (full-grid coverage via both halves)");
-  assert.equal(receipt.deferrals.length, 0, "nothing deferred on a clean full sweep");
-  const cl = readFileSync(join(res.runDir, "common-law-findings.md"), "utf8");
-  for (const v of ["novapulse", "转码"]) assert.ok(cl.includes(`| ${v} | github.com | No results — supplemental source-channel sweep |`),
-    `variant ${v} carries its supplemental channel row in the merged canonical findings`);
-});
-
-test("A1 split frame-reopen: one half's sweep failing mechanically DEFERS the omission (disclosed) even though the merged file changed", async () => {
-  // Pre-fix regression: srcSwept was a bare merged-file byte-diff — half a's successful sweep changed the
-  // file, so half b's mechanical failure was swallowed and the omission read CLOSED while half b's
-  // variants were never searched on the flagged channel. The single-member arm's contract is full sweep
-  // OR disclosed deferral (open row + clamp) — the split must match it.
-  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    MOCK_FRAME_DIFF: "source", MOCK_FAIL_STAGE: "SOURCE CHANNELS&&half-b" });
-  assert.equal(res.ok, true, JSON.stringify(res));
-  const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "frame-reopen.json"), "utf8"));
-  assert.ok(!receipt.swept.some((k) => /^source:/.test(k)), "the omission is NOT marked swept over a partial sweep");
-  const def = receipt.deferrals.find((d) => /^source:/.test(d.directive));
-  assert.ok(def, "the source directive is a DISCLOSED deferral");
-  assert.match(def.reason, /mechanical-fail/, "the deferral carries the mechanical-failure reason");
-  // the trap the fix guards: half a's sweep DID change the merged canonical file
-  assert.ok(readFileSync(join(res.runDir, "common-law-findings.md"), "utf8")
-    .includes("| novapulse | github.com | No results — supplemental source-channel sweep |"),
-    "half a's supplemental rows landed (the byte-diff alone would have read as swept)");
-  assert.ok(events.some((e) => e.event === "frame-reopen" && e.deferred >= 1), "the reopen event records the deferral");
-});
-
 // ── a provider hard-error on a dictated slice becomes a DISCLOSED DEFERRAL ──────────────────────
 //
 // R5 (engine `8098215`), a worldwide Global preliminary: two `incumbent-class` slices took an

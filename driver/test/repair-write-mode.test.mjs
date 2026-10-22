@@ -243,7 +243,9 @@ test("a composer's declared tail matches the text it composes — in BOTH direct
   // floor exists so this arm cannot go vacuous, so it tracks the population rather than holding a number
   // the population has left — but it is lowered by the ONE row that moved, never re-derived from the
   // current count, which would ratify any future silent drop.
-  assert.ok(edits >= 7, `only ${edits} sample(s) declare the edit tail`);
+  // LOWERED BY TWO more, deliberately and in the same commit: the frame-reopen's two channel-sweep composers (single
+  // member and split half) are gone, because a channel the frame-diff names is disclosed, never swept.
+  assert.ok(edits >= 5, `only ${edits} sample(s) declare the edit tail`);
   assert.ok(refusals >= 4, `only ${refusals} sample(s) declare tool/none`);
 });
 
@@ -282,7 +284,9 @@ test("a composer that names a tool-owned ledger scopes the Edit direction BEFORE
     assert.ok(scope >= 0, `${s.key} / ${s.name} — names a tool-owned ledger and offers the Edit tool with no scoping sentence`);
     assert.ok(scope < tailAt, `${s.key} / ${s.name} — the scope must be read BEFORE the direction it qualifies`);
   }
-  assert.equal(scoped, 4, `${scoped} composer(s) exercised this — the single-member and split-half arms of both lanes are four`);
+  // Two: the coverage closure's single-member and split-half arms. The frame-reopen lane's two channel-sweep arms are
+  // gone, because a channel the frame-diff names is disclosed, never swept.
+  assert.equal(scoped, 2, `${scoped} composer(s) exercised this — the coverage closure's single-member and split-half arms are two`);
 });
 
 test("the report-card lint repair is a COLD re-render and keeps its full write — patching it would defeat it", () => {

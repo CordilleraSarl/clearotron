@@ -127,6 +127,6 @@ test("no part banner or role text orders a whole read, and the manual's identica
   assert.doesNotMatch(SERVER, /COMPLETE only once|is complete once parts/, "a record's banner still orders a whole read");
   assert.ok(SERVER.includes("This record is served in ${total} parts; the next part continues it."));
   assert.doesNotMatch(SHAPE_SRC, /reads THIS whole/);
-  assert.ok(MANUAL.includes("An identical mark live in an ordered or added class is placed, sheet 2 at the least, unless it is set aside by name on its status or territory, or sits in a crowd of a thousand or more identical marks for other goods, where the crowd's row stands for it once its line has been read; it is never out-of-scope-filtered."));
+  assert.ok(MANUAL.includes("An identical mark live in an ordered or added class is placed, sheet 2 at the least, unless it is set aside by name on its status or territory, or sits in a crowd of a thousand or more identical marks and its goods, read on its line, are not the client's goods, where the crowd's row stands for it; it is never out-of-scope-filtered."));
   assert.doesNotMatch(MANUAL, /is never out-of-scope-filtered: sheet 2 at the least\./, "the old line 172 still stands beside the by-name rule");
 });
