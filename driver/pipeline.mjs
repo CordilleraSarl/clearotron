@@ -11319,7 +11319,7 @@ async function pipelineInner(job, opts = {}) {
         const collapsedQids = collapsed.map((x) => x.qid).filter(Boolean);
         if (collapsedQids.length && (await dispatchPlanQids(a, collapsedQids, "collapsed-reexecute")) === "ok") collapsed = readCollapsed();
         // The collapsed slices are the searches not completed, failed on with every axis's below. One with no qid is named by
-        // its query, and its block becomes a deferred block on that query (6335279737).
+        // its query, and its block becomes a deferred block on that query.
         if (collapsed.length) collapsedSlices.push({ axis: a, collapsed });
       }
       // ── band-truth gate (2026-07-14, teal-foundry): the band must be EVIDENCED, not just well-formed ──
