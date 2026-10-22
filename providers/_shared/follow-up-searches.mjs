@@ -25,11 +25,12 @@
 // HOW IT IS KEPT: one line per follow-up search, appended to a file in the run's `_driver/` folder beside its
 // record log, read before each follow-up is sent. Every process appends to the same file, so the count is shared.
 //
-// EACH QUESTION COUNTS ONCE. A question the run has already answered counts nothing, and a follow-up the file already
-// holds was asked before. On a test run of a crowded matter a worker proposed five answered questions again and the
-// run sent them again, mostly answered from memory, and the net counted 120 for 114 questions. A repeat now goes as
-// before and adds nothing, so the net never holds it back. The same qid with new romanised spellings asks something
-// new, and counts.
+// A QUESTION THE RUN HAS ALREADY ANSWERED COUNTS NOTHING. On a test run of a crowded matter a worker proposed five
+// answered questions again, the run sent them again, mostly answered from memory, and the net counted 120 for 114
+// questions. A follow-up the file already holds, whose answer the run holds, now goes as before and adds nothing, so
+// the net never holds it back. One whose earlier send failed was never answered: sending it again counts again, so a
+// worker that keeps proposing a failing question still meets the net. The same qid with new romanised spellings asks
+// something new, and counts.
 
 import { appendFileSync, readFileSync, mkdirSync } from "node:fs";
 import { dirname, basename, join } from "node:path";
@@ -69,9 +70,17 @@ export function followUpSearchesSent(driverDir) {
 
 /**
  * The question a follow-up asks, as the net counts it: its qid, which the mint derives from the question, with the
- * romanised spellings it carries, which a later proposal can add to an existing qid. Null without a qid. PURE.
+ * romanised spellings it carries, which a later proposal can add to an existing qid. A line written for a send of a
+ * question that had failed carries a `retry` token of its own, so it counts on its own. Null without a qid. PURE.
  */
 export function followUpQuestion(row) {
+  const asked = questionOf(row);
+  if (asked === null) return null;
+  const retry = String(row?.retry ?? "").trim();
+  return retry ? `${asked}#${retry}` : asked;
+}
+
+function questionOf(row) {
   const qid = String(row?.qid ?? "").trim();
   if (!qid) return null;
   const rom = Array.isArray(row?.romanized) ? row.romanized : Array.isArray(row?.romanizedTerms) ? row.romanizedTerms : [];
@@ -79,35 +88,40 @@ export function followUpQuestion(row) {
   return spellings.length ? `${qid}|${spellings.join("|")}` : qid;
 }
 
-// The file read once: the distinct questions it holds, and their number. A line with no question in it (torn, or
-// written without a qid) counts on its own, so a damaged file never reads as more room.
+// The file read once: the distinct lines it holds and their number, and the questions sent at least once. A line with
+// no question in it (torn, or written without a qid) counts on its own, so a damaged file never reads as more room.
 function readSent(driverDir) {
-  const asked = new Set();
+  const counted = new Set();
+  const questions = new Set();
   const p = searchesPath(driverDir);
-  if (!p) return { sent: 0, unreadable: false, asked };
+  if (!p) return { sent: 0, unreadable: false, questions };
   let text;
   try { text = readFileSync(p, "utf8"); }
-  catch (e) { return e?.code === "ENOENT" ? { sent: 0, unreadable: false, asked } : { sent: Infinity, unreadable: true, asked }; }
+  catch (e) { return e?.code === "ENOENT" ? { sent: 0, unreadable: false, questions } : { sent: Infinity, unreadable: true, questions }; }
   let n = 0;
   for (const line of text.split("\n")) {
     if (!line.trim()) continue;
-    let q = null;
-    try { q = followUpQuestion(JSON.parse(line)); } catch { /* a torn line counts on its own */ }
-    if (q === null) n++;
-    else if (!asked.has(q)) { asked.add(q); n++; }
+    let row = null;
+    try { row = JSON.parse(line); } catch { /* a torn line counts on its own */ }
+    const q = followUpQuestion(row);
+    if (q === null) { n++; continue; }
+    questions.add(questionOf(row));
+    if (!counted.has(q)) { counted.add(q); n++; }
   }
-  return { sent: n, unreadable: false, asked };
+  return { sent: n, unreadable: false, questions };
 }
 
 /**
- * Whether a follow-up may be sent now, and whether the run has asked it already (`repeat`): a repeat adds nothing to
- * the count, so the net never holds it back. PURE but for the read.
+ * Whether a follow-up may be sent now. `repeat`: the run sent it before and holds its answer (`answered(qid)`), so it
+ * adds nothing and the net never holds it back. `retry`: the run sent it before and holds no answer, so it counts
+ * again, under a line of its own. PURE but for the read and `answered`.
  */
-export function followUpRoom(driverDir, limit = FOLLOW_UP_SEARCH_LIMIT, entry = null) {
-  const { sent, unreadable, asked } = readSent(driverDir);
-  const q = entry ? followUpQuestion(entry) : null;
-  const repeat = !unreadable && q !== null && asked.has(q);
-  return { open: !unreadable && (repeat || sent < limit), sent, limit, unreadable, repeat };
+export function followUpRoom(driverDir, limit = FOLLOW_UP_SEARCH_LIMIT, entry = null, { answered = () => false } = {}) {
+  const { sent, unreadable, questions } = readSent(driverDir);
+  const q = entry ? questionOf(entry) : null;
+  const before = !unreadable && q !== null && questions.has(q);
+  const repeat = before && answered(String(entry?.qid ?? "")) === true;
+  return { open: !unreadable && (repeat || sent < limit), sent, limit, unreadable, repeat, retry: before && !repeat };
 }
 
 // One line per write, appended: each process's line lands whole, whatever the others are writing.

@@ -372,6 +372,19 @@ export function makeExecutePlan(deps) {
       try { identicalTerms = identicalMarkTerms(JSON.parse(readFileSync(join(driverDir, "register-plan.json"), "utf8"))); } catch { /* no frozen plan: no identical terms known */ }
     }
     const refused = [];
+    // The follow-ups this axis's band already answers, read once and only when the net meets a question sent before:
+    // an answered one adds nothing when it is sent again, and a failed one counts again.
+    let answeredQids = null;
+    const answeredBefore = (qid) => {
+      if (!answeredQids) {
+        answeredQids = new Set();
+        try {
+          const prior = JSON.parse(readFileSync(outPath, "utf8"));
+          for (const b of Array.isArray(prior) ? prior : []) if (b?.qid && b.error !== true) answeredQids.add(String(b.qid));
+        } catch { /* no band yet: nothing answered */ }
+      }
+      return answeredQids.has(qid);
+    };
     const stateByQid = new Map();
     const seeded = new Set();
     if (qidsFilter) {
@@ -609,7 +622,7 @@ export function makeExecutePlan(deps) {
     // register said — a block that fabricated a provider response would be the worse defect.
     const runEntry = async (e) => {
       if (driverDir && followUpClass(e, { identicalTerms }) === "counted") {
-        const room = followUpRoom(driverDir, FOLLOW_UP_SEARCH_LIMIT, e);
+        const room = followUpRoom(driverDir, FOLLOW_UP_SEARCH_LIMIT, e, { answered: answeredBefore });
         if (!room.open) {
           refused.push(e.qid);
           let query = String(e?.qid ?? "");
@@ -617,9 +630,11 @@ export function makeExecutePlan(deps) {
           recordOutstanding(driverDir, { qid: e.qid, axis, query, sent: room.sent, limit: room.limit, ...(room.unreadable ? { unreadable: true } : {}) });
           return;
         }
-        // A question the run has asked already is sent as before and adds nothing: each question counts once.
+        // A question the run has asked and answered already is sent as before and adds nothing; one whose earlier send
+        // failed counts again, under a line of its own.
         if (!room.repeat) recordFollowUpSearch(driverDir, { qid: e.qid, axis,
-          ...(Array.isArray(e.romanizedTerms) && e.romanizedTerms.length ? { romanized: e.romanizedTerms.map(String) } : {}) });
+          ...(Array.isArray(e.romanizedTerms) && e.romanizedTerms.length ? { romanized: e.romanizedTerms.map(String) } : {}),
+          ...(room.retry ? { retry: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` } : {}) });
       }
       try {
         await dispatchEntry(e);
