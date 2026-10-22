@@ -35,7 +35,8 @@ const reply = (status, body = "upstream said no") => ({
 test("A RETRYABLE STATUS RIDES THE ERROR OBJECT — not only the message text", async () => {
   let calls = 0;
   const fetchImpl = async () => { calls += 1; return reply(429); };
-  const err = await callAgentAPI("k", { preset: "pro-search" }, { retries: 1, backoffMs: 0, fetchImpl })
+  // No rate-limit waits here: this arm is about what reaches the driver once a 429 has had its waits.
+  const err = await callAgentAPI("k", { preset: "pro-search" }, { retries: 1, backoffMs: 0, fetchImpl, maxRateLimitWaitMs: 0 })
     .then(() => null, (e) => e);
   assert.ok(err, "it still throws once the retries are spent");
   assert.equal(err.status, 429, "the code is readable without parsing prose");
