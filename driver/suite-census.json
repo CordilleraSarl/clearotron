@@ -6897,6 +6897,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-reasoning-notes-follow-the-ruled-method.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-recipes-narrow-a-crowd-and-ask-a-script-per-named-market.test.mjs": {
           "tests": 2,
           "asserts": 5,

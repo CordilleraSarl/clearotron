@@ -110,8 +110,8 @@ eight languages and scripts searched." State it once and stop.)*
 >
 > ✓ Investigate whether Ridgeline Beverages is actually selling under the mark in Germany.
 
-*(The other three name this system's own mechanisms. Reading the run's own records is the engine's job and was
-owed before delivery — printing it as a step for the reader is a defect, not an action.)*
+*(The other three name this system's own mechanisms. What the run read, and what it set aside with its count and
+reason, is the engine's record — printing it as a step for the reader is a defect, not an action.)*
 
 **5 — A ruled-out entry names the specific point that settled it.**
 
