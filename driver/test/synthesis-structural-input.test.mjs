@@ -338,7 +338,9 @@ test("a real dispatch carries both blocks — read out of the recorded synthesis
     ref: "TMP447D", markName: "MARK TMP447D", classes: [9, 41], provider: "corsearch" };
   const res = await PL.pipeline(job);
   delete process.env.MOCK_FAIL_STAGE;
-  assert.equal(res.failedStage, "synthesis", "the run must reach and dispatch synthesis for this to be testing anything");
+  // The run stops at synthesis: it parks, and its status names the stage.
+  assert.equal(JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage, "synthesis",
+    "the run must reach and dispatch synthesis for this to be testing anything");
 
   const recorded = readFileSync(driverDir(res.runDir, "synthesis.attempt1.dispatch.txt"), "utf8");
   assert.match(recorded, /DETERMINISTIC PLAN-EXECUTION CHECK/,

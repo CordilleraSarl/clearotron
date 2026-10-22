@@ -1167,6 +1167,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-part-not-completed-is-a-stated-state.test.mjs": {
+          "tests": 4,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "a-part-that-fails-and-still-ships-is-in-the-audit-workbook.test.mjs": {
           "tests": 18,
           "asserts": 58,
@@ -1632,6 +1638,12 @@
         "a-run-that-never-published-can-still-be-retired.test.mjs": {
           "tests": 5,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-whose-assessment-cannot-finish-delivers-what-it-holds.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -3689,7 +3701,7 @@
         },
         "experiment-context.test.mjs": {
           "tests": 27,
-          "asserts": 90,
+          "asserts": 91,
           "skips": 0,
           "todos": 0
         },
@@ -4366,8 +4378,8 @@
           "todos": 0
         },
         "operability.test.mjs": {
-          "tests": 30,
-          "asserts": 177,
+          "tests": 31,
+          "asserts": 181,
           "skips": 0,
           "todos": 0
         },

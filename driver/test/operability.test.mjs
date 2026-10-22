@@ -73,29 +73,25 @@ test("WS1a: a clean run makes ONE attempt per stage — nothing re-dispatches wh
 
 // ---- WS1b-core — resume from failure -----------------------------------------------------------------
 
-test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthesis→delivery re-run", async () => {
-  // Run 1: hard-fail synthesis (non-eligible) so the run fails AFTER the 7 upstream stages are valid on disk.
+// A synthesis failure whose recovery is spent is no longer the run's end: it is recorded as the assessment not completed
+// and the resumed pass delivers without it. So the stop that leaves synthesis to re-run on a resume is a RECOVERY PARK,
+// and the run is given the one attempt it takes; the terminal hand-off below is driven at a stage whose failure still
+// ends a run, the matter frame.
+async function parkAtSynthesis(job) {
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  process.env.CLEAROTRON_RECOVERY_MAX = "1";
+  try { return await PL.pipeline(job); } finally { process.env.CLEAROTRON_RECOVERY_MAX = "0"; }
+}
+
+test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthesis→delivery re-run", async () => {
+  // Run 1: synthesis fails and the run parks AFTER the 7 upstream stages are valid on disk.
   const job = jobFor("TMPRES1");
-  const r1 = await PL.pipeline(job);
-  assert.equal(r1.ok, false);
-  assert.equal(r1.failedStage, "synthesis");
-  // — THE RETURN IS A SINK, AND THIS IS THE HOP THAT PROVES IT. The terminal's own `terminalKind`
-  // has to survive `pipeline()`'s wrapper to the caller, because runner.mjs stringifies exactly this
-  // object into `<base>.failed.result` — the record scripts/e2e.mjs falls back to when it cannot resolve
-  // the run dir. A projection added to either wrapper would drop it here, silently, and both lanes'
-  // discriminators would die one hop short of the sink.
-  assert.ok(r1.terminalKind, "the terminal kind reaches the caller (here: exhausted, CLEAROTRON_RECOVERY_MAX=0)");
+  const r1 = await parkAtSynthesis(job);
+  assert.equal(r1.postponed, true, JSON.stringify(r1));
+  assert.equal(JSON.parse(readFileSync(join(r1.runDir, "status.json"), "utf8")).failedStage, "synthesis");
+  assert.ok(existsSync(join(r1.runDir, ".postponed")), ".postponed sentinel written");
+  assert.ok(!existsSync(join(r1.runDir, ".failed")), "a park is not a terminal");
   const codename = codenameOf(r1.runDir);
-  assert.ok(existsSync(join(r1.runDir, ".failed")), ".failed sentinel written");
-  // Handoff mode (the default): the failure event rides the outbox — a run-failed packet lands in the run
-  // dir AND as a self-contained outbox copy (the engine has no message tool; no notify-fail-chat turn).
-  const failPacket = JSON.parse(readFileSync(driverDir(r1.runDir, "failure.json"), "utf8"));
-  assert.equal(failPacket.kind, "run-failed");
-  assert.equal(failPacket.failedStage, "synthesis");
-  assert.match(failPacket.text, /nothing was delivered/i);
-  const outboxCopy = JSON.parse(readFileSync(join(ROOT, "clearance-outbox", `${failPacket.runId}.failed.pending`), "utf8"));
-  assert.equal(outboxCopy.failedStage, "synthesis");
 
   // Run 2: resume (clear knobs so synthesis succeeds). Idempotency skips the valid upstream stages.
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
@@ -111,6 +107,28 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
   assert.ok(underDir(r2.runDir, "archive"), "resumed run delivered + archived");
 });
 
+test("WS1b-core: a run that ends with nothing delivered hands its terminal kind to the caller and owes the failure notice", async () => {
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "record_matter_frame" });
+  const r1 = await PL.pipeline(jobFor("TMPRES0"));
+  assert.equal(r1.ok, false);
+  assert.equal(r1.failedStage, "matter-frame");
+  // — THE RETURN IS A SINK, AND THIS IS THE HOP THAT PROVES IT. The terminal's own `terminalKind`
+  // has to survive `pipeline()`'s wrapper to the caller, because runner.mjs stringifies exactly this
+  // object into `<base>.failed.result` — the record scripts/e2e.mjs falls back to when it cannot resolve
+  // the run dir. A projection added to either wrapper would drop it here, silently, and both lanes'
+  // discriminators would die one hop short of the sink.
+  assert.ok(r1.terminalKind, "the terminal kind reaches the caller (here: exhausted, CLEAROTRON_RECOVERY_MAX=0)");
+  assert.ok(existsSync(join(r1.runDir, ".failed")), ".failed sentinel written");
+  // Handoff mode (the default): the failure event rides the outbox — a run-failed packet lands in the run
+  // dir AND as a self-contained outbox copy (the engine has no message tool; no notify-fail-chat turn).
+  const failPacket = JSON.parse(readFileSync(driverDir(r1.runDir, "failure.json"), "utf8"));
+  assert.equal(failPacket.kind, "run-failed");
+  assert.equal(failPacket.failedStage, "matter-frame");
+  assert.match(failPacket.text, /nothing was delivered/i);
+  const outboxCopy = JSON.parse(readFileSync(join(ROOT, "clearance-outbox", `${failPacket.runId}.failed.pending`), "utf8"));
+  assert.equal(outboxCopy.failedStage, "matter-frame");
+});
+
 // ── post-merge audit, N2 — the contract the babysit surface STATES, on a real resume ─────────
 // `get_run` folds run.jsonl `stage` and `skip` rows into ONE stages[] list, and mcp-server/server.mjs
 // states that surface's contract unqualified: an output that was expected and is not there arrives as
@@ -123,10 +141,9 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
 // The assertion that would have caught it is universally quantified over a REAL resumed run's rows —
 // asserting on one hand-written row only ever proves the row you thought to write.
 test("AUDIT #175/N2 — every stage/skip row a RESUMED run writes satisfies the get_run stages[] contract", async () => {
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   const job = jobFor("TMPCONTRACT1");
-  const r1 = await PL.pipeline(job);
-  assert.equal(r1.ok, false, "run 1 fails at synthesis, leaving the upstream stages valid on disk");
+  const r1 = await parkAtSynthesis(job);
+  assert.equal(r1.postponed, true, "run 1 parks at synthesis, leaving the upstream stages valid on disk");
   const codename = codenameOf(r1.runDir);
 
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
@@ -203,10 +220,9 @@ test("P2 crash-resume: a crash changes no input bytes, so the resume stays as ch
   // (the reason the skip exists at all) exactly as cheap as it was. A resume that changed nothing upstream
   // must fire ZERO `stage-stale` events and must still skip its upstream stages. Freshness is
   // unconditional — there is no flag to arm, so this is the production code path.
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   const job = jobFor("TMPFRESH1");
-  const r1 = await PL.pipeline(job);
-  assert.equal(r1.ok, false);
+  const r1 = await parkAtSynthesis(job);
+  assert.equal(r1.postponed, true);
   const codename = codenameOf(r1.runDir);
 
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });

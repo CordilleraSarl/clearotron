@@ -64,6 +64,19 @@ export function clientFailureNote({ refused = false } = {}) {
  */
 export const CLIENT_ACTION = "Please tell whoever administers this installation.";
 
+/**
+ * The sentence a delivered report leads with when the run's overall assessment could not be completed, and the
+ * one new client sentence that state needs. Written once, here, so a change of wording changes one string. Its
+ * second half is the shipped gap row's own wording (driver/deferral-row.mjs); "The overall assessment" and its
+ * place at the top of the page are what is new, and that wording waits on the owner's word.
+ */
+export const ASSESSMENT_NOT_COMPLETED = "The overall assessment could not be completed this run, so it is left open here rather than reported as clean.";
+
+/** The report's own conclusion in that state: the sentence, then the shipped action line. */
+export function assessmentNotCompletedNote() {
+  return `${ASSESSMENT_NOT_COMPLETED} ${CLIENT_ACTION}`;
+}
+
 /** The words no client-facing surface may say again — asserted by an arm, so the retirement holds. */
 export const RETIRED_CLAIMS = Object.freeze([
   "has been notified",

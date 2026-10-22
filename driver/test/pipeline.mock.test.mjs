@@ -666,9 +666,9 @@ test("WS-A: a forced re-digest DROPS the stale JSON first and the driver re-deri
 test("WS-A: --from register-digest re-run drops the stale JSON, then the driver RE-DERIVES it (non-followup forced re-runs)", async () => {
   // run 1 dies at synthesis (the first FATAL post-digest stage — the skeptic is non-fatal),
   // leaving a live run dir with a derived JSON beside the findings.
-  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
-  assert.equal(r1.ok, false);
-  assert.equal(r1.failedStage, "synthesis");
+  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
+  assert.equal(r1.postponed, true, JSON.stringify(r1));
+  assert.equal(JSON.parse(readFileSync(join(r1.runDir, "status.json"), "utf8")).failedStage, "synthesis");
   const ledgerPath = join(r1.runDir, "register-coverage-ledger.json");
   assert.ok(existsSync(ledgerPath), "run 1 derived the JSON before failing");
   // plant a recognizable STALE-but-valid JSON, as if the prose were about to be rewritten under it
@@ -956,7 +956,7 @@ test("spec 62 sidecar: a project-bearing job freezes the PROJECT's marketplaces 
 });
 
 test("WS-B sidecar is authoritative on resume: a planted sidecar wins (write-if-absent) and logs profile-mismatch", async () => {
-  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
   // simulate "profiles/ changed between run and resume": the sidecar carries a different key (same
   // floor/platforms so the validators behave identically — this pins WHICH source wins, not the floor)
@@ -979,7 +979,7 @@ test("WS-B sidecar is authoritative on resume: a planted sidecar wins (write-if-
 });
 
 test("WS-B corrupt sidecar: resume fails LOUDLY and never silently re-derives the frozen profile", async () => {
-  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
   const sidecarPath = driverDir(r1.runDir, "profile.json");
   const { writeFileSync: wf } = await import("node:fs");
@@ -992,7 +992,7 @@ test("WS-B corrupt sidecar: resume fails LOUDLY and never silently re-derives th
 });
 
 test("WS-B pre-WS-B resume: a sidecar-less run resumes LEGACY end to end — no retro-mint, no identity join", async () => {
-  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
   // simulate a run created before this deploy: strip the sidecar the cold start minted
   const { rmSync } = await import("node:fs");
@@ -1735,9 +1735,9 @@ test("envelope-settle: a resume that finds no decision on disk re-settles the re
   // run 1 dies at synthesis — the first FATAL post-digest stage — so the run dir stays LIVE and resumable
   // (a delivered run is archived and pipeline() refuses to resume it).
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    MOCK_PLAN_DEFERRED: DEFERRED_SLICE, MOCK_FAIL_STAGE: "joint synthesis narrative" });
-  assert.equal(r1.ok, false);
-  assert.equal(r1.failedStage, "synthesis");
+    MOCK_PLAN_DEFERRED: DEFERRED_SLICE, MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
+  assert.equal(r1.postponed, true, JSON.stringify(r1));
+  assert.equal(JSON.parse(readFileSync(join(r1.runDir, "status.json"), "utf8")).failedStage, "synthesis");
   const decisionPath = driverDir(r1.runDir, "envelope-decision.json");
   assert.ok(existsSync(decisionPath), "run 1 decided at its fan-in");
 
@@ -2382,7 +2382,7 @@ function ledgerSets(raw) {
 // second independent ledger.
 async function resumedUnsplitRun(extra = {}) {
   const { res: seed } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    MOCK_FAIL_STAGE: "joint synthesis narrative", ...extra });
+    MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1", ...extra });
   assert.equal(seed.ok, false, `the seed run must run the split and stop AFTER the merge: ${JSON.stringify(seed)}`);
   assert.ok(existsSync(join(seed.runDir, "common-law-findings.md")),
     "the seed run must have merged its halves — without the canonical findings file there is no pre-split shape to resume");
@@ -2944,7 +2944,7 @@ test("the record can never explain a path the run did not take", async () => {
 // is valid now and still writes a grid of the general-web cell and the meaning sweep — the arm after this
 // one pins that it does, and that it delivers without this clamp.
 test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CONDITIONAL and names the gap", async () => {
-  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
   // a run created before the profile freeze existed: strip the sidecar the cold start minted
   const { rmSync } = await import("node:fs");
@@ -3176,9 +3176,9 @@ test("the model gets ONE repair turn, not a loop", async () => {
 // in a state that persists: under success-only recording the run's own status names the last stage that
 // finished, which is not where it stopped.
 test("a run that dies in a stage says THAT stage is where it was, not the last one that finished", async () => {
-  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
-  assert.equal(res.ok, false);
-  assert.equal(res.failedStage, "synthesis");
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
+  assert.equal(res.postponed, true, JSON.stringify(res));
+  assert.equal(JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage, "synthesis");
 
   const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
   assert.equal(status.lastStage, "synthesis",
@@ -3198,9 +3198,9 @@ test("a run that dies in a stage says THAT stage is where it was, not the last o
 // and a rebuilt run (stale repair, an experiment arm) restores it from there — or, on a record written
 // before the move, from the old field, so an archived run's sign-off is not lost on the way back in.
 test("a rebuilt run restores the reviewer's sign-off from review.signoff, and from a record written before the move", async () => {
-  const { res } = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_FAIL_STAGE: "joint synthesis narrative" });
-  assert.equal(res.ok, false);
-  assert.equal(res.failedStage, "synthesis");
+  const { res } = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
+  assert.equal(res.postponed, true, JSON.stringify(res));
+  assert.equal(JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage, "synthesis");
   delete process.env.MOCK_FAIL_STAGE;
   // The run stopped before the refutation signed, so the sign-off is planted here in each shape; the writer
   // side is held by the delivered-run arms above, which read review.signoff off the run's own status.

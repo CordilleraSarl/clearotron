@@ -1118,6 +1118,10 @@ const isFullCountry = (opts) => /full country/i.test(searchStage(opts));
 // delivered test run, a finding holding rights in three countries was drawn under the first, and the other two were
 // chipped "Nothing found" on the same page that asked the client who owns the rights there.
 function whereItStandsSection(findings, opts) {
+  // WITH NO ASSESSMENT THERE IS NO STANDING TO DRAW. Every planned country with no banded finding is chipped
+  // "Nothing found", and on a run whose overall assessment was not completed that would be every country: a clean
+  // answer the run never reached. The section is the assessment's, so it is not drawn.
+  if (opts && opts.assessmentNotCompleted === true) return '';
   const sd = opts && opts.searchDepth;
   if (!sd || !sd.counts || isFullCountry(opts)) return '';
   const byC = sd.counts.recordsByCountry || {};
@@ -1300,7 +1304,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
     rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
   }
-  const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open)}</div>` : '';
+  const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true })}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
   // and what a register-index entry means. A reader cannot read a card without it.
@@ -1308,7 +1312,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   const hasCards = Array.isArray(findings) && findings.length > 0;
   const hasIndexEntry = (Array.isArray(findings) ? findings : []).some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
     && (hasRecordSet || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length)))));
-  const prov = (hasRecordSet || hasCards)
+  const prov = (opts?.assessmentNotCompleted !== true && (hasRecordSet || hasCards))
     ? `<div class="provwrap"><div class="rk">Record provenance</div><p class="provnote">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p></div>`
     : '';
   // THE BOARDS END THE SECTION WITH THE WORKBOOK: every search and its result are in the audit workbook,
@@ -1322,6 +1326,9 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
 }
 
 function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
+  // The names the run set aside and cleared are the assessment's conclusions, so a run whose overall assessment
+  // was not completed lists none of them.
+  if (opts.assessmentNotCompleted === true) return '';
   const sd = opts.searchDepth || null;
   const ruledCards = ruledOut.map((f) => {
     const who = recordOwner(f, recordsByUri) || f.owner?.name || '';
@@ -2231,7 +2238,9 @@ function dedupeFollowUps(coverage) {
   });
 }
 
-function coverageGrid(coverage) {
+// `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open
+// rows' lead line, which says the material ones are carried in it, is not printed. The rows are.
+function coverageGrid(coverage, { verdict = true } = {}) {
   coverage = dedupeFollowUps(coverage);
   if (!coverage.length) return '';
   const cell = (c) => {
@@ -2249,7 +2258,7 @@ function coverageGrid(coverage) {
   const parts = [];
   if (covered.length) parts.push(`<div class="cov">${covered.map(cell).join('')}</div>`);
   if (rest.length) parts.push(
-    `<p class="covnext"><b>Next steps &amp; monitoring</b> — routine follow-ups and bounded monitor items; anything material is carried in the verdict above.</p>`
+    (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b> — routine follow-ups and bounded monitor items; anything material is carried in the verdict above.</p>` : '')
     + `<div class="cov">${rest.map(cell).join('')}</div>`);
   return parts.join('');
 }
@@ -2459,9 +2468,12 @@ function splitFirstSentence(text) {
   return { first: t, rest: '' };
 }
 
-function heroCaptionHtml(text) {
+// `whole` — the conclusion of a report whose overall assessment was not completed is printed whole: its second
+// sentence is the action the reader is asked to take, and the fold's label names a chart that report does not have.
+function heroCaptionHtml(text, { whole = false } = {}) {
   const { first, rest } = splitFirstSentence(text);
   if (!first) return '';
+  if (whole) return `<p class="sub">${inline(String(text).trim())}</p>`;
   if (!rest) return `<p class="sub">${inline(first)}</p>`;
   // `sub-lead` marks the FOLDED first sentence so the stylesheet can tighten its bottom margin without a
   // positional selector: `.sub:first-of-type` would have caught an UNFOLDED one-sentence caption too and
@@ -2786,7 +2798,7 @@ ${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
   ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
   ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   <span class="sp"></span>
-  <span class="tb-risk" style="background:var(${STOP_VAR[i]})">${riskLabel}</span>
+  ${/* With no assessment there is no rating, and with no rating this pill falls back to the CLEAR stop. */''}${opts.assessmentNotCompleted === true ? '' : `<span class="tb-risk" style="background:var(${STOP_VAR[i]})">${riskLabel}</span>`}
   <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
   ${/* A DATE, NOT A TIMESTAMP. This read "Issued on 2026-09-17 · 08:36 GMT+2" — the minute the file
        was written, and the zone the machine that wrote it happened to be in. Neither tells a reader
@@ -2823,8 +2835,8 @@ ${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
     ${confLineHtml(opts.delivery, productName)}
     <h1 class="mark">${esc(fm.title || '')}</h1>
     ${aboutPanel(fm, coverage, findings, opts)}
-    ${heroCaptionHtml(secs['Summary'] ? secs['Summary'].trim() : (fm.overall_caption || ''))}
-    <div class="heroGrid">${gauge(fm, findings, coverage, fourAnswers, opts)}</div>
+    ${heroCaptionHtml(secs['Summary'] ? secs['Summary'].trim() : (fm.overall_caption || ''), { whole: opts.assessmentNotCompleted === true })}
+    ${/* The gauge is the rating: with no assessment it has none to show, and would point at CLEAR. */''}${opts.assessmentNotCompleted === true ? '' : `<div class="heroGrid">${gauge(fm, findings, coverage, fourAnswers, opts)}</div>`}
     ${doFirst(secs)}
     ${actionGroup(buckets.ans, 'ans')}
   </header>
