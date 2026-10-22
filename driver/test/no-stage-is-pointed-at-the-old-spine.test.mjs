@@ -15,6 +15,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, dirname, resolve, relative } from "node:path";
 
 import { DRIVER, SKILLS, everyModelStageDispatch } from "./model-stage-dispatches.mjs";
+import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const SPINE = resolve(SKILLS, "clearance-search", "SKILL.md");
 const flat = (rel) => readFileSync(join(SKILLS, rel), "utf8").replace(/\s+/g, " ");
@@ -23,7 +24,7 @@ test("no chain of links from a file any stage declares reaches the spine", () =>
   const declared = new Set(everyModelStageDispatch("/nonexistent/invented-run").flatMap((d) => d.declared).map((rel) => resolve(DRIVER, rel)));
   // The register search reads whichever provider's manual is active; every one is a starting point.
   const providers = join(SKILLS, "clearance-register", "providers");
-  for (const name of readdirSync(providers)) if (name.endsWith(".md")) declared.add(resolve(providers, name));
+  for (const name of nonEmpty(readdirSync(providers), "the provider manuals")) if (name.endsWith(".md")) declared.add(resolve(providers, name));
   assert.ok(declared.size > 20, "guard: the stages' declared files were found");
   assert.ok(!declared.has(SPINE), "a stage declares the spine");
   const seen = new Set(), queue = [...declared], reached = [];
