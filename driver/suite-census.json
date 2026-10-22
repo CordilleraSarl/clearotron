@@ -1581,6 +1581,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-report-whose-overview-cannot-finish-delivers-its-rating-and-cards.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
           "tests": 3,
           "asserts": 13,

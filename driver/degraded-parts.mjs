@@ -36,6 +36,7 @@ export const PART_NAMES = {
   register: "Register",                // the report's search-coverage row (publish/render.mjs)
   localLanguage: "Local-language investigation",   // the report's search-coverage row (publish/render.mjs)
   findings: "Findings",                // the workbook's tab (publish/xlsx.mjs)
+  summary: "Summary",                  // the report's own top section, in its section strip (publish/render.mjs)
   machineQc: "Machine QC",             // the workbook's Summary row for the checks (publish/xlsx.mjs)
   conditions: "Conditions",            // the gaps sheet's area for a condition that reaches no page (publish/index.mjs)
   coverage: "Coverage & gaps",         // the workbook's tab (publish/xlsx.mjs)
@@ -104,6 +105,16 @@ function assessment(runDir) {
   return { part: "assessment", name: PART_NAMES.findings, reason: NOT_COMPLETED,
     cause: open.damaged ? "the record of the assessment not completed is present and cannot be read"
       : `the overall assessment did not complete at ${open.stage ?? "an unrecorded stage"}: ${open.reason ?? "no cause recorded"}` };
+}
+
+// The report overview, where the run recorded it as not completed: the report carries its rating and its cards without
+// the overview's conclusion, which sits in the report's top section, so the part is that section's name.
+function overview(runDir) {
+  const open = readPartNotCompleted(runDir, "overview");
+  if (!open) return null;
+  return { part: "overview", name: PART_NAMES.summary, reason: NOT_COMPLETED,
+    cause: open.damaged ? "the record of the overview not completed is present and cannot be read"
+      : `the report overview did not complete: ${open.reason ?? "no cause recorded"}` };
 }
 
 // Court decisions, on a run that was due them: the stage ended failed, or its file is absent or empty. An
@@ -250,7 +261,7 @@ function officialRecords(runDir, log) {
     cause: `the fetch ledger could not be read: ${last.ledgerError}` };
 }
 
-const CHECKS = [assessment, courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords];
+const CHECKS = [assessment, overview, courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords];
 
 /**
  * Every part of this clearance run that failed and still ships, read from the run directory as it stands

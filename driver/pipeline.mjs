@@ -15156,7 +15156,18 @@ async function pipelineInner(job, opts = {}) {
       ensureDriverDir(run.runDir);
       writeFileSync(join(run.runDir, REPORT_IDENTITY_FILE), JSON.stringify(reportIdentityRecord(job, ctx, run.runDir, displayVerdict), null, 2) + "\n");
     } catch (e) { note(`report identity write failed (non-fatal — the shell renders the keys it has): ${e.message}`); }
-    const rov = must(await stage("report-overview", { ...ctx, displayVerdict }, {}), "report-overview");   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
+    // THE REPORT OVERVIEW, WHERE IT COULD NOT BE COMPLETED (parts-not-completed.mjs). Its recovery was spent, so the report
+    // delivers its rating and its cards without the overview's conclusion, and the workbook's shipped "Summary" row says
+    // so. The shell the overview would have written is the driver's own, with the run's identity and no conclusion, and
+    // no overview is dispatched again on this pass: not here, not by the lint's redo, not by the delivery check's repair.
+    const overviewOpen = readPartNotCompleted(run.runDir, "overview");
+    if (overviewOpen) {
+      writeFileSync(P.reportOverview, renderReportOverview({ overall_caption: null, handling_note: null, actions: [], methodology: null },
+        reportIdentityRecord(job, ctx, run.runDir, displayVerdict)));
+      runLog(run.runDir, { event: "overview-not-completed-delivery", stage: overviewOpen.stage ?? null });
+    }
+    const rov = overviewOpen ? null
+      : await asPartNotCompleted("overview", async () => must(await stage("report-overview", { ...ctx, displayVerdict }, {}), "report-overview"));   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
     const findingsRead = readFindingsForReport(P);
     const findingsForCards = findingsRead.findings;
     //: a rejected findings.json is a defect, not an emptiness. Say so HERE, where the file was read,
@@ -16187,7 +16198,7 @@ async function pipelineInner(job, opts = {}) {
           if (rc.ok) { repaired.push(`report-card:${ord}`); reassembled = true; }
         }
         const shellFixable = targets.overview;
-        if (shellFixable.length) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
+        if (shellFixable.length && rov) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
         // narrative that broke the rules is the run shipping the defect with a note attached. ONE warm
@@ -16243,7 +16254,9 @@ async function pipelineInner(job, opts = {}) {
         const axis = label.includes(":") ? label.slice(label.indexOf(":") + 1) : null;
         try { return stageInputs(bare, P, { axes: ctx.axes, axis, registerOnly: ctx.registerOnly }); } catch { return []; }
       };
-      staleStages = [...staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput }),
+      // The overview not completed has no stage to be stale: its shell is the driver's own, and nothing re-runs it.
+      const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview"));
+      staleStages = [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
         ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
       // A DELIVERY-CHECK REPAIR THAT CHANGED ONLY THE FINDINGS RECORD leaves the narrative's bytes, and so the
       // reviewer, fresh — the reviewer does not declare findings.json. The change is still content no review has
@@ -16616,7 +16629,7 @@ async function pipelineInner(job, opts = {}) {
         // freshness question — one bounded pass; anything still stale blocks below, exactly as before.
         lint = lintNow();
         autoCorrectRegistry();
-        staleStages = staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
+        staleStages = staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput });
         // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, and its record says so (`unreadRecordReview`). The guard
         // is never handed that record: a run is not held on an unread review (owner's ruling, 2026-10-19). What the guard
         // reads here is staleness alone, as in the released engine.
