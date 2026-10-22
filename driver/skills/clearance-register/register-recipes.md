@@ -314,8 +314,7 @@ total_hits, fetched:0, sample:[], reason:"crowd descriptor — <why>"}`. Then:
 - **Do NOT narrow the crowd, re-probe, and call the residual clean.** Scoping a named slice by class/region is
   *breadth* (which slice you search) — that is fine and is what the `register_enumerate` call does. Replacing
   a broad query's hits with a narrower query's lower count and declaring the field clean is the banned
-  broad→narrow false-clean. The crowd is *described* (count) and the named slices are *enumerated*; nothing in
-  between.
+  broad→narrow false-clean. The crowd is *described* (count) and the named slices are *enumerated*; a crowd that reading would change the advice on is narrowed by the steps in unit.md.
 - **"Character-noise" is a judgment read, not a funnel call.** A high count is *passed to the lawyer as a
   descriptor*; the funnel does not dismiss it as individual-character indexing. The lawyer reads the count
   alongside the enumerated class-scoped band and decides.

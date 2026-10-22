@@ -1749,6 +1749,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-saturation-crowd-that-would-change-the-advice-is-narrowed.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "a-save-that-cannot-commit-says-so.test.mjs": {
           "tests": 4,
           "asserts": 19,
