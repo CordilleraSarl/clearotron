@@ -47,8 +47,9 @@ const ENGINES = {
 const KEYS = ["CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE",
   "CLEAROTRON_REGISTER_GAP_CLAMP"];
 const AXIS = "primary-sweep";
-// Only this unit's own dispatch names its band as the band artifact, so only its turns fail.
-const FAIL_UNIT = `BAND ARTIFACT&&register-units/${AXIS}-band.json`;
+// Only this unit's own dispatch names its band as the band artifact, so only its turns fail. The path is joined for the
+// platform, as the dispatch joins it: on Windows it is written with backslashes.
+const FAIL_UNIT = `BAND ARTIFACT&&${join("register-units", `${AXIS}-band.json`)}`;
 const NOT_LANDED = plainDeferralReason("slice-not-landed");
 
 async function runPass(root, engine, knobs = {}, codename = null) {

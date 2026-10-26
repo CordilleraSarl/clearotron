@@ -37,8 +37,11 @@ test("codex carries the time to stop sending to each server it starts", () => {
 
 test("the wiring: each turn and each repair turn builds its config with the time, and every register server reads it", () => {
   const gateway = readFileSync(join(HERE, "..", "gateway.mjs"), "utf8");
-  const sites = gateway.match(/mcpConfig: withSendUntil\(gatherMcpConfig, Date\.now\(\) \+ effTimeout \* 1000 - sendReserveMs\(effTimeout\)\)/g) ?? [];
-  assert.equal(sites.length, 2, "a turn is dispatched without its time to stop sending");
+  assert.match(gateway, /const turnConfig = \(sec\) => withSendUntil\(gatherMcpConfig, Date\.now\(\) \+ sec \* 1000 - sendReserveMs\(sec\)\);/,
+    "a turn's config is not built with its time to stop sending");
+  assert.match(gateway, /const mcpConfig = turnConfig\(effTimeout\);[^\n]*\n[\s\S]{0,1200}engine\.runTurn\(\{[^\n]*codexHome: stageCodexHome, mcpConfig, /,
+    "the turn is dispatched without its own copy of the config");
+  assert.equal((gateway.match(/mcpConfig: turnConfig\(effTimeout\)/g) ?? []).length, 1, "the repair turn is dispatched without its time to stop sending");
   assert.doesNotMatch(gateway, /mcpConfig: gatherMcpConfig[,}]/, "a turn still takes the stage's config as it was built");
   const servers = readdirSync(join(HERE, "..", "engine", "mcp")).filter((f) => f.endsWith("-server.mjs"))
     .filter((f) => /const tctx = \(kind\) => \(\{/.test(readFileSync(join(HERE, "..", "engine", "mcp", f), "utf8")));
