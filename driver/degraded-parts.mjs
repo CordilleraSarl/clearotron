@@ -326,6 +326,7 @@ export const STORE_PARTS = {
   "_driver/framework.json": "findings",
   "_driver/register-recall.json": "coverage",
   "_driver/register-plan.json": "register",
+  "_driver/plan-execution.json": "register",
   "register-named-band.json": "register",
   "_driver/instructed-scope.json": "register",
   "_driver/jx-lanes.json": "localLanguage",

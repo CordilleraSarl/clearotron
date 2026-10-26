@@ -1808,7 +1808,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // in the set. Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: a report whose overall assessment was not completed
 // draws no rating. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "cb4fccf30d505b59322ef7ce787d825b7bc0bb1c4c79732e9a63ea1b62c4661c";
+// Advanced again by the break recorded above the FROZEN constant: a territory the register could not search is not
+// drawn where it stands. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "cfcaf5dfe6a5f81b111fd2ac412876703fc2a3014aeac3f8e85dd888ffa4fe18";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2790,7 +2792,26 @@ const FROZEN_BEFORE_SPDX = "cb4fccf30d505b59322ef7ce787d825b7bc0bb1c4c79732e9a63
 //   2. Could it live in report.css or brand.mjs? No: it decides which sections are drawn at all.
 //   3. Why it had to move here: the pill, the gauge and the sections are composed in this file and nowhere else, and
 //      the portal frames this page rather than drawing its own.
-const FROZEN = "43b62b526376c61ddcbee81ee88af06282fdc7eb41abff9a4453611e6a83e471";
+//
+// ── BREAK (2026-10-26 — a territory the register could not search is not drawn where it stands) ─────────────────────
+//
+// WHAT MOVED: "Where it stands" chipped every planned country with no banded finding "Nothing found", reading the
+// plan alone. A planned slice the register could not search is deferred on the plan-execution receipt, so a country
+// it covers was chipped clean over a search that did not happen. The publisher now hands this file the territories
+// of the slices the receipt deferred (`planTerritories.open`), and a country among them with no finding is not drawn:
+// no row and no chip. A country where a finding sits keeps its band row. No sentence is added or removed (owner,
+// 2026-10-26).
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, for a run whose receipt deferred a planned slice: its section loses the
+//      countries that slice covers. Measured through the previous tree and this one: the four demo runs, which carry
+//      no receipt, publish byte-identical pages. The global demo given a receipt deferring its first slice, a
+//      worldwide query over all 186 planned territories, keeps its 10 banded rows and goes from 175 "Nothing found"
+//      chips to none; the 80 chips of its "What was searched" section are unchanged, and the page differs on that
+//      one line.
+//   2. Could it live in report.css or brand.mjs? No: it decides which countries are drawn.
+//   3. Why it had to move here: the section is composed in this file and nowhere else.
+const FROZEN = "1c6d57dd3ffda17bad650e0e23c3f147ab7c69b6dde4d5c34e1ab6cdaece7fb4";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
