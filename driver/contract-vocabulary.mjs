@@ -425,7 +425,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   },
   {
     prefix: "knockout_",
-    site: "driver/findings-model.mjs:2303 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
+    site: "driver/findings-model.mjs:2323 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
     reason: "The knockout lane's parser. knockout-frame and knockout-assess live in driver/stages-knockout.mjs, not in STAGES, so they carry no E1 declaration and are outside this partition. RECORDED AS A GAP: #850 audits both stages, and an E1 declaration for the knockout lane is not in this scaffolding.",
   },
   {
