@@ -20,41 +20,37 @@ directives); `%h` is that account's home. The load-bearing operational fact: the
 ```mermaid
 flowchart TB
     subgraph VM["Single VM — systemd --user (service account)"]
-        DP[".path: watches 3 agent queue globs<br/>(inotify, sub-second)"]
-        DT[".timer: 90s fallback re-drain<br/>(covers unwatched queues)"]
-        DS["prelim-driver.service<br/>oneshot: node runner.mjs<br/>TimeoutStartSec=6h"]
-        OP["outbox .path: *.pending markers"]
-        OT["outbox .timer: 50min rescan<br/>(fixed-cadence backstop)"]
-        OS["prelim-outbox.service<br/>oneshot: deliver-trigger.sh<br/>TimeoutStartSec=1500"]
-        PS["profile-service.service<br/>long-running, loopback :18794"]
-        GW["integrator agent-platform gateway<br/>(reference integration; comms plane)"]
-        DP --> DS
+        WK["clearotron-worker.service<br/>simple: node runner.mjs --watch<br/>drains the queue, resumes parked runs"]
+        PT["clearotron-portal.service<br/>simple: node portal-service.mjs"]
+        MF["clearotron-mcp-face.service<br/>simple: node mcp-server/http-server.mjs"]
+        CM["clearotron-client-mcp.service<br/>simple: node mcp-server/http-server-client.mjs"]
+        DT["clearotron-deploy.timer<br/>boot+5min, every 1h (optional)"]
+        DS["clearotron-deploy.service<br/>oneshot: clearotron update"]
         DT --> DS
-        OP --> OS
-        OT --> OS
+        PT --> MF
     end
-    Q[("per-agent queue dirs")] -.watched.-> DP
-    OB[("outbox: runId.pending")] -.watched.-> OP
+    Q[("per-agent queue dirs")] -.polled.-> WK
     POOL[("publish pool — CLEAROTRON_REPORTS_DIR<br/>(web-served, group-readable)")]
-    CF["auth proxy + tunnel<br/>(this deployment: Cloudflare)"] --> CADDY["reverse proxy<br/>(this deployment: Caddy)"] --> PS
+    WK --> POOL
+    CF["auth proxy + tunnel<br/>(this deployment: Cloudflare)"] --> CADDY["reverse proxy<br/>(this deployment: Caddy)"] --> PT
     CADDY --> POOL
-    DS --> POOL
-    OS --> GW
 ```
 
 | Unit | Trigger | Execs | Key settings (why) |
 |---|---|---|---|
-| `prelim-driver.path` | new `*.json` in the **three explicitly listed** agent queues | `prelim-driver.service` | A new agent workspace is only covered by the timer until this unit gains a glob line + deploy |
-| `prelim-driver.timer` | boot+2min, every 90s | same | Self-healing backstop; atomic claims mean a re-drain can never double-run |
-| `prelim-driver.service` | (path/timer only — not `[Install]`ed) | `node runner.mjs` | `Type=oneshot` (single instance guaranteed); `EnvironmentFile=%h/.env`; `StartLimitIntervalSec=0` (a gateway outage must not lock the unit out); **`TimeoutStartSec=6h`** — a ceiling for a *wedged* runner only; honest drains are bounded by the runner's 2h admission budget (`CLEAROTRON_ADMISSION_BUDGET_MS`) + one run's wall. Change the two together: a 6h unit ceiling under a longer admission budget kills honest drains |
-| `prelim-outbox.path` | `*.pending` in the outbox | `prelim-outbox.service` | Level-triggered: re-fires while any marker exists — the script's pacing sleep is load-bearing |
-| `prelim-outbox.service` | (path/timer) | `driver/deliver-trigger.sh` | **`TimeoutStartSec=1500`**: one hung wake once wedged the lane 19h (the CLI finished its turn but never exited); with a real ceiling the unit self-heals. The 1500 s covers the worst legitimate wake end to end — the script's own `timeout 840 --kill-after=30` wall, plus its drain wait (180 s) and its pacing sleep (≤300 s). Change them together |
-| `prelim-outbox.timer` | boot+10min, every 50min | same | Rescan for owed sends (`sendPending` true, no `.sent`); self-defers while the instant lane is busy |
-| `profile-service.service` | long-running | `node profile-service.mjs` | Loopback :18794 behind the reverse proxy and auth gate (this deployment: Caddy + Cloudflare Access); deliberately **no** `EnvironmentFile` (least-privilege; pins its own non-secret audience identifiers) |
+| `clearotron-worker.service` | long-running (`[Install]`ed) | `node driver/runner.mjs --watch` | `Type=simple`; polls for queued jobs and for parked runs whose window has passed; `Restart=on-failure`, `RestartSec=10`. The one unit that spends |
+| `clearotron-portal.service` | long-running | `node driver/portal-service.mjs` | The UI, the API, the sign-in and the configuration surface; ordered after the MCP face, which it calls |
+| `clearotron-mcp-face.service` | long-running | `node mcp-server/http-server.mjs` | The engine door the portal calls over MCP |
+| `clearotron-client-mcp.service` | long-running | `node mcp-server/http-server-client.mjs` | The door for a company's signed-in people and their access keys |
+| `clearotron-deploy.timer` | boot+5min, every 1h | `clearotron-deploy.service` | Optional: keeps the checkout on `origin/main` |
+| `clearotron-deploy.service` | (timer only) | `clearotron update` | `Type=oneshot`; refuses while a run is queued or in flight and exits 4, which `SuccessExitStatus=4` counts as success, so a busy box skips that firing; `TimeoutStartSec=30min`, so a hung `npm ci` cannot block later firings |
 
-**"Activating" for hours is normal** on `prelim-driver.service` during a multi-job drain — oneshot
-semantics put the whole drain inside the activating state. Do not add `Restart=` or a start limit;
-the unit comments and tests pin why.
+Every unit loads `EnvironmentFile=%h/.env`, expands `${CLEAROTRON_CHECKOUT_DIR}` in `ExecStart=` and sets
+`CLEAROTRON_NO_ENV_FILE=1`. `clearotron start --background` installs the four services; the deploy pair is copied by
+hand ([`driver/systemd/README.md`](../../driver/systemd/README.md)). The worker's normal state is `active (running)`.
+
+The packaged install runs no outbox watcher: the integrator wakes itself to courier what the outbox holds
+([`docs/DELIVERY.md`](../DELIVERY.md)), and `driver/deliver-trigger.sh` is one agent platform's reference wake.
 
 Delivery truth lives in the run dir, not the marker: `status.sendPending` + the `.sent` sentinel
 make wakes idempotent — a lost marker can delay a send (≤50 min), never lose or double it.
@@ -64,7 +60,7 @@ settle it).
 
 ## Deploy
 
-This repository ships the unit files (`driver/systemd/`, seven of them) and the delivery trigger
+This repository ships the unit files (`driver/systemd/`, six of them) and a reference delivery wake
 (`driver/deliver-trigger.sh`); it does not ship the script that installs them. Whatever plays that
 role on your host — a dispatcher, a config-management run, a hand-written script — owes the
 properties below, each of which was learned the expensive way:
@@ -75,21 +71,20 @@ properties below, each of which was learned the expensive way:
    deployment would drain plus the run-slot locks, and refuse on any of them. `--override
    "<reason>"` is the operator's deliberate exception; the reason is printed into the deploy output, and a
    blank one exits 2 rather than passing. This step used to be a line of prose asking a human to
-   check, which is not a guard on the night it matters. Then **stop the four trigger units** for
-   the deploy window and install an **EXIT trap that restarts them on every exit path**, success or
-   abort — trap *after* stop, or an early abort leaves the machine silent.
+   check, which is not a guard on the night it matters. Then **stop the worker** for the deploy
+   window and install an **EXIT trap that restarts it on every exit path**, success or abort — trap
+   *after* stop, or an early abort leaves the machine silent.
 2. **Skill scanner gate** over `driver/skills/` — the tree the driver actually reads — and over any
    skills tree your integrator carries. Abort on high/critical findings, and if the scanner is
    absent say so loudly rather than passing: a gate that cannot run is not a gate that passed.
 3. **Drift detection on live agent workspaces** — abort on local skill edits rather than promoting
    them; silent auto-promotion twice resurrected intentionally deleted files. A skill relocated into
    the driver tree is relocation, not drift.
-4. **Driver block** — install dependencies, copy the seven unit files + `daemon-reload`,
-   install/enable/restart the sibling services (`profile-service`, `client-access`, `client-mcp`), and
-   **pre-create the queue dirs and the outbox**: an inotify `.path` watch on a directory that does
-   not exist never fires.
-5. **Restart the gateway last**, with no live run and the triggers stopped, then re-enable the four
-   trigger units.
+4. **Driver block** — install dependencies, copy the unit files + `daemon-reload`,
+   install/enable/restart the deployment's sibling services (`client-access`, `client-mcp`), and
+   **pre-create the queue dirs and the outbox**.
+5. **Restart the gateway last**, with no live run and the worker stopped, then start the worker
+   again.
 
 ### Never hand-edit (a deploy overwrites these silently)
 
@@ -117,8 +112,8 @@ and the environment file holding the secrets.
 
 | Surface | What it tells you |
 |---|---|
-| `systemctl --user status prelim-driver.{path,timer,service} clearance-outbox.{path,timer,service} profile-service` | Trigger health; remember "activating = draining" |
-| `journalctl --user -u prelim-driver.service -f` | Runner notes (stderr): claims, dedup parks, preflight failures, orphan reclaims |
+| `systemctl --user status clearotron-worker clearotron-portal clearotron-mcp-face clearotron-client-mcp clearotron-deploy.timer` | Unit health; the four services read `active (running)` |
+| `journalctl --user -u clearotron-worker.service -f` | Runner notes (stderr): claims, dedup parks, preflight failures, orphan reclaims |
 | Run dir `status.json` / `run.jsonl` | Per-run state + the append-only decision trace; grep keys: `axes`, `profile`, `verdict`, `escalation`, `postponed`, `delivered`, `profile-mismatch` |
 | `_driver/<stage>.jsonl` | Per-attempt telemetry: status, fail token, kill signals, wall, tokens |
 | Queue dirs | Marker states at a glance ([03 §2](03-run-lifecycle.md#2--claim-identity-and-crash-safety)): `.json`, `.processing` (+`.skips` — a growing skip tally is the wedge signature), `.postponed`, `.duplicate`, `.done`, `.failed` |
@@ -161,7 +156,7 @@ survive until terminal state.
 | Run parked with `*.tainted-N` artifacts | Timeout-taint convergence loop ([07 §3](07-quality-and-audit.md#3--completed-coverage-honesty-in-code)) | Let it converge; repeated signature goes terminal honestly |
 | Chat failure ping never arrived for a failed run | By design: nothing here sends. The failure packet IS the notice, and an integrator consumes it | Check `_driver/failure.json` + the outbox lane (the guaranteed notice) |
 | Deploy refused because a run is in flight | The in-flight guard above | Wait for the run. A force-restart of the gateway is not the answer — that is for a wedged gateway |
-| Everything quiet after a deploy abort | Should not happen (EXIT trap restarts triggers) — if it does: `systemctl --user start prelim-driver.{path,timer} clearance-outbox.{path,timer}` and file it |
+| Everything quiet after a deploy abort | Should not happen (EXIT trap restarts triggers) — if it does: `systemctl --user start clearotron-worker.service` and file it |
 
 ## Selftest — retired
 
