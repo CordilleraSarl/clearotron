@@ -36,7 +36,8 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
-import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed } from "./parts-not-completed.mjs";
+import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
+import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // a band read with the slices a check could not prove ran taken out
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
@@ -4643,6 +4644,46 @@ export function recoverWinningAttempt(runDir, label) {   // @internal
     }
   } catch { /* no prior telemetry — fall back to caller defaults */ }
   return null;
+}
+
+// ── A REGISTER UNIT THAT COULD NOT FINISH IS DELIVERED AS ITS BAND STANDS ─────────────────────────────
+//
+// A unit that wrote no result once its attempts were spent ended the run, though the run held every other unit: on a
+// production run on 2026-10-21 one unit's plan search timed out at the register on every attempt, and the client got
+// nothing. Such a unit now fails as the searches not completed (the gather barrier below), naming itself and the planned
+// slices its band never reached. Once its recovery is spent, the run-level catch records both, and the resumed pass
+// takes the unit as it stands rather than sending it again: its band is what the kept answers left, or empty, and its
+// note is the driver's own account of that band, with no word from the seat. The band merge then takes the recorded
+// slices out as deferred blocks, so they are delivered as open rows.
+
+/**
+ * The planned slices of `axis` that its band holds no block for, each `{axis, qid, reason}` with the shipped reason for a
+ * search that never reached the register. A slice with a block, a timed-out one included, is not among them: the band
+ * already accounts for it. A guarded child is left to the plan join, which reads it off its parent. PURE but for the read.
+ */
+export function slicesUnitNeverReached(P, plan, axis) {   // @internal
+  let band = [];
+  try { const parsed = JSON.parse(readFileSync(P.registerBand(axis), "utf8")); band = Array.isArray(parsed) ? parsed : []; } catch { band = []; }
+  const held = new Set(band.map((b) => b?.qid).filter(Boolean).map(String));
+  return (plan?.entries ?? []).filter((e) => e?.axis === axis && e?.qid && !e.when && !held.has(String(e.qid)))
+    .map((e) => ({ axis, qid: String(e.qid), reason: plainDeferralReason("slice-not-landed") }));
+}
+
+/** The unit a run records as unfinished, taken as its band stands: its note rendered from it, nothing dispatched. */
+export function unfinishedUnitAsItStands(ctx) {   // @internal
+  const P = ctx.paths, a = ctx.axis, label = `register-unit:${a}`;
+  const t0 = Date.now();
+  mkdirSync(join(P.runDir, "register-units"), { recursive: true });
+  const bandPath = P.registerBand(a);
+  if (!existsSync(bandPath)) { writeFileSync(`${bandPath}.tmp`, "[]\n"); renameSync(`${bandPath}.tmp`, bandPath); }
+  const out = P.registerUnit(a);
+  writeFileSync(`${out}.tmp`, renderUnitNote({ axis: a, account: readBandAccount(P.runDir, a) }));
+  renameSync(`${out}.tmp`, out);
+  runLog(P.runDir, { event: "unit-not-completed-delivery", stage: label, output: outputMeta(out), ...stageWallFields(t0) });
+  note(`[${label}] could not be completed once its recovery was spent — taken as its band stands and not sent again`);
+  (ctx.skippedStages ??= []).push(label);
+  recordTransition(ctx, "register-unit");
+  return { ok: true, skipped: true, notCompleted: true, sessionKey: null, model: null };
 }
 
 // ── saturation-probe runs CODE-SIDE (2026-07-14, fabricated-band root cause) ────────────────────────
@@ -10779,9 +10820,13 @@ async function pipelineInner(job, opts = {}) {
     // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
     // real executor lane would dial the provider from a test). Production default is ON.
     const satProbeCodeSide = process.env.CLEAROTRON_SATPROBE_CODESIDE !== "0" && Boolean(planExec && ctx.registerPlan);
+    // The units this run records as unfinished are taken as their bands stand (unfinishedUnitAsItStands, above).
+    const unfinishedUnits = new Set(readPartNotCompleted(run.runDir, "searches")?.unfinished_units ?? []);
     const [gatherResults, blindRes] = await Promise.all([
       runBatched(gather, config.gatherConcurrency, (g) =>
-        g.name === "register-unit" && g.axis === "saturation-probe" && satProbeCodeSide
+        g.name === "register-unit" && unfinishedUnits.has(g.axis)
+          ? unfinishedUnitAsItStands({ ...ctx, axis: g.axis })
+          : g.name === "register-unit" && g.axis === "saturation-probe" && satProbeCodeSide
           ? runSaturationProbeCodeSide({ ...ctx, axis: g.axis }, planExec)
           : stage(g.name, { ...ctx, axis: g.axis })),
       stage("blind-frame", ctx).catch((e) => ({ ok: false, fail: String(e?.message ?? e) })),
@@ -10900,7 +10945,17 @@ async function pipelineInner(job, opts = {}) {
         runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
       }
     }
-    gather.forEach((g, i) => must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")));
+    // A REGISTER UNIT THAT WROTE NO RESULT is the searches not completed, after every other member has been held to its
+    // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path.
+    const unfinished = gather.map((g, i) => i).filter((i) => gather[i].name === "register-unit" && gather[i].axis
+      && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && !existsSync(P.registerUnit(gather[i].axis)));
+    gather.forEach((g, i) => { if (!unfinished.includes(i)) must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")); });
+    if (unfinished.length) {
+      const axesOut = unfinished.map((i) => gather[i].axis), first = gatherResults[unfinished[0]];
+      throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined, { quantity: first?.quantity }),
+        { notCompletedPart: "searches", unfinishedUnits: axesOut,
+          excludedSlices: axesOut.flatMap((a) => slicesUnitNeverReached(P, ctx.registerPlan, a)) });
+    }
     // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
     // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)
     const unitKey = {};
@@ -17584,7 +17639,8 @@ async function pipelineInner(job, opts = {}) {
     // THE SEARCHES' RECORD GROWS: a failure is routed again while it names a slice the record does not hold yet.
     const addedSlices = coveredPart === "searches" ? slicesNotYetRecorded(heldRecord, e.excludedSlices) : [];
     const addedAxes = coveredPart === "searches" ? axesNotYetDisclosed(heldRecord, e.taintedAxes) : [];
-    if (coveredPart && run?.runDir && (coveredPart === "searches" ? addedSlices.length + addedAxes.length > 0 : !heldRecord)) {
+    const addedUnits = coveredPart === "searches" ? unitsNotYetRecorded(heldRecord, e.unfinishedUnits) : [];
+    if (coveredPart && run?.runDir && (coveredPart === "searches" ? addedSlices.length + addedAxes.length + addedUnits.length > 0 : !heldRecord)) {
       let parked = null;
       try {
         // A TIMED-OUT AXIS IS READ AS THE LAST PASS LEFT IT: the park renamed its unit, band and digest so a resume would
@@ -17592,7 +17648,8 @@ async function pipelineInner(job, opts = {}) {
         if (addedAxes.length) undoTaintRenames(e.undoRenames);
         writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind,
           ...(coveredPart === "searches" ? { slices: [...(Array.isArray(heldRecord?.slices) ? heldRecord.slices : []), ...addedSlices],
-            disclosedAxes: [...(Array.isArray(heldRecord?.disclosed_axes) ? heldRecord.disclosed_axes : []), ...addedAxes] } : {}) });
+            disclosedAxes: [...(Array.isArray(heldRecord?.disclosed_axes) ? heldRecord.disclosed_axes : []), ...addedAxes],
+            unfinishedUnits: [...(Array.isArray(heldRecord?.unfinished_units) ? heldRecord.unfinished_units : []), ...addedUnits] } : {}) });
         const resumesAt = new Date().toISOString();
         // The payload the runner's self-resume needs (job, agent, codename), and the recovery kind, whose stated
         // clock it keeps exactly: now. No recovery attempt is counted, because nothing is being retried.

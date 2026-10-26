@@ -1557,6 +1557,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-search-that-cannot-finish-is-delivered-as-not-searched.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": {
           "tests": 4,
           "asserts": 10,
