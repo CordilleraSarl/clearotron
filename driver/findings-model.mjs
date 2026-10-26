@@ -1338,6 +1338,22 @@ export function remapActionOrdinals(actions, ordinalMap) {
   }).filter(Boolean);
 }
 
+/**
+ * The four answers' citations, renumbered with the findings. Each answer's ordinals follow the fold the way the
+ * actions' do: a merged-away ordinal becomes its kept finding's new one, and repeats collapse, in order. An ordinal the
+ * map does not know is left as the writer wrote it, so a citation that was already dangling still reaches the
+ * pre-delivery check rather than being quietly dropped. The answers themselves never change. PURE.
+ */
+export function remapFourAnswersOrdinals(fourAnswers, ordinalMap) {
+  if (!fourAnswers || typeof fourAnswers !== "object" || Array.isArray(fourAnswers)) return fourAnswers ?? null;
+  const out = {};
+  for (const [key, a] of Object.entries(fourAnswers)) {
+    if (!a || typeof a !== "object" || !Array.isArray(a.ordinals)) { out[key] = a; continue; }
+    out[key] = { ...a, ordinals: [...new Set(a.ordinals.map((n) => { const m = ordinalMap?.get?.(n); return Number.isInteger(m) ? m : n; }))] };
+  }
+  return out;
+}
+
 function validateFinding(f, idx, seenOrdinals, mode = { v4: false, manifest: null }) {
   if (!isPlainObject(f)) throw new Error(`finding_invalid:${idx} (every finding must be a plain object)`);
   // doc 50 — on v4 the legacy scale is FORBIDDEN, with its own token BEFORE the key allowlist so the

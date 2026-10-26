@@ -699,6 +699,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-findings-check-names-every-finding-it-fails-at-once.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-findings-record-broken-after-synthesis-is-restored-at-delivery.pipeline.test.mjs": {
           "tests": 6,
           "asserts": 38,
@@ -1866,6 +1872,12 @@
         "a-section-the-skill-spells-two-ways-is-not-a-missing-section.test.mjs": {
           "tests": 4,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-session-cut-off-keeps-its-own-stream-and-what-it-spent.test.mjs": {
+          "tests": 5,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -3550,8 +3562,8 @@
           "todos": 0
         },
         "e2e-scenario-ops.test.mjs": {
-          "tests": 28,
-          "asserts": 94,
+          "tests": 29,
+          "asserts": 97,
           "skips": 0,
           "todos": 0
         },
@@ -6567,6 +6579,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-four-answers-cite-the-findings-as-the-fold-numbers-them.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-frame-comparisons-sentence-stays-in-the-run-record.test.mjs": {
           "tests": 6,
           "asserts": 22,
@@ -8831,9 +8849,21 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/clarivate/test/an-office-that-refused-the-goods-field-is-left-out-for-the-rest-of-the-run.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/clarivate/test/an-office-that-takes-no-goods-field-is-left-out-and-the-rest-asked.test.mjs": {
           "tests": 5,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/an-owner-question-leaves-room-for-the-rest-of-the-request.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },

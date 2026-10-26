@@ -267,6 +267,20 @@ test("a narrowing names a crowd on the record, and both carry a count", () => {
   assert.equal(check(NARROW_ASSERT, { ...base, ...exec([]) }).notProbed, true, "no narrowing: not probed");
 });
 
+test("a narrowing and its crowd deferred at the provider still fail, and each is named with why it was deferred", () => {
+  // Four questions on one run were refused by the register with an HTTP 500 and deferred with that reason on
+  // the record; the check said only "no count", and the reason was found by hand.
+  const refused = "provider hard error after the full recovery ladder — the slice was accepted and then failed, so it was never searched"
+    + " and cannot be read as clean: provider error on the count probe before enumeration: HTTP 500: INTERNAL_SERVER_ERROR - Could not write JSON";
+  const r = check(NARROW_ASSERT, {
+    "_driver/register-plan.json": { entries: [planEntry("crowd:1", { predicate: "default", provenance: "mark" })] },
+    "register-units/primary-sweep-supplemental-plan.json": { entries: [{ qid: "supp:n1", origin: "supplemental", narrows: "crowd:1", rationale: "Narrowed to the exact form." }] },
+    "_driver/plan-execution.json": { executed: [], deferred: [{ qid: "crowd:1", reason: refused }, { qid: "supp:n1", reason: refused }] } });
+  assert.equal(r.ok, false, "a question that was never searched passed");
+  assert.match(r.saw, /1 name a crowd with no count: supp:n1 → crowd:1 \(deferred: provider hard error after the full recovery ladder, HTTP 500\)/);
+  assert.match(r.saw, /1 carry no count of their own: supp:n1 \(deferred: provider hard error after the full recovery ladder, HTTP 500\)/);
+});
+
 test("a narrowing asked OFF THE PLAN is named as that, not counted as a missing count", () => {
   // The engine asked something the plan did not contain and said so: the question is on the record in
   // `unplanned`, with a disposition and no executed count. This op had no branch for that disposition

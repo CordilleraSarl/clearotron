@@ -17,7 +17,7 @@
 //
 //   D1 verify.mjs connotationDispositionFail   fail(`connotation_${reason}:…`)   — reason is a member of CALL_REASON_SET
 //   D2 verify.mjs checkFindingsSibling  fail(String(e.message)…)  — parseFindingsJson throws token-first
-//   D3 verify.mjs:1240   checkJson: fail(String(e.message)…)   — FIVE parsers reach this one site
+//   D3 verify.mjs:1249   checkJson: fail(String(e.message)…)   — FIVE parsers reach this one site
 //   D4 verify.mjs  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs validators.registerFindings  fail(`${unaccounted[0].token}:…`)  — token minted in a DATA ROW
 //   D6 verify.mjs validators.registerFindings  fail(`${violations[0].token}…`)  — findUnexecutedCleanClaims() in register-plan.mjs
@@ -321,7 +321,7 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "coverage_form_missing",
     stages: ["register-digest"],
-    reason: "verify.mjs:2155 registerFindings says it in the failure string the reader sees: \"the driver writes it before the digest dispatches and unions it before every judgement (driver-written — this is a bug, not a model defect)\".",
+    reason: "verify.mjs:2164 registerFindings says it in the failure string the reader sees: \"the driver writes it before the digest dispatches and unions it before every judgement (driver-written — this is a bug, not a model defect)\".",
   },
   {
     token: "coverage_form_empty",
@@ -425,7 +425,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   },
   {
     prefix: "knockout_",
-    site: "driver/findings-model.mjs:2303 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
+    site: "driver/findings-model.mjs:2323 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
     reason: "The knockout lane's parser. knockout-frame and knockout-assess live in driver/stages-knockout.mjs, not in STAGES, so they carry no E1 declaration and are outside this partition. RECORDED AS A GAP: #850 audits both stages, and an E1 declaration for the knockout lane is not in this scaffolding.",
   },
   {

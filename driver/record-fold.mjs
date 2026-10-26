@@ -30,7 +30,7 @@
 import { readFileSync, writeFileSync, existsSync, renameSync, rmSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { consolidateFindings, remapActionOrdinals, parseFindingsJson } from "./findings-model.mjs";
+import { consolidateFindings, remapActionOrdinals, remapFourAnswersOrdinals, parseFindingsJson } from "./findings-model.mjs";
 import { parseFrameworkManifest } from "./framework.mjs";
 
 export const FOLD_FILE = "fold.json";
@@ -55,6 +55,9 @@ export function foldRecord(doc, manifest = null) {
   const next = { ...doc, findings };
   // spec 64 — a merged-away ordinal remaps to its kept finding's new ordinal
   if (Array.isArray(doc.actions)) next.actions = remapActionOrdinals(doc.actions, ordinalMap);
+  // …and so do the four answers' citations: left in the model's numbering, the panel cited ordinals past the folded
+  // record's end and linked the reader to findings that were not there.
+  if (doc.four_answers && typeof doc.four_answers === "object") next.four_answers = remapFourAnswersOrdinals(doc.four_answers, ordinalMap);
   return { doc: next, merges, map: bothWays(ordinalMap) };
 }
 

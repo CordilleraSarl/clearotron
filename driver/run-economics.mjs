@@ -33,8 +33,9 @@
 // So every total here is three-valued about its own completeness, in the shape provider-usage.mjs
 // already uses for `unclassified` — the absence is counted, named and carried beside the number:
 //   measured   — the dispatch journalled a usage object (from the provider's own result envelope)
-//   streamed   — usage present but RECONSTRUCTED from the stream (`signals.usageStreamed`), because the
-//                turn died before its result event. A real measurement, a weaker one, counted apart.
+//   streamed   — usage present but RECONSTRUCTED (`signals.usageStreamed`), because the turn died before its
+//                result event: from the stream on Claude, from codex's session log on codex. A real
+//                measurement, a weaker one, counted apart.
 //   unmeasured — the row is a dispatch and carries no usage at all. THE KILLED TURNS.
 // `tokensComplete` is false whenever `unmeasured > 0`, at run level and per stage, and
 // `unmeasuredDispatches[]` names which ones so a reader can see what the total is missing.

@@ -185,16 +185,14 @@ export const config = {
   // writes (`$HOME/trademark/workspace`), so the wizard and the bare default now agree instead of
   // describing two different installs.
   //
-  // ── WHAT AN UNSET WORKSPACE ROOT COSTS A DEPLOYED BOX (read this before changing it again) ─────────
+  // ── WHY A DEPLOYED BOX PINS ITS WORKSPACE ROOT (read this before changing it again) ──────────────────
   //
-  // driver/systemd/prelim-driver.path and prelim-outbox.path watch HARDCODED absolute globs — read them,
-  // they carry the literal path. A .path unit cannot read an environment variable, so those globs do NOT track this default and cannot
-  // be made to. If a deployment's run dirs move and its globs do not, the queue watcher stops firing:
-  // jobs sit, nothing errors, nothing logs, and the 90s prelim-driver.timer is the only thing still
-  // draining. That is why this default's move is paired with an EXPLICIT `CLEAROTRON_WORK_DIR` line in
-  // every deployed .env (see CHANGELOG "Unreleased") rather than shipped on its own — a deployment that
-  // pins the root it already runs on is unaffected by this line, which is the whole point of pinning it.
-  // driver/test/data-plane-defaults.test.mjs holds the globs and the production env example to each other.
+  // This default's move was paired with an EXPLICIT `CLEAROTRON_WORK_DIR` line in every deployed .env (see
+  // CHANGELOG "Unreleased") rather than shipped on its own: a deployment that pins the root it already runs
+  // on is unaffected by this line, which is the whole point of pinning it. The pin was first required by
+  // the queue watchers of the time, `.path` units whose globs were literals and could not track a default.
+  // Those units no longer ship: the worker (driver/systemd/clearotron-worker.service) drains the
+  // directories this config resolves, so the pin now keeps a box's runs where they already are.
   get workspaceRoot() { return this.envValue("CLEAROTRON_WORK_DIR") || join(home(), "trademark", "workspace"); },
 
   // Compute-skills tree. The deterministic stage prompts reference skills by the convention
@@ -348,9 +346,9 @@ export const config = {
     const m = new RegExp(`(?:^|${S})${this.workspacePrefixRe}(${N}+)${S}studio${S}${STUDIO_SEGMENT_RE}${S}queue${S}?$`).exec(qdir);
     return m ? m[1] : null;
   },
-  // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
-  // them on each trigger (+ a timer fallback), so a request from ANY forwarder runs. (Pre-fix the watcher
-  // and runner only looked at one agent's workspace, silently orphaning every other agent's job — the bug this fixes.)
+  // Every agent workspace's clearotron queue. The runner drains ALL of them on each poll, so a request from
+  // ANY forwarder runs. (Pre-fix the runner only looked at one agent's workspace, silently orphaning every
+  // other agent's job — the bug this fixes.)
   //
   // HEADLESS (Phase 2, standalone product): CLEAROTRON_QUEUE_DIR names ONE explicit queue dir — the intake
   // contract for a deployment with no agent workspaces at all (the enqueue CLI + ops-MCP start_run write

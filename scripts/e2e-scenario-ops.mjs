@@ -268,6 +268,14 @@ function executedCounts(exec) {
   return out;
 }
 
+/** A deferral's reason in a few words: its first clause, and the provider's HTTP status where it states one. */
+function deferralWhy(reason) {
+  const r = text(reason);
+  const head = r.split(" — ")[0].trim() || "no reason recorded";
+  const status = r.match(/\bHTTP \d{3}\b/)?.[0];
+  return status && !head.includes(status) ? `${head}, ${status}` : head;
+}
+
 /**
  * `narrowing-names-its-crowd` — every narrowing names a crowd that is on the record, and both carry a count.
  */
@@ -296,14 +304,21 @@ export function narrowingNamesItsCrowd(a, runDir) {
   // a question it asked off-plan is a question about the RECORD, not about this narrowing. That belongs
   // to the lane that writes the record; this op says what it found and declines to invent a verdict.
   const offPlanQids = new Set(list(exec.unplanned).map((e) => text(e?.qid)).filter(Boolean));
+  // A QUESTION DEFERRED AT THE PROVIDER IS STILL A FAILURE HERE, AND IT SAYS WHY. It was never searched, so
+  // the crowd it stood for has no count, and that is what this op exists to catch. But "no count" alone sent
+  // the reader of one run tracing four questions by hand to find that the register had refused every one
+  // with an HTTP 500. Each is now named with the first clause of the reason the record gives, and the
+  // provider's status where the reason states one; the verdict does not change.
+  const deferredWhy = new Map(list(exec.deferred).filter((e) => text(e?.qid)).map((e) => [text(e.qid), deferralWhy(e.reason)]));
+  const why = (qid) => (deferredWhy.has(qid) ? ` (deferred: ${deferredWhy.get(qid)})` : "");
   const crowdMissing = [], crowdUncounted = [], narrowingUncounted = [], narrowingOffPlan = [];
   for (const n of narrowings) {
     const crowd = text(n.narrows);
     if (!byQid.has(crowd)) crowdMissing.push(`${n.qid} → ${crowd}`);
-    else if (!counts.has(crowd)) crowdUncounted.push(`${n.qid} → ${crowd}`);
+    else if (!counts.has(crowd)) crowdUncounted.push(`${n.qid} → ${crowd}${why(crowd)}`);
     if (!counts.has(text(n.qid))) {
       if (offPlanQids.has(text(n.qid))) narrowingOffPlan.push(text(n.qid));
-      else narrowingUncounted.push(text(n.qid));
+      else narrowingUncounted.push(`${text(n.qid)}${why(text(n.qid))}`);
     }
   }
   const parts = [`${plural(narrowings.length, "narrowing")} naming ${new Set(narrowings.map((n) => text(n.narrows))).size} crowd(s)`];

@@ -64,7 +64,9 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
   session:    Session | null,        // what the session went through (below); null = no session ran
   stream:     { file, present, bytes, reason? } | null,
                                      // the raw stream, written to the file the caller named
-                                     // (the gateway names _driver/streams/<label>.attempt<N>.jsonl)
+                                     // (the gateway names _driver/streams/<label>.attempt<N>.jsonl);
+                                     // a name a session already wrote is never written over: the
+                                     // stream goes to <stem>.session<N>.jsonl, and `file` names it
 }
 ```
 
