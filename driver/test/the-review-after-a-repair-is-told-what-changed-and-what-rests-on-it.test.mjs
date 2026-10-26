@@ -146,8 +146,10 @@ test("the flag list after a repair closes on the line for a pass nothing reviews
 });
 
 test("the first full review's message still opens with its whole-review order: it is not narrowed", () => {
-  const msg = STAGES["narrative-refutation"].message({ paths: paths("/r"), intakeAsks: [], job: {}, registerOnly: false, profileSelection: null });
+  // The run directory's paths are joined for the platform, so on Windows the narrative is `\r\narrative.md`.
+  const P = paths("/r");
+  const msg = STAGES["narrative-refutation"].message({ paths: P, intakeAsks: [], job: {}, registerOnly: false, profileSelection: null });
   assert.match(msg, /^First, read and follow exactly: skills\/narrative-refutation\/SKILL\.md, skills\/clearance-search\/report-prose\.md\.\n/);
-  assert.match(msg, /\nAdversarially refute the narrative \/r\/narrative\.md against the source files:/);
+  assert.match(msg, new RegExp(`\\nAdversarially refute the narrative ${P.narrative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} against the source files:`));
   for (const l of REFUTATION_RECORDING_LINES) assert.ok(msg.includes(l));
 });
