@@ -194,11 +194,22 @@ export function countTool(byName, name) {
 // started it. Kept while the disk holding the run has room: below STREAM_FLOOR_BYTES free it is not
 // written, and the record says so rather than leaving a file that stops halfway. A write that fails
 // mid-session closes the file and says so too. Neither ever fails the turn.
+//
+// A NAME THAT IS TAKEN IS NEVER WRITTEN OVER. `<label>.attempt1` repeats when a recovery park re-enters a
+// stage, and a stage's follow-up passes each dispatch their own attempt 1. On a test run of a crowded matter
+// seven writer sessions shared two names, and each of the three cut off at the wall, 28 to 41 MB of stream,
+// was truncated by a later, shorter session under its name: the rows named files that held other sessions'
+// bytes. A later session now takes the next free name, `<stem>.session<N>.jsonl`, and the row records the
+// name it took, so every row names the bytes of its own session.
 export const STREAM_FLOOR_BYTES = 5 * 1024 ** 3;
 
+/** `<stem>.jsonl` for the first session under a name, `<stem>.session<n>.jsonl` for each later one. */
+const nthStreamName = (file, n) => (n === 1 ? file : file.replace(/(\.jsonl)?$/, (ext) => `.session${n}${ext}`));
+
 /**
- * Open a sink for `file`. Returns `{ write(chunk), close() }`; `close()` returns what landed:
- * `{ file, bytes, present: true }`, or `{ file, present: false, reason }`. A null file is a null sink.
+ * Open a sink for `file`, or for the next free name beside it when a session already wrote there. Returns
+ * `{ write(chunk), close() }`; `close()` returns what landed under the name it took: `{ file, bytes,
+ * present: true }`, or `{ file, present: false, reason }`. A null file is a null sink.
  */
 export function streamSink(file, { floorBytes = STREAM_FLOOR_BYTES, freeBytes = null } = {}) {
   if (!file) return { write() {}, close: () => null };
@@ -207,7 +218,14 @@ export function streamSink(file, { floorBytes = STREAM_FLOOR_BYTES, freeBytes = 
     mkdirSync(dirname(file), { recursive: true });
     const free = freeBytes ?? (() => { const s = statfsSync(dirname(file)); return Number(s.bavail) * Number(s.bsize); })();
     if (free < floorBytes) reason = `not written: the disk holding the run had ${Math.round(free / 1024 ** 2)} MiB free, under the ${Math.round(floorBytes / 1024 ** 3)} GiB floor`;
-    else fd = openSync(file, "w", 0o600);
+    else {
+      // "wx" creates or refuses, in one step, so two sessions can never both take one name.
+      for (let n = 1; fd === null; n += 1) {
+        const name = nthStreamName(file, n);
+        try { fd = openSync(name, "wx", 0o600); file = name; }
+        catch (e) { if (e?.code !== "EEXIST" || n >= 999) throw e; }
+      }
+    }
   } catch (e) { reason = `not written: ${String(e?.message ?? e).slice(0, 120)}`; }
   return {
     write(chunk) {

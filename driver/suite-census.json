@@ -1851,6 +1851,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-session-cut-off-keeps-its-own-stream-and-what-it-spent.test.mjs": {
+          "tests": 5,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-session-the-classifier-cut-is-not-recorded-as-clean.test.mjs": {
           "tests": 13,
           "asserts": 80,
