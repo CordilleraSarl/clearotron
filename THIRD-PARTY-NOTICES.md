@@ -9,7 +9,7 @@ file rather than a courtesy.
 production tree; `--check` fails when it no longer matches. Development dependencies are excluded:
 they are not distributed, so they carry no obligation for anyone who installs this.
 
-177 packages.
+178 packages.
 
 > **Declared but NOT INSTALLED, so not distributed and not attributed below:** `@cfworker/json-schema`.
 > npm lists these with no version and no path — an unmet or optional peer. Recorded because a name
@@ -534,7 +534,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-## body-parser@2.3.0
+## body-parser@2.4.0
 
 - **Licence declared:** `MIT`
 - **Repository:** expressjs/body-parser
@@ -902,6 +902,37 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 ## content-type@1.0.5
+
+- **Licence declared:** `MIT`
+- **Repository:** jshttp/content-type
+- **Licence file:** `LICENSE`
+
+```
+(The MIT License)
+
+Copyright (c) 2015 Douglas Christopher Wilson
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+## content-type@2.1.0
 
 - **Licence declared:** `MIT`
 - **Repository:** jshttp/content-type
@@ -1968,7 +1999,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## fast-uri@3.1.8
+## fast-uri@3.1.9
 
 - **Licence declared:** `BSD-3-Clause`
 - **Repository:** https://github.com/fastify/fast-uri
@@ -2626,7 +2657,7 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ```
 
-## ip-address@10.7.2
+## ip-address@10.7.5
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/beaugunderson/ip-address
@@ -4927,7 +4958,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## qs@6.16.0
+## qs@6.16.1
 
 - **Licence declared:** `BSD-3-Clause`
 - **Repository:** https://github.com/ljharb/qs
@@ -6193,7 +6224,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## undici@7.29.1
+## undici@7.30.1
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/nodejs/undici
@@ -6476,7 +6507,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## zod@4.4.3
+## zod@4.6.7
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/colinhacks/zod
