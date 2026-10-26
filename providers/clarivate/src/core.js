@@ -1596,6 +1596,13 @@ export async function doResolveCompany(apiKey, base, params, tctx) {
  * the caller's own terms are always kept, so this can only widen. Returns the params to sweep plus a
  * note that rides on the enumerate result for the record.
  */
+/** The OR operands a request's other fields put on the wire beside the owner value: its mark terms, its representative,
+ *  its classes and its goods words, as buildSearchRequest joins them. */
+export function otherOrOperands(params) {
+  const classes = Array.isArray(params?.nice_classes) ? new Set(params.nice_classes.map(String)).size : 0;
+  return markTermsOf(params).length + (params?.representative ? 1 : 0) + classes + goodsTermsOf(params).length;
+}
+
 export async function expandOwnerTerms(apiKey, base, params, tctx) {
   const raw = ownerTermsOf(params);
   const threshold = Number.isFinite(Number(params?.min_confidence)) ? Number(params.min_confidence) : OWNER_RESOLUTION_MIN_CONFIDENCE;
@@ -1640,11 +1647,18 @@ export async function expandOwnerTerms(apiKey, base, params, tctx) {
   // into TWO OR-operands (`TRADER VIC?S OR TRADER VICS`), so a flat slice at maxOrWidth overflows by
   // exactly the number of apostrophes in the stack — and the stack is then refused whole, taking the
   // slice with it. A regression introduced when it made the apostrophe expressible.
+  //
+  // AND BY WHAT THE REST OF THE REQUEST PUTS ON THE WIRE BESIDE IT. The parser's nesting cap counts every OR operand in
+  // the request, not the owner value's alone: on a test run of a crowded matter an owner question on a mark in four
+  // classes was refused 60 times with "Document nesting depth (501) exceeds the maximum allowed (500)", which is the
+  // 496 owner names plus the mark's one term and the four classes. The owner's spellings now take only the width the
+  // other fields leave, so the tail of the least likely spellings is what gives way, never the question.
+  const budget = Math.max(1, CAPABILITIES.maxOrWidth - otherOrOperands(params));
   const swept = [];
   let width = 0;
   for (const name of merged) {
     const cost = expandApostrophe(sanitizeOwnerName(name)).length;   // count what actually goes on the wire
-    if (width + cost > CAPABILITIES.maxOrWidth) break;
+    if (width + cost > budget) break;
     swept.push(name);
     width += cost;
   }
