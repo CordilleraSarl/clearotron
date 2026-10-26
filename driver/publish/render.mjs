@@ -1173,8 +1173,8 @@ function whereItStandsSection(findings, opts) {
     if (!rawByKey.has(key)) rawByKey.set(key, []);
     rawByKey.get(key).push(c);
   }
-  // A TERRITORY AN OPEN ROW COVERS IS NEVER CHIPPED "Nothing found": a planned slice there was never searched, so it
-  // reads as clean nowhere. A territory where a finding sits keeps its band row.
+  // A TERRITORY THE REGISTER COULD NOT SEARCH IS NOT DRAWN: a planned slice there was deferred and never searched, so
+  // the country reads as clean nowhere. A territory where a finding sits keeps its band row.
   const open = new Set((plan && Array.isArray(plan.open) ? plan.open : []).map(String));
   const withF = [], clean = [];
   for (const [key, raws] of rawByKey) {

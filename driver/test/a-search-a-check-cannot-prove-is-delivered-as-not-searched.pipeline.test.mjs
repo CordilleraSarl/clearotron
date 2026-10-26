@@ -120,8 +120,8 @@ for (const engine of Object.keys(ENGINES)) {
     const merged = json(join(rd, "register-named-band.json"));
     const mergedRows = [...(merged.enumerated ?? []), ...(merged.crowds ?? [])].filter((b) => qids.has(b?.qid) && (b.records ?? b.sample ?? []).length);
     assert.deepEqual(mergedRows, [], "the merged band still carries a record of a slice taken out");
-    // No territory a slice taken out covers is chipped "Nothing found".
-    const open = new Set(planTerritoriesOf(json(driverDir(rd, "register-plan.json")), record.slices.map((s) => s.qid))?.open ?? []);
+    // No territory a slice taken out covers is chipped "Nothing found": the receipt files it as deferred, and the page reads that.
+    const open = new Set(planTerritoriesOf(json(driverDir(rd, "register-plan.json")), receipt)?.open ?? []);
     const regions = json(driverDir(rd, "register-plan.json")).entries.filter((e) => qids.has(e.qid)).flatMap((e) => e.regions ?? []);
     assert.deepEqual(regions.filter((r) => !open.has(r)), [], "a territory a slice taken out covers would be chipped Nothing found");
     // The verdict is held off CLEAR over the open slices, and the workbook carries the shipped Register row.
@@ -174,11 +174,12 @@ test("the searches' record grows only by slices it does not hold, so a failure n
 });
 
 test("a territory a slice taken out of the band covers is open, and the page chips none of them Nothing found", () => {
+  // A slice taken out becomes a deferred block, so the receipt defers it, and the page reads the receipt.
   const plan = { entries: [{ qid: "a", regions: ["JP", "KR"] }, { qid: "b", regions: ["FR"] }] };
-  assert.deepEqual(planTerritoriesOf(plan), { searched: ["JP", "KR", "FR"], unreached: [] }, "a run with no searches record changed shape");
-  assert.deepEqual(planTerritoriesOf(plan, []), { searched: ["JP", "KR", "FR"], unreached: [] }, "nothing taken out added an open list");
-  assert.deepEqual(planTerritoriesOf(plan, ["not-planned"]), { searched: ["JP", "KR", "FR"], unreached: [] }, "a slice the plan does not hold opened a territory");
-  const territories = planTerritoriesOf(plan, ["a"]);
+  assert.deepEqual(planTerritoriesOf(plan), { searched: ["JP", "KR", "FR"], unreached: [] }, "a run with no receipt changed shape");
+  assert.deepEqual(planTerritoriesOf(plan, { deferred: [] }), { searched: ["JP", "KR", "FR"], unreached: [] }, "nothing taken out added an open list");
+  assert.deepEqual(planTerritoriesOf(plan, { deferred: [{ qid: "not-planned", reason: NOT_VERIFIED }] }), { searched: ["JP", "KR", "FR"], unreached: [] }, "a slice the plan does not hold opened a territory");
+  const territories = planTerritoriesOf(plan, { deferred: [{ qid: "a", reason: NOT_VERIFIED }] });
   assert.deepEqual(territories.open, ["JP", "KR"]);
   const depth = { counts: { recordsByCountry: { JP: 3, KR: 1, FR: 2 }, courtDecisions: "not-in-scope" } };
   const dir = tempDir("clearotron-open-chips-");

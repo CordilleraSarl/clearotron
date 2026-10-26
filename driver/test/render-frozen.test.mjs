@@ -1808,9 +1808,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // in the set. Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: a report whose overall assessment was not completed
 // draws no rating. Not licence-only, so this constant moves with the other one.
-// Advanced again by the break recorded above the FROZEN constant: a territory an open row covers is never chipped
-// "Nothing found". Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "21c4c4d56f9b31d423edd2be7af98c9079ed7864d506401692c23d656e2e1334";
+// Advanced again by the break recorded above the FROZEN constant: a territory the register could not search is not
+// drawn where it stands. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "cfcaf5dfe6a5f81b111fd2ac412876703fc2a3014aeac3f8e85dd888ffa4fe18";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2793,23 +2793,25 @@ const FROZEN_BEFORE_SPDX = "21c4c4d56f9b31d423edd2be7af98c9079ed7864d506401692c2
 //   3. Why it had to move here: the pill, the gauge and the sections are composed in this file and nowhere else, and
 //      the portal frames this page rather than drawing its own.
 //
-// ── BREAK (2026-10-22 — a territory an open row covers is never chipped "Nothing found") ──────────────────────────────
+// ── BREAK (2026-10-26 — a territory the register could not search is not drawn where it stands) ─────────────────────
 //
 // WHAT MOVED: "Where it stands" chipped every planned country with no banded finding "Nothing found", reading the
-// plan alone. A slice a check could not prove ran is taken out of the band and delivered open, so a country it covers
-// was chipped clean over a search nobody can show happened. The publisher now hands this file the territories of the
-// slices the run's searches record took out (`planTerritories.open`), and a country among them with no finding is
-// left out of the chips. A country where a finding sits keeps its band row. No sentence is added or removed. A slice
-// the provider could not express is not among them: whether its countries leave the chips too is the owner's to rule.
+// plan alone. A planned slice the register could not search is deferred on the plan-execution receipt, so a country
+// it covers was chipped clean over a search that did not happen. The publisher now hands this file the territories
+// of the slices the receipt deferred (`planTerritories.open`), and a country among them with no finding is not drawn:
+// no row and no chip. A country where a finding sits keeps its band row. No sentence is added or removed (owner,
+// 2026-10-26).
 //
 // THE THREE QUESTIONS.
-//   1. Reachable from republish? Only for a run that carries a searches record, which no run before this change does.
-//      Measured: the three demo runs publish byte-identical through the previous tree and this one, the issue date
-//      aside, and so does the global demo given a receipt deferring its first slice. Given a searches record taking
-//      that slice out, a worldwide query, it keeps 255 chips through the previous tree and 80 through this one.
+//   1. Reachable from republish? Yes, for a run whose receipt deferred a planned slice: its section loses the
+//      countries that slice covers. Measured through the previous tree and this one: the four demo runs, which carry
+//      no receipt, publish byte-identical pages. The global demo given a receipt deferring its first slice, a
+//      worldwide query over all 186 planned territories, keeps its 10 banded rows and goes from 175 "Nothing found"
+//      chips to none; the 80 chips of its "What was searched" section are unchanged, and the page differs on that
+//      one line.
 //   2. Could it live in report.css or brand.mjs? No: it decides which countries are drawn.
-//   3. Why it had to move here: the chips are composed in this file and nowhere else.
-const FROZEN = "edeaa5683a0c186be1a5a2448b6e64e78f1ea5db588ad6c0b1a42cd22ef59456";
+//   3. Why it had to move here: the section is composed in this file and nowhere else.
+const FROZEN = "1c6d57dd3ffda17bad650e0e23c3f147ab7c69b6dde4d5c34e1ab6cdaece7fb4";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

@@ -1739,7 +1739,7 @@
         },
         "a-run-whose-assessment-cannot-finish-delivers-what-it-holds.pipeline.test.mjs": {
           "tests": 7,
-          "asserts": 76,
+          "asserts": 75,
           "skips": 0,
           "todos": 0
         },
@@ -2040,6 +2040,12 @@
         "a-territory-the-engine-cannot-search-is-disclosed-not-wired.test.mjs": {
           "tests": 4,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-territory-the-register-could-not-search-is-not-drawn-where-it-stands.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
