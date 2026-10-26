@@ -3532,8 +3532,8 @@
           "todos": 0
         },
         "e2e-scenario-ops.test.mjs": {
-          "tests": 28,
-          "asserts": 94,
+          "tests": 29,
+          "asserts": 97,
           "skips": 0,
           "todos": 0
         },
