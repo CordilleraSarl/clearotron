@@ -150,12 +150,11 @@ async function assertDeliveredWithoutTheAssessment(root, res, label) {
 }
 
 test("the one new sentence is written once, and the report's conclusion is it followed by the shipped action", () => {
-  assert.equal(ASSESSMENT_NOT_COMPLETED, "The overall assessment could not be completed this run, so it is left open here rather than reported as clean.");
+  // The owner's approved words (2026-10-26), pinned whole: a change to them needs his word again.
+  assert.equal(ASSESSMENT_NOT_COMPLETED, "The overall assessment is incomplete.");
   assert.equal(assessmentNotCompletedNote(), `${ASSESSMENT_NOT_COMPLETED} ${CLIENT_ACTION}`);
-  // The sentence's second half is the shipped gap row's own wording.
-  assert.ok(ASSESSMENT_NOT_COMPLETED.endsWith("it is left open here rather than reported as clean."));
   for (const f of ["pipeline.mjs", "publish/index.mjs", "publish/render.mjs", "publish/xlsx.mjs", "degraded-parts.mjs"])
-    assert.ok(!readFileSync(join(HERE, "..", f), "utf8").includes("The overall assessment could not be completed"), `${f} spells the sentence out instead of importing it`);
+    assert.ok(!readFileSync(join(HERE, "..", f), "utf8").includes(ASSESSMENT_NOT_COMPLETED), `${f} spells the sentence out instead of importing it`);
 });
 
 for (const engine of Object.keys(ENGINES)) {

@@ -66,11 +66,11 @@ export const CLIENT_ACTION = "Please tell whoever administers this installation.
 
 /**
  * The sentence a delivered report leads with when the run's overall assessment could not be completed, and the
- * one new client sentence that state needs. Written once, here, so a change of wording changes one string. Its
- * second half is the shipped gap row's own wording (driver/deferral-row.mjs); "The overall assessment" and its
- * place at the top of the page are what is new, and that wording waits on the owner's word.
+ * one new client sentence that state needs, in the owner's approved words (2026-10-26). It is shown only in that
+ * state, at the top of the page, in the email and on the run list; a report whose assessment completed never carries
+ * it. Written once, here, so a change of wording changes one string.
  */
-export const ASSESSMENT_NOT_COMPLETED = "The overall assessment could not be completed this run, so it is left open here rather than reported as clean.";
+export const ASSESSMENT_NOT_COMPLETED = "The overall assessment is incomplete.";
 
 /** The report's own conclusion in that state: the sentence, then the shipped action line. */
 export function assessmentNotCompletedNote() {
