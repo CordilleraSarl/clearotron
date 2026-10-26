@@ -34,6 +34,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+import { handResearchAnswers } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed } from "./parts-not-completed.mjs";
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // a band read with the slices a check could not prove ran taken out
@@ -44,7 +45,7 @@ import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince } from ".
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
-import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
+import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
@@ -53,7 +54,7 @@ import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
   digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
-import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
+import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey, isLiveRecord } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
 import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
   unprovableRecordBases, applyDerivedBases,
@@ -61,7 +62,7 @@ import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordU
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
 import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, marketStepMarkets, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
@@ -84,10 +85,16 @@ import { readOutstanding, FOLLOW_UP_SEARCH_LIMIT, followUpSearchesSent } from ".
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
 // safety net did not send, which join as questions not asked rather than missing (follow-up-searches.mjs), and the run's
 // main markets, the one market list a crowd of the identical mark is read in (crowdNarrowing): the order's
-// countries, else the customer's priority markets, else the major markets.
-const mainMarketsOf = (ctx) => {
-  try { const { scope, priorities, major } = narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile); return scope.length ? scope : priorities.length ? priorities : major; }
-  catch { return []; }
+// countries, else the customer's priority markets, else the markets the customer's field and brand point to, as the
+// identical mark's market step used them (W8), else the major markets, where no market step ran.
+export const mainMarketsOf = (ctx) => {   // @internal
+  try {
+    const { scope, priorities, major } = narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile);
+    if (scope.length) return scope;
+    if (priorities.length) return priorities;
+    const used = marketStepMarkets(ctx.registerPlan);
+    return used.length ? used : major;
+  } catch { return []; }
 };
 const joinOptions = (ctx) => ({ released: releasedFamilyQids(ctx.paths.runDir),
   outstanding: new Set(readOutstanding(driverDir(ctx.paths.runDir)).map((r) => String(r.qid))), mainMarkets: mainMarketsOf(ctx) });
@@ -125,7 +132,8 @@ import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, fr
 import { bandShapeGoods, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
-import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
+import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT, rowOutsideProviderOffices } from "./register-plan.mjs";
+import { capabilitiesFor } from "./register-capabilities.mjs";
 import { waitingCrossCheck, undecidedCrossChecks, withoutWait } from "./cross-check-wait.mjs";   // the cross-checks wait for the reading step   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
 import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
@@ -142,7 +150,7 @@ import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whati
 import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presence-or-reason (2026-07-22 — the unjoined-Sheet-2 leak)
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
-import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
+import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris, parseCarrySurfaces, classifyPlacement } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyClosed, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
@@ -174,7 +182,7 @@ import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconci
 import { locateReportFaults, reportPartsOf } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
-  routeHalfTermScopes, findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
+  findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
@@ -1832,21 +1840,6 @@ export function decideCaseLaw({ job, narrative, policy } = {}) {   // @internal
   };
 }
 
-// #5a — the detail-fetch ceiling for the frame-reopen "enumerate the dominant-element floor to EXHAUSTION"
-// closure pass. The batch-screen (≤100/call, no detail-fetch) stays UNBOUNDED — it screens the full crowd
-// cheaply; only the expensive per-record detail-fetch is capped, so the pass returns a BOUNDED coverage-limited
-// result instead of grinding every survivor to the hard-wall SIGKILL (which produces NOTHING — the resume is
-// killed mid-fetch, no file written, and the directive logs a deferral with zero new coverage). Generous by
-// design: the default only bites a pathological saturated crowd; a normal reopen fetches far fewer survivors and
-// never sees the ceiling. Env-tunable for the rare matter that needs deeper closure. PURE + exported for test.
-// T1 (J2): default 500→150. 500 detail-fetches cannot fit the 1500s stage wall — the old default
-// contradicted the prompt's own "a bounded WRITTEN band beats an exhaustive one killed mid-fetch" and drove
-// the 48% reopen-timeout class ( F5). 150 fits the wall with margin; env-tunable for deep closure.
-export function reopenFetchCeiling(envVal) {   // @internal
-  const n = Number(envVal);
-  return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 150;
-}
-
 // ── WS-B: the run's frozen profile + the sidecar spine ──────────────────────────────────────────────
 // Resolve the customer profile ONCE and freeze it into _driver/profile.json (temp+rename, BEFORE any
 // validated stage). Resume / --experiment load FROM the sidecar — a profiles/ edit between
@@ -2361,8 +2354,9 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     let readIds = [];
     try { readIds = [...readOkRecordUris(readFileSync(P.readingLog, "utf8"))]; } catch { readIds = []; }
 
-    // THE OWED SET: every record placement carried into this stage — the population `record-carry.mjs`
-    // judges this seam against, so the refusal and the ledger are counting the same thing.
+    // THE OWED SET: the records of the entries placement carried into this stage that the write-up must end, the
+    // population the refusal judges. `record-carry.mjs` judges the seam against every placed record, and an adopted
+    // entry is carried by its row.
     // ── AN ABSENT FILE IS THE ONLY BENIGN WAY TO HAVE NO OWED SET ────────────────────────────────
     //
     // This was one bare `catch {}` around the whole block, and it hid a `ReferenceError`: `entryUris`
@@ -2378,18 +2372,33 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     // which the transport already refuses by name as a driver fault rather than a model one. Never
     // silently empty: "the driver told me none" and "the driver could not tell me" are different facts
     // and only the first may be checked against.
+    //
+    // WHAT THE WRITE-UP OWES IS PLACEMENT'S HEADLINE ENTRIES, judged per entry: a row naming any record of an entry ends
+    // the whole entry. A sheet-2 entry is adopted as placed (`adopt`): the render writes its row on the entry's first
+    // live record, else its first, with placement's reason, unless the write-up overrides it with any row naming any of
+    // its records. Watchlist and out-of-scope entries owe nothing and keep their own tabs. An entry with no records owes
+    // nothing and gets no row.
     const owed = [];
+    const owedEntries = [];
+    const adopt = [];
     let owedFailed = null;
     if (existsSync(P.placementModel)) {
       try {
         const placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-        for (const e of Array.isArray(placements) ? placements : []) for (const u of entryUris(e)) owed.push(u);
+        const live = new Map(records.map((r) => [bandRecordUri(r).toLowerCase(), isLiveRecord(r)]));
+        for (const e of Array.isArray(placements) ? placements : []) {
+          const uris = entryUris(e);
+          if (!uris.length) continue;
+          if (e?.tier === "headline-candidate") { owedEntries.push({ uris }); owed.push(...uris); }
+          else if (e?.tier === "sheet-2") adopt.push({ uri: uris.find((u) => live.get(u) === true) ?? uris[0], uris, reason: String(e?.reason ?? "") });
+        }
       } catch (e) { owedFailed = String(e?.message ?? e).slice(0, 160); }
     }
 
     const facts = {
       schema_version: 1,
       owed: owedFailed ? null : [...new Set(owed)],
+      ...(owedFailed ? {} : { owed_entries: owedEntries, adopt }),
       identity: {
         mark: ctx.job?.markName ?? ctx.run?.slug ?? null,
         date: ctx.job?.filedDate ?? ctx.run?.startedAt?.slice?.(0, 10) ?? null,
@@ -2799,6 +2808,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // it always was, and `addedClasses` only ever appends.
       job: { jobKey: ctx.run.slug, classes: inScopeClassList(ctx.job, ctx.profile).map(String), jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
       addedClasses: frameIdentifiedClassRows(P.runDir), frameMarkets: lastAcceptedMatterFrame(P.runDir)?.scope_jurisdictions ?? null,
+      marketList: narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile),
       form, skillVersion: "clearance-register@spec48",
       // — WHICH ELEMENT THE EXCLUSION TOOK OUT, so the compile can make its form band unreachable
       // rather than merely unasked-for. Null unless the ownership receipt verified, which is the same
@@ -3057,8 +3067,8 @@ function noteCoverageLedgerAbsent(ctx, trigger) {
 // derivation — unended:0 is ASSERTED, never absent. Enforcement: unended ⇒ ONE warm followup on the
 // winning digest session dictating the three ending forms (at most RECALL_FOLLOWUP_MAX attempts per
 // unended-set signature, so a park/resume gets a fresh attempt without ever looping); what remains
-// unended after that blocks delivery at the pre-verdict floor (StageFailure → the bounded recovery
-// ladder — a repeated identical signature goes terminal there, never a silent ship).
+// unended after that ships NAMED from the pre-verdict floor, through the terminal guards' deliver-and-clamp (the
+// owner's ruling of 2026-10-19 that a run is never held), never a silent ship.
 const RECALL_FOLLOWUP_MAX = 2;
 
 // amendment 2 — the follow-up bound is a DEPTH ROW (2 / 1 / 1), not a constant. The constant stays
@@ -3377,7 +3387,9 @@ export function lateRecordsUnaddressed(P, alreadyNamed = new Set()) {   // @inte
 function owedUrisFor(runDir) {
   try {
     const owed = driverReadsFor(runDir).owed;
-    return Array.isArray(owed) ? owed.map((row) => String(normalizeRecordUri(row?.uri ?? row?.record_id) ?? "").toLowerCase()).filter(Boolean) : null;
+    // An entry's row owes every record it holds.
+    return Array.isArray(owed) ? owed.flatMap((row) => (Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri ?? row?.record_id]))
+      .map((u) => String(normalizeRecordUri(u) ?? "").toLowerCase()).filter(Boolean) : null;
   } catch { return null; }
 }
 
@@ -3474,30 +3486,40 @@ function recordDigestSeam(ctx, r, trigger = null) {
 function findingsSurfaceRows(P) {
   try {
     const placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-    const idx = placementIndex(placements, existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "");
-    // THE BAND JOIN, AND IT IS LOAD-BEARING RATHER THAN DECORATIVE. `placementIndex` carries
-    // {tier, mark, owner, carry, ended_by} and NOTHING ELSE — no classes, no status. Both of the tool's
-    // contradiction refusals rest on exactly those two fields, so a row built from the placement alone
-    // would arrive with `classes: []` and `status: null`, every check would find nothing to contradict,
-    // and the tool would accept every declination while looking like it was guarding them. A guard that
-    // cannot fire is worse than none, because it reads as one. The band record is where the run's own
-    // class list and status live (`traceRecordCarry` reads the same two fields off the same rows).
+    const text = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
+    // THE BAND JOIN, AND IT IS LOAD-BEARING RATHER THAN DECORATIVE. A placement carries no classes and no status. Both of
+    // the tool's contradiction refusals rest on exactly those two fields, so a row built from the placement alone would
+    // arrive with `classes: []` and `status: null`, every check would find nothing to contradict, and the tool would
+    // accept every declination while looking like it was guarding them. A guard that cannot fire is worse than none,
+    // because it reads as one. The band record is where the run's own class list and status live.
     const band = new Map();
     try {
       const b = safeReadJson(P.registerNamedBand);
       for (const rec of Array.isArray(b?.enumerated) ? b.enumerated : []) {
         const u = bandRecordUri(rec);
-        if (u) band.set(u, rec);
+        if (u) band.set(String(u).toLowerCase(), rec);
       }
-    } catch { /* an unreadable band leaves the refusals with nothing to rest on; see below */ }
+    } catch { /* an unreadable band leaves the refusals with nothing to rest on; see above */ }
+    // THE WRITER IS OWED POSITIONS, NOT RECORDS. A position is one placement entry: an owner's mark with its records.
+    // Every entry the write-up carried is owed, whatever its tier: a headline entry, a sheet-2 entry the write-up adopted
+    // or kept, and one it promoted. An entry the write-up dropped carries its own ending and is not owed. A finding naming
+    // any record of an entry ends it, or one declination of its row, which the report lists once among the set-asides.
+    // The row is the entry's first live record, else its first; its records ride with it, and each one's classes and
+    // status, for the refusals to read.
+    const surfaces = parseCarrySurfaces(text);
     const rows = [];
-    for (const [uri, seat] of idx) {
-      if (seat.carry !== "carried") continue;
+    for (const e of Array.isArray(placements) ? placements : []) {
+      const uris = entryUris(e);
+      if (!uris.length || classifyPlacement(e, surfaces).class !== "carried") continue;
+      const uri = uris.find((u) => band.has(u) && isLiveRecord(band.get(u))) ?? uris[0];
       const rec = band.get(uri);
       rows.push({
-        uri, mark: seat.mark ?? null, owner: seat.owner ?? null, tier: seat.tier ?? null,
+        uri, mark: e?.mark ?? null, owner: e?.owner ?? null, tier: e?.tier ?? null,
         classes: Array.isArray(rec?.classes) ? rec.classes : [],
         status: rec?.status ?? null,
+        uris,
+        ...(uris.length > 1 ? { members: uris.map((u) => ({ uri: u, mark: band.get(u)?.mark_text ?? e?.mark ?? null,
+          classes: Array.isArray(band.get(u)?.classes) ? band.get(u).classes : [], status: band.get(u)?.status ?? null })) } : {}),
       });
     }
     return rows;
@@ -3574,7 +3596,7 @@ function keepRankingReadByWriter(P) {
   catch (e) { runLog(P.runDir, { event: "ranking-read-by-writer-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
 }
 
-function recordSynthesisSeam(ctx, r, trigger = null) {
+export function recordSynthesisSeam(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
   if (r?.ok) keepRankingReadByWriter(P);   // where each record stood as this writer read it
   const declined = readDeclinations(P.runDir);   // — three-valued: absent ledger ≠ empty ledger
@@ -3592,11 +3614,31 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
       for (const [uri] of findingUris(parsed.findings ?? [])) delivered.push({ uri });
     }
   } catch { /* validators.findings' business; this seam records what it can */ }
+  // A POSITION IS SEEN WHOLE AND ENDS WHOLE. Each row the writer was handed is a position, one placement entry: every
+  // record of it was seen. A record a finding names is carried. A finding naming any record of a position delivers it,
+  // and its other records end with it on that ground; the row's declination is each record's. Only a named record
+  // reads as carried, because the trace holds a carried record to a finding that names it.
+  const key = (u) => String(normalizeRecordUri(u) ?? "");
+  const deliveredKeys = new Set(delivered.map((d) => key(d.uri)));
+  const rowOf = new Map(), namedWith = new Map();
+  const sawRecords = [];
+  for (const row of saw) {
+    const members = Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri];
+    const named = members.find((u) => deliveredKeys.has(key(u)));
+    for (const u of members) {
+      sawRecords.push({ ...row, uri: u });
+      rowOf.set(key(u), row?.uri);
+      if (named) namedWith.set(key(u), named);
+    }
+  }
   return recordSeamDiscards(ctx, {
     seam: "synthesis", stage: "synthesis", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
-    saw, carried: delivered,
+    saw: sawRecords, carried: delivered,
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
+      const named = namedWith.get(key(uri));
+      if (named) return { reason: "synthesis:delivered-with-its-position", reason_source: "step-stated",
+        detail: `delivered with its position: a finding names ${named}, another record of the same placement entry` };
       // — THE 102. This callback used to be zero-arity and constant: every record this pass
       // discarded got the same sentence and `step-silent`, whatever it was. One of them was KORPHIC,
       // a lawyer-named gold mark placed on sheet-2 and stamped `carry: "carried"`, and the trace could
@@ -3605,7 +3647,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
       // had nothing to read until `record_declination` gave synthesis somewhere to say it.
       // The judgment itself is `seamReasonFor`, pure and next door, so the guarantee has an arm
       // that does not need a run directory. This callback is now only the plumbing around it.
-      return seamReasonFor(declined, uri);
+      return seamReasonFor(declined, rowOf.get(key(uri)) ?? uri);
     },
   });
 }
@@ -4039,7 +4081,7 @@ async function enforceRecallReconciliation(ctx, r, trigger) {
   if (artifact?.computable && artifact.totals.unended) {
     runLog(P.runDir, { event: "recall-reconciliation-unended", trigger, unended: artifact.totals.unended,
       uris: artifact.unended.slice(0, 8).map((u) => u.record_id) });
-    note(`recall-reconciliation: ${artifact.totals.unended} position(s) STILL unended after the followup — the pre-verdict floor will block delivery`);
+    note(`recall-reconciliation: ${artifact.totals.unended} position(s) STILL unended after the followup — the run delivers with them stated, clamped at the pre-verdict floor`);
   }
 }
 
@@ -4444,6 +4486,56 @@ export function envelopeDecision({ deferredAxes, deadline, now, estCloseSec, hel
 }
 
 /**
+ * Whether a coverage row names an office the plan's provider cannot express, as a predicate for the closeability split.
+ * A plan with no provider, or one the capability contract does not know, names nothing outside. PURE.
+ */
+export function officeGapOf(plan) {   // @internal
+  let capabilities = null;
+  try { capabilities = plan?.provider ? capabilitiesFor(plan.provider) : null; } catch { capabilities = null; }
+  return capabilities ? (row) => rowOutsideProviderOffices(row, capabilities) : () => false;
+}
+
+// WHAT A RE-RUN CANNOT CLOSE, in the words the review's table, the review's manual and both re-run follow-ups share, so
+// the unit that is told to leave a row and the review that is told not to send it back read one reason.
+export const NOT_CLOSEABLE_KINDS = "the provider cannot express the slice, the envelope close has already asked it again, it was not asked in this run, or it names no search at all";   // @internal
+const heldRowLines = (rows) => rows.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n");
+/** The rows an escalated unit must leave as they are, and why; empty when there are none. @internal */
+export function escalationHeldNote(rows) {
+  return rows?.length ? `\n\nNOT YOURS TO CLOSE — a re-run cannot close these: ${NOT_CLOSEABLE_KINDS}. Leave these Coverage-ledger rows exactly as they are (\`deferred\`, same reason), and do not restate them as searched or clean:\n${heldRowLines(rows)}` : "";
+}
+/** The rows a unit the envelope re-opens must leave as they are, and why; empty when there are none. @internal */
+export function envelopeHeldNote(rows) {
+  return rows?.length ? `\n\nThese rows on this axis are NOT yours to close and must stay exactly as they are — a re-run cannot close them: ${NOT_CLOSEABLE_KINDS}. Leave them \`deferred\`, keep their reason, and do not restate them as searched or clean:\n${heldRowLines(rows)}` : "";
+}
+
+/**
+ * Whether a deferred coverage row names a question a re-run can still send, read off the plan-execution receipt as a
+ * predicate for the closeability split. An axis's `missing` questions are the ones a re-run sends: planned and never
+ * sent, or failed at the provider. A capability gap is not among them, and neither is a follow-up the safety net
+ * refused (joinPlanToBands). A row carrying its question's qid can be sent when that question is missing. The axis's
+ * own row, which names the axis and no slice of it, stands for the axis's planned questions, and can be sent when the
+ * axis holds a missing one. Any other row that names no question names no search: a re-run has nothing to send for
+ * it, whatever else its axis holds. Null for an axis the receipt does not cover, or with no receipt, so the split keeps
+ * its old answer. PURE.
+ */
+export function askableOf(receipt) {   // @internal
+  const missingByAxis = new Map();
+  for (const s of Array.isArray(receipt?.skeleton) ? receipt.skeleton : []) {
+    const ax = String(s?.axis ?? "").toLowerCase();
+    if (!ax) continue;
+    const set = missingByAxis.get(ax) ?? new Set();
+    for (const q of Array.isArray(s?.missing) ? s.missing : []) set.add(String(q?.qid ?? q));
+    missingByAxis.set(ax, set);
+  }
+  return (row) => {
+    const missing = missingByAxis.get(String(row?.axis ?? "").toLowerCase());
+    if (!missing) return null;
+    if (row?.qid) return missing.has(String(row.qid));
+    return !String(row?.scope ?? "").trim() && missing.size > 0;
+  };
+}
+
+/**
  * The axes the plan-execution receipt indicts with >=1 DETERMINISTIC deferral (joinPlanToBands'
  * `deferred` bucket — the executor's own client-side refusals), plus the axes the frozen plan says are
  * deferred end to end. The AUTHORITY half of the capability-gap split; prose only ever narrows inside
@@ -4810,9 +4902,16 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
-  if (name === "register-digest" || name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
+  // The writer is also handed the research its earlier attempts got (research-answers.mjs), written to the run folder when
+  // the message is built: none on a first attempt, so its message is unchanged.
+  if (name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths),
+    researchAnswered: ctx.run ? handResearchAnswers(ctx.paths.runDir, stageSessionKey(ctx, name)) : 0 };
   return ctx;
 }
+
+/** A stage's session key, which its retries extend with `-rerun<n>`. One statement, read where a stage is dispatched. */
+export const stageSessionKey = (ctx, name, keyAxis = "") => `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`;   // @internal
 
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
@@ -5047,7 +5146,7 @@ async function stageOnce(name, ctx, opts = {}) {
     thinking,
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
     // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
-    sessionKey: opts.sessionKey ?? `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`,
+    sessionKey: opts.sessionKey ?? stageSessionKey(ctx, name, keyAxis),
     timeoutSec: derivedLimit.sec ?? def.timeoutSec,
     derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
     stallSec: def.stallSec,     // per-stage stall override (heavy stages); undefined → global CLEAROTRON_STALL_MS
@@ -7301,7 +7400,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
     const ledgerLines = coverageLedgerTableRows(rows);
     const held = [], closeable = [];
     for (const a of axes) {
-      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a), heldUnits });
+      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a), heldUnits, uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(receipt) });
       for (const r of s.held) held.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
       for (const r of s.closeable) closeable.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
     }
@@ -7335,7 +7434,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
         ? `CLOSEABLE floor obligations (a warm re-run reaches these — escalate them if they are material): ${closeable.join("; ")}.`
         : "CLOSEABLE floor obligations: none.",
       held.length
-        ? `NOT CLOSEABLE — a capability-gap deferral is never closeable by time or by re-running: ${held.join("; ")}. Do NOT emit ESCALATE for these; the provider cannot express those slices at all, so a re-run re-derives the identical refusal at full cost. They stay open, disclosed gaps for the lawyer, and the coverage floor is right to refuse a clean verdict over them — say so in a flag if the findings read them as clean, but never as an escalation.`
+        ? `NOT CLOSEABLE — a re-run cannot close these: ${NOT_CLOSEABLE_KINDS}: ${held.join("; ")}. Do NOT emit ESCALATE for these. They stay open, disclosed gaps for the lawyer, and the coverage floor is right to refuse a clean verdict over them — say so in a flag if the findings read them as clean, but never as an escalation.`
         : "NOT CLOSEABLE: none.",
       // the owner screen's own receipt rides the same block — the audit claim it replaces ("no record
       // anywhere in the band carries an incumbent-class qid") was false on the evidence run.
@@ -10497,7 +10596,7 @@ async function pipelineInner(job, opts = {}) {
     return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
   }
 
-  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS (874) ──────────────────────
+  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS ──────────────────────
   //
   // Reached from the synthesis site on the pass that resumes a run whose synthesis failed once its recovery was spent:
   // the catch recorded the assessment as not completed and parked the run (parts-not-completed.mjs). The run holds
@@ -11211,8 +11310,11 @@ async function pipelineInner(job, opts = {}) {
       // 6m45s seam was three of them, against 1.1s of driver compute in the same window.
       const dispatchStartedMs = Date.now();
       try {
+        // The envelope close's own dispatch is the one rung that asks a question that timed out at the gateway again
+        // (execute-plan.mjs, timedOutBefore); every other dispatch leaves its timeout standing.
         const r = await planExec({ planPath: P.registerPlan, axis: a, outputPath: P.registerBand(a), ...(qids?.length ? { qids } : {}) },
-          { agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}`, recordLog: runRecordLogPath(run.runDir) });
+          { agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}`, recordLog: runRecordLogPath(run.runDir),
+            ...(repairId === "early-envelope-close" ? { reaskTimedOut: true } : {}) });
         outcome = r?.ok ? "ok" : `failed: ${String(r?.cause ?? "unknown").slice(0, 140)}`;
       } catch (err) { outcome = `threw: ${String(err?.message ?? err).slice(0, 140)}`; }
       // — MEASURE WHETHER THE HOLE CLOSED, not whether the phone was answered. `outcome` is the
@@ -11648,7 +11750,8 @@ async function pipelineInner(job, opts = {}) {
           if (unitKey[axis]) try {
             const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
             const from = new Map([...(Array.isArray(prior?.directives) ? prior.directives : []), ...kept].map((d) => [d.qid, d.source?.url ?? null]));
-            const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })) });
+            const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })),
+              job: ctx.job, profile: ctx.profile, supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
             const r = await stage("register-unit", { ...ctx, axis }, { force: true, followup, sessionKey: unitKey[axis], trigger: "xcheck-decide" });
             asked = r?.ok === true;
             remergeIfBandsMoved(ctx, "xcheck-decide");
@@ -11950,35 +12053,25 @@ async function pipelineInner(job, opts = {}) {
       };
       let { exempt, closable } = cellsOf();
       const cellKey = (c) => `${c.variant} × ${c.platform}`;
-      // doc-35 closure-the-loop: an in-scope SOURCE channel the blind frame-diff flagged as un-swept (a
-      // developer ecosystem / distribution surface marked `applied` in the scope ledger but never gridded —
-      // the github/nuget miss) is a CLOSE target, not a caveat. Fold it into the SAME supplementary common-law
-      // pass (the model resolves the channel's real domains), so a searchable in-scope channel is closed
-      // in-run, never shipped as a "[channel] not searched" item.
-      const sourceChannels = (() => {
-        try {
-          const rp = driverDir(run.runDir, "frame-reopen.json");
-          const rec = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null;
-          const defs = Array.isArray(rec?.deferrals) ? rec.deferrals : [];
-          return [...new Set(defs.filter((d) => String(d.layer || "").toLowerCase() === "source" && d.directive).map((d) => String(d.directive)))];
-        } catch { return []; }
-      })();
+      // A CHANNEL THE FRAME-DIFF NAMED IS NOT FOLDED IN HERE. It is disclosed as an open row, never swept (the
+      // frame-reopen above defers it as a channel never swept), so this pass closes grid cells and nothing else.
+      // The signature keeps its second slot, empty, so a receipt written for the same cells still matches.
       const priorReceipt = existsSync(closureReceiptPath) ? JSON.parse(readFileSync(closureReceiptPath, "utf8")) : null;
-      const closureSig = JSON.stringify([closable.map(cellKey).sort(), [...sourceChannels].sort()]);
+      const closureSig = JSON.stringify([closable.map(cellKey).sort(), []]);
       const alreadyAttempted = priorReceipt && (priorReceipt.sig === closureSig ||
-        // back-compat: a pre-doc-35 receipt keyed only on the cell set (no source channels)
-        (priorReceipt.sig == null && !sourceChannels.length &&
+        // back-compat: a pre-doc-35 receipt keyed only on the cell set
+        (priorReceipt.sig == null &&
           JSON.stringify((priorReceipt.requested ?? []).map(cellKey).sort()) === JSON.stringify(closable.map(cellKey).sort())));
       // SIZED BY THE CELLS A CLOSURE GRID RUNS, as the main grid is (gridBatchFor): its spec carries only the
       // platforms of the cells it closes.
       const closureBatch = (cells) => gridBatchFor(ctx.profile, new Set(cells.map((c) => c.platform)).size);
-      if ((closable.length || sourceChannels.length) && !alreadyAttempted) {
+      if (closable.length && !alreadyAttempted) {
         const requested = closable;
         const variants = [...new Set(closable.map((c) => c.variant))];
         const batchSize = closureBatch(closable);
         const batches = Math.max(1, Math.ceil(variants.length / batchSize));
-        const gridCalls = batches + (sourceChannels.length ? 1 : 0);   // grid call(s) + a channel-sweep call (tokens-only: no $ estimate)
-        note(`coverage closure: ${closable.length} machine-closable cell(s)${sourceChannels.length ? ` + ${sourceChannels.length} un-swept in-scope channel(s) [${sourceChannels.join(", ")}]` : ""} — one supplementary grid pass (${gridCalls} grid call(s))`);
+        const gridCalls = batches;   // grid call(s) (tokens-only: no $ estimate)
+        note(`coverage closure: ${closable.length} machine-closable cell(s) — one supplementary grid pass (${gridCalls} grid call(s))`);
         // Fix-1: the driver DICTATES a supplementary grid SPEC for a set of closable cells (a subset of the
         // canonical grid) and the PLUGIN writes the ledger from the API response — never an agent hand-append
         // (the grid_ledger_unparseable class). Connotation is OMITTED (caveat 4): meaning was swept in the
@@ -12003,9 +12096,9 @@ async function pipelineInner(job, opts = {}) {
         };
         if (!clSplit) {
           const suppSpec = closable.length ? buildSuppSpec(closable, null) : null;
-          const followup = repairFollowup("common-law:coverage-closure", { findingsFile: P.commonLaw, suppSpec, suppSpecPath: P.gridSpecSupp(null, "closure"), closable, cellKey, sourceChannels });
+          const followup = repairFollowup("common-law:coverage-closure", { findingsFile: P.commonLaw, suppSpec, suppSpecPath: P.gridSpecSupp(null, "closure"), closable, cellKey });
           const r = await stage("common-law", ctx, { force: true, followup, sessionKey: clMember()?.sessionKey, trigger: "coverage-closure" });
-          if (!r.ok) note(`coverage closure pass failed mechanically (${r.fail}) — surviving cells/channels ship as the genuine limitation`);
+          if (!r.ok) note(`coverage closure pass failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
           // Fold AFTER the stage returns ok (caveat 3): the stage re-validated the UNCHANGED canonical ledger
           // (the plugin never touched it — it wrote only the supp), so grid_ledger_unparseable is structurally
           // impossible on this lane. Now union the plugin-written supp into the canonical in code. The full spec
@@ -12029,15 +12122,10 @@ async function pipelineInner(job, opts = {}) {
           // (the deterministic partition, via ctx.clHalfTerms); a cell whose owner half has no usable
           // session this process (quarantined) re-routes to the OTHER live half — any live common-law
           // session can run a dictated supplementary cell, and the merge unions by term|platform
-          // regardless of which half's ledger carries it. Source-channel sweeps span the WHOLE grid, so
-          // they go to EVERY usable half over an explicit term scope (routeHalfTermScopes — the cell
-          // re-route's mirror): a usable half covers its own partition terms PLUS any unusable sibling's
-          // terms, so a dead half can never leave its variants unsearched on a flagged channel while the
-          // scope-ledger reconciliation reads the channel as closed (the unsplit contract is EVERY
-          // manifest variant). Every followup targets the HALF artifacts (the halves stay the source of
-          // truth); the code re-merge below refreshes the canonical pair before cellsOf() re-reads it.
+          // regardless of which half's ledger carries it. Every followup targets the HALF artifacts (the
+          // halves stay the source of truth); the code re-merge below refreshes the canonical pair before
+          // cellsOf() re-reads it.
           const usable = (h) => Boolean(clHalves[h].sessionKey && !clHalves[h].quarantined);
-          const chanScopes = routeHalfTermScopes(ctx.clHalfTerms, GRID_HALVES.filter(usable));
           // item 25 — the closure set is partitioned EVENLY at dispatch, not routed through halfOfTerm.
           //
           // halfOfTerm is right for the FRESH gather: it is a pure function of the term, every followup
@@ -12065,12 +12153,11 @@ async function pipelineInner(job, opts = {}) {
           // independent, so serializing them only doubled the closure wall.
           await runBatched(GRID_HALVES, config.gatherConcurrency, async (h) => {
             const cells = cellJobs[h];
-            const chans = sourceChannels.length && chanScopes[h]?.length ? sourceChannels : [];
-            if (!cells.length && !chans.length) return;
-            const suppSpec = cells.length ? buildSuppSpec(cells, h) : null;
-            const followup = repairFollowup("common-law-half:coverage-closure", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), suppSpec, suppSpecPath: P.gridSpecSupp(h, "closure"), cells, cellKey, chans, scopes: chanScopes[h] });
+            if (!cells.length) return;
+            const suppSpec = buildSuppSpec(cells, h);
+            const followup = repairFollowup("common-law-half:coverage-closure", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), suppSpec, suppSpecPath: P.gridSpecSupp(h, "closure"), cells, cellKey });
             const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "coverage-closure" });
-            if (!r.ok) note(`coverage closure pass (half ${h}) failed mechanically (${r.fail}) — surviving cells/channels ship as the genuine limitation`);
+            if (!r.ok) note(`coverage closure pass (half ${h}) failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
           });
           // The plugin wrote each half's supplementary ledger; the extended readHalfLedger folds it with the
           // UNCHANGED main half ledger (both plugin-written) into the canonical pair — fold-after-stage, so the
@@ -12080,10 +12167,10 @@ async function pipelineInner(job, opts = {}) {
           await mergeWithConnotationRemedy();   // the halves changed — re-derive the canonical pair before re-reading
         }
         ({ exempt, closable } = cellsOf());
-        const receipt = { ts: new Date().toISOString(), requested: requested, sig: closureSig, sourceChannels,
+        const receipt = { ts: new Date().toISOString(), requested: requested, sig: closureSig,
           closed: requested.length - closable.length, remaining: closable, exempt, gridCalls };
         writeFileSync(closureReceiptPath, JSON.stringify(receipt, null, 2) + "\n");
-        runLog(run.runDir, { event: "coverage-closure", requested: requested.length, sourceChannels: sourceChannels.length || undefined,
+        runLog(run.runDir, { event: "coverage-closure", requested: requested.length,
           closed: receipt.closed, remaining: closable.length, exempt: exempt.length, gridCalls });
       } else if (closable.length || exempt.length) {
         runLog(run.runDir, { event: "coverage-closure", requested: 0, closed: 0,
@@ -12384,9 +12471,6 @@ async function pipelineInner(job, opts = {}) {
           const regDirectives = firing.filter((d) => d.layer === "variant" || d.layer === "field");
           const srcDirectives = firing.filter((d) => d.layer === "source");
           const changedAxes = [];
-          // #5a: the detail-fetch ceiling for the dominant-element CLOSURE pass (below). Bounds the pass to a
-          // returnable coverage-limited result rather than a hard-wall SIGKILL on a runaway crowd.
-          const reopenFetchCap = reopenFetchCeiling(process.env.CLEAROTRON_REOPEN_MAX_FETCH);
 
           // CLOSURE-FIRST (register). The dominant-element crowd lives on the register and a Corsearch sweep is
           // far cheaper than the common-law grid, so by DEFAULT we try to CLOSE it: re-cover the dominant element
@@ -12431,7 +12515,7 @@ async function pipelineInner(job, opts = {}) {
           // pure code: mint supplemental plan entries from the directives, dispatch the deterministic
           // executor (count-first, ceiling, error stamping — code writes the band, qids stamped), fold +
           // refresh the receipt, re-merge the named band. No LLM sweep turn, no session needed, and the
-          // reopenFetchCeiling concern retires with the arm (the executor batch-screens, never
+          // detail-fetch ceiling concern retires with the arm (the executor batch-screens, never
           // detail-fetches; the enumerate ceiling bounds records). The unit .md prose stays as-is —
           // audit-only; where it differs from the band, the band wins. The ONE warm re-digest below is
           // where judgment reasons over the completed band, unchanged.
@@ -12689,8 +12773,8 @@ async function pipelineInner(job, opts = {}) {
             // Lane flag read from the SAME key the tool exclusion keys on (see the stage dispatcher) —
             // this arm is reachable on a lane run whenever the code-side dispatch arm above could not
             // take it (no executePlan adapter, or CLEAROTRON_PLAN_DISPATCH=off).
-            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives,
+              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
             const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "frame-reopen" });
             if (r.ok) {
               if (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand) { changedAxes.push(a); regChanged = true; }
@@ -12704,8 +12788,8 @@ async function pipelineInner(job, opts = {}) {
               // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
               if (/timeout/.test(String(regMechFail))) {
                 note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
-                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives,
+                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
                 const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
                 if (r2.ok && existsSync(P.registerUnit(a)) && (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand)) {
                   changedAxes.push(a); regChanged = true; regMechFail = null;
@@ -12723,79 +12807,13 @@ async function pipelineInner(job, opts = {}) {
           }
           if (regArm === "resume") remergeIfBandsMoved(ctx, "frame-reopen");
 
-          // SOURCE channels: a warm RESUME is taken when the common-law session is live; with no
-          // resumable session the omission becomes a DISCLOSED DEFERRAL (open coverage row + the
-          // CLEAR→CONDITIONAL clamp) — "can't close → disclose", never a silent drop. There is
-          // deliberately NO fresh-sweep arm: the grid is the expensive (~$40) layer, and a fresh
-          // re-sweep on a dead session is a feature decision to be deployed always-on, not a knob.
-          let srcSwept = false, srcReason = null;
+          // A SOURCE DIRECTIVE NAMING A CHANNEL IS DISCLOSED, NEVER SWEPT. The frame-diff manual says so ("disclosed
+          // rather than swept blind — they end as an open coverage row"), and this arm used to do the opposite: it
+          // resumed the web-search sessions to sweep the channel for every variant. No web-search session is resumed
+          // for a channel now. Each source directive is deferred as a channel never swept, so it reaches the reader as
+          // an open row in the shipped words, and the coverage closure below no longer folds it in either.
           // (Register-only never reaches this arm: source-layer directives are dropped before `firing`.)
-          // C2: the source sweeps are WARM arms (model resumes rewriting common-law findings) — they
-          // stay behind the digest lock even when the register dispatch arm ran under it.
-          if (srcDirectives.length && digestLockedReopen) {
-            srcReason = "digest-locked-resume";
-            note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — digest locked on a resume past synthesis (warm arms stay locked by design)`);
-          } else if (srcDirectives.length && !clSplit) {
-            const canResume = clMember()?.sessionKey && !clMember()?.skipped;
-            if (canResume) {
-              const beforeCl = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null;
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) → resuming common-law for a supplemental sweep`);
-              // Fix-1: source-channel closure stays PROSE/byte-diff-verified — the channel must be model-
-              // resolved to its real domains (github.com/nuget.org/…), never a spec-shaped grid platform, so
-              // unlike the closable grid cells it does not route through a driver-dictated grid spec. The
-              // append line is DELETED (it corrupted canonical ledgers); the channel receipts land in the
-              // findings prose and `srcSwept` is decided by the byte-diff below, exactly as before.
-              const followup = repairFollowup("common-law:frame-reopen", { findingsFile: P.commonLaw, gridLedger: P.commonLawGrid, directives: srcDirectives });
-              const r = await stage("common-law", ctx, { force: true, followup, sessionKey: clMember()?.sessionKey, trigger: "frame-reopen" });
-              if (r.ok) {
-                if (readFileSync(P.commonLaw, "utf8") !== beforeCl) srcSwept = true;
-                else { srcReason = "unchanged-after-resume"; note(`frame-reopen: common-law unchanged after the supplemental sweep`); }
-              } else { srcReason = `mechanical-fail:${r.fail}`; note(`frame-reopen: common-law supplemental sweep failed mechanically (${r.fail})`); }
-            } else {
-              srcReason = "no-resumable-session";
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — no resumable common-law session (the grid is the expensive layer; disclose rather than spend)`);
-            }
-          } else if (srcDirectives.length) {
-            // A1 SPLIT — a source-channel sweep spans the WHOLE grid, so the followup goes to EVERY live
-            // half-session (same warm-resume-only doctrine as the single-member arm: skipped/quarantined
-            // halves are not live in this process, and there is deliberately no fresh-sweep arm — the
-            // grid is the expensive layer). Each live half sweeps an EXPLICIT term scope
-            // (routeHalfTermScopes): its own partition terms plus any dead sibling's terms re-routed to
-            // it, so the union of the sweeps is ALWAYS the full manifest — the unsplit contract. SWEPT
-            // requires every routed followup to succeed mechanically AND the merged canonical file to
-            // change; a mechanical failure on ANY half means part of the grid's variants were never
-            // searched on the flagged channels, so the directive stays a DISCLOSED DEFERRAL (open
-            // coverage row + the CLEAR→CONDITIONAL clamp), exactly like the single-member arm's !r.ok
-            // branch — never closed on a partial byte-diff.
-            const live = GRID_HALVES.filter((h) => clHalves[h].sessionKey && !clHalves[h].skipped && !clHalves[h].quarantined);
-            const sweepScopes = routeHalfTermScopes(ctx.clHalfTerms, live);
-            if (live.length) {
-              const beforeCl = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null;
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) → resuming ${live.length} common-law half-session(s) for a supplemental sweep`);
-              // CONCURRENCY (2026-07-13): the live half followups run CONCURRENTLY (runBatched — each on its
-              // own warm half-session), then ONE re-merge folds the results. First mechanical failure in half
-              // order wins (runBatched preserves input order) — identical to the prior sequential first-fail.
-              const sweepFails = await runBatched(live, config.gatherConcurrency, async (h) => {
-                // Fix-1: same as the single-member arm — channels are model-resolved, not grid platforms, so
-                // this stays prose/byte-diff; the append that corrupted the half ledger is DELETED. The half
-                // findings change (channel rows) drive the merged byte-diff via mergeCommonLawArtifacts below.
-                const followup = repairFollowup("common-law-half:frame-reopen", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), gridLedger: P.commonLawGridHalf(h), directives: srcDirectives, scopes: sweepScopes[h] });
-                const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "frame-reopen" });
-                if (!r.ok) { note(`frame-reopen: common-law half ${h} supplemental sweep failed mechanically (${r.fail})`); return `mechanical-fail:${r.fail}`; }
-                return null;
-              });
-              let mechFail = sweepFails.find(Boolean) ?? null;
-              // Through the connotation-remedy wrapper (one shared round per run): a half re-emit that
-              // dropped its disposition rows gets the routed repair instead of a terminal merge throw.
-              await mergeWithConnotationRemedy();
-              if (mechFail) { srcReason = mechFail; note(`frame-reopen: source-channel omission stays a disclosed deferral — a half sweep failed mechanically, so part of the grid was never searched on the flagged channel(s)`); }
-              else if (readFileSync(P.commonLaw, "utf8") !== beforeCl) srcSwept = true;
-              else { srcReason = "unchanged-after-resume"; note(`frame-reopen: common-law unchanged after the supplemental half sweeps`); }
-            } else {
-              srcReason = "no-resumable-session";
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — no resumable common-law half-session (the grid is the expensive layer; disclose rather than spend)`);
-            }
-          }
+          if (srcDirectives.length) note(`frame-reopen: ${srcDirectives.length} source-channel directive(s) disclosed as open rows, not swept`);
 
           // ONE warm re-digest if a register axis materially changed (re-derives register-coverage-ledger.json,
           // and surfaces the newly-enumerated conflicts as findings — this block runs BEFORE synthesis).
@@ -12895,12 +12913,12 @@ async function pipelineInner(job, opts = {}) {
           // axis byte-diff (lower stakes, not a clamp input — broadening them would manufacture false defers).
           // Whether the now-searched band is COMPLETE enough is judgment's call downstream (coverage_judgment).
           const { swept, deferrals } = partitionFiring(firing,
-            (d) => d.layer === "source" ? srcSwept
+            (d) => d.layer === "source" ? false
                  : regArm === "dispatch" ? regSwept.has(reopenKey(d))
                  : d.severity === "dominant-element" ? false
                  : regChanged,
             (d) => {
-              if (d.layer === "source") return srcReason || "source-not-swept";
+              if (d.layer === "source") return "source-not-swept";
               if (regArm === "dispatch") {
                 const base = regDeferReason.get(reopenKey(d)) || "not-verified-closed";
                 const partial = regPartialMint.get(reopenKey(d));
@@ -12932,7 +12950,7 @@ async function pipelineInner(job, opts = {}) {
               : [];
             const outOfScope = [
               ...srcDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
-                reason: "source-channel directive — the common-law sweep is verified by a prose byte-diff on the findings file, so it has no term unit and no per-query record to account" })),
+                reason: "source-channel directive — disclosed as an open row and never swept, so it has no term unit and no per-query record to account" })),
               ...(regArm === "dispatch" ? [] : regDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
                 reason: `register directive handled by the ${regArm ?? "no"} arm, which stamps no per-slice execution receipt — no term-level record exists to account` }))),
             ];
@@ -12970,7 +12988,7 @@ async function pipelineInner(job, opts = {}) {
           const answered = swept.filter((k) => regAnsweredBy.has(k)).map((k) => ({ directive: k, slices: regAnsweredBy.get(k) }));
           const withheldBy = swept.filter((k) => regWithheldBy.has(k)).map((k) => ({ directive: k, slices: regWithheldBy.get(k) }));
           writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered, withheldBy);
-          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed, reopenFetchCap: regDirectives.some((d) => d.severity === "dominant-element") ? reopenFetchCap : undefined });
+          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed });
           // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
           // unlocked path demotes verified-closed directives inline when its pre-synthesis flush
           // fails (above); under the lock the reconcile rides the LATE flush AFTER this receipt is
@@ -13049,12 +13067,12 @@ async function pipelineInner(job, opts = {}) {
         // that parks the run. Best-effort by construction: a miss just leaves the delivery gate as strict
         // as it is today.
         //
-        // COMMON-LAW JOINED THIS LIST ON 2026-08-04 ( follow-up). It was missing: the source-layer arm
-        // above resumes the common-law session and re-saves common-law.md (it tracks the rewrite in
-        // `srcSwept`), and frame-diff declares that file too — so a reopen that swept a SOURCE directive
-        // rather than a variant one left exactly the staleness this block exists to prevent. The seam
-        // below covers the arms that run after placement; this one covers the crash window between the
-        // sweeps and that seam.
+        // COMMON-LAW JOINED THIS LIST ON 2026-08-04, when the source-layer arm above still resumed the
+        // common-law session and re-saved common-law.md. That arm no longer sweeps (a channel is disclosed,
+        // never swept), so the reopen does not move the file now; it stays listed because frame-diff
+        // declares it, and a file that did not move fingerprints the same on both sides. The seam below
+        // covers the arms that run after placement; this one covers the crash window between the sweeps
+        // and that seam.
         // P.commonLaw unconditionally: stageInputs["frame-diff"] declares it on every run type, and an
         // absent file fingerprints as absent on both sides — a register-only run is a no-op here.
         settleOneShotStamp(run.runDir, "frame-diff",
@@ -13112,8 +13130,8 @@ async function pipelineInner(job, opts = {}) {
     // D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the
     // never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED; every ESCALATE line still re-runs its axis.
     // Audit-trail-aware escalation skip (Lever 4). A skeptic flag against an axis whose coverage-ledger
-    // row(s) are ALL `coverage-limited` is a DOCUMENTED/ACCEPTED structural limit (budget overrun, ring-fenced
-    // jurisdiction yield, phonetic-fringe sampled, count-only saturation) — a warm re-run cannot close it; it
+    // row(s) are ALL `coverage-limited` is a DOCUMENTED/ACCEPTED structural limit (a crowd recorded with its
+    // count) — a warm re-run cannot close it; it
     // would only re-spend the fat gather context (the ~343K cold-write) + a 2nd Opus re-digest for no recall
     // gain, so we skip it. CONSERVATIVE predicate: skip ONLY when the axis owns ≥1 ledger row AND every owned
     // row is `coverage-limited` (a `deferred` row = real outstanding work → re-run closes it; a `confirmed-clean`
@@ -13123,7 +13141,8 @@ async function pipelineInner(job, opts = {}) {
     const ledger = loadCoverageLedger(run.runDir).rows;   // WS-A: machine ledger when present, else prose
     // A2 — the capability-gap inputs the skip below decides on, read once (same authority-then-prose
     // ordering as the envelope: the receipt indicts an axis, the row reason splits inside it).
-    const escalationGapAxes = capabilityGapAxes(ctx.registerPlan, readPlanExecution(ctx));
+    const escalationReceipt = readPlanExecution(ctx);
+    const escalationGapAxes = capabilityGapAxes(ctx.registerPlan, escalationReceipt);
     // — the floor axes this mark designated, and the axes whose floor work was excused rather than
     // executed. Read once, beside the other inputs the skip decides on, in the same authority ordering.
     const floorBreachAxes = new Set(findFloorBreaches(ledger, readFloorAxes(P)).map((b) => b.axis));
@@ -13175,11 +13194,16 @@ async function pipelineInner(job, opts = {}) {
       // that designates no floor.
       if (owned.length > 0 && !floorBreachAxes.has(a.toLowerCase())) {
         const split = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P) });
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) });
         const openNonDeferred = owned.some((r) => r.status !== "deferred" && r.status !== "coverage-limited");
         if (split.held.length > 0 && split.closeable.length === 0 && !openNonDeferred) {
-          note(`escalation skipped ${a} — capability-gap deferral: the active register provider cannot express those slices, so a re-run re-derives the same refusal (the gap stays open and disclosed)`);
-          runLog(run.runDir, { event: "escalation-skipped", axis: a, reason: "capability-gap deferral (nothing a re-run can close)" });
+          // Held only because none of its rows has a question left to send is not a capability gap, and says so.
+          const nothingToSend = heldForNothingToSend(split);
+          note(nothingToSend
+            ? `escalation skipped ${a} — no question is left to send, so a re-run cannot close it (the gap stays open and disclosed)`
+            : `escalation skipped ${a} — capability-gap deferral: the active register provider cannot express those slices, so a re-run re-derives the same refusal (the gap stays open and disclosed)`);
+          runLog(run.runDir, { event: "escalation-skipped", axis: a,
+            reason: nothingToSend ? "no question left to send (nothing a re-run can close)" : "capability-gap deferral (nothing a re-run can close)" });
           return false;
         }
       }
@@ -13246,16 +13270,14 @@ async function pipelineInner(job, opts = {}) {
         const beforeBand = bandBytesOf(P, a);   // a narrow sub-query adds blocks to the band, whatever it does to the notes
         note(`skeptic escalated ${a} → resuming its session to defend/adjust (warm, same tier)`);
         let followup = repairFollowup("register-unit:escalation", { paths: P, axis: a, flags,
-          supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
-        // A2, per-row: the skip above only catches an axis whose ENTIRE outstanding work is a
-        // capability gap. An axis is often escalated for a good reason (a flagged confirmed-clean row)
+          supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
+        // A2, per-row: the skip above only catches an axis whose ENTIRE outstanding work is held (a
+        // capability gap, or nothing left to send). An axis is often escalated for a good reason (a flagged confirmed-clean row)
         // while ALSO carrying held rows — and the resumed unit must not be left to think those are
         // work it failed to do. Name them, exactly as the envelope's close followup does.
         const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P) }).held;
-        if (escHeld.length) {
-          followup += `\n\nNOT YOURS TO CLOSE — the active register provider cannot express these slices at all, so no re-run can reach them. Leave these Coverage-ledger rows exactly as they are (\`deferred\`, same reason), and do not restate them as searched or clean:\n${escHeld.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`;
-        }
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) }).held;
+        followup += escalationHeldNote(escHeld);
         // No opts.model → stays on this axis's original tier (axisTier: sonnet/haiku) so the resume is a warm
         // cache hit. sessionKey: unitKey[a] resumes the EXACT key the unit won on. force bypasses idempotency.
         const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "escalation" });
@@ -13327,11 +13349,13 @@ async function pipelineInner(job, opts = {}) {
       // The plan-execution receipt is the authority (capabilityGapAxes); the row reason only splits
       // INSIDE an indicted axis. An axis with nothing closeable is HELD: never re-run, never closed by
       // time, still deferred, still an open floor, still disclosed.
-      const gapAxes = capabilityGapAxes(ctx.registerPlan, readPlanExecution(ctx));
+      const envelopeReceipt = readPlanExecution(ctx);
+      const gapAxes = capabilityGapAxes(ctx.registerPlan, envelopeReceipt);
       const fullyDeferred = new Set((ctx.registerPlan ? fullyDeferredAxes(ctx.registerPlan) : []).map((a) => String(a.axis).toLowerCase()));
       const stickyUnitsNow = stickyGapUnits(P);   // a gap this run already accepted is held whatever its row's reason says
       const closeabilityByAxis = new Map(deferredAxes.map((a) => [a,
-        splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()), heldUnits: stickyUnitsNow })]));
+        splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()), heldUnits: stickyUnitsNow,
+          uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(envelopeReceipt) })]));
       const heldAxes = deferredAxes.filter((a) => {
         const s = closeabilityByAxis.get(a);
         // The `!hasBreach &&` term is retired with the ⭐ floor: it kept an axis carrying a
@@ -13352,8 +13376,13 @@ async function pipelineInner(job, opts = {}) {
       runLog(run.runDir, { event: "envelope-decision", deferredAxes, estCloseSec, deadline: job.deadline ?? null,
         held_rows: heldAxes.map((a) => ({ axis: a, rows: (closeabilityByAxis.get(a)?.held ?? []).map((r) => ({ unit: r.unit, reason: String(r.reason ?? "").slice(0, 200) })) })),
         ...decision });
+      // An axis held only because none of its rows has a question left to send is not a capability gap: the client's
+      // note below names the capability-held axes alone, and the open-floor line discloses the rest.
+      const nothingToSendOnly = (a) => heldForNothingToSend(closeabilityByAxis.get(a));
       for (const a of heldAxes) {
-        note(`envelope: ${a} HELD — a capability-gap deferral is never closeable by time; the floor stays open and ships disclosed`);
+        note(nothingToSendOnly(a)
+          ? `envelope: ${a} HELD — no question is left to send, so a re-run cannot close it; the floor stays open and ships disclosed`
+          : `envelope: ${a} HELD — a capability-gap deferral is never closeable by time; the floor stays open and ships disclosed`);
       }
       // V4-1: same digest-lock semantics as the escalation block — a --from synthesis fork's inherited
       // narrative does not lock the digest (synthesis is about to re-run over it).
@@ -13370,16 +13399,14 @@ async function pipelineInner(job, opts = {}) {
           const split = closeabilityByAxis.get(a) ?? { closeable: [], held: [] };
           const rows = split.closeable
             .map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n");
-          const heldRows = split.held.length
-            ? `\n\nThese rows on this axis are NOT yours to close and must stay exactly as they are — the active register provider cannot express those slices at all, so no re-run can reach them. Leave them \`deferred\`, keep their reason, and do not restate them as searched or clean:\n${split.held.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`
-            : "";
+          const heldRows = envelopeHeldNote(split.held);
           note(`envelope: closing deferred coverage on ${a} (deadline permits — ${decision.reason})`);
           // What the re-opened unit is asked to close, and what it is told to leave: the record of the split
           // this close acted on, so a gap handed back as work is visible in the run's own log.
           runLog(run.runDir, { event: "envelope-close-rows", axis: a,
             closeable: split.closeable.map((r) => String(r.unit ?? "")), held: split.held.map((r) => String(r.unit ?? "")) });
           const followup = repairFollowup("register-unit:envelope-close", { paths: P, axis: a, rows: rows + heldRows,
-            supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
+            supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
           const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "envelope" });
           if (!r.ok) return { axis: a, changed: false, fail: r.fail };
           const afterUnit = readFileSync(P.registerUnit(a), "utf8");
@@ -13461,8 +13488,9 @@ async function pipelineInner(job, opts = {}) {
       // A2 — held axes are DISCLOSED, never silently absent: the note is what the report's front matter
       // renders, and a gap nothing can close is precisely the gap the lawyer must be told about. It
       // rides beside any close note rather than replacing it.
-      if (heldAxes.length) {
-        const heldNote = `deferred coverage (${heldAxes.join(", ")}) cannot be closed by any re-run — the active register provider cannot express those slices; the gap stays open and disclosed`;
+      const capabilityHeldAxes = heldAxes.filter((a) => !nothingToSendOnly(a));
+      if (capabilityHeldAxes.length) {
+        const heldNote = `deferred coverage (${capabilityHeldAxes.join(", ")}) cannot be closed by any re-run — the active register provider cannot express those slices; the gap stays open and disclosed`;
         ctx.envelopeNote = ctx.envelopeNote ? `${ctx.envelopeNote}; ${heldNote}` : heldNote;
       }
       refreshSupplementalExecution(ctx);   // envelope closes may have PROPOSED supplementals — account for them
@@ -14678,8 +14706,13 @@ async function pipelineInner(job, opts = {}) {
       // THE TWO GAPS STATED ONCE when both name records: the approved sentence, with each record counted once out of the
       // records either required to be assessed (ruled 2026-10-19). The run record keeps each gap's own counts.
       const gap = recallGapNow(duty);
+      // THE DUTY IS THE ENTRY'S, AND THE READER IS TOLD ITS RECORDS: every record of each entry left unaccounted, out of
+      // the records the owed entries hold (a duty with no record counts is a row per record, as before).
+      const dutyIds = duty?.computable === true ? duty.unaccounted.flatMap((u) => (Array.isArray(u.uris) ? u.uris : [u.uri])) : [];
+      const recordsOpen = duty?.records?.unaccounted ?? dutyIds.length;
+      const recordsOwed = duty?.records?.owed ?? duty?.totals?.owed;
       const joint = duty?.computable === true && duty.unaccounted.length
-        ? jointUnaccounted({ dutyIds: duty.unaccounted.map((u) => u.uri), owedIds: owedUrisFor(run.runDir), recallIds: gap.records, weighedIds: gap.population })
+        ? jointUnaccounted({ dutyIds, owedIds: owedUrisFor(run.runDir), recallIds: gap.records, weighedIds: gap.population })
         : null;
       if (duty?.computable === true && duty.unaccounted.length) {
         const sample = duty.unaccounted.slice(0, 4).map((u) => `${u.mark ? `${u.mark} ` : ""}(${u.uri})`).join("; ");
@@ -14688,9 +14721,9 @@ async function pipelineInner(job, opts = {}) {
         // but naming it to nobody was the worse outcome of the two.
         deliverAndClamp({
           event: "synthesis-duty-undischarged",
-          defect: `synthesis_unaccounted_delivered:${duty.unaccounted.length}`,
-          detail: { unaccounted: duty.unaccounted.length, owed: duty.totals.owed, uris: duty.unaccounted.slice(0, 6).map((u) => u.uri) },
-          reason: `synthesis_unaccounted_delivered:${duty.unaccounted.length} of ${duty.totals.owed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.${joint ? ` Stated with the recall gate's records, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
+          defect: `synthesis_unaccounted_delivered:${recordsOpen}`,
+          detail: { unaccounted: recordsOpen, owed: recordsOwed, uris: dutyIds.slice(0, 6) },
+          reason: `synthesis_unaccounted_delivered:${recordsOpen} of ${recordsOwed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.${joint ? ` Stated with the recall gate's records, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
           again,
           // — the READER's sentence: what is open, in a lawyer's nouns. Counts survive;
           // the token, the record ids and the engine's nouns stay in `reason` and the run record.
@@ -14699,7 +14732,7 @@ async function pipelineInner(job, opts = {}) {
           // counts survive; `terminal-clamp.mjs` composes it from the counts either way, so the fresh
           // run and the republished archive cannot drift apart.
           clause: joint ? clauseForDefect("synthesis_unaccounted_delivered", joint.n, joint.m)
-            : clauseForDefect("synthesis_unaccounted_delivered", duty.unaccounted.length, duty.totals.owed),
+            : clauseForDefect("synthesis_unaccounted_delivered", recordsOpen, recordsOwed),
         });
       } else if (again && gapPositivelyClosed("synthesis_unaccounted_delivered", { duty })) withdrawClosedGap("synthesis_unaccounted_delivered");
       const recall = clampOnTheRecallGate(duty, { again, gap, joint });   // the recall gate's gap, beside the writer's duty
@@ -17110,7 +17143,7 @@ async function pipelineInner(job, opts = {}) {
       // ZERO usable rows (machine mirror unavailable AND the prose parse yielded nothing) has no
       // functioning coverage receipts at all — it FAILS instead of stamping a verdict over unread
       // coverage (the retired D1 clamp used to ship this as a finished-looking CONDITIONAL).
-      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER (874). The machine ledger
+      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER. The machine ledger
       // and the prose table are renders of the driver's coverage form, whose statuses the write-up recorded. With both
       // renders unreadable, the form's ruled rows still let the coverage-honesty floor run, through the same relabels,
       // so the run is not ended with no report over a render it lost. With no ruled row there either, see below.
@@ -17122,7 +17155,7 @@ async function pipelineInner(job, opts = {}) {
           note(`coverage ledger: the machine ledger and the prose table are unreadable — the coverage floor reads the coverage form's ${formRows.length} ruled row(s)`);
         } else
           // With no ruled row anywhere, no verdict can ship over coverage nobody read (spec-49 T3), and the run is not
-          // ended for it either (874): the failure is the assessment's, recorded as not completed and delivered without it.
+          // ended for it either: the failure is the assessment's, recorded as not completed and delivered without it.
           throw Object.assign(new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`), { notCompletedPart: "assessment" });
       }
       // — the designation comes from the VALIDATED model, not the rendered manifest. `manifestFinal`
@@ -17227,7 +17260,7 @@ async function pipelineInner(job, opts = {}) {
       // failClass "stale": the remedy is a DETERMINISTIC recompute of the stale stage(s) (a resume recomputes
       // them — the stamps were left stale for exactly this, see reconcileStamps' exclude), so this must not be
       // starved by the shared one-park "unknown" budget. The repeat-signature backstop still caps it.
-      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE (874). A first staleness parks and the resume repairs
+      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE. A first staleness parks and the resume repairs
       // it, as always. Where the repeat would end the run, the check is named as its own part: the run parks once more,
       // and the resumed pass repairs and checks again from the material as it then stands. Still stale then, it ends as
       // it always did; this check never delivers past staleness.
@@ -17534,7 +17567,7 @@ async function pipelineInner(job, opts = {}) {
       // not a status surface — it stays under the machinery name deliberately.
       return { ok: false, postponed: true, recovery: true, attempt, resetsAt: recoveryResumesAt, codename: run.codename, runDir: run.runDir };
     }
-    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON (874) ────────────────────────
+    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON ────────────────────────
     //
     // A failure the throw site named as a covered part (`notCompletedPart`, parts-not-completed.mjs) reaches here once
     // the decision above has nothing left to buy: every recovery lane spent, a repeated signature, or a deterministic

@@ -29,6 +29,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 // What stays is the GRID path's own need — the obligations sidecar written beside the grid's ledger.
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
+import { keepResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage
 
 const API_KEY = process.env.PERPLEXITY_API_KEY || "";
 
@@ -61,7 +62,8 @@ const AGENT = process.env.CLEAROTRON_GATHER_AGENT || "";
 // change what was searched — the answer to "what was asked". The response BODY is never written: it can
 // run to tens of KB, it is the client's matter content, and the question this log exists to answer is
 // answered by its SHAPE (ok, bytes, how many citations came back). The API key is never in `params` and
-// never touches this file.
+// never touches this file. An answer's text is kept apart, in the run folder, for a later attempt of the same stage
+// to be handed (research-answers.mjs), and never in this log.
 function logCall(tool, args, result) {
   if (!RUN_DIR) return;
   try {
@@ -296,6 +298,7 @@ async function research(params) {
     keepRaw("question", { task, preset }, data);
     const text = enable_sandbox ? formatSandboxResponse(data, preset) : formatResponse(data, preset);
     logCall("perplexity_research", asked, { ok: true, bytes: String(text ?? "").length, citations: citationCount(data) });
+    keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset, text });
     return text;
   } catch (err) {
     // A FAILED LOOKUP IS LOGGED TOO, and that is the half that matters most: without it, "the search

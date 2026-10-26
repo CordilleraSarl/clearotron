@@ -6,8 +6,7 @@ vocabulary, field names, tool references, and the quirks that will otherwise cos
 **EUIPO is a single-office register.** It holds EU trade marks and international registrations
 designating the EU, and nothing else. A German DPMA filing, a French INPI filing, a UK one — all of
 them are different registers this source does not hold. Every non-EU territory in the matter becomes a
-**deferred coverage row**, disclosed on the face of the report. That is the deliberate trade of running
-the free tier, not a fault to work around.
+**deferred coverage row**, disclosed on the face of the report. That is this register's coverage, not a fault to work around.
 
 ## Plugin reference
 

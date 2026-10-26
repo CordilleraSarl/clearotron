@@ -139,3 +139,11 @@ test("a per-class and a per-spelling count each say what their own count said, n
   assert.equal(bySpelling.term_counts.QA.total_counts, "records");
   assert.equal("total_counts" in bySpelling.term_counts.QB, false);
 });
+
+test("a crowd the page limit cut short sends the reading step to the narrowing steps, and hands it to no later stage", async () => {
+  const out = await EXITS["the page limit"].run(() => true);
+  assert.ok(EXITS["the page limit"].proves(out), "guard: the page limit was not the exit reached");
+  assert.ok(out.reason.endsWith("This is an incomplete crowd descriptor, never a clean."), out.reason);
+  assert.ok(!out.reason.includes("unit.md"), `the recorded reason carries an instruction for the unit: ${out.reason}`);
+  assert.ok(!/hand it up to judgment|self-narrow-and-retry/.test(out.reason), `the page limit still hands the crowd up: ${out.reason}`);
+});

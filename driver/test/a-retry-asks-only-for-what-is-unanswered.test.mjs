@@ -80,11 +80,16 @@ test("the narrowed ctx composes a SHORTER message that still names what is left"
 
 // ── the blast radius, which is what this hook has to be safe about ───────────────────────────────────
 
-test("EXACTLY ONE stage declares refreshCtx", () => {
-  // A second declarer is not forbidden — it is a decision, and it should be made deliberately rather
+test("EXACTLY TWO stages declare refreshCtx: doubt-closure, and synthesis", () => {
+  // A further declarer is not forbidden — it is a decision, and it should be made deliberately rather
   // than discovered. This fails when one arrives, and the reader is sent to the premises above.
+  //
+  // SYNTHESIS IS THE SECOND, deliberately. Its refresh changes nothing in its context: what it adds is the research its
+  // earlier attempts got, re-read where the message is built. Its findings surface and positions are frozen for the
+  // stage, so a rebuilt first attempt is the message it replaces, and a retry's differs only by that block
+  // (a-synthesis-retry-is-handed-the-research-its-earlier-attempt-got.test.mjs).
   const declaring = Object.entries(STAGES).filter(([, d]) => typeof d?.refreshCtx === "function").map(([n]) => n);
-  assert.deepEqual(declaring, ["doubt-closure"],
+  assert.deepEqual(declaring.sort(), ["doubt-closure", "synthesis"],
     `${declaring.length} stage(s) recompose their dispatch per attempt. Each one needs its own answer to `
     + `"do this stage's ids mean the same thing on attempt 2" — see doubt-closure's two premises.`);
 });
@@ -96,7 +101,7 @@ test("every OTHER stage composes the same bytes however many attempts it takes",
   // there is no configuration that turns this on for a stage that did not ask for it.
   const offenders = [];
   for (const [name, d] of Object.entries(STAGES)) {
-    if (name === "doubt-closure") continue;
+    if (name === "doubt-closure" || name === "synthesis") continue;
     if (typeof d?.refreshCtx !== "undefined") offenders.push(`${name} declares refreshCtx: ${typeof d.refreshCtx}`);
   }
   assert.deepEqual(offenders, [], offenders.join("\n  "));

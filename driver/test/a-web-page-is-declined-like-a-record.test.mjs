@@ -136,9 +136,9 @@ test("the synthesis instructions print the pages after the records, continuing t
     crowdContext: null, dispatchBlocks: {},
   };
   const text = String(STAGES.synthesis.message({ ...base, findingsSurface: [RECORD, PAGE_A, PAGE_B] }));
-  assert.match(text, /the register digest carried 1 record\(s\) onto your findings surface, and the web notes marked 2 page\(s\) as candidates or conflicts\./);
+  assert.match(text, /the register digest carried 1 position\(s\) onto your findings surface, and the web notes marked 2 page\(s\) as candidates or conflicts\./);
   assert.match(text, /A page you do not mention is counted as a defect of this run\./);
-  assert.match(text, /A record or page that reached your findings surface leaves this stage/);
+  assert.match(text, /A position or page on your findings surface leaves this stage/);
   assert.match(text, /you cite a record or page by its POSITION in the list below/);
   const list = text.slice(text.indexOf("The records on your findings surface, by position:"));
   assert.match(list, /\n {2}0\. SAMPLE — Sample Holdings SA \[sheet-2\] \/mark\/eu\/tm_sample-1\n/);

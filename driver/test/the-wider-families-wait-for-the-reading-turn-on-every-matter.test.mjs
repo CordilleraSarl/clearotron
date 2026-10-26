@@ -37,7 +37,8 @@ const manifestFor = (over = {}) => ({
     { value: "VELTRIS PRO", category: "compound" }],
   incumbent_classes: ["9"], goods_words: ["software", "platform"], ...over,
 });
-const JOB = { jobKey: "t", classes: ["9", "42"], jurisdictions: ["US", "EU"] };
+// Japan is on the list so the Katakana form has a market that reads it: a script form no listed market reads is set aside.
+const JOB = { jobKey: "t", classes: ["9", "42"], jurisdictions: ["US", "EU", "JP"] };
 
 const isIdentical = (e) => e.provenance === "mark"
   && !(Array.isArray(e.goods_text) && e.goods_text.length)

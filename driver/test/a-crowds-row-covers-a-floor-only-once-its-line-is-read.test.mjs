@@ -70,7 +70,7 @@ test("the cover is per line: only a crowded (b) may cover a floor, and only once
 
 test("a crowded (b) says its row covers a floor once read, and each floor line shows the goods the test read, cut short", () => {
   const { md } = crowded();
-  assert.match(md, /The first 5 lines are below; page with band_lookup \{"group":"b"\} only where a line needs reading\. This row covers a floor only once you have read its line\. Where more floors are counted than this page shows, page the rest with band_lookup \{"group":"b"\}; they come first\./);
+  assert.match(md, /The first 5 lines are below; page with band_lookup \{"group":"b"\} only where a line needs reading\. This row covers a floor only once you have read its line and its goods are not the client's goods\. Where more floors are counted than this page shows, page the rest with band_lookup \{"group":"b"\}; they come first\./);
   assert.ok(!withoutPlacementOrders(md).includes(A_CROWDS_ROW_COVERS_A_READ_FLOOR), "another stage was told placement's order");
   const line = (id) => md.split("\n").find((l) => l.includes(`| ${id} |`));
   assert.match(line("/mark/eu/c0"), /\| 0 of 1 «printers» \|/, "a floor line in (b) does not show the goods the test read");
@@ -81,7 +81,7 @@ test("a crowded (b) says its row covers a floor once read, and each floor line s
 test("the placement manual and the group contract carry the five sentences", () => {
   const manual = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   assert.ok(manual.includes("it covers a floor only in such a crowd in (b), and only once you have read the floor's line."));
-  assert.ok(manual.includes("or sits in a crowd of a thousand or more identical marks for other goods, where the crowd's row stands for it once its line has been read;"));
+  assert.ok(manual.includes("or sits in a crowd of a thousand or more identical marks and its goods, read on its line, are not the client's goods, where the crowd's row stands for it;"));
   assert.ok(SET_ASIDE_GROUP_CONTRACT.when.includes("It covers a floor only in such a crowd in (b), and only once you have read the floor's line; a floor among the lines the goods test could not place, like any other floor, is placed or set aside by name."));
   assert.ok(SET_ASIDE_GROUP_CONTRACT.unresolved.includes("or a group with lines you have not read (its first page, in a crowd outside (a), and in (b) every floor),"));
 });

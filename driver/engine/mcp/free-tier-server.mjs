@@ -30,6 +30,7 @@
 // Telemetry: the core writes CLEAROTRON_REGISTER_CALL_LOG / CLEAROTRON_REGISTER_RECORD_LOG (the SHARED register
 // ledger) under the provider id `free-tier`, keyed by the gateway session key.
 import { serve } from "./stdio-server.mjs";
+import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import {
   CAPABILITIES, doSearch, doRecordFetch, doBatchScreen, doImageFetch, doEnumerate, doExecutePlan,
 } from "../../../providers/free-tier/src/core.js";
@@ -100,7 +101,7 @@ const QUERY_PROPS = {
 };
 
 serve({
-  name: "register", version: "0.1.0",
+  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
   tools: [
     {
       name: "register_search",

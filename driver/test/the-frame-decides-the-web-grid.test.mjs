@@ -295,7 +295,7 @@ test("the web sweep's manual no longer says every variant runs on every store", 
     assert.equal(count(web, gone), 0, gone);
   assert.equal(count(skill("clearance-search/phase2-execution.md"), "the 6 gaming platforms"), 0, "the skeptic still checks a fixed store list");
   for (const kept of ["- **The dictated platforms** — your task message's PLATFORMS block names the exact store domains for this customer's profile. A gaming profile",
-    "Extend with field-scoped cells when the matter goes outside", "6. **Negative results** — one row per grid cell", "- [ ] Negative results documented for every grid cell"])
+    "Extend with field-scoped cells when the frame names a field outside", "6. **Negative results** — one row per grid cell", "- [ ] Negative results documented for every grid cell"])
     assert.equal(count(web, kept), 1, kept);
 });
 

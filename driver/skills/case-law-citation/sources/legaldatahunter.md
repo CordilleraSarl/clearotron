@@ -26,7 +26,7 @@ legaldatahunter`).
   doctrine). This is the Swiss / EU / non-US gap CourtListener cannot fill.
 - LDH is a broad legal-data index, **not a trademark specialist**. It will surface national and EU court
   judgments and statutes, but it is not the EUIPO administrative layer. For EUIPO Boards-of-Appeal
-  decisions there is no free source today — report that as a coverage gap.
+  decisions there is no source wired here today — report that as a coverage gap.
 - The dedicated EU court layer (CJEU / General Court judgments) now lives in
   [eurlex.md](eurlex.md) — prefer it for EU *judgments*. Keep LDH for EU **statutes** and the non-US /
   Swiss jurisdictions, and run both for an EU finding, de-duplicating by CELEX / ECLI.

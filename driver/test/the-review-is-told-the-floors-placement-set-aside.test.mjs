@@ -91,7 +91,7 @@ test("a floor set aside on its territory is listed with that ground", (t) => {
   assert.deepEqual(placementFloorDecisionLines(P), ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its territory: the registration covers only Japan, outside the ordered territories"]);
 });
 
-test("a floor a crowd's row covers is listed as covered by that group's row", (t) => {
+test("a crowd's row is listed once, with its ground once and every floor it covers", (t) => {
   // A thousand or more identical marks for goods the client does not sell: group (b), crowded, whose row may cover
   // its floors.
   const N = 1001;
@@ -103,13 +103,33 @@ test("a floor a crowd's row covers is listed as covered by that group's row", (t
   ], { band, goodsOf });
   assert.equal(shape.groups.b.records, N, "guard: the crowd is in (b)");
   const lines = placementFloorDecisionLines(P);
-  assert.equal(lines.length, N, "every floor the row covers is listed");
-  assert.equal(lines[0], "- QZORVAK — Owner 0 Ltd (/mark/eu/m0): covered by group (b)'s row: identical marks in the class for goods unrelated to the client's");
+  assert.equal(lines.length, 1, "the row was repeated on its floors");
+  const m = lines[0].match(/^- covered by group \(b\)'s row: identical marks in the class for goods unrelated to the client's \((.*)\)$/);
+  assert.ok(m, `the row's line is not its ground followed by its floors: ${lines[0].slice(0, 160)}`);
+  assert.deepEqual(m[1].split(", ").sort(), Array.from({ length: N }, (_, i) => `/mark/eu/m${i}`).sort(), "a floor the row covers is not named, or named twice");
+});
+
+test("beside a crowd's row, a set-aside by name keeps its own line, and the review is told each decision once", (t) => {
+  const N = 1001;
+  const band = [rec("a1", "QZORVAK", "Alpha Ltd"), rec("b1", "Qzorvak", "Beta GmbH"), ...Array.from({ length: N }, (_, i) => rec(`m${i}`, "QZORVAK", `Owner ${i} Ltd`))];
+  const goodsOf = { a1: "joysticks", b1: "printers", ...Object.fromEntries(Array.from({ length: N }, (_, i) => [`m${i}`, "printers"])) };
+  const ground = "identical marks in the class for goods unrelated to the client's";
+  const { P } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/b1", ground: "the registration expired in 2019", on: "status" },
+    { set_aside_group: "b", count: N + 1, ground },   // b1 is in (b) too: the row counts the whole group
+  ], { band, goodsOf });
+  const lines = placementFloorDecisionLines(P);
+  assert.equal(lines.length, 2, `one line per standing decision: ${lines.map((l) => l.slice(0, 80)).join(" | ")}`);
+  assert.ok(lines.includes("- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019"));
+  const text = lines.join("\n");
+  assert.equal(text.split(ground).length - 1, 1, "the crowd's ground was repeated");
+  for (let i = 0; i < N; i++) assert.equal(text.split(`/mark/eu/m${i})`).length - 1 + text.split(`/mark/eu/m${i},`).length - 1, 1, `floor m${i} is not named once`);
 });
 
 const SENTENCE = "Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision already accounts for it under the placement rules. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision.";
 const LINES = ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019",
-  "- QZORVAK — Omega Ltd (/mark/eu/m1): covered by group (b)'s row: identical marks in the class for goods unrelated to the client's"];
+  "- covered by group (b)'s row: identical marks in the class for goods unrelated to the client's (/mark/eu/m1)"];
 
 test("the full review reads the sentence and the decisions under it; with none, it says so", () => {
   const P = paths("/run");

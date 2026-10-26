@@ -12,7 +12,7 @@ funnel's tool surface, one `register_execute_plan` call runs every dictated entr
 the SHAPE of the query it names, never as an instruction to type the call yourself. The funnel (Layer A) runs
 each named query via
 `register_enumerate` — the completeness primitive that owns the page loop and returns `enumerated` or
-`incomplete`, never a partial list. **No recipe step narrows-for-tractability or samples a top-N.** A recipe step that says "macro probe"
+`incomplete`, never a partial list. **No recipe step samples a top-N; a crowd is narrowed by the steps in unit.md.** A recipe step that says "macro probe"
 is a **count-only crowd descriptor** (`limit:1`); a recipe step that names a variant query is an
 **`register_enumerate` call**. See [unit.md](unit.md).
 
@@ -27,8 +27,7 @@ is a **count-only crowd descriptor** (`limit:1`); a recipe step that names a var
 **Execution note:** `clearance-register` now runs as a worker that decomposes these axes into isolated
 search **units** (saturation-probe / primary-sweep / transliteration-numeric / incumbent-class /
 merch-sweep), each executing one axis and writing its named-band array (`register-units/<axis>-band.json`).
-If you are a unit, run only your assigned axis from the recipe below; the judgment worker (Layer B) performs
-the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation over the combined bands. See
+If you are a unit, run only your assigned axis from the recipe below; the write-up (Layer B) performs the cross-cutting relevance / owner-aggregation / prioritisation over the candidates placement carried forward. See
 [SKILL.md](SKILL.md).
 
 ## Contents
@@ -36,7 +35,7 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 - [Recipe 1 — Compound tagline](#recipe-1--compound-tagline-multi-word-mark-with-distinctive-element)
 - [Recipe 2 — Single distinctive word](#recipe-2--single-distinctive-word-coined--unusual)
 - [Recipe 3 — Single descriptive word with crowded field](#recipe-3--single-descriptive-word-with-crowded-field)
-- [Recipe 5 — Foreign-language transliteration](#recipe-5--foreign-language-transliteration-worldwide--multi-region-scope)
+- [Recipe 5 — Foreign-language transliteration](#recipe-5--foreign-language-transliteration)
 - [Recipe 6 — Multi-word descriptive tagline](#recipe-6--multi-word-descriptive-tagline-0-distinctive-elements)
 - [Recipe 7 — Exact-in-class-live floor (saturated near-exact band)](#recipe-7--exact-in-class-live-floor-saturated-near-exact-band)
 - [Funnel timing rules](#funnel-timing-rules-apply-across-all-recipes)
@@ -127,24 +126,23 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 4. ENUMERATE a cross-class merch query if identical match
 ```
 
-**Why:** descriptive crowded-field marks have many records. The funnel does **not** narrow-to-tractable-and-stop — it scopes each named slice by class and region (which is breadth, not sufficiency) and lets `register_enumerate` page it to completion or return `incomplete`. The crowd descriptor (step 1) tells the lawyer how crowded the field is; the lawyer decides relevance and sufficiency over the complete enumerated slices.
+**Why:** descriptive crowded-field marks have many records. Each named slice is scoped by class and region (breadth, not sufficiency), and `register_enumerate` pages it to completion or returns `incomplete`; a crowd is narrowed by the steps in unit.md, which stop at the first list you can read. The crowd descriptor (step 1) tells the lawyer how crowded the field is; the lawyer decides relevance and sufficiency over the complete enumerated slices.
 
 **Expected output:** complete enumerated band for each class/region-scoped named slice + a crowd descriptor for the bare element. The lawyer filters to relevance; the funnel does not.
 
 ---
 
-## Recipe 5 — Foreign-language transliteration (worldwide / multi-region scope)
+## Recipe 5 — Foreign-language transliteration
 
-**When to use:** jurisdiction scope is worldwide or includes non-Latin markets. Triggered by `translit-<script>` variants in the manifest.
+**When to use:** the frame names a market whose buyers read a non-Latin script. Triggered by `translit-<script>` variants in the manifest.
 
 **Pattern:**
 
-For each transliteration variant in the manifest:
+Ask one script question per market the frame names. Where the register files foreign marks by their romanised form, and it says so, the Latin question already covers them; do not ask it again in other scripts. For each script question you ask:
 
 ```
 1. ENUMERATE the transliteration (register_enumerate)
    → name:<transliteration> classes <target>
-   → most providers store non-Latin marks in their native script
    → enumerated|incomplete block carried forward verbatim
 
 2. The lawyer reads each transliteration hit:
@@ -154,7 +152,7 @@ For each transliteration variant in the manifest:
 
 **Important:** transliteration hits are NOT confirmed without senior-lawyer sign-off. Claude generates plausible transliterations but Korean/Arabic/etc native speakers must confirm. The `Verify? ✅` flag from `clearance-variants` carries through to the band so judgment surfaces it. The funnel does not decide a transliteration is wrong — it enumerates and passes the record with its flag.
 
-**Breadth note (this recipe shares a unit with the per-jurisdiction named queries).** Both the script-group enumerations here and the material-jurisdiction named queries are owned by the `transliteration-numeric` unit, and **both are enumerated** — there is no "yield one to fund the other" sufficiency trade any more. `register_enumerate` owns each query's page loop; the unit runs every variant query the manifest declares. If a query genuinely cannot run (provider error), that surfaces as an `incomplete` block, not a silently-dropped sweep.
+**Breadth note.** The script questions here are owned by the `transliteration-numeric` unit. `register_enumerate` owns each query's page loop. If a query genuinely cannot run (provider error), that surfaces as an `incomplete` block, not a silently-dropped sweep.
 
 **Expected output:** the enumerated band per script group; sparse where domestic registrants dominate, high-signal where a pre-emptive filing appears. The lawyer reads it.
 
@@ -162,41 +160,41 @@ For each transliteration variant in the manifest:
 
 ## Recipe 6 — Multi-word descriptive tagline (0 distinctive elements)
 
-**When to use:** mark is 2+ words, ALL elements are common-words with high or very-high saturation, no distinctive anchor. Examples: "Raise Your Play", "Level Up Your Skills", "Step Into The Play".
+**When to use:** mark is 2+ words, ALL elements are common-words with high or very-high saturation, no distinctive anchor. Examples: "Sharpen Your Aim", "Level Up Your Skills", "Push Your Limits".
 
 **Pattern:**
 
 ```
 1. Crowd descriptors — count-only probes on the saturated common elements (limit=1, fields=[uri])
-   → name:RAISE classes 9/28/41/42 → `incomplete` crowd-descriptor block
-   → name:PLAY classes 9/28/41/42 → `incomplete` crowd-descriptor block
+   → name:SHARPEN classes 9/28/41/42 → `incomplete` crowd-descriptor block
+   → name:AIM classes 9/28/41/42 → `incomplete` crowd-descriptor block
 
 2. Crowd descriptor — partial-phrase prefix count (the narrative anchor)
-   → phrase:"RAISE YOUR" classes <target> limit=1 → `incomplete` block ("234 live RAISE YOUR ___")
+   → phrase:"SHARPEN YOUR" classes <target> limit=1 → `incomplete` block ("234 live SHARPEN YOUR ___")
 
 3. ENUMERATE the compound phrase, 3 match-modes (register_enumerate each)
-   → exact:"RAISE YOUR PLAY" classes <target>   → identical-mark band
-   → phrase:"RAISE YOUR PLAY" classes <target>  → embedded-in-compound band
-   → default:"RAISE YOUR PLAY" classes <target> → tokenisation-split band
+   → exact:"SHARPEN YOUR AIM" classes <target>   → identical-mark band
+   → phrase:"SHARPEN YOUR AIM" classes <target>  → embedded-in-compound band
+   → default:"SHARPEN YOUR AIM" classes <target> → tokenisation-split band
 
 4. ENUMERATE phrase-substitution variant queries (per manifest)
-   → name:"RAISING YOUR PLAY" match=default classes <target> → register_enumerate
-   → name:"RAISE YOUR PLAYS" match=default classes <target>  → register_enumerate
-   → name:"RAISE THE PLAY"   match=default classes <target>  → register_enumerate
+   → name:"SHARPENING YOUR AIM" match=default classes <target> → register_enumerate
+   → name:"SHARPEN YOUR AIMS" match=default classes <target>  → register_enumerate
+   → name:"SHARPEN THE AIM"   match=default classes <target>  → register_enumerate
    → ...
 
 5. ENUMERATE wildcard variant queries (per manifest)
-   → name:"Raise * play"  classes <target>     → register_enumerate
-   → name:"Raise your *"   classes <target>     → register_enumerate
-   → name:"* your play"     classes <target>     → register_enumerate
+   → name:"Sharpen * aim" classes <target>     → register_enumerate
+   → name:"Sharpen your *" classes <target>     → register_enumerate
+   → name:"* your aim"      classes <target>     → register_enumerate
 
 6. ENUMERATE each common element's exact-in-class name-list (register_enumerate)
-   → name:RAISE match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
+   → name:SHARPEN match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
 
 7. ENUMERATE a cross-class merch query if identical match
 ```
 
-**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). The lawyer reads the complete band + the crowd descriptors and decides sufficiency.
+**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). Placement reads the band; a crowd is narrowed by the steps in unit.md.
 
 **Expected output:** the enumerated band for every named slice + crowd descriptors for the bare elements. The lawyer prioritises; the funnel surfaces everything.
 
@@ -261,7 +259,7 @@ For each transliteration variant in the manifest:
      so judgment sees provenance; identical-text rows carry their status like any other record
 ```
 
-**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration by the narrowing steps on any `incomplete` it deems material, or records it with its count and moves on. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
+**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. You decide on each `incomplete` by the narrowing steps; placement reads the band and decides relevance. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
 
 **Meaning-axis extension — a saturated everyday-word meaning token (COLORA→色彩) runs the same enumeration.** When
 the saturation probe flags a `translit-*-meaning` variant and the frame says that market matters, add **one `register_enumerate` step on the
@@ -297,9 +295,9 @@ hand-paginate. These rules describe what the primitive guarantees and how the fu
   The funnel **never** decides a page-through was "enough" — there is no top-N, no "stop at record N and call
   it clean". `enumerated` or `incomplete` are the only two outcomes, and both cross the firewall verbatim.
 - **A crowd over the window/ceiling returns `incomplete`** (count + sample + reason) — **never a silent
-  truncation and never a self-accepted limit.** That `incomplete` block is the signal to judgment; the lawyer decides whether to command a narrower named enumeration by the narrowing steps (which the funnel then runs), or to record it with its count and move on. The funnel does
-  not "narrow and re-probe until tractable, then call it clean" — it surfaces the descriptor and lets judgment
-  command.
+  truncation and never a self-accepted limit.** That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it
+  with its count and move on. The funnel does not "narrow and re-probe until tractable, then call it clean" — it
+  surfaces the descriptor, and you decide on it.
 - **Retry / provider error** is handled inside the primitive; a persistent failure returns `incomplete` with
   the error in `reason` (a `deferred`-class gap for judgment), never a fabricated empty.
 
@@ -316,8 +314,7 @@ total_hits, fetched:0, sample:[], reason:"crowd descriptor — <why>"}`. Then:
 - **Do NOT narrow the crowd, re-probe, and call the residual clean.** Scoping a named slice by class/region is
   *breadth* (which slice you search) — that is fine and is what the `register_enumerate` call does. Replacing
   a broad query's hits with a narrower query's lower count and declaring the field clean is the banned
-  broad→narrow false-clean. The crowd is *described* (count) and the named slices are *enumerated*; nothing in
-  between.
+  broad→narrow false-clean. The crowd is *described* (count) and the named slices are *enumerated*; a crowd that reading would change the advice on is narrowed by the steps in unit.md.
 - **"Character-noise" is a judgment read, not a funnel call.** A high count is *passed to the lawyer as a
   descriptor*; the funnel does not dismiss it as individual-character indexing. The lawyer reads the count
   alongside the enumerated class-scoped band and decides.

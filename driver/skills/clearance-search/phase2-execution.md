@@ -47,9 +47,8 @@ if its axis is empty, so running a non-applicable one is harmless):
 - `incumbent-class` — if the manifest has an `industry_incumbent_alert`.
 
 Each unit is given: the sub-skill + axis (`clearance-register` unit mode — see `clearance-register/unit.md`), the
-variant manifest path, the request context, the **active register provider** (see
-[SKILL.md → Register sources](SKILL.md#register-sources--the-vendor-is-the-source-of-truth-euipo-is-a-free-eu-cross-check)),
-the sub-budget and its output path (`register-units/<axis>.md`). `clearance-common-law` runs
+variant manifest path, the request context, the **active register provider**
+and its output path (`register-units/<axis>.md`). `clearance-common-law` runs
 alongside the units against the same manifest.
 
 ### Step 2C — Touchpoint 2: placement-inquiry
@@ -69,22 +68,9 @@ After the gather units complete, run `placement-inquiry` (read [skills/placement
 
 ### Variant execution strategy (register layer)
 
-For a **saturated common-word phrase** (per the manifest's Diligence notes / Recipe classification),
-the register units collectively must cover the **Compound-Phrase Funnel** below. Each step maps to a
-unit (macro probes → `saturation-probe`; compound-phrase + single-word + wildcard → `primary-sweep`;
-numeric/transliteration → `transliteration-numeric`). Each step has an explicit skip condition; a
-skipped step must be logged with its reason in the unit's digest audit.
-
-1. **Macro probes** — one search per element of the compound + one for the full compound phrase (limit=10 each), to establish saturation levels. Minimum 3 searches. SKIP only if all elements are non-common-words (rare).
-2. **Compound-phrase sweeps** — the compound phrase across **three match-modes (exact, phrase, default)**, limit=100 per search. Minimum 3 searches. SKIP only if the phrase is a single word (then it's a single-word funnel, not compound).
-3. **Single-word coverage hunts** — for each element marked "demote to filter" in the manifest, one search with product/industry filters applied (limit=50). Minimum 1 per such element.
-4. **Wildcard reorders** — if the manifest lists word-order variants, at least one wildcard sweep per distinct ordering (e.g. `Raise * play`, `play * Raise`).
-5. **Numeric-substitution and transliteration sweeps** — execute every sweep marked ✅ (requires verification) in the variant manifest, UNLESS the manifest classifies the mark as English-only (single-language Recipe 1 pattern). Skipping any ✅ requires a stated reason in the unit's digest audit.
-6. **Material-jurisdiction sub-queries** — a **protected, non-yielding** line item, NOT folded into the sweep budget. Run one scoped sub-query per jurisdiction `matter-context` declares materially-matters (no top-N cap). These outrank within-axis breadth: if budget is tight, an extra script group (step 5) yields and is logged `coverage-limited` — a material jurisdiction is never dropped to fund breadth, and a jurisdiction that genuinely can't run is logged `deferred`, never silent.
-
-**Expected breadth for saturated common-word patterns: ~20–25 register searches per mark, plus the ring-fenced per-jurisdiction allowance** — a guideline, not a quota; coverage of the manifest's axes *and* the declared material jurisdictions is what matters, not the raw count. A run that is thin **and** left ✅ sweeps or material-jurisdiction sub-queries unexecuted with no documented skip reason is incomplete; the skeptic (Step 2.6) flags it. A run that executed every axis and validly found little is complete.
-
-For non-saturated marks (highly distinctive coined terms), the funnel is lighter — but the same skip-with-reason discipline applies. Document the classification in the scope statement so the staff lawyer can challenge it.
+The register units follow clearance-register/unit.md: the identical mark first, a crowd narrowed by its steps, and a
+wider question only where reading it would change what you tell the client. A family the reading turn did not ask is
+recorded withheld-by-judgment with its reason; that is a documented decision, not a shortcut.
 
 ## Step 2.6 — Skeptic review (a fresh-eyes self-audit before you trust the findings)
 
@@ -101,7 +87,7 @@ array IS the clean answer and an EMPTY `escalations` array IS a decision — omi
 
 Escalation is decided by the `escalations` field and by nothing else. Naming an axis in a flag does **not**
 escalate it, and typing an `ESCALATE:` token inside a flag or a reason is REFUSED rather than parsed — so a
-passing mention never triggers a paid re-run, and a real gap is never missed because the axis name happened to be
+passing mention never triggers a re-run, and a real gap is never missed because the axis name happened to be
 absent from prose.
 
 **Coverage is DATA here, never a re-derivation.** The dispatch carries a driver-computed table built from
@@ -112,13 +98,13 @@ table — do **not** reconstruct the ledger by reading the findings prose. (On t
 reconstruction burned 28,592 thinking tokens, 95% of the stage's emission, and still got the answer wrong.)
 
 Two classes of gap are **not** escalation triggers:
-- a gap the **Coverage ledger records as `coverage-limited`** — a documented/accepted structural limit a warm
-  re-run cannot close (budget overrun, ring-fenced jurisdiction yield, phonetic-fringe sampled, count-only
-  saturation);
-- a **capability-gap deferral**, marked `NOT CLOSEABLE` in the table — the active provider cannot express those
-  slices at all (a predicate it lacks, an office outside its coverage, a script its index cannot hold, an owner
-  surface it does not have), so a re-run re-derives the identical refusal at full cost. **A capability-gap
-  deferral is never closeable by time**, and the deadline envelope will not close it either. It stays an open,
+- a gap the **Coverage ledger records as `coverage-limited`** — a crowd recorded with its count, which a
+  warm re-run cannot close;
+- a deferral marked `NOT CLOSEABLE` in the table — the active provider cannot express the slice (a predicate it
+  lacks, an office outside its coverage, a script its index cannot hold, an owner surface it does not have), the
+  envelope close has already asked it again, it was not asked in this run, or it names no search at all — so a
+  re-run cannot close it. **A `NOT CLOSEABLE` deferral is never closeable by time**, and the deadline envelope will
+  not close it either. It stays an open,
   disclosed gap, and the coverage floor is right to refuse a clean verdict over it — if a findings surface reads
   such a slice as clean, that IS a flag; it is never an escalation.
 
@@ -174,10 +160,10 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   of filer size)? Is any escalation of a distinguished mark resting on optics/PR/partner rather than a
   named confusion theory? Is the headline risk driven by the top on-point conflicts, not a distinguished
   mark or unrelated-field noise?
-- **Coverage ledger:** does the `## Coverage ledger` in each findings file carry a row for **every**
-  jurisdiction `matter-context` named materially-matters? Is any `deferred` / `coverage-limited` row being
-  narrated (or about to be narrated) as a clean negative? A material jurisdiction with no row, or a
-  deferred row treated as clean, is a recall gap — flag it.
+- **Coverage ledger:** is any `deferred` / `coverage-limited` row being narrated (or about to be narrated) as a
+  clean negative? Is a material jurisdiction that no question reached at all missing from the ledger? One covered
+  by a complete worldwide answer, or left in a crowd's count by the identical mark's narrowing, is accounted for
+  and needs no row of its own. A deferred row treated as clean is a recall gap — flag it.
 - **Registrability flag:** did `clearance-variants` name the dominant element + give the proposed-mark
   distinctiveness read (spectrum + deceptive/offensive, or "plainly distinctive"), and is it carried
   into the deliverable?
@@ -191,8 +177,8 @@ records — and is asked to **defend its finding from that evidence or run only 
 revise**, then re-emit its file. It does **not** redo the search from scratch, and it is **not** switched to a
 fresh `opus` session (that would cold-cache the whole thread — cache is model-specific — for no quality gain over
 arguing from the evidence already in hand; opus judgment happens once, at the re-digest). **A `deferred`
-coverage-ledger row on a material jurisdiction is exactly this kind of documented-reason gap** — the owning unit
-resumes and runs the missing per-jurisdiction sub-query (its ring-fenced budget makes room). This is the
+coverage-ledger row the table lists as CLOSEABLE is exactly this kind of documented-reason gap** — the owning
+unit resumes and runs the missing question. A deferral the table marks NOT CLOSEABLE is not re-run. This is the
 recall-recovery loop: a *visible* deferral is recoverable; a silent one is not. **If a register unit is re-run,
 the register digest is re-run** (also a resume of its own session) over the refreshed unit digests (the prior
 digest consumed the stale set); if the flag is about the digest's own judgment, re-run the digest alone.
@@ -203,7 +189,7 @@ record the gap in the Audit Trail and narrative so the staff lawyer sees it. Log
 in the Audit Trail.
 
 This review replaces the old single-session "Opus + max thinking does it all" guard — quality now
-comes from a cheap fresh-eyes audit plus targeted Opus escalation, not from one giant session.
+comes from a fresh-eyes audit plus targeted escalation, not from one giant session.
 
 ## Step 3 — Cross-pollination (Option D — deterministic cross-checks, cap N=10)
 

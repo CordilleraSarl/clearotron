@@ -29,6 +29,7 @@
 // `match_mode: "phonetic"` on register_search / register_enumerate remains fully available; it is the
 // PREVIEW of the expansion that this provider cannot give, not phonetic search itself.
 import { serve } from "./stdio-server.mjs";
+import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import {
   CAPABILITIES, doSearch, doRecordFetch, doImageFetch, doBatchScreen, doEnumerate, doExecutePlan, DEFAULT_BASE,
 } from "../../../providers/clarivate/src/core.js";
@@ -62,7 +63,7 @@ const QUERY_PROPS = {
 };
 
 serve({
-  name: "register", version: "0.2.0",
+  name: "register", version: "0.2.0", noteFor: crowdNoteFor,
   tools: [
     {
       name: "register_search",

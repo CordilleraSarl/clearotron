@@ -1,6 +1,6 @@
 ---
 name: clearance-register
-description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the complete merged band through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
+description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
 ---
 
 ## Spawned session
@@ -59,8 +59,7 @@ Set by the orchestrator per mode (set `model` explicitly on the spawn — omitti
 
 - **Unit mode** — `saturation-probe` → **`haiku`**, thinking off (count-only, pure data-pull). The
   three sweep axes (`primary-sweep`, `transliteration-numeric`, `incumbent-class`) → **`sonnet`**,
-  adaptive thinking (run the manifest's given searches, detail-fetch, apply the rule-based status
-  filter — nuanced rule-following, not open analysis).
+  adaptive thinking (run the plan, read each answer, narrow a crowd by the steps in unit.md, and decide whether more searching would change the advice).
 - **Digest mode** — **`opus`**, thinking medium. All the precision-critical judgment lives here
   (relevance gate, owner clustering, opposition interpretation, Option-D).
 
@@ -232,12 +231,14 @@ lets judgment decide.
   count-only saturation descriptor, a volume/pagination ceiling. A re-run cannot close it, so the escalation
   gate skips it and it does not on its own make the run unfinished.
 - **`deferred`** — the search could not run or could not reach its data: tool absent, provider error, fetch
-  blocked, a predicate or an office the active provider cannot express. It is a CLOSEABLE gap — escalate and
-  disclose — and it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these `coverage-limited` and a
-  fixable hole disappears into an accepted limit.
+  blocked, a predicate or an office the active provider cannot express. A provider error or a blocked fetch is a
+  CLOSEABLE gap — escalate and disclose; a predicate or an office the provider cannot express is never closeable,
+  and stays open and disclosed. Either way it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these
+  `coverage-limited` and a fixable hole disappears into an accepted limit.
 - **`confirmed-clean`** — the slice ran to completion and judgment cleared it.
-- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched.
-  Only a `family` row takes it, and its reason goes into the audit workbook, not the report.
+- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched;
+  or a crowd the narrowing steps closed (a narrowed list that was read answered it, or the reading step set it
+  aside with its count and a reason). Its reason goes into the audit workbook, not the report.
 
 **HOW those statuses are recorded is not yours to assume — the dispatch states it, and it is one route,
 the `record_coverage` tool.** The driver computes the form before every digest dispatch and enumerates
@@ -266,6 +267,6 @@ restates the row shape: one copy, told at dispatch beside the rows themselves.
 
 This skill runs in one of two modes, **selected by the caller**, which states which file to read:
 - **Unit mode (the FUNNEL — Layer A)** → read this spine + [`unit.md`](unit.md). Run ONE axis: ENUMERATE each named query via `register_enumerate`, describe crowds as count-only descriptors, write `register-units/<axis>-band.json` (the complete named band). Do NOT perform digest judgment.
-- **Digest mode (judgment — Layer B)** → read this spine + [`digest.md`](digest.md). Read the complete merged band through the band tools (`band_shape` first, then `band_lookup` / `band_record` — never by slicing band files), apply relevance + sufficiency + prioritisation, hand the findings back through the `record_register_digest` tool (the driver renders the document — see [`digest.md`](digest.md), *What the call takes*), and settle the coverage judgment through the `record_coverage` tool (*Coverage ledger* above). Two transports, two statements, and no file to write in either.
+- **Digest mode (judgment — Layer B)** → read this spine + [`digest.md`](digest.md). Read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` first, then `band_lookup` / `band_record` — never by slicing band files), apply relevance + sufficiency + prioritisation, hand the findings back through the `record_register_digest` tool (the driver renders the document — see [`digest.md`](digest.md), *What the call takes*), and settle the coverage judgment through the `record_coverage` tool (*Coverage ledger* above). Two transports, two statements, and no file to write in either.
 
 Companion references (load as needed): `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/<name>.md`.

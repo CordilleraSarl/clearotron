@@ -73,7 +73,7 @@ export function reconcileDeclinationDuty({ owed = null, deliveredUris = null, de
 
   const unaccounted = [];
   const seen = new Set();
-  let both = 0;
+  let both = 0, deliveredRows = 0, declinedRows = 0, recordsOwed = 0, recordsUnaccounted = 0;
   for (const row of owed) {
     const uri = normalizeRecordUri(row?.uri ?? row?.record_id);
     // A spec row with no uri cannot be cited by the seat either — the decline tool addresses records BY
@@ -82,15 +82,24 @@ export function reconcileDeclinationDuty({ owed = null, deliveredUris = null, de
     if (!uri) continue;
     if (seen.has(uri)) continue;      // the same record listed twice is one duty
     seen.add(uri);
-    const isDelivered = delivered.has(uri);
-    const isDeclined = declined.has(uri);
+    // AN ENTRY'S ROW STANDS FOR ALL ITS RECORDS: a finding naming any of them delivers the entry, and the row's
+    // declination declines it. The duty is the entry's; the reader is still told how many records it holds.
+    const members = uriSet(Array.isArray(row?.uris) && row.uris.length ? row.uris : [uri]);
+    members.add(uri);
+    const isDelivered = [...members].some((u) => delivered.has(u));
+    const isDeclined = [...members].some((u) => declined.has(u));
+    recordsOwed += members.size;
+    if (isDelivered) deliveredRows++;
+    if (isDeclined) declinedRows++;
     if (isDelivered && isDeclined) both++;
     if (isDelivered || isDeclined) continue;
+    recordsUnaccounted += members.size;
     unaccounted.push({
       uri,
       mark: String(row?.mark ?? "").trim() || null,
       owner: String(row?.owner ?? "").trim() || null,
       tier: row?.tier ?? null,
+      ...(members.size > 1 ? { uris: [...members] } : {}),
     });
   }
 
@@ -100,10 +109,12 @@ export function reconcileDeclinationDuty({ owed = null, deliveredUris = null, de
     schema_version: DECLINATION_DUTY_SCHEMA_VERSION, computable: true,
     totals: {
       owed: owedCount,
-      delivered: [...seen].filter((u) => delivered.has(u)).length,
-      declined: [...seen].filter((u) => declined.has(u)).length,
+      delivered: deliveredRows,
+      declined: declinedRows,
       accounted, unaccounted: unaccounted.length, both,
     },
+    // The records the owed rows hold, and those of the rows left unaccounted: what the reader is told about.
+    records: { owed: recordsOwed, unaccounted: recordsUnaccounted },
     unaccounted,
     // Stated rather than left to be derived, the same reason floor-duty states its own: an artifact that
     // does not add up is a bug in THIS module, and a reader should not have to find that out by summing.
@@ -125,12 +136,12 @@ export function declinationDutyRefusal(result, { cap = 12 } = {}) {
   const shown = unaccounted.slice(0, cap)
     .map((r) => `${r.mark ? `${r.mark} ` : ""}(${r.uri})`).join(", ");
   const rest = unaccounted.length - Math.min(cap, unaccounted.length);
-  return `synthesis_unaccounted_records:${unaccounted.length} of ${result.totals.owed} — these records `
+  return `synthesis_unaccounted_records:${unaccounted.length} of ${result.totals.owed} — these positions `
     + `reached your findings surface and your call accounts for none of them: ${shown}`
-    + `${rest ? ` (+${rest} more)` : ""}. For each one, either deliver a finding that names it, or call `
-    + `\`record_declination\` with a reason and grounds. DECLINING IS A COMPLETE ANSWER and most of `
-    + `these should be declined — what cannot happen is a record leaving with neither, because then `
-    + `nobody can tell a record you judged irrelevant from one that was lost.`;
+    + `${rest ? ` (+${rest} more)` : ""}. For each one, either deliver a finding that names any of its records, or call `
+    + `\`record_declination\` with a reason and grounds. DECLINING IS A COMPLETE ANSWER — what cannot happen `
+    + `is a position leaving with neither, because then nobody can tell a position you judged irrelevant from one `
+    + `that was lost.`;
 }
 
 export const DECLINATION_DUTY_EVENT_FIELDS = ["owed", "delivered", "declined", "unaccounted", "both"];

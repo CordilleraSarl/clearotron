@@ -384,7 +384,7 @@ test("a sandboxed register-digest carries the driver-computed prompt blocks runD
 
 test("a sandboxed synthesis is handed the same list of records to answer as the canonical pass", async () => {
   const { job, runDir, codename } = await canonicalRun();
-  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried (\d+) record\(s\)/;
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried (\d+) position\(s\)/;
   const canonical = readFileSync(driverDir(runDir, "synthesis.attempt1.dispatch.txt"), "utf8").match(DECLINATIONS);
   assert.ok(canonical, "the canonical synthesis pass must carry a list for this to be testing anything");
 

@@ -142,7 +142,7 @@ drives the whole delivery side over the ops MCP face — mint its token verb-sco
    `sendPending` until a send is confirmed, whichever lane wrote the packet, and `mark_sent` is the only
    thing that clears it. Acknowledging the event instead removes the marker and leaves the run owed, so
    the backstop scan re-arms it and the requester is told again on the next sweep.
-4. For the remaining kinds — `intake-rejected`, `duplicate-skipped`, `late-bind-ack` — route the
+4. For the remaining kinds — `intake-rejected`, `duplicate-skipped`, `pre-run-failed`, `late-bind-ack` — route the
    packet's `text` → **`ack_event(file)`** (idempotent; validated as a bare `*.pending` name). These
    describe something that did not become a run, so there is no run to settle.
 
@@ -188,10 +188,9 @@ double-sends (`.sent` guards it).
 ## Legacy notes
 
 - The `delivered` outbox marker's plain-text body (agent id) predates the JSON packets and is
-  kept for compatibility with the existing watcher (`driver/deliver-trigger.sh` + the
-  `driver/systemd/` reference units, which wake an agent). Those are **one deployment's reference
-  integration**, not part of the headless product contract; the full packet is always in
-  `_driver/delivery.json`.
+  kept for compatibility with `driver/deliver-trigger.sh`, **one deployment's reference wake**. Its units no
+  longer ship, and the packaged install runs no outbox watcher: the integrator wakes itself. The script is not
+  part of the headless product contract; the full packet is always in `_driver/delivery.json`.
 
 ## One report per run
 

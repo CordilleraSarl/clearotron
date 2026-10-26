@@ -39,7 +39,7 @@ Companion files (one level deep — read the one you need):
 - [evals.md](evals.md) — the three scenarios this skill is verified against.
 
 Still-future adapter (drops in here with no change to this file): `sources/euipo.md` (EUIPO
-Boards-of-Appeal decisions — no free API today). EUIPO *register* lookups are a different layer
+Boards-of-Appeal decisions — no API wired here today). EUIPO *register* lookups are a different layer
 (`clearance-register`), not this skill.
 
 ## Trigger
@@ -62,7 +62,7 @@ chat may run on whatever the session is already on.
 ## Scope — light and targeted
 
 Ground **only** the watchlist / aggressive-enforcer hits flagged in synthesis
-— not every finding. Grounding all findings is cost-prohibitive and low-signal. Expect a small batch,
+— not every finding. Grounding all findings is slow and low-signal. Expect a small batch,
 typically a handful per search.
 
 ## Source selection
@@ -82,7 +82,7 @@ multi-jurisdiction case to handle here: one run, one jurisdiction, one adapter.
 **MCP tool naming.** Tools are fully qualified `server__tool`, e.g.
 `courtlistener__search`, `legaldatahunter__get_document`. Use exactly these names. (EUR-Lex is the
 exception — it has no MCP; it uses `WebFetch`, see [sources/eurlex.md](sources/eurlex.md).) Do not
-reference a source that is not wired — **EUIPO Boards-of-Appeal** has no free source today — treat it as
+reference a source that is not wired — **EUIPO Boards-of-Appeal** has no source wired here today — treat it as
 a coverage gap, not an available tool.
 
 ## Grounding workflow
@@ -130,7 +130,7 @@ what you did not search.
 
 ## Treatment and temporal handling
 
-Free sources give citation *networks*, not editorial treatment flags. Achievable, honest handling:
+The wired sources give citation *networks*, not editorial treatment flags. Achievable, honest handling:
 date-stamp every decision and surface later citing decisions where the tools allow. Do not imply a
 decision is still good law, and do not tag its standing either: no citator is wired, so such a tag is
 true of every citation always — the report's methodology states what ran, once.
@@ -142,7 +142,7 @@ Name what you did not search, rather than implying completeness. Common gaps:
   — that source covers US federal opinions incl. CAFC only. TTABVUE is a separate, not-yet-wired source.
 - **EU court judgments** (CJEU / General Court) are covered verbatim via [sources/eurlex.md](sources/eurlex.md),
   but it has **no keyword search** — recall depends on having a case name/number lead (state when you had
-  none). **EUIPO Boards-of-Appeal decisions** have no free API and are not searched.
+  none). **EUIPO Boards-of-Appeal decisions** have no API wired here and are not searched.
 - A source being unavailable is a coverage gap — report it, do not guess around it. **But say WHICH KIND
   of unavailable, and take that from the source list in your task message, never from the error text.**
   A source this deployment never enrolled is one it does not have; it is not down, not unreachable, and

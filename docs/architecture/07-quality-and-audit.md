@@ -151,11 +151,7 @@ What makes the coverage statement trustworthy:
 
 Register budgets deserve one honest sentence: the per-worker call budgets in the skill prose
 (enumerates, phoneme ≤ 5, image ≤ 10) are **observed, prompt-level budgets, not code-enforced
-quotas** — and so is the reopen detail-fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`, default 150).
-`reopenFetchCeiling` resolves the figure in code, then the reopen prompt builders
-(`buildFrameReopenFollowup`, `buildFrameReopenRetryMessage`) interpolate it into the instruction the
-model reads; nothing counts a run's detail-fetches and nothing refuses the next one. The bound that
-*is* code is the executor's enumerate resource guard (`CLEAROTRON_ENUMERATE_CEILING`): it owns the page
+quotas**. The bound that *is* code is the executor's enumerate resource guard (`CLEAROTRON_ENUMERATE_CEILING`): it owns the page
 loop and returns an honest `incomplete` descriptor for an over-ceiling band rather than a truncated
 one. Calls are metered per run (billing-grade ledger), never hard-capped.
 

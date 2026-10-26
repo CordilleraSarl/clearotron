@@ -8,14 +8,14 @@ profile via a different source.
 
 Fully-qualified tool names, in the `server__tool` runtime form. Allowlisted on the deployment's
 reviewer agent identities via the OAuth bridge (`providers/oauth-mcp-bridge`, `--server
-courtlistener`). 5000 requests/day free tier.
+courtlistener`). 5000 requests/day.
 
 | Tool | Use in this skill |
 |---|---|
 | `courtlistener__search` | Primary search — opinions/clusters/dockets by party, citation, or full-text query. Returns leads, not authority. |
 | `courtlistener__get_endpoint_item` | **Fetch the full opinion** before citing it (Step 3). Read the holding from this text. |
 | `courtlistener__get_endpoint_schema` | Discover the exact query/filter params for an endpoint — **prefer this over hardcoding params** (live tool wins). |
-| `courtlistener__get_counts` | Cheap pre-flight: how many hits a query returns before paging. |
+| `courtlistener__get_counts` | One-request pre-flight: how many hits a query returns before paging. |
 | `courtlistener__get_more_results` | Page through a result set. |
 | `courtlistener__extract_citations` / `courtlistener__analyze_citations` / `courtlistener__resume_citation_analysis` | Citation-network tooling — use in Step 5 to surface later decisions that cite a candidate. NOT a citator (no overruled/superseded treatment). |
 | `courtlistener__get_choices` / `courtlistener__call_endpoint` | Enumerate field choices / call an arbitrary endpoint when the above don't fit. |

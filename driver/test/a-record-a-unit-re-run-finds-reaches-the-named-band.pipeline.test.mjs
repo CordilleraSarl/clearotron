@@ -125,7 +125,7 @@ const ESCALATE = "- transliteration-numeric extra script group looks thin\n\n## 
 
 async function runMockPipeline(root, env, codename = null) {
   for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_PLACEMENT_NO_SIBLING", "MOCK_ESCALATION_ADDS_FLOOR", "MOCK_ESCALATION_ADDS_MARK",
-    "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"]) delete process.env[k];
+    "MOCK_SEAT_DEFERS", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root,
     CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
@@ -169,8 +169,11 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.ok(r.inNamedBand, "the record the escalation found is not in the named band");
     assert.ok(r.floorInShape, "the band shape does not list the record as a floor");
     assert.ok(r.ev2.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "the moved band did not queue the reading step's re-run");
+    // Counted against the resumed pass's own fresh reconciliation, so the arm does not move when the plan's size does.
     const recall = r.ev2.filter((e) => e.event === "recall-reconciliation");
-    assert.ok(recall.some((e) => e.trigger === "settlement-flush" && e.candidates === 22), `the record did not reach the recall reconciliation: ${JSON.stringify(recall.map((e) => [e.trigger, e.candidates]))}`);
+    const fresh = recall.find((e) => e.trigger === "fresh")?.candidates;
+    assert.ok(Number.isInteger(fresh), `guard: the resumed pass reconciled no fresh digest: ${JSON.stringify(recall.map((e) => [e.trigger, e.candidates]))}`);
+    assert.ok(recall.some((e) => e.trigger === "settlement-flush" && e.candidates === fresh + 1), `the record did not reach the recall reconciliation: ${JSON.stringify(recall.map((e) => [e.trigger, e.candidates]))}`);
     // assessed in the run, and never held (the owner's rulings of 2026-10-19): placement placed nothing new for it and the
     // reading step left it unended, so the delivered report names it once, as the floor it is
     assert.deepEqual(r.ev2.filter((e) => e.event === "late-evidence").map((e) => e.records), [1], "the late record was not assessed");
@@ -232,10 +235,12 @@ test(`${engine}: a record a refused merge left out is counted in the delivered r
 });
 }
 
+// The envelope closes the seat's own deferred row (MOCK_SEAT_DEFERS) on an axis the plan-execution receipt does not cover:
+// a row on an axis the receipt covers has no question left to send, so the envelope would hold it.
 for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
 test(`${engine}: a record the envelope close adds reaches the named band, the shape and the floor of the placement pass that assesses it`, async () => {
-  const r = await resumeWithAddedRecord(env, "primary-sweep", {});
-  assert.ok(r.ev2.some((e) => e.event === "stage" && e.stage === "register-unit:primary-sweep" && e.trigger === "envelope"), "guard: the envelope close re-ran the unit");
+  const r = await resumeWithAddedRecord(env, "incumbent-class", { MOCK_SEAT_DEFERS: "incumbent-class" });
+  assert.ok(r.ev2.some((e) => e.event === "stage" && e.stage === "register-unit:incumbent-class" && e.trigger === "envelope"), "guard: the envelope close re-ran the unit");
   assert.ok(r.inAxisBand, "guard: the re-run added the record to its axis band");
   assert.deepEqual(r.ev2.filter((e) => e.event === "named-band-remerged").map((e) => e.why), ["envelope"]);
   assert.ok(r.inNamedBand && r.floorInShape, "the record the envelope close found is not in the named band and its shape");

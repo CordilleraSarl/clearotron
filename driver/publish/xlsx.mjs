@@ -403,6 +403,9 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
 // ── Coverage & gaps ─────────────────────────────────────────────────────────────────────────────────────
 const COVERAGE_COLS = ['Area', 'State', 'What was done', "What's left"];
 const STATE_WORD = { 'confirmed-clean': 'Clean', 'coverage-limited': 'Limited', open: 'Open', 'not-searched': 'Open', note: 'Note' };
+// A coverage row is open where this tab shows it Open or Limited. The Summary's count and its caveat read the same
+// rule, so a not-searched row, shown Open here, is never left out of the count the Summary leads with.
+const isOpenCoverage = (c) => STATE_WORD[c?.state] === 'Open' || STATE_WORD[c?.state] === 'Limited';
 
 // split a coverage note into "what was done" / "what's left" at its natural prose seam. Open/limited areas
 // describe the residual after a "; " or " — "; a clean area is all done and has nothing left.
@@ -436,7 +439,7 @@ function coverageRows(coverage) {
 // The one-open-caveat + headline-honesty rule: the workbook must never read clean/complete while any
 // coverage unit did not finish. This computes whether that condition holds and the plain caveat sentence.
 function coverageOpen({ coverage = [], coverageJudgment = null, verdict = null, degradedParts = [] } = {}) {
-  const openState = (coverage || []).some(c => c.state === 'open' || c.state === 'coverage-limited') || (degradedParts || []).length > 0;
+  const openState = (coverage || []).some(isOpenCoverage) || (degradedParts || []).length > 0;
   const judgeUnsure = coverageJudgment && coverageJudgment.sufficient === false;
   const verdictCoverage = !!(verdict && verdict.kinds && verdict.kinds.coverage);
   return openState || judgeUnsure || verdictCoverage;
@@ -447,7 +450,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
   const rated = findings.filter(f => !f.isContextNote);
   // A part that failed and still shipped is open too, so the count and the caveat never read complete
   // beside its row on Coverage & gaps.
-  const openCount = (coverage || []).filter(c => c.state === 'open' || c.state === 'coverage-limited').length + (degradedParts || []).length;
+  const openCount = (coverage || []).filter(isOpenCoverage).length + (degradedParts || []).length;
   const verdictWord = (verdict && verdict.tier) || fm.overall_label || '';
   // THE ASSESSMENT NOT COMPLETED LEADS. With no assessment there is no verdict, no rated finding and no count of
   // them: the Summary says first what was left open, in the shipped gap row's own words, and prints no row whose
@@ -455,7 +458,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
   // The shipped gap row for the Findings part, whose area is the deferral row's own: "Follow-up / Findings".
   const notCompletedRow = assessmentNotCompleted ? (degradedParts || []).find(d => /(^|\/ )Findings$/.test(String(d?.area ?? ''))) : null;
   const caveat = (notCompletedRow && plainNote(notCompletedRow.note)) || plainNote(coverageJudgment?.reason) ||
-    (coverage || []).find(c => c.state === 'open' || c.state === 'coverage-limited')?.note ||
+    (coverage || []).find(isOpenCoverage)?.note ||
     (degradedParts || [])[0]?.note ||
     'None — every search unit reached completion.';
 

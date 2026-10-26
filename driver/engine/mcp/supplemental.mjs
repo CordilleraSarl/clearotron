@@ -38,6 +38,8 @@ import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searche
 import { heldAnswers, questionKey } from "./held-answers.mjs";
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../../shared/slices-taken-out.mjs";
 import { readWithheldFamilies } from "../../withheld-families.mjs";
+import { addedClassBound, boundAddedClasses } from "../../frame-diff-model.mjs";   // an added class takes one question, the identical mark
+import { scriptQuestionsByMarket } from "../../registration-scripts.mjs";   // one script question per market on the plan's list
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
 
 // THE ONE SENTENCE THE MODEL READS WHEN THE RUN'S SAFETY NET HOLDS A FOLLOW-UP BACK (follow-up-searches.mjs). It names
@@ -405,10 +407,12 @@ export async function proposeSupplemental(params, tctx, deps) {
   // execute-plan kernel fills every entry that declares none from the plan's regions, on every provider
   // (withPlanRegions). A proposal that DOES declare regions is untouched, and qid fingerprints are
   // unchanged.
-  let planRegions = [], planClasses = [], house = null;
+  let planRegions = [], planClasses = [], house = null, bound = { addedClasses: [], addedClassQuestions: [] }, scriptMarkets = null, scriptQuestionsAsked = [];
   try {
     const frozen = JSON.parse(readFileSync(driverDir(dirname(dirname(outPath)), "register-plan.json"), "utf8"));
     house = houseElementOf(frozen);
+    bound = addedClassBound(frozen);
+    if (Array.isArray(frozen?.script_markets)) { scriptMarkets = frozen.script_markets; scriptQuestionsAsked = Array.isArray(frozen?.script_questions_asked) ? frozen.script_questions_asked : []; }
     planRegions = (Array.isArray(frozen?.regions) ? frozen.regions : []).map((r) => String(r).trim()).filter(Boolean);
     // C3 — the frozen plan's own class list is the priority set: proposals intersecting it compete
     // for any cap a caller sets first (mintSupplementalEntries stable-sorts; this tool sets none).
@@ -436,10 +440,61 @@ export async function proposeSupplemental(params, tctx, deps) {
     if (!kept) { excludedHouse.push(String(p?.term ?? p?.terms?.[0] ?? "")); continue; }
     offered.push(kept === p || !Array.isArray(kept.terms) ? p : { ...p, terms: kept.terms });
   }
-  if (!offered.length)
-    return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, executed: false }, null, 2) };
+  // ── AN ADDED CLASS TAKES ONE QUESTION, THE IDENTICAL MARK, AND THE PLAN ALREADY ASKS IT ─────────────────────
+  //
+  // The frame may add a class the client's goods reach, and the plan compiler asks one question there: the identical
+  // mark (the bounded class widening, ruled 2026-09-21). The re-sweep keeps to that bound (deriveDirectiveRemedy); this
+  // tool did not, so on a test run of a crowded matter the review's send-back asked script and sound-alike questions in
+  // an added class. The same bound applies here, before the mint: an added class comes off a proposal that also names
+  // an instructed one; a proposal naming only added classes becomes the plan's own question there, which the held
+  // answers then serve; and one in an added class the plan asks nothing in is left out. Like the client's own element,
+  // a question left out here is not an open question, so it does not reach rejected[].
+  const excludedAddedClass = [];
+  const bounded = [];
+  const added = new Set(bound.addedClasses);
+  for (const p of offered) {
+    const classes = Array.isArray(p?.nice_classes) ? p.nice_classes : [];
+    if (!added.size || !classes.some((c) => added.has(String(c).trim()))) { bounded.push(p); continue; }
+    const b = boundAddedClasses({ terms: [], nice_classes: classes.map((c) => String(c).trim()), regions: [] }, bound.addedClasses, bound.addedClassQuestions);
+    if (!b) { excludedAddedClass.push(String(p?.term ?? p?.terms?.[0] ?? "")); continue; }
+    if (b.identicalOnly) { bounded.push(...b.questions.map((q) => ({ ...q, ...(p?.rationale ? { rationale: p.rationale } : {}) }))); continue; }
+    const keep = new Set(b.nice_classes);
+    bounded.push({ ...p, nice_classes: classes.filter((c) => keep.has(String(c).trim())) });
+  }
+  // ── ONE SCRIPT QUESTION PER MARKET ON THE PLAN'S LIST, PUT TO THAT MARKET'S OFFICES ───────────────────────
+  // The plan compiles a script form only for a market on its list whose buyers read that script, one per script the
+  // market reads (compileRegisterPlan). A worker's own script proposal is held to the same rule: it is asked only where a
+  // market on the list has no question in its script yet, in that market's offices, and otherwise left out, as the
+  // client's own element is. A script form an earlier call on this axis asked holds its markets' places, and proposing
+  // it again asks the same question, in the same offices. A plan compiled with no market list records none, and the
+  // proposal goes as written.
+  const excludedScript = [];
+  const scripted = [];
+  const askedKeys = [...scriptQuestionsAsked];
+  const marketsOfForm = new Map();
+  const askIn = (term) => {
+    if (marketsOfForm.has(term)) return marketsOfForm.get(term);
+    const [a] = scriptQuestionsByMarket([term], scriptMarkets, { taken: askedKeys }).asked;
+    if (!a) return null;
+    askedKeys.push(...a.keys);
+    marketsOfForm.set(term, a.markets);
+    return a.markets;
+  };
+  if (scriptMarkets) for (const e of supp.entries) { const t = String(e?.term ?? ""); if (t && isNonLatinTerm(t)) askIn(t); }
+  for (const p of bounded) {
+    const term = String(p?.term ?? "");
+    if (!scriptMarkets || !term || !isNonLatinTerm(term)) { scripted.push(p); continue; }
+    const markets = askIn(term);
+    if (!markets) { excludedScript.push(term); continue; }
+    const offices = deps.capabilities ? resolveRegions(markets, deps.capabilities).regions : markets;
+    scripted.push(offices.length ? { ...p, regions: offices } : p);
+  }
+  const leftOut = { ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(excludedAddedClass.length ? { excluded_added_class: excludedAddedClass } : {}),
+    ...(excludedScript.length ? { excluded_script: excludedScript } : {}) };
+  if (!scripted.length)
+    return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, ...leftOut, executed: false }, null, 2) };
   const existingQids = new Set(supp.entries.map((e) => e.qid));
-  let { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, offered,
+  let { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, scripted,
     { existingQids, capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
 
   // ── ONE ANSWER PER QUESTION PER RUN (held-answers.mjs) ───────────────────────────────────────────
@@ -534,7 +589,7 @@ export async function proposeSupplemental(params, tctx, deps) {
     const r = await executePlan({ plan_path: suppPath, axis, output_path: outPath, qids }, tctx);
     const text = r && typeof r === "object" ? (r.text ?? "") : String(r ?? "");
     if (!text || text.startsWith("ERROR")) {
-      return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: false, error: text.slice(0, 300) || "executor returned nothing" }, null, 2) };
+      return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...leftOut, ...(narrowed.length ? { narrowed } : {}), executed: false, error: text.slice(0, 300) || "executor returned nothing" }, null, 2) };
     }
     try { summary = JSON.parse(text); } catch { summary = { raw: text.slice(0, 300) }; }
   }
@@ -582,5 +637,5 @@ export async function proposeSupplemental(params, tctx, deps) {
     }
   } catch { /* band unreadable — the executor summary still crosses */ }
 
-  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding } : {}), ...(held.length ? { held } : {}), ...(outstanding.length || held.some((h) => h.decision === "outstanding") ? { outstanding_note: OUTSTANDING_NOTE } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...(excludedHouse.length ? { excluded_house_element: excludedHouse } : {}), ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
+  return { type: "text", text: JSON.stringify({ minted: minted.map((e) => e.qid).filter((q) => !refusedHere.includes(q)), reused, ...(enrichedQids.length ? { enriched: enrichedQids } : {}), ...(conflicts.length ? { conflict: conflicts } : {}), rejected, ...(outstanding.length ? { outstanding } : {}), ...(held.length ? { held } : {}), ...(outstanding.length || held.some((h) => h.decision === "outstanding") ? { outstanding_note: OUTSTANDING_NOTE } : {}), ...(reusedHeld.length ? { held_answer_kept: reusedHeld } : {}), ...leftOut, ...(narrowed.length ? { narrowed } : {}), executed: qids.length > 0, summary, results }, null, 2) };
 }

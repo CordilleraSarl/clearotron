@@ -5,7 +5,7 @@
 // run would otherwise end with no report and read where the run is resumed, so the resumed pass delivers without
 // that part and says so.
 //
-// THE RULE (874: a run always delivers; 2026-09-25: a part that still fails ships flagged). A failure whose recovery
+// THE RULE (a run always delivers; 2026-09-25: a part that still fails ships flagged). A failure whose recovery
 // is spent used to end the run with the stop notice and nothing delivered, even where the run held everything but
 // the part that failed. For a covered part, the run-level catch writes this record instead and parks the run for an
 // immediate resume. The resumed pass reaches the part, finds the record, and takes the part's delivery without it.

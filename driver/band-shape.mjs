@@ -1127,7 +1127,7 @@ export const PLACEMENT_GROUP_ORDERS = Object.freeze([SORT_THE_NEAR_ONES, ONE_SET
 // group's identity, members and count stay, and so does the fact that a crowded group prints only its first page.
 export const FLOORS_BY_NAME_HERE = "Every floor here is placed or set aside by name; this group's row covers only its other lines.";
 export const A_CROWDS_ONE_ROW = "Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded.";
-export const A_CROWDS_ROW_COVERS_A_READ_FLOOR = "This row covers a floor only once you have read its line.";
+export const A_CROWDS_ROW_COVERS_A_READ_FLOOR = "This row covers a floor only once you have read its line and its goods are not the client's goods.";
 export const AN_UNREAD_CROWDS_ONE_ROW = "Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded.";
 export const AN_UNREAD_CROWDS_FLOOR = "A floor here is placed or set aside by name on its status or its territory; this row never covers it.";
 export const AN_UNREAD_LISTS_FLOOR = "A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.";
@@ -1192,7 +1192,7 @@ function renderGroupsMd(md, groups, rows = []) {
   const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(where(l))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
   const head = ["| mark | owner | classes | live | territories | goods words | floor | record |", "|---|---|---|---|---|---|---|---|"];
   // A crowded group's own words for what it holds, in the crowded-field method's sentence (ruled 2026-10-12).
-  const crowd = { b: "identical marks in the ordered classes for other goods than the client's",
+  const crowd = { b: "identical marks in the ordered classes whose goods name none of the client's product words",
     c: "marks of the same family as the mark, or carrying the searched word, for the client's goods", d: "other marks in the ordered classes for the client's goods" };
   const firstPage = `The first ${fmtN(groups.first_page)} lines are below`;
   for (const g of ["a", "b", "c", "d"]) {

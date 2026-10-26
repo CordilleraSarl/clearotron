@@ -6,7 +6,7 @@ Non-Latin scripts to consider when the jurisdiction scope is multi-region or wor
 
 | Jurisdiction scope | Scripts to generate |
 |---|---|
-| **Worldwide / global** | All 8 below |
+| **Worldwide / global** | The script of each market the frame names, one per market |
 | **EU-wide** | Cyrillic (for Russia / Bulgaria / etc.) and Greek (Greece / Cyprus) — most marks register in Latin scripts |
 | **Asia-Pacific** | Hanzi (Chinese), Katakana (Japanese), Hangul (Korean), Thai (Thailand) |
 | **MENA** | Arabic |
@@ -100,7 +100,7 @@ Skip transliteration for:
 - Internal sanity-check / brainstorm runs (the standalone mode of `clearance-variants`)
 - Matters where the client explicitly excludes non-Latin markets
 
-When in doubt: generate them. Cost is one extra dozen rows in the variant manifest, but missing a Japanese katakana hit on a global launch is the kind of miss that gets noticed post-launch.
+Generate the script of each market the frame names; a market it does not name gets no script form.
 
 ## What this DOESN'T cover
 
@@ -114,5 +114,5 @@ When in doubt: generate them. Cost is one extra dozen rows in the variant manife
 Confirm during historical-case review:
 - For Chinese, when does a mark warrant the meaning axis alongside phonetic (vs phonetic-only for a coined mark)? — when the meaning axis IS used, it is always the everyday-first SET, never a single rendering (settled; see *The 8 scripts → Chinese*).
 - Are there scripts missing? Thai and Greek were added 2026-07-21 (Thai under Asia-Pacific, Greek under
-  EU-wide) so that every script the portal offers is also generated as standard. **Hebrew remains open** —
+  EU-wide) so that a market the frame names in those scripts has its script. **Hebrew remains open** —
   add it if Israel is a recurring filing market for our matters.
