@@ -149,20 +149,27 @@ test("e2e: a unit that skips its band is FAILED AT THE STAGE and healed by the c
 // `named_band_missing` IS NOT DEAD and must not be deleted from the vocabulary on the strength of this
 // arm: it still names a band written and then lost, a torn band, and a resume that finds none. What this
 // knob can no longer produce is a SEAT that skips it, which is the narrower thing.
+//
+// AND ONCE ITS ATTEMPTS ARE SPENT, THE RUN NO LONGER ENDS THERE. A unit that wrote no result is the searches not
+// completed: the failure is recorded at the unit with its reason, and the run parks to deliver without it, its slices
+// open (a-register-search-that-cannot-finish-is-delivered-as-not-searched.pipeline.test.mjs drives the delivery).
 test("e2e: a unit that NEVER writes its band fails AT THE STAGE, naming the band, never a fan-in terminal", async () => {
   // persistent MOCK_NO_BAND: even the warm-patch repair arm (which fires regardless of the retry
   // budget — the designed heal lane) cannot conjure the band → the stage must fail-close at the
   // producer with the fabrication signature, where pre-PR the run sailed to fan-in and died terminal.
   const { res, events } = await runMockPipeline({ MOCK_NO_BAND: "transliteration-numeric", CLEAROTRON_MAX_RETRIES: "0" });
   assert.equal(res.ok, false);
-  const why = String(res.reason ?? res.fail ?? "");
-  assert.match(why, /unit_band_unreadable/, `fails naming the BAND as the cause, not merely the absent note: ${JSON.stringify({ fail: res.fail, reason: res.reason, stage: res.failedStage })}`);
+  assert.equal(res.postponed, true, `the run did not park to deliver without the unit: ${JSON.stringify(res).slice(0, 300)}`);
+  const record = JSON.parse(readFileSync(driverDir(res.runDir, "not-completed", "searches.json"), "utf8"));
+  const why = String(record.reason ?? "");
+  assert.match(why, /unit_band_unreadable/, `fails naming the BAND as the cause, not merely the absent note: ${JSON.stringify({ reason: record.reason, stage: record.stage })}`);
   // AND THE ABSENCE IS STILL REPORTED, so the two halves cannot drift apart into a reason that names a
   // cause for an artifact nobody said was missing.
   // Either separator: the named path is native, and Windows joins it with backslashes.
   assert.match(why, /missing_file:.*register-units[\\/]transliteration-numeric\.md/,
     "the absent artifact is named beside its cause");
-  assert.notEqual(res.failedStage, "fan-in", "the failure is at the unit, where a retry CAN help — not the fan-in terminal");
+  assert.equal(record.stage, "register-unit:transliteration-numeric", "the failure is at the unit, where a retry CAN help — not the fan-in terminal");
+  assert.deepEqual(record.unfinished_units, ["transliteration-numeric"], "the unit is not recorded as one to deliver without");
   const ev = events.find((e) => e.event === "stage" && e.stage === "register-unit:transliteration-numeric");
   assert.equal(ev?.ok, false, "stage event records the unit failure");
 });
