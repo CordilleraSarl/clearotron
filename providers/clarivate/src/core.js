@@ -43,6 +43,9 @@ import { CAPABILITY_GAP_MARKER, defaultBuildEntryQuery, makeExecutePlan, makeReg
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
 import { stripGoodsReservedWords } from "../../_shared/term-shape.mjs";   // the goods field parses these words as operators
+import { runDriverDirOf } from "../../_shared/follow-up-searches.mjs";   // the run's own folder, from its record log
+import { readFileSync, writeFileSync, renameSync } from "node:fs";
+import { join } from "node:path";
 
 export const DEFAULT_BASE = "https://api.clarivate.com/compumark-content/api/v1";
 
@@ -1788,9 +1791,49 @@ export function officeRefusingGoodsField(reason) {
   return m ? m[1] : null;
 }
 
-export async function withoutOfficesRefusingGoods(params, ask, reasonOf) {
+// AND AN OFFICE THAT HAS REFUSED IT ONCE IS LEFT OUT OF THE RUN'S LATER GOODS-NARROWED REQUESTS. Each request learned
+// the refusals again: on a test run of a crowded matter fifteen offices refused the field twenty times each, 300 calls
+// that answered nothing. The offices that have refused are kept in the run's own folder, and a goods-narrowed request
+// leaves them out before it is sent, naming them as left out exactly as an office that refuses in the call itself is.
+// A request with no goods term asks every office as before, and a process with no run asks as it always has.
+export const GOODS_REFUSALS_FILE = "offices-without-goods-field.json";
+
+/** The offices the run has seen refuse the goods field, from its folder. [] with no run or no file. */
+export function goodsRefusalsOf(driverDir) {
+  if (!driverDir) return [];
+  try {
+    const held = JSON.parse(readFileSync(join(driverDir, GOODS_REFUSALS_FILE), "utf8"));
+    return Array.isArray(held) ? held.filter((c) => /^[A-Z]{2}$/.test(String(c))) : [];
+  } catch { return []; }
+}
+
+/** Keep an office that refused the goods field, for the rest of the run. Never breaks a search. */
+export function rememberGoodsRefusal(driverDir, office) {
+  if (!driverDir || !/^[A-Z]{2}$/.test(String(office ?? ""))) return;
+  try {
+    const held = goodsRefusalsOf(driverDir);
+    if (held.includes(office)) return;
+    const path = join(driverDir, GOODS_REFUSALS_FILE);
+    const tmp = `${path}.${process.pid}.tmp`;
+    writeFileSync(tmp, JSON.stringify([...held, office]) + "\n");
+    renameSync(tmp, path);
+  } catch { /* a run that cannot keep it learns the refusal again, as before */ }
+}
+
+export async function withoutOfficesRefusingGoods(params, ask, reasonOf, { known = [], remember = () => {} } = {}) {
   const leftOut = [];
   let p = params;
+  // The offices the run already knows refuse the field leave a goods-narrowed request before it is sent, unless they
+  // are all it asks: then it is asked as written, and the refusal stands as it is given.
+  const asked = Array.isArray(p?.regions) ? p.regions : [];
+  if (known.length && goodsTermsOf(p).length && asked.length) {
+    const refusing = (r) => resolveOffices([r]).codes.some((c) => known.includes(c));
+    const regions = asked.filter((r) => !refusing(r));
+    if (regions.length && regions.length < asked.length) {
+      for (const r of asked) for (const c of resolveOffices([r]).codes) if (known.includes(c) && !leftOut.includes(c)) leftOut.push(c);
+      p = { ...p, regions };
+    }
+  }
   let out = await ask(p);
   for (let office = officeRefusingGoodsField(reasonOf(out)); office && !leftOut.includes(office); office = officeRefusingGoodsField(reasonOf(out))) {
     const regions = (Array.isArray(p?.regions) ? p.regions : []).filter((r) => !resolveOffices([r]).codes.includes(office));
@@ -1798,6 +1841,7 @@ export async function withoutOfficesRefusingGoods(params, ask, reasonOf) {
     // refusal stands as it was given.
     if (!regions.length || regions.length === (p?.regions ?? []).length) break;
     leftOut.push(office);
+    remember(office);
     p = { ...p, regions };
     out = await ask(p);
   }
@@ -1844,11 +1888,12 @@ export async function doEnumerate(apiKey, base, params, tctx) {
   const chunked = Array.isArray(p?.names) && p.names.filter(Boolean).length > namesChunk;
 
   const sink = [];
+  const runFolder = runDriverDirOf(tctx?.recordLog);
   const asked = await withoutOfficesRefusingGoods(p, async (q) => {
     sink.length = 0;
     const rr = await __enumerate({ apiKey, base }, { ...q, __countSink: sink }, tctx);
     return { rr, parsed: parseToolText(rr) };
-  }, (o) => o.parsed?.reason);
+  }, (o) => o.parsed?.reason, { known: goodsRefusalsOf(runFolder), remember: (office) => rememberGoodsRefusal(runFolder, office) });
   p = asked.params;
   let r = asked.out.rr;
   let parsed = asked.out.parsed;
