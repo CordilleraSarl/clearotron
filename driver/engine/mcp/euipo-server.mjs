@@ -28,6 +28,7 @@
 //   `GET /trademarks/{n}/image` answers 200 with real image bytes. The tool returns metadata + the
 //   Vienna figurative-element codes rather than the bytes; see the core for why.
 import { serve } from "./stdio-server.mjs";
+import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
 import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import {
   CAPABILITIES, CRED_ENV, doSearch, doRecordFetch, doBatchScreen, doImageFetch,
@@ -51,6 +52,7 @@ const tctx = (kind) => ({
   agentId: process.env.CLEAROTRON_GATHER_AGENT || "localagent",
   sessionKey: process.env.CLEAROTRON_GATHER_SESSION_KEY || "",
   sessionId: process.env.CLEAROTRON_GATHER_SESSION_ID || "",
+  sendUntilMs: sendUntilFromEnv(),   // this turn's time to stop sending (providers/_shared/send-until.mjs)
 });
 const passthrough = (r) => (r && typeof r === "object" ? (r.text ?? JSON.stringify(r)) : String(r));
 const guard = (fn) => async (args) => {

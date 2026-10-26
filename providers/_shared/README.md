@@ -24,6 +24,7 @@ documents both: `countProbe` (`"endpoint"` / `"cheap"` / `"none"`) says where a 
 | `term-shape.mjs` | Whether a string is a searchable mark term and agrees with its predicate (`{ predicate: "exact", term: "WAVO*" }` is a silent clean). |
 | `territory-codes.mjs` | Display name → ISO 3166 / WIPO ST.3 code. `""` means worldwide, `null` means unknown — and never goes to the wire. |
 | `provider-text.mjs` | Clips a vendor message from the MIDDLE, because the word that classifies a refusal sits at the end of the sentence. |
+| `send-until.mjs` | The time after which a plan call sends no further question, handed to each turn's tool servers ahead of the turn's deadline, so a call cut short returns what it holds. |
 | `test/` | Twelve files, provider-agnostic by design — several drive every adapter's real code rather than fixtures of what we believe it returns. |
 
 ## What reads it

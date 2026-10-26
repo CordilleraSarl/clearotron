@@ -20,7 +20,8 @@ import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, more
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { FOLLOW_UP_SEARCH_LIMIT, runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
-import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../shared/slices-taken-out.mjs";   // a band read as answers, with the slices a check could not prove ran taken out
+import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../shared/slices-taken-out.mjs";
+import { pastSendUntil } from "./send-until.mjs";   // a call past its time to stop sending sends no new question   // a band read as answers, with the slices a check could not prove ran taken out
 
 /** How soon after an answer lands it is written to the band, while the call goes on (see `keepAnswers` below). */
 export const KEEP_ANSWERS_AFTER_MS = 2000;
@@ -706,7 +707,11 @@ export function makeExecutePlan(deps) {
     // change the answer. An unhandled fault here is an unknown of unknown durability, so it keeps the
     // transient reading. The reason names it an EXECUTOR fault so it is never read as something the
     // register said — a block that fabricated a provider response would be the worse defect.
+    // PAST ITS TIME TO STOP SENDING, A CALL SENDS NO NEW QUESTION (send-until.mjs). The question is not reached by
+    // this call and keeps whatever block the band holds for it; the call returns what it has, naming it.
+    const notReached = [];
     const runEntry = async (e) => {
+      if (pastSendUntil(tctx)) { notReached.push(e.qid); return; }
       if (driverDir && followUpClass(e, { identicalTerms }) === "counted") {
         const room = followUpRoom(driverDir, FOLLOW_UP_SEARCH_LIMIT, e, { answered: answeredBefore });
         if (!room.open) {
@@ -765,8 +770,8 @@ export function makeExecutePlan(deps) {
     // fringe) gets no block and any stale one is dropped (a fringe slice must never outlive its
     // parent's crowd verdict). This makes the initial call and every warm followup the SAME call.
     // A follow-up the net did not send is not owned by this call: whatever answer it already had stands.
-    const refusedSet = new Set(refused);
-    const owned = new Set(targeted.map((e) => e.qid).filter((q) => !refusedSet.has(q)));
+    const refusedSet = new Set(refused), notReachedSet = new Set(notReached);
+    const owned = new Set(targeted.map((e) => e.qid).filter((q) => !refusedSet.has(q) && !notReachedSet.has(q)));
     let preserved = [];
     try {
       const existing = JSON.parse(readFileSync(outPath, "utf8"));
@@ -804,6 +809,7 @@ export function makeExecutePlan(deps) {
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),
       ...(Object.keys(spellingCounts).length ? { spelling_counts: spellingCounts } : {}),
       ...(refused.length ? { outstanding: refused } : {}),
+      ...(notReached.length ? { not_reached: notReached } : {}),
     }, null, 2) };
   };
 }

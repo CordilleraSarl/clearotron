@@ -224,7 +224,8 @@ export function toolWrittenArtifact(p) {
     ?? TOOL_WRITTEN_PATTERNS.find((r) => r.re.test(base))
     ?? null;
 }
-import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups } from "./engine/mcp/gather-config.mjs";
+import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups, withSendUntil } from "./engine/mcp/gather-config.mjs";
+import { sendReserveMs } from "../providers/_shared/send-until.mjs";   // each turn's plan calls stop sending ahead of its deadline
 import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
 export { everyToolCallRefused };
 // The profiles STORE root, for the write boundary only — read from the module that owns it, never
@@ -1131,7 +1132,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: withSendUntil(gatherMcpConfig, Date.now() + effTimeout * 1000 - sendReserveMs(effTimeout)), allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
       // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
       // keep it while the disk has room and say on the tuple's `stream` what landed.
@@ -1354,7 +1355,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // under the run dir to win the grant back, and warmPatchMessage renders the target through rel();
       // a relative path there would silently strip the write root off the one turn that needs it most.
       const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
-        timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools,
+        timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: withSendUntil(gatherMcpConfig, Date.now() + effTimeout * 1000 - sendReserveMs(effTimeout)), allowedTools: gatherAllowedTools,
         skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
         progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
       repairRef = rt.sessionRef ?? repairRef;
