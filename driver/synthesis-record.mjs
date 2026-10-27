@@ -46,13 +46,15 @@ import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, ren
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion } from "./findings-model.mjs";
+import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave } from "./findings-model.mjs";
+import { normalizeRecordUri } from "./registry-fidelity.mjs";   // the duty's own reading of a record uri
 import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { findCoverageRecommendations } from "./verify.mjs";
 import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";   // — the seat's own declines, read by the driver never asserted by the seat
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
 import { findingUris } from "./record-carry.mjs";   // one derivation of "which records did the findings name", called not copied
 import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam is passed, the saved record is folded again
+import { SAVED_FINDINGS_FILE } from "./saved-findings-block.mjs";   // the file a later attempt is handed the saved findings in
 import { runLog } from "./log.mjs";   // what the transport read a call as goes to the run's record, never to the model's answer
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
 export const NARRATIVE_FILE = "narrative.md";
@@ -908,6 +910,19 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // record to patch and the call reads that way (`registerPatchOf`); any other shape is read as it always was.
   // The call is decided on AS READ (`readSynthesisCall`): a marker sent as a JSON string is decoded first. The
   // capture above keeps what arrived; the base written below keeps the call as read.
+  // A SAVE OF COMPLETED FINDINGS is its own call, and writes no report file (see `saveFindings`).
+  if (received && typeof received === "object" && received.save_findings !== undefined) {
+    const others = Object.keys(received).filter((k) => k !== "save_findings");
+    if (others.length) {
+      const reason = `synthesis_save_mixed:${others.join(",").slice(0, 80)} — a save carries \`save_findings\` alone; the whole record arrives on its own call, which takes the saved findings`;
+      noteRefusalAt(dir0, reason, now);
+      return { written: null, refused: reason, captured: closeCapture({ ok: false, refused: reason }), capture_failed: captureFailed };
+    }
+    const r = saveFindings(dir0, received.save_findings, { manifest, method, owed, declined, recordOrigins: recordOriginsOr(recordOrigins), now });
+    for (const x of r.refused) noteRefusalAt(dir0, x.reason, now);
+    closeCapture({ ok: r.saved.length > 0, saved: r.saved.length, refused: r.refused.length });
+    return { written: null, refused: null, saved: r.saved, save_refused: r.refused, held: r.held, ...(r.write_failed ? { write_failed: r.write_failed } : {}), capture_failed: captureFailed };
+  }
   const stored = lastAcceptedCall(dir0);
   const read = readSynthesisCall(received, stored);
   let call = read.call;
@@ -952,6 +967,10 @@ export function recordSynthesis(runDir, received, opts = {}) {
     call = repeat.call;
     recordBlanking(dir0, { stage: "synthesis", layer: "call", blanked: repeat.blanked, kept: repeat.kept });
   }
+  // THE COMPLETING CALL TAKES THE SAVED FINDINGS for every position it does not carry itself, and the record-wide checks
+  // below judge the record that results. A patch repairs an accepted record and takes none.
+  const savedBefore = isPatch ? [] : readSavedFindings(dir0);
+  if (savedBefore.length) call = { ...call, findings: withSavedFindings(call.findings, savedBefore, owed).doc };
   const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: origins });
   if (!v.ok) {
     noteRefusal(v.reason);
@@ -986,6 +1005,11 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // record the reviewer, the cards and the delivery read. Before the seam this leaves the record as written.
   foldAfterSave(dir0, findingsAt);
   recordReading(true);
+  // The parts this record took are consumed; a part saved after it waits for the next completing call.
+  if (savedBefore.length) {
+    try { appendFileSync(savedFindingsPath(dir0), JSON.stringify({ at: now(), consumed: true, findings: savedBefore.length }) + "\n"); }
+    catch { /* best-effort: the accepted record already holds them */ }
+  }
 
   return {
     written: [findingsAt, narrativeAt], refused: null,
@@ -994,6 +1018,148 @@ export function recordSynthesis(runDir, received, opts = {}) {
     captured: closeCapture({ ok: true }), capture_failed: captureFailed,
   };
 }
+
+// ── A COMPLETED FINDING IS KEPT AS IT PASSES, BEFORE THE WHOLE RECORD EXISTS ─────────────────────────────────────────
+//
+// The writer recorded the report in one whole call, and nothing was kept until that call passed: on a test run of a
+// crowded matter, 2026-10-27, two writer attempts were stopped after hundreds of tool calls each and left nothing, so
+// each attempt started again from nothing. A completed finding is now saved as the writer completes it
+// (`save_findings`), checked as the whole record checks a finding, and kept in the run's own record, where a fresh
+// attempt, a fresh recovery ladder or a lost working folder cannot take it. The whole record still arrives on one call,
+// the completing call, which takes every saved finding for a position it does not carry itself; the record-wide checks
+// run there, as they always have. Intermediate saves write no report file, so nothing downstream reads a part as done.
+//
+// A SAVED FINDING IS KEYED BY THE POSITION IT ENDS, never by its ordinal: the ordinal is the finding's rank, which the
+// next finding found can move. The position is the declination spec's entry whose records the finding names, as the
+// duty reads it; a finding naming none of them is keyed by the records it names, or by its mark and owner.
+//
+// APPEND-ONLY, FOLDED ON READ: a kill in the middle of a save cannot cut an earlier one short, and two saves in one turn
+// cannot lose either. The latest save for a position stands; an identical re-save changes nothing; a different one is a
+// revision, and the record says how many there were. A saved finding naming a record the writer has declined is
+// refused by name: an accepted exclusion is never reversed by a save. Once a whole record is accepted the parts before
+// it are consumed, and a part saved after it waits for the next completing call.
+
+/** Where the saved findings live: beside the writer's call records, under the run's `_driver/`. */
+export const savedFindingsPath = (runDir) => join(synthesisCallPaths(runDir).dir, "saved-findings.jsonl");
+
+/** The position a finding ends, as the declination duty reads positions. PURE. */
+export function positionKeyOf(finding, owed = null) {
+  const named = [...findingUris([finding]).keys()].map((u) => normalizeRecordUri(u)).filter(Boolean);
+  for (const row of Array.isArray(owed) ? owed : []) {
+    const head = normalizeRecordUri(row?.uri ?? row?.record_id);
+    if (!head) continue;
+    const members = new Set([head, ...(Array.isArray(row?.uris) ? row.uris : []).map((u) => normalizeRecordUri(u)).filter(Boolean)]);
+    if (named.some((u) => members.has(u))) return `position:${head}`;
+  }
+  if (named.length) return `records:${[...new Set(named)].sort().join(",")}`;
+  return `mark:${String(finding?.mark ?? "").trim().toLowerCase()}|${String(finding?.owner ?? "").trim().toLowerCase()}`;
+}
+
+/**
+ * The findings saved since the last accepted whole record, the latest per position, in the order first saved. A torn
+ * line is skipped. IMPURE (reads the record). Returns `[{ key, finding, savedAt, revisions }]`.
+ */
+export function readSavedFindings(runDir) {
+  let raw = "";
+  try { raw = readFileSync(savedFindingsPath(String(runDir ?? "")), "utf8"); } catch { return []; }
+  let byKey = new Map();
+  for (const line of raw.split("\n")) {
+    if (!line.trim()) continue;
+    let row;
+    try { row = JSON.parse(line); } catch { continue; }
+    if (row?.consumed) { byKey = new Map(); continue; }
+    if (typeof row?.key !== "string" || !row.finding || typeof row.finding !== "object") continue;
+    const had = byKey.get(row.key);
+    byKey.set(row.key, { key: row.key, finding: row.finding, savedAt: String(row.at ?? ""), revisions: had ? had.revisions + (row.revised ? 1 : 0) : 0 });
+  }
+  return [...byKey.values()];
+}
+
+const sameFinding = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+/**
+ * Save completed findings, one by one: each passes or is refused on its own, and a refusal never touches a finding
+ * already saved. IMPURE (appends to the record). Returns the answer the tool hands back.
+ */
+export function saveFindings(runDir, list, { manifest = null, method = undefined, owed = null, declined = null, recordOrigins = null, now = () => new Date().toISOString() } = {}) {
+  const dir0 = String(runDir ?? "");
+  if (!Array.isArray(list) || !list.length)
+    return { saved: [], refused: [{ index: null, reason: "synthesis_save_empty: `save_findings` is an array of one or more completed finding objects, each as the findings record carries it" }], held: readSavedFindings(dir0).length };
+  const held = new Map(readSavedFindings(dir0).map((s) => [s.key, s]));
+  const declinedSet = new Set((Array.isArray(declined) ? declined : []).map((u) => normalizeRecordUri(u)).filter(Boolean));
+  const saved = [], refused = [], rows = [];
+  list.forEach((f, index) => {
+    let checked;
+    try { checked = validateFindingForSave(f, { manifest, ...(method !== undefined ? { method } : {}), ...(Array.isArray(recordOrigins) ? { recordOrigins } : {}) }); }
+    catch (e) { refused.push({ index, reason: `synthesis_save_invalid:${index}: ${String(e?.message ?? e).slice(0, 240)}` }); return; }
+    const named = [...findingUris([f]).keys()].map((u) => normalizeRecordUri(u)).filter((u) => declinedSet.has(u));
+    if (named.length) {
+      refused.push({ index, reason: `synthesis_save_declined:${index}: you declined ${named.slice(0, 3).join(", ")} through record_declination, and a save does not reverse an exclusion. Leave that record declined, or keep it out of this finding` });
+      return;
+    }
+    const key = positionKeyOf(f, owed);
+    const before = held.get(key);
+    if (before && sameFinding(before.finding, f)) { saved.push({ index, key, unchanged: true }); return; }
+    rows.push({ at: now(), key, ...(before ? { revised: true } : {}), finding: f });
+    held.set(key, { key, finding: f });
+    saved.push({ index, key, ...(before ? { revised: true } : {}) });
+    void checked;
+  });
+  if (rows.length) {
+    try {
+      mkdirSync(dirname(savedFindingsPath(dir0)), { recursive: true });
+      appendFileSync(savedFindingsPath(dir0), rows.map((r) => JSON.stringify(r)).join("\n") + "\n");
+    } catch (e) {
+      // VALID AND NOT KEPT is infrastructure, never a refusal: the two have opposite repairs.
+      return { saved: [], refused, held: readSavedFindings(dir0).length, write_failed: String(e?.message ?? e).slice(0, 200) };
+    }
+  }
+  return { saved, refused, held: readSavedFindings(dir0).length };
+}
+
+/**
+ * The completing call's findings with every saved finding for a position the call does not carry, appended after the
+ * call's own in the order they were saved, each numbered after the call's highest ordinal: the record's order is the
+ * call's, and the fold renumbers the record contiguously as it always has. PURE.
+ */
+export function withSavedFindings(doc, saved, owed = null) {
+  if (!saved?.length || !doc || typeof doc !== "object" || !Array.isArray(doc.findings)) return { doc, taken: 0 };
+  const carried = new Set(doc.findings.map((f) => positionKeyOf(f, owed)));
+  let next = doc.findings.reduce((m, f) => (Number.isInteger(f?.ordinal) && f.ordinal > m ? f.ordinal : m), 0);
+  const taken = saved.filter((s) => !carried.has(s.key)).map((s) => ({ ...s.finding, ordinal: ++next }));
+  return { doc: { ...doc, findings: [...doc.findings, ...taken] }, taken: taken.length };
+}
+
+
+/**
+ * HAND A LATER ATTEMPT WHAT THIS RUN ALREADY SAVED: write the saved findings to `synthesis-saved.json` in the run folder,
+ * each as it was accepted, with the evidence it carries, and return what the attempt's message says about them: how
+ * many were saved, how many records were declined, and the positions still owed. null when nothing is saved, so a first
+ * attempt's message is unchanged; null too when the file could not be written, since a message must never name a file
+ * that is not there. `outstanding` is null when the duty cannot be computed (no declination spec, an unreadable
+ * ledger), never an empty list. IMPURE.
+ */
+export function handSavedFindings(runDir) {
+  const dir0 = String(runDir ?? "");
+  const saved = readSavedFindings(dir0);
+  if (!saved.length) return null;
+  const { owed, declined } = driverReadsFor(dir0);
+  const duty = reconcileDeclinationDuty({ owed, deliveredUris: [...findingUris(saved.map((s) => s.finding)).keys()], declinedUris: declined });
+  try {
+    const p = join(dir0, SAVED_FINDINGS_FILE);
+    writeFileSync(`${p}.tmp`, JSON.stringify({ saved_findings: saved.map((s) => s.finding) }, null, 2) + "\n");
+    renameSync(`${p}.tmp`, p);
+  } catch { return null; }
+  return {
+    findings: saved.length,
+    declined: Array.isArray(declined) ? declined.length : 0,
+    outstanding: duty.computable ? duty.unaccounted.map((r) => `${r.mark ? `${r.mark}${r.owner ? ` — ${r.owner}` : ""} ` : ""}(${r.uri})`) : null,
+  };
+}
+
+const noteRefusalAt = (runDir, reason, now) => {
+  try { appendFileSync(synthesisCallPaths(runDir).refusals, JSON.stringify({ at: now(), reason }) + "\n"); } catch { /* best-effort */ }
+};
 
 /** Every call this run turned away, in order — the run's own record that a defect was met and corrected. */
 export function refusalsFor(runDir) {

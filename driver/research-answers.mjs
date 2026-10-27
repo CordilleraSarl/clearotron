@@ -51,9 +51,13 @@ export function keepResearchAnswer(runDir, { session = null, agent = null, task,
 /**
  * The research answers the session `sessionKey` and its retries got, oldest first, one per question: the latest answer
  * to each exact question. [] when there are none, or no record. A torn line is skipped. IMPURE (reads the record).
+ *
+ * `ofRun` widens it to every stage of this run: the writer is told to use an answer this run already holds, from an
+ * earlier stage as from an earlier attempt, and it cannot open `_driver/` itself. The record is the run's own file, so
+ * nothing another run asked can be in it.
  * @returns {{ task: string, text: string, ts: string }[]}
  */
-export function researchAnswersFor(runDir, sessionKey) {
+export function researchAnswersFor(runDir, sessionKey, { ofRun = false } = {}) {
   if (!runDir || !sessionKey) return [];
   let raw = "";
   try { raw = readFileSync(driverDir(runDir, RESEARCH_ANSWERS_FILE), "utf8"); } catch { return []; }
@@ -63,7 +67,7 @@ export function researchAnswersFor(runDir, sessionKey) {
     if (!line.trim()) continue;
     let row;
     try { row = JSON.parse(line); } catch { continue; }
-    if (!own(row?.session) || typeof row.task !== "string" || !row.task.trim() || !isResearchAnswer(row.text)) continue;
+    if ((!ofRun && !own(row?.session)) || typeof row.task !== "string" || !row.task.trim() || !isResearchAnswer(row.text)) continue;
     byTask.delete(row.task);   // the latest answer to a question takes the place of an earlier one
     byTask.set(row.task, { task: row.task, text: row.text, ts: String(row.ts ?? "") });
   }
@@ -83,8 +87,8 @@ export const researchAnswerLine = (n, { task, text }) => `Question ${n}: ${oneLi
  * folder, one question and its answer per line, and return how many. Nothing is written when there are none, and 0 is
  * returned when the file could not be written: a message must never name a file that is not there. IMPURE.
  */
-export function handResearchAnswers(runDir, sessionKey) {
-  const answers = researchAnswersFor(runDir, sessionKey);
+export function handResearchAnswers(runDir, sessionKey, opts = {}) {
+  const answers = researchAnswersFor(runDir, sessionKey, opts);
   if (!answers.length) return 0;
   try {
     const p = join(runDir, RESEARCH_ANSWERS_MD);

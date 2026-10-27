@@ -1876,6 +1876,23 @@ export function applyStageWrites(msg, argv) {
         if (f0) f0.net = `${f0.net ?? ""} ${process.env.MOCK_CORRECTION_MARKS}`.trim();
         sections.verdict = `${sections.verdict} ${process.env.MOCK_CORRECTION_MARKS}`;
       }
+      // MOCK_WRITER_SAVE_THEN_DIE=1 — the writer saves its first finding with `save_findings` and its attempt is then
+      // stopped, as the stall watchdog or the time limit stops one. The next attempt, told what was saved, sends the whole
+      // record WITHOUT that finding, so only the saved copy can put it in the record. MOCK_WRITER_SAVE_LOG=<file> records,
+      // per attempt, whether its message carried the saved-findings brief.
+      if (process.env.MOCK_WRITER_SAVE_THEN_DIE) {
+        const told = /SAVED IN THIS RUN:/.test(msg);
+        if (process.env.MOCK_WRITER_SAVE_LOG) appendFileSync(process.env.MOCK_WRITER_SAVE_LOG, JSON.stringify({ told }) + "\n");
+        const first = (doc.findings ?? [])[0];
+        if (!told && first) {
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const saved = recordSynthesis(runDir, { save_findings: [first] });
+          if (process.env.MOCK_WRITER_SAVE_LOG) appendFileSync(process.env.MOCK_WRITER_SAVE_LOG, JSON.stringify({ saved: saved.saved?.length ?? 0, refused: saved.save_refused ?? null }) + "\n");
+          process.stderr.write("mock writer: stopped after saving one finding\n");
+          process.exit(1);
+        }
+        if (told && first) doc = { ...doc, findings: (doc.findings ?? []).slice(1) };
+      }
       let r = recordSynthesis(runDir, { findings: doc, narrative: sections });
       // The refusal names the family. Re-derive with that family's heal phrase and restate once —
       // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the

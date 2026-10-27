@@ -2049,6 +2049,18 @@
           "skips": 1,
           "todos": 0
         },
+        "a-stopped-writer-attempt-keeps-what-it-saved.test.mjs": {
+          "tests": 5,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stopped-writer-attempt-resumes-from-what-it-saved.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-store-from-before-the-rename-still-loads.test.mjs": {
           "tests": 11,
           "asserts": 33,

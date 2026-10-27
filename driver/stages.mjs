@@ -16,7 +16,7 @@
 
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
-import { researchAnsweredBlock } from "./research-answers.mjs";   // the research an earlier attempt got, handed to a later one
+import { researchAnsweredBlock } from "./research-answers.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
@@ -3099,7 +3099,7 @@ export const STAGES = {
         why: "THE SECOND frame_scope_missing. The driver holds the value in _driver/framework.json, writes it into the dispatch, asks the model to retype it, and fails the file when the retyping does not match its own copy. The audit table groups it under the tool-written envelope row; pre-bound is the sharper discharge and either removes it from the model",
       },
     },
-    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth, placementSetAsides, researchAnswered }) => lines(
+    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth, placementSetAsides, researchAnswered, savedSynthesis }) => lines(
       // C4 — pharma matters (class 5 / pharma-shaped goods) FORCE-READ the field module: the
       // therapeutic-goods discipline, no-use ≠ safety (pipelines run 5-10y), practitioner/pharmacist
       // confusion. Conditional read (frameworkFor pattern); doctrine TABLES live elsewhere, untouched.
@@ -3438,13 +3438,13 @@ export const STAGES = {
       // MEANS — the net contract, the band contract, the meters, the disposition logic, the voice
       // rules. What goes is the seat formatting them into a file for the driver to read back.
       `RECORD YOUR WORK WITH \`record_synthesis\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders both the narrative and the findings record from what you send. You hold no Write or Edit tool for either and nothing you write by hand is read.`,
-      `WHAT THE CALL TAKES. \`narrative\`: your CROSS-FINDING read as sections — \`spine\` (the dominant-element spine), \`verdict\` (what the findings together mean for this client), \`coverage.read\` (the honest coverage prose) and \`calibration\` ([{challenge, answer}]). \`findings\`: the findings document exactly as specified above — schema_version, rated_under_framework, findings[], coverage[], ask_answers[] and the top-level registers. It is the same values it always was; it arrives on the call instead of as a file you write.`,
+      `WHAT THE CALL TAKES. \`narrative\`: your CROSS-FINDING read as sections — \`spine\` (the dominant-element spine), \`verdict\` (what the findings together mean for this client), \`coverage.read\` (the honest coverage prose) and \`calibration\` ([{challenge, answer}]). \`findings\`: the findings document exactly as specified above — schema_version, rated_under_framework, findings[], coverage[], ask_answers[] and the top-level registers. It is the same values it always was; it arrives on the call instead of as a file you write. \`save_findings\`: a finding you have completed, alone or a few at a time, saved before the whole record exists; each is checked as the record checks a finding and kept as soon as it passes, and the call carrying \`narrative\` with \`findings\` takes every saved finding for a position it does not carry.`,
       `THE PER-FINDING WRITE-UPS ARE NOT A FIELD, and that is a ruling rather than an omission: the report card holds the single authored wording for a finding and the typed fields carry the reads it is written from. Do not restate a finding's reasoning in the narrative sections — the spine is what the findings mean TOGETHER, which is the read no other artifact on this run holds.`,
       `COVERAGE ROWS AND ASK ANSWERS ARE SENT ONCE, ON THE RECORD, AND THE DRIVER RENDERS THEM INTO THE NARRATIVE TOO. Do not repeat them as narrative sections — a second authored copy is refused, because two copies of one statement can disagree and it is the record's copy that ships to the report, the workbook and the portal.`,
       `YOUR COVERAGE ROWS ARE JOINED TO THIS RUN'S PLAN-EXECUTION RECEIPT AS YOU SEND THEM. \`confirmed-clean\` asserts a search ran and came back empty, so a confirmed-clean row naming a slice the receipt does not record as executed is REFUSED — in this turn, where restating it costs nothing, rather than at a gate whose only repair is re-asking this whole stage. Name the area as the receipt names the slice. The honest alternatives are \`coverage-limited\` and \`not-searched\`, and neither is a worse answer than a clean claim that is not true.`,
       // THE RESEARCH AN EARLIER ATTEMPT GOT, handed on as a file (research-answers.mjs). Last, and absent on a first
       // attempt, whose message is unchanged.
-      researchAnsweredBlock(researchAnswered),
+      researchAnsweredBlock(researchAnswered), savedFindingsBlock(savedSynthesis),
     ),
     // A FRESH RETRY IS REBUILT, so it is handed the research its earlier attempts got. Nothing else in this stage's
     // context changes between attempts: the findings surface and its positions are frozen for the stage, and placement's
