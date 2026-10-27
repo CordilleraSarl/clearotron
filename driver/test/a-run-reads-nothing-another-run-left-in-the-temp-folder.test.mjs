@@ -15,7 +15,7 @@
 // does not exist for the command, and `mktemp`, a heredoc and Python's tempfile all land in the working folder.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, existsSync, realpathSync, statSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,7 +61,12 @@ test("codex, sandbox on: the profile grants no shared temp folder, and grants th
   assert.equal(rules[":tmpdir"], undefined, "the profile still grants the account's temp folder, which every run shares");
   const own = `${call.codexHome}.work`;
   assert.equal(rules[own], "write", `the profile does not grant the home's working folder:\n${call.configToml}`);
-  assert.ok(!own.startsWith(realpathSync(tmpdir()) + sep) && !own.startsWith(`${sep}tmp${sep}`), `the working folder sits in a shared temp folder: ${own}`);
+  // Beside the home, in the account's own cache folder, which no other account opens and the profile never names
+  // whole. Asked of the folder's place, never of its distance from the temp folder: an account whose home sits under
+  // the temp folder keeps its cache there too, and that is still its own.
+  const { codexHomesRoot } = await import("../engine/openai-agent.mjs");
+  assert.ok(own.startsWith(codexHomesRoot() + sep), `the working folder is not beside its home in the account's cache folder: ${own}`);
+  assert.ok(!own.startsWith(`${sep}tmp${sep}`), `the working folder sits in /tmp: ${own}`);
 });
 
 test("the turn's commands are handed the working folder as TMPDIR, TMP and TEMP, with the sandbox on and with the bypass", async (t) => {
