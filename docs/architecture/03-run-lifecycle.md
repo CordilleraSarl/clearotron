@@ -438,6 +438,7 @@ node pipeline.mjs --job <file.json> [--agent <id>]        # cold run (still take
 node pipeline.mjs --resume <codename>                     # idempotent resume: valid outputs skip
 node pipeline.mjs --resume <codename> --from <stage>      # force re-run from a stage ordinal
 node pipeline.mjs --resume <codename> --experiment <stage> [--label <t>]                  # shadow dir
+node pipeline.mjs --resume <codename> --experiment synthesis --research replay           # research from the run's own answers
 ```
 
 - **Resume** refuses a delivered run (any of the three delivered markers above — re-handing off a
@@ -448,6 +449,11 @@ node pipeline.mjs --resume <codename> --experiment <stage> [--label <t>]        
 - **`--experiment`** runs one stage in a shadow dir (`_experiments/<ts>-<tag>/`) on copies of its
   inputs, under a `clearance-exp-…` session key that is excluded from the run's provider-usage
   attribution. The canonical run is untouched.
+- **`--research replay`** answers the arm's research from the answers the run saved
+  (`_driver/research-answers.jsonl`, copied into the shadow dir). A question the run asked gets the
+  run's latest answer to it; a question it did not ask, and any grid, is refused, and nothing is sent
+  to the research service. It is refused for a stage that holds no research tool, or a run that saved
+  no answers. The arm's `experiment-context.json` records `research: {mode, answers}`.
 - **Orphan self-resume**: a manually resumed run that parks has no queue sidecars; the runner scans
   run dirs for due, payload-complete `.postponed` sentinels not owned by any queue and resumes them
   (claim = atomic rename to `.resuming`).

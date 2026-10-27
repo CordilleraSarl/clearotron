@@ -25,7 +25,7 @@
 // A first attempt has none, and its message is unchanged.
 //
 // A pure leaf: node:fs, node:path and shared/driver-dir.mjs only, so the research server can import it.
-import { appendFileSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 
@@ -105,4 +105,47 @@ export function researchAnsweredBlock(n) {
     + "one question and its answer per line. Before you ask about a finding's owner and mark, search that file for the owner's name "
     + "with search_run_artifacts. Where one of them asked about that owner and mark for the same field and country, use its answer as "
     + "that finding's check, cite its URL and record it as you would a fresh one; ask only what none of them covers.";
+}
+
+// ── A REPLAY ANSWERS FROM THE RUN'S OWN RESEARCH, AND ASKS NOTHING NEW ────────────────────────────────────────────────
+//
+// A stage replayed offline in the experiment sandbox would send its research questions out again: a cost, and an
+// answer that is not the one the run got. With `--research replay` the sandbox holds the run's own answers and says so
+// in this marker, and the research server answers a question the run already asked from what the run got, and refuses
+// a question it did not ask, sending nothing out. Only the sandbox writes the marker; a run never does.
+export const RESEARCH_REPLAY_FILE = "research-replay.json";
+
+/** True when this run folder is a replay of a run's research. IMPURE (reads the marker). */
+export const researchReplayOn = (runDir) => Boolean(runDir) && existsSync(driverDir(runDir, RESEARCH_REPLAY_FILE));
+
+/**
+ * The run's latest answer to exactly this question, whichever of its stages asked it, or null. The question is
+ * matched as written, trimmed at its ends: a question worded differently is a new question. IMPURE (reads the record).
+ */
+export function savedResearchAnswer(runDir, task) {
+  const want = typeof task === "string" ? task.trim() : "";
+  if (!runDir || !want) return null;
+  let raw = "";
+  try { raw = readFileSync(driverDir(runDir, RESEARCH_ANSWERS_FILE), "utf8"); } catch { return null; }
+  let found = null;
+  for (const line of raw.split("\n")) {
+    if (!line.trim()) continue;
+    let row;
+    try { row = JSON.parse(line); } catch { continue; }
+    if (typeof row?.task !== "string" || row.task.trim() !== want || !isResearchAnswer(row.text)) continue;
+    if (!found || String(row.ts ?? "") >= String(found.ts ?? "")) found = { task: row.task, text: row.text, ts: String(row.ts ?? ""), session: row.session ?? null };
+  }
+  return found;
+}
+
+/** How many questions the run's record answers: the experiment refuses a replay with nothing to replay. IMPURE. */
+export function savedResearchCount(runDir) {
+  let raw = "";
+  try { raw = readFileSync(driverDir(runDir, RESEARCH_ANSWERS_FILE), "utf8"); } catch { return 0; }
+  const tasks = new Set();
+  for (const line of raw.split("\n")) {
+    try { const row = JSON.parse(line); if (typeof row?.task === "string" && row.task.trim() && isResearchAnswer(row.text)) tasks.add(row.task.trim()); }
+    catch { /* a torn line answers nothing */ }
+  }
+  return tasks.size;
 }
