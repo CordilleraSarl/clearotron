@@ -2670,3 +2670,20 @@ export function topKeysForVersion(schemaVersion) {
   const v = typeof schemaVersion === "number" ? schemaVersion : 1;
   return [...topKeysFor({ v4: v >= 4, v5: v >= 5, v6: v >= 6, v7: v >= 7 })];
 }
+
+/**
+ * ONE FINDING, CHECKED AS THE WHOLE RECORD CHECKS IT, before the record exists. The writer saves a completed finding as
+ * it completes it, and a saved finding must pass exactly what it would pass inside the record, under the schema the
+ * record is written at and the run's frozen framework and method. The record-wide rules (an empty record, ordinals
+ * unique across the record, the actions and the coverage) belong to the record and are checked when it is complete.
+ * Returns the finding as validated; throws the record's own token-first refusal. PURE.
+ */
+export function validateFindingForSave(f, opts = {}) {
+  const schemaVersion = FINDINGS_SCHEMA_VERSION;
+  const mode = { v4: schemaVersion >= 4, v5: schemaVersion >= 5, v6: schemaVersion >= 6, v7: schemaVersion >= 7, manifest: opts.manifest ?? null,
+    method: "method" in opts ? (opts.method ?? null) : undefined,
+    recordOrigins: Array.isArray(opts.recordOrigins) ? opts.recordOrigins : null, foreignLinks: Array.isArray(opts.recordOrigins) ? [] : null };
+  const out = validateFinding(f, 0, new Set(), mode);
+  throwForeignLinks(mode);
+  return out;
+}

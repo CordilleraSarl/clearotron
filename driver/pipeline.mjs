@@ -153,7 +153,7 @@ import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse 
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris, parseCarrySurfaces, classifyPlacement } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyClosed, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
-import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
+import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor, handSavedFindings } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
@@ -5010,7 +5010,9 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   // The writer is also handed the research its earlier attempts got (research-answers.mjs), written to the run folder when
   // the message is built: none on a first attempt, so its message is unchanged.
   if (name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths),
-    researchAnswered: ctx.run ? handResearchAnswers(ctx.paths.runDir, stageSessionKey(ctx, name)) : 0 };
+    researchAnswered: ctx.run ? handResearchAnswers(ctx.paths.runDir, stageSessionKey(ctx, name), { ofRun: true }) : 0,
+    // The findings an earlier attempt saved, handed on as a file (synthesis-record.mjs): none on a first attempt.
+    savedSynthesis: handSavedFindings(ctx.paths.runDir) };
   return ctx;
 }
 

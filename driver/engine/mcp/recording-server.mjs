@@ -1046,7 +1046,10 @@ serve({
       "are. The driver renders narrative.md and findings.json. Your coverage rows are joined to this " +
       "run's plan-execution receipt as you send them, so a clean claim over a slice that did not run is " +
       "refused here — in this turn, where restating it is free — rather than at a gate that can only " +
-      "re-ask the whole stage. The answer tells you what was stored, or names the exact defect token.",
+      "re-ask the whole stage. The answer tells you what was stored, or names the exact defect token. " +
+      "Save each finding as you complete it, alone or a few at a time, with `save_findings`: each is checked as " +
+      "the record checks a finding and kept the moment it passes, so a stopped attempt loses none of them. The " +
+      "call that sends the whole record takes every saved finding for a position it does not carry itself.",
     inputSchema: {
       type: "object",
       // ── NO BLANKET `required`, AND THAT IS THE FIX FOR ─────────────────────────
@@ -1079,6 +1082,18 @@ serve({
       // reads the run's own accepted-call record rather than trusting the shape. That check is older
       // than this change and is the reason relaxing `required` costs nothing.
       properties: {
+        // A COMPLETED FINDING, KEPT BEFORE THE WHOLE RECORD EXISTS (synthesis-record.mjs, `saveFindings`). Its items
+        // are findings as the record carries them, declared from the same key ladder as a patch row.
+        save_findings: {
+          type: "array",
+          description:
+            "COMPLETED FINDINGS, saved before the whole record exists. Send one or a few complete finding objects as the findings record carries them, and nothing else on the call. Each is checked as the record checks a finding and kept as soon as it passes; one that is refused leaves the others saved. A finding saved again for the same position replaces the earlier one. Saving writes no report: the record is complete only when you send `narrative` with `findings`, and that call takes every saved finding for a position it does not carry.",
+          items: {
+            type: "object",
+            description: "One complete finding object, as the findings record carries it.",
+            properties: Object.fromEntries(FINDING_KEYS_CURRENT.map((k) => [k, { description: `Part of the finding record; see findings-model.mjs for what \`${k}\` carries.` }])),
+          },
+        },
         findings_patch: {
           type: "array",
           description:
