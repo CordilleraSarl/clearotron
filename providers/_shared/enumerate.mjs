@@ -632,8 +632,8 @@ export function makeEnumerate(deps) {
             "the provider REFUSED to count this slice because it would match too much — a structural "
             + "cardinality limit on the query shape, not an outage and not a transient. It will refuse "
             + "the same shape identically on every future run, so retrying cannot change it. This is a "
-            + "CROWD: record it as a count+sample descriptor and hand it up to judgment (Layer B), never "
-            + "accept it as clean. The total is UNKNOWN rather than zero — the count never returned. "
+            + "CROWD: it is recorded as a count+sample descriptor, never accepted as clean. "
+            + "The total is UNKNOWN rather than zero — the count never returned. "
             + `Provider's own words: ${clipProviderText(c?.reason ?? "", COUNT_PROBE_BUDGET)}`,
             { crowd_basis: "provider-refused-count", count_unavailable: true });
         }
@@ -741,7 +741,7 @@ export function makeEnumerate(deps) {
       if (!parsed.has_more) break;
       if (page + 1 >= pageGuard) {
         return incomplete(total, results.length, results,
-          `pagination guard hit (${pageGuard} pages) before has_more:false — the provider's reachable window (${capWarning ?? providerWindow}) is exhausted; the remainder is unreachable by paging. This is an incomplete crowd descriptor — hand it up to judgment (Layer B decides whether a narrower NAMED enumeration is warranted); the funnel does not self-narrow-and-retry.`);
+          `pagination guard hit (${pageGuard} pages) before has_more:false — the provider's reachable window (${capWarning ?? providerWindow}) is exhausted; the remainder is unreachable by paging. This is an incomplete crowd descriptor, never a clean.`);
       }
     }
 
@@ -899,5 +899,7 @@ function stampTotalCounts(r, totalCounts) {
   return { ...r, text: JSON.stringify({ ...parsed, total_counts: totalCounts }, null, 2) };
 }
 
-// What a crowd is, in the words every crowd's reason ends with: a band the funnel hands up, never a clean.
-const CROWD_IS = "this is a CROWD, not a named exact/near band. Record it as a count+sample descriptor and hand it up to judgment; the funnel does NOT narrow-and-retry a crowd here. Whether a narrower NAMED enumeration is warranted, and whether this slice is material, is judgment's call (Layer B) — never accept it as clean.";
+// What a crowd is, in the words every crowd's reason ends with. FACTS ONLY: the recorded reason is data the write-up,
+// placement and the writer read too, none of which has the unit's manual. How the unit decides on a crowd rides its
+// tool answer instead (driver/engine/mcp/crowd-note.mjs), once per answer that carries one.
+const CROWD_IS = "this is a CROWD, not a named exact/near band, and never a clean; what stays a crowd is recorded with its count.";

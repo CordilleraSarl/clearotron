@@ -59,7 +59,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   it first. VS Code's Remote-SSH port forwarding is the common case. If the page that opens is not this
   install's sign-in, run the same command again with `--port 28802`, or any free number.
 
-  A *hosted* deployment needs Linux for one further thing, the systemd outbox trigger —
+  A *hosted* deployment runs the product as systemd user units, so it needs Linux —
   [driver/systemd/README.md](driver/systemd/README.md).
 - **Setup installs the reasoning program.** Clearotron runs each step of a clearance as a short,
   unattended session of Claude Code or the Codex CLI. Setup installs the one your engine uses, for this

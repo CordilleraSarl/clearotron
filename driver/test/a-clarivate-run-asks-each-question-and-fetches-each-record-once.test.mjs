@@ -35,7 +35,7 @@ import assert from "node:assert/strict";
 const { beginAnswerMemory, answerMemoryMode, ANSWER_WATCH_LOG } = await import("../../providers/_shared/answer-memory.mjs");
 const { runRecordLogPath } = await import("../../providers/_shared/ledger-path.mjs");
 const { driverDir } = await import("../../shared/driver-dir.mjs");
-const { buildSearchRequest, clarivateFetch, doBatchScreen, doRecordFetch, doSearch, resolveCompany, rememberableAnswer } = await import("../../providers/clarivate/src/core.js");
+const { buildSearchRequest, clarivateFetch, doBatchScreen, doEnumerate, doRecordFetch, doSearch, resolveCompany, rememberableAnswer } = await import("../../providers/clarivate/src/core.js");
 const { tallyRegisterCalls } = await import("../provider-usage.mjs");
 
 const BASE = "https://register.test";
@@ -204,4 +204,15 @@ test("with the memory off every request goes to the register, as before", async 
   let watch = null;
   try { watch = readFileSync(driverDir(d, ANSWER_WATCH_LOG), "utf8"); } catch { /* none written */ }
   assert.equal(watch, null, "nothing is recorded when the memory is off");
+});
+
+test("a search over the register's ceiling is a crowd that sends the reading step to the narrowing steps", async () => {
+  const { tctx } = run(null);
+  register({ refuse: { path: "/search", status: 400, body: { errorMessage: "tooManyResults - The search returned 41234 results." } } });
+  const parsed = JSON.parse((await doEnumerate("key", BASE, { name: "ORBANTIQ", nice_classes: [9], regions: ["US"] }, tctx)).text);
+  assert.equal(parsed.state, "incomplete", `guard: the ceiling did not make a crowd: ${JSON.stringify(parsed).slice(0, 300)}`);
+  assert.match(parsed.reason, /tooManyResults/, "guard: the crowd is not the register's ceiling");
+  assert.ok(parsed.reason.endsWith("This is a CROWD descriptor for judgment — dilution the lawyer reads, not a provider fault and not a clean negative."), parsed.reason);
+  assert.ok(!parsed.reason.includes("unit.md"), `the recorded reason carries an instruction for the unit: ${parsed.reason}`);
+  assert.ok(!/self-narrow-and-retry|judgment's call \(Layer B\)/.test(parsed.reason), `the crowd still hands itself up: ${parsed.reason}`);
 });

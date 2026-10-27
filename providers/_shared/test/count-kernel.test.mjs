@@ -193,6 +193,9 @@ test("a count refusal keyed on the provider's own sentence becomes a crowd, not 
   assert.equal(parsed.total_hits, null, "UNKNOWN, not zero — the count never returned, and a zero here is a false clean");
   assert.equal(parsed.crowd_basis, "provider-refused-count");
   assert.equal(parsed.count_unavailable, true);
+  // The crowd is recorded as one, and its answer hands it to no later stage: the reading step decides on it.
+  assert.ok(parsed.reason.includes("This is a CROWD: it is recorded as a count+sample descriptor, never accepted as clean."), parsed.reason);
+  assert.ok(!/hand it up to judgment|Layer B/.test(parsed.reason), `the refused count still hands the crowd up: ${parsed.reason}`);
   assert.equal(counts, 1, "one probe: a structural refusal is the same on every attempt, so the ladder has nothing to offer it");
 
   // THE CONTROL, and without it this arm would pass just as well on a kernel that called everything a

@@ -190,7 +190,7 @@ export function renderReportOverview(model, identity) {
     id.run ? `run: ${id.run}` : "",
     id.overall_label ? `overall_label: ${id.overall_label}` : "",
     id.overall_badge ? `overall_badge: ${id.overall_badge}` : "",
-    `overall_caption: ${model.overall_caption}`,
+    model.overall_caption ? `overall_caption: ${model.overall_caption}` : "",
     model.handling_note ? `handling_note: ${model.handling_note}` : "",
     "---",
   ].filter(Boolean);

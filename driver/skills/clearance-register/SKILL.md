@@ -1,6 +1,6 @@
 ---
 name: clearance-register
-description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the complete merged band through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
+description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
 ---
 
 ## Spawned session
@@ -59,8 +59,7 @@ Set by the orchestrator per mode (set `model` explicitly on the spawn — omitti
 
 - **Unit mode** — `saturation-probe` → **`haiku`**, thinking off (count-only, pure data-pull). The
   three sweep axes (`primary-sweep`, `transliteration-numeric`, `incumbent-class`) → **`sonnet`**,
-  adaptive thinking (run the manifest's given searches, detail-fetch, apply the rule-based status
-  filter — nuanced rule-following, not open analysis).
+  adaptive thinking (run the plan, read each answer, narrow a crowd by the steps in unit.md, and decide whether more searching would change the advice).
 - **Digest mode** — **`opus`**, thinking medium. All the precision-critical judgment lives here
   (relevance gate, owner clustering, opposition interpretation, Option-D).
 
@@ -77,8 +76,7 @@ SKILL.md applies whichever sits behind the neutral `register_*` tools. There is 
 no cross-check alongside it: where the active provider's coverage does not reach a territory, that is a
 **deferred coverage row** you disclose, never a gap you fill from elsewhere.
 
-**EUIPO covers the EU alone** and is free. Running it makes every non-EU territory a deferred row —
-the honest trade, not a fault. Sandbox and production hold different corpora and must never be
+**EUIPO covers the EU alone.** Running it makes every non-EU territory a deferred row — a known limit of that register, not a fault. Sandbox and production hold different corpora and must never be
 mistaken — so the DRIVER records which answered, on every receipt in `_driver/receipts.json`.
 Never tag it in the findings.
 
@@ -94,8 +92,7 @@ saturated raw pile — does **not** exist: crowds are descriptors, named slices 
 **A genuine resource/time limit produces an `incomplete` block, never a sufficiency accept.** If
 `register_enumerate` hits the provider 5000-record window or a resource ceiling on a slice, it returns
 `{state:"incomplete", …, reason}` — the funnel writes that block verbatim and **stops there for that slice**.
-That `incomplete` is the signal to **judgment (Layer B)**, which decides whether the crowd is material and
-either **commands a narrower named enumeration** (which the funnel then runs) or **halts to a human**. The
+That `incomplete` is the signal to **judgment (Layer B)**, which decides whether the crowd is material and either **commands a narrower named enumeration** by the narrowing steps (which the funnel then runs) or **records the crowd with its count and moves on**. The
 funnel never converts a resource limit into a clean negative and never re-adds a record/count ceiling that
 says "searched N, ship clean".
 
@@ -127,8 +124,7 @@ step that gives you a list you can read.
 A list you have read answers the crowd it came from. Do not ask that crowd again without the limits that answered
 it.
 
-The same steps serve any other question that comes back as a crowd, when reading it would change what you tell
-the client. You need not take every step on every crowd. A wider crowd that the lists you have read already
+The same steps serve any other question that comes back as a crowd, when reading it would change what you tell the client. Before you narrow a wider crowd, write in the proposal what reading it would change. If you cannot, set it aside with its count and your reason. You need not take every step on every crowd. A wider crowd that the lists you have read already
 answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
 mark's market step did not read stay on its coverage row with their count, as today.
 
@@ -149,14 +145,10 @@ its own count. A narrowing that does not name what it replaced leaves the crowd 
 
 
 **The per-major and per-jurisdiction named queries are breadth, not a budgeted sufficiency allowance.** Each
-in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is a **named slice
-the funnel COVERS** — and when the region-scoped in-scope sweep (Recipe 1 Step 2) returns `enumerated`
+in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is **part of the in-scope sweep** — and when the region-scoped in-scope sweep (Recipe 1 Step 2) returns `enumerated`
 (complete), that complete set provably contains every in-scope slice, so the per-major/per-jurisdiction slices
 are taken from it **machine-side by `jurisdictions`**, NOT re-run as redundant per-major `register_enumerate`
-calls (Recipe 1 §2b/§2c — this drops the per-jurisdiction call-count + timeout fragility). A slice gets its OWN
-`register_enumerate` call only on the guarded crowd-narrow path — when the in-scope sweep returned `incomplete`
-and a major/material jurisdiction may sit in the un-paged remainder. Either way no slice is sampled; the
-manifest/matter-frame chose the breadth (judgment, upstream); the funnel covers every such slice. There is **no "ring-fenced allowance" that breadth
+calls (Recipe 1 §2b/§2c — this drops the per-jurisdiction call-count + timeout fragility). When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked on its own; it stays in the crowd's count. Either way no slice is sampled; the manifest/matter-frame chose the breadth (judgment, upstream). There is **no "ring-fenced allowance" that breadth
 yields to** any more (that was a sufficiency trade — breadth-vs-coverage), because no slice is sampled: every
 named query enumerates or returns `incomplete`. If a declared jurisdiction's query genuinely cannot run
 (provider error), it surfaces as an `incomplete` block (a could-not-reach gap for judgment), never a silent
@@ -164,8 +156,7 @@ drop and never a sufficiency-accepted omission.
 
 **The dangerous-category named enumeration is the same contract, not a separate budget floor.** The
 `primary-sweep` unit's dangerous-category enumeration (`unit.md` → *the dangerous-category named enumeration*)
-runs **every** named slice through `register_enumerate` — the exact name-list, the substring band, the
-per-major region-scoped band, the phonetic fringe — **for the DISTINCTIVE anchor. A common saturated component
+runs **every** named slice through `register_enumerate` — the exact name-list, the substring band, the phonetic fringe — **for the DISTINCTIVE anchor. A common saturated component
 that is not the anchor (a stripped common word — GREAT / OUTDOORS) is count-only via `saturation-probe`, not
 enumerated here** (`unit.md` → *the dangerous-category named enumeration*; an all-common-words phrase mark is
 searched as the exact phrase + near-neighbours). It does **not** "detail-fetch every candidate up to a
@@ -180,7 +171,7 @@ category is **structurally impossible** now: there is no sampling verb in the fu
 `incomplete` block verbatim** and letting judgment act on it.
 
 - **Provider session-key invalid** → halt; surface to orchestrator with one-line diagnostic (no band can be written).
-- **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment, which commands a narrower named enumeration or halts.
+- **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment, which commands a narrower named enumeration by the narrowing steps, or records it and moves on: a crowd with its count, a failed search as a gap.
 - **Rate-limit signal (429 or sustained 5xx)** → handled inside the primitive (back off); a persistent failure surfaces as an `incomplete` block with the error in `reason`.
 - **A unit's axis is not applicable** to this manifest (e.g. transliteration-numeric with an English-only mark) → write a single "not applicable" `incomplete` block (`reason:"not applicable — <why>"`, `total_hits:0`) so the band file lands, and return cleanly. Do NOT fabricate work.
 ## Coverage = the band blocks (the funnel emits NO clearance verdict)
@@ -201,8 +192,7 @@ states, and **the state IS the coverage signal**:
   could not reach its data (provider error, tool absent) OR is a count-only crowd descriptor. **The funnel
   never grades an `incomplete` as an "accepted limit" vs a "closeable gap"** — that grading was a sufficiency
   judgment (is this gap OK to ship over?) and now belongs to **judgment (Layer B)**: the lawyer reads the
-  `incomplete` block (its `total_hits` / `sample` / `reason`), decides whether it is material, and either
-  **commands a narrower named enumeration** (which the funnel runs) or **halts to a human**. The funnel's job
+  `incomplete` block (its `total_hits` / `sample` / `reason`), decides whether it is material, and either **commands a narrower named enumeration** by the narrowing steps (which the funnel runs) or **records it with its count and moves on**. The funnel's job
   is only to surface the `incomplete` honestly — count + sample + reason — never to decide it is tolerable.
 
 **The exact name-list is read first, and narrowed when it crowds.** The dominant element's `match_mode:exact`
@@ -241,12 +231,14 @@ lets judgment decide.
   count-only saturation descriptor, a volume/pagination ceiling. A re-run cannot close it, so the escalation
   gate skips it and it does not on its own make the run unfinished.
 - **`deferred`** — the search could not run or could not reach its data: tool absent, provider error, fetch
-  blocked, a predicate or an office the active provider cannot express. It is a CLOSEABLE gap — escalate and
-  disclose — and it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these `coverage-limited` and a
-  fixable hole disappears into an accepted limit.
+  blocked, a predicate or an office the active provider cannot express. A provider error or a blocked fetch is a
+  CLOSEABLE gap — escalate and disclose; a predicate or an office the provider cannot express is never closeable,
+  and stays open and disclosed. Either way it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these
+  `coverage-limited` and a fixable hole disappears into an accepted limit.
 - **`confirmed-clean`** — the slice ran to completion and judgment cleared it.
-- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched.
-  Only a `family` row takes it, and its reason goes into the audit workbook, not the report.
+- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched;
+  or a crowd the narrowing steps closed (a narrowed list that was read answered it, or the reading step set it
+  aside with its count and a reason). Its reason goes into the audit workbook, not the report.
 
 **HOW those statuses are recorded is not yours to assume — the dispatch states it, and it is one route,
 the `record_coverage` tool.** The driver computes the form before every digest dispatch and enumerates
@@ -275,6 +267,6 @@ restates the row shape: one copy, told at dispatch beside the rows themselves.
 
 This skill runs in one of two modes, **selected by the caller**, which states which file to read:
 - **Unit mode (the FUNNEL — Layer A)** → read this spine + [`unit.md`](unit.md). Run ONE axis: ENUMERATE each named query via `register_enumerate`, describe crowds as count-only descriptors, write `register-units/<axis>-band.json` (the complete named band). Do NOT perform digest judgment.
-- **Digest mode (judgment — Layer B)** → read this spine + [`digest.md`](digest.md). Read the complete merged band through the band tools (`band_shape` first, then `band_lookup` / `band_record` — never by slicing band files), apply relevance + sufficiency + prioritisation, hand the findings back through the `record_register_digest` tool (the driver renders the document — see [`digest.md`](digest.md), *What the call takes*), and settle the coverage judgment through the `record_coverage` tool (*Coverage ledger* above). Two transports, two statements, and no file to write in either.
+- **Digest mode (judgment — Layer B)** → read this spine + [`digest.md`](digest.md). Read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` first, then `band_lookup` / `band_record` — never by slicing band files), apply relevance + sufficiency + prioritisation, hand the findings back through the `record_register_digest` tool (the driver renders the document — see [`digest.md`](digest.md), *What the call takes*), and settle the coverage judgment through the `record_coverage` tool (*Coverage ledger* above). Two transports, two statements, and no file to write in either.
 
 Companion references (load as needed): `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/<name>.md`.

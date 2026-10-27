@@ -83,15 +83,18 @@ const SANCTIONED = (p) => /(^|[\\/])register-named-band\.json$/.test(p) || /(^|[
 // Pass 1 parks on the turn whose message names placement-inquiry's skill. The driver writes that
 // reference as an absolute path joined on this machine, so on Windows it reads `placement-inquiry\SKILL`.
 const PARK_AT_PLACEMENT = `placement-inquiry${sep}SKILL`;
+// A placement failure whose recovery is spent is delivered without the assessment, so pass 1 takes a recovery park
+// instead, and the stage it stopped at is the one its status records.
+const parkedAt = (res) => JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).failedStage;
 
 test("a resume whose frame-diff SKIPS is not parked by the escalation rewriting the band/units it declares", async () => {
   // ── pass 1: park at placement-inquiry ────────────────────────────────────────────────────────────
   // The window the defect lives in: frame-diff has RUN (its seam is above placement since) and
   // narrative.md is absent, so the resume is NOT digest-locked and the escalation/envelope arms fire.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT }, {});
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT, CLEAROTRON_RECOVERY_MAX: "1" }, {});
   assert.equal(p1.res.ok, false, "pass 1 parks");
-  assert.equal(p1.res.failedStage, "placement-inquiry",
-    `pass 1 must park AT placement-inquiry (substring match caught a different turn: ${p1.res.failedStage})`);
+  assert.equal(parkedAt(p1.res), "placement-inquiry",
+    `pass 1 must park AT placement-inquiry (substring match caught a different turn: ${parkedAt(p1.res)})`);
   assert.ok(existsSync(join(p1.res.runDir, "frame-diff.md")), "frame-diff RAN in pass 1 — its stamp is what pass 2 inherits");
   assert.ok(!existsSync(join(p1.res.runDir, "narrative.md")), "narrative absent ⇒ the resume is NOT digest-locked");
   assert.ok(p1.events.some((e) => e.event === "stage" && e.stage === "frame-diff"), "frame-diff dispatched in pass 1");
@@ -165,9 +168,9 @@ test("a restamp aimed at a file the stage does NOT declare lands a restamp-miss 
 test("frame-diff still recomputes when a NON-sanctioned input moves (the freshness contract is not blanket-disabled)", async () => {
   // The seam blesses only what the pre-synthesis register arms rewrite. A blind-frame model that moves
   // between passes is new material and must still force the diff — the copper-vault catch, intact.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT }, {});
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT, CLEAROTRON_RECOVERY_MAX: "1" }, {});
   assert.equal(p1.res.ok, false, "pass 1 parks");
-  assert.equal(p1.res.failedStage, "placement-inquiry");
+  assert.equal(parkedAt(p1.res), "placement-inquiry");
 
   // Re-serialise the blind model COMPACTLY: same content, different bytes. It has to stay valid — an
   // invalid model just makes blind-frame re-run and rewrite the canonical bytes back, which is not the

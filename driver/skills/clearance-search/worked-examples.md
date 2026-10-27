@@ -11,8 +11,8 @@
 
 - [The reasoning to reproduce (what makes these good)](#the-reasoning-to-reproduce-what-makes-these-good)
 - [Voice — worked before / after pairs (P6)](#voice--worked-before--after-pairs-p6)
-- [Example 1 — descriptive-compound + family-of-marks (SOLSTRIKER / EMBERSTRIKE, gaming hardware)](#example-1-descriptive-compound-family-of-marks-solstrike-emberstrike-gaming-hardware)
-- [Example 2 — slogan (CHART YOUR COURSE, console tagline)](#example-2-slogan-chart-your-course-console-tagline)
+- [Example 1 — descriptive-compound + family-of-marks (GLOWVAULTER / FLINTVAULT, gaming hardware)](#example-1-descriptive-compound-family-of-marks-glowvaulter-flintvault-gaming-hardware)
+- [Example 2 — slogan (SET YOUR PACE, console tagline)](#example-2-slogan-set-your-pace-console-tagline)
 - [Example 3 — cross-industry collab, multi-mark (a games franchise × pizza chain; food + gaming)](#example-3-cross-industry-collab-multi-mark-a-games-franchise-pizza-chain-food-gaming)
 - [Example 4 — descriptive-compound + family-of-marks (AQUA SURGE / AQUA DAWN, energy/functional drinks) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)](#example-4-descriptive-compound-+-family-of-marks-aqua-surge-aqua-dawn-energyfunctional-drinks-illustrative-composite-pending-a-staff-lawyer-marked-real-matter)
 - [Example 5 — slogan / tagline (POWER YOUR FOCUS, energy-drink line) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)](#example-5-slogan-tagline-power-your-focus-energy-drink-line-illustrative-composite-pending-a-staff-lawyer-marked-real-matter)
@@ -32,8 +32,8 @@ Notice across all three:
   ("in a pizza context, a 'prize crate' has no immediate meaning, and is therefore distinctive").
 - **The proposed mark's own distinctiveness is assessed *per field*** — and it drives how narrowly any
   third-party right can block (descriptive term → narrow rights → weak block).
-- **Family-of-marks / branded-context is a real mitigant** ("consumers will perceive EMBERSTRIKE as
-  an extension of the Strike range"; "strong Blockvale branding").
+- **Family-of-marks / branded-context is a real mitigant** ("consumers will perceive FLINTVAULT as
+  an extension of the Vault range"; "strong Blockvale branding").
 - **Use / revocability / enforcement appetite carry the analysis** — a registration with no use, in
   insolvency, or outside the owner's core market is a different risk from an active enforcer.
 - **Executive summary is synthesised prose:** name the primary risk(s), the overall rating, and the
@@ -50,7 +50,7 @@ Notice across all three:
 
 The hardest calls sit on the **Manageable ↔ Moderate** line, and the answer turns on **whether our actual use meets theirs in the market** — not on how close the marks look. Two moves the examples above already embody, stated so they transfer to any vertical:
 
-- **Distinguishable manner of use → Manageable.** When the client's use is a *descriptive or in-product label* (a feature name, a tier / badge, a strapline surfaced inside the client's own product) rather than a standalone source-brand, a third party's near-identical *product or studio brand* often does **not** meet it in the market — confusion is unlikely and the finding is **Manageable** (the company more likely than not prevails, though material risk remains), even on a near-identical word in a shared class. (The EMBERSTRIKE family-distinguishes shape and the CHART YOUR COURSE descriptive-use shape: presentation and manner of use narrow the third-party right. A heavily crowded element reinforces it — the crowd is a *ceiling that lets you reach Manageable*, never a floor that parks you at Moderate.)
+- **Distinguishable manner of use → Manageable.** When the client's use is a *descriptive or in-product label* (a feature name, a tier / badge, a strapline surfaced inside the client's own product) rather than a standalone source-brand, a third party's near-identical *product or studio brand* often does **not** meet it in the market — confusion is unlikely and the finding is **Manageable** (the company more likely than not prevails, though material risk remains), even on a near-identical word in a shared class. (The FLINTVAULT family-distinguishes shape and the SET YOUR PACE descriptive-use shape: presentation and manner of use narrow the third-party right. A heavily crowded element reinforces it — the crowd is a *ceiling that lets you reach Manageable*, never a floor that parks you at Moderate.)
 - **Active same-field competitor → Moderate.** The mirror: when a third party runs an *active brand with current marketplace presence in the client's own core classes* — a live competitor whose product actually meets the client's — that is a real **Moderate** conflict (the prior owner more likely than not wins, with reasonable defences available), and a small mark-shape difference (an onset letter, a one-keystroke swap) does **not** drop it to Manageable. (The AQUA SURGE shape: the goods meet directly, so it stays Moderate despite a house-mark lead and a diluted element.) Don't let a crowded field or a lower-tier placement wash an active in-field competitor down to Manageable.
 
 Both are the same principle from opposite sides: **rate our use meeting their use, not the marks in the abstract.**
@@ -110,14 +110,14 @@ eight languages and scripts searched." State it once and stop.)*
 >
 > ✓ Investigate whether Ridgeline Beverages is actually selling under the mark in Germany.
 
-*(The other three name this system's own mechanisms. Reading the run's own records is the engine's job and was
-owed before delivery — printing it as a step for the reader is a defect, not an action.)*
+*(The other three name this system's own mechanisms. What the run read, and what it set aside with its count and
+reason, is the engine's record — printing it as a step for the reader is a defect, not an action.)*
 
 **5 — A ruled-out entry names the specific point that settled it.**
 
 > ✗ Not relevant — different field, no overlap.
 >
-> ✓ Shares the theme, not the word: OPEN COUNTRY against SOLSTRIKE, no common element and no shared sound.
+> ✓ Shares the theme, not the word: MOONLIT TRAIL against GLOWVAULT, no common element and no shared sound.
 
 **6 — Each fact once: cross-reference by ordinal instead of retelling.**
 
@@ -183,106 +183,106 @@ which is why this is a reading and not a list.)*
 
 ---
 
-## Example 1 — descriptive-compound + family-of-marks (SOLSTRIKER / EMBERSTRIKE, gaming hardware)
+## Example 1 — descriptive-compound + family-of-marks (GLOWVAULTER / FLINTVAULT, gaming hardware)
 
-*Global preliminary search for SOLSTRIKER and EMBERSTRIKE as special-edition names for a Nebula
-Wireless Controller. Classes 9, 28, 41, 42. Series name "Strike" already in use by the client for its
+*Global preliminary search for GLOWVAULTER and FLINTVAULT as special-edition names for a Nebula
+Wireless Controller. Classes 9, 28, 41, 42. Series name "Vault" already in use by the client for its
 special-edition controller range (debuted 2024).*
 
 ### Executive summary
 
-**Solstriker — moderate risk.** The primary risk is an international portfolio of SOLSTRIKE filings owned
-by the US game developer/publisher Solstrike Games (illustrative — a mid-size independent publisher,
+**Glowvaulter — moderate risk.** The primary risk is an international portfolio of GLOWVAULT filings owned
+by the US game developer/publisher Glowvault Games (illustrative — a mid-size independent publisher,
 300+ employees, 9 published titles, ~$80m revenue). Assessed moderate rather than high because:
-(i) slight visual/phonetic/conceptual differences between SOLSTRIKER and SOLSTRIKE; (ii) the client's
-use is for gaming *hardware*, not games/development; (iii) the client's prior use of "Strike" across a
+(i) slight visual/phonetic/conceptual differences between GLOWVAULTER and GLOWVAULT; (ii) the client's
+use is for gaming *hardware*, not games/development; (iii) the client's prior use of "Vault" across a
 family of special-edition controller names helps avoid confusion (consumers see a continuation of the
-range). Nevertheless Solstrike's portfolio poses a material risk given the overlapping field and its
-prominent, well-funded position. The search also found Chinese SOLSTRIKE GAMES filings (apparently
-unrelated) and a Benelux SOLSTRIKER filing (a national lottery operator); in each case no obvious use was
+range). Nevertheless Glowvault's portfolio poses a material risk given the overlapping field and its
+prominent, well-funded position. The search also found Chinese GLOWVAULT GAMES filings (apparently
+unrelated) and a Benelux GLOWVAULTER filing (a national lottery operator); in each case no obvious use was
 found and the registrations may be revocable for non-use, which would reduce the risk to manageable —
 Chinese and Benelux investigations would be needed to confirm.
 
-**Emberstrike — manageable risk.** No EMBER( )STRIKE(S) filings in the searched classes. Several
-EMBER(S) and STRIKE filings cover gaming goods/services internationally, but confusion is unlikely
-given the additional elements in EMBERSTRIKE and the client's ongoing STRIKE family use (consumers
-perceive it as an extension). Closest common-law use is a YouTube/Twitch channel "EmberstrikeGames"
+**Flintvault — manageable risk.** No FLINT( )VAULT(S) filings in the searched classes. Several
+FLINT(S) and VAULT filings cover gaming goods/services internationally, but confusion is unlikely
+given the additional elements in FLINTVAULT and the client's ongoing VAULT family use (consumers
+perceive it as an extension). Closest common-law use is a YouTube/Twitch channel "FlintvaultGames"
 selling gaming merchandise (not hardware) — low confusion risk, but an opportunistic nuisance claim
 cannot be excluded.
 
 ### Analysis / notes
 
-**Solstriker — Moderate Risk**
+**Glowvaulter — Moderate Risk**
 
 *Filings*
-- **Moderate (market overlap; coexistence negotiable)** — Solstrike Games owns an international portfolio for SOLSTRIKE,
-  SOLSTRIKE & Eye Logo, SOLSTRIKE GAMES and SOLSTRIKE CASH covering computer game software, online games
+- **Moderate (market overlap; coexistence negotiable)** — Glowvault Games owns an international portfolio for GLOWVAULT,
+  GLOWVAULT & Eye Logo, GLOWVAULT GAMES and GLOWVAULT CASH covering computer game software, online games
   and other gaming goods/services, including incontestable US registrations. [owner profile as above].
 - **Moderate (register risk; no obvious market overlap)** — Hanwei Yuanchuang Technology (China) owns Chinese
-  registrations for SOLSTRIKE GAMES covering computer game software and game design/development. Little
-  available online; appears unrelated to Solstrike Games or its parent. Revocable if unused in China for
+  registrations for GLOWVAULT GAMES covering computer game software and game design/development. Little
+  available online; appears unrelated to Glowvault Games or its parent. Revocable if unused in China for
   3 years — no obvious use found, though Chinese investigation/advice would be needed.
 - **Moderate (register risk; no obvious market overlap)** — a Benelux state lottery operator owns a Benelux registration for
-  SOLSTRIKER covering organisation of online games. Revocable if unused in Benelux for 5 years — no
+  GLOWVAULTER covering organisation of online games. Revocable if unused in Benelux for 5 years — no
   current use found on the State Lottery site, though Benelux investigation/advice would be needed.
-- **Manageable** — The festival group Solstriker owns an international SOLSTRIKER portfolio for
+- **Manageable** — The festival group Glowvaulter owns an international GLOWVAULTER portfolio for
   entertainment/events/fitness. No specific gaming claim and no obvious gaming aspect; low confusion
-  risk, but the registrations could block a SOLSTRIKE filing in Class 41.
-- **Manageable** — A national free-to-air broadcaster owns a UK registration for a SOLSTRIKE series covering computer games
+  risk, but the registrations could block a GLOWVAULT filing in Class 41.
+- **Manageable** — A national free-to-air broadcaster owns a UK registration for a GLOWVAULT series covering computer games
   among much else; the breakfast show ended in 2014 and use is historic — likely revocable for computer
   games if not in its entirety.
-- **Manageable** — Numerous SOLSTRIKE-formative filings cover gaming goods/services (Solstrike
-  Mobile, Solstrike Torch, Soldiers of Solstrike, Downtown Solstrike…). None claim controllers/hardware;
+- **Manageable** — Numerous GLOWVAULT-formative filings cover gaming goods/services (Glowvault
+  Mobile, Glowvault Torch, Soldiers of Glowvault, Downtown Glowvault…). None claim controllers/hardware;
   sufficient differences to avoid confusion.
 
 *Common-law use*
-- **Manageable** — "Solstrikers" is a game "coming soon" on Steam from an indie developer.
+- **Manageable** — "Glowvaulters" is a game "coming soon" on Steam from an indie developer.
 
-**Emberstrike — Manageable Risk**
+**Flintvault — Manageable Risk**
 
-- 3,060 live EMBER/EMBER-formative filings internationally in the searched classes (640 claim gaming
-  software/hardware/online gaming); analysis focuses on EMBER and EMBER ST___ marks covering gaming.
-- 8,575 live STRIKE(S)/STRIK(E)-formative filings (2,317 claim gaming); analysis focuses on
-  STRIKE(S) and E__ STRIKE(S) marks covering gaming.
+- 3,060 live FLINT/FLINT-formative filings internationally in the searched classes (640 claim gaming
+  software/hardware/online gaming); analysis focuses on FLINT and FLINT VA___ marks covering gaming.
+- 8,575 live VAULT(S)/VAUL(T)-formative filings (2,317 claim gaming); analysis focuses on
+  VAULT(S) and F__ VAULT(S) marks covering gaming.
 
 *Filings*
-- **Manageable** — Numerous EMBER/EMBERS marks claim gaming goods/services; most significant is
-  an international EMBERS portfolio owned by a gambling company (no apparent current
+- **Manageable** — Numerous FLINT/FLINTS marks claim gaming goods/services; most significant is
+  an international FLINTS portfolio owned by a gambling company (no apparent current
   use).
-- **Manageable** — Numerous STRIKE marks claim gaming goods/services; none appears to have
-  objected to the client's ongoing use of ___ STRIKE for controllers.
+- **Manageable** — Numerous VAULT marks claim gaming goods/services; none appears to have
+  objected to the client's ongoing use of ___ VAULT for controllers.
 
 *Common-law use*
-- **Manageable** — EmberstrikeGaming: streamer/YouTube channel (205 videos, 405 subscribers)
+- **Manageable** — FlintvaultGaming: streamer/YouTube channel (205 videos, 405 subscribers)
   with a merch store that does not sell hardware/accessories.
-- **Manageable** — Emberstruck: a 2016 Steam game (444 "very positive" reviews) by an indie studio;
+- **Manageable** — Flintvaulted: a 2016 Steam game (444 "very positive" reviews) by an indie studio;
   no game published in ~10 years.
-- **Not a rated conflict (clear win)** — A "Emberstrike Set" appears in several games of a long-running adventure series; not monetised or
+- **Not a rated conflict (clear win)** — A "Flintvault Set" appears in several games of a long-running adventure series; not monetised or
   prominent.
-- **Not a rated conflict (clear win)** — A studio's co-op shooter "Firestrike" (1,914 "mixed" reviews on Steam).
+- **Not a rated conflict (clear win)** — A studio's co-op shooter "Firevault" (1,914 "mixed" reviews on Steam).
 
 ---
 
-## Example 2 — slogan (CHART YOUR COURSE, console tagline)
+## Example 2 — slogan (SET YOUR PACE, console tagline)
 
-*Global preliminary search for CHART YOUR COURSE as a tagline for Gen-9 console assets (header text on
+*Global preliminary search for SET YOUR PACE as a tagline for Gen-9 console assets (header text on
 assets and packaging). Classes 9, 28, 41, 42.*
 
 ### Executive summary
 
-**Moderate risk, with practical factors mitigating in each case.** Primary risks: (i) CHART YOUR COURSE
+**Moderate risk, with practical factors mitigating in each case.** Primary risks: (i) SET YOUR PACE
 registrations owned by branded-products company Calderon Brands, with occasional use by its games-accessory
 affiliate Volt Peripherals — the tagline appears low-priority for them; (ii) an *official* Canadian registration
 owned by a Canadian provincial lottery corporation whose actual use does not commercially overlap with consoles;
 (iii) a US registration owned by a sports broadcaster for an inactive youth-fitness program. The moderate rating attaches
-to *independent, prominent* use of the tagline — to the extent CHART YOUR COURSE is used wholly
+to *independent, prominent* use of the tagline — to the extent SET YOUR PACE is used wholly
 descriptively (embedded in sentences, unstylised, communicating product features), the risk is
 manageable.
 
 ### Analysis / notes — Moderate Risk
 
 *Filings*
-- **Moderate (market overlap; coexistence negotiable)** — Calderon Brands owns CHART YOUR COURSE registrations (UK, Argentina, Panama,
+- **Moderate (market overlap; coexistence negotiable)** — Calderon Brands owns SET YOUR PACE registrations (UK, Argentina, Panama,
   Costa Rica, Chile) covering chargers/adaptors/covers for video-game controllers and other
   accessories, acquired with Volt Peripherals from a games-accessory maker in 2020. Post-acquisition Calderon
   let the US application abandon (no statement of use), cascading cancellation of the IR in the EU,
@@ -290,7 +290,7 @@ manageable.
   descriptive use; no obvious branded use specifically for consoles. Letting the filings lapse in key
   markets suggests low priority; enforcement on narrow use / non-core registered rights seems doubtful.
 - **Moderate (register risk; no obvious market overlap)** — a Canadian provincial lottery corporation owns an official Canadian
-  registration for CHART YOUR COURSE (all goods/services) used descriptively for self-service lotteries.
+  registration for SET YOUR PACE (all goods/services) used descriptively for self-service lotteries.
   Legal risk, but low practical objection risk — no enforcement history, no commercial overlap with a
   console tagline. A Canadian application would undoubtedly be blocked; consent from that corporation the only route.
 - **Moderate (register risk; no obvious market overlap)** — A sports broadcaster owns a US registration covering publication of
@@ -304,21 +304,21 @@ manageable.
 - **Manageable** — A Polish telecom owns a Polish registration covering computer game
   software and console game programs; no specific gaming interest; minor use on its careers site;
   low confusion; scope likely reducible away from gaming goods if challenged.
-- **Manageable** — A games-accessory maker holds invalid/lapsed CHART YOUR COURSE filings
+- **Manageable** — A games-accessory maker holds invalid/lapsed SET YOUR PACE filings
   (NZ, Brazil, Australia, Mexico) — legacy after the 2020 accessory-brand sale; no current use.
 
 *Common-law use*
-- **Manageable** — "Chart Your Course" mobile gaming truck (Michigan) for party rentals, claims Nebula
+- **Manageable** — "Set Your Pace" mobile gaming truck (Michigan) for party rentals, claims Nebula
   consoles onboard — confusion unlikely, nuisance-claim risk not excluded given gaming overlap.
-- **Manageable** — "Chart Your Course" platform for sharing love of video games; limited social
+- **Manageable** — "Set Your Pace" platform for sharing love of video games; limited social
   presence.
-- **Manageable** — "Chart Your Course" 2025 mental-health-in-gaming fundraiser (£7,000 raised).
-- **Manageable** — "Chart Your Course" announced as a major update for a popular co-op game (~127k
+- **Manageable** — "Set Your Pace" 2025 mental-health-in-gaming fundraiser (£7,000 raised).
+- **Manageable** — "Set Your Pace" announced as a major update for a popular co-op game (~127k
   "overwhelmingly positive" Steam reviews).
-- **Manageable** — "Charting Your Course" arcade-game subscription service.
-- **Not a rated conflict (clear win)** — A third-party Nebula console-streaming app uses "Chart Your Course" descriptively.
+- **Manageable** — "Setting Your Pace" arcade-game subscription service.
+- **Not a rated conflict (clear win)** — A third-party Nebula console-streaming app uses "Set Your Pace" descriptively.
 - **Not a rated conflict (clear win)** — A PC gaming companion app has minor descriptive use.
-- **Not a rated conflict (clear win)** — A "Chart Your Course" card-game app and a "Chart My Course" fitness app.
+- **Not a rated conflict (clear win)** — A "Set Your Pace" card-game app and a "Set My Pace" fitness app.
 
 ---
 
@@ -448,7 +448,7 @@ A register sweep returned roughly 1,900 live DAWN / DAWN-formative filings inter
 *Filings*
 - **Manageable** — Procter & Gamble owns the well-known DAWN house mark, but its registrations sit in Class 3 (dishwashing/cleaning) with no beverage or supplement claim located. Famous mark, but a different field entirely; the dilution-style theory a famous-mark owner might raise is remote against a AQUA-led beverage extension, and there is no goods overlap. Noted because the name is prominent, not because it obstructs.
 - **Manageable** — Solene Boissons (France) owns an EU registration for DAWN covering non-alcoholic beverages in Class 32. We found no clear current use in EU retail; as we understand EU practice the registration could be revocable for non-use after the grace period, subject to local-counsel confirmation and a use investigation. The marks also differ — the client's distinctive lead is AQUA, with "dawn" a weak time-of-day descriptor for a morning product — so confusion is unlikely even setting non-use aside.
-- **Manageable** — Several SOLSTRIKE / SOLSTRIKER beverage and supplement filings (SOLSTRIKE COLD BREW, Solstrike Wellness, Solstrike Electrolytes) claim Class 30 or 32 goods. The closest in concept is **Solstrike Cold Brew**, but the marks diverge clearly from AQUA DAWN and the goods sit in a different naming family; descriptive "morning"/"solstrike" framing is common in the coffee-adjacent category and individually weak. None presents a realistic obstacle.
+- **Manageable** — Several GLOWVAULT / GLOWVAULTER beverage and supplement filings (GLOWVAULT COLD BREW, Glowvault Wellness, Glowvault Electrolytes) claim Class 30 or 32 goods. The closest in concept is **Glowvault Cold Brew**, but the marks diverge clearly from AQUA DAWN and the goods sit in a different naming family; descriptive "morning"/"glow" framing is common in the coffee-adjacent category and individually weak. None presents a realistic obstacle.
 
 *Common-law use*
 - **Manageable** — "Dawn Patrol Coffee" — a regional small-batch cold-brew roaster selling on Amazon and its own Shopify store. The goods graze the AQUA DAWN coffee-hybrid concept and it has a genuine (if modest) Amazon presence, which keeps it at Manageable; but the marks differ substantially and the trader is single-region with no registered right located. Confusion unlikely; opportunistic nuisance claim not excluded.

@@ -109,7 +109,7 @@ test("both manuals stop on a lawyer's judgment, and the register manuals carry t
   assert.ok(flat("skills/clearance-register/unit.md").includes("**The exact name-list is read first, and narrowed when it crowds.** The exact mark token × in-scope class (`match_mode:exact`) is the identical-mark question of the narrowing steps"));
   assert.ok(flat("skills/clearance-register/SKILL.md").includes("The narrowing steps bound the searching: each keeps the limits before it, and they end."));
   const recipes = flat("skills/clearance-register/register-recipes.md");
-  assert.ok(recipes.includes("then the majors, taken from a complete worldwide answer and asked region-scoped only when it was a crowd; then the exact name-list, narrowed by the steps in `unit.md` when it crowds"));
+  assert.ok(recipes.includes("then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds"));
   assert.ok(recipes.includes("Scope the search text by class and region; narrow a crowd by the client's goods with the goods field, never by putting goods words into the search text."));
   // the billing and price words the approved set takes out
   const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/corsearch.md", "providers/euipo.md",
@@ -117,4 +117,18 @@ test("both manuals stop on a lawyer's judgment, and the register manuals carry t
   for (const gone of ["wastes a paid call", "one billable search", "both paid vendors", "Queries are free", "metered provider", "cheap `/count`",
     "cost breakdown", "send one cheap", "(cheap tiers)", "(cheap, informational", "(cheap — tells", "cheapest, always enumerates"])
     assert.ok(!all.includes(gone), `the register manuals still say "${gone}"`);
+});
+
+test("judgment on a crowd narrows by the steps or records it with its count and moves on: it never halts", () => {
+  const flat = (rel) => read(rel).replace(/\s+/g, " ");
+  const skill = flat("skills/clearance-register/SKILL.md");
+  const unit = flat("skills/clearance-register/unit.md");
+  const recipes = flat("skills/clearance-register/register-recipes.md");
+  assert.ok(skill.includes("either **commands a narrower named enumeration** by the narrowing steps (which the funnel then runs) or **records the crowd with its count and moves on**."));
+  assert.ok(skill.includes("which commands a narrower named enumeration by the narrowing steps, or records it and moves on: a crowd with its count, a failed search as a gap."));
+  assert.ok(unit.includes("an incomplete result crosses the firewall as an incomplete block, and you decide on it by the narrowing steps: narrow it, or record it with its count and move on."));
+  assert.ok(recipes.includes("That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it with its count and move on."));
+  for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]])
+    assert.doesNotMatch(text, /halts to a human|, or halts\.| or halt\./, `${name} still lets judgment halt on a crowd`);
+  assert.doesNotMatch(flat("skills/clearance-register/providers/corsearch.md"), /cheapest count-only/);
 });

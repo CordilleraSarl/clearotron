@@ -33,15 +33,17 @@ function crowded() {
 }
 const ROW = { set_aside_group: "b", count: CROWDED_GROUP_RECORDS, ground: "identical marks in the class, for goods unrelated to the client's" };
 
-test("a crowded (b)'s row stands on its first page read and the count: refused while that page is unread, then taken over every line", () => {
+test("a crowded (b)'s row stands on its first page read and the count: refused while that page is unread, then covering the floors read", () => {
   const { shape, input } = crowded();
   assert.equal(shape.groups.b.records, CROWDED_GROUP_RECORDS, "guard: (b) is listed by its first page");
   const unread = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(), records: new Set() } });
   assert.deepEqual(unread.form.set_aside_groups, []);
   assert.match(unread.form.set_aside_group_refused[0].why, /^0 of the first 5 lines of group b were read: read the parts of band_shape that print them, before its row$/, "no paging is asked of a crowd");
   const firstPage = unionPlacementForm(null, { rows: [ROW] }, { ...input, served: { lines: new Set(shape.groups.b.list.slice(0, 5).map((l) => l.key)), records: new Set() } });
-  assert.deepEqual(firstPage.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines]), [["b", CROWDED_GROUP_RECORDS]],
-    "the first page read and the count: the row covers the crowd, paging never required");
+  // Every line of this crowd holds a floor, and the row covers a floor only once its line has been read: the
+  // first page's five are covered, and every other floor is said back for the step to read.
+  assert.deepEqual(firstPage.form.set_aside_groups.map((g) => [g.set_aside_group, g.covers_lines, g.floors_not_covered?.length ?? 0]),
+    [["b", 5, CROWDED_GROUP_RECORDS - 5]], "the first page read and the count: the row stands, and covers only the floors read");
 });
 
 test("group (a) is held to the same rule: its row over lines never served is refused", () => {
@@ -156,13 +158,15 @@ test("band_lookup pages the lines the goods test could not place, and logs them 
 });
 
 test("a group's row answers a floor only in a group of a thousand records or more", async () => {
-  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm } = await import("../placement-form.mjs");
+  const { setAsideGrounds, buildSelectionIndex, parsePlacementForm, servedLines } = await import("../placement-form.mjs");
   const { reconcileFloorDuty } = await import("../floor-duty.mjs");
   const { shape, input } = crowded();
   const served = { lines: new Set(shape.groups.b.list.map((l) => l.key)), records: new Set() };
   const u = unionPlacementForm(null, { rows: [ROW] }, { ...input, served });
   const entries = parsePlacementForm(JSON.stringify(u.form)).set_aside;
-  const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(entries, buildSelectionIndex(input), input.groups, input.floors) });
+  // Every line was served, so the row covers every floor: a floor is covered only once its line has been read.
+  const duty = reconcileFloorDuty({ floors: input.floors, placements: [], setAsideGroundOf: setAsideGrounds(entries, buildSelectionIndex(input), input.groups, input.floors,
+    { served: servedLines(input.groups, served, buildSelectionIndex(input)) }) });
   assert.equal(input.floors.length, CROWDED_GROUP_RECORDS, "guard: every line of the crowded (b) is a floor");
   assert.equal(duty.undischarged_by_seat, 0, "a crowded group's row is the crowded field's block: it answers its floors");
 });

@@ -1649,7 +1649,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   1. REACHABLE from a republish, and NOT inert — which is the point. A republished archived run on a
 //      provider that publishes no record page LOSES links it used to render. Those links were wrong:
 //      every one pointed at a host the provider does not publish (measured on this tree before the fix
-//      existed — 28 absolute anchors on one clarivate run, publish/index.mjs:756 recordsByUri). The acceptance
+//      existed — 28 absolute anchors on one clarivate run, publish/index.mjs:775 recordsByUri). The acceptance
 //      criterion is that a republish introduces no link it did not have; removing false ones is the
 //      requirement, not a side effect. A run on corsearch, EUIPO or USPTO republishes byte-identically.
 //   2. It could NOT live elsewhere. The hrefs are CONSTRUCTED here, from `registrations[].uri` paths, at
@@ -1802,7 +1802,15 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: no cause in brackets on the card's
 // could-not-be-retrieved line. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "1052908ba0933f011ac3c10b9ffa46999ff75bce6fd71bcd389a279b19aa14fc";
+// Advanced again by the break recorded above the FROZEN constant: every country a finding holds a registration in
+// takes its band where it stands. Not licence-only, so this constant moves with the other one.
+// Advanced again by the same break's second edit, recorded above the FROZEN constant: the cards' own country stays
+// in the set. Not licence-only, so this constant moves with the other one.
+// Advanced again by the break recorded above the FROZEN constant: a report whose overall assessment was not completed
+// draws no rating. Not licence-only, so this constant moves with the other one.
+// Advanced again by the break recorded above the FROZEN constant: a territory the register could not search is not
+// drawn where it stands. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "cfcaf5dfe6a5f81b111fd2ac412876703fc2a3014aeac3f8e85dd888ffa4fe18";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2736,7 +2744,74 @@ const FROZEN_BEFORE_SPDX = "1052908ba0933f011ac3c10b9ffa46999ff75bce6fd71bcd389a
 //      this line and its comment alone.
 //   2. Could it live in report.css or brand.mjs? No: it is the line's text, not its look.
 //   3. Why it had to move here: the line is composed in this file and nowhere else.
-const FROZEN = "e6691f9e3a04e66ddf1de44d359a965c4a8064cf129f4118d2b8decacb77beaf";
+// ── BREAK (2026-10-22 — every country a finding holds a registration in takes its band where it stands) ──
+//
+// WHAT MOVED: "Where it stands" gave each finding one country, the country of its first registration, the same
+// one the cards file it under. A finding holding registrations in several countries had its band drawn under the
+// first, and the others, being in the search plan, were chipped "Nothing found". On a delivered test run, a
+// finding holding rights in three countries was drawn under the first, and the other two were chipped "Nothing
+// found" on the same page that asked the client who owns the rights there. Every country a finding holds a
+// registration in now takes its band, read as the first one always was; a finding with no registration country
+// keeps the one country it had. Nothing else in the file moved, and no sentence is added.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, and it changes only that section, only where a finding holds registrations
+//      in more than one country. Measured on that run's saved files through the previous file and this one:
+//      the pages differ, and they are byte-identical outside the section; 47 countries move from "Nothing found"
+//      to a banded row and none moves the other way. The same findings cut to one registration country each
+//      render byte-identically through both files, and the two inputs hash apart, so the comparison can tell
+//      renders apart.
+//   2. Could it live in report.css or brand.mjs? No: it decides which countries are rows and which are chips.
+//   3. Why it had to move here: the section is composed in this file and nowhere else. The portal draws no such
+//      section, and report-data.json carries no search depth.
+//
+// Same break, second edit (one commit later on the same branch). Review found a case the first edit missed: a
+// finding whose first registration names no office in its address is filed by the cards under its owner's country,
+// and the set of registered countries began without that country, so it could lose its band to a later registration
+// and be chipped "Nothing found". The set now starts from the country the cards use, so no country loses the band it
+// had under the previous renderer. Measured again on the same run's saved files: this edit renders byte-identically to
+// the first, the page still differs from the previous renderer only inside the section, and the one-country control
+// still renders byte-identically through both. The new arm in render.test.mjs holds the reviewed case.
+// ── BREAK (2026-10-22 — a report whose overall assessment was not completed draws no rating) ──────────────────────────
+//
+// WHAT MOVED: a run whose synthesis could not be completed once its recovery was spent is now delivered with what it
+// holds instead of ending with no report, and its publisher passes `assessmentNotCompleted`. With no rating to show, this
+// file fell back to the CLEAR stop in two places, the top bar's risk pill and the hero's gauge, and "Where it stands"
+// chipped every planned country "Nothing found": a clean answer the run never reached. Under that one option the pill,
+// the gauge, "Where it stands", "Also considered" and the provenance note about the cards are not drawn; the hero prints
+// the report's conclusion whole, since its second sentence is the action the reader is asked to take and the fold's
+// label names a chart that report does not have; and the open coverage rows lose their lead line, which says the
+// material ones are carried in the verdict above. No sentence is added; one shipped line and one shipped label are left
+// out in that state.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Only for a run that carries the record of its assessment not completed, which no run
+//      before this change does. Measured: the three demo runs published through the previous tree and this one give
+//      byte-identical pages, the issue date aside. The same run with the record present renders with no pill, gauge
+//      or rating, so the comparison can tell the two inputs apart.
+//   2. Could it live in report.css or brand.mjs? No: it decides which sections are drawn at all.
+//   3. Why it had to move here: the pill, the gauge and the sections are composed in this file and nowhere else, and
+//      the portal frames this page rather than drawing its own.
+//
+// ── BREAK (2026-10-26 — a territory the register could not search is not drawn where it stands) ─────────────────────
+//
+// WHAT MOVED: "Where it stands" chipped every planned country with no banded finding "Nothing found", reading the
+// plan alone. A planned slice the register could not search is deferred on the plan-execution receipt, so a country
+// it covers was chipped clean over a search that did not happen. The publisher now hands this file the territories
+// of the slices the receipt deferred (`planTerritories.open`), and a country among them with no finding is not drawn:
+// no row and no chip. A country where a finding sits keeps its band row. No sentence is added or removed (owner,
+// 2026-10-26).
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, for a run whose receipt deferred a planned slice: its section loses the
+//      countries that slice covers. Measured through the previous tree and this one: the four demo runs, which carry
+//      no receipt, publish byte-identical pages. The global demo given a receipt deferring its first slice, a
+//      worldwide query over all 186 planned territories, keeps its 10 banded rows and goes from 175 "Nothing found"
+//      chips to none; the 80 chips of its "What was searched" section are unchanged, and the page differs on that
+//      one line.
+//   2. Could it live in report.css or brand.mjs? No: it decides which countries are drawn.
+//   3. Why it had to move here: the section is composed in this file and nowhere else.
+const FROZEN = "1c6d57dd3ffda17bad650e0e23c3f147ab7c69b6dde4d5c34e1ab6cdaece7fb4";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

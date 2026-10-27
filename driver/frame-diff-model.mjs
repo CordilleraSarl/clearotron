@@ -278,7 +278,59 @@ export function parseFieldClasses(item) {
  *   3. a variant near-form → the near-form searched in the in-scope classes (today's mint behaviour).
  * PURE. Returns {terms, nice_classes, regions} or null (not code-closeable — disclose).
  */
-export function deriveDirectiveRemedy(directive, { dominantElement = "", inScope = [] } = {}) {
+export function deriveDirectiveRemedy(directive, { dominantElement = "", inScope = [], addedClasses = [], addedClassQuestions = [] } = {}) {
+  return boundAddedClasses(remedyAsDirected(directive, { dominantElement, inScope }), addedClasses, addedClassQuestions);
+}
+
+/**
+ * What bounds a re-sweep remedy, read off the frozen plan: the classes the frame added, and the one question each
+ * of them costs, the identical mark in that class, as the plan compiler asked it (the entries carrying
+ * `added_class_reason`). PURE.
+ * @returns {{ addedClasses: string[], addedClassQuestions: {predicate: string, term: string, nice_classes: string[], regions: string[], term_literal?: true}[] }}
+ */
+export function addedClassBound(plan) {
+  const addedClasses = [...new Set((Array.isArray(plan?.added_classes) ? plan.added_classes : [])
+    .map((r) => String(r?.class ?? r ?? "").trim()).filter(Boolean))];
+  const addedClassQuestions = (Array.isArray(plan?.entries) ? plan.entries : [])
+    .filter((e) => e?.added_class_reason && typeof e.term === "string" && e.term.trim() && Array.isArray(e.nice_classes) && e.nice_classes.length)
+    .map((e) => ({ predicate: String(e.predicate ?? "exact"), term: e.term.trim(), nice_classes: e.nice_classes.map(String),
+      regions: (Array.isArray(e.regions) ? e.regions : []).map(String), ...(e.term_literal === true ? { term_literal: true } : {}) }));
+  return { addedClasses, addedClassQuestions };
+}
+
+// THE FRAME'S ADDED CLASS COSTS ONE QUESTION, THE IDENTICAL MARK IN THAT CLASS (the bounded class widening, ruled
+// 2026-09-21), and the plan compiler already asks it. A remedy the frame diff dictates can still name the added class
+// beside the instructed ones, and the re-sweep then put it on every question it asked: on a test run of a crowded
+// matter (2026-10-21), 32 questions widened into the added class. So the added classes come off every remedy, and what
+// is left is asked in the instructed classes as before. A remedy that named only added classes becomes the one question
+// an added class allows, the compiler's own (`identicalOnly`, with the question in `questions`), so the fold finds it
+// already in the plan. PURE.
+export function boundAddedClasses(remedy, addedClasses, addedClassQuestions) {
+  if (!remedy) return remedy;
+  const added = new Set((addedClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
+  if (!added.size) return remedy;
+  const kept = remedy.nice_classes.filter((c) => !added.has(String(c)));
+  if (kept.length) return { ...remedy, nice_classes: kept };
+  const named = new Set(remedy.nice_classes.map(String));
+  const questions = (addedClassQuestions ?? []).filter((q) => (q?.nice_classes ?? []).some((c) => named.has(String(c))));
+  if (!questions.length) return null;
+  return { terms: [...new Set(questions.map((q) => q.term))], nice_classes: [...new Set(questions.flatMap((q) => q.nice_classes))],
+    regions: [], identicalOnly: true, questions };
+}
+
+/**
+ * The re-sweep's questions for one remedy, as proposals for the mint. A main-element directive asks each term exact and
+ * contains, any other directive exact; a remedy bounded to an added class asks the plan's own question there. PURE.
+ */
+export function remedyProposals(remedy, directive, base = {}) {
+  if (!remedy) return [];
+  if (remedy.identicalOnly) return (remedy.questions ?? []).map((q) => ({ ...base, ...q }));
+  return remedy.terms.flatMap((t) => directive?.severity === "dominant-element"
+    ? [{ ...base, predicate: "exact", term: t }, { ...base, predicate: "default", term: t }]
+    : [{ ...base, predicate: "exact", term: t }]);
+}
+
+function remedyAsDirected(directive, { dominantElement = "", inScope = [] } = {}) {
   const d = directive ?? {};
   const r = d.remedy;
   if (r && (r.terms?.length || r.nice_classes?.length)) {

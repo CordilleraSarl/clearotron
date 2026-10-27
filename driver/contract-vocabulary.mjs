@@ -17,7 +17,7 @@
 //
 //   D1 verify.mjs connotationDispositionFail   fail(`connotation_${reason}:…`)   — reason is a member of CALL_REASON_SET
 //   D2 verify.mjs checkFindingsSibling  fail(String(e.message)…)  — parseFindingsJson throws token-first
-//   D3 verify.mjs:1240   checkJson: fail(String(e.message)…)   — FIVE parsers reach this one site
+//   D3 verify.mjs:1249   checkJson: fail(String(e.message)…)   — FIVE parsers reach this one site
 //   D4 verify.mjs  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs validators.registerFindings  fail(`${unaccounted[0].token}:…`)  — token minted in a DATA ROW
 //   D6 verify.mjs validators.registerFindings  fail(`${violations[0].token}…`)  — findUnexecutedCleanClaims() in register-plan.mjs
@@ -321,7 +321,7 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "coverage_form_missing",
     stages: ["register-digest"],
-    reason: "verify.mjs:2155 registerFindings says it in the failure string the reader sees: \"the driver writes it before the digest dispatches and unions it before every judgement (driver-written — this is a bug, not a model defect)\".",
+    reason: "verify.mjs:2164 registerFindings says it in the failure string the reader sees: \"the driver writes it before the digest dispatches and unions it before every judgement (driver-written — this is a bug, not a model defect)\".",
   },
   {
     token: "coverage_form_empty",
@@ -425,7 +425,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   },
   {
     prefix: "knockout_",
-    site: "driver/findings-model.mjs:2303 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
+    site: "driver/findings-model.mjs:2323 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
     reason: "The knockout lane's parser. knockout-frame and knockout-assess live in driver/stages-knockout.mjs, not in STAGES, so they carry no E1 declaration and are outside this partition. RECORDED AS A GAP: #850 audits both stages, and an E1 declaration for the knockout lane is not in this scaffolding.",
   },
   {
@@ -530,9 +530,9 @@ export const INNER_CODES = Object.freeze([
   // ONE CODE, TWO TOKENS, and the split is by `cause` rather than by code: verify.mjs peels the
   // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
-  { code: "no_status", mints: ["driver/coverage-form.mjs:907"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
+  { code: "no_status", mints: ["driver/coverage-form.mjs:920"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
     why: "Two composites, split on the record's `cause`: coverageFormFail() in verify.mjs for cause `axis_invalid`, and the same function for the rest. NOT the `@returns` annotation of findCoverageFormViolations() in coverage-form.mjs — that is the annotation, not the mint." },
-  { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:897"], rollsUpTo: ["coverage_form_engine_vocabulary"],
+  { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:910"], rollsUpTo: ["coverage_form_engine_vocabulary"],
     why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced by coverageFormFail() in verify.mjs; the bare code names a row, never a stage." },
 
   // ── ONE CODE, TWO MODULES ────────────────────────────────────────────────────────────────────────
@@ -544,7 +544,7 @@ export const INNER_CODES = Object.freeze([
   // failure tokens" already states the rule this row records: `coverage_form_damaged`, never a bare
   // `form_damaged`.
   { code: "form_damaged",
-    mints: ["driver/connotation-search.mjs:2002", "driver/connotation-search.mjs:2078", "driver/coverage-form.mjs:889"],
+    mints: ["driver/connotation-search.mjs:2002", "driver/connotation-search.mjs:2078", "driver/coverage-form.mjs:902"],
     rollsUpTo: ["connotation_form_damaged", "coverage_form_damaged"],
     why: "Minted in two lanes and namespaced per lane: connotationDispositionFail() in verify.mjs for the meaning sweep, coverageFormFail() in verify.mjs for the register digest. The namespacing is what keeps them apart — see verify.mjs's block headed \"the register coverage-form failure tokens\"." },
 ]);

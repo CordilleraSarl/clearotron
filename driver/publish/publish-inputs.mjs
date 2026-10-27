@@ -66,6 +66,9 @@ export const PUBLISH_INPUTS = {
   "_driver/register-recall.json": "optional",
   // T6 (D4) — the frozen register plan; the render falls back to the coverage prose without it.
   "_driver/register-plan.json": "optional",
+  // The plan-execution receipt, read for the slices it deferred: their territories are never chipped "Nothing found".
+  // Optional: a knockout, a legacy run and a register-less run have none, and the chips then read the plan alone.
+  "_driver/plan-execution.json": "optional",
   // The band the register returned, read ONLY where the run has no `_records/` archive, to count what was
   // read and where. Optional: a knockout, a legacy run and a register-less run have none, and an absent
   // band leaves the count as "cannot say" exactly as before.
@@ -102,6 +105,11 @@ export const PUBLISH_INPUTS = {
   "common-law-grid.json": "optional",
   // spec 62 — the frozen project/profile stamp carried into the pool.
   "_driver/profile.json": "optional",
+  // The record that the run's overall assessment could not be completed (driver/parts-not-completed.mjs), and the
+  // coverage rows its delivery read from the run's own coverage records in place of the assessment's copy. Optional:
+  // every run whose assessment completed has neither, and its report reads exactly as before.
+  "_driver/not-completed/assessment.json": "optional",
+  "_driver/not-completed/assessment-coverage.json": "optional",
 };
 
 // The other half of the partition, and the half without which this check could only run one way. These

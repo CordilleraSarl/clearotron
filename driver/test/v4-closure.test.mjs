@@ -151,5 +151,8 @@ test("V4-4 e2e: exempt cells (mechanical ledger failure) get NO pass; note names
 test("V4-4 e2e: a narrative recommending a marketplace re-run fails the synthesis gate (receipt exists)", async () => {
   const { res } = await run({ MOCK_CL_GAPS: "persist", MOCK_NARRATIVE_RECO: "1" }, "closure-reco");
   assert.equal(res.ok, false);
-  assert.match(JSON.stringify(res), /coverage_recommendation/);
+  // The gate refuses it. With no recovery left the run records the assessment as not completed, with the gate's
+  // reason, and parks to deliver without it rather than ending.
+  const record = JSON.parse(readFileSync(driverDir(res.runDir, "not-completed", "assessment.json"), "utf8"));
+  assert.match(record.reason, /coverage_recommendation/);
 });

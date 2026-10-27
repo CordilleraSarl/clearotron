@@ -66,8 +66,10 @@ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
 
 test("a run parked AFTER placement re-runs it on resume when its floor duty is undischarged", async () => {
   // ── pass 1: placement runs, then the run parks downstream of it ──────────────────────────────────
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "joint synthesis narrative" }, {});
-  assert.equal(p1.res.ok, false, "pass 1 must park");
+  // A recovery park: a synthesis failure whose recovery is spent is delivered without the assessment, so the pass is
+  // given the one park it takes and the resume runs synthesis again.
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" }, {});
+  assert.equal(p1.res.postponed, true, "pass 1 must park");
   assert.ok(p1.events.some((e) => e.event === "stage" && e.stage === "placement-inquiry"),
     `placement must have RUN in pass 1 — the whole defect is about a pass that genuinely ran and then was `
     + `skipped on resume (parked at: ${p1.res.failedStage})`);
@@ -105,8 +107,10 @@ test("CONTROL: a resume whose duty is DISCHARGED still skips placement, as it al
   // Without this the arm above is satisfied by a change that simply stopped skipping placement ever —
   // which would re-run the pipeline's largest stage on every resume for no reason. The fix must cost
   // nothing on a healthy run.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "joint synthesis narrative" }, {});
-  assert.equal(p1.res.ok, false, "pass 1 must park");
+  // A recovery park: a synthesis failure whose recovery is spent is delivered without the assessment, so the pass is
+  // given the one park it takes and the resume runs synthesis again.
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" }, {});
+  assert.equal(p1.res.postponed, true, "pass 1 must park");
   writeFileSync(driverDir(p1.res.runDir, "floor-duty.json"), JSON.stringify({
     ts: "2026-08-28T11:49:36.000Z", trigger: "test-seed", computable: true, undischarged_by_seat: 0,
     totals: { floors: 45, accounted: 45, named_without_ground: 0, unanswered: 0, unanswerable: 0 }, rows: [],

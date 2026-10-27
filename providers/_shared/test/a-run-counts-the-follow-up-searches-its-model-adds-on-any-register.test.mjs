@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import {
   FOLLOW_UP_SEARCH_LIMIT, SEARCHES_FILE, runDriverDirOf, followUpSearchesSent, followUpRoom, recordFollowUpSearch,
-  recordOutstanding, readOutstanding, identicalMarkTerms, followUpClass,
+  recordOutstanding, readOutstanding, identicalMarkTerms, followUpClass, followUpQuestion,
 } from "../follow-up-searches.mjs";
 import { makeLedger } from "../ledger.mjs";
 
@@ -102,4 +102,28 @@ test("only follow-ups count; the plan and the identical mark's required read nev
   // a wider read of the identical mark, without the goods cut, counts, and so does every other follow-up
   assert.equal(c({ origin: "supplemental", predicate: "exact", term: "QZORVAK" }), "counted");
   assert.equal(c({ origin: "supplemental", predicate: "default", term: "QZORVAK", goods_text: ["video games"] }), "counted");
+});
+
+test("an answered question asked again adds nothing and passes a full net; a failed one counts again; new romanised spellings count", (t) => {
+  // A question the run has already answered counts 0 (the approved measure). On a test run a worker proposed five
+  // answered questions again, the run sent them again, and the net had counted 120 for 114 questions.
+  const d = runDriver(t);
+  for (const qid of ["q1", "q2", "q1", "q1"]) recordFollowUpSearch(d, { qid });
+  assert.equal(followUpSearchesSent(d).sent, 2, "a question written twice was counted twice");
+  const answered = () => true, failed = () => false;
+  const again = followUpRoom(d, 2, { qid: "q1" }, { answered });
+  assert.deepEqual([again.open, again.repeat, again.retry], [true, true, false], "the full net held back an answered question it had counted");
+  const retry = followUpRoom(d, 2, { qid: "q1" }, { answered: failed });
+  assert.deepEqual([retry.open, retry.repeat, retry.retry], [false, false, true], "a failed question sent again must count, so the full net holds it back");
+  assert.deepEqual([followUpRoom(d, 2, { qid: "q3" }).open, followUpRoom(d, 2, { qid: "q3" }).repeat], [false, false]);
+  assert.equal(followUpRoom(d, 9, { qid: "q1", romanizedTerms: ["kiravo"] }, { answered }).repeat, false, "new romanised spellings ask something new");
+  recordFollowUpSearch(d, { qid: "q1", retry: "r1" });
+  recordFollowUpSearch(d, { qid: "q1", retry: "r2" });
+  assert.equal(followUpSearchesSent(d).sent, 4, "each send of a failed question counts on its own line");
+  assert.equal(followUpQuestion({ qid: "q1", romanizedTerms: ["b", "a", "a"] }), followUpQuestion({ qid: "q1", romanized: ["a", "b"] }));
+  assert.notEqual(followUpQuestion({ qid: "q1", retry: "r1" }), followUpQuestion({ qid: "q1" }));
+  assert.equal(followUpQuestion({}), null);
+  const torn = runDriver(t);
+  writeFileSync(join(torn, SEARCHES_FILE), "{\"qid\":\"q1\"}\n{not json\n{}\n");
+  assert.equal(followUpSearchesSent(torn).sent, 3, "a line with no question in it must still count");
 });

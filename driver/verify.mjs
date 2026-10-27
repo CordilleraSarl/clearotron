@@ -1207,17 +1207,24 @@ function checkFindingsSibling(p, c) {
   // "material finding" — the line the receipt gates key on: composite>=3 on the legacy scale; on v4, banded on
   // a rung whose own tone is medium risk or higher (materialBand — by tone, never by position on the ladder).
   const material = (f) => v4 ? (f.band != null && materialBand(fw.manifest, f.band)) : f.composite >= 3;
+  // EVERY FINDING A CHECK FAILS IS NAMED AT ONCE. The first failing finding used to end the read, so a correction that
+  // owed three use-checks was told of one, fixed it, and failed on the next: on a test run of a crowded matter the
+  // writer's corrective pass after review failed three times this way, on three findings in turn, and was rolled back
+  // with the review's flags unapplied. Each check now gathers every finding it fails, in record order, and the first
+  // check that fails names them all: `finding_use_check_missing:102,112,115`.
+  const failing = new Map();
+  const owe = (token, ordinal) => { if (!failing.has(token)) failing.set(token, []); failing.get(token).push(ordinal); };
   for (const f of parsed.findings) {
     if (material(f) && f.use_check != null && !String(f.use_check.source ?? "").trim())
-      return fail(`finding_use_check_source_missing:${f.ordinal}`);
+      owe("finding_use_check_source_missing", f.ordinal);
     if (f.own_rights != null && !String(f.own_rights.source ?? "").trim())
-      return fail(`finding_own_rights_source_missing:${f.ordinal}`);
+      owe("finding_own_rights_source_missing", f.ordinal);
     if (v3) {
       // A4 — a "verified-from-record" meter must NAME its record/URL; a bare verified stamp
       // is exactly the self-attestation the review caught presenting inferred facts as verified.
       for (const [name, entry] of Object.entries(f.meters ?? {})) {
         if (entry?.basis === "verified-from-record" && !String(entry.source ?? "").trim())
-          return fail(`finding_basis_source_missing:${name}:${f.ordinal}`);
+          owe(`finding_basis_source_missing:${name}`, f.ordinal);
       }
       // A4 — SYMMETRIC use-check: any ASSERTED use status on a scored finding needs its
       // receipt — confirmed use was previously receipt-free (only negatives were gated), which let
@@ -1225,9 +1232,11 @@ function checkFindingsSibling(p, c) {
       const useTok = f.meters?.use?.token;
       if (material(f) && (useTok === "confirmed" || useTok === "not-confirmed")
           && !String(f.use_check?.source ?? "").trim())
-        return fail(`finding_use_check_missing:${f.ordinal}`);
+        owe("finding_use_check_missing", f.ordinal);
     }
   }
+  const [token, ordinals] = failing.entries().next().value ?? [];
+  if (token) return fail(`${token}:${ordinals.join(",")}`);
   return ok("machine-findings");
 }
 

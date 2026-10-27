@@ -583,6 +583,24 @@ export function mcpToolGauge(ev) {
  * block deletes the dir.
  */
 export function readServedModel(codexHome, sinceMs = 0) {
+  const file = thisTurnsRollout(codexHome, sinceMs);
+  if (!file) return null;
+  try {
+    let served = null;
+    for (const line of readFileSync(file, "utf8").split("\n")) {
+      if (!line.trim()) continue;
+      let rec; try { rec = JSON.parse(line); } catch { continue; }
+      const m = rec?.payload?.model ?? rec?.model;
+      if (typeof m === "string" && m) served = m;
+    }
+    return served;
+  } catch {
+    return null;                                  // telemetry is never load-bearing on a turn's outcome
+  }
+}
+
+/** The newest rollout under `codexHome` written at or after `sinceMs`, or null. Never throws. */
+function thisTurnsRollout(codexHome, sinceMs = 0) {
   // — `sinceMs` is not optional decoration. This walks $CODEX_HOME/sessions, sorts every rollout
   // by mtime and reads the NEWEST, which is only "this turn's" while the home is created and destroyed
   // per turn. Once a home is shared across a stage's attempts and form-repairs, a turn that wrote NO
@@ -607,18 +625,48 @@ export function readServedModel(codexHome, sinceMs = 0) {
     walk(root);
     const fresh = sinceMs ? files.filter((f) => { try { return statSync(f).mtimeMs >= sinceMs; } catch { return false; } }) : files;
     if (!fresh.length) return null;      // no rollout from THIS turn — absence, not the last turn's answer
-    const ordered = fresh.slice().sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
-    const files_ = ordered;
-    let served = null;
-    for (const line of readFileSync(files_[0], "utf8").split("\n")) {
+    return fresh.slice().sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs)[0];
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * WHAT A TURN CUT OFF BEFORE ITS END SPENT, read where codex wrote it down.
+ *
+ * The stream states a turn's tokens once, on `turn.completed`, so a turn killed at its wall or by the stall
+ * watchdog was journalled `usage: null` and counted as spending nothing. On a test run of a crowded matter
+ * the writer's three cut-off sessions, 50 to 75 minutes each, left no token count at all. Codex's session
+ * rollout does carry them: after each model response it writes a `token_count` event whose
+ * `info.total_token_usage` is the session's running total and `info.last_token_usage` that response's share,
+ * on codex 0.156.1, 0.162.0 and 0.164 alike (read off saved rollouts, 2026-10-26).
+ *
+ * Summed over this turn's responses: a `token_count` stamped before `sinceMs` is an earlier turn's on a
+ * resumed thread, and one whose total repeats the one before is the same response stated again, so neither
+ * is counted. In the stream's shape, for `mapUsage`; null when no response was recorded, so a turn that
+ * moved nothing still reads as one. Never throws.
+ */
+export function readRolloutUsage(codexHome, sinceMs = 0) {
+  const file = thisTurnsRollout(codexHome, sinceMs);
+  if (!file) return null;
+  try {
+    const sum = { input_tokens: 0, cached_input_tokens: 0, cache_write_input_tokens: 0, output_tokens: 0 };
+    let counted = 0, lastTotal = null;
+    for (const line of readFileSync(file, "utf8").split("\n")) {
       if (!line.trim()) continue;
       let rec; try { rec = JSON.parse(line); } catch { continue; }
-      const m = rec?.payload?.model ?? rec?.model;
-      if (typeof m === "string" && m) served = m;
+      const info = rec?.payload?.type === "token_count" ? rec.payload.info : null;
+      if (!info?.total_token_usage || !info.last_token_usage) continue;
+      const total = JSON.stringify(info.total_token_usage);
+      if (total === lastTotal) continue;
+      lastTotal = total;
+      if (sinceMs && !(Date.parse(rec.timestamp) >= sinceMs)) continue;
+      for (const k of Object.keys(sum)) sum[k] += Number(info.last_token_usage[k]) || 0;
+      counted += 1;
     }
-    return served;
+    return counted ? sum : null;
   } catch {
-    return null;                                  // telemetry is never load-bearing on a turn's outcome
+    return null;
   }
 }
 
@@ -761,6 +809,9 @@ function settleTuple({ r, ev, resumeRef }) {
     commandFailures: ev.commandFailures ?? [],
     signals: {
       stalled: stallKill || undefined, hardWall: r.hardWall || undefined,
+      // The usage was read off codex's session rollout because the turn never reached turn.completed: the
+      // same class the Claude adapter journals for a usage it rebuilt from its stream (run-economics.mjs).
+      usageStreamed: ev.usageFromRollout || undefined,
       // A gather stage that ran with none of its tools produced prose and no instrumented half. The
       // turn is still `ok` here — whether a refusal should FAIL the turn changes what a client
       // receives and is not this adapter's call — but nothing downstream can any longer fail to know.
@@ -895,6 +946,8 @@ export const openaiAgentEngine = {
       // The stream said no model (it never does — see readServedModel); the rollout under THIS run's
       // CODEX_HOME did. Read here, inside the try, because the finally below deletes that dir.
       if (!ev.model) ev.model = readServedModel(codexHome, spawnedAtMs);
+      // A turn cut off before turn.completed: what it spent, from the same rollout (readRolloutUsage).
+      if (!ev.usage) { ev.usage = readRolloutUsage(codexHome, spawnedAtMs); ev.usageFromRollout = ev.usage != null; }
       return settleTuple({ r, ev, resumeRef });
     } finally {
       // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the

@@ -3107,6 +3107,37 @@ test("where it stands is filled from the search plan, so a register that archive
   assert.doesNotMatch(named, /Where it stands/, "a plan that named nothing fell back to the record archive");
 });
 
+test("every country a finding holds a registration in takes its band where it stands, never a Nothing found chip", () => {
+  // On a delivered test run a finding holding rights in three countries was drawn under the first, and the other two
+  // were chipped "Nothing found" on the same page that asked the client who owns the rights there.
+  const panelOf = (html) => {
+    const i = html.indexOf('class="panel where"');
+    if (i === -1) return '';
+    const j = html.indexOf('<div class="sec"', i);
+    return j === -1 ? html.slice(i) : html.slice(i, j);
+  };
+  const depth = { counts: { recordsByCountry: {}, courtDecisions: "not-in-scope" } };
+  const plan = { searched: ["GR", "SA", "AM", "JP"], unreached: [] };
+  const threeCountries = [{ ...FINDINGS[0], ordinal: 43, band: "Moderate", owner: { ...FINDINGS[0].owner, country: "GR", registrations: [
+    { uri: "https://tm.example/mark/gr/1001", classes: ["9"], status: "Registered" },
+    { uri: "https://tm.example/mark/sa/2002", classes: ["9"], status: "Registered" },
+    { uri: "https://tm.example/mark/am/3003", classes: ["9"], status: "Registered" } ] } }];
+  const panel = panelOf(renderHtml(parsedOf(REPORT), threeCountries, [], { searchDepth: depth, planTerritories: plan }));
+  const rows = [...panel.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">[^<]*<\/span><span class="kc[^"]*">([^<]*)</g)].map((m) => `${m[1]}:${m[2]}`);
+  const chips = [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  assert.deepEqual(rows.sort(), ["AM:Moderate", "GR:Moderate", "SA:Moderate"], `a registered country lost its band: ${JSON.stringify(rows)}`);
+  assert.deepEqual(chips, ["Japan"], `a country holding a finding's registration was chipped Nothing found: ${JSON.stringify(chips)}`);
+
+  // THE COUNTRY THE CARDS FILE IT UNDER KEEPS ITS BAND. A first registration whose address names no office leaves the
+  // finding on its owner's country; a later registration naming an office must add that office, not replace it.
+  const noOfficeFirst = [{ ...threeCountries[0], owner: { ...threeCountries[0].owner, country: "GR", registrations: [
+    { uri: "https://tm.example/10203040", classes: ["9"], status: "Registered" },
+    { uri: "https://tm.example/mark/sa/2002", classes: ["9"], status: "Registered" } ] } }];
+  const kept = panelOf(renderHtml(parsedOf(REPORT), noOfficeFirst, [], { searchDepth: depth, planTerritories: plan }));
+  const keptRows = [...kept.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]).sort();
+  assert.deepEqual(keptRows, ["GR", "SA"], `the owner's country lost its band to a later registration: ${JSON.stringify(keptRows)}`);
+});
+
 // ── THE LOCAL-LANGUAGE ROW SAYS HOW DEEP THE INVESTIGATION WENT, IN WORDS ALREADY ON THE PAGE ──────
 //
 // The engine can run this investigation shallower than the matter configured. It said so in one place —

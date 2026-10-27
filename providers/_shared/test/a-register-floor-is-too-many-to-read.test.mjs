@@ -103,7 +103,7 @@ test("CONTROL — an exact total over the ceiling keeps today's crowd sentence, 
   const { at } = await run((p) => EXACT(12000)(p.limit), { entries: [LISTING] });
   const b = at(LISTING.qid);
   assert.equal(b.total_hits, 12000);
-  assert.equal(b.reason, "total_hits 12000 exceeds the enumerate ceiling 600 — this is a CROWD, not a named exact/near band. Record it as a count+sample descriptor and hand it up to judgment; the funnel does NOT narrow-and-retry a crowd here. Whether a narrower NAMED enumeration is warranted, and whether this slice is material, is judgment's call (Layer B) — never accept it as clean.");
+  assert.equal(b.reason, "total_hits 12000 exceeds the enumerate ceiling 600 — this is a CROWD, not a named exact/near band, and never a clean; what stays a crowd is recorded with its count.");
   assert.equal("total_floor" in b, false);
   assert.equal("crowd_basis" in b, false);
 });

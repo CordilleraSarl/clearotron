@@ -185,16 +185,14 @@ export const config = {
   // writes (`$HOME/trademark/workspace`), so the wizard and the bare default now agree instead of
   // describing two different installs.
   //
-  // ── WHAT AN UNSET WORKSPACE ROOT COSTS A DEPLOYED BOX (read this before changing it again) ─────────
+  // ── WHY A DEPLOYED BOX PINS ITS WORKSPACE ROOT (read this before changing it again) ──────────────────
   //
-  // driver/systemd/prelim-driver.path and prelim-outbox.path watch HARDCODED absolute globs — read them,
-  // they carry the literal path. A .path unit cannot read an environment variable, so those globs do NOT track this default and cannot
-  // be made to. If a deployment's run dirs move and its globs do not, the queue watcher stops firing:
-  // jobs sit, nothing errors, nothing logs, and the 90s prelim-driver.timer is the only thing still
-  // draining. That is why this default's move is paired with an EXPLICIT `CLEAROTRON_WORK_DIR` line in
-  // every deployed .env (see CHANGELOG "Unreleased") rather than shipped on its own — a deployment that
-  // pins the root it already runs on is unaffected by this line, which is the whole point of pinning it.
-  // driver/test/data-plane-defaults.test.mjs holds the globs and the production env example to each other.
+  // This default's move was paired with an EXPLICIT `CLEAROTRON_WORK_DIR` line in every deployed .env (see
+  // CHANGELOG "Unreleased") rather than shipped on its own: a deployment that pins the root it already runs
+  // on is unaffected by this line, which is the whole point of pinning it. The pin was first required by
+  // the queue watchers of the time, `.path` units whose globs were literals and could not track a default.
+  // Those units no longer ship: the worker (driver/systemd/clearotron-worker.service) drains the
+  // directories this config resolves, so the pin now keeps a box's runs where they already are.
   get workspaceRoot() { return this.envValue("CLEAROTRON_WORK_DIR") || join(home(), "trademark", "workspace"); },
 
   // Compute-skills tree. The deterministic stage prompts reference skills by the convention
@@ -348,9 +346,9 @@ export const config = {
     const m = new RegExp(`(?:^|${S})${this.workspacePrefixRe}(${N}+)${S}studio${S}${STUDIO_SEGMENT_RE}${S}queue${S}?$`).exec(qdir);
     return m ? m[1] : null;
   },
-  // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
-  // them on each trigger (+ a timer fallback), so a request from ANY forwarder runs. (Pre-fix the watcher
-  // and runner only looked at one agent's workspace, silently orphaning every other agent's job — the bug this fixes.)
+  // Every agent workspace's clearotron queue. The runner drains ALL of them on each poll, so a request from
+  // ANY forwarder runs. (Pre-fix the runner only looked at one agent's workspace, silently orphaning every
+  // other agent's job — the bug this fixes.)
   //
   // HEADLESS (Phase 2, standalone product): CLEAROTRON_QUEUE_DIR names ONE explicit queue dir — the intake
   // contract for a deployment with no agent workspaces at all (the enqueue CLI + ops-MCP start_run write
@@ -575,10 +573,10 @@ export const config = {
   // silently exceeded rather than enforced. Ruling.
   get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || [join(this.workspaceRoot, "prelim-run-locks"), join(this.workspaceRoot, "clearance-run-locks")].find((d, i) => i === 1 || existsSync(d)); },   // the name the install already has wins
 
-  // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
-  // the forwarder agent); the systemd-user prelim-outbox.path unit fires an INSTANT clearotron-deliver wake off
-  // it, so a finished run sends in seconds instead of waiting ≤55m for the HEARTBEAT completion-watch (which
-  // stays as the backstop). Mirrors runLockDir's derivation; env-overridable for dev/prod parity.
+  // Delivery outbox (Workstream B). On a finish the driver drops <runId>.pending here (naming the forwarder
+  // agent). The packaged install runs no watcher on it: the integrator wakes itself and drains the outbox
+  // over MCP (docs/DELIVERY.md). driver/deliver-trigger.sh is one agent platform's reference wake, and its
+  // prelim-outbox units no longer ship. Mirrors runLockDir's derivation; env-overridable for dev/prod parity.
   // Phase 2: the outbox is ALSO the event seam for every other requester-facing event (run-failed,
   // intake-rejected, duplicate-skipped, late-bind-ack) — self-contained JSON packets via outbox.mjs.
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
@@ -1073,7 +1071,7 @@ export const PROVIDERS = {
     // it is the same executor the initial gather used. Corsearch-only today: providers without an
     // executePlan adapter fall back to the LLM followup at the gate. (Corsearch + Clarivate carry one
     // as of phase 5, 2026-07-21; Signa does not — it has no enumerate/execute surface yet.)
-    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null }) {
+    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null, reaskTimedOut = false }) {
       if (!process.env.CORSEARCH_SESSION_KEY) return { ok: false, cause: "CORSEARCH_SESSION_KEY absent from driver env" };
       let doExecutePlan;
       try { ({ doExecutePlan } = await import("../providers/corsearch/src/core.js")); }
@@ -1081,7 +1079,7 @@ export const PROVIDERS = {
       try {
         const r = await doExecutePlan(process.env.CORSEARCH_SESSION_KEY,
           { plan_path: planPath, axis, output_path: outputPath, ...(Array.isArray(qids) && qids.length ? { qids } : {}) },
-          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog });
+          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog, ...(reaskTimedOut ? { reaskTimedOut: true } : {}) });
         const text = typeof r?.text === "string" ? r.text : "";
         if (text.startsWith("ERROR")) return { ok: false, cause: text.slice(0, 200) };
         try { const summary = JSON.parse(text); return { ok: true, states: summary.states ?? {}, executed: summary.executed, skipped: summary.skipped ?? [] }; }
@@ -1214,7 +1212,7 @@ export const PROVIDERS = {
     // what code can do deterministically, which is the transcription lane this whole design closes.
     // Signature note: the clarivate core takes (apiKey, base, params, tctx), not corsearch's
     // (sessionKey, params, tctx) — the base is threaded explicitly here.
-    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null }) {
+    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null, reaskTimedOut = false }) {
       if (!process.env.CLARIVATE_API_KEY) return { ok: false, cause: "CLARIVATE_API_KEY absent from driver env" };
       let doExecutePlan, DEFAULT_BASE;
       try { ({ doExecutePlan, DEFAULT_BASE } = await import("../providers/clarivate/src/core.js")); }
@@ -1223,7 +1221,7 @@ export const PROVIDERS = {
       try {
         const r = await doExecutePlan(process.env.CLARIVATE_API_KEY, base,
           { plan_path: planPath, axis, output_path: outputPath, ...(Array.isArray(qids) && qids.length ? { qids } : {}) },
-          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog });
+          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog, ...(reaskTimedOut ? { reaskTimedOut: true } : {}) });
         const text = typeof r?.text === "string" ? r.text : "";
         if (text.startsWith("ERROR")) return { ok: false, cause: text.slice(0, 200) };
         try { const summary = JSON.parse(text); return { ok: true, states: summary.states ?? {}, executed: summary.executed, skipped: summary.skipped ?? [] }; }
@@ -1366,7 +1364,7 @@ export const PROVIDERS = {
         }) };
       } catch (e) { return { ok: false, records: null, reason: `listRecords threw: ${e.message}` }; }
     },
-    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null }) {
+    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null, reaskTimedOut = false }) {
       if (!process.env.SIGNA_API_KEY) return { ok: false, cause: "SIGNA_API_KEY absent from driver env" };
       let core;
       try { core = await import("../providers/signa/src/core.js"); }
@@ -1375,7 +1373,7 @@ export const PROVIDERS = {
       try {
         const r = await core.doExecutePlan({ apiKey: process.env.SIGNA_API_KEY, base },
           { plan_path: planPath, axis, output_path: outputPath, qids },
-          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog });
+          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog, ...(reaskTimedOut ? { reaskTimedOut: true } : {}) });
         const text = typeof r?.text === "string" ? r.text : "";
         if (text.startsWith("ERROR")) return { ok: false, cause: text.slice(0, 200) };
         try { const summary = JSON.parse(text); return { ok: true, states: summary.states ?? {}, executed: summary.executed, skipped: summary.skipped ?? [] }; }
@@ -1446,7 +1444,7 @@ export const PROVIDERS = {
         { name, match_mode: matchMode, nice_classes: classes ?? [], ...(regions?.length ? { regions } : {}), size: limit, page: 0 },
         { kind: "record_list", agentId, sessionKey, sessionId: null, recordLog });
     },
-    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null }) {
+    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null, reaskTimedOut = false }) {
       if (!process.env.EUIPO_CLIENT_ID || !process.env.EUIPO_CLIENT_SECRET) {
         return { ok: false, cause: "EUIPO_CLIENT_ID / EUIPO_CLIENT_SECRET absent from driver env" };
       }
@@ -1456,7 +1454,7 @@ export const PROVIDERS = {
       try {
         const r = await doExecutePlan(null,
           { plan_path: planPath, axis, output_path: outputPath, ...(Array.isArray(qids) && qids.length ? { qids } : {}) },
-          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog });
+          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog, ...(reaskTimedOut ? { reaskTimedOut: true } : {}) });
         const text = typeof r?.text === "string" ? r.text : "";
         return text.startsWith("ERROR") ? { ok: false, cause: text.slice(0, 200) } : { ok: true, summary: text.slice(0, 400) };
       } catch (e) { return { ok: false, cause: `executePlan threw: ${e.message}` }; }
@@ -1515,7 +1513,7 @@ export const PROVIDERS = {
     },
     // The repair-first plan-direct-execute lane. Without it this provider would fall back to the LLM
     // followup at the fan-in gate — a model turn doing what code does deterministically.
-    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null }) {
+    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null, reaskTimedOut = false }) {
       if (!process.env.USPTO_LOCAL_DB) return { ok: false, cause: "USPTO_LOCAL_DB absent from driver env" };
       let doExecutePlan;
       try { ({ doExecutePlan } = await import("../providers/uspto-local/src/core.js")); }
@@ -1523,7 +1521,7 @@ export const PROVIDERS = {
       try {
         const r = await doExecutePlan({ dbPath: process.env.USPTO_LOCAL_DB },
           { plan_path: planPath, axis, output_path: outputPath, ...(Array.isArray(qids) && qids.length ? { qids } : {}) },
-          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog });
+          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog, ...(reaskTimedOut ? { reaskTimedOut: true } : {}) });
         const text = typeof r?.text === "string" ? r.text : "";
         if (text.startsWith("ERROR")) return { ok: false, cause: text.slice(0, 200) };
         try { const summary = JSON.parse(text); return { ok: true, states: summary.states ?? {}, executed: summary.executed, skipped: summary.skipped ?? [] }; }
@@ -1623,7 +1621,7 @@ export const PROVIDERS = {
         { name, match_mode: matchMode, nice_classes: classes ?? [], ...(regions?.length ? { regions } : {}), size: limit, limit, page: 0 },
         { kind: "record_list", agentId, sessionKey, sessionId: null, recordLog });
     },
-    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null }) {
+    async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null, reaskTimedOut = false }) {
       const missing = freeTierMissing();
       if (missing.length) return { ok: false, cause: `${missing.join(" + ")} absent from driver env` };
       let doExecutePlan;
@@ -1632,7 +1630,7 @@ export const PROVIDERS = {
       try {
         const r = await doExecutePlan(null,
           { plan_path: planPath, axis, output_path: outputPath, ...(Array.isArray(qids) && qids.length ? { qids } : {}) },
-          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog });
+          { kind: "execute_plan", agentId, sessionKey, sessionId: null, recordLog, ...(reaskTimedOut ? { reaskTimedOut: true } : {}) });
         const text = typeof r?.text === "string" ? r.text : "";
         return text.startsWith("ERROR") ? { ok: false, cause: text.slice(0, 200) } : { ok: true, summary: text.slice(0, 400) };
       } catch (e) { return { ok: false, cause: `executePlan threw: ${e.message}` }; }

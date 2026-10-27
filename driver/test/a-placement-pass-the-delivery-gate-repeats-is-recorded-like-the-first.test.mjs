@@ -111,7 +111,10 @@ test("the delivery gate's repeat of placement goes through the one helper, as th
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true, trigger: "stale-repair" \}\), "stale-repair"\)/);
-  const main = src.slice(src.indexOf("const placementPass = await stage(\"placement-inquiry\", ctx);"), src.indexOf("must(placementPass, \"placement-inquiry\");"));
+  const start = src.indexOf("const placementPass = await asPartNotCompleted(\"assessment\", () => stage(\"placement-inquiry\", ctx));");
+  const end = src.indexOf("await asPartNotCompleted(\"assessment\", async () => must(placementPass, \"placement-inquiry\"));");
+  assert.ok(start >= 0 && end > start, "guard: the main path's placement call is not where this test reads it");
+  const main = src.slice(start, end);
   assert.match(main, /recordPlacementPass\(ctx, placementPass\);/, "the main path records its pass through the same helper");
   // After a repeated placement pass the gate applies the floor again, through the one clamp the terminal checks use.
   const arm = src.slice(src.indexOf("} else if (UPSTREAM_STALE_REPAIR[s2.label]) {"), src.indexOf("} else if (s2.label.startsWith(\"report-card:\")) {"));

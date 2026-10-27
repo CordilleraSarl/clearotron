@@ -131,7 +131,7 @@ difference is not a margin. On the same term:
 **So an EU trade mark that blocks use in France is now found**, and it never appears in the French
 register. Every covered territory reaches its Madrid layer this way and the EU members additionally reach
 the EU register; Switzerland, under no regional register, returns regional 0 either way and its Madrid
-layer arrives all the same. It is ONE call, not three — no extra spend.
+layer arrives all the same. It is ONE call, not three.
 
 Do not describe a covered territory's result as "the national register": it is the stack of rights in
 force there, and a finding may sit on any layer of it.
@@ -141,11 +141,10 @@ expansion above does not change this and must not be read as widening it: `SIGNA
 these eleven, an unmapped region abandons the translation, and a territory the vendor does not index is
 not reachable by asking the question a different way. A Madrid designation of Germany is found only when
 Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, give
-that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa — a closeable
-gap a different provider or a manual check can cover, never an accepted limit) so the digest + synthesis
-surface it and the skeptic can escalate. This follows the keystone doctrine
-in `../SKILL.md` → *Coverage ledger*: a could-not-reach gap is **`deferred`** (escalate + disclose),
-never `coverage-limited` (a searched-but-unexhausted DATA limit a re-run cannot close).
+that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — disclose
+it; no search on this register can close it, so it is not escalated, and it is never clean. This follows
+the keystone doctrine in `../SKILL.md` → *Coverage ledger*: a could-not-reach gap is **`deferred`**,
+open and disclosed, never `coverage-limited` (a searched-but-unexhausted DATA limit a re-run cannot close).
 
 **A territory search reaches every register that binds the territory — national, regional and Madrid.**
 The executor sends `filters.jurisdictions` with `territory_match: "protection"`, not `filters.offices`, so a

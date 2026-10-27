@@ -168,6 +168,28 @@ export function isRetryableStatus(status) {
   return status >= 500 || status === 429;
 }
 
+// ── Rate limits ──────────────────────────────────────────────────
+// A 429 says "not now", not "this request is wrong". On a test run of a crowded matter, a retried stage sent
+// its research questions in a burst; the provider refused 66 of them with 429 over fourteen minutes, and each
+// refusal failed after one retry 1.5 seconds later. A 429 now waits first: as long as the provider's
+// Retry-After asks, up to the longest step (a longer Retry-After is cut to it), or else 10, 30 and 60 seconds,
+// each with a tenth either way so parallel callers do not return together. One call waits at most three times
+// and never more than RATE_LIMIT_MAX_WAIT_MS in all; the count matters because a Retry-After of 0, or a date
+// already past, waits nothing. The waits do not spend the preset's retries; once they are spent, a 429 is
+// retried as before.
+export const RATE_LIMIT_WAITS_MS = Object.freeze([10_000, 30_000, 60_000]);
+export const RATE_LIMIT_MAX_WAIT_MS = 120_000;
+
+/** How long to wait after the `n`th 429 (0-based), from its Retry-After when it gives one. PURE. */
+export function rateLimitWaitMs(n, retryAfter = null, { now = Date.now(), random = Math.random } = {}) {
+  const ra = String(retryAfter ?? "").trim();
+  let ms = null;
+  if (/^\d+$/.test(ra)) ms = Number(ra) * 1000;
+  else if (ra) { const t = Date.parse(ra); if (Number.isFinite(t)) ms = Math.max(0, t - now); }
+  if (ms === null) ms = RATE_LIMIT_WAITS_MS[Math.min(n, RATE_LIMIT_WAITS_MS.length - 1)];
+  return Math.round(Math.min(ms, RATE_LIMIT_WAITS_MS[RATE_LIMIT_WAITS_MS.length - 1]) * (0.9 + random() * 0.2));
+}
+
 // ── API call ─────────────────────────────────────────────────────
 
 /**
@@ -175,7 +197,7 @@ export function isRetryableStatus(status) {
  *
  * @param {string} apiKey
  * @param {object} body          from buildRequestBody()
- * @param {object} [opts]        { retries, backoffMs, fetchImpl } — injectable for tests
+ * @param {object} [opts]        { retries, backoffMs, fetchImpl, sleep, maxRateLimitWaitMs } — injectable for tests
  * @returns {Promise<object>}    parsed response JSON
  * @throws {Error}               on persistent transport failure or non-retryable / final HTTP error
  */
@@ -183,11 +205,12 @@ export async function callAgentAPI(apiKey, body, opts = {}) {
   const retries = opts.retries ?? retriesForPreset(body.preset);
   const backoffMs = opts.backoffMs ?? 1500;
   const fetchImpl = opts.fetchImpl ?? fetch;
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const sleep = opts.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)));
+  const maxRateLimitWaitMs = opts.maxRateLimitWaitMs ?? RATE_LIMIT_MAX_WAIT_MS;
 
   let lastErr;
-  for (let i = 0; i <= retries; i++) {
-    if (i > 0) await sleep(backoffMs * i);
+  let retried = 0, rateLimitWaits = 0, waitedMs = 0;
+  for (;;) {
     let response;
     try {
       response = await fetchImpl(AGENT_API_URL, {
@@ -200,6 +223,9 @@ export async function callAgentAPI(apiKey, body, opts = {}) {
       });
     } catch (err) {
       lastErr = err; // transport/network throw — retryable
+      if (retried >= retries) throw lastErr;
+      retried += 1;
+      await sleep(backoffMs * retried);
       continue;
     }
 
@@ -215,9 +241,19 @@ export async function callAgentAPI(apiKey, body, opts = {}) {
     // "Perplexity API 429: …" matches neither of them and a rate-limit reads as an ordinary defect.
     lastErr.status = response.status;
     lastErr.retryable = isRetryableStatus(response.status);
-    if (!isRetryableStatus(response.status)) throw lastErr;
+    if (response.status === 429 && maxRateLimitWaitMs > 0 && rateLimitWaits < RATE_LIMIT_WAITS_MS.length) {
+      const wait = rateLimitWaitMs(rateLimitWaits, response.headers?.get?.("retry-after"));
+      if (waitedMs + wait <= maxRateLimitWaitMs) {
+        rateLimitWaits += 1;
+        waitedMs += wait;
+        await sleep(wait);
+        continue;
+      }
+    }
+    if (!isRetryableStatus(response.status) || retried >= retries) throw lastErr;
+    retried += 1;
+    await sleep(backoffMs * retried);
   }
-  throw lastErr;
 }
 
 // ── Response formatting (pure) ───────────────────────────────────

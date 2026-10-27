@@ -43,6 +43,9 @@ import { CAPABILITY_GAP_MARKER, defaultBuildEntryQuery, makeExecutePlan, makeReg
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
 import { stripGoodsReservedWords } from "../../_shared/term-shape.mjs";   // the goods field parses these words as operators
+import { runDriverDirOf } from "../../_shared/follow-up-searches.mjs";   // the run's own folder, from its record log
+import { readFileSync, writeFileSync, renameSync } from "node:fs";
+import { join } from "node:path";
 
 export const DEFAULT_BASE = "https://api.clarivate.com/compumark-content/api/v1";
 
@@ -1593,6 +1596,13 @@ export async function doResolveCompany(apiKey, base, params, tctx) {
  * the caller's own terms are always kept, so this can only widen. Returns the params to sweep plus a
  * note that rides on the enumerate result for the record.
  */
+/** The OR operands a request's other fields put on the wire beside the owner value: its mark terms, its representative,
+ *  its classes and its goods words, as buildSearchRequest joins them. */
+export function otherOrOperands(params) {
+  const classes = Array.isArray(params?.nice_classes) ? new Set(params.nice_classes.map(String)).size : 0;
+  return markTermsOf(params).length + (params?.representative ? 1 : 0) + classes + goodsTermsOf(params).length;
+}
+
 export async function expandOwnerTerms(apiKey, base, params, tctx) {
   const raw = ownerTermsOf(params);
   const threshold = Number.isFinite(Number(params?.min_confidence)) ? Number(params.min_confidence) : OWNER_RESOLUTION_MIN_CONFIDENCE;
@@ -1637,11 +1647,18 @@ export async function expandOwnerTerms(apiKey, base, params, tctx) {
   // into TWO OR-operands (`TRADER VIC?S OR TRADER VICS`), so a flat slice at maxOrWidth overflows by
   // exactly the number of apostrophes in the stack — and the stack is then refused whole, taking the
   // slice with it. A regression introduced when it made the apostrophe expressible.
+  //
+  // AND BY WHAT THE REST OF THE REQUEST PUTS ON THE WIRE BESIDE IT. The parser's nesting cap counts every OR operand in
+  // the request, not the owner value's alone: on a test run of a crowded matter an owner question on a mark in four
+  // classes was refused 60 times with "Document nesting depth (501) exceeds the maximum allowed (500)", which is the
+  // 496 owner names plus the mark's one term and the four classes. The owner's spellings now take only the width the
+  // other fields leave, so the tail of the least likely spellings is what gives way, never the question.
+  const budget = Math.max(1, CAPABILITIES.maxOrWidth - otherOrOperands(params));
   const swept = [];
   let width = 0;
   for (const name of merged) {
     const cost = expandApostrophe(sanitizeOwnerName(name)).length;   // count what actually goes on the wire
-    if (width + cost > CAPABILITIES.maxOrWidth) break;
+    if (width + cost > budget) break;
     swept.push(name);
     width += cost;
   }
@@ -1788,9 +1805,49 @@ export function officeRefusingGoodsField(reason) {
   return m ? m[1] : null;
 }
 
-export async function withoutOfficesRefusingGoods(params, ask, reasonOf) {
+// AND AN OFFICE THAT HAS REFUSED IT ONCE IS LEFT OUT OF THE RUN'S LATER GOODS-NARROWED REQUESTS. Each request learned
+// the refusals again: on a test run of a crowded matter fifteen offices refused the field twenty times each, 300 calls
+// that answered nothing. The offices that have refused are kept in the run's own folder, and a goods-narrowed request
+// leaves them out before it is sent, naming them as left out exactly as an office that refuses in the call itself is.
+// A request with no goods term asks every office as before, and a process with no run asks as it always has.
+export const GOODS_REFUSALS_FILE = "offices-without-goods-field.json";
+
+/** The offices the run has seen refuse the goods field, from its folder. [] with no run or no file. */
+export function goodsRefusalsOf(driverDir) {
+  if (!driverDir) return [];
+  try {
+    const held = JSON.parse(readFileSync(join(driverDir, GOODS_REFUSALS_FILE), "utf8"));
+    return Array.isArray(held) ? held.filter((c) => /^[A-Z]{2}$/.test(String(c))) : [];
+  } catch { return []; }
+}
+
+/** Keep an office that refused the goods field, for the rest of the run. Never breaks a search. */
+export function rememberGoodsRefusal(driverDir, office) {
+  if (!driverDir || !/^[A-Z]{2}$/.test(String(office ?? ""))) return;
+  try {
+    const held = goodsRefusalsOf(driverDir);
+    if (held.includes(office)) return;
+    const path = join(driverDir, GOODS_REFUSALS_FILE);
+    const tmp = `${path}.${process.pid}.tmp`;
+    writeFileSync(tmp, JSON.stringify([...held, office]) + "\n");
+    renameSync(tmp, path);
+  } catch { /* a run that cannot keep it learns the refusal again, as before */ }
+}
+
+export async function withoutOfficesRefusingGoods(params, ask, reasonOf, { known = [], remember = () => {} } = {}) {
   const leftOut = [];
   let p = params;
+  // The offices the run already knows refuse the field leave a goods-narrowed request before it is sent, unless they
+  // are all it asks: then it is asked as written, and the refusal stands as it is given.
+  const asked = Array.isArray(p?.regions) ? p.regions : [];
+  if (known.length && goodsTermsOf(p).length && asked.length) {
+    const refusing = (r) => resolveOffices([r]).codes.some((c) => known.includes(c));
+    const regions = asked.filter((r) => !refusing(r));
+    if (regions.length && regions.length < asked.length) {
+      for (const r of asked) for (const c of resolveOffices([r]).codes) if (known.includes(c) && !leftOut.includes(c)) leftOut.push(c);
+      p = { ...p, regions };
+    }
+  }
   let out = await ask(p);
   for (let office = officeRefusingGoodsField(reasonOf(out)); office && !leftOut.includes(office); office = officeRefusingGoodsField(reasonOf(out))) {
     const regions = (Array.isArray(p?.regions) ? p.regions : []).filter((r) => !resolveOffices([r]).codes.includes(office));
@@ -1798,6 +1855,7 @@ export async function withoutOfficesRefusingGoods(params, ask, reasonOf) {
     // refusal stands as it was given.
     if (!regions.length || regions.length === (p?.regions ?? []).length) break;
     leftOut.push(office);
+    remember(office);
     p = { ...p, regions };
     out = await ask(p);
   }
@@ -1844,11 +1902,12 @@ export async function doEnumerate(apiKey, base, params, tctx) {
   const chunked = Array.isArray(p?.names) && p.names.filter(Boolean).length > namesChunk;
 
   const sink = [];
+  const runFolder = runDriverDirOf(tctx?.recordLog);
   const asked = await withoutOfficesRefusingGoods(p, async (q) => {
     sink.length = 0;
     const rr = await __enumerate({ apiKey, base }, { ...q, __countSink: sink }, tctx);
     return { rr, parsed: parseToolText(rr) };
-  }, (o) => o.parsed?.reason);
+  }, (o) => o.parsed?.reason, { known: goodsRefusalsOf(runFolder), remember: (office) => rememberGoodsRefusal(runFolder, office) });
   p = asked.params;
   let r = asked.out.rr;
   let parsed = asked.out.parsed;
@@ -1907,7 +1966,7 @@ export async function doEnumerate(apiKey, base, params, tctx) {
     const tooMany = /tooManyResults/i.test(String(parsed.reason ?? "")) ? tooManyResultsCount(parsed.reason) : null;
     if (tooMany != null) {
       if (tooMany > 0) parsed.total_hits = tooMany;
-      parsed.reason = `the provider returned tooManyResults: ${tooMany || "the band"} records exceed its ${CAPABILITIES.resultCeiling}-result search ceiling, so the complete guid set is unreachable in one call. This is a CROWD descriptor for judgment — dilution the lawyer reads, not a provider fault and not a clean negative. Whether a narrower NAMED band is warranted is judgment's call (Layer B); the funnel does not self-narrow-and-retry.`;
+      parsed.reason = `the provider returned tooManyResults: ${tooMany || "the band"} records exceed its ${CAPABILITIES.resultCeiling}-result search ceiling, so the complete guid set is unreachable in one call. This is a CROWD descriptor for judgment — dilution the lawyer reads, not a provider fault and not a clean negative.`;
     }
     // Per-office counts from the WHOLE-STACK /count probe — richer than corsearch can offer, and the
     // per-jurisdiction shape of the crowd is exactly what judgment needs to weigh materiality.

@@ -57,8 +57,8 @@ on every place you name for it (task 2d), and keeps what each search returned, w
    common misspelling, a transliteration a market uses. Each spelling is searched on every place in
    task 2d.
 
-3. **Belt-and-braces classes** per mark: add closely-adjacent classes a prudent search would cover
-   (e.g. retail 35 beside goods classes; food theme → 29/43). Every addition is marked "belt-and-braces" in
+3. **Added classes** per mark: add a class only for the client's own goods, never for what a competitor
+   might hold, with one sentence saying why. Every addition is marked "belt-and-braces" in
    `classesPlain` (task 8). Nice-class
    integers only. Scope expansion is NEVER silent.
 4. **Context framing** per mark (MANDATORY): what does this name read as in THIS context — coined,
@@ -74,7 +74,7 @@ on every place you name for it (task 2d), and keeps what each search returned, w
    should be searched."
 8. **Plain-language class line** per mark (`classesPlain`): the human-readable classes/industries
    sentence the rating step reads beside the class numbers (e.g. "kitchen hand tools (8); household
-   utensils (21); retail services (35, belt-and-braces)").
+   utensils (21); retail of the client's own goods (35, belt-and-braces)").
 
 ## Output contract — `knockout-plan.json` (strict, closed keys)
 

@@ -245,12 +245,15 @@ export function recordsNeverDelivered(readingLog) {
     .sort((a, b) => b.misses - a.misses || a.record_id.localeCompare(b.record_id));
 }
 
-export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = null, doubts = null, asks = null, readingLog = null, commonLawGrid = null, doubtTruncations = null, registerPresence = null, placementRows = null } = {}) {
+export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = null, doubts = null, asks = null, readingLog = null, commonLawGrid = null, doubtTruncations = null, registerPresence = null, placementRows = null, searchLogOnly = false } = {}) {
   const reg = parseTables(registerMd);
   const cl = parseTables(commonLawMd);
 
   // FINDINGS: register risk-relevant + watchlist annex + common-law finding tables (exclude meta tables).
-  const findings = parseSpineFindingBlocks(registerMd, commonLawMd);
+  // `searchLogOnly`: a run whose overall assessment was not completed delivers its search log and nothing it would
+  // have rated. The records the write-up kept for the assessment are unrated, so they are not listed, and the
+  // section is left out rather than printed empty, which would read as a search that found nothing.
+  const findings = searchLogOnly ? [] : parseSpineFindingBlocks(registerMd, commonLawMd);
 
   // NEGATIVE RESULTS: the "Negative results" table(s). Tag each row by which spine FILE it came from —
   // the register spine's rows are Register, the common-law spine's rows are Common-law. (The heading-regex
@@ -350,7 +353,7 @@ export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = 
     }
   }
 
-  let md = "# Findings\n";
+  let md = searchLogOnly ? "" : "# Findings\n";
   findings.forEach((f) => { md += "\n" + block(f.title, f); });
   md += "\n# Negative Results\n";
   negRows.forEach((n, i) => { md += `\n## NR${i + 1}\n`; for (const [k, v] of Object.entries(n)) if (v) md += `- ${k}: ${v}\n`; });

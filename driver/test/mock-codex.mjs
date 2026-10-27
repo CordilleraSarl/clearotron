@@ -20,6 +20,9 @@
 //   MOCK_CODEX_ROLLOUT_MODEL=<id> — write a codex-shaped session rollout under $CODEX_HOME naming <id>
 //                            as the served model, the way real codex does. Absent → no rollout,
 //                            which is the "engine did not report" path.
+//   MOCK_CODEX_ROLLOUT_TOKENS=<json> — a list of per-response token shares (codex shape); each is written to the
+//                            rollout as a `token_count` event with the running total, stamped now, before the
+//                            turn goes on. With MOCK_CODEX_STALL, a turn cut off after spending them.
 //   MOCK_CODEX_NO_NEWLINE=1— emit the final turn.completed with NO trailing newline (B1 final-line flush)
 //   MOCK_CODEX_SLOW_STREAM=<ms> [+ MOCK_CODEX_SLOW_COUNT] — a healthy-but-slow turn (a delta every <ms>)
 //   MOCK_CODEX_CALL_LOG=<file> — append {argv, prompt, codexHome, configToml, hasAuth, envNames} per call (assert
@@ -178,13 +181,23 @@ const open = () => { send({ type: "thread.started", thread_id: session }); send(
 // — MOCK_CODEX_SESSION_STORE=1 makes the mock PERSIST sessions the way real codex does, without
 // having to name a served model. That is what lets a test resume a real thread from its own home and
 // fail to resume it from a fresh one.
-if ((process.env.MOCK_CODEX_ROLLOUT_MODEL || process.env.MOCK_CODEX_SESSION_STORE === "1") && process.env.CODEX_HOME) {
+// — MOCK_CODEX_ROLLOUT_TOKENS adds the `token_count` events real codex writes after each model response, shaped
+// from a saved codex 0.162.0 rollout: `info.total_token_usage` running, `info.last_token_usage` the response's share.
+const tokenRows = () => {
+  const total = { input_tokens: 0, cached_input_tokens: 0, cache_write_input_tokens: 0, output_tokens: 0, reasoning_output_tokens: 0, total_tokens: 0 };
+  return JSON.parse(process.env.MOCK_CODEX_ROLLOUT_TOKENS).map((last) => {
+    for (const k of Object.keys(total)) total[k] += last[k] || 0;
+    return { timestamp: new Date().toISOString(), type: "event_msg", payload: { type: "token_count", info: { total_token_usage: { ...total }, last_token_usage: last, model_context_window: 258400 } } };
+  });
+};
+if ((process.env.MOCK_CODEX_ROLLOUT_MODEL || process.env.MOCK_CODEX_SESSION_STORE === "1" || process.env.MOCK_CODEX_ROLLOUT_TOKENS) && process.env.CODEX_HOME) {
   try {
     const dir = join(process.env.CODEX_HOME, "sessions", "2026", "08", "11");
     mkdirSync(dir, { recursive: true });
     const rows = [
       { type: "session_meta", payload: { session_id: session, cli_version: "0.147.0", source: "exec", model_provider: "openai" } },
       ...(process.env.MOCK_CODEX_ROLLOUT_MODEL ? [{ type: "turn_context", payload: { model: process.env.MOCK_CODEX_ROLLOUT_MODEL, model_provider: "openai" } }] : []),
+      ...(process.env.MOCK_CODEX_ROLLOUT_TOKENS ? tokenRows() : []),
     ];
     writeFileSync(join(dir, `rollout-2026-08-11T13-48-49-${session}.jsonl`), rows.map((r) => JSON.stringify(r)).join("\n") + "\n");
   } catch { /* best-effort: a missing rollout is a real state the engine must handle */ }

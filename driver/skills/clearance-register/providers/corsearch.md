@@ -75,7 +75,6 @@ The plugin's `register_search` tool maps these from snake_case params (e.g., `ni
 
 The `register_search` tool accepts `owner: "<free-text>"` as a top-level parameter mapping to the `owner:` field. Useful for:
 
-- Watchlist-driven proactive sweeps (competitors / aggressive enforcers from the variant manifest)
 - Cross-pollination Trigger 1 (every common-law owner → register check)
 - Targeted "does competitor X have a related mark?" probes
 
@@ -117,7 +116,7 @@ On `/search/trademark`, only 3 fields are reliably populated on search rows rega
 - `name`
 - `representativeName`
 
-Everything else (`niceClassification`, `owners`, `corsearchStatusCode`, dates, jurisdictions, mark feature, image path) requires `register_record_fetch`. Plugin defaults to requesting the 3 working fields; callers can override via `fields[]` param to e.g. `["uri"]` for cheapest count-only probes.
+Everything else (`niceClassification`, `owners`, `corsearchStatusCode`, dates, jurisdictions, mark feature, image path) requires `register_record_fetch`. Plugin defaults to requesting the 3 working fields; callers can override via `fields[]` param to e.g. `["uri"]` for count-only probes.
 
 ## Detail-record fields (46+ fields)
 
@@ -161,7 +160,7 @@ Corsearch supports phoneme expansion via `register_expand_phoneme`. Returns `{ b
 
 Declared languages: `en_US`, `de_DE`, `fr_FR` — each returns a few dozen variants for a typical word. Other languages (`it_IT`, `es_ES`) are supported by the API but UNDECLARED here — treat them as a stated unknown, not as unavailable.
 
-**Usage pattern:** for multi-language jurisdictions, call expand-phoneme once per relevant language, concatenate `aiVariants[]`, pass to a single search call. Don't run multiple separate phonetic searches — costs more, returns largely overlapping results.
+**Usage pattern:** for multi-language jurisdictions, call expand-phoneme once per relevant language, concatenate `aiVariants[]`, pass to a single search call. Don't run multiple separate phonetic searches — they make more requests and return largely overlapping results.
 
 ## Image fetch
 
@@ -174,7 +173,7 @@ Only invoke for marks where `markFeature: "Figurative"` or `markFeature: "Stylis
 Be aware these capabilities are missing, so the skill doesn't promise them:
 
 - **POCA scoring** — not available through this adapter. Skill returns `null`
-- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `clearance-variants` and querying each separately.
+- **Cross-language search within one query** — Corsearch doesn't support "search this mark in Japanese AND English in one query." Skill handles this by generating transliteration variants in `clearance-variants`, with one script question per market the frame names.
 - **Server-side stem-folding** — present but not configurable (the default match-mode tokenizer catches LEGEND ↔ LEGENDS). The variant manifest's `plural-root` category encodes this — search the root form to catch inflected forms.
 
 ## Provider-specific behaviour
@@ -185,7 +184,7 @@ Be aware these capabilities are missing, so the skill doesn't promise them:
 - Chinese status strings appear verbatim — apply substring dictionary in `../status-rules.md`
 - Madrid (`/mark/int/*`) records have non-trivial `onomaticsJurisdictionsStatuses` aggregation — see `../status-rules.md#madrid-protocol-designations`
 
-## API budget
+## Request limits
 
 Sustained-burst behaviour is UNDECLARED.
 

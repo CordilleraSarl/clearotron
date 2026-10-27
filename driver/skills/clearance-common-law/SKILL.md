@@ -43,17 +43,11 @@ coverage, it is re-spawned escalated to Opus.
 
 ## Tool call budget
 
-Per input mark:
-- `perplexity_research` calls: **5** (1 search-as-code grid call + up to 3 targeted follow-ups + any
-  famous-mark query flagged by the manifest)
-
-Per workflow run total: **15** (covers multi-mark requests).
+One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client,
+and a famous-mark query when the manifest flags one.
 
 **Every call passes an explicit `depth`** — see the routing table at the top of
-[perplexity-prompts.md](perplexity-prompts.md). *(Budget rationale: cost-based overflow protection
-against a looping worker — a full grid call ≈ $0.06, follow-ups ≈ $0.01–0.15 each, measured
-2026-06-10. The old "Perplexity Pro rate-limit headroom" rationale is obsolete: the plugin is
-API-key billed.)*
+[perplexity-prompts.md](perplexity-prompts.md).
 
 Other tools (file read/write, memory write) are bounded by workflow steps — no cap needed. The audit
 workbook is NOT one of them: the driver builds it in code at publish (`driver/publish/xlsx.mjs`) from
@@ -61,7 +55,7 @@ the artifacts this stage writes, so there is nothing here to call and nothing to
 
 ## Search approval (HITL exception)
 
-The full HITL exception covering this workflow is declared **once** in the orchestrator at [clearance-search/SKILL.md](../clearance-search/SKILL.md#hitl-exception-shared-across-sub-skills). It is pre-approved at workflow trigger time when the requesting lawyer or a staff lawyer forwards the request email.
+This workflow's searches are pre-approved at workflow trigger time, when the requesting lawyer or a staff lawyer forwards the request email.
 
 Operative rules for this sub-skill (Perplexity-side):
 - **Include in queries:** mark name, product type, relevant industry context
@@ -83,7 +77,7 @@ so there is **no partial-delivery fallback**:
    a final message reporting the tool failure and the exact errors seen. The driver detects the
    missing file, re-runs the stage on a fresh session, and — if the layer still cannot run — fails
    the whole run and surfaces it. That is the correct outcome.
-3. If Perplexity worked for some calls and the budget/coverage is merely incomplete: that is NOT a
+3. If Perplexity worked for some calls and coverage is merely incomplete: that is NOT a
    failure — write the real findings file with honest `coverage-limited` / `deferred` ledger rows
    for the parts that did not run.
 
@@ -93,7 +87,7 @@ so there is **no partial-delivery fallback**:
 
 - Internet-based marketplace searches (Google, Amazon, social media, industry platforms)
 - **The dictated platforms** — your task message's PLATFORMS block names the exact store domains for this customer's profile. A gaming profile is one example of such a list — Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io — illustrative only; never substitute the example for the dictated list
-- **Field-scoped general search** — when the matter goes outside the customer's core field (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also mandatory (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the matter goes outside the customer's core field. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
+- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the frame names a field outside the customer's own. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
 - Domain name presence
 - Social media presence and commercial use
 - Industry press and trade publications
@@ -165,15 +159,15 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| "Raising Your Play" | Brightwick marketing | https://... | Brightwick uses tagline for gaming hardware; no register protection found (flagged for clearance-register cross-check) |
+| "Sharpening Your Aim" | Brightwick marketing | https://... | Brightwick uses tagline for gaming hardware; no register protection found (flagged for clearance-register cross-check) |
 | 1,600+ "Dusk" titles on Steam | Steam | https://... | Crowded field — supportive evidence |
 
 ### Competitor intelligence
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| Veltrona "Pulse Raise" portfolio | Veltrona products | https://... | Veltrona uses "Raise" in audio products; flagged for clearance-register cross-check |
-| Foxglade "Borealis" console "Raise Your Play" tagline (prior usage) | Foxglade Interactive marketing | https://... | Client's own prior use — note as supportive |
+| Veltrona "Pulse Aim" portfolio | Veltrona products | https://... | Veltrona uses "Aim" in audio products; flagged for clearance-register cross-check |
+| Foxglade "Borealis" console "Sharpen Your Aim" tagline (prior usage) | Foxglade Interactive marketing | https://... | Client's own prior use — note as supportive |
 
 ### PR / reputational risk
 
@@ -366,8 +360,8 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 
 | Trigger | Suggested cross-check |
 |---|---|
-| Brightwick appears using "RAISING YOUR PLAY" | Check register: does Brightwick have any raise-related trademark in target classes? |
-| Veltrona "Pulse Raise" portfolio | Check register: any Veltrona raise filings in target classes? |
+| Brightwick appears using "SHARPENING YOUR AIM" | Check register: does Brightwick have any aim-related trademark in target classes? |
+| Veltrona "Pulse Aim" portfolio | Check register: any Veltrona aim filings in target classes? |
 | Thornfall Games "Thornmantle" (itch.io) | Check register: any Thornfall trademark protection? |
 
 ### Audit trail
@@ -377,8 +371,8 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 |---|---|---|---|
 | 1 | Grid (sandbox) | Search-as-code grid: 9 variants × 7 platforms + extras | 63 cells, 0 gaps, 487 candidates recorded; 12 risk-relevant after judgment |
 | 2 | Famous-mark | None flagged in manifest | (not run) |
-| 3 | Follow-up | Brightwick gaming portfolio + "raising your play" deeper trace | 3 additional findings |
-| 4 | Follow-up | Veltrona pulse-raise portfolio | 2 additional findings |
+| 3 | Follow-up | Brightwick gaming portfolio + "sharpening your aim" deeper trace | 3 additional findings |
+| 4 | Follow-up | Veltrona pulse-aim portfolio | 2 additional findings |
 
 **Grid program receipt** — the executed sandbox program returned by the tool, verbatim:
 
@@ -389,7 +383,7 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 ### Open verification flags
 
 - Thornfall Games "Thornmantle" itch.io listing — URL needs re-verification (404'd during follow-up call)
-- Brightwick "Raising Your Play" marketing presence in EU — coverage was thin, may need a region-specific follow-up
+- Brightwick "Sharpening Your Aim" marketing presence in EU — coverage was thin, may need a region-specific follow-up
 ```
 
 ## At every step: look at what you have before you work on it
@@ -427,11 +421,10 @@ The variants table is the source of truth for what to search. The skill does NOT
 > re-emitting ~100 cells through your turn output — is exactly what truncated/dropped cells before), and
 > you do **NOT** re-emit the grid JSON. The tool returns the candidate hits that need judgment.
 > **This mode changes ONLY the Step-2 grid mechanics — nothing else about common-law.** You STILL run
-> **Step 3 (the famous-mark check)** and the **extras** (competitor-intel / PR-risk / crowded-field)
-> exactly as normal, then judge all candidates into the taxonomy (Step 4) and write the COMPLETE findings
-> file with every section (Findings, famous-mark, extras, Negative results matrix, Coverage ledger, Audit
-> trail). Skipping Step 3 or the extras leaves the deliverable missing a core search layer and the
-> pre-delivery lint will HOLD client export. The only things you skip are authoring the grid program and
+> **Step 3 (the famous-mark check)**, then judge all candidates — the meaning questions' answers among them — into
+> the taxonomy (Step 4) and write the COMPLETE findings file with every section (Findings, famous-mark, Negative
+> results matrix, Coverage ledger, Audit trail). Skipping Step 3 leaves the deliverable missing a core search
+> layer. The only things you skip are authoring the grid program and
 > saving the grid ledger — the tool owns those. The program template and the verbatim-save step below are
 > the **LEGACY path**, used only when the task gives no `grid_spec_path`.
 
@@ -441,14 +434,13 @@ every (variant × platform) cell and returns per-cell receipts plus the executed
 **Search-as-code marketplace grid** template in [perplexity-prompts.md](perplexity-prompts.md),
 filling in:
 
-- ALL variants from the Variants table (the program's SEARCH TERMS array)
+- The terms your task message's GRID KEYS names (the program's SEARCH TERMS array)
 - Every store domain in the task message's PLATFORMS block + the general-web cell (never a remembered list)
-- **Field-scoped general-web cells (mandatory when the matter goes outside the customer's core field):** one extra cell per term
-  combining it with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza
-  collab, `"<term> pizza"` cells. Scope to the specific goods, not a fixed per-field platform list
+- **Field-scoped general-web cell (when the frame names a field outside the customer's own):** one extra cell for the mark
+  combined with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza
+  collab, a `"<mark> pizza"` cell. Scope to the specific goods, not a fixed per-field platform list
   (staff-lawyer redline, Project NOVA PULSE).
-- The extras searches: competitor-intel probes from the manifest's watchlists, PR-risk probes per
-  core element, crowded-field probes per pattern
+- The meaning questions the frame wrote, as the grid spec carries them.
 
 The tool returns the program's stdout JSON (`cells` + `extras` + `gaps`) and the program code as an
 audit receipt. **Trademark-register lookups stay out of scope** — the grid only searches
@@ -476,7 +468,7 @@ After the grid call, run the gate:
 4. Are there any dual-meaning terms where a descriptive reading may be masking a trademark?
 5. For compound marks: would the average consumer recognise any element as a brand name?
 
-If any answer is "no" or "unsure," fire a targeted `perplexity_research` follow-up (`depth: "pro-search"`) focused on the specific gap.
+If an answer is "no" or "unsure" and closing it could change what you tell the client, fire a targeted `perplexity_research` follow-up (`depth: "pro-search"`) focused on the specific gap.
 
 ### Step 5 — Judge the grid output into structured tables
 
@@ -512,7 +504,7 @@ For every Consumer-confusion-risks row that is a **game title** (Steam game, Mic
 - Add the candidate to the Open verification flags section with the specific gap
 - DO NOT GUESS by inferring from prior-frequent gaming companies (Bandai Namco, Tencent, Capcom, Behold Studios, etc.) — even when the title's genre or style suggests a likely publisher, leave the field as `not extracted` rather than confabulating
 
-The downstream orchestrator's `placement-inquiry` (Phase 2 Step 2C) will place any game-title with `developer_of_record: not extracted` at **sheet-2** with a verify-publisher flag — never at headline-candidate. The `narrative-refutation` gate (Phase 2 Step 4.7) will BLOCK delivery if the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
+The downstream orchestrator's `placement-inquiry` (Phase 2 Step 2C) will place any game-title with `developer_of_record: not extracted` at **sheet-2** with a verify-publisher flag — never at headline-candidate. The `narrative-refutation` gate (Phase 2 Step 4.7) will flag in the audit workbook any case where the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
 
 This requirement applies even when the model running this skill is at the Haiku tier (per the live workflow config). Treat `developer_of_record` and `publisher_of_record` as required, unambiguous columns; mark them `not extracted` when uncertain rather than confabulating.
 
@@ -541,7 +533,7 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 - [ ] Famous-mark check judged for every flagged element from its general-web results (or "None" documented)
 - [ ] Post-search 5-question checklist run; any "no/unsure" gaps closed via follow-up calls
 - [ ] Every DICTATED platform appears in the audit trail (the list from your task message's PLATFORMS block)
-- [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the matter goes outside the customer's core field)
+- [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the frame names a field outside the customer's own)
 - [ ] Every finding has a URL (or is in Open verification flags)
 - [ ] Findings categorised: consumer-confusion / commercial-awareness / competitor-intel / PR-risk
 - [ ] **Every game-title finding in Consumer-confusion-risks has both `developer_of_record` and `publisher_of_record` columns populated** — with the extracted value when known, or the literal string `not extracted` when uncertain. Never confabulated.

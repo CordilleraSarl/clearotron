@@ -141,7 +141,9 @@ const MODEL = (variants) => JSON.stringify({
   variants,
   incumbent_classes: ["9"],
 });
-const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9"], jurisdictions: ["EU"] };
+// No market is named, so every script form the manifest lists compiles: these arms are about the mint, and a market on
+// the list would ask one Cyrillic form and set the other two aside.
+const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9"], jurisdictions: [] };
 const compileWith = (variants) => compileRegisterPlan({
   manifest: parseVariantManifestModel(MODEL(variants)), job: JOB, skillVersion: "clearance-register@spec48",
 });

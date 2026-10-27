@@ -145,8 +145,8 @@ screen-surfaced records whose mark carries the dominant element** — as a stand
 token, or concatenated inside a longer word (`WAVOTONK`-class) — against your endings. **The unit is
 the POSITION, the same collapse Sheet-1 rows follow**: the driver groups those records by
 `_driver/register-positions.json` and an ending on ANY ONE constituent URI ends the whole position.
-A position with NO ending is a hard discrepancy: one warm follow-up, then the run **blocks
-delivery**. An ENDING is exactly one of:
+A position with NO ending is a hard discrepancy: one warm follow-up, then the run delivers with the
+unended positions stated. An ENDING is exactly one of:
 
 1. **a finding row** — a constituent URI in a findings-table row (Risk-relevant / Incumbent-context /
    watchlist / out-of-scope), or
@@ -165,7 +165,7 @@ delivery**. An ENDING is exactly one of:
 
    **`<N>` goes in the `unit` value and NOWHERE else.** The driver's reconciliation reads the count out
    of that value only — a count you write into the `reason` instead reads as ZERO, the crowd then covers
-   no position, and delivery blocks over a ruling you did make. Write it as a bare integer. The count
+   no position, and the run delivers with those positions stated as unended, over a ruling you did make. Write it as a bare integer. The count
    must be at least the number of POSITIONS you did not individually end, the same denominator the
    driver counts, and the follow-up always states the current number. (The shape's Positions section
    and `band_lookup` give you the numbers; the driver verifies the count and re-verifies after every
@@ -176,6 +176,9 @@ delivery**. An ENDING is exactly one of:
    You do NOT type this as a markdown table row. The driver renders the table from what the tool
    records, replacing whatever is in that section — so a row typed into the table is erased before
    anything reads it.
+
+4. **placement's own set-aside of that position** — by name, or, for a residual position, by its group's row. The
+   driver counts it; you add nothing.
 
 The **code-ranked top slice** (closest positions: registered rights first, then the freshest in-class
 pendings) must ALWAYS end individually (1 or 2) — the crowd never ends a top-slice position. The
@@ -251,7 +254,7 @@ Worked examples, one per shape you are likely to add:
 
 The last row is the compulsory one and its label is not free text: the driver's dominant-element
 reconciliation reads the crowd token and the member count out of that `unit` cell, so `(<N> members)`
-with a bare integer is load-bearing. Drop it and the ruling covers nothing and the run blocks delivery.
+with a bare integer is load-bearing. Drop it and the ruling covers nothing, and the run delivers with those positions stated as unended.
 The other three labels are yours to phrase; only the leading axis is dictated.
 
 **A row marked `open` cannot be `confirmed-clean`, and its own `open_because` says why.** There are three
@@ -393,6 +396,7 @@ Every judgment below spans the band and/or needs data a single unit cannot have,
 **Consume `placement-recommendations.md` (from Touchpoint 2 `placement-inquiry`).** The per-candidate tiers ALSO arrive structured in `placements.json` beside the md — `{mark, owner, jurisdiction, records[], tier, reason}` per candidate (plus an optional `borderline: true` — see below), `reason` carrying placement's stated reasoning. When present, the JSON is the authoritative tier record: adopt or override each tier BY ENGAGING ITS `reason` (an override quotes the reason it contradicts — never a silent re-tier; a kept tier may tighten a label while reusing the reason). The md remains the home of the rulings tail (Disagreements, Coverage rulings, Open questions), which you carry forward exactly as below. On a corrective/repair pass do NOT re-read the whole md — the tiers are in the JSON, and the driver hands you the md's rulings tail verbatim in the dispatch (a `PLACEMENT RULINGS TAIL` block): adjudicate against it there, adopting or counter-reasoning each ruling. For each candidate `placement-inquiry` placed:
 - Find the matching entry in `placements.json` (mark text + owner + jurisdiction match; fall back to the md's tier sections on runs that predate the JSON)
 - Adopt the graduated outcome (`headline-candidate` / `sheet-2` / `watchlist-annex` / `out-of-scope-filtered`) as the placement
+- A sheet-2 placement is adopted as it stands — the driver writes its Sheet-2 row with placement's reason — unless you override it; you send rows for the headline positions and for the placements you override.
 - **Between `headline-candidate` and `sheet-2`, what you are adopting is an ANSWER, not a label.** Those two tiers are placement-inquiry's written answer to one question — *does this conflict change the advice, or only complete the record?* (a headline entry names what it changes; a sheet-2 entry states why the advice reads the same either way). Adopting means adopting that answer. **Overriding means answering the SAME question the other way, in writing**, in your `### Disagreement resolutions` row — never re-labelling the tier and never substituting a risk-tier argument for the question. An override that does not say what the conflict does (or does not do) to the advice has not engaged the placement
 - **A `"borderline": true` entry in `placements.json` is placement declaring that its own answer could be argued either way on this record.** That is the expected place for your judgment to differ, and it is a correct declaration rather than a defect — but it must be **resolved either way, explicitly**, in a `### Disagreement resolutions` row (`ADOPTED placement-inquiry — <the reading you took, and why>` / `OVERRODE — <the other reading, and why>`), never silently carried and never left as a shrug. **The declaration is internal adjudication only**: it belongs in your audit trail beside the other open verification flags, and no borderline mark, no "arguably", no "either way" derived from it goes into the findings prose the client reads — you resolve it here so the report does not have to hedge it there
 - The "Disagreements / flags surfaced to downstream" section names cases where placement-inquiry deviated from class-match — read those reasonings carefully
@@ -549,11 +553,11 @@ not a fresh Opus spawn). You do NOT re-run anything.
 **Rule the coverage form and reconcile the complete band against `matter-context`.** Rule every
 crowd descriptor (cleared / material-gap) by recording that row's status and reason through
 `record_coverage` — and write the rolled-up sufficiency line. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
-every material jurisdiction must be accounted for. A material jurisdiction whose exact-in-class-live slice was
-**enumerated** and judged clear is `confirmed-clean`. A material jurisdiction the band shows as an **`incomplete`
-crowd** — OR one with **no `enumerated` block and no crowd descriptor at all** (the funnel never reached it) — is
-an **unsearched dangerous slice**: rule it material and write it `coverage-limited` (or `deferred` if it could not
-reach its data at all), with a reason that NAMES the slice — `sufficient:false` → the run ships **CONDITIONAL**
+every material jurisdiction must be accounted for. One covered by a complete worldwide or regional answer, or by a
+narrowed list that was read, is accounted for by that answer. One the identical mark's narrowing left inside a crowd,
+because the one market list did not name it, stays in that crowd's count on the crowd's own row. Only a material
+jurisdiction no question reached at all is an **unsearched dangerous slice**: write it `deferred` if it could not
+reach its data, else `coverage-limited`, with a reason that NAMES the slice — `sufficient:false` → the run ships **CONDITIONAL**
 and the gap surfaces in # Actions. **Never** write a missing material jurisdiction as a self-accepted clean — but
 it is a delivered conditional, not a re-search loop and not a halt. Each slice is prefixed by the axis that ran
 (or owes) its sweep — `primary-sweep / CH (material)`, never a bare `CH (material)`. Do not re-judge a unit's
@@ -589,7 +593,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 
 **Digest mode:**
 - [ ] Candidates placement carried forward read through the band tools, and accepted set-asides carried forward with their grounds and exceptions under the placement rules; any missing/unreadable band ruled a coverage failure (`coverage-limited`/`deferred` → CONDITIONAL), never called clean off the prose digest; identical-match test run over the band; class-25 merch slice checked in the band (or its absence written as an open Coverage row)
-- [ ] **Band reconciled against the expectation for THIS mark** — saturated field with no enumerated exact-owner slice ruled a material gap (`coverage-limited` → CONDITIONAL), anything famous-missing surfaced, partner-as-headline flagged for de-prioritisation
+- [ ] **Band reconciled against the expectation for THIS mark** — saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, ruled a material gap (`coverage-limited` → CONDITIONAL), anything famous-missing surfaced, partner-as-headline flagged for de-prioritisation
 - [ ] `matter-context.md` read and informing placement (jurisdiction attribution, off-field framing, watchlist seeds)
 - [ ] `placement-recommendations.md` read and informing tiering; each candidate's graduated outcome adopted or counter-reasoned with audit-trail justification; its coverage-commands/open-questions carried forward
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail

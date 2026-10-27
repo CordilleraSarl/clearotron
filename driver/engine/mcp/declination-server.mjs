@@ -81,8 +81,8 @@ serve({
   tools: [{
     name: "record_declination",
     description:
-      "Record, per record or page, your decision NOT to deliver something that reached your findings surface. " +
-      "Every record the digest carried to you, and every page the web notes marked as a candidate or conflict, " +
+      "Record, per position or page, your decision NOT to deliver something that reached your findings surface. " +
+      "Every position the digest carried to you, and every page the web notes marked as a candidate or conflict, " +
       "either becomes a finding " +
       "or carries a stated reason it did not — there is no third way out, and one left silent is reported as " +
       "a defect of this run. One call carries a batch; the answer tells you what was accepted, " +

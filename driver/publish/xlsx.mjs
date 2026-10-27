@@ -403,6 +403,9 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
 // ── Coverage & gaps ─────────────────────────────────────────────────────────────────────────────────────
 const COVERAGE_COLS = ['Area', 'State', 'What was done', "What's left"];
 const STATE_WORD = { 'confirmed-clean': 'Clean', 'coverage-limited': 'Limited', open: 'Open', 'not-searched': 'Open', note: 'Note' };
+// A coverage row is open where this tab shows it Open or Limited. The Summary's count and its caveat read the same
+// rule, so a not-searched row, shown Open here, is never left out of the count the Summary leads with.
+const isOpenCoverage = (c) => STATE_WORD[c?.state] === 'Open' || STATE_WORD[c?.state] === 'Limited';
 
 // split a coverage note into "what was done" / "what's left" at its natural prose seam. Open/limited areas
 // describe the residual after a "; " or " — "; a clean area is all done and has nothing left.
@@ -436,21 +439,26 @@ function coverageRows(coverage) {
 // The one-open-caveat + headline-honesty rule: the workbook must never read clean/complete while any
 // coverage unit did not finish. This computes whether that condition holds and the plain caveat sentence.
 function coverageOpen({ coverage = [], coverageJudgment = null, verdict = null, degradedParts = [] } = {}) {
-  const openState = (coverage || []).some(c => c.state === 'open' || c.state === 'coverage-limited') || (degradedParts || []).length > 0;
+  const openState = (coverage || []).some(isOpenCoverage) || (degradedParts || []).length > 0;
   const judgeUnsure = coverageJudgment && coverageJudgment.sufficient === false;
   const verdictCoverage = !!(verdict && verdict.kinds && verdict.kinds.coverage);
   return openState || judgeUnsure || verdictCoverage;
 }
 
-export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly = false, commonLawUnlogged = false, clientGate = null, lintFailures = [], productName = null, degradedParts = [] } = {}) {
+export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly = false, commonLawUnlogged = false, clientGate = null, lintFailures = [], productName = null, degradedParts = [], assessmentNotCompleted = false } = {}) {
   const disp = d => findings.filter(f => f.disposition === d && !f.isContextNote).length;
   const rated = findings.filter(f => !f.isContextNote);
   // A part that failed and still shipped is open too, so the count and the caveat never read complete
   // beside its row on Coverage & gaps.
-  const openCount = (coverage || []).filter(c => c.state === 'open' || c.state === 'coverage-limited').length + (degradedParts || []).length;
+  const openCount = (coverage || []).filter(isOpenCoverage).length + (degradedParts || []).length;
   const verdictWord = (verdict && verdict.tier) || fm.overall_label || '';
-  const caveat = plainNote(coverageJudgment?.reason) ||
-    (coverage || []).find(c => c.state === 'open' || c.state === 'coverage-limited')?.note ||
+  // THE ASSESSMENT NOT COMPLETED LEADS. With no assessment there is no verdict, no rated finding and no count of
+  // them: the Summary says first what was left open, in the shipped gap row's own words, and prints no row whose
+  // value would be a rating or a zero read as a result.
+  // The shipped gap row for the Findings part, whose area is the deferral row's own: "Follow-up / Findings".
+  const notCompletedRow = assessmentNotCompleted ? (degradedParts || []).find(d => /(^|\/ )Findings$/.test(String(d?.area ?? ''))) : null;
+  const caveat = (notCompletedRow && plainNote(notCompletedRow.note)) || plainNote(coverageJudgment?.reason) ||
+    (coverage || []).find(isOpenCoverage)?.note ||
     (degradedParts || [])[0]?.note ||
     'None — every search unit reached completion.';
 
@@ -478,9 +486,10 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     // "Verdict: High" — vocabulary conflation). With a composed statement the summary carries two
     // labelled rows: the band word and THE one risk statement. A legacy run (no statement) keeps its
     // single original row byte-identically — a republished archived workbook must not grow rows.
-    ...(verdict && verdict.statement
-      ? [{ Field: 'Risk band', Value: verdictWord }, { Field: 'Verdict', Value: verdict.statement, _verdict: true }]
-      : [{ Field: 'Verdict', Value: verdictWord, _verdict: true }]),
+    ...(assessmentNotCompleted ? []
+      : verdict && verdict.statement
+        ? [{ Field: 'Risk band', Value: verdictWord }, { Field: 'Verdict', Value: verdict.statement, _verdict: true }]
+        : [{ Field: 'Verdict', Value: verdictWord, _verdict: true }]),
     { Field: '⚠  One thing to check first', Value: caveat, _caveat: true },
     // The gap "What was searched" had to DECLARE rather than list, said again where the reader starts.
     // It is set when that sheet found no per-term common-law rows on a run nothing records as
@@ -521,15 +530,18 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
       : []),
     { Field: '', Value: '' },
     { Field: 'By the numbers', Value: '', _head: true },
-    { Field: '   Findings rated', Value: String(rated.length) },
-    { Field: '   On-field (the one stress-tested as closest)', Value: String(disp('adversarial')) },
-    { Field: '   Distinguished / manageable', Value: String(disp('distinguished')) },
-    { Field: '   Off-field (outside the risk zone)', Value: String(disp('off-field')) },
+    ...(assessmentNotCompleted ? [] : [
+      { Field: '   Findings rated', Value: String(rated.length) },
+      { Field: '   On-field (the one stress-tested as closest)', Value: String(disp('adversarial')) },
+      { Field: '   Distinguished / manageable', Value: String(disp('distinguished')) },
+      { Field: '   Off-field (outside the risk zone)', Value: String(disp('off-field')) },
+    ]),
     { Field: '   Coverage areas assessed', Value: String((coverage || []).length) },
     { Field: '   Open / limited coverage', Value: String(openCount) },
     { Field: '', Value: '' },
     { Field: 'How to read this workbook', Value: '', _head: true },
-    { Field: '   Findings', Value: 'every conflicting mark we surfaced, our call on it, and the evidence behind each call.' },
+    ...(assessmentNotCompleted ? []
+      : [{ Field: '   Findings', Value: 'every conflicting mark we surfaced, our call on it, and the evidence behind each call.' }]),
     // the third form is not cosmetic. "every search we ran — register and common-law — so you can see
     // we looked everywhere" is a claim ABOUT THIS SHEET, and on a run whose common-law sweep never
     // reached the search log the sheet does not carry it, so the sentence was simply false.
@@ -628,7 +640,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
 
   // 1 · Summary
   addSheet(wb, 'Summary', ['Field', 'Value'],
-    [...summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly, commonLawUnlogged, clientGate: contract?.clientGate ?? null, lintFailures: contract?.lintFailures ?? [], productName: contract?.productName ?? null, degradedParts }),
+    [...summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly, commonLawUnlogged, clientGate: contract?.clientGate ?? null, lintFailures: contract?.lintFailures ?? [], productName: contract?.productName ?? null, degradedParts, assessmentNotCompleted: contract?.assessmentNotCompleted === true }),
       // PR-9 — the structured v5 rows (mark assessment / coverage-judgment slices / corrections
       // attestation) render as ROWS here; the report carries only their string projection. All three
       // are empty on legacy records, so a republished archived workbook never grows rows.
@@ -690,6 +702,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // this replaced: a legitimately-sparse run — e.g. no bound Class — must still ship its workbook.)
   await wb.xlsx.writeFile(outPath);
   const gate = validateAudit(wb, { findings, coverage, coverageJudgment, verdict, registerOnly, degradedParts,
+    assessmentNotCompleted: contract?.assessmentNotCompleted === true,
     registerPublishesRecordPages: contract?.registerPublishesRecordPages ?? null });
   return {
     sheets: wb.worksheets.map(w => w.name),
@@ -737,7 +750,7 @@ function readerWords(s) {
  * Returns { ok, violations[] }. Exported so tests assert the same contract the build enforces.
  */
 export function validateAudit(wb, { findings = [], coverage = [], coverageJudgment = null, verdict = null, registerOnly = false,
-  registerPublishesRecordPages = null, degradedParts = [] } = {}) {
+  registerPublishesRecordPages = null, degradedParts = [], assessmentNotCompleted = false } = {}) {
   const v = [];
   const sheets = wb.worksheets.map(w => w.name);
 
@@ -932,7 +945,8 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
       if (/^Verdict$/.test(f)) hasVerdict = true;
       if (/check first/i.test(f)) hasCaveat = true;
     });
-    if (!hasVerdict) v.push('Summary: no Verdict row');
+    // A run whose overall assessment was not completed has no verdict to state, and its Summary prints none.
+    if (!hasVerdict && !assessmentNotCompleted) v.push('Summary: no Verdict row');
     if (coverageOpen({ coverage, coverageJudgment, verdict, degradedParts })) {
       if (!hasCaveat) v.push('Summary: coverage is open but no caveat row (headline-honesty)');
       const covWs = wb.getWorksheet('Coverage & gaps');
