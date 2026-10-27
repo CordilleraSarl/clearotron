@@ -275,10 +275,15 @@ export function featuresToml(withheld = []) {
 // codex's `workspace-write` sandbox confines where a command WRITES and lets it read the whole disk, the
 // install's settings files and the program's own sign-in included. A permission profile confines reading
 // too (the vendor's Permissions guide, a beta feature since 0.138.0; the floor was 0.154.0 when this was written and is 0.159.0 now, for the judgment tier's model — driver.config.mjs): a stage's
-// commands read the platform's own paths, the instruction trees and the temp folders, and write the run
-// folder, their working folder and the temp folders. Nothing else is readable, so a page a stage fetched
-// cannot get a command to print the account's files. The temp folders stay writable because
-// `workspace-write` let commands use them and stages write their output through the shell.
+// commands read the platform's own paths and the instruction trees, and write the run folder, their
+// working folder and their Codex home's working folder. Nothing else is readable, so a page a stage
+// fetched cannot get a command to print the account's files.
+//
+// NO SHARED TEMP FOLDER. The profile granted `:tmpdir` and `:slash_tmp`, which every stage of every run on
+// the machine shares, and a later run's commands read what an earlier run left in `/tmp` (measured on codex
+// 0.162.0 with that profile: a command read a file planted in `/tmp` and wrote another beside it). The
+// turn's TMPDIR, TMP and TEMP now name its home's working folder (openai-agent.mjs, `withWorkFolder`), and
+// this grants that folder, named, in their place.
 //
 // ONLY WITH THE SANDBOX ON. Under the bypass codex builds no sandbox, so a profile would enforce nothing;
 // the caller passes no `fence` then, and the file stays what it was. With the sandbox on the command line
@@ -297,10 +302,10 @@ export function featuresToml(withheld = []) {
 // wins over the run folder's: measured on codex 0.162.0 with this profile, a write into the run folder
 // succeeded, a read of `_driver/` succeeded, and a write or an append there was refused.
 export const FENCE_PROFILE = "clearotron-stage";
-export function fenceToml({ runDir = null, readRoots = [] } = {}) {
+export function fenceToml({ runDir = null, workDir = null, readRoots = [] } = {}) {
   const key = (p) => tomlString(p);
-  const out = [`[permissions.${FENCE_PROFILE}.filesystem]`,
-    `":minimal" = "read"`, `":tmpdir" = "write"`, `":slash_tmp" = "write"`];
+  const out = [`[permissions.${FENCE_PROFILE}.filesystem]`, `":minimal" = "read"`];
+  if (workDir) out.push(`${key(workDir)} = "write"`);
   for (const r of [...new Set(readRoots.filter(Boolean))]) out.push(`${key(r)} = "read"`);
   if (runDir) out.push(`${key(runDir)} = "write"`, `${key(driverDir(runDir))} = "read"`);
   out.push("", `[permissions.${FENCE_PROFILE}.filesystem.":workspace_roots"]`, `"." = "write"`, "");
