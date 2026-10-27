@@ -4,6 +4,13 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.5.0-beta.2
+
+### Fixed
+
+- Reports no longer show "Nothing found" in "Where it stands" for a country the register could not search; that country is left out.
+- A finding registered in several countries now shows under each of them in "Where it stands". Before, only its first country showed it, and the others could read "Nothing found".
+
 ## 0.5.0-beta.1
 
 ### Fixed

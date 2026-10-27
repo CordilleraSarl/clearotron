@@ -1,5 +1,12 @@
 # clearotron-driver
 
+## 0.5.0-beta.2
+
+### Patch Changes
+
+- Fixed: Reports no longer show "Nothing found" in "Where it stands" for a country the register could not search; that country is left out.
+- Fixed: A finding registered in several countries now shows under each of them in "Where it stands". Before, only its first country showed it, and the others could read "Nothing found".
+
 ## 0.5.0-beta.1
 
 ### Patch Changes
