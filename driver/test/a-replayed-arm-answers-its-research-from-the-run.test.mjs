@@ -122,13 +122,20 @@ test("--research replay writes the marker into the arm's sandbox and says so on 
     /--research replay: this run kept no research answers/, "a replay with nothing to replay was dispatched");
   await assert.rejects(() => PL.runExperiment(job, { codename, experiment: "synthesis", research: "replayed" }), /--research: unknown value "replayed"/);
 
-  saved(res.runDir, [{ ts: "2026-01-01T10:00:00.000Z", session: "s", task: ask("Example Holdings"), text: "Yes, in use: https://example.com/qzorvel" }]);
+  // Saved under the writer's OWN session key, as a run's writer saves them: what a retry is handed, and a first attempt is not.
+  const start = readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").split("\n").map((l) => { try { return JSON.parse(l); } catch { return null; } })
+    .find((e) => e?.event === "start");
+  const writerKey = PL.stageSessionKey({ run: { slug: start.job.slug, codename: start.job.codename } }, "synthesis");
+  saved(res.runDir, [{ ts: "2026-01-01T10:00:00.000Z", session: writerKey, task: ask("Example Holdings"), text: "Yes, in use: https://example.com/qzorvel" }]);
   const ex = await PL.runExperiment(job, { codename, experiment: "synthesis", research: "replay", label: "replay" });
   assert.ok(existsSync(driverDir(ex.shadowDir, "research-replay.json")), "the arm's sandbox carries no replay marker");
   assert.ok(existsSync(driverDir(ex.shadowDir, "research-answers.jsonl")), "the arm's sandbox does not carry the run's answers");
   assert.equal(existsSync(driverDir(res.runDir, "research-replay.json")), false, "the canonical run was marked as a replay");
   const receipt = JSON.parse(readFileSync(driverDir(ex.shadowDir, "experiment-context.json"), "utf8"));
   assert.deepEqual(receipt.research, { mode: "replay", answers: 1 });
+  // A FRESH ARM IS A FIRST ATTEMPT: the copied answers feed the replay, and its message hands on none of them.
+  assert.equal(receipt.researchHandOff, false);
+  assert.equal(existsSync(join(ex.shadowDir, "research-answers.md")), false, "a fresh arm was handed the run's research as a retry is");
 
   const live = await PL.runExperiment(job, { codename, experiment: "synthesis", label: "live" });
   assert.equal(existsSync(driverDir(live.shadowDir, "research-replay.json")), false, "an arm run without the flag replays");
