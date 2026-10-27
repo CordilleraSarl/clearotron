@@ -398,7 +398,7 @@ export function withWorkFolder(env, dir) {
   return { ...env, TMPDIR: dir, TMP: dir, TEMP: dir };
 }
 
-// WHAT THE MODEL IS TOLD, approved on tracker issue 1196 (the design ruling of 2026-10-27, section 4). It describes the
+// WHAT THE MODEL IS TOLD, as the design ruling of 2026-10-27 approved it (its section on isolation). It describes the
 // mechanism and replaces nothing: the profile is what keeps another run's files out of reach. Codex alone carries it,
 // since only a Codex stage runs commands and only a Codex turn has a working folder of its own.
 export const TEMP_FOLDER_RULE = "Keep temporary working files in the directory given by TMPDIR. Use only this run's supplied evidence and accepted work.";
