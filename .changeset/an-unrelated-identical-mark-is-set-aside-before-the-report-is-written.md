@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: Reports set aside an identical mark registered for unrelated goods, with the reason recorded in the audit workbook, rather than listing it as a finding.
+Fixed: Reports can set aside an identical mark registered for unrelated goods, recording the reason in the audit workbook instead of listing it as a finding.
