@@ -81,6 +81,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-blocking-email-keeps-the-reports-client-actions.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-borrowed-node-modules-is-not-a-licence-defect.test.mjs": {
           "tests": 8,
           "asserts": 28,
@@ -711,6 +717,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-floor-is-set-aside-on-its-goods-or-mark-on-the-evidence.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-floor-row-whose-owner-was-set-aside-is-answered.test.mjs": {
           "tests": 2,
           "asserts": 11,
@@ -809,7 +821,7 @@
         },
         "a-goods-test-miss-is-not-called-other-goods.test.mjs": {
           "tests": 2,
-          "asserts": 6,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -833,7 +845,7 @@
         },
         "a-group-row-gives-every-owner-in-it-a-fate.test.mjs": {
           "tests": 7,
-          "asserts": 36,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -2430,6 +2442,12 @@
         "an-experiment-receipt-names-its-engine.test.mjs": {
           "tests": 8,
           "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-identical-mark-is-declined-on-its-goods-only-on-goods-held-complete.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -7150,8 +7168,8 @@
           "todos": 0
         },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
-          "tests": 9,
-          "asserts": 25,
+          "tests": 11,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -7421,7 +7439,7 @@
         },
         "the-words-the-step-reads-match-what-the-driver-checks.test.mjs": {
           "tests": 9,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -7457,7 +7475,7 @@
         },
         "the-writer-owes-positions-not-records.test.mjs": {
           "tests": 6,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
