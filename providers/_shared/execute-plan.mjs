@@ -21,6 +21,7 @@ import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { FOLLOW_UP_SEARCH_LIMIT, runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../shared/slices-taken-out.mjs";
+import { pathInRun } from "../../shared/inside-run.mjs";   // a plan or a band path is served only inside this run
 import { pastSendUntil } from "./send-until.mjs";   // a call past its time to stop sending sends no new question   // a band read as answers, with the slices a check could not prove ran taken out
 
 /** How soon after an answer lands it is written to the band, while the call goes on (see `keepAnswers` below). */
@@ -346,6 +347,14 @@ export function makeExecutePlan(deps) {
     const outPath = String(params?.output_path ?? "");
     if (!planPath || !axis || !outPath)
       return { type: "text", text: "ERROR: plan_path, axis and output_path are all required." };
+    // THIS RUN'S PLAN, AND THIS RUN'S BAND (shared/inside-run.mjs). The run is the one its record log names, never the
+    // call's; a search outside a run has none to confine it to.
+    const runOf = runDriverDirOf(tctx?.recordLog);
+    if (runOf) {
+      const run = dirname(runOf);
+      if (pathInRun(run, planPath) === null) return { type: "text", text: "ERROR: plan_path is outside this run's folder. Use the frozen plan path the driver gave you." };
+      if (pathInRun(run, outPath) === null) return { type: "text", text: "ERROR: output_path is outside this run's folder. Use the band path the driver gave you." };
+    }
     let plan;
     try { plan = JSON.parse(readFileSync(planPath, "utf8")); }
     catch (err) { return { type: "text", text: `ERROR: cannot read the plan at ${planPath}: ${err.message}` }; }

@@ -398,6 +398,13 @@ export function withWorkFolder(env, dir) {
   return { ...env, TMPDIR: dir, TMP: dir, TEMP: dir };
 }
 
+// WHAT THE MODEL IS TOLD, approved on tracker issue 1196 (the design ruling of 2026-10-27, section 4). It describes the
+// mechanism and replaces nothing: the profile is what keeps another run's files out of reach. Codex alone carries it,
+// since only a Codex stage runs commands and only a Codex turn has a working folder of its own.
+export const TEMP_FOLDER_RULE = "Keep temporary working files in the directory given by TMPDIR. Use only this run's supplied evidence and accepted work.";
+/** The instructions every Codex turn carries: the output rule, then the temp-folder rule. */
+export const CODEX_DEVELOPER_INSTRUCTIONS = `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`;
+
 /**
  * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
  * shell command through a helper of its own inside the sandbox, so a profile that cannot read the helper
@@ -947,7 +954,7 @@ export const openaiAgentEngine = {
       const fence = codexSandboxBypassed() ? null
         : { runDir, workDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: CODEX_DEVELOPER_INSTRUCTIONS, toolTimeoutSec: timeoutSec, fence,
           withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);

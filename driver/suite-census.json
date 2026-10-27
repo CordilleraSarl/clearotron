@@ -2121,6 +2121,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-tool-serves-only-its-own-runs-files.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-turn-the-program-answers-itself-names-no-model.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -3863,7 +3869,7 @@
         },
         "every-model-stage-is-handed-the-instruction-files-it-declares.test.mjs": {
           "tests": 8,
-          "asserts": 17,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },

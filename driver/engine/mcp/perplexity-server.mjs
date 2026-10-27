@@ -29,6 +29,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 // What stays is the GRID path's own need — the obligations sidecar written beside the grid's ledger.
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
+import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
 import { keepResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage
 
 const API_KEY = process.env.PERPLEXITY_API_KEY || "";
@@ -224,9 +225,14 @@ async function research(params) {
 
   // ── Deterministic grid mode: the caller dictates the cells; the tool runs + captures them. ──
   if (grid_spec_path) {
+    // THIS RUN'S SPEC, WRITING THIS RUN'S LEDGER: a spec, or a ledger it names, in another run's folder is never served.
+    if (RUN_DIR && !insideRun(RUN_DIR, grid_spec_path))
+      return "ERROR: grid_spec_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.";
     let spec;
     try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
+    if (RUN_DIR && !insideRun(RUN_DIR, spec.output_path))
+      return "ERROR: the grid spec's output_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.";
     if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
       return requiredLedgerRefusal(`ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}`, { spec, gridSpecPath: grid_spec_path });
     // — already recorded and complete? Answer from the ledger; do not buy the grid twice. This is also
