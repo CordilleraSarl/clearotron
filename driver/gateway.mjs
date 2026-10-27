@@ -298,11 +298,11 @@ export function isEmbeddedFallback(json, stderr = "") {
 // nonzero exit (the v14 delivery failure, previously mislabelled `nonzero_exit_1`); (3) any nonzero
 // exit whose wall already reached the configured budget. Distinguished from transient errors so the
 // retry policy can give a slow stage ONE longer shot instead of 3 identical doomed attempts.
-export function isTimeout({ killed, code, wall, stderr = "", timeoutSec }) {
-  if (killed) return true;
-  if (/EmbeddedAttemptSessionTakeoverError|request timed out|\bETIMEDOUT\b/i.test(stderr)) return true;
-  if (code !== 0 && wall >= timeoutSec) return true;
-  return false;
+export const isTimeout = (facts) => timeoutCause(facts) !== null;
+export function timeoutCause({ killed, code, wall, stderr = "", timeoutSec }) {   // which signal fired, or null
+  if (killed) return "killed";
+  if (/EmbeddedAttemptSessionTakeoverError|request timed out|\bETIMEDOUT\b/i.test(stderr)) return "stderr";
+  return code !== 0 && wall >= timeoutSec ? "wall" : null;
 }
 
 // A LANE WEDGE: a timeout whose turn moved ZERO tokens — the gateway never admitted it to a command lane (the
@@ -1287,7 +1287,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     let fail = null;
     let stampedQuantity = null;   //: a validator's own exact count, when it stamped one (see below)
     let failingFile = null;       //: the artifact the validator rejected — the repair's only target
-    if (isTimeout({ killed, code, wall, stderr, timeoutSec: effTimeout })) fail = "timeout";
+    // A TURN THAT COMPLETED IS JUDGED ON WHAT IT WROTE, whatever its stderr says about a request inside it
+    // (attemptTimedOut). Which signal fired is kept on the row either way.
+    const timedOutBy = timeoutCause({ killed, code, wall, stderr, timeoutSec: effTimeout });
+    if (attemptTimedOut({ cause: timedOutBy, code, json })) fail = "timeout";
     else if (isEmbeddedFallback(json, stderr)) fail = "embedded_fallback";
     else if (code !== 0) fail = `nonzero_exit_${code}`;
     else if (!json) fail = "unparseable_json";
@@ -1824,6 +1827,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // `followup` matters too: a followup success PATCHES the prior session's output, it never
         // supersedes a taint the way a fresh full pass does.
         killed: killed || undefined,
+        timeoutCause: timedOutBy ?? undefined,   // — which of the three timeout signals fired: killed, stderr or wall
         signals: turn.signals ?? undefined,
         //: how long every declared artifact had been untouched when the turn settled. Present on any
         // hard-wall kill the wall rescue looked at — INCLUDING the ones it refused, so "considered and
@@ -1904,7 +1908,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
         cliFloor: cli.floor ?? null, cliBelowFloor: cli.belowFloor ?? null,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
-          rescued: rescued ?? undefined, killed: killed || undefined,
+          rescued: rescued ?? undefined, killed: killed || undefined, timeoutCause: timedOutBy ?? undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row
           rescueRefused: rescueRefused ?? undefined,   // — the cause, when the rescue looked and refused
           rescueRefusedFile: rescueRefusedFile ?? undefined, rescueRefusedReason: rescueRefusedReason ?? undefined,
@@ -3739,4 +3743,16 @@ function toolCallCounts(turn) {
   const errored = turn?.toolCallsErroredByName;
   return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls),
     toolCallsErroredByName: errored && typeof errored === "object" && !Array.isArray(errored) ? { ...errored } : null };
+}
+
+/**
+ * IS THIS ATTEMPT A TIMEOUT? A kill and a run past the limit with a non-zero exit always are. A timed-out request named
+ * in stderr is one only when the turn did not complete: a turn that exited 0 with its engine's status ok outlived the
+ * request, which was a call inside it (a web lookup, a tool), and is judged on what it wrote like any finished turn.
+ * Recorded as a timeout, it was run again whole: on one test run a writer finished in 14.7 minutes of its 43, exited 0
+ * with its output written, and paid a second attempt of 20.3 minutes. `cause` is `timeoutCause`'s answer. PURE.
+ */
+export function attemptTimedOut({ cause, code, json }) {
+  if (!cause) return false;
+  return !(cause === "stderr" && code === 0 && json?.status === "ok");
 }
