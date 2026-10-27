@@ -7498,8 +7498,8 @@
           "todos": 0
         },
         "the-writer-writes-from-the-work-it-is-handed.test.mjs": {
-          "tests": 6,
-          "asserts": 26,
+          "tests": 7,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },

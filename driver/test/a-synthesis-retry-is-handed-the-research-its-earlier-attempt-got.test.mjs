@@ -51,7 +51,7 @@ test("a retry is handed the answers: a file with one question and its answer per
   keepResearchAnswer(runDir, { session: `clearance-${RUN.slug}-${RUN.codename}-common-law-half-a`, task: ask("Other Stage Co"), text: "another stage's answer" });
 
   const text = messageOf(ctx);
-  const block = "RESEARCH THIS RUN HAS ALREADY ANSWERED: an earlier attempt of this stage asked 2 questions and got their answers. "
+  const block = "RESEARCH THIS RUN HAS ALREADY ANSWERED: earlier stages or attempts of this run asked 2 questions and got their answers. "
     + "They are in research-answers.md, one question and its answer per line. Before you ask about a finding's owner and mark, search that file "
     + "for the owner's name with search_run_artifacts. Where one of them answers the same owner, mark, goods, territory and material time question, use its "
     + "answer as that finding's check, cite its URL and record it as you would a fresh one; ask only what none of them covers.";
@@ -67,7 +67,7 @@ test("a retry is handed the answers: a file with one question and its answer per
 test("one saved answer is told in the singular", (t) => {
   const { runDir, ctx } = runFolder(t);
   keepResearchAnswer(runDir, { session: KEY, task: ask("Example Holdings"), text: "Yes: https://example.com/qzorva" });
-  assert.match(messageOf(ctx), /an earlier attempt of this stage asked 1 question and got its answer\. They are in research-answers\.md, one question and its answer per line\./);
+  assert.match(messageOf(ctx), /earlier stages or attempts of this run asked 1 question and got its answer\. They are in research-answers\.md, one question and its answer per line\./);
 });
 
 test("the artifact search hands back a whole answer line from the answers file, and still cuts other files' lines", (t) => {
