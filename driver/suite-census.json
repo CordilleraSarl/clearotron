@@ -2307,6 +2307,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-writer-is-told-placements-set-asides-or-refuses.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "ab-tooling-honesty.test.mjs": {
           "tests": 16,
           "asserts": 78,
