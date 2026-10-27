@@ -5011,8 +5011,10 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
   // The writer is also handed the research its earlier attempts got (research-answers.mjs), written to the run folder when
   // the message is built: none on a first attempt, so its message is unchanged.
+  // A sandbox arm reproducing a FIRST attempt hands on nothing: its copy holds the run's own answers under this stage's
+  // key, which a first attempt in a run never has (`researchHandOff`, set by the experiment).
   if (name === "synthesis") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths),
-    researchAnswered: ctx.run ? handResearchAnswers(ctx.paths.runDir, stageSessionKey(ctx, name)) : 0 };
+    researchAnswered: ctx.run && ctx.researchHandOff !== false ? handResearchAnswers(ctx.paths.runDir, stageSessionKey(ctx, name)) : 0 };
   return ctx;
 }
 
@@ -18459,7 +18461,10 @@ async function runExperimentInner(job, opts) {
   // Any ctx field holding a PATH is dropped rather than inherited: reconstructCtx resolved them against
   // the canonical run, and a sandbox whose prompt names a canonical path is not a sandbox. The
   // derivations below re-set them against ctx.paths, which here is the shadow dir.
-  const shadowCtx = { ...ctx, paths: paths(shadowDir), axis, gridSpecPath: null, clHalfTerms: null };
+  // A `fresh` arm is a stage's first attempt, which is handed no earlier attempt's research: the copied answers are
+  // what the replay answers from, never a hand-off production's first attempt does not get.
+  const shadowCtx = { ...ctx, paths: paths(shadowDir), axis, gridSpecPath: null, clHalfTerms: null,
+    researchHandOff: (opts.dispatchTrigger ?? "fresh") !== "fresh" };
   const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly };
   const manifest = sandboxManifest(name, ctx.paths, inputOpts);
   // ── 1. GATHER — the sandbox manifest, not the freshness list ──────────────────────────────────────
@@ -18607,6 +18612,8 @@ async function runExperimentInner(job, opts) {
     dispatchTrigger: opts.dispatchTrigger ?? "fresh",
     // How the arm's research was answered: sent out live, or replayed from the run's own answers.
     research: opts.research === "replay" ? { mode: "replay", answers: replayedAnswers } : { mode: "live" },
+    // Whether the arm's message hands on an earlier attempt's research, as a retry's does: never on a `fresh` arm.
+    researchHandOff: shadowCtx.researchHandOff,
     // — WHICH PASS THIS ARM REPRODUCED, in a word. null on a non-corrective arm;
     // never "dispatched-warm", which is production's alone.
     correctivePass: whichPass,
