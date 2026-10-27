@@ -353,10 +353,14 @@ export const DEFERRED_OPEN_BECAUSE = Object.freeze({
 });
 const deferredOpenBecause = (block, receiptReason) => block?.gateway_timeout === true ? DEFERRED_OPEN_BECAUSE.timeout
   : isProviderHardErrorReason(receiptReason) ? DEFERRED_OPEN_BECAUSE.hardError : DEFERRED_OPEN_BECAUSE.capability;
+// A SLICE THE RUN TOOK OUT OF THE BAND (the searches not completed, parts-not-completed.mjs) is open for the reason its
+// record gives, which is the shipped line the reader gets for it (ruled 2026-10-27): the provider could express it, and
+// what is missing is the evidence that it ran. A taken-out slice with no qid has no plan row to defer it, so it gets a
+// row of its own, keyed on its query.
 
 export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null,
   bandBlocksByAxis = {}, deferredReasons = {}, bandsUnreadable = [],
-  orderedTerritories = [], capabilities = null, awaiting = [], withheld = {}, mainMarkets = [] } = {}) {
+  orderedTerritories = [], capabilities = null, awaiting = [], withheld = {}, mainMarkets = [], takenOut = {} } = {}) {
   const skel = Array.isArray(skeleton) ? skeleton.filter((s) => s && typeof s === "object") : [];
   // WHAT WAS RETRIEVED UNDER EACH CROWD (register-plan.mjs, crowdNarrowing), worked out from the same blocks these rows
   // are built from and carried on its row as data: a narrowed list retrieved in full (and which), none, or for the
@@ -423,6 +427,8 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
         status: null, reason: null,
       });
     }
+    const out = Array.isArray(takenOut?.[axis]) ? takenOut[axis] : [];
+    const takenReason = new Map(out.filter((x) => x?.qid && x?.reason).map((x) => [String(x.qid), String(x.reason)]));
     for (const qid of deferredQids) {
       rows.push({
         row_id: shortId("CD", `deferred:${qid}`),
@@ -433,7 +439,20 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
         // It was never searched, or it was asked and never answered, and nothing in this run asks it again, so a clean
         // claim over it is not a judgment the seat gets to make.
         open: true,
-        open_because: deferredOpenBecause(blockByQid.get(qid), deferredReasons?.[qid]),
+        open_because: takenReason.get(qid) ?? deferredOpenBecause(blockByQid.get(qid), deferredReasons?.[qid]),
+        status: null, reason: null,
+      });
+    }
+    for (const x of out) {
+      if (x?.qid || !x?.query || !x?.reason) continue;
+      rows.push({
+        row_id: shortId("CD", `deferred:${axis}:query:${x.query}`),
+        axis, kind: "deferred",
+        unit: unitLabel(axis, { term: String(x.query) }),
+        qid: null, query: String(x.query),
+        receipt_reason: String(x.reason),
+        open: true,
+        open_because: String(x.reason),
         status: null, reason: null,
       });
     }
