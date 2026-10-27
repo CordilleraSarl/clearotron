@@ -17,7 +17,8 @@ import { mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { STAGES, paths, BAND_READING_STAGES, BAND_READING_CONTRACT, BAND_READING_CONTRACT_AFTER_PLACEMENT,
-  BAND_READING_CONTRACT_FOR_THE_WRITER, BAND_READING_STANDARDS, WRITER_STARTS_FROM_THE_WORK, USE_CHECK_ANSWERS_HELD } from "../stages.mjs";
+  BAND_READING_CONTRACT_FOR_THE_WRITER, BAND_READING_STANDARDS, WRITER_STARTS_FROM_THE_WORK, WRITER_RECORDS_AS_IT_GOES,
+  USE_CHECK_ANSWERS_HELD } from "../stages.mjs";
 
 const RULED = [
   "Start from the retained entries, the recorded decisions, and the evidence this run already holds. Use completed work in your judgment and write what the findings mean together for this client. Complete the legal and practical assessment that remains yours under the framework.",
@@ -95,4 +96,12 @@ test("no band tool tells a reader to keep paging; each says the next page is the
     "the next page is available with offset:", "the rest are available with offset:", 'part ${part + 1} is available with {"record_id": "${uri}", "part": ${part + 1}}]',
     "a capped answer names the offset where the next page starts", "A large shape is served in parts, and the end of each part names the next one."])
     assert.ok(code.includes(said), `missing: ${said}`);
+});
+
+test("the writer records its findings and exclusions as it completes them, told so right after where it starts", (t) => {
+  const SAVED = "Record completed findings (`record_synthesis`) and exclusions (`record_declination`) as you complete them, individually or in small groups; do not wait for the whole report. On a resumed attempt, continue from this run's accepted work and complete what remains. Revise accepted work only for identified contrary evidence, a reasoning error, or an applicable change in the instructions. Finish the overall conclusions against the complete set before declaring the assessment complete.";
+  assert.equal(WRITER_RECORDS_AS_IT_GOES, SAVED);
+  assert.ok(messageOf(t, "synthesis").includes(`${RULED.join("\n")}\n${SAVED}`), "the writer is not told to record as it goes, straight after where it starts");
+  for (const stage of ["placement-inquiry", "register-digest", "narrative-refutation"])
+    assert.ok(!messageOf(t, stage).includes(SAVED), `${stage} was told to record the writer's findings`);
 });

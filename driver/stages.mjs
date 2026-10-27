@@ -3150,7 +3150,7 @@ export const STAGES = {
       // (house-brand attachment / seasonality / scale). Context, never a rule that decides a finding.
       job?.campaignShape ? `Stated campaign shape (verbatim from intake — how the mark will be deployed; facts, not judgment): ${job.campaignShape}` : "",
       `Inputs: register findings ${P.registerFindings}${registerOnly ? "" : `; common-law ${P.commonLaw}`}; placements ${P.placement} (structured tiers + reasons: ${P.placementModel}); matter frame ${P.matterContext}; manifest ${P.variantManifest}.`,
-      placementSetAsideBlock(placementSetAsides), WRITER_STARTS_FROM_THE_WORK,
+      placementSetAsideBlock(placementSetAsides), WRITER_STARTS_FROM_THE_WORK, WRITER_RECORDS_AS_IT_GOES,
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
       `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
       PLACEMENT_BORDERLINE_NOTE,
@@ -4855,3 +4855,7 @@ export const BAND_READING_CONTRACT_FOR_THE_WRITER = "THE REGISTER BAND: Use the 
 // An answer the run already holds can be a finding's check (ruled 2026-10-27): a use-check source needs evidence, not
 // a fresh call. The triggers are unchanged. Step 3.5 of phase2-execution.md carries the same words.
 export const USE_CHECK_ANSWERS_HELD = "Apply the existing triggers for actual-use, enforcement, and owner checks after the relevant legal assessment. First use a suitable answer already held by this run, including an earlier stage or attempt, where it answers the same owner, mark, goods, territory, and material time question. A source requirement is not a requirement for a new call. One answer may support several findings only where it answers each finding's question. Ask only what remains unanswered and record the result against every finding it supports.";
+// Saving as it goes (ruled 2026-10-27): a try that is stopped keeps the findings and exclusions it accepted, and the
+// next try continues from them. Exclusions already go through record_declination in batches; record_synthesis takes
+// a part of the findings before the whole document exists.
+export const WRITER_RECORDS_AS_IT_GOES = "Record completed findings (`record_synthesis`) and exclusions (`record_declination`) as you complete them, individually or in small groups; do not wait for the whole report. On a resumed attempt, continue from this run's accepted work and complete what remains. Revise accepted work only for identified contrary evidence, a reasoning error, or an applicable change in the instructions. Finish the overall conclusions against the complete set before declaring the assessment complete.";
