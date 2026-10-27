@@ -64,7 +64,7 @@ import { writeRunStatus, readRunStatus, rollupStatus, atomicWrite, identitySeed 
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
-import { AGENT_WHATSAPP, whatsappRouting } from "./stages.mjs";
+import { whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
@@ -1205,8 +1205,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // two existing. Where no number is held the packet now SAYS so in `whatsappToReason` rather than
       // substituting the operator silently.
       //
-      // The failure notice below deliberately keeps `AGENT_WHATSAPP[agent]`: 289 ruled on the COMPLETION
-      // notice, and a stage failure is an operational page rather than an answer the requester ordered.
+      // The failure notice below routes the same way (buildFailurePacket). It used to keep `AGENT_WHATSAPP[agent]` as an
+      // operational page, but the courier relays it to the requester, who is owed it as they are owed a report, and the
+      // operator keeps the page as the copy beside it.
       ...whatsappRouting(job, agent),
       // ONE LINE, N LINKS. This said "Report: <one url>" and on a batch that url is now null, which would
       // have read "Report: null" — the fail-visible shape doing its job, and still not a line to send. A
@@ -1350,7 +1351,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     try {
       const rich = buildFailurePacket({
         runId, agent, job, failedStage, shortReason, terminalKind,
-        reasonVerbatim: String(reason).slice(0, 1000), whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+        reasonVerbatim: String(reason).slice(0, 1000),
       });
       const packet = {
         kind: "run-failed", ...rich,

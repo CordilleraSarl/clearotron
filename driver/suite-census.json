@@ -669,6 +669,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failure-notice-goes-to-whoever-asked.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-family-withheld-by-judgment-is-not-read-as-awaiting.test.mjs": {
           "tests": 6,
           "asserts": 15,
