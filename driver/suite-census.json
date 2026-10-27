@@ -1947,6 +1947,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-slice-taken-out-of-the-band-is-open-for-its-own-reason.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-slice-the-fold-refused-as-already-asked-is-not-a-dispatch-failure.test.mjs": {
           "tests": 10,
           "asserts": 32,
