@@ -1743,6 +1743,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-reads-nothing-another-run-left-in-the-temp-folder.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-records-the-tier-it-asked-for.test.mjs": {
           "tests": 5,
           "asserts": 18,
