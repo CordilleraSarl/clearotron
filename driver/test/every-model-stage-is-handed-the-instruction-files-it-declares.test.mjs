@@ -132,7 +132,7 @@ test("the two engines' rewrites hand every stage the same instruction paths", ()
   }
 });
 
-test("the system-level instruction reaches both engines on every stage, fresh and resumed, byte for byte the same text", () => {
+test("the system-level instruction reaches both engines on every stage, fresh and resumed, the same output rule byte for byte", async () => {
   assert.equal(CLAUDE_WRITE_DISCIPLINE, WRITE_DISCIPLINE, "the two copies of the system-level instruction have drifted");
   for (const d of dispatches()) {
     for (const resumeRef of [undefined, "invented-session"]) {
@@ -143,9 +143,12 @@ test("the system-level instruction reaches both engines on every stage, fresh an
     }
   }
   // Codex carries it as the configuration's developer instructions, which its adapter writes on every turn.
-  const toml = renderCodexConfigToml({ mcpConfig: null, allowedTools: "", developerInstructions: WRITE_DISCIPLINE });
+  // It is Claude's instruction, then the temp-folder rule only a Codex turn needs (openai-agent.mjs, TEMP_FOLDER_RULE).
+  const { CODEX_DEVELOPER_INSTRUCTIONS, TEMP_FOLDER_RULE } = await import("../engine/openai-agent.mjs");
+  assert.equal(CODEX_DEVELOPER_INSTRUCTIONS, `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`, "codex: the output rule is not the one Claude is given");
+  const toml = renderCodexConfigToml({ mcpConfig: null, allowedTools: "", developerInstructions: CODEX_DEVELOPER_INSTRUCTIONS });
   const line = toml.split("\n").find((l) => l.startsWith("developer_instructions = "));
   assert.ok(line, "codex: no developer instructions in the rendered configuration");
-  assert.equal(JSON.parse(line.slice("developer_instructions = ".length)), WRITE_DISCIPLINE,
-    "codex: the developer instructions are not the system-level instruction Claude is given");
+  assert.equal(JSON.parse(line.slice("developer_instructions = ".length)), CODEX_DEVELOPER_INSTRUCTIONS,
+    "codex: the developer instructions are not the system-level instruction plus the temp-folder rule");
 });

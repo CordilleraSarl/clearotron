@@ -60,6 +60,7 @@ import { MAX_ROWS_PER_CALL } from "../../disposition-call.mjs";
 // The lane's second statement, and a different one: which coverage units were searched to what end. Its
 // own module and its own file, never a row in the disposition form — see record_coverage_status below.
 import { recordCoverageStatus, COMMON_LAW_COVERAGE_STATUSES } from "../../common-law-coverage-status.mjs";
+import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
 
 // ── B — THE TYPED DISPOSITION TRANSPORT ─────────────────────────────────────────────────────────────
 //
@@ -76,11 +77,17 @@ function specFrom(params) {
   const { grid_spec_path } = params ?? {};
   if (!grid_spec_path)
     return { error: "ERROR: grid_spec_path is required — it is the same driver-written spec path the grid tool was given. Do not compose a path." };
+  // THIS RUN'S SPEC AND LEDGER ONLY (shared/inside-run.mjs): the run folder is the one the driver wired, never the call's.
+  const runDir = process.env.CLEAROTRON_BAND_RUN_DIR || "";
+  if (runDir && !insideRun(runDir, grid_spec_path))
+    return { error: "ERROR: grid_spec_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you." };
   let spec;
   try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
   catch (err) { return { error: `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.` }; }
   if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
     return { error: `ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}` };
+  if (runDir && !insideRun(runDir, spec.output_path))
+    return { error: "ERROR: the grid spec's output_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you." };
   return { spec };
 }
 

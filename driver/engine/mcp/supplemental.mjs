@@ -34,7 +34,8 @@ import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, planExactOrWidth, planPhoneticOrWidth, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
-import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
+import { OUTSTANDING_REASON, runDriverDirOf } from "../../../providers/_shared/follow-up-searches.mjs";
+import { pathInRun } from "../../../shared/inside-run.mjs";   // the band path is served only inside this run
 import { heldAnswers, questionKey } from "./held-answers.mjs";
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../../shared/slices-taken-out.mjs";
 import { readWithheldFamilies } from "../../withheld-families.mjs";
@@ -391,6 +392,10 @@ export async function proposeSupplemental(params, tctx, deps) {
   const proposals = Array.isArray(params?.proposals) ? params.proposals : null;
   if (!axis || !outPath || !proposals || !proposals.length)
     return { type: "text", text: "ERROR: axis, output_path and a non-empty proposals[] are all required." };
+  // The supplemental plan is written beside the band, so the band path must be this run's before anything is written.
+  const runOf = runDriverDirOf(tctx?.recordLog);
+  if (runOf && pathInRun(dirname(runOf), outPath) === null)
+    return { type: "text", text: "ERROR: output_path is outside this run's folder. Use the band path the driver gave you." };
 
   const suppPath = join(dirname(outPath), `${axis}-supplemental-plan.json`);
   // ── the supplemental plan INHERITS the frozen plan's regions (review findings 4/12) ───────────────
