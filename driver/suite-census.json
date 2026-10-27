@@ -915,6 +915,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-kept-sheet-two-entry-keeps-its-row.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-key-pasted-at-a-yes-no-prompt-is-taken-and-not-shown.test.mjs": {
           "tests": 6,
           "asserts": 31,
