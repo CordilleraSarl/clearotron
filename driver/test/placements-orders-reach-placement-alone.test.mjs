@@ -17,7 +17,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { SORT_THE_NEAR_ONES, ONE_SET_ASIDE_ROW, A_FATE_BY_NAME, PLACEMENT_GROUP_ORDERS } from "../band-shape.mjs";
+import { SORT_THE_NEAR_ONES, ONE_SET_ASIDE_ROW, A_FATE_BY_NAME, PLACEMENT_GROUP_ORDERS, READ_THEM_ALL } from "../band-shape.mjs";
 import { STAGES, paths, BAND_READING_STAGES, GROUP_READING_STAGES, BAND_READING_CONTRACT,
   BAND_READING_CONTRACT_AFTER_PLACEMENT, BAND_READING_CONTRACT_FOR_THE_WRITER, FLOOR_FATE_ORDER } from "../stages.mjs";
 
@@ -98,12 +98,12 @@ test("placement reads the shape and the contract exactly as before; the others, 
   const placement = await shapeServed(dir, true);
   const other = await shapeServed(dir, false);
   assert.equal(placement, SHAPE_MD, "placement's shape changed");
-  assert.equal(other, SHAPE_MD.split(` ${SORT_THE_NEAR_ONES}`).join("").split(` ${ONE_SET_ASIDE_ROW}`).join("").split(` ${A_FATE_BY_NAME}`).join(""),
-    "the other stages' shape lost more than the three orders, or kept one");
+  assert.equal(other, SHAPE_MD.split(` ${SORT_THE_NEAR_ONES}`).join("").split(` ${ONE_SET_ASIDE_ROW}`).join("").split(` ${A_FATE_BY_NAME}`).join("")
+    .split(` ${READ_THEM_ALL}`).join(""), "the other stages' shape lost more than the three orders and the order to read, or kept one");
   // No line moves, so the line each listed mark is printed on still holds for the reading audit.
   assert.equal(other.split("\n").length, placement.split("\n").length);
   assert.ok(other.includes("120 records in 64 lines from 60 owners.\n"), "a count lost its full stop or kept a trailing space");
-  assert.ok(other.includes("Fifty? Read them all. A floor here is placed"), "the sentences either side of an order were not rejoined by one space");
+  assert.ok(other.includes("from 2 owners.** A floor here is placed"), "the sentences either side of an order were not rejoined by one space");
 
   const P = paths(dir);
   const message = (stage) => String(STAGES[stage].message({ paths: P, axes: ["primary-sweep"], registerOnly: true, job: {} }));
