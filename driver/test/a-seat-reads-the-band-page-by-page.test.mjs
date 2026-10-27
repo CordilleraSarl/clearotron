@@ -87,7 +87,7 @@ async function readWhole(s) {
     if (answer.next_offset !== undefined) {
       assert.equal(answer.next_offset, offset + answer.returned);
       assert.ok(answer.next_offset > offset, "a page returned nothing and named its own offset");
-      assert.match(answer.note, new RegExp(`call again with offset: ${answer.next_offset} for the next page`));
+      assert.match(answer.note, new RegExp(`the next page is available with offset: ${answer.next_offset};`));
       offset = answer.next_offset;
     }
     for (const note of [answer.note, answer.byte_cap_note].filter(Boolean)) {

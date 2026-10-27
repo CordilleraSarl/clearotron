@@ -282,7 +282,7 @@ function bandShape(params) {
     ? `[band_shape part ${part}/${total} of the json; concatenate the parts before parsing it.]`
     : `[band_shape part ${part}/${total}. Read each group by the size sentence at its head; the next part continues the groups.]`;
   const tail = part < total
-    ? `\n[end of part ${part}/${total} — call band_shape again with {"part": ${part + 1}} for the next part]`
+    ? `\n[end of part ${part}/${total} — part ${part + 1} is available with {"part": ${part + 1}}]`
     : `\n[end of the shape]`;
   return head + "\n" + parts[part - 1] + tail;
 }
@@ -351,7 +351,7 @@ function groupLookup(params) {
   const body = () => JSON.stringify({
     group: g, lines_total: lines.length, returned: page.length, ...(offset ? { offset } : {}),
     ...(lines.length > offset + page.length ? { next_offset: offset + page.length,
-      note: `call again with offset: ${offset + page.length} for the next lines of group ${g}` } : {}),
+      note: `the next lines of group ${g} are available with offset: ${offset + page.length}` } : {}),
     lines: page.map(({ _key, ...l }) => l),
   }, null, 2);
   let out = body();
@@ -440,8 +440,8 @@ function bandLookup(params = {}) {
   const body = () => JSON.stringify({
     matched, returned: hits.length, ...(offset ? { offset } : {}),
     ...(matched > offset + hits.length ? { next_offset: offset + hits.length } : {}),
-    ...(matched > offset + hits.length ? { note: `capped at ${hits.length} — call again with offset: ${offset + hits.length} for the next page; the count above is the full match` } : {}),
-    ...(byteCapped ? { byte_cap_note: `${byteCapped} matched record(s) withheld to fit one tool response — call again with offset: ${offset + hits.length} for the rest` } : {}),
+    ...(matched > offset + hits.length ? { note: `capped at ${hits.length} — the next page is available with offset: ${offset + hits.length}; the count above is the full match` } : {}),
+    ...(byteCapped ? { byte_cap_note: `${byteCapped} matched record(s) withheld to fit one tool response — the rest are available with offset: ${offset + hits.length}` } : {}),
     records: hits,
     ...(crowds.length ? { matching_crowds: crowds, crowd_note: "these matching slices were NOT enumerated — records under them may exist that no lookup can return; weigh the descriptor, never treat this result as their clean"
       + (refusedCrowds ? ` — and ${refusedCrowds} of them was/were NEVER ANSWERED at all (see "refusal"): no count exists for those, so they are unsearched rather than empty, and nothing about them can be read off a zero` : "")
@@ -515,7 +515,7 @@ function bandRecord(params = {}) {
     logRead("band_record", { record_id: uri, part, parts: total }, { ok: true, bytes: parts[part - 1].length, total_bytes: text.length, ...resolution, ...served.audit });
     const head = `[band_record part ${part}/${total}. This record is served in ${total} parts; the next part continues it.]`;
     const tail = part < total
-      ? `\n[end of part ${part}/${total} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}} for the next part]`
+      ? `\n[end of part ${part}/${total} — part ${part + 1} is available with {"record_id": "${uri}", "part": ${part + 1}}]`
       : `\n[end of the record]`;
     return head + "\n" + parts[part - 1] + tail;
   }
@@ -537,7 +537,7 @@ function bandRecord(params = {}) {
     const part = Number.isInteger(wanted) && wanted >= 1 && wanted <= parts.length ? wanted : 1;
     logRead("band_record", { record_id: uri }, { ok: true, bytes: text.length, via: "ledger", part, parts: parts.length, ...served.audit });
     return { type: "text", text: `[record ${uri} — part ${part}/${parts.length}]\n` + parts[part - 1]
-      + (part < parts.length ? `\n[end of part ${part}/${parts.length} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
+      + (part < parts.length ? `\n[end of part ${part}/${parts.length} — part ${part + 1} is available with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
   }
 
   // A GENUINE miss — neither materialised NOR in this run's ledger. Now the sentence below is true.
@@ -581,7 +581,7 @@ function bandRecord(params = {}) {
     ...(parts.length > 1 ? { part, parts: parts.length } : {}), ...(failed ? { fetch_failed: true } : {}) });
   if (parts.length === 1) return { isError: true, text };
   return { isError: true, text: `[record ${uri} — part ${part}/${parts.length}]\n` + parts[part - 1]
-    + (part < parts.length ? `\n[end of part ${part}/${parts.length} — call band_record again with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
+    + (part < parts.length ? `\n[end of part ${part}/${parts.length} — part ${part + 1} is available with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
 }
 
 // The band row a record id names, from the band file, read once per server. null where the band holds none.
@@ -610,10 +610,10 @@ const GROUP_PAGES = process.env.CLEAROTRON_BAND_GROUPS === "1";
 // served the shape without them (the owner's ruling, 2026-10-14). Each is removed with the space before it, inside
 // its line, so no line moves and the line each listed mark is printed on, which `linesByPart` reads, still holds.
 // (band-shape.mjs `withoutPlacementOrders` removes them, with the shape's other placement-only orders and its group-page commands.)
-const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: official record; official record, cut by the register; official record, completeness not established; official record, no goods listed; search answer; search answer, cut by the register; search answer, completeness not established; fetch failed; or nothing held. The goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
+const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the offset where the next page starts). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: official record; official record, cut by the register; official record, completeness not established; official record, no goods listed; search answer; search answer, cut by the register; search answer, completeness not established; fetch failed; or nothing held. The goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
 const LOOKUP_GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
-const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page)";
-const LOOKUP_OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page)";
+const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the offset where the next page starts)";
+const LOOKUP_OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the offset where the next page starts)";
 /** The lookup's description as a stage is offered it: whole where it reads the groups, without them elsewhere. PURE. */
 const lookupDescription = (groupPages) => (groupPages ? LOOKUP_DESCRIPTION
   : LOOKUP_DESCRIPTION.replace(LOOKUP_GROUP_CLAUSE, "").replace(LOOKUP_OFFSET_GROUPS, LOOKUP_OFFSET_BAND));
@@ -623,7 +623,7 @@ serve({
   tools: [
     {
       name: "band_shape",
-      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the floors (every live in-class identical/near-identical record), each marked on its line in the band in the lawyer's order, class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. Read this FIRST, then pull what it names via band_lookup/band_record. A large shape is served in parts, each naming the next call. Every call is logged to the run's reading audit.",
+      description: "The deterministic shape of this run's merged register band: totals, mechanical tiers, the floors (every live in-class identical/near-identical record), each marked on its line in the band in the lawyer's order, class/status/registry/recency census, owner concentrations, crowd descriptors (with crowd-context joins) and blind spots. What it names can be looked up with band_lookup and band_record. A large shape is served in parts, and the end of each part names the next one. Every call is logged to the run's reading audit.",
       inputSchema: { type: "object", properties: { format: { type: "string", enum: ["md", "json"], description: "md (default, readable) or json (machine shape)" }, part: { type: "number", description: "1-based part number when the shape is served in parts (default 1)" } } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandShape,

@@ -97,7 +97,7 @@ test("nothing the step reads orders the shape read whole; a part says only that 
   for (const [where, text] of [["reading contract", BAND_READING_CONTRACT], ["manual", MANUAL], ["band_shape tool", SHAPE_TOOL]])
     assert.doesNotMatch(text, /read every part|read ALL parts|COMPLETE only once|complete once parts|no lookup pattern excuses|a partial shape is never the shape/, `the ${where} still orders a whole read`);
   assert.ok(SHAPE_TOOL.includes("Read each group by the size sentence at its head; the next part continues the groups."), "the banner says what a part is");
-  assert.ok(SHAPE_TOOL.includes("A large shape is served in parts, each naming the next call."), "the description says only that");
+  assert.ok(SHAPE_TOOL.includes("A large shape is served in parts, and the end of each part names the next one."), "the description says only that");
   assert.doesNotMatch(MANUAL, /\bher\b/, "the manual points at a person it never names");
   assert.match(MANUAL, /read its goods in `band_record`, unless its goods words already show the ground/);
 });

@@ -218,7 +218,9 @@ Every cross-check (including "checked, found nothing") logged in the unified aud
 
 ## Step 3.5 — Actual-use and enforcement check (mandatory for register hits rated medium risk or higher)
 
-Before synthesis, for **every register finding** advisory-rated on a rung **the framework rates medium risk or higher** (the stage message names those rungs; a rung below that is not checked, on any client's ladder), run a marketplace check via `perplexity_research` to determine whether the registered mark is **actually being used in the marketplace within the scope of the current search** (i.e. for the goods/services and field this clearance targets). **The same query also asks for the owner's enforcement record:** whether the owner has opposed, disputed or sued over this mark or a similar one.
+For **every register finding** advisory-rated on a rung **the framework rates medium risk or higher** (the stage message names those rungs; a rung below that is not checked, on any client's ladder), run a marketplace check via `perplexity_research` to determine whether the registered mark is **actually being used in the marketplace within the scope of the current search** (i.e. for the goods/services and field this clearance targets). **The same query also asks for the owner's enforcement record:** whether the owner has opposed, disputed or sued over this mark or a similar one.
+
+Apply the existing triggers for actual-use, enforcement, and owner checks after the relevant legal assessment. First use a suitable answer already held by this run, including an earlier stage or attempt, where it answers the same owner, mark, goods, territory, and material time question. A source requirement is not a requirement for a new call. One answer may support several findings only where it answers each finding's question. Ask only what remains unanswered and record the result against every finding it supports.
 
 Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 video game software — check whether Jellycat actually sells or markets video games under JELLY. If they don't (their commercial use is toys), note the filed-vs-used distinction in Key Factors and weigh it as a Stage-2 factor together with revocation-vulnerability — no automatic downgrade (see `synthesis-rules.md` → *Actual-use assessment results*).
 
@@ -245,7 +247,7 @@ If the marketplace query genuinely returned nothing, write the honest value verb
 
 The driver's `narrative` validator (`verify.mjs` → `findUseCheckViolations`) **rejects the whole narrative** if a
 Composite 3+ use-negative finding lacks this line, so the synthesis stage cannot ship an *inferred* "no use" —
-it must actually run the scoped query (owner + mark + goods/field) and cite the result, or state the honest
+it must actually run the scoped query (owner + mark + goods/field), unless an answer this run already holds answers that question, and cite the result, or state the honest
 "no result". Never dress an un-run check as a clean negative. Also mirror the result into the matching `# Actions`
 item: "confirm the owner's actual use" becomes the stated result, not a task handed onward (this is what fills
 spec 09's "Checks we ran — what we found" bucket). On a perplexity outage the "no result" value is the accepted

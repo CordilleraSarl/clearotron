@@ -103,7 +103,7 @@ export function researchAnsweredBlock(n) {
   const asked = n === 1 ? "asked 1 question and got its answer" : `asked ${n} questions and got their answers`;
   return `RESEARCH THIS RUN HAS ALREADY ANSWERED: an earlier attempt of this stage ${asked}. They are in ${RESEARCH_ANSWERS_MD}, `
     + "one question and its answer per line. Before you ask about a finding's owner and mark, search that file for the owner's name "
-    + "with search_run_artifacts. Where one of them asked about that owner and mark for the same field and country, use its answer as "
+    + "with search_run_artifacts. Where one of them answers the same owner, mark, goods, territory and material time question, use its answer as "
     + "that finding's check, cite its URL and record it as you would a fresh one; ask only what none of them covers.";
 }
 
