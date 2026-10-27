@@ -1,6 +1,6 @@
 ---
 name: clearotron-account
-description: Work with a trademark clearance account: review the searches already run for it, and commission new ones. Use when the user asks about their clearance searches in general, or wants a new search set up.
+description: "Work with a trademark clearance account: review the searches already run for it, and commission new ones. Use when the user asks about their clearance searches in general, or wants a new search set up."
 ---
 
 # Working with your trademark clearance searches (account connector)

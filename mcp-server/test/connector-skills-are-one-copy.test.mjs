@@ -40,6 +40,21 @@ test("each connector skill is discoverable: frontmatter, a name that matches its
   }
 });
 
+test("each connector skill's frontmatter values read under a strict YAML parser", () => {
+  // A host that parses the frontmatter strictly refuses a plain, unquoted value that carries ": " or " #":
+  // the first reads as a nested mapping, the second as a comment. A lenient loader reads the line anyway,
+  // so the skill still works in one host and fails to load in another. A value that needs either is quoted.
+  for (const d of DIRS) {
+    const src = readFileSync(join(SKILLS, d, "SKILL.md"), "utf8");
+    const front = src.slice(4, src.indexOf("\n---", 4));
+    for (const [, key, value] of front.matchAll(/^([A-Za-z_][\w-]*): (.*)$/gm)) {
+      if (/^["']/.test(value)) continue;
+      assert.ok(!value.includes(": ") && !value.includes(" #"),
+        `${d}'s ${key} is unquoted and carries ": " or " #", which a strict YAML parser refuses: ${value}`);
+    }
+  }
+});
+
 test("the plugin manifest exists and is the thing that makes them install as one unit", () => {
   // The plugin is its own folder, the one Claude's plugin directory installs; the skills it carries are
   // byte copies of skills/, which scripts/mint-plugin-folder.mjs --check holds identical.

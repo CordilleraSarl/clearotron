@@ -7983,8 +7983,8 @@
           "todos": 0
         },
         "connector-skills-are-one-copy.test.mjs": {
-          "tests": 5,
-          "asserts": 30,
+          "tests": 6,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
