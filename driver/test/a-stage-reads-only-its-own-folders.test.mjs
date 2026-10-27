@@ -10,8 +10,9 @@
 //
 // Claude's file tools now refuse any path outside the turn's working directories, and Codex, with its
 // sandbox on, runs every command under a permission profile that reads only the instruction trees, the run
-// folder and the temp folders. These arms hold both, on every stage, fresh and resumed, and hold a retry to
-// the run folder its stage was dispatched with, which the fence would otherwise take from it.
+// folder and its Codex home's own working folder, never a temp folder another run shares. These arms hold
+// both, on every stage, fresh and resumed, and hold a retry to the run folder its stage was dispatched with,
+// which the fence would otherwise take from it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync, mkdirSync, writeFileSync, symlinkSync, realpathSync, statSync } from "node:fs";
@@ -130,7 +131,7 @@ async function codexTurn(bypass) {
 }
 
 test("codex, sandbox on: the config selects the stage's profile, and no --sandbox rides the command line to switch it off", async () => {
-  const { argv, configToml, runDir, trees } = await codexTurn(undefined);
+  const { argv, configToml, runDir, trees, codexHome } = await codexTurn(undefined);
   assert.ok(!argv.includes("--sandbox"), `--sandbox makes codex ignore the profile: ${argv.join(" ")}`);
   assert.ok(!argv.includes("--dangerously-bypass-approvals-and-sandbox"));
   assert.ok(!/^\s*sandbox_mode\s*=/m.test(configToml), "sandbox_mode in the config makes codex ignore the profile");
@@ -140,10 +141,10 @@ test("codex, sandbox on: the config selects the stage's profile, and no --sandbo
   const rules = Object.fromEntries([...profile.matchAll(/^("[^"]+") = "(read|write|deny)"$/gm)].map((m) => [JSON.parse(m[1]), m[2]]));
   // The stand-in is a loose program, so its own folder is the program root the profile reads.
   assert.deepEqual(rules, {
-    ":minimal": "read", ":tmpdir": "write", ":slash_tmp": "write",
+    ":minimal": "read", [`${codexHome}.work`]: "write",
     [trees[0]]: "read", [trees[1]]: "read", [dirname(realpathSync(join(HERE, "mock-codex.mjs")))]: "read", [runDir]: "write",
     [driverDir(runDir)]: "read", ".": "write",
-  }, "the profile grants something other than the instruction trees, codex's own programs, the run folder with its driver records read-only, the working folder and the temp folders");
+  }, "the profile grants something other than the instruction trees, codex's own programs, the run folder with its driver records read-only, the working folder and the home's own working folder");
   assert.match(profile, new RegExp(`^\\[permissions\\.${FENCE_PROFILE}\\.filesystem\\.":workspace_roots"\\]\\n"\\." = "write"$`, "m"));
 });
 
