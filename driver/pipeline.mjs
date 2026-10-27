@@ -3580,6 +3580,34 @@ export function withGoodsStates(ctx, P, rows) {   // @internal — driven by its
   } catch (e) { return unstated(e?.message ?? e); }
 }
 
+/**
+ * THE FLOORS THE WRITER DECLINED, AS THE REVIEW IS TOLD THEM (ruled 2026-10-27): one line per floor on a position the
+ * writer declined, with its reason and its ground, after placement's decisions. The writer may decline a mark identical
+ * to the applied-for mark on goods the run holds complete, and a review told only placement's decisions read such a
+ * floor as one the narrative neither rates nor reasons away, and sent it back. [] when nothing stands. IMPURE.
+ */
+export function writerFloorDeclinationLines(P) {   // @internal — driven by its test with a run's own files
+  try {
+    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
+    if (!Array.isArray(floors) || !floors.length) return [];
+    const declined = readDeclinations(P.runDir);
+    if (!declined.byUri.size) return [];
+    // A declination is the position's: each record of a row the writer was handed reads its row's.
+    const rowOf = new Map();
+    for (const row of findingsSurfaceRows(P))
+      for (const u of (Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri])) rowOf.set(normalizeRecordUri(u), normalizeRecordUri(row?.uri));
+    const out = [];
+    for (const f of floors) {
+      const u = normalizeRecordUri(f?.record_id);
+      const d = u ? declined.byUri.get(rowOf.get(u) ?? u) : null;
+      if (d) out.push(`- ${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id}): declined by the writer as ${d.reason}: ${d.grounds}`);
+    }
+    return out;
+  } catch { return []; }
+}
+/** Every floor decision the review reads: placement's, then the writer's. IMPURE (reads the run). */
+const reviewFloorDecisionLines = (P) => [...placementFloorDecisionLines(P), ...writerFloorDeclinationLines(P)];
+
 export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
   if (!rows.length) {
@@ -4963,7 +4991,7 @@ function clearedForSeat(runDir, label) {
  */
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
-  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) };
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths) };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
   // The writer is also handed the research its earlier attempts got (research-answers.mjs), written to the run folder when
@@ -7079,7 +7107,7 @@ async function runPostRepairReview(ctx, P, run, scope) {
   const changedInputs = changedInputsOf(scope.changed, { narrative: P.narrative, findings: P.findings });
   const message = repairFollowup("narrative-refutation:post-repair-review", {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
-    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
+    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: reviewFloorDecisionLines(P),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
