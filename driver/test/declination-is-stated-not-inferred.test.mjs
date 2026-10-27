@@ -331,7 +331,7 @@ test("a live record in an instructed class cannot be declined for want of room",
   const clash = contradictionFor("not-worth-the-line", live, scope);
   assert.ok(clash, "a live in-class record declined on economy must be refused");
   assert.match(clash, /class 5, 42/, "the refusal must name the shared classes it rests on");
-  assert.match(clash, /never omitted for want of room/);
+  assert.match(clash, /never declined for want of room/);
   // It must tell the seat what to do instead, or it is a wall rather than a correction.
   for (const alternative of ["unrelated-goods", "off-field-not-major", "own-right", "duplicate-of-delivered"])
     assert.match(clash, new RegExp(alternative), `the refusal must name ${alternative} as still open`);

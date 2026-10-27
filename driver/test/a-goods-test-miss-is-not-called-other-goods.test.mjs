@@ -33,6 +33,6 @@ test("the crowd's row covers a floor once its line is read and its goods are not
   assert.equal(A_CROWDS_ROW_COVERS_A_READ_FLOOR, "This row covers a floor only once you have read its line and its goods are not the client's goods.");
   const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "placement-inquiry", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   assert.ok(manual.includes("only a crowd's row of a thousand records or more in (b) covers a floor."));
-  assert.ok(manual.includes("A shared class or a match to a searched variant does not itself require a finding."));
+  assert.ok(manual.includes("A shared class, or a match to a searched variant, is not on its own a reason to place a floor."));
   assert.ok(!manual.includes("identical marks for other goods"), "the placement manual still calls a goods-test miss other goods");
 });

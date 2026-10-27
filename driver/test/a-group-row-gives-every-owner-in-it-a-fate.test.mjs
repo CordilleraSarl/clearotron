@@ -130,20 +130,20 @@ test("a floor is set aside by name on its status, territory, registered goods or
     { set_aside: "/mark/eu/u1", ground: "held only in Japan, outside the order", on: "Territory" },
     { set_aside: "/mark/eu/a2", ground: "a different product, sold only to farmers" },
   ] }, input);
-  assert.match(why(u)["/mark/eu/b1"], /give "on" as one of status, territory, goods, mark/);
-  assert.match(why(u)["/mark/eu/a1"], /never its goods or its owner's customers, channels, markets or field/, "the form reads a status ground, not the label alone");
+  assert.match(why(u)["/mark/eu/b1"], /^a floor's set-aside needs "on": one of status, territory, goods, mark$/);
+  assert.match(why(u)["/mark/eu/a1"], /^a status ground is about the status only, and this one speaks of goods, customers, channels, markets or field\./, "the form reads a status ground, not the label alone");
   assert.deepEqual(u.form.set_aside.map((e) => [e.set_aside, e.on ?? null]), [["/mark/eu/b2", "goods"], ["/mark/eu/u1", "territory"], ["/mark/eu/a2", null]],
     "a floor named on its goods, read in full, and one named on its territory are taken; a line holding no floor needs no `on`");
   const cut = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground: "registered for printers only", on: "goods" }] }, input);
-  assert.match(why(cut)["/mark/eu/b1"], /does not hold the goods of \/mark\/eu\/b1 \(cut\) complete: missing or incomplete goods establish no ground/);
+  assert.match(why(cut)["/mark/eu/b1"], /does not hold the goods of \/mark\/eu\/b1 \(cut\) in full, so a goods ground cannot stand/);
   const own = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b2", ground: "the marks differ as wholes", on: "mark" }] }, input);
-  assert.match(why(own)["/mark/eu/b2"], /carries the client's mark itself, which no comparison of marks can set aside/);
+  assert.match(why(own)["/mark/eu/b2"], /carries the client's own mark, so a mark ground cannot set it aside/);
   const earlier = unionPlacementForm({ rows: [], set_aside: [{ set_aside: "/mark/eu/b1", ground: "an earlier ground about the owner" }] }, { rows: [] }, input);
   assert.deepEqual([earlier.form.set_aside.length, Boolean(why(earlier)["/mark/eu/b1"])], [0, true], "an earlier row on a floor without `on` is refused and said back");
   const oos = unionPlacementForm(null, { rows: [{ select: "/mark/eu/b1", tier: "out-of-scope-filtered", reason: "the owner's customers are hospitals" }] }, input);
   assert.deepEqual([oos.form.rows[0].tier, oos.form.tier_refused?.[0]?.select, oos.settled], [null, "/mark/eu/b1", 0],
     "out-of-scope-filtered on a floor is refused by code and the row stays open");
-  assert.match(oos.form.tier_refused[0].why, /never out-of-scope-filtered: place it, sheet-2 at the least, or set its line aside by name on its status, its territory, its registered goods or its mark/);
+  assert.match(oos.form.tier_refused[0].why, /^a floor never takes out-of-scope-filtered\. Place it at headline-candidate or sheet-2, or set its line aside by name$/);
 });
 
 test("a ground by name on a line holding a floor needs a floor ground, though the record it names is another position of the line", async () => {

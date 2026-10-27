@@ -233,22 +233,18 @@ export function contradictionFor(reason, row, scope) {
   // record's goods complete (goods-evidence.mjs), because cut, unknown or missing goods establish nothing. The
   // record's field, the report's length and a comparison with the applied-for mark itself are still refused.
   if (isIdenticalToAppliedMark(row?.mark, marks) && isLive(row?.status) && shared.length) {
-    const facts = `this record's mark is IDENTICAL to the applied-for mark under the house normalizer, its `
-      + `status is ${String(row?.status ?? "").trim() || "live"}, and it sits in class ${shared.join(", ")} `
-      + `— one of the matter's own filed classes`;
+    const facts = `this record's mark is IDENTICAL to the applied-for mark, its status is `
+      + `${String(row?.status ?? "").trim() || "live"}, and it is in filed class ${shared.join(", ")}`;
     if (reason === "unrelated-goods") {
       if (row?.goods === "complete") return "";
-      return `${facts}, and the run does not hold its goods complete (${String(row?.goods ?? "").trim() || "not recorded"}): `
-        + `missing or incomplete goods do not establish that the goods are unrelated. Deliver it and rate it, or, `
-        + `if it is the applicant's own right or already delivered under another record, say so with own-right `
-        + `or duplicate-of-delivered.`;
+      return `${facts}. The run holds its goods as ${String(row?.goods ?? "").trim() || "not recorded"}, not in full, `
+        + `and incomplete goods cannot show the goods are unrelated. Deliver and rate it, or use own-right or `
+        + `duplicate-of-delivered if one is true.`;
     }
-    return `${facts}. An on-point identical mark in the relevant class is never dropped for its field, for want `
-      + `of room or on a comparison with the applied-for mark itself, "regardless of filer profile". Deliver it `
-      + `and rate it; a Stage-2 mitigant is a rating input, never a reason to omit. If its registered goods, read `
-      + `in full, do not meet the matter's goods, decline it as unrelated-goods with that ground; if it is the `
-      + `applicant's own right or already delivered under another record, say so with own-right or `
-      + `duplicate-of-delivered.`;
+    return `${facts}. Such a mark is never declined for its field, for want of room, or on its sign. Deliver and `
+      + `rate it; a Stage-2 mitigant goes into the rating. If its registered goods, read in full, do not meet the `
+      + `matter's goods, decline it as unrelated-goods and say so in the ground. If it is the applicant's own right `
+      + `or already delivered, use own-right or duplicate-of-delivered.`;
   }
 
   // ── ECONOMY IS NOT A REASON ABOUT A LIVE IN-CLASS MARK (ruling 2026-09-07) ─────────────────
@@ -273,15 +269,12 @@ export function contradictionFor(reason, row, scope) {
   // It does effectively retire this token for live in-class records, because the sweep is already scoped
   // to the instructed classes. That was put to the owner as the consequence and ruled anyway.
   if (reason === "not-worth-the-line" && isLive(row?.status) && shared.length) {
-    return `this record is ${String(row?.status ?? "").trim() || "live"} and sits in class `
-      + `${shared.join(", ")} — one of the matter's own instructed classes. "not worth the line" is a `
-      + `statement about the report's budget, not about this mark, and a live registration in an `
-      + `instructed class is never omitted for want of room. Either carry it, or decline it on something `
-      + `true of THIS MARK: unrelated-goods if its goods do not meet the matter's, off-field-not-major `
-      + `if it is off-field and not a major brand, an active dispute or a well-known enforcer, sign if `
-      + `a buyer in this market could not take its spelling for the mark, own-right if it belongs to the `
-      + `applicant, duplicate-of-delivered if the same right is already reported. Say what makes this mark `
-      + `distant, or give it its line.`;
+    return `this record is ${String(row?.status ?? "").trim() || "live"} in instructed class ${shared.join(", ")}. `
+      + `A live mark in an instructed class is never declined for want of room. Deliver it, or decline it on a fact `
+      + `about this mark: unrelated-goods if its goods do not meet the matter's; off-field-not-major if it is `
+      + `off-field and not a major brand, an active dispute or a well-known enforcer; sign if a buyer in this market `
+      + `could not take its spelling for the mark; own-right if it belongs to the applicant; duplicate-of-delivered `
+      + `if the same right is already reported.`;
   }
 
   // THERE IS NO CLASS-OVERLAP REFUSAL, AND THE FIRST DRAFT HAD ONE. It refused `unrelated-goods` and

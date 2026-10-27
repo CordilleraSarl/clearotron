@@ -150,7 +150,7 @@ test("beside a crowd's row, a set-aside by name keeps its own line, and the revi
   for (let i = 0; i < N; i++) assert.equal(text.split(`/mark/eu/m${i})`).length - 1 + text.split(`/mark/eu/m${i},`).length - 1, 1, `floor m${i} is not named once`);
 });
 
-const SENTENCE = "Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision or the writer's recorded declination already accounts for it. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision, naming the evidence that contradicts its ground or the error in its reasoning.";
+const SENTENCE = "Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below. A floor that is none of these is a FLAGGED CORRECTION. Check each listed decision's ground against the evidence. Flag a decision only when you can name the evidence against its ground or the error in its reasoning.";
 const LINES = ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019",
   "- covered by group (b)'s row: identical marks in the class for goods unrelated to the client's (/mark/eu/m1)"];
 

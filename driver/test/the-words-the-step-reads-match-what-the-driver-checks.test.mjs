@@ -55,17 +55,17 @@ test("no sentence the step reads lets a group's row answer a floor below a thous
   assert.doesNotMatch(MANUAL, /you were served|covers only the lines/, "the manual still says a row covers a subset of a group");
   assert.match(MANUAL, /left to the group's row with the reason, except a floor, which is placed or set aside by name/);
   assert.match(SET_ASIDE_GROUP_CONTRACT.when, /It covers a floor only in such a crowd in \(b\), and only once you have read the floor's line; a floor among the lines the goods test could not place, like any other floor, is placed or set aside by name/);
-  assert.match(DICTATION, /A floor is placed, sheet-2 at the least, or set aside by name on its status, its territory, its registered goods or its mark; only a crowd's row in \(b\) may leave it to the row/);
+  assert.ok(DICTATION.includes("Place a floor at headline-candidate or sheet-2, or set it aside by name. Only a crowd's row in (b) may cover a floor."));
   assert.doesNotMatch(MANUAL + DICTATION, /among the lines the goods test could not place, covers a floor|or in those lines/, "no sentence lets the no-goods row cover a floor");
 });
 
 test("no sentence the step reads lets a name cover an owner's other marks", () => {
   for (const [where, text] of [["manual", MANUAL], ["dictation", DICTATION], ["form", CONTRACTS]])
     assert.doesNotMatch(text, /every record of that owner|owner's set|as a set and do not carry|several lines|more than one line/, `the ${where} still sets an owner's marks aside by one name`);
-  assert.match(SET_ASIDE_ROW_CONTRACT.set_aside, /never another mark of the owner/);
-  assert.match(SET_ASIDE_ROW_CONTRACT.on, /one of status, territory, goods or mark\. goods is the registered goods, read in full, against the client's particular goods; mark is a reasoned comparison with the client's mark\. A floor is never set aside on its owner, its customers or its field\./);
-  assert.match(MANUAL, /set aside by name on its status, its territory, its registered goods or its mark \(the row's `on`\), never on its owner's customers or field/);
-  assert.match(DICTATION, /sets a floor aside on its status, its territory, its registered goods or its mark, said in "on", never on its owner's customers or field/);
+  assert.match(SET_ASIDE_ROW_CONTRACT.set_aside, /Another mark of the same owner needs its own fate\./);
+  assert.ok(SET_ASIDE_ROW_CONTRACT.on.includes("The owner, its customers and its field are never a ground."));
+  assert.ok(MANUAL.includes("set aside by name with `on` set to status, territory, goods or mark"));
+  assert.ok(DICTATION.includes("A floor's set-aside gives its ground in \"on\": status, territory, goods or mark."));
   assert.match(MANUAL, /never an identical mark live in an ordered or frame-added class\. For each:/, "the out-of-scope section names the exception");
 });
 
@@ -127,7 +127,7 @@ test("no part banner or role text orders a whole read, and the manual's identica
   assert.doesNotMatch(SERVER, /COMPLETE only once|is complete once parts/, "a record's banner still orders a whole read");
   assert.ok(SERVER.includes("This record is served in ${total} parts; the next part continues it."));
   assert.doesNotMatch(SHAPE_SRC, /reads THIS whole/);
-  assert.ok(MANUAL.includes("An identical or mechanically near-identical mark live in an ordered or added class must be considered. Read the evidence needed to judge the mark against the client's mark and the registered goods against the client's particular goods. Carry a plausible conflict or an unresolved relevant question. Otherwise, record the substantive reason and the evidence for setting it aside. A shared class or a match to a searched variant does not itself require a finding. Missing or incomplete goods, thin use, small ownership, and possible revocation do not establish a ground for exclusion."));
+  assert.ok(MANUAL.includes("A floor is a live identical or mechanically near-identical mark in an ordered or added class. Compare each floor's mark with the client's mark, and its registered goods with the client's particular goods. Place the floor when a conflict is plausible or the evidence leaves the question open. Otherwise set it aside, with the reason and the evidence. A shared class, or a match to a searched variant, is not on its own a reason to place a floor. Missing or incomplete goods, thin use, a small owner and possible revocation are never reasons to set a floor aside. A floor never takes out-of-scope-filtered."));
   assert.doesNotMatch(MANUAL, /is placed, sheet 2 at the least, unless it is set aside by name on its status or territory/, "the compulsory-retention line still stands beside the amendment");
   assert.doesNotMatch(MANUAL, /is never out-of-scope-filtered: sheet 2 at the least\./, "the old line 172 still stands beside the by-name rule");
 });

@@ -79,7 +79,7 @@ test("the writer is told it owes positions, ended by a finding naming any of the
   const { ctx, rows } = seed(t);
   const text = String(STAGES.synthesis.message({ ...ctx, customerUnknown: false, profile: null, intakeAsks: [], enforcerSignals: null, framework: null,
     jxAim: null, registerOnly: false, crowdContext: null, dispatchBlocks: {}, findingsSurface: rows }));
-  assert.match(text, /Account for each retained position or page with a finding or a substantive recorded exclusion\. Accepted exclusions from earlier steps are already accounted for: preserve their evidence and reasons without writing them again\. Reopen one only on identified contrary evidence or an error in its reasoning\. Write the findings that remain after relevance is settled; do not write a finding merely to satisfy accounting\./);
+  assert.ok(text.includes("End each position and page on your list with a finding, or with a declination whose reason is a fact about that position or page. Exclusions made before your step are complete: keep their evidence and reasons, and do not write them again. Reopen one only when you can name the evidence against it or the error in its reasoning. Never write a finding whose only purpose is to account for a position."), "the writer is not told D as approved");
   assert.doesNotMatch(text, /there is no third way out\./, "the writer is still told every position needs a line of its own");
   assert.match(text, /the register digest carried 4 position\(s\) onto your findings surface/);
   assert.match(text, /or you decline it BY NAME with a reason and one ground for the position\. A position you simply do not mention/);

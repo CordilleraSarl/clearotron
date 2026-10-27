@@ -65,7 +65,7 @@ test("one goods ground over a list covers each line whose goods are held complet
   ] }, input);
   assert.deepEqual(taken(u), [["/mark/eu/b1", "goods"], ["/mark/eu/b2", "goods"]]);
   const why = refusedBy(u);
-  assert.match(why["/mark/eu/b3"], /does not hold the goods of \/mark\/eu\/b3 \(unknown\) complete/);
+  assert.match(why["/mark/eu/b3"], /does not hold the goods of \/mark\/eu\/b3 \(unknown\) in full, so a goods ground cannot stand/);
   assert.match(why["/mark/eu/zz"], /the band holds no record with this id/);
   assert.equal(u.form.rows.length, 0, "a list of set-asides is never a candidate");
   // The floor duty counts the two lines the ground covers, and still owes the exception and the line never named.
@@ -78,7 +78,7 @@ test("one goods ground over a list covers each line whose goods are held complet
 test("a goods ground on a line the step never read, or on a run with no record of its goods, is said back", () => {
   const unread = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground: GOODS_GROUND, on: "goods" }] }, fixture({ read: false }));
   assert.equal(unread.form.set_aside.length, 0);
-  assert.match(refusedBy(unread)["/mark/eu/b1"], /only once its line has been read/);
+  assert.match(refusedBy(unread)["/mark/eu/b1"], /^this line has not been read\./);
   const opened = fixture({ read: false });
   opened.served.records.add("/mark/eu/b1");
   assert.equal(unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground: GOODS_GROUND, on: "goods" }] }, opened).form.set_aside.length, 1,
@@ -86,7 +86,7 @@ test("a goods ground on a line the step never read, or on a run with no record o
   const none = fixture();
   none.evidence = null;
   const u = unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/b1", ground: GOODS_GROUND, on: "goods" }] }, none);
-  assert.match(refusedBy(u)["/mark/eu/b1"], /no record of what this line's goods rest on/);
+  assert.match(refusedBy(u)["/mark/eu/b1"], /^the run has no record of this line's goods, so a goods ground cannot be checked\./);
 });
 
 test("a mark ground stands on a searched form of the mark and never on the client's mark itself", () => {
@@ -96,11 +96,11 @@ test("a mark ground stands on a searched form of the mark and never on the clien
     { set_aside: "/mark/eu/b2", ground: "the stylisation sets it apart from the client's mark", on: "mark" },
   ] }, input);
   assert.deepEqual(taken(u), [["/mark/eu/v1", "mark"]]);
-  assert.match(refusedBy(u)["/mark/eu/b2"], /carries the client's mark itself/);
+  assert.match(refusedBy(u)["/mark/eu/b2"], /carries the client's own mark, so a mark ground cannot set it aside/);
   const noMarks = fixture();
   noMarks.marks = [];
   assert.match(refusedBy(unionPlacementForm(null, { rows: [{ set_aside: "/mark/eu/v1", ground: "a different word as a whole", on: "mark" }] }, noMarks))["/mark/eu/v1"],
-    /no applied-for mark to compare/);
+    /^the run has no applied-for mark to compare with\./);
 });
 
 test("a goods ground needs no product words: the evidence is what the form reads", () => {

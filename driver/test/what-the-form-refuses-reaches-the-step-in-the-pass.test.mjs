@@ -134,7 +134,7 @@ test("a floor row whose tier the form refused is not read as placed: its group's
   // The step judged the row and the form refused its tier: the floor is said back, with why the tier was refused.
   assert.equal(v.ok, false);
   assert.match(v.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_tier_invalid\) — /, "the refused tier was read as a row left unfinished");
-  assert.match(v.reason, /The form also refused, each for the reason given: the tier on \/mark\/eu\/b1 \(an identical mark live in an ordered or frame-added class is never out-of-scope-filtered/);
+  assert.match(v.reason, /The form also refused, each for the reason given: the tier on \/mark\/eu\/b1 \(a floor never takes out-of-scope-filtered/);
 });
 
 test("a floor whose tier the form refused, left alone on the turns after, is said back as a floor and never fails as an unfinished row", (t) => {
@@ -167,7 +167,7 @@ test("a floor whose own row lacks its reason is named with that row and what it 
   const v = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), { select: "/mark/eu/b1", tier: "sheet-2" }] });
   assert.match(v.reason, /^placement_floors_without_fate=1: \/mark\/eu\/b1 in \(b\), its row PR-[A-Z0-9]+ \(placement_reason_missing\) — /,
     "the step was told to select a record it had selected, not what its row lacks");
-  assert.match(v.reason, /Where a floor's row is named, finish that row: a floor's row owes a tier, sheet-2 at the least, and a reason stating the ground\. Only these are owed/);
+  assert.match(v.reason, /Where a floor's row is named, finish that row: give it headline-candidate or sheet-2, and a reason stating the ground\. Only these are owed/);
 });
 
 test("a pass whose only selection is a floor with its tier refused says the floor back, and is not refused as a lost register", (t) => {
@@ -180,7 +180,7 @@ test("a row left unfinished is refused as before, and the refusal names the floo
   const r = run(t);
   const v = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), { select: "/mark/eu/d1", tier: "sheet-2" }] });
   assert.match(v.reason, /^placement_unjudged=1: /, "guard: (d)'s row has no reason, and is not a floor");
-  assert.match(v.reason, /The form gives these floors no fate either: \/mark\/eu\/b1 in \(b\)\. Place each by selecting that record, sheet-2 at the least, or set its line aside by name on its status, its territory, its registered goods or its mark\./,
+  assert.match(v.reason, /The form gives these floors no fate either: \/mark\/eu\/b1 in \(b\)\. Select each at headline-candidate or sheet-2, or set its line aside by name\./,
     "the step learned of the floor a turn later than of the row");
 });
 

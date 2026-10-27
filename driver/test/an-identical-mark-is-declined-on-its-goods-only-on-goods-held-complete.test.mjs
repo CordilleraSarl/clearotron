@@ -43,8 +43,8 @@ test("…and refused on goods the run does not hold complete, naming what they r
     const r = decline([{ ...IDENTICAL, goods }], 0, "unrelated-goods");
     assert.equal(r.accepted.length, 0, `goods ${goods}: a goods decision stood on goods the run does not hold complete`);
     assert.match(r.refused[0].why, /IDENTICAL/);
-    assert.match(r.refused[0].why, new RegExp(`does not hold its goods complete \\(${goods ?? "not recorded"}\\): missing or incomplete goods do not establish`));
-    assert.match(r.refused[0].why, /own-right or duplicate-of-delivered/, "the refusal names the routes still open");
+    assert.match(r.refused[0].why, new RegExp(`The run holds its goods as ${goods ?? "not recorded"}, not in full, and incomplete goods cannot show the goods are unrelated\\.`));
+    assert.match(r.refused[0].why, /use own-right or duplicate-of-delivered if one is true/, "the refusal names the routes still open");
   }
 });
 
@@ -52,7 +52,7 @@ test("its field, the report's length and its sign stay refused, with the goods r
   for (const reason of ["off-field-not-major", "not-worth-the-line", "sign"]) {
     const r = decline([{ ...IDENTICAL, goods: "complete" }], 0, reason);
     assert.equal(r.accepted.length, 0, `${reason} set aside an identical, live, in-class mark`);
-    assert.match(r.refused[0].why, /decline it as unrelated-goods with that ground/);
+    assert.match(r.refused[0].why, /decline it as unrelated-goods and say so in the ground/);
   }
 });
 
@@ -71,7 +71,7 @@ test("a position is declined on its goods only where every identical member's go
       { uri: "/mark/eu/q3", mark: "QZORVAK", classes: [42], status: "PENDING", goods }] });
   assert.equal(decline([position("complete")], 0, "unrelated-goods").accepted.length, 1);
   assert.equal(decline([position("cut")], 0, "unrelated-goods").accepted.length, 0, "one member's cut goods were read as complete");
-  assert.equal(contradictionFor("unrelated-goods", position("cut"), SCOPE).includes("(cut)"), true);
+  assert.equal(contradictionFor("unrelated-goods", position("cut"), SCOPE).includes("The run holds its goods as cut, not in full"), true);
 });
 
 test("the spec the tool judges carries each record's goods state, a position's members included", (t) => {

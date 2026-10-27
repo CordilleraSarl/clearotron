@@ -200,17 +200,17 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     const records = checkedRecords(canonical);
     if (on === "goods") {
       if (!servedSet.has(namedKey(canonical)))
-        return "a floor is set aside on its goods only once its line has been read: read it in band_shape or its group's page, or open its record with band_record";
+        return "this line has not been read. Read it in band_shape or its group's page, or open its record with band_record, before you set it aside on its goods";
       const states = input?.evidence instanceof Map ? input.evidence : null;
-      if (!states) return "the run holds no record of what this line's goods rest on, so no ground on its goods can be checked: place the line, or set it aside on another ground";
+      if (!states) return "the run has no record of this line's goods, so a goods ground cannot be checked. Place the line, or set it aside on its status, territory or mark";
       const short = records.filter((r) => states.get(r.uri) !== "complete");
       if (short.length)
-        return `the run does not hold the goods of ${short.slice(0, 3).map((r) => `${r.uri} (${states.get(r.uri) ?? "not recorded"})`).join(", ")}${short.length > 3 ? `, and ${short.length - 3} more` : ""} complete: missing or incomplete goods establish no ground, so place the line or set it aside on another ground`;
+        return `the run does not hold the goods of ${short.slice(0, 3).map((r) => `${r.uri} (${states.get(r.uri) ?? "not recorded"})`).join(", ")}${short.length > 3 ? `, and ${short.length - 3} more` : ""} in full, so a goods ground cannot stand. Place the line, or set it aside on its status, territory or mark`;
     }
     if (on === "mark") {
-      if (!clientMarks.size) return "the run holds no applied-for mark to compare this line's mark with: decide it on its goods, its status or its territory, or place it";
+      if (!clientMarks.size) return "the run has no applied-for mark to compare with. Place the line, or set it aside on its status, territory or goods";
       const own = records.find((r) => clientMarks.has(formKey(String(r.mark ?? ""))));
-      if (own) return `${own.uri} carries the client's mark itself, which no comparison of marks can set aside: decide it on its goods, its status or its territory, or place it`;
+      if (own) return `${own.uri} carries the client's own mark, so a mark ground cannot set it aside. Place the line, or set it aside on its status, territory or goods`;
     }
     return "";
   };
@@ -229,8 +229,8 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     if (!ground) { refuse("no ground"); return; }
     const on = typeof row.on === "string" ? row.on.trim().toLowerCase() : "";
     if (lineHoldsFloor(canonical)) {
-      if (!FLOOR_GROUND_ON.includes(on)) { refuse(`a floor is set aside by name on its status, its territory, its registered goods or its mark compared with the client's: give "on" as one of ${FLOOR_GROUND_ON.join(", ")}`); return; }
-      if (FLOOR_GROUND_WORDS_READ.includes(on) && FLOOR_GROUND_REFUSED.test(ground)) { refuse(`a ground on a floor's ${on} is about its ${on}, never its goods or its owner's customers, channels, markets or field: write a ground about its ${on}, or give a ground on its registered goods with "on": "goods"`); return; }
+      if (!FLOOR_GROUND_ON.includes(on)) { refuse(`a floor's set-aside needs "on": one of ${FLOOR_GROUND_ON.join(", ")}`); return; }
+      if (FLOOR_GROUND_WORDS_READ.includes(on) && FLOOR_GROUND_REFUSED.test(ground)) { refuse(`a ${on} ground is about the ${on} only, and this one speaks of goods, customers, channels, markets or field. Rewrite it about the ${on}, or send a ground about the registered goods with "on": "goods"`); return; }
       const problem = evidenceProblem(on, canonical);
       if (problem) { refuse(problem); return; }
     }
@@ -334,7 +334,7 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     // AN IDENTICAL MARK LIVE IN AN ORDERED OR FRAME-ADDED CLASS IS NEVER OUT-OF-SCOPE-FILTERED. The tier is
     // refused, said back, and the row left open, so the floor duty still owes it a fate.
     if (row.tier === "out-of-scope-filtered" && holdsFloor(row)) {
-      tierRefused.push({ select: row.select ?? null, why: "an identical mark live in an ordered or frame-added class is never out-of-scope-filtered: place it, sheet-2 at the least, or set its line aside by name on its status, its territory, its registered goods or its mark" });
+      tierRefused.push({ select: row.select ?? null, why: "a floor never takes out-of-scope-filtered. Place it at headline-candidate or sheet-2, or set its line aside by name" });
       row.tier = null;
     }
     // JUDGED ON THE MERGED ROW, not on either input — a tier written on one pass and its reason on the

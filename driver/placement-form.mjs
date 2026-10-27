@@ -128,23 +128,22 @@ export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
   when: "a line the shape lists, one mark of one owner, whose records you do not carry. One row gives that "
     + "line its ground.",
   fields: SET_ASIDE_ROW_FIELDS,
-  set_aside: "one record id of that line, from the band, or a list of record ids, one per line, where one ground "
-    + "is true of every line in it. The driver finds each line on the register's own projection; the ground "
-    + "covers every record of that mark of that owner the form does not place, and never another mark of the "
-    + "owner, which needs its own fate. A record that names no owner stands for its own position only.",
+  set_aside: "One record id of the line, from the band, or a list of record ids, one per line, that share one ground. "
+    + "The ground covers every unplaced record of that mark of that owner. Another mark of the same owner needs its "
+    + "own fate. A record that names no owner stands for its own position only.",
   ground: "why this line's records are not carried, in a lawyer's words.",
-  on: "where the line holds a floor, a live identical or near-identical mark in an ordered class: what the "
-    + "ground is about, one of status, territory, goods or mark. goods is the registered goods, read in full, "
-    + "against the client's particular goods; mark is a reasoned comparison with the client's mark. A floor is "
-    + "never set aside on its owner, its customers or its field.",
+  on: "Required when the line holds a floor (a live identical or near-identical mark in an ordered class): one of "
+    + "status, territory, goods, mark. Use goods when the registered goods, read in full, do not meet the client's "
+    + "particular goods. Use mark when a reasoned comparison with the client's mark shows the two do not conflict. "
+    + "The owner, its customers and its field are never a ground.",
   not_a_candidate: "It places nothing. A record of the same line you do place stays placed.",
   latest: "A later row for the same line replaces the earlier ground. To remove one, hand back "
     + "{\"retract\":\"<its set_aside id>\"}.",
-  unresolved: "A `set_aside` the band does not hold or one with no ground is reported back to you by id, and so "
-    + "is a floor's row whose `on` is not status, territory, goods or mark; whose status or territory ground "
-    + "speaks of customers, channels, markets, field or goods; whose goods ground rests on a line not read or "
-    + "on goods the run does not hold complete; or whose mark ground is about the client's own mark. In a "
-    + "list, each line is judged on its own: one reported back leaves the others standing.",
+  unresolved: "The driver says a row back by id when: its record is not in the band; it has no ground; a floor's "
+    + "`on` is missing or not one of the four; a status or territory ground speaks of goods, customers, channels, "
+    + "markets or field; a goods ground rests on a line not read, or on goods the run does not hold in full; a mark "
+    + "ground names the client's own mark, or the run holds no applied-for mark to compare with. In a list, each "
+    + "line is judged on its own.",
 });
 
 /** The record ids a set-aside row names: one, or the list of lines one ground covers. PURE. */
