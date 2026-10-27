@@ -3541,7 +3541,7 @@ function findingsSurfaceRows(P) {
 // cut, or none. Only the dispatch's copy carries it; the spec the declination tool reads is the positions alone.
 // A list the label could not be added to keeps its lines as they were, and the run says so: a write-up handed no goods
 // source must not read as one whose records have none.
-export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its test with a run's own files
+export function withGoodsFrom(ctx, P, rows, read = null) {   // @internal — driven by its test with a run's own files
   const unlabelled = (reason) => {
     try { runLog(P.runDir, { event: "write-up-goods-from-failed", rows: rows.length, reason: String(reason).slice(0, 120) }); } catch { /* the list still goes */ }
     return rows;
@@ -3550,7 +3550,7 @@ export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its t
     const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
     if (!runPrefix) return unlabelled("the run has no session prefix to read its evidence by");
     const uris = rows.filter((r) => r?.kind !== "page" && r?.uri).map((r) => r.uri);
-    const evidence = goodsEvidenceOfDrops(P, runPrefix, uris);
+    const evidence = read ?? goodsEvidenceOfDrops(P, runPrefix, uris);
     return rows.map((r) => {
       const e = r?.kind !== "page" && r?.uri ? evidence.get(r.uri) : null;
       return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source }) } : r;
@@ -3563,7 +3563,7 @@ export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its t
 // complete, so the spec the declination tool judges carries each record's state, a position's members' included. A
 // list the states could not be added to keeps its rows as they were: the refusal then reads no state and refuses, and
 // the run says so.
-export function withGoodsStates(ctx, P, rows) {   // @internal — driven by its test with a run's own files
+export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — driven by its test with a run's own files
   const unstated = (reason) => {
     try { runLog(P.runDir, { event: "declination-goods-states-failed", rows: rows.length, reason: String(reason).slice(0, 120) }); } catch { /* the list still goes */ }
     return rows;
@@ -3571,9 +3571,7 @@ export function withGoodsStates(ctx, P, rows) {   // @internal — driven by its
   try {
     const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
     if (!runPrefix) return unstated("the run has no session prefix to read its evidence by");
-    const uris = [...new Set(rows.filter((r) => r?.kind !== "page" && r?.uri)
-      .flatMap((r) => [r.uri, ...(Array.isArray(r.members) ? r.members.map((m) => m?.uri).filter(Boolean) : [])]))];
-    const evidence = goodsEvidenceOfDrops(P, runPrefix, uris);
+    const evidence = read ?? goodsEvidenceOfDrops(P, runPrefix, surfaceUris(rows));
     const state = (u) => evidence.get(u)?.goods ?? null;
     return rows.map((r) => (r?.kind === "page" || !r?.uri ? r : { ...r, goods: state(r.uri),
       ...(Array.isArray(r.members) ? { members: r.members.map((m) => ({ ...m, goods: state(m?.uri) })) } : {}) }));
@@ -3605,6 +3603,20 @@ export function writerFloorDeclinationLines(P) {   // @internal — driven by it
     return out;
   } catch { return []; }
 }
+/** Every record a list of the writer's rows names, a position's members included. PURE. */
+const surfaceUris = (rows) => [...new Set(rows.filter((r) => r?.kind !== "page" && r?.uri)
+  .flatMap((r) => [r.uri, ...(Array.isArray(r.members) ? r.members.map((m) => m?.uri).filter(Boolean) : [])]))];
+/**
+ * What the goods of the writer's records rest on, READ ONCE for the labels its message carries and the states its tool
+ * judges: the read walks the run's held records, which run to hundreds of megabytes, and took half a minute a pass on a
+ * test run. null where it cannot be read; each reader then reads for itself and says so as before. IMPURE.
+ */
+function surfaceGoodsEvidence(ctx, P, rows) {
+  try {
+    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    return runPrefix ? goodsEvidenceOfDrops(P, runPrefix, surfaceUris(rows)) : null;
+  } catch { return null; }
+}
 /** Every floor decision the review reads: placement's, then the writer's. IMPURE (reads the run). */
 const reviewFloorDecisionLines = (P) => [...placementFloorDecisionLines(P), ...writerFloorDeclinationLines(P)];
 
@@ -3623,9 +3635,10 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
   try { scope = JSON.parse(readFileSync(P.instructedScope, "utf8")) ?? {}; } catch { scope = {}; }
   try {
     ensureDriverDir(P.runDir);
+    const read = surfaceGoodsEvidence(ctx, P, rows);
     atomicWrite(driverDir(P.runDir, "declination-spec.json"),
-      JSON.stringify({ ts: new Date().toISOString(), rows: withGoodsStates(ctx, P, rows), scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
-    ctx.findingsSurface = withGoodsFrom(ctx, P, rows);
+      JSON.stringify({ ts: new Date().toISOString(), rows: withGoodsStates(ctx, P, rows, read), scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
+    ctx.findingsSurface = withGoodsFrom(ctx, P, rows, read);
   } catch (e) {
     // The dispatch block is gated on ctx.findingsSurface, so a failed write leaves the stage UNORDERED
     // rather than ordered to call a tool whose spec it cannot read. Loud in the log, never a dead order.
