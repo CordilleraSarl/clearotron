@@ -19,7 +19,7 @@ import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { SORT_THE_NEAR_ONES, ONE_SET_ASIDE_ROW, A_FATE_BY_NAME, PLACEMENT_GROUP_ORDERS } from "../band-shape.mjs";
 import { STAGES, paths, BAND_READING_STAGES, GROUP_READING_STAGES, BAND_READING_CONTRACT,
-  BAND_READING_CONTRACT_AFTER_PLACEMENT, FLOOR_FATE_ORDER } from "../stages.mjs";
+  BAND_READING_CONTRACT_AFTER_PLACEMENT, BAND_READING_CONTRACT_FOR_THE_WRITER, FLOOR_FATE_ORDER } from "../stages.mjs";
 
 const SERVER = fileURLToPath(new URL("../engine/mcp/band-server.mjs", import.meta.url));
 const SENTENCES = { "sort the near ones": SORT_THE_NEAR_ONES, "one set-aside row": ONE_SET_ASIDE_ROW,
@@ -108,7 +108,9 @@ test("placement reads the shape and the contract exactly as before; the others, 
   const P = paths(dir);
   const message = (stage) => String(STAGES[stage].message({ paths: P, axes: ["primary-sweep"], registerOnly: true, job: {} }));
   assert.ok(message("placement-inquiry").includes(BAND_READING_CONTRACT), "placement's contract changed");
-  for (const stage of ["register-digest", "synthesis"]) assert.ok(message(stage).includes(BAND_READING_CONTRACT_AFTER_PLACEMENT));
+  assert.ok(message("register-digest").includes(BAND_READING_CONTRACT_AFTER_PLACEMENT), "the digest's contract changed");
+  assert.ok(message("synthesis").includes(BAND_READING_CONTRACT_FOR_THE_WRITER) && !message("synthesis").includes(BAND_READING_CONTRACT_AFTER_PLACEMENT),
+    "the writer is still told to read the band before it writes");
   assert.equal(BAND_READING_CONTRACT.replace(` ${FLOOR_FATE_ORDER}`, ""), BAND_READING_CONTRACT_AFTER_PLACEMENT);
   assert.notEqual(BAND_READING_CONTRACT, BAND_READING_CONTRACT_AFTER_PLACEMENT, "the floor order is no longer in the contract to remove");
   assert.equal(PLACEMENT_GROUP_ORDERS.length, 3);

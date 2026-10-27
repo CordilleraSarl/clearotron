@@ -24,9 +24,9 @@ import { GROUP_READING_STAGES, BAND_READING_STAGES } from "../stages.mjs";
 
 const SERVER = fileURLToPath(new URL("../engine/mcp/band-server.mjs", import.meta.url));
 const GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
-const OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the next offset, so a large band or group is read page by page)";
+const OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the offset where the next page starts)";
 // Word for word what every stage was offered before group pages existed.
-const OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the next offset, so a large band is read page by page)";
+const OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the offset where the next page starts)";
 
 function runDir(t) {
   const d = mkdtempSync(join(tmpdir(), "group-offer-"));

@@ -53,7 +53,7 @@ test("a retry is handed the answers: a file with one question and its answer per
   const text = messageOf(ctx);
   const block = "RESEARCH THIS RUN HAS ALREADY ANSWERED: an earlier attempt of this stage asked 2 questions and got their answers. "
     + "They are in research-answers.md, one question and its answer per line. Before you ask about a finding's owner and mark, search that file "
-    + "for the owner's name with search_run_artifacts. Where one of them asked about that owner and mark for the same field and country, use its "
+    + "for the owner's name with search_run_artifacts. Where one of them answers the same owner, mark, goods, territory and material time question, use its "
     + "answer as that finding's check, cite its URL and record it as you would a fresh one; ask only what none of them covers.";
   assert.ok(text.endsWith(`\n${block}`), `the block is not the message's last line:\n${text.slice(-700)}`);
   assert.equal(refreshedOf(ctx), text, "a fresh retry is not handed the same");
