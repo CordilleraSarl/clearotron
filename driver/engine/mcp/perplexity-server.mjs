@@ -232,7 +232,7 @@ async function research(params) {
     try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
     if (RUN_DIR && !insideRun(RUN_DIR, spec.output_path))
-      return "ERROR: the grid spec's output_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.";
+      return requiredLedgerRefusal("ERROR: the grid spec's output_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.", { spec, gridSpecPath: grid_spec_path });
     if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
       return requiredLedgerRefusal(`ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}`, { spec, gridSpecPath: grid_spec_path });
     // — already recorded and complete? Answer from the ledger; do not buy the grid twice. This is also
