@@ -280,7 +280,7 @@ function bandShape(params) {
     ...(read ? { served_lines: read.keys[part - 1], group_parts: read.groupParts } : {}) });
   const head = format === "json"
     ? `[band_shape part ${part}/${total} of the json; concatenate the parts before parsing it.]`
-    : `[band_shape part ${part}/${total}. Read each group by the size sentence at its head; the next part continues the groups.]`;
+    : `[band_shape part ${part}/${total}. ${GROUP_PAGES ? "Read each group by the size sentence at its head; the next part continues the groups." : "The next part continues the groups."}]`;
   const tail = part < total
     ? `\n[end of part ${part}/${total} — part ${part + 1} is available with {"part": ${part + 1}}]`
     : `\n[end of the shape]`;

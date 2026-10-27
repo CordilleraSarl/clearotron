@@ -105,3 +105,28 @@ test("the writer records its findings and exclusions as it completes them, told 
   for (const stage of ["placement-inquiry", "register-digest", "narrative-refutation"])
     assert.ok(!messageOf(t, stage).includes(SAVED), `${stage} was told to record the writer's findings`);
 });
+
+test("the size rule's orders to read reach placement alone; each list keeps its count, what it holds and its first page", async () => {
+  const { buildBandShape, deriveRegisterPositions, renderBandShapeMd, withoutPlacementOrders, READ_THEM_ALL, READ_EVERY_LINE, READ_THE_LIVE_ONES_FIRST } = await import("../band-shape.mjs");
+  const { setAsideKeysOf } = await import("../placement-form.mjs");
+  const { goodsWordCounter, goodsWordsMatched } = await import("../record-goods.mjs");
+  const rec = (id, mark, owner) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes: ["9"], status: "registered", jurisdictions: ["EU"] });
+  const band = [rec("b1", "QZORVAK", "Beta GmbH"), rec("b2", "Qzorvak", "Gamma SA")];
+  const positions = deriveRegisterPositions(band);
+  const goods = { of: () => [{ classes: ["9"], text: "industrial pumps" }], hits: goodsWordCounter(["joystick"]), matched: goodsWordsMatched(["joystick"]) };
+  const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
+  const placement = renderBandShapeMd(shape);
+  assert.ok(placement.includes(READ_THEM_ALL), "guard: the fixture's list is short enough to be read whole");
+  const served = withoutPlacementOrders(placement);
+  for (const order of [READ_THEM_ALL, READ_EVERY_LINE, READ_THE_LIVE_ONES_FIRST]) assert.ok(!served.includes(order), `another stage is still told: ${order}`);
+  assert.equal(served.split("\n").length, placement.split("\n").length, "a line moved, so the reading audit's line numbers no longer hold");
+  // The orders as a crowded list and an unreadable one print them: the count, what the list holds and its first page stay.
+  const counted = "1,200 records in 640 lines from 600 owners.";
+  const a = `${counted} These are the identical and near-identical marks live in the ordered classes for the client's goods`;
+  assert.equal(withoutPlacementOrders(`${a}${READ_EVERY_LINE} The first 100 lines are below.`), `${a}. The first 100 lines are below.`);
+  assert.equal(withoutPlacementOrders(`**Goods the test could not read: ${counted}** ${READ_THE_LIVE_ONES_FIRST} A floor here is placed.`),
+    `**Goods the test could not read: ${counted}** A floor here is placed.`);
+  const server = readFileSync(new URL("../engine/mcp/band-server.mjs", import.meta.url), "utf8");
+  assert.ok(server.includes('GROUP_PAGES ? "Read each group by the size sentence at its head; the next part continues the groups." : "The next part continues the groups."'),
+    "a part of the shape still tells a stage other than placement how to read its groups");
+});
