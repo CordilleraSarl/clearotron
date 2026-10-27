@@ -114,7 +114,9 @@ test("T3b: the corrective `must` is reached only where the rollback declined", (
   const src = pipelineSrc();
   assert.match(src, /correctiveRollback = correctivePass\.ok\s*\n?\s*\?\s*null\s*\n?\s*:\s*rollbackCorrectivePass\(/,
     "the corrective pass's failure must run through the rollback first");
-  const guarded = /if \(correctiveRollback\) \{[\s\S]{0,900}?\} else \{\s*\n\s*must\(correctivePass,/;
+  // In the ELSE, as the first statement after the comment on it: the rollback declined, so the pass's failure is
+  // thrown, as the assessment not completed when there was no record to roll back to.
+  const guarded = /if \(correctiveRollback\) \{[\s\S]{0,900}?\} else \{\s*\n(?:\s*\/\/[^\n]*\n)*\s*await asPartNotCompleted\("assessment", async \(\) => must\(correctivePass,/;
   assert.match(src, guarded,
     "`must` must sit in the ELSE of the rollback. Left unconditional it throws before the rollback can "
     + "matter, which is the pre-change behaviour with a dead branch beside it");

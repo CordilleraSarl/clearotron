@@ -29,6 +29,7 @@
 // `match_mode: "phonetic"` on register_search / register_enumerate remains fully available; it is the
 // PREVIEW of the expansion that this provider cannot give, not phonetic search itself.
 import { serve } from "./stdio-server.mjs";
+import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
 import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import {
   CAPABILITIES, doSearch, doRecordFetch, doImageFetch, doBatchScreen, doEnumerate, doExecutePlan, DEFAULT_BASE,
@@ -43,6 +44,7 @@ const tctx = (kind) => ({
   agentId: process.env.CLEAROTRON_GATHER_AGENT || "localagent",
   sessionKey: process.env.CLEAROTRON_GATHER_SESSION_KEY || "",   // run session key — telemetry attribution
   sessionId: process.env.CLEAROTRON_GATHER_SESSION_ID || "",
+  sendUntilMs: sendUntilFromEnv(),   // this turn's time to stop sending (providers/_shared/send-until.mjs)
 });
 const passthrough = (r) => (r && typeof r === "object" ? (r.text ?? JSON.stringify(r)) : String(r));
 const guard = (fn) => async (args) => {

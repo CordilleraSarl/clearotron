@@ -30,13 +30,15 @@ import { engineProvenance } from "./engine-build.mjs";                  // — �
 import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
 import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
-import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
+import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
-import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
+import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
+import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
+import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // a band read with the slices a check could not prove ran taken out
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
@@ -458,6 +460,78 @@ export function loadCoverageLedger(runDir) {   // @internal
   return { rows: relabel(rows), source: "prose", dropped };
 }
 
+/**
+ * Which still-tainted axes are disclosed and which are parked. Every axis once synthesis is done (the audit spine is
+ * locked); an axis the searches record lists, whose recovery is spent; and the rest parked, to be run again. PURE.
+ */
+export function taintDisposition(stillTainted, { digestLocked = false, disclosedAxes = new Set() } = {}) {   // @internal
+  const disclose = (stillTainted ?? []).filter((a) => digestLocked || disclosedAxes.has(a));
+  return { disclose, park: (stillTainted ?? []).filter((a) => !disclose.includes(a)) };
+}
+
+/**
+ * Put back what a taint park renamed, so the band and the digest are read as the last pass left them. A renamed copy
+ * whose original has since been written again stays where it is. Returns the paths put back. IMPURE.
+ */
+export function undoTaintRenames(renames) {   // @internal
+  const back = [];
+  for (const r of Array.isArray(renames) ? renames : []) {
+    try { if (r?.to && r?.from && existsSync(r.to) && !existsSync(r.from)) { renameSync(r.to, r.from); back.push(r.from); } }
+    catch { /* best-effort: what stays renamed is re-run on the resume, as before */ }
+  }
+  return back;
+}
+
+// THE BANDS ARE READ WITH THE RECORDED SLICES OUT, whatever wrote them since. A unit re-run after the fan-in, by the
+// envelope, the escalation or the taint chain, writes its axis's band whole, and a slice the searches' record took
+// out would come back with the records nobody could prove were searched. So the band's two readers, the merge and the
+// plan join, take the recorded slices out of what they read, in memory and never by writing the file: a unit or the
+// executor may be writing that band at the same moment. Every other reader of a band as answers does the same, from
+// the one definition (shared/slices-taken-out.mjs).
+const recordedSlicesByAxis = (P) => slicesTakenOutByAxis(P?.runDir);
+
+// A band's text with the slices taken out, for a reader that parses text. Text that does not parse is handed on whole,
+// for the reader's own parse to refuse. PURE.
+function withSlicesOut(raw, slices) {
+  if (!Array.isArray(slices) || !slices.length) return raw;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return raw;
+    const { blocks, taken } = bandWithSlicesOut(parsed, slices);
+    return taken.length ? JSON.stringify(blocks) : raw;
+  } catch { return raw; }
+}
+
+/**
+ * THE SLICES A RUN COULD NOT PROVE IT SEARCHED, TAKEN OUT OF ITS BAND. Each recorded slice's block becomes the
+ * executor's own deferred block (providers/_shared/execute-plan.mjs), carrying the slice's reason, or is added as one
+ * where the band holds none for it. The plan join files it as deferred, the coverage form gives it an open row the
+ * write-up may not call clean, and the axis's other blocks stand. The band as it was is kept beside it the first time,
+ * as evidence. An axis whose band is absent or unreadable is left to the band's own checks. Returns the slices taken
+ * out on this call. IMPURE (rewrites the bands).
+ */
+export function takeSlicesOutOfTheBand(P, slices) {   // @internal
+  const taken = [];
+  const byAxis = new Map();
+  for (const s of Array.isArray(slices) ? slices : []) {
+    if (!s?.axis || (!s?.qid && !s?.query)) continue;
+    if (!byAxis.has(s.axis)) byAxis.set(s.axis, []);
+    byAxis.get(s.axis).push(s);
+  }
+  for (const [axis, list] of byAxis) {
+    const at = P.registerBand(axis);
+    let blocks;
+    try { blocks = JSON.parse(readFileSync(at, "utf8")); } catch { continue; }
+    if (!Array.isArray(blocks)) continue;
+    const out = bandWithSlicesOut(blocks, list);
+    if (!out.taken.length) continue;
+    taken.push(...out.taken);
+    try { if (!existsSync(`${at}.before-taken-out`)) copyFileSync(at, `${at}.before-taken-out`); } catch { /* the evidence is best-effort */ }
+    atomicWrite(at, JSON.stringify(out.blocks, null, 2) + "\n");
+  }
+  return taken;
+}
+
 // ── judgment-relocation (2026-06-23): the COMPLETE NAMED BAND flow (lift the firewall) ───────────────
 // The register-unit funnel writes register-units/<axis>-band.json (a JSON ARRAY of named-band blocks). The
 // driver MERGES the per-axis bands into one complete band (register-named-band.json) and feeds it to Layer B
@@ -466,6 +540,7 @@ export function loadCoverageLedger(runDir) {   // @internal
 // de-dups enumerated records by record_id and preserves every crowd descriptor. Returns the merged band
 // object {enumerated, crowds} plus { axes:[…], invalid:[{axis,reason}] } so the caller can flag a bad axis.
 export function mergeRegisterBands(P, axes = []) {   // @internal
+  const recorded = recordedSlicesByAxis(P);
   const bands = [];
   const merged = [];
   const invalid = [];
@@ -473,7 +548,7 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
     const bandPath = P.registerBand(a);
     if (!existsSync(bandPath)) continue;   // an axis that found nothing may legitimately write no band
     try {
-      const band = parseNamedBand(readFileSync(bandPath, "utf8"));   // throws named_band_* on a malformed artifact
+      const band = parseNamedBand(withSlicesOut(readFileSync(bandPath, "utf8"), recorded.get(a)));   // throws named_band_* on a malformed artifact
       bands.push(band);
       merged.push(a);
     } catch (e) {
@@ -489,7 +564,7 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
             writeFileSync(`${bandPath}.tmp`, JSON.stringify(blocks, null, 2) + "\n");
             renameSync(`${bandPath}.tmp`, bandPath);
             runLog(P.runDir, { event: "named-band-state-quarantined", axis: a, states: quarantined.map((q) => q.state), site: "merge" });
-            const band = parseNamedBand(readFileSync(bandPath, "utf8"));
+            const band = parseNamedBand(withSlicesOut(readFileSync(bandPath, "utf8"), recorded.get(a)));
             bands.push(band);
             merged.push(a);
             continue;
@@ -521,12 +596,13 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
 // chain, the clean-gates, and dispatchPlanQids cover them with zero extra code. Run-local only: the
 // slug store is never written (clearances run once; senior lawyer 2026-07-10).
 export function readRegisterBands(P, axes) {   // @internal
+  const recorded = recordedSlicesByAxis(P);
   const byAxis = {};
   for (const a of axes ?? []) {
     if (!existsSync(P.registerBand(a))) continue;
     try {
       const parsed = JSON.parse(readFileSync(P.registerBand(a), "utf8"));
-      byAxis[a] = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.blocks) ? parsed.blocks : []);
+      byAxis[a] = bandWithSlicesOut(Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.blocks) ? parsed.blocks : []), recorded.get(a)).blocks;
     } catch { byAxis[a] = []; }
   }
   return byAxis;
@@ -3465,7 +3541,7 @@ function findingsSurfaceRows(P) {
 // cut, or none. Only the dispatch's copy carries it; the spec the declination tool reads is the positions alone.
 // A list the label could not be added to keeps its lines as they were, and the run says so: a write-up handed no goods
 // source must not read as one whose records have none.
-export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its test with a run's own files
+export function withGoodsFrom(ctx, P, rows, read = null) {   // @internal — driven by its test with a run's own files
   const unlabelled = (reason) => {
     try { runLog(P.runDir, { event: "write-up-goods-from-failed", rows: rows.length, reason: String(reason).slice(0, 120) }); } catch { /* the list still goes */ }
     return rows;
@@ -3474,13 +3550,75 @@ export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its t
     const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
     if (!runPrefix) return unlabelled("the run has no session prefix to read its evidence by");
     const uris = rows.filter((r) => r?.kind !== "page" && r?.uri).map((r) => r.uri);
-    const evidence = goodsEvidenceOfDrops(P, runPrefix, uris);
+    const evidence = read ?? goodsEvidenceOfDrops(P, runPrefix, uris);
     return rows.map((r) => {
       const e = r?.kind !== "page" && r?.uri ? evidence.get(r.uri) : null;
       return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source }) } : r;
     });
   } catch (e) { return unlabelled(e?.message ?? e); }
 }
+
+// THE TOOL IS TOLD WHAT EACH RECORD'S GOODS REST ON, from the same derivation (ruled 2026-10-27). A goods decision on a
+// mark identical to the applied-for mark, live in a filed class, stands only where the run holds that record's goods
+// complete, so the spec the declination tool judges carries each record's state, a position's members' included. A
+// list the states could not be added to keeps its rows as they were: the refusal then reads no state and refuses, and
+// the run says so.
+export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — driven by its test with a run's own files
+  const unstated = (reason) => {
+    try { runLog(P.runDir, { event: "declination-goods-states-failed", rows: rows.length, reason: String(reason).slice(0, 120) }); } catch { /* the list still goes */ }
+    return rows;
+  };
+  try {
+    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    if (!runPrefix) return unstated("the run has no session prefix to read its evidence by");
+    const evidence = read ?? goodsEvidenceOfDrops(P, runPrefix, surfaceUris(rows));
+    const state = (u) => evidence.get(u)?.goods ?? null;
+    return rows.map((r) => (r?.kind === "page" || !r?.uri ? r : { ...r, goods: state(r.uri),
+      ...(Array.isArray(r.members) ? { members: r.members.map((m) => ({ ...m, goods: state(m?.uri) })) } : {}) }));
+  } catch (e) { return unstated(e?.message ?? e); }
+}
+
+/**
+ * THE FLOORS THE WRITER DECLINED, AS THE REVIEW IS TOLD THEM (ruled 2026-10-27): one line per floor on a position the
+ * writer declined, with its reason and its ground, after placement's decisions. The writer may decline a mark identical
+ * to the applied-for mark on goods the run holds complete, and a review told only placement's decisions read such a
+ * floor as one the narrative neither rates nor reasons away, and sent it back. [] when nothing stands. IMPURE.
+ */
+export function writerFloorDeclinationLines(P) {   // @internal — driven by its test with a run's own files
+  try {
+    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
+    if (!Array.isArray(floors) || !floors.length) return [];
+    const declined = readDeclinations(P.runDir);
+    if (!declined.byUri.size) return [];
+    // A declination is the position's: each record of a row the writer was handed reads its row's.
+    const rowOf = new Map();
+    for (const row of findingsSurfaceRows(P))
+      for (const u of (Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri])) rowOf.set(normalizeRecordUri(u), normalizeRecordUri(row?.uri));
+    const out = [];
+    for (const f of floors) {
+      const u = normalizeRecordUri(f?.record_id);
+      const d = u ? declined.byUri.get(rowOf.get(u) ?? u) : null;
+      if (d) out.push(`- ${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id}): declined by the writer as ${d.reason}: ${d.grounds}`);
+    }
+    return out;
+  } catch { return []; }
+}
+/** Every record a list of the writer's rows names, a position's members included. PURE. */
+const surfaceUris = (rows) => [...new Set(rows.filter((r) => r?.kind !== "page" && r?.uri)
+  .flatMap((r) => [r.uri, ...(Array.isArray(r.members) ? r.members.map((m) => m?.uri).filter(Boolean) : [])]))];
+/**
+ * What the goods of the writer's records rest on, READ ONCE for the labels its message carries and the states its tool
+ * judges: the read walks the run's held records, which run to hundreds of megabytes, and took half a minute a pass on a
+ * test run. null where it cannot be read; each reader then reads for itself and says so as before. IMPURE.
+ */
+function surfaceGoodsEvidence(ctx, P, rows) {
+  try {
+    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    return runPrefix ? goodsEvidenceOfDrops(P, runPrefix, surfaceUris(rows)) : null;
+  } catch { return null; }
+}
+/** Every floor decision the review reads: placement's, then the writer's. IMPURE (reads the run). */
+const reviewFloorDecisionLines = (P) => [...placementFloorDecisionLines(P), ...writerFloorDeclinationLines(P)];
 
 export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
@@ -3497,9 +3635,10 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
   try { scope = JSON.parse(readFileSync(P.instructedScope, "utf8")) ?? {}; } catch { scope = {}; }
   try {
     ensureDriverDir(P.runDir);
+    const read = surfaceGoodsEvidence(ctx, P, rows);
     atomicWrite(driverDir(P.runDir, "declination-spec.json"),
-      JSON.stringify({ ts: new Date().toISOString(), rows, scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
-    ctx.findingsSurface = withGoodsFrom(ctx, P, rows);
+      JSON.stringify({ ts: new Date().toISOString(), rows: withGoodsStates(ctx, P, rows, read), scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
+    ctx.findingsSurface = withGoodsFrom(ctx, P, rows, read);
   } catch (e) {
     // The dispatch block is gated on ctx.findingsSurface, so a failed write leaves the stage UNORDERED
     // rather than ordered to call a tool whose spec it cannot read. Loud in the log, never a dead order.
@@ -4570,6 +4709,46 @@ export function recoverWinningAttempt(runDir, label) {   // @internal
   return null;
 }
 
+// ── A REGISTER UNIT THAT COULD NOT FINISH IS DELIVERED AS ITS BAND STANDS ─────────────────────────────
+//
+// A unit that wrote no result once its attempts were spent ended the run, though the run held every other unit: on a
+// production run on 2026-10-21 one unit's plan search timed out at the register on every attempt, and the client got
+// nothing. Such a unit now fails as the searches not completed (the gather barrier below), naming itself and the planned
+// slices its band never reached. Once its recovery is spent, the run-level catch records both, and the resumed pass
+// takes the unit as it stands rather than sending it again: its band is what the kept answers left, or empty, and its
+// note is the driver's own account of that band, with no word from the seat. The band merge then takes the recorded
+// slices out as deferred blocks, so they are delivered as open rows.
+
+/**
+ * The planned slices of `axis` that its band holds no block for, each `{axis, qid, reason}` with the shipped reason for a
+ * search that never reached the register. A slice with a block, a timed-out one included, is not among them: the band
+ * already accounts for it. A guarded child is left to the plan join, which reads it off its parent. PURE but for the read.
+ */
+export function slicesUnitNeverReached(P, plan, axis) {   // @internal
+  let band = [];
+  try { const parsed = JSON.parse(readFileSync(P.registerBand(axis), "utf8")); band = Array.isArray(parsed) ? parsed : []; } catch { band = []; }
+  const held = new Set(band.map((b) => b?.qid).filter(Boolean).map(String));
+  return (plan?.entries ?? []).filter((e) => e?.axis === axis && e?.qid && !e.when && !held.has(String(e.qid)))
+    .map((e) => ({ axis, qid: String(e.qid), reason: plainDeferralReason("slice-not-landed") }));
+}
+
+/** The unit a run records as unfinished, taken as its band stands: its note rendered from it, nothing dispatched. */
+export function unfinishedUnitAsItStands(ctx) {   // @internal
+  const P = ctx.paths, a = ctx.axis, label = `register-unit:${a}`;
+  const t0 = Date.now();
+  mkdirSync(join(P.runDir, "register-units"), { recursive: true });
+  const bandPath = P.registerBand(a);
+  if (!existsSync(bandPath)) { writeFileSync(`${bandPath}.tmp`, "[]\n"); renameSync(`${bandPath}.tmp`, bandPath); }
+  const out = P.registerUnit(a);
+  writeFileSync(`${out}.tmp`, renderUnitNote({ axis: a, account: readBandAccount(P.runDir, a) }));
+  renameSync(`${out}.tmp`, out);
+  runLog(P.runDir, { event: "unit-not-completed-delivery", stage: label, output: outputMeta(out), ...stageWallFields(t0) });
+  note(`[${label}] could not be completed once its recovery was spent — taken as its band stands and not sent again`);
+  (ctx.skippedStages ??= []).push(label);
+  recordTransition(ctx, "register-unit");
+  return { ok: true, skipped: true, notCompleted: true, sessionKey: null, model: null };
+}
+
 // ── saturation-probe runs CODE-SIDE (2026-07-14, fabricated-band root cause) ────────────────────────
 // The axis is fully dictated (count-only crowd descriptors; judgment proposes nothing on it), yet it was
 // staffed by the cheapest model whose ONLY job was one register_execute_plan call — and the provider
@@ -4825,7 +5004,7 @@ function clearedForSeat(runDir, label) {
  */
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
-  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths) };
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths) };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
   // The writer is also handed the research its earlier attempts got (research-answers.mjs), written to the run folder when
@@ -5395,7 +5574,7 @@ export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {})
 // every terminal failure to preserve. And per the payload stays OUT of the sentence — `whatsappText`
 // and the CLIENT body are untouched; the staff body gets it in its own <pre>, beside the verbatim reason
 // that body already quotes.
-export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, whatsappTo = null, reasonDetail = null, reasonQuantity = null, capWait = null }) {
+export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null }) {
   const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const detail = typeof reasonDetail === "string" && reasonDetail.trim() ? reasonDetail.trim() : null;
   const quantity = Number.isFinite(reasonQuantity) ? reasonQuantity : null;
@@ -5514,7 +5693,10 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
       : refused
         ? `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> was REFUSED at stage <b>${esc(failedStage)}</b> before any work was done, and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre><p>The run directory is preserved; this is not a defect to diagnose.</p>`
         : `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> FAILED at stage <b>${esc(failedStage)}</b>${priorAttempts ? ` after <b>${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}</b>` : ""} and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre>${detailBlock}${attempted}<p>The run directory is preserved for diagnosis; re-trigger the run when the cause is addressed.</p>`,
-    whatsappTo,
+    // THE NOTICE GOES TO WHOEVER ASKED, as the completion notice does (whatsappRouting, stages.mjs): the requester's own
+    // number where one is held, the gap stated where none is, and the operator's copy beside it. It went to the agent's
+    // number, which every user of a deployment shares, so the operator was told of a failure the requester never heard.
+    ...whatsappRouting(job, agent),
     whatsappText: refused
       ? `⛔ Clearotron search for ${mark} REFUSED at ${failedStage} [${terminalKind}]: ${shortReason} — nothing was delivered and nothing broke; ${retryHint}.`
       : `❌ Clearotron search for ${mark} FAILED at ${failedStage}${priorAttempts ? ` after ${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}` : ""}${terminalKind ? ` [${terminalKind}]` : ""}: ${shortReason} — nothing was delivered; ${retryHint}.`,
@@ -6941,7 +7123,7 @@ async function runPostRepairReview(ctx, P, run, scope) {
   const changedInputs = changedInputsOf(scope.changed, { narrative: P.narrative, findings: P.findings });
   const message = repairFollowup("narrative-refutation:post-repair-review", {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
-    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
+    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: reviewFloorDecisionLines(P),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
@@ -7055,6 +7237,16 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
         base: { accepted: k.accepted, narrative: k.narrative }, from: "state-before-the-review" };
     }
   } catch { /* no state kept, or it does not read: the saves below */ }
+  return recordFromTheSaves(Pv, runDir, before);
+}
+
+/**
+ * THE LAST RECORD A SAVE PASSED, rebuilt through the driver's own acceptance: the save the review read (`before`), then
+ * the save kept from before the delivery-check repair (sources 3 and 4 of `trustedStateBeforeCorrection`, with the
+ * same duty rule). Null when neither stands. Never throws.
+ */
+function recordFromTheSaves(Pv, runDir, before) {
+  const sha = (t) => createHash("sha256").update(t).digest("hex");
   const reads = (() => { try { return driverReadsFor(runDir); } catch { return null; } })();
   const fromSave = (params, accepted, from) => {
     if (!params || accepted == null || !reads) return null;
@@ -7076,6 +7268,46 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
 }
 
 /**
+ * A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED AT DELIVERY, NOT ENDED ON. The delivery checks
+ * find the record broken at the top level, so a write after synthesis broke it. The record comes back from the
+ * last save that passed, by the corrective rollback's own search (`recordFromTheSaves`): the save the review read, then
+ * the save kept from before the delivery-check repair. It is folded, and given the seam's writes, as after any save, and
+ * the check runs again on the record that now stands. The broken record is kept under `_driver/` as evidence. Returns
+ * {from, duty}, or null where no save stands or the record restored fails the check too. IMPURE (writes the run).
+ */
+async function restoreTheRecordThatPassed(ctx, P, runDir, check) {
+  const pre = recordFromTheSaves(P, runDir, lastAcceptedCall(runDir));
+  if (!pre?.raw) return null;
+  try { copyFileSync(P.findings, driverDir(runDir, "findings-broken-at-delivery.json")); } catch { /* the evidence is best-effort */ }
+  atomicWrite(P.findings, pre.raw);
+  restoreSynthesisBase(runDir, pre.base);
+  try { foldAfterSave(runDir, P.findings); } catch (e) { note(`[core-artifact] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
+  try { await ctx.afterSynthesisSave?.(); } catch (e) { note(`[core-artifact] the seam's writes could not be made again over the restored record (${String(e?.message ?? e).slice(0, 100)})`); }
+  try { check(readFileSync(P.findings, "utf8")); } catch { return null; }
+  return { from: pre.from, duty: pre.duty ?? "current" };
+}
+
+// A correction row's outcomes that say the pass changed the record or the narrative (corrections-feedforward.mjs).
+const CORRECTION_CHANGED = new Set(["section-changed", "line-removed", "line-changed", "findings-removed", "findings-changed"]);
+
+/**
+ * THE CORRECTIONS A RECORD RESTORED FROM THE SAVE BEFORE THE REPAIR DOES NOT CARRY: what the correction after the review
+ * of that repair changed, by the names its points targeted. The corrections' state is judged once, when the correction
+ * runs, so nothing else would see that the restored record predates it. Written as that state, the client gate's
+ * "findings-stale" reason closes the client export over it, as when a correction did not reach the findings. [] when
+ * the record came from the accepted save, or no correction after the repair changed anything. Never throws.
+ */
+export function correctionsTheRestoreLacks(runDir, from) {   // @internal
+  if (from !== "save-before-the-repair") return [];
+  try {
+    const rec = JSON.parse(readFileSync(postRepairCorrectionsPath(runDir), "utf8"));
+    const named = (r) => (Array.isArray(r.targets) && r.targets.length ? r.targets : [(rec.classes ?? []).find((c) => c?.n === r.n)?.target]);
+    return [...new Set((rec.rows ?? []).filter((r) => CORRECTION_CHANGED.has(r?.outcome)).flatMap(named)
+      .map((t) => String(t ?? "").trim()).filter(Boolean))];
+  } catch { return []; }
+}
+
+/**
  * A FAILED CORRECTION AFTER A POST-REPAIR REVIEW NEVER ENDS THE RUN (the owner's ruling of 2026-10-19: a run is never
  * held). The trusted state comes back whole: the record, its narrative and the merge base, then the fold and the seam's
  * writes made again over a record rebuilt from a save, as after any save, so the delivered verdict is derived from the
@@ -7083,13 +7315,14 @@ function trustedStateBeforeCorrection(Pv, runDir, before) {
  * not waited for either: it is rolled back as a failed one is, since the report it would correct is already reviewed,
  * and waiting for the reset would hold the run.
  *
- * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER. That is the precise limit: the record, the state kept whole before
- * the review, the save the review read and the save kept from before the repair are all unreadable or refused, a
- * storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
+ * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER THE ASSESSMENT. That is the precise limit: the record, the state
+ * kept whole before the review, the save the review read and the save kept from before the repair are all unreadable
+ * or refused, a storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
  * go back to what they were, and the failed pass's record is set aside under `_driver/` as evidence. A pass that went on from there delivered a
  * report with no findings, labelled with the verdict as it stood (measured on the mock pipeline, 2026-10-19): a clear
- * result over a record nobody can read. So this case alone keeps the failure it always had. Returns the rollback
- * record, or null for this case.
+ * result over a record nobody can read. So the failure is the assessment not completed (parts-not-completed.mjs): once
+ * its recovery is spent, the run delivers what it holds without the assessment. Returns the rollback record, or null
+ * for this case.
  */
 async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore }) {
   // A rate limit is a failure of this pass like any other here: the shared rollback would leave it to wait.
@@ -7156,7 +7389,7 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
       ...(rollback.duty ? { duty: rollback.duty } : {}) });
     note(`[post-repair] the correction after the review of the repair failed (${rollback.reason}) — the record it started from is back, and the run delivers with the points recorded`);
   } else {
-    must(pass, "synthesis(post-repair)");
+    await asPartNotCompleted("assessment", async () => must(pass, "synthesis(post-repair)"));
     let preDocForNames = null;
     try { preDocForNames = pre ? parseFindingsJsonLenient(pre.raw) : null; } catch { /* fall back to the file */ }
     const repaired = repairUnnamedRemovals(Pv, runDir, pre, correctionNamedOrdinals(Pv), correctionNamedSet(Pv, preDocForNames), correctionNamedLines(Pv, preDocForNames));
@@ -10145,7 +10378,7 @@ async function pipelineInner(job, opts = {}) {
       const p = writeOutboxPacket(`${runId}.bindack`, {
         kind: "late-bind-ack", runId, agent,
         forwarder: job.forwarder ?? null, forwarderEmail: job.forwarderEmail ?? null, msgId: job.msgId ?? null,
-        customer: bind.customer, action, whatsappTo: AGENT_WHATSAPP[agent] ?? null, text,
+        customer: bind.customer, action, ...whatsappRouting(job, agent), text,
       });
       runLog(run.runDir, { event: "customer-late-bind-ack", sent: Boolean(p), via: "outbox" });
     } catch (e) { note(`late-bind ack failed (non-fatal): ${e?.message ?? e}`); }
@@ -10653,9 +10886,13 @@ async function pipelineInner(job, opts = {}) {
     // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
     // real executor lane would dial the provider from a test). Production default is ON.
     const satProbeCodeSide = process.env.CLEAROTRON_SATPROBE_CODESIDE !== "0" && Boolean(planExec && ctx.registerPlan);
+    // The units this run records as unfinished are taken as their bands stand (unfinishedUnitAsItStands, above).
+    const unfinishedUnits = new Set(readPartNotCompleted(run.runDir, "searches")?.unfinished_units ?? []);
     const [gatherResults, blindRes] = await Promise.all([
       runBatched(gather, config.gatherConcurrency, (g) =>
-        g.name === "register-unit" && g.axis === "saturation-probe" && satProbeCodeSide
+        g.name === "register-unit" && unfinishedUnits.has(g.axis)
+          ? unfinishedUnitAsItStands({ ...ctx, axis: g.axis })
+          : g.name === "register-unit" && g.axis === "saturation-probe" && satProbeCodeSide
           ? runSaturationProbeCodeSide({ ...ctx, axis: g.axis }, planExec)
           : stage(g.name, { ...ctx, axis: g.axis })),
       stage("blind-frame", ctx).catch((e) => ({ ok: false, fail: String(e?.message ?? e) })),
@@ -10774,7 +11011,17 @@ async function pipelineInner(job, opts = {}) {
         runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
       }
     }
-    gather.forEach((g, i) => must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")));
+    // A REGISTER UNIT THAT WROTE NO RESULT is the searches not completed, after every other member has been held to its
+    // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path.
+    const unfinished = gather.map((g, i) => i).filter((i) => gather[i].name === "register-unit" && gather[i].axis
+      && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && !existsSync(P.registerUnit(gather[i].axis)));
+    gather.forEach((g, i) => { if (!unfinished.includes(i)) must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")); });
+    if (unfinished.length) {
+      const axesOut = unfinished.map((i) => gather[i].axis), first = gatherResults[unfinished[0]];
+      throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined, { quantity: first?.quantity }),
+        { notCompletedPart: "searches", unfinishedUnits: axesOut,
+          excludedSlices: axesOut.flatMap((a) => slicesUnitNeverReached(P, ctx.registerPlan, a)) });
+    }
     // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
     // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)
     const unitKey = {};
@@ -11227,6 +11474,16 @@ async function pipelineInner(job, opts = {}) {
     for (const f of [...(runCommonLaw ? [P.commonLaw] : []), ...axes.map((a) => P.registerUnit(a))]) {
       if (!existsSync(f)) throw new StageFailure("fan-in", `missing ${f}`);
     }
+    // THE SLICES A CHECK COULD NOT PROVE RAN, ONCE ITS RECOVERY WAS SPENT: each is taken out of its axis's band and
+    // delivered as an open row, before the band's checks and the plan join read the band. The checks below name the
+    // slices they fail on, and the run-level catch records them (parts-not-completed.mjs).
+    const searchesOpen = readPartNotCompleted(run.runDir, "searches");
+    if (Array.isArray(searchesOpen?.slices) && searchesOpen.slices.length) {
+      const taken = takeSlicesOutOfTheBand(P, searchesOpen.slices);
+      runLog(run.runDir, { event: "searches-not-completed-delivery", slices: searchesOpen.slices.length, taken: taken.length,
+        reasons: [...new Set(searchesOpen.slices.map((s) => s.reason))] });
+      note(`register: ${searchesOpen.slices.length} slice(s) a check could not prove ran are taken out of the band and delivered as open rows`);
+    }
     // judgment-relocation LINCHPIN (2026-06-24): the load-bearing funnel artifact is the COMPLETE NAMED BAND
     // (register-units/<axis>-band.json) — the real material that crosses the lifted firewall. A unit that RAN
     // THIS process (unitKey[a] set) MUST have written it; a missing band would merge to empty and let a clean
@@ -11239,6 +11496,8 @@ async function pipelineInner(job, opts = {}) {
     // archived) keeps the lenient path. copper-spire's shipping path was exactly fail → manual resume →
     // resumed-past leniency → degrade-with-note → ship.
     const anyBands = axes.some((x) => existsSync(P.registerBand(x)));
+    const unprovenBands = [];   // every axis whose band the ledger cannot evidence, failed on together below
+    const collapsedSlices = [];   // every axis's qid-stamped slices that claimed hits and carried no record, likewise
     for (const a of axes) {
       if ((unitKey[a] || anyBands) && !existsSync(P.registerBand(a)))
         throw new StageFailure("fan-in", `missing named band for axis "${a}" — the funnel produced no complete band (a clean can never ship over an unsearched band)`, undefined, { detail: `${P.registerBand(a)}${unitKey[a] ? "" : " — resumed-past axis on a run that carries bands: a hole, not legacy"}` });
@@ -11255,8 +11514,9 @@ async function pipelineInner(job, opts = {}) {
         // collapsed slices already had their re-run via the validator ladder — they stay terminal.
         const collapsedQids = collapsed.map((x) => x.qid).filter(Boolean);
         if (collapsedQids.length && (await dispatchPlanQids(a, collapsedQids, "collapsed-reexecute")) === "ok") collapsed = readCollapsed();
-        if (collapsed.length)
-          throw new StageFailure("fan-in", `collapsed named band for axis "${a}" — ${collapsed.length} enumerated slice(s) claimed hits but carried ZERO records into the band (a clean can never ship over a collapsed slice)`, undefined, { failClass: "deterministic", repairs: fanInRepairs, detail: `${P.registerBand(a)} — ${collapsed.slice(0, 6).map((x) => `${(x.query || "slice").slice(0, 40)}~${x.total_hits}`).join("; ")}${collapsed.length > 6 ? ` (+${collapsed.length - 6} more)` : ""}` });
+        // The collapsed slices are the searches not completed, failed on with every axis's below. One with no qid is named by
+        // its query, and its block becomes a deferred block on that query.
+        if (collapsed.length) collapsedSlices.push({ axis: a, collapsed });
       }
       // ── band-truth gate (2026-07-14, teal-foundry): the band must be EVIDENCED, not just well-formed ──
       // A qid-stamped band whose unit lane logged ZERO real provider calls was AUTHORED, not executed —
@@ -11276,10 +11536,12 @@ async function pipelineInner(job, opts = {}) {
       if (process.env.CLEAROTRON_BAND_TRUTH_GATE !== "0"
         && unitKey[a] && existsSync(P.registerBand(a)) && (ctx.registerPlan?.entries ?? []).some((e) => e?.axis === a)) {
         const laneKey = `clearance-${run.slug}-${run.codename}-register-unit-${a}`;
-        const bandHasQids = (() => {
-          try { const b = JSON.parse(readFileSync(P.registerBand(a), "utf8")); return Array.isArray(b) && b.some((x) => x && typeof x === "object" && x.qid); }
-          catch { return false; /* parse defects are the stage validator's problem, not this gate's */ }
+        // A slice taken out of the band, or one the provider could not express, is a deferred block that made no call.
+        const qidBlocks = (() => {
+          try { const b = JSON.parse(readFileSync(P.registerBand(a), "utf8")); return Array.isArray(b) ? b.filter((x) => x && typeof x === "object" && x.qid && !(x.error === true && x.deferred === true)) : []; }
+          catch { return []; /* parse defects are the stage validator's problem, not this gate's */ }
         })();
+        const bandHasQids = qidBlocks.length > 0;
         if (bandHasQids && countLaneCalls(laneKey) === 0) {
           note(`register-unit ${a}: band carries qid blocks but its lane logged ZERO provider calls — authored, not executed; direct re-execution from the frozen plan`);
           runLog(run.runDir, { event: "band-truth-gate", axis: a, lane: laneKey, calls: 0 });
@@ -11289,10 +11551,35 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "band-truth-rebuilt", axis: a, outcome, calls: callsNow ?? 0 });
             note(`register-unit ${a}: band re-executed from the frozen plan (dispatch ${outcome ?? "unavailable"}, ${callsNow ?? 0} ledger call(s)) — fan-in continues over executor data`);
           } else {
-            throw new StageFailure("fan-in", `fabricated named band for axis "${a}" — qid-stamped blocks, ZERO provider calls in the ledger, re-execution not evidenced (a clean can never ship over an unexecuted band)`, undefined, { failClass: "deterministic", repairs: fanInRepairs, detail: `${P.registerBand(a)} — lane "${laneKey}", re-execution ${outcome ?? "no executor lane"}` });
+            unprovenBands.push({ axis: a, laneKey, reexecution: outcome, qids: qidBlocks.map((x) => x.qid) });
           }
         }
       }
+    }
+    // THE SLICES THE BAND'S CHECKS COULD NOT PROVE RAN, failed on together, so one park takes every axis's. They are the
+    // searches not completed: once this is terminal they are taken out of the band and delivered as open rows, each with
+    // its shipped reason. A band no ledger call evidences reads "nothing in the run's own record confirms it was
+    // searched"; a slice that claimed hits and carried no record reads "it could not be completed this run". A slice that
+    // is both keeps the first.
+    const notCompleted = [
+      ...unprovenBands.flatMap((u) => u.qids.map((qid) => ({ axis: u.axis, qid, reason: plainDeferralReason("not-verified-closed") }))),
+      ...collapsedSlices.flatMap((c) => c.collapsed.map((x) => (x.qid ? { axis: c.axis, qid: x.qid, reason: plainDeferralReason("collapsed-slice") }
+        : { axis: c.axis, query: String(x.query ?? ""), reason: plainDeferralReason("collapsed-slice") }))),
+    ];
+    if (unprovenBands.length) {
+      const [first] = unprovenBands, more = unprovenBands.length - 1;
+      throw Object.assign(new StageFailure("fan-in", `fabricated named band for ${more ? `${unprovenBands.length} axes` : `axis "${first.axis}"`} — qid-stamped blocks, ZERO provider calls in the ledger, re-execution not evidenced (a clean can never ship over an unexecuted band)`,
+        undefined, { failClass: "deterministic", repairs: fanInRepairs,
+          detail: `${P.registerBand(first.axis)} — lane "${first.laneKey}", re-execution ${first.reexecution ?? "no executor lane"}${more ? `; ${more} more axis(es): ${unprovenBands.slice(1).map((u) => u.axis).join(", ")}` : ""}` }),
+        { notCompletedPart: "searches", excludedSlices: notCompleted });
+    }
+    if (collapsedSlices.length) {
+      const [{ axis: a, collapsed }] = collapsedSlices;
+      const n = collapsedSlices.reduce((k, c) => k + c.collapsed.length, 0);
+      throw Object.assign(new StageFailure("fan-in", `collapsed named band for axis "${a}" — ${n} enumerated slice(s) claimed hits but carried ZERO records into the band (a clean can never ship over a collapsed slice)`,
+        undefined, { failClass: "deterministic", repairs: fanInRepairs,
+          detail: `${P.registerBand(a)} — ${collapsed.slice(0, 6).map((x) => `${(x.query || "slice").slice(0, 40)}~${x.total_hits}`).join("; ")}${collapsedSlices.length > 1 ? `; and on ${collapsedSlices.length - 1} more axis(es)` : ""}` }),
+        { notCompletedPart: "searches", excludedSlices: notCompleted });
     }
 
     // ── timeout-taint chain (copper-lattice 2026-07-08): unfinished ⇒ deferred ⇒ recover ⇒ converge ──────
@@ -11318,6 +11605,8 @@ async function pipelineInner(job, opts = {}) {
       const taintedNow = axes.filter((a) => taint0[a]?.tainted);
       if (taintedNow.length) {
         const recoveryAttempts = (() => { try { return Number(JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")).recoveryAttempts) || 0; } catch { return 0; } })();
+        // The axes whose recovery is spent: the searches record lists them, and each is read as it stands and disclosed.
+        const disclosedAxes = new Set(Array.isArray(searchesOpen?.disclosed_axes) ? searchesOpen.disclosed_axes : []);
         const axesRec = {};
         const digestLocked = existsSync(P.narrative);   // synthesis done — the audit spine is locked; disclose, never mutate under it
         for (const a of taintedNow) {
@@ -11336,8 +11625,9 @@ async function pipelineInner(job, opts = {}) {
               }
             }
           } catch (e) { note(`register-unit ${a}: taint quarantine not applicable (${String(e.message).slice(0, 100)})`); }
-          // T0.5 — deterministic re-execution of the dictated half (repair-ledger bounded)
-          const dispatched = await dispatchPlanQids(a, null, "taint-dispatch");
+          // T0.5 — deterministic re-execution of the dictated half (repair-ledger bounded). Not for an axis the searches
+          // record discloses: its recovery is spent, and its band is read as the last pass left it.
+          const dispatched = disclosedAxes.has(a) ? null : await dispatchPlanQids(a, null, "taint-dispatch");
           if (dispatched) repairs.push(`taint-dispatch:${dispatched}`);
           // T1 — ONE fresh in-loop re-run, pre-synthesis only (a fresh full pass, full fallback chain)
           // — held until the real result is in hand; see the push below the taint re-read.
@@ -11345,7 +11635,7 @@ async function pipelineInner(job, opts = {}) {
 // — ONE ceiling, named once and read by BOTH ends. A literal repeated at the record site is a
           // second statement of the same rule, and two ends stating the same rule is how they drift apart.
           const taintRerunMax = 1;
-          if (!digestLocked && repairLedger.canAttempt("taint-rerun", a, { max: taintRerunMax, epoch: repairEpoch })) {
+          if (!digestLocked && !disclosedAxes.has(a) && repairLedger.canAttempt("taint-rerun", a, { max: taintRerunMax, epoch: repairEpoch })) {
             note(`register-unit ${a}: taint-rerun — one fresh re-run (fresh session; a killed session is never warm-resumed)`);
             const r = await stage("register-unit", { ...ctx, axis: a },
               { force: true, trigger: "taint-rerun", sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}-taint-rerun-${recoveryAttempts}` });
@@ -11390,34 +11680,18 @@ async function pipelineInner(job, opts = {}) {
         const stillTainted = Object.entries(axesRec)
           .filter(([a, v]) => v.status === "active" && !NON_MATERIAL_AXES.includes(String(a).toLowerCase()))
           .map(([a]) => a);
-        if (stillTainted.length && !digestLocked) {
-          // PARK — the converging outer net. Rename (never delete — forensics) so stageOnce's
-          // exists-and-validates skip MISSES and the resume genuinely re-executes the tainted units;
-          // drop the plan-execution receipt so the re-join runs over the fresh bands; a digest already
-          // derived from tainted material is renamed too, else its skip would ship stale rows.
-          for (const a of stillTainted) {
-            for (const f of [P.registerUnit(a), P.registerBand(a)]) {
-              try { if (existsSync(f)) renameSync(f, `${f}.tainted-${recoveryAttempts}`); } catch { /* best-effort */ }
-            }
-          }
-          try { if (existsSync(P.planExecution)) rmSync(P.planExecution); } catch { /* best-effort */ }
-          for (const f of taintParkJudgmentArtifacts(P, run.runDir)) {
-            try { if (existsSync(f)) renameSync(f, `${f}.tainted-${recoveryAttempts}`); } catch { /* best-effort */ }
-          }
-          runLog(run.runDir, { event: "taint-park", axes: stillTainted, attempt: recoveryAttempts });
-          throw new StageFailure(`register-unit:${stillTainted[0]}`,
-            `register slice timeout-tainted and unrecovered — an unfinished pass cannot ship self-reported clean (axes: ${stillTainted.join(", ")})`,
-            undefined, { failClass: "transient", repairs: fanInRepairs });
-        }
-        if (stillTainted.length && digestLocked) {
-          // DISCLOSE — the sanctioned post-synthesis lever: the client export is withheld until the
-          // search is re-run to closure (the same class as a failed escalation/envelope), the internal
-          // report ships CONDITIONAL via the ledger relabel + registerGap clamp.
+        // Disclosed: every axis once synthesis is done, and an axis the searches record lists once its recovery is spent.
+        // Parked: the rest, while the run can still re-run them.
+        const { disclose: toDisclose, park: toPark } = taintDisposition(stillTainted, { digestLocked, disclosedAxes });
+        if (toDisclose.length) {
+          // DISCLOSE — the sanctioned lever once synthesis is done, and once an axis's recovery is spent: the client
+          // export is withheld until the search is re-run to closure (the same class as a failed escalation/envelope),
+          // the internal report ships CONDITIONAL via the ledger relabel + registerGap clamp.
           try {
             const escPath = driverDir(run.runDir, "escalation-state.json");
             let esc = {}; try { esc = JSON.parse(readFileSync(escPath, "utf8")); } catch { /* fresh */ }
             const failed = Array.isArray(esc.failed) ? esc.failed : [];
-            for (const a of stillTainted) if (!failed.includes(`taint:${a}`)) failed.push(`taint:${a}`);
+            for (const a of toDisclose) if (!failed.includes(`taint:${a}`)) failed.push(`taint:${a}`);
             atomicWrite(escPath, JSON.stringify({ ...esc, ts: new Date().toISOString(), failed }, null, 2) + "\n");   // B5 — the client-gate reads this: never truncated
           } catch (e) { note(`taint disclose: escalation-state append failed (${String(e.message).slice(0, 80)})`); }
           // Receipt status → "disclosed": the LEDGER keeps treating the axis as a gap (deferred → clamp +
@@ -11426,11 +11700,31 @@ async function pipelineInner(job, opts = {}) {
           try {
             const tp = driverDir(run.runDir, "register-taint.json");
             const rec = JSON.parse(readFileSync(tp, "utf8"));
-            for (const a of stillTainted) if (rec?.axes?.[a]) rec.axes[a] = { ...rec.axes[a], status: "disclosed" };
+            for (const a of toDisclose) if (rec?.axes?.[a]) rec.axes[a] = { ...rec.axes[a], status: "disclosed" };
             writeFileSync(`${tp}.tmp`, JSON.stringify(rec, null, 2) + "\n"); renameSync(`${tp}.tmp`, tp);
           } catch (e) { note(`register-taint receipt disclose update failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-          runLog(run.runDir, { event: "taint-disclose", axes: stillTainted });
-          note(`timeout-taint on ${stillTainted.join(", ")} past the locked audit spine — disclosed: client export withheld, verdict clamps CONDITIONAL (internal report still ships)`);
+          runLog(run.runDir, { event: "taint-disclose", axes: toDisclose });
+          note(`timeout-taint on ${toDisclose.join(", ")} ${digestLocked ? "past the locked audit spine" : "with its recovery spent"} — disclosed: client export withheld, verdict clamps CONDITIONAL (internal report still ships)`);
+        }
+        if (toPark.length) {
+          // PARK — the converging outer net. Rename (never delete — forensics) so stageOnce's
+          // exists-and-validates skip MISSES and the resume genuinely re-executes the tainted units;
+          // drop the plan-execution receipt so the re-join runs over the fresh bands; a digest already
+          // derived from tainted material is renamed too, else its skip would ship stale rows. The renames ride the
+          // failure: once its recovery is spent, the run-level catch puts them back and the axes are disclosed instead.
+          const undoRenames = [];
+          const parkRename = (f) => {
+            try { if (existsSync(f)) { renameSync(f, `${f}.tainted-${recoveryAttempts}`); undoRenames.push({ from: f, to: `${f}.tainted-${recoveryAttempts}` }); } }
+            catch { /* best-effort */ }
+          };
+          for (const a of toPark) for (const f of [P.registerUnit(a), P.registerBand(a)]) parkRename(f);
+          try { if (existsSync(P.planExecution)) rmSync(P.planExecution); } catch { /* best-effort */ }
+          for (const f of taintParkJudgmentArtifacts(P, run.runDir)) parkRename(f);
+          runLog(run.runDir, { event: "taint-park", axes: toPark, attempt: recoveryAttempts });
+          throw Object.assign(new StageFailure(`register-unit:${toPark[0]}`,
+            `register slice timeout-tainted and unrecovered — an unfinished pass cannot ship self-reported clean (axes: ${toPark.join(", ")})`,
+            undefined, { failClass: "transient", repairs: fanInRepairs }),
+            { notCompletedPart: "searches", taintedAxes: toPark, undoRenames });
         }
       }
     }
@@ -11743,7 +12037,9 @@ async function pipelineInner(job, opts = {}) {
       // The rows are excluded here and announced by their own note: they are NOT slices the provider
       // cannot express — it accepted them and then failed — and one note claiming both would make the
       // run's own record of WHY a territory went unsearched wrong.
-      const capabilityDeferred = (joinRes.deferred ?? []).filter((d) => !isProviderHardErrorReason(d.reason));
+      // And the slices a check could not prove ran, taken out of the band (searchesOpen above): announced on their own.
+      const takenOut = new Set((Array.isArray(searchesOpen?.slices) ? searchesOpen.slices : []).map((s) => s.qid));
+      const capabilityDeferred = (joinRes.deferred ?? []).filter((d) => !isProviderHardErrorReason(d.reason) && !takenOut.has(d.qid));
       if (capabilityDeferred.length) {
         runLog(run.runDir, { event: "plan-qids-deferred", count: capabilityDeferred.length,
           qids: capabilityDeferred.slice(0, 8).map((d) => d.qid) });
@@ -11792,12 +12088,17 @@ async function pipelineInner(job, opts = {}) {
           if (r.quote) return `${r.qid} ← ${r.quote.slice(0, 160)}`;
           return `${r.qid} ← no error block and no repair outcome — nothing ran this slice`;
         });
-        throw new StageFailure("fan-in", `register plan unexecuted after direct dispatch + followup — ${joinRes.missing.length} dictated qid(s) own no band block: ${detail.join("; ")}${joinRes.missing.length > 6 ? " …" : ""} (a clean can never ship over a slice the plan dictated and nothing ran)`, undefined,
+        // Once their recovery is spent, these are the searches not completed: each is added to its axis's band as the
+        // executor's deferred block and delivered as an open row, reading that it was planned and never reached the
+        // register (parts-not-completed.mjs).
+        throw Object.assign(new StageFailure("fan-in", `register plan unexecuted after direct dispatch + followup — ${joinRes.missing.length} dictated qid(s) own no band block: ${detail.join("; ")}${joinRes.missing.length > 6 ? " …" : ""} (a clean can never ship over a slice the plan dictated and nothing ran)`, undefined,
           // `quantity` is the missing count — what CONVERGES across attempts (5 → 3 → 1 is a run closing
           // on the hole; 5 → 5 → 5 is one that has stopped). repairs.mjs progressQuantity cannot read it
           // out of this prose: its census table is an allowlist and this template is not in it, so the
           // ladder has been reading `unknown` here and a converging run looked plateaued.
-          { failClass, repairs: fanInRepairs, quantity: joinRes.missing.length });
+          { failClass, repairs: fanInRepairs, quantity: joinRes.missing.length }),
+          { notCompletedPart: "searches", excludedSlices: joinRes.missing.map((qid) => ({ axis: byQid.get(qid)?.axis, qid, reason: plainDeferralReason("slice-not-landed") }))
+            .filter((x) => x.axis) });
       }
       runLog(run.runDir, { event: "plan-execution", executed: joinRes.executed.length, skipped: joinRes.skipped.length, unplanned: joinRes.unplanned.length,
         awaiting: joinRes.awaiting?.length ?? 0, asked: joinRes.asked?.length ?? 0,
@@ -14073,7 +14374,9 @@ async function pipelineInner(job, opts = {}) {
           + `${correctiveRollback.restored ? "findings.json restored to the version the reviewer read" : "findings.json was never changed"}`
           + `; the run delivers with the reviewer's points printed rather than failing`);
       } else {
-        must(correctivePass, `synthesis(${verdict.toLowerCase()})`);
+        // The rollback declined: a rate limit, which waits, or no record from before the pass to trust, which is the
+        // assessment not completed, as for the correction after the review of a repair.
+        await asPartNotCompleted("assessment", async () => must(correctivePass, `synthesis(${verdict.toLowerCase()})`));
         // ── — THE THIRD BRANCH, AND IT IS ON THE SUCCESS SIDE ON PURPOSE ─────────
         //
         // A repair is not a rollback and must never be reached by falling through to one. The rollback
@@ -15216,6 +15519,7 @@ async function pipelineInner(job, opts = {}) {
     // P2 clause 3 — assigned in the lint block below, consumed by the freshness precondition before the
     // client gate. Declared here so both live in the same scope regardless of the lint block's nesting.
     let staleStages = [];
+    let staleOnTheDeliveryPath = () => staleStages;   // the same question, asked again: set where the lint block asks it
     // ── §9 — THE CARD SET IS `fullProseOrdinals ∧ form === "full"` ───────────────────────────
     //
     // On one country every form is `full`, so this reduces to `fullProseOrdinals` — the same list, in the
@@ -15396,6 +15700,46 @@ async function pipelineInner(job, opts = {}) {
     // five dispatches, three of them failing identically until the ladder exhausted.
     // composeEmailHtml now takes its headline tier from the verdict sidecar and its conditions from
     // the report's own `# Actions`.
+
+    // A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED, NOT ENDED ON. It is checked as the delivery
+    // gate checks it, before the audit and the delivery checks are built from it, and again at that gate. A broken record
+    // comes back from the last save that passed (restoreTheRecordThatPassed). A save rebuilt with the duty set aside is
+    // judged again here, as after a rollback, and the corrections a save from before the repair lacks close the client
+    // export (correctionsTheRestoreLacks). With no save to restore, the failure is the assessment not completed: its
+    // recovery re-runs synthesis, which a broken record does not let skip, and once that is spent the run delivers
+    // without the assessment. Returns the restore, or null where no save passes.
+    const restoreTheBrokenRecord = async (failures, where) => {
+      const restored = await restoreTheRecordThatPassed(ctx, P, run.runDir, (raw) => { parseFindingsJsonLenient(raw); });
+      if (!restored) {
+        note(`core-artifact (${where}): ${failures.join("; ")} — no save passes either, so the assessment is not completed`);
+        return null;
+      }
+      const lacks = correctionsTheRestoreLacks(run.runDir, restored.from);
+      if (lacks.length) {
+        // Joined to what the state already holds: an earlier correction's names stay in the reason.
+        const at = driverDir(run.runDir, "corrections-state.json");
+        const held = (() => { try { const s = JSON.parse(readFileSync(at, "utf8"))?.stale; return Array.isArray(s) ? s : []; } catch { return []; } })();
+        try { atomicWrite(at, JSON.stringify({ ts: new Date().toISOString(), stale: [...new Set([...held, ...lacks])] }, null, 2)); }
+        catch { /* the event below records it */ }
+      }
+      runLog(run.runDir, { event: "core-artifact-restored", where, from: restored.from, duty: restored.duty, ...(lacks.length ? { correctionsLacked: lacks.length } : {}) });
+      note(`core-artifact (${where}): ${failures.join("; ")} — the record is restored from the ${restored.from}, and the run delivers from it`);
+      if (restored.duty === "relaxed") {
+        const was = verdict, stood = JSON.stringify(clampReasons);
+        clampOnTheWritersDuty({ again: true });
+        if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after the record was restored")) applyVerdictFrontMatter();
+      }
+      return restored;
+    };
+    if (existsSync(P.findings)) {
+      let broken = null;
+      try { parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch (e) { broken = `findings.json — ${String(e.message).replace(/\s+/g, " ").slice(0, 140)}`; }
+      if (broken) {
+        runLog(run.runDir, { event: "core-artifact-invalid", failures: [broken], where: "delivery-checks" });
+        if (!(await restoreTheBrokenRecord([broken], "delivery-checks")))
+          throw Object.assign(new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${broken}`), { notCompletedPart: "assessment" });
+      }
+    }
 
     // A2 — full audit: DETERMINISTIC CODE (parse the spine tables → audit.md, count-guarded). Replaces the LLM
     // audit-emit (output varied 47↔69 on identical input). NON-FATAL: if it fails, the report still ships (publish
@@ -16298,8 +16642,9 @@ async function pipelineInner(job, opts = {}) {
       // again, and nothing re-runs either.
       const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview")
         && !(reviewOpen && l === "narrative-refutation"));
-      staleStages = [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
+      staleOnTheDeliveryPath = () => [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
         ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
+      staleStages = staleOnTheDeliveryPath();
       // A DELIVERY-CHECK REPAIR THAT CHANGED ONLY THE FINDINGS RECORD leaves the narrative's bytes, and so the
       // reviewer, fresh — the reviewer does not declare findings.json. The change is still content no review has
       // read, so the reviewer is queued for the review after a repair, marked as the record's change.
@@ -16978,8 +17323,9 @@ async function pipelineInner(job, opts = {}) {
     // doc-44 Fix C — machine-file DELIVERY gate (mechanism + a pluggable core-artifact seam). A top-level-invalid
     // CORE machine artifact must NOT ship: it is repaired UPSTREAM (the synthesis quarantine + the corrective
     // must() re-synthesis already fail a top-level-invalid findings.json), and THIS is the final backstop before
-    // publish so nothing invalid slips through a post-synthesis mutation. Fails LOUDLY via the technical-failure
-    // path — never quarantine-and-ship. We validate with the LENIENT parser so a legitimate PER-FINDING quarantine
+    // publish so nothing invalid slips through a post-synthesis mutation. Never quarantine-and-ship: a broken
+    // findings.json is restored from the last save that passed (restoreTheRecordThatPassed), and with none to restore
+    // the failure is the assessment not completed. We validate with the LENIENT parser so a legitimate PER-FINDING quarantine
     // (one bad finding dropped, the rest shipped) still passes — THAT (whether a dropped finding is a core failure)
     // is a POLICY call the definition-of-done (spec 45) owns, not this gate. The CORE_ARTIFACTS list is the SEAM:
     // spec 45 owns its contents; it is seeded with the machine findings file doc-44 names. This enforces machine-
@@ -16995,8 +17341,13 @@ async function pipelineInner(job, opts = {}) {
     }
     if (coreInvalid.length) {
       runLog(run.runDir, { event: "core-artifact-invalid", failures: coreInvalid });
-      note(`core-artifact gate: ${coreInvalid.join("; ")} — failing the run (a report cannot ship over a broken machine artifact)`);
-      throw new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${coreInvalid.join("; ")}`);
+      // The record, broken after the delivery checks first read it, is restored as it is there (restoreTheBrokenRecord),
+      // and what was built from it is judged again against the record that stands: the freshness check below parks a
+      // stage it left stale, and the resumed pass rebuilds it.
+      const failure = new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${coreInvalid.join("; ")}`);
+      if (!coreInvalid.every((f) => f.startsWith("findings.json "))) throw failure;   // only the findings record is the assessment's
+      if (!(await restoreTheBrokenRecord(coreInvalid, "delivery-gate"))) throw Object.assign(failure, { notCompletedPart: "assessment" });
+      staleStages = staleOnTheDeliveryPath();
     }
 
     // P2 clause 3 — FRESHNESS PRECONDITION, immediately before the client gate. copper-vault's gate
@@ -17350,17 +17701,30 @@ async function pipelineInner(job, opts = {}) {
     // a run that delivers carries neither. A rate limit and a stop never reach this line (both are handled above), and
     // a storage failure is not a covered part: no throw site names one.
     const coveredPart = e instanceof StageFailure ? (e.notCompletedPart ?? null) : null;
-    if (coveredPart && run?.runDir && !readPartNotCompleted(run.runDir, coveredPart)) {
+    const heldRecord = coveredPart && run?.runDir ? readPartNotCompleted(run.runDir, coveredPart) : null;
+    // THE SEARCHES' RECORD GROWS: a failure is routed again while it names a slice the record does not hold yet.
+    const addedSlices = coveredPart === "searches" ? slicesNotYetRecorded(heldRecord, e.excludedSlices) : [];
+    const addedAxes = coveredPart === "searches" ? axesNotYetDisclosed(heldRecord, e.taintedAxes) : [];
+    const addedUnits = coveredPart === "searches" ? unitsNotYetRecorded(heldRecord, e.unfinishedUnits) : [];
+    if (coveredPart && run?.runDir && (coveredPart === "searches" ? addedSlices.length + addedAxes.length + addedUnits.length > 0 : !heldRecord)) {
       let parked = null;
       try {
-        writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind });
+        // A TIMED-OUT AXIS IS READ AS THE LAST PASS LEFT IT: the park renamed its unit, band and digest so a resume would
+        // run it again, and with its recovery spent nothing will, so they are put back.
+        if (addedAxes.length) undoTaintRenames(e.undoRenames);
+        writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind,
+          ...(coveredPart === "searches" ? { slices: [...(Array.isArray(heldRecord?.slices) ? heldRecord.slices : []), ...addedSlices],
+            disclosedAxes: [...(Array.isArray(heldRecord?.disclosed_axes) ? heldRecord.disclosed_axes : []), ...addedAxes],
+            unfinishedUnits: [...(Array.isArray(heldRecord?.unfinished_units) ? heldRecord.unfinished_units : []), ...addedUnits] } : {}) });
         const resumesAt = new Date().toISOString();
         // The payload the runner's self-resume needs (job, agent, codename), and the recovery kind, whose stated
         // clock it keeps exactly: now. No recovery attempt is counted, because nothing is being retried.
         sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt: resumesAt, postponedAt: resumesAt,
           codename: run.codename, job, agent, attempt: priorAttempts, reason: String(reason).slice(0, 300), sig: failSig.sig,
           class: failClass, notCompleted: coveredPart });
-        writeRunStatus(ctx, { state: "recovering", failedStage, ...terminalReasonFields(reason), recoveryResumesAt: resumesAt, resetsAt: null });
+        // The cause's payload rides beside the sentence, as on the stop it replaces, so the record still points at it.
+        writeRunStatus(ctx, { state: "recovering", failedStage, ...terminalReasonFields(reason), recoveryResumesAt: resumesAt, resetsAt: null,
+          reasonDetail: reasonDetail ? abbrev(String(reasonDetail).replace(/\s+/g, " ").trim(), 600) : null });
         rollupStatus(run.studioRoot);
         runLog(run.runDir, { event: "part-not-completed", part: coveredPart, stage: failedStage, sig: failSig.sig, class: failClass,
           terminalKind: terminalKind ?? null, resumesAt });
@@ -17449,7 +17813,7 @@ async function pipelineInner(job, opts = {}) {
           runId, agent, job, failedStage, shortReason,
           reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
           terminalKind: terminalKind ?? null, repairs: attemptedRepairs ?? [],
-          priorAttempts, whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+          priorAttempts,
           // Read off the park history rather than recomputed: the history is what survived the parks.
           capWait: capWaitFrom(Array.isArray(statusSnapshot?.recoveryHistory) ? statusSnapshot.recoveryHistory : []),
           reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the payload reaches the notice
@@ -17506,7 +17870,7 @@ async function pipelineInner(job, opts = {}) {
         const packet = buildFailurePacket({
           runId: `${run.slug}-${run.date}-${run.codename}`, agent, job, failedStage, shortReason,   // canonical runId form (charter P1 §3)
           reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, terminalKind,
-          repairs: attemptedRepairs ?? [], priorAttempts, whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+          repairs: attemptedRepairs ?? [], priorAttempts,
           reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the BACKSTOP notice carries it too
         });
         writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");

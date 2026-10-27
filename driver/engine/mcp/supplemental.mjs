@@ -36,6 +36,7 @@ import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, planExactOrWi
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
 import { heldAnswers, questionKey } from "./held-answers.mjs";
+import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../../shared/slices-taken-out.mjs";
 import { readWithheldFamilies } from "../../withheld-families.mjs";
 import { addedClassBound, boundAddedClasses } from "../../frame-diff-model.mjs";   // an added class takes one question, the identical mark
 import { scriptQuestionsByMarket } from "../../registration-scripts.mjs";   // one script question per market on the plan's list
@@ -573,11 +574,13 @@ export async function proposeSupplemental(params, tctx, deps) {
   }
 
   // A question this worker re-proposes that already holds an answer is not run again: the answer stands. One with no
-  // answer, a failed one, or one this call enriched or gave its markets runs as before.
+  // answer, a failed one, one whose slice the run took out of the band because a check could not prove it ran
+  // (shared/slices-taken-out.mjs), or one this call enriched or gave its markets runs as before.
   let reusedHeld = [];
   try {
     const own = new Map();
-    for (const b of JSON.parse(readFileSync(outPath, "utf8"))) if (b?.qid) own.set(String(b.qid), b);
+    const { blocks } = bandWithSlicesOut(JSON.parse(readFileSync(outPath, "utf8")), slicesTakenOutByAxis(dirname(dirname(outPath))).get(axis));
+    for (const b of blocks) if (b?.qid) own.set(String(b.qid), b);
     reusedHeld = reused.filter((q) => { const b = own.get(String(q)); return b && b.error !== true && !enrichedQids.includes(q) && !staleOnDisk; });
   } catch { reusedHeld = []; }
   const qids = [...minted.map((e) => e.qid), ...reused.filter((q) => !reusedHeld.includes(q))];

@@ -25,6 +25,7 @@ import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { PLACEMENT_FORM_NAME, placementFormSidecarName, parsePlacementForm, renderPlacementsJson } from "./placement-form.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
+import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { atomicWrite } from "./progress.mjs";
 
 export { PLACEMENT_FORM_NAME };
@@ -54,13 +55,32 @@ export function placementFormStamp(runDir) {
 export function readPlacementFormInput(runDir) {
   const shape = readJson(driverDir(runDir, "band-shape.json"));
   const pos = readJson(driverDir(runDir, "register-positions.json"));
-  return {
+  const scope = readJson(driverDir(runDir, "instructed-scope.json"));
+  const input = {
     floors: Array.isArray(shape?.floors?.in_class_identical_or_near) ? shape.floors.in_class_identical_or_near : null,
     positions: Array.isArray(pos?.positions) ? pos.positions : null,
     // The shape's groups, which a group row names and is checked against; null on a shape that has none.
     groups: shape?.groups && typeof shape.groups === "object" ? shape.groups : null,
     served: readServed(runDir),
+    // The applied-for marks, written by the job before any model ran: a ground on a floor's mark is refused on the
+    // client's own mark. A scope that names one mark as a string names it all the same.
+    marks: Array.isArray(scope?.marks) ? scope.marks : (typeof scope?.marks === "string" && scope.marks ? [scope.marks] : []),
   };
+  // What each record's goods rest on (goods-evidence.mjs), which a ground on a floor's goods is checked against. Read
+  // only when a ground needs it: the record runs to megabytes and the form is judged on every pass. null where the
+  // run wrote none, which establishes no goods.
+  let evidence;
+  Object.defineProperty(input, "evidence", { enumerable: false, get: () => (evidence === undefined ? (evidence = readGoodsStates(runDir)) : evidence) });
+  return input;
+}
+
+/** canonical uri → the state goods-evidence.mjs recorded for that record's goods; null with no record. */
+export function readGoodsStates(runDir) {
+  const doc = readJson(driverDir(runDir, "goods-evidence.json"));
+  if (!Array.isArray(doc?.records)) return null;
+  const out = new Map();
+  for (const r of doc.records) { const k = normalizeRecordUri(r?.uri); if (k && typeof r?.state === "string") out.set(k, r.state); }
+  return out;
 }
 
 /**

@@ -81,7 +81,7 @@ test("a crowded (b) says its row covers a floor once read, and each floor line s
 test("the placement manual and the group contract carry the five sentences", () => {
   const manual = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   assert.ok(manual.includes("it covers a floor only in such a crowd in (b), and only once you have read the floor's line."));
-  assert.ok(manual.includes("or sits in a crowd of a thousand or more identical marks and its goods, read on its line, are not the client's goods, where the crowd's row stands for it;"));
+  assert.ok(manual.includes("only a crowd's row of a thousand records or more in (b) covers a floor."));
   assert.ok(SET_ASIDE_GROUP_CONTRACT.when.includes("It covers a floor only in such a crowd in (b), and only once you have read the floor's line; a floor among the lines the goods test could not place, like any other floor, is placed or set aside by name."));
   assert.ok(SET_ASIDE_GROUP_CONTRACT.unresolved.includes("or a group with lines you have not read (its first page, in a crowd outside (a), and in (b) every floor),"));
 });

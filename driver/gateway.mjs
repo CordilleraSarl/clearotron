@@ -224,7 +224,8 @@ export function toolWrittenArtifact(p) {
     ?? TOOL_WRITTEN_PATTERNS.find((r) => r.re.test(base))
     ?? null;
 }
-import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups } from "./engine/mcp/gather-config.mjs";
+import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups, withSendUntil } from "./engine/mcp/gather-config.mjs";
+import { sendReserveMs } from "../providers/_shared/send-until.mjs";   // each turn's plan calls stop sending ahead of its deadline
 import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
 export { everyToolCallRefused };
 // The profiles STORE root, for the write boundary only — read from the module that owns it, never
@@ -297,11 +298,11 @@ export function isEmbeddedFallback(json, stderr = "") {
 // nonzero exit (the v14 delivery failure, previously mislabelled `nonzero_exit_1`); (3) any nonzero
 // exit whose wall already reached the configured budget. Distinguished from transient errors so the
 // retry policy can give a slow stage ONE longer shot instead of 3 identical doomed attempts.
-export function isTimeout({ killed, code, wall, stderr = "", timeoutSec }) {
-  if (killed) return true;
-  if (/EmbeddedAttemptSessionTakeoverError|request timed out|\bETIMEDOUT\b/i.test(stderr)) return true;
-  if (code !== 0 && wall >= timeoutSec) return true;
-  return false;
+export const isTimeout = (facts) => timeoutCause(facts) !== null;
+export function timeoutCause({ killed, code, wall, stderr = "", timeoutSec }) {   // which signal fired, or null
+  if (killed) return "killed";
+  if (/EmbeddedAttemptSessionTakeoverError|request timed out|\bETIMEDOUT\b/i.test(stderr)) return "stderr";
+  return code !== 0 && wall >= timeoutSec ? "wall" : null;
 }
 
 // A LANE WEDGE: a timeout whose turn moved ZERO tokens — the gateway never admitted it to a command lane (the
@@ -942,6 +943,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       }
     }
   }
+  // EACH TURN'S OWN COPY of the stage's tool config, carrying that turn's time to stop sending: ahead of the turn's
+  // deadline by the reserve, so a plan call returns what it holds while the turn can still write it (send-until.mjs).
+  const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
   let lastFail;
   // — WHAT ACTUALLY RAN, carried out to the caller. The attempt rows have held the truth all along
   // (`modelActual` from the wire, `modelUsed` from the engine's own resolver); the ladder simply never
@@ -1125,13 +1129,14 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // the snapshot, which only widens the window by their own time: an earlier attempt's refusals all
     // precede its own settle, so they stay outside it.
     const dispatchedAt = Date.now();
+    const mcpConfig = turnConfig(effTimeout);   // this turn's copy, with its time to stop sending
     for (const line of describeMethodologyDrift(witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)))
       note(`[${name}] ${line}`);
     // — the frozen judged-by set, hashed into THIS PROCESS'S MEMORY before the seat runs. Never
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
       // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
       // keep it while the disk has room and say on the tuple's `stream` what landed.
@@ -1282,7 +1287,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     let fail = null;
     let stampedQuantity = null;   //: a validator's own exact count, when it stamped one (see below)
     let failingFile = null;       //: the artifact the validator rejected — the repair's only target
-    if (isTimeout({ killed, code, wall, stderr, timeoutSec: effTimeout })) fail = "timeout";
+    // A TURN THAT COMPLETED IS JUDGED ON WHAT IT WROTE, whatever its stderr says about a request inside it
+    // (attemptTimedOut). Which signal fired is kept on the row either way.
+    const timedOutBy = timeoutCause({ killed, code, wall, stderr, timeoutSec: effTimeout });
+    if (attemptTimedOut({ cause: timedOutBy, code, json })) fail = "timeout";
     else if (isEmbeddedFallback(json, stderr)) fail = "embedded_fallback";
     else if (code !== 0) fail = `nonzero_exit_${code}`;
     else if (!json) fail = "unparseable_json";
@@ -1354,7 +1362,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // under the run dir to win the grant back, and warmPatchMessage renders the target through rel();
       // a relative path there would silently strip the write root off the one turn that needs it most.
       const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
-        timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools,
+        timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
         skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
         progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
       repairRef = rt.sessionRef ?? repairRef;
@@ -1819,6 +1827,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // `followup` matters too: a followup success PATCHES the prior session's output, it never
         // supersedes a taint the way a fresh full pass does.
         killed: killed || undefined,
+        timeoutCause: timedOutBy ?? undefined,   // — which of the three timeout signals fired: killed, stderr or wall
         signals: turn.signals ?? undefined,
         //: how long every declared artifact had been untouched when the turn settled. Present on any
         // hard-wall kill the wall rescue looked at — INCLUDING the ones it refused, so "considered and
@@ -1899,7 +1908,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
         cliFloor: cli.floor ?? null, cliBelowFloor: cli.belowFloor ?? null,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
-          rescued: rescued ?? undefined, killed: killed || undefined,
+          rescued: rescued ?? undefined, killed: killed || undefined, timeoutCause: timedOutBy ?? undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row
           rescueRefused: rescueRefused ?? undefined,   // — the cause, when the rescue looked and refused
           rescueRefusedFile: rescueRefusedFile ?? undefined, rescueRefusedReason: rescueRefusedReason ?? undefined,
@@ -3734,4 +3743,16 @@ function toolCallCounts(turn) {
   const errored = turn?.toolCallsErroredByName;
   return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls),
     toolCallsErroredByName: errored && typeof errored === "object" && !Array.isArray(errored) ? { ...errored } : null };
+}
+
+/**
+ * IS THIS ATTEMPT A TIMEOUT? A kill and a run past the limit with a non-zero exit always are. A timed-out request named
+ * in stderr is one only when the turn did not complete: a turn that exited 0 with its engine's status ok outlived the
+ * request, which was a call inside it (a web lookup, a tool), and is judged on what it wrote like any finished turn.
+ * Recorded as a timeout, it was run again whole: on one test run a writer finished in 14.7 minutes of its 43, exited 0
+ * with its output written, and paid a second attempt of 20.3 minutes. `cause` is `timeoutCause`'s answer. PURE.
+ */
+export function attemptTimedOut({ cause, code, json }) {
+  if (!cause) return false;
+  return !(cause === "stderr" && code === 0 && json?.status === "ok");
 }

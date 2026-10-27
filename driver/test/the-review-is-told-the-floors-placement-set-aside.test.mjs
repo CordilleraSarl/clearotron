@@ -23,6 +23,7 @@ import { writePlacementForm } from "../placement-form-io.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
 import { placementFloorDecisionLines, messageCtxFor } from "../pipeline.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
+import { appendDeclinations } from "../declination-tool.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
 const rec = (id, mark, owner, extra = {}) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes: ["9"],
@@ -35,7 +36,7 @@ const BAND = [
 ];
 const GOODS = { a1: "joysticks", b1: "printers", c1: "printers", r1: "printers" };
 
-function seedRun(t, rows, { band = BAND, goodsOf = GOODS, later = [] } = {}) {
+function seedRun(t, rows, { band = BAND, goodsOf = GOODS, later = [], evidence = null } = {}) {
   const runDir = mkdtempSync(join(tmpdir(), "review-floors-"));
   t.after(() => rmSync(runDir, { recursive: true, force: true }));
   mkdirSync(driverDir(runDir), { recursive: true });
@@ -45,7 +46,7 @@ function seedRun(t, rows, { band = BAND, goodsOf = GOODS, later = [] } = {}) {
   const { shape } = buildBandShape({ enumerated: band }, { targets: ["Qzorvak"], inScopeClasses: ["9"], positions, goods, keysOf: setAsideKeysOf(positions.positions) });
   const read = ["a", "b", "c", "d", "rest", "no_goods"].flatMap((g) => shape.groups[g].list.map((l) => l.key));
   const input = { floors: shape.floors.in_class_identical_or_near, positions: positions.positions, groups: shape.groups,
-    served: { lines: new Set(read), records: new Set() } };
+    served: { lines: new Set(read), records: new Set() }, marks: ["Qzorvak"], evidence };
   let u = unionPlacementForm(null, { rows }, input);
   for (const more of later) u = unionPlacementForm(u.form, { rows: more }, input);
   const P = paths(runDir);
@@ -91,6 +92,28 @@ test("a floor set aside on its territory is listed with that ground", (t) => {
   assert.deepEqual(placementFloorDecisionLines(P), ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its territory: the registration covers only Japan, outside the ordered territories"]);
 });
 
+test("a floor set aside on its registered goods is listed with that ground", (t) => {
+  const ground = "registered for printers only, which do not meet the client's joysticks";
+  const { P } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/b1", ground, on: "goods" },
+  ], { evidence: new Map([["/mark/eu/b1", "complete"]]) });
+  assert.deepEqual(placementFloorDecisionLines(P), [`- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its goods: ${ground}`]);
+});
+
+test("a floor the writer declined is listed after placement's decisions, with its reason and ground", (t) => {
+  const { P } = seedRun(t, [
+    { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
+    { set_aside: "/mark/eu/b1", ground: "the registration expired in 2019", on: "status" },
+  ]);
+  const grounds = "Registered for printer cartridges; the specification, read in full, does not meet the client's joysticks.";
+  appendDeclinations(P.runDir, [{ row_index: 0, uri: "/mark/eu/c1", mark: "QZORVAK", owner: "Gamma SA", reason: "unrelated-goods", grounds }]);
+  assert.deepEqual(messageCtxFor("narrative-refutation", { paths: P }).placementFloorDecisions, [
+    "- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019",
+    `- QZORVAK — Gamma SA (/mark/eu/c1): declined by the writer as unrelated-goods: ${grounds}`,
+  ], "the review flags as unaccounted a floor the writer declined on its goods");
+});
+
 test("a crowd's row is listed once, with its ground once and every floor it covers", (t) => {
   // A thousand or more identical marks for goods the client does not sell: group (b), crowded, whose row may cover
   // its floors.
@@ -127,7 +150,7 @@ test("beside a crowd's row, a set-aside by name keeps its own line, and the revi
   for (let i = 0; i < N; i++) assert.equal(text.split(`/mark/eu/m${i})`).length - 1 + text.split(`/mark/eu/m${i},`).length - 1, 1, `floor m${i} is not named once`);
 });
 
-const SENTENCE = "Check the narrative's register assertions against them. A floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION unless a validated placement decision already accounts for it under the placement rules. Those decisions are listed below with their grounds and the records they cover. Check those grounds against the evidence; flag an unsupported decision.";
+const SENTENCE = "Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below. A floor that is none of these is a FLAGGED CORRECTION. Check each listed decision's ground against the evidence. Flag a decision only when you can name the evidence against its ground or the error in its reasoning.";
 const LINES = ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019",
   "- covered by group (b)'s row: identical marks in the class for goods unrelated to the client's (/mark/eu/m1)"];
 

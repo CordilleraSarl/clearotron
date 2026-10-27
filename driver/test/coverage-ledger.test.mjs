@@ -445,7 +445,7 @@ test("loadCoverageLedger: machine when present, prose (with dropped[]) when not,
 });
 
 // ── copper-lattice: taint relabel + the registerGap clamp decision ─────────────────────────────────────
-test("applyTaintDeferred: confirmed-clean on a tainted MATERIAL axis → deferred with the honest reason", async () => {
+test("applyTaintDeferred: confirmed-clean on a tainted MATERIAL axis → deferred with the shipped gap reason, and none of the claim's words", async () => {
   const { applyTaintDeferred } = await import("../coverage-ledger.mjs");
   const rows = [
     { axis: "primary-sweep", scope: "", status: "confirmed-clean", reason: "exact clean" },
@@ -455,7 +455,8 @@ test("applyTaintDeferred: confirmed-clean on a tainted MATERIAL axis → deferre
   ];
   const out = applyTaintDeferred(rows, ["primary-sweep", "saturation-probe"]);
   assert.equal(out[0].status, "deferred", "tainted material clean row downgraded");
-  assert.match(out[0].reason, /timeout-tainted pass/);
+  assert.equal(out[0].reason, "it could not be completed this run, so it is left open here rather than reported as clean",
+    "the withdrawn clean claim does not carry the shipped gap reason, or keeps the claim's own words");
   assert.equal(out[1].status, "confirmed-clean", "saturation-probe is non-material — never relabelled");
   assert.equal(out[2].status, "coverage-limited", "coverage-limited untouched (accepted limit)");
   assert.equal(out[3].status, "confirmed-clean", "untainted axis untouched");

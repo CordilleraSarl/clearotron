@@ -30,6 +30,7 @@
 // Telemetry: the core writes CLEAROTRON_REGISTER_CALL_LOG / CLEAROTRON_REGISTER_RECORD_LOG (the SHARED register
 // ledger) under the provider id `free-tier`, keyed by the gateway session key.
 import { serve } from "./stdio-server.mjs";
+import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
 import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import {
   CAPABILITIES, doSearch, doRecordFetch, doBatchScreen, doImageFetch, doEnumerate, doExecutePlan,
@@ -47,6 +48,7 @@ const tctx = (kind) => ({
   agentId: process.env.CLEAROTRON_GATHER_AGENT || "localagent",
   sessionKey: process.env.CLEAROTRON_GATHER_SESSION_KEY || "",
   sessionId: process.env.CLEAROTRON_GATHER_SESSION_ID || "",
+  sendUntilMs: sendUntilFromEnv(),   // this turn's time to stop sending (providers/_shared/send-until.mjs)
 });
 const passthrough = (r) => (r && typeof r === "object" ? (r.text ?? JSON.stringify(r)) : String(r));
 const CAPABILITY_OFFICES = CAPABILITIES.offices.covered.join("+");

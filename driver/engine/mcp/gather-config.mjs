@@ -900,6 +900,21 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false }
 
 // Build the mcp-config object for a set of groups. Returns { config: <object>, servers: [...] } or null if
 // the groups need no MCP server (e.g. caselaw-only EUR-Lex via WebFetch needs no server but the bridges do).
+/**
+ * The stage's tool config for ONE turn, with that turn's time to stop sending handed to every server
+ * (providers/_shared/send-until.mjs). Built per turn, because each attempt has its own deadline. The config
+ * is the JSON string the engines take; anything that is not one is returned as it came. PURE.
+ */
+export function withSendUntil(mcpConfigJson, sendUntilMs) {
+  if (typeof mcpConfigJson !== "string" || !Number.isFinite(Number(sendUntilMs))) return mcpConfigJson;
+  let cfg;
+  try { cfg = JSON.parse(mcpConfigJson); } catch { return mcpConfigJson; }
+  if (!cfg?.mcpServers || typeof cfg.mcpServers !== "object") return mcpConfigJson;
+  for (const server of Object.values(cfg.mcpServers))
+    if (server && typeof server === "object") server.env = { ...(server.env ?? {}), CLEAROTRON_GATHER_SEND_UNTIL_MS: String(Math.floor(Number(sendUntilMs))) };
+  return JSON.stringify(cfg);
+}
+
 export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false } = {}) {
   const localKeys = new Set(), bridgeKeys = new Set();
   for (const g of groups) { const r = resolveGroup(g); r.local.forEach((k) => localKeys.add(k)); r.bridges.forEach((k) => bridgeKeys.add(k)); }

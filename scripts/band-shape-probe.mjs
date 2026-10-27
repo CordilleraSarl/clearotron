@@ -65,7 +65,7 @@ if (!/^\d+$/.test(String(opts.seed)) || Number(opts.seed) <= 0)
 
 // ── the inputs deriveBandShape uses, read the same way it reads them ─────────────────────────────────
 //
-// Deliberately mirrors driver/pipeline.mjs:441-490 mergeRegisterBands rather than inventing a gathering step. If the two
+// Deliberately mirrors driver/pipeline.mjs:501-563 mergeRegisterBands rather than inventing a gathering step. If the two
 // diverge, this probe measures a shape the run never had.
 
 const runDir = opts.run;

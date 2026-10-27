@@ -112,11 +112,15 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
 // (ruled 2026-10-12). It is not a candidate, it renders into no placement, and nothing bounds how many there are.
 export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground", "on"];
 /**
- * What a ground setting a floor aside by name may be about (ruled 2026-10-12): its status or its territory.
- * Never its goods, which decide whether it sits in (a) or (b), and in a crowd (b)'s row is the goods ground;
- * never its owner's customers or field, whatever `on` says, so the form reads the ground's words too.
+ * What a ground setting a floor aside by name may be about: its status, its territory, its registered goods or a
+ * reasoned comparison of its mark with the client's (ruled 2026-10-27, superseding the status-or-territory rule of
+ * 2026-10-12). Never its owner's customers or field. The union checks each against the run's own evidence: a goods
+ * ground needs the line read and every floor's goods held complete, and a mark ground is refused on the client's
+ * own mark. The words of a ground on status or territory are read too, for customers, field and goods.
  */
-export const FLOOR_GROUND_ON = Object.freeze(["status", "territory"]);
+export const FLOOR_GROUND_ON = Object.freeze(["status", "territory", "goods", "mark"]);
+/** The grounds whose words the form reads for customers, field and goods: the two that are about neither. */
+export const FLOOR_GROUND_WORDS_READ = Object.freeze(["status", "territory"]);
 export const FLOOR_GROUND_REFUSED = /\b(?:customers?|consumers?|clients|clientele|users?|audiences?|buyers?|purchasers?|patients?|professionals?|channels?|markets?|marketplaces?|sectors?|fields?|industr(?:y|ies|ial)|business(?:es)?|activit(?:y|ies)|commerce|commercial|trad(?:e|es|ing)(?!\s*-?\s*marks?)|distribution|wholesale|retail(?:ers?)?|sells?|sold|selling|b2b|b2c|off[- ]field|goods|products?|services?(?!\s*-?\s*marks?)|merchandise)\b/i;
 /** The lists a group row may name: the shape's groups, the rest, and the lines the goods test could not place. */
 export const ROW_GROUPS = Object.freeze([...BAND_GROUPS, "no_goods"]);
@@ -124,24 +128,30 @@ export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
   when: "a line the shape lists, one mark of one owner, whose records you do not carry. One row gives that "
     + "line its ground.",
   fields: SET_ASIDE_ROW_FIELDS,
-  set_aside: "one record id of that line, from the band. The driver finds the line on the register's own "
-    + "projection; the ground covers every record of that mark of that owner the form does not place, and "
-    + "never another mark of the owner, which needs its own fate. A record that names no owner stands for its "
-    + "own position only.",
+  set_aside: "One record id of the line, from the band, or a list of record ids, one per line, that share one ground. "
+    + "The ground covers every unplaced record of that mark of that owner. Another mark of the same owner needs its "
+    + "own fate. A record that names no owner stands for its own position only.",
   ground: "why this line's records are not carried, in a lawyer's words.",
-  on: "where the line holds a floor, a live identical or near-identical mark in an ordered class: what the "
-    + "ground is about, status or territory. A floor is never set aside on its goods, which decide its group, "
-    + "nor on its owner, its customers or its field; a ground in those terms is refused.",
+  on: "Required when the line holds a floor (a live identical or near-identical mark in an ordered class): one of "
+    + "status, territory, goods, mark. Use goods when the registered goods, read in full, do not meet the client's "
+    + "particular goods. Use mark when a reasoned comparison with the client's mark shows the two do not conflict. "
+    + "The owner, its customers and its field are never a ground.",
   not_a_candidate: "It places nothing. A record of the same line you do place stays placed.",
   latest: "A later row for the same line replaces the earlier ground. To remove one, hand back "
     + "{\"retract\":\"<its set_aside id>\"}.",
-  unresolved: "A `set_aside` the band does not hold, one with no ground, or a floor's row whose `on` is not "
-    + "status or territory or whose ground speaks of customers, channels, markets or field, is reported back "
-    + "to you by id.",
+  unresolved: "The driver says a row back by id when: its record is not in the band; it has no ground; a floor's "
+    + "`on` is missing or not one of the four; a status or territory ground speaks of goods, customers, channels, "
+    + "markets or field; a goods ground rests on a line not read, or on goods the run does not hold in full; a mark "
+    + "ground names the client's own mark, or the run holds no applied-for mark to compare with. In a list, each "
+    + "line is judged on its own.",
 });
 
+/** The record ids a set-aside row names: one, or the list of lines one ground covers. PURE. */
+export const setAsideMembers = (row) => (Array.isArray(row?.set_aside) ? row.set_aside : [row?.set_aside])
+  .filter((id) => typeof id === "string" && id.trim() !== "").map((id) => id.trim());
+
 /** Is this submitted row an owner's set-aside? PURE. */
-export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.set_aside.trim() !== "";
+export const isSetAsideRow = (row) => setAsideMembers(row).length > 0;
 
 // ONE ROW PER GROUP. The band shape lists the band in the lawyer's order, one line per mark of an owner,
 // the rest last. A listed line gets a fate, not a row: it is placed, or set aside by name, or covered

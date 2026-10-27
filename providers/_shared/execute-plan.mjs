@@ -20,6 +20,8 @@ import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, more
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { FOLLOW_UP_SEARCH_LIMIT, runDriverDirOf, followUpRoom, followUpClass, identicalMarkTerms, recordFollowUpSearch, recordOutstanding } from "./follow-up-searches.mjs";
+import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../shared/slices-taken-out.mjs";
+import { pastSendUntil } from "./send-until.mjs";   // a call past its time to stop sending sends no new question   // a band read as answers, with the slices a check could not prove ran taken out
 
 /** How soon after an answer lands it is written to the band, while the call goes on (see `keepAnswers` below). */
 export const KEEP_ANSWERS_AFTER_MS = 2000;
@@ -375,10 +377,20 @@ export function makeExecutePlan(deps) {
       try { identicalTerms = identicalMarkTerms(JSON.parse(readFileSync(join(driverDir, "register-plan.json"), "utf8"))); } catch { /* no frozen plan: no identical terms known */ }
     }
     const refused = [];
+    // THE BAND AS ANSWERS, for the checks below that read it so: a slice the run's searches record took out of the band,
+    // because a check could not prove it ran, is read as the open slice it was delivered as, whatever wrote the band
+    // since (shared/slices-taken-out.mjs). The run is the band's own, as the propose tool reads it. The writes below
+    // still merge the file as it stands.
+    const asAnswers = (file) => {
+      const prior = JSON.parse(readFileSync(file, "utf8"));
+      return Array.isArray(prior) ? bandWithSlicesOut(prior, slicesTakenOutByAxis(dirname(dirname(outPath))).get(axis)).blocks : prior;
+    };
+    const bandAsAnswers = () => asAnswers(outPath);
     // The follow-ups this axis's band already answers, read once and only when the net meets a question sent before:
-    // an answered one adds nothing when it is sent again, and a failed one counts again. A unit whose pass was killed at
-    // its time limit is parked: its band is renamed (`<band>.tainted-<n>`) so the resume runs the unit again, and the
-    // re-run sends the same follow-ups. Their answers are in the renamed band, so they count nothing either.
+    // an answered one adds nothing when it is sent again, and a failed one counts again, as does one taken out. A unit
+    // whose pass was killed at its time limit is parked: its band is renamed (`<band>.tainted-<n>`) so the resume runs the
+    // unit again, and the re-run sends the same follow-ups. Their answers are in the renamed band, so they count nothing
+    // either. Every band on record is read as answers, so a slice taken out counts again whichever band holds it.
     let answeredQids = null;
     // This axis's band, and the bands a parked pass left (`<band>.tainted-<n>`), oldest first and the band's own last.
     const bandsOnRecord = () => {
@@ -393,7 +405,7 @@ export function makeExecutePlan(deps) {
         answeredQids = new Set();
         for (const band of bandsOnRecord()) {
           try {
-            const prior = JSON.parse(readFileSync(band, "utf8"));
+            const prior = asAnswers(band);
             for (const b of Array.isArray(prior) ? prior : []) if (b?.qid && b.error !== true) answeredQids.add(String(b.qid));
           } catch { /* no band yet: nothing answered */ }
         }
@@ -426,7 +438,7 @@ export function makeExecutePlan(deps) {
     const seeded = new Set();
     if (qidsFilter) {
       try {
-        const existing = JSON.parse(readFileSync(outPath, "utf8"));
+        const existing = bandAsAnswers();   // a parent taken out of the band releases no child
         if (Array.isArray(existing)) {
           for (const b of existing) {
             if (b && typeof b === "object" && b.qid && typeof b.state === "string" && !qidsFilter.has(b.qid)) {
@@ -695,7 +707,11 @@ export function makeExecutePlan(deps) {
     // change the answer. An unhandled fault here is an unknown of unknown durability, so it keeps the
     // transient reading. The reason names it an EXECUTOR fault so it is never read as something the
     // register said — a block that fabricated a provider response would be the worse defect.
+    // PAST ITS TIME TO STOP SENDING, A CALL SENDS NO NEW QUESTION (send-until.mjs). The question is not reached by
+    // this call and keeps whatever block the band holds for it; the call returns what it has, naming it.
+    const notReached = [];
     const runEntry = async (e) => {
+      if (pastSendUntil(tctx)) { notReached.push(e.qid); return; }
       if (driverDir && followUpClass(e, { identicalTerms }) === "counted") {
         const room = followUpRoom(driverDir, FOLLOW_UP_SEARCH_LIMIT, e, { answered: answeredBefore });
         if (!room.open) {
@@ -754,8 +770,8 @@ export function makeExecutePlan(deps) {
     // fringe) gets no block and any stale one is dropped (a fringe slice must never outlive its
     // parent's crowd verdict). This makes the initial call and every warm followup the SAME call.
     // A follow-up the net did not send is not owned by this call: whatever answer it already had stands.
-    const refusedSet = new Set(refused);
-    const owned = new Set(targeted.map((e) => e.qid).filter((q) => !refusedSet.has(q)));
+    const refusedSet = new Set(refused), notReachedSet = new Set(notReached);
+    const owned = new Set(targeted.map((e) => e.qid).filter((q) => !refusedSet.has(q) && !notReachedSet.has(q)));
     let preserved = [];
     try {
       const existing = JSON.parse(readFileSync(outPath, "utf8"));
@@ -793,6 +809,7 @@ export function makeExecutePlan(deps) {
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),
       ...(Object.keys(spellingCounts).length ? { spelling_counts: spellingCounts } : {}),
       ...(refused.length ? { outstanding: refused } : {}),
+      ...(notReached.length ? { not_reached: notReached } : {}),
     }, null, 2) };
   };
 }

@@ -9,6 +9,7 @@
 // keyed by the GATEWAY session key (tctx.sessionKey) — we thread the run's session key via
 // CLEAROTRON_GATHER_SESSION_KEY so the $0 provider-usage diff still attributes calls to the run.
 import { serve } from "./stdio-server.mjs";
+import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
 import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
 import { doSearch, doRecordFetch, doEnumerate, doExecutePlan, DEFAULT_BASE } from "../../../providers/signa/src/core.js";
 import { proposeSupplemental } from "./supplemental.mjs";
@@ -22,6 +23,7 @@ const tctx = (kind) => ({
   agentId: process.env.CLEAROTRON_GATHER_AGENT || "localagent",
   sessionKey: process.env.CLEAROTRON_GATHER_SESSION_KEY || "",   // run session key — telemetry attribution
   sessionId: process.env.CLEAROTRON_GATHER_SESSION_ID || "",
+  sendUntilMs: sendUntilFromEnv(),   // this turn's time to stop sending (providers/_shared/send-until.mjs)
 });
 const passthrough = (r) => (r && typeof r === "object" ? (r.text ?? JSON.stringify(r)) : String(r));
 const guard = (fn) => async (args) => {

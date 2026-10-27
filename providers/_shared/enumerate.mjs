@@ -57,6 +57,7 @@ import {
 import { makeCountProbe, parseToolText, isToolError } from "./count.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { guardCountCall, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
+import { pastSendUntil } from "./send-until.mjs";   // past a call's time to stop sending, a timed-out question is not split again
 
 // ── — HOW MUCH OF A PROVIDER ERROR SURVIVES INTO THE BAND BLOCK: ALL OF IT ───────────────────────────
 //
@@ -448,7 +449,7 @@ export function makeEnumerate(deps) {
       }
       // A half that timed out while its sibling answered is the one place fewer regions may help: it is
       // halved in turn, under the same rule.
-      const r = timedOut({ r: first })
+      const r = timedOut({ r: first }) && !pastSendUntil(tctx)
         ? await regionHalves(auth, { ...params, regions: half }, tctx, { ceiling, incomplete, cause: parseToolText(first)?.reason ?? cause, hear })
         : first;
       const parsed = isToolError(r) ? null : parseToolText(r);
@@ -637,7 +638,7 @@ export function makeEnumerate(deps) {
             + `Provider's own words: ${clipProviderText(c?.reason ?? "", COUNT_PROBE_BUDGET)}`,
             { crowd_basis: "provider-refused-count", count_unavailable: true });
         }
-        if (splittable && isGatewayTimeout(c?.reason)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(c.reason), hear });
+        if (splittable && isGatewayTimeout(c?.reason) && !pastSendUntil(tctx)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(c.reason), hear });
         return incomplete(0, 0, [],
           `provider error on the count probe before enumeration: ${String(c?.reason ?? "count unavailable")}`, timeoutMark(c?.reason));
       }
@@ -670,7 +671,7 @@ export function makeEnumerate(deps) {
         if (page === 0 && allNames && allNames.length > 1 && listRefusal?.test(String(r.text ?? ""))) {
           return enumerateQuestion(auth, params, tctx, { split, width: Math.ceil(allNames.length / 2) }, said);
         }
-        if (splittable && isGatewayTimeout(r.text)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(r.text), hear });
+        if (splittable && isGatewayTimeout(r.text) && !pastSendUntil(tctx)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(r.text), hear });
         return incomplete(total, results.length, results, `provider error during enumeration (page ${page}): ${String(r.text ?? "")}`, timeoutMark(r.text));
       }
       const parsed = parseToolText(r);

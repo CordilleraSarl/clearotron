@@ -1129,8 +1129,8 @@ export const FLOORS_BY_NAME_HERE = "Every floor here is placed or set aside by n
 export const A_CROWDS_ONE_ROW = "Read the first page, carry forward any line a lawyer would raise, and set the rest aside in this group's one row with the count: the client is told the field is crowded.";
 export const A_CROWDS_ROW_COVERS_A_READ_FLOOR = "This row covers a floor only once you have read its line and its goods are not the client's goods.";
 export const AN_UNREAD_CROWDS_ONE_ROW = "Carry forward any line a lawyer would raise, and set the rest aside in this list's one row with the count, on the ground that their goods are unreadable and the field is crowded.";
-export const AN_UNREAD_CROWDS_FLOOR = "A floor here is placed or set aside by name on its status or its territory; this row never covers it.";
-export const AN_UNREAD_LISTS_FLOOR = "A floor here is placed, or set aside by name on its status or its territory; any other line may be set aside on the ground that its goods are unknown.";
+export const AN_UNREAD_CROWDS_FLOOR = "This row never covers a floor. Place each floor here, or set it aside by name; a goods ground needs the floor's goods read in full.";
+export const AN_UNREAD_LISTS_FLOOR = "Place each floor here, or set it aside by name; a goods ground needs the floor's goods read in full. Any other line here may be set aside because its goods are unknown.";
 // What placement does with a line of that list before its fate, by its marker (approved wording, 2026-10-19). Placement's
 // alone, as its other orders are: every other stage keeps the markers as evidence and is not told of a fate.
 export const AN_UNREAD_LINE_IS_CHECKED = 'A line marked "on file, not readable", "cut by the register, no goods word found", "goods held; completeness not established" or "no goods text held; completeness not established" must be checked with band_record before its fate. Read the evidence held for it, keeping its source and goods completeness clear. A line marked "no goods on file", "fetch failed, no goods on file" or "the register\'s record lists no goods" has no goods text on file. Missing goods do not establish that the goods are unrelated.';
@@ -1231,8 +1231,8 @@ function renderGroupsMd(md, groups, rows = []) {
   if (groups.no_goods.lines) {
     // The lines the goods test could not place, read by the same size rule (ruled 2026-10-12): under a thousand
     // records, a fate per line by name, opened where goods are on file; at a thousand or more, the first page,
-    // and one row on the rest whose goods are unreadable in a crowded field. A floor is never set aside on
-    // its goods, so a floor here is placed or set aside on its status or territory.
+    // and one row on the rest whose goods are unreadable in a crowded field. A floor is set aside on its goods only
+    // once they are read in full, which unknown goods never are, so a floor here is placed or set aside by name.
     const ng = groups.no_goods;
     const crowded = ng.records >= groups.crowded_at;
     const lead = tested.source === "none"

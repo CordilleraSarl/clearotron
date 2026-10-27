@@ -43,7 +43,7 @@ import { checkResolvedProduct } from "./scope-rules.mjs";   // every resolved-pr
 import { freeSlots } from "./slot-lock.mjs";   // admission arithmetic — see drainQueue
 import { orderedQueueFiles } from "./queue-order.mjs";   // the order jobs are admitted in (shared with the portal)
 import { isCancelled } from "./cancel.mjs";   // a stopped run must not come back through any resume path
-import { AGENT_WHATSAPP } from "./stages.mjs";
+import { whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { writeRunStatus, terminalRunState } from "./progress.mjs";   // A5 — grace-exit park + reclaim-bound terminal go through the guarded status writer; terminalRunState is the run record's own terminal vocabulary (2155)
 import { identitySeed } from "./progress.mjs";   // — the same stamp a run seeds, for the process that runs them
@@ -702,7 +702,7 @@ function preRunFailNotify(agentId, base, job, reason) {
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
-    whatsappTo: AGENT_WHATSAPP[agentId] ?? null,
+    ...whatsappRouting(job, agentId),   // to whoever asked, as every other notice (the-notice-goes-to-whoever-asked)
     reason: terminalReasonFields(reason).reason, text,
   });
   note(`[runner] pre-run failure ${p ? `packet \u2192 ${p}` : "packet write FAILED"} for ${base}`);
@@ -739,7 +739,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
       // canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — owned.dir's leaf IS
       // "<date>-<codename>", so the dated id is derivable even here (matches status.runId + rescan).
       runId: `${slug}-${basename(owned.dir)}`, agent: agentId, job, failedStage: "pre-run",
-      shortReason, reasonVerbatim: reason.slice(0, 1000), whatsappTo: AGENT_WHATSAPP[agentId] ?? null,
+      shortReason, reasonVerbatim: reason.slice(0, 1000),
     });
     // same per-send invariant as the pipeline's failure path: a fresh notice supersedes an older .sent
     // and its per-channel receipts (B4 — stale receipts would make clearotron-deliver skip this notice)
@@ -2089,7 +2089,7 @@ function reclaimOrphanedClaims(qdir, agentId) {
               // comment above calls out for NAMING THE ARTIFACT DIRECTORY at its end: the status field
               // was repaired by and the notice a human actually reads was left cutting it blind.
               shortReason: rt.reason, reasonVerbatim: reasonText, terminalKind: "reclaim-exhausted",
-              priorAttempts: priorReclaims, whatsappTo: AGENT_WHATSAPP[agentId] ?? null,
+              priorAttempts: priorReclaims,
             });
             try { rmSync(join(owned.dir, ".sent"), { force: true }); } catch { /* none */ }
             try { rmSync(driverDir(owned.dir, "send-receipts.json"), { force: true }); } catch { /* none */ }

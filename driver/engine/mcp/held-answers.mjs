@@ -15,7 +15,8 @@
 // is the same as one naming them. Owner names are compared as written, never merged. A different scope is a
 // different question, and an earlier answer that failed is no answer: both are asked again. A question that timed out
 // at the gateway is the one failure held, by the executor rather than here: its timeout stands until the envelope
-// close asks it once more (execute-plan.mjs, timedOutBefore).
+// close asks it once more (execute-plan.mjs, timedOutBefore). An answer in a slice the run took out of its band
+// because a check could not prove it ran is asked again too, whatever wrote the band since.
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -23,6 +24,7 @@ import { driverDir } from "../../../shared/driver-dir.mjs";
 import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
 import { awaitsReadingTurn } from "../../../providers/_shared/plan-guards.mjs";
 import { releasedFamilyQids } from "../../withheld-families.mjs";
+import { bandWithSlicesOut, slicesTakenOutByAxis } from "../../../shared/slices-taken-out.mjs";
 
 const QUESTION_FIELDS = ["predicate", "term", "terms", "romanizedTerms", "term_literal", "nice_classes", "regions", "goods_text", "owner", "expected_kind"];
 const sorted = (v) => [...v].map((x) => String(x)).sort();
@@ -88,7 +90,9 @@ export function refuseHeldQuestions(entries, held, planRegions = []) {
 }
 
 // The run's questions and answers as its files hold them: the frozen plan, each worker's supplemental plan, and every
-// band's blocks by qid. IMPURE.
+// band's blocks by qid, with the slices the searches record took out read as the open slices they were delivered as
+// (shared/slices-taken-out.mjs). They are read out after the cache, which knows a band's size and time and not the
+// record's. IMPURE.
 function readRunQuestions(runDir) {
   const units = join(runDir, "register-units");
   const blocksByQid = new Map();
@@ -96,8 +100,12 @@ function readRunQuestions(runDir) {
   try { plans.push({ axis: null, plan: JSON.parse(readFileSync(driverDir(runDir, "register-plan.json"), "utf8")) }); } catch { /* no frozen plan */ }
   let files = [];
   try { files = readdirSync(units); } catch { files = []; }
+  const takenOut = slicesTakenOutByAxis(runDir);
   for (const f of files) {
-    if (f.endsWith("-band.json")) for (const b of readBlocks(join(units, f))) if (b?.qid) blocksByQid.set(String(b.qid), b);
+    if (f.endsWith("-band.json")) {
+      const { blocks } = bandWithSlicesOut(readBlocks(join(units, f)), takenOut.get(f.slice(0, -"-band.json".length)));
+      for (const b of blocks) if (b?.qid) blocksByQid.set(String(b.qid), b);
+    }
     if (f.endsWith("-supplemental-plan.json")) {
       try { plans.push({ axis: f.slice(0, -"-supplemental-plan.json".length), plan: JSON.parse(readFileSync(join(units, f), "utf8")) }); } catch { /* torn: skipped */ }
     }

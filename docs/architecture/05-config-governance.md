@@ -282,7 +282,7 @@ edited — that box runs pre-rebuild code and genuinely still sets it.
 `CLEAROTRON_OUTBOX_BACKOFF_MAX_RETRIES` (5) / `CLEAROTRON_OUTBOX_GIVEUP_COOLDOWN_SEC` (3600 — note this one
 drops BACKOFF from the prefix, which the elided spelling this row used to carry actively misled about),
 `CLEAROTRON_OUTBOX_NOPROGRESS_MAX`, `TRADEMARK_MSGID_DOMAIN` (enqueue.local).
-Code-set per stage (not operator-set): `CLEAROTRON_GATHER_AGENT` / `CLEAROTRON_GATHER_SESSION_KEY` / `CLEAROTRON_GATHER_SESSION_ID`.
+Code-set per stage (not operator-set): `CLEAROTRON_GATHER_AGENT` / `CLEAROTRON_GATHER_SESSION_KEY` / `CLEAROTRON_GATHER_SESSION_ID`; per turn: `CLEAROTRON_GATHER_SEND_UNTIL_MS`.
 
 **Who the completion notice reaches** — `CLEAROTRON_REQUESTER_WHATSAPP` (empty; effect: deployment) is a
 JSON map of requester email or handle → number, and `CLEAROTRON_WHATSAPP_OPERATOR_COPY` (on unless `0`,

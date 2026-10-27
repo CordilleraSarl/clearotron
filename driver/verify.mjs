@@ -2689,12 +2689,12 @@ function placementAccountVerdict(dir) {
     const rid = rowOf.get(id), cause = rid ? causeOf.get(rid) : null;
     return `${id}${group ? ` in (${group})` : ""}${cause ? `, its row ${rid} (${cause})` : ""}`;
   });
-  const finishRow = floors.some((f) => f.includes(", its row ")) ? " Where a floor's row is named, finish that row: a floor's row owes a tier, "
-    + "sheet-2 at the least, and a reason stating the ground." : "";
+  const finishRow = floors.some((f) => f.includes(", its row ")) ? " Where a floor's row is named, finish that row: give it "
+    + "headline-candidate or sheet-2, and a reason stating the ground." : "";
   if (unjudged.length) {
     const named = unjudged.slice(0, 8).map((u) => `${u.row_id ?? u.select ?? "?"} (${u.cause})`).join(", ");
-    const floorsToo = floors.length ? ` The form gives these floors no fate either: ${capped(floors)}. Place each by `
-      + `selecting that record, sheet-2 at the least, or set its line aside by name on its status or its territory.${finishRow}` : "";
+    const floorsToo = floors.length ? ` The form gives these floors no fate either: ${capped(floors)}. Select each at `
+      + `headline-candidate or sheet-2, or set its line aside by name.${finishRow}` : "";
     return fail(`placement_unjudged=${unjudged.length}: ${named}${unjudged.length > 8 ? ", …" : ""} — each of these rows is `
       + "in placement-form.json and its own judgement will not render: a selected row owes a `tier` from the closed set and a `reason` "
       + "stating the ground; a row you wrote in full owes mark, owner and jurisdiction too. Finish these rows in the form; "
@@ -2755,8 +2755,8 @@ function placementSaidBackVerdict({ refused, floors, also, finishRow = "" }) {
   if (floors.length)
     return fail(`placement_floors_without_fate=${floors.length}: ${capped(floors)} — each is a floor, a live identical or `
       + "near-identical mark in an ordered class, and the form gives it no fate. "
-      + "Place it by selecting that record, sheet-2 at the least, or set its line aside by name on its status or its "
-      + `territory.${finishRow} Only these are owed; every other row stands.${also}`);
+      + "Select it at headline-candidate or sheet-2, or set its line aside by name."
+      + `${finishRow} Only these are owed; every other row stands.${also}`);
   if (refused.length)
     return fail(`placement_refused=${refused.length}: ${capped(refused)} — the form refused each of these for the reason given `
       + "with it, and nothing else on the form moved. Send each again corrected, or leave it out; every other row stands.");

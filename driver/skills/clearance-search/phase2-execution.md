@@ -155,9 +155,9 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   headline.)
 - **Dominant-element spine / calibration:** is each finding ranked by the *dominant element* + whole-mark confusion
   test? Is a distinguished mark (house-mark-prefixed) **over-rated**, or a
-  bare-dominant-element-in-field conflict **under-rated or dropped**? Did any **on-point identical /
-  near-identical-in-class** hit fall out of the deliverable (it must not — even if revocable, and regardless
-  of filer size)? Is any escalation of a distinguished mark resting on optics/PR/partner rather than a
+  bare-dominant-element-in-field conflict **under-rated or dropped**? Did an **on-point identical or
+  near-identical mark in the class** fall out of the report? It must not, even if revocable and whatever its
+  owner's size. Is any escalation of a distinguished mark resting on optics/PR/partner rather than a
   named confusion theory? Is the headline risk driven by the top on-point conflicts, not a distinguished
   mark or unrelated-field noise?
 - **Coverage ledger:** is any `deferred` / `coverage-limited` row being narrated (or about to be narrated) as a

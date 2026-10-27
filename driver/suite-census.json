@@ -81,6 +81,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-blocking-email-keeps-the-reports-client-actions.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-borrowed-node-modules-is-not-a-licence-defect.test.mjs": {
           "tests": 8,
           "asserts": 28,
@@ -669,6 +675,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failure-notice-goes-to-whoever-asked.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-family-withheld-by-judgment-is-not-read-as-awaiting.test.mjs": {
           "tests": 6,
           "asserts": 15,
@@ -702,6 +714,24 @@
         "a-findings-check-names-every-finding-it-fails-at-once.test.mjs": {
           "tests": 2,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-findings-record-broken-after-synthesis-is-restored-at-delivery.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-finished-turn-is-not-a-timeout-for-a-request-inside-it.test.mjs": {
+          "tests": 5,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-floor-is-set-aside-on-its-goods-or-mark-on-the-evidence.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -803,7 +833,7 @@
         },
         "a-goods-test-miss-is-not-called-other-goods.test.mjs": {
           "tests": 2,
-          "asserts": 6,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -827,7 +857,7 @@
         },
         "a-group-row-gives-every-owner-in-it-a-fate.test.mjs": {
           "tests": 7,
-          "asserts": 36,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -1557,6 +1587,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-search-that-cannot-finish-is-delivered-as-not-searched.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": {
           "tests": 4,
           "asserts": 10,
@@ -1815,9 +1851,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-search-a-check-cannot-prove-is-delivered-as-not-searched.pipeline.test.mjs": {
+          "tests": 11,
+          "asserts": 66,
+          "skips": 0,
+          "todos": 0
+        },
         "a-search-asks-the-web-on-the-settings-its-report-type-pins.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-search-taken-out-of-the-band-is-never-read-as-answered.test.mjs": {
+          "tests": 5,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -1901,6 +1949,12 @@
         },
         "a-skipped-question-is-not-an-answer.test.mjs": {
           "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-slice-taken-out-of-the-band-is-open-for-its-own-reason.test.mjs": {
+          "tests": 4,
           "asserts": 12,
           "skips": 0,
           "todos": 0
@@ -2062,6 +2116,12 @@
           "todos": 0
         },
         "a-turn-whose-every-tool-call-was-refused-is-not-retried.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-turns-tool-servers-are-told-when-to-stop-sending.test.mjs": {
           "tests": 3,
           "asserts": 12,
           "skips": 0,
@@ -2403,6 +2463,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-identical-mark-is-declined-on-its-goods-only-on-goods-held-complete.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "an-incumbent-alert-adds-no-class.test.mjs": {
           "tests": 2,
           "asserts": 3,
@@ -2597,7 +2663,7 @@
         },
         "band-truth-gate.pipeline.test.mjs": {
           "tests": 3,
-          "asserts": 15,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -3653,7 +3719,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 70,
-          "asserts": 262,
+          "asserts": 263,
           "skips": 2,
           "todos": 0
         },
@@ -4385,7 +4451,7 @@
         },
         "named-band-missing.test.mjs": {
           "tests": 7,
-          "asserts": 22,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -7103,7 +7169,7 @@
         },
         "the-review-after-a-repair-reads-only-what-the-repair-changed.pipeline.test.mjs": {
           "tests": 24,
-          "asserts": 190,
+          "asserts": 193,
           "skips": 0,
           "todos": 0
         },
@@ -7120,8 +7186,8 @@
           "todos": 0
         },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
-          "tests": 9,
-          "asserts": 25,
+          "tests": 11,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -7391,7 +7457,7 @@
         },
         "the-words-the-step-reads-match-what-the-driver-checks.test.mjs": {
           "tests": 9,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -7427,7 +7493,7 @@
         },
         "the-writer-owes-positions-not-records.test.mjs": {
           "tests": 6,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -7953,8 +8019,8 @@
           "todos": 0
         },
         "connector-skills-are-one-copy.test.mjs": {
-          "tests": 5,
-          "asserts": 30,
+          "tests": 6,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -8678,6 +8744,12 @@
         "providers/_shared/test/a-follow-up-met-with-the-allowance-spent-is-not-asked-and-the-run-goes-on.test.mjs": {
           "tests": 8,
           "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/a-plan-call-past-its-time-to-stop-sending-returns-what-it-holds.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

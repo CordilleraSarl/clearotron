@@ -1823,15 +1823,19 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // doc-52 — the cover banner speaks the SAME plain "Only you can close these" wording as the report, never
   // the engine clamp reasons (opts.conditions = verdict.json reasons). Machinery-only clamps (no client
   // item authored) degrade to one generic plain line — never raw engine jargon, never truncated mid-sentence.
-  const emailConditions = opts?.verdict === 'CONDITIONAL' ? actYouConditions(parseActionBuckets(secs['Actions']).you) : [];
+  // A BLOCKING RESULT KEEPS THE REPORT'S ITEMS TOO (ruled 2026-10-27). The box showed only on a CONDITIONAL result, so
+  // a blocking one lost the client's own actions the report lists. It shows them under the report's heading in the
+  // report's words, and only where the report names any: no empty box, no fallback line.
+  const emailConditions = opts?.verdict === 'CONDITIONAL' || opts?.verdict === 'BLOCKING' ? actYouConditions(parseActionBuckets(secs['Actions']).you) : [];
   // THE REPORT IS THE MASTER (ruled 2026-09-22). The banner used to print a second summary composed
   // beside the report — "On hold — …" on a run the report called conditional, although nothing is ever
   // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
   // report's own conclusion (below), and where the report names what only the client can close, those
   // items under the report's own heading. Nothing here composes a sentence of its own.
+  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>Only you can close these</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
   const verdictBound = opts?.verdict === 'CONDITIONAL'
-    ? `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>Only you can close these</b><br>${(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result']).map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`
-    : '';
+    ? closeBox(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result'])
+    : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
 
   const reviewHeadline = `<div style="${FONT};font-size:11pt;color:#1a1a2e;margin:0 0 14px">`
     + flagBanner

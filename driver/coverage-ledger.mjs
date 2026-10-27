@@ -23,6 +23,7 @@
 // `validators` at module scope, so verify importing stages would TDZ-crash whenever verify loads
 // first; stages.mjs re-exports both names, keeping every existing import site working).
 
+import { plainDeferralReason } from "./deferral-row.mjs";
 export const REGISTER_AXES = ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"];
 
 // ── — THE READER'S NAME FOR AN AXIS, EMITTED AT SOURCE ──────────────────────────────────────────
@@ -347,13 +348,18 @@ export function coverageLedgerTableRows(rows, { reasonMax = 180 } = {}) {
 // confirmed-clean rows on tainted material axes move; coverage-limited/deferred rows and non-material
 // axes (saturation-probe) are untouched; an empty taint set is a no-op. PURE; the caller pre-reads the
 // taint verdicts (pipeline loadCoverageLedger → readRegisterTaint).
+// The reason a tainted axis's withdrawn clean claim carries: the shipped gap sentence (deferral-row.mjs).
+export const TAINTED_CLEAN_REASON = plainDeferralReason("unfinished");
+
 export function applyTaintDeferred(rows, taintedAxes) {
   const tainted = new Set((taintedAxes ?? []).map((a) => String(a).toLowerCase()));
   if (!tainted.size) return rows ?? [];
   const material = (a) => !NON_MATERIAL_AXES.includes(String(a ?? "").toLowerCase());
+  // The pass that claimed clean was killed before it finished reading, so the claim is withdrawn whole: the row is open,
+  // with the shipped reason a reader gets for a part not completed, and none of the claim's words.
   return (rows ?? []).map((r) =>
     (r && r.status === "confirmed-clean" && tainted.has(String(r.axis ?? "").toLowerCase()) && material(r.axis))
-      ? { ...r, status: "deferred", reason: `${String(r.reason ?? "").trim()}${r.reason ? " — " : ""}timeout-tainted pass: self-reported clean downgraded pending re-run`.trim() }
+      ? { ...r, status: "deferred", reason: TAINTED_CLEAN_REASON }
       : r);
 }
 

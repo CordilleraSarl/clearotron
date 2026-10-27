@@ -2771,6 +2771,28 @@ export function applyStageWrites(msg, argv) {
  * cut off: the run's declination list, which the driver builds again before that correction, holds it once more. Called
  * by mock-claude and mock-codex just before a forced failure, so the restored record meets a duty it does not answer.
  */
+// MOCK_BREAK_FINDINGS_AFTER=<substr[&&substr]>: once a turn whose message carries every part has made its writes, the
+// run's findings.json is left broken at the top level, as a write that broke a record synthesis had passed would leave
+// it. The run dir comes from the engine wiring, as the recording branches read it. With it:
+//   MOCK_BREAK_FINDINGS_AS=absent — the record is removed instead, as a storage failure leaves it;
+//   MOCK_BREAK_FINDINGS_SAVES=1   — the synthesis saves go too (the accepted call and the save kept from before a repair);
+//   MOCK_BREAK_FINDINGS_ONCE=<path> — only the first such turn breaks it, and <path> records that it did.
+export function breakFindingsAfterWrites(msg, argv) {
+  const want = process.env.MOCK_BREAK_FINDINGS_AFTER;
+  if (!want || !want.split("&&").every((part) => msg.includes(part))) return;
+  const once = process.env.MOCK_BREAK_FINDINGS_ONCE;
+  if (once && existsSync(once)) return;
+  const runDir = runDirFromWiring(argv);
+  if (!runDir) return;
+  if (process.env.MOCK_BREAK_FINDINGS_AS === "absent") rmSync(join(runDir, "findings.json"), { force: true });
+  else writeFileSync(join(runDir, "findings.json"), JSON.stringify(["a record broken after synthesis passed it"]) + "\n");
+  if (process.env.MOCK_BREAK_FINDINGS_SAVES === "1") {
+    const { accepted, dir } = synthesisCallPaths(runDir);
+    for (const at of [accepted, join(dir, "accepted-before-repair.json")]) rmSync(at, { force: true });
+  }
+  if (once) writeFileSync(once, "broken\n");
+}
+
 export function beforeForcedFailure(argv, msg) {
   if (process.env.MOCK_POST_REPAIR_OWES_MORE !== "persist" || !/After the delivery check, that record was repaired/.test(msg)) return;
   const dir = runDirFromWiring(argv);

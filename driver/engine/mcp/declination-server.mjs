@@ -83,12 +83,11 @@ serve({
     description:
       "Record, per position or page, your decision NOT to deliver something that reached your findings surface. " +
       "Every position the digest carried to you, and every page the web notes marked as a candidate or conflict, " +
-      "either becomes a finding " +
-      "or carries a stated reason it did not — there is no third way out, and one left silent is reported as " +
-      "a defect of this run. One call carries a batch; the answer tells you what was accepted, " +
+      "ends as a finding or as a declination with its reason. One left with neither is reported as a defect " +
+      "of this run. One call carries a batch; the answer tells you what was accepted, " +
       "what was refused and why, and WHICH ROWS STILL CARRY NO DECISION, so you can finish inside this " +
-      "turn. A refusal is about bookkeeping, never about your legal judgment: a reason is refused only " +
-      "where it contradicts a fact the job recorded before this run started.",
+      "turn. A refusal is about the record's facts, never your legal judgment: a reason is refused only when it " +
+      "contradicts the matter's instructions or the record's mark, status, classes or goods as the run holds them.",
     inputSchema: { type: "object", required: ["declinations"], properties: {
       declinations: {
         type: "array",

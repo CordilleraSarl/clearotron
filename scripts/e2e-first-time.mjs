@@ -76,7 +76,7 @@ export const COUNTED_EVENTS = {
   "post-repair-correction-unrecoverable": FAILED, "post-repair-state-not-kept": FAILED,
   "digest-flush-timeout": FAILED, "document-coverage-render-failed": FAILED, "doubts-failed": FAILED,
   "evidence-claim-invariant": { kind: FAILED, when: (e) => e.ok === false || Number(e.violations) > 0 },
-  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "house-element-ownership-failed": FAILED,
+  "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "declination-goods-states-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
   "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
@@ -231,6 +231,7 @@ export const NOT_COUNTED_EVENTS = {
   ],
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
     "assessment-not-completed-delivery", "part-completed", "overview-not-completed-delivery", "review-not-completed-delivery",
+    "core-artifact-restored", "searches-not-completed-delivery", "unit-not-completed-delivery",
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
     "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",

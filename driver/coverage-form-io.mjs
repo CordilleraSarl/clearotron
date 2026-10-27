@@ -32,6 +32,7 @@ import { COVERAGE_STATUSES, COVERAGE_FORM_NAME, REGISTER_AXES } from "./coverage
 import { coverageFormSidecarName, parseCoverageForm } from "./coverage-form.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 import { readWithheldFamilies, splitWaitingFamilies } from "./withheld-families.mjs";
+import { slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // the slices the searches record took out of the band
 
 export { COVERAGE_FORM_NAME };
 
@@ -150,7 +151,8 @@ export function coverageFormInput(runDir) {
   return { input: { skeleton: exec.skeleton, plan, bandBlocksByAxis, deferredReasons, activeAxes,
     bandsUnreadable, orderedTerritories, capabilities, unknownAxisUnits,
     awaiting: Array.isArray(exec.awaiting) ? exec.awaiting : [], withheld: readWithheldFamilies(runDir),
-    mainMarkets: Array.isArray(exec.main_markets) ? exec.main_markets : [] }, absent: null };
+    mainMarkets: Array.isArray(exec.main_markets) ? exec.main_markets : [],
+    takenOut: Object.fromEntries(slicesTakenOutByAxis(runDir)) }, absent: null };
 }
 
 /**

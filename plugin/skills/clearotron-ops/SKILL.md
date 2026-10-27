@@ -1,6 +1,6 @@
 ---
 name: clearotron-ops
-description: Drive the clearance engine as an integrator: take an intake brief, start a run, monitor it, and courier the delivery. Use when operating the engine rather than reading its output.
+description: "Drive the clearance engine as an integrator: take an intake brief, start a run, monitor it, and courier the delivery. Use when operating the engine rather than reading its output."
 ---
 
 # Operating the clearance engine (ops connector) — intake + monitoring
