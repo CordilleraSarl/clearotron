@@ -79,7 +79,8 @@ test("the writer is told it owes positions, ended by a finding naming any of the
   const { ctx, rows } = seed(t);
   const text = String(STAGES.synthesis.message({ ...ctx, customerUnknown: false, profile: null, intakeAsks: [], enforcerSignals: null, framework: null,
     jxAim: null, registerOnly: false, crowdContext: null, dispatchBlocks: {}, findingsSurface: rows }));
-  assert.match(text, /A position or page on your findings surface leaves this stage as a finding in \S+ naming any of its records, or as one declination with its ground, and there is no third way out\./);
+  assert.match(text, /Account for each retained position or page with a finding or a substantive recorded exclusion\. Accepted exclusions from earlier steps are already accounted for: preserve their evidence and reasons without writing them again\. Reopen one only on identified contrary evidence or an error in its reasoning\. Write the findings that remain after relevance is settled; do not write a finding merely to satisfy accounting\./);
+  assert.doesNotMatch(text, /there is no third way out\./, "the writer is still told every position needs a line of its own");
   assert.match(text, /the register digest carried 4 position\(s\) onto your findings surface/);
   assert.match(text, /or you decline it BY NAME with a reason and one ground for the position\. A position you simply do not mention/);
 });

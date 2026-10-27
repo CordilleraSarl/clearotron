@@ -3558,6 +3558,28 @@ export function withGoodsFrom(ctx, P, rows) {   // @internal — driven by its t
   } catch (e) { return unlabelled(e?.message ?? e); }
 }
 
+// THE TOOL IS TOLD WHAT EACH RECORD'S GOODS REST ON, from the same derivation (ruled 2026-10-27). A goods decision on a
+// mark identical to the applied-for mark, live in a filed class, stands only where the run holds that record's goods
+// complete, so the spec the declination tool judges carries each record's state, a position's members' included. A
+// list the states could not be added to keeps its rows as they were: the refusal then reads no state and refuses, and
+// the run says so.
+export function withGoodsStates(ctx, P, rows) {   // @internal — driven by its test with a run's own files
+  const unstated = (reason) => {
+    try { runLog(P.runDir, { event: "declination-goods-states-failed", rows: rows.length, reason: String(reason).slice(0, 120) }); } catch { /* the list still goes */ }
+    return rows;
+  };
+  try {
+    const runPrefix = ctx.run?.slug && ctx.run?.codename ? `clearance-${ctx.run.slug}-${ctx.run.codename}-` : null;
+    if (!runPrefix) return unstated("the run has no session prefix to read its evidence by");
+    const uris = [...new Set(rows.filter((r) => r?.kind !== "page" && r?.uri)
+      .flatMap((r) => [r.uri, ...(Array.isArray(r.members) ? r.members.map((m) => m?.uri).filter(Boolean) : [])]))];
+    const evidence = goodsEvidenceOfDrops(P, runPrefix, uris);
+    const state = (u) => evidence.get(u)?.goods ?? null;
+    return rows.map((r) => (r?.kind === "page" || !r?.uri ? r : { ...r, goods: state(r.uri),
+      ...(Array.isArray(r.members) ? { members: r.members.map((m) => ({ ...m, goods: state(m?.uri) })) } : {}) }));
+  } catch (e) { return unstated(e?.message ?? e); }
+}
+
 export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
   if (!rows.length) {
@@ -3574,7 +3596,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
   try {
     ensureDriverDir(P.runDir);
     atomicWrite(driverDir(P.runDir, "declination-spec.json"),
-      JSON.stringify({ ts: new Date().toISOString(), rows, scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
+      JSON.stringify({ ts: new Date().toISOString(), rows: withGoodsStates(ctx, P, rows), scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
     ctx.findingsSurface = withGoodsFrom(ctx, P, rows);
   } catch (e) {
     // The dispatch block is gated on ctx.findingsSurface, so a failed write leaves the stage UNORDERED

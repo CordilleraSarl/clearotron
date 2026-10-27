@@ -117,6 +117,13 @@ export const DECLINATION_REASONS = Object.freeze({
     gloss: "an off-field name that is not a major brand, an active dispute or proceeding, or a "
       + "well-known enforcer — omitted, never listed for completeness",
   },
+  // A COMPARISON OF MARKS (ruled 2026-10-27): the writer may set aside a near spelling on its sign, as the write-up
+  // may, with the write-up's own gloss. It is refused on the applied-for mark itself, which no comparison sets aside.
+  sign: {
+    discretionary: true,
+    rules: 'synthesis-rules.md, "The consumer confusion test — the governing gate"',
+    gloss: "a near spelling a buyer in this market could not take for the mark, by sound, by look or by meaning",
+  },
   "not-worth-the-line": {
     discretionary: true,
     rules: 'synthesis-rules.md, "Promote-or-omit"',
@@ -206,7 +213,7 @@ export function contradictionFor(reason, row, scope) {
   // class is closed to the entry that holds it. Each record is judged on its own mark, status and classes.
   if (Array.isArray(row?.members) && row.members.length) {
     for (const m of row.members) {
-      const clash = contradictionFor(reason, { mark: m?.mark ?? row.mark, status: m?.status ?? null, classes: m?.classes ?? [] }, scope);
+      const clash = contradictionFor(reason, { mark: m?.mark ?? row.mark, status: m?.status ?? null, classes: m?.classes ?? [], goods: m?.goods ?? null }, scope);
       if (clash) return clash;
     }
     return "";
@@ -218,14 +225,30 @@ export function contradictionFor(reason, row, scope) {
   // it switched the identical-mark refusal below off on exactly those runs.
   const marks = Array.isArray(scope?.marks) ? scope.marks : (scope?.marks ? [scope.marks] : []);
 
+  // ── AN IDENTICAL MARK IN A FILED CLASS MAY BE DECLINED ON ITS GOODS, AND ON NOTHING ELSE DISCRETIONARY ──
+  //
+  // Ruled 2026-10-27: identical spelling and a shared class no longer bar a supported judgment that the registered
+  // goods are unrelated. This refused every discretionary token on such a record, so on a test run 29 goods
+  // decisions were refused and every one came back as a finding. A goods decision now stands where the run holds the
+  // record's goods complete (goods-evidence.mjs), because cut, unknown or missing goods establish nothing. The
+  // record's field, the report's length and a comparison with the applied-for mark itself are still refused.
   if (isIdenticalToAppliedMark(row?.mark, marks) && isLive(row?.status) && shared.length) {
-    return `this record's mark is IDENTICAL to the applied-for mark under the house normalizer, its `
+    const facts = `this record's mark is IDENTICAL to the applied-for mark under the house normalizer, its `
       + `status is ${String(row?.status ?? "").trim() || "live"}, and it sits in class ${shared.join(", ")} `
-      + `— one of the matter's own filed classes. synthesis-rules.md:167 orders that an on-point `
-      + `identical mark in the relevant class is never dropped, and says so "regardless of filer `
-      + `profile". Deliver it and rate it; a Stage-2 mitigant is a rating input, never a reason to omit. `
-      + `If it is the applicant's own right or already delivered under another record, say so with `
-      + `own-right or duplicate-of-delivered.`;
+      + `— one of the matter's own filed classes`;
+    if (reason === "unrelated-goods") {
+      if (row?.goods === "complete") return "";
+      return `${facts}, and the run does not hold its goods complete (${String(row?.goods ?? "").trim() || "not recorded"}): `
+        + `missing or incomplete goods do not establish that the goods are unrelated. Deliver it and rate it, or, `
+        + `if it is the applicant's own right or already delivered under another record, say so with own-right `
+        + `or duplicate-of-delivered.`;
+    }
+    return `${facts}. An on-point identical mark in the relevant class is never dropped for its field, for want `
+      + `of room or on a comparison with the applied-for mark itself, "regardless of filer profile". Deliver it `
+      + `and rate it; a Stage-2 mitigant is a rating input, never a reason to omit. If its registered goods, read `
+      + `in full, do not meet the matter's goods, decline it as unrelated-goods with that ground; if it is the `
+      + `applicant's own right or already delivered under another record, say so with own-right or `
+      + `duplicate-of-delivered.`;
   }
 
   // ── ECONOMY IS NOT A REASON ABOUT A LIVE IN-CLASS MARK (ruling 2026-09-07) ─────────────────
@@ -255,9 +278,10 @@ export function contradictionFor(reason, row, scope) {
       + `statement about the report's budget, not about this mark, and a live registration in an `
       + `instructed class is never omitted for want of room. Either carry it, or decline it on something `
       + `true of THIS MARK: unrelated-goods if its goods do not meet the matter's, off-field-not-major `
-      + `if it is off-field and not a major brand, an active dispute or a well-known enforcer, `
-      + `own-right if it belongs to the applicant, duplicate-of-delivered if the same right is already `
-      + `reported. Say what makes this mark distant, or give it its line.`;
+      + `if it is off-field and not a major brand, an active dispute or a well-known enforcer, sign if `
+      + `a buyer in this market could not take its spelling for the mark, own-right if it belongs to the `
+      + `applicant, duplicate-of-delivered if the same right is already reported. Say what makes this mark `
+      + `distant, or give it its line.`;
   }
 
   // THERE IS NO CLASS-OVERLAP REFUSAL, AND THE FIRST DRAFT HAD ONE. It refused `unrelated-goods` and
