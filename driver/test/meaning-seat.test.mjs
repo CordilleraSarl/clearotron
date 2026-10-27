@@ -200,15 +200,15 @@ test("EVERY grid refusal the server returns after the spec is read goes through 
   // \`ERROR: ...\`` inside the grid branch, correct-looking, and silent about the unwritten ledger.
   const src = readSrc(fileURLToPath(new URL("../engine/mcp/perplexity-server.mjs", import.meta.url)), "utf8");
 
-  // ONE REFUSAL IS EXEMPT, AND THE EXEMPTION IS ASSERTED RATHER THAN ASSUMED: the spec that would not
-  // PARSE. There is no `ledger_required` to read on a spec that is not an object, so the wrapper has
-  // nothing to decide with. It still points the reader at the right file, which is the property that
-  // matters — so that is checked here instead of waived.
+  // TWO REFUSALS ARE EXEMPT, AND THE EXEMPTION IS ASSERTED RATHER THAN ASSUMED: a spec outside this run's
+  // folder, which is never read, and the spec that would not PARSE. Neither has a `ledger_required` to
+  // read, so the wrapper has nothing to decide with. Each still points the reader at the right file, which
+  // is the property that matters — so that is checked here instead of waived.
   const preParse = src.slice(src.indexOf("if (grid_spec_path) {"), src.indexOf("if (!underStudioSegment(spec.output_path))"));
   const preParseRefusals = preParse.split("\n").filter((l) => /return\s+[`'"]ERROR:/.test(l));
-  assert.equal(preParseRefusals.length, 1, "the pre-parse region gained or lost a refusal — re-derive this exemption");
-  assert.match(preParseRefusals[0], /grid_spec_path/,
-    "the one exempt refusal must still name the spec path in its own text, or an unparseable spec sends "
+  assert.equal(preParseRefusals.length, 2, "the pre-parse region gained or lost a refusal — re-derive this exemption");
+  for (const r of preParseRefusals) assert.match(r, /grid_spec_path/,
+    "an exempt refusal must still name the spec path in its own text, or an unreadable spec sends "
     + "the reader nowhere");
 
   // Everything from the output_path guard onward runs with a PARSED spec in hand and is covered.
