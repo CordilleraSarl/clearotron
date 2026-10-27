@@ -1,5 +1,16 @@
 # clearotron-driver
 
+## 0.5.0-beta.3
+
+### Patch Changes
+
+- Fixed: The delivery email for a result the review could not sign off now lists the report's "Only you can close these" items.
+- Fixed: When a clearance fails, its chat notice now goes to the person who asked for it, with a copy to the operator.
+- Fixed: A clearance no longer repeats a finished step because a web lookup inside it timed out.
+- Fixed: A clearance whose register search cannot finish, such as one that keeps timing out, now delivers its report instead of ending with none.
+- Fixed: A search that cannot be shown to have run is now listed as not searched, and the report is still delivered.
+- Fixed: Reports can set aside an identical mark registered for unrelated goods, recording the reason in the audit workbook instead of listing it as a finding.
+
 ## 0.5.0-beta.2
 
 ### Patch Changes

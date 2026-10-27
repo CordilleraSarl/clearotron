@@ -4,6 +4,17 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.5.0-beta.3
+
+### Fixed
+
+- The delivery email for a result the review could not sign off now lists the report's "Only you can close these" items.
+- When a clearance fails, its chat notice now goes to the person who asked for it, with a copy to the operator.
+- A clearance no longer repeats a finished step because a web lookup inside it timed out.
+- A clearance whose register search cannot finish, such as one that keeps timing out, now delivers its report instead of ending with none.
+- A search that cannot be shown to have run is now listed as not searched, and the report is still delivered.
+- Reports can set aside an identical mark registered for unrelated goods, recording the reason in the audit workbook instead of listing it as a finding.
+
 ## 0.5.0-beta.2
 
 ### Fixed
