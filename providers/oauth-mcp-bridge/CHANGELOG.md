@@ -1,5 +1,9 @@
 # trademark-oauth-mcp-bridge
 
+## 0.5.0-beta.3
+
+No changes in this release.
+
 ## 0.5.0-beta.2
 
 No changes in this release.
