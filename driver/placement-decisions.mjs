@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { createHash } from "node:crypto";
-import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName, servedLines } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName, servedLines, FLOOR_GROUND_ON } from "./placement-form.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput } from "./placement-form-io.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
@@ -78,7 +78,7 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
 
 /**
  * THE FLOORS PLACEMENT SET ASIDE, AS THE REVIEW IS TOLD THEM: one line per standing decision on the shape now on disk,
- * with placement's ground once. A set-aside by name, on its status or its territory, covers one floor and names it. A
+ * with placement's ground once. A set-aside by name, on its status, territory, goods or mark, covers one floor and names it. A
  * crowd's row names its ground once and then every floor it covers, by record: the ground is the group's, so it was
  * never the floors' to repeat, and on a test run of a crowded matter repeating it on each of 1,177 floors made the
  * review's opening message 866 KB of its 899. Only decisions that stand on the current shape are listed
@@ -99,7 +99,7 @@ export function placementFloorDecisionLines(P) {   // @internal — driven by it
         const key = `${g.group}\u0000${g.ground}`;
         if (!rows.has(key)) { rows.set(key, { group: g.group, ground: g.ground, ids: [] }); out.push(rows.get(key)); }
         rows.get(key).ids.push(f.record_id);
-      } else if (g.on === "status" || g.on === "territory") {
+      } else if (FLOOR_GROUND_ON.includes(g.on)) {
         out.push(`- ${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id}): set aside on its ${g.on}: ${g.ground}`);
       }
     }
@@ -130,7 +130,7 @@ export function standingPlacementDecisions(P) {   // @internal — driven by its
         covered_lines_hash: createHash("sha256").update((e.covered_lines ?? []).join("\n")).digest("hex").slice(0, 16) }];
       const c = index.resolve(e.set_aside);
       return [{ kind: "name", record: e.set_aside, mark: c?.mark ?? null, owner: c?.owner ?? null, ground: e.ground,
-        ...(e.on === "status" || e.on === "territory" ? { on: e.on } : {}) }];
+        ...(FLOOR_GROUND_ON.includes(e.on) ? { on: e.on } : {}) }];
     });
   } catch { return []; }
 }

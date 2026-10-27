@@ -27,9 +27,11 @@ import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey,
   SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
   SET_ASIDE_ROW_CONTRACT, isSetAsideRow,
   SET_ASIDE_GROUP_CONTRACT, isSetAsideGroupRow, groupName, groupOfKeys, namedKey, lineKey, servedLines,
-  groupRowCoversFloors, groupRowCoversFloorLine, FLOOR_GROUND_ON, FLOOR_GROUND_REFUSED, ROW_GROUPS, renderPlacementsJson, setAsideGrounds } from "./placement-form.mjs";
+  groupRowCoversFloors, groupRowCoversFloorLine, FLOOR_GROUND_ON, FLOOR_GROUND_WORDS_READ, FLOOR_GROUND_REFUSED, ROW_GROUPS, renderPlacementsJson,
+  setAsideGrounds, setAsideMembers } from "./placement-form.mjs";
 import { groupPageCall } from "./band-shape.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
+import { formKey } from "../providers/_shared/script-form.mjs";   // — the one fold for "is this the same form of the mark"
 import { reconcileFloorDuty } from "./floor-duty.mjs";
 
 /** Why a `select` the fold does not hold is refused, said back with it. */
@@ -162,8 +164,8 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
   // placements.json. Prior first, so a later row for the same owner replaces the earlier ground, and a
   // retraction names the record id the row set aside. A row the band cannot resolve, or one with no
   // ground, is reported back by id, never dropped in silence.
-  // A ground by name covers the named line only. On a line holding a floor it is about the mark, its goods,
-  // its status or its territory, and says which in `on`; a ground about the owner never sets a floor aside.
+  // A ground by name covers the named line only. On a line holding a floor it is about its status, its territory,
+  // its registered goods or its mark, and says which in `on`; a ground about the owner never sets a floor aside.
   const groups = input?.groups ?? null;
   const floorUris = new Set((Array.isArray(input?.floors) ? input.floors : []).map((f) => normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "")).filter(Boolean));
   const holdsFloor = (canonical) => (canonical?.records ?? []).some((u) => floorUris.has(normalizeRecordUri(u) || String(u ?? "")));
@@ -174,10 +176,52 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     ...["a", "b", "c", "d", "no_goods"].flatMap((g) => (Array.isArray(groups?.[g]?.list) ? groups[g].list : []).filter((l) => l?.floors > 0).map((l) => l.key)),
   ]);
   const lineHoldsFloor = (canonical) => holdsFloor(canonical) || floorLines.has(namedKey(canonical));
+  // THE FLOORS OF EACH LINE, which a ground on a floor's goods or mark is checked against record by record.
+  const floorsOfLine = new Map();
+  for (const f of (Array.isArray(input?.floors) ? input.floors : [])) {
+    const u = normalizeRecordUri(f?.record_id) || String(f?.record_id ?? "");
+    const k = u ? namedKey(index.resolve(u)) : null;
+    if (k) floorsOfLine.set(k, [...(floorsOfLine.get(k) ?? []), { uri: u, mark: f?.mark_text ?? null }]);
+  }
+  // The records a ground on a line's goods or mark must hold for: the line's floors and the records of the position
+  // the row names, so a line the projection keys apart from its floors is still checked on the records it names.
+  const checkedRecords = (canonical) => {
+    const byUri = new Map((floorsOfLine.get(namedKey(canonical)) ?? []).map((f) => [f.uri, f]));
+    for (const u of canonical?.records ?? []) { const k = normalizeRecordUri(u) || String(u ?? ""); if (k && !byUri.has(k)) byUri.set(k, { uri: k, mark: canonical?.mark ?? null }); }
+    return [...byUri.values()];
+  };
+  const servedSet = servedLines(groups, input?.served, index);
+  const clientMarks = new Set((Array.isArray(input?.marks) ? input.marks : []).map((m) => formKey(String(m ?? ""))).filter(Boolean));
+  // WHY A GROUND ON A FLOOR'S GOODS OR MARK DOES NOT HOLD, or "" where it does (ruled 2026-10-27). Identical spelling
+  // and a shared class no longer bar the judgment; what bars it is the evidence. A goods ground stands on a line the
+  // step read and on goods the run holds complete for every floor of it: cut, unknown or missing goods establish
+  // nothing. A mark ground is a comparison with the client's mark, so it cannot set aside the client's mark itself.
+  const evidenceProblem = (on, canonical) => {
+    const records = checkedRecords(canonical);
+    if (on === "goods") {
+      if (!servedSet.has(namedKey(canonical)))
+        return "a floor is set aside on its goods only once its line has been read: read it in band_shape or its group's page, or open its record with band_record";
+      const states = input?.evidence instanceof Map ? input.evidence : null;
+      if (!states) return "the run holds no record of what this line's goods rest on, so no ground on its goods can be checked: place the line, or set it aside on another ground";
+      const short = records.filter((r) => states.get(r.uri) !== "complete");
+      if (short.length)
+        return `the run does not hold the goods of ${short.slice(0, 3).map((r) => `${r.uri} (${states.get(r.uri) ?? "not recorded"})`).join(", ")}${short.length > 3 ? `, and ${short.length - 3} more` : ""} complete: missing or incomplete goods establish no ground, so place the line or set it aside on another ground`;
+    }
+    if (on === "mark") {
+      if (!clientMarks.size) return "the run holds no applied-for mark to compare this line's mark with: decide it on its goods, its status or its territory, or place it";
+      const own = records.find((r) => clientMarks.has(formKey(String(r.mark ?? ""))));
+      if (own) return `${own.uri} carries the client's mark itself, which no comparison of marks can set aside: decide it on its goods, its status or its territory, or place it`;
+    }
+    return "";
+  };
   const setAside = new Map();
   const setAsideRefused = [];
   const takeSetAside = (row) => {
-    const id = String(row.set_aside).trim();
+    // A LIST UNDER ONE GROUND is taken line by line: each member stands or is reported back on its own evidence, so a
+    // shared ground covers only the lines it holds for, and the exceptions are said back by id.
+    const members = setAsideMembers(row);
+    if (members.length > 1) { for (const m of members) takeSetAside({ ...row, set_aside: m }); return; }
+    const id = members[0];
     const ground = typeof row.ground === "string" ? row.ground.trim() : "";
     const canonical = index.resolve(id);
     const refuse = (why) => { if (!setAsideRefused.some((x) => x.set_aside === id && x.why === why)) setAsideRefused.push({ set_aside: id, why }); };
@@ -185,8 +229,10 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     if (!ground) { refuse("no ground"); return; }
     const on = typeof row.on === "string" ? row.on.trim().toLowerCase() : "";
     if (lineHoldsFloor(canonical)) {
-      if (!FLOOR_GROUND_ON.includes(on)) { refuse(`a floor is set aside by name only on its status or its territory: give "on" as one of ${FLOOR_GROUND_ON.join(", ")}`); return; }
-      if (FLOOR_GROUND_REFUSED.test(ground)) { refuse("a floor is never set aside on its owner's customers, channels, markets or field: write a ground about its status or its territory"); return; }
+      if (!FLOOR_GROUND_ON.includes(on)) { refuse(`a floor is set aside by name on its status, its territory, its registered goods or its mark compared with the client's: give "on" as one of ${FLOOR_GROUND_ON.join(", ")}`); return; }
+      if (FLOOR_GROUND_WORDS_READ.includes(on) && FLOOR_GROUND_REFUSED.test(ground)) { refuse(`a ground on a floor's ${on} is about its ${on}, never its goods or its owner's customers, channels, markets or field: write a ground about its ${on}, or give a ground on its registered goods with "on": "goods"`); return; }
+      const problem = evidenceProblem(on, canonical);
+      if (problem) { refuse(problem); return; }
     }
     const key = namedKey(canonical);
     setAside.delete(key);
@@ -217,7 +263,6 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
   // does not list, a count that is not the shape's, or a row with no ground is reported back, never dropped.
   const setAsideGroups = new Map();
   const groupRefused = [];
-  const servedSet = servedLines(groups, input?.served, index);
   const takeGroup = (row) => {
     const written = String(row.set_aside_group).trim();
     const refuse = (why) => { if (!groupRefused.some((x) => x.set_aside_group === written && x.why === why)) groupRefused.push({ set_aside_group: written, why }); };
@@ -289,7 +334,7 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     // AN IDENTICAL MARK LIVE IN AN ORDERED OR FRAME-ADDED CLASS IS NEVER OUT-OF-SCOPE-FILTERED. The tier is
     // refused, said back, and the row left open, so the floor duty still owes it a fate.
     if (row.tier === "out-of-scope-filtered" && holdsFloor(row)) {
-      tierRefused.push({ select: row.select ?? null, why: "an identical mark live in an ordered or frame-added class is never out-of-scope-filtered: place it, sheet-2 at the least, or set it aside by name on its status or its territory" });
+      tierRefused.push({ select: row.select ?? null, why: "an identical mark live in an ordered or frame-added class is never out-of-scope-filtered: place it, sheet-2 at the least, or set its line aside by name on its status, its territory, its registered goods or its mark" });
       row.tier = null;
     }
     // JUDGED ON THE MERGED ROW, not on either input — a tier written on one pass and its reason on the

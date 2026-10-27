@@ -180,7 +180,7 @@ test("a row left unfinished is refused as before, and the refusal names the floo
   const r = run(t);
   const v = r.turn({ rows: [...EVERY_FLOOR.filter((x) => x.select !== "/mark/eu/b1"), { select: "/mark/eu/d1", tier: "sheet-2" }] });
   assert.match(v.reason, /^placement_unjudged=1: /, "guard: (d)'s row has no reason, and is not a floor");
-  assert.match(v.reason, /The form gives these floors no fate either: \/mark\/eu\/b1 in \(b\)\. Place each by selecting that record, sheet-2 at the least, or set its line aside by name on its status or its territory\./,
+  assert.match(v.reason, /The form gives these floors no fate either: \/mark\/eu\/b1 in \(b\)\. Place each by selecting that record, sheet-2 at the least, or set its line aside by name on its status, its territory, its registered goods or its mark\./,
     "the step learned of the floor a turn later than of the row");
 });
 
