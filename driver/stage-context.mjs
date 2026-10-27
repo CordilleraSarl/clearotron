@@ -177,6 +177,7 @@ export const TOOL_GROUP_EDGES = {
   // the policy asks on the question's own depth instead, so the arm would measure a different tier.
   perplexity: (P) => [
     { path: driverDir(P.runDir, "search-policy.json"), why: "perplexity_research sends every question on the tier the run's frozen policy pins (web.questionPreset); without it a question goes out on its own depth" },
+    { path: driverDir(P.runDir, "research-answers.jsonl"), why: "under --research replay, perplexity_research answers a question the run already asked from the answer the run kept here (research-answers.mjs); without it a replay has nothing to answer from" },
   ],
   declination: (P) => [
     { path: driverDir(P.runDir, "declination-spec.json"), why: "record_declination resolves every row_index against this spec; without it the tool refuses the call and the seat cannot decline at all" },

@@ -34,7 +34,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
-import { handResearchAnswers } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one
+import { handResearchAnswers, RESEARCH_REPLAY_FILE, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
 import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
@@ -1679,6 +1679,8 @@ const AXIS_VOCABULARY = {
 // a preserved run's canonical artefact came from); the rest are the re-dispatch triggers runDigest
 // labels, and they carry the placement rulings tail a fresh pass does not.
 export const DISPATCH_TRIGGERS = ["fresh", "escalation", "envelope", "late-bind", "stale-repair", "settlement-flush", "corrective"];   // @internal — — the corrective pass is the seam the losses happen in; see driver/corrective-arm.mjs for warm vs cold
+// How an --experiment arm's research is answered: sent out as the run sent it, or replayed from the run's own answers.
+export const RESEARCH_MODES = ["live", "replay"];   // @internal
 
 /**
  * The sha of a sandbox file AS IT WOULD READ on the canonical run — the sandbox's own directory
@@ -18438,6 +18440,12 @@ async function runExperimentInner(job, opts) {
     throw new Error(`--experiment ${name}: --axis "${axis}" is not ${vocab.what} (${vocab.oneOf})`);
   // A typo here changes WHICH driver-computed blocks the arm carries and nothing would say so — the
   // same silent-degradation shape the RETIRED_FLAGS table at the bottom of this file exists for.
+  // `--research replay` answers the arm's research from the run's own answers and sends nothing out
+  // (research-answers.mjs). Only a stage that holds the research tool has research to replay.
+  if (opts.research != null && !RESEARCH_MODES.includes(opts.research))
+    throw new Error(`--research: unknown value "${opts.research}" — one of: ${RESEARCH_MODES.join(", ")}`);
+  if (opts.research === "replay" && !experimentToolGroups(name).includes("perplexity"))
+    throw new Error(`--experiment ${name} --research replay: ${name} holds no research tool, so there is no research to replay`);
   if (opts.dispatchTrigger != null && !DISPATCH_TRIGGERS.includes(opts.dispatchTrigger))
     throw new Error(`--dispatch-trigger: unknown value "${opts.dispatchTrigger}" — it decides which production pass the arm reproduces, so a typo would compose a quietly different prompt. One of: ${DISPATCH_TRIGGERS.join(", ")}`);
   const ctx = reconstructCtx(job, opts);
@@ -18501,6 +18509,15 @@ async function runExperimentInner(job, opts) {
     runLog(ctx.paths.runDir, { event: "experiment-refused", stage: name + (axis ? `:${axis}` : ""), missing: gaps.map((g) => g.rel) });
     throw new Error(`--experiment ${name}: the sandbox could not reproduce ${gaps.length} thing(s) this stage's context has on the canonical run — refusing to dispatch against an incomplete context:\n` +
       gaps.map((g) => `  · ${g.rel}  [${g.kind}${g.via ? ` via ${g.via}` : ""}]${g.why ? ` — ${g.why}` : ""}`).join("\n"));
+  }
+  // A REPLAY NEEDS ANSWERS TO REPLAY. Refused by name when the run kept none, rather than dispatched to refuse
+  // every question it asks; the marker is the research server's whole switch, and only a sandbox writes it.
+  let replayedAnswers = null;
+  if (opts.research === "replay") {
+    replayedAnswers = savedResearchCount(shadowDir);
+    if (!replayedAnswers)
+      throw new Error(`--experiment ${name} --research replay: this run kept no research answers (_driver/research-answers.jsonl is absent or holds none), so there is nothing to replay — run the arm with --research live`);
+    atomicWrite(driverDir(shadowDir, RESEARCH_REPLAY_FILE), JSON.stringify({ replayOf: "the run's saved research answers", answers: replayedAnswers }, null, 2) + "\n");
   }
   // ── 4. INLINE context — what no file copy can supply ──────────────────────────────────────────────
   //
@@ -18588,6 +18605,8 @@ async function runExperimentInner(job, opts) {
     // omitted: absent and "there was none" are different facts and only one of them is a defect.
     ratedUnder: ctx.profile?.profileKey ?? null,
     dispatchTrigger: opts.dispatchTrigger ?? "fresh",
+    // How the arm's research was answered: sent out live, or replayed from the run's own answers.
+    research: opts.research === "replay" ? { mode: "replay", answers: replayedAnswers } : { mode: "live" },
     // — WHICH PASS THIS ARM REPRODUCED, in a word. null on a non-corrective arm;
     // never "dispatched-warm", which is production's alone.
     correctivePass: whichPass,
@@ -18693,7 +18712,7 @@ function parseArgv(argv) {
   const o = {};
   const flags = { "--job": "job", "--agent": "agent", "--resume": "codename", "--from": "fromStage",
     "--experiment": "experiment", "--model": "model", "--instructions": "instructions",
-    "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger" };
+    "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger", "--research": "research" };
   for (let i = 0; i < argv.length; i++) {
     const key = flags[argv[i]];
     if (!key) {
@@ -18861,7 +18880,7 @@ export function resumeAdvice({ result = null, error = null, signal = null, scrip
 
 const USAGE = "usage: node pipeline.mjs --job <file.json> [--agent <id>]\n" +
   "       [--resume <codename> [--from <stage>]]\n" +
-  "       [--resume <codename> --experiment <stage> [--model <id>] [--instructions <text>] [--axis <axis>] [--label <text>] [--dispatch-trigger <t>]]\n" +
+  "       [--resume <codename> --experiment <stage> [--model <id>] [--instructions <text>] [--axis <axis>] [--label <text>] [--dispatch-trigger <t>] [--research live|replay]]\n" +
   "  --instructions appends to a stage's prompt (a light tweak); a full prompt rewrite means editing the stage's skill file.\n" +
   "  --axis also names the ORDINAL for report-card (its dispatch label is report-card:<ordinal>).\n" +
   "  --dispatch-trigger picks WHICH production pass the arm reproduces (default \"fresh\"); a corrective pass carries prompt blocks a fresh one does not.";
@@ -18976,7 +18995,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // hangs `__runRef` on the caller's own opts the moment the run context is built, which is how pipeline()'s
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
-    ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger }
+    ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research }
     : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
