@@ -30,7 +30,7 @@ import { engineProvenance } from "./engine-build.mjs";                  // — �
 import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
 import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
-import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
+import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
@@ -5561,7 +5561,7 @@ export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {})
 // every terminal failure to preserve. And per the payload stays OUT of the sentence — `whatsappText`
 // and the CLIENT body are untouched; the staff body gets it in its own <pre>, beside the verbatim reason
 // that body already quotes.
-export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, whatsappTo = null, reasonDetail = null, reasonQuantity = null, capWait = null }) {
+export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null }) {
   const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const detail = typeof reasonDetail === "string" && reasonDetail.trim() ? reasonDetail.trim() : null;
   const quantity = Number.isFinite(reasonQuantity) ? reasonQuantity : null;
@@ -5680,7 +5680,10 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
       : refused
         ? `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> was REFUSED at stage <b>${esc(failedStage)}</b> before any work was done, and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre><p>The run directory is preserved; this is not a defect to diagnose.</p>`
         : `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> FAILED at stage <b>${esc(failedStage)}</b>${priorAttempts ? ` after <b>${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}</b>` : ""} and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre>${detailBlock}${attempted}<p>The run directory is preserved for diagnosis; re-trigger the run when the cause is addressed.</p>`,
-    whatsappTo,
+    // THE NOTICE GOES TO WHOEVER ASKED, as the completion notice does (whatsappRouting, stages.mjs): the requester's own
+    // number where one is held, the gap stated where none is, and the operator's copy beside it. It went to the agent's
+    // number, which every user of a deployment shares, so the operator was told of a failure the requester never heard.
+    ...whatsappRouting(job, agent),
     whatsappText: refused
       ? `⛔ Clearotron search for ${mark} REFUSED at ${failedStage} [${terminalKind}]: ${shortReason} — nothing was delivered and nothing broke; ${retryHint}.`
       : `❌ Clearotron search for ${mark} FAILED at ${failedStage}${priorAttempts ? ` after ${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}` : ""}${terminalKind ? ` [${terminalKind}]` : ""}: ${shortReason} — nothing was delivered; ${retryHint}.`,
@@ -10362,7 +10365,7 @@ async function pipelineInner(job, opts = {}) {
       const p = writeOutboxPacket(`${runId}.bindack`, {
         kind: "late-bind-ack", runId, agent,
         forwarder: job.forwarder ?? null, forwarderEmail: job.forwarderEmail ?? null, msgId: job.msgId ?? null,
-        customer: bind.customer, action, whatsappTo: AGENT_WHATSAPP[agent] ?? null, text,
+        customer: bind.customer, action, ...whatsappRouting(job, agent), text,
       });
       runLog(run.runDir, { event: "customer-late-bind-ack", sent: Boolean(p), via: "outbox" });
     } catch (e) { note(`late-bind ack failed (non-fatal): ${e?.message ?? e}`); }
@@ -17797,7 +17800,7 @@ async function pipelineInner(job, opts = {}) {
           runId, agent, job, failedStage, shortReason,
           reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
           terminalKind: terminalKind ?? null, repairs: attemptedRepairs ?? [],
-          priorAttempts, whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+          priorAttempts,
           // Read off the park history rather than recomputed: the history is what survived the parks.
           capWait: capWaitFrom(Array.isArray(statusSnapshot?.recoveryHistory) ? statusSnapshot.recoveryHistory : []),
           reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the payload reaches the notice
@@ -17854,7 +17857,7 @@ async function pipelineInner(job, opts = {}) {
         const packet = buildFailurePacket({
           runId: `${run.slug}-${run.date}-${run.codename}`, agent, job, failedStage, shortReason,   // canonical runId form (charter P1 §3)
           reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, terminalKind,
-          repairs: attemptedRepairs ?? [], priorAttempts, whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+          repairs: attemptedRepairs ?? [], priorAttempts,
           reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the BACKSTOP notice carries it too
         });
         writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
