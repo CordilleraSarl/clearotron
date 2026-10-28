@@ -22,7 +22,7 @@
 // retirement is the `:email` surface — see the note at its call site in runLint: it now runs on the
 // report-derived cover text alone, because a gate that simply stops running is not a gate that passes.
 
-import { REGION_NAMES } from "./publish/regions.mjs";
+import { REGION_NAMES, COMMON_LAW } from "./publish/regions.mjs";
 import { PLAIN_FORMS, SENTENCE_WORD_LIMIT, termMatcher } from "./plain-register.mjs";   // the pinned rule, not a fourth copy
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // one spelling of a territory code
 import { searchedCovers } from "./frame-diff-model.mjs";                // one copy of the EU-reach rule
@@ -760,6 +760,12 @@ const TERRITORY_NAME_TO_CODE = (() => {
   return m;
 })();
 
+/** Did the common-law grid answer at least one search? A cell is a search that came back, `hit` or `no_hit`; a query
+ * that failed is a gap, not a cell. Absent grid ⇒ false. PURE. */
+export function commonLawGridSearched(grid) {
+  return (Array.isArray(grid?.cells) ? grid.cells : []).some((c) => c?.status === "hit" || c?.status === "no_hit");
+}
+
 // Longest-first so "South Korea" and "United Kingdom" win over "Korea"/"Kingdom" fragments.
 const TERRITORY_NAMES_BY_LENGTH = [...TERRITORY_NAME_TO_CODE.keys()].sort((a, b) => b.length - a.length);
 
@@ -776,15 +782,22 @@ function coverageSentences(text) {
 /**
  * Territory-coverage claims in a delivered surface, compared against what the run searched.
  *
+ * COMMON LAW IS SEARCHED WHEN ITS GRID SEARCHED. The region table names common law as `C/L`, so a sentence about
+ * common-law coverage reads as a claim about a territory, and the searched set is the register's jurisdictions alone.
+ * Measured in testing, 2026-10-28: a run whose common-law grid answered every one of its searches failed this check
+ * on the narrative's common-law sentence. `commonLawSearched` adds it to the searched set; a run whose grid answered
+ * nothing still fails a claim to have searched it.
+ *
  * Returns [] — NOT a pass — when there is no searched set to compare against. A run with no register
  * layer has nothing to contradict, and a green check on a comparison that never happened is the
  * absence-as-pass this codebase keeps paying for. The family being absent is the honest record.
  *
  * PURE.
  */
-export function coverageClaimChecks({ text, searchedJurisdictions = null, surface = "report" } = {}) {
+export function coverageClaimChecks({ text, searchedJurisdictions = null, surface = "report", commonLawSearched = false } = {}) {
   const searched = (searchedJurisdictions ?? []).map((j) => canonicalJurisdictionCode(j)).filter(Boolean);
   if (!searched.length) return [];                       // nothing to compare — record nothing, claim nothing
+  if (commonLawSearched && !searched.includes(COMMON_LAW)) searched.push(COMMON_LAW);
   const body = stripHtml(text);
   if (!body.trim()) return [];
   const searchedSet = new Set(searched);
@@ -796,7 +809,8 @@ export function coverageClaimChecks({ text, searchedJurisdictions = null, surfac
     for (const name of TERRITORY_NAMES_BY_LENGTH) {
       if (!new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(n)) continue;
       const code = TERRITORY_NAME_TO_CODE.get(name);
-      if (searchedCovers(code, searchedSet)) continue;
+      // Judged by its canonical code, as the searched set is: the region table says `UK`, the set holds `GB`.
+      if (searchedCovers(canonicalJurisdictionCode(code), searchedSet)) continue;
       // display the canonical territory name, not the normalised token the match ran on ("korea" → South Korea)
       violations.push({ code, name: REGION_NAMES[code] ?? name, sentence: sentence.slice(0, 180) });
       break;                                             // one flag per sentence; the repair reads the sentence
@@ -2304,8 +2318,9 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   // this run has an owner screen, and nesting it there would have silently switched the check off for
   // every run without one. Both prose surfaces: the narrative is where the issue measured the
   // disagreement, and the report is what the client is handed.
-  if (reportMd) checks.push(...coverageClaimChecks({ text: reportMd, searchedJurisdictions, surface: "report" }));
-  if (narrativeMd) checks.push(...coverageClaimChecks({ text: narrativeMd, searchedJurisdictions, surface: "narrative" }));
+  const commonLawSearched = commonLawGridSearched(commonLawGrid);
+  if (reportMd) checks.push(...coverageClaimChecks({ text: reportMd, searchedJurisdictions, surface: "report", commonLawSearched }));
+  if (narrativeMd) checks.push(...coverageClaimChecks({ text: narrativeMd, searchedJurisdictions, surface: "narrative", commonLawSearched }));
   if (reportMd) checks.push(...deadRecordLinkChecks({ text: reportMd, surface: "report" }));
   if (clientSummaryMd) checks.push(...deadRecordLinkChecks({ text: clientSummaryMd, surface: "client-summary", idSuffix: ":client" }));
   if (narrativeMd) checks.push(...deadRecordLinkChecks({ text: narrativeMd, surface: "narrative", idSuffix: ":narrative" }));
