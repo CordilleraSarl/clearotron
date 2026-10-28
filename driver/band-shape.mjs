@@ -1135,18 +1135,26 @@ export const AN_UNREAD_LISTS_FLOOR = "Place each floor here, or set it aside by 
 // alone, as its other orders are: every other stage keeps the markers as evidence and is not told of a fate.
 export const AN_UNREAD_LINE_IS_CHECKED = 'A line marked "on file, not readable", "cut by the register, no goods word found", "goods held; completeness not established" or "no goods text held; completeness not established" must be checked with band_record before its fate. Read the evidence held for it, keeping its source and goods completeness clear. A line marked "no goods on file", "fetch failed, no goods on file" or "the register\'s record lists no goods" has no goods text on file. Missing goods do not establish that the goods are unrelated.';
 export const PLACEMENT_LINE_ORDERS = Object.freeze([FLOORS_BY_NAME_HERE, A_CROWDS_ONE_ROW, A_CROWDS_ROW_COVERS_A_READ_FLOOR, AN_UNREAD_CROWDS_ONE_ROW, AN_UNREAD_CROWDS_FLOOR, AN_UNREAD_LISTS_FLOOR, AN_UNREAD_LINE_IS_CHECKED]);
+// AND THE SIZE RULE'S ORDERS TO READ (ruled 2026-10-27). A list's size sentence tells placement how much of it to read,
+// and only placement owes the lines that read. Every other stage is served the shape without these orders too: the
+// writer is told the groups are a way to find evidence, never a list it must read to completion. Each list's count,
+// what it holds and the fact that a crowded one prints its first page stay.
+export const READ_THEM_ALL = "Fifty? Read them all.";
+export const READ_EVERY_LINE = ": read every line.";
+export const READ_THE_LIVE_ONES_FIRST = "A few hundred? Read the live ones in the ordered classes first.";
 const SHAPE_LISTS = ["a", "b", "c", "d", "rest", "no_goods"];
 const pageEveryOtherLine = (g) => `; page every other line with ${groupPageCall(g)}`;
 const pageWhereALineNeedsIt = (g) => `; page with ${groupPageCall(g)} only where a line needs reading`;
 const pageTheFloorsLeft = (g) => `Where more floors are counted than this page shows, page the rest with ${groupPageCall(g)}; they come first.`;
 /**
- * The shape as every stage but placement is served it: placement's orders and its group-page commands removed,
+ * The shape as every stage but placement is served it: placement's orders, its size rule's orders to read and its group-page commands removed,
  * each with the space before it, inside its line, so no line moves and the line each listed mark is printed on
  * still holds. A crowded group's "The first N lines are below" stays, as a fact about what is printed. PURE.
  */
 export function withoutPlacementOrders(text) {
   let t = String(text ?? "");
-  for (const order of [...PLACEMENT_GROUP_ORDERS, ...PLACEMENT_LINE_ORDERS, ...SHAPE_LISTS.map(pageTheFloorsLeft)]) t = t.split(` ${order}`).join("").split(order).join("");
+  for (const order of [...PLACEMENT_GROUP_ORDERS, ...PLACEMENT_LINE_ORDERS, ...SHAPE_LISTS.map(pageTheFloorsLeft), READ_THEM_ALL, READ_THE_LIVE_ONES_FIRST]) t = t.split(` ${order}`).join("").split(order).join("");
+  t = t.split(READ_EVERY_LINE).join(".");
   for (const g of SHAPE_LISTS) t = t.split(pageEveryOtherLine(g)).join("").split(pageWhereALineNeedsIt(g)).join("");
   return t;
 }
@@ -1200,16 +1208,16 @@ function renderGroupsMd(md, groups, rows = []) {
     md.push(`### ${heading(g)}`, "");
     if (!grp.lines) { md.push("(none)", ""); continue; }
     const crowded = grp.records >= groups.crowded_at;
-    const readA = "These are the identical and near-identical marks live in the ordered classes for the client's goods: read every line.";
+    const readA = `These are the identical and near-identical marks live in the ordered classes for the client's goods${READ_EVERY_LINE}`;
     md.push(g === "a"
       ? (crowded
         ? `${count(grp)}. ${readA} ${firstPage}${pageEveryOtherLine(g)}. ${FLOORS_BY_NAME_HERE}`
-        : grp.lines <= READ_ALL_LINES ? `${count(grp)}. Fifty? Read them all.` : `${count(grp)}. ${readA}`)
+        : grp.lines <= READ_ALL_LINES ? `${count(grp)}. ${READ_THEM_ALL}` : `${count(grp)}. ${readA}`)
       : crowded
         ? `${count(grp)}. A thousand or more? The field is crowded. These are ${crowd[g]}. ${A_CROWDS_ONE_ROW} ${firstPage}${pageWhereALineNeedsIt(g)}.${
           g === "b" ? ` ${A_CROWDS_ROW_COVERS_A_READ_FLOOR} ${pageTheFloorsLeft(g)}` : ""}`
         : grp.lines <= READ_ALL_LINES
-          ? `${count(grp)}. Fifty? Read them all.`
+          ? `${count(grp)}. ${READ_THEM_ALL}`
           : `${count(grp)}. ${SORT_THE_NEAR_ONES}`, "");
     md.push(...head);
     for (const l of crowded ? grp.list.slice(0, groups.first_page) : grp.list) { rows.push([md.length, l.key]); md.push(row(l)); }
@@ -1223,7 +1231,7 @@ function renderGroupsMd(md, groups, rows = []) {
   md.push(`**The rest: ${count(rest)}${outside}** — every record in none of (a) to (d) above. ${!rest.lines ? ONE_SET_ASIDE_ROW
     : restCrowded
       ? `A thousand or more? The field is crowded. ${A_CROWDS_ONE_ROW} ${firstPage}${pageWhereALineNeedsIt("rest")}.`
-      : `${rest.lines <= READ_ALL_LINES ? "Fifty? Read them all." : SORT_THE_NEAR_ONES} ${ONE_SET_ASIDE_ROW}`}`);
+      : `${rest.lines <= READ_ALL_LINES ? READ_THEM_ALL : SORT_THE_NEAR_ONES} ${ONE_SET_ASIDE_ROW}`}`);
   if (rest.lines) {
     md.push("", ...head);
     for (const l of restCrowded ? rest.list.slice(0, groups.first_page) : rest.list) { rows.push([md.length, l.key]); md.push(row(l)); }
@@ -1240,7 +1248,7 @@ function renderGroupsMd(md, groups, rows = []) {
       : `**Goods the test could not read: ${count(ng)}.**`;
     md.push("", crowded
       ? `${lead} A thousand or more? ${firstPage}, the floors first, then the live ones in the ordered classes. ${AN_UNREAD_CROWDS_ONE_ROW} ${AN_UNREAD_CROWDS_FLOOR} ${pageTheFloorsLeft("no_goods")}`
-      : `${lead} ${ng.lines <= READ_ALL_LINES ? "Fifty? Read them all." : "A few hundred? Read the live ones in the ordered classes first."} ${A_FATE_BY_NAME}${tested.source === "none" ? "" : ` ${AN_UNREAD_LINE_IS_CHECKED}`} ${AN_UNREAD_LISTS_FLOOR}`, "");
+      : `${lead} ${ng.lines <= READ_ALL_LINES ? READ_THEM_ALL : READ_THE_LIVE_ONES_FIRST} ${A_FATE_BY_NAME}${tested.source === "none" ? "" : ` ${AN_UNREAD_LINE_IS_CHECKED}`} ${AN_UNREAD_LISTS_FLOOR}`, "");
     md.push(...head);
     for (const l of crowded ? ng.list.slice(0, groups.first_page) : ng.list) { rows.push([md.length, l.key]); md.push(row(l)); }
   }

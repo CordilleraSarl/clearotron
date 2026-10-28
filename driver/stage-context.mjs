@@ -177,6 +177,7 @@ export const TOOL_GROUP_EDGES = {
   // the policy asks on the question's own depth instead, so the arm would measure a different tier.
   perplexity: (P) => [
     { path: driverDir(P.runDir, "search-policy.json"), why: "perplexity_research sends every question on the tier the run's frozen policy pins (web.questionPreset); without it a question goes out on its own depth" },
+    { path: driverDir(P.runDir, "research-answers.jsonl"), why: "under --research replay, perplexity_research answers a question the run already asked from the answer the run kept here (research-answers.mjs); without it a replay has nothing to answer from" },
   ],
   declination: (P) => [
     { path: driverDir(P.runDir, "declination-spec.json"), why: "record_declination resolves every row_index against this spec; without it the tool refuses the call and the seat cannot decline at all" },
@@ -191,6 +192,21 @@ export const TOOL_GROUP_EDGES = {
 };
 
 // ── the edges a declaration cannot carry ─────────────────────────────────────────────────────────────
+// PLACEMENT'S SET-ASIDES, as the reading step and the writer are told them when their message is built
+// (placement-decisions.mjs, `standingPlacementDecisions`): the form's driver copy, judged against the shape, the
+// positions, the scope, what the band tools served and the goods evidence, under the era stamp that says a form is
+// required. An arm without them was told of no set-aside at all.
+const placementSetAsideReads = (P) => [
+  { path: driverDir(P.runDir, "placement-form.form.json"), kind: "driver-side", why: "standingPlacementDecisions reads placement's set-asides from the form's driver copy" },
+  { path: driverDir(P.runDir, "stage-contracts.json"), kind: "driver-side", why: "the era stamp that says this run's placement records a form; without it a missing form reads as none set aside" },
+  { path: P.placementModel, kind: "driver-side", why: "the placed records a set-aside is checked against (placedUriRows)" },
+  { path: P.bandShape, kind: "driver-side", why: "readPlacementFormInput: the floors and groups a set-aside is judged against" },
+  { path: P.registerPositions, kind: "driver-side", why: "readPlacementFormInput: the positions a named set-aside resolves to" },
+  { path: driverDir(P.runDir, "instructed-scope.json"), kind: "driver-side", why: "readPlacementFormInput: the applied-for marks a ground is refused on" },
+  { path: driverDir(P.runDir, "reading-log.jsonl"), kind: "driver-side", why: "readServed: the lines a group row may cover are the lines placement was shown" },
+  { path: driverDir(P.runDir, "goods-evidence.json"), kind: "driver-side", why: "readGoodsStates: a ground on a record's goods is checked against what its goods rest on" },
+];
+
 const UNDECLARED = {
   // The verbatim forward is named in the prompt only when job.rawRequest exists — and matter-frame,
   // unlike blind-frame, never declared it at all (stages.mjs "matter-frame": []).
@@ -224,6 +240,7 @@ const UNDECLARED = {
   // and one that built it and lost it in the copy refuses by name. Listing it costs nothing on the first and
   // is the whole point on the second.
   "register-digest": (P) => [
+    ...placementSetAsideReads(P),
     { path: P.registerHitList,
       why: "the digest's own message names this file and asks the model to mark lines on it (hit-list.mjs reads the marks back); without it in the copy a marking lands nowhere and the stage passes having been given a different input than the real one" },
   ],
@@ -231,6 +248,7 @@ const UNDECLARED = {
   // non-zero count (stages.mjs synthesis message). Undeclared on purpose — it is aim-attention only and
   // must never move a freshness stamp — but a sandbox without it hands a different prompt.
   synthesis: (P) => [
+    ...placementSetAsideReads(P),
     { path: P.enforcerSignals, kind: "conditional",
       why: "named in the prompt only when ctx.enforcerSignals > 0; aim-attention telemetry, deliberately outside the freshness map" },
     // The job's own scope. The prompt never names it, so nothing declared it, and the sandbox rebuilt the

@@ -15,7 +15,7 @@ import { dirname } from "node:path";
 import { createHash } from "node:crypto";
 import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, groupName, servedLines, FLOOR_GROUND_ON } from "./placement-form.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
-import { readPlacementForm, readPlacementFormInput } from "./placement-form-io.mjs";
+import { readPlacementForm, readPlacementFormInput, placementFormStamp, placementFormPaths } from "./placement-form-io.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
 
 const safeReadJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -118,9 +118,20 @@ export function placementFloorDecisionLines(P) {   // @internal — driven by it
  * enough for a stage to open. [] when nothing stands or nothing can be read. IMPURE (reads the run).
  */
 export function standingPlacementDecisions(P) {   // @internal — driven by its test with a run's own files
+  // A FORM THAT IS NOT THERE IS NOT "NOTHING SET ASIDE". Every failure here used to read as an empty list, so a writer in
+  // the experiment sandbox, which held no form, was told of no set-aside at all on a run whose placement had set 178
+  // aside. Where this run's placement records its decisions on a form (the era stamp), a missing or unreadable form is
+  // refused by name, and so is a failure reading what stands. A run from before the form had none, and its empty list
+  // is true.
+  const form = readPlacementForm(P.runDir);
+  if (form.error) throw new Error(`placement_form_unreadable: ${form.error} — placement's set-asides cannot be read, and an unread form is not "none set aside"`);
+  if (!form.present) {
+    if (placementFormStamp(P.runDir).required)
+      throw new Error(`placement_form_missing: this run's placement records its decisions on a form, and ${placementFormPaths(P.runDir).sidecar} is not there — refusing to read its absence as "none set aside"`);
+    return [];
+  }
+  if (!form.set_aside?.length) return [];
   try {
-    const form = readPlacementForm(P.runDir);
-    if (!form.set_aside?.length) return [];
     const input = readPlacementFormInput(P.runDir);
     const index = buildSelectionIndex(input);
     return standingSetAside(form.set_aside, input, { placedUris: placedUriRows(P).map((r) => r.uri), rows: form.rows }).flatMap((e) => {
@@ -132,7 +143,7 @@ export function standingPlacementDecisions(P) {   // @internal — driven by its
       return [{ kind: "name", record: e.set_aside, mark: c?.mark ?? null, owner: c?.owner ?? null, ground: e.ground,
         ...(FLOOR_GROUND_ON.includes(e.on) ? { on: e.on } : {}) }];
     });
-  } catch { return []; }
+  } catch (e) { throw new Error(`placement_decisions_unreadable: ${String(e?.message ?? e).slice(0, 200)} — what placement set aside could not be worked out from its form`); }
 }
 
 /**
@@ -144,7 +155,11 @@ export function rankingNow(P) {   // @internal — driven by its test with a run
   const records = new Map();
   for (const r of placedUriRows(P)) records.set(String(r.uri).toLowerCase(), `placed:${r.tier ?? ""}`);
   const groups = new Map();
-  for (const d of standingPlacementDecisions(P)) {
+  // The re-rank count runs inside the delivery loop, and a run always delivers: here a refusal counts no decision, and
+  // the writer's own message, which reads the same decisions, is where it is refused.
+  let decisions = [];
+  try { decisions = standingPlacementDecisions(P); } catch { decisions = []; }
+  for (const d of decisions) {
     if (d.kind === "group") groups.set(d.group, { key: `${d.ground}|${d.covers_lines}|${d.covered_lines_hash}`, records: d.records });
     else records.set(String(d.record).toLowerCase(), `set aside${d.on ? ` on its ${d.on}` : ""}: ${d.ground}`);
   }

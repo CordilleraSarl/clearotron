@@ -146,13 +146,16 @@ export function accountedUris(model, owed = []) {
  * THE SHEET-2 ROWS THE DRIVER WRITES. A sheet-2 entry is adopted as placement placed it: one row, on the entry's first
  * live record (else its first), carrying placement's reason word for word, with verify "yes" because nothing has checked
  * it against the live register. An entry the write-up overrode gets none: any row of its own naming any of the entry's
- * records, or a disagreement resolution naming one, is its ending instead. An entry whose record the band does not
- * hold gets none. PURE.
+ * records, or an OVERRODE resolution naming one, is its ending instead. An ADOPTED resolution keeps placement's
+ * placement, so the entry keeps its row: counting it as an ending rendered an adoption exactly as an override, and
+ * kept entries vanished from the table the writer is owed from. An entry whose record the band does not hold gets
+ * none. PURE.
  */
 export function adoptedRows(model, facts = emptyFacts()) {
   const adopt = Array.isArray(facts?.adopt) ? facts.adopt : [];
   if (!adopt.length) return [];
-  const named = accountedUris(model, adopt.flatMap((e) => e.uris));
+  const overrides = { ...model, disagreement_resolutions: (model?.disagreement_resolutions ?? []).filter((d) => d?.decision !== "ADOPTED") };
+  const named = accountedUris(overrides, adopt.flatMap((e) => e.uris));
   const out = [];
   for (const e of adopt) {
     if (e.uris.some((u) => named.has(u))) continue;

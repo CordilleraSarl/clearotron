@@ -317,8 +317,10 @@ export function sweepStaleCodexHomes(root, { now = Date.now(), alive = processAl
   for (const e of entries) {
     if (!e.isDirectory() || !/^(?:stage|turn)-/.test(e.name)) continue;
     const dir = join(root, e.name);
-    if (OWNED.has(dir)) continue;
-    const maker = e.name.match(MAKER_RE);
+    // A home's working folder is judged by its home's name, and goes when its home's maker has ended.
+    const home = e.name.endsWith(WORK_SUFFIX) ? e.name.slice(0, -WORK_SUFFIX.length) : e.name;
+    if (OWNED.has(join(root, home))) continue;
+    const maker = home.match(MAKER_RE);
     let stale;
     if (maker) stale = Number(maker[1]) !== process.pid && !alive(Number(maker[1]));
     else { try { stale = now - statSync(dir).mtimeMs > STALE_UNMARKED_MS; } catch { stale = false; } }
@@ -329,7 +331,7 @@ export function sweepStaleCodexHomes(root, { now = Date.now(), alive = processAl
 }
 
 const removeOwned = () => {
-  for (const dir of OWNED) { try { rmSync(dir, { recursive: true, force: true }); } catch { /* best-effort */ } }
+  for (const dir of OWNED) for (const d of [dir, workFolderOf(dir)]) { try { rmSync(d, { recursive: true, force: true }); } catch { /* best-effort */ } }
   OWNED.clear();
 };
 
@@ -363,12 +365,45 @@ export function makeCodexHome(prefix) {
   return dir;
 }
 
-/** Remove a home this process made. Best-effort: never throws. */
+/** Remove a home this process made, and its working folder. Best-effort: never throws. */
 export function releaseCodexHome(dir) {
   if (!dir) return;
   OWNED.delete(dir);
-  try { rmSync(dir, { recursive: true, force: true }); } catch { /* best-effort */ }
+  for (const d of [dir, workFolderOf(dir)]) { try { rmSync(d, { recursive: true, force: true }); } catch { /* best-effort */ } }
 }
+
+// ── A STAGE'S TEMPORARY FILES ARE ITS OWN ─────────────────────────────────────────────────────────────
+//
+// The stage's profile granted the account's temp folder and `/tmp`, both shared by every stage of every run on
+// the machine, and nothing removed what a stage left there. In a test run of a crowded matter, 2026-10-27, the
+// writer's commands found and read the working notes, a state file with ratings, and a families file that an
+// earlier run's writer had left in `/tmp` the day before. A run must read nothing from another run.
+//
+// So each home has one working folder of its own, beside it and never inside it (the home holds the sign-in,
+// which the profile never names). The turn's TMPDIR, TMP and TEMP name it, and the profile grants it in place
+// of the shared folders. It lives as long as its home: a stage's ladder shares one home across its attempts,
+// its warm resumes and its repair turns, so they keep the notes they made, and the folder goes when the ladder
+// settles. A home whose maker has ended takes its working folder with it in the sweep.
+const WORK_SUFFIX = ".work";
+/** The working folder of a Codex home. PURE. */
+export const workFolderOf = (home) => `${home}${WORK_SUFFIX}`;
+/** Make a home's working folder if it is not there yet, private to the account. Returns its path. */
+export function ensureWorkFolder(home) {
+  const dir = workFolderOf(home);
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  return dir;
+}
+/** The turn's environment with every temp-folder name pointing at the home's working folder. PURE. */
+export function withWorkFolder(env, dir) {
+  return { ...env, TMPDIR: dir, TMP: dir, TEMP: dir };
+}
+
+// WHAT THE MODEL IS TOLD, as the design ruling of 2026-10-27 approved it (its section on isolation). It describes the
+// mechanism and replaces nothing: the profile is what keeps another run's files out of reach. Codex alone carries it,
+// since only a Codex stage runs commands and only a Codex turn has a working folder of its own.
+export const TEMP_FOLDER_RULE = "Keep temporary working files in the directory given by TMPDIR. Use only this run's supplied evidence and accepted work.";
+/** The instructions every Codex turn carries: the output rule, then the temp-folder rule. */
+export const CODEX_DEVELOPER_INSTRUCTIONS = `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`;
 
 /**
  * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
@@ -884,7 +919,10 @@ export const openaiAgentEngine = {
     let authMaster = null, seeded = null;
     try {
       // Auth toggle (may throw loud on api-key-without-key — a config error, not a retryable failure).
-      const { env, mode } = spawnEnv(process.env, codexHome);
+      const { env: baseEnv, mode } = spawnEnv(process.env, codexHome);
+      // The home's own working folder, as the turn's temp folder, with the sandbox on or off.
+      const workDir = ensureWorkFolder(codexHome);
+      const env = withWorkFolder(baseEnv, workDir);
       if (mode === "subscription") {
         const af = authFilePath(process.env);
         if (!existsSync(af))
@@ -906,16 +944,17 @@ export const openaiAgentEngine = {
       // backstop if a tool consumes the lot.
       //
       // — the fence: with the sandbox on, the stage's commands read only the instruction trees, the run
-      // folder and the temp folders (codex-config.mjs, `fenceToml`). The same roots claude's file tools get.
+      // folder and the home's working folder (codex-config.mjs, `fenceToml`). The same roots claude's file
+      // tools get, and a working folder claude needs none of, since no claude stage runs a command.
       //
       // — what those commands inherit: none of the register and research keys the program holds for its
       // tool servers, and not the Codex key (engine-env.mjs, `codexCommandWithheld`), with codex's shell
       // snapshot off because it replays them (codex-config.mjs, `commandEnvToml`). With the sandbox on or
       // off, since the bypass builds no fence and a command could otherwise print them.
       const fence = codexSandboxBypassed() ? null
-        : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
+        : { runDir, workDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: CODEX_DEVELOPER_INSTRUCTIONS, toolTimeoutSec: timeoutSec, fence,
           withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);

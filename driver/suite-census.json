@@ -915,6 +915,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-kept-sheet-two-entry-keeps-its-row.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-key-pasted-at-a-yes-no-prompt-is-taken-and-not-shown.test.mjs": {
           "tests": 6,
           "asserts": 31,
@@ -1038,6 +1044,12 @@
         "a-link-in-the-workbook-is-not-banned-vocabulary.test.mjs": {
           "tests": 2,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-live-finding-sharing-a-withdrawn-ones-mark-and-owner-is-not-it-back.test.mjs": {
+          "tests": 4,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
@@ -1689,6 +1701,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-replayed-arm-answers-its-research-from-the-run.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
           "tests": 6,
           "asserts": 17,
@@ -1740,6 +1758,12 @@
         "a-run-asks-signa-each-question-once.test.mjs": {
           "tests": 19,
           "asserts": 86,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-reads-nothing-another-run-left-in-the-temp-folder.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -2031,6 +2055,18 @@
           "skips": 1,
           "todos": 0
         },
+        "a-stopped-writer-attempt-keeps-what-it-saved.test.mjs": {
+          "tests": 5,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stopped-writer-attempt-resumes-from-what-it-saved.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-store-from-before-the-rename-still-loads.test.mjs": {
           "tests": 11,
           "asserts": 33,
@@ -2105,6 +2141,12 @@
         },
         "a-timer-is-asked-about-as-a-timer.test.mjs": {
           "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-tool-serves-only-its-own-runs-files.test.mjs": {
+          "tests": 4,
           "asserts": 17,
           "skips": 0,
           "todos": 0
@@ -2298,6 +2340,12 @@
         "a-write-up-list-the-goods-source-cannot-reach-says-so.test.mjs": {
           "tests": 2,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-writer-is-told-placements-set-asides-or-refuses.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -3851,7 +3899,7 @@
         },
         "every-model-stage-is-handed-the-instruction-files-it-declares.test.mjs": {
           "tests": 8,
-          "asserts": 17,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4787,7 +4835,7 @@
         },
         "placements-orders-reach-placement-alone.test.mjs": {
           "tests": 2,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -7494,6 +7542,12 @@
         "the-writer-owes-positions-not-records.test.mjs": {
           "tests": 6,
           "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-writer-writes-from-the-work-it-is-handed.test.mjs": {
+          "tests": 8,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },

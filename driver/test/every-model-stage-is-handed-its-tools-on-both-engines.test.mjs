@@ -42,6 +42,7 @@ const { STAGES, composeFollowup, REGISTER_ENUMERATE_TOOL } = await import("../st
 const { KO_STAGES } = await import("../stages-knockout.mjs");
 const { toolGroupsForStage, allowedToolsFor, RECORDING_TOOLS } = await import("../engine/mcp/gather-config.mjs");
 const { WRITE_DISCIPLINE } = await import("../engine/common.mjs");
+const { CODEX_DEVELOPER_INSTRUCTIONS } = await import("../engine/openai-agent.mjs");   // the output rule, then the temp-folder rule
 const { DRIVER, everyModelStageDispatch, everyDispatchedLabel, baseOf } = await import("./model-stage-dispatches.mjs");
 
 function withEnv(env, fn) {
@@ -177,7 +178,7 @@ test("codex: every stage's program is handed, per server, exactly the tools it m
     const webFetch = expectedGrant(label).includes("WebFetch");
     if (webFetch !== Boolean(got.fetch)) wrong.push(`${label}: the page fetcher is ${got.fetch ? "mounted without" : "missing despite"} a WebFetch grant`);
     const line = String(call.configToml).split("\n").find((l) => l.startsWith("developer_instructions = "));
-    if (!line || JSON.parse(line.slice("developer_instructions = ".length)) !== WRITE_DISCIPLINE) wrong.push(`${label}: the system-level instruction is not the developer instructions`);
+    if (!line || JSON.parse(line.slice("developer_instructions = ".length)) !== CODEX_DEVELOPER_INSTRUCTIONS) wrong.push(`${label}: the system-level instruction is not the developer instructions`);
   }
   assert.deepEqual(wrong, []);
 });

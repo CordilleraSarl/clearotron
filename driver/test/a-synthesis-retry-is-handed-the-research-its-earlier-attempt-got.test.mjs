@@ -48,18 +48,18 @@ test("a retry is handed the answers: a file with one question and its answer per
   keepResearchAnswer(runDir, { session: KEY, task: ask("Example Holdings"), text: LONG });
   keepResearchAnswer(runDir, { session: `${KEY}-rerun1`, task: ask("Sample Trading", "QZORVEN"), text: "No result: no page shows Sample Trading using QZORVEN.\n\n---\n_Research metadata: Depth: pro-search_" });
   keepResearchAnswer(runDir, { session: KEY, task: ask("Broken Answer Co"), text: "ERROR: Research failed — 429" });
-  keepResearchAnswer(runDir, { session: `clearance-${RUN.slug}-${RUN.codename}-common-law-half-a`, task: ask("Other Stage Co"), text: "another stage's answer" });
+  keepResearchAnswer(runDir, { session: `clearance-${RUN.slug}-${RUN.codename}-common-law-half-a`, task: ask("Other Stage Co"), text: "another stage's answer, which the writer is handed too" });
 
   const text = messageOf(ctx);
-  const block = "RESEARCH THIS RUN HAS ALREADY ANSWERED: an earlier attempt of this stage asked 2 questions and got their answers. "
+  const block = "RESEARCH THIS RUN HAS ALREADY ANSWERED: earlier stages or attempts of this run asked 3 questions and got their answers. "
     + "They are in research-answers.md, one question and its answer per line. Before you ask about a finding's owner and mark, search that file "
-    + "for the owner's name with search_run_artifacts. Where one of them asked about that owner and mark for the same field and country, use its "
+    + "for the owner's name with search_run_artifacts. Where one of them answers the same owner, mark, goods, territory and material time question, use its "
     + "answer as that finding's check, cite its URL and record it as you would a fresh one; ask only what none of them covers.";
   assert.ok(text.endsWith(`\n${block}`), `the block is not the message's last line:\n${text.slice(-700)}`);
   assert.equal(refreshedOf(ctx), text, "a fresh retry is not handed the same");
 
   const lines = readFileSync(join(runDir, RESEARCH_ANSWERS_MD), "utf8").split("\n").filter(Boolean);
-  assert.equal(lines.length, 2, "a failed call or another stage's answer was handed on, or an answer was lost");
+  assert.equal(lines.length, 3, "a failed call was handed on, an answer was lost, or another stage's answer was not handed on");
   assert.equal(lines[0], `Question 1: ${ask("Example Holdings")} Answer 1: ${LONG.replace(/\s*\n\s*/g, " ")}`);
   assert.match(lines[1], /^Question 2: .*QZORVEN.* Answer 2: No result: no page shows Sample Trading using QZORVEN\. --- _Research metadata: Depth: pro-search_$/);
 });
@@ -67,7 +67,7 @@ test("a retry is handed the answers: a file with one question and its answer per
 test("one saved answer is told in the singular", (t) => {
   const { runDir, ctx } = runFolder(t);
   keepResearchAnswer(runDir, { session: KEY, task: ask("Example Holdings"), text: "Yes: https://example.com/qzorva" });
-  assert.match(messageOf(ctx), /an earlier attempt of this stage asked 1 question and got its answer\. They are in research-answers\.md, one question and its answer per line\./);
+  assert.match(messageOf(ctx), /earlier stages or attempts of this run asked 1 question and got its answer\. They are in research-answers\.md, one question and its answer per line\./);
 });
 
 test("the artifact search hands back a whole answer line from the answers file, and still cuts other files' lines", (t) => {

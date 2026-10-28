@@ -16,7 +16,7 @@
 
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
-import { researchAnsweredBlock } from "./research-answers.mjs";   // the research an earlier attempt got, handed to a later one
+import { researchAnsweredBlock } from "./research-answers.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
@@ -3099,7 +3099,7 @@ export const STAGES = {
         why: "THE SECOND frame_scope_missing. The driver holds the value in _driver/framework.json, writes it into the dispatch, asks the model to retype it, and fails the file when the retyping does not match its own copy. The audit table groups it under the tool-written envelope row; pre-bound is the sharper discharge and either removes it from the model",
       },
     },
-    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth, placementSetAsides, researchAnswered }) => lines(
+    message: ({ paths: P, job, customerUnknown, profile, intakeAsks, enforcerSignals, framework, frameworkMethod, jxAim, registerOnly, crowdContext, dispatchBlocks, findingsSurface, depth, placementSetAsides, researchAnswered, savedSynthesis }) => lines(
       // C4 — pharma matters (class 5 / pharma-shaped goods) FORCE-READ the field module: the
       // therapeutic-goods discipline, no-use ≠ safety (pipelines run 5-10y), practitioner/pharmacist
       // confusion. Conditional read (frameworkFor pattern); doctrine TABLES live elsewhere, untouched.
@@ -3122,7 +3122,7 @@ export const STAGES = {
       // WS2 (spec 11) — ENFORCED, not advisory: validators.narrative HARD-REJECTS this file if a
       // use-dependent finding above the framework's lowest band asserts a use-negative without a searched
       // source line. So actually run the query.
-      `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). After the search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant, "owner's use unknown"), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) and END that finding's actual-use line with a literal "- **Use-check source:** <result URL | "perplexity_research — no result">" line. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. On a perplexity outage write "- **Use-check source:** perplexity_research — no result" and proceed (the run still delivers). ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"} — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
+      `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). ${USE_CHECK_ANSWERS_HELD} After the search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant, "owner's use unknown"), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and END that finding's actual-use line with a literal "- **Use-check source:** <result URL | "perplexity_research — no result">" line. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. On a perplexity outage write "- **Use-check source:** perplexity_research — no result" and proceed (the run still delivers). ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"} — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
       // Spec-v3 A4 — ENFORCED the same way (validators.narrative): own-rights reliance needs its evidence.
       // PR-8 review fix: synthesis holds the FROZEN band, not the live register — and the band is class-
       // and mark-text-scoped to this matter's dispatched slices, so the client's OWN house-mark
@@ -3150,7 +3150,7 @@ export const STAGES = {
       // (house-brand attachment / seasonality / scale). Context, never a rule that decides a finding.
       job?.campaignShape ? `Stated campaign shape (verbatim from intake — how the mark will be deployed; facts, not judgment): ${job.campaignShape}` : "",
       `Inputs: register findings ${P.registerFindings}${registerOnly ? "" : `; common-law ${P.commonLaw}`}; placements ${P.placement} (structured tiers + reasons: ${P.placementModel}); matter frame ${P.matterContext}; manifest ${P.variantManifest}.`,
-      placementSetAsideBlock(placementSetAsides),
+      placementSetAsideBlock(placementSetAsides), WRITER_STARTS_FROM_THE_WORK, WRITER_RECORDS_AS_IT_GOES,
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
       `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
       PLACEMENT_BORDERLINE_NOTE,
@@ -3208,8 +3208,8 @@ export const STAGES = {
       // judgment-relocation (2026-06-23): you are Layer B — the ONE judgment layer. The funnel ENUMERATED the
       // dangerous named band or reported HONEST INCOMPLETENESS; you read the complete material and decide
       // relevance, risk, sufficiency and prioritisation. PR-8: the reading goes through the band tools
-      // (shape whole + logged lookups) — nothing was sampled away upstream, and nothing is sliced by hand.
-      BAND_READING_CONTRACT_AFTER_PLACEMENT,
+      // (logged lookups, as an assessment needs them) — nothing was sampled away upstream, nothing sliced by hand.
+      BAND_READING_CONTRACT_FOR_THE_WRITER,
       // PR-8: synthesis holds NO live register tools — by design, never an outage. The funnel owns
       // enumeration; a register check this stage still wants is either answerable from the frozen
       // material (the band tools) or it is NEW SEARCH WORK, which enters only through the supplemental
@@ -3438,13 +3438,13 @@ export const STAGES = {
       // MEANS — the net contract, the band contract, the meters, the disposition logic, the voice
       // rules. What goes is the seat formatting them into a file for the driver to read back.
       `RECORD YOUR WORK WITH \`record_synthesis\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders both the narrative and the findings record from what you send. You hold no Write or Edit tool for either and nothing you write by hand is read.`,
-      `WHAT THE CALL TAKES. \`narrative\`: your CROSS-FINDING read as sections — \`spine\` (the dominant-element spine), \`verdict\` (what the findings together mean for this client), \`coverage.read\` (the honest coverage prose) and \`calibration\` ([{challenge, answer}]). \`findings\`: the findings document exactly as specified above — schema_version, rated_under_framework, findings[], coverage[], ask_answers[] and the top-level registers. It is the same values it always was; it arrives on the call instead of as a file you write.`,
+      `WHAT THE CALL TAKES. \`narrative\`: your CROSS-FINDING read as sections — \`spine\` (the dominant-element spine), \`verdict\` (what the findings together mean for this client), \`coverage.read\` (the honest coverage prose) and \`calibration\` ([{challenge, answer}]). \`findings\`: the findings document exactly as specified above — schema_version, rated_under_framework, findings[], coverage[], ask_answers[] and the top-level registers. It is the same values it always was; it arrives on the call instead of as a file you write. \`save_findings\`: a finding you have completed, alone or a few at a time, saved before the whole record exists; each is checked as the record checks a finding and kept as soon as it passes, and the call carrying \`narrative\` with \`findings\` takes every saved finding for a position it does not carry.`,
       `THE PER-FINDING WRITE-UPS ARE NOT A FIELD, and that is a ruling rather than an omission: the report card holds the single authored wording for a finding and the typed fields carry the reads it is written from. Do not restate a finding's reasoning in the narrative sections — the spine is what the findings mean TOGETHER, which is the read no other artifact on this run holds.`,
       `COVERAGE ROWS AND ASK ANSWERS ARE SENT ONCE, ON THE RECORD, AND THE DRIVER RENDERS THEM INTO THE NARRATIVE TOO. Do not repeat them as narrative sections — a second authored copy is refused, because two copies of one statement can disagree and it is the record's copy that ships to the report, the workbook and the portal.`,
       `YOUR COVERAGE ROWS ARE JOINED TO THIS RUN'S PLAN-EXECUTION RECEIPT AS YOU SEND THEM. \`confirmed-clean\` asserts a search ran and came back empty, so a confirmed-clean row naming a slice the receipt does not record as executed is REFUSED — in this turn, where restating it costs nothing, rather than at a gate whose only repair is re-asking this whole stage. Name the area as the receipt names the slice. The honest alternatives are \`coverage-limited\` and \`not-searched\`, and neither is a worse answer than a clean claim that is not true.`,
       // THE RESEARCH AN EARLIER ATTEMPT GOT, handed on as a file (research-answers.mjs). Last, and absent on a first
       // attempt, whose message is unchanged.
-      researchAnsweredBlock(researchAnswered),
+      researchAnsweredBlock(researchAnswered), savedFindingsBlock(savedSynthesis),
     ),
     // A FRESH RETRY IS REBUILT, so it is handed the research its earlier attempts got. Nothing else in this stage's
     // context changes between attempts: the findings surface and its positions are frozen for the stage, and placement's
@@ -4831,3 +4831,31 @@ export const REFUTATION_RECORDING_LINES = Object.freeze([
   `TYPE EACH CORRECTION: \`kind\` is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest), fact (a factual defect — record values, owners, statuses, dates, grounding), rating (a band/rating you challenge), narrative (prose, structure or voice of the narrative). DECLARE the kind from what the correction is about, never from how severe it is.`,
   `A BLOCKING verdict REQUIRES at least one flag. A refusal to sign that names nothing is refused by the call itself, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.`,
 ]);
+
+// ── THE WRITER WRITES FROM THE WORK IT IS HANDED (ruled 2026-10-27) ─────────────────────────────────────────────────
+//
+// On a test run of a crowded matter the writer's second try made 1,095 record reads of 707 distinct records and 117
+// web research calls, and recorded nothing before its time ran out. It was re-reading the matter from the start: the
+// band's shape, then each position's records one by one, then the owners. The steps before it had already settled
+// relevance and kept the evidence. So the writer starts from that work: it inherits supported decisions, completes the
+// assessment that is its own, and reads or searches further only where the evidence it holds does not answer a
+// question. Its duties do not change: the ratings, the cross-finding read and the required checks stay with it.
+export const WRITER_STARTS_FROM_THE_WORK = lines(
+  "Start from the retained entries, the recorded decisions, and the evidence this run already holds. Use completed work in your judgment and write what the findings mean together for this client. Complete the legal and practical assessment that remains yours under the framework.",
+  "Reopen a settled decision only for identified contrary evidence or an identified error in its reasoning. Complete an outstanding required question from the evidence already held; read or search further only where that evidence does not answer it. Do not repeat the investigation because a new stage or attempt has started.",
+  "Assess each retained position on its relevant evidence. A list of its constituent records does not require you to open every record. Open an additional record when a difference in its goods, status, priority, territory, identity, or other material evidence could change the assessment and the supplied evidence does not resolve it. Missing or incomplete evidence does not establish an exclusion or a clean result.",
+);
+// The band as the writer is told of it: what the tools are for, never a read it owes. The contract the steps before it
+// read begins "call `band_shape` FIRST" and says each part of a large shape names the next call. The standards that
+// contract sets for any reading are kept word for word, cut from it so the two cannot drift apart. The name keeps
+// "BAND_READING_CONTRACT" in it: the stages that read the band are found by it (BAND_READING_STAGES, band-size.mjs).
+export const BAND_READING_STANDARDS = BAND_READING_CONTRACT.slice(BAND_READING_CONTRACT.indexOf("A crowd descriptor is an open slice"));
+export const BAND_READING_CONTRACT_FOR_THE_WRITER = "THE REGISTER BAND: Use the band tools (`band_shape`, `band_lookup`, `band_record`) when a specific assessment needs evidence beyond the material handed to you. The available groups and pages are ways to find that evidence, not a list you must read to completion. "
+  + BAND_READING_STANDARDS;
+// An answer the run already holds can be a finding's check (ruled 2026-10-27): a use-check source needs evidence, not
+// a fresh call. The triggers are unchanged. Step 3.5 of phase2-execution.md carries the same words.
+export const USE_CHECK_ANSWERS_HELD = "Apply the existing triggers for actual-use, enforcement, and owner checks after the relevant legal assessment. First use a suitable answer already held by this run, including an earlier stage or attempt, where it answers the same owner, mark, goods, territory, and material time question. A source requirement is not a requirement for a new call. One answer may support several findings only where it answers each finding's question. Ask only what remains unanswered and record the result against every finding it supports.";
+// Saving as it goes (ruled 2026-10-27): a try that is stopped keeps the findings and exclusions it accepted, and the
+// next try continues from them. Exclusions already go through record_declination in batches; record_synthesis takes
+// a part of the findings before the whole document exists.
+export const WRITER_RECORDS_AS_IT_GOES = "Record completed findings (`record_synthesis`) and exclusions (`record_declination`) as you complete them, individually or in small groups; do not wait for the whole report. On a resumed attempt, continue from this run's accepted work and complete what remains. Revise accepted work only for identified contrary evidence, a reasoning error, or an applicable change in the instructions. Finish the overall conclusions against the complete set before declaring the assessment complete.";

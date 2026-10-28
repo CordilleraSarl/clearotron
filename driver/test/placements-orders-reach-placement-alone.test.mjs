@@ -17,9 +17,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { SORT_THE_NEAR_ONES, ONE_SET_ASIDE_ROW, A_FATE_BY_NAME, PLACEMENT_GROUP_ORDERS } from "../band-shape.mjs";
+import { SORT_THE_NEAR_ONES, ONE_SET_ASIDE_ROW, A_FATE_BY_NAME, PLACEMENT_GROUP_ORDERS, READ_THEM_ALL } from "../band-shape.mjs";
 import { STAGES, paths, BAND_READING_STAGES, GROUP_READING_STAGES, BAND_READING_CONTRACT,
-  BAND_READING_CONTRACT_AFTER_PLACEMENT, FLOOR_FATE_ORDER } from "../stages.mjs";
+  BAND_READING_CONTRACT_AFTER_PLACEMENT, BAND_READING_CONTRACT_FOR_THE_WRITER, FLOOR_FATE_ORDER } from "../stages.mjs";
 
 const SERVER = fileURLToPath(new URL("../engine/mcp/band-server.mjs", import.meta.url));
 const SENTENCES = { "sort the near ones": SORT_THE_NEAR_ONES, "one set-aside row": ONE_SET_ASIDE_ROW,
@@ -98,17 +98,19 @@ test("placement reads the shape and the contract exactly as before; the others, 
   const placement = await shapeServed(dir, true);
   const other = await shapeServed(dir, false);
   assert.equal(placement, SHAPE_MD, "placement's shape changed");
-  assert.equal(other, SHAPE_MD.split(` ${SORT_THE_NEAR_ONES}`).join("").split(` ${ONE_SET_ASIDE_ROW}`).join("").split(` ${A_FATE_BY_NAME}`).join(""),
-    "the other stages' shape lost more than the three orders, or kept one");
+  assert.equal(other, SHAPE_MD.split(` ${SORT_THE_NEAR_ONES}`).join("").split(` ${ONE_SET_ASIDE_ROW}`).join("").split(` ${A_FATE_BY_NAME}`).join("")
+    .split(` ${READ_THEM_ALL}`).join(""), "the other stages' shape lost more than the three orders and the order to read, or kept one");
   // No line moves, so the line each listed mark is printed on still holds for the reading audit.
   assert.equal(other.split("\n").length, placement.split("\n").length);
   assert.ok(other.includes("120 records in 64 lines from 60 owners.\n"), "a count lost its full stop or kept a trailing space");
-  assert.ok(other.includes("Fifty? Read them all. A floor here is placed"), "the sentences either side of an order were not rejoined by one space");
+  assert.ok(other.includes("from 2 owners.** A floor here is placed"), "the sentences either side of an order were not rejoined by one space");
 
   const P = paths(dir);
   const message = (stage) => String(STAGES[stage].message({ paths: P, axes: ["primary-sweep"], registerOnly: true, job: {} }));
   assert.ok(message("placement-inquiry").includes(BAND_READING_CONTRACT), "placement's contract changed");
-  for (const stage of ["register-digest", "synthesis"]) assert.ok(message(stage).includes(BAND_READING_CONTRACT_AFTER_PLACEMENT));
+  assert.ok(message("register-digest").includes(BAND_READING_CONTRACT_AFTER_PLACEMENT), "the digest's contract changed");
+  assert.ok(message("synthesis").includes(BAND_READING_CONTRACT_FOR_THE_WRITER) && !message("synthesis").includes(BAND_READING_CONTRACT_AFTER_PLACEMENT),
+    "the writer is still told to read the band before it writes");
   assert.equal(BAND_READING_CONTRACT.replace(` ${FLOOR_FATE_ORDER}`, ""), BAND_READING_CONTRACT_AFTER_PLACEMENT);
   assert.notEqual(BAND_READING_CONTRACT, BAND_READING_CONTRACT_AFTER_PLACEMENT, "the floor order is no longer in the contract to remove");
   assert.equal(PLACEMENT_GROUP_ORDERS.length, 3);

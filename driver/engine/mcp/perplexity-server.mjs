@@ -29,7 +29,8 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 // What stays is the GRID path's own need — the obligations sidecar written beside the grid's ledger.
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
-import { keepResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage
+import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
+import { keepResearchAnswer, researchReplayOn, savedResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage; a replay answers from them
 
 const API_KEY = process.env.PERPLEXITY_API_KEY || "";
 
@@ -219,14 +220,21 @@ function judgeBlock(cands, part, gridSpecPath, reserve = 0) {
 }
 
 async function research(params) {
+  // A REPLAY SENDS NOTHING OUT, so it is answered before the key is asked for: an offline replay needs none.
+  if (researchReplayOn(RUN_DIR)) return replayResearch(params);
   if (!API_KEY) return "ERROR: PERPLEXITY_API_KEY not set — marketplace research unavailable.";
   const { task, depth, model: modelOverride, allow_fetch = false, domain_filter, enable_sandbox = false, response_schema, schema_name, grid_spec_path, part } = params;
 
   // ── Deterministic grid mode: the caller dictates the cells; the tool runs + captures them. ──
   if (grid_spec_path) {
+    // THIS RUN'S SPEC, WRITING THIS RUN'S LEDGER: a spec, or a ledger it names, in another run's folder is never served.
+    if (RUN_DIR && !insideRun(RUN_DIR, grid_spec_path))
+      return "ERROR: grid_spec_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.";
     let spec;
     try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
+    if (RUN_DIR && !insideRun(RUN_DIR, spec.output_path))
+      return requiredLedgerRefusal("ERROR: the grid spec's output_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.", { spec, gridSpecPath: grid_spec_path });
     if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
       return requiredLedgerRefusal(`ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}`, { spec, gridSpecPath: grid_spec_path });
     // — already recorded and complete? Answer from the ledger; do not buy the grid twice. This is also
@@ -307,6 +315,26 @@ async function research(params) {
     logCall("perplexity_research", asked, { ok: false, error: String(err?.message ?? err).slice(0, 200) });
     return `ERROR: Research failed — ${err.message}${err?.cause ? ` (${err.cause.code || err.cause.name || err.cause})` : ""}`;
   }
+}
+
+// ── A REPLAY: THE RUN'S OWN ANSWER, OR NOTHING ─────────────────────────────────────────────────────────
+//
+// In the experiment sandbox under `--research replay` (research-answers.mjs), a question the run already asked
+// gets the answer the run got, and any other question, a grid among them, is refused: nothing goes out to the
+// research service. Both are logged as a lookup is, marked as a replay, so the arm's reading log says which.
+function replayResearch(params) {
+  const { task, grid_spec_path } = params ?? {};
+  if (grid_spec_path) {
+    logCall("perplexity_research", { task: task ?? "", grid: true, replay: true }, { ok: false, error: "replay: grid not replayed" });
+    return "ERROR: replay — this replays the run's saved research answers and runs no grid; nothing was sent to the research service.";
+  }
+  const saved = savedResearchAnswer(RUN_DIR, task);
+  if (!saved) {
+    logCall("perplexity_research", { task: task ?? "", replay: true }, { ok: false, error: "replay: no saved answer" });
+    return "ERROR: replay — the run asked no question worded exactly like this one, so there is no saved answer to give; nothing was sent to the research service.";
+  }
+  logCall("perplexity_research", { task, replay: true }, { ok: true, bytes: saved.text.length, replayed: true });
+  return saved.text;
 }
 
 serve({
