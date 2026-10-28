@@ -28,7 +28,8 @@ import { fallbackNoteFor } from "./numeric-setting.mjs";   // — the one allowe
 import { preflightSkillsStore } from "./skills-store-provenance.mjs";   // — the doctrine this run will be rated under must be reproducible
 import { engineProvenance } from "./engine-build.mjs";                  // — …and which engine loaded it, at run START
 import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
-import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
+import { codexSandboxBypassed } from "./engine/openai-agent.mjs";
+import { RECORDS_MODES, savedRecordFetch, heldRegisterCredentials } from "./record-replay.mjs";   // an offline resume answers a record fetch from the run's own records        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
@@ -9933,6 +9934,16 @@ async function pipelineInner(job, opts = {}) {
   // credential its lane never uses, and failed before any run dir existed.
   const jobPolicy = policyFor(String(job.product ?? "").trim().toLowerCase());
   const koSelector = jobPolicy?.pipeline === "knockout";
+  // AN OFFLINE RESUME ANSWERS ITS RECORD FETCHES FROM THE RUN'S OWN RECORDS (`--records replay`, record-replay.mjs), so
+  // it needs no register key and refuses to start while one is set: a stage's register tools read the same key.
+  if (opts.records != null && !RECORDS_MODES.includes(opts.records))
+    throw new Error(`--records: unknown value "${opts.records}" — one of: ${RECORDS_MODES.join(", ")}`);
+  if (opts.records === "replay") {
+    const held = heldRegisterCredentials(activeProvider());
+    if (held.length)
+      throw new Error(`--records replay: ${held.join(" + ")} is set, so a stage's register tools could still reach the register — unset it for this resume, which answers every record fetch from the run's own records`);
+    opts.recordFetcher ??= (uri) => savedRecordFetch(opts.__runRef?.runDir, uri);
+  }
   if (!opts.recordFetcher && !koSelector) preflightCredentials();
   // -6 — and the RESEARCH credential, for the products that cannot deliver their answer without it.
   //
@@ -9999,6 +10010,7 @@ async function pipelineInner(job, opts = {}) {
   const run = buildRunContext(job, { studioRoot: opts.studioRoot, archiveRoot: opts.archiveRoot, codename: opts.codename, date: resumeDate });
   opts.__runRef = run;   // expose the run identity so pipeline()'s rate-limit catch can postpone+resume it
   const P = paths(run.runDir);
+  if (opts.records === "replay") runLog(run.runDir, { event: "records-replay", why: "every record fetch is answered from this run's saved records; nothing is sent to the register" });
 
   // RESUME guard: refuse to clobber a delivered run, and clear the stale .failed sentinel so a clean resume
   // doesn't read as failed. (Fresh runs — including minted dispatches — never enter here.)
@@ -18743,7 +18755,7 @@ function parseArgv(argv) {
   const o = {};
   const flags = { "--job": "job", "--agent": "agent", "--resume": "codename", "--from": "fromStage",
     "--experiment": "experiment", "--model": "model", "--instructions": "instructions",
-    "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger", "--research": "research" };
+    "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger", "--research": "research", "--records": "records" };
   for (let i = 0; i < argv.length; i++) {
     const key = flags[argv[i]];
     if (!key) {
@@ -18910,7 +18922,7 @@ export function resumeAdvice({ result = null, error = null, signal = null, scrip
 }
 
 const USAGE = "usage: node pipeline.mjs --job <file.json> [--agent <id>]\n" +
-  "       [--resume <codename> [--from <stage>]]\n" +
+  "       [--resume <codename> [--from <stage>] [--records live|replay]]\n" +
   "       [--resume <codename> --experiment <stage> [--model <id>] [--instructions <text>] [--axis <axis>] [--label <text>] [--dispatch-trigger <t>] [--research live|replay]]\n" +
   "  --instructions appends to a stage's prompt (a light tweak); a full prompt rewrite means editing the stage's skill file.\n" +
   "  --axis also names the ORDINAL for report-card (its dispatch label is report-card:<ordinal>).\n" +
@@ -18960,6 +18972,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   if (a.fromStage && !a.codename) { console.error("error: --from requires --resume <codename>"); process.exit(2); }
   if (a.experiment && !a.codename) { console.error("error: --experiment requires --resume <codename>"); process.exit(2); }
   if ((a.model || a.instructions || a.dispatchTrigger) && !a.experiment) { console.error("error: --model/--instructions/--dispatch-trigger apply only to --experiment"); process.exit(2); }
+  if (a.records && (!a.codename || a.experiment)) { console.error("error: --records applies only to --resume <codename>, without --experiment"); process.exit(2); }
 
   // — SAY IT BEFORE THE RUN, NOT AFTER IT. `config.poolRoot` now refuses when CLEAROTRON_REPORTS_DIR is
   // unset, but the first thing that touches it is the publish step, so a first run on an unconfigured
@@ -19027,7 +19040,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research }
-    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
+    : { ...base, codename: a.codename, fromStage: a.fromStage, records: a.records, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
