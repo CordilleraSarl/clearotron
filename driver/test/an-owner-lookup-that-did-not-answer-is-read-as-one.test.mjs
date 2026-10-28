@@ -10,14 +10,14 @@
 // answer, and on every owner when no research key is set: a lookup that did not answer, which is a
 // different fact from one that found nothing. The line now says so.
 //
-// The report's source line for such a row is unchanged: it prints the lane's literal for a lookup with
-// no answer, as ruled 2026-09-07. The marks and owners are invented.
+// The report's line for such a row says the use check was unavailable, in the owner's words (2026-10-28), where it
+// printed the lane's no-result literal. The marks and owners are invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { runOwnerChecks, composeOwnerQuery, NO_RESULT } from "../owner-use-check.mjs";
+import { runOwnerChecks, composeOwnerQuery } from "../owner-use-check.mjs";
 import { ownerCheckLines } from "../stages-knockout.mjs";
 
 const OWNERS = [
@@ -48,7 +48,7 @@ test("a lookup that did not answer is named as one to the reading seat, never as
       assert.match(lines[i], /THE SEARCH DID NOT ANSWER\. Say so in the read; do not infer the trade from the name\./);
       assert.doesNotMatch(lines[i], /RETURNED NOTHING/, "a non-answer is not a search that found nothing");
     }
-    // the report's source line for these rows is the ruled literal, unchanged
-    assert.deepEqual(rows.slice(1).map((r) => r.source), [NO_RESULT, NO_RESULT]);
+    // these rows claim no source, so nothing can print them as a search that found nothing
+    assert.deepEqual(rows.slice(1).map((r) => [r.ok, r.source]), [[false, null], [false, null]]);
   } finally { rmSync(d, { recursive: true, force: true }); }
 });

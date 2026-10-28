@@ -37,11 +37,19 @@
 // cite is enforced in that it is always PRESENT and always the driver's, never in the sense that a
 // missing one can withhold a report. Nothing in this module throws. A provider outage produces rows that
 // say the query did not answer, and the run publishes.
+//
+// ── 2026-10-28: A LOOKUP THAT DID NOT ANSWER IS NOT A "NO RESULT" ──────────────────────────────────────
+//
+// The row's source was that literal for a failed lookup and for a completed answer with no link alike, and the card
+// printed it: neither shows a search that found nothing. A row now keeps the link it has and nothing in its place, and
+// its `ok` says whether the lookup answered. The card's words for the two are the owner's (render-knockout.mjs). A
+// reply the formatter could not read is a lookup that did not answer.
 import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 
-import { promotableRecords } from "./publish/render-knockout.mjs";
+import { promotableRecords, ownerCheckOutcome, ownerCheckText, USE_CHECK_UNAVAILABLE } from "./publish/render-knockout.mjs";
+import { isResearchAnswer } from "./research-answers.mjs";   // a reply the formatter could not read is no answer
 
 /** The literal the clearance lane uses for an honest non-answer. Copied, not re-worded. */
 export const NO_RESULT = "perplexity_research — no result";
@@ -124,8 +132,8 @@ export function firstSourceUrl(text) {
  * `exec` is the sweep's own executor — injected, so the fixture path that makes this product testable at
  * $0 covers this call too and a test never reaches a provider.
  *
- * Each row carries `source`: a URL when the payload gave one, otherwise the clearance lane's honest
- * literal. A row is written for EVERY owner owed a check, including the ones that failed — an owner with
+ * Each row carries `source`: a URL when the payload gave one, otherwise null, and `ok`: whether the lookup
+ * answered. A row is written for EVERY owner owed a check, including the ones that failed — an owner with
  * no row would be indistinguishable from an owner nobody owed a check to, which is the absence-reads-as-
  * a-pass shape this repository keeps paying for.
  *
@@ -154,7 +162,7 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
         writeFileSync(join(rawDir, ownerPayloadFile(o).replace(/\.md$/, ".json")), JSON.stringify({ mark: o.mark, owner: o.owner, query, items: r.raw }, null, 1) + "\n");
       } catch { /* the ledger row is the receipt; a raw-results write never fails a lookup */ }
     }
-    const ok = Boolean(r?.ok && r?.text);
+    const ok = Boolean(r?.ok && isResearchAnswer(r?.text));
     let payloadFile = null;
     if (ok && runDir) {
       // The payload lands beside the mark payloads, under a name derived from the row rather than the
@@ -162,7 +170,7 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
       payloadFile = ownerPayloadFile(o);
       try { writeFileSync(join(runDir, "research", payloadFile), r.text); } catch { payloadFile = null; }
     }
-    const source = ok ? (firstSourceUrl(r.text) ?? NO_RESULT) : NO_RESULT;
+    const source = ok ? firstSourceUrl(r.text) : null;
     const row = {
       mark: o.mark, owner: o.owner, recordIds: o.recordIds, classes: o.classes,
       query, preset, ok, source, payloadFile,
@@ -206,7 +214,8 @@ export function useCheckLineFor(ownerChecks, recordId) {
   const row = (Array.isArray(ownerChecks) ? ownerChecks : [])
     .find((c) => (Array.isArray(c?.recordIds) ? c.recordIds : []).some((x) => String(x).trim() === id));
   if (!row) return null;
-  return `${USE_CHECK_LABEL} ${row.source}`;
+  const o = ownerCheckOutcome(row);
+  return o.kind === "unavailable" ? USE_CHECK_UNAVAILABLE : `${USE_CHECK_LABEL} ${ownerCheckText(o)}`;
 }
 
 /** Read the store a run wrote, tolerantly. `[]` when the lane did not run — never a throw. */
