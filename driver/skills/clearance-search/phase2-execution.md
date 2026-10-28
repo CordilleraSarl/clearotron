@@ -236,8 +236,8 @@ Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 vide
 
 **Output contract — ENFORCED by the driver (spec 11), not optional.** For every Composite 3+ finding whose
 mitigant or verdict turns on the **absence** of use (it says the mark is "not in actual use" / "unused" / has
-"no marketplace use found", or names non-use revocation/cancellation as the mitigant, or calls the owner's use
-"unknown"), the finding's actual-use line MUST end with a literal source line:
+"no marketplace use found", or names non-use revocation/cancellation as the mitigant), the finding's actual-use line
+MUST end with a literal source line:
 
 > `- **Use-check source:** <the perplexity_research result URL> — <one-clause finding>`
 
@@ -245,13 +245,16 @@ If the marketplace query genuinely returned nothing, write the honest value verb
 
 > `- **Use-check source:** perplexity_research — no result`
 
-The driver's `narrative` validator (`verify.mjs` → `findUseCheckViolations`) **rejects the whole narrative** if a
-Composite 3+ use-negative finding lacks this line, so the synthesis stage cannot ship an *inferred* "no use" —
-it must actually run the scoped query (owner + mark + goods/field), unless an answer this run already holds answers that question, and cite the result, or state the honest
+The driver checks the structured finding record. A required use-check source belongs in that record. An unknown use
+status does not require an invented source. The reviewer checks whether the available evidence supports the claim.
+The synthesis stage cannot ship an *inferred* "no use" — it must actually run the scoped query (owner + mark + goods/field), unless an answer this run already holds answers that question, and cite the result, or state the honest
 "no result". Never dress an un-run check as a clean negative. Also mirror the result into the matching `# Actions`
 item: "confirm the owner's actual use" becomes the stated result, not a task handed onward (this is what fills
-spec 09's "Checks we ran — what we found" bucket). On a perplexity outage the "no result" value is the accepted
-satisfying answer — the run still delivers; only a *silent* un-searched no-use is forbidden.
+spec 09's "Checks we ran — what we found" bucket). A search that failed, was refused, was not asked, or has no
+available saved answer supplies no search result. Use relevant evidence already held, and leave any remaining use or
+enforcement question unknown. Never describe the unanswered question as a search that found no result, no use, or no
+enforcement, and do not infer a low enforcement likelihood from that failure. Record no-result only when a completed
+search actually returned no result. Preserve unaffected findings and complete the report from the evidence available.
 
 This check is mandatory and applies to Composite 3+ register findings only — lower-rated register hits don't justify the cost.
 

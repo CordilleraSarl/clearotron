@@ -791,8 +791,21 @@ const ACTION_KEYS = ["id", "kind", "text", "ordinals", "deadline", "condition"];
 // without them parses clean. The parser is SHAPE-only here (object / key-allowlist / source-is-a-string);
 // the composite>=3 NON-EMPTY-source gate lives in verify.mjs checkFindingsSibling (it carries the ordinal
 // context and is a validator-fail, not a parser-throw, on the offline unit path).
-const USE_CHECK_KEYS = ["source", "quality"];   // A4 — optional model-attested source class, code-audited
+// A4 — `quality`, the optional model-attested source class, code-audited. `question` names the research question whose
+// completed answer a no-result rests on; the writer's record joins it to the answers the writer holds (synthesis-record.mjs).
+const USE_CHECK_KEYS = ["source", "quality", "question"];
 export const USE_SOURCE_QUALITY = ["owner-site", "independent", "register-mirror"];
+// D7 — `use_check.source` carries exactly ONE "we searched and found nothing" value, a code-owned sentinel the
+// writer's message dictates. The writer's record refuses it when the run holds no completed search to have returned
+// it, so the record must read it as the report does. MATCHED ON NORMALISED PUNCTUATION, NOT ONE SPELLING: the seat
+// emitted a hyphen where the doctrine writes an em dash, and exact equality let the raw tool name through to a
+// delivered report twice. Dash class and whitespace fold to one form on both sides; anything else is a source string.
+// The frozen renderer (publish/render.mjs) keeps its own copy of this match, and a test holds the two the same.
+export const USE_CHECK_NO_RESULT = "perplexity_research — no result";
+export const isUseCheckNoResult = (s) => {
+  const norm = (x) => String(x ?? "").replace(/[‐-―−-]+/g, "-").replace(/\s+/g, " ").trim().toLowerCase();
+  return norm(s) === norm(USE_CHECK_NO_RESULT);
+};
 const OWN_RIGHTS_KEYS = ["source"];
 const DEADLINE_KEYS = ["kind", "date"]; // #6 — a CLIENT-facing time-critical date (opposition / SOU / renewal)
 

@@ -261,6 +261,14 @@ const UNDECLARED = {
     { path: driverDir(P.runDir, "jx", "aim-attention.json"), kind: "conditional",
       why: "named in the prompt only when ctx.jxAim > 0 — the zh lane's aim-attention flags; aim-attention only, deliberately outside the freshness map" },
   ],
+  // The research behind the findings' use checks, written by the writer's record beside the findings (research-checks.mjs)
+  // and named in the review's prompt only when it is there. Undeclared on purpose: it moves only when the record does, and
+  // the narrative this stage declares moves with it, so the freshness map needs no entry for it. A sandbox without it
+  // hands the review a different prompt and no evidence.
+  "narrative-refutation": (P) => [
+    { path: P.researchChecks, kind: "conditional",
+      why: "named in the prompt only when the writer's record wrote it; it moves with narrative.md, so it stays outside the freshness map" },
+  ],
 };
 
 // ── the sidecars a stage's own VALIDATOR resolves ────────────────────────────────────────────────────

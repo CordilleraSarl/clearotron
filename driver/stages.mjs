@@ -16,7 +16,7 @@
 
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
-import { researchAnsweredBlock } from "./research-answers.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
+import { researchAnsweredBlock, NO_SEARCH_RESULT } from "./research-answers.mjs"; import { reviewResearchLine, RESEARCH_CHECKS_FILE } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
@@ -204,6 +204,7 @@ export function paths(runDir) {
     // tools; machine checks keep reading the complete band above.
     bandShape: p(driverRel("band-shape.json")),
     bandShapeMd: p("band-shape.md"),
+    researchChecks: p(RESEARCH_CHECKS_FILE),   // the research behind the findings' use checks, written by the writer's record for the review
     readingLog: p(driverRel("reading-log.jsonl")),   // band-server appends every lookup — audit.md "# Reading audit" renders from it
     // P2-A (the recall spine) — three driver-derived sidecars:
     // the retrieved→judgment reconciliation (recall-reconciliation.mjs join, re-derived after EVERY
@@ -3122,7 +3123,7 @@ export const STAGES = {
       // WS2 (spec 11) — ENFORCED, not advisory: validators.narrative HARD-REJECTS this file if a
       // use-dependent finding above the framework's lowest band asserts a use-negative without a searched
       // source line. So actually run the query.
-      `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). ${USE_CHECK_ANSWERS_HELD} After the search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant, "owner's use unknown"), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and END that finding's actual-use line with a literal "- **Use-check source:** <result URL | "perplexity_research — no result">" line. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. On a perplexity outage write "- **Use-check source:** perplexity_research — no result" and proceed (the run still delivers). ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"} — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
+      `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). ${USE_CHECK_ANSWERS_HELD} After a completed search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and END that finding's actual-use line with a literal "- **Use-check source:** <result URL | "perplexity_research — no result">" line. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. ${NO_SEARCH_RESULT} ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"}, and with a no-result also "question": "<the research question whose completed answer returned it, word for word as it was asked>" — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
       // Spec-v3 A4 — ENFORCED the same way (validators.narrative): own-rights reliance needs its evidence.
       // PR-8 review fix: synthesis holds the FROZEN band, not the live register — and the band is class-
       // and mark-text-scoped to this matter's dispatched slices, so the client's OWN house-mark
@@ -3597,7 +3598,7 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions }) => lines(
+    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, researchChecks }) => lines(
       reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
@@ -3613,6 +3614,9 @@ export const STAGES = {
       // C5 — the generic correction: a registered right can support an injunction without the
       // owner's use (country-dependent); "no use → procedural only / no injunction risk" is a forbidden inference.
       `Flag as a CORRECTION any line reasoning "the owner does not use it → procedural risk only / no injunction exposure": non-use may open a revocation DEFENCE after the grace period, it does not neutralise an enforceable registration today.`,
+      // A claimed research result is checked against its saved answer and completion record, never the writer's word
+      // alone: the record writes that evidence beside the findings (research-checks.mjs), and the line names it when it is there.
+      researchChecks ? reviewResearchLine(researchChecks) : "",
       // WP-56 — demotion-verification lens (the mirror of the anti-over-rating checks; see the skill section)
       `DEMOTION VERIFICATION (per the skill): for every finding at the framework's lowest band, or disposition "distinguished"/"off-field", whose senior right is same-class and in use, verify the three demotion receipts (a registered-scope comparison with the specification quoted — never the senior's trade dress; any dilution counted in that conflict's jurisdiction × goods lane; a use-meets-use read consistent with the finding's own use-check result) and the response-band reconciliation line. A missing/dishonest receipt on the conflict that would otherwise drive the verdict is BLOCKING; elsewhere a FLAGGED CORRECTION. Where the receipts exist, the demotion STANDS — audit the evidence, never re-decide the band.`,
       // A3/A6 — verify the machine's own open items and the customer's explicit asks were HONOURED,

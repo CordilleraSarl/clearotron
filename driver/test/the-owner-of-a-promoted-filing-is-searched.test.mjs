@@ -13,8 +13,9 @@
 //   1. THE BOUND. One promoted filing on the issue's own run means ONE extra query on a 5–10 minute
 //      product. A bound that silently widens turns a screen into a per-filing billing surface, and the
 //      widening is invisible in a green test that only checks a query happened.
-//   2. THE OUTAGE. Ruling A, 2026-09-07: the report still delivers with an honest "no result" on
-//      any row the lookup could not answer; the cite is enforced, its absence never refuses delivery.
+//   2. THE OUTAGE. Ruling A, 2026-09-07: the report still delivers on any row the lookup could not
+//      answer; the cite is enforced, its absence never refuses delivery. Since 2026-10-28 such a row's
+//      card says the use check was unavailable, in the owner's words, never "no result".
 //      A happy-path-only test passes on a change that refuses on outage, which is the one outcome the
 //      owner ruled against.
 import { test } from "node:test";
@@ -104,7 +105,7 @@ test("acceptance 5: a provider outage yields rows saying so, and NEVER throws", 
   const rows = await runOwnerChecks({ owners: owed, exec: throwing, runDir: null });
   assert.equal(rows.length, 1, "a row is written for an owner whose lookup failed");
   assert.equal(rows[0].ok, false);
-  assert.equal(rows[0].source, NO_RESULT, "the clearance lane's own honest literal");
+  assert.equal(rows[0].source, null, "a lookup that failed claims no source, and no result either");
   assert.match(rows[0].cause, /429|threw/, "and the cause is recorded rather than swallowed");
 });
 
@@ -112,7 +113,7 @@ test("an executor that resolves not-ok is the same story, and still no throw", a
   const owed = ownersOwedACheck(doc([rec()]));
   const rows = await runOwnerChecks({ owners: owed, exec: async () => ({ ok: false, cause: "provider unreachable", outage: true }), runDir: null });
   assert.equal(rows[0].ok, false);
-  assert.equal(rows[0].source, NO_RESULT);
+  assert.equal(rows[0].source, null);
   assert.equal(rows[0].outage, true, "an outage is flagged so the lane can tell it from a bad key");
 });
 
@@ -126,7 +127,8 @@ test("every owner owed a check gets a row, so a gap can never read as a clean re
   const rows = await runOwnerChecks({ owners: owed, exec: flaky, runDir: null });
   assert.equal(rows.length, 2, "both owners are on the record");
   assert.equal(rows[0].source, "https://a.example/about", "the answered one cites where the answer came from");
-  assert.equal(rows[1].source, NO_RESULT, "the unanswered one says so, in the clearance lane's words");
+  assert.equal(rows[1].ok, false, "the unanswered one says so");
+  assert.equal(rows[1].source, null);
 });
 
 test("the source is the first URL in the payload, and a payload with none is not a clean negative", async () => {
@@ -134,8 +136,8 @@ test("the source is the first URL in the payload, and a payload with none is not
   assert.equal(firstSourceUrl("no links here at all"), null);
   const owed = ownersOwedACheck(doc([rec()]));
   const rows = await runOwnerChecks({ owners: owed, exec: async () => ({ ok: true, text: "Some prose with no link." }), runDir: null });
-  assert.equal(rows[0].source, NO_RESULT,
-    "an answer we cannot point at is reported as no result rather than as an uncited finding");
+  assert.equal(rows[0].ok, true, "an answer with no link is still an answer");
+  assert.equal(rows[0].source, null, "and a missing link is never recorded as a search that found nothing");
 });
 
 test("the payload is saved beside the mark payloads so the assess stage can read it", async () => {
@@ -179,10 +181,21 @@ test("acceptance 2: the card cites where the owner's trade was looked up", () =>
   assert.match(out, /lumenreed\.example\/about/, "and the source the driver actually got");
 });
 
-test("an unanswered lookup prints the honest literal, not a silent omission", () => {
-  const out = html([{ ...CHECK, ok: false, source: NO_RESULT, payloadFile: null }]);
-  assert.match(out, /Use-check source:/);
-  assert.match(out, /perplexity_research — no result/, "the clearance lane's wording for an honest non-answer");
+test("an unanswered lookup says the use check was unavailable, in the owner's words, never no result", () => {
+  // Today's row and a row a run delivered before 2026-10-28, which stored the no-result literal for a failed lookup.
+  for (const row of [{ ...CHECK, ok: false, source: null, payloadFile: null }, { ...CHECK, ok: false, source: NO_RESULT, payloadFile: null }]) {
+    const out = html([row]);
+    assert.match(out, /<p class="ko-findev">Use check unavailable\.<\/p>/);
+    assert.doesNotMatch(out, /no result/, "a lookup that did not answer printed as a search that found nothing");
+  }
+});
+
+test("a completed answer with no link says its link is unavailable, and never no result", () => {
+  for (const row of [{ ...CHECK, source: null }, { ...CHECK, source: NO_RESULT }]) {
+    const out = html([row]);
+    assert.match(out, /<p class="ko-findev">Use-check source: link unavailable\.<\/p>/);
+    assert.doesNotMatch(out, /no result/);
+  }
 });
 
 // THE THIRD STATE, and it is the one a two-state test misses. A run that owed no check must print NO
@@ -203,6 +216,13 @@ test("report-data carries the source, in the same three states as the card", () 
   });
   const card = withCheck.marks[0].findings.find((f) => f.shape === "register");
   assert.equal(card.useCheckSource, "https://lumenreed.example/about");
+  // The data says what the card says: the link, or the owner's words for a lookup without one.
+  const dataFor = (row) => knockoutReportData(findingsDoc(), FW, {
+    runId: "r", overall: "Manageable", identity: {}, registerCounts: null,
+    registerRecords: doc([rec()]), ownerChecks: [row], matter: "r",
+  }).marks[0].findings.find((f) => f.shape === "register").useCheckSource;
+  assert.equal(dataFor({ ...CHECK, ok: false, source: NO_RESULT }), "Use check unavailable.");
+  assert.equal(dataFor({ ...CHECK, source: null }), "link unavailable.");
 
   const without = knockoutReportData(findingsDoc(), FW, {
     runId: "r", overall: "Manageable", identity: {}, registerCounts: null,

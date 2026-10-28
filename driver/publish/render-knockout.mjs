@@ -1238,6 +1238,23 @@ function sourceChips(v) {
 // both products is the point: a reader who has seen it on a clearance report knows what it means here.
 const USE_CHECK_LABEL = 'Use-check source:';
 
+// WHAT THE CARD SAYS OF AN OWNER LOOKUP, read from the lookup's own outcome (owner-use-check.mjs), never from a marker:
+// a lookup that failed or was refused, and a completed answer that carries no link, used to print the same "no result"
+// literal, and neither shows a search that found nothing. The words are the owner's (approved 2026-10-28). A lookup's
+// row with a link cites it. A completed search that found nothing keeps the existing no-result line, and no lookup
+// today gives a sign of one beyond a missing link, which alone does not establish it.
+export const USE_CHECK_UNAVAILABLE = 'Use check unavailable.';
+export const USE_CHECK_LINK_UNAVAILABLE = 'link unavailable.';
+/** A lookup's outcome: "linked" with its link, "no-link", or "unavailable". `null` when no lookup was owed. PURE. */
+export function ownerCheckOutcome(row) {
+  if (!row) return null;
+  if (row.ok !== true) return { kind: 'unavailable' };
+  return isHttpUrl(row.source) ? { kind: 'linked', url: row.source } : { kind: 'no-link' };
+}
+/** The card's line for a lookup, after its label where it has one. PURE. */
+export const ownerCheckText = (o) => !o ? null : o.kind === 'unavailable' ? USE_CHECK_UNAVAILABLE
+  : o.kind === 'linked' ? o.url : USE_CHECK_LINK_UNAVAILABLE;
+
 /** The owner lookup covering a filing, joined by recordId. `null` when this run owed that filing none. */
 function ownerCheckFor(ownerChecks, recordId) {
   const id = String(recordId ?? '').trim();
@@ -1350,8 +1367,10 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   //
   // ABSENT ON A RUN THAT OWED NO CHECK, and that silence is correct: no line at all says nothing, while
   // a line reading "no result" on a filing nobody was asked about would claim a search that never ran.
-  const useCheck = ownerCheckFor(ownerChecks, r?.recordId);
-  const useCheckSource = useCheck?.source ?? null;
+  const useCheck = ownerCheckOutcome(ownerCheckFor(ownerChecks, r?.recordId));
+  const useCheckLine = !useCheck ? ''
+    : useCheck.kind === 'unavailable' ? esc(USE_CHECK_UNAVAILABLE)
+    : `${esc(USE_CHECK_LABEL)} ${useCheck.kind === 'linked' ? linkOrText(useCheck.url) : esc(USE_CHECK_LINK_UNAVAILABLE)}`;
   const meta = [r.owner ? esc(r.owner) : 'proprietor not stated', r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
   const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? 'no record address supplied'));
@@ -1371,7 +1390,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
                  screen rather than as a wall. */''}
             <details class="drill"><summary>Full detail</summary><div class="drillbody">
             ${basisLine(band, read)}
-            ${useCheck ? `<p class="ko-findev">${esc(USE_CHECK_LABEL)} ${isHttpUrl(useCheckSource) ? linkOrText(useCheckSource) : esc(useCheckSource)}</p>` : ''}
+            ${useCheckLine ? `<p class="ko-findev">${useCheckLine}</p>` : ''}
             <p class="ko-findev">Register record: ${receipt}</p>
             </div></details>
           </div>
@@ -2213,7 +2232,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
               type: 'Register filing',
               net: read ? v.statement : `${v.statement} It was ${NOT_WEIGHED}.`,
               basis: read ?? NOT_WEIGHED,
-              useCheckSource: oc?.source ?? null,
+              useCheckSource: ownerCheckText(ownerCheckOutcome(oc)),
               evidence: v.evidence, shape: 'register',
             };
           }),

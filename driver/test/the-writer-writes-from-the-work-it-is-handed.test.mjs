@@ -74,7 +74,7 @@ test("an answer the run already holds can be a finding's check, in the message a
   const text = messageOf(t, "synthesis");
   const block = text.split("\n").find((l) => l.startsWith("USE-CHECK (enforced):"));
   assert.ok(block, "the writer has no use-check block");
-  assert.ok(block.includes(`over this mark or a similar one). ${ANSWERS_HELD} After the search, use is`), "the ruled paragraph does not open the block's rules");
+  assert.ok(block.includes(`over this mark or a similar one). ${ANSWERS_HELD} After a completed search, use is`), "the ruled paragraph does not open the block's rules");
   assert.ok(block.includes("run ONE scoped `perplexity_research` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and END"));
   // The triggers do not move: a finding banded medium risk or higher is checked, and a claim of absent use is searched.
   assert.ok(block.includes("run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded"));

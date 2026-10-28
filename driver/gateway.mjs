@@ -12,6 +12,7 @@
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
+import { NO_SEARCH_RESULT, RESEARCH_CORRECTION } from "./research-answers.mjs";   // a search that did not answer supplies no result
 import { tmpdir } from "node:os";
 import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary, olderThanFloor, ENGINE_BINARIES } from "./driver.config.mjs";
 import { probeCliVersion } from "./engine/cli-version.mjs";
@@ -2375,8 +2376,18 @@ const CLEARANCE_FINDINGS_TOKEN_RE = /(?<!knockout_|knockoutassess_)findings?_/;
 // of the written files, and the driver then holds the record that save left: the retry sends only the change, in the
 // patch the follow-ups above it ask for. A record nobody saved yet, or one whose version is being replaced, still
 // takes the complete save.
-const HELD_RECORD_RETRY = "Fix exactly that in ONE `record_synthesis` PATCH call, sending only the change: `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces, and `findings` carrying any register you corrected, complete, and never a `findings[]` list; leave the narrative prose unchanged";
+// The patch a held record takes, in the tool's own words; the retry for most findings checks leaves the narrative as it is.
+const HELD_RECORD_PATCH = "ONE `record_synthesis` PATCH call, sending only the change: `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces, and `findings` carrying any register you corrected, complete, and never a `findings[]` list";
+const HELD_RECORD_RETRY = `Fix exactly that in ${HELD_RECORD_PATCH}; leave the narrative prose unchanged`;
 const VERSION_FAILURE_RE = /finding_legacy_scale_forbidden|schema_version/;
+// A USE CHECK'S CORRECTION corrects what depends on the finding too, so it never says to leave the narrative as it is
+// (design, 2026-10-28). A held record takes the patch, in the tool's own words, with the narrative sections it changes;
+// a record not yet accepted is completed by its first call, which the line after every hint names. The caller prints a
+// full stop after the hint, so the ruled sentences go without their last one.
+const USE_CHECK_TOKEN_RE = /finding_use_check_(missing|source_missing):/;
+const useCheckCorrection = (heldRecord) => heldRecord
+  ? `${RESEARCH_CORRECTION} Send it in ${HELD_RECORD_PATCH}. In \`narrative\`, send only the sections you changed — the rest are held`
+  : RESEARCH_CORRECTION.replace(/\.$/, "");
 /**
  * Does the driver hold an accepted synthesis record for the run these files belong to? Read from either of the files
  * the writer's call renders: the stage's own expected file is the narrative, and a caller may name the findings.
@@ -2433,6 +2444,10 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       // The framework's method (framework-method.mjs). Each refusal already names its fix — the value list,
       // or the band the table gives — so no addendum: the generic band hint below would point elsewhere.
       extra = "";
+    } else if (USE_CHECK_TOKEN_RE.test(lastFail)) {
+      // A use status with no source behind it. Where no search completed, the honest record is an unknown use,
+      // never a no-result, so the repair is handed the ruled sentence for a search that did not answer, unchanged.
+      extra = ` ${NO_SEARCH_RESULT}`;
     } else if (/finding_band_|findings_rated_under_|finding_disposition_missing/.test(lastFail)) {
       extra = ` SPECIFIC FIX: every finding carries "disposition"; adversarial / coexistence-partner / ` +
         `distinguished findings are RATED and carry "band" = EXACTLY one of the framework's band words (as ` +
@@ -2482,7 +2497,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the four ` +
       `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} ` +
-      (heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? HELD_RECORD_RETRY
+      (USE_CHECK_TOKEN_RE.test(lastFail) ? useCheckCorrection(heldRecord)
+        : heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? HELD_RECORD_RETRY
         : `Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged`);
   } else if (/coverage_status_offenum/.test(lastFail)) {
     // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON

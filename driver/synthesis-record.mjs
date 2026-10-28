@@ -46,7 +46,9 @@ import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, ren
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave } from "./findings-model.mjs";
+import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult } from "./findings-model.mjs";
+import { heldResearchAnswers, questionKey, NO_SEARCH_RESULT } from "./research-answers.mjs";   // a "no result" names a question that completed
+import { writeResearchChecks } from "./research-checks.mjs";   // the research behind the use checks, written for the review
 import { normalizeRecordUri } from "./registry-fidelity.mjs";   // the duty's own reading of a record uri
 import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { findCoverageRecommendations } from "./verify.mjs";
@@ -272,7 +274,45 @@ export function withoutWithheldRows(rows, ledger) {
   return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
 }
 
-export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, recordOrigins = null } = {}) {
+// ── A "NO RESULT" NAMES A QUESTION THIS WRITER HOLDS A COMPLETED ANSWER TO ────────────────────────────────────────────
+//
+// `use_check.source` has one value saying a search ran and found nothing, and the report prints it as exactly that. So a
+// finding carrying it names, in `use_check.question`, the research question whose completed answer returned it, and the
+// record looks for that question among the completed answers this writer holds (`heldResearchAnswers`): the ones it was
+// handed and the ones its own session's calls completed. A finding naming no question, or one it holds no completed
+// answer to, is refused in the turn, with the ruled sentence for a search that did not answer. One answer may support
+// several findings. What the answer supports is the model's to judge; the code checks only that the question completed.
+//
+// A REFUSAL, NEVER A STOP. A repeat after that refusal is accepted with the unsupported no-result taken off the finding
+// and the original kept beside the run, as a foreign record link is (foreign-record-links.mjs): the finding keeps every
+// other field, and the record's own check judges the use status it is left with. A withdrawn finding reaches no reader
+// and is left as it is. `held` null (no run, or not passed) refuses nothing.
+const noResultFault = (f, held) => {
+  if (!held || f?.disposition === "withdrawn" || !isUseCheckNoResult(f?.use_check?.source)) return null;
+  const k = questionKey(typeof f.use_check.question === "string" ? f.use_check.question : "");
+  return !k ? "names no question" : held.has(k) ? null : "names a question this writer holds no completed answer to";
+};
+export const NO_RESULT_TOKEN = "no_result_without_a_completed_search";
+/** Whether this run's writer was refused a no-result before: a repeat is then taken with it off. IMPURE (reads the refusals). */
+const noResultRefusedIn = (runDir) => refusalsFor(runDir).some((r) => String(r?.reason ?? "").includes(NO_RESULT_TOKEN));
+/** The refusal's text: what each finding lacks, the questions held where one named was not found, the ruled sentence. PURE. */
+function noResultRefusal(token, at, faults, held) {
+  const each = faults.map((x) => `${x.label} ${x.fault}`).join("; ");
+  const named = faults.some((x) => /holds no completed answer/.test(x.fault));
+  const list = [...held.values()].slice(0, 8).map((h) => `"${h.question.slice(0, 300)}"`).join(" | ") || "none";
+  return `${token}:${at} — ${each}.${named ? ` The completed questions this writer holds: ${list}.` : ""} ${NO_SEARCH_RESULT}`;
+}
+const withoutUseCheck = (f) => { const { use_check: _taken, ...rest } = f; return rest; };
+/** What a repeat took off, kept beside the run with one run-log row. Never throws. */
+function recordNoResultRemoval(runDir, { layer, removed, now }) {
+  try {
+    appendFileSync(driverDir(runDir, "no-result-removed.jsonl"), removed.map((r) => JSON.stringify({ at: now(), stage: "synthesis", layer, ...r })).join("\n") + "\n");
+  } catch { /* the file is forensics; the run-log row below is the record */ }
+  try { runLog(runDir, { event: "no-result-without-a-completed-search-removed", stage: "synthesis", layer, ordinals: removed.map((r) => r.ordinal ?? null) }); }
+  catch { /* a log that cannot be written must not stop the record it describes */ }
+}
+
+export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, recordOrigins = null, heldAnswers = null } = {}) {
   const doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
     return { ok: false, reason: "synthesis_findings_missing: `findings` must be the findings document object { schema_version, rated_under_framework, findings, coverage, … } — this is the record the report and the workbook are built from, and there is no path that renders without it" };
@@ -330,6 +370,12 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   if (uncarried && uncarried.length) {
     const names = [...new Set(uncarried.map((r) => `${r.axis}${r.scope ? ` (${r.scope})` : ""}`))].join(", ");
     return { ok: false, reason: `synthesis_coverage_limit_uncarried:${names.slice(0, 140)} — this run's own register coverage ledger records those slices as less than clean, and every coverage row you sent says confirmed-clean. A slice the run could not clear cannot be written as a clean negative. Carry it: one coverage row whose state is coverage-limited / open / not-searched, at whatever granularity the reader needs` };
+  }
+  const faults = (Array.isArray(doc.findings) ? doc.findings : [])
+    .map((f) => ({ f, fault: noResultFault(f, heldAnswers) })).filter((x) => x.fault)
+    .map(({ f, fault }) => ({ label: `finding ${f?.ordinal ?? "?"}`, ordinal: f?.ordinal ?? "?", fault }));
+  if (faults.length) {
+    return { ok: false, reason: noResultRefusal(`synthesis_${NO_RESULT_TOKEN}`, faults.map((x) => x.ordinal).join(","), faults, heldAnswers) };
   }
   // Intake asks: answered, and answered by the same strings the driver will join on.
   if (asks.length) {
@@ -889,6 +935,8 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const { asks = auto.asks, ledger = auto.ledger, manifest = auto.manifest,
     method = auto.method, methodInvalid = auto.methodInvalid ?? null,
     owed = auto.owed, declined = auto.declined, recordOrigins = undefined,
+    sessionKey = process.env.CLEAROTRON_GATHER_SESSION_KEY || null,
+    heldAnswers = heldResearchAnswers(dir0, sessionKey),
     now = () => new Date().toISOString() } = opts;
   const { dir, payload, accepted, refusals } = synthesisCallPaths(dir0);
   // Its sibling rule — ONE FILE PER CALL, refusals included. This used to
@@ -918,7 +966,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
       noteRefusalAt(dir0, reason, now);
       return { written: null, refused: reason, captured: closeCapture({ ok: false, refused: reason }), capture_failed: captureFailed };
     }
-    const r = saveFindings(dir0, received.save_findings, { manifest, method, owed, declined, recordOrigins: recordOriginsOr(recordOrigins), now });
+    const r = saveFindings(dir0, received.save_findings, { manifest, method, owed, declined, recordOrigins: recordOriginsOr(recordOrigins), heldAnswers, now });
     for (const x of r.refused) noteRefusalAt(dir0, x.reason, now);
     closeCapture({ ok: r.saved.length > 0, saved: r.saved.length, refused: r.refused.length });
     return { written: null, refused: null, saved: r.saved, save_refused: r.refused, held: r.held, ...(r.write_failed ? { write_failed: r.write_failed } : {}), capture_failed: captureFailed };
@@ -971,7 +1019,17 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // below judge the record that results. A patch repairs an accepted record and takes none.
   const savedBefore = isPatch ? [] : readSavedFindings(dir0);
   if (savedBefore.length) call = { ...call, findings: withSavedFindings(call.findings, savedBefore, owed).doc };
-  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: origins });
+  // A no-result refused once in this run is taken off on a repeat rather than refused again (see `noResultFault`).
+  if (Array.isArray(call?.findings?.findings) && noResultRefusedIn(dir0)) {
+    const removed = [];
+    const findings = call.findings.findings.map((f) => {
+      if (!noResultFault(f, heldAnswers)) return f;
+      removed.push({ ordinal: f?.ordinal ?? null, use_check: f.use_check });
+      return withoutUseCheck(f);
+    });
+    if (removed.length) { call = { ...call, findings: { ...call.findings, findings } }; recordNoResultRemoval(dir0, { layer: "call", removed, now }); }
+  }
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: origins, heldAnswers });
   if (!v.ok) {
     noteRefusal(v.reason);
     recordReading(false);
@@ -1004,6 +1062,8 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // call records above stay the model's own, the base for its next patch; findings.json becomes the folded
   // record the reviewer, the cards and the delivery read. Before the seam this leaves the record as written.
   foldAfterSave(dir0, findingsAt);
+  // The review is handed the research behind the use checks of the record that now stands (research-checks.mjs).
+  writeResearchChecks(dir0, { findingsAt, held: heldAnswers, sessionKey });
   recordReading(true);
   // The parts this record took are consumed; a part saved after it waits for the next completing call.
   if (savedBefore.length) {
@@ -1096,7 +1156,7 @@ const sameFinding = (a, b) => JSON.stringify(a) === JSON.stringify(b);
  * Save completed findings, one by one: each passes or is refused on its own, and a refusal never touches a finding
  * already saved. IMPURE (appends to the record). Returns the answer the tool hands back.
  */
-export function saveFindings(runDir, list, { manifest = null, method = undefined, owed = null, declined = null, recordOrigins = null, now = () => new Date().toISOString() } = {}) {
+export function saveFindings(runDir, list, { manifest = null, method = undefined, owed = null, declined = null, recordOrigins = null, heldAnswers = null, now = () => new Date().toISOString() } = {}) {
   const dir0 = String(runDir ?? "");
   if (!Array.isArray(list) || !list.length)
     return { saved: [], refused: [{ index: null, reason: "synthesis_save_empty: `save_findings` is an array of one or more completed finding objects, each as the findings record carries it" }], held: readSavedFindings(dir0).length };
@@ -1107,6 +1167,13 @@ export function saveFindings(runDir, list, { manifest = null, method = undefined
     let checked;
     try { checked = validateFindingForSave(f, { manifest, ...(method !== undefined ? { method } : {}), ...(Array.isArray(recordOrigins) ? { recordOrigins } : {}) }); }
     catch (e) { refused.push({ index, reason: `synthesis_save_invalid:${index}: ${String(e?.message ?? e).slice(0, 240)}` }); return; }
+    const fault = noResultFault(f, heldAnswers);
+    if (fault && !noResultRefusedIn(dir0)) {
+      const label = `finding ${f?.ordinal ?? "?"}`;
+      refused.push({ index, reason: noResultRefusal(`synthesis_save_${NO_RESULT_TOKEN}`, index, [{ label, fault }], heldAnswers) });
+      return;
+    }
+    if (fault) { recordNoResultRemoval(dir0, { layer: "save", removed: [{ ordinal: f?.ordinal ?? null, use_check: f.use_check }], now }); f = withoutUseCheck(f); }
     const named = [...findingUris([f]).keys()].map((u) => normalizeRecordUri(u)).filter((u) => declinedSet.has(u));
     if (named.length) {
       refused.push({ index, reason: `synthesis_save_declined:${index}: you declined ${named.slice(0, 3).join(", ")} through record_declination, and a save does not reverse an exclusion. Leave that record declined, or keep it out of this finding` });

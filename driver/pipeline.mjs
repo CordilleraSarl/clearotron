@@ -5009,7 +5009,9 @@ function clearedForSeat(runDir, label) {
  */
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
-  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths) };
+  // The review is also pointed at the research behind the findings' use checks, where the writer's record wrote it.
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths),
+    researchChecks: ctx.paths.researchChecks && existsSync(ctx.paths.researchChecks) ? ctx.paths.researchChecks : null };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
   // The writer is also handed the research this run's earlier stages and attempts got (research-answers.mjs), written to
