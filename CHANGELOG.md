@@ -4,6 +4,16 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.5.0-beta.4
+
+### Fixed
+
+- On the Codex engine, a clearance no longer sees temporary files that another clearance left on the same machine.
+- A report's copy for the client is no longer held back when a live finding shares its mark and owner with a finding the review withdrew.
+- A register entry the engine decided to keep as background now appears in the report's context table, instead of being left out of it.
+- When the report's writing step is interrupted, the next attempt continues from the findings it had already finished instead of starting again.
+- On a crowded field, the report is written from the work the clearance has already done, without reading every register result again.
+
 ## 0.5.0-beta.3
 
 ### Fixed

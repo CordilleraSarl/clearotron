@@ -1,5 +1,15 @@
 # clearotron-driver
 
+## 0.5.0-beta.4
+
+### Patch Changes
+
+- Fixed: On the Codex engine, a clearance no longer sees temporary files that another clearance left on the same machine.
+- Fixed: A report's copy for the client is no longer held back when a live finding shares its mark and owner with a finding the review withdrew.
+- Fixed: A register entry the engine decided to keep as background now appears in the report's context table, instead of being left out of it.
+- Fixed: When the report's writing step is interrupted, the next attempt continues from the findings it had already finished instead of starting again.
+- Fixed: On a crowded field, the report is written from the work the clearance has already done, without reading every register result again.
+
 ## 0.5.0-beta.3
 
 ### Patch Changes
