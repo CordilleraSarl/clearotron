@@ -1901,7 +1901,7 @@
         },
         "a-search-that-did-not-answer-is-never-recorded-as-one-that-found-nothing.test.mjs": {
           "tests": 12,
-          "asserts": 95,
+          "asserts": 96,
           "skips": 0,
           "todos": 0
         },

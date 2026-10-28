@@ -218,10 +218,12 @@ export function heldResearchAnswers(runDir, sessionKey = null) {
   const own = (s) => sameStageSession(s, sessionKey);
   const kept = rows(driverDir(runDir, RESEARCH_ANSWERS_FILE));
   for (const r of kept) if (own(r?.session) && typeof r.task === "string" && isResearchAnswer(r.text)) put(r.task, oneLine(r.text), "asked");
+  // A replayed answer is the run's own, read from the copy of its answers the replay's marker names, outside the arm.
+  const replayFrom = replayAnswersFrom(runDir);
   for (const r of rows(driverDir(runDir, "reading-log.jsonl"))) {
     if (r?.tool !== "perplexity_research" || r.ok !== true || !own(r.session) || r.args?.grid || typeof r.args?.task !== "string") continue;
-    // A replayed answer is the run's own, read from its bank: the text is there, under the session that first asked it.
-    const text = kept.filter((x) => typeof x?.task === "string" && x.task.trim() === r.args.task.trim() && isResearchAnswer(x.text)).pop()?.text ?? null;
+    const text = (r.args.replay && replayFrom ? savedResearchAnswer(replayFrom, r.args.task)?.text : null)
+      ?? kept.filter((x) => typeof x?.task === "string" && x.task.trim() === r.args.task.trim() && isResearchAnswer(x.text)).pop()?.text ?? null;
     put(r.args.task, text == null ? null : oneLine(text), "asked");
   }
   return held;

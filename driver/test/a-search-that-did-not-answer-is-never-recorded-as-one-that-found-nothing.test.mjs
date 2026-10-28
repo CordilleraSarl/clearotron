@@ -251,16 +251,22 @@ test("earlier evidence stays usable: a handed answer needs no new call, a replay
   assert.equal(save(handed, [noResult(DOC.findings[0], ask("Example Holdings"))]).saved.length, 1, "a handed answer did not count");
   assert.equal(readingLog(handed).length, before, "reusing an answer already held made a new call");
 
-  // A replay: the bank holds the run's answers, its own stage's later ones among them. One the writer asked is
-  // replayed to it and counts; one it never asked sits in the bank and does not.
+  // A replay: the bank holds the run's answers, its own stage's later ones among them, in a copy outside the arm that
+  // the replay's marker names. One the writer asked is replayed to it and counts, with its answer; one it never asked
+  // sits in the bank and does not.
   const replayed = run(t);
+  const bankDir = mkdtempSync(join(tmpdir(), "unanswered-search-bank-"));
+  t.after(() => rmSync(bankDir, { recursive: true, force: true }));
+  const bank = join(bankDir, "research-answers.jsonl");
   for (const owner of ["Sample Trading", "Hidden Later Co"]) {
-    appendFileSync(driverDir(replayed, "research-answers.jsonl"), JSON.stringify({ ts: "2026-01-01T10:00:00.000Z",
+    appendFileSync(bank, JSON.stringify({ ts: "2026-01-01T10:00:00.000Z",
       session: "clearance-acme-run-amber-fox-synthesis-of-the-saved-run", task: ask(owner), text: `No use found for ${owner}.` }) + "\n");
   }
-  writeFileSync(driverDir(replayed, "research-replay.json"), JSON.stringify({ replayOf: "the run's saved research answers", answers: 2 }) + "\n");
+  writeFileSync(driverDir(replayed, "research-replay.json"), JSON.stringify({ replayOf: "the run's saved research answers", answers: 2, answersFrom: bank }) + "\n");
   assert.equal(await callResearch(replayed, { task: ask("Sample Trading") }, { key: "" }), "No use found for Sample Trading.");
   assert.equal(save(replayed, [noResult(DOC.findings[0], ask("Sample Trading"))]).saved.length, 1, "a replayed answer did not count");
+  assert.equal(RA.heldResearchAnswers(replayed, SESSION).get(RA.questionKey(ask("Sample Trading")))?.answer,
+    "No use found for Sample Trading.", "a replayed answer counted without its text, so the review cannot read it");
   assert.match(save(replayed, [noResult(DOC.findings[1], ask("Hidden Later Co"))]).save_refused?.[0]?.reason ?? "",
     /^synthesis_save_no_result_without_a_completed_search:0 — finding 2 names a question this writer holds no completed answer to/,
     "an answer the writer was neither handed nor given by the tool counted as one it held");
