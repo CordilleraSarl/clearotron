@@ -25,7 +25,7 @@ function run(t, { stamped }) {
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   mkdirSync(driverDir(dir), { recursive: true });
   writeFileSync(join(dir, "placements.json"), JSON.stringify({ schema_version: 1, placements: [
-    { mark: "QZORVAN", owner: "Ardent Ltd", jurisdiction: "EU", tier: "headline-candidate", records: ["/mark/eu/h1"], reason: "identical, live" }] }) + "\n");
+    { mark: "QZORVAN", owner: "Corvane Ltd", jurisdiction: "EU", tier: "headline-candidate", records: ["/mark/eu/h1"], reason: "identical, live" }] }) + "\n");
   if (stamped) writeFileSync(driverDir(dir, "stage-contracts.json"), JSON.stringify({ "placement-inquiry": { placementForm: 1 } }) + "\n");
   return paths(dir);
 }

@@ -22,14 +22,14 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 
 const rec = (id, mark, owner) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes: ["28"], status: "Registered" });
 const BAND = [
-  rec("h1", "VOLMERIQ", "Ardent Ltd"),                                            // a headline entry
+  rec("h1", "VOLMERIQ", "Corvane Ltd"),                                            // a headline entry
   rec("k1", "VOLMERAN", "Brisk GmbH"), rec("k2", "VOLMERON", "Cobalt SA"), rec("k3", "VOLMERUS", "Dorne AG"),   // kept as placed
   rec("o1", "VOLMERIX", "Ember BV"),                                              // overridden by a resolution
   rec("r1", "VOLMERAL", "Fable Oy"),                                              // overridden by the write-up's own row
 ];
 const sheet2 = (mark, owner, id, reason) => ({ mark, owner, jurisdiction: "EU", tier: "sheet-2", records: [`/mark/eu/${id}`], reason, borderline: true });
 const PLACEMENTS = [
-  { mark: "VOLMERIQ", owner: "Ardent Ltd", jurisdiction: "EU", tier: "headline-candidate", records: ["/mark/eu/h1"], reason: "identical, live, for the client's own goods" },
+  { mark: "VOLMERIQ", owner: "Corvane Ltd", jurisdiction: "EU", tier: "headline-candidate", records: ["/mark/eu/h1"], reason: "identical, live, for the client's own goods" },
   sheet2("VOLMERAN", "Brisk GmbH", "k1", "a near form for board games: completes the record, changes nothing"),
   sheet2("VOLMERON", "Cobalt SA", "k2", "a near form for kites: completes the record, changes nothing"),
   sheet2("VOLMERUS", "Dorne AG", "k3", "a near form for puzzles: completes the record, changes nothing"),
