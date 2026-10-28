@@ -2097,6 +2097,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-superseded-beta-says-to-install-the-current-beta.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-switched-off-feature-says-so-and-says-what-to-change.test.mjs": {
           "tests": 4,
           "asserts": 7,
