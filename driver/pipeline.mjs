@@ -2379,11 +2379,13 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     // WHAT THE WRITE-UP OWES IS PLACEMENT'S HEADLINE ENTRIES, judged per entry: a row naming any record of an entry ends
     // the whole entry. A sheet-2 entry is adopted as placed (`adopt`): the render writes its row on the entry's first
     // live record, else its first, with placement's reason, unless the write-up overrides it with any row naming any of
-    // its records. Watchlist and out-of-scope entries owe nothing and keep their own tabs. An entry with no records owes
-    // nothing and gets no row.
+    // its records. A watchlist-annex entry is adopted the same way (`watch`), into the watchlist annex: the write-up's
+    // render has no other table for it, so without that row it reached no surface and its ending was nobody's. Out-of-scope
+    // entries owe nothing. An entry with no records owes nothing and gets no row.
     const owed = [];
     const owedEntries = [];
     const adopt = [];
+    const watch = [];
     let owedFailed = null;
     if (existsSync(P.placementModel)) {
       try {
@@ -2393,7 +2395,8 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
           const uris = entryUris(e);
           if (!uris.length) continue;
           if (e?.tier === "headline-candidate") { owedEntries.push({ uris }); owed.push(...uris); }
-          else if (e?.tier === "sheet-2") adopt.push({ uri: uris.find((u) => live.get(u) === true) ?? uris[0], uris, reason: String(e?.reason ?? "") });
+          else if (e?.tier === "sheet-2" || e?.tier === "watchlist-annex")
+            (e.tier === "sheet-2" ? adopt : watch).push({ uri: uris.find((u) => live.get(u) === true) ?? uris[0], uris, reason: String(e?.reason ?? "") });
         }
       } catch (e) { owedFailed = String(e?.message ?? e).slice(0, 160); }
     }
@@ -2401,7 +2404,7 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     const facts = {
       schema_version: 1,
       owed: owedFailed ? null : [...new Set(owed)],
-      ...(owedFailed ? {} : { owed_entries: owedEntries, adopt }),
+      ...(owedFailed ? {} : { owed_entries: owedEntries, adopt, watch }),
       identity: {
         mark: ctx.job?.markName ?? ctx.run?.slug ?? null,
         date: ctx.job?.filedDate ?? ctx.run?.startedAt?.slice?.(0, 10) ?? null,
