@@ -28,13 +28,14 @@ import { fallbackNoteFor } from "./numeric-setting.mjs";   // — the one allowe
 import { preflightSkillsStore } from "./skills-store-provenance.mjs";   // — the doctrine this run will be rated under must be reproducible
 import { engineProvenance } from "./engine-build.mjs";                  // — …and which engine loaded it, at run START
 import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
+import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
-import { handResearchAnswers, RESEARCH_REPLAY_FILE, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
+import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
 import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
@@ -18462,6 +18463,10 @@ async function runExperimentInner(job, opts) {
     throw new Error(`--research: unknown value "${opts.research}" — one of: ${RESEARCH_MODES.join(", ")}`);
   if (opts.research === "replay" && !experimentToolGroups(name).includes("perplexity"))
     throw new Error(`--experiment ${name} --research replay: ${name} holds no research tool, so there is no research to replay`);
+  // The replayed answers sit outside the arm's folder, and only the engine's own fence keeps a stage's commands there.
+  // Codex's sandbox bypass builds none, so the writer could read every answer it is about to be replayed.
+  if (opts.research === "replay" && experimentEngineName() === "openai-agent" && codexSandboxBypassed())
+    throw new Error(`--experiment ${name} --research replay: Codex's sandbox is bypassed (CLEAROTRON_CODEX_SANDBOX_BYPASS=1), so the stage's commands could read the answers the replay answers from — run the arm with the sandbox on, or with --research live`);
   if (opts.dispatchTrigger != null && !DISPATCH_TRIGGERS.includes(opts.dispatchTrigger))
     throw new Error(`--dispatch-trigger: unknown value "${opts.dispatchTrigger}" — it decides which production pass the arm reproduces, so a typo would compose a quietly different prompt. One of: ${DISPATCH_TRIGGERS.join(", ")}`);
   const ctx = reconstructCtx(job, opts);
@@ -18479,7 +18484,7 @@ async function runExperimentInner(job, opts) {
   // what the replay answers from, never a hand-off production's first attempt does not get.
   const shadowCtx = { ...ctx, paths: paths(shadowDir), axis, gridSpecPath: null, clHalfTerms: null,
     researchHandOff: (opts.dispatchTrigger ?? "fresh") !== "fresh" };
-  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly };
+  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly, researchHandOff: shadowCtx.researchHandOff };
   const manifest = sandboxManifest(name, ctx.paths, inputOpts);
   // ── 1. GATHER — the sandbox manifest, not the freshness list ──────────────────────────────────────
   //
@@ -18530,13 +18535,18 @@ async function runExperimentInner(job, opts) {
       gaps.map((g) => `  · ${g.rel}  [${g.kind}${g.via ? ` via ${g.via}` : ""}]${g.why ? ` — ${g.why}` : ""}`).join("\n"));
   }
   // A REPLAY NEEDS ANSWERS TO REPLAY. Refused by name when the run kept none, rather than dispatched to refuse
-  // every question it asks; the marker is the research server's whole switch, and only a sandbox writes it.
+  // every question it asks; the marker is the research server's whole switch, and only a sandbox writes it. The
+  // answers are copied beside the arm, never into it (research-answers.mjs), and the marker names that copy.
   let replayedAnswers = null;
   if (opts.research === "replay") {
-    replayedAnswers = savedResearchCount(shadowDir);
+    const kept = driverDir(ctx.paths.runDir, RESEARCH_ANSWERS_FILE);
+    replayedAnswers = savedResearchCount(kept);
     if (!replayedAnswers)
       throw new Error(`--experiment ${name} --research replay: this run kept no research answers (_driver/research-answers.jsonl is absent or holds none), so there is nothing to replay — run the arm with --research live`);
-    atomicWrite(driverDir(shadowDir, RESEARCH_REPLAY_FILE), JSON.stringify({ replayOf: "the run's saved research answers", answers: replayedAnswers }, null, 2) + "\n");
+    const answersFrom = replayAnswersFile(shadowDir);
+    mkdirSync(dirname(answersFrom), { recursive: true });
+    copyFileSync(kept, answersFrom);
+    atomicWrite(driverDir(shadowDir, RESEARCH_REPLAY_FILE), JSON.stringify({ replayOf: "the run's saved research answers", answers: replayedAnswers, answersFrom }, null, 2) + "\n");
   }
   // ── 4. INLINE context — what no file copy can supply ──────────────────────────────────────────────
   //

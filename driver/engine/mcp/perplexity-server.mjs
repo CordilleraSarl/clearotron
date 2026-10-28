@@ -30,7 +30,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
 import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
-import { keepResearchAnswer, researchReplayOn, savedResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage; a replay answers from them
+import { keepResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage; a replay answers from them
 
 const API_KEY = process.env.PERPLEXITY_API_KEY || "";
 
@@ -321,16 +321,18 @@ async function research(params) {
 //
 // In the experiment sandbox under `--research replay` (research-answers.mjs), a question the run already asked
 // gets the answer the run got, and any other question, a grid among them, is refused: nothing goes out to the
-// research service. Both are logged as a lookup is, marked as a replay, so the arm's reading log says which.
+// research service. Both are logged as a lookup is, marked as a replay, so the arm's reading log says which. The answers
+// are read from the copy the marker names, outside the arm's folder, where the stage's own commands cannot reach them.
 function replayResearch(params) {
   const { task, grid_spec_path } = params ?? {};
   if (grid_spec_path) {
     logCall("perplexity_research", { task: task ?? "", grid: true, replay: true }, { ok: false, error: "replay: grid not replayed" });
     return "ERROR: replay — this replays the run's saved research answers and runs no grid; nothing was sent to the research service.";
   }
-  const saved = savedResearchAnswer(RUN_DIR, task);
+  const from = replayAnswersFrom(RUN_DIR);
+  const saved = savedResearchAnswer(from, task);
   if (!saved) {
-    logCall("perplexity_research", { task: task ?? "", replay: true }, { ok: false, error: "replay: no saved answer" });
+    logCall("perplexity_research", { task: task ?? "", replay: true }, { ok: false, error: from ? "replay: no saved answer" : "replay: the marker names no answers file" });
     return "ERROR: replay — the run asked no question worded exactly like this one, so there is no saved answer to give; nothing was sent to the research service.";
   }
   logCall("perplexity_research", { task, replay: true }, { ok: true, bytes: saved.text.length, replayed: true });

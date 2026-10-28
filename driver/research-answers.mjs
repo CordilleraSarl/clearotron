@@ -26,7 +26,7 @@
 //
 // A pure leaf: node:fs, node:path and shared/driver-dir.mjs only, so the research server can import it.
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 
 export const RESEARCH_ANSWERS_FILE = "research-answers.jsonl";
@@ -114,23 +114,42 @@ export function researchAnsweredBlock(n) {
 // ── A REPLAY ANSWERS FROM THE RUN'S OWN RESEARCH, AND ASKS NOTHING NEW ────────────────────────────────────────────────
 //
 // A stage replayed offline in the experiment sandbox would send its research questions out again: a cost, and an
-// answer that is not the one the run got. With `--research replay` the sandbox holds the run's own answers and says so
-// in this marker, and the research server answers a question the run already asked from what the run got, and refuses
-// a question it did not ask, sending nothing out. Only the sandbox writes the marker; a run never does.
+// answer that is not the one the run got. With `--research replay` the research server answers a question the run
+// already asked from what the run got, and refuses a question it did not ask, sending nothing out. The sandbox says so
+// in this marker; only the sandbox writes it, a run never does.
+//
+// THE ANSWERS IT REPLAYS SIT OUTSIDE THE ARM'S COPY. They were copied into it, under `_driver/`, and a stage's own
+// commands may read `_driver/`. On a test replay of a crowded matter, 2026-10-28, a Codex writer read the file through
+// its shell and asked 169 of the saved run's own later questions word for word, which the replay then answered: a
+// first attempt that holds those answers is not a first attempt. So the run's answers are copied beside the arm, into
+// `_experiments/_replay/<arm>/`, which no stage of the arm is granted, and the marker names that copy. It holds only
+// while the engine keeps a stage's commands to its own folders: under Codex's sandbox bypass nothing does, and the
+// experiment refuses a replay there.
 export const RESEARCH_REPLAY_FILE = "research-replay.json";
+
+/** Where an arm's replayed answers are kept: beside the arm's folder, never inside it. PURE. */
+export const replayAnswersFile = (armDir) => join(dirname(armDir), "_replay", basename(armDir), RESEARCH_ANSWERS_FILE);
 
 /** True when this run folder is a replay of a run's research. IMPURE (reads the marker). */
 export const researchReplayOn = (runDir) => Boolean(runDir) && existsSync(driverDir(runDir, RESEARCH_REPLAY_FILE));
 
+/** The answers file a replay answers from, as its marker names it, or null: then it answers nothing. IMPURE. */
+export function replayAnswersFrom(runDir) {
+  try {
+    const from = JSON.parse(readFileSync(driverDir(runDir, RESEARCH_REPLAY_FILE), "utf8"))?.answersFrom;
+    return typeof from === "string" && from.trim() ? from : null;
+  } catch { return null; }
+}
+
 /**
- * The run's latest answer to exactly this question, whichever of its stages asked it, or null. The question is
- * matched as written, trimmed at its ends: a question worded differently is a new question. IMPURE (reads the record).
+ * The latest answer in the answers file `file` to exactly this question, whichever stage of the run asked it, or null.
+ * The question is matched as written, trimmed at its ends: a question worded differently is a new question. IMPURE.
  */
-export function savedResearchAnswer(runDir, task) {
+export function savedResearchAnswer(file, task) {
   const want = typeof task === "string" ? task.trim() : "";
-  if (!runDir || !want) return null;
+  if (!file || !want) return null;
   let raw = "";
-  try { raw = readFileSync(driverDir(runDir, RESEARCH_ANSWERS_FILE), "utf8"); } catch { return null; }
+  try { raw = readFileSync(file, "utf8"); } catch { return null; }
   let found = null;
   for (const line of raw.split("\n")) {
     if (!line.trim()) continue;
@@ -142,10 +161,10 @@ export function savedResearchAnswer(runDir, task) {
   return found;
 }
 
-/** How many questions the run's record answers: the experiment refuses a replay with nothing to replay. IMPURE. */
-export function savedResearchCount(runDir) {
+/** How many questions the answers file `file` answers: the experiment refuses a replay with nothing to replay. IMPURE. */
+export function savedResearchCount(file) {
   let raw = "";
-  try { raw = readFileSync(driverDir(runDir, RESEARCH_ANSWERS_FILE), "utf8"); } catch { return 0; }
+  try { raw = readFileSync(file, "utf8"); } catch { return 0; }
   const tasks = new Set();
   for (const line of raw.split("\n")) {
     try { const row = JSON.parse(line); if (typeof row?.task === "string" && row.task.trim() && isResearchAnswer(row.text)) tasks.add(row.task.trim()); }
