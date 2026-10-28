@@ -1033,6 +1033,11 @@ export function recordSynthesis(runDir, received, opts = {}) {
 // next finding found can move. The position is the declination spec's entry whose records the finding names, as the
 // duty reads it; a finding naming none of them is keyed by the records it names, or by its mark and owner.
 //
+// THE OWNER IS NAMED BY ITS NAME AND COUNTRY. The last key read the owner object as text, and every owner object reads
+// the same, so two owners' findings for one mark that named no register record shared a key and the second save
+// replaced the first (found in review, 2026-10-28, on a test run's saved progress). A row saved under that key is keyed
+// again from its finding when it is read, so a run saved before this change keeps both owners.
+//
 // APPEND-ONLY, FOLDED ON READ: a kill in the middle of a save cannot cut an earlier one short, and two saves in one turn
 // cannot lose either. The latest save for a position stands; an identical re-save changes nothing; a different one is a
 // revision, and the record says how many there were. A saved finding naming a record the writer has declined is
@@ -1052,8 +1057,16 @@ export function positionKeyOf(finding, owed = null) {
     if (named.some((u) => members.has(u))) return `position:${head}`;
   }
   if (named.length) return `records:${[...new Set(named)].sort().join(",")}`;
-  return `mark:${String(finding?.mark ?? "").trim().toLowerCase()}|${String(finding?.owner ?? "").trim().toLowerCase()}`;
+  return markOwnerKey(finding);
 }
+
+const keyText = (v) => String(v ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+// The key of a finding that names no register record: its mark, and its owner as the owner object names it.
+const markOwnerKey = (finding) => {
+  const o = finding?.owner;
+  const owner = o && typeof o === "object" ? `${keyText(o.name ?? o.nameRaw ?? o.nameNative)}|${keyText(o.country)}` : keyText(o);
+  return `mark:${keyText(finding?.mark)}|${owner}`;
+};
 
 /**
  * The findings saved since the last accepted whole record, the latest per position, in the order first saved. A torn
@@ -1069,8 +1082,10 @@ export function readSavedFindings(runDir) {
     try { row = JSON.parse(line); } catch { continue; }
     if (row?.consumed) { byKey = new Map(); continue; }
     if (typeof row?.key !== "string" || !row.finding || typeof row.finding !== "object") continue;
-    const had = byKey.get(row.key);
-    byKey.set(row.key, { key: row.key, finding: row.finding, savedAt: String(row.at ?? ""), revisions: had ? had.revisions + (row.revised ? 1 : 0) : 0 });
+    // A mark-and-owner key is the finding's own, so it is read again from the finding, as the save now writes it.
+    const key = row.key.startsWith("mark:") ? markOwnerKey(row.finding) : row.key;
+    const had = byKey.get(key);
+    byKey.set(key, { key, finding: row.finding, savedAt: String(row.at ?? ""), revisions: had ? had.revisions + (row.revised ? 1 : 0) : 0 });
   }
   return [...byKey.values()];
 }
