@@ -238,8 +238,16 @@ export function referenceChecks({ actionsText, fullSurface, searchedNames, surfa
   // Pre-v4 runs keep the redo — there the authored section survives assembly and the redo IS the owner.
   // The flag rides a FAILURE only. `modelFixable` reads it off failures, so a structural bit on a pass
   // would be a state nothing means and a reader would have to guess at.
+  //
+  // THE ZONE IS NOT THE ACTIONS ALONE. `splitBlocks` ends a block at `##` or `###` only, so the only-you
+  // block runs on through the overview's own `# Methodology` up to the first card. A name there is
+  // read as an action line, and on a code-built run it is structural, although the overview wrote it
+  // and the overview's repair could change it. So the orphans ride the failure: the repair reads which
+  // part holds each one, and a citation of a withdrawn or absent finding in the overview's own prose
+  // goes to the overview (repair-targets.mjs).
   return [{ ...check("reference-integrity", "reference", surface, orphans.length === 0,
-    orphans.length ? detail : ""), ...(structural && orphans.length ? { structural: true } : {}) }];
+    orphans.length ? detail : ""), ...(structural && orphans.length ? { structural: true } : {}),
+    ...(orphans.length ? { orphans } : {}) }];
 }
 
 // ── — AN ASK LONGER THAN THE VERDICT STATEMENT'S CLAUSE IS ONE THE STATEMENT ELLIPSISES ─────────
@@ -1719,6 +1727,15 @@ export function contentModelChecks({ findings, fourAnswers, expected }) {
 // (registry-record-match, registry-arithmetic, correction-consistency:*, …) and these are not on it,
 // so they cannot suppress or delay the artifact. They ship to the reviewing lawyer on the receipt.
 //
+// THE ORDINALS JOIN IS THE EXCEPTION, because one part can change those bytes. The citations are the
+// writer's record, and the writer's own repair edits that record. Marked structural, a citation of a
+// finding the review withdrew went to no repair at all: measured in testing, 2026-10-28, all three
+// answers of a delivered summary panel linked to a withdrawn finding after a repair that had already
+// re-run the writer for another fault. So a failure that cites a withdrawn finding names the register
+// that holds it and each citation, and the repair hands it to the writer (repair-targets.mjs). One
+// that cites only findings the run does not have stays structural: the writer's repair has no wording
+// for that fault.
+//
 // ABSENT ⇒ SILENT. `fourAnswers` null/absent emits NOTHING, exactly as placementsChecks gates on
 // Array.isArray. Every archived run carries `four_answers: null`, so an ungated check would grow a new
 // failure across the whole replay corpus and flip verdicts the corpus depends on.
@@ -1737,17 +1754,20 @@ export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }
   // (1) THE ORDINALS JOIN. An answer citing a finding this run does not have, or one the review
   // withdrew, is incoherent by construction — no reading of the prose rescues it, and the renderer
   // emits the ordinal as a live #anchor, so the reader gets a link to nothing.
-  const dangling = [];
+  const dangling = [], cites = [];
   for (const [key, a] of Object.entries(fourAnswers)) {
     if (!a || !Array.isArray(a.ordinals)) continue;
     for (const n of a.ordinals) {
       const ord = Number(n);
-      if (withdrawn.has(ord)) dangling.push(`${key} cites #${ord}, which the review WITHDREW`);
-      else if (!byOrdinal.has(ord)) dangling.push(`${key} cites #${ord}, which this run has no finding for`);
+      if (withdrawn.has(ord)) { dangling.push(`${key} cites #${ord}, which the review WITHDREW`); cites.push({ answer: key, ordinal: ord, withdrawn: true }); }
+      else if (!byOrdinal.has(ord)) { dangling.push(`${key} cites #${ord}, which this run has no finding for`); cites.push({ answer: key, ordinal: ord, withdrawn: false }); }
     }
   }
-  add("four-answers-ordinals", dangling.length === 0,
-    `the four-answers panel cites finding(s) that are not there: ${dangling.join("; ")} — the panel links each ordinal as a card anchor, so the reader follows it to nothing; re-cite the findings the answer actually rests on`);
+  const ordinals = check("four-answers-ordinals", "content-model", "report", dangling.length === 0, dangling.length ?
+    `the four-answers panel cites finding(s) that are not there: ${dangling.join("; ")} — the panel links each ordinal as a card anchor, so the reader follows it to nothing; re-cite the findings the answer actually rests on` : "");
+  if (cites.some((c) => c.withdrawn)) Object.assign(ordinals, { register: "four_answers", cites });
+  else if (!ordinals.pass) ordinals.structural = true;
+  out.push(ordinals);
 
   // (2) THIRD-PARTY RIGHTS vs the findings. "weak" is a statement about the field the findings
   // contradict when the run itself rated conflicts adversarial; "strong" over a run with no rated

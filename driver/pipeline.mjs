@@ -180,7 +180,7 @@ import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKe
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
-import { locateReportFaults, reportPartsOf } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
+import { locateReportFaults, reportPartsOf, overviewCitationFault, writersCitationFaults } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
   findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
@@ -16548,8 +16548,12 @@ async function pipelineInner(job, opts = {}) {
           if (r.ok) repaired.push(label);
         };
         const reportFixable = modelFixable(bySurface("report"));
+        const reportParts = reportPartsOf(P, findingsForCards, writeUps);
+        // A citation of a withdrawn or absent finding in the overview's own prose is the overview's to remove, although
+        // the reference check that finds it ships its failure as structural (repair-targets.mjs).
+        const overviewCites = overviewCitationFault(lint.failures, reportParts);
         const reportStructuralOnly = bySurface("report").filter((f) => f.structural);
-        if (reportStructuralOnly.length && !reportFixable.length) {
+        if (reportStructuralOnly.length && !reportFixable.length && !overviewCites) {
           runLog(run.runDir, { event: "lint-redo-skipped-structural", surface: "report", failures: reportStructuralOnly.map((f) => f.id) });
           note(`pre-delivery lint: report failure(s) are structural (un-fetchable record) — shipping as flags, no doomed redo`);
         }
@@ -16559,11 +16563,13 @@ async function pipelineInner(job, opts = {}) {
         let reassembled = false;
         // Each fault goes to the part that holds it (repair-targets.mjs): a card's to that card, with the detail its
         // check gives on that card alone; the overview's to the overview; and a fault only the lines composed from the
-        // record hold to the writer's repair below, since the record is the writer's. One no single part holds keeps the
-        // overview's repair.
-        const targets = locateReportFaults(reportFixable, reportPartsOf(P, findingsForCards, writeUps));
-        if (reportFixable.length) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
-          overview: targets.overview.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), unlocated: targets.unlocated.map((f) => f.id) });
+        // record hold to the writer's repair below, since the record is the writer's, and so does one a register of the
+        // record holds. One no single part holds keeps the overview's repair.
+        const targets = locateReportFaults(reportFixable, reportParts);
+        const shellFixable = [...targets.overview, ...(overviewCites ? [overviewCites] : [])];
+        if (reportFixable.length || overviewCites) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
+          overview: shellFixable.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), record: targets.record.map((f) => f.id),
+          unlocated: targets.unlocated.map((f) => f.id) });
         const badOrdinals = [...targets.cards.keys()];
         for (const ord of badOrdinals) {
           const f = findingsForCards.find((x) => x.ordinal === ord);
@@ -16588,7 +16594,6 @@ async function pipelineInner(job, opts = {}) {
           });
           if (rc.ok) { repaired.push(`report-card:${ord}`); reassembled = true; }
         }
-        const shellFixable = targets.overview;
         if (shellFixable.length && rov) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
@@ -16599,9 +16604,12 @@ async function pipelineInner(job, opts = {}) {
         // writer's too: no card or overview repair can change what the renderer stamps from the record. It joins the
         // narrative's faults in the writer's one repair, each named by the finding that owns it, in the numbering the
         // writer's save takes. Its consumers then rebuild, and its change is reviewed, as for any repair of the record.
+        // A fault a register of the record holds (the four answers citing a finding the review withdrew) joins it, one
+        // line per withdrawn finding it cites, in that numbering.
         const fold = readFold(run.runDir);
         const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
-        const narrativeFixable = [...modelFixable(bySurface("narrative")), ...sentenceFixable];
+        const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
+        const narrativeFixable = [...modelFixable(bySurface("narrative")), ...sentenceFixable, ...recordFixable];
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
         // A writer fault with no writer session to repair it is not repaired, and the run says so.
         if (narrativeFixable.length && !synthesisKey)

@@ -15,6 +15,12 @@
 // one neither of those repairs can edit: it goes to the writer, whose record those lines are composed from. A fault no
 // single part holds (two cards counting one owner's registrations differently), or one whose check cannot be run on a
 // part, keeps the overview's repair it always had.
+//
+// Two faults are placed by what they cite. A citation held in a register of the record (the four answers' findings) is
+// the writer's, since no card or overview repair can change the record. A citation of a withdrawn or absent finding in
+// the overview's own prose is the overview's, although the reference check that finds it marks its failure structural:
+// the check reads the overview's `# Methodology` as part of the actions, and on a run whose actions code builds from
+// the record no part writes those lines.
 import { readFileSync } from "node:fs";
 import { prescriptionProseChecks, scopeNumberProseChecks, wipoLanguageChecks, countingChecks, countsFromFindings } from "./predelivery-lint.mjs";
 import { netOf, memberLine } from "./write-up-render.mjs";
@@ -37,14 +43,15 @@ export const LOCATED_CHECKS = Object.freeze(Object.keys(ON_A_PART));
  * the overview's own file; and `stamped`, the lines code composes from the record ({ordinal, text}). `findings` is
  * the record the delivery check judged, for the check that compares a count with it.
  *
- * Returns `{cards, overview, stamped, unlocated}`: `cards` maps a card's ordinal to the faults it holds, each with
- * that card's ordinal and the detail its check gives on that card alone; `overview` holds the faults the overview's
- * repair is given, those it holds (with its own detail) and those no part holds alone; `stamped` the faults only
- * lines composed from the record hold, each with `parts`, the finding of each line that holds it and the detail its
- * check gives on that line; `unlocated` the faults no part holds alone, already counted in `overview`.
+ * Returns `{cards, overview, stamped, record, unlocated}`: `cards` maps a card's ordinal to the faults it holds, each
+ * with that card's ordinal and the detail its check gives on that card alone; `overview` holds the faults the
+ * overview's repair is given, those it holds (with its own detail) and those no part holds alone; `stamped` the faults
+ * only lines composed from the record hold, each with `parts`, the finding of each line that holds it and the detail
+ * its check gives on that line; `record` the faults a register of the record holds, each naming it as `register`;
+ * `unlocated` the faults no part holds alone, already counted in `overview`.
  */
 export function locateReportFaults(failures, { cards = [], overview = null, stamped = [], findings = [] } = {}) {
-  const out = { cards: new Map(), overview: [], stamped: [], unlocated: [] };
+  const out = { cards: new Map(), overview: [], stamped: [], record: [], unlocated: [] };
   const fails = (rerun, text) => {
     if (!String(text ?? "").trim()) return null;
     const c = rerun(text, findings);
@@ -53,6 +60,7 @@ export function locateReportFaults(failures, { cards = [], overview = null, stam
   const toCard = (ordinal, fault) => out.cards.set(ordinal, [...(out.cards.get(ordinal) ?? []), fault]);
   for (const f of failures ?? []) {
     if (f?.ordinal != null) { toCard(f.ordinal, f); continue; }   // the check named its finding: that card, as it always was
+    if (f?.register) { out.record.push(f); continue; }            // a register of the record holds it: the writer's
     const rerun = ON_A_PART[f?.id];
     if (!rerun) { out.overview.push(f); out.unlocated.push(f); continue; }
     let held = false;
@@ -71,6 +79,73 @@ export function locateReportFaults(failures, { cards = [], overview = null, stam
     out.unlocated.push(f);
   }
   return out;
+}
+
+// The writer's repair line for one withdrawn finding its record cites, in the owner's words (ruled 2026-10-28). The
+// finding's number is the only part that varies.
+const withdrawnCitationLine = (ordinal) => `Your text cites finding ${ordinal}, which the review withdrew. Remove that citation. `
+  + `Check the affected statement against the surviving assessment, and correct or remove it if unsupported. Keep unaffected text unchanged.`;
+
+/**
+ * The faults the writer's repair is given for one a register of the record holds: one line per withdrawn finding it
+ * cites, each named by the number the writer's record carries. The check judged the delivered record, which the fold
+ * may have renumbered; `toModel` maps a delivered ordinal to the writer's, or to null for one the fold does not know,
+ * which keeps its number as written. A citation of a finding the run does not have is not sent: the ruled line is for a
+ * withdrawn one. PURE.
+ */
+export function writersCitationFaults(fault, toModel) {
+  if (fault?.register !== "four_answers" || !Array.isArray(fault.cites)) return [fault];
+  const numbers = [...new Set(fault.cites.filter((c) => c.withdrawn).map((c) => toModel(c.ordinal) ?? c.ordinal))];
+  return numbers.map((ordinal) => ({ ...fault, cites: fault.cites.filter((c) => (toModel(c.ordinal) ?? c.ordinal) === ordinal),
+    detail: withdrawnCitationLine(ordinal) }));
+}
+
+// A citation by number, as the reference check returns it among the names it could not place: "Finding 12".
+const CITATION = /^findings?\s+#?(\d+)$/i;
+
+/**
+ * The overview's repair for the citations of a withdrawn or absent finding that its own prose holds, among the names
+ * the reference check could not place (each failure's `orphans`). PURE.
+ *
+ * A citation of a live finding is left as it is: that finding's card is in the report, so the citation is not the fault
+ * the check reports, and the overview has nothing to remove. A party's name is left too. The report's check and the
+ * email's can name one citation twice; it is one citation to remove.
+ *
+ * Returns the fault the overview's repair is given, `{id, family, surface, detail, cites}`, with `cites` as
+ * `{ordinal, withdrawn}`, or null when its prose holds no such citation.
+ */
+export function overviewCitationFault(failures, { overview = null, findings = [] } = {}) {
+  const text = String(overview ?? "");
+  if (!text.trim()) return null;
+  const live = new Set((findings ?? []).filter((f) => f && f.disposition !== "withdrawn").map((f) => Number(f.ordinal)));
+  const withdrawn = new Set((findings ?? []).filter((f) => f?.disposition === "withdrawn").map((f) => Number(f.ordinal)));
+  const cites = new Map();
+  for (const f of failures ?? []) {
+    if (!/^reference-integrity(:|$)/.test(String(f?.id ?? "")) || !Array.isArray(f.orphans)) continue;
+    for (const name of f.orphans) {
+      const m = String(name).trim().match(CITATION);
+      const ordinal = m ? Number(m[1]) : null;
+      if (ordinal == null || live.has(ordinal) || cites.has(ordinal)) continue;
+      if (!new RegExp(`\\bfindings?\\s+#?${ordinal}\\b`, "i").test(text)) continue;
+      cites.set(ordinal, { ordinal, withdrawn: withdrawn.has(ordinal) });
+    }
+  }
+  if (!cites.size) return null;
+  const list = [...cites.values()];
+  return { id: "reference-integrity", family: "reference", surface: "report", detail: overviewCitationDetail(list), cites: list };
+}
+
+// The overview's repair instruction, as design approved it for this correction (2026-10-28), word for word. Its repair is
+// handed this run's references ahead of it, each as withdrawn or absent, in design's own words.
+const CITATION_CORRECTION = "The listed references point to findings that have been withdrawn or are absent. "
+  + "Reassess the affected answers, actions, and conclusions against the surviving findings. "
+  + "Cite a surviving finding only where its evidence supports the statement; otherwise correct the statement. "
+  + "Preserve unaffected work and record the corrections through the existing correction tool.";
+
+/** The overview's citation fault in words, for its repair. PURE. */
+export function overviewCitationDetail(cites) {
+  const each = cites.map((c) => `finding ${c.ordinal} (${c.withdrawn ? "withdrawn" : "absent"})`);
+  return `References: ${each.join("; ")}. ${CITATION_CORRECTION}`;
 }
 
 /**
