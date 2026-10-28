@@ -1256,11 +1256,18 @@ export function correctionConsistencyChecks({ reportMd, clientSummaryMd, auditMd
   const report = String(reportMd ?? "");
   const cs = String(clientSummaryMd ?? "");
   const audit = String(auditMd ?? "");
+  // A CARD THAT CARRIES ITS OWN `- ord:` LINE IS THE FINDING THAT LINE NAMES. One owner can hold the same mark in
+  // several records, each its own finding, and a live one keeps its card under the same head when another is
+  // withdrawn: read by its head, it was the withdrawn finding back, and that one false failure closed the client
+  // export of a crowded test run (2026-10-28). The ord line already answers for such a card, so the head match is
+  // for a card with none, the older card shape.
+  const unnumberedHeads = [...report.matchAll(/^##\s+([^\n]+)\n?((?:- [^\n]*\n?)*)/gm)]
+    .filter(([, , meta]) => !/^-\s*ord:/m.test(meta)).map(([, h]) => h);
   for (const f of withdrawn) {
     const ord = f.ordinal;
     const markN = norm(f.mark), ownerN = norm(f.owner?.name);
     const ordHit = ord != null && new RegExp(`^-\\s*ord:\\s*${ord}\\s*$`, "m").test(report);
-    const headHit = [...report.matchAll(/^##\s+([^\n]+)$/gm)].some(([, h]) => {
+    const headHit = unnumberedHeads.some((h) => {
       const hN = norm(h);
       return markN && ownerN && hN.includes(markN) && hN.includes(ownerN);
     });
