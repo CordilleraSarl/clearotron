@@ -2235,6 +2235,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-watchlist-entry-keeps-its-row.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-watchlist-is-a-hint-not-a-rule.test.mjs": {
           "tests": 1,
           "asserts": 4,
