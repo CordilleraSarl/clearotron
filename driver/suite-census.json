@@ -1941,6 +1941,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-set-aside-crowd-an-open-required-read-and-a-failed-search-keep-their-own-outcomes.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-shared-proprietor-is-not-a-bucket-collision.test.mjs": {
           "tests": 6,
           "asserts": 14,

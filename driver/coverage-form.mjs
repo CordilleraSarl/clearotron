@@ -373,7 +373,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
     return r ? { narrowing: r.narrowing, ...(r.lists?.length ? { lists: r.lists } : {}), ...(r.not_covered?.length ? { not_covered: r.not_covered } : {}) } : {};
   };
   const entriesByQid = new Map((plan?.entries ?? []).map((e) => [e.qid, e]));
-  const open = openBlocksByAxis(skel, bandBlocksByAxis, plan);
+  const open = openBlocksByAxis(skel, bandBlocksByAxis, plan, { withDeferred: true });
   // Axis order is the run's, not a set's iteration order: the plan-execution skeleton first (the order
   // the plan dictated), then any active axis the skeleton does not name, then the canonical axis list as
   // the final tie-break. Deterministic ⇒ the same run regenerates a byte-identical form every pass.
