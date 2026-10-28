@@ -294,6 +294,28 @@ test("a refusal is not a stop: a repeat is taken with the unsupported no-result 
   assert.deepEqual([s.saved.length, s.save_refused], [1, []]);
 });
 
+test("a correction on a retry's session keeps the main pass's no-result, and its evidence keeps the main pass's questions", async (t) => {
+  const d = run(t);
+  await callResearch(d, { task: ask("Alder Holdings") });                 // the main pass, on the writer's session
+  await callResearch(d, { task: ask("Birchmoor Ltd") }, { key: "" });      // and a question of it that was refused
+  const main = whole(d, [noResult(DOC.findings[0], ask("Alder Holdings")), leftUnknown(DOC.findings[1]), DOC.findings[2]]);
+  assert.equal(main.refused, null, main.refused);
+  // The correction after the review, on a retry's session, changing another finding.
+  const retry = `${SESSION}-rerun1`;
+  const patch = SR.recordSynthesis(d, { findings_patch: [{ ...leftUnknown(DOC.findings[1]), ordinal: 2, legal_position: "Corrected on the record's own evidence." }] }, { sessionKey: retry });
+  assert.equal(patch.refused, null, `a correction to another finding reopened a stored no-result: ${patch.refused}`);
+  const stored = JSON.parse(readFileSync(join(d, "findings.json"), "utf8")).findings.find((f) => f.mark === DOC.findings[0].mark);
+  assert.equal(stored.use_check?.source, NO_RESULT, "the main pass's supported no-result was taken off");
+  assert.ok(readFileSync(paths(d).researchChecks, "utf8").includes(`- "${ask("Birchmoor Ltd")}": did not complete (refused: no research credential)`),
+    "the review's evidence lost the main pass's refused question after the correction");
+  // A changed finding naming the main pass's completed question holds it, on a retry of a retry.
+  const again = SR.recordSynthesis(d, { findings_patch: [{ ...noResult(DOC.findings[2], ask("Alder Holdings")), ordinal: 3 }] }, { sessionKey: `${retry}-rerun1` });
+  assert.equal(again.refused, null, again.refused);
+  // And a changed finding is still judged: a no-result on the refused question is refused.
+  const bad = SR.recordSynthesis(d, { findings_patch: [{ ...noResult(DOC.findings[1], ask("Birchmoor Ltd")), ordinal: 2 }] }, { sessionKey: retry });
+  assert.match(bad.refused ?? "", /^synthesis_no_result_without_a_completed_search:2 — finding 2 names a question this writer holds no completed answer to/);
+});
+
 // A frozen ladder, so the record's own check judges which findings are material, as it does on a run.
 const FIVE = parseFrameworkManifest({
   schema_version: 1, framework_key: "five-rung-test", title: "Invented five-rung ladder", source_deck: "none", entity_label: "the company",

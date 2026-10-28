@@ -163,7 +163,9 @@ export function savedResearchAnswer(runDir, task) {
 // checks that the question completed; what its answer supports is the model's to judge.
 //
 // WHAT THE WRITER HOLDS: the answers it was handed (research-answers.md: earlier stages and attempts), and the questions
-// its own session completed, as the research log records them, a replayed answer among them. A bank of saved answers it
+// its own stage's sessions completed, as the research log records them, a replayed answer among them. Its sessions are
+// one base key and the retries the gateway mints from it, `-rerun<n>`, chained when a correction resumes a retry: the
+// correction after the review counts the main pass's answers, and the main pass's a retry's. A bank of saved answers it
 // was neither handed nor given by the tool is not held: a replay's copy carries the whole run's answers, its own stage's
 // later answers among them, and those are not evidence already held.
 
@@ -174,10 +176,17 @@ export const questionKey = (q) => String(q ?? "").replace(/\s+/g, " ").trim()
 const lines = (p) => { try { return readFileSync(p, "utf8").split("\n"); } catch { return []; } };
 const rows = (p) => lines(p).flatMap((l) => { if (!l.trim()) return []; try { return [JSON.parse(l)]; } catch { return []; } });
 
+/** Whether two session keys are one stage's: the same key once every `-rerun<n>` the gateway added is taken off. PURE. */
+export const sameStageSession = (a, b) => {
+  const base = (s) => String(s ?? "").replace(/(-rerun\d+)+$/, "");
+  return Boolean(a) && Boolean(b) && typeof a === "string" && typeof b === "string" && base(a) === base(b);
+};
+
 /**
  * The research questions this writer holds a completed answer to, keyed by `questionKey`, each with its question as asked,
- * its answer where the run kept it, and `from`: "handed" or "asked". `sessionKey` is the writer's session; its retries'
- * keys extend it with `-rerun<n>`. With no session, only what was handed is held. null when there is no run. IMPURE.
+ * its answer where the run kept it, and `from`: "handed" or "asked". `sessionKey` is the writer's session, and every
+ * session of its stage counts (`sameStageSession`). With no session, only what was handed is held. null when there is no
+ * run. IMPURE.
  */
 export function heldResearchAnswers(runDir, sessionKey = null) {
   if (!runDir) return null;
@@ -187,8 +196,7 @@ export function heldResearchAnswers(runDir, sessionKey = null) {
     const m = l.match(/^Question (\d+): (.*?) Answer \1: (.*)$/);
     if (m && isResearchAnswer(m[3])) put(m[2], m[3], "handed");
   }
-  const own = (s) => Boolean(sessionKey) && typeof s === "string"
-    && (s === sessionKey || (s.startsWith(`${sessionKey}-rerun`) && /^\d+$/.test(s.slice(`${sessionKey}-rerun`.length))));
+  const own = (s) => sameStageSession(s, sessionKey);
   const kept = rows(driverDir(runDir, RESEARCH_ANSWERS_FILE));
   for (const r of kept) if (own(r?.session) && typeof r.task === "string" && isResearchAnswer(r.text)) put(r.task, oneLine(r.text), "asked");
   for (const r of rows(driverDir(runDir, "reading-log.jsonl"))) {

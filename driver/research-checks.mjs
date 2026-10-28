@@ -14,7 +14,7 @@ import { readFileSync, writeFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { isUseCheckNoResult } from "./findings-model.mjs";
-import { questionKey } from "./research-answers.mjs";
+import { questionKey, sameStageSession } from "./research-answers.mjs";
 
 export const RESEARCH_CHECKS_FILE = "research-checks.md";
 
@@ -65,14 +65,14 @@ export function researchChecksText(findings, held, asked) {
 
 /**
  * Write the file for the record that now stands (`findingsAt`, the folded findings.json). `held` is what the record
- * checked against; `sessionKey` the writer's session, whose calls and retries' calls are its own. Best-effort: a file
+ * checked against; `sessionKey` the writer's session: every session of its stage asked as the writer, so the file the
+ * review reads after a correction still lists the main pass's questions. Best-effort: a file
  * that cannot be written never fails the record it describes. Returns the path written, or null. IMPURE.
  */
 export function writeResearchChecks(runDir, { findingsAt, held = null, sessionKey = null } = {}) {
   try {
     const doc = JSON.parse(readFileSync(findingsAt, "utf8"));
-    const own = (s) => Boolean(sessionKey) && typeof s === "string"
-      && (s === sessionKey || (s.startsWith(`${sessionKey}-rerun`) && /^\d+$/.test(s.slice(`${sessionKey}-rerun`.length))));
+    const own = (s) => sameStageSession(s, sessionKey);
     const asked = rows(driverDir(runDir, "reading-log.jsonl"))
       .filter((r) => r?.tool === "perplexity_research" && own(r.session) && !r.args?.grid && typeof r.args?.task === "string" && r.args.task.trim())
       .map((r) => ({ question: r.args.task, ok: r.ok === true, error: r.error ?? null }));

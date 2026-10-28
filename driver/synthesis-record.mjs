@@ -312,7 +312,7 @@ function recordNoResultRemoval(runDir, { layer, removed, now }) {
   catch { /* a log that cannot be written must not stop the record it describes */ }
 }
 
-export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, recordOrigins = null, heldAnswers = null } = {}) {
+export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, recordOrigins = null, heldAnswers = null, judged = null } = {}) {
   const doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
     return { ok: false, reason: "synthesis_findings_missing: `findings` must be the findings document object { schema_version, rated_under_framework, findings, coverage, … } — this is the record the report and the workbook are built from, and there is no path that renders without it" };
@@ -372,6 +372,7 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
     return { ok: false, reason: `synthesis_coverage_limit_uncarried:${names.slice(0, 140)} — this run's own register coverage ledger records those slices as less than clean, and every coverage row you sent says confirmed-clean. A slice the run could not clear cannot be written as a clean negative. Carry it: one coverage row whose state is coverage-limited / open / not-searched, at whatever granularity the reader needs` };
   }
   const faults = (Array.isArray(doc.findings) ? doc.findings : [])
+    .filter((f) => !judged || judged(f))
     .map((f) => ({ f, fault: noResultFault(f, heldAnswers) })).filter((x) => x.fault)
     .map(({ f, fault }) => ({ label: `finding ${f?.ordinal ?? "?"}`, ordinal: f?.ordinal ?? "?", fault }));
   if (faults.length) {
@@ -1019,17 +1020,21 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // below judge the record that results. A patch repairs an accepted record and takes none.
   const savedBefore = isPatch ? [] : readSavedFindings(dir0);
   if (savedBefore.length) call = { ...call, findings: withSavedFindings(call.findings, savedBefore, owed).doc };
+  // A PATCH IS JUDGED ON WHAT IT CHANGES. A stored finding was judged when it was accepted, and a correction that
+  // touches another finding must not reopen it: the writer's session can differ by then, and what it holds with it.
+  const storedRows = isPatch ? new Map((Array.isArray(stored?.findings?.findings) ? stored.findings.findings : []).map((f) => [f?.ordinal, JSON.stringify(f)])) : null;
+  const judged = storedRows ? (f) => storedRows.get(f?.ordinal) !== JSON.stringify(f) : null;
   // A no-result refused once in this run is taken off on a repeat rather than refused again (see `noResultFault`).
   if (Array.isArray(call?.findings?.findings) && noResultRefusedIn(dir0)) {
     const removed = [];
     const findings = call.findings.findings.map((f) => {
-      if (!noResultFault(f, heldAnswers)) return f;
+      if ((judged && !judged(f)) || !noResultFault(f, heldAnswers)) return f;
       removed.push({ ordinal: f?.ordinal ?? null, use_check: f.use_check });
       return withoutUseCheck(f);
     });
     if (removed.length) { call = { ...call, findings: { ...call.findings, findings } }; recordNoResultRemoval(dir0, { layer: "call", removed, now }); }
   }
-  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: origins, heldAnswers });
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, recordOrigins: origins, heldAnswers, judged });
   if (!v.ok) {
     noteRefusal(v.reason);
     recordReading(false);
