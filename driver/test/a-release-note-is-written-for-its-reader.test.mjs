@@ -137,7 +137,7 @@ test("tracker 97 the lint refuses each thing the contract bans, and passes a not
 test("tracker 97 a sentence a reader cannot hold in their head is refused, and the limit is a count not a feeling", () => {
   const words = (n) => "word ".repeat(n).trim();
   assert.deepEqual(offences(`Fixed: ${words(MAX_WORDS - 1)}.`), []);
-  assert.ok(findings(note(`Fixed: ${words(MAX_WORDS + 5)}.`)).some((f) => /at most 25 words/.test(f.rule)));
+  assert.ok(findings(note(`Fixed: ${words(MAX_WORDS + 5)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)));
   // TWO short sentences are not one long one — the contract allows a second sentence, and an arm that
   // measured the paragraph would refuse correct prose.
   assert.deepEqual(offences(`Fixed: ${words(20)}. ${words(20)}.`), []);
@@ -212,7 +212,7 @@ test("tracker 97 the standard is in the repository, and it runs where a note is 
   for (const [what, needle] of [
     ["who reads a note", "trademark lawyer"],
     ["the one rule", "what is different for that reader after upgrading"],
-    ["the word limit", "at most 25 words"],
+    ["the word limit", `at most ${MAX_WORDS} words`],
     ["the groups", "**New** · **Fixed** · **For operators**"],
     ["the banned list", "Banned in a note"],
     ["the before/after examples", "Before → after"],

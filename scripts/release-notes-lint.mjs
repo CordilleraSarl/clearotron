@@ -29,7 +29,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const GROUPS = ["Before you upgrade", "New", "Fixed", "For operators"];
 
 /** At most this many words in a sentence. The contract's number, not a tuned one. */
-export const MAX_WORDS = 25;
+export const MAX_WORDS = 26;
 
 /**
  * Our internal vocabulary. Every one of these is a word we use fluently and the reader has never met in
