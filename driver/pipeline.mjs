@@ -28,8 +28,8 @@ import { fallbackNoteFor } from "./numeric-setting.mjs";   // — the one allowe
 import { preflightSkillsStore } from "./skills-store-provenance.mjs";   // — the doctrine this run will be rated under must be reproducible
 import { engineProvenance } from "./engine-build.mjs";                  // — …and which engine loaded it, at run START
 import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
-import { codexSandboxBypassed } from "./engine/openai-agent.mjs";
-import { RECORDS_MODES, savedRecordFetch, heldRegisterCredentials } from "./record-replay.mjs";   // an offline resume answers a record fetch from the run's own records        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
+import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
+import { RECORDS_MODES, savedRecordFetch, heldRegisterCredentials } from "./record-replay.mjs";   // an offline resume answers a record fetch from the run's own records
 import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
@@ -19042,7 +19042,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research }
-    : { ...base, codename: a.codename, fromStage: a.fromStage, records: a.records, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
+    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }), records: a.records };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
