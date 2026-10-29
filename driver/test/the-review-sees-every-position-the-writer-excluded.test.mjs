@@ -8,7 +8,8 @@
 // on such a position named no finding, which opened the whole corrective pass. Now the full review is told every
 // position placement put forward that the writer excluded, at any tier, once each, with placement's tier and reason
 // and the writer's ground, under the ruled standard (2026-10-29). A later review is told what changed. A flag names
-// an excluded position by its record id, and the corrective pass is narrowed to it. Every mark and owner is invented.
+// an excluded position by its record id, and the corrective pass is narrowed to it; where another flag declared
+// nothing, the pass stays open and is still told the position and its row. Every mark and owner is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
@@ -19,7 +20,7 @@ import { writerExclusions, writerExclusionBlock, messageCtxFor, correctionsExtra
 import { appendDeclinations, declinationCallPaths } from "../declination-tool.mjs";
 import { acceptRefutation, recordRefutation, listedExclusionPositions } from "../narrative-refutation-record.mjs";
 import { parseCorrections } from "../verify.mjs";
-import { correctionScope, scopeDrift } from "../corrections-feedforward.mjs";
+import { correctionScope, flaggedPositions, scopeDrift } from "../corrections-feedforward.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
@@ -168,6 +169,31 @@ test("a flag on an excluded position narrows the corrective pass to it; an undec
     "the pass was not told the position, or the row to keep its exclusion by");
   assert.ok(msg.includes("Change ONLY those finding objects, any finding you record for those positions, and ONLY the narrative passages that discuss them. EVERY OTHER FINDING OBJECT"),
     "the pass was not told to leave everything else as it is");
+});
+
+test("a flag on an excluded position reaches the corrective pass with its row when another flag declared nothing; the pass stays open", (t) => {
+  assert.deepEqual(flaggedPositions([{ ordinals: null, positions: ["/mark/eu/d1"] }, { ordinals: null }, { ordinals: [3], positions: ["/mark/eu/d1", "/mark/eu/e1"] }]),
+    ["/mark/eu/d1", "/mark/eu/e1"]);
+  const P = seedRun(t);
+  writerExclusionBlock(P, { review: "full" });
+  const rec = recordRefutation(P.runDir, { verdict: "BLOCKING", flags: [
+    { kind: "narrative", text: "narrative.md puts the sheet-2 section before the headline candidates" },
+    { kind: "rating", text: "narrative.md drops the QZORVEX position on a sound reading the records do not support", positions: ["/mark/de/d2"] },
+  ] });
+  assert.ok(rec.written, String(rec.refused));
+  prepareDeclinationSpec({ paths: P }, P);
+  const msg = correctionsExtra(P);
+  assert.ok(!msg.includes("SCOPE —") && !msg.includes("MUST COME BACK BYTE-IDENTICAL"), "a review with a flag that declared nothing narrowed the pass");
+  assert.ok(msg.includes("THE EXCLUDED POSITIONS THE REVIEWER'S FLAGS ARE ABOUT: QZORVEX — Delta AG (/mark/eu/d1), row 2. For each, either record it as a finding, or keep its exclusion by calling `record_declination` again for its row with a ground that answers the flag."),
+    "the open pass was not told the position, or the row to keep its exclusion by");
+
+  // A review that names no position: the open pass is told nothing new.
+  const Q = seedRun(t);
+  writerExclusionBlock(Q, { review: "full" });
+  assert.ok(recordRefutation(Q.runDir, { verdict: "BLOCKING", flags: [{ kind: "narrative", text: "narrative.md puts the sheet-2 section before the headline candidates" }] }).written);
+  prepareDeclinationSpec({ paths: Q }, Q);
+  const plain = correctionsExtra(Q);
+  assert.ok(!plain.includes("EXCLUDED POSITIONS") && !plain.includes("SCOPE —"), "a review that named no position was told one, or narrowed");
 });
 
 test("the recheck is told to read each named position's decision, beside the exclusions that changed", (t) => {

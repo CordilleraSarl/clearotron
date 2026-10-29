@@ -221,8 +221,14 @@ export function correctionScope(rows) {
   const named = (r) => Array.isArray(r.positions) && r.positions.length > 0;
   if (list.some((r) => r.ordinals == null && !named(r))) return { scoped: false, ordinals: [] };
   const ords = [...new Set(list.flatMap((r) => r.ordinals ?? []))].sort((a, b) => a - b);
-  const positions = [...new Set(list.flatMap((r) => (named(r) ? r.positions : [])))];
+  const positions = flaggedPositions(list);
   return { scoped: true, ordinals: ords, ...(positions.length ? { positions } : {}) };
+}
+
+/** The writer's excluded positions the flags named, whether or not every flag declared its subject: the narrowing
+ *  stays all-or-nothing, and a flag on a position is still answered by that position's row. PURE. */
+export function flaggedPositions(rows) {
+  return [...new Set((rows ?? []).flatMap((r) => (Array.isArray(r.positions) ? r.positions : [])))];
 }
 
 /** The ordinals a findings doc actually carries. PURE. */

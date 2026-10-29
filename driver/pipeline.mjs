@@ -46,7 +46,7 @@ import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, 
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
 import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
-import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
@@ -6086,8 +6086,9 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
   // finding moved. When every flag declares which finding it is about, the pass is told so, and told
   // that nothing else may move. When any flag declares nothing, this is "" and the dispatch is
   // byte-identical to the one before this existed — the narrowing is bought by the reviewer's own
-  // declaration, never assumed on its behalf.
-  const scope = withPositionLabels(correctionScope(rows), P);
+  // declaration, never assumed on its behalf. The positions the flags named ride either way, with their rows.
+  const named = flaggedPositions(rows);
+  const scope = withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P);
   // THE RUNG RIDES THE CORRECTIVE RE-EMISSION, byte-identically with the fresh dispatch. Appended rather
   // than threaded through `repairFollowup`'s fields so both dispatches carry the SAME STRING from the
   // SAME function, and an arm can compare them without knowing how either is assembled.

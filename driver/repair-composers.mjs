@@ -270,12 +270,15 @@ export const REPAIR_COMPOSERS = [
       // declares nothing, this is "" and the dispatch is byte-identical to the one before it existed —
       // the narrowing is bought by the reviewer's own declaration, never assumed on its behalf.
       // A flag about a writer's exclusion names the position, which has no ordinal: the block lists it and says what the
-      // two answers are, and the narrowing holds for everything else.
+      // two answers are, and the narrowing holds for everything else. Where another flag declared nothing there is no
+      // block, and the positions line stands alone: the pass is told the position and its row, and stays open.
       const positions = Array.isArray(scope?.positionLabels) && scope.positionLabels.length ? scope.positionLabels : [];
+      const answers = "For each, either record it as a finding, or keep its exclusion by calling `record_declination` again for its row with a ground that answers the flag.";
+      const positionsLine = !scope?.scoped && positions.length ? `THE EXCLUDED POSITIONS THE REVIEWER'S FLAGS ARE ABOUT: ${positions.join("; ")}. ${answers}` : "";
       const scopeBlock = scope?.scoped ? lines(
         `SCOPE — THE REVIEWER DECLARED WHICH FINDINGS ITS FLAGS ARE ABOUT, AND THIS IS THE COMPLETE LIST: ${
           scope.ordinals.length ? scope.ordinals.map((o) => `#${o}`).join(", ") : positions.length ? "(none — its flags are about excluded positions)" : "(none — every flag is about the document, not a finding)"}.`,
-        positions.length ? `THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: ${positions.join("; ")}. For each, either record it as a finding, or keep its exclusion by calling \`record_declination\` again for its row with a ground that answers the flag.` : "",
+        positions.length ? `THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: ${positions.join("; ")}. ${answers}` : "",
         `Change ONLY those finding objects${positions.length ? ", any finding you record for those positions," : ""} and ONLY the narrative passages that discuss them. EVERY OTHER FINDING OBJECT IN ${findings} MUST COME BACK BYTE-IDENTICAL — do not re-derive it, do not re-word it, do not re-order its keys. The driver compares them and records anything that moved.`,
         KNOCK_ON,
       ) : "";
@@ -287,6 +290,7 @@ export const REPAIR_COMPOSERS = [
         `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. The independent refutation flagged the corrections below. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, remove the sentence, or verify-flag for re-check) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
         ...correctiveRules({ narrative, findings, placement, rulingsTail }),
         scopeBlock ? lines(scopeBlock, ``) : "",
+        positionsLine ? lines(positionsLine, ``) : "",
         worklist ? lines(worklist, ``) : "",
         `The reviewer's flags, verbatim:`,
         ``,
@@ -294,9 +298,10 @@ export const REPAIR_COMPOSERS = [
         review,
       );
     },
-    // TWO SAMPLES BECAUSE THE COMPOSER HAS TWO SHAPES, and the saving is the whole point of the
+    // THREE SAMPLES BECAUSE THE COMPOSER HAS THREE SHAPES, and the saving is the whole point of the
     // second: a declared scope narrows the pass, an undeclared one leaves it byte-identical to what it
-    // was before that existed. A guard walking only one of them walks half the surface.
+    // was before that existed. The third is an undeclared scope whose flags name an excluded position.
+    // A guard walking only one of them walks part of the surface.
     samples: [
       { name: "no declared scope, no placement tail", tail: "tool",
         args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
@@ -305,6 +310,10 @@ export const REPAIR_COMPOSERS = [
         args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
           rulingsTail: "| axis | ruling |", scope: { scoped: true, ordinals: [1, 4] },
           worklist: "- #1 correct the owner", review: "the flags, verbatim" } },
+      { name: "no declared scope, a flag on an excluded position", tail: "tool",
+        args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
+          rulingsTail: "", scope: { scoped: false, ordinals: [], positions: ["/mark/eu/d1"], positionLabels: ["QZORVEX — Delta AG (/mark/eu/d1), row 2"] },
+          worklist: "", review: "the flags, verbatim" } },
     ],
   },
   {
