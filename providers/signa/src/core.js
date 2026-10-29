@@ -101,15 +101,14 @@ const endpointOf = (method, path) => `${method} ${String(path).split("?")[0].rep
 
 // ── A RATE-LIMIT REFUSAL IS WAITED OUT, THE WAY THE REGISTER'S OWN DOCUMENTATION SAYS ─────────────
 //
-// Signa's "Rate Limits & Credits" page (docs.signa.so/api-reference/rate-limits, read 2026-10-29): a 429
-// carries one of three error types, and only `rate_limited` (too many requests per minute, or too many
-// searches running at once) clears by waiting: "Wait `Retry-After` seconds, then retry." `Retry-After`
-// is in seconds and comes only on a 429, and an error is never billed. `daily_credit_cap_exceeded` and
+// Signa's "Rate Limits & Credits" page (docs.signa.so/api-reference/rate-limits): a 429 carries one of
+// three error types, and only `rate_limited` (too many requests per minute, or too many searches running
+// at once) clears by waiting: "Wait `Retry-After` seconds, then retry." `Retry-After` is in seconds and
+// comes only on a 429, and an error is never billed. `daily_credit_cap_exceeded` and
 // `insufficient_credits` do not clear within a call, so they return at once, as every 429 used to.
 //
 // This loop used to retry server errors only, so a 429 came back on its first attempt and the plan
-// executor asked again at once, inside the same window. Measured in testing, 2026-10-29: one run had 204
-// of its 484 calls refused in a four-minute burst, every one on attempt 1.
+// executor asked again at once, inside the same window.
 //
 // The wait is the register's own figure: `Retry-After`, else the body's `retry_after`, else the
 // documentation's backoff (one second, doubling). Up to a second of jitter goes on top, as Signa's
@@ -119,8 +118,7 @@ const endpointOf = (method, path) => `${method} ${String(path).split("?")[0].rep
 // ONE CALL SLEEPS AT MOST ONE PER-MINUTE WINDOW IN ALL, AND NEVER PAST ITS TIME TO STOP SENDING. A plan call
 // runs inside a model's turn, and a call that outlasts the turn ends with it, unwritten (send-until.mjs). So
 // a wait that would take the call's sleeping past 60 seconds, or past the turn's time to stop sending, is
-// not taken: that refusal returns as it always has. On the run measured above, a search on the same
-// endpoint succeeded within 22.1 seconds of every one of the 204 refusals.
+// not taken: that refusal returns as it always has.
 export const RATE_LIMIT_RETRIES = 3;
 export const RATE_LIMIT_SLEEP_BUDGET_MS = 60_000;
 const RATE_LIMIT_BASE_MS = 1000;
