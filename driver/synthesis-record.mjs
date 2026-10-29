@@ -1212,17 +1212,31 @@ export function saveFindings(runDir, list, { manifest = null, method = undefined
   return { saved, refused, held: readSavedFindings(dir0).length };
 }
 
+// THE RECORD KEEPS THE WRITER'S NUMBERING. Saved findings were numbered in the order saved, after the call's highest
+// ordinal. A first save refused in part is saved again after its neighbours, so on a test run the writer's findings 2
+// and 3 changed places: the narrative, written in the writer's numbering, named the wrong findings, a check named the
+// wrong ordinal, and a correction naming a finding by its number was refused, that number holding another finding.
+// A saved finding now keeps the ordinal it was last saved under, unless the call's own findings or an earlier save
+// hold that number; it then takes the next number after the highest. The record is in ordinal order, so the fold's
+// contiguous renumber follows the writer's numbering.
 /**
- * The completing call's findings with every saved finding for a position the call does not carry, appended after the
- * call's own in the order they were saved, each numbered after the call's highest ordinal: the record's order is the
- * call's, and the fold renumbers the record contiguously as it always has. PURE.
+ * The completing call's findings with every saved finding for a position the call does not carry, each under the
+ * ordinal it was last saved under where that is free, else after the highest, the whole in ordinal order. PURE.
  */
 export function withSavedFindings(doc, saved, owed = null) {
   if (!saved?.length || !doc || typeof doc !== "object" || !Array.isArray(doc.findings)) return { doc, taken: 0 };
   const carried = new Set(doc.findings.map((f) => positionKeyOf(f, owed)));
-  let next = doc.findings.reduce((m, f) => (Number.isInteger(f?.ordinal) && f.ordinal > m ? f.ordinal : m), 0);
-  const taken = saved.filter((s) => !carried.has(s.key)).map((s) => ({ ...s.finding, ordinal: ++next }));
-  return { doc: { ...doc, findings: [...doc.findings, ...taken] }, taken: taken.length };
+  const held = new Set(doc.findings.map((f) => f?.ordinal).filter((o) => Number.isInteger(o)));
+  const kept = [], moved = [];
+  for (const s of saved.filter((x) => !carried.has(x.key))) {
+    const o = s.finding?.ordinal;
+    if (Number.isInteger(o) && o >= 1 && !held.has(o)) { held.add(o); kept.push({ ...s.finding }); } else moved.push(s);
+  }
+  let next = Math.max(0, ...held);
+  const taken = [...kept, ...moved.map((s) => ({ ...s.finding, ordinal: ++next }))];
+  const rank = (f) => (Number.isInteger(f?.ordinal) ? f.ordinal : Infinity);
+  const findings = [...doc.findings, ...taken].map((f, i) => ({ f, i })).sort((a, b) => rank(a.f) - rank(b.f) || a.i - b.i).map((x) => x.f);
+  return { doc: { ...doc, findings }, taken: taken.length };
 }
 
 

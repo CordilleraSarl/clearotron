@@ -99,6 +99,27 @@ test("the completing call takes the saved findings it does not carry, and the re
   assert.equal(SR.readSavedFindings(dir).length, 1);
 });
 
+test("the record keeps the writer's numbering: a saved finding keeps its number where it is free, and the record is in that order", (t) => {
+  const numbered = (dir) => JSON.parse(readFileSync(join(dir, "findings.json"), "utf8")).findings.map((f) => [f.mark, f.ordinal]);
+  // Saved out of the writer's order, and completed by a call that carries none.
+  const none = run(t);
+  save(none, [F3]);
+  save(none, [F1, F2]);
+  assert.equal(whole(none, []).refused, null);
+  assert.deepEqual(numbered(none), [F1, F2, F3].map((f) => [f.mark, f.ordinal]), "the findings were numbered in the order saved");
+  // The call carries the writer's 2, and the saves its 3 and 1. Numbered after the call's highest, the saved ones
+  // took 3 and 4, and the fold's renumber would have moved every one of them.
+  const between = run(t);
+  save(between, [F3, F1]);
+  assert.equal(whole(between, [F2]).refused, null);
+  assert.deepEqual(numbered(between), [F1, F2, F3].map((f) => [f.mark, f.ordinal]), "a call carrying one finding moved the saved ones");
+  // A saved finding under a number the call holds moves after the highest, and the record still parses.
+  const taken = run(t);
+  save(taken, [{ ...F1, ordinal: F2.ordinal }, F3]);
+  assert.equal(whole(taken, [F2]).refused, null);
+  assert.deepEqual(numbered(taken), [[F2.mark, F2.ordinal], [F3.mark, F3.ordinal], [F1.mark, F3.ordinal + 1]]);
+});
+
 test("a later attempt is told what is saved, where, and which positions are still to settle; a first is told nothing", (t) => {
   const dir = run(t);
   assert.equal(SR.handSavedFindings(dir), null);
