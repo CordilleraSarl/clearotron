@@ -206,6 +206,17 @@ const placementSetAsideReads = (P) => [
   { path: driverDir(P.runDir, "goods-evidence.json"), kind: "driver-side", why: "readGoodsStates: a ground on a record's goods is checked against what its goods rest on" },
 ];
 
+// THE STATE A CORRECTIVE PASS STARTS FROM, for an arm that reproduces one (`--dispatch-trigger corrective`): the findings
+// before the pass, the review and the typed call whose flags the pass answers, and the writer's declinations. A first
+// pass is handed none of them, so only a corrective arm carries them. Without them an arm on a saved run refused as having
+// no corrective state (measured 2026-10-29).
+const correctiveStateReads = (P) => [
+  { path: driverDir(P.runDir, "findings-pre-corrective.json"), kind: "driver-side", why: "correctiveReadiness and the pass's snapshot: the findings the corrective pass started from" },
+  { path: P.seniorEyeReview, kind: "driver-side", why: "the review whose flags the corrective pass answers; correctionsExtra hands it on verbatim" },
+  { path: driverDir(P.runDir, "refutation-calls", "call-001.json"), kind: "driver-side", why: "readAcceptedFlags: the review's typed flags, the corrective worklist's source" },
+  { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side", why: "the writer's declinations the corrective pass starts from" },
+];
+
 const UNDECLARED = {
   // The verbatim forward is named in the prompt only when job.rawRequest exists — and matter-frame,
   // unlike blind-frame, never declared it at all (stages.mjs "matter-frame": []).
@@ -246,8 +257,9 @@ const UNDECLARED = {
   // The provider enforcement telemetry: the prompt names the path only when ctx.enforcerSignals is a
   // non-zero count (stages.mjs synthesis message). Undeclared on purpose — it is aim-attention only and
   // must never move a freshness stamp — but a sandbox without it hands a different prompt.
-  synthesis: (P, { researchHandOff = false } = {}) => [
+  synthesis: (P, { researchHandOff = false, dispatchTrigger = "fresh" } = {}) => [
     ...placementSetAsideReads(P),
+    ...(dispatchTrigger === "corrective" ? correctiveStateReads(P) : []),
     // The research the run already got, handed to a later attempt of the writer as a file (messageCtxFor,
     // research-answers.mjs). Carried only by an arm that reproduces one: a first attempt is handed none, and the copy
     // is readable by the arm's own commands, so an arm that carried the run's later answers would hand them on.
@@ -272,6 +284,13 @@ const UNDECLARED = {
   "narrative-refutation": (P) => [
     { path: P.researchChecks, kind: "conditional",
       why: "named in the prompt only when the writer's record wrote it; it moves with narrative.md, so it stays outside the freshness map" },
+    // Placement's floor decisions and the writer's declinations, which the review is told when its message is built
+    // (messageCtxFor): placement's are read through the same files as the set-asides the reading step and the writer are
+    // told. Measured on a saved run, 2026-10-29: an arm without them was told none of placement's 33 floor decisions and
+    // none of the writer's 30 floor lines.
+    ...placementSetAsideReads(P),
+    { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side",
+      why: "the review is told the writer's declinations from it when its message is built; without it the arm is told of none" },
   ],
 };
 
