@@ -144,6 +144,12 @@ test("tracker 97 a sentence a reader cannot hold in their head is refused, and t
   // A full stop inside code is not a sentence boundary, or `clearotron doctor` splits a sentence in two
   // and a 30-word note reads as two 15-word ones.
   assert.equal(sentencesIn("Run `a.b.c` and then stop. Then go.").length, 2);
+  // A semicolon ends a clause a reader holds on its own, so each clause is counted (owner item 988).
+  assert.deepEqual(offences(`Fixed: ${words(17)}; ${words(17)}.`), []);
+  assert.ok(findings(note(`Fixed: ${words(17)}; ${words(MAX_WORDS + 1)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
+    "a long clause after the semicolon is still refused");
+  assert.ok(findings(note(`Fixed: ${words(17)}, ${words(17)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
+    "CONTROL: a comma joins one clause, and 34 words of it are refused");
 });
 
 test("tracker 97 a note names a package that exists, decided when it is written rather than on main", () => {
