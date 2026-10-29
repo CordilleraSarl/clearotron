@@ -375,6 +375,20 @@ function verdictIsCleanOf(runDir) {
   });
 }
 
+/**
+ * The run's folder names, as the redaction must know them: a slug is `tmp<ref>-<mark>` or
+ * `noref<hash>-<mark>` (phase0.mjs deriveSlug), and the `run:` and `reviewer:` lines print the path whole.
+ * Both the slug and its mark part, because the mark part also names files inside the run.
+ */
+function slugsOf(runDir, { status = null, meta = null } = {}) {
+  const found = new Set([status?.slug, meta?.slug].filter((s) => typeof s === "string" && s.trim()).map((s) => s.trim()));
+  for (const seg of String(runDir).split(/[\\/]/)) if (SLUG_SHAPE.test(seg)) found.add(seg);
+  for (const s of [...found]) { const mark = s.replace(SLUG_SHAPE_HEAD, ""); if (mark && mark !== s) found.add(mark); }
+  return [...found];
+}
+const SLUG_SHAPE = /^(tmp[a-z0-9]+|noref[0-9a-f]{6})-./;
+const SLUG_SHAPE_HEAD = /^(tmp[a-z0-9]+|noref[0-9a-f]{6})-/;
+
 function readRun(runDir, ref) {
   if (!existsSync(runDir)) die(`no run directory at ${runDir}`);
   const hasDriver = existsSync(driverDir(runDir));
@@ -397,6 +411,7 @@ function readRun(runDir, ref) {
   const settle = readSettleStamp(runDir);
   return {
     dir: runDir, lane, hasDriver, hasStatus, poolMeta, settle, findings, subjects,
+    slugs: slugsOf(runDir, { status: readJson(join(runDir, "status.json")), meta: poolMeta }),
     // — from the RUN DIR's own status.json, which a failed or in-flight run has and a pool
     // meta.json only exists after publish. Null on any run scored before that stamp, and the printer
     // says so rather than leaving the line off: a missing instrument and a matching one must not read
@@ -1018,6 +1033,11 @@ const delta = prev ? bucketDelta(scored.buckets, prev.buckets) : null;
 //
 // AND A FOURTH: THE CARRY-THROUGH ROWS. A subject lands in `lost` there because it reached no
 // downstream artifact, so it is in none of the three above, and both outputs printed it in clear.
+//
+// AND THE RUN'S OWN: THE MARKS IT SEARCHED, AND ITS FOLDER. A knockout's subject roll reached the
+// redaction only through a mark's finding rows, so a mark with none, or spelled other than the
+// reference spells it, went out in clear on the `coverage:` line. The folder is the run's slug, named
+// for its mark, and the `run:` and `reviewer:` lines print the path.
 let unclassifiedKeys = [];
 const carry = carryThrough(run.dir);
 const carryCoverage = coverageConflicts(run.dir, carry.lost);
@@ -1026,7 +1046,8 @@ const carryCoverage = coverageConflicts(run.dir, carry.lost);
 let redactValue = (x) => x, redactKey = (x) => x;
 if (!opts.names) {
   const { names, prose, derived, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null,
-    carry: carryThroughRows({ lost: carry.lost, unmeasurable: carry.unmeasurable, conflicts: carryCoverage.conflicts }) });
+    carry: carryThroughRows({ lost: carry.lost, unmeasurable: carry.unmeasurable, conflicts: carryCoverage.conflicts }),
+    searched_marks: run.subjects ?? [], run_slugs: run.slugs ?? [] });
   unclassifiedKeys = unclassified;
   // The second redactor is for lines this tool WROTE. It drops the derived-word layer
   // only, so a party's ordinary long word stops rewriting our own headings while its full name is still

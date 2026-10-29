@@ -93,7 +93,10 @@ const NAME_KEYS = new Set([
 ]);
 
 /** Arrays whose entries are bare names rather than objects. */
-const NAME_LIST_KEYS = new Set(["covers_marks", "close_variations", "variations", "aliases"]);
+// `searched_marks` and `run_slugs` are not reference keys. score.mjs hands them in beside the reference: the
+// marks the run itself searched, which reach this file through a finding only where a mark has one, and the
+// run's folder, which is named for its mark (phase0.mjs deriveSlug) and printed with every path.
+const NAME_LIST_KEYS = new Set(["covers_marks", "close_variations", "variations", "aliases", "searched_marks", "run_slugs"]);
 
 /**
  * Keys whose strings are NOT a name and NOT matter prose: schema labels, scenario ids, band and level
@@ -203,7 +206,12 @@ export function protectedStrings(root) {
   // party called "Depth Charge" turns `per-territory depth` into `per-territory «name 2»`, and a reader
   // cannot tell a redaction from a word. Both layers still apply to everything the run prints; only a
   // line the SCORER ITSELF authored drops the derived one, through `authoredRedactor` below.
+  //
+  // A WORD THAT IS ALSO A GIVEN NAME IS NOT DERIVED. A run can search a single word that is also a word of a
+  // longer protected name, and the authored lines drop every derived word, so the coverage line printed that
+  // searched mark in clear. A given name stays given whatever else it is a word of.
   const derived = new Set();
+  const given = new Set([...names].map((n) => foldForMatching(n.trim()).folded.toLowerCase()));
   for (const n of [...names]) {
     const parts = n.trim().split(/\s+/);
     if (parts.length < 2) continue;
@@ -216,7 +224,7 @@ export function protectedStrings(root) {
       // ligature is four characters raw and five folded, so a distinctive word was excluded for being
       // short when it is not. Deriving from the folded form makes both decisions right by construction.
       const bare = foldForMatching(w).folded.replace(/[^\p{L}\p{N}]/gu, "");
-      if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); derived.add(bare); }
+      if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); if (!given.has(bare.toLowerCase())) derived.add(bare); }
     }
   }
   // THE FLOOR STAYS AND THE CASE IT MISSES IS NAMED. A fleet decision on an internal page rather than
