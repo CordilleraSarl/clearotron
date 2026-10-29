@@ -64,6 +64,10 @@ const PROSE_KEYS = new Set([
   // (zero `sheet` keys in a real run's findings, checked on R19 `a46abdad`), so prose costs nothing and
   // is right for what arrives. See the note below on why that is luck rather than design.
   "sheet",
+  // The carry-through rows' own prose, from `carryThroughRows` below. `subject_cell` is a common-law
+  // subject cell whole, "<entity> — <what they do>". `section` is the heading the row sits under in the
+  // run's own markdown, and a heading can name the party its table is about.
+  "subject_cell", "section",
 ]);
 
 /** Fields that carry a name: a mark, a proprietor, a subject, a form of a mark. */
@@ -83,6 +87,9 @@ const NAME_KEYS = new Set([
   // by a different route. Read at its site (the per-territory query roll) rather than inferred: it is
   // `e.term ?? e.terms[0]` off the frozen plan's own query entries.
   "term",
+  // A common-law row's identifier, from `carryThroughRows` below: a site's address, whose domain is
+  // usually the party's name. It has no whitespace, so it adds no derived word.
+  "url",
 ]);
 
 /** Arrays whose entries are bare names rather than objects. */
@@ -235,6 +242,36 @@ export function protectedStrings(root) {
   // THE SCAN IS WHAT CATCHES THE MISS, and a reader of this file should know that rather than infer it.
   for (const n of [...names]) if (n.length < 3) names.delete(n);
   return { names, prose, derived, unclassified: [...unclassified].sort() };
+}
+
+/**
+ * The carry-through rows, shaped for `protectedStrings`.
+ *
+ * THEY ARE THE RUN'S OWN TEXT, AND NO OTHER INPUT HOLDS THEM. A row lands in carry-through's `lost`
+ * because its subject arrived nowhere downstream, so it is in neither the findings nor the scored
+ * buckets, and the boundary had nothing to match it against. Measured on an invented fixture: the
+ * default `--json` printed `carry_through.lost[]`'s subject, URL and section heading in clear while the
+ * fields around them were tokenised, and the human path printed the same row under REACHED NONE.
+ *
+ * THE ENTITY IS THE NAME, AND THE WHOLE CELL IS PROSE. The common-law surface writes a subject as
+ * "<entity> — <what they do>". Collected whole as a name, every long word of the description becomes a
+ * derived protected word and tokenises the scorer's own sentences wherever it occurs. So only the head
+ * before the dash is a name, and the cell is withheld whole, as it stands.
+ *
+ * A URL IS A NAME, because a common-law site's domain is usually the party's own name. A register URI
+ * is not collected, for the reason `record_id` is safe: it is an office and a number.
+ */
+export function carryThroughRows({ lost = [], unmeasurable = [], conflicts = [] } = {}) {
+  return [...lost, ...unmeasurable, ...conflicts].map((r) => {
+    const cell = isStr(r.subject) ? r.subject.trim() : "";
+    const head = cell.split(/\s+[—–]\s+/)[0].trim();
+    return {
+      subject: head,
+      ...(cell !== head ? { subject_cell: cell } : {}),
+      section: r.section,
+      ...(isStr(r.identifier) && /^https?:\/\//i.test(r.identifier) ? { url: r.identifier } : {}),
+    };
+  });
 }
 
 /**
