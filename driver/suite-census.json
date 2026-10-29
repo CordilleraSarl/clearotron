@@ -909,6 +909,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-job-rebuilt-from-its-run-keeps-the-orders-territories.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-jq-program-in-a-js-string-keeps-its-backslash.test.mjs": {
           "tests": 2,
           "asserts": 6,
