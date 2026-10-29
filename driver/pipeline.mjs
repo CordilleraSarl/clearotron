@@ -44,7 +44,7 @@ import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
-import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
+import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
@@ -3586,29 +3586,96 @@ export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — 
 }
 
 /**
- * THE FLOORS THE WRITER DECLINED, AS THE REVIEW IS TOLD THEM (ruled 2026-10-27): one line per floor on a position the
- * writer declined, with its reason and its ground, after placement's decisions. The writer may decline a mark identical
- * to the applied-for mark on goods the run holds complete, and a review told only placement's decisions read such a
- * floor as one the narrative neither rates nor reasons away, and sent it back. [] when nothing stands. IMPURE.
+ * THE WRITER'S EXCLUSIONS, AS THE REVIEW IS TOLD THEM (ruled 2026-10-29). Every position placement put forward and the
+ * writer was handed, at any tier, that ends in a declination rather than a finding: one entry per position, with
+ * placement's tier and its whole reason (a borderline entry's competing readings live there), the writer's reason and
+ * ground, the position's records for the band tools, and the floors it covers. The review used to be told only the
+ * declinations that covered a floor, so a writer's exclusion of a headline candidate off the floors reached it as an
+ * absence. Read from the run's files each time a message is built, like placement's decisions.
+ *
+ * "NONE" IS A CLAIM, SO IT IS EARNED. `state` is "listed", "none", "unreadable" or "no-positions". "none" means every
+ * position handed to the writer is ended by a finding; an absent ledger is that answer only then, because a position
+ * with no finding and no declination is a decision the record does not hold. An unreadable placements file, ledger or
+ * findings file is "unreadable", never "none". "no-positions" is a run that handed the writer no position. A finding
+ * ends a position whatever the ledger still holds, as the synthesis seam reads it. IMPURE.
  */
-export function writerFloorDeclinationLines(P) {   // @internal — driven by its test with a run's own files
+export function writerExclusions(P) {   // @internal — driven by its test with a run's own files
+  const empty = (state) => ({ state, positions: [], undecided: 0 });
   try {
-    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
-    if (!Array.isArray(floors) || !floors.length) return [];
+    if (!P?.placementModel || !existsSync(P.placementModel)) return empty("no-positions");
+    let placements;
+    try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; } catch { return empty("unreadable"); }
+    const rows = findingsSurfaceRows(P);
+    if (!rows.length) return empty("no-positions");
+    const key = (u) => String(normalizeRecordUri(u) ?? "");
     const declined = readDeclinations(P.runDir);
-    if (!declined.byUri.size) return [];
-    // A declination is the position's: each record of a row the writer was handed reads its row's.
-    const rowOf = new Map();
-    for (const row of findingsSurfaceRows(P))
-      for (const u of (Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri])) rowOf.set(normalizeRecordUri(u), normalizeRecordUri(row?.uri));
-    const out = [];
-    for (const f of floors) {
-      const u = normalizeRecordUri(f?.record_id);
-      const d = u ? declined.byUri.get(rowOf.get(u) ?? u) : null;
-      if (d) out.push(`- ${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id}): declined by the writer as ${d.reason}: ${d.grounds}`);
+    if (existsSync(declinationCallPaths(P.runDir, 0).ledger) && !declined.present) return empty("unreadable");
+    let delivered;
+    try { delivered = new Set([...findingUris(parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? []).keys()].map(key)); }
+    catch { return empty("unreadable"); }
+    const entryOf = new Map();
+    for (const e of Array.isArray(placements) ? placements : []) for (const u of entryUris(e)) entryOf.set(key(u), e);
+    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
+    const floorIds = new Set((Array.isArray(floors) ? floors : []).map((f) => key(f?.record_id)).filter(Boolean));
+    const positions = [];
+    let undecided = 0;
+    for (const row of rows) {
+      const members = [...new Set((Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri]).map(key).filter(Boolean))];
+      if (members.some((u) => delivered.has(u))) continue;
+      const d = declined.byUri.get(key(row?.uri));
+      if (!d) { undecided++; continue; }
+      const e = entryOf.get(key(row?.uri)) ?? null;
+      positions.push({ uri: key(row.uri), members, mark: e?.mark ?? row.mark ?? null, owner: e?.owner ?? row.owner ?? null,
+        tier: e?.tier ?? row.tier ?? null, borderline: e?.borderline === true, reason: e?.reason ?? null,
+        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)) });
     }
-    return out;
-  } catch { return []; }
+    return { state: undecided ? "unreadable" : positions.length ? "listed" : "none", positions, undecided };
+  } catch { return empty("unreadable"); }
+}
+
+/** One position's entry, as the review reads it. PURE. */
+export const writerExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${x.members.join(", ")}): `
+  + `placement: ${x.tier ?? "(no tier)"}${x.borderline ? ", borderline" : ""} — ${x.reason ?? "(no reason recorded)"}; `
+  + `excluded by the writer as ${x.writerReason}: ${x.grounds}`
+  + (x.floors.length ? `; covers the floor${x.floors.length > 1 ? "s" : ""} ${x.floors.join(", ")}` : "");
+
+/** A position the full review read as excluded that a finding now delivers, as a later review reads it. PURE. */
+export const withdrawnExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${(x.members ?? [x.uri]).join(", ")}): excluded at the full review, now delivered as a finding`;
+
+/** What the full review was shown, kept for the reviews after it; and what the last review was shown, for its flags. */
+export const reviewExclusionsPaths = (P) => ({ full: driverDir(P.runDir, "review-exclusions-full.json"), shown: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE) });
+
+/**
+ * THE LIST A REVIEW IS GIVEN, and the record of it. The full review gets every exclusion. A later review (the recheck
+ * after a correction, the review after a delivery-check repair) gets the exclusions that changed since the full review,
+ * the ones its own flags named, and every one that covers a floor, which the floor accounting reads in each review; a
+ * narrow recheck does not reconsider settled exclusions. With no full review on record, a later review gets the whole
+ * list. `{state, lines, changedOnly}`; the review's flags are checked against `review-exclusions.json`. IMPURE.
+ */
+export function writerExclusionBlock(P, { review = "full", named = [] } = {}) {   // @internal
+  const x = writerExclusions(P);
+  const at = reviewExclusionsPaths(P);
+  let shown = x.positions, changedOnly = false, withdrawn = [];
+  if (review !== "full" && x.state !== "unreadable") {
+    const full = safeReadJson(at.full);
+    if (Array.isArray(full?.positions)) {
+      const before = new Map(full.positions.map((p) => [p.uri, p]));
+      const names = new Set(named.map((u) => String(normalizeRecordUri(u) ?? "")));
+      shown = x.positions.filter((p) => p.floors.length || names.has(p.uri) || !before.has(p.uri)
+        || before.get(p.uri).writerReason !== p.writerReason || before.get(p.uri).grounds !== p.grounds);
+      // An exclusion the full review read that is no longer one: a finding now delivers the position.
+      const now = new Set(x.positions.map((p) => p.uri));
+      withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri));
+      changedOnly = true;
+    }
+  }
+  try {
+    ensureDriverDir(P.runDir);
+    const record = JSON.stringify({ ts: new Date().toISOString(), review, state: x.state, positions: x.positions, shown: shown.map((p) => p.uri) }, null, 2) + "\n";
+    if (review === "full") atomicWrite(at.full, record);
+    atomicWrite(at.shown, record);
+  } catch (e) { runLog(P.runDir, { event: "review-exclusions-write-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
+  return { state: x.state, lines: [...shown.map(writerExclusionLine), ...withdrawn.map(withdrawnExclusionLine)], changedOnly };
 }
 /** Every record a list of the writer's rows names, a position's members included. PURE. */
 const surfaceUris = (rows) => [...new Set(rows.filter((r) => r?.kind !== "page" && r?.uri)
@@ -3624,8 +3691,6 @@ function surfaceGoodsEvidence(ctx, P, rows) {
     return runPrefix ? goodsEvidenceOfDrops(P, runPrefix, surfaceUris(rows)) : null;
   } catch { return null; }
 }
-/** Every floor decision the review reads: placement's, then the writer's. IMPURE (reads the run). */
-const reviewFloorDecisionLines = (P) => [...placementFloorDecisionLines(P), ...writerFloorDeclinationLines(P)];
 
 export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
@@ -5012,7 +5077,8 @@ function clearedForSeat(runDir, label) {
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   // The review is also pointed at the research behind the findings' use checks, where the writer's record wrote it.
-  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths),
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths),
+    writerExclusions: writerExclusionBlock(ctx.paths, { review: "full" }),
     researchChecks: ctx.paths.researchChecks && existsSync(ctx.paths.researchChecks) ? ctx.paths.researchChecks : null };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
@@ -5216,7 +5282,9 @@ async function stageOnce(name, ctx, opts = {}) {
       // The reading step's and the writer's fresh sessions are given placement's accepted set-asides as they stand,
       // except a narrow repair: it fixes only the faults or objects it names, and the general order to check each
       // ground would widen it. Its inputs, the decisions file among them, are named as for any other.
-      decisions: NARROW_REPAIR_TRIGGERS.has(trigger) ? null : (messageCtxFor(name, ctx)?.placementSetAsides ?? null),
+      // The review holds no set-asides, and its context records the exclusions its full review was shown, so a
+      // follow-up of it does not build one: that would move the record the reviews after it are compared with.
+      decisions: NARROW_REPAIR_TRIGGERS.has(trigger) || name === "narrative-refutation" ? null : (messageCtxFor(name, ctx)?.placementSetAsides ?? null),
     })
     : (def.message(messageCtxFor(name, ctx)) + (opts.extra ? `\n\n${opts.extra}` : ""));
   // Every stage runs as the forwarding agent (derived from the queue location). An explicit opts.agent wins.
@@ -5945,6 +6013,24 @@ export function stageCharter(stageName, depth, framework = null) {   // @interna
  * A re-emission that is not told the rung is not a repair of the rung's output. It is a fresh write
  * under the default contract, wearing the corrective pass's name.
  */
+/** A flag's position ids as the review's list keys them; null when it names none. PURE. */
+const positionIdsOf = (ids, listed) => {
+  if (!Array.isArray(ids) || !ids.length) return null;
+  const out = [...new Set(ids.map((p) => listed?.get(String(normalizeRecordUri(p) ?? "")) ?? String(normalizeRecordUri(p) ?? p)))];
+  return out.length ? out : null;
+};
+/** The scope with each named position's mark, owner and id, as the corrective pass is told them. IMPURE (reads the run). */
+function withPositionLabels(scope, P) {
+  if (!scope?.positions?.length) return scope;
+  const shown = safeReadJson(reviewExclusionsPaths(P).shown);
+  const byUri = new Map((Array.isArray(shown?.positions) ? shown.positions : []).map((p) => [p.uri, p]));
+  // Its row in the list `record_declination` reads, prepared again before this pass, so keeping an exclusion names the row.
+  const spec = safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows;
+  const rowOf = (u) => (Array.isArray(spec) ? spec.findIndex((r) => r?.kind !== "page" && String(normalizeRecordUri(r?.uri) ?? "") === u) : -1);
+  const label = (u) => { const p = byUri.get(u); const i = rowOf(u); return `${p?.mark ?? "(unnamed)"}${p?.owner ? ` — ${p.owner}` : ""} (${u})${i >= 0 ? `, row ${i}` : ""}`; };
+  return { ...scope, positionLabels: scope.positions.map(label) };
+}
+
 export function correctionsExtra(P, depth = null, framework = null) {   // @internal
   const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
@@ -5968,6 +6054,7 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
   // cannot tell which source produced a worklist cannot tell a missed flag from an absent one, so the
   // choice is written to the run log with the count each source yielded.
   const typed = readAcceptedFlags(P.runDir);
+  const listed = listedExclusionPositions(P.runDir);
   const rows = typed
     ? typed.map((f, i) => ({
         n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
@@ -5976,6 +6063,8 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
         // that meaning: an empty array would read as "scoped to no findings", which narrows the pass to
         // nothing instead of widening it to everything.
         ordinals: Array.isArray(f.on) && f.on.length ? f.on : null,
+        // A writer's excluded position, as the review's list keys it, whichever of its record ids the flag named.
+        positions: positionIdsOf(f.positions, listed),
       }))
     : parseCorrections(review);
   if (P.runDir) {
@@ -5998,7 +6087,7 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
   // that nothing else may move. When any flag declares nothing, this is "" and the dispatch is
   // byte-identical to the one before this existed — the narrowing is bought by the reviewer's own
   // declaration, never assumed on its behalf.
-  const scope = correctionScope(rows);
+  const scope = withPositionLabels(correctionScope(rows), P);
   // THE RUNG RIDES THE CORRECTIVE RE-EMISSION, byte-identically with the fresh dispatch. Appended rather
   // than threaded through `repairFollowup`'s fields so both dispatches carry the SAME STRING from the
   // SAME function, and an arm can compare them without knowing how either is assembled.
@@ -7137,7 +7226,8 @@ async function runPostRepairReview(ctx, P, run, scope) {
   const changedInputs = changedInputsOf(scope.changed, { narrative: P.narrative, findings: P.findings });
   const message = repairFollowup("narrative-refutation:post-repair-review", {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
-    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: reviewFloorDecisionLines(P),
+    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
+    writerExclusions: writerExclusionBlock(P, { review: "later" }),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
@@ -14546,6 +14636,7 @@ async function pipelineInner(job, opts = {}) {
             followup: repairFollowup("narrative-refutation:verdict-recheck", {
               narrative: P.narrative, findings: P.findings, seniorEyeReview: P.seniorEyeReview,
               correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry,
+              writerExclusions: writerExclusionBlock(P, { review: "later", named: correctionsScope?.positions ?? [] }),
             }),
           })
         : await stage("narrative-refutation", ctx, { force: true, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck", ...(planAuditExtra(ctx) ? { extra: planAuditExtra(ctx) } : {}) });

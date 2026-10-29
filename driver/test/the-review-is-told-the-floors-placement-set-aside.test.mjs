@@ -25,6 +25,7 @@ import { placementFloorDecisionLines, messageCtxFor } from "../pipeline.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { appendDeclinations } from "../declination-tool.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
+import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 
 const rec = (id, mark, owner, extra = {}) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes: ["9"],
   status: "registered", jurisdictions: ["EU"], ...extra });
@@ -101,17 +102,23 @@ test("a floor set aside on its registered goods is listed with that ground", (t)
   assert.deepEqual(placementFloorDecisionLines(P), [`- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its goods: ${ground}`]);
 });
 
-test("a floor the writer declined is listed after placement's decisions, with its reason and ground", (t) => {
+test("a floor the writer declined is listed once, among the writer's exclusions, after placement's decisions", (t) => {
   const { P } = seedRun(t, [
     { select: "/mark/eu/a1", tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
     { set_aside: "/mark/eu/b1", ground: "the registration expired in 2019", on: "status" },
+    { select: "/mark/eu/c1", tier: "sheet-2", reason: "identical, live in the class, for printers beside the client's joysticks" },
   ]);
+  // The write-up carried both placed records to the writer, which delivered a1 and declined c1.
+  writeFileSync(P.registerFindings, "## Findings\n\n| /mark/eu/a1 | QZORVAK |\n| /mark/eu/c1 | QZORVAK |\n");
+  writeFileSync(P.findings, synthesisFindings(P.runDir).replaceAll("/mark/us/90000001", "/mark/eu/a1"));
   const grounds = "Registered for printer cartridges; the specification, read in full, does not meet the client's joysticks.";
-  appendDeclinations(P.runDir, [{ row_index: 0, uri: "/mark/eu/c1", mark: "QZORVAK", owner: "Gamma SA", reason: "unrelated-goods", grounds }]);
-  assert.deepEqual(messageCtxFor("narrative-refutation", { paths: P }).placementFloorDecisions, [
-    "- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019",
-    `- QZORVAK — Gamma SA (/mark/eu/c1): declined by the writer as unrelated-goods: ${grounds}`,
-  ], "the review flags as unaccounted a floor the writer declined on its goods");
+  appendDeclinations(P.runDir, [{ row_index: 1, uri: "/mark/eu/c1", mark: "QZORVAK", owner: "Gamma SA", reason: "unrelated-goods", grounds }]);
+  const ctx = messageCtxFor("narrative-refutation", { paths: P });
+  assert.deepEqual(ctx.placementFloorDecisions, ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019"],
+    "placement's decisions list only placement's");
+  assert.equal(ctx.writerExclusions.state, "listed");
+  assert.equal(ctx.writerExclusions.lines.length, 1, "the floor's position is listed once");
+  assert.match(ctx.writerExclusions.lines[0], /^- QZORVAK — Gamma SA \(\/mark\/eu\/c1\): placement: sheet-2 — identical, live in the class, for printers beside the client's joysticks; excluded by the writer as unrelated-goods: Registered for printer cartridges; the specification, read in full, does not meet the client's joysticks\.; covers the floor \/mark\/eu\/c1$/);
 });
 
 test("a crowd's row is listed once, with its ground once and every floor it covers", (t) => {
@@ -150,7 +157,7 @@ test("beside a crowd's row, a set-aside by name keeps its own line, and the revi
   for (let i = 0; i < N; i++) assert.equal(text.split(`/mark/eu/m${i})`).length - 1 + text.split(`/mark/eu/m${i},`).length - 1, 1, `floor m${i} is not named once`);
 });
 
-const SENTENCE = "Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below. A floor that is none of these is a FLAGGED CORRECTION. Check each listed decision's ground against the evidence. Flag a decision only when you can name the evidence against its ground or the error in its reasoning.";
+const SENTENCE = "Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below: placement's decisions on the floors, or the writer's exclusions of positions placement retained. A floor that is none of these is a FLAGGED CORRECTION. Check each of placement's listed decisions against the evidence, and flag one only when you can name the evidence against its ground or the error in its reasoning. The writer's exclusions are listed after them, under their own standard.";
 const LINES = ["- Qzorvak — Beta GmbH (/mark/eu/b1): set aside on its status: the registration expired in 2019",
   "- covered by group (b)'s row: identical marks in the class for goods unrelated to the client's (/mark/eu/m1)"];
 

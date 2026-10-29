@@ -210,13 +210,19 @@ function byName(doc) {
 // ALL-OR-NOTHING ON PURPOSE. A partial scope is the dangerous shape: it reads like a narrow instruction
 // while one flag's subject is unknown, so the pass is told not to touch the finding that flag is about.
 // Under-correcting a client deliverable is worse than paying for a wide pass, and `kind`'s own fail-safe
-// takes the same direction one field over. PURE.
+// takes the same direction one field over.
+//
+// A FLAG ABOUT A WRITER'S EXCLUSION DECLARES ITS SUBJECT TOO: the position it names, which has no finding ordinal. It
+// counts as declared, so a flag on an excluded position narrows the pass to that position instead of opening the
+// whole report (ruled 2026-10-29). `positions` lists them, as the review's list keys them. PURE.
 export function correctionScope(rows) {
   const list = rows ?? [];
   if (!list.length) return { scoped: false, ordinals: [] };
-  if (list.some((r) => r.ordinals == null)) return { scoped: false, ordinals: [] };
+  const named = (r) => Array.isArray(r.positions) && r.positions.length > 0;
+  if (list.some((r) => r.ordinals == null && !named(r))) return { scoped: false, ordinals: [] };
   const ords = [...new Set(list.flatMap((r) => r.ordinals ?? []))].sort((a, b) => a - b);
-  return { scoped: true, ordinals: ords };
+  const positions = [...new Set(list.flatMap((r) => (named(r) ? r.positions : [])))];
+  return { scoped: true, ordinals: ords, ...(positions.length ? { positions } : {}) };
 }
 
 /** The ordinals a findings doc actually carries. PURE. */
@@ -241,7 +247,8 @@ export function scopeDrift(rows, preDoc, postDoc) {
   const named = new Set(scope.ordinals);
   const have = ordinalsOf(preDoc?.findings ? preDoc : postDoc);
   const unbound = [...new Set((rows ?? []).flatMap((r) => r.ordinals ?? []))].filter((o) => !have.has(o));
-  if (!scope.scoped || !preDoc || !postDoc) return { scoped: scope.scoped, named: [...named], moved: [], unbound };
+  const positions = scope.positions ? { positions: scope.positions } : {};
+  if (!scope.scoped || !preDoc || !postDoc) return { scoped: scope.scoped, named: [...named], ...positions, moved: [], unbound };
   const pre = byOrdinal(preDoc), post = byOrdinal(postDoc);
   const moved = [];
   for (const [ord, a] of pre) {
@@ -249,7 +256,7 @@ export function scopeDrift(rows, preDoc, postDoc) {
     const b = post.get(ord);
     if (!b || stateOf(a) !== stateOf(b)) moved.push(ord);
   }
-  return { scoped: true, named: [...named], moved, unbound };
+  return { scoped: true, named: [...named], ...positions, moved, unbound };
 }
 
 // `sections`, optional: the flags whose target is a narrative section, as `{n, label, before, after}` with the
