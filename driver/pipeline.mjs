@@ -7838,11 +7838,7 @@ async function refute(ctx) {
   // EVERY UNREADABLE STATE RESOLVES TO null = EVERY FINDING: no cut on the row, no findings file, an
   // unparseable one, a manifest with no bands. Wrong toward depth costs time; wrong toward brevity drops
   // work from a report somebody paid for, and the only symptom is a profile nobody asked about missing.
-  ctx.profileSelection = profileOrdinals({
-    findings: safeReadJson(ctx.paths.findings),
-    bandOrder: ctx.framework?.bands ?? null,
-    maxRank: ctx.depth?.profileKeptBandRank ?? null,
-  });
+  ctx.profileSelection = reviewProfileSelection(ctx);
   if (ctx.profileSelection.ordinals)
     runLog(ctx.run.runDir, { event: "profile-selection", of: ctx.profileSelection.total,
       selected: ctx.profileSelection.ordinals.length, keyless: ctx.profileSelection.keyless });
@@ -18430,6 +18426,13 @@ function experimentEngineName() {
  * The cap is deliberately far above any real number of concurrent draws, because this lock exists to be
  * SEEN and never to ration. A draw that blocked here would be a new failure mode in place of an old one.
  */
+/** Which findings the review is asked to ground in a profile, from the findings, the framework's bands and the depth. */
+export const reviewProfileSelection = (ctx) => profileOrdinals({
+  findings: safeReadJson(ctx.paths.findings),
+  bandOrder: ctx.framework?.bands ?? null,
+  maxRank: ctx.depth?.profileKeptBandRank ?? null,
+});
+
 export async function runExperiment(job, opts) {   // @internal
   const lock = await acquireSlot({ dir: config.runLockDir, cap: 1024, prefix: "draw" });
   try {
@@ -18498,7 +18501,7 @@ async function runExperimentInner(job, opts) {
   // what the replay answers from, never a hand-off production's first attempt does not get.
   const shadowCtx = { ...ctx, paths: paths(shadowDir), axis, gridSpecPath: null, clHalfTerms: null,
     researchHandOff: (opts.dispatchTrigger ?? "fresh") !== "fresh" };
-  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly, researchHandOff: shadowCtx.researchHandOff };
+  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly, researchHandOff: shadowCtx.researchHandOff, dispatchTrigger: opts.dispatchTrigger ?? "fresh" };
   const manifest = sandboxManifest(name, ctx.paths, inputOpts);
   // ── 1. GATHER — the sandbox manifest, not the freshness list ──────────────────────────────────────
   //
@@ -18585,6 +18588,9 @@ async function runExperimentInner(job, opts) {
   // with no DECLINATIONS block while the recorder held it to the copied list. Built from the sandbox's
   // own copies, so the canonical run is not touched.
   if (name === "synthesis") prepareDeclinationSpec(shadowCtx, shadowCtx.paths);
+  // A REVIEW ARM IS TOLD WHICH FINDINGS TO PROFILE, as production tells it: the run computes the list just before the
+  // review is dispatched and sets it on the context, so an arm that did not had no grounded-profiles line at all.
+  if (name === "narrative-refutation") shadowCtx.profileSelection = reviewProfileSelection(shadowCtx);
   const sessionKey = `clearance-exp-${ctx.run.slug}-${ctx.run.codename}-${name}${axis ? `-${axis}` : ""}-${ts}`;
   let { text: extra, ids: extraIds } = experimentExtra(shadowCtx, name, opts);
 

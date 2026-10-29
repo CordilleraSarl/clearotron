@@ -90,8 +90,10 @@ test("THE CALL SITE computes it on ctx, so the recheck sends the SAME list", () 
   // session a different list than the one it was given — the two-dispatches-disagreeing shape this
   // issue is made of. Set once on ctx, read by every dispatch of the stage.
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
-  assert.match(src, /ctx\.profileSelection = profileOrdinals\(/,
+  assert.match(src, /\bctx\.profileSelection = reviewProfileSelection\(ctx\)/,
     "nothing computes the profile selection onto ctx");
+  // An --experiment review arm is told the same list, from the same function, set once on its own context.
+  assert.match(src, /shadowCtx\.profileSelection = reviewProfileSelection\(shadowCtx\)/, "a review arm is not told which findings to profile");
   assert.equal((src.match(/profileOrdinals\(/g) ?? []).length, 1,
     "the selection is computed in more than one place — two computations can disagree, and a recheck "
     + "that re-derived it could hand a resumed session a different list than the one it was given");
