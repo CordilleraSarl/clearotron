@@ -7277,7 +7277,13 @@
         },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
           "tests": 11,
-          "asserts": 27,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-sees-every-position-the-writer-excluded.test.mjs": {
+          "tests": 7,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
