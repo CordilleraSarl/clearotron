@@ -20,7 +20,7 @@ after(() => rmSync(TMP, { recursive: true, force: true }));
 // Before the import: the ledger's path is fixed when its module loads.
 process.env.CLEAROTRON_REGISTER_CALL_LOG = join(TMP, "calls.jsonl");
 process.env.CLEAROTRON_REGISTER_RECORD_LOG = join(TMP, "records.jsonl");
-const { signaFetch, rateLimitWaitMs, RATE_LIMIT_RETRIES } = await import("../src/core.js");
+const { signaFetch, rateLimitWaitMs, RATE_LIMIT_RETRIES, RATE_LIMIT_SLEEP_BUDGET_MS } = await import("../src/core.js");
 
 const refusal = (type, retry_after = null) => ({
   error: { type, title: "Refused", status: 429, detail: "synthetic", retryable: type === "rate_limited", retry_after },
@@ -41,13 +41,13 @@ async function register(answers) {
 }
 
 let target = 0;
-async function ask(answers) {
+async function ask(answers, tctx = {}) {
   const reg = await register(answers);
   const waits = [];
   const label = `t${++target}`;
   try {
     const r = await signaFetch("k", reg.base, "/v1/trademarks", { method: "POST", body: { q: "X" },
-      tctx: { kind: "test", target: label }, sleep: async (ms) => { waits.push(ms); } });
+      tctx: { kind: "test", target: label, ...tctx }, sleep: async (ms) => { waits.push(ms); } });
     const log = existsSync(process.env.CLEAROTRON_REGISTER_CALL_LOG) ? readFileSync(process.env.CLEAROTRON_REGISTER_CALL_LOG, "utf8") : "";
     const rows = log.split("\n").filter(Boolean).map((l) => JSON.parse(l)).filter((row) => row.target === label);
     return { r, waits, rows, asked: reg.asked() };
@@ -101,6 +101,32 @@ test("CONTROL: a stated wait longer than one window is not slept through inside 
   assert.deepEqual(waits, []);
 });
 
+test("one call sleeps at most one window in all: a third wait that would pass it is not taken", async () => {
+  const slow = Array.from({ length: 5 }, () => ({ status: 429, headers: { "retry-after": "25" }, body: refusal("rate_limited", 25) }));
+  const { r, waits, asked } = await ask(slow);
+  assert.equal(r.status, 429);
+  assert.equal(waits.length, 2, "25 s twice fits in 60 s; a third would not");
+  assert.ok(waits.reduce((a, b) => a + b, 0) <= RATE_LIMIT_SLEEP_BUDGET_MS);
+  assert.equal(asked, 3);
+});
+
+test("a wait that would run past the turn's time to stop sending is not taken", async () => {
+  // A plan call that outlasts its turn ends with it and its answers are never written, so the refusal
+  // returns while the turn still has time to write what the call holds.
+  const { r, waits, asked } = await ask([{ status: 429, headers: { "retry-after": "2" }, body: refusal("rate_limited", 2) }],
+    { sendUntilMs: Date.now() + 500 });
+  assert.equal(r.status, 429);
+  assert.deepEqual(waits, []);
+  assert.equal(asked, 1);
+});
+
+test("CONTROL: a time to stop sending the wait fits inside does not stop it", async () => {
+  const { r, waits } = await ask([{ status: 429, headers: { "retry-after": "2" }, body: refusal("rate_limited", 2) }],
+    { sendUntilMs: Date.now() + 60_000 });
+  assert.equal(r.status, 200);
+  assert.equal(waits.length, 1);
+});
+
 test("CONTROL: a server error still gets its one retry after a second and a half", async () => {
   const { r, waits, rows } = await ask([{ status: 503, body: { error: { type: "unavailable" } } }]);
   assert.equal(r.status, 200);
@@ -116,6 +142,6 @@ test("the wait rule, read without a server", () => {
   assert.equal(rateLimitWaitMs("Wed, 21 Oct 2026 07:28:00 GMT", refusal("rate_limited", 5), 0, none), 5000,
     "a header that is not a number of seconds falls back to the body");
   assert.equal(rateLimitWaitMs("1", { message: "too many requests" }, 0, none), null, "no error type: not a refusal the documentation says to wait out");
-  assert.equal(rateLimitWaitMs("60", refusal("rate_limited"), 0, none), 60000, "one whole window is still waited");
-  assert.equal(rateLimitWaitMs("61", refusal("rate_limited"), 0, none), null);
+  assert.equal(rateLimitWaitMs("90", refusal("rate_limited"), 0, none), 90000,
+    "the rule reports the register's figure; the call's budget decides whether it is waited");
 });

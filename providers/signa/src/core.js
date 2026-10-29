@@ -31,6 +31,7 @@ import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_sha
 import { answerKey, compareAnswers, noteAnswer, openAnswerMemory, recallAnswer, rememberAnswer } from "../../_shared/answer-memory.mjs";
 import { makeEnumerate, isOwnerScoped } from "../../_shared/enumerate.mjs";
 import { makeExecutePlan } from "../../_shared/execute-plan.mjs";
+import { pastSendUntil } from "../../_shared/send-until.mjs";
 import CAPABILITIES, { SIGNA_OFFICE_KEYS, OWNER_SCOPED_WINDOW } from "./capabilities.js";
 // The register's own measure of a term's length: case and accents folded, spaces not counted — the same
 // measure its documented floors are stated in (the compiler's foldedTermLength counts the same way).
@@ -112,12 +113,17 @@ const endpointOf = (method, path) => `${method} ${String(path).split("?")[0].rep
 //
 // The wait is the register's own figure: `Retry-After`, else the body's `retry_after`, else the
 // documentation's backoff (one second, doubling). Up to a second of jitter goes on top, as Signa's
-// resilience guide does, so units refused together do not return together. A stated wait longer than one
-// per-minute window is not slept through inside a call: that refusal returns as it always has. A retry is
-// another attempt on the same ledger row, never a row of its own.
+// resilience guide does, so units refused together do not return together. A retry is another attempt on
+// the same ledger row, never a row of its own.
+//
+// ONE CALL SLEEPS AT MOST ONE PER-MINUTE WINDOW IN ALL, AND NEVER PAST ITS TIME TO STOP SENDING. A plan call
+// runs inside a model's turn, and a call that outlasts the turn ends with it, unwritten (send-until.mjs). So
+// a wait that would take the call's sleeping past 60 seconds, or past the turn's time to stop sending, is
+// not taken: that refusal returns as it always has. On the run measured above, a search on the same
+// endpoint succeeded within 22.1 seconds of every one of the 204 refusals.
 export const RATE_LIMIT_RETRIES = 3;
+export const RATE_LIMIT_SLEEP_BUDGET_MS = 60_000;
 const RATE_LIMIT_BASE_MS = 1000;
-const RATE_LIMIT_LONGEST_WAIT_MS = 60_000;
 
 /** How long to wait before asking again after a 429, or null when it is not a refusal a wait clears. */
 export function rateLimitWaitMs(retryAfter, body, retried, random = Math.random) {
@@ -126,7 +132,7 @@ export function rateLimitWaitMs(retryAfter, body, retried, random = Math.random)
   const stated = Number.isFinite(header) && header >= 0 ? header * 1000
     : Number.isFinite(body.error.retry_after) && body.error.retry_after >= 0 ? body.error.retry_after * 1000
     : RATE_LIMIT_BASE_MS * 2 ** retried;
-  return stated > RATE_LIMIT_LONGEST_WAIT_MS ? null : stated + random() * RATE_LIMIT_BASE_MS;
+  return stated + random() * RATE_LIMIT_BASE_MS;
 }
 
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -160,7 +166,7 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
     note({ held: true, served: true, status: held.status });
     return { status: held.status, ok, url, body: parsed, raw: held.raw, parseError };
   }
-  let attempts = 0, resp, raw = null, serverRetries = 0, rateRetries = 0;
+  let attempts = 0, resp, raw = null, serverRetries = 0, rateRetries = 0, slept = 0;
   try {
     for (;;) {
       attempts++;
@@ -171,8 +177,9 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
         // caller if this is the answer that stands.
         raw = await resp.text();
         const wait = rateRetries < RATE_LIMIT_RETRIES ? rateLimitWaitMs(resp.headers.get("retry-after"), parseJsonBody(raw).body, rateRetries) : null;
-        if (wait === null) break;
+        if (wait === null || slept + wait > RATE_LIMIT_SLEEP_BUDGET_MS || pastSendUntil(tctx, Date.now() + wait)) break;
         rateRetries++;
+        slept += wait;
         await sleep(wait);
         continue;
       }
