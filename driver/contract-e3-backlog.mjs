@@ -524,7 +524,7 @@ export const E3_BACKLOG = [
     kind: "literal-json-skeleton",
     where: "driver/stages.mjs:3294",
     surface: "stage-message",
-    evidence: "use_check = {\"source\",\"quality\"}: … quality: OPTIONAL, EXACTLY one of owner-site / independent / register-mirror … own_rights = {\"source\"}",
+    evidence: "use_check = {\"source\",\"quality\",\"question\"}: … quality: OPTIONAL, EXACTLY one of owner-site / independent / register-mirror … own_rights = {\"source\"}",
     reparsedBy: "driver/verify.mjs checkFindingsSibling (finding_use_check_missing); driver/own-rights.mjs:19-22",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
