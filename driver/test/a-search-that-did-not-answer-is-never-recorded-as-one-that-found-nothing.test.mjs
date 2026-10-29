@@ -60,6 +60,13 @@ const REVIEW = "Check a claimed research result against the relevant saved answe
 const CHECKED = "The driver checks the structured finding record. A required use-check source belongs in that record. "
   + "An unknown use status does not require an invented source. The reviewer checks whether the available evidence supports the claim.";
 const NO_RESULT = "perplexity_research — no result";
+// Design's amendments of 2026-10-29, word for word: the refusal's examples, the review's pointer, the writer's field
+// rule and the own-rights line.
+const EXAMPLES = (list) => `Examples of completed questions with answers available to this writer: ${list}. `
+  + "Use a question only where its answer supports this finding. Other relevant answers already held remain usable.";
+const POINTER = "the cited questions, their recorded outcomes, any saved answers, and the writer's research questions with their outcomes.";
+const QUESTION_FIELD = "question: required for a no-result; copy the research question whose completed answer supports it, as instructed above.";
+const OWN_RIGHTS = "record the source in the finding's `own_rights.source` field, which the driver checks in the structured finding record.";
 
 const ask = (owner) => `Does ${owner} use the mark QZORVEL for toys in France, and has it opposed or sued over a similar mark?`;
 
@@ -199,9 +206,9 @@ test("the writer's record takes a no-result only where the question it names com
     }
     assert.equal(saved.saved?.length, 0, `${name}: a no-result was saved with no completed search behind it`);
     assert.equal(saved.save_refused?.[0]?.reason, `synthesis_save_no_result_without_a_completed_search:0 — finding 1 names a question `
-      + `this writer holds no completed answer to. The completed questions this writer holds: none. ${RULED}`, name);
+      + `this writer holds no completed answer to. ${EXAMPLES("none")} ${RULED}`, name);
     assert.equal(recorded.refused, "synthesis_no_result_without_a_completed_search:1,3 — finding 1 names a question this writer holds no completed "
-      + `answer to; finding 3 names a question this writer holds no completed answer to. The completed questions this writer holds: none. ${RULED}`,
+      + `answer to; finding 3 names a question this writer holds no completed answer to. ${EXAMPLES("none")} ${RULED}`,
       `${name}: the whole record took a no-result`);
     assert.equal(existsSync(join(all, "findings.json")), false, `${name}: a refused record was written`);
   }
@@ -230,7 +237,7 @@ test("owner A answered and owner B failed: B's no-result is refused, and A's sta
   const r = whole(e, [a, b, DOC.findings[2]]);
   assert.match(r.refused ?? "", /^synthesis_no_result_without_a_completed_search:2 — finding 2 names a question this writer holds no completed answer to\. /,
     "a completed answer about one owner let a failed question about another pass as a search that found nothing");
-  assert.ok(r.refused.includes(`The completed questions this writer holds: "${ask("Alder Holdings")}".`), "the refusal does not hand back the question that did complete");
+  assert.ok(r.refused.includes(`${EXAMPLES(`"${ask("Alder Holdings")}"`)} ${RULED}`), "the refusal does not hand back the question that did complete");
   // Spelled as research-answers.md hands it on, on one line and without its question mark, it is the same question:
   // on a run of its own, so no earlier refusal can have taken the no-result off.
   const d2 = run(t);
@@ -322,6 +329,29 @@ test("a correction on a retry's session keeps the main pass's no-result, and its
   assert.match(bad.refused ?? "", /^synthesis_no_result_without_a_completed_search:2 — finding 2 names a question this writer holds no completed answer to/);
 });
 
+test("a completed question whose answer the run did not keep supports no no-result, and its completion stays on the record", async (t) => {
+  // Keeping an answer is best-effort, so a search can complete and its answer be lost to a write that failed. Nothing
+  // the run holds then says what it returned, and the review could not check it.
+  const d = run(t);
+  await callResearch(d, { task: ask("Alder Holdings") });
+  await callResearch(d, { task: ask("Sample Trading") });
+  const keptRows = lines(driverDir(d, "research-answers.jsonl")).filter((r) => r.task === ask("Alder Holdings"));
+  writeFileSync(driverDir(d, "research-answers.jsonl"), keptRows.map((r) => JSON.stringify(r)).join("\n") + "\n");
+  const lost = RA.heldResearchAnswers(d, SESSION).get(RA.questionKey(ask("Sample Trading")));
+  assert.deepEqual([lost?.from, lost?.answer], ["asked", null], "premise: the question is held as completed, with no answer");
+  const s = save(d, [noResult(DOC.findings[0], ask("Sample Trading"))]);
+  assert.equal(s.saved.length, 0, "a no-result was saved on an answer the run does not hold");
+  // The refusal's examples are the questions with an answer to read, never the one whose answer was lost.
+  assert.equal(s.save_refused?.[0]?.reason, "synthesis_save_no_result_without_a_completed_search:0 — finding 1 names a question this writer "
+    + `holds no completed answer to. ${EXAMPLES(`"${ask("Alder Holdings")}"`)} ${RULED}`);
+  // Its completion stays in the evidence the review reads, with the answer shown as not kept.
+  const linked = { ...DOC.findings[0], use_check: { source: "https://register.example/record/90000001", question: ask("Sample Trading") } };
+  assert.equal(whole(d, [linked, leftUnknown(DOC.findings[1]), DOC.findings[2]]).refused, null);
+  const text = readFileSync(paths(d).researchChecks, "utf8");
+  assert.ok(text.includes(`question "${ask("Sample Trading")}": completed.`), "the question's completion was dropped");
+  assert.ok(text.includes(`- "${ask("Sample Trading")}": (answer not kept)`), "a lost answer was shown as one the review can read");
+});
+
 // A frozen ladder, so the record's own check judges which findings are material, as it does on a run.
 const FIVE = parseFrameworkManifest({
   schema_version: 1, framework_key: "five-rung-test", title: "Invented five-rung ladder", source_deck: "none", entity_label: "the company",
@@ -372,7 +402,7 @@ test("the review is handed the research behind each claim, its outcome and its a
   // Nothing here depends on the engine: both read the same message and the same run folder.
   const ctx = messageCtxFor("narrative-refutation", { paths: P, run: null });
   const message = String(STAGES["narrative-refutation"].message({ ...ctx, job: {}, registerOnly: true }));
-  assert.ok(message.includes(`${REVIEW} The research behind the findings' use checks is in ${P.researchChecks}:`), "the review is not told to check claims against the evidence");
+  assert.ok(message.includes(`${REVIEW} The research behind the findings' use checks is in ${P.researchChecks}: ${POINTER}`), "the review is not told to check claims against the evidence");
   assert.equal(stageInputs("narrative-refutation", P).includes(P.researchChecks), false, "the freshness map widened");
   assert.ok(sandboxManifest("narrative-refutation", P).some((e) => e.path === P.researchChecks), "an experiment's review would not carry the evidence");
   // A run whose record wrote none sends no pointer to a file that is not there.
@@ -390,6 +420,11 @@ test("the ruled words stand where the writer, its correction and the review read
   assert.equal(message.includes("On a perplexity outage"), false, "the writer is still told to write no-result on an outage");
   assert.ok(useCheck.includes('non-use revocation/cancellation as the mitigant), run ONE scoped'), "the writer still owes a source line for an unknown use");
   assert.ok(useCheck.includes('and with a no-result also "question": "<the research question whose completed answer returned it, word for word as it was asked>"'));
+  // The field list names the question beside the source and the quality, which stays optional.
+  const fields = message.slice(message.indexOf("- use_check / own_rights:"));
+  assert.ok(fields.includes('use_check = {"source","quality","question"}: source is the cite of record'), "the field list does not name the question");
+  assert.ok(fields.includes(`a register mirror is never evidence of use). ${QUESTION_FIELD} own_rights = {"source"}`), "the field list does not say when the question is owed");
+  assert.ok(fields.includes("quality: OPTIONAL, EXACTLY one of owner-site / independent / register-mirror"));
 
   const flat = (p) => readFileSync(join(DRIVER, "skills", ...p), "utf8").replace(/\s+/g, " ");
   const manual = flat(["clearance-search", "phase2-execution.md"]);
@@ -399,6 +434,8 @@ test("the ruled words stand where the writer, its correction and the review read
   assert.ok(step.includes(`${CHECKED} The synthesis stage cannot ship an *inferred* "no use"`), "Step 3.5 still names the retired validator");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
   assert.ok(rules.includes(`"perplexity_research — no result">\` line. ${CHECKED} A use-negative`), "the synthesis manual still names the retired validator");
+  assert.ok(rules.includes(`searched register material">\` line — ${OWN_RIGHTS} **Know what the negative means:**`), "the own-rights paragraph still names the retired validator");
+  assert.equal(/validator rejects the narrative/.test(rules), false, "the synthesis manual still names the retired narrative validator");
   const review = flat(["narrative-refutation", "SKILL.md"]);
   assert.ok(review.includes(`an un-run check dressed as a clean negative is a defect. ${CHECKED}`), "the review still names the retired validator");
 

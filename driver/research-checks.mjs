@@ -25,7 +25,7 @@ export const REVIEW_RESEARCH_CHECK = "Check a claimed research result against th
 
 /** The review message's line: the instruction, then where its evidence is. Model-facing. PURE. */
 export const reviewResearchLine = (path) => `${REVIEW_RESEARCH_CHECK} The research behind the findings' use checks is in ${path}: `
-  + "each cited question, whether it completed, and its answer, and every research question the writer asked, with its outcome.";
+  + "the cited questions, their recorded outcomes, any saved answers, and the writer's research questions with their outcomes.";
 
 const oneLine = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
 const quoted = (s) => `"${oneLine(s).replace(/"/g, "'")}"`;

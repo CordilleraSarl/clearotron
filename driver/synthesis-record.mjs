@@ -47,7 +47,7 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult } from "./findings-model.mjs";
-import { heldResearchAnswers, questionKey, NO_SEARCH_RESULT } from "./research-answers.mjs";   // a "no result" names a question that completed
+import { heldResearchAnswers, isResearchAnswer, questionKey, NO_SEARCH_RESULT } from "./research-answers.mjs";   // a "no result" names a question that completed
 import { writeResearchChecks } from "./research-checks.mjs";   // the research behind the use checks, written for the review
 import { normalizeRecordUri } from "./registry-fidelity.mjs";   // the duty's own reading of a record uri
 import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
@@ -280,8 +280,10 @@ export function withoutWithheldRows(rows, ledger) {
 // finding carrying it names, in `use_check.question`, the research question whose completed answer returned it, and the
 // record looks for that question among the completed answers this writer holds (`heldResearchAnswers`): the ones it was
 // handed and the ones its own session's calls completed. A finding naming no question, or one it holds no completed
-// answer to, is refused in the turn, with the ruled sentence for a search that did not answer. One answer may support
-// several findings. What the answer supports is the model's to judge; the code checks only that the question completed.
+// answer to, is refused in the turn, with the ruled sentence for a search that did not answer. A question that completed
+// but whose answer the run did not keep is no support either: the review could not read what it returned. One answer
+// may support several findings. What the answer supports is the model's to judge; the code checks only that the
+// question completed and its answer is there.
 //
 // A REFUSAL, NEVER A STOP. A repeat after that refusal is accepted with the unsupported no-result taken off the finding
 // and the original kept beside the run, as a foreign record link is (foreign-record-links.mjs): the finding keeps every
@@ -290,17 +292,23 @@ export function withoutWithheldRows(rows, ledger) {
 const noResultFault = (f, held) => {
   if (!held || f?.disposition === "withdrawn" || !isUseCheckNoResult(f?.use_check?.source)) return null;
   const k = questionKey(typeof f.use_check.question === "string" ? f.use_check.question : "");
-  return !k ? "names no question" : held.has(k) ? null : "names a question this writer holds no completed answer to";
+  return !k ? "names no question" : isResearchAnswer(held.get(k)?.answer) ? null : "names a question this writer holds no completed answer to";
 };
 export const NO_RESULT_TOKEN = "no_result_without_a_completed_search";
 /** Whether this run's writer was refused a no-result before: a repeat is then taken with it off. IMPURE (reads the refusals). */
 const noResultRefusedIn = (runDir) => refusalsFor(runDir).some((r) => String(r?.reason ?? "").includes(NO_RESULT_TOKEN));
-/** The refusal's text: what each finding lacks, the questions held where one named was not found, the ruled sentence. PURE. */
+/**
+ * The refusal's text: what each finding lacks, then, where one named was not found, up to eight of the questions held
+ * with an answer, each in full so it can be copied as asked, then the ruled sentence. The examples are an aid to the
+ * correction, not the questions admitted: any held answer counts. Their words are design's (2026-10-29), word for word.
+ * PURE.
+ */
 function noResultRefusal(token, at, faults, held) {
   const each = faults.map((x) => `${x.label} ${x.fault}`).join("; ");
   const named = faults.some((x) => /holds no completed answer/.test(x.fault));
-  const list = [...held.values()].slice(0, 8).map((h) => `"${h.question.slice(0, 300)}"`).join(" | ") || "none";
-  return `${token}:${at} — ${each}.${named ? ` The completed questions this writer holds: ${list}.` : ""} ${NO_SEARCH_RESULT}`;
+  const list = [...held.values()].filter((h) => isResearchAnswer(h.answer)).slice(0, 8).map((h) => `"${h.question}"`).join(" | ") || "none";
+  return `${token}:${at} — ${each}.${named ? ` Examples of completed questions with answers available to this writer: ${list}. `
+    + "Use a question only where its answer supports this finding. Other relevant answers already held remain usable." : ""} ${NO_SEARCH_RESULT}`;
 }
 const withoutUseCheck = (f) => { const { use_check: _taken, ...rest } = f; return rest; };
 /** What a repeat took off, kept beside the run with one run-log row. Never throws. */

@@ -1900,8 +1900,8 @@
           "todos": 0
         },
         "a-search-that-did-not-answer-is-never-recorded-as-one-that-found-nothing.test.mjs": {
-          "tests": 12,
-          "asserts": 96,
+          "tests": 13,
+          "asserts": 107,
           "skips": 0,
           "todos": 0
         },
