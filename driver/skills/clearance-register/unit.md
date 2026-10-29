@@ -71,6 +71,8 @@ step that gives you a list you can read.
 A list you have read answers the crowd it came from. Do not ask that crowd again without the limits that answered
 it.
 
+A small list for a longer mark or narrower goods does not establish that a distinct root or sound-alike family adds nothing. Judge what that family could add to the advice and record the reason. Where no count is held, do not describe the family as a measured crowd.
+
 The same steps serve any other question that comes back as a crowd, when reading it would change what you tell the client. Before you narrow a wider crowd, write in the proposal what reading it would change. If you cannot, set it aside with its count and your reason. You need not take every step on every crowd. A wider crowd that the lists you have read already
 answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
 mark's market step did not read stay on its coverage row with their count, as today.
