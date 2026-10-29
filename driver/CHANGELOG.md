@@ -1,5 +1,17 @@
 # clearotron-driver
 
+## 0.5.0-beta.5
+
+### Patch Changes
+
+- Fixed: When a register search fails, the report's coverage still accounts for the unread searches beside it, instead of leaving them out.
+- Fixed: When the search for an owner's use of a mark could not run, the report no longer says that search found nothing.
+- Fixed: A register entry the engine placed on the watchlist now appears in the audit trail with its reason, instead of being left out.
+- Fixed: A citation of a finding the review withdrew, in the report's summary panel or methodology, is now sent back for correction before delivery.
+- Fixed: A clearance that searched common law or the United Kingdom is no longer flagged as claiming a search it did not run.
+- New: Searches now use the latest models: Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5, and OpenAI's GPT-6.1 Sol, GPT-6.1 Terra and GPT-6 Luna.
+- Fixed: When two parties use the same name without a registration, the report keeps a finding for each, instead of keeping only the last one saved.
+
 ## 0.5.0-beta.4
 
 ### Patch Changes
