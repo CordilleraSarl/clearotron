@@ -35,7 +35,7 @@ const LEAKS = [/quillmere/i, /brindlewick/i, /ostend/i];
 function score(...flags) {
   const store = mkdtempSync(join(tmpdir(), "score-marks-store-"));
   const root = mkdtempSync(join(tmpdir(), "score-marks-run-"));
-  const run = join(root, SLUG, "2026-10-29-ochre-drift");
+  const run = join(root, SLUG, "2026-10-29-fixture-folder");
   try {
     mkdirSync(join(store, "baselines"));
     writeFileSync(join(store, "baselines", "KT1.gold.json"), JSON.stringify(GOLD, null, 2));
@@ -68,7 +68,7 @@ test("the run line does not print the folder named for the mark", () => {
   const line = r.stdout.split("\n").find((l) => l.startsWith("run:"));
   assert.ok(line, "the run line is printed");
   assert.doesNotMatch(line, /tarnfold/i);
-  assert.match(line, /2026-10-29-ochre-drift/, "the run's own folder, a date and a codename, still shows");
+  assert.match(line, /2026-10-29-fixture-folder/, "the run's own folder, which carries no mark, still shows");
 });
 
 test("nothing in the whole masked output names a searched mark or the folder", () => {
