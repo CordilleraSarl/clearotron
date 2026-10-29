@@ -80,7 +80,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-## @hono/node-server@1.19.17
+## @hono/node-server@2.1.5
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/honojs/node-server
