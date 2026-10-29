@@ -9083,6 +9083,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/a-rate-limit-refusal-is-waited-out.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/a-search-row-is-a-band-row.test.mjs": {
           "tests": 3,
           "asserts": 15,
