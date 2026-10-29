@@ -346,6 +346,29 @@ test("a completed question whose answer the run did not keep supports no no-resu
   assert.ok(text.includes(`- "${ask("Sample Trading")}": (answer not kept)`), "a lost answer was shown as one the review can read");
 });
 
+test("a refused no-result and its repeat keep the writer's numbering, for the narrative and for a correction", async (t) => {
+  // The record built from saves numbered them in the order saved. A no-result refused in a first save is saved again
+  // after its neighbours, so on a test run the writer's findings 2 and 3 changed places, and the narrative, written in
+  // the writer's numbering, named the wrong findings.
+  const d = run(t);
+  await callResearch(d, { task: ask("Sample Trading") }, { key: "" });
+  const [f1, f2, f3] = DOC.findings;
+  const first = save(d, [f1, noResult(f2, ask("Sample Trading")), f3]);
+  assert.deepEqual([first.saved.length, first.save_refused.length], [2, 1], "premise: the no-result is refused and its neighbours saved");
+  assert.equal(save(d, [noResult(f2, ask("Sample Trading"))]).saved.length, 1, "premise: the repeat is saved");
+  const done = SR.recordSynthesis(d, { findings: { ...DOC, findings: [] }, narrative: SECTIONS });
+  assert.equal(done.refused, null, done.refused);
+  const record = () => JSON.parse(readFileSync(join(d, "findings.json"), "utf8")).findings;
+  assert.deepEqual(record().map((f) => [f.mark, f.ordinal]), DOC.findings.map((f) => [f.mark, f.ordinal]),
+    "the record does not number the findings as the writer did");
+  // A correction names a finding by the writer's number, and changes that finding and no other.
+  const corrected = "Corrected on the record's own evidence.";
+  const patch = SR.recordSynthesis(d, { findings_patch: [{ ...leftUnknown(f2), legal_position: corrected }] });
+  assert.equal(patch.refused, null, patch.refused);
+  assert.deepEqual(record().filter((f) => f.legal_position === corrected).map((f) => f.mark), [f2.mark], "the correction changed another finding");
+  assert.deepEqual(record().map((f) => f.mark), DOC.findings.map((f) => f.mark), "the correction lost or doubled a finding");
+});
+
 // A frozen ladder, so the record's own check judges which findings are material, as it does on a run.
 const FIVE = parseFrameworkManifest({
   schema_version: 1, framework_key: "five-rung-test", title: "Invented five-rung ladder", source_deck: "none", entity_label: "the company",
