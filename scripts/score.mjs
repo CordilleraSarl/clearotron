@@ -64,7 +64,7 @@ import { recordQids } from "../driver/named-band.mjs";
 import { previousRunDir, scenarioRefs } from "../driver/e2e-rounds.mjs";
 // The names rule, kept out of this file so it is testable without a run directory — the same reason
 // reference-score.mjs holds the scoring rules rather than this script.
-import { protectedStrings, redactor, authoredRedactor, printAuthored, printPreRedacted, redactDeep, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
+import { protectedStrings, carryThroughRows, redactor, authoredRedactor, printAuthored, printPreRedacted, redactDeep, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
 import { readSettleStamp } from "../driver/settle-stamp.mjs";   
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
@@ -1015,12 +1015,18 @@ const delta = prev ? bucketDelta(scored.buckets, prev.buckets) : null;
 // as a name substitutes it in all of them rather than needing each one withheld whole. That matters:
 // `text` carries the reviewer's verdict word, and withholding it entire would blank a value the reader
 // came for.
+//
+// AND A FOURTH: THE CARRY-THROUGH ROWS. A subject lands in `lost` there because it reached no
+// downstream artifact, so it is in none of the three above, and both outputs printed it in clear.
 let unclassifiedKeys = [];
+const carry = carryThrough(run.dir);
+const carryCoverage = coverageConflicts(run.dir, carry.lost);
 // The two instruments the JSON payload needs, live only when names are withheld. With `--names` they
 // stay identity, which is the same "nothing to withhold" case `printAuthored` already has.
 let redactValue = (x) => x, redactKey = (x) => x;
 if (!opts.names) {
-  const { names, prose, derived, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null });
+  const { names, prose, derived, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null,
+    carry: carryThroughRows({ lost: carry.lost, unmeasurable: carry.unmeasurable, conflicts: carryCoverage.conflicts }) });
   unclassifiedKeys = unclassified;
   // The second redactor is for lines this tool WROTE. It drops the derived-word layer
   // only, so a party's ordinary long word stops rewriting our own headings while its full name is still
@@ -1061,7 +1067,7 @@ if (opts.json) {
     // — the same measure the human output prints, in the payload too. `--json` bypasses print,
     // so leaving it out would hide it from exactly the readers most likely to automate on it, and a
     // consumer would have no way to tell an absent measure from a clean one.
-    carry_through: (() => { const ct = carryThrough(run.dir); return { ...ct, coverage: coverageConflicts(run.dir, ct.lost) }; })(),
+    carry_through: { ...carry, coverage: carryCoverage },
   }, { redactValue, redactKey }), null, 2)}\n`);
 } else {
   // Said before the first number, not after the last: a reader who stops at the top screen must know

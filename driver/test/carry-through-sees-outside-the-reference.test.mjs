@@ -105,7 +105,9 @@ function scoreFixture(zetaArrives) {
     writeFileSync(join(run, "register-named-band.json"), JSON.stringify(
       { records: [{ mark: "ALPHA", uri: ALPHA_URI }, { mark: "ZETA CORP", uri: ZETA_URI }] }, null, 2));
 
-    const r = spawnSync("node", [SCORE, "CT1", "--run", run, "--json"], {
+    // `--names`: these arms read the measure's rows by subject. Without it the scorer withholds them,
+    // as it withholds every name, and the fixture here is invented.
+    const r = spawnSync("node", [SCORE, "CT1", "--run", run, "--json", "--names"], {
       encoding: "utf8",
       // Scrubbed before ours is set: an inherited CLEAROTRON_E2E_DIR points at the config store's real gold
       // sets, which are live client matter, and the fixture would read as clean against them.
