@@ -28,13 +28,15 @@ import { fallbackNoteFor } from "./numeric-setting.mjs";   // — the one allowe
 import { preflightSkillsStore } from "./skills-store-provenance.mjs";   // — the doctrine this run will be rated under must be reproducible
 import { engineProvenance } from "./engine-build.mjs";                  // — …and which engine loaded it, at run START
 import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
+import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
+import { RECORDS_MODES, savedRecordFetch, heldRegisterCredentials } from "./record-replay.mjs";   // an offline resume answers a record fetch from the run's own records
 import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
-import { handResearchAnswers, RESEARCH_REPLAY_FILE, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
+import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
 import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
@@ -180,7 +182,7 @@ import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKe
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
-import { locateReportFaults, reportPartsOf } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
+import { locateReportFaults, reportPartsOf, overviewCitationFault, writersCitationFaults } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
   findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
@@ -2379,11 +2381,13 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     // WHAT THE WRITE-UP OWES IS PLACEMENT'S HEADLINE ENTRIES, judged per entry: a row naming any record of an entry ends
     // the whole entry. A sheet-2 entry is adopted as placed (`adopt`): the render writes its row on the entry's first
     // live record, else its first, with placement's reason, unless the write-up overrides it with any row naming any of
-    // its records. Watchlist and out-of-scope entries owe nothing and keep their own tabs. An entry with no records owes
-    // nothing and gets no row.
+    // its records. A watchlist-annex entry is adopted the same way (`watch`), into the watchlist annex: the write-up's
+    // render has no other table for it, so without that row it reached no surface and its ending was nobody's. Out-of-scope
+    // entries owe nothing. An entry with no records owes nothing and gets no row.
     const owed = [];
     const owedEntries = [];
     const adopt = [];
+    const watch = [];
     let owedFailed = null;
     if (existsSync(P.placementModel)) {
       try {
@@ -2393,7 +2397,8 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
           const uris = entryUris(e);
           if (!uris.length) continue;
           if (e?.tier === "headline-candidate") { owedEntries.push({ uris }); owed.push(...uris); }
-          else if (e?.tier === "sheet-2") adopt.push({ uri: uris.find((u) => live.get(u) === true) ?? uris[0], uris, reason: String(e?.reason ?? "") });
+          else if (e?.tier === "sheet-2" || e?.tier === "watchlist-annex")
+            (e.tier === "sheet-2" ? adopt : watch).push({ uri: uris.find((u) => live.get(u) === true) ?? uris[0], uris, reason: String(e?.reason ?? "") });
         }
       } catch (e) { owedFailed = String(e?.message ?? e).slice(0, 160); }
     }
@@ -2401,7 +2406,7 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
     const facts = {
       schema_version: 1,
       owed: owedFailed ? null : [...new Set(owed)],
-      ...(owedFailed ? {} : { owed_entries: owedEntries, adopt }),
+      ...(owedFailed ? {} : { owed_entries: owedEntries, adopt, watch }),
       identity: {
         mark: ctx.job?.markName ?? ctx.run?.slug ?? null,
         date: ctx.job?.filedDate ?? ctx.run?.startedAt?.slice?.(0, 10) ?? null,
@@ -5006,7 +5011,9 @@ function clearedForSeat(runDir, label) {
  */
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
-  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths) };
+  // The review is also pointed at the research behind the findings' use checks, where the writer's record wrote it.
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths),
+    researchChecks: ctx.paths.researchChecks && existsSync(ctx.paths.researchChecks) ? ctx.paths.researchChecks : null };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
   // The writer is also handed the research this run's earlier stages and attempts got (research-answers.mjs), written to
@@ -9929,6 +9936,16 @@ async function pipelineInner(job, opts = {}) {
   // credential its lane never uses, and failed before any run dir existed.
   const jobPolicy = policyFor(String(job.product ?? "").trim().toLowerCase());
   const koSelector = jobPolicy?.pipeline === "knockout";
+  // AN OFFLINE RESUME ANSWERS ITS RECORD FETCHES FROM THE RUN'S OWN RECORDS (`--records replay`, record-replay.mjs), so
+  // it needs no register key and refuses to start while one is set: a stage's register tools read the same key.
+  if (opts.records != null && !RECORDS_MODES.includes(opts.records))
+    throw new Error(`--records: unknown value "${opts.records}" — one of: ${RECORDS_MODES.join(", ")}`);
+  if (opts.records === "replay") {
+    const held = heldRegisterCredentials(activeProvider());
+    if (held.length)
+      throw new Error(`--records replay: ${held.join(" + ")} is set, so a stage's register tools could still reach the register — unset it for this resume, which answers every record fetch from the run's own records`);
+    opts.recordFetcher ??= (uri) => savedRecordFetch(opts.__runRef?.runDir, uri);
+  }
   if (!opts.recordFetcher && !koSelector) preflightCredentials();
   // -6 — and the RESEARCH credential, for the products that cannot deliver their answer without it.
   //
@@ -9995,6 +10012,7 @@ async function pipelineInner(job, opts = {}) {
   const run = buildRunContext(job, { studioRoot: opts.studioRoot, archiveRoot: opts.archiveRoot, codename: opts.codename, date: resumeDate });
   opts.__runRef = run;   // expose the run identity so pipeline()'s rate-limit catch can postpone+resume it
   const P = paths(run.runDir);
+  if (opts.records === "replay") runLog(run.runDir, { event: "records-replay", why: "every record fetch is answered from this run's saved records; nothing is sent to the register" });
 
   // RESUME guard: refuse to clobber a delivered run, and clear the stale .failed sentinel so a clean resume
   // doesn't read as failed. (Fresh runs — including minted dispatches — never enter here.)
@@ -16548,8 +16566,12 @@ async function pipelineInner(job, opts = {}) {
           if (r.ok) repaired.push(label);
         };
         const reportFixable = modelFixable(bySurface("report"));
+        const reportParts = reportPartsOf(P, findingsForCards, writeUps);
+        // A citation of a withdrawn or absent finding in the overview's own prose is the overview's to remove, although
+        // the reference check that finds it ships its failure as structural (repair-targets.mjs).
+        const overviewCites = overviewCitationFault(lint.failures, reportParts);
         const reportStructuralOnly = bySurface("report").filter((f) => f.structural);
-        if (reportStructuralOnly.length && !reportFixable.length) {
+        if (reportStructuralOnly.length && !reportFixable.length && !overviewCites) {
           runLog(run.runDir, { event: "lint-redo-skipped-structural", surface: "report", failures: reportStructuralOnly.map((f) => f.id) });
           note(`pre-delivery lint: report failure(s) are structural (un-fetchable record) — shipping as flags, no doomed redo`);
         }
@@ -16559,11 +16581,13 @@ async function pipelineInner(job, opts = {}) {
         let reassembled = false;
         // Each fault goes to the part that holds it (repair-targets.mjs): a card's to that card, with the detail its
         // check gives on that card alone; the overview's to the overview; and a fault only the lines composed from the
-        // record hold to the writer's repair below, since the record is the writer's. One no single part holds keeps the
-        // overview's repair.
-        const targets = locateReportFaults(reportFixable, reportPartsOf(P, findingsForCards, writeUps));
-        if (reportFixable.length) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
-          overview: targets.overview.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), unlocated: targets.unlocated.map((f) => f.id) });
+        // record hold to the writer's repair below, since the record is the writer's, and so does one a register of the
+        // record holds. One no single part holds keeps the overview's repair.
+        const targets = locateReportFaults(reportFixable, reportParts);
+        const shellFixable = [...targets.overview, ...(overviewCites ? [overviewCites] : [])];
+        if (reportFixable.length || overviewCites) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
+          overview: shellFixable.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), record: targets.record.map((f) => f.id),
+          unlocated: targets.unlocated.map((f) => f.id) });
         const badOrdinals = [...targets.cards.keys()];
         for (const ord of badOrdinals) {
           const f = findingsForCards.find((x) => x.ordinal === ord);
@@ -16588,7 +16612,6 @@ async function pipelineInner(job, opts = {}) {
           });
           if (rc.ok) { repaired.push(`report-card:${ord}`); reassembled = true; }
         }
-        const shellFixable = targets.overview;
         if (shellFixable.length && rov) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
@@ -16599,9 +16622,12 @@ async function pipelineInner(job, opts = {}) {
         // writer's too: no card or overview repair can change what the renderer stamps from the record. It joins the
         // narrative's faults in the writer's one repair, each named by the finding that owns it, in the numbering the
         // writer's save takes. Its consumers then rebuild, and its change is reviewed, as for any repair of the record.
+        // A fault a register of the record holds (the four answers citing a finding the review withdrew) joins it, one
+        // line per withdrawn finding it cites, in that numbering.
         const fold = readFold(run.runDir);
         const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
-        const narrativeFixable = [...modelFixable(bySurface("narrative")), ...sentenceFixable];
+        const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
+        const narrativeFixable = [...modelFixable(bySurface("narrative")), ...sentenceFixable, ...recordFixable];
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
         // A writer fault with no writer session to repair it is not repaired, and the run says so.
         if (narrativeFixable.length && !synthesisKey)
@@ -18451,6 +18477,10 @@ async function runExperimentInner(job, opts) {
     throw new Error(`--research: unknown value "${opts.research}" — one of: ${RESEARCH_MODES.join(", ")}`);
   if (opts.research === "replay" && !experimentToolGroups(name).includes("perplexity"))
     throw new Error(`--experiment ${name} --research replay: ${name} holds no research tool, so there is no research to replay`);
+  // The replayed answers sit outside the arm's folder, and only the engine's own fence keeps a stage's commands there.
+  // Codex's sandbox bypass builds none, so the writer could read every answer it is about to be replayed.
+  if (opts.research === "replay" && experimentEngineName() === "openai-agent" && codexSandboxBypassed())
+    throw new Error(`--experiment ${name} --research replay: Codex's sandbox is bypassed (CLEAROTRON_CODEX_SANDBOX_BYPASS=1), so the stage's commands could read the answers the replay answers from — run the arm with the sandbox on, or with --research live`);
   if (opts.dispatchTrigger != null && !DISPATCH_TRIGGERS.includes(opts.dispatchTrigger))
     throw new Error(`--dispatch-trigger: unknown value "${opts.dispatchTrigger}" — it decides which production pass the arm reproduces, so a typo would compose a quietly different prompt. One of: ${DISPATCH_TRIGGERS.join(", ")}`);
   const ctx = reconstructCtx(job, opts);
@@ -18468,7 +18498,7 @@ async function runExperimentInner(job, opts) {
   // what the replay answers from, never a hand-off production's first attempt does not get.
   const shadowCtx = { ...ctx, paths: paths(shadowDir), axis, gridSpecPath: null, clHalfTerms: null,
     researchHandOff: (opts.dispatchTrigger ?? "fresh") !== "fresh" };
-  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly };
+  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly, researchHandOff: shadowCtx.researchHandOff };
   const manifest = sandboxManifest(name, ctx.paths, inputOpts);
   // ── 1. GATHER — the sandbox manifest, not the freshness list ──────────────────────────────────────
   //
@@ -18519,13 +18549,18 @@ async function runExperimentInner(job, opts) {
       gaps.map((g) => `  · ${g.rel}  [${g.kind}${g.via ? ` via ${g.via}` : ""}]${g.why ? ` — ${g.why}` : ""}`).join("\n"));
   }
   // A REPLAY NEEDS ANSWERS TO REPLAY. Refused by name when the run kept none, rather than dispatched to refuse
-  // every question it asks; the marker is the research server's whole switch, and only a sandbox writes it.
+  // every question it asks; the marker is the research server's whole switch, and only a sandbox writes it. The
+  // answers are copied beside the arm, never into it (research-answers.mjs), and the marker names that copy.
   let replayedAnswers = null;
   if (opts.research === "replay") {
-    replayedAnswers = savedResearchCount(shadowDir);
+    const kept = driverDir(ctx.paths.runDir, RESEARCH_ANSWERS_FILE);
+    replayedAnswers = savedResearchCount(kept);
     if (!replayedAnswers)
       throw new Error(`--experiment ${name} --research replay: this run kept no research answers (_driver/research-answers.jsonl is absent or holds none), so there is nothing to replay — run the arm with --research live`);
-    atomicWrite(driverDir(shadowDir, RESEARCH_REPLAY_FILE), JSON.stringify({ replayOf: "the run's saved research answers", answers: replayedAnswers }, null, 2) + "\n");
+    const answersFrom = replayAnswersFile(shadowDir);
+    mkdirSync(dirname(answersFrom), { recursive: true });
+    copyFileSync(kept, answersFrom);
+    atomicWrite(driverDir(shadowDir, RESEARCH_REPLAY_FILE), JSON.stringify({ replayOf: "the run's saved research answers", answers: replayedAnswers, answersFrom }, null, 2) + "\n");
   }
   // ── 4. INLINE context — what no file copy can supply ──────────────────────────────────────────────
   //
@@ -18722,7 +18757,7 @@ function parseArgv(argv) {
   const o = {};
   const flags = { "--job": "job", "--agent": "agent", "--resume": "codename", "--from": "fromStage",
     "--experiment": "experiment", "--model": "model", "--instructions": "instructions",
-    "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger", "--research": "research" };
+    "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger", "--research": "research", "--records": "records" };
   for (let i = 0; i < argv.length; i++) {
     const key = flags[argv[i]];
     if (!key) {
@@ -18889,7 +18924,7 @@ export function resumeAdvice({ result = null, error = null, signal = null, scrip
 }
 
 const USAGE = "usage: node pipeline.mjs --job <file.json> [--agent <id>]\n" +
-  "       [--resume <codename> [--from <stage>]]\n" +
+  "       [--resume <codename> [--from <stage>] [--records live|replay]]\n" +
   "       [--resume <codename> --experiment <stage> [--model <id>] [--instructions <text>] [--axis <axis>] [--label <text>] [--dispatch-trigger <t>] [--research live|replay]]\n" +
   "  --instructions appends to a stage's prompt (a light tweak); a full prompt rewrite means editing the stage's skill file.\n" +
   "  --axis also names the ORDINAL for report-card (its dispatch label is report-card:<ordinal>).\n" +
@@ -18939,6 +18974,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   if (a.fromStage && !a.codename) { console.error("error: --from requires --resume <codename>"); process.exit(2); }
   if (a.experiment && !a.codename) { console.error("error: --experiment requires --resume <codename>"); process.exit(2); }
   if ((a.model || a.instructions || a.dispatchTrigger) && !a.experiment) { console.error("error: --model/--instructions/--dispatch-trigger apply only to --experiment"); process.exit(2); }
+  if (a.records && (!a.codename || a.experiment)) { console.error("error: --records applies only to --resume <codename>, without --experiment"); process.exit(2); }
 
   // — SAY IT BEFORE THE RUN, NOT AFTER IT. `config.poolRoot` now refuses when CLEAROTRON_REPORTS_DIR is
   // unset, but the first thing that touches it is the publish step, so a first run on an unconfigured
@@ -19006,7 +19042,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research }
-    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
+    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }), records: a.records };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again

@@ -152,7 +152,16 @@ export function accountedUris(model, owed = []) {
  * none. PURE.
  */
 export function adoptedRows(model, facts = emptyFacts()) {
-  const adopt = Array.isArray(facts?.adopt) ? facts.adopt : [];
+  return rowsAsPlaced(facts?.adopt, model, facts);
+}
+
+/** THE WATCHLIST-ANNEX ROWS THE DRIVER WRITES, adopted as placed exactly as the sheet-2 rows above are. PURE. */
+export function watchlistRows(model, facts = emptyFacts()) {
+  return rowsAsPlaced(facts?.watch, model, facts);
+}
+
+function rowsAsPlaced(list, model, facts) {
+  const adopt = Array.isArray(list) ? list : [];
   if (!adopt.length) return [];
   const overrides = { ...model, disagreement_resolutions: (model?.disagreement_resolutions ?? []).filter((d) => d?.decision !== "ADOPTED") };
   const named = accountedUris(overrides, adopt.flatMap((e) => e.uris));
@@ -286,6 +295,7 @@ export const DIGEST_SECTIONS = Object.freeze({
   findings: "## Findings",
   riskRelevant: "### Risk-relevant (orchestrator: Sheet 1 candidates)",
   incumbent: "### Incumbent-context (orchestrator: Sheet 2 candidates)",
+  watchlist: "### Watchlist annex (orchestrator: placement's watchlist-annex entries)",
   opposition: "### Opposition history (high-signal — captured verbatim)",
   merch: "### Cross-class merchandising sweep",
   negative: "### Negative results (orchestrator: Sheet \"Negative Results\")",
@@ -419,7 +429,7 @@ const table = (columns, rows) => [row(columns), `|${columns.map(() => "---").joi
  */
 export function emptyFacts() {
   return { identity: {}, recordsByUri: new Map(), recordHost: "", counts: null, auditRows: [], readIds: [],
-    positions: [], owed: null, owedEntries: null, adopt: [], armed: false };
+    positions: [], owed: null, owedEntries: null, adopt: [], watch: [], armed: false };
 }
 
 /** The canonical join key both sides use. Band uris and seat-sent uris meet here and nowhere else. */
@@ -461,8 +471,11 @@ export function readDigestFacts(runDir) {
     ? raw.owed_entries.map((e) => ({ uris: keys(e?.uris) })).filter((e) => e.uris.length) : null;
   // THE ENTRIES ADOPTED AS PLACED: placement's sheet-2 entries, each with the record its row is written on and
   // placement's reason. The write-up overrides one by sending any row that names any of its records.
-  facts.adopt = Array.isArray(raw?.adopt)
-    ? raw.adopt.map((e) => ({ uri: joinKey(e?.uri), uris: keys(e?.uris), reason: str(e?.reason) })).filter((e) => e.uri && e.reason) : [];
+  const asPlaced = (v) => (Array.isArray(v)
+    ? v.map((e) => ({ uri: joinKey(e?.uri), uris: keys(e?.uris), reason: str(e?.reason) })).filter((e) => e.uri && e.reason) : []);
+  facts.adopt = asPlaced(raw?.adopt);
+  // THE WATCHLIST ENTRIES, adopted as placed into the watchlist annex in the same way. Absent on a run written before.
+  facts.watch = asPlaced(raw?.watch);
   facts.armed = accountingArmed(runDir);
   for (const rec of Array.isArray(raw?.records) ? raw.records : []) {
     const key = joinKey(rec?.record_id ?? rec?.uri);
@@ -565,6 +578,8 @@ export function renderRegisterFindings(model, facts = emptyFacts()) {
   if (sheet2.length) {
     out.push(DIGEST_SECTIONS.incumbent, "", table(FINDING_COLUMNS, sheet2.map(findingRow)), "");
   }
+  const watch = watchlistRows(model, facts);   // placement's watchlist entries, adopted as placed
+  if (watch.length) out.push(DIGEST_SECTIONS.watchlist, "", table(FINDING_COLUMNS, watch.map(findingRow)), "");
   for (const [heading, body] of [[DIGEST_SECTIONS.opposition, model.opposition], [DIGEST_SECTIONS.merch, model.merch_sweep]])
     if (body) out.push(heading, "", body, "");
 
@@ -865,7 +880,8 @@ export function acceptRegisterDigest(params, facts = emptyFacts()) {
     }
   }
 
-  const judged = model.findings_rows.length + model.incumbent_rows.length + model.negative_rows.length + adoptedRows(model, facts).length;
+  const judged = model.findings_rows.length + model.incumbent_rows.length + model.negative_rows.length + adoptedRows(model, facts).length
+    + watchlistRows(model, facts).length;
   if (judged < MIN_JUDGED_ROWS && byUri.size > 0)
     return { ok: false, reason: `registerdigest_nothing_judged:0 rows against ${byUri.size} record(s) in this run's band — no Sheet-1 row, no incumbent row and no negative-results drop. Every screened-live record must END somewhere a reader can see; a digest that ends none of them has not read the band` };
   model.band_empty = byUri.size === 0 && judged === 0;

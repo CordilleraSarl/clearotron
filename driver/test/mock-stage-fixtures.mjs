@@ -1752,6 +1752,18 @@ export function applyStageWrites(msg, argv) {
           return r.refused ? `mock writer refused re-saving the same values: ${r.refused}` : "mock writer re-saved the same values";
         }
       }
+      // MOCK_ANSWERS_CITE — the writer's delivery-check repair corrects the four answers as its repair message orders: ONE
+      // patch carrying the corrected register alone, which the receiver merges onto the record it last accepted. Each
+      // answer then cites finding 1 alone.
+      if (process.env.MOCK_ANSWERS_CITE && WRITER_LINT_REPAIR.test(msg)) {
+        const answers = structuredClone(lastAcceptedCall(runDir)?.findings?.four_answers ?? null);
+        if (answers) {
+          for (const a of Object.values(answers)) if (a && typeof a === "object") a.ordinals = [1];
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, { findings: { four_answers: answers } });
+          return r.refused ? `mock writer's four-answers patch refused: ${r.refused}` : "mock writer patched the four answers";
+        }
+      }
       // THE WRITER. The mock drives the PRODUCTION receiver rather than writing the two files, for the
       // same reason every arm here does: a fixture that wrote narrative.md and findings.json would be
       // the mock taking the path this conversion deleted, and it would hide the one thing the
@@ -1793,6 +1805,16 @@ export function applyStageWrites(msg, argv) {
       if (process.env.MOCK_SENTENCE_SCOPE_COUNT && !WRITER_LINT_REPAIR.test(msg)) {
         const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_SENTENCE_SCOPE_COUNT));
         if (f) f.net = `${String(f.net ?? f.legal_position ?? "").trim()} The search ran 14 queries across the register.`.trim();
+      }
+      // MOCK_RECORD_WITHDRAWS=<ordinal> — that finding is withdrawn on every save. MOCK_ANSWERS_CITE=<ordinals> — the four
+      // answers cite those findings on every whole save (the writer's delivery-check repair patches them, above).
+      if (process.env.MOCK_RECORD_WITHDRAWS) {
+        const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_RECORD_WITHDRAWS));
+        if (f) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review flag on this invented finding withdrew it."; }
+      }
+      if (process.env.MOCK_ANSWERS_CITE) {
+        const cites = String(process.env.MOCK_ANSWERS_CITE).split(",").map(Number);
+        for (const a of Object.values(doc.four_answers ?? {})) if (a && typeof a === "object") a.ordinals = cites;
       }
       // THE MOCK CARRIES THE RUN'S OWN LIMITS, because a compliant seat does. The receiver refuses a
       // coverage account that is clean throughout when the register ledger records a slice as less than
@@ -2231,6 +2253,10 @@ export function applyStageWrites(msg, argv) {
       // of MOCK_CARD_SCOPE_COUNT; a later rendering is clean. Keyed on the overview's own file, never on a message.
       const scopeCountNote = process.env.MOCK_OVERVIEW_SCOPE_COUNT && !existsSync(join(runDir, "report-overview.md"))
         ? "The search ran 14 queries across the register." : "";
+      // MOCK_OVERVIEW_CITES=<ordinal> — the overview's FIRST rendering cites that finding by its number; a later rendering
+      // is clean. Keyed on the overview's own file, as MOCK_OVERVIEW_SCOPE_COUNT is.
+      const citeNote = process.env.MOCK_OVERVIEW_CITES && !existsSync(join(runDir, "report-overview.md"))
+        ? `Finding ${process.env.MOCK_OVERVIEW_CITES} remains an open question on its goods.` : "";
       // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption, an empty actions list, and
       // no methodology. The driver renders it with no section heading.
       const r = recordReportOverview(runDir, process.env.MOCK_OVERVIEW_BARE ? {
@@ -2239,7 +2265,7 @@ export function applyStageWrites(msg, argv) {
       } : {
         overall_caption: "mock composite 3",
         actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, scopeCountNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
+        methodology: [permNote, scopeCountNote, citeNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
           .filter(Boolean).join(" "),
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.

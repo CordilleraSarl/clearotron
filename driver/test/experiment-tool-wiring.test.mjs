@@ -125,9 +125,9 @@ test("the tool this sweep needs is reachable, but its ABSENCE would not be visib
   // The gap that remains after the wiring is ruled out. Stated as an assertion over the server's own
   // source because it is the reason a fix here would have been aimed at the wrong thing.
   const src = readFileSync(join(ROOT, "driver", "engine", "mcp", "perplexity-server.mjs"), "utf8");
-  assert.match(src, /if \(!API_KEY\) return "ERROR: PERPLEXITY_API_KEY not set/,
-    "a keyless server STARTS and refuses at the call — so the tool is present, answers an error string, "
-    + "and the driver's record shows only that no ledger appeared");
+  assert.match(src, /if \(!API_KEY\) \{[\s\S]{0,600}?return "ERROR: PERPLEXITY_API_KEY not set/,
+    "a keyless server STARTS and refuses at the call — so the tool is present, answers an error string and logs "
+    + "the refusal, and the driver's record shows only that no ledger appeared");
   assert.match(src, /grid spec\.output_path must be within a studio\/clearance-search run dir/,
     "…and a path the tool refuses produces the same silence");
 });

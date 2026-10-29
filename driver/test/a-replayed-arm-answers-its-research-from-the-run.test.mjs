@@ -5,12 +5,16 @@
 //
 // A stage replayed offline in the experiment sandbox sent its research questions out again: a cost, and answers that
 // were not the ones the run got, so an offline check of the writer could not hold its research still. With
-// `--research replay` the sandbox carries the run's saved research answers, and the research server answers a question
-// the run already asked from the answer the run got, refuses one it did not ask, and sends nothing out. Without the
-// flag nothing changes. Every owner and mark below is invented.
+// `--research replay` the research server answers a question the run already asked from the answer the run got, refuses
+// one it did not ask, and sends nothing out. Without the flag nothing changes.
+//
+// THE ANSWERS ARE KEPT BESIDE THE ARM, NEVER IN IT. They were copied into the arm's `_driver/`, which a stage's own
+// commands may read, and on a test replay, 2026-10-28, a Codex writer read them there and asked the saved run's later
+// questions word for word. Now the arm's folder holds none of them, the server reads the copy its marker names, and an
+// arm under Codex's sandbox bypass, where nothing fences a command, is refused. Every owner and mark below is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, existsSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, existsSync, chmodSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,10 +25,12 @@ import { pinEnv } from "../../shared/env-aliases.mjs";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SERVER = join(HERE, "..", "engine", "mcp", "perplexity-server.mjs");
 const ask = (owner) => `Does ${owner} use the mark QZORVEL for toys in France, and has it opposed a similar mark?`;
-const saved = (dir, rows) => {
-  mkdirSync(driverDir(dir), { recursive: true });
-  for (const r of rows) appendFileSync(driverDir(dir, "research-answers.jsonl"), JSON.stringify(r) + "\n");
+const savedTo = (file, rows) => {
+  mkdirSync(dirname(file), { recursive: true });
+  for (const r of rows) appendFileSync(file, JSON.stringify(r) + "\n");
 };
+const saved = (dir, rows) => savedTo(driverDir(dir, "research-answers.jsonl"), rows);
+const ANSWER = "Yes, in use: https://example.com/qzorvel";
 
 /** One call to the real research server over stdio, with NO research key: a live question can only fail. */
 async function callResearch(runDir, args) {
@@ -52,22 +58,26 @@ async function callResearch(runDir, args) {
     for (const r of requests) child.stdin.write(JSON.stringify(r) + "\n");
   });
 }
-const replayRun = (t, { marker = true } = {}) => {
-  const d = mkdtempSync(join(tmpdir(), "research-replay-"));
-  t.after(() => rmSync(d, { recursive: true, force: true }));
-  saved(d, [
+// An arm folder `d`, and the run's answers kept OUTSIDE it, at the file its marker names (`names: false` names none).
+const replayRun = (t, { marker = true, names = true } = {}) => {
+  const root = mkdtempSync(join(tmpdir(), "research-replay-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const d = join(root, "arm"), from = join(root, "_replay", "arm", "research-answers.jsonl");
+  mkdirSync(driverDir(d), { recursive: true });
+  savedTo(from, [
     { ts: "2026-01-01T10:00:00.000Z", session: "clearance-acme-run-amber-fox-synthesis", task: ask("Example Holdings"), text: "an earlier answer" },
-    { ts: "2026-01-01T10:05:00.000Z", session: "clearance-acme-run-amber-fox-synthesis-rerun1", task: ask("Example Holdings"), text: "Yes, in use: https://example.com/qzorvel" },
+    { ts: "2026-01-01T10:05:00.000Z", session: "clearance-acme-run-amber-fox-synthesis-rerun1", task: ask("Example Holdings"), text: ANSWER },
     { ts: "2026-01-01T10:06:00.000Z", session: "clearance-acme-run-amber-fox-synthesis", task: ask("Broken Answer Co"), text: "ERROR: Research failed — 429" },
   ]);
-  if (marker) writeFileSync(driverDir(d, "research-replay.json"), JSON.stringify({ replayOf: "the run's saved research answers", answers: 1 }) + "\n");
+  if (marker) writeFileSync(driverDir(d, "research-replay.json"),
+    JSON.stringify({ replayOf: "the run's saved research answers", answers: 1, ...(names ? { answersFrom: from } : {}) }) + "\n");
   return d;
 };
 const readingLog = (d) => readFileSync(driverDir(d, "reading-log.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 
 test("a replayed question gets the run's latest answer to it, with no research key and nothing sent out", async (t) => {
   const d = replayRun(t);
-  assert.equal(await callResearch(d, { task: `  ${ask("Example Holdings")} ` }), "Yes, in use: https://example.com/qzorvel");
+  assert.equal(await callResearch(d, { task: `  ${ask("Example Holdings")} ` }), ANSWER);
   const [row] = readingLog(d);
   assert.equal(row.args.replay, true, "the reading log does not mark the answer as replayed");
   assert.equal(row.ok, true);
@@ -82,18 +92,33 @@ test("a question the run did not ask, one it asked and got no answer to, and a g
   assert.deepEqual(readingLog(d).map((r) => [r.args.replay, r.ok]), [[true, false], [true, false], [true, false]]);
 });
 
+test("the replay never answers from the arm's own folder: a marker that names no answers file answers nothing", async (t) => {
+  const d = replayRun(t, { names: false });
+  saved(d, [{ ts: "2026-01-01T10:05:00.000Z", session: "clearance-acme-run-amber-fox-synthesis", task: ask("Example Holdings"), text: ANSWER }]);
+  assert.match(await callResearch(d, { task: ask("Example Holdings") }), /^ERROR: replay — .*nothing was sent to the research service\.$/,
+    "the replay answered from the arm's own folder, which the stage's commands can read");
+  assert.equal(readingLog(d)[0].error, "replay: the marker names no answers file");
+});
+
 test("THE CONTROL: without the replay marker the same question goes the live way, which needs the key", async (t) => {
   const d = replayRun(t, { marker: false });
   assert.match(await callResearch(d, { task: ask("Example Holdings") }), /PERPLEXITY_API_KEY not set/);
 });
 
-test("the sandbox of every stage that holds the research tool carries the run's saved answers", async () => {
+test("a first attempt's sandbox carries none of the run's answers; one reproducing a later attempt carries them for its hand-off", async () => {
   const SC = await import("../stage-context.mjs");
   const ST = await import("../stages.mjs");
   const P = ST.paths("/run");
-  const paths = SC.sandboxManifest("synthesis", P).map((e) => e.path);
-  assert.ok(paths.includes(driverDir("/run", "research-answers.jsonl")), "the synthesis sandbox does not carry the run's research answers");
+  const answers = driverDir("/run", "research-answers.jsonl");
+  for (const stage of ["synthesis", "common-law", "narrative-refutation"])
+    assert.ok(!SC.sandboxManifest(stage, P).map((e) => e.path).includes(answers), `a first attempt's ${stage} sandbox carries the run's research answers`);
+  assert.ok(SC.sandboxManifest("synthesis", P, { researchHandOff: true }).map((e) => e.path).includes(answers),
+    "a synthesis arm reproducing a later attempt does not carry the answers that attempt is handed");
 });
+
+// Every file under `dir`, read as text.
+const filesUnder = (dir) => readdirSync(dir, { withFileTypes: true, recursive: true }).filter((e) => e.isFile())
+  .map((e) => ({ path: join(e.parentPath ?? e.path, e.name), text: readFileSync(join(e.parentPath ?? e.path, e.name), "utf8") }));
 
 // ── THE ARM ITSELF, on a real mock run parked at synthesis ─────────────────────────────────────────────
 const CLAUDE = join(HERE, "mock-claude.mjs");
@@ -126,10 +151,23 @@ test("--research replay writes the marker into the arm's sandbox and says so on 
   const start = readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").split("\n").map((l) => { try { return JSON.parse(l); } catch { return null; } })
     .find((e) => e?.event === "start");
   const writerKey = PL.stageSessionKey({ run: { slug: start.job.slug, codename: start.job.codename } }, "synthesis");
-  saved(res.runDir, [{ ts: "2026-01-01T10:00:00.000Z", session: writerKey, task: ask("Example Holdings"), text: "Yes, in use: https://example.com/qzorvel" }]);
+  saved(res.runDir, [{ ts: "2026-01-01T10:00:00.000Z", session: writerKey, task: ask("Example Holdings"), text: ANSWER }]);
+  // UNDER CODEX'S SANDBOX BYPASS nothing keeps a command out of the answers, so the replay is refused before any arm is built.
+  const engine0 = process.env.CLEAROTRON_AI;
+  pinEnv(process.env, "CLEAROTRON_AI", "openai-agent"); process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS = "1";
+  try {
+    await assert.rejects(() => PL.runExperiment(job, { codename, experiment: "synthesis", research: "replay", label: "bypassed" }),
+      /--research replay: Codex's sandbox is bypassed/, "a replay was built where nothing fences the writer's commands");
+  } finally { pinEnv(process.env, "CLEAROTRON_AI", engine0); delete process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS; }
+
   const ex = await PL.runExperiment(job, { codename, experiment: "synthesis", research: "replay", label: "replay" });
   assert.ok(existsSync(driverDir(ex.shadowDir, "research-replay.json")), "the arm's sandbox carries no replay marker");
-  assert.ok(existsSync(driverDir(ex.shadowDir, "research-answers.jsonl")), "the arm's sandbox does not carry the run's answers");
+  // THE ANSWERS ARE BESIDE THE ARM, NOT IN IT: nothing under the arm's folder holds one, and the marker names the copy.
+  const from = JSON.parse(readFileSync(driverDir(ex.shadowDir, "research-replay.json"), "utf8")).answersFrom;
+  assert.equal(from, join(dirname(ex.shadowDir), "_replay", basename(ex.shadowDir), "research-answers.jsonl"));
+  assert.ok(readFileSync(from, "utf8").includes(ANSWER), "the copy the replay answers from does not hold the run's answer");
+  const holding = filesUnder(ex.shadowDir).filter((f) => f.text.includes(ANSWER)).map((f) => f.path.slice(ex.shadowDir.length + 1));
+  assert.deepEqual(holding, [], "a file in the arm's own folder holds a saved answer the stage's commands could read");
   assert.equal(existsSync(driverDir(res.runDir, "research-replay.json")), false, "the canonical run was marked as a replay");
   const receipt = JSON.parse(readFileSync(driverDir(ex.shadowDir, "experiment-context.json"), "utf8"));
   assert.deepEqual(receipt.research, { mode: "replay", answers: 1 });

@@ -40,25 +40,28 @@ const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return 
 
 // tier/alias → codex `-m` model id. opus/sonnet/haiku are the driver's abstract tiers (CONTRACT §3). The
 // GPT ids are ENV-OVERRIDABLE and default to the vendor's current models — `gpt-6.1-sol` for the judgment
-// and sweep tiers, `gpt-6-luna` for the cheap tier (the GPT-6 ladder, below) — so an out-of-the-box run
-// uses REAL, current ids rather than invented guesses, and a stage's declared tier means the same thing
-// on both engines. Until 2026-10-09 they were `gpt-5.6-sol`, `gpt-5.6-terra` and `gpt-5.6-luna`; `sol`
-// was what codex itself reported as its own default (live-probed 2026-07-27: `model: gpt-5.6-sol,
-// provider: openai`), which is why the judgment tier kept it.
+// tier, `gpt-6.1-terra` for the sweep tier and `gpt-6-luna` for the cheap tier (the GPT-6 ladder, below) —
+// so an out-of-the-box run uses REAL, current ids rather than invented guesses, and a stage's declared tier
+// means the same thing on both engines. Until 2026-10-09 they were `gpt-5.6-sol`, `gpt-5.6-terra` and
+// `gpt-5.6-luna`; `sol` was what codex itself reported as its own default (live-probed 2026-07-27:
+// `model: gpt-5.6-sol, provider: openai`), which is why the judgment tier kept it.
 //
-// ── THE GPT-6 LADDER (ruling 2026-10-09) ────────────────────────────────────────────────────────────────
+// ── THE GPT-6 LADDER (2026-10-09; the sweep tier moved 2026-10-28) ──────────────────────────────────────
 //
 // The owner asked for the latest models on both engines, cheaper and faster. The vendor's price list,
 // read 2026-10-09 (standard tier, per million tokens in / out): `gpt-6.1-sol` $2 / $10, `gpt-6-luna`
-// $0.10 / $0.50, `gpt-6-astra` $10 / $50. The 5.6 ladder it replaces was sol $4 / $20, terra $2 / $12,
-// luna $0.20 / $1.20. There is no GPT-6 middle model and Sol 6.1 costs less than Terra 5.6, so the sweep
-// tier takes Sol as well; Astra is the premium model, neither cheaper nor faster, and is not a rung.
+// $0.10 / $0.50, `gpt-6-astra` $10 / $50. The 5.6 ladder it replaced was sol $4 / $20, terra $2 / $12,
+// luna $0.20 / $1.20. With no GPT-6 middle model then, the sweep tier shared Sol. `gpt-6.1-terra`
+// ($1 / $5, released 2026-10-26) is that middle model, and the owner asked again for the latest models,
+// so the sweep tier takes it. Astra is the premium model, neither cheaper nor faster, and is not a rung.
 //
 // THE CODEX FLOOR MOVED WITH IT. On ChatGPT-account sign-in (subscription billing) codex 0.156.1, 0.157.0
 // and 0.158.0 refuse `gpt-6.1-sol` with a 400 — "not supported when using Codex with a ChatGPT account" —
 // and 0.159.0 to 0.162.0 accept it; `gpt-6-luna` is accepted from 0.156.1. Measured 2026-10-09 with
 // one-word turns on the test box. Below 0.159.0 the judgment tier stops at its first stage, so the floor
-// in ENGINE_BINARIES (driver.config.mjs) is 0.159.0.
+// in ENGINE_BINARIES (driver.config.mjs) is 0.159.0. `gpt-6.1-terra` needs 0.159.0 or later by the
+// vendor's Codex model page, and 0.162.0 served it on a ChatGPT sign-in (measured 2026-10-28), so the
+// floor did not move for it.
 //
 // The August measurement below still names the symptom to watch for when a tier moves to a cheaper model.
 //
@@ -108,7 +111,7 @@ const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return 
 // story. They fall through to the throw below, which is where they always should have been. Concrete
 // gpt-*/o* ids still pass through.
 const JUDGMENT = process.env.CLEAROTRON_OPENAI_MODEL_JUDGMENT || "gpt-6.1-sol";   // opus   — was gpt-5.6-sol
-const SWEEP    = process.env.CLEAROTRON_OPENAI_MODEL_SWEEP    || "gpt-6.1-sol";   // sonnet — was gpt-5.6-terra
+const SWEEP    = process.env.CLEAROTRON_OPENAI_MODEL_SWEEP    || "gpt-6.1-terra"; // sonnet — was gpt-6.1-sol, and gpt-5.6-terra before 2026-10-09
 const CHEAP    = process.env.CLEAROTRON_OPENAI_MODEL_CHEAP    || "gpt-6-luna";    // haiku  — was gpt-5.6-luna
 const OPENAI_MODEL = { opus: JUDGMENT, sonnet: SWEEP, haiku: CHEAP };
 export function openaiModel(model) {

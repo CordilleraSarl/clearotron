@@ -3092,14 +3092,18 @@ export function findUnexecutedCleanClaims(claimedRows, skeleton) {
  * @returns {{[axis: string]: Array<{qid, total_hits?, unaccounted?, unaccounted_classes?}>}} — axes with
  *   no open block are ABSENT from the object, never present-and-empty. PURE.
  */
-export function openBlocksByAxis(skeleton, bandBlocksByAxis, plan) {
+export function openBlocksByAxis(skeleton, bandBlocksByAxis, plan, { withDeferred = false } = {}) {
   // READ in full: nothing else is. A leg that is itself a crowd was counted, not read.
   const READ = new Set(["verified-zero", "enumerated"]);
   const entriesByQid = new Map((plan?.entries ?? []).map((e) => [e.qid, e]));
   const out = {};
   for (const s of (skeleton ?? [])) {
     const axis = String(s?.axis ?? "").trim();
-    if (!axis || s.state !== "incomplete") continue;
+    // A DEFERRED SLICE DOES NOT ACCOUNT FOR ITS AXIS'S CROWDS. An axis's state names its worst entry, and a slice the
+    // register could not run outranks a crowd, so an axis holding both reads `deferred`. The coverage form asks for
+    // that axis's crowds too (`withDeferred`): each is its own question, and without its row it reached no ruling and
+    // no ledger. The gate for a run with no form keeps its own reading, where a deferred axis is never clean at all.
+    if (!axis || !(s.state === "incomplete" || (withDeferred && s.state === "deferred"))) continue;
     const blocks = (bandBlocksByAxis?.[axis] ?? []).filter((b) => b && typeof b === "object");
     const unverified = [];
     for (const b of blocks) {

@@ -143,6 +143,7 @@ export const COUNTED_EVENTS = {
   "corrective-unnamed-removal-repaired": REPAIR, "coverage-floor-clamp": REPAIR, "jx-receipt-repaired": REPAIR,
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
   "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR, "foreign-record-links-blanked": REPAIR,
+  "no-result-without-a-completed-search-removed": REPAIR,
   "verdict-hardened-by-repair": REPAIR, "verdict-rederive-repair": REPAIR,
   // the coverage floor read the coverage form because both of its renders were unreadable
   "coverage-ledger-from-form": REPAIR,
@@ -209,7 +210,7 @@ export const NOT_COUNTED_EVENTS = {
     "post-repair-fix-pass", "post-repair-review", "post-repair-review-not-needed", "post-repair-review-queued",
     "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
     "profile-resolved", "profile-selection", "provider-usage", "quote",
-    "record-artifacts", "register-digest-facts-written", "register-follow-up-searches",
+    "record-artifacts", "records-replay", "register-digest-facts-written", "register-follow-up-searches",
     "register-only", "register-plan", "register-plan-axis-deferred", "register-plan-deferred-coverage",
     "register-plan-variant-dropped", "register-positions-derived", "register-presence",
     "register-presence-skipped", "register-xcheck", "register-xcheck-decided", "run-integrity",

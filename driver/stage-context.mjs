@@ -177,7 +177,6 @@ export const TOOL_GROUP_EDGES = {
   // the policy asks on the question's own depth instead, so the arm would measure a different tier.
   perplexity: (P) => [
     { path: driverDir(P.runDir, "search-policy.json"), why: "perplexity_research sends every question on the tier the run's frozen policy pins (web.questionPreset); without it a question goes out on its own depth" },
-    { path: driverDir(P.runDir, "research-answers.jsonl"), why: "under --research replay, perplexity_research answers a question the run already asked from the answer the run kept here (research-answers.mjs); without it a replay has nothing to answer from" },
   ],
   declination: (P) => [
     { path: driverDir(P.runDir, "declination-spec.json"), why: "record_declination resolves every row_index against this spec; without it the tool refuses the call and the seat cannot decline at all" },
@@ -247,8 +246,13 @@ const UNDECLARED = {
   // The provider enforcement telemetry: the prompt names the path only when ctx.enforcerSignals is a
   // non-zero count (stages.mjs synthesis message). Undeclared on purpose — it is aim-attention only and
   // must never move a freshness stamp — but a sandbox without it hands a different prompt.
-  synthesis: (P) => [
+  synthesis: (P, { researchHandOff = false } = {}) => [
     ...placementSetAsideReads(P),
+    // The research the run already got, handed to a later attempt of the writer as a file (messageCtxFor,
+    // research-answers.mjs). Carried only by an arm that reproduces one: a first attempt is handed none, and the copy
+    // is readable by the arm's own commands, so an arm that carried the run's later answers would hand them on.
+    ...(researchHandOff ? [{ path: driverDir(P.runDir, "research-answers.jsonl"), kind: "driver-side",
+      why: "handResearchAnswers writes research-answers.md from it for an arm that reproduces a later attempt; without it that arm is handed nothing" }] : []),
     { path: P.enforcerSignals, kind: "conditional",
       why: "named in the prompt only when ctx.enforcerSignals > 0; aim-attention telemetry, deliberately outside the freshness map" },
     // The job's own scope. The prompt never names it, so nothing declared it, and the sandbox rebuilt the
@@ -260,6 +264,14 @@ const UNDECLARED = {
     // message). Undeclared, an arm on a run that had them dispatched without the block.
     { path: driverDir(P.runDir, "jx", "aim-attention.json"), kind: "conditional",
       why: "named in the prompt only when ctx.jxAim > 0 — the zh lane's aim-attention flags; aim-attention only, deliberately outside the freshness map" },
+  ],
+  // The research behind the findings' use checks, written by the writer's record beside the findings (research-checks.mjs)
+  // and named in the review's prompt only when it is there. Undeclared on purpose: it moves only when the record does, and
+  // the narrative this stage declares moves with it, so the freshness map needs no entry for it. A sandbox without it
+  // hands the review a different prompt and no evidence.
+  "narrative-refutation": (P) => [
+    { path: P.researchChecks, kind: "conditional",
+      why: "named in the prompt only when the writer's record wrote it; it moves with narrative.md, so it stays outside the freshness map" },
   ],
 };
 

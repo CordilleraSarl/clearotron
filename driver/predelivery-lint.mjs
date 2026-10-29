@@ -22,7 +22,7 @@
 // retirement is the `:email` surface — see the note at its call site in runLint: it now runs on the
 // report-derived cover text alone, because a gate that simply stops running is not a gate that passes.
 
-import { REGION_NAMES } from "./publish/regions.mjs";
+import { REGION_NAMES, COMMON_LAW } from "./publish/regions.mjs";
 import { PLAIN_FORMS, SENTENCE_WORD_LIMIT, termMatcher } from "./plain-register.mjs";   // the pinned rule, not a fourth copy
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // one spelling of a territory code
 import { searchedCovers } from "./frame-diff-model.mjs";                // one copy of the EU-reach rule
@@ -238,8 +238,16 @@ export function referenceChecks({ actionsText, fullSurface, searchedNames, surfa
   // Pre-v4 runs keep the redo — there the authored section survives assembly and the redo IS the owner.
   // The flag rides a FAILURE only. `modelFixable` reads it off failures, so a structural bit on a pass
   // would be a state nothing means and a reader would have to guess at.
+  //
+  // THE ZONE IS NOT THE ACTIONS ALONE. `splitBlocks` ends a block at `##` or `###` only, so the only-you
+  // block runs on through the overview's own `# Methodology` up to the first card. A name there is
+  // read as an action line, and on a code-built run it is structural, although the overview wrote it
+  // and the overview's repair could change it. So the orphans ride the failure: the repair reads which
+  // part holds each one, and a citation of a withdrawn or absent finding in the overview's own prose
+  // goes to the overview (repair-targets.mjs).
   return [{ ...check("reference-integrity", "reference", surface, orphans.length === 0,
-    orphans.length ? detail : ""), ...(structural && orphans.length ? { structural: true } : {}) }];
+    orphans.length ? detail : ""), ...(structural && orphans.length ? { structural: true } : {}),
+    ...(orphans.length ? { orphans } : {}) }];
 }
 
 // ── — AN ASK LONGER THAN THE VERDICT STATEMENT'S CLAUSE IS ONE THE STATEMENT ELLIPSISES ─────────
@@ -752,6 +760,12 @@ const TERRITORY_NAME_TO_CODE = (() => {
   return m;
 })();
 
+/** Did the common-law grid answer at least one search? A cell is a search that came back, `hit` or `no_hit`; a query
+ * that failed is a gap, not a cell. Absent grid ⇒ false. PURE. */
+export function commonLawGridSearched(grid) {
+  return (Array.isArray(grid?.cells) ? grid.cells : []).some((c) => c?.status === "hit" || c?.status === "no_hit");
+}
+
 // Longest-first so "South Korea" and "United Kingdom" win over "Korea"/"Kingdom" fragments.
 const TERRITORY_NAMES_BY_LENGTH = [...TERRITORY_NAME_TO_CODE.keys()].sort((a, b) => b.length - a.length);
 
@@ -768,15 +782,22 @@ function coverageSentences(text) {
 /**
  * Territory-coverage claims in a delivered surface, compared against what the run searched.
  *
+ * COMMON LAW IS SEARCHED WHEN ITS GRID SEARCHED. The region table names common law as `C/L`, so a sentence about
+ * common-law coverage reads as a claim about a territory, and the searched set is the register's jurisdictions alone.
+ * Measured in testing, 2026-10-28: a run whose common-law grid answered every one of its searches failed this check
+ * on the narrative's common-law sentence. `commonLawSearched` adds it to the searched set; a run whose grid answered
+ * nothing still fails a claim to have searched it.
+ *
  * Returns [] — NOT a pass — when there is no searched set to compare against. A run with no register
  * layer has nothing to contradict, and a green check on a comparison that never happened is the
  * absence-as-pass this codebase keeps paying for. The family being absent is the honest record.
  *
  * PURE.
  */
-export function coverageClaimChecks({ text, searchedJurisdictions = null, surface = "report" } = {}) {
+export function coverageClaimChecks({ text, searchedJurisdictions = null, surface = "report", commonLawSearched = false } = {}) {
   const searched = (searchedJurisdictions ?? []).map((j) => canonicalJurisdictionCode(j)).filter(Boolean);
   if (!searched.length) return [];                       // nothing to compare — record nothing, claim nothing
+  if (commonLawSearched && !searched.includes(COMMON_LAW)) searched.push(COMMON_LAW);
   const body = stripHtml(text);
   if (!body.trim()) return [];
   const searchedSet = new Set(searched);
@@ -788,7 +809,8 @@ export function coverageClaimChecks({ text, searchedJurisdictions = null, surfac
     for (const name of TERRITORY_NAMES_BY_LENGTH) {
       if (!new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(n)) continue;
       const code = TERRITORY_NAME_TO_CODE.get(name);
-      if (searchedCovers(code, searchedSet)) continue;
+      // Judged by its canonical code, as the searched set is: the region table says `UK`, the set holds `GB`.
+      if (searchedCovers(canonicalJurisdictionCode(code), searchedSet)) continue;
       // display the canonical territory name, not the normalised token the match ran on ("korea" → South Korea)
       violations.push({ code, name: REGION_NAMES[code] ?? name, sentence: sentence.slice(0, 180) });
       break;                                             // one flag per sentence; the repair reads the sentence
@@ -1719,6 +1741,15 @@ export function contentModelChecks({ findings, fourAnswers, expected }) {
 // (registry-record-match, registry-arithmetic, correction-consistency:*, …) and these are not on it,
 // so they cannot suppress or delay the artifact. They ship to the reviewing lawyer on the receipt.
 //
+// THE ORDINALS JOIN IS THE EXCEPTION, because one part can change those bytes. The citations are the
+// writer's record, and the writer's own repair edits that record. Marked structural, a citation of a
+// finding the review withdrew went to no repair at all: measured in testing, 2026-10-28, all three
+// answers of a delivered summary panel linked to a withdrawn finding after a repair that had already
+// re-run the writer for another fault. So a failure that cites a withdrawn finding names the register
+// that holds it and each citation, and the repair hands it to the writer (repair-targets.mjs). One
+// that cites only findings the run does not have stays structural: the writer's repair has no wording
+// for that fault.
+//
 // ABSENT ⇒ SILENT. `fourAnswers` null/absent emits NOTHING, exactly as placementsChecks gates on
 // Array.isArray. Every archived run carries `four_answers: null`, so an ungated check would grow a new
 // failure across the whole replay corpus and flip verdicts the corpus depends on.
@@ -1737,17 +1768,20 @@ export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }
   // (1) THE ORDINALS JOIN. An answer citing a finding this run does not have, or one the review
   // withdrew, is incoherent by construction — no reading of the prose rescues it, and the renderer
   // emits the ordinal as a live #anchor, so the reader gets a link to nothing.
-  const dangling = [];
+  const dangling = [], cites = [];
   for (const [key, a] of Object.entries(fourAnswers)) {
     if (!a || !Array.isArray(a.ordinals)) continue;
     for (const n of a.ordinals) {
       const ord = Number(n);
-      if (withdrawn.has(ord)) dangling.push(`${key} cites #${ord}, which the review WITHDREW`);
-      else if (!byOrdinal.has(ord)) dangling.push(`${key} cites #${ord}, which this run has no finding for`);
+      if (withdrawn.has(ord)) { dangling.push(`${key} cites #${ord}, which the review WITHDREW`); cites.push({ answer: key, ordinal: ord, withdrawn: true }); }
+      else if (!byOrdinal.has(ord)) { dangling.push(`${key} cites #${ord}, which this run has no finding for`); cites.push({ answer: key, ordinal: ord, withdrawn: false }); }
     }
   }
-  add("four-answers-ordinals", dangling.length === 0,
-    `the four-answers panel cites finding(s) that are not there: ${dangling.join("; ")} — the panel links each ordinal as a card anchor, so the reader follows it to nothing; re-cite the findings the answer actually rests on`);
+  const ordinals = check("four-answers-ordinals", "content-model", "report", dangling.length === 0, dangling.length ?
+    `the four-answers panel cites finding(s) that are not there: ${dangling.join("; ")} — the panel links each ordinal as a card anchor, so the reader follows it to nothing; re-cite the findings the answer actually rests on` : "");
+  if (cites.some((c) => c.withdrawn)) Object.assign(ordinals, { register: "four_answers", cites });
+  else if (!ordinals.pass) ordinals.structural = true;
+  out.push(ordinals);
 
   // (2) THIRD-PARTY RIGHTS vs the findings. "weak" is a statement about the field the findings
   // contradict when the run itself rated conflicts adversarial; "strong" over a run with no rated
@@ -2284,8 +2318,9 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   // this run has an owner screen, and nesting it there would have silently switched the check off for
   // every run without one. Both prose surfaces: the narrative is where the issue measured the
   // disagreement, and the report is what the client is handed.
-  if (reportMd) checks.push(...coverageClaimChecks({ text: reportMd, searchedJurisdictions, surface: "report" }));
-  if (narrativeMd) checks.push(...coverageClaimChecks({ text: narrativeMd, searchedJurisdictions, surface: "narrative" }));
+  const commonLawSearched = commonLawGridSearched(commonLawGrid);
+  if (reportMd) checks.push(...coverageClaimChecks({ text: reportMd, searchedJurisdictions, surface: "report", commonLawSearched }));
+  if (narrativeMd) checks.push(...coverageClaimChecks({ text: narrativeMd, searchedJurisdictions, surface: "narrative", commonLawSearched }));
   if (reportMd) checks.push(...deadRecordLinkChecks({ text: reportMd, surface: "report" }));
   if (clientSummaryMd) checks.push(...deadRecordLinkChecks({ text: clientSummaryMd, surface: "client-summary", idSuffix: ":client" }));
   if (narrativeMd) checks.push(...deadRecordLinkChecks({ text: narrativeMd, surface: "narrative", idSuffix: ":narrative" }));

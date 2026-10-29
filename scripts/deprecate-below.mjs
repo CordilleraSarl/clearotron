@@ -88,6 +88,16 @@ export function compareVersions(a, b) {
 // to, and a warning on the version a reader is told to install is worse than none.
 export const RANGE_MESSAGE = "This version is no longer supported. Please upgrade to the latest version of clearotron.";
 
+// A RANGE OF BETAS ONLY CARRIES THE BETA SENTENCE, also the owner's, approved word for word (2026-10-28). "The latest
+// version" is what `npm install clearotron` gives, the stable, so the sentence above sent a reader of a superseded beta
+// down to an older line. The sentence is chosen by what the range holds, never typed at dispatch: it says "beta", so it
+// goes only on a range whose every version is one.
+export const BETA_MESSAGE = "This beta is superseded. Install the current beta: npm install clearotron@beta.";
+
+/** The sentence a range carries: the beta sentence when every version it takes is a prerelease. PURE. */
+export const rangeMessageFor = (picked) =>
+  (picked?.length && picked.every((v) => /-/.test(String(v))) ? BETA_MESSAGE : RANGE_MESSAGE);
+
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?$/;
 
 /** Read "<from>..<through>[ except <v>[,<v>…]]". Throws on anything else. */
@@ -293,6 +303,7 @@ async function deprecateRange(spec, DRY) {
     console.error(`deprecate-below: refusing — ${e.message}. Nothing was written.`);
     return 2;
   }
+  const MESSAGE = rangeMessageFor(picked);
   let done = 0, skipped = 0, failed = 0;
   const wrote = [];
   for (const v of picked) {
@@ -303,11 +314,11 @@ async function deprecateRange(spec, DRY) {
       failed += 1;
       continue;
     }
-    if (existing === RANGE_MESSAGE) { console.log(`  ${v}: already carries this message`); skipped += 1; continue; }
+    if (existing === MESSAGE) { console.log(`  ${v}: already carries this message`); skipped += 1; continue; }
     const was = existing ? ` (replacing "${existing.slice(0, 60)}")` : "";
     if (DRY) { console.log(`  ${v}: would deprecate${was}`); done += 1; continue; }
     try {
-      npm("deprecate", `${PKG}@${v}`, RANGE_MESSAGE);
+      npm("deprecate", `${PKG}@${v}`, MESSAGE);
     } catch (e) {
       console.error(`  ${v}: deprecate FAILED — ${String(e.stderr ?? e.message).split("\n")[0]}`);
       failed += 1;
@@ -321,7 +332,7 @@ async function deprecateRange(spec, DRY) {
     // A replaced message is confirmed only once THIS sentence is served, not merely any sentence.
     const r = await confirmWrites({
       versions: wrote,
-      read: (v) => (deprecationOf(v) === RANGE_MESSAGE ? RANGE_MESSAGE : null),
+      read: (v) => (deprecationOf(v) === MESSAGE ? MESSAGE : null),
       sleep: (ms) => new Promise((res) => setTimeout(res, ms)),
     });
     unconfirmed = r.unconfirmed;
