@@ -25,7 +25,8 @@ test("a review arm's sandbox carries placement's form and the writer's declinati
 
 test("a corrective arm's sandbox carries the state the corrective pass starts from; a first pass's does not", () => {
   const P = paths("/run");
-  const state = [driverDir("/run", "findings-pre-corrective.json"), P.seniorEyeReview, driverDir("/run", "refutation-calls", "call-001.json"), driverDir("/run", "declinations.json")];
+  const state = [driverDir("/run", "findings-pre-corrective.json"), P.seniorEyeReview, driverDir("/run", "refutation-calls", "call-001.json"), driverDir("/run", "declinations.json"),
+    driverDir("/run", "review-exclusions.json")];
   const corrective = new Set(sandboxManifest("synthesis", P, { dispatchTrigger: "corrective" }).map((e) => e.path));
   for (const p of state) assert.ok(corrective.has(p), `a corrective arm's sandbox does not carry ${p}`);
   const fresh = new Set(sandboxManifest("synthesis", P).map((e) => e.path));

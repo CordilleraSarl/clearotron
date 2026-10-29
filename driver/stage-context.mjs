@@ -36,7 +36,8 @@
 
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "../shared/driver-dir.mjs";
+import { REVIEW_EXCLUSIONS_FILE } from "./narrative-refutation-record.mjs";   // the exclusions the last review was shown   //
 
 import { STAGES, stageInputs, REGISTER_AXES } from "./stages.mjs";
 import { withheldFamiliesPath } from "./withheld-families.mjs";
@@ -215,6 +216,7 @@ const correctiveStateReads = (P) => [
   { path: P.seniorEyeReview, kind: "driver-side", why: "the review whose flags the corrective pass answers; correctionsExtra hands it on verbatim" },
   { path: driverDir(P.runDir, "refutation-calls", "call-001.json"), kind: "driver-side", why: "readAcceptedFlags: the review's typed flags, the corrective worklist's source" },
   { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side", why: "the writer's declinations the corrective pass starts from" },
+  { path: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE), kind: "driver-side", why: "correctionsExtra names each excluded position a flag is about, with its mark, owner and row, from the exclusions the review was shown" },
 ];
 
 const UNDECLARED = {
