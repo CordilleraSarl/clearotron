@@ -2799,6 +2799,8 @@ const DELIVERY_LINES = {
   "wipo-designation-language": "An international registration is described in terms that do not match how that designation works.",
   // reference — who the document names
   "reference-integrity": "The action list names parties that no finding in the report identifies.",
+  // The email's own check, in the owner's words (ruled 2026-10-30): the line above says the report is wrong.
+  "reference-integrity:email": "The email's conditions name a party that no finding in the report identifies.",
   // The owner's sentence, word for word (ruled 2026-10-30).
   "overview-citation": "This report's overview refers to a finding that is no longer in the report; read the overview against the findings list.",
   "self-comparison": "A finding compares a mark against itself.",

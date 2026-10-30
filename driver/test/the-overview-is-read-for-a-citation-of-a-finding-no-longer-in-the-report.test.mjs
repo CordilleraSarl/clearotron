@@ -114,3 +114,17 @@ test("the failure goes to the overview's repair once, in its ruled words, and sh
   assert.deepEqual(locateReportFaults([check].filter((f) => f.id !== OVERVIEW_CITATION_ID), { overview: "Finding 3 remains open." }).overview, []);
   assert.deepEqual(deliveryFlagLines([check]), ["This report's overview refers to a finding that is no longer in the report; read the overview against the findings list."]);
 });
+
+test("the email's check ships the owner's line for the email, and the report's keeps its own", () => {
+  const onEmail = { id: "reference-integrity:email", family: "reference", surface: "email", pass: false };
+  const onReport = { id: "reference-integrity", family: "reference", surface: "report", pass: false };
+  assert.deepEqual(deliveryFlagLines([onEmail]), ["The email's conditions name a party that no finding in the report identifies."]);
+  assert.deepEqual(deliveryFlagLines([onReport]), ["The action list names parties that no finding in the report identifies."]);
+  assert.deepEqual(deliveryFlagLines([onReport, onEmail, onEmail]), ["The action list names parties that no finding in the report identifies.",
+    "The email's conditions name a party that no finding in the report identifies. (2 occurrences)"], "the two surfaces' lines merged, or the count was lost");
+  // The check's own failure on the email reaches that line.
+  const md = report({ you: "- Obtain consent from Delmont Optics before filing." });
+  const failing = lint({ reportMd: md }).failures.filter((f) => f.id === "reference-integrity:email");
+  assert.equal(failing.length, 1);
+  assert.deepEqual(deliveryFlagLines(failing), ["The email's conditions name a party that no finding in the report identifies."]);
+});

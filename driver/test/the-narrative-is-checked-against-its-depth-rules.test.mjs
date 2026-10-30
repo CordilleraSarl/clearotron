@@ -263,10 +263,12 @@ test("an ordinary depth violation and a could-not-read do NOT collapse into one 
 
 // THE CHANGE MUST ADD NO LINE TO A RUN THAT PRODUCED NONE. Every other check still groups by base, so a
 // receipt with no could-not-read row is projected exactly as it was before.
+// The reference check's failure on the email has a line of its own since 2026-10-30, so the example is a check whose
+// suffix only counts.
 test("nothing else moves — base grouping is unchanged for every other check", () => {
   const before = deliveryLines([
-    { id: "reference-integrity", family: "reference" },
-    { id: "reference-integrity:email", family: "reference" },
+    { id: "finding-provenance:3", family: "registry" },
+    { id: "finding-provenance:7", family: "registry" },
   ]);
   assert.equal(before.length, 1, "two failures of one check are still one line");
   assert.match(before[0], /\(2 occurrences\)/);
