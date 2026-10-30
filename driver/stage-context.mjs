@@ -398,6 +398,10 @@ export const CONTEXT_DERIVATIONS = [
     // obvious three would let the sandbox derive a sidecar with different counts and audit rows from
     // the canonical one, silently, which is this registry's whole subject matter one level down.
     writes: (P) => [driverDir(P.runDir, DIGEST_FACTS_FILE), driverDir(P.runDir, DIGEST_ACCOUNTING_STAMP)],
+    // A projection taken at dispatch, which the replay fills only where the run has none and never re-derives over
+    // (pipeline.mjs DERIVATION_RUNNERS). Its reads include the digest's own output, which moves once the digest
+    // writes, so a replay is handed the dispatch's picture when the copy is the one the dispatch wrote (derived-state.mjs).
+    projection: true,
     reads: (P) => [
       { path: P.registerNamedBand, why: "the slim record index — every identifier cell the render prints, keyed by the uri the seat cites" },
       { path: P.readingLog, why: "readOkRecordUris — which records this run actually read" },

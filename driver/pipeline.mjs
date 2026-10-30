@@ -43,6 +43,7 @@ import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // a band read with the slices a check could not prove ran taken out
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
+import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./derived-state.mjs";   // the register picture a dispatch was handed, so a replay can be checked against it
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
 import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
@@ -5402,6 +5403,9 @@ async function stageOnce(name, ctx, opts = {}) {
   }
   runLog(P.runDir, { event: "stage-limit-derived", stage: name, base: def.timeoutSec,
     inputBytes: derivedLimit.inputBytes, derivedLimitSec: derivedLimit.sec, basis: derivedLimit.basis });
+  // The register picture this dispatch is handed, by content (derived-state.mjs), so a replay can tell whether it is
+  // handed the same one. Never throws; [] when the stage's context reaches no derivation.
+  const derivedState = derivedStateOf(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
   const r = await runStage(label, {
     agent: execAgent,
     message,
@@ -5491,6 +5495,7 @@ async function stageOnce(name, ctx, opts = {}) {
     followup: followupDispatch,
     readsTruncated: r.readsTruncated ?? null,
     warm: r.warm ?? null,
+    ...(derivedState.length ? { derivedState } : {}),
     output: out ? outputMeta(out) : null,
     outputWritten: r.wrote ?? null,
     summary: r.json?.summary,
@@ -18761,10 +18766,33 @@ async function runExperimentInner(job, opts) {
   // Which derivations run is computed from the manifest — a derivation is replayed because its OUTPUT
   // is in this stage's context, never because the stage was named in a list. Add a derived artifact to
   // the registry and every stage whose context reaches it gets it, with no edit here.
-  const derived = [];
+  //
+  // EXCEPT WHERE THE RUN STILL HOLDS THE PICTURE THE DISPATCH WAS HANDED (derived-state.mjs). An arm that changes
+  // nothing upstream reproduces a pass, and re-deriving from inputs that have grown since hands it a later picture
+  // than the pass read. So where the dispatch this arm reproduces recorded its picture, and the run's files are still
+  // exactly that picture, the run's own derived files are the arm's. A seeded arm re-derives, as it must. Anything
+  // else re-derives as before, and the receipt says the replay is not faithful, and why.
+  const recordedPicture = recordedDerivedState(ctx.paths.runDir, name + (axis ? `:${axis}` : ""), opts.dispatchTrigger ?? "fresh");
+  const currentPicture = derivedStateOf(name, ctx.paths, inputOpts);
+  const changesDerivation = orderProbeSeed() != null;
+  const derived = [], pictureReplay = [];
   for (const id of derivationsFor(name, ctx.paths, inputOpts)) {
-    try { if (DERIVATION_RUNNERS[id](shadowCtx) !== false) derived.push(id); }
-    catch (e) { note(`--experiment: derivation "${id}" threw in the sandbox (${String(e?.message ?? e).slice(0, 120)})`); }
+    const replay = replayOfDerivation(id, recordedPicture, currentPicture, { changesDerivation });
+    // A projection goes through its runner as before, which keeps the run's copy and fills only a gap.
+    if (replay.how === "kept" && CONTEXT_DERIVATIONS.find((d) => d.id === id)?.projection !== true) {
+      for (const w of CONTEXT_DERIVATIONS.find((d) => d.id === id).writes(ctx.paths)) {
+        if (!existsSync(w)) continue;
+        const dst = join(shadowDir, w.slice(ctx.paths.runDir.length + 1));
+        mkdirSync(dirname(dst), { recursive: true }); copyFileSync(w, dst);
+      }
+      pictureReplay.push(replay);
+      continue;
+    }
+    try { if (DERIVATION_RUNNERS[id](shadowCtx) !== false) derived.push(id); pictureReplay.push(replay); }
+    catch (e) {
+      note(`--experiment: derivation "${id}" threw in the sandbox (${String(e?.message ?? e).slice(0, 120)})`);
+      pictureReplay.push({ ...replay, faithful: false, why: "the derivation failed in the sandbox" });
+    }
   }
   // ── 3. REFUSE an incomplete context ───────────────────────────────────────────────────────────────
   //
@@ -18889,6 +18917,9 @@ async function runExperimentInner(job, opts) {
     // never "dispatched-warm", which is production's alone.
     correctivePass: whichPass,
     seed: orderProbeSeed(), derived, extraChars: extra ? extra.length : 0,
+    // WHETHER THE ARM WAS HANDED THE PICTURE ITS DISPATCH WAS (derived-state.mjs): per derivation, kept or re-derived,
+    // and why a re-derived one is not faithful. `faithfulPicture` is false whenever one is not.
+    pictureReplay, faithfulPicture: pictureReplay.every((x) => x.faithful === true),
     // corruption 2 — WHICH driver-computed blocks this arm actually carried, by id and size.
     // `extraChars` alone could not distinguish "the stage has no blocks" from "its blocks were never
     // registered and silently vanished": both read as 0. The list names what was built, so a reader
