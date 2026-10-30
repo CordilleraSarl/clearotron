@@ -7053,6 +7053,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-primary-sweep-decides-waiting-families-on-the-judgment-tier.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "the-probe-spawns-the-environment-it-validated.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -7115,7 +7121,7 @@
         },
         "the-reading-step-decides-on-a-crowd.test.mjs": {
           "tests": 3,
-          "asserts": 6,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -7530,12 +7536,6 @@
         "the-unit-is-told-how-to-decide-a-crowd-beside-the-answer.test.mjs": {
           "tests": 3,
           "asserts": 17,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-units-that-decide-waiting-families-run-on-the-judgment-tier.pipeline.test.mjs": {
-          "tests": 2,
-          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
