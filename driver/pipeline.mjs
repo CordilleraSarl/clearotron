@@ -107,6 +107,7 @@ import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFlo
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
+import { orderSnapshot, retainAcceptedOrder, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
@@ -9900,6 +9901,8 @@ export function instructedScopeOf(job) {
 }
 
 async function pipelineInner(job, opts = {}) {
+  // The order as it arrived, before anything below folds its scope or settles its fields (accepted-order.mjs).
+  const acceptedOrder = orderSnapshot(job);
   assertTierSanity();
   // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
   // Every lane spawns the engine: a knockout does, and so does a run with an injected recordFetcher. So
@@ -10325,6 +10328,12 @@ async function pipelineInner(job, opts = {}) {
       event: "intake-artifacts", rawRequest: Boolean(job.rawRequest), brief: Boolean(job.brief),
     });
   } catch (e) { note(`intake artifact write failed (non-fatal): ${e.message}`); }
+  // THE ORDER AS IT WAS ACCEPTED, kept whole with the run before any stage can fail, so a resume or a stage replay
+  // given no job file runs on the order and not on what status kept of it (accepted-order.mjs). Written once; an order
+  // given again by a resume's job file is kept beside it when it differs, and a job this run rebuilt is never kept.
+  try {
+    retainAcceptedOrder(run.runDir, acceptedOrder, { explicit: opts.explicitJob === true, rebuilt: opts.jobRebuiltFromStatus === true });
+  } catch (e) { note(`accepted-order write failed (non-fatal): ${e.message}`); }
   // WS2 (B3) — the code-authoritative INSTRUCTED SCOPE: what the job fields actually said,
   // written before any model breathes on them. The matter frame must quote these verbatim (the
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
@@ -18157,6 +18166,10 @@ function resolveRun(job, opts) {
  * (`origins.level` is `job.product`). A product resolved from a saved search, the account's default or
  * the scope was never on the order, so a job carrying it would be a different order.
  *
+ * THE PROJECT AND THE ORGANISATION COME FROM THE FROZEN PROFILE TOO: the freeze took `projectKey` from the order,
+ * and stamped a Generic run's `tenant` as its `organisation`. This rebuild is the last resort, for a run that kept no
+ * copy of its order (accepted-order.mjs); the fields only the order held are not here.
+ *
  * THE CALLER MUST CHECK THE SLUG, and `resumeJobRefusal` below is that check. A rebuilt job that derives
  * the run's own slug has reproduced the run's identity — `deriveSlug` reads `ref` and `markName` and
  * nothing else — and one that derives a different slug is a job for a different matter.
@@ -18178,6 +18191,8 @@ export function jobFromStatus(status, scope = null, { profile = null, searchPoli
     ...(Array.isArray(scope?.jurisdictions) ? { jurisdictions: scope.jurisdictions } : {}),
     ...(scope?.geography && typeof scope.geography === "object" ? { geography: scope.geography } : {}),
     ...(account && (!roster || roster.has(account)) ? { profileKey: account } : {}),
+    ...(said(profile?.projectKey) ? { projectKey: profile.projectKey } : {}),
+    ...(account === "generic" && said(profile?.organisation) ? { tenant: profile.organisation } : {}),
     ...(product ? { product } : {}),
   };
 }
@@ -18691,6 +18706,12 @@ async function runExperimentInner(job, opts) {
     // `null` means the run carries no frozen profile (a legacy run), and it is written rather than
     // omitted: absent and "there was none" are different facts and only one of them is a defect.
     ratedUnder: ctx.profile?.profileKey ?? null,
+    // WHICH ORDER THE ARM RAN ON (accepted-order.mjs): the job file it was given, the order the run kept, or a
+    // rebuild from status that lacks the fields named here. Only a whole order makes a faithful replay; whether a
+    // job file is the order, nothing here can say, so `faithful` is null for one.
+    order: opts.orderRecovery
+      ? { source: opts.orderRecovery.source, unrecovered: opts.orderRecovery.unrecovered, faithful: opts.orderRecovery.unrecovered.length === 0 }
+      : { source: "job-file", unrecovered: [], faithful: null },
     dispatchTrigger: opts.dispatchTrigger ?? "fresh",
     // How the arm's research was answered: sent out live, or replayed from the run's own answers.
     research: opts.research === "replay" ? { mode: "replay", answers: replayedAnswers } : { mode: "live" },
@@ -19035,7 +19056,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // exited on a raw V8 stack trace: a non-clean exit with no honest message, and the one shape of
   // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
   // pool check above is a separate refusal and must not swallow this one.
-  let job;
+  let job, orderRecovery = null;
   if (!a.job && a.codename) {
     // ── RESUMING A RUN WHOSE JOB FILE THE BOX NO LONGER HAS ───────────────────────────────────────
     //
@@ -19075,16 +19096,25 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     let roster = null;
     try { roster = loadProfiles(); } catch { /* the run context reads the roster again, and refuses with its reason */ }
     const frozen = { profile: safeReadJson(driverDir(found.dir, "profile.json")), searchPolicy: safeReadJson(driverDir(found.dir, "search-policy.json")), roster };
-    job = jobFromStatus(status, scope, frozen);
+    // The order the run kept at intake, else an older run's retained queue entry, else the rebuild from status
+    // (accepted-order.mjs says which, and why a queue entry was refused).
+    orderRecovery = rebuildRunOrder({ runDir: found.dir, status, scope, profile: frozen.profile,
+      queueDir: config.queueDirForAgent(a.agent || config.defaultAgent), scopeOf: instructedScopeOf,
+      fromStatus: () => jobFromStatus(status, scope, frozen), write: !a.experiment });
+    job = orderRecovery.job;
     const refusal = resumeJobRefusal(job, found.slug);
     if (refusal) { console.error(`error: ${refusal}`); process.exit(2); }
     const fromScope = [job.marks && "marks", job.goods && "goods", job.customer && "applicant", job.jurisdictions && "territories"].filter(Boolean);
-    console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`
+    if (orderRecovery.source !== "status")
+      console.error(`[pipeline] --job not given; the job for ${a.codename} is the order ${orderRecovery.source === "accepted-order"
+        ? "the run kept when it was accepted" : "in the run's retained queue entry, now kept with the run"} (slug ${found.slug} confirmed)`);
+    else console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`
       + (!scope ? "; the run holds no readable instructed scope, so its territories fall back to the account's defaults"
         : fromScope.length ? `; the order's ${fromScope.join(", ")} from its instructed scope` : "")
       + (job.profileKey ? "; its account from the frozen profile"
         : frozen.profile?.profileKey ? "; its account is not on this install's roster, so the job names none and the frozen profile governs" : "")
-      + (job.product ? "; its product from the frozen search policy" : ""));
+      + (job.product ? "; its product from the frozen search policy" : "")
+      + `; the run holds no copy of its order${orderRecovery.conflict ? ` (its queue entry was refused: ${orderRecovery.conflict})` : ""}, so the job lacks what only the order held: ${orderRecovery.unrecovered.join(", ")}`);
   } else {
     try { job = JSON.parse(readFileSync(a.job, "utf8")); }
     catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
@@ -19097,8 +19127,8 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // hangs `__runRef` on the caller's own opts the moment the run context is built, which is how pipeline()'s
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
-    ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research }
-    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }), records: a.records };
+    ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research, orderRecovery }
+    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? { explicitJob: true } : { jobRebuiltFromStatus: true }), records: a.records };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
