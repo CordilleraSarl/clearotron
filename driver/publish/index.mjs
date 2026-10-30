@@ -14,6 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
+import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
@@ -904,7 +905,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // words are the reading turn's reason. The stores the matter frame set aside join them the same way (web-grid.mjs).
   const withheldFamilies = [...withheldFamilyRows(runDir ?? dirname(reportMd)), ...frameSetAsideRows(runDir ?? dirname(reportMd))]; // The records the assessment set aside are the assessment's own: in the state where it did not complete, an earlier
   // draft's set-asides are not its answer, so none is listed.
-  const setAside = assessmentNotCompleted ? [] : setAsideRows(runDir ?? dirname(reportMd));
+  const setAside = assessmentNotCompleted ? [] : setAsideRows(runDir ?? dirname(reportMd), { findings });
 
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
@@ -1944,14 +1945,26 @@ export function releasedFamilyRows(runDir) {
  * What synthesis set aside, record or page, each with the ground it wrote — as audit-workbook coverage
  * rows. Set-aside reasons live in the audit workbook and never in the report, so this sheet is their one
  * reader-facing place. The label is the driver's; the ground is the AI's own words. Never throws.
+ *
+ * A POSITION A FINDING DELIVERS IS NOT SET ASIDE. The ledger keeps the last decision per record, and a finding is
+ * not a decision it records, so a declination stays in it after a later pass delivers the same position. The run's
+ * trace reads that position as delivered with its finding, and so does this sheet: `findings` are the ones the
+ * report carries, read from the run when not passed. A position is the declination spec's row, with every record of
+ * its entry; with no spec, only the declined record itself is matched. Pages are listed as before.
  */
-export function setAsideRows(runDir) {
+export function setAsideRows(runDir, { findings = null } = {}) {
   try {
     const d = readDeclinations(runDir);
     if (!d.present) return [];
+    const read = (f) => { try { return JSON.parse(readFileSync(driverDir(runDir, f), 'utf8')); } catch { return null; } };
+    let delivered = findings;
+    if (!Array.isArray(delivered)) {
+      try { delivered = parseFindingsJsonLenient(readFileSync(join(runDir, 'findings.json'), 'utf8')).findings ?? []; } catch { delivered = []; }
+    }
+    const ended = recordsOfDeliveredPositions(read('declination-spec.json')?.rows ?? [], [...findingUris(delivered).keys()]);
     const label = (x) => [x.mark, x.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') || x.uri;
     return [
-      ...[...d.byUri.values()].map((x) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
+      ...[...d.byUri.entries()].filter(([u]) => !ended.has(u)).map(([, x]) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
       ...[...d.byPage.values()].map((x) => ({ area: `Set aside: ${x.url ?? x.page}`, note: String(x.grounds ?? '') })),
     ];
   } catch { return []; }
