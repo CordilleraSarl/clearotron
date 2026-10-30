@@ -31,6 +31,8 @@ import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";  
 
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
 import { parseFront } from "./publish/parse.mjs";
+import { citedFindingNumbers } from "./finding-citations.mjs";   // every written form of a citation, read one way
+export { citedFindingNumbers };
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, statedConditions, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
 import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE, ENGINE_PHRASE_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
@@ -274,28 +276,7 @@ export function onlyYouZone(md) {
 // builds into the overview's section from the record (the client's own items and the answers to the instructions) are
 // not the overview's, so they are not read.
 export const OVERVIEW_CITATION_ID = "overview-citation";
-// "finding 12", "finding no. 12", "findings 3 and 4", "findings 5–7", each also with a hash sign before the number, and a
-// number after a bare hash sign that is not part of a word, a link or a colour.
-const CITATION_RE = /(?:\bfindings?\s+(?:no\.?\s*|number\s+)?#?|(?<![\w#/&=-])#)(\d{1,4})((?:\s*(?:,|and|&|or|[–-])\s*#?\d{1,4}(?!\w))*)(?!\w)/gi;
 const CODE_BUILT_SECTIONS = /^###\s+(?:Only you can close these|Answers to your instructions)\b[^\n]*\n?[\s\S]*?(?=^#{1,3}\s|$(?![\s\S]))/gm;
-
-/** The finding numbers a text cites, in every written form, in order of first mention. PURE. */
-export function citedFindingNumbers(text) {
-  const out = [];
-  const add = (n) => { if (Number.isInteger(n) && n > 0 && !out.includes(n)) out.push(n); };
-  for (const m of String(text ?? "").matchAll(CITATION_RE)) {
-    add(Number(m[1]));
-    let prev = Number(m[1]);
-    for (const part of String(m[2] ?? "").matchAll(/([,&–-]|and|or)\s*#?(\d{1,4})/gi)) {
-      const n = Number(part[2]);
-      // A range names every finding in it, up to a run's worth.
-      if (/[–-]/.test(part[1]) && n > prev && n - prev <= 50) for (let k = prev + 1; k < n; k++) add(k);
-      add(n);
-      prev = n;
-    }
-  }
-  return out;
-}
 
 /**
  * The overview's citations of a withdrawn or absent finding. `overviewMd` is the overview as its writer wrote it

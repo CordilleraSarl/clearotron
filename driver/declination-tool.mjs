@@ -20,6 +20,7 @@ import { join, basename } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { acceptDeclinationCall, MAX_DECLINATIONS_PER_CALL, PAGE_KEY_PREFIX } from "./declination-call.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
+import { citedFindingNumbers } from "./finding-citations.mjs";   // the findings a ground cites, recorded with it
 import { idSetHash, priorCallWithIdSet, listGeneration } from "./call-repeat.mjs";   //
 import { PARK_AFTER_REFUSALS, parkedIds, refusalCountsBy } from "./refusal-bound.mjs";   //
 
@@ -104,10 +105,18 @@ export function declinationKey(k) {
   return s.startsWith(PAGE_KEY_PREFIX) ? s : normalizeRecordUri(s);
 }
 
+/** The findings a ground cites by number, as the ledger keeps them: `{cites}`, or nothing when it cites none. PURE. */
+export const groundCites = (grounds) => { const cites = citedFindingNumbers(grounds, { bare: false }); return cites.length ? { cites } : {}; };
+
 /**
  * Merge newly accepted rows into the ledger. LAST DECISION WINS per uri and the supersession is kept:
  * a seat that re-states a declination after a refusal, or after a corrective, is doing the right thing,
  * and losing the earlier row would hide that it happened. `supersedes` carries the previous decision.
+ *
+ * THE FINDINGS A GROUND CITES ARE RECORDED WITH IT (ruled 2026-10-30). A ground that says "carried as finding 9" rests
+ * on that finding, and nothing else in the ledger said so: a later review could not be told when finding 9 changed.
+ * `cites` holds the numbers the ground gives with the word "finding", in the writer's own numbering; it is left out
+ * where the ground cites none. Only the writer's own number is read, never a name.
  */
 export function appendDeclinations(runDir, accepted, { now = () => new Date().toISOString() } = {}) {
   const { ledger } = declinationCallPaths(runDir, 0);
@@ -122,7 +131,7 @@ export function appendDeclinations(runDir, accepted, { now = () => new Date().to
       const was = byUri.get(u);
       byUri.set(u, {
         ...(isPage ? { page: a.page, url: a.url ?? null } : { uri: u }),
-        mark: a.mark ?? null, owner: a.owner ?? null, reason: a.reason, grounds: a.grounds, recordedAt: now(),
+        mark: a.mark ?? null, owner: a.owner ?? null, reason: a.reason, grounds: a.grounds, ...groundCites(a.grounds), recordedAt: now(),
         ...(was ? { supersedes: { reason: was.reason, grounds: was.grounds, recordedAt: was.recordedAt } } : {}),
       });
     }

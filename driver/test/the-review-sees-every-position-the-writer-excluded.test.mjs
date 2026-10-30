@@ -304,7 +304,7 @@ test("after a changed shared conclusion both later reviews see a dependent exclu
   writerExclusionBlock(P, { review: "full" });
   // The finding on Alpha Ltd's record is rewritten. No exclusion is Alpha Ltd's, so the same-owner trigger reopens
   // none, and e1 (Epsilon BV) is not a decision the later review checks.
-  writeFileSync(P.findings, synthesisFindings(P.runDir).replaceAll("/mark/us/90000001", "/mark/eu/a1").replace(/"band":\s*"[A-Z]+"/, "\"band\": \"LOW\""));
+  writeFileSync(P.findings, synthesisFindings(P.runDir).replaceAll("/mark/us/90000001", "/mark/eu/a1").replace(/"band":\s*"[A-Za-z]+"/, "\"band\": \"LOW\""));
   assert.ok(!relisted(P).includes("/mark/eu/e1"), "guard: the exclusion under another owner was counted changed");
   // Both later reviews start fresh, and both are given e1 with its recorded ground, under the reference sentence.
   const e1 = "- ZORVA — Epsilon BV (/mark/eu/e1): placement: watchlist-annex — a shared root, live for unrelated software; excluded by the writer as unrelated-goods: Software for logistics, which the client does not sell.";
@@ -476,4 +476,62 @@ test("a full review recorded before its research was kept is compared by time", 
   writeFileSync(at, JSON.stringify({ ...rec, ts: "2026-10-30T08:30:00.000Z" }));
   answer(P, "2026-10-30T09:00:00.000Z", WRITER, "Does Epsilon BV sell game servers?", "Yes.");
   assert.equal(writerExclusionBlock(P, { review: "later" }).research, 1, "an answer obtained after an older full review was not handed on, or one before it was");
+});
+
+// ── A GROUND THAT CITES A FINDING (2026-10-30) ──────────────────────────────────────────────────────────────────────
+// Measured in testing on the saved proof: a later review handed an exclusion for reference, whose ground read "carried
+// as finding N", did not see that a change to finding N reached it. The ground's own number is a recorded connection:
+// the ledger keeps it, and when that finding changes the exclusion is a decision the later review checks, its entry
+// naming the finding. The number is the writer's own; no name is read.
+const citing = (P, grounds) => appendDeclinations(P.runDir, [{ uri: "/mark/eu/e1", reason: "unrelated-goods", grounds }]);
+
+test("the ledger records the findings a ground cites, in the writer's numbering, and a bare hash number is not one", (t) => {
+  const P = seedRun(t);
+  citing(P, "Logistics software; the class 9 reading is carried as finding 1, and findings 3 and 4 hold the rest.");
+  appendDeclinations(P.runDir, [{ uri: "/mark/eu/d1", reason: "dissimilar-mark", grounds: "Filed in class #9 only, with a different ending." }]);
+  const ledger = JSON.parse(readFileSync(declinationCallPaths(P.runDir, 0).ledger, "utf8")).declinations;
+  assert.deepEqual(ledger.find((d) => d.uri === "/mark/eu/e1").cites, [1, 3, 4]);
+  assert.ok(!("cites" in ledger.find((d) => d.uri === "/mark/eu/d1")), "a class number after a hash sign was read as a finding");
+  assert.ok(!("cites" in ledger.find((d) => d.uri === "/mark/eu/c1")), "a ground citing nothing carries a link");
+});
+
+test("when a finding an exclusion's ground cites changes, both later reviews check that exclusion and its entry names the finding", (t) => {
+  const P = seedRun(t);
+  citing(P, "Logistics software; the class 9 reading is carried as finding 1.");
+  writerExclusionBlock(P, { review: "full" });
+  assert.deepEqual(relisted(P), [], "guard: unchanged, the later review checks no decision");
+  // Finding 1 is Alpha Ltd's, another owner's: the same-owner trigger reopens nothing, the cited number does.
+  writeFileSync(P.findings, synthesisFindings(P.runDir).replaceAll("/mark/us/90000001", "/mark/eu/a1").replace(/"band":\s*"[A-Za-z]+"/, "\"band\": \"LOW\""));
+  const later = writerExclusionBlock(P, { review: "later" });
+  assert.deepEqual(ids(later.lines), ["/mark/eu/e1"], "the exclusion resting on the changed finding is not a decision the review checks");
+  assert.ok(later.lines[0].endsWith("Logistics software; the class 9 reading is carried as finding 1.; that ground cites finding 1, which changed after the full review"), later.lines[0]);
+  assert.deepEqual(ids(later.reference), ["/mark/eu/c1", "/mark/eu/d1"], "the exclusion was listed twice, or another left the reference block");
+  for (const key of ["narrative-refutation:verdict-recheck", "narrative-refutation:post-repair-review"]) {
+    const text = String(repairFollowup(key, { narrative: "/run/narrative.md", findings: "/run/findings.json", seniorEyeReview: "/run/senior-eye-review.md",
+      correctionsScope: { scoped: true, named: [1], moved: [], unbound: [] }, appliedTable: "", restoredTable: "", evidenceTable: "", planAuditCarry: "",
+      changes: [], resting: [], renumbered: false, coverageChanged: false, evidence: {}, registerOnly: false, job: {}, skepticFlags: "/run/sf.md", frameReopenReceipt: "/run/fr.json",
+      floorDecisions: [], writerExclusions: writerExclusionBlock(P, { review: "later" }) }));
+    assert.ok(text.indexOf("that ground cites finding 1, which changed after the full review") < text.indexOf(WRITER_EXCLUSIONS_REFERENCE), `${key}: the exclusion is not before the reference sentence`);
+    assert.equal(text.split("(/mark/eu/e1)").length - 1, 1, `${key}: the exclusion is listed more than once`);
+  }
+  // A ledger written before the link was recorded is read from the ground itself, to the same answer.
+  const at = declinationCallPaths(P.runDir, 0).ledger;
+  const doc = JSON.parse(readFileSync(at, "utf8"));
+  writeFileSync(at, JSON.stringify({ ...doc, declinations: doc.declinations.map(({ cites, ...d }) => d) }));
+  assert.deepEqual(ids(writerExclusionBlock(P, { review: "later" }).lines), ["/mark/eu/e1"], "an older ledger's ground was not read for its finding");
+});
+
+test("a ground citing a finding that did not change stays for reference, and the fold's renumbering is not a change", (t) => {
+  const P = seedRun(t);
+  citing(P, "Logistics software; the class 9 reading is carried as finding 1.");
+  writerExclusionBlock(P, { review: "full" });
+  // The delivery seam folds the record: findings.json is renumbered and rewritten, while the writer's own record, kept
+  // beside it, is as the full review read it (record-fold.mjs). The review after a repair reads the folded file.
+  const model = readFileSync(P.findings, "utf8");
+  writeFileSync(driverDir(P.runDir, "findings-unfolded.json"), model);
+  writeFileSync(driverDir(P.runDir, "fold.json"), JSON.stringify({ seamPassed: true, map: { modelToFolded: { 1: 1 }, foldedToModel: { 1: [1] } }, merges: [] }));
+  writeFileSync(P.findings, model.replace(/"band":\s*"[A-Za-z]+"/, "\"band\": \"Moderate\""));
+  const later = writerExclusionBlock(P, { review: "later" });
+  assert.deepEqual(ids(later.lines), [], "the folded file's rewrite reopened an exclusion the writer's record did not change");
+  assert.deepEqual(ids(later.reference), ["/mark/eu/c1", "/mark/eu/d1", "/mark/eu/e1"]);
 });

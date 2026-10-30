@@ -161,6 +161,7 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
+import { citedFindingNumbers } from "./finding-citations.mjs";   // the findings an exclusion's ground cites
 import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, heldBodiesOf, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations, declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
@@ -3628,7 +3629,11 @@ export function writerExclusions(P) {   // @internal — driven by its test with
     try {
       const found = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? [];
       delivered = new Set([...findingUris(found).keys()].map(key));
-      findings = found.map((f) => ({ ordinal: f?.ordinal ?? null, owner: String(f?.owner?.name ?? f?.owner_name ?? (typeof f?.owner === "string" ? f.owner : "") ?? ""),
+      // Each finding as the writer numbered it. A later review's comparison and a ground's "finding 9" both read the
+      // writer's numbering, and from the delivery seam on findings.json is the folded, renumbered record (record-fold.mjs).
+      const modelAt = modelRecordPath(P.runDir, P.findings);
+      const own = modelAt === P.findings ? found : (parseFindingsJsonLenient(readFileSync(modelAt, "utf8"))?.findings ?? []);
+      findings = own.map((f) => ({ ordinal: f?.ordinal ?? null, owner: String(f?.owner?.name ?? f?.owner_name ?? (typeof f?.owner === "string" ? f.owner : "") ?? ""),
         fp: createHash("sha256").update(JSON.stringify(f ?? null)).digest("hex").slice(0, 16) }));
     } catch { return empty("unreadable"); }
     // The goods state each record was given on the writer's list, where the list carries one.
@@ -3651,7 +3656,10 @@ export function writerExclusions(P) {   // @internal — driven by its test with
       const e = entryOf.get(key(row?.uri)) ?? null;
       positions.push({ uri: key(row.uri), members, mark: e?.mark ?? row.mark ?? null, owner: e?.owner ?? row.owner ?? null,
         tier: e?.tier ?? row.tier ?? null, borderline: e?.borderline === true, reason: e?.reason ?? null,
-        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)) });
+        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)),
+        // The findings its ground cites, as the ledger recorded them, or read from the ground of an entry written before
+        // the ledger recorded them: the writer's own number, never a name.
+        cites: Array.isArray(d.cites) ? d.cites : citedFindingNumbers(d.grounds, { bare: false }) });
     }
     // WHAT EACH EXCLUSION RESTS ON, read for its own records only.
     const band = new Map();
@@ -3676,7 +3684,14 @@ const recordContent = (row) => (row && typeof row === "object"
 export const writerExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${x.members.join(", ")}): `
   + `placement: ${x.tier ?? "(no tier)"}${x.borderline ? ", borderline" : ""} — ${x.reason ?? "(no reason recorded)"}; `
   + `excluded by the writer as ${x.writerReason}: ${x.grounds}`
-  + (x.floors.length ? `; covers the floor${x.floors.length > 1 ? "s" : ""} ${x.floors.join(", ")}` : "");
+  + (x.floors.length ? `; covers the floor${x.floors.length > 1 ? "s" : ""} ${x.floors.join(", ")}` : "")
+  + (x.revisedCites?.length ? revisedCitesNote(x.revisedCites) : "");
+
+// THE CONNECTION A GROUND RECORDS, NAMED (2026-10-30). An exclusion whose ground cites a finding that changed after the
+// full review is a decision the later review checks, and its entry says which finding. Model-facing: the later review
+// reads it, and only on such an entry.
+export const revisedCitesNote = (ords) => `; that ground cites ${ords.length === 1 ? `finding ${ords[0]}`
+  : `findings ${ords.slice(0, -1).join(", ")} and ${ords[ords.length - 1]}`}, which changed after the full review`;
 
 /** A position the full review read as excluded that a finding now delivers, as a later review reads it. PURE. */
 export const withdrawnExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${(x.members ?? [x.uri]).join(", ")}): excluded at the full review, now delivered as a finding`;
@@ -3689,7 +3704,8 @@ export const reviewExclusionsPaths = (P) => ({ full: driverDir(P.runDir, "review
  * after a correction, the review after a delivery-check repair) starts a fresh session, so it is given every exclusion
  * too, each once, in two parts (ruled 2026-10-30). First the decisions it is checking: the exclusions whose own
  * sentence, placement's reason or tier, or records' evidence changed since the full review, the ones touched by a
- * finding about the same owner that changed, the ones its own flags named, and the ones a finding now delivers. Then,
+ * finding about the same owner that changed, the ones whose ground cites a finding that changed (its entry names it),
+ * the ones its own flags named, and the ones a finding now delivers. Then,
  * under the ruled reference sentence, the other accepted exclusions with their recorded grounds and ids, a floor's
  * among them: it reconsiders one only where a change it identified affects its grounds. With no full review on record,
  * or a record it cannot read, a later review gets the whole list as decisions to check.
@@ -3716,10 +3732,12 @@ export function writerExclusionBlock(P, { review = "full", named = [] } = {}) { 
       const before = new Map(full.positions.map((p) => [p.uri, p]));
       const names = new Set(named.map((u) => String(normalizeRecordUri(u) ?? "")));
       const touched = changedFindingOwners(full.findings, x.findings);
+      const revised = changedFindingOrdinals(full.findings, x.findings);
+      const restsOn = (p) => (Array.isArray(p.cites) ? p.cites : []).filter((o) => revised.has(o));
       const changed = (p, b) => !b || b.writerReason !== p.writerReason || b.grounds !== p.grounds || b.reason !== p.reason
         || b.tier !== p.tier || Boolean(b.borderline) !== Boolean(p.borderline) || (b.evidence ?? null) !== (p.evidence ?? null);
-      const checked = (p) => names.has(p.uri) || changed(p, before.get(p.uri)) || touched.has(ownerKey(p.owner));
-      shown = x.positions.filter(checked);
+      const checked = (p) => names.has(p.uri) || changed(p, before.get(p.uri)) || touched.has(ownerKey(p.owner)) || restsOn(p).length > 0;
+      shown = x.positions.filter(checked).map((p) => (restsOn(p).length ? { ...p, revisedCites: restsOn(p) } : p));
       reference = x.positions.filter((p) => !checked(p));
       const now = new Set(x.positions.map((p) => p.uri));
       withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri) && (p.members ?? [p.uri]).some((u) => x.delivered?.has(u)));
@@ -3744,16 +3762,21 @@ export function writerExclusionBlock(P, { review = "full", named = [] } = {}) { 
 const reviewSession = (s) => /-narrative-refutation(?=$|-)/.test(String(s ?? ""));
 /** An owner's name as two records of it are compared: trimmed, spaced once, in any case. PURE. */
 const ownerKey = (o) => String(o ?? "").replace(/\s+/g, " ").trim().toLowerCase();
-/** The owners of the findings that changed between two readings, by ordinal: added, removed or rewritten. Empty where
- *  either reading is missing, so a record from before findings were kept touches nothing. PURE. */
-export function changedFindingOwners(before, after) {   // @internal
+/** The ordinals of the findings that changed between two readings, in the writer's numbering: added, removed or
+ *  rewritten. Empty where either reading is missing, so a record from before findings were kept changes nothing. PURE. */
+export function changedFindingOrdinals(before, after) {   // @internal
   const out = new Set();
   if (!Array.isArray(before) || !Array.isArray(after)) return out;
   const a = new Map(before.map((f) => [f?.ordinal, f])), b = new Map(after.map((f) => [f?.ordinal, f]));
-  for (const o of new Set([...a.keys(), ...b.keys()])) {
-    if (a.get(o)?.fp === b.get(o)?.fp) continue;
+  for (const o of new Set([...a.keys(), ...b.keys()])) if (a.get(o)?.fp !== b.get(o)?.fp) out.add(o);
+  return out;
+}
+/** The owners of those findings, on either reading. PURE. */
+export function changedFindingOwners(before, after) {   // @internal
+  const out = new Set();
+  const a = new Map((before ?? []).map((f) => [f?.ordinal, f])), b = new Map((after ?? []).map((f) => [f?.ordinal, f]));
+  for (const o of changedFindingOrdinals(before, after))
     for (const f of [a.get(o), b.get(o)]) if (ownerKey(f?.owner)) out.add(ownerKey(f.owner));
-  }
   return out;
 }
 /** Every record a list of the writer's rows names, a position's members included. PURE. */
