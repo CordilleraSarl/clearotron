@@ -220,7 +220,10 @@ export function deriveCoverageStatus(rows, { excludeAxes = NON_MATERIAL_AXES } =
 // close it. register-plan.mjs's unsupportedPredicateReason / uncoveredJurisdictionReason emit exactly
 // these two phrasings, and the per-provider relabel tests pin them. Deliberately narrow: both require
 // the literal "register provider" tail, so ordinary saturation prose cannot trip them.
-const TOOL_ABSENCE_RE = /not (?:supported|covered) by (?:the )?(?:active )?register provider|tool[- ](?:absent|unavailable|missing|access)|no (?:such )?tool\b|not on the allowlist|tool not (?:available|configured|enabled|present)|provider (?:unavailable|down|error|not configured|absent|failure)|no (?:register )?provider\b|fetch (?:failed|blocked|error|unavailable)|(?:could not|cannot|couldn't|unable to) (?:reach|fetch|access|retrieve|query|call|invoke) (?:the )?(?:provider|data|register|endpoint|api|source|tool|record|mcp)|mcp (?:tool )?(?:unavailable|error|missing|absent|failed)|endpoint (?:unavailable|unreachable|down|failed)|connection (?:failed|refused|error|timed out)|api (?:error|unavailable|down|failure)/i;
+// The lawyer's ledger prints the owner's sentence for a search left undone in place of its recorded line
+// (register-plan.mjs NOT_SEARCHED_SENTENCES), so a ledger read back from its rendered table holds the sentence. The
+// sentence says the search was set aside and is disclosed, never a limit accepted as covered, so it reads as deferred.
+const TOOL_ABSENCE_RE = /It was set aside and is disclosed here\.|not (?:supported|covered) by (?:the )?(?:active )?register provider|tool[- ](?:absent|unavailable|missing|access)|no (?:such )?tool\b|not on the allowlist|tool not (?:available|configured|enabled|present)|provider (?:unavailable|down|error|not configured|absent|failure)|no (?:register )?provider\b|fetch (?:failed|blocked|error|unavailable)|(?:could not|cannot|couldn't|unable to) (?:reach|fetch|access|retrieve|query|call|invoke) (?:the )?(?:provider|data|register|endpoint|api|source|tool|record|mcp)|mcp (?:tool )?(?:unavailable|error|missing|absent|failed)|endpoint (?:unavailable|unreachable|down|failed)|connection (?:failed|refused|error|timed out)|api (?:error|unavailable|down|failure)/i;
 export function coerceToolAbsenceDeferred(rows) {
   return (rows ?? []).map((r) =>
     (r && r.status === "coverage-limited" && TOOL_ABSENCE_RE.test(String(r.reason ?? "")))
@@ -257,7 +260,8 @@ export function coerceToolAbsenceDeferred(rows) {
 // registerGap clamp stays armed) — it is simply never closed by the clock. Closing it needs a DIFFERENT
 // question (the owner×term slices its covered_by names, or the register's own styling from a human),
 // which is precisely what "held" means here. PURE.
-const CAPABILITY_GAP_REASON_RE = /capability-gap:|not supported by (?:the )?(?:active )?register provider|not covered by (?:the )?(?:active )?register provider|owner.{0,3}term intersection is not supported|indexes non-latin filings by their transliteration|provider capability absent|has no owner surface|owner vocabulary returned no applicant styling/i;
+// As for TOOL_ABSENCE_RE above: the owner's sentences for the kinds whose recorded lines state a capability gap.
+const CAPABILITY_GAP_REASON_RE = /files marks in other alphabets under a Latin spelling|this register does not offer this kind of search|the register did not recognise this owner's name|which this register treats as a search command|longer than this register can search as one phrase|asked for too many names at once|this register cannot run this search|capability-gap:|not supported by (?:the )?(?:active )?register provider|not covered by (?:the )?(?:active )?register provider|owner.{0,3}term intersection is not supported|indexes non-latin filings by their transliteration|provider capability absent|has no owner surface|owner vocabulary returned no applicant styling/i;
 
 /** Does this reason state a deterministic capability gap (nothing a re-run can change)? PURE. */
 export const isCapabilityGapReason = (reason) => CAPABILITY_GAP_REASON_RE.test(String(reason ?? ""));
