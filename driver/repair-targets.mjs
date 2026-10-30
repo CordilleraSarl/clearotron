@@ -18,11 +18,9 @@
 //
 // Two faults are placed by what they cite. A citation held in a register of the record (the four answers' findings) is
 // the writer's, since no card or overview repair can change the record. A citation of a withdrawn or absent finding in
-// the overview's own prose is the overview's, although the reference check that finds it marks its failure structural:
-// the check reads the overview's `# Methodology` as part of the actions, and on a run whose actions code builds from
-// the record no part writes those lines.
+// the overview's own prose is the overview's: a check of its own reads the overview as its writer wrote it.
 import { readFileSync } from "node:fs";
-import { prescriptionProseChecks, scopeNumberProseChecks, wipoLanguageChecks, countingChecks, countsFromFindings } from "./predelivery-lint.mjs";
+import { prescriptionProseChecks, scopeNumberProseChecks, wipoLanguageChecks, countingChecks, countsFromFindings, OVERVIEW_CITATION_ID } from "./predelivery-lint.mjs";
 import { netOf, memberLine } from "./write-up-render.mjs";
 
 // The checks that judge a text by itself, run as the delivery check runs them, on one part at a time.
@@ -100,39 +98,21 @@ export function writersCitationFaults(fault, toModel) {
     detail: withdrawnCitationLine(ordinal) }));
 }
 
-// A citation by number, as the reference check returns it among the names it could not place: "Finding 12".
-const CITATION = /^findings?\s+#?(\d+)$/i;
-
 /**
- * The overview's repair for the citations of a withdrawn or absent finding that its own prose holds, among the names
- * the reference check could not place (each failure's `orphans`). PURE.
+ * The overview's repair for the citations of a withdrawn or absent finding that its own prose holds, as the overview's
+ * citation check found them (predelivery-lint.mjs overviewCitationChecks). PURE.
  *
- * A citation of a live finding is left as it is: that finding's card is in the report, so the citation is not the fault
- * the check reports, and the overview has nothing to remove. A party's name is left too. The report's check and the
- * email's can name one citation twice; it is one citation to remove.
+ * A citation of a live finding is not among them: that finding is in the report, so the overview has nothing to
+ * remove. The check reads the overview as its writer wrote it, so every citation it found is the overview's.
  *
  * Returns the fault the overview's repair is given, `{id, family, surface, detail, cites}`, with `cites` as
  * `{ordinal, withdrawn}`, or null when its prose holds no such citation.
  */
-export function overviewCitationFault(failures, { overview = null, findings = [] } = {}) {
-  const text = String(overview ?? "");
-  if (!text.trim()) return null;
-  const live = new Set((findings ?? []).filter((f) => f && f.disposition !== "withdrawn").map((f) => Number(f.ordinal)));
-  const withdrawn = new Set((findings ?? []).filter((f) => f?.disposition === "withdrawn").map((f) => Number(f.ordinal)));
-  const cites = new Map();
-  for (const f of failures ?? []) {
-    if (!/^reference-integrity(:|$)/.test(String(f?.id ?? "")) || !Array.isArray(f.orphans)) continue;
-    for (const name of f.orphans) {
-      const m = String(name).trim().match(CITATION);
-      const ordinal = m ? Number(m[1]) : null;
-      if (ordinal == null || live.has(ordinal) || cites.has(ordinal)) continue;
-      if (!new RegExp(`\\bfindings?\\s+#?${ordinal}\\b`, "i").test(text)) continue;
-      cites.set(ordinal, { ordinal, withdrawn: withdrawn.has(ordinal) });
-    }
-  }
-  if (!cites.size) return null;
-  const list = [...cites.values()];
-  return { id: "reference-integrity", family: "reference", surface: "report", detail: overviewCitationDetail(list), cites: list };
+export function overviewCitationFault(failures) {
+  const found = (failures ?? []).find((f) => f?.id === OVERVIEW_CITATION_ID && Array.isArray(f.cites) && f.cites.length);
+  if (!found) return null;
+  const cites = [...new Map(found.cites.map((c) => [Number(c.ordinal), { ordinal: Number(c.ordinal), withdrawn: Boolean(c.withdrawn) }])).values()];
+  return { id: OVERVIEW_CITATION_ID, family: "reference", surface: "report", detail: overviewCitationDetail(cites), cites };
 }
 
 // The overview's repair instruction, as design approved it for this correction (2026-10-28), word for word. Its repair is
