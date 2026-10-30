@@ -25,7 +25,7 @@ const REVIEW_OPENING = [
   "Everything else stands as this run's earlier reviews left it. Do not flag a statement that rests on no changed item.",
   "From your own manual, skills/narrative-refutation/SKILL.md, use only the checks that bear on these items. Its whole-report checks, its length target for a review and its expectation that a clean review is rare belong to the full review, not to this one. A clean result is a normal outcome here.",
   "Check each changed item against the evidence named for it, and each statement that rests on a changed item against the new values.",
-  "Say what each flag is about. For a finding, put its number from the list below in `on`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for \"<area>\".",
+  "Say what each flag is about. For a finding, put its number from the list below in `on`. For a writer's exclusion, put a record id from its entry in `positions`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for \"<area>\".",
 ];
 const RENUMBERED = "Where a finding below shows two numbers, put the first in `on`. The second is its number in findings.json.";
 const VERDICT = "Your verdict is about the repair. CLEAR: what changed is sound, and every statement that rests on a changed item still holds. CONDITIONAL: a flag needs a correction. BLOCKING: the change makes the report unsafe to sign, under your manual's verdict logic.";

@@ -4824,12 +4824,16 @@ export const placementSetAsideBlock = (decisions) => (Array.isArray(decisions) &
 export const WRITER_EXCLUSIONS_STANDARD = "The writer's exclusions of positions retained by placement are listed below with placement's reasons and the writer's grounds. Check whether each exclusion follows from the evidence under the framework, including any competing reading placement recorded. Accurate facts do not by themselves establish that the exclusion follows. A crowd count alone does not justify excluding a surviving relevant conflict. Assess a supported goods or whole-mark distinction under the existing exclusion rules. Flag a decision only when you can name contrary evidence, an error in its reasoning, or a relevant uncertainty the exclusion leaves unresolved. Name the affected position and the targeted correction. Preserve supported exclusions and unaffected work.";
 export const WRITER_EXCLUSIONS_UNREAD = "The writer's exclusions could not be read from this run's record. This is not a statement that the writer excluded nothing.";
 export const WRITER_EXCLUSIONS_UNCHANGED = "No exclusion has changed since the full review; the full review's list stands.";
+// A LATER REVIEW READS THE STANDARD WITHIN ITS SCOPE (ruled 2026-10-30): the sentence precedes the paragraph, so the
+// floor decisions its list carries as context do not reopen every settled floor.
+export const WRITER_EXCLUSIONS_LATER_SCOPE = "Apply the following standard only to the decisions this review is checking and conclusions that depend on them. Other accepted decisions stand.";
 export const writerExclusionLines = (block) => {
   if (!block || block.state === "no-positions") return [];
-  if (block.state === "unreadable") return [WRITER_EXCLUSIONS_STANDARD, ...(block.lines ?? []), WRITER_EXCLUSIONS_UNREAD];
+  const standard = block.review === "later" ? [WRITER_EXCLUSIONS_LATER_SCOPE, WRITER_EXCLUSIONS_STANDARD] : [WRITER_EXCLUSIONS_STANDARD];
+  if (block.state === "unreadable") return [...standard, ...(block.lines ?? []), WRITER_EXCLUSIONS_UNREAD];
   const lines = Array.isArray(block.lines) ? block.lines : [];
-  if (lines.length) return [WRITER_EXCLUSIONS_STANDARD, ...lines];
-  return [WRITER_EXCLUSIONS_STANDARD, block.changedOnly && block.state === "listed" ? WRITER_EXCLUSIONS_UNCHANGED : "(none)"];
+  if (lines.length) return [...standard, ...lines];
+  return [...standard, block.changedOnly && block.state === "listed" ? WRITER_EXCLUSIONS_UNCHANGED : "(none)"];
 };
 
 export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null, writerExclusions = null } = {}) => [

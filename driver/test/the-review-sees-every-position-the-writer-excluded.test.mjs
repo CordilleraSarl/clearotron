@@ -15,10 +15,10 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { paths, STAGES, WRITER_EXCLUSIONS_STANDARD, WRITER_EXCLUSIONS_UNREAD, WRITER_EXCLUSIONS_UNCHANGED, writerExclusionLines as writerExclusionLinesOf } from "../stages.mjs";
-import { writerExclusions, writerExclusionBlock, messageCtxFor, correctionsExtra, prepareDeclinationSpec } from "../pipeline.mjs";
+import { paths, STAGES, WRITER_EXCLUSIONS_STANDARD, WRITER_EXCLUSIONS_UNREAD, WRITER_EXCLUSIONS_UNCHANGED, WRITER_EXCLUSIONS_LATER_SCOPE, writerExclusionLines as writerExclusionLinesOf } from "../stages.mjs";
+import { writerExclusions, writerExclusionBlock, messageCtxFor, correctionsExtra, prepareDeclinationSpec, correctionRows, flagOrdinals, changedFindingOwners } from "../pipeline.mjs";
 import { appendDeclinations, declinationCallPaths } from "../declination-tool.mjs";
-import { acceptRefutation, recordRefutation, listedExclusionPositions } from "../narrative-refutation-record.mjs";
+import { acceptRefutation, recordRefutation, listedExclusionPositions, refutationCallPaths } from "../narrative-refutation-record.mjs";
 import { parseCorrections } from "../verify.mjs";
 import { correctionScope, flaggedPositions, scopeDrift } from "../corrections-feedforward.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
@@ -145,7 +145,7 @@ test("a flag names an excluded position by any of its record ids; one the list d
   assert.match(plain.content, /^1\. \[kind: fact\] \[on: 1\] narrative\.md misstates an owner$/m);
 });
 
-test("a flag on an excluded position narrows the corrective pass to it; an undeclared flag still opens the whole pass", (t) => {
+test("a flag on an excluded position narrows the corrective pass to it; a flag whose target cannot be read still opens the whole pass", (t) => {
   const pos = { n: 1, kind: "rating", text: "x", ordinals: null, positions: ["/mark/eu/d1"] };
   const fin = { n: 2, kind: "fact", text: "y", ordinals: [3] };
   assert.deepEqual(correctionScope([pos, fin]), { scoped: true, ordinals: [3], positions: ["/mark/eu/d1"] });
@@ -167,13 +167,14 @@ test("a flag on an excluded position narrows the corrective pass to it; an undec
   assert.ok(msg.includes("THIS IS THE COMPLETE LIST: (none — its flags are about excluded positions)."), "the pass was not told its flags are about positions");
   assert.ok(msg.includes("THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: QZORVEX — Delta AG (/mark/eu/d1), row 2. For each, either record it as a finding, or keep its exclusion by calling `record_declination` again for its row with a ground that answers the flag."),
     "the pass was not told the position, or the row to keep its exclusion by");
-  assert.ok(msg.includes("Change ONLY those finding objects, any finding you record for those positions, and ONLY the narrative passages that discuss them. EVERY OTHER FINDING OBJECT"),
-    "the pass was not told to leave everything else as it is");
+  assert.ok(msg.includes("Change the named finding objects, any finding you record for the named excluded positions, and the document passages the flags identify. Preserve unaffected findings and passages. If a correction requires another change, record what changed and why. EVERY OTHER FINDING OBJECT"),
+    "the pass was not told its scope as ruled, or to leave everything else as it is");
 });
 
-test("a flag on an excluded position reaches the corrective pass with its row when another flag declared nothing; the pass stays open", (t) => {
+test("a flag about the document is a declared target: with a flag on a position the pass is narrowed to both, and alone it is narrowed to the passage", (t) => {
   assert.deepEqual(flaggedPositions([{ ordinals: null, positions: ["/mark/eu/d1"] }, { ordinals: null }, { ordinals: [3], positions: ["/mark/eu/d1", "/mark/eu/e1"] }]),
     ["/mark/eu/d1", "/mark/eu/e1"]);
+  const SCOPE_SENTENCE = "Change the named finding objects, any finding you record for the named excluded positions, and the document passages the flags identify.";
   const P = seedRun(t);
   writerExclusionBlock(P, { review: "full" });
   const rec = recordRefutation(P.runDir, { verdict: "BLOCKING", flags: [
@@ -183,17 +184,58 @@ test("a flag on an excluded position reaches the corrective pass with its row wh
   assert.ok(rec.written, String(rec.refused));
   prepareDeclinationSpec({ paths: P }, P);
   const msg = correctionsExtra(P);
-  assert.ok(!msg.includes("SCOPE —") && !msg.includes("MUST COME BACK BYTE-IDENTICAL"), "a review with a flag that declared nothing narrowed the pass");
-  assert.ok(msg.includes("THE EXCLUDED POSITIONS THE REVIEWER'S FLAGS ARE ABOUT: QZORVEX — Delta AG (/mark/eu/d1), row 2. For each, either record it as a finding, or keep its exclusion by calling `record_declination` again for its row with a ground that answers the flag."),
-    "the open pass was not told the position, or the row to keep its exclusion by");
+  assert.ok(msg.includes("SCOPE —") && msg.includes(SCOPE_SENTENCE), "a document flag beside a position flag left the pass open");
+  assert.ok(msg.includes("THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: QZORVEX — Delta AG (/mark/eu/d1), row 2."), "the narrowed pass was not told the position and its row");
 
-  // A review that names no position: the open pass is told nothing new.
+  // A document flag alone: the pass is narrowed to the passage it names, and told no finding is in scope.
   const Q = seedRun(t);
   writerExclusionBlock(Q, { review: "full" });
   assert.ok(recordRefutation(Q.runDir, { verdict: "BLOCKING", flags: [{ kind: "narrative", text: "narrative.md puts the sheet-2 section before the headline candidates" }] }).written);
   prepareDeclinationSpec({ paths: Q }, Q);
   const plain = correctionsExtra(Q);
-  assert.ok(!plain.includes("EXCLUDED POSITIONS") && !plain.includes("SCOPE —"), "a review that named no position was told one, or narrowed");
+  assert.ok(plain.includes("THIS IS THE COMPLETE LIST: (none — every flag is about the document, not a finding).") && plain.includes(SCOPE_SENTENCE),
+    "a document flag alone opened the pass, or was not told its passage is in scope");
+  assert.ok(!plain.includes("EXCLUDED POSITIONS"), "a review that named no position was told one");
+});
+
+test("a flag whose target cannot be read leaves the pass open, and a flag on a position still reaches it with its row", (t) => {
+  // On the typed path, a flag with no text names nothing; on a rendered review written before the token, no flag declares.
+  assert.deepEqual([flagOrdinals({ text: "narrative.md drops a disclosure" }), flagOrdinals({ text: "  " }), flagOrdinals({ text: "x", on: [4] })], [[], null, [4]]);
+  const P = seedRun(t);
+  writerExclusionBlock(P, { review: "full" });
+  assert.ok(recordRefutation(P.runDir, { verdict: "BLOCKING", flags: [
+    { kind: "narrative", text: "narrative.md puts the sheet-2 section before the headline candidates" },
+    { kind: "rating", text: "narrative.md drops the QZORVEX position on a sound reading the records do not support", positions: ["/mark/de/d2"] },
+  ] }).written);
+  // The review as an older run holds it: the rendered document alone, its first flag with no target token.
+  const review = readFileSync(P.seniorEyeReview, "utf8").replace("[kind: narrative] [on: -] ", "[kind: narrative] ");
+  writeFileSync(P.seniorEyeReview, review);
+  rmSync(refutationCallPaths(P.runDir).payload);
+  prepareDeclinationSpec({ paths: P }, P);
+  const msg = correctionsExtra(P);
+  assert.ok(!msg.includes("SCOPE —") && !msg.includes("MUST COME BACK BYTE-IDENTICAL"), "a flag with no readable target narrowed the pass");
+  assert.ok(msg.includes("THE EXCLUDED POSITIONS THE REVIEWER'S FLAGS ARE ABOUT: QZORVEX — Delta AG (/mark/eu/d1), row 2. For each, either record it as a finding, or keep its exclusion by calling `record_declination` again for its row with a ground that answers the flag."),
+    "the open pass was not told the position, or the row to keep its exclusion by");
+});
+
+test("the correction and its recheck read every flag's target the same way, from the typed call or the rendered review", (t) => {
+  const cases = {
+    "document only": [{ kind: "narrative", text: "narrative.md puts the sheet-2 section before the headline candidates" }],
+    "finding and document": [{ kind: "fact", text: "narrative.md misstates the owner of the first finding", on: [1] },
+      { kind: "coverage-disposition", text: "narrative.md claims the annex was searched in full" }],
+    "position and document": [{ kind: "rating", text: "narrative.md drops the QZORVEX position on a sound reading", positions: ["/mark/eu/d1"] },
+      { kind: "narrative", text: "narrative.md orders the sheet-2 section first" }],
+  };
+  for (const [name, flags] of Object.entries(cases)) {
+    const P = seedRun(t);
+    writerExclusionBlock(P, { review: "full" });
+    assert.ok(recordRefutation(P.runDir, { verdict: "BLOCKING", flags }).written, name);
+    const review = readFileSync(P.seniorEyeReview, "utf8");
+    const typed = correctionScope(correctionRows(P, review));
+    const rendered = correctionScope(parseCorrections(review));
+    assert.equal(typed.scoped, true, `${name}: the correction left the pass open`);
+    assert.deepEqual(typed, rendered, `${name}: the correction and the rendered review read the scope differently`);
+  }
 });
 
 test("the recheck is told to read each named position's decision, beside the exclusions that changed", (t) => {
@@ -202,7 +244,70 @@ test("the recheck is told to read each named position's decision, beside the exc
   const text = String(repairFollowup("narrative-refutation:verdict-recheck", { narrative: "/run/narrative.md", findings: "/run/findings.json", seniorEyeReview: "/run/senior-eye-review.md",
     correctionsScope: { scoped: true, named: [], positions: ["/mark/eu/d1"], moved: [], unbound: [] }, appliedTable: "", restoredTable: "", evidenceTable: "", planAuditCarry: "",
     writerExclusions: writerExclusionBlock(P, { review: "later", named: ["/mark/eu/d1"] }) }));
-  assert.ok(text.includes("For each excluded position your flags named, check in the writer's exclusions below whether it is now a finding or its exclusion was recorded again with a ground that answers your flag."));
-  assert.ok(text.includes(`${WRITER_EXCLUSIONS_STANDARD}\n- QZORVAK — Gamma SA (/mark/eu/c1)`) && text.includes("- QZORVEX — Delta AG (/mark/eu/d1, /mark/de/d2)"));
+  assert.ok(text.includes("For each excluded position your flags named, check the resulting finding or renewed exclusion against the evidence and the specific objection you raised. A newly recorded ground alone does not settle the flag. Retain the flag if its factual error, reasoning error, or relevant uncertainty remains."),
+    "the recheck was not told D6 as ruled");
+  assert.ok(text.includes(`${WRITER_EXCLUSIONS_LATER_SCOPE}\n${WRITER_EXCLUSIONS_STANDARD}\n- QZORVAK — Gamma SA (/mark/eu/c1)`) && text.includes("- QZORVEX — Delta AG (/mark/eu/d1, /mark/de/d2)"),
+    "the later review's standard is not preceded by its scope sentence, or the list is missing");
   assert.ok(!text.includes("(/mark/eu/e1)"), "a settled exclusion no flag named was listed again");
+});
+
+test("an exclusion is said to be delivered only where a current finding names its records; a missing placements file is unread, not none", (t) => {
+  // Known to have had no positions: the placements file reads and carries none.
+  const none = seedRun(t);
+  writeFileSync(none.placementModel, JSON.stringify({ schema_version: 1, placements: [] }));
+  assert.equal(writerExclusions(none).state, "no-positions");
+  // Expected and missing: placement runs on every clearance, so its record is owed.
+  const gone = seedRun(t);
+  writerExclusionBlock(gone, { review: "full" });
+  rmSync(gone.placementModel);
+  assert.equal(writerExclusions(gone).state, "unreadable");
+  const later = writerExclusionBlock(gone, { review: "later" });
+  assert.ok(!later.lines.some((l) => l.includes("now delivered")), "a missing placements file told the review its exclusions were delivered");
+  assert.ok(writerExclusionLinesOf(later).includes(WRITER_EXCLUSIONS_UNREAD));
+  // A position that leaves the list with no finding naming its records is not called delivered.
+  const left = seedRun(t);
+  writerExclusionBlock(left, { review: "full" });
+  writeFileSync(left.registerFindings, "## Findings\n\n| /mark/eu/a1 | QZORVAK |\n| /mark/eu/c1 | QZORVAK |\n| /mark/eu/d1 | QZORVEX |\n");
+  const after = writerExclusionBlock(left, { review: "later" });
+  assert.ok(!after.lines.some((l) => l.includes("(/mark/eu/e1)")), "an exclusion that left the list was told as delivered");
+});
+
+test("a later review re-reads a decision whose placement reason, evidence or same-owner finding changed, and the full review is not given the scope sentence", (t) => {
+  const listed = (block) => block.lines.map((l) => l.match(/\((\/mark\/[^,)]+)/)[1]);
+  const P = seedRun(t);
+  const full = writerExclusionBlock(P, { review: "full" });
+  assert.equal(full.review, "full");
+  assert.ok(!writerExclusionLinesOf(full).includes(WRITER_EXCLUSIONS_LATER_SCOPE), "the full review was given the later review's scope sentence");
+  assert.deepEqual(listed(writerExclusionBlock(P, { review: "later" })), ["/mark/eu/c1"], "guard: an unchanged later review lists the floor's exclusion only");
+  // Placement re-reads e1's position: its reason changes.
+  writeFileSync(P.placementModel, JSON.stringify({ schema_version: 1, placements: PLACEMENTS.map((e) => (e.owner === "Epsilon BV" ? { ...e, reason: "a shared root, live for software the client now sells" } : e)) }));
+  assert.deepEqual(listed(writerExclusionBlock(P, { review: "later" })), ["/mark/eu/c1", "/mark/eu/e1"], "a changed placement reason did not reopen its decision");
+  // The evidence of d1's records changes: the writer's list now holds its goods.
+  const Q = seedRun(t);
+  writerExclusionBlock(Q, { review: "full" });
+  writeFileSync(driverDir(Q.runDir, "declination-spec.json"), JSON.stringify({ rows: [{ uri: "/mark/eu/d1", goods: "complete", members: [{ uri: "/mark/eu/d1", goods: "complete" }, { uri: "/mark/de/d2", goods: "complete" }] }] }));
+  assert.deepEqual(listed(writerExclusionBlock(Q, { review: "later" })), ["/mark/eu/c1", "/mark/eu/d1"], "changed evidence did not reopen its decision");
+  // A finding about the same owner as an exclusion changes.
+  assert.deepEqual([...changedFindingOwners([{ ordinal: 1, owner: "Delta AG", fp: "a" }, { ordinal: 2, owner: "Beta", fp: "b" }], [{ ordinal: 1, owner: "Delta AG", fp: "c" }, { ordinal: 2, owner: "Beta", fp: "b" }])], ["delta ag"]);
+  assert.deepEqual([...changedFindingOwners(undefined, [{ ordinal: 1, owner: "Delta AG", fp: "c" }])], [], "a record with no findings kept touched an owner");
+});
+
+test("the review's manual states the targets as ruled: positions beside on, the document flag's passage, and no all-or-nothing", () => {
+  const manual = readFileSync(new URL("../skills/narrative-refutation/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
+  for (const ruled of [
+    "and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them).",
+    "For a flag about the document, omit `on` and `positions` and name the affected passage, section, or coverage claim in `text`. Use `on` for a finding and `positions` for an excluded position.",
+    "The writer corrects the named findings, excluded positions, and document passages, together with conclusions that depend on them. Unaffected findings stay unchanged. The recheck reviews that same scope and any additional changes the writer had to make, using its recorded reasons. A missing finding number does not make the whole report open for revision.",
+  ]) assert.ok(manual.includes(ruled), `the manual does not carry: ${ruled.slice(0, 60)}…`);
+  assert.ok(!/Either every flag has one|a partial set buys nothing|the absence is the statement/.test(manual), "the all-or-nothing paragraph is still in the manual");
+});
+
+test("the review after a repair is told to name a writer's exclusion by a record id in positions", (t) => {
+  const P = seedRun(t);
+  writerExclusionBlock(P, { review: "full" });
+  const text = String(repairFollowup("narrative-refutation:post-repair-review", { findings: "/run/findings.json", changes: [], resting: [],
+    renumbered: false, coverageChanged: false, evidence: {}, registerOnly: false, job: {}, skepticFlags: "/run/sf.md", frameReopenReceipt: "/run/fr.json",
+    floorDecisions: [], writerExclusions: writerExclusionBlock(P, { review: "later" }) }));
+  assert.ok(text.includes("For a finding, put its number from the list below in `on`. For a writer's exclusion, put a record id from its entry in `positions`. For anything else,"),
+    "the review after a repair is not told the clause as ruled");
 });

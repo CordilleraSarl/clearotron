@@ -3596,13 +3596,20 @@ export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — 
  * "NONE" IS A CLAIM, SO IT IS EARNED. `state` is "listed", "none", "unreadable" or "no-positions". "none" means every
  * position handed to the writer is ended by a finding; an absent ledger is that answer only then, because a position
  * with no finding and no declination is a decision the record does not hold. An unreadable placements file, ledger or
- * findings file is "unreadable", never "none". "no-positions" is a run that handed the writer no position. A finding
- * ends a position whatever the ledger still holds, as the synthesis seam reads it. IMPURE.
+ * findings file is "unreadable", never "none". "no-positions" is a run KNOWN to have handed the writer no position: its
+ * placements file reads and carries none. A missing placements file is not that: placement runs on every clearance,
+ * so its record is expected, and a missing one is "unreadable" (ruled 2026-10-30). A finding ends a position whatever
+ * the ledger still holds, as the synthesis seam reads it.
+ *
+ * `delivered` is every record the current findings name, and `findings` each finding's owner and fingerprint, for a
+ * later review to establish from the findings themselves which exclusions a finding now delivers and which a changed
+ * finding touches; both are null where the findings cannot be read. Each position's `evidence` fingerprints its
+ * records as the run holds them: status, classes and the goods state the writer's list was given. IMPURE.
  */
 export function writerExclusions(P) {   // @internal — driven by its test with a run's own files
-  const empty = (state) => ({ state, positions: [], undecided: 0 });
+  const empty = (state) => ({ state, positions: [], undecided: 0, delivered: null, findings: null });
   try {
-    if (!P?.placementModel || !existsSync(P.placementModel)) return empty("no-positions");
+    if (!P?.placementModel || !existsSync(P.placementModel)) return empty("unreadable");
     let placements;
     try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; } catch { return empty("unreadable"); }
     const rows = findingsSurfaceRows(P);
@@ -3610,9 +3617,19 @@ export function writerExclusions(P) {   // @internal — driven by its test with
     const key = (u) => String(normalizeRecordUri(u) ?? "");
     const declined = readDeclinations(P.runDir);
     if (existsSync(declinationCallPaths(P.runDir, 0).ledger) && !declined.present) return empty("unreadable");
-    let delivered;
-    try { delivered = new Set([...findingUris(parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? []).keys()].map(key)); }
-    catch { return empty("unreadable"); }
+    let delivered, findings;
+    try {
+      const found = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? [];
+      delivered = new Set([...findingUris(found).keys()].map(key));
+      findings = found.map((f) => ({ ordinal: f?.ordinal ?? null, owner: String(f?.owner?.name ?? f?.owner_name ?? (typeof f?.owner === "string" ? f.owner : "") ?? ""),
+        fp: createHash("sha256").update(JSON.stringify(f ?? null)).digest("hex").slice(0, 16) }));
+    } catch { return empty("unreadable"); }
+    // The goods state each record was given on the writer's list, where the list carries one.
+    const goodsOf = new Map();
+    for (const r of safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows ?? [])
+      for (const m of [r, ...(Array.isArray(r?.members) ? r.members : [])]) if (m?.uri) goodsOf.set(key(m.uri), m.goods ?? null);
+    const bandOf = new Map();
+    for (const row of rows) for (const m of (Array.isArray(row?.members) && row.members.length ? row.members : [row])) bandOf.set(key(m?.uri), m);
     const entryOf = new Map();
     for (const e of Array.isArray(placements) ? placements : []) for (const u of entryUris(e)) entryOf.set(key(u), e);
     const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
@@ -3625,11 +3642,13 @@ export function writerExclusions(P) {   // @internal — driven by its test with
       const d = declined.byUri.get(key(row?.uri));
       if (!d) { undecided++; continue; }
       const e = entryOf.get(key(row?.uri)) ?? null;
+      const evidence = createHash("sha256").update(JSON.stringify(members.map((u) => [u, bandOf.get(u)?.status ?? null,
+        bandOf.get(u)?.classes ?? null, goodsOf.get(u) ?? null]))).digest("hex").slice(0, 16);
       positions.push({ uri: key(row.uri), members, mark: e?.mark ?? row.mark ?? null, owner: e?.owner ?? row.owner ?? null,
         tier: e?.tier ?? row.tier ?? null, borderline: e?.borderline === true, reason: e?.reason ?? null,
-        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)) });
+        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)), evidence });
     }
-    return { state: undecided ? "unreadable" : positions.length ? "listed" : "none", positions, undecided };
+    return { state: undecided ? "unreadable" : positions.length ? "listed" : "none", positions, undecided, delivered, findings };
   } catch { return empty("unreadable"); }
 }
 
@@ -3647,10 +3666,14 @@ export const reviewExclusionsPaths = (P) => ({ full: driverDir(P.runDir, "review
 
 /**
  * THE LIST A REVIEW IS GIVEN, and the record of it. The full review gets every exclusion. A later review (the recheck
- * after a correction, the review after a delivery-check repair) gets the exclusions that changed since the full review,
- * the ones its own flags named, and every one that covers a floor, which the floor accounting reads in each review; a
- * narrow recheck does not reconsider settled exclusions. With no full review on record, a later review gets the whole
- * list. `{state, lines, changedOnly}`; the review's flags are checked against `review-exclusions.json`. IMPURE.
+ * after a correction, the review after a delivery-check repair) gets the decisions it is checking: the exclusions whose
+ * own sentence, placement's reason or tier, or records' evidence changed since the full review, the ones touched by a
+ * finding about the same owner that changed, and the ones its own flags named (ruled 2026-10-30). Every one that covers
+ * a floor rides as context, which the floor accounting reads in each review, and its presence reopens nothing: the
+ * later review is told so before the standard. With no full review on record, a later review gets the whole list.
+ * An exclusion the full review read is said to be delivered only where a current finding names one of its records,
+ * never because it left the list. `{state, review, lines, changedOnly}`; the review's flags are checked against
+ * `review-exclusions.json`. IMPURE.
  */
 export function writerExclusionBlock(P, { review = "full", named = [] } = {}) {   // @internal
   const x = writerExclusions(P);
@@ -3661,21 +3684,36 @@ export function writerExclusionBlock(P, { review = "full", named = [] } = {}) { 
     if (Array.isArray(full?.positions)) {
       const before = new Map(full.positions.map((p) => [p.uri, p]));
       const names = new Set(named.map((u) => String(normalizeRecordUri(u) ?? "")));
-      shown = x.positions.filter((p) => p.floors.length || names.has(p.uri) || !before.has(p.uri)
-        || before.get(p.uri).writerReason !== p.writerReason || before.get(p.uri).grounds !== p.grounds);
-      // An exclusion the full review read that is no longer one: a finding now delivers the position.
+      const touched = changedFindingOwners(full.findings, x.findings);
+      const changed = (p, b) => !b || b.writerReason !== p.writerReason || b.grounds !== p.grounds || b.reason !== p.reason
+        || b.tier !== p.tier || Boolean(b.borderline) !== Boolean(p.borderline) || (b.evidence ?? null) !== (p.evidence ?? null);
+      shown = x.positions.filter((p) => p.floors.length || names.has(p.uri) || changed(p, before.get(p.uri)) || touched.has(ownerKey(p.owner)));
       const now = new Set(x.positions.map((p) => p.uri));
-      withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri));
+      withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri) && (p.members ?? [p.uri]).some((u) => x.delivered?.has(u)));
       changedOnly = true;
     }
   }
   try {
     ensureDriverDir(P.runDir);
-    const record = JSON.stringify({ ts: new Date().toISOString(), review, state: x.state, positions: x.positions, shown: shown.map((p) => p.uri) }, null, 2) + "\n";
+    const record = JSON.stringify({ ts: new Date().toISOString(), review, state: x.state, positions: x.positions, findings: x.findings, shown: shown.map((p) => p.uri) }, null, 2) + "\n";
     if (review === "full") atomicWrite(at.full, record);
     atomicWrite(at.shown, record);
   } catch (e) { runLog(P.runDir, { event: "review-exclusions-write-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
-  return { state: x.state, lines: [...shown.map(writerExclusionLine), ...withdrawn.map(withdrawnExclusionLine)], changedOnly };
+  return { state: x.state, review, lines: [...shown.map(writerExclusionLine), ...withdrawn.map(withdrawnExclusionLine)], changedOnly };
+}
+/** An owner's name as two records of it are compared: trimmed, spaced once, in any case. PURE. */
+const ownerKey = (o) => String(o ?? "").replace(/\s+/g, " ").trim().toLowerCase();
+/** The owners of the findings that changed between two readings, by ordinal: added, removed or rewritten. Empty where
+ *  either reading is missing, so a record from before findings were kept touches nothing. PURE. */
+export function changedFindingOwners(before, after) {   // @internal
+  const out = new Set();
+  if (!Array.isArray(before) || !Array.isArray(after)) return out;
+  const a = new Map(before.map((f) => [f?.ordinal, f])), b = new Map(after.map((f) => [f?.ordinal, f]));
+  for (const o of new Set([...a.keys(), ...b.keys()])) {
+    if (a.get(o)?.fp === b.get(o)?.fp) continue;
+    for (const f of [a.get(o), b.get(o)]) if (ownerKey(f?.owner)) out.add(ownerKey(f.owner));
+  }
+  return out;
 }
 /** Every record a list of the writer's rows names, a position's members included. PURE. */
 const surfaceUris = (rows) => [...new Set(rows.filter((r) => r?.kind !== "page" && r?.uri)
@@ -6019,6 +6057,33 @@ const positionIdsOf = (ids, listed) => {
   const out = [...new Set(ids.map((p) => listed?.get(String(normalizeRecordUri(p) ?? "")) ?? String(normalizeRecordUri(p) ?? p)))];
   return out.length ? out : null;
 };
+
+/**
+ * WHAT A FLAG IS ABOUT, READ ONE WAY FOR THE CORRECTION AND ITS RECHECK (ruled 2026-10-30). A finding flag names its
+ * findings; a flag on a writer's exclusion names its positions; a flag about the document names the passage, section or
+ * coverage claim in its text, and carries no finding ordinal, which is normal for it. That is a declared target, `[]`,
+ * as the rendered review's `[on: -]` already reads, so a document flag no longer opens every finding for revision. A flag
+ * whose target cannot be read, one with no text, stays `null`, which leaves the pass open: an unidentified target is not
+ * a document one. PURE.
+ */
+export const flagOrdinals = (f) => (Array.isArray(f?.on) && f.on.length ? f.on : String(f?.text ?? "").trim() ? [] : null);   // @internal
+
+/**
+ * The review's flags as the correction and its recheck read them: from the typed call the review recorded, or, for a
+ * review that has none (an archived run, a review the tool refused), parsed from its rendered document. Both read a flag's
+ * target the same way. IMPURE (reads the run's accepted call and its exclusions list).
+ */
+export function correctionRows(P, review, typed = readAcceptedFlags(P?.runDir)) {   // @internal
+  if (!typed) return parseCorrections(review);
+  const listed = listedExclusionPositions(P.runDir);
+  return typed.map((f, i) => ({
+    n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
+    ordinals: flagOrdinals(f),
+    // A writer's excluded position, as the review's list keys it, whichever of its record ids the flag named.
+    positions: positionIdsOf(f.positions, listed),
+  }));
+}
+
 /** The scope with each named position's mark, owner and id, as the corrective pass is told them. IMPURE (reads the run). */
 function withPositionLabels(scope, P) {
   if (!scope?.positions?.length) return scope;
@@ -6054,19 +6119,7 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
   // cannot tell which source produced a worklist cannot tell a missed flag from an absent one, so the
   // choice is written to the run log with the count each source yielded.
   const typed = readAcceptedFlags(P.runDir);
-  const listed = listedExclusionPositions(P.runDir);
-  const rows = typed
-    ? typed.map((f, i) => ({
-        n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
-        // `on` is OMITTED for a flag about the document rather than a finding, and `correctionScope`
-        // reads `ordinals == null` as "unscoped". Mapping an absent `on` to null rather than [] keeps
-        // that meaning: an empty array would read as "scoped to no findings", which narrows the pass to
-        // nothing instead of widening it to everything.
-        ordinals: Array.isArray(f.on) && f.on.length ? f.on : null,
-        // A writer's excluded position, as the review's list keys it, whichever of its record ids the flag named.
-        positions: positionIdsOf(f.positions, listed),
-      }))
-    : parseCorrections(review);
+  const rows = correctionRows(P, review, typed);
   if (P.runDir) {
     try {
       runLog(P.runDir, {
@@ -7470,8 +7523,7 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
   const runDir = run.runDir;
   const Pv = { ...P, seniorEyeReview: reviewAfterRepairPath(runDir), correctionsApplied: postRepairCorrectionsPath(runDir), reviewFlags: rec.flags };
   const named = [...new Set(points.filter((x) => x.target.kind !== "none").map((x) => x.target.label))];
-  const rows = rec.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
-    ordinals: Array.isArray(f.on) && f.on.length ? f.on : null }));
+  const rows = rec.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null, ordinals: flagOrdinals(f) }));
   const review = readFileSync(Pv.seniorEyeReview, "utf8");
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
   const followup = repairFollowup("synthesis:post-repair-corrective", {
@@ -14533,7 +14585,7 @@ async function pipelineInner(job, opts = {}) {
       // changed is RIGHT. NEVER-KILL: a table that cannot be built just means the recheck reads as it
       // always did, which is today's behaviour exactly.
       try {
-        const rows = parseCorrections(readFileSync(P.seniorEyeReview, "utf8"));
+        const rows = correctionRows(P, readFileSync(P.seniorEyeReview, "utf8"));   // the same reading of each flag as the correction's
         const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.model?.raw ?? preCorrective.raw) : null;   // the flags name the model's ordinals, so both sides are the record the model wrote (record-fold.mjs)
         let postDoc = null;
         try { postDoc = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")); } catch { /* shape defects ride the normal ladder */ }

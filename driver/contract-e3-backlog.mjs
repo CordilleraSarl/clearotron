@@ -670,7 +670,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:4851",
+    where: "driver/stages.mjs:4855",
     surface: "stage-message",
     // RE-QUOTED BY CONVERSION 9. The LINE-TOKEN half is gone — no "anywhere on the line", no "[kind: …]
     // token", no "a line with no token is treated as fact", because a kind is a typed field now and an

@@ -204,13 +204,19 @@ function byName(doc) {
 //
 //   { scoped: true,  ordinals: [6, 9, 12] }  every flag declared what it is about; the corrective pass
 //                                            may be told to leave everything else alone.
-//   { scoped: false, ordinals: [] }          at least one flag declared nothing, so the safe reading is
-//                                            that anything may need to move — today's behaviour exactly.
+//   { scoped: false, ordinals: [] }          at least one flag's target could not be read, so the safe
+//                                            reading is that anything may need to move.
 //
-// ALL-OR-NOTHING ON PURPOSE. A partial scope is the dangerous shape: it reads like a narrow instruction
-// while one flag's subject is unknown, so the pass is told not to touch the finding that flag is about.
-// Under-correcting a client deliverable is worse than paying for a wide pass, and `kind`'s own fail-safe
-// takes the same direction one field over.
+// A FLAG ABOUT THE DOCUMENT IS A DECLARED TARGET (ruled 2026-10-30): it names the passage, section or coverage
+// claim in its text and carries no finding ordinal, which is normal for it, so its `ordinals` are `[]` and the
+// pass is told to change the passages the flags identify along with the named findings. Only a target that
+// cannot be read, `null`, leaves the pass open: a review written before the token, a rendered flag without
+// one, or a typed flag with no text.
+//
+// ALL-OR-NOTHING ON THAT, ON PURPOSE. A partial scope is the dangerous shape: it reads like a narrow
+// instruction while one flag's subject is unknown, so the pass is told not to touch the finding that flag
+// is about. Under-correcting a client deliverable is worse than paying for a wide pass, and `kind`'s own
+// fail-safe takes the same direction one field over.
 //
 // A FLAG ABOUT A WRITER'S EXCLUSION DECLARES ITS SUBJECT TOO: the position it names, which has no finding ordinal. It
 // counts as declared, so a flag on an excluded position narrows the pass to that position instead of opening the
