@@ -1589,7 +1589,7 @@
         },
         "a-refused-search-is-told-apart-from-an-unsupported-one.test.mjs": {
           "tests": 4,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -1908,6 +1908,12 @@
         "a-search-asks-the-web-on-the-settings-its-report-type-pins.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-search-not-carried-out-says-why-in-plain-words.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
