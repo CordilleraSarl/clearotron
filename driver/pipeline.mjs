@@ -191,7 +191,7 @@ import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
-import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs";
+import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
@@ -16586,6 +16586,8 @@ async function pipelineInner(job, opts = {}) {
           // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
           // which passes the archived summary.
           reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
+          // The overview as its writer wrote it, read for a citation of a finding the report does not carry.
+          overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(),
           fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
           // WP-56 B2 — fresh v4 runs expect the standing mark-assessment (structural banner flag when
           // absent). The replay harness's runLint call never passes this, so archived runs never flip.
@@ -16752,11 +16754,11 @@ async function pipelineInner(job, opts = {}) {
           });
           if (r.ok) repaired.push(label);
         };
-        const reportFixable = modelFixable(bySurface("report"));
+        // A citation of a withdrawn or absent finding in the overview's own prose is the overview's to remove, in the
+        // words its repair is given (repair-targets.mjs), so its check's failure is not placed a second time below.
+        const reportFixable = modelFixable(bySurface("report")).filter((f) => f.id !== OVERVIEW_CITATION_ID);
         const reportParts = reportPartsOf(P, findingsForCards, writeUps);
-        // A citation of a withdrawn or absent finding in the overview's own prose is the overview's to remove, although
-        // the reference check that finds it ships its failure as structural (repair-targets.mjs).
-        const overviewCites = overviewCitationFault(lint.failures, reportParts);
+        const overviewCites = overviewCitationFault(lint.failures);
         const reportStructuralOnly = bySurface("report").filter((f) => f.structural);
         if (reportStructuralOnly.length && !reportFixable.length && !overviewCites) {
           runLog(run.runDir, { event: "lint-redo-skipped-structural", surface: "report", failures: reportStructuralOnly.map((f) => f.id) });

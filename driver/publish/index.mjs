@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFi
 import { join, dirname } from 'node:path';
 import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
-import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
+import { renderHtml } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
@@ -1827,7 +1827,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // A BLOCKING RESULT KEEPS THE REPORT'S ITEMS TOO (ruled 2026-10-27). The box showed only on a CONDITIONAL result, so
   // a blocking one lost the client's own actions the report lists. It shows them under the report's heading in the
   // report's words, and only where the report names any: no empty box, no fallback line.
-  const emailConditions = opts?.verdict === 'CONDITIONAL' || opts?.verdict === 'BLOCKING' ? actYouConditions(parseActionBuckets(secs['Actions']).you) : [];
+  const emailConditions = emailConditionsOf(secs['Actions'], opts?.verdict);
   // THE REPORT IS THE MASTER (ruled 2026-09-22). The banner used to print a second summary composed
   // beside the report — "On hold — …" on a run the report called conditional, although nothing is ever
   // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
