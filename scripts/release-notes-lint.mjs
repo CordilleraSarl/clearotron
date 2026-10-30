@@ -204,13 +204,17 @@ export function findings(text, {
     }
   }
 
+  // A SEMICOLON ENDS A CLAUSE THE READER CAN HOLD ON ITS OWN, so the limit counts each clause. A sentence
+  // the owner approved word for word ran to 34 words as two clauses of 17, and the check, not the sentence,
+  // was the thing to change (owner item 988, as with item 959 before it).
   for (const s of sentencesIn(prose)) {
-    if (words(s) > MAX_WORDS) {
-      const at = lines.findIndex((l, i) => i >= bodyStart && l.includes(s.slice(0, 30)));
+    for (const clause of s.split(/;\s+/)) {
+      if (words(clause) <= MAX_WORDS) continue;
+      const at = lines.findIndex((l, i) => i >= bodyStart && l.includes(clause.slice(0, 30)));
       out.push({
         line: (at < 0 ? bodyStart : at) + 1,
-        rule: `a sentence runs to at most ${MAX_WORDS} words; this one is ${words(s)}`,
-        offending: s.slice(0, 90) + (s.length > 90 ? "…" : ""),
+        rule: `a sentence runs to at most ${MAX_WORDS} words, or each clause of it after a semicolon; this one is ${words(clause)}`,
+        offending: clause.slice(0, 90) + (clause.length > 90 ? "…" : ""),
       });
     }
   }

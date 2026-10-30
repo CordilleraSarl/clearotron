@@ -31,6 +31,7 @@ import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_sha
 import { answerKey, compareAnswers, noteAnswer, openAnswerMemory, recallAnswer, rememberAnswer } from "../../_shared/answer-memory.mjs";
 import { makeEnumerate, isOwnerScoped } from "../../_shared/enumerate.mjs";
 import { makeExecutePlan } from "../../_shared/execute-plan.mjs";
+import { pastSendUntil } from "../../_shared/send-until.mjs";
 import CAPABILITIES, { SIGNA_OFFICE_KEYS, OWNER_SCOPED_WINDOW } from "./capabilities.js";
 // The register's own measure of a term's length: case and accents folded, spaces not counted — the same
 // measure its documented floors are stated in (the compiler's foldedTermLength counts the same way).
@@ -98,7 +99,44 @@ const creditsCharged = (resp) => {
 };
 const endpointOf = (method, path) => `${method} ${String(path).split("?")[0].replace(/^(\/v1\/trademarks\/)[^/]+/, "$1{id}")}`;
 
-export async function signaFetch(apiKey, base, path, { method = "GET", body = null, retries = 1, tctx = null } = {}) {
+// ── A RATE-LIMIT REFUSAL IS WAITED OUT, THE WAY THE REGISTER'S OWN DOCUMENTATION SAYS ─────────────
+//
+// Signa's "Rate Limits & Credits" page (docs.signa.so/api-reference/rate-limits): a 429 carries one of
+// three error types, and only `rate_limited` (too many requests per minute, or too many searches running
+// at once) clears by waiting: "Wait `Retry-After` seconds, then retry." `Retry-After` is in seconds and
+// comes only on a 429, and an error is never billed. `daily_credit_cap_exceeded` and
+// `insufficient_credits` do not clear within a call, so they return at once, as every 429 used to.
+//
+// This loop used to retry server errors only, so a 429 came back on its first attempt and the plan
+// executor asked again at once, inside the same window.
+//
+// The wait is the register's own figure: `Retry-After`, else the body's `retry_after`, else the
+// documentation's backoff (one second, doubling). Up to a second of jitter goes on top, as Signa's
+// resilience guide does, so units refused together do not return together. A retry is another attempt on
+// the same ledger row, never a row of its own.
+//
+// ONE CALL SLEEPS AT MOST ONE PER-MINUTE WINDOW IN ALL, AND NEVER PAST ITS TIME TO STOP SENDING. A plan call
+// runs inside a model's turn, and a call that outlasts the turn ends with it, unwritten (send-until.mjs). So
+// a wait that would take the call's sleeping past 60 seconds, or past the turn's time to stop sending, is
+// not taken: that refusal returns as it always has.
+export const RATE_LIMIT_RETRIES = 3;
+export const RATE_LIMIT_SLEEP_BUDGET_MS = 60_000;
+const RATE_LIMIT_BASE_MS = 1000;
+
+/** How long to wait before asking again after a 429, or null when it is not a refusal a wait clears. */
+export function rateLimitWaitMs(retryAfter, body, retried, random = Math.random) {
+  if (body?.error?.type !== "rate_limited") return null;
+  const header = String(retryAfter ?? "").trim() === "" ? NaN : Number(retryAfter);
+  const stated = Number.isFinite(header) && header >= 0 ? header * 1000
+    : Number.isFinite(body.error.retry_after) && body.error.retry_after >= 0 ? body.error.retry_after * 1000
+    : RATE_LIMIT_BASE_MS * 2 ** retried;
+  return stated + random() * RATE_LIMIT_BASE_MS;
+}
+
+const pause = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// `sleep` is for a test, which cannot wait out a real window; every caller here leaves it alone.
+export async function signaFetch(apiKey, base, path, { method = "GET", body = null, retries = 1, tctx = null, sleep = pause } = {}) {
   const url = `${base}${path}`;
   const endpoint = endpointOf(method, path);
   const headers = { Authorization: `Bearer ${apiKey}`, Accept: "application/json" };
@@ -126,20 +164,33 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
     note({ held: true, served: true, status: held.status });
     return { status: held.status, ok, url, body: parsed, raw: held.raw, parseError };
   }
-  let attempts = 0, resp;
+  let attempts = 0, resp, raw = null, serverRetries = 0, rateRetries = 0, slept = 0;
   try {
-    for (let i = 0; i <= retries; i++) {
-      attempts = i + 1;
+    for (;;) {
+      attempts++;
+      raw = null;
       resp = await fetch(url, init);
-      if (resp.ok || resp.status < 500 || i === retries) break;
-      await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
+      if (resp.status === 429) {
+        // The body says which of the three refusals this is, so it is read here, and kept for the
+        // caller if this is the answer that stands.
+        raw = await resp.text();
+        const wait = rateRetries < RATE_LIMIT_RETRIES ? rateLimitWaitMs(resp.headers.get("retry-after"), parseJsonBody(raw).body, rateRetries) : null;
+        if (wait === null || slept + wait > RATE_LIMIT_SLEEP_BUDGET_MS || pastSendUntil(tctx, Date.now() + wait)) break;
+        rateRetries++;
+        slept += wait;
+        await sleep(wait);
+        continue;
+      }
+      if (resp.ok || resp.status < 500 || serverRetries === retries) break;
+      serverRetries++;
+      await sleep(1500 * serverRetries);
     }
   } catch (err) {
     logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false, endpoint, credits_charged: null });
     if (mem) note({ held: Boolean(held), status: 0 });
     throw err;
   }
-  const raw = await resp.text();
+  if (raw === null) raw = await resp.text();
   // The parse failure travels on `parseError` instead of being swallowed — providers/_shared/http-body.mjs.
   const { body: parsed, parseError } = parseJsonBody(raw);
   logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false, endpoint, credits_charged: creditsCharged(resp) });

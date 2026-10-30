@@ -131,7 +131,7 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
+import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate, readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { bandShapeGoods, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
@@ -18208,21 +18208,31 @@ function resolveRun(job, opts) {
  * is the person trying to repair it.
  *
  * This is not a guess at the job. `seedRunStatus` writes these fields FROM the job the engine ran, so
- * reading them back is the engine's own record, not a reconstruction of intent. What it cannot carry is
- * scope, and it does not have to: `reconstructCtx` reads profile and framework from the run's frozen
- * sidecars with `write: false`, so the run's own configuration governs and the job supplies identity.
+ * reading them back is the engine's own record, not a reconstruction of intent. `reconstructCtx` reads
+ * profile and framework from the run's frozen sidecars with `write: false`, so the run's own configuration
+ * governs and the job supplies identity.
+ *
+ * THE ORDER'S TERRITORIES COME FROM THE RUN'S INSTRUCTED SCOPE, `scope` here. Status does not carry
+ * them, and the stage messages read them off the job: the narrowing line names "one
+ * question per market of the order's scope", and the default-territories line says whether the request
+ * named any. A job without them fell back to the account's defaults, so a stage re-run on a saved run was
+ * told markets the order never named (measured, 2026-10-29: four in place of the order's three). The run
+ * wrote `jurisdictions` and `geography` verbatim from its job at intake (`instructedScopeOf`), so copying
+ * them back gives the job its own territories, not a reading of them.
  *
  * THE CALLER MUST CHECK THE SLUG, and `resumeJobRefusal` below is that check. A rebuilt job that derives
  * the run's own slug has reproduced the run's identity — `deriveSlug` reads `ref` and `markName` and
  * nothing else — and one that derives a different slug is a job for a different matter.
  */
-export function jobFromStatus(status) {   // @internal
+export function jobFromStatus(status, scope = null) {   // @internal
   const s = status ?? {};
   if (!s.id && !s.ref && !s.markName) return null;   // not a status this can rebuild from
   return {
     id: s.id ?? null, ref: s.ref ?? null, markName: s.markName ?? null,
     classes: Array.isArray(s.classes) ? s.classes : null,
     forwarder: s.forwarder ?? null,
+    ...(Array.isArray(scope?.jurisdictions) ? { jurisdictions: scope.jurisdictions } : {}),
+    ...(scope?.geography && typeof scope.geography === "object" ? { geography: scope.geography } : {}),
   };
 }
 
@@ -19123,10 +19133,13 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     let status = null;
     try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
     catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
-    job = jobFromStatus(status);
+    const scope = readInstructedScope(found.dir);
+    job = jobFromStatus(status, scope);
     const refusal = resumeJobRefusal(job, found.slug);
     if (refusal) { console.error(`error: ${refusal}`); process.exit(2); }
-    console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`);
+    console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`
+      + (scope ? "; the order's territories from its instructed scope"
+        : "; the run holds no readable instructed scope, so its territories fall back to the account's defaults"));
   } else {
     try { job = JSON.parse(readFileSync(a.job, "utf8")); }
     catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
