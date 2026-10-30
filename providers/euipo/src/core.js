@@ -48,7 +48,7 @@ import { makeLedger } from "../../_shared/ledger.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
 import { makeEnumerate } from "../../_shared/enumerate.mjs";
 import { makeCountProbe } from "../../_shared/count.mjs";
-import { CAPABILITY_GAP_MARKER, makeExecutePlan, planPredicateParams } from "../../_shared/execute-plan.mjs";
+import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, makeExecutePlan, planPredicateParams } from "../../_shared/execute-plan.mjs";
 
 import CAPABILITIES from "./capabilities.js";
 import { ENV, getAccessToken } from "./euipo-client.js";
@@ -142,7 +142,8 @@ const MATCH_MODE_TO_PREDICATE = Object.freeze({
   ends_with: "wildcardSuffix",
 });
 
-const capabilityGap = (msg) => { throw new Error(`${CAPABILITY_GAP_MARKER} ${msg}`); };
+// Every gap is found while the query is built, so it is also a refusal before sending (execute-plan.mjs).
+const capabilityGap = (msg) => { throw new Error(`${CAPABILITY_GAP_MARKER} ${REFUSED_BEFORE_SENDING} ${msg}`); };
 
 export function resolvePredicate(params) {
   const mode = String(params?.match_mode ?? "default") || "default";

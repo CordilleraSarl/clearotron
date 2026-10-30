@@ -76,6 +76,24 @@ export function planPredicateParams(entry) {
 export const CAPABILITY_GAP_MARKER = "capability-gap:";
 export const isCapabilityGap = (reason) => String(reason ?? "").includes(CAPABILITY_GAP_MARKER);
 
+// ── A SEARCH THE CLIENT REFUSED BEFORE SENDING IS NOT A PROVIDER ERROR ────────────────────────────────
+//
+// The marker above is not proof that nothing was sent: a provider also stamps it on a query the register
+// itself refused as written, which will be refused the same way again. So a provider that refuses a
+// request before sending it says so as well, with this token after the marker, and the executor writes
+// the slice's reason as `refused before sending: capability-gap: <the client's words>`. Before, it framed
+// those words as a provider error after an in-tool retry, though no request had been sent and the retry
+// sent none either. The marker stays in the reason, so every reader that classifies a deferral reads it
+// as before, and the block keeps `error` and `deferred`.
+export const REFUSED_BEFORE_SENDING = "refused before sending:";
+/** The block reason for a refusal made before sending, or null when `text` carries no such refusal. PURE. */
+export function refusedBeforeSendingReason(text, limit = 240) {
+  const s = String(text ?? "");
+  const at = s.indexOf(REFUSED_BEFORE_SENDING);
+  if (at < 0 || !isCapabilityGap(s)) return null;
+  return `${REFUSED_BEFORE_SENDING} ${CAPABILITY_GAP_MARKER} ${clipProviderText(s.slice(at + REFUSED_BEFORE_SENDING.length).trim(), limit)}`;
+}
+
 // ── A ZERO-HIT BARE-OWNER COUNT IS UNVERIFIED, NEVER THE NUMBER ZERO ──────────────────────────────
 //
 // A `predicate:"owner"` count descriptor asks one question — how large is this owner's portfolio in
@@ -637,7 +655,8 @@ export function makeExecutePlan(deps) {
           ...(counted && typeof parsed?.total_counts === "string" ? { total_counts: parsed.total_counts } : {}),
           reason: ownerUnverified ? unresolvedOwnerCountReason(e.term ?? (e.terms ?? [])[0], coveredBy)
             : parsed ? descriptorReason
-            : `provider error on the count probe (after one in-tool retry): ${clipProviderText(r?.text ?? "", 100)}` });
+            : refusedBeforeSendingReason(r?.text)
+            ?? `provider error on the count probe (after one in-tool retry): ${clipProviderText(r?.text ?? "", 100)}` });
         stateByQid.set(e.qid, counted ? "incomplete" : "error");
         return;
       }
@@ -670,7 +689,8 @@ export function makeExecutePlan(deps) {
         blocks.push({ state: "incomplete", ...base,
           total_hits: parsed?.total_hits ?? 0, fetched: parsed?.fetched ?? 0, sample: (parsed?.sample ?? []).slice(0, 5),
           error: true, ...(gap || timedOut ? { deferred: true } : {}), ...(timedOut ? { gateway_timeout: true } : {}),
-          reason: `${stalled(parsed) ? "provider error (not asked again)" : "provider error (after one in-tool retry)"}: ${clipProviderText(detail, 240)}` });
+          reason: refusedBeforeSendingReason(detail)
+            ?? `${stalled(parsed) ? "provider error (not asked again)" : "provider error (after one in-tool retry)"}: ${clipProviderText(detail, 240)}` });
         stateByQid.set(e.qid, "error");
         return;
       }
