@@ -6394,8 +6394,8 @@
           "todos": 0
         },
         "the-audit-says-why-a-search-was-not-carried-out.test.mjs": {
-          "tests": 3,
-          "asserts": 7,
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
