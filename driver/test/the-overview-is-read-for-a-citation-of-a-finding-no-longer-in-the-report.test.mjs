@@ -18,7 +18,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { runLint, onlyYouZone, citedFindingNumbers, overviewCitationChecks, deliveryFlagLines, OVERVIEW_CITATION_ID } from "../predelivery-lint.mjs";
 import { overviewCitationFault, locateReportFaults } from "../repair-targets.mjs";
-import { emailConditionsOf } from "../publish/email-conditions.mjs";
+import { emailConditionsOf, emailConditionsOfReport } from "../publish/email-conditions.mjs";
 
 const FINDINGS = [
   { ordinal: 1, mark: "NOVAPULSE", owner: { name: "Brannick Tooling" }, disposition: "adversarial" },
@@ -51,7 +51,11 @@ ${methodology || "The register was searched in full."}
 - ord: 1
 `;
 const ids = (lint) => lint.failures.map((f) => f.id);
-const lint = (over) => runLint({ searchedNames: ["NOVAPULSE"], headerName: "NOVAPULSE", ratedNames: ["NOVAPULSE"], findings: FINDINGS, verdictDoc: { verdict: "CONDITIONAL" }, ...over });
+// The conditions the email carries are handed to the check, as the run hands them.
+const lint = (over) => {
+  const args = { searchedNames: ["NOVAPULSE"], headerName: "NOVAPULSE", ratedNames: ["NOVAPULSE"], findings: FINDINGS, verdictDoc: { verdict: "CONDITIONAL" }, ...over };
+  return runLint({ emailConditions: emailConditionsOfReport(args.reportMd, args.verdictDoc?.verdict), ...args });
+};
 
 test("the report's client list ends at the next heading of any level, so the methodology after it is not read as an action", () => {
   const md = report({ methodology: "Hartwell Instruments was consulted on the class 9 market." });
@@ -75,6 +79,8 @@ test("the email's check reads the conditions the email carries, as the email com
   assert.equal(introduced.checks.find((c) => c.id === "reference-integrity:email")?.pass, true);
   // On a clear result the email carries no conditions, so its check names nothing.
   assert.equal(lint({ reportMd: md, verdictDoc: { verdict: "CLEAR" } }).checks.find((c) => c.id === "reference-integrity:email")?.pass, true);
+  // A caller that hands no conditions is not judged on the email: the check would otherwise pass on nothing.
+  assert.ok(!runLint({ reportMd: md, searchedNames: ["NOVAPULSE"], findings: FINDINGS, verdictDoc: { verdict: "CONDITIONAL" } }).checks.some((c) => c.id === "reference-integrity:email"));
 });
 
 test("a citation is read in every written form, and a link, a colour or a decimal is not one", () => {

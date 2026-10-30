@@ -30,8 +30,7 @@ import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyF
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
-import { parseFront, parseSections } from "./publish/parse.mjs";
-import { emailConditionsOf } from "./publish/email-conditions.mjs";   // the conditions the cover email carries, as the email composes them
+import { parseFront } from "./publish/parse.mjs";
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, statedConditions, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
 import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE, ENGINE_PHRASE_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
@@ -2302,7 +2301,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
+export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2352,14 +2351,16 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
     // check keeps running over what the mail actually carries. On a REPLAY of an archived run the
     // client summary is still on disk and joins the surface exactly as before — byte-identical.
     //
-    // THE EMAIL'S ZONE IS WHAT THE EMAIL CARRIES: the conditions in its box, composed from the report's only-you items
-    // by the email's own function, beside the report's conclusion it quotes. It used to be the report's two buckets,
-    // the methodology included, and so named a party from a line the email never carried.
-    const { fm, body } = parseFront(String(reportMd));
-    const emailZone = emailConditionsOf(parseSections(body).Actions, verdictDoc?.verdict).join("\n");
-    checks.push(...referenceChecks({
-      actionsText: emailZone, fullSurface: [emailZone, fm.overall_caption, clientSummaryMd].filter(Boolean).join("\n"), searchedNames, surface: "email", extraVocab, markNames, structural: actionsExpected === true,
-    }).map((c) => ({ ...c, id: `${c.id}:email` })));
+    // THE EMAIL'S ZONE IS WHAT THE EMAIL CARRIES: the conditions in its box, beside the report's conclusion it quotes.
+    // It used to be the report's two buckets, the methodology included, and so named a party from a line the email
+    // never carried. The caller hands the conditions in, from the function the email composes its box with
+    // (publish/email-conditions.mjs); a caller that hands none is not judged on the email.
+    if (Array.isArray(emailConditions)) {
+      const emailZone = emailConditions.join("\n");
+      checks.push(...referenceChecks({
+        actionsText: emailZone, fullSurface: [emailZone, parseFront(String(reportMd)).fm.overall_caption, clientSummaryMd].filter(Boolean).join("\n"), searchedNames, surface: "email", extraVocab, markNames, structural: actionsExpected === true,
+      }).map((c) => ({ ...c, id: `${c.id}:email` })));
+    }
   }
   if (clientSummaryMd) checks.push(...registryChecks({ text: clientSummaryMd, recordsByUri, surface: "client-summary", fetchFailures }));
   // 404-card caveat (c): a record-verification CLAIM with no fetched record behind any of its citations

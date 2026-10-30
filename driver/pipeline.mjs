@@ -130,7 +130,7 @@ import { seedRunStatus, recordTransition, writeRunStatus, readRunStatus, rollupS
 import { batchMarkName } from "./mark-name.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { publishReport, composeEmailHtml, deliverySubject } from "./publish/index.mjs";
-import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
+import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs"; import { emailConditionsOfReport } from "./publish/email-conditions.mjs";   // what the cover email carries, for the delivery check
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate, readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
@@ -16600,8 +16600,9 @@ async function pipelineInner(job, opts = {}) {
           // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
           // which passes the archived summary.
           reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
-          // The overview as its writer wrote it, read for a citation of a finding the report does not carry.
-          overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(),
+          // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
+          // conditions the email carries, as the email composes them.
+          overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict),
           fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
           // WP-56 B2 — fresh v4 runs expect the standing mark-assessment (structural banner flag when
           // absent). The replay harness's runLint call never passes this, so archived runs never flip.
