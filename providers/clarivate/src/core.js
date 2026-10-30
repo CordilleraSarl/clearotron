@@ -40,7 +40,7 @@ import {
 } from "../../_shared/screen.mjs";
 import { makeEnumerate, ENUMERATE_NAMES_CHUNK_DEFAULT, parseToolText } from "../../_shared/enumerate.mjs";
 import { makeCountProbe } from "../../_shared/count.mjs";
-import { CAPABILITY_GAP_MARKER, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
+import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
 import { stripGoodsReservedWords } from "../../_shared/term-shape.mjs";   // the goods field parses these words as operators
@@ -1289,11 +1289,12 @@ async function countOnce(apiKey, base, p, tctx) {
   // never change on a retry (an office outside the 186-code vocabulary, a term carrying parentheses or
   // a 2-letter operator word this query language cannot state, a missing regions[]).
   // Marked as a capability gap so the plan executor DEFERS the slice — a disclosed coverage row the
-  // lawyer reads — instead of stamping a transient error and grinding the whole run to a fan-in
+  // lawyer reads, whose reason says it was refused before sending — instead of stamping a transient
+  // error and grinding the whole run to a fan-in
   // StageFailure over an answer that will never differ. A real HTTP failure below keeps the transient
   // reading and rides the repair ladder, exactly as before, except a query the service refused as written
   // (countFailureReason above).
-  catch (e) { return { ok: false, total: null, per_office: null, reason: `${CAPABILITY_GAP_MARKER} ${e.message}` }; }
+  catch (e) { return { ok: false, total: null, per_office: null, reason: `${CAPABILITY_GAP_MARKER} ${REFUSED_BEFORE_SENDING} ${e.message}` }; }
 
   const r = await clarivateFetch(apiKey, base, "/count", { body, tctx: { ...tctx, target: String(echoOf(p)).slice(0, 200) } });
   if (!r.ok) return { ok: false, total: null, per_office: null, reason: countFailureReason(r.status, errText(r), body) };

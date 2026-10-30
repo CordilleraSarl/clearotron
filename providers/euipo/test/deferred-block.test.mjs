@@ -93,6 +93,20 @@ test("the refusal reason carries the capability-gap marker — the token that cl
   }
 });
 
+test("the refusal reason says it was refused before sending, and never calls it a provider error", async () => {
+  // Nothing was sent, so the lawyer's coverage ledger must not print an error from a register nobody asked.
+  globalThis.fetch = NO_NETWORK;
+  const { byQid } = await runPlan([
+    { qid: "q-ph3", predicate: "phonetic", term: "ALPHA" },
+    { qid: "q-us3", predicate: "default", term: "ALPHA", regions: ["US"] },
+  ]);
+  for (const qid of ["q-ph3", "q-us3"]) {
+    assert.match(byQid[qid].reason, new RegExp(`^refused before sending: ${CAPABILITY_GAP_MARKER} `), `${qid}: ${byQid[qid].reason}`);
+    assert.doesNotMatch(byQid[qid].reason, /provider error/i, qid);
+  }
+  assert.match(byQid["q-us3"].reason, /EUIPO holds the EU register only/, "the client's own words were lost");
+});
+
 test("a slice the COMPILER stamped unsupported is deferred without being built", async () => {
   globalThis.fetch = NO_NETWORK;
   const { byQid } = await runPlan([{
