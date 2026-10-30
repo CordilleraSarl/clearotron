@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // the-audit-says-why-a-search-was-not-carried-out.test.mjs — the audit's ask ledger, under "Questions the run asked
-// itself", gives the owner's sentence for why a search was not carried out in place of the line the run recorded.
+// itself", gives the owner's sentence for why a search was not carried out in place of the line the run recorded: the
+// refused-search sentence for a search the register refused during the run, and the nine for every other kind.
 //
 // THE DEFECT. The audit is delivered with the report, and its ask ledger quoted each recorded reason as written for the
 // run's record: "capability-gap:", a provider's id, "is not in Latin script". Measured 2026-10-30 on the test install:
@@ -17,7 +18,7 @@ import assert from "node:assert/strict";
 
 import { buildAuditMd } from "../publish/audit-from-spine.mjs";
 import { unsupportedPredicateReason, uncoveredJurisdictionReason } from "../register-plan.mjs";
-import { notSearchedSentence as fromThePlan, NOT_SEARCHED_SENTENCES } from "../register-plan.mjs";
+import { notSearchedSentence as fromThePlan, NOT_SEARCHED_SENTENCES, PROVIDER_HARD_ERROR_PREFIX } from "../register-plan.mjs";
 import { notSearchedSentence } from "../not-searched-sentences.mjs";
 import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, refusedBeforeSendingReason } from "../../providers/_shared/execute-plan.mjs";
 import { nativeScriptIndexGap } from "../../providers/_shared/script-form.mjs";
@@ -55,6 +56,15 @@ test("each recorded reason a search was not carried out reads, in the audit's as
   assert.doesNotMatch(ledger, /capability-gap|register provider|Latin script|invented-register/, "the ledger still prints the engine's words");
   // The run's record, the ask itself, keeps the recorded line.
   assert.equal(asks[0].ending.reasons[0], RECORDED["kind-of-search"].slice(0, 300));
+});
+
+test("a search the register refused during the run reads as the refused sentence, its bracket from the recorded answer", () => {
+  const hard = (cause) => PROVIDER_HARD_ERROR_PREFIX + `provider error (after one in-tool retry): ${cause}`;
+  const ledger = ledgerOf([deferredAsk(0, hard("Error: register_search HTTP 429: used 1000 of 1000 daily credit cap.")),
+    deferredAsk(1, hard("HTTP 400: Bad Request"))]);
+  assert.ok(ledger.includes(" — recovery — These searches were not carried out because the register refused them during this run (its daily limit was reached); a later run can repeat them.\n"), ledger);
+  assert.ok(ledger.includes(" — recovery — These searches were not carried out because the register refused them during this run; a later run can repeat them.\n"), ledger);
+  assert.doesNotMatch(ledger, /\bslices?\b|recovery ladder/, "the ledger still prints the engine's words");
 });
 
 test("a reason of no known kind, and the run's own judgments, stand as recorded", () => {
