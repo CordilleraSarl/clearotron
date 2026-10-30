@@ -909,6 +909,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-job-rebuilt-from-its-run-keeps-the-orders-territories.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-jq-program-in-a-js-string-keeps-its-backslash.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -1649,7 +1655,7 @@
         },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
-          "asserts": 66,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -7377,6 +7383,18 @@
           "skips": 0,
           "todos": 0
         },
+        "the-scorer-withholds-the-carry-through-rows.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-scorer-withholds-the-searched-marks.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "the-screen-gate-records-what-its-drops-rest-on.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 20,
@@ -9080,6 +9098,12 @@
         "providers/signa/test/a-deterministic-mode-goes-to-the-register-as-a-text-filter.test.mjs": {
           "tests": 6,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/a-rate-limit-refusal-is-waited-out.test.mjs": {
+          "tests": 10,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
