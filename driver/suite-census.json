@@ -7294,8 +7294,8 @@
           "todos": 0
         },
         "the-review-sees-every-position-the-writer-excluded.test.mjs": {
-          "tests": 8,
-          "asserts": 46,
+          "tests": 14,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -7612,8 +7612,8 @@
           "todos": 0
         },
         "the-writer-owes-positions-not-records.test.mjs": {
-          "tests": 6,
-          "asserts": 21,
+          "tests": 7,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
