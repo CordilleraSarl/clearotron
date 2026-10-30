@@ -254,8 +254,9 @@ test("the recheck is told to read each named position's decision, beside the exc
 
 // ── WHAT AN EXCLUSION RESTS ON, AND WHAT DEPENDS ON A CHANGE (design, 2026-10-30) ───────────────────────────────────
 // The three proof cases design named: changed goods wording with the same classes and completeness reaches the review;
-// a changed shared conclusion lets the later review check a dependent exclusion under another owner; an unrelated
-// change leaves settled exclusions alone.
+// a changed shared conclusion must permit checking a dependent exclusion under another owner, and here the later
+// review can name one it was not shown again (what it is shown of the others is design's to word); an unrelated change
+// leaves settled exclusions alone.
 const bandRow = (id, mark, owner, goods) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, classes: [9], status: "Registered",
   owner_name: owner, raw: { classifications: [{ class: 9, goods_services_text: goods }] }, _qid: "primary-sweep:exact", screen: "surface:in-scope-live" });
 const BAND = [bandRow("a1", "QZORVAK", "Alpha Ltd", "Game controllers."), bandRow("c1", "QZORVAK", "Gamma SA", "Printer cartridges."),
@@ -278,7 +279,7 @@ test("changed goods wording, with the same classes, status and completeness, rea
   assert.deepEqual(relisted(P), ["/mark/eu/c1", "/mark/eu/d1", "/mark/eu/e1"], "a newly held record did not reach the exclusion that rests on it");
 });
 
-test("a changed shared conclusion lets the later review check a dependent exclusion under another owner, and name it", (t) => {
+test("after a changed shared conclusion the later review can name a dependent exclusion under another owner that it was not shown again", (t) => {
   const P = seedRun(t);
   writeBand(P, BAND);
   writerExclusionBlock(P, { review: "full" });
