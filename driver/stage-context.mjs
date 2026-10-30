@@ -283,9 +283,18 @@ const UNDECLARED = {
   // and named in the review's prompt only when it is there. Undeclared on purpose: it moves only when the record does, and
   // the narrative this stage declares moves with it, so the freshness map needs no entry for it. A sandbox without it
   // hands the review a different prompt and no evidence.
-  "narrative-refutation": (P) => [
+  "narrative-refutation": (P, { dispatchTrigger = "fresh" } = {}) => [
     { path: P.researchChecks, kind: "conditional",
       why: "named in the prompt only when the writer's record wrote it; it moves with narrative.md, so it stays outside the freshness map" },
+    // What the full review was shown, which a later review's list is compared with. Without it an arm reproducing a later
+    // review reads as a run with no full review on record and is given the whole list as decisions to check, a shape
+    // production never sends. A full-review arm writes its own over the copy.
+    { path: driverDir(P.runDir, "review-exclusions-full.json"), kind: "driver-side",
+      why: "writerExclusionBlock: a later review's list is the full review's compared with the run as it stands" },
+    // The research a later review is told the run obtained after the full review. Carried only by an arm that reproduces a
+    // later review: a full review's copy would hold answers the run got after it.
+    ...(dispatchTrigger !== "fresh" ? [{ path: driverDir(P.runDir, "research-answers.jsonl"), kind: "driver-side",
+      why: "writerExclusionBlock writes research-after-review.md from it for a later review; without it that arm is told of none" }] : []),
     // Placement's floor decisions and the writer's declinations, which the review is told when its message is built
     // (messageCtxFor): placement's are read through the same files as the set-asides the reading step and the writer are
     // told. Measured on a saved run, 2026-10-29: an arm without them was told none of placement's 33 floor decisions and

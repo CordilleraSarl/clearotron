@@ -36,7 +36,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
-import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
+import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
 import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
@@ -3684,19 +3684,30 @@ export const reviewExclusionsPaths = (P) => ({ full: driverDir(P.runDir, "review
 
 /**
  * THE LIST A REVIEW IS GIVEN, and the record of it. The full review gets every exclusion. A later review (the recheck
- * after a correction, the review after a delivery-check repair) gets the decisions it is checking: the exclusions whose
- * own sentence, placement's reason or tier, or records' evidence changed since the full review, the ones touched by a
- * finding about the same owner that changed, and the ones its own flags named (ruled 2026-10-30). Every one that covers
- * a floor rides as context, which the floor accounting reads in each review, and its presence reopens nothing: the
- * later review is told so before the standard. With no full review on record, a later review gets the whole list.
+ * after a correction, the review after a delivery-check repair) starts a fresh session, so it is given every exclusion
+ * too, each once, in two parts (ruled 2026-10-30). First the decisions it is checking: the exclusions whose own
+ * sentence, placement's reason or tier, or records' evidence changed since the full review, the ones touched by a
+ * finding about the same owner that changed, the ones its own flags named, and the ones a finding now delivers. Then,
+ * under the ruled reference sentence, the other accepted exclusions with their recorded grounds and ids, a floor's
+ * among them: it reconsiders one only where a change it identified affects its grounds. With no full review on record,
+ * or a record it cannot read, a later review gets the whole list as decisions to check.
  * An exclusion the full review read is said to be delivered only where a current finding names one of its records,
- * never because it left the list. `{state, review, lines, changedOnly}`; the review's flags are checked against
+ * never because it left the list.
+ *
+ * THE RESEARCH THE RUN OBTAINED AFTER THE FULL REVIEW rides beside them (ruled 2026-10-30): every answer the run did not
+ * hold, with that text, when the full review's list was built, written to `research-after-review.md`. No record links an
+ * answer to an exclusion, so none is joined to one here, and no exclusion is counted changed because research changed:
+ * the reviewer judges the connection from the answers and the grounds. The review's own questions are its check, not
+ * evidence the writer's grounds rest on, so they are left out.
+ *
+ * `{state, review, lines, reference, research, changedOnly}`; the review's flags are checked against
  * `review-exclusions.json`. IMPURE.
  */
 export function writerExclusionBlock(P, { review = "full", named = [] } = {}) {   // @internal
   const x = writerExclusions(P);
   const at = reviewExclusionsPaths(P);
-  let shown = x.positions, changedOnly = false, withdrawn = [];
+  const held = runResearchAnswers(P.runDir, { except: reviewSession });
+  let shown = x.positions, reference = [], changedOnly = false, withdrawn = [], research = 0;
   if (review !== "full" && x.state !== "unreadable") {
     const full = safeReadJson(at.full);
     if (Array.isArray(full?.positions)) {
@@ -3705,20 +3716,30 @@ export function writerExclusionBlock(P, { review = "full", named = [] } = {}) { 
       const touched = changedFindingOwners(full.findings, x.findings);
       const changed = (p, b) => !b || b.writerReason !== p.writerReason || b.grounds !== p.grounds || b.reason !== p.reason
         || b.tier !== p.tier || Boolean(b.borderline) !== Boolean(p.borderline) || (b.evidence ?? null) !== (p.evidence ?? null);
-      shown = x.positions.filter((p) => p.floors.length || names.has(p.uri) || changed(p, before.get(p.uri)) || touched.has(ownerKey(p.owner)));
+      const checked = (p) => names.has(p.uri) || changed(p, before.get(p.uri)) || touched.has(ownerKey(p.owner));
+      shown = x.positions.filter(checked);
+      reference = x.positions.filter((p) => !checked(p));
       const now = new Set(x.positions.map((p) => p.uri));
       withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri) && (p.members ?? [p.uri]).some((u) => x.delivered?.has(u)));
       changedOnly = true;
+      // A record from before the answers were kept is read by time: what the run obtained after it was written.
+      const had = Array.isArray(full.research) ? new Set(full.research) : null;
+      research = handResearchAfterReview(P.runDir, held.filter((a) => (had ? !had.has(researchAnswerKey(a)) : a.ts > String(full.ts ?? ""))));
     }
   }
+  if (review === "full") handResearchAfterReview(P.runDir, []);
   try {
     ensureDriverDir(P.runDir);
-    const record = JSON.stringify({ ts: new Date().toISOString(), review, state: x.state, positions: x.positions, findings: x.findings, shown: shown.map((p) => p.uri) }, null, 2) + "\n";
+    const record = JSON.stringify({ ts: new Date().toISOString(), review, state: x.state, positions: x.positions, findings: x.findings,
+      research: held.map(researchAnswerKey), shown: shown.map((p) => p.uri), reference: reference.map((p) => p.uri) }, null, 2) + "\n";
     if (review === "full") atomicWrite(at.full, record);
     atomicWrite(at.shown, record);
   } catch (e) { runLog(P.runDir, { event: "review-exclusions-write-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
-  return { state: x.state, review, lines: [...shown.map(writerExclusionLine), ...withdrawn.map(withdrawnExclusionLine)], changedOnly };
+  return { state: x.state, review, lines: [...shown.map(writerExclusionLine), ...withdrawn.map(withdrawnExclusionLine)],
+    reference: reference.map(writerExclusionLine), research, changedOnly };
 }
+/** A session of the review itself, under its stage key, a retry of it, or an experiment arm's key for it. PURE. */
+const reviewSession = (s) => /-narrative-refutation(?=$|-)/.test(String(s ?? ""));
 /** An owner's name as two records of it are compared: trimmed, spaced once, in any case. PURE. */
 const ownerKey = (o) => String(o ?? "").replace(/\s+/g, " ").trim().toLowerCase();
 /** The owners of the findings that changed between two readings, by ordinal: added, removed or rewritten. Empty where

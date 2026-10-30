@@ -16,7 +16,7 @@
 
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
-import { researchAnsweredBlock, NO_SEARCH_RESULT } from "./research-answers.mjs"; import { reviewResearchLine, RESEARCH_CHECKS_FILE } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
+import { researchAnsweredBlock, NO_SEARCH_RESULT, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs"; import { reviewResearchLine, RESEARCH_CHECKS_FILE } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
@@ -4819,21 +4819,30 @@ export const placementSetAsideBlock = (decisions) => (Array.isArray(decisions) &
 
 // THE WRITER'S EXCLUSIONS, BESIDE PLACEMENT'S FLOOR DECISIONS (ruled 2026-10-29). The driver lists every position placement
 // put forward that the writer excluded (pipeline.mjs writerExclusionBlock): the full review reads them all, and a later
-// review the ones that changed, the ones its flags named and the ones that cover a floor. The paragraph is the ruled
+// review the ones that changed and the ones its flags named, then the others for reference. The paragraph is the ruled
 // standard, word for word. An exclusion record the driver cannot read is said to be unread, never "(none)".
 export const WRITER_EXCLUSIONS_STANDARD = "The writer's exclusions of positions retained by placement are listed below with placement's reasons and the writer's grounds. Check whether each exclusion follows from the evidence under the framework, including any competing reading placement recorded. Accurate facts do not by themselves establish that the exclusion follows. A crowd count alone does not justify excluding a surviving relevant conflict. Assess a supported goods or whole-mark distinction under the existing exclusion rules. Flag a decision only when you can name contrary evidence, an error in its reasoning, or a relevant uncertainty the exclusion leaves unresolved. Name the affected position and the targeted correction. Preserve supported exclusions and unaffected work.";
 export const WRITER_EXCLUSIONS_UNREAD = "The writer's exclusions could not be read from this run's record. This is not a statement that the writer excluded nothing.";
 export const WRITER_EXCLUSIONS_UNCHANGED = "No exclusion has changed since the full review; the full review's list stands.";
 // A LATER REVIEW READS THE STANDARD WITHIN ITS SCOPE (ruled 2026-10-30): the sentence precedes the paragraph, so the
-// floor decisions its list carries as context do not reopen every settled floor.
+// accepted exclusions its list carries for reference do not reopen every settled decision.
 export const WRITER_EXCLUSIONS_LATER_SCOPE = "Apply the following standard only to the decisions this review is checking and conclusions that depend on them. Other accepted decisions stand.";
+// A LATER REVIEW STARTS FRESH, SO IT IS GIVEN THE OTHER EXCLUSIONS TOO (ruled 2026-10-30), after the decisions it is
+// checking and the research obtained after the full review, under this sentence, word for word. Being listed under it
+// is no duty to re-investigate or re-rate a position.
+export const WRITER_EXCLUSIONS_REFERENCE = "The other accepted exclusions follow for reference; reconsider one only when a change identified in this review affects its grounds, and explain that connection.";
+// The research the run obtained after the full review, as a later review is told where it is (research-answers.mjs).
+export const researchAfterReviewLine = (n) => `RESEARCH THIS RUN OBTAINED AFTER THE FULL REVIEW: ${n === 1 ? "1 question and its answer" : `${n} questions and their answers`}, in ${RESEARCH_AFTER_REVIEW_MD}, one question and its answer per line.`;
 export const writerExclusionLines = (block) => {
   if (!block || block.state === "no-positions") return [];
   const standard = block.review === "later" ? [WRITER_EXCLUSIONS_LATER_SCOPE, WRITER_EXCLUSIONS_STANDARD] : [WRITER_EXCLUSIONS_STANDARD];
   if (block.state === "unreadable") return [...standard, ...(block.lines ?? []), WRITER_EXCLUSIONS_UNREAD];
   const lines = Array.isArray(block.lines) ? block.lines : [];
-  if (lines.length) return [...standard, ...lines];
-  return [...standard, block.changedOnly && block.state === "listed" ? WRITER_EXCLUSIONS_UNCHANGED : "(none)"];
+  const reference = Array.isArray(block.reference) ? block.reference : [];
+  return [...standard,
+    ...(lines.length ? lines : [block.changedOnly && block.state === "listed" ? WRITER_EXCLUSIONS_UNCHANGED : "(none)"]),
+    ...(block.research > 0 ? [researchAfterReviewLine(block.research)] : []),
+    ...(reference.length ? [WRITER_EXCLUSIONS_REFERENCE, ...reference] : [])];
 };
 
 export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null, writerExclusions = null } = {}) => [

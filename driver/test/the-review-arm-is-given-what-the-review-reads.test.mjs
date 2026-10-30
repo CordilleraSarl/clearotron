@@ -8,7 +8,8 @@
 // the declination ledger, so on a saved run the arm was told none of placement's decisions and none of the writer's,
 // while the review it reproduced was told both (measured 2026-10-29). The sandbox now carries every file those two
 // lists read; `sandboxGaps` refuses an arm whose copy lacks one the canonical run holds. An arm reproducing the
-// corrective pass is given the state that pass starts from, which it refused for want of on the same run.
+// corrective pass is given the state that pass starts from, which it refused for want of on the same run. An arm
+// reproducing a later review is given what the full review was shown and the run's research, which its list is built from.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { paths } from "../stages.mjs";
@@ -31,4 +32,14 @@ test("a corrective arm's sandbox carries the state the corrective pass starts fr
   for (const p of state) assert.ok(corrective.has(p), `a corrective arm's sandbox does not carry ${p}`);
   const fresh = new Set(sandboxManifest("synthesis", P).map((e) => e.path));
   for (const p of state) assert.ok(!fresh.has(p), `a first pass's sandbox carries ${p}, which a first pass is never handed`);
+});
+
+test("a later review's arm carries what the full review was shown and the run's research; a full review's arm carries no research", () => {
+  const P = paths("/run");
+  const full = driverDir("/run", "review-exclusions-full.json"), research = driverDir("/run", "research-answers.jsonl");
+  const later = new Set(sandboxManifest("narrative-refutation", P, { dispatchTrigger: "verdict-recheck" }).map((e) => e.path));
+  assert.ok(later.has(full) && later.has(research), "a later review's arm would read as a run with no full review on record, or be told of no research");
+  const first = new Set(sandboxManifest("narrative-refutation", P).map((e) => e.path));
+  assert.ok(first.has(full), "a full review's arm does not carry the list it writes over");
+  assert.ok(!first.has(research), "a full review's arm carries research the run got after it");
 });

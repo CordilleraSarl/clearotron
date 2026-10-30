@@ -380,7 +380,7 @@ export const REPAIR_COMPOSERS = [
       // blocked assertions still present, and returned BLOCKING — two steps before the stage that would
       // have rebuilt them. Blocking on that staleness is unwinnable, so say plainly that it is expected.
       `Judge ONLY ${narrative} and ${findings}. The report and the client summary are GENERATED FROM the narrative by stages that run after this gate, so on disk they still carry the previous round's text — that is expected and is NOT evidence a correction failed to land. Do not read them as the deliverable and do not block on them.`,
-      // The writer's exclusions a recheck reads: the ones that changed, the ones its flags named, and the ones on a floor.
+      // The writer's exclusions a recheck reads: the ones that changed and the ones its flags named, then the others for reference.
       ...writerExclusionLines(writerExclusions),
       appliedTable,
       // — WHAT THE DRIVER PUT BACK, and why the reviewer has to be told rather than
@@ -412,6 +412,15 @@ export const REPAIR_COMPOSERS = [
         args: { narrative: "narrative.md", findings: "findings.json", seniorEyeReview: "senior-eye-review.md",
           correctionsScope: { scoped: true, named: [1], moved: [4] },
           appliedTable: "| flag | outcome |", restoredTable: "", evidenceTable: "| finding | meter | what moved |", planAuditCarry: "plan-audit carry" } },
+      // A later review is given every exclusion: the ones it checks, the research obtained after the full review, and
+      // the others for reference.
+      { name: "declared scope, a named position, and the other exclusions for reference", tail: "none",
+        args: { narrative: "narrative.md", findings: "findings.json", seniorEyeReview: "senior-eye-review.md",
+          correctionsScope: { scoped: true, named: [], positions: ["/mark/eu/d1"], moved: [] },
+          appliedTable: "", restoredTable: "", evidenceTable: "", planAuditCarry: "",
+          writerExclusions: { state: "listed", review: "later", changedOnly: true, research: 2,
+            lines: ["- QZORVEX — Delta AG (/mark/eu/d1): placement: sheet-2 — near in sound; excluded by the writer as sign: a different ending"],
+            reference: ["- ZORVA — Epsilon BV (/mark/eu/e1): placement: watchlist-annex — a shared root; excluded by the writer as unrelated-goods: logistics software"] } } },
     ],
   },
   {
@@ -468,6 +477,13 @@ export const REPAIR_COMPOSERS = [
         args: { findings: "findings.json", registerOnly: true, skepticFlags: "skeptic-flags.json", frameReopenReceipt: "frame-reopen.json",
           changes: [{ kind: "finding", change: "removed", ordinal: 3, delivered: null, before: { ordinal: 3, mark: "NOVA" } }],
           resting: [], renumbered: false, coverageChanged: false, evidence: { coverage: false, finding: true } } },
+      { name: "a changed finding, no exclusion changed, the exclusions for reference", tail: "none",
+        args: { findings: "findings.json", skepticFlags: "skeptic-flags.json", frameReopenReceipt: "frame-reopen.json",
+          changes: [{ kind: "finding", change: "changed", ordinal: 2, delivered: 2, fields: ["band"], before: { band: "Moderate" }, after: { band: "Low" },
+            records: { source_type: "register-vendor", resolved_link: "https://example.invalid/mark/2" } }],
+          resting: [], renumbered: false, coverageChanged: false, evidence: { coverage: false, finding: true }, floorDecisions: [],
+          writerExclusions: { state: "listed", review: "later", changedOnly: true, research: 0, lines: [],
+            reference: ["- ZORVA — Epsilon BV (/mark/eu/e1): placement: watchlist-annex — a shared root; excluded by the writer as unrelated-goods: logistics software"] } } },
     ],
   },
   {
