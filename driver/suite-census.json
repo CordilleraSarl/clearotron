@@ -1581,6 +1581,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refused-search-is-told-apart-from-an-unsupported-one.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refused-tool-call-is-classified-and-counted.test.mjs": {
           "tests": 6,
           "asserts": 21,
@@ -1655,7 +1661,7 @@
         },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
-          "asserts": 69,
+          "asserts": 72,
           "skips": 0,
           "todos": 0
         },
