@@ -206,7 +206,7 @@ export function findings(text, {
 
   // A SEMICOLON ENDS A CLAUSE THE READER CAN HOLD ON ITS OWN, so the limit counts each clause. A sentence
   // the owner approved word for word ran to 34 words as two clauses of 17, and the check, not the sentence,
-  // was the thing to change (owner item 988, as with item 959 before it). A COLON FOLLOWED BY A SPACE ENDS
+  // was the thing to change. A COLON FOLLOWED BY A SPACE ENDS
   // ONE TOO: the next sentence he approved word for word ran to 37 words, as 12 before its colon and 25 after
   // (2026-10-30). A colon with no space after it, as in a time or an address, ends nothing.
   for (const s of sentencesIn(prose)) {
