@@ -65,7 +65,7 @@ import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordU
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
 import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, marketStepMarkets, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { undoneSearchesNote, compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, marketStepMarkets, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
@@ -13634,9 +13634,11 @@ async function pipelineInner(job, opts = {}) {
       // A2 — held axes are DISCLOSED, never silently absent: the note is what the report's front matter
       // renders, and a gap nothing can close is precisely the gap the lawyer must be told about. It
       // rides beside any close note rather than replacing it.
+      // The account is the owner's sentences (approved 2026-10-30): the searches the register refused during the run apart
+      // from the ones it does not support, each refused one with the register's recorded answer, read from the receipt.
       const capabilityHeldAxes = heldAxes.filter((a) => !nothingToSendOnly(a));
       if (capabilityHeldAxes.length) {
-        const heldNote = `deferred coverage (${capabilityHeldAxes.join(", ")}) cannot be closed by any re-run — the active register provider cannot express those slices; the gap stays open and disclosed`;
+        const heldNote = undoneSearchesNote(ctx.registerPlan, envelopeReceipt, capabilityHeldAxes);
         ctx.envelopeNote = ctx.envelopeNote ? `${ctx.envelopeNote}; ${heldNote}` : heldNote;
       }
       refreshSupplementalExecution(ctx);   // envelope closes may have PROPOSED supplementals — account for them

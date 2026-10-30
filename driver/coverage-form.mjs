@@ -31,7 +31,7 @@
 import { REGISTER_AXES, COVERAGE_STATUSES, normalizeAxis, CROWD_RULING_TOKEN,
   CROWD_RULING_UNIT_GRAMMAR } from "./coverage-ledger.mjs";
 import { shortId } from "./connotation-search.mjs";
-import { openBlocksByAxis, crowdNarrowing, blocksByQidOf, isProviderHardErrorReason } from "./register-plan.mjs";
+import { openBlocksByAxis, crowdNarrowing, blocksByQidOf, isProviderHardErrorReason, refusedSearchSentence } from "./register-plan.mjs";
 import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
@@ -979,7 +979,8 @@ export function renderCoverageLedgerSection(rows) {
         Number.isInteger(r.total_hits) ? `${r.total_hits} hits` : "",
         r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
         r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
-        r.receipt_reason ? `receipt: ${r.receipt_reason}` : "",
+        // A search the register refused reads as the owner's sentence for it, not as its recorded line.
+        r.receipt_reason ? `receipt: ${refusedSearchSentence(r.receipt_reason) ?? r.receipt_reason}` : "",
       ].filter(Boolean).join("; ");
       const reason = [cell(r.reason), detail ? `(${cell(detail)})` : ""].filter(Boolean).join(" ");
       return `| ${cell(r.unit)} | ${cell(String(r.status).trim().toLowerCase())} | ${reason} | ${cell(r.qid ?? "—")} |`;
@@ -1075,7 +1076,7 @@ function briefRow(r) {
     Number.isInteger(r.total_hits) ? `${r.total_hits} hits` : "",
     r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
     r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
-    r.receipt_reason ? `receipt: ${String(r.receipt_reason).slice(0, 160)}` : "",
+    r.receipt_reason ? `receipt: ${refusedSearchSentence(r.receipt_reason) ?? String(r.receipt_reason).slice(0, 160)}` : "",
     // what was retrieved under the crowd (register-plan.mjs, crowdNarrowing), as data beside the counts it rests on
     r.narrowing ? `narrowing: ${r.narrowing}${r.lists?.length ? ` (${r.lists.slice(0, 6).join(", ")})` : ""}${r.not_covered?.length ? `; not covered: ${r.not_covered.slice(0, 12).join(", ")}` : ""}` : "",
   ].filter(Boolean).join("; ");
