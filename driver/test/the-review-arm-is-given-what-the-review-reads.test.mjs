@@ -39,6 +39,9 @@ test("a later review's arm carries what the full review was shown and the run's 
   const full = driverDir("/run", "review-exclusions-full.json"), research = driverDir("/run", "research-answers.jsonl");
   const later = new Set(sandboxManifest("narrative-refutation", P, { dispatchTrigger: "verdict-recheck" }).map((e) => e.path));
   assert.ok(later.has(full) && later.has(research), "a later review's arm would read as a run with no full review on record, or be told of no research");
+  // …and what each exclusion's evidence and the writer's numbering are read from, without which every exclusion reads as changed.
+  for (const f of ["declination-spec.json", "fold.json", "findings-unfolded.json"])
+    assert.ok(later.has(driverDir("/run", f)), `a later review's arm does not carry _driver/${f}`);
   const first = new Set(sandboxManifest("narrative-refutation", P).map((e) => e.path));
   assert.ok(first.has(full), "a full review's arm does not carry the list it writes over");
   assert.ok(!first.has(research), "a full review's arm carries research the run got after it");
