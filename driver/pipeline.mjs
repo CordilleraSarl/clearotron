@@ -109,7 +109,7 @@ export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsid
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
-import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
+import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
 // THE OFFERING'S own sentence about where the native-language investigation can be bought. It reaches a
@@ -18138,19 +18138,45 @@ function resolveRun(job, opts) {
  * wrote `jurisdictions` and `geography` verbatim from its job at intake (`instructedScopeOf`), so copying
  * them back gives the job its own territories, not a reading of them.
  *
+ * THE ORDER'S MARKS, GOODS AND APPLICANT COME FROM THE SAME SCOPE, for the same reason. The review's
+ * plain-words block reads the marks list, the frame messages print the goods only when the job carries
+ * them, and the self-exclusion seed reads the applicant. The scope keeps each mark's name and nothing
+ * else of its entry, so the marks come back as `{ name }`. An entry's own reference and classes are not
+ * read back; the job's are, from status.
+ *
+ * THE ACCOUNT COMES FROM THE FROZEN PROFILE, `profile` here, and only where this install's roster holds
+ * it. `buildRunContext` resolves the account through `selectCustomer`, which refuses a key the roster
+ * lacks rather than fall back to `generic`. On the install that ran the run the roster holds it. A copy of
+ * the run read where it does not, such as a sandbox on the bundled roster, would be refused for a job
+ * field the resume does not need: the frozen profile governs either way. So the key is left off there,
+ * as it was before it was restored, and the caller says so. `roster` null means not checked.
+ *
+ * THE PRODUCT COMES FROM THE FROZEN SEARCH POLICY, `searchPolicy` here, only when the order named it
+ * (`origins.level` is `job.product`). A product resolved from a saved search, the account's default or
+ * the scope was never on the order, so a job carrying it would be a different order.
+ *
  * THE CALLER MUST CHECK THE SLUG, and `resumeJobRefusal` below is that check. A rebuilt job that derives
  * the run's own slug has reproduced the run's identity — `deriveSlug` reads `ref` and `markName` and
  * nothing else — and one that derives a different slug is a job for a different matter.
  */
-export function jobFromStatus(status, scope = null) {   // @internal
+export function jobFromStatus(status, scope = null, { profile = null, searchPolicy = null, roster = null } = {}) {   // @internal
   const s = status ?? {};
   if (!s.id && !s.ref && !s.markName) return null;   // not a status this can rebuild from
+  const named = Array.isArray(scope?.marks) ? scope.marks.filter((m) => typeof m === "string" && m.trim()) : [];
+  const said = (v) => v != null && String(v).trim() !== "";
+  const account = typeof profile?.profileKey === "string" && profile.profileKey.trim() ? profile.profileKey : null;
+  const product = searchPolicy?.origins?.level === "job.product" && said(searchPolicy?.level) ? searchPolicy.level : null;
   return {
     id: s.id ?? null, ref: s.ref ?? null, markName: s.markName ?? null,
     classes: Array.isArray(s.classes) ? s.classes : null,
     forwarder: s.forwarder ?? null,
+    ...(named.length ? { marks: named.map((name) => ({ name })) } : {}),
+    ...(said(scope?.goods) ? { goods: scope.goods } : {}),
+    ...(said(scope?.customer) ? { customer: scope.customer } : {}),
     ...(Array.isArray(scope?.jurisdictions) ? { jurisdictions: scope.jurisdictions } : {}),
     ...(scope?.geography && typeof scope.geography === "object" ? { geography: scope.geography } : {}),
+    ...(account && (!roster || roster.has(account)) ? { profileKey: account } : {}),
+    ...(product ? { product } : {}),
   };
 }
 
@@ -19042,12 +19068,21 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
     catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
     const scope = readInstructedScope(found.dir);
-    job = jobFromStatus(status, scope);
+    // The account and the product from the run's frozen files, and the roster that says whether the account
+    // can ride on this install (jobFromStatus says why it may not).
+    let roster = null;
+    try { roster = loadProfiles(); } catch { /* the run context reads the roster again, and refuses with its reason */ }
+    const frozen = { profile: safeReadJson(driverDir(found.dir, "profile.json")), searchPolicy: safeReadJson(driverDir(found.dir, "search-policy.json")), roster };
+    job = jobFromStatus(status, scope, frozen);
     const refusal = resumeJobRefusal(job, found.slug);
     if (refusal) { console.error(`error: ${refusal}`); process.exit(2); }
+    const fromScope = [job.marks && "marks", job.goods && "goods", job.customer && "applicant", job.jurisdictions && "territories"].filter(Boolean);
     console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`
-      + (scope ? "; the order's territories from its instructed scope"
-        : "; the run holds no readable instructed scope, so its territories fall back to the account's defaults"));
+      + (!scope ? "; the run holds no readable instructed scope, so its territories fall back to the account's defaults"
+        : fromScope.length ? `; the order's ${fromScope.join(", ")} from its instructed scope` : "")
+      + (job.profileKey ? "; its account from the frozen profile"
+        : frozen.profile?.profileKey ? "; its account is not on this install's roster, so the job names none and the frozen profile governs" : "")
+      + (job.product ? "; its product from the frozen search policy" : ""));
   } else {
     try { job = JSON.parse(readFileSync(a.job, "utf8")); }
     catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
@@ -19316,10 +19351,11 @@ function orphanAreaLabel(qid, axis, plan) {
 
 /**
  * The instructed scope this run writes, or null to keep the one already on disk. A resume that rebuilt its
- * job from status.json holds only the job's identity (id, reference, mark, classes, forwarder), so writing
- * the scope from it would replace the order's goods, customer and territories with nothing, and every
- * later reader of the scope would see a narrower matter than was ordered. Such a resume keeps the scope the
- * run started with. A job read from a file, or a run with no scope yet, writes as before. PURE.
+ * job from status.json holds what the run kept of the order, not the order: its identity, and what
+ * `jobFromStatus` reads back from this same scope and the frozen files. Written from it, the scope could
+ * only lose what that reading leaves out, and every later reader of the scope would see a narrower matter
+ * than was ordered. Such a resume keeps the scope the run started with. A job read from a file, or a run
+ * with no scope yet, writes as before. PURE.
  */
 export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
   return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);
