@@ -85,8 +85,8 @@ test("a resume rebuilt from status.json keeps the run's instructed scope; a job 
   const fromFile = { ...rebuilt, goods: "invented goods", customer: "Invented Holdings" };
   assert.equal(instructedScopeToWrite(fromFile, { jobRebuiltFromStatus: false, scopeOnDisk: true })?.goods, "invented goods",
     "a job read from a file no longer writes its scope");
-  // And the command line marks the rebuild exactly when no --job was given.
+  // And the command line marks the rebuild exactly when no --job was given, and a job file as given explicitly.
   const src = (await import("node:fs")).readFileSync(PIPELINE, "utf8");
-  assert.match(src, /fromStage: a\.fromStage, \.\.\.\(a\.job \? \{\} : \{ jobRebuiltFromStatus: true \}\)/);
+  assert.match(src, /fromStage: a\.fromStage, \.\.\.\(a\.job \? \{ explicitJob: true \} : \{ jobRebuiltFromStatus: true \}\)/);
   assert.match(src, /instructedScopeToWrite\(job, \{ jobRebuiltFromStatus: opts\.jobRebuiltFromStatus, scopeOnDisk: existsSync\(P\.instructedScope\) \}\)/);
 });
