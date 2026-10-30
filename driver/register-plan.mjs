@@ -2814,14 +2814,16 @@ export const refusedSearchesSentence = (cause = null) =>
   `These searches were not carried out because the register refused them during this run${REFUSAL_BRACKETS[cause] ? ` (${REFUSAL_BRACKETS[cause]})` : ""}; a later run can repeat them.`;
 export const UNSUPPORTED_SEARCHES_SENTENCE = "These searches cannot be carried out because the register does not support this kind of search; no run can close this gap.";
 
-/** The register's recorded answer to a search it refused, as a bracket: a 429 or rate limit that names a daily limit or
- *  the account's credits (Signa's `daily_credit_cap_exceeded` and `insufficient_credits`, the daily credit cap in plain
- *  words, ruled 2026-10-30), any other 429 or rate limit, and a 5xx or no answer at all. null for anything else. PURE. */
+/** The register's recorded answer to a search it refused, as a bracket: a 429 or rate limit that names a daily limit
+ *  (Signa's `daily_credit_cap_exceeded`, which clears at UTC midnight), any other 429 or rate limit, and a 5xx or no
+ *  answer at all. Signa's `insufficient_credits` is a used-up credit balance, which retrying cannot clear until the
+ *  balance changes: none of the three, so like anything else it is null. PURE. */
 export function refusalCause(reason) {
   const s = String(reason ?? "");
   const status = Number((s.match(/\bHTTP (\d{3})\b/i) ?? [])[1] ?? NaN);
   if (status === 429 || /(?:^|[^a-z])rate[_ -]?limit/i.test(s)) {
-    return /daily|insufficient[_ ]credits?/i.test(s) ? "daily-limit" : "rate-limited";
+    if (/daily/i.test(s)) return "daily-limit";
+    return /insufficient[_ ]credits?/i.test(s) ? null : "rate-limited";
   }
   if (status >= 500 && status <= 599) return "not-responding";
   if (!(status >= 400 && status <= 499) && /\btimed out\b|\btimeout\b|ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|socket hang up|fetch failed/i.test(s))
