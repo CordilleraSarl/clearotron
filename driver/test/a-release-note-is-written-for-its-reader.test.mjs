@@ -148,6 +148,12 @@ test("tracker 97 a sentence a reader cannot hold in their head is refused, and t
   assert.deepEqual(offences(`Fixed: ${words(17)}; ${words(17)}.`), []);
   assert.ok(findings(note(`Fixed: ${words(17)}; ${words(MAX_WORDS + 1)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
     "a long clause after the semicolon is still refused");
+  // A colon followed by a space ends one too: the owner's next sentence ran to 37 words, 12 before its colon and 25 after.
+  assert.deepEqual(offences(`Fixed: ${words(12)}: ${words(MAX_WORDS - 1)}.`), [], "a clause after a colon was counted with the one before it");
+  assert.ok(findings(note(`Fixed: ${words(12)}: ${words(MAX_WORDS + 1)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
+    "a long clause after the colon is still refused");
+  assert.ok(findings(note(`Fixed: ${words(17)} at 10:30 ${words(17)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
+    "CONTROL: a colon with no space after it, as in a time, ends no clause");
   assert.ok(findings(note(`Fixed: ${words(17)}, ${words(17)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
     "CONTROL: a comma joins one clause, and 34 words of it are refused");
 });

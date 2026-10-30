@@ -174,11 +174,11 @@ export { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid };
 // that is the point.
 export const unsupportedPredicateReason = (predicate, providerId) =>
   `predicate "${predicate}" is not supported by the active register provider (${providerId}) — that capability is absent, `
-  + `so this slice was never searched. It is a deferred gap for judgment, never a clean negative.`;
+  + `so this search was never carried out. It is a deferred gap for judgment, never a clean negative.`;
 
 export const uncoveredJurisdictionReason = (jurisdictions, providerId) =>
   `jurisdiction ${[...jurisdictions].join(", ")} is not covered by the active register provider (${providerId}) — `
-  + `the office is outside the provider's coverage, so this slice was never searched. It is a deferred gap for `
+  + `the office is outside the provider's coverage, so this search was never carried out. It is a deferred gap for `
   + `judgment, never a clean negative.`;
 
 // ──: an office the provider COVERS but this deployment cannot reach ─────────────────────────────
@@ -204,7 +204,7 @@ export const uncoveredJurisdictionReason = (jurisdictions, providerId) =>
 export const officeUnavailableReason = (jurisdictions, providerId, { memberId, missing = [] } = {}) =>
   `jurisdiction ${[...jurisdictions].join(", ")} is not covered by the active register provider (${providerId}) `
   + `AS THIS DEPLOYMENT IS CONFIGURED — the source that serves it (${memberId ?? "unknown"}) is not wired up here`
-  + `${missing.length ? ` (${missing.join(" + ")} unset)` : ""}, so this slice was never searched. The provider `
+  + `${missing.length ? ` (${missing.join(" + ")} unset)` : ""}, so this search was never carried out. The provider `
   + `does cover this office: set the variable and re-run to close it. It is a deferred gap for judgment, `
   + `never a clean negative.`;
 
@@ -217,7 +217,7 @@ export const officeUnavailableReason = (jurisdictions, providerId, { memberId, m
 // what a new one lands in, and the reason below is the sentence it lands with.
 export const ownerIntersectionUnsupportedReason = (providerId) =>
   `owner×term intersection is not supported by the active register provider (${providerId}) — the owner scope `
-  + `field cannot be combined with mark text there, so this slice was never searched. It is a deferred gap for `
+  + `field cannot be combined with mark text there, so this search was never carried out. It is a deferred gap for `
   + `judgment, never a clean negative.`;
 
 /** Is an owner×term entry executable on the provider? null when it is (or when no contract/owner). */
@@ -248,7 +248,7 @@ export function ownerIntersectionGap(entry, capabilities) {
 export const goodsTextUnsupportedReason = (providerId) =>
   `goods-and-services text narrowing is not supported by the active register provider (${providerId}) — the `
   + `goods description cannot be searched there, so the narrowed sweep this entry asks for was never run. `
-  + `Running it on the class alone would have returned the crowd the narrowing exists to cut, so the slice `
+  + `Running it on the class alone would have returned the crowd the narrowing exists to cut, so the search `
   + `is deferred. It is a gap for judgment, never a clean negative.`;
 
 /** Is a goods-narrowed entry executable on the provider? null when it is (or when it asks for no goods text). */
@@ -2795,6 +2795,60 @@ export const isProviderHardErrorReason = (reason) => {
   const s = String(reason ?? "");
   return s.startsWith(PROVIDER_HARD_ERROR_PREFIX) || s.startsWith(PROVIDER_PERMANENT_ERROR_PREFIX);
 };
+
+// ── WHY A SEARCH WAS NOT CARRIED OUT, IN THE LAWYER'S WORDS (the owner's sentences, approved 2026-10-30) ──────────────
+//
+// The front matter gave every search the register left undone one account: the provider cannot express it. That is
+// true of a search the register does not support, and false of one it refused during the run, such as on a spent daily
+// limit, which a later run can repeat. Each kind now has its own sentence. The refused one also stands beside each
+// refused search in the coverage ledger, in place of its recorded line, which is written for the run's record and not
+// for a reader; an unsupported search keeps its own line there, which names what the register lacks. The refused sentence
+// names the register's recorded answer in its bracket: a daily limit, a rate limit, or no answer. Any other answer gets
+// no bracket. The run's record keeps the recorded line.
+export const REFUSAL_BRACKETS = Object.freeze({
+  "daily-limit": "its daily limit was reached",
+  "rate-limited": "it was rate-limited",
+  "not-responding": "it was not responding",
+});
+export const refusedSearchesSentence = (cause = null) =>
+  `These searches were not carried out because the register refused them during this run${REFUSAL_BRACKETS[cause] ? ` (${REFUSAL_BRACKETS[cause]})` : ""}; a later run can repeat them.`;
+export const UNSUPPORTED_SEARCHES_SENTENCE = "These searches cannot be carried out because the register does not support this kind of search; no run can close this gap.";
+
+/** The register's recorded answer to a search it refused, as a bracket: a 429 or rate limit that names a daily limit
+ *  (Signa's `daily_credit_cap_exceeded`, which clears at UTC midnight), any other 429 or rate limit, and a 5xx or no
+ *  answer at all. Signa's `insufficient_credits` is a used-up credit balance, which retrying cannot clear until the
+ *  balance changes: none of the three, so like anything else it is null. PURE. */
+export function refusalCause(reason) {
+  const s = String(reason ?? "");
+  const status = Number((s.match(/\bHTTP (\d{3})\b/i) ?? [])[1] ?? NaN);
+  if (status === 429 || /(?:^|[^a-z])rate[_ -]?limit/i.test(s)) {
+    if (/daily/i.test(s)) return "daily-limit";
+    return /insufficient[_ ]credits?/i.test(s) ? null : "rate-limited";
+  }
+  if (status >= 500 && status <= 599) return "not-responding";
+  if (!(status >= 400 && status <= 499) && /\btimed out\b|\btimeout\b|ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|socket hang up|fetch failed/i.test(s))
+    return "not-responding";
+  return null;
+}
+
+/** The sentence that stands beside one search the register refused, by its recorded line; null for any other line,
+ *  which stands as recorded. PURE. */
+export const refusedSearchSentence = (reason) => (isProviderHardErrorReason(reason) ? refusedSearchesSentence(refusalCause(reason)) : null);
+
+/**
+ * The front matter's account of the searches left undone on the axes no re-run can close: the refused ones first, one
+ * sentence per recorded answer in the brackets' order, then the unsupported ones. `axes` are those axes; the receipt's
+ * deferred rows on them are the searches. Each such axis holds at least one search the register does not support, which
+ * is what holds it, so the unsupported sentence always closes the note. A refused search on the same axis keeps its own
+ * sentence rather than taking the axis's (ruled 2026-10-30). PURE.
+ */
+export function undoneSearchesNote(plan, receipt, axes) {
+  const axisOf = new Map((plan?.entries ?? []).map((e) => [String(e?.qid ?? ""), String(e?.axis ?? "").toLowerCase()]));
+  const on = new Set([...(axes ?? [])].map((a) => String(a).toLowerCase()));
+  const refused = (receipt?.deferred ?? []).filter((d) => on.has(axisOf.get(String(d?.qid ?? ""))) && isProviderHardErrorReason(d?.reason));
+  const causes = new Set(refused.map((d) => refusalCause(d.reason)));
+  return [...[...Object.keys(REFUSAL_BRACKETS), null].filter((c) => causes.has(c)).map((c) => refusedSearchesSentence(c)), UNSUPPORTED_SEARCHES_SENTENCE].join(" ");
+}
 
 /** Every qid this run has already taken through the fan-in ladder, per its own last receipt. PURE. */
 export function ladderExhaustedQids(receipt) {

@@ -528,7 +528,7 @@ export function makeExecutePlan(deps) {
       if (capabilities && capabilities.ownerTermIntersection !== true
           && typeof e?.owner === "string" && e.owner.trim() && String(e?.predicate ?? "default") !== "owner") {
         blocks.push({ state: "incomplete", ...base, total_hits: 0, fetched: 0, sample: [], error: true, deferred: true,
-          reason: `owner×term intersection is not supported by the active register provider (${capabilities.id ?? "unknown"}) — the owner scope field cannot be combined with mark text there, so this slice was never searched. It is a deferred gap for judgment, never a clean negative.` });
+          reason: `owner×term intersection is not supported by the active register provider (${capabilities.id ?? "unknown"}) — the owner scope field cannot be combined with mark text there, so this search was never carried out. It is a deferred gap for judgment, never a clean negative.` });
         stateByQid.set(e.qid, "error");
         return;
       }

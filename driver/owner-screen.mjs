@@ -146,7 +146,7 @@ function sliceState(entry, block) {
 /** Plain-English reason a slice is not an enumerated answer (null when it is). PURE. */
 function sliceReason(entry, block, deferredReason, capabilities) {
   if (entry?.unsupported === true)
-    return str(entry.unsupported_reason) || `the active register provider (${str(capabilities?.id) || "unknown"}) has no owner surface — this slice was never searched`;
+    return str(entry.unsupported_reason) || `the active register provider (${str(capabilities?.id) || "unknown"}) has no owner surface — this search was never carried out`;
   if (!block) return "no band block carries this qid — the slice is unaccounted for, never a clean";
   if (block.deferred === true) return str(deferredReason) || str(block.reason).slice(0, 300);
   if (block.error === true) return `provider error — the slice never really ran: ${str(block.reason).slice(0, 200)}`;
