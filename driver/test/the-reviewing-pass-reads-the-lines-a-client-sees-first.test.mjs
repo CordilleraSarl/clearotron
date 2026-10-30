@@ -193,3 +193,21 @@ test("the block claims an exclusion only when it made one, and says so plainly w
       "the absolute claim survived into the state where it is false");
   }
 });
+
+// ── ONE MARK IS COUNTED ONCE ─────────────────────────────────────────────────────────────────────────
+//
+// An order names its mark in `marks` and again in `markName`, and the block counted both, so a run about one
+// mark told the seat 2 were removed before reading. Each arm checks the block was built before it reads the
+// count, and two different marks are driven too, so a count pinned at 1 cannot pass.
+test("a mark the order names twice is counted once, and two different marks are still two", () => {
+  const findings = plant("The proprietor holds a subsisting right.");
+  const told = (job) => {
+    const out = compose(findings, job);
+    assert.ok(out.ids.some((x) => x.id === "refute-plain-register"), `the block was not built for ${JSON.stringify(job)}`);
+    return out.text.match(/The (\d+) mark\(s\) this run is about were removed before reading/)?.[1] ?? null;
+  };
+  assert.equal(told({ marks: [{ name: "NORTHWIND" }], markName: "NORTHWIND" }), "1", "a mark named in both marks and markName was counted twice");
+  assert.equal(told({ marks: [{ name: "Northwind" }], markName: "NORTHWIND ", name: "northwind" }), "1",
+    "the same mark in another case, or with a trailing space, was counted again");
+  assert.equal(told({ marks: [{ name: "NORTHWIND" }, { name: "QUILLMERE" }], markName: "NORTHWIND" }), "2", "two different marks are no longer two");
+});
