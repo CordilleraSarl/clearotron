@@ -446,7 +446,33 @@ export const COMMON_LAW_SEAT_TIER = {
   [MEANING_SEAT]: { model: process.env.CLEAROTRON_MEANING_SEAT_MODEL || "haiku", thinking: "low" },
 };
 
-// per-axis tier: saturation-probe is the only haiku register unit; the sweeps run sonnet (the authorized fix).
+// ── THE PRIMARY SWEEP'S READING DECISION RUNS ON THE JUDGMENT TIER (2026-10-30) ─────────────────────
+//
+// The plan parks every widening on the unit that owns it until that unit has read the identical mark's
+// list, and the unit then releases or withholds each waiting family with its reason (register-plan.mjs,
+// decision 10; DECIDE_WAITING_FAMILIES). Whether an unasked family matters is a judgment about the matter.
+//
+// MEASURED IN TESTING, 2026-10-30, on the primary-sweep unit, on saved register answers with the same
+// inputs and wording and the model the only change. On an ordinary matter, in the five draws the rig
+// accepted, the record of a missed reference entry reached the unit's band in all five, and the family that
+// usually finds it was released in four; the sweep tier released that family in 1 of 5. The judgment tier did
+// not open everything: 7 to 12 of 30 waiting families there, and 7 to 25 of 147 on a crowded matter. It costs
+// about three times the minutes and tokens of the unit's turn, and it proposes more searches of its own.
+//
+// ONLY THE PRIMARY SWEEP MOVES, because the measurement and the accepted cost are that unit's. The
+// transliteration unit also decides waiting families and keeps the sweep tier, unmeasured; the incumbent
+// unit and the saturation probe keep theirs, and axisTier's default below is unchanged.
+//
+// THE ENGINES MOVE TOGETHER. `opus` is the engine-independent judgment tier: the Claude engine sends it as
+// the vendor's alias and the codex engine resolves it to its configured judgment model (openaiModel), and
+// each dispatch row records the model the engine reports serving. `thinking` stays `adaptive`, the unit's
+// own: the measurement moved the model and nothing else. A fresh dispatch, its retries, a follow-up to its
+// session, a resumed run and `--experiment` all resolve this unit through axisTier, so none of them runs the
+// decision on another model.
+export const PRIMARY_SWEEP_TIER = { model: "opus", thinking: "adaptive" };
+
+// per-axis tier: saturation-probe is the only haiku register unit; the primary sweep runs opus (above); the
+// other sweeps run sonnet (the authorized fix).
 //
 // — the grid seats resolve here too, and that is a MOVE rather than an addition: `common-law-half`
 // no longer carries a static `model`/`thinking`, because a static one wins over this function and would
@@ -455,6 +481,7 @@ export const COMMON_LAW_SEAT_TIER = {
 // for a half id, and naming the seats here removes it by construction instead of by avoidance.
 export function axisTier(axis) {
   if (Object.hasOwn(COMMON_LAW_SEAT_TIER, axis)) return COMMON_LAW_SEAT_TIER[axis];
+  if (axis === "primary-sweep") return PRIMARY_SWEEP_TIER;
   return axis === "saturation-probe" ? { model: "haiku", thinking: "off" } : { model: "sonnet", thinking: "adaptive" };
 }
 

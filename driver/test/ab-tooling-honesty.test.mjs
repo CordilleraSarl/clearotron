@@ -411,14 +411,15 @@ test("corruption 4b: the guard also fires at DISPATCH, where a --model override 
   // The second way in, which no start-of-run scan can see: the operator supplies the model and the
   // thinking tier still comes from the axis. `--experiment register-unit --axis primary-sweep --model
   // haiku` is haiku + adaptive, assembled at the dispatch site out of two sources that are each fine.
-  assert.deepEqual(ST.axisTier("primary-sweep"), { model: "sonnet", thinking: "adaptive" });
+  assert.deepEqual(ST.axisTier("primary-sweep"), { model: "opus", thinking: "adaptive" });
   assert.throws(() => ST.assertEffectiveTier("register-unit:primary-sweep", { model: "haiku", thinking: "adaptive" }),
     /haiku\+adaptive forbidden/, "the effective pair this dispatch is about to send must be refused");
   assert.match(
     (() => { try { ST.assertEffectiveTier("register-unit:primary-sweep", { model: "haiku", thinking: "adaptive" }); } catch (e) { return e.message; } })(),
     /BOUNCES TO SONNET/, "the refusal says WHY, so the operator does not have to find out by reading a manifest that lies");
   // Everything else still dispatches.
-  assert.equal(ST.assertEffectiveTier("register-unit:primary-sweep", { model: "sonnet", thinking: "adaptive" }), true);
+  assert.equal(ST.assertEffectiveTier("register-unit:primary-sweep", { model: "opus", thinking: "adaptive" }), true);
+  assert.equal(ST.assertEffectiveTier("register-unit:incumbent-class", { model: "sonnet", thinking: "adaptive" }), true);
   assert.equal(ST.assertEffectiveTier("register-unit:saturation-probe", { model: "haiku", thinking: "off" }), true);
   assert.equal(ST.assertEffectiveTier("synthesis", { model: "opus", thinking: "high" }), true);
 });

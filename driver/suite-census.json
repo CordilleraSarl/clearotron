@@ -2399,7 +2399,7 @@
         },
         "ab-tooling-honesty.test.mjs": {
           "tests": 16,
-          "asserts": 78,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
@@ -3035,7 +3035,7 @@
         },
         "common-law-seat-tier.test.mjs": {
           "tests": 10,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -7059,6 +7059,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-primary-sweep-decides-waiting-families-on-the-judgment-tier.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "the-probe-spawns-the-environment-it-validated.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -7121,7 +7127,7 @@
         },
         "the-reading-step-decides-on-a-crowd.test.mjs": {
           "tests": 3,
-          "asserts": 6,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
