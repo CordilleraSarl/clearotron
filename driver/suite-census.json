@@ -7276,8 +7276,8 @@
           "todos": 0
         },
         "the-review-arm-is-given-what-the-review-reads.test.mjs": {
-          "tests": 2,
-          "asserts": 4,
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -7294,8 +7294,8 @@
           "todos": 0
         },
         "the-review-sees-every-position-the-writer-excluded.test.mjs": {
-          "tests": 17,
-          "asserts": 79,
+          "tests": 20,
+          "asserts": 105,
           "skips": 0,
           "todos": 0
         },
