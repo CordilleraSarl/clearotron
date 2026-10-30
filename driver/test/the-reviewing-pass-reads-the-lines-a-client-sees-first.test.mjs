@@ -173,23 +173,26 @@ test("the block claims an exclusion only when it made one, and says so plainly w
 
   // THE EMPTY STATE NEEDS BOTH HALVES, which the first version of this arm missed: `about.owners` is
   // built from the RECORD, so a job naming no marks still excludes every owner the findings carry —
-  // thirteen of them on this one — and the claim was true. The arm passed for the wrong reason until
-  // the owners were stripped too. An empty exclusion means the job named nothing AND the record
-  // carries no owner.
+  // thirteen of them on this one — and the claim was true. An empty exclusion means the job named
+  // nothing AND the record carries no owner. The record must still parse: one whose findings were
+  // stripped of their owners does not, so the block was never built and the arm checked nothing. So the
+  // record here has no finding, and no action naming one, and the flagged line is on another surface the
+  // reader sees.
   const noNames = withRecord((doc) => {
-    doc.findings = doc.findings.map((f, i) => ({
-      ...f,
-      owner: undefined, owner_name: undefined,
-      net: i === 0 ? "PREVAIL has a strong reputation in class 9." : "A short clean line.",
-    }));
+    doc.findings = [];
+    doc.actions = [];
+    doc.coverage = (doc.coverage ?? []).map((c, i) => ({ ...c, note: i === 0 ? "The proprietor holds a subsisting right." : "We searched this and found nothing live." }));
   });
 
   for (const job of [{ marks: [] }, {}, undefined]) {
     const out = compose(noNames, job);
-    if (!out.ids.some((x) => x.id === "refute-plain-register")) continue;   // nothing flagged, nothing to claim
-    assert.match(out.text, /NAMED NO MARK OR OWNER TO EXCLUDE/,
+    assert.deepEqual(out.failed, [], `the record must parse (job ${JSON.stringify(job)})`);
+    assert.ok(out.ids.some((x) => x.id === "refute-plain-register"), `the block was not built (job ${JSON.stringify(job)})`);
+    assert.match(out.text, /THIS RUN NAMED NO MARK TO EXCLUDE, so the mark under clearance was NOT removed before reading/,
       `a run with no mark to exclude claimed an exclusion it did not make (job ${JSON.stringify(job)})`);
-    assert.doesNotMatch(out.text, /none of these is a hit inside a name being cleared/,
+    assert.doesNotMatch(out.text, /owner name\(s\) from the record were also removed/,
+      "a record with no owner was said to have had its owners removed");
+    assert.doesNotMatch(out.text, /none of these is a hit inside the name being cleared/,
       "the absolute claim survived into the state where it is false");
   }
 });
