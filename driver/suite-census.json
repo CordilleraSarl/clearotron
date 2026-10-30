@@ -6981,6 +6981,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-overview-is-read-for-a-citation-of-a-finding-no-longer-in-the-report.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "the-owner-of-a-promoted-filing-is-searched.test.mjs": {
           "tests": 16,
           "asserts": 49,
