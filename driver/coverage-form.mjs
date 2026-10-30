@@ -31,7 +31,7 @@
 import { REGISTER_AXES, COVERAGE_STATUSES, normalizeAxis, CROWD_RULING_TOKEN,
   CROWD_RULING_UNIT_GRAMMAR } from "./coverage-ledger.mjs";
 import { shortId } from "./connotation-search.mjs";
-import { openBlocksByAxis, crowdNarrowing, blocksByQidOf, isProviderHardErrorReason, refusedSearchSentence } from "./register-plan.mjs";
+import { openBlocksByAxis, crowdNarrowing, blocksByQidOf, isProviderHardErrorReason, refusedSearchSentence, notSearchedSentence } from "./register-plan.mjs";
 import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
@@ -979,8 +979,9 @@ export function renderCoverageLedgerSection(rows) {
         Number.isInteger(r.total_hits) ? `${r.total_hits} hits` : "",
         r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
         r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
-        // A search the register refused reads as the owner's sentence for it, not as its recorded line.
-        r.receipt_reason ? `receipt: ${refusedSearchSentence(r.receipt_reason) ?? r.receipt_reason}` : "",
+        // A search left undone reads as the owner's sentence for its kind, not as its recorded line; a line of no known
+        // kind stands as recorded.
+        r.receipt_reason ? `receipt: ${refusedSearchSentence(r.receipt_reason) ?? notSearchedSentence(r.receipt_reason) ?? r.receipt_reason}` : "",
       ].filter(Boolean).join("; ");
       const reason = [cell(r.reason), detail ? `(${cell(detail)})` : ""].filter(Boolean).join(" ");
       return `| ${cell(r.unit)} | ${cell(String(r.status).trim().toLowerCase())} | ${reason} | ${cell(r.qid ?? "—")} |`;

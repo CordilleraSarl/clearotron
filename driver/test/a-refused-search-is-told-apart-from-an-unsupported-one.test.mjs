@@ -88,8 +88,10 @@ test("beside each refused search the coverage ledger, and the write-up's list it
     const at = (i) => lines.find((l) => l.includes(`unit ${i}`)) ?? "";
     assert.ok(at(0).includes(`receipt: ${REFUSED_DAILY}`), `the refused search reads as recorded: ${at(0)}`);
     assert.doesNotMatch(at(0), /\bslices?\b|recovery ladder/i);
-    // An unsupported search keeps its own line, which names what the register lacks; so does any other line.
-    assert.ok(at(1).includes("is not supported by the active register provider (invented-register)"), `the unsupported search lost its line: ${at(1)}`);
+    // An unsupported search reads as the owner's sentence for its kind in the ledger
+    // (a-search-not-carried-out-says-why-in-plain-words.test.mjs), and keeps its own line in the writer's list.
+    if (lines === brief) assert.ok(at(1).includes("is not supported by the active register provider (invented-register)"), `the unsupported search lost its line: ${at(1)}`);
+    else assert.ok(at(1).includes("receipt: Not searched: this register does not offer this kind of search."), at(1));
     assert.ok(at(2).includes("receipt: the session could not be resumed"), "a line that is not a refusal was rewritten");
   }
 });
