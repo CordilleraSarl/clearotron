@@ -1755,6 +1755,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-resumed-run-keeps-the-order-it-was-accepted-on.test.mjs": {
+          "tests": 7,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
         "a-retrieval-group-does-not-vote-on-seat-writes.test.mjs": {
           "tests": 5,
           "asserts": 15,
@@ -1806,6 +1812,12 @@
         "a-run-records-which-register-served-it.test.mjs": {
           "tests": 14,
           "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-repaired-after-a-failure-keeps-its-order.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
