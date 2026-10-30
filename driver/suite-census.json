@@ -7006,8 +7006,8 @@
           "todos": 0
         },
         "the-overview-is-read-for-a-citation-of-a-finding-no-longer-in-the-report.test.mjs": {
-          "tests": 6,
-          "asserts": 22,
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
