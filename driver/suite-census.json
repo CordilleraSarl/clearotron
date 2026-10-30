@@ -1731,6 +1731,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-replayed-stage-is-handed-the-register-picture-it-read.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
           "tests": 6,
           "asserts": 17,
