@@ -697,7 +697,8 @@ export const E3_BACKLOG = [
     // ordinals the seat sends, and the bracketed forms are now labelled as what the DRIVER renders. The
     // `[on: -]` case went from a value to an ABSENCE — you omit the field — which is the one part a
     // reader could get wrong from the old wording, since there is no value meaning "no finding".
-    evidence: "**AND EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT** — the `on` field, an array of ordinals. Same rule as `kind`: you send the values, the driver renders the token.",
+    // RE-QUOTED 2026-10-30: the heading is design's ruled one, because the old one said every flag names a finding.
+    evidence: "**Identify what each flag is about** — the `on` field, an array of ordinals. Same rule as `kind`: you send the values, the driver renders the token.",
     reparsedBy: "driver/verify.mjs:864 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message (narrative-refutation's, in stages.mjs) never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },

@@ -164,7 +164,7 @@ test("a flag on an excluded position narrows the corrective pass to it; a flag w
   assert.ok(rec.written, String(rec.refused));
   prepareDeclinationSpec({ paths: P }, P);   // as the pipeline does before the corrective pass
   const msg = correctionsExtra(P);
-  assert.ok(msg.includes("THIS IS THE COMPLETE LIST: (none — its flags are about excluded positions)."), "the pass was not told its flags are about positions");
+  assert.ok(msg.includes("THIS IS THE COMPLETE LIST: (no existing finding is named)."), "the pass was not told no finding is named");
   assert.ok(msg.includes("THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: QZORVEX — Delta AG (/mark/eu/d1), row 2. For each, either record it as a finding, or keep its exclusion by calling `record_declination` again for its row with a ground that answers the flag."),
     "the pass was not told the position, or the row to keep its exclusion by");
   assert.ok(msg.includes("Change the named finding objects, any finding you record for the named excluded positions, and the document passages the flags identify. Preserve unaffected findings and passages. If a correction requires another change, record what changed and why. EVERY OTHER FINDING OBJECT"),
@@ -193,7 +193,7 @@ test("a flag about the document is a declared target: with a flag on a position 
   assert.ok(recordRefutation(Q.runDir, { verdict: "BLOCKING", flags: [{ kind: "narrative", text: "narrative.md puts the sheet-2 section before the headline candidates" }] }).written);
   prepareDeclinationSpec({ paths: Q }, Q);
   const plain = correctionsExtra(Q);
-  assert.ok(plain.includes("THIS IS THE COMPLETE LIST: (none — every flag is about the document, not a finding).") && plain.includes(SCOPE_SENTENCE),
+  assert.ok(plain.includes("THIS IS THE COMPLETE LIST: (no existing finding is named).") && plain.includes(SCOPE_SENTENCE),
     "a document flag alone opened the pass, or was not told its passage is in scope");
   assert.ok(!plain.includes("EXCLUDED POSITIONS"), "a review that named no position was told one");
 });
@@ -249,6 +249,69 @@ test("the recheck is told to read each named position's decision, beside the exc
   assert.ok(text.includes(`${WRITER_EXCLUSIONS_LATER_SCOPE}\n${WRITER_EXCLUSIONS_STANDARD}\n- QZORVAK — Gamma SA (/mark/eu/c1)`) && text.includes("- QZORVEX — Delta AG (/mark/eu/d1, /mark/de/d2)"),
     "the later review's standard is not preceded by its scope sentence, or the list is missing");
   assert.ok(!text.includes("(/mark/eu/e1)"), "a settled exclusion no flag named was listed again");
+  assert.ok(text.includes("verify (no existing finding is named) and the narrative passages"), "the recheck's empty finding list is not design's wording");
+});
+
+// ── WHAT AN EXCLUSION RESTS ON, AND WHAT DEPENDS ON A CHANGE (design, 2026-10-30) ───────────────────────────────────
+// The three proof cases design named: changed goods wording with the same classes and completeness reaches the review;
+// a changed shared conclusion lets the later review check a dependent exclusion under another owner; an unrelated
+// change leaves settled exclusions alone.
+const bandRow = (id, mark, owner, goods) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, classes: [9], status: "Registered",
+  owner_name: owner, raw: { classifications: [{ class: 9, goods_services_text: goods }] }, _qid: "primary-sweep:exact", screen: "surface:in-scope-live" });
+const BAND = [bandRow("a1", "QZORVAK", "Alpha Ltd", "Game controllers."), bandRow("c1", "QZORVAK", "Gamma SA", "Printer cartridges."),
+  bandRow("d1", "QZORVEX", "Delta AG", "Accessories for game consoles."), bandRow("e1", "ZORVA", "Epsilon BV", "Logistics software.")];
+const writeBand = (P, rows) => writeFileSync(P.registerNamedBand, JSON.stringify({ enumerated: rows }));
+const holdBody = (P, id, body, ts = "2026-10-30T09:00:00Z") => writeFileSync(driverDir(P.runDir, "register-record-bodies.jsonl"),
+  `${JSON.stringify({ ts, provider: "signa", agentId: null, sessionKey: "s", sessionId: null, target: `/mark/eu/${id}`, body })}\n`, { flag: "a" });
+const relisted = (P) => writerExclusionBlock(P, { review: "later" }).lines.map((l) => l.match(/\((\/mark\/[^,)]+)/)[1]);
+
+test("changed goods wording, with the same classes, status and completeness, reaches the review of the exclusion it rests under", (t) => {
+  const P = seedRun(t);
+  writeBand(P, BAND);
+  writerExclusionBlock(P, { review: "full" });
+  assert.deepEqual(relisted(P), ["/mark/eu/c1"], "guard: unchanged, the later review lists the floor's exclusion only");
+  // The register's answer for d1 now words its goods differently; nothing else about the record moves.
+  writeBand(P, BAND.map((r) => (r.record_id === "/mark/eu/d1" ? { ...r, raw: { classifications: [{ class: 9, goods_services_text: "Controllers and accessories for game consoles." }] } } : r)));
+  assert.deepEqual(relisted(P), ["/mark/eu/c1", "/mark/eu/d1"], "reworded goods did not reach the exclusion that rests on them");
+  // A record body obtained after the full review is new evidence too: the run now holds e1's official record.
+  holdBody(P, "e1", { mark: "ZORVA", goods: [{ class: 9, text: "Logistics software; game servers." }] });
+  assert.deepEqual(relisted(P), ["/mark/eu/c1", "/mark/eu/d1", "/mark/eu/e1"], "a newly held record did not reach the exclusion that rests on it");
+});
+
+test("a changed shared conclusion lets the later review check a dependent exclusion under another owner, and name it", (t) => {
+  const P = seedRun(t);
+  writeBand(P, BAND);
+  writerExclusionBlock(P, { review: "full" });
+  // The finding on Alpha Ltd's record is rewritten. No exclusion is Alpha Ltd's, so the same-owner trigger reopens
+  // none, and e1 (Epsilon BV) is not listed again.
+  writeFileSync(P.findings, synthesisFindings(P.runDir).replaceAll("/mark/us/90000001", "/mark/eu/a1").replace(/"band":\s*"[A-Z]+"/, "\"band\": \"LOW\""));
+  assert.ok(!relisted(P).includes("/mark/eu/e1"), "guard: the exclusion under another owner was listed again");
+  // The later review reads that e1's exclusion depends on the changed conclusion and names it: it is accepted, and the
+  // corrective pass is told the position and its row.
+  const rec = recordRefutation(P.runDir, { verdict: "CONDITIONAL", flags: [
+    { kind: "rating", text: "narrative.md keeps ZORVA excluded on the reading of the controller market the rewritten finding withdrew", positions: ["/mark/eu/e1"] },
+  ] });
+  assert.ok(rec.written, `a later review could not name an exclusion it was not shown: ${rec.refused}`);
+  prepareDeclinationSpec({ paths: P }, P);
+  const rows = correctionRows(P, readFileSync(P.seniorEyeReview, "utf8"));
+  assert.deepEqual(rows.map((r) => r.positions), [["/mark/eu/e1"]]);
+  assert.ok(correctionsExtra(P).includes("THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: ZORVA — Epsilon BV (/mark/eu/e1)"), "the corrective pass was not told the dependent position");
+});
+
+test("an unrelated change leaves settled exclusions alone: a delivered record's goods, another record's body, and the same body fetched again", (t) => {
+  const P = seedRun(t);
+  writeBand(P, BAND);
+  holdBody(P, "d1", { mark: "QZORVEX", goods: [{ class: 9, text: "Accessories for game consoles." }] });
+  writerExclusionBlock(P, { review: "full" });
+  // a1 is delivered as a finding, so its reworded goods are no exclusion's evidence; a record no position holds is
+  // obtained; d1's record is fetched again with the same body, and the driver keeps its own copy of it.
+  writeBand(P, BAND.map((r) => (r.record_id === "/mark/eu/a1" ? { ...r, raw: { classifications: [{ class: 9, goods_services_text: "Game controllers and headsets." }] } } : r)));
+  holdBody(P, "zz9", { mark: "QZORBIT", goods: [{ class: 9, text: "Cables." }] });
+  holdBody(P, "d1", { mark: "QZORVEX", goods: [{ class: 9, text: "Accessories for game consoles." }] }, "2026-10-30T11:00:00Z");
+  mkdirSync(join(P.runDir, "_records"), { recursive: true });
+  writeFileSync(join(P.runDir, "_records", "eu-d1.json"), JSON.stringify({ mark: "QZORVEX", goods: [{ class: 9, text: "Accessories for game consoles." }],
+    _uri: "/mark/eu/d1", _receipt: { provider: "signa", fetched_at: "2026-10-30T11:00:00Z" } }));
+  assert.deepEqual(relisted(P), ["/mark/eu/c1"], "an unrelated change reopened a settled exclusion");
 });
 
 test("an exclusion is said to be delivered only where a current finding names its records; a missing placements file is unread, not none", (t) => {
@@ -296,10 +359,12 @@ test("the review's manual states the targets as ruled: positions beside on, the 
   const manual = readFileSync(new URL("../skills/narrative-refutation/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
   for (const ruled of [
     "and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them).",
-    "For a flag about the document, omit `on` and `positions` and name the affected passage, section, or coverage claim in `text`. Use `on` for a finding and `positions` for an excluded position.",
+    "**Identify what each flag is about** — the `on` field",
+    "`[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a document passage, omit both fields and name the affected passage, section, or coverage claim in `text`. A flag affecting a finding and an excluded position may carry both `on` and `positions`.",
     "The writer corrects the named findings, excluded positions, and document passages, together with conclusions that depend on them. Unaffected findings stay unchanged. The recheck reviews that same scope and any additional changes the writer had to make, using its recorded reasons. A missing finding number does not make the whole report open for revision.",
   ]) assert.ok(manual.includes(ruled), `the manual does not carry: ${ruled.slice(0, 60)}…`);
   assert.ok(!/Either every flag has one|a partial set buys nothing|the absence is the statement/.test(manual), "the all-or-nothing paragraph is still in the manual");
+  assert.ok(!/EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT|it is about the document, not a finding/.test(manual), "the manual still says every flag names a finding");
 });
 
 test("the review after a repair is told to name a writer's exclusion by a record id in positions", (t) => {

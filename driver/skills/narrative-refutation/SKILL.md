@@ -70,16 +70,13 @@ flag with no token is counted as `fact` whether or not it is one, and a page of 
 a page of factual errors. **The token is how the count stays true**, and the count is what tells the next
 round whether your objections can be carried forward as data instead of re-read as prose.
 
-**AND EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT** — the `on` field, an array of ordinals. Same rule
+**Identify what each flag is about** — the `on` field, an array of ordinals. Same rule
 as `kind`: you send the values, the driver renders the token. The rendered forms, so you recognise them
 in the file:
 
 - `[on: 9]` — this flag is about finding #9. You send `on: [9]`.
 - `[on: 6, 12]` — it is about both. You send `on: [6, 12]`.
-- `[on: -]` — it is about the document, not a finding: ordering, a whole-section claim, a missing
-  disclosure that belongs to no one card. For a flag about the document, omit `on` and `positions` and
-  name the affected passage, section, or coverage claim in `text`. Use `on` for a finding and `positions`
-  for an excluded position.
+- `[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a document passage, omit both fields and name the affected passage, section, or coverage claim in `text`. A flag affecting a finding and an excluded position may carry both `on` and `positions`.
 
 Use the finding's **ordinal**, the number the narrative and `findings.json` already agree on — not the
 mark, not the owner. You are writing them anyway ("Finding 9 — VELTRIC…"); the token is the same fact

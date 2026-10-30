@@ -134,7 +134,7 @@ import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // �
 import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate, readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { bandShapeGoods, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
-import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
+import { romanizedTermsFromPlan, mintSupplementalQid, stableStringify } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT, rowOutsideProviderOffices } from "./register-plan.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 import { waitingCrossCheck, undecidedCrossChecks, withoutWait } from "./cross-check-wait.mjs";   // the cross-checks wait for the reading step   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
@@ -159,7 +159,7 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, heldBodiesOf, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations, declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -3603,8 +3603,13 @@ export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — 
  *
  * `delivered` is every record the current findings name, and `findings` each finding's owner and fingerprint, for a
  * later review to establish from the findings themselves which exclusions a finding now delivers and which a changed
- * finding touches; both are null where the findings cannot be read. Each position's `evidence` fingerprints its
- * records as the run holds them: status, classes and the goods state the writer's list was given. IMPURE.
+ * finding touches; both are null where the findings cannot be read.
+ *
+ * Each position's `evidence` fingerprints what the run holds of its records, by content (ruled 2026-10-30): each
+ * record's band row with the register's answer as it came, the body the run holds for it, and the goods state the
+ * writer's list was given. Status, classes and that state are not enough: a record's registered goods can be reworded while all three
+ * stay the same, and a body obtained after the full review changes what an exclusion rests on. Only what the run
+ * already holds is compared; nothing is fetched for it. IMPURE.
  */
 export function writerExclusions(P) {   // @internal — driven by its test with a run's own files
   const empty = (state) => ({ state, positions: [], undecided: 0, delivered: null, findings: null });
@@ -3642,15 +3647,28 @@ export function writerExclusions(P) {   // @internal — driven by its test with
       const d = declined.byUri.get(key(row?.uri));
       if (!d) { undecided++; continue; }
       const e = entryOf.get(key(row?.uri)) ?? null;
-      const evidence = createHash("sha256").update(JSON.stringify(members.map((u) => [u, bandOf.get(u)?.status ?? null,
-        bandOf.get(u)?.classes ?? null, goodsOf.get(u) ?? null]))).digest("hex").slice(0, 16);
       positions.push({ uri: key(row.uri), members, mark: e?.mark ?? row.mark ?? null, owner: e?.owner ?? row.owner ?? null,
         tier: e?.tier ?? row.tier ?? null, borderline: e?.borderline === true, reason: e?.reason ?? null,
-        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)), evidence });
+        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)) });
     }
+    // WHAT EACH EXCLUSION RESTS ON, read for its own records only.
+    const band = new Map();
+    for (const r of safeReadJson(P.registerNamedBand)?.enumerated ?? []) if (r?.record_id) band.set(key(r.record_id), r);
+    const bodies = heldBodiesOf(P.runDir, positions.flatMap((p) => p.members));
+    for (const p of positions) p.evidence = createHash("sha256").update(stableStringify(p.members.map((u) => ({ uri: u,
+      record: recordContent(band.get(u) ?? bandOf.get(u)), body: bodies.get(u) ?? null, goodsState: goodsOf.get(u) ?? null }))))
+      .digest("hex").slice(0, 16);
     return { state: undecided ? "unreadable" : positions.length ? "listed" : "none", positions, undecided, delivered, findings };
   } catch { return empty("unreadable"); }
 }
+
+// A band row as the record it stands for: the register's fields and its answer as it came (`raw`, which holds the goods
+// wording on every register). What the run adds to it (the questions that found it, how a search scored it, the
+// screen's reading) is left out, so the same record found by another question reads alike. The band keeps the first
+// copy of each record (named-band.mjs mergeNamedBands), so a later search does not swap its answer.
+const SEARCH_SIDE = new Set(["screen", "relevance_score", "match"]);
+const recordContent = (row) => (row && typeof row === "object"
+  ? Object.fromEntries(Object.entries(row).filter(([k]) => !k.startsWith("_") && !SEARCH_SIDE.has(k))) : null);
 
 /** One position's entry, as the review reads it. PURE. */
 export const writerExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${x.members.join(", ")}): `

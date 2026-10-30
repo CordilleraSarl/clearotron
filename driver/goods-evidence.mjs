@@ -30,7 +30,8 @@
 // change with it. It carries no clock, so a replay derives it byte for byte.
 //
 // PURE except `heldRecordProvenance` and `readRunCallRows`, which read the run's files.
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyHasContent } from "./registry-fidelity.mjs";
 import { recordGoodsProvenance } from "./record-goods.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";
@@ -73,6 +74,41 @@ export function heldRecordProvenance(runDir) {
   for (const [uri, body] of readRecordArtifacts(runDir)) {
     const r = body?._receipt;
     put(uri, "_records", { provider: r?.provider ?? null, session: r?.context ?? null, ts: r?.fetched_at ?? null }, body);
+  }
+  return out;
+}
+
+/**
+ * THE BODIES THE RUN HOLDS FOR A FEW RECORDS: canonical uri → the body a reader opens for it (the record ledger, then
+ * `_records/`, the later copy winning, as heldRecordProvenance reads them), without the `_uri` and `_receipt` the driver
+ * adds to its own copy, so the two copies of one body read alike. A record the run holds no body for is absent. Only
+ * the ledger lines and `_records/` files of the records asked about are read: a run's held bodies run to hundreds of
+ * megabytes, and reading them all took 5 to 16 seconds on the largest test runs (measured 2026-10-30). IMPURE.
+ */
+export function heldBodiesOf(runDir, uris) {
+  const want = new Set((Array.isArray(uris) ? uris : []).map(uriKey).filter(Boolean));
+  const out = new Map();
+  if (!want.size) return out;
+  // A ledger row is written with its `target` before its `body` (providers/_shared/ledger.mjs), so the first target
+  // on a line is the row's own, and only the rows of the records asked about are parsed.
+  forEachLedgerLine(driverDir(runDir, "register-record-bodies.jsonl"), (line) => {
+    const t = /"target":("(?:[^"\\]|\\.)*")/.exec(line);
+    let target = null;
+    try { target = t ? JSON.parse(t[1]) : null; } catch { target = null; }
+    if (!want.has(uriKey(target))) return;
+    let row; try { row = JSON.parse(line); } catch { return; }
+    if (recordBodyHasContent(row?.body)) out.set(uriKey(row.target), row.body);
+  });
+  // `_records/` names each file from its uri (registry-fidelity.mjs writeRecordArtifacts), in whatever case it was given.
+  let names = new Map();
+  try { names = new Map(readdirSync(join(runDir, "_records")).filter((n) => n.endsWith(".json")).map((n) => [n.toLowerCase(), n])); } catch { /* none held */ }
+  for (const uri of want) {
+    const name = names.get(`${uri.replace(/^\/mark\//, "").replace(/[^a-z0-9]+/gi, "-")}.json`.toLowerCase());
+    if (!name) continue;
+    let body; try { body = JSON.parse(readFileSync(join(runDir, "_records", name), "utf8")); } catch { continue; }
+    if (!body || typeof body !== "object" || Array.isArray(body)) continue;
+    const { _uri, _receipt, ...rest } = body;
+    if ((_uri == null || uriKey(_uri) === uri) && recordBodyHasContent(rest)) out.set(uri, rest);
   }
   return out;
 }
