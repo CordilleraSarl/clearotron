@@ -183,8 +183,8 @@ Stages must name **abstract tiers**, not provider aliases. Per-engine maps:
 
 | tier | role (stage examples) | anthropic-agent (claude alias) | openai-agent (codex `-m`) |
 |---|---|---|---|
-| `judgment` | matter-frame, register-digest, synthesis, narrative-refutation, register-unit on `primary-sweep` and `transliteration-numeric` (the units that decide waiting families) | `opus` | `$CLEAROTRON_OPENAI_MODEL_JUDGMENT` |
-| `sweep` | register-unit on `incumbent-class`, case-law, skeptic, report-overview, report-card | `sonnet` | `$CLEAROTRON_OPENAI_MODEL_SWEEP` |
+| `judgment` | matter-frame, register-digest, synthesis, narrative-refutation, register-unit on `primary-sweep` | `opus` | `$CLEAROTRON_OPENAI_MODEL_JUDGMENT` |
+| `sweep` | register-unit on `transliteration-numeric` and `incumbent-class`, case-law, skeptic, report-overview, report-card | `sonnet` | `$CLEAROTRON_OPENAI_MODEL_SWEEP` |
 | `cheap` | saturation-probe | `haiku` | `$CLEAROTRON_OPENAI_MODEL_CHEAP` |
 
 **AN UNHONOURED OVERRIDE IS AN ERROR, NOT A SUBSTITUTION** (2026-08-03). This

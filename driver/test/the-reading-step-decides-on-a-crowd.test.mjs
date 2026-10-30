@@ -17,10 +17,17 @@ import { fileURLToPath } from "node:url";
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
-test("the register manual's unit mode reads each answer, narrows a crowd and decides", () => {
+test("the register manual's unit mode reads its answers and decides, and the digest is not handed all the judgment", () => {
   const manual = flat("SKILL.md");
-  assert.ok(manual.includes("(run the plan, read each answer, narrow a crowd by the steps in unit.md, and decide whether more searching would change the advice)"));
-  assert.ok(!manual.includes("nuanced rule-following, not open analysis"), "the register manual still calls the unit's work rule-following");
+  for (const ruled of [
+    "Unit mode — `saturation-probe` uses `haiku`, with thinking off, for count-only work. `primary-sweep` uses `opus`, with adaptive thinking, to run the plan, read its answers, and decide which further searches could change the advice. `transliteration-numeric` and `incumbent-class` use `sonnet`, with adaptive thinking.",
+    "Register units execute searches and decide which further questions could change the advice. The primary sweep uses the judgment model for that decision. The digest assesses the evidence carried forward. The driver selects each stage's model; a unit does not choose its own replacement.",
+  ]) assert.ok(manual.includes(ruled), `the register manual does not say "${ruled.slice(0, 80)}…"`);
+  for (const gone of ["nuanced rule-following, not open analysis", "All the precision-critical judgment lives here",
+    "units execute (smaller model tiers), the digest worker judges", "re-spawns it escalated to Opus"])
+    assert.ok(!manual.includes(gone), `the register manual still says "${gone}"`);
+  const orchestration = readFileSync(join(DIR, "..", "clearance-search", "phase2-execution.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(!orchestration.includes("opus judgment happens once, at the re-digest"), "the orchestration manual still puts all the opus judgment at the digest");
 });
 
 test("the unit manual has the unit decide on each crowd, and writes its reason as the note", () => {

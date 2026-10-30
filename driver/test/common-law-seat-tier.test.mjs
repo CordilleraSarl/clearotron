@@ -113,7 +113,7 @@ test("the haiku+adaptive sanity check reaches the seats — it could not before"
 test("a non-seat axis takes its register tier, never a seat's", () => {
   assert.deepEqual(axisTier("saturation-probe"), { model: "haiku", thinking: "off" });
   assert.deepEqual(axisTier("primary-sweep"), { model: "opus", thinking: "adaptive" });
-  assert.deepEqual(axisTier("transliteration-numeric"), { model: "opus", thinking: "adaptive" });
+  assert.deepEqual(axisTier("transliteration-numeric"), { model: "sonnet", thinking: "adaptive" });
   assert.deepEqual(axisTier("incumbent-class"), { model: "sonnet", thinking: "adaptive" });
 });
 

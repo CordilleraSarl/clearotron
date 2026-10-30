@@ -57,16 +57,10 @@ unit digests exist. Not invoked directly by operators.
 
 Set by the orchestrator per mode (set `model` explicitly on the spawn — omitting it mis-tiers):
 
-- **Unit mode** — `saturation-probe` → **`haiku`**, thinking off (count-only, pure data-pull). The
-  three sweep axes (`primary-sweep`, `transliteration-numeric`, `incumbent-class`) → **`sonnet`**,
-  adaptive thinking (run the plan, read each answer, narrow a crowd by the steps in unit.md, and decide whether more searching would change the advice).
-- **Digest mode** — **`opus`**, thinking medium. All the precision-critical judgment lives here
-  (relevance gate, owner clustering, opposition interpretation, Option-D).
+- Unit mode — `saturation-probe` uses `haiku`, with thinking off, for count-only work. `primary-sweep` uses `opus`, with adaptive thinking, to run the plan, read its answers, and decide which further searches could change the advice. `transliteration-numeric` and `incumbent-class` use `sonnet`, with adaptive thinking.
+- **Digest mode** — **`opus`**, thinking medium.
 
-The old "register sweep must be Opus or it truncates" lesson came from a *monolithic* single session
-doing searching **and** judgment at once. The work is now split: units execute (smaller model tiers), the
-digest worker judges (Opus). If a unit shortcut its axis, the orchestrator's skeptic review catches
-it and re-spawns it escalated to Opus — that decision belongs to the orchestrator, not here.
+Register units execute searches and decide which further questions could change the advice. The primary sweep uses the judgment model for that decision. The digest assesses the evidence carried forward. The driver selects each stage's model; a unit does not choose its own replacement.
 
 ## Provider
 
