@@ -13,11 +13,11 @@
 //
 // WHY THESE ARMS AND NOT A STRING GREP. A test that greps a composer for sentences the same commit
 // wrote proves only that the commit happened. The failure mode worth pinning is STRUCTURAL and this
-// module has already been bitten by it once — its own comment says so: "TWO SAMPLES BECAUSE THE
-// COMPOSER HAS TWO SHAPES ... A guard walking only one of them walks half the surface." A rule placed
+// module has already been bitten by it once — its own comment says so: "THREE SAMPLES BECAUSE THE
+// COMPOSER HAS THREE SHAPES ... A guard walking only one of them walks part of the surface." A rule placed
 // inside the `scopeBlock` conditional reaches only the dispatches where the reviewer declared
 // ordinals, and vanishes silently on every other one. So the arms walk the composer's OWN declared
-// samples — both shapes — rather than a hand-written argument list that would go stale beside them.
+// samples — every shape — rather than a hand-written argument list that would go stale beside them.
 //
 // The prose gate this issue also proposed is NOT here, and deliberately: measured over 32 delivered
 // narratives it fired on 31 of them (141 sentences) while nine of twelve before/after run-pairs read
@@ -32,17 +32,20 @@ import { composerFor } from "../repair-composers.mjs";
 const CORRECTIVE = composerFor("synthesis:corrective");
 const shapes = () => CORRECTIVE.samples.map((s) => ({ name: s.name, text: CORRECTIVE.compose(s.args) }));
 
-test("the two declared shapes really are different dispatches — the control for every arm below", () => {
-  const [a, b] = shapes();
-  assert.equal(shapes().length, 2, "the composer declares two shapes; an arm that walks one walks half");
+test("the three declared shapes really are different dispatches — the control for every arm below", () => {
+  const [a, b, c] = shapes();
+  assert.equal(shapes().length, 3, "the composer declares three shapes; an arm that walks one walks a third");
   assert.notEqual(a.text, b.text,
     "if both samples composed the same text, every 'in both shapes' assertion below would be one "
     + "assertion wearing two hats. The declared scope block is what makes them differ.");
   assert.match(b.text, /SCOPE — THE REVIEWER DECLARED/, "and the difference is the scope block, not incidental");
   assert.doesNotMatch(a.text, /SCOPE — THE REVIEWER DECLARED/);
+  // The third is an undeclared scope whose flags name an excluded position: no scope block, and the position line alone.
+  assert.doesNotMatch(c.text, /SCOPE — THE REVIEWER DECLARED/);
+  assert.match(c.text, /THE EXCLUDED POSITIONS THE REVIEWER'S FLAGS ARE ABOUT: /);
 });
 
-test("a repair may narrow and never broaden — in BOTH shapes, not only the scoped one", () => {
+test("a repair may narrow and never broaden — in EVERY shape, not only the scoped one", () => {
   for (const { name, text } of shapes()) {
     assert.match(text, /MAY NARROW A CLAIM AND MAY NEVER BROADEN ONE/,
       `${name}: a rule that reaches only the scoped dispatch is absent from most of them`);

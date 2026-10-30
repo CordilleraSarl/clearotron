@@ -879,6 +879,15 @@ function parseOn(line) {
   const ords = [...String(raw).matchAll(/\d+/g)].map((m) => Number(m[0])).filter(Number.isInteger);
   return [...new Set(ords)].sort((a, b) => a - b);    // `[on: -]` ⇒ [] — declared, and different from null
 }
+// The writer's excluded positions a flag is about, by record id, as the review's list named them. Absent ⇒ null: the
+// flag named none. The render writes the token only when the flag carries some, so a review without it is unchanged.
+const CORRECTION_POSITIONS_RE = /\[positions:\s*([^\]]*?)\s*\]/i;
+export function parsePositions(line) {
+  const raw = String(line ?? "").match(CORRECTION_POSITIONS_RE)?.[1];
+  if (raw == null) return null;
+  const ids = [...new Set(raw.split(",").map((s) => s.trim()).filter(Boolean))];
+  return ids.length ? ids : null;
+}
 // ── — WHAT COUNTS AS A FLAG, AND WHY IT IS NOT "ANY BULLET" ──────────────────────────────────
 //
 // The old selector was `^(?:[-*•]|\d+[.)])\s+\S`, and it skipped EVERY typed correction the reviewer
@@ -1060,7 +1069,8 @@ export function parseCorrections(reviewMd) {
       // channel, not the instruction, and repeating it back adds nothing a reader acts on.
       // — the findings this flag declares itself to be about. null ⇒ undeclared ⇒ scopes to all.
       ordinals: parseOn(ln),
-      text: content.replace(CORRECTION_KIND_RE, "").replace(CORRECTION_ON_RE, "").replace(/\s{2,}/g, " ").trim(),
+      ...(parsePositions(ln) ? { positions: parsePositions(ln) } : {}),
+      text: content.replace(CORRECTION_KIND_RE, "").replace(CORRECTION_ON_RE, "").replace(CORRECTION_POSITIONS_RE, "").replace(/\s{2,}/g, " ").trim(),
     });
   }
   return rows;

@@ -41,7 +41,7 @@ The driver dispatches this as a stage with its own context and a 900-second wall
 `record_narrative_refutation`, with:
 
 - **`verdict`** — `CLEAR` / `CONDITIONAL` / `BLOCKING`. **A BLOCKING requires at least one flag**: a refusal to sign that names nothing is refused by the call, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.
-- **`flags`** — one entry per flag. Each carries `kind`, `text` (one line, naming the file and the exact claim), optionally `fix` (one line — the targeted edit that would settle it), and optionally `on` (the finding ordinals it is about; omit it for a flag about the document rather than a finding).
+- **`flags`** — one entry per flag. Each carries `kind`, `text` (one line, naming the file and the exact claim), optionally `fix` (one line — the targeted edit that would settle it), and optionally `on` (the finding ordinals it is about; omit it for a flag about the document rather than a finding), and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them).
 - **`plan_audit`** — the PLAN-EXECUTION CHECK lines. Required when this run has a plan-execution receipt; **the driver reads whether it does**, so you cannot waive your own audit by omitting the field.
 
 You do **not** number your flags, and you do not format them. Render order is the numbering, so a number cannot disagree with the list it labels; the enumeration style is the driver's, so a flag the corrective ladder cannot parse cannot be written. That is the whole point of the call — the shapes this stage used to lose a flag to are unreachable from a typed value.
@@ -70,25 +70,22 @@ flag with no token is counted as `fact` whether or not it is one, and a page of 
 a page of factual errors. **The token is how the count stays true**, and the count is what tells the next
 round whether your objections can be carried forward as data instead of re-read as prose.
 
-**AND EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT** — the `on` field, an array of ordinals. Same rule
+**Identify what each flag is about** — the `on` field, an array of ordinals. Same rule
 as `kind`: you send the values, the driver renders the token. The rendered forms, so you recognise them
 in the file:
 
 - `[on: 9]` — this flag is about finding #9. You send `on: [9]`.
 - `[on: 6, 12]` — it is about both. You send `on: [6, 12]`.
-- `[on: -]` — it is about the document, not a finding: ordering, a whole-section claim, a missing
-  disclosure that belongs to no one card. **You send nothing** — omit `on` entirely. There is no value
-  that means "no finding"; the absence is the statement.
+- `[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a document passage, omit both fields and name the affected passage, section, or coverage claim in `text`. A flag affecting a finding and an excluded position may carry both `on` and `positions`.
 
 Use the finding's **ordinal**, the number the narrative and `findings.json` already agree on — not the
 mark, not the owner. You are writing them anyway ("Finding 9 — VELTRIC…"); the token is the same fact
 where a machine can read it.
 
-**What it buys, and it is not bookkeeping.** When every flag carries one, the author is told to change
-those findings and leave every other finding object byte-identical, and the driver checks that. On a
-measured run the author re-emitted the whole document for eleven minutes and one finding moved. When a
-single flag omits the token the whole review falls back to "anything may need to change" — the safe
-reading — so a partial set buys nothing. **Either every flag has one or none of them do any work.**
+The writer corrects the named findings, excluded positions, and document passages, together with
+conclusions that depend on them. Unaffected findings stay unchanged. The recheck reviews that same scope
+and any additional changes the writer had to make, using its recorded reasons. A missing finding number
+does not make the whole report open for revision.
 
 ### Verdict
 

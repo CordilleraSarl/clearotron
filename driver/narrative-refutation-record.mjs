@@ -38,6 +38,7 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 
 import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
+import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS } from "./verify.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
@@ -49,6 +50,22 @@ export const REVIEW_VERDICTS = ["CLEAR", "CONDITIONAL", "BLOCKING"];
 export function refutationCallPaths(runDir) {
   const dir = driverDir(runDir, "refutation-calls");
   return { dir, payload: join(dir, "call-001.json") };
+}
+
+/**
+ * The writer's excluded positions the last review was shown, by each of their record ids: record id → the position's
+ * own id, as the driver wrote them beside the review's message (pipeline.mjs writerExclusionBlock). null when none
+ * was written or it cannot be read, so a flag naming a position is refused rather than guessed at. Never throws.
+ */
+export const REVIEW_EXCLUSIONS_FILE = "review-exclusions.json";
+export function listedExclusionPositions(runDir) {
+  try {
+    const doc = JSON.parse(readFileSync(driverDir(String(runDir ?? ""), REVIEW_EXCLUSIONS_FILE), "utf8"));
+    const out = new Map();
+    for (const p of Array.isArray(doc?.positions) ? doc.positions : [])
+      for (const m of [p?.uri, ...(Array.isArray(p?.members) ? p.members : [])]) { const k = String(normalizeRecordUri(m) ?? ""); if (k && p?.uri) out.set(k, p.uri); }
+    return out;
+  } catch { return null; }
 }
 
 /** Whether this run has a plan-execution receipt, which is what makes the audit section mandatory. */
@@ -78,7 +95,10 @@ export function renderRefutation(verdict, flags, planAudit) {
       // does not strip markup left behind by their removal: with `**[kind: …] [on: …]**` the worklist
       // entry came back as `** ** the summary says …`. The corrective pass acts on that text, so the
       // stray markers would ride into the instruction the next seat is given.
-      out.push(`${i + 1}. [kind: ${f.kind}] [on: ${on}] ${f.text}`);
+      // A flag about a writer's exclusion names its position; the token is written only then, so a review without one
+      // renders as it always did.
+      const positions = Array.isArray(f.positions) && f.positions.length ? ` [positions: ${f.positions.join(", ")}]` : "";
+      out.push(`${i + 1}. [kind: ${f.kind}] [on: ${on}]${positions} ${f.text}`);
       if (f.fix) out.push(`   Fix: ${f.fix}`);
       out.push("");
     });
@@ -110,7 +130,7 @@ const textDefect = (t) => {
  * `receiptPresent` is the DRIVER's read, never a parameter of the call: whether the audit section is
  * owed is a fact about the run, and a seat that could assert it could waive its own audit.
  */
-export function acceptRefutation(params, { receiptPresent = false } = {}) {
+export function acceptRefutation(params, { receiptPresent = false, positionsListed = null } = {}) {
   const verdict = params?.verdict;
   const flags = params?.flags;
   const planAudit = params?.plan_audit;
@@ -142,6 +162,15 @@ export function acceptRefutation(params, { receiptPresent = false } = {}) {
         return { ok: false, reason: `refutation_flag_on_invalid:${i} — \`on\` is an array of finding ordinals (1-based), or omit it for a flag about the document rather than a finding` };
       }
     }
+    if (f?.positions != null) {
+      if (!Array.isArray(f.positions) || !f.positions.length || f.positions.some((p) => typeof p !== "string" || !p.trim())) {
+        return { ok: false, reason: `refutation_flag_positions_invalid:${i} — \`positions\` is an array of record ids from the writer's exclusions list, or omit it` };
+      }
+      const unknown = f.positions.find((p) => !positionsListed?.get(String(normalizeRecordUri(p) ?? "")));
+      if (unknown != null) {
+        return { ok: false, reason: `refutation_flag_position_unlisted:${i}:${String(unknown).slice(0, 80)} — name a position by a record id the writer's exclusions list gives for it` };
+      }
+    }
   }
   if (receiptPresent && !(Array.isArray(planAudit) && planAudit.length)) {
     return { ok: false, reason: "refutation_plan_audit_missing: this run has a plan-execution receipt, so the review must carry the PLAN-EXECUTION CHECK — hand its lines in `plan_audit`. A review that skipped it has not audited whether clean claims rest on unexecuted slices" };
@@ -150,7 +179,10 @@ export function acceptRefutation(params, { receiptPresent = false } = {}) {
     return { ok: false, reason: "refutation_plan_audit_shape: `plan_audit` is an array of lines" };
   }
 
-  const content = renderRefutation(verdict, flags, planAudit);
+  // A position is rendered as the list keys it, whichever of its record ids the flag named.
+  const byPosition = (p) => positionsListed.get(String(normalizeRecordUri(p) ?? ""));
+  const rendered = flags.map((f) => (Array.isArray(f?.positions) ? { ...f, positions: [...new Set(f.positions.map(byPosition))] } : f));
+  const content = renderRefutation(verdict, rendered, planAudit);
 
   // ── THE ROUND-TRIP. Rendered bytes → the four shipped parsers → exactly what was asked for. ───────
   // With the refusals above none of these can fire, which is the point: they are the assertion that
@@ -221,7 +253,7 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
   // Written first so a call that CRASHES the validator still leaves its input — that was the original
   // reason and it survives — then rewritten with the verdict once there is one.
   capture({ accepted: null, refusedReason: null });
-  const verdict = acceptRefutation(received, { receiptPresent: planReceiptPresent(dir0) });
+  const verdict = acceptRefutation(received, { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0) });
   capture({ accepted: Boolean(verdict.ok), refusedReason: verdict.ok ? null : verdict.reason });
   if (!verdict.ok) {
     return { written: null, refused: verdict.reason, captured: captureFailed ? null : payload, capture_failed: captureFailed };

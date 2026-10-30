@@ -16,7 +16,7 @@
 
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
-import { researchAnsweredBlock, NO_SEARCH_RESULT } from "./research-answers.mjs"; import { reviewResearchLine, RESEARCH_CHECKS_FILE } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
+import { researchAnsweredBlock, NO_SEARCH_RESULT, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs"; import { reviewResearchLine, RESEARCH_CHECKS_FILE } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
@@ -3625,7 +3625,7 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, researchChecks }) => lines(
+    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, researchChecks }) => lines(
       reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
@@ -3633,7 +3633,7 @@ export const STAGES = {
       // which is the one-country product always, and any run whose cut keeps everything.
       profileSelectionDirective(profileSelection),
       `Adversarially refute the narrative ${P.narrative} against the source files: register findings ${P.registerFindings}${registerOnly ? "" : `, common-law ${P.commonLaw}`}, placements ${P.placement} (structured tiers + reasons: ${P.placementModel}), matter frame ${P.matterContext}.`,
-      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions, writerExclusions }),
       // PR-8: the reviewer verifies register claims against the RECORD, on the record — the same
       // read-only band tools the drafting stages used, every lookup logged to the reading audit.
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
@@ -4844,12 +4844,41 @@ export const DECIDE_WAITING_FAMILIES = "WHERE THE PLAN ABOVE HAS WAITING FAMILIE
 export const PLACEMENT_SET_ASIDES_INTRO = "Placement's accepted set-asides are listed below with their grounds, the records they cover, and any exceptions. Carry those decisions forward under the placement rules. Where a conclusion depends on a set-aside, check its ground against the supporting evidence and flag an unsupported decision.";
 export const placementSetAsideBlock = (decisions) => (Array.isArray(decisions) && decisions.length ? lines(PLACEMENT_SET_ASIDES_INTRO, ...decisions) : "");
 
-export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null } = {}) => [
+// THE WRITER'S EXCLUSIONS, BESIDE PLACEMENT'S FLOOR DECISIONS (ruled 2026-10-29). The driver lists every position placement
+// put forward that the writer excluded (pipeline.mjs writerExclusionBlock): the full review reads them all, and a later
+// review the ones that changed and the ones its flags named, then the others for reference. The paragraph is the ruled
+// standard, word for word. An exclusion record the driver cannot read is said to be unread, never "(none)".
+export const WRITER_EXCLUSIONS_STANDARD = "The writer's exclusions of positions retained by placement are listed below with placement's reasons and the writer's grounds. Check whether each exclusion follows from the evidence under the framework, including any competing reading placement recorded. Accurate facts do not by themselves establish that the exclusion follows. A crowd count alone does not justify excluding a surviving relevant conflict. Assess a supported goods or whole-mark distinction under the existing exclusion rules. Flag a decision only when you can name contrary evidence, an error in its reasoning, or a relevant uncertainty the exclusion leaves unresolved. Name the affected position and the targeted correction. Preserve supported exclusions and unaffected work.";
+export const WRITER_EXCLUSIONS_UNREAD = "The writer's exclusions could not be read from this run's record. This is not a statement that the writer excluded nothing.";
+export const WRITER_EXCLUSIONS_UNCHANGED = "No exclusion has changed since the full review; the full review's list stands.";
+// A LATER REVIEW READS THE STANDARD WITHIN ITS SCOPE (ruled 2026-10-30): the sentence precedes the paragraph, so the
+// accepted exclusions its list carries for reference do not reopen every settled decision.
+export const WRITER_EXCLUSIONS_LATER_SCOPE = "Apply the following standard only to the decisions this review is checking and conclusions that depend on them. Other accepted decisions stand.";
+// A LATER REVIEW STARTS FRESH, SO IT IS GIVEN THE OTHER EXCLUSIONS TOO (ruled 2026-10-30), after the decisions it is
+// checking and the research obtained after the full review, under this sentence, word for word. Being listed under it
+// is no duty to re-investigate or re-rate a position.
+export const WRITER_EXCLUSIONS_REFERENCE = "The other accepted exclusions follow for reference; reconsider one only when a change identified in this review affects its grounds, and explain that connection.";
+// The research the run obtained after the full review, as a later review is told where it is (research-answers.mjs).
+export const researchAfterReviewLine = (n) => `RESEARCH THIS RUN OBTAINED AFTER THE FULL REVIEW: ${n === 1 ? "1 question and its answer" : `${n} questions and their answers`}, in ${RESEARCH_AFTER_REVIEW_MD}, one question and its answer per line.`;
+export const writerExclusionLines = (block) => {
+  if (!block || block.state === "no-positions") return [];
+  const standard = block.review === "later" ? [WRITER_EXCLUSIONS_LATER_SCOPE, WRITER_EXCLUSIONS_STANDARD] : [WRITER_EXCLUSIONS_STANDARD];
+  if (block.state === "unreadable") return [...standard, ...(block.lines ?? []), WRITER_EXCLUSIONS_UNREAD];
+  const lines = Array.isArray(block.lines) ? block.lines : [];
+  const reference = Array.isArray(block.reference) ? block.reference : [];
+  return [...standard,
+    ...(lines.length ? lines : [block.changedOnly && block.state === "listed" ? WRITER_EXCLUSIONS_UNCHANGED : "(none)"]),
+    ...(block.research > 0 ? [researchAfterReviewLine(block.research)] : []),
+    ...(reference.length ? [WRITER_EXCLUSIONS_REFERENCE, ...reference] : [])];
+};
+
+export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null, writerExclusions = null } = {}) => [
   PLACEMENT_BORDERLINE_NOTE,
-  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, including floors marked on their lines; crowded groups may show only their first page), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below. A floor that is none of these is a FLAGGED CORRECTION. Check each listed decision's ground against the evidence. Flag a decision only when you can name the evidence against its ground or the error in its reasoning. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+  `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, including floors marked on their lines; crowded groups may show only their first page), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below: placement's decisions on the floors, or the writer's exclusions of positions placement retained. A floor that is none of these is a FLAGGED CORRECTION. Check each of placement's listed decisions against the evidence, and flag one only when you can name the evidence against its ground or the error in its reasoning. The writer's exclusions are listed after them, under their own standard. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
   // The validated decisions themselves, written by the driver from the placement form (pipeline.mjs
   // placementFloorDecisionLines); none stands where the list is empty.
   ...(Array.isArray(floorDecisions) && floorDecisions.length ? floorDecisions : ["(none)"]),
+  ...writerExclusionLines(writerExclusions),
   `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
   registerOnly ? REGISTER_ONLY_NOTE : "",
   pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
@@ -4858,7 +4887,7 @@ export const refutationOpenItemsLine = (P) =>
   `Also verify against ${P.skepticFlags} and ${P.frameReopenReceipt} (JSON "deferrals"): every skeptic flag and every reopen deferral must be either visible as a coverage[]/narrative open item or explicitly reasoned immaterial — one that appears in neither place is a FLAGGED CORRECTION. Files absent ⇒ skip.`;
 export const REFUTATION_RECORDING_LINES = Object.freeze([
   `RECORD YOUR REVIEW WITH \`record_narrative_refutation\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders the review from what you send, so a flag the corrective ladder cannot parse cannot be written. You hold no Write or Edit tool for it and nothing you write by hand is read.`,
-  `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about, omitted for a flag about the document rather than a finding). You do NOT number the flags: render order is the numbering.`,
+  `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about) and optionally \`positions\` (the record ids of the writer's excluded positions it is about, as their list names them). Omit both for a flag about the document. You do NOT number the flags: render order is the numbering.`,
   `TYPE EACH CORRECTION: \`kind\` is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest), fact (a factual defect — record values, owners, statuses, dates, grounding), rating (a band/rating you challenge), narrative (prose, structure or voice of the narrative). DECLARE the kind from what the correction is about, never from how severe it is.`,
   `A BLOCKING verdict REQUIRES at least one flag. A refusal to sign that names nothing is refused by the call itself, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.`,
 ]);

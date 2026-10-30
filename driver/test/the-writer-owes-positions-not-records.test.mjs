@@ -116,6 +116,25 @@ test("each position the writer sets aside is listed once in the coverage tab, un
   ], "a position is set aside once per record, or not at all");
 });
 
+test("a position a later finding delivers is not listed as set aside, whichever of its records the finding names", async (t) => {
+  const { runDir, rows, ctx } = seed(t);
+  recordDeclinations({ runDir, rows, scope: SCOPE }, { declinations: rows.map((_, i) => ({ row_index: i, reason: "unrelated-goods", grounds: GROUNDS })) });
+  // Every position was declined. A later pass delivers QZORVAK by its expired record, which is not the record its row holds.
+  writeFileSync(ctx.paths.findings, synthesisFindings(runDir).replaceAll("/mark/us/90000001", "/mark/eu/h1dead"));
+  const { setAsideRows } = await import("../publish/index.mjs");
+  const { parseFindingsJson } = await import("../findings-model.mjs");
+  const listed = (opts) => setAsideRows(runDir, opts).map((r) => [r.area, r.note]);
+  const others = [["Set aside: QZORVEK — Beta GmbH", GROUNDS], ["Set aside: QZORVIN — Gamma SA", GROUNDS], ["Set aside: QZORVAX — Delta AG", GROUNDS]];
+  assert.deepEqual(listed(), others, "a position the report carries as a finding is still listed as set aside, or another row changed");
+  assert.deepEqual(listed({ findings: parseFindingsJson(readFileSync(ctx.paths.findings, "utf8")).findings }), others,
+    "the findings the report carries, handed in, read differently from the run's own file");
+  // With no spec there is no position to map, so only the declined record itself is matched.
+  rmSync(driverDir(runDir, "declination-spec.json"));
+  assert.deepEqual(listed(), [["Set aside: QZORVAK — Alpha Ltd", GROUNDS], ...others], "with no spec, a record the finding does not name was dropped");
+  writeFileSync(ctx.paths.findings, synthesisFindings(runDir).replaceAll("/mark/us/90000001", "/mark/eu/h1live"));
+  assert.deepEqual(listed(), others, "a finding naming the declined record itself did not end it");
+});
+
 test("the run's trace reads every record of a position by the position's ending", (t) => {
   const ending = (runDir, uri) => ledgerEnding(foldDiscardLedger(readFileSync(driverDir(runDir, DISCARD_LEDGER_NAME), "utf8")), uri);
   const declined = seed(t);

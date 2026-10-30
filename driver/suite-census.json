@@ -1709,7 +1709,7 @@
         },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
-          "asserts": 13,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -6623,7 +6623,7 @@
         },
         "the-driver-lists-the-profiles.test.mjs": {
           "tests": 8,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -7293,6 +7293,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-arm-is-given-what-the-review-reads.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-review-counts-a-wider-answer-as-covering-a-market.test.mjs": {
           "tests": 2,
           "asserts": 4,
@@ -7301,7 +7307,13 @@
         },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
           "tests": 11,
-          "asserts": 27,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-sees-every-position-the-writer-excluded.test.mjs": {
+          "tests": 20,
+          "asserts": 105,
           "skips": 0,
           "todos": 0
         },
@@ -7618,8 +7630,8 @@
           "todos": 0
         },
         "the-writer-owes-positions-not-records.test.mjs": {
-          "tests": 6,
-          "asserts": 21,
+          "tests": 7,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },

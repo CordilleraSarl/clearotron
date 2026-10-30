@@ -993,6 +993,7 @@ serve({
               text: { type: "string", description: "One line, naming the file and the exact claim. A flag that opens as a list item or heading is refused — the driver renders the list." },
               fix: { type: "string", description: "Optional. One line describing the targeted edit that would settle it." },
               on: { type: "array", items: { type: "integer" }, description: "The finding ordinals this flag is about, 1-based. Omit for a flag about the document rather than a finding." },
+              positions: { type: "array", items: { type: "string" }, description: "The record id of each excluded position this flag is about, exactly as the writer's exclusions list names it. A flag about an exclusion needs no finding ordinal." },
             },
           },
         },
