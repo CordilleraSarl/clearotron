@@ -7337,7 +7337,7 @@
         },
         "the-reviewing-pass-reads-the-lines-a-client-sees-first.test.mjs": {
           "tests": 11,
-          "asserts": 31,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
