@@ -93,8 +93,9 @@ const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return 
 // The first sonnet- and haiku-declared stages in a clearance are reached within the first few
 // dispatches, so the next codex clearance reports the answer early and cheaply.
 //
-// Stages that would report first: the `register-unit` sweeps (sonnet/adaptive — the bulk of the
-// register work), then `common-law` and the `common-law-half` seats (haiku/low).
+// Stages that would report first: the `incumbent-class` register unit (sonnet/adaptive), then `common-law`
+// and the `common-law-half` seats (haiku/low). The two register units that decide waiting families run on
+// the judgment tier from 2026-10-30 (READING_UNIT_TIER in stages.mjs), so they no longer report on this one.
 //
 // Byte-identical retry remains the tell if it does happen: a model that is INCAPABLE of a contract is
 // not flaky at it, so no retry budget and no temperature reaches it, and the failure surfaces as a

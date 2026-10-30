@@ -446,7 +446,35 @@ export const COMMON_LAW_SEAT_TIER = {
   [MEANING_SEAT]: { model: process.env.CLEAROTRON_MEANING_SEAT_MODEL || "haiku", thinking: "low" },
 };
 
-// per-axis tier: saturation-probe is the only haiku register unit; the sweeps run sonnet (the authorized fix).
+// ── THE READING DECISION RUNS ON THE JUDGMENT TIER (2026-10-30) ─────────────────────────────────────
+//
+// The units on these two axes are the ones that hold waiting families. The plan parks every widening on
+// them until the unit has read the identical mark's list, and then the unit releases or withholds each
+// family with its reason (register-plan.mjs, decision 10; DECIDE_WAITING_FAMILIES). Whether an unasked
+// family matters is a judgment about the matter, not a sweep, and the sweep tier was asked it.
+//
+// MEASURED IN TESTING, 2026-10-30, on saved register answers with the same inputs and wording, the model
+// the only change. On an ordinary matter the judgment tier released the family that held a reference
+// entry in 7 of 8 draws, and that entry reached the unit's band in all 8; the sweep tier released it in
+// 1 of 5. It did not open everything: it released 7 to 12 of 30 waiting families there, and 7 to 25 of
+// 147 on a crowded matter. The cost was measured with it: about three times the minutes and tokens of the
+// unit's turn, and more searches proposed of its own.
+//
+// NOT EVERY REGISTER UNIT MOVES. `incumbent-class` holds no waiting family: the compile dictates nothing
+// on it, and the one question it does carry (the house-element confirmation, pipeline.mjs) is appended
+// after the plan's waiting gate. The saturation probe is a count, never a decision. Both keep their tiers,
+// and an axis that is not named here keeps the sweep tier below, so a new axis never moves by accident.
+//
+// THE ENGINES MOVE TOGETHER: the tier is the engine-independent `opus`, which the codex engine resolves to
+// its judgment model (openaiModel in engine/openai-agent.mjs). `thinking` stays `adaptive`, the unit's own:
+// the measurement moved the model and nothing else.
+export const READING_UNIT_TIER = {
+  "primary-sweep": { model: "opus", thinking: "adaptive" },
+  "transliteration-numeric": { model: "opus", thinking: "adaptive" },
+};
+
+// per-axis tier: saturation-probe is the only haiku register unit; the two units that decide waiting
+// families run opus (above); the incumbent unit runs sonnet (the authorized fix).
 //
 // — the grid seats resolve here too, and that is a MOVE rather than an addition: `common-law-half`
 // no longer carries a static `model`/`thinking`, because a static one wins over this function and would
@@ -455,6 +483,7 @@ export const COMMON_LAW_SEAT_TIER = {
 // for a half id, and naming the seats here removes it by construction instead of by avoidance.
 export function axisTier(axis) {
   if (Object.hasOwn(COMMON_LAW_SEAT_TIER, axis)) return COMMON_LAW_SEAT_TIER[axis];
+  if (Object.hasOwn(READING_UNIT_TIER, axis)) return READING_UNIT_TIER[axis];
   return axis === "saturation-probe" ? { model: "haiku", thinking: "off" } : { model: "sonnet", thinking: "adaptive" };
 }
 
@@ -2112,7 +2141,13 @@ export const STAGES = {
     // The kills were code:137 at wall 1260s/1860s = the HARD timeout (timeoutSec+60), NOT the 900s stall. The
     // real fix is the in-class scoping (unit.md) + the 600 enumerate ceiling, which cap the silent page-loop to
     // ~seconds; this is a safety margin only. stallSec stays < timeoutSec so a true silent wedge still trips.
-    timeoutSec: 1500, stallSec: 1100,
+    // 2026-10-30: hard wall 1500→2250, stall unchanged, because two of the units moved to the judgment tier
+    // (READING_UNIT_TIER) and that tier's codex model has already run them. Measured in testing on the
+    // `transliteration-numeric` unit when codex's sweep tier was that same model (2026-10-09 to 10-28): of 12
+    // first dispatches one was killed at the wall (1561s) and finished in 1615s on the extended retry, and
+    // another took 1312s. 2250 is the wall that retry ran under, so the first attempt now holds what was
+    // measured. A unit that falls silent still trips the stall at 1100s.
+    timeoutSec: 2250, stallSec: 1100,
     skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/unit.md"],
     // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
     // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
