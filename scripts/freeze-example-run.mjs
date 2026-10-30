@@ -70,12 +70,12 @@ const FROZEN_FILES = [
   { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
   { path: "_driver/register-plan.json", why: "publish/index.mjs:935 scopeBasis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:936 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:937 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
-  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },
-  { path: "_driver/escalation-state.json", why: "publish/index.mjs:173 escSink" },
+  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:173 lintSink" },
+  { path: "_driver/escalation-state.json", why: "publish/index.mjs:174 escSink" },
   { path: "_driver/reasoning-integrity.json", why: "`integritySink` declared in index.mjs" },
-  { path: "_driver/corrections-state.json", why: "publish/index.mjs:174 correctionsSink" },
+  { path: "_driver/corrections-state.json", why: "publish/index.mjs:175 correctionsSink" },
   { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
 ];
@@ -118,7 +118,7 @@ const KNOCKOUT_FILES = [
   // knockout report render empty (`buildKnockoutWorkbook` in publish/knockout.mjs). Named by `koPaths` in stages-knockout.mjs.
   { path: "_driver/register-counts.json", why: "buildKnockoutWorkbook in publish/knockout.mjs: counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "koPaths in stages-knockout.mjs: the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:936 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:937 searchedJurisdictions, the fallback for register-plan" },
 ];
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */
@@ -174,7 +174,7 @@ const SCRUB = [
 // hides the next real difference.
 const VOLATILE = [
   { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the generation stamp in the firm locale" },
-  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:668 asOf" },
+  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:669 asOf" },
 ];
 
 // ── REWRITES — what is CHANGED on the way out, as opposed to what is refused ───────────────────────
