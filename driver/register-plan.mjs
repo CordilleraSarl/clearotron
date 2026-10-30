@@ -174,11 +174,11 @@ export { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid };
 // that is the point.
 export const unsupportedPredicateReason = (predicate, providerId) =>
   `predicate "${predicate}" is not supported by the active register provider (${providerId}) — that capability is absent, `
-  + `so this slice was never searched. It is a deferred gap for judgment, never a clean negative.`;
+  + `so this search was never carried out. It is a deferred gap for judgment, never a clean negative.`;
 
 export const uncoveredJurisdictionReason = (jurisdictions, providerId) =>
   `jurisdiction ${[...jurisdictions].join(", ")} is not covered by the active register provider (${providerId}) — `
-  + `the office is outside the provider's coverage, so this slice was never searched. It is a deferred gap for `
+  + `the office is outside the provider's coverage, so this search was never carried out. It is a deferred gap for `
   + `judgment, never a clean negative.`;
 
 // ──: an office the provider COVERS but this deployment cannot reach ─────────────────────────────
@@ -204,7 +204,7 @@ export const uncoveredJurisdictionReason = (jurisdictions, providerId) =>
 export const officeUnavailableReason = (jurisdictions, providerId, { memberId, missing = [] } = {}) =>
   `jurisdiction ${[...jurisdictions].join(", ")} is not covered by the active register provider (${providerId}) `
   + `AS THIS DEPLOYMENT IS CONFIGURED — the source that serves it (${memberId ?? "unknown"}) is not wired up here`
-  + `${missing.length ? ` (${missing.join(" + ")} unset)` : ""}, so this slice was never searched. The provider `
+  + `${missing.length ? ` (${missing.join(" + ")} unset)` : ""}, so this search was never carried out. The provider `
   + `does cover this office: set the variable and re-run to close it. It is a deferred gap for judgment, `
   + `never a clean negative.`;
 
@@ -217,7 +217,7 @@ export const officeUnavailableReason = (jurisdictions, providerId, { memberId, m
 // what a new one lands in, and the reason below is the sentence it lands with.
 export const ownerIntersectionUnsupportedReason = (providerId) =>
   `owner×term intersection is not supported by the active register provider (${providerId}) — the owner scope `
-  + `field cannot be combined with mark text there, so this slice was never searched. It is a deferred gap for `
+  + `field cannot be combined with mark text there, so this search was never carried out. It is a deferred gap for `
   + `judgment, never a clean negative.`;
 
 /** Is an owner×term entry executable on the provider? null when it is (or when no contract/owner). */
@@ -248,7 +248,7 @@ export function ownerIntersectionGap(entry, capabilities) {
 export const goodsTextUnsupportedReason = (providerId) =>
   `goods-and-services text narrowing is not supported by the active register provider (${providerId}) — the `
   + `goods description cannot be searched there, so the narrowed sweep this entry asks for was never run. `
-  + `Running it on the class alone would have returned the crowd the narrowing exists to cut, so the slice `
+  + `Running it on the class alone would have returned the crowd the narrowing exists to cut, so the search `
   + `is deferred. It is a gap for judgment, never a clean negative.`;
 
 /** Is a goods-narrowed entry executable on the provider? null when it is (or when it asks for no goods text). */
@@ -2814,15 +2814,14 @@ export const refusedSearchesSentence = (cause = null) =>
   `These searches were not carried out because the register refused them during this run${REFUSAL_BRACKETS[cause] ? ` (${REFUSAL_BRACKETS[cause]})` : ""}; a later run can repeat them.`;
 export const UNSUPPORTED_SEARCHES_SENTENCE = "These searches cannot be carried out because the register does not support this kind of search; no run can close this gap.";
 
-/** The register's recorded answer to a search it refused, as a bracket: a 429 or rate limit that names a daily limit
- *  (Signa's `daily_credit_cap_exceeded`), any other 429 or rate limit, and a 5xx or no answer at all. An account out of
- *  credits (`insufficient_credits`) is none of the three, and neither is anything else: null. PURE. */
+/** The register's recorded answer to a search it refused, as a bracket: a 429 or rate limit that names a daily limit or
+ *  the account's credits (Signa's `daily_credit_cap_exceeded` and `insufficient_credits`, the daily credit cap in plain
+ *  words, ruled 2026-10-30), any other 429 or rate limit, and a 5xx or no answer at all. null for anything else. PURE. */
 export function refusalCause(reason) {
   const s = String(reason ?? "");
   const status = Number((s.match(/\bHTTP (\d{3})\b/i) ?? [])[1] ?? NaN);
   if (status === 429 || /(?:^|[^a-z])rate[_ -]?limit/i.test(s)) {
-    if (/daily/i.test(s)) return "daily-limit";
-    return /insufficient[_ ]credits?/i.test(s) ? null : "rate-limited";
+    return /daily|insufficient[_ ]credits?/i.test(s) ? "daily-limit" : "rate-limited";
   }
   if (status >= 500 && status <= 599) return "not-responding";
   if (!(status >= 400 && status <= 499) && /\btimed out\b|\btimeout\b|ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|socket hang up|fetch failed/i.test(s))

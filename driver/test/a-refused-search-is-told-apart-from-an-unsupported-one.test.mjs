@@ -50,7 +50,7 @@ test("the bracket is the register's recorded answer, and any other answer gets n
     // Signa's own error types on a 429, as its client records them.
     [hard('HTTP 429: {"error":{"type":"daily_credit_cap_exceeded"}}'), "daily-limit", REFUSED_DAILY],
     [hard('HTTP 429: {"error":{"type":"rate_limited"}}'), "rate-limited", REFUSED_RATE],
-    [hard('HTTP 429: {"error":{"type":"insufficient_credits"}}'), null, REFUSED_PLAIN],
+    [hard('HTTP 429: {"error":{"type":"insufficient_credits"}}'), "daily-limit", REFUSED_DAILY],
     [hard("HTTP 429: Too Many Requests"), "rate-limited", REFUSED_RATE],
     [hard("rate limited by the register, retry later"), "rate-limited", REFUSED_RATE],
     [hard("HTTP 503: Service Unavailable"), "not-responding", REFUSED_DOWN],
