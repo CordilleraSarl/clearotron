@@ -6,6 +6,7 @@
 // straight from the tables; per-finding risk scoring lives in the curated report, not the raw audit.
 
 import { findingJoinFor, normalizeJoinText } from "../doubt-ledger.mjs";   // pure — the shared doubt→finding join + its ONE normalization
+import { notSearchedSentence } from "../not-searched-sentences.mjs";   // pure — the owner's sentence for why a search was not carried out
 
 // ---- generic markdown-table parsing ------------------------------------------------------------
 const splitRow = (line) => line.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((s) => s.trim());
@@ -441,11 +442,15 @@ export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = 
         md += `\n- [${a?.born?.place}] "${t}" — OPEN — ${clipQuote(a?.handoff) || "unanswered at delivery"}\n`;
       } else {
         asksEnded++;
+        // A REASON A SEARCH WAS NOT CARRIED OUT reads as the owner's sentence for its kind, whole, in place of the line
+        // the run recorded (not-searched-sentences.mjs); a reason of no known kind stands as recorded. The run's own
+        // record, _driver/asks.json, keeps the recorded line.
+        const reasonsOf = (rs) => (rs ?? []).map((r) => notSearchedSentence(r) ?? clipQuote(r)).join("; ");
         const detail = e.kind === "executed"
           ? clipQuote(e.evidence)
           : e.kind === "judged-immaterial"
-            ? `${(e.reasons ?? []).map((r) => clipQuote(r)).join("; ")}${e.by === "doubt-closure-stage" ? " — model-cited (verified quote)" : ""}`
-            : `${(e.reasons ?? []).map((r) => clipQuote(r)).join("; ")}${a?.handoff ? ` — handed over: ${clipQuote(a.handoff)}` : ""}`;
+            ? `${reasonsOf(e.reasons)}${e.by === "doubt-closure-stage" ? " — model-cited (verified quote)" : ""}`
+            : `${reasonsOf(e.reasons)}${a?.handoff ? ` — handed over: ${clipQuote(a.handoff)}` : ""}`;
         const label = e.kind === "judged-immaterial" ? "judged immaterial" : e.kind;
         md += `\n- [${a?.born?.place}] "${t}" — ${label} — ${detail}\n`;
       }
