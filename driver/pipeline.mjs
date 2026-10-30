@@ -7653,11 +7653,17 @@ function plainRegisterExtra(ctx) {
     // parse is a real defect, and the receipt should carry it.
     const doc = parseFindingsJson(readFileSync(P.findings, "utf8"));
 
+    // ONE MARK IS ONE MARK. An order names its mark in `marks` and again in `markName`, so the list held it
+    // twice and the seat was told a run about one mark was about 2 (seen on a saved test run, 2026-10-29).
+    // Deduped on the key the exclusion blanks by, trimmed and in any case, so the count is the number of
+    // names removed before reading.
+    const markKeys = new Set();
     const about = {
       marks: [
         ...(Array.isArray(ctx.job?.marks) ? ctx.job.marks.map((m) => (typeof m === "string" ? m : m?.name)) : []),
         ctx.job?.markName, ctx.job?.name,
-      ].filter((x) => typeof x === "string" && x),
+      ].filter((x) => typeof x === "string" && x)
+        .filter((x) => { const k = x.trim().toLowerCase(); if (!k || markKeys.has(k)) return false; markKeys.add(k); return true; }),
       owners: (doc.findings ?? [])
         .flatMap((f) => [f?.owner, f?.owner_name, f?.owner?.name])
         .filter((x) => typeof x === "string" && x),
