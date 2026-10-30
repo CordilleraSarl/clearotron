@@ -163,6 +163,11 @@
 //                               call. The run's goods record stores them together and nothing enforces against the
 //                               flag later: the record gates nothing, and its `unreadable` total is counted off the
 //                               same rows. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `runExperiment` in pipeline.mjs mints the receipt's `faithfulPicture` in the SAME object literal as the
+//                               `pictureReplay` list it summarises, off that one list, in one expression. The receipt
+//                               is written once at dispatch and nothing enforces against the flag later; a reader
+//                               holding the flag holds the per-derivation entries it was folded from. (CITED BY
+//                               SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
 //   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
@@ -246,7 +251,7 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 const RULED = new Map([
   ["band-shape.mjs", 7], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
-  ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
+  ["pipeline.mjs", 3], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
 ]);
