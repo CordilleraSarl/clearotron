@@ -1,5 +1,14 @@
 # clearotron-driver
 
+## 0.5.0-beta.6
+
+### Patch Changes
+
+- Fixed: A clearance on the Signa register no longer loses searches to a brief rate limit; it waits as long as the register asks and searches again.
+- Fixed: A clearance resumed after an interruption now searches the territories the order named, not the account's default markets.
+- Fixed: A wider register search is no longer set aside because a narrower search returned a short list; the engine now weighs what each waiting search could add to the advice and records its reason.
+- Fixed: The lawyer's report now says why a search was not carried out: the register refused it for the day and a later run can repeat it, or the register cannot run that kind of search at all.
+
 ## 0.5.0-beta.5
 
 ### Patch Changes
