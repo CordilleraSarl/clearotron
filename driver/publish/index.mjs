@@ -1949,8 +1949,9 @@ export function releasedFamilyRows(runDir) {
  * A POSITION A FINDING DELIVERS IS NOT SET ASIDE. The ledger keeps the last decision per record, and a finding is
  * not a decision it records, so a declination stays in it after a later pass delivers the same position. The run's
  * trace reads that position as delivered with its finding, and so does this sheet: `findings` are the ones the
- * report carries, read from the run when not passed. A position is the declination spec's row, with every record of
- * its entry; with no spec, only the declined record itself is matched. Pages are listed as before.
+ * report carries, read from the run when not passed. A withdrawn finding is not one of them, so a position only it
+ * names stays set aside. A position is the declination spec's row, with every record of its entry; with no spec, only
+ * the declined record itself is matched. Pages are listed as before.
  */
 export function setAsideRows(runDir, { findings = null } = {}) {
   try {
@@ -1961,7 +1962,7 @@ export function setAsideRows(runDir, { findings = null } = {}) {
     if (!Array.isArray(delivered)) {
       try { delivered = parseFindingsJsonLenient(readFileSync(join(runDir, 'findings.json'), 'utf8')).findings ?? []; } catch { delivered = []; }
     }
-    const ended = recordsOfDeliveredPositions(read('declination-spec.json')?.rows ?? [], [...findingUris(delivered).keys()]);
+    const ended = recordsOfDeliveredPositions(read('declination-spec.json')?.rows ?? [], [...findingUris(delivered.filter((f) => f?.disposition !== 'withdrawn')).keys()]);
     const label = (x) => [x.mark, x.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') || x.uri;
     return [
       ...[...d.byUri.entries()].filter(([u]) => !ended.has(u)).map(([, x]) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),

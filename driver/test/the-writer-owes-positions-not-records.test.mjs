@@ -7,9 +7,10 @@
 // 1,154 rows, 521 of them declined one by one. It now owes every position the write-up carried, by position: one
 // placement entry with its records, whether a headline entry, a sheet-2 entry the write-up adopted or kept, or one it
 // promoted, with the marked pages as before. An entry the write-up dropped owes nothing. A finding naming any record of
-// an entry ends it, or one declination of its row, which the coverage tab lists once; a ground closed to any one of its
-// records is closed to the entry, and the run's trace reads each record by its position's ending. The reader is still
-// told the records an entry left unaccounted holds. Every mark and owner here is invented.
+// an entry ends it, or one declination of its row, which the coverage tab lists once; a withdrawn finding, which the
+// report does not carry, ends nothing there. A ground closed to any one of its records is closed to the entry, and the
+// run's trace reads each record by its position's ending. The reader is still told the records an entry left
+// unaccounted holds. Every mark and owner here is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
@@ -133,6 +134,23 @@ test("a position a later finding delivers is not listed as set aside, whichever 
   assert.deepEqual(listed(), [["Set aside: QZORVAK — Alpha Ltd", GROUNDS], ...others], "with no spec, a record the finding does not name was dropped");
   writeFileSync(ctx.paths.findings, synthesisFindings(runDir).replaceAll("/mark/us/90000001", "/mark/eu/h1live"));
   assert.deepEqual(listed(), others, "a finding naming the declined record itself did not end it");
+});
+
+test("a position only a withdrawn finding names is still listed as set aside, since the report does not carry that finding", async (t) => {
+  const { runDir, rows, ctx } = seed(t);
+  recordDeclinations({ runDir, rows, scope: SCOPE }, { declinations: rows.map((_, i) => ({ row_index: i, reason: "unrelated-goods", grounds: GROUNDS })) });
+  // A later pass delivered QZORVAK by its expired record, and the review withdrew that finding.
+  const doc = JSON.parse(synthesisFindings(runDir).replaceAll("/mark/us/90000001", "/mark/eu/h1dead"));
+  Object.assign(doc.findings[0], { disposition: "withdrawn", withdrawn_reason: "the review found the owner's goods never reach the client's" });
+  writeFileSync(ctx.paths.findings, JSON.stringify(doc));
+  const { setAsideRows } = await import("../publish/index.mjs");
+  const { parseFindingsJson } = await import("../findings-model.mjs");
+  const listed = (opts) => setAsideRows(runDir, opts).map((r) => [r.area, r.note]);
+  const all = [["Set aside: QZORVAK — Alpha Ltd", GROUNDS], ["Set aside: QZORVEK — Beta GmbH", GROUNDS],
+    ["Set aside: QZORVIN — Gamma SA", GROUNDS], ["Set aside: QZORVAX — Delta AG", GROUNDS]];
+  assert.deepEqual(listed(), all, "a position only a withdrawn finding names was dropped, read from the run's own file");
+  assert.deepEqual(listed({ findings: parseFindingsJson(readFileSync(ctx.paths.findings, "utf8")).findings }), all,
+    "a position only a withdrawn finding names was dropped, from the findings the report is built from");
 });
 
 test("the run's trace reads every record of a position by the position's ending", (t) => {
