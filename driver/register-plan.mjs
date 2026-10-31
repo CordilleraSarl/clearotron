@@ -61,6 +61,7 @@ import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWi
 import { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid } from "../providers/_shared/plan-guards.mjs";
 import { asksIdenticalMark, identicalMarkTerms } from "../providers/_shared/follow-up-searches.mjs";
 import { territoryKey } from "./territory-tiers.mjs";
+import { isProviderHardErrorReason, refusedSearchesSentence, refusalCause, REFUSAL_BRACKETS, PROVIDER_HARD_ERROR_PREFIX, PROVIDER_PERMANENT_ERROR_PREFIX } from "./not-searched-sentences.mjs";   // the refused-search sentence and its reading, shared with the audit
 import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { scriptQuestionsByMarket } from "./registration-scripts.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
@@ -2787,53 +2788,16 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), 
 // negative test, so the cheapest possible hedge against having classified it wrong is to let the
 // envelope try exactly once and record what happened.
 
-export const PROVIDER_HARD_ERROR_PREFIX = "provider hard error after the full recovery ladder — the slice was accepted and then failed, so it was never searched and cannot be read as clean: ";
-export const PROVIDER_PERMANENT_ERROR_PREFIX = "provider hard error the recovery ladder cannot help — the slice was accepted and then failed with an error this run cannot classify as transient, so it was never searched and cannot be read as clean: ";
-
-/** Is this deferral row one of ours (either path)? The stem both carry-forward and the fan-in key off. PURE. */
-export const isProviderHardErrorReason = (reason) => {
-  const s = String(reason ?? "");
-  return s.startsWith(PROVIDER_HARD_ERROR_PREFIX) || s.startsWith(PROVIDER_PERMANENT_ERROR_PREFIX);
-};
-
-// ── WHY A SEARCH WAS NOT CARRIED OUT, IN THE LAWYER'S WORDS (the owner's sentences, approved 2026-10-30) ──────────────
-//
-// The front matter gave every search the register left undone one account: the provider cannot express it. That is
-// true of a search the register does not support, and false of one it refused during the run, such as on a spent daily
-// limit, which a later run can repeat. Each kind now has its own sentence. The refused one also stands beside each
-// refused search in the coverage ledger, in place of its recorded line, which is written for the run's record and not
-// for a reader; an unsupported search keeps its own line there, which names what the register lacks. The refused sentence
-// names the register's recorded answer in its bracket: a daily limit, a rate limit, or no answer. Any other answer gets
-// no bracket. The run's record keeps the recorded line.
-export const REFUSAL_BRACKETS = Object.freeze({
-  "daily-limit": "its daily limit was reached",
-  "rate-limited": "it was rate-limited",
-  "not-responding": "it was not responding",
-});
-export const refusedSearchesSentence = (cause = null) =>
-  `These searches were not carried out because the register refused them during this run${REFUSAL_BRACKETS[cause] ? ` (${REFUSAL_BRACKETS[cause]})` : ""}; a later run can repeat them.`;
+// The two prefixes, the test for them and the refused-search sentence live in the leaf module the audit imports too
+// (not-searched-sentences.mjs); re-exported here, where the fan-in and the front matter read them.
+export { PROVIDER_HARD_ERROR_PREFIX, PROVIDER_PERMANENT_ERROR_PREFIX, isProviderHardErrorReason, REFUSAL_BRACKETS,
+  refusedSearchesSentence, refusalCause, refusedSearchSentence } from "./not-searched-sentences.mjs";
 export const UNSUPPORTED_SEARCHES_SENTENCE = "These searches cannot be carried out because the register does not support this kind of search; no run can close this gap.";
 
-/** The register's recorded answer to a search it refused, as a bracket: a 429 or rate limit that names a daily limit
- *  (Signa's `daily_credit_cap_exceeded`, which clears at UTC midnight), any other 429 or rate limit, and a 5xx or no
- *  answer at all. Signa's `insufficient_credits` is a used-up credit balance, which retrying cannot clear until the
- *  balance changes: none of the three, so like anything else it is null. PURE. */
-export function refusalCause(reason) {
-  const s = String(reason ?? "");
-  const status = Number((s.match(/\bHTTP (\d{3})\b/i) ?? [])[1] ?? NaN);
-  if (status === 429 || /(?:^|[^a-z])rate[_ -]?limit/i.test(s)) {
-    if (/daily/i.test(s)) return "daily-limit";
-    return /insufficient[_ ]credits?/i.test(s) ? null : "rate-limited";
-  }
-  if (status >= 500 && status <= 599) return "not-responding";
-  if (!(status >= 400 && status <= 499) && /\btimed out\b|\btimeout\b|ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|socket hang up|fetch failed/i.test(s))
-    return "not-responding";
-  return null;
-}
 
-/** The sentence that stands beside one search the register refused, by its recorded line; null for any other line,
- *  which stands as recorded. PURE. */
-export const refusedSearchSentence = (reason) => (isProviderHardErrorReason(reason) ? refusedSearchesSentence(refusalCause(reason)) : null);
+// WHY ANY OTHER SEARCH WAS NOT CARRIED OUT: the owner's sentences and which recorded reason takes which live in a leaf
+// module the audit can import too (not-searched-sentences.mjs).
+export { NOT_SEARCHED_SENTENCES, notSearchedSentence } from "./not-searched-sentences.mjs";
 
 /**
  * The front matter's account of the searches left undone on the axes no re-run can close: the refused ones first, one

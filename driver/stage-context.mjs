@@ -36,7 +36,8 @@
 
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "../shared/driver-dir.mjs";
+import { REVIEW_EXCLUSIONS_FILE } from "./narrative-refutation-record.mjs";   // the exclusions the last review was shown   //
 
 import { STAGES, stageInputs, REGISTER_AXES } from "./stages.mjs";
 import { withheldFamiliesPath } from "./withheld-families.mjs";
@@ -206,6 +207,18 @@ const placementSetAsideReads = (P) => [
   { path: driverDir(P.runDir, "goods-evidence.json"), kind: "driver-side", why: "readGoodsStates: a ground on a record's goods is checked against what its goods rest on" },
 ];
 
+// THE STATE A CORRECTIVE PASS STARTS FROM, for an arm that reproduces one (`--dispatch-trigger corrective`): the findings
+// before the pass, the review and the typed call whose flags the pass answers, and the writer's declinations. A first
+// pass is handed none of them, so only a corrective arm carries them. Without them an arm on a saved run refused as having
+// no corrective state (measured 2026-10-29).
+const correctiveStateReads = (P) => [
+  { path: driverDir(P.runDir, "findings-pre-corrective.json"), kind: "driver-side", why: "correctiveReadiness and the pass's snapshot: the findings the corrective pass started from" },
+  { path: P.seniorEyeReview, kind: "driver-side", why: "the review whose flags the corrective pass answers; correctionsExtra hands it on verbatim" },
+  { path: driverDir(P.runDir, "refutation-calls", "call-001.json"), kind: "driver-side", why: "readAcceptedFlags: the review's typed flags, the corrective worklist's source" },
+  { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side", why: "the writer's declinations the corrective pass starts from" },
+  { path: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE), kind: "driver-side", why: "correctionsExtra names each excluded position a flag is about, with its mark, owner and row, from the exclusions the review was shown" },
+];
+
 const UNDECLARED = {
   // The verbatim forward is named in the prompt only when job.rawRequest exists — and matter-frame,
   // unlike blind-frame, never declared it at all (stages.mjs "matter-frame": []).
@@ -246,8 +259,9 @@ const UNDECLARED = {
   // The provider enforcement telemetry: the prompt names the path only when ctx.enforcerSignals is a
   // non-zero count (stages.mjs synthesis message). Undeclared on purpose — it is aim-attention only and
   // must never move a freshness stamp — but a sandbox without it hands a different prompt.
-  synthesis: (P, { researchHandOff = false } = {}) => [
+  synthesis: (P, { researchHandOff = false, dispatchTrigger = "fresh" } = {}) => [
     ...placementSetAsideReads(P),
+    ...(dispatchTrigger === "corrective" ? correctiveStateReads(P) : []),
     // The research the run already got, handed to a later attempt of the writer as a file (messageCtxFor,
     // research-answers.mjs). Carried only by an arm that reproduces one: a first attempt is handed none, and the copy
     // is readable by the arm's own commands, so an arm that carried the run's later answers would hand them on.
@@ -269,9 +283,32 @@ const UNDECLARED = {
   // and named in the review's prompt only when it is there. Undeclared on purpose: it moves only when the record does, and
   // the narrative this stage declares moves with it, so the freshness map needs no entry for it. A sandbox without it
   // hands the review a different prompt and no evidence.
-  "narrative-refutation": (P) => [
+  "narrative-refutation": (P, { dispatchTrigger = "fresh" } = {}) => [
     { path: P.researchChecks, kind: "conditional",
       why: "named in the prompt only when the writer's record wrote it; it moves with narrative.md, so it stays outside the freshness map" },
+    // What the full review was shown, which a later review's list is compared with. Without it an arm reproducing a later
+    // review reads as a run with no full review on record and is given the whole list as decisions to check, a shape
+    // production never sends. A full-review arm writes its own over the copy.
+    { path: driverDir(P.runDir, "review-exclusions-full.json"), kind: "driver-side",
+      why: "writerExclusionBlock: a later review's list is the full review's compared with the run as it stands" },
+    // What each exclusion's evidence is read from beside the band and the bodies: the goods state the writer's list gave
+    // each record, and, from the delivery seam on, the writer's own record and the fold's map, which keep the writer's
+    // numbering. Without the list an arm reads every exclusion's evidence without its goods state, so a later review's
+    // arm reads every exclusion the full review read with one as changed.
+    { path: driverDir(P.runDir, "declination-spec.json"), kind: "driver-side", why: "writerExclusions: the goods state each record's evidence is read with" },
+    { path: driverDir(P.runDir, "fold.json"), kind: "driver-side", why: "modelRecordPath: whether findings.json is the folded record" },
+    { path: driverDir(P.runDir, "findings-unfolded.json"), kind: "driver-side", why: "modelRecordPath: the writer's own record while a fold is in force" },
+    // The research a later review is told the run obtained after the full review. Carried only by an arm that reproduces a
+    // later review: a full review's copy would hold answers the run got after it.
+    ...(dispatchTrigger !== "fresh" ? [{ path: driverDir(P.runDir, "research-answers.jsonl"), kind: "driver-side",
+      why: "writerExclusionBlock writes research-after-review.md from it for a later review; without it that arm is told of none" }] : []),
+    // Placement's floor decisions and the writer's declinations, which the review is told when its message is built
+    // (messageCtxFor): placement's are read through the same files as the set-asides the reading step and the writer are
+    // told. Measured on a saved run, 2026-10-29: an arm without them was told none of placement's 33 floor decisions and
+    // none of the writer's 30 floor lines.
+    ...placementSetAsideReads(P),
+    { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side",
+      why: "the review is told the writer's declinations from it when its message is built; without it the arm is told of none" },
   ],
 };
 
@@ -368,6 +405,10 @@ export const CONTEXT_DERIVATIONS = [
     // obvious three would let the sandbox derive a sidecar with different counts and audit rows from
     // the canonical one, silently, which is this registry's whole subject matter one level down.
     writes: (P) => [driverDir(P.runDir, DIGEST_FACTS_FILE), driverDir(P.runDir, DIGEST_ACCOUNTING_STAMP)],
+    // A projection taken at dispatch, which the replay fills only where the run has none and never re-derives over
+    // (pipeline.mjs DERIVATION_RUNNERS). Its reads include the digest's own output, which moves once the digest
+    // writes, so a replay is handed the dispatch's picture when the copy is the one the dispatch wrote (derived-state.mjs).
+    projection: true,
     reads: (P) => [
       { path: P.registerNamedBand, why: "the slim record index — every identifier cell the render prints, keyed by the uri the seat cites" },
       { path: P.readingLog, why: "readOkRecordUris — which records this run actually read" },

@@ -53,7 +53,7 @@ import { basename } from "node:path";
 // this file would trade locality for nothing: what was missing was never their location, it was that
 // nothing enumerated them, so the guard could not walk them. They are imported and registered.
 import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES, followupScopeLines } from "./stages.mjs";
-import { refutationStandingLines, refutationOpenItemsLine, REFUTATION_RECORDING_LINES } from "./stages.mjs";
+import { refutationStandingLines, refutationOpenItemsLine, REFUTATION_RECORDING_LINES, writerExclusionLines } from "./stages.mjs";
 import { buildReconcileFollowup } from "./recall-reconciliation.mjs";
 import { buildFlushFollowup } from "./digest-queue.mjs";
 
@@ -98,6 +98,10 @@ const SAMPLE_SCOPE = Object.freeze({ job: { jobKey: "sample", classes: ["9"], ge
 // repair carry the same rules and steps, from the narrowing rule through the placement rulings. They live
 // here once, so the two corrections cannot drift apart; the first correction's text is byte-identical to
 // what it was before they moved.
+// THE EMPTY FINDING LIST, in design's words (ruled 2026-10-30), wherever a correction or a recheck names no finding:
+// true of a flag about the document, a flag about an excluded position, and a mixture. The lists beside it and the
+// scope sentence say what the work is.
+export const NO_FINDING_NAMED = "(no existing finding is named)";
 const KNOCK_ON = `If applying a flag genuinely REQUIRES changing a finding outside that list — a knock-on the reviewer did not see — make the change and say which one and why in the "corrections" note. A silent edit outside the scope is the one thing this instruction forbids; a reasoned one is not.`;
 // ── THE REVIEW AFTER A REPAIR: HOW ITS LIST IS RENDERED FROM VALUES ─────────────────────────────────────
 //
@@ -269,10 +273,18 @@ export const REPAIR_COMPOSERS = [
       // is about, the corrective pass is told so and told that nothing else may move. When any flag
       // declares nothing, this is "" and the dispatch is byte-identical to the one before it existed —
       // the narrowing is bought by the reviewer's own declaration, never assumed on its behalf.
+      // A flag about a writer's exclusion names the position, which has no ordinal: the block lists it and says what the
+      // two answers are, and the narrowing holds for everything else. Where another flag declared nothing there is no
+      // block, and the positions line stands alone: the pass is told the position and its row, and stays open.
+      const positions = Array.isArray(scope?.positionLabels) && scope.positionLabels.length ? scope.positionLabels : [];
+      const answers = "For each, either record it as a finding, or keep its exclusion by calling `record_declination` again for its row with a ground that answers the flag.";
+      const positionsLine = !scope?.scoped && positions.length ? `THE EXCLUDED POSITIONS THE REVIEWER'S FLAGS ARE ABOUT: ${positions.join("; ")}. ${answers}` : "";
       const scopeBlock = scope?.scoped ? lines(
         `SCOPE — THE REVIEWER DECLARED WHICH FINDINGS ITS FLAGS ARE ABOUT, AND THIS IS THE COMPLETE LIST: ${
-          scope.ordinals.length ? scope.ordinals.map((o) => `#${o}`).join(", ") : "(none — every flag is about the document, not a finding)"}.`,
-        `Change ONLY those finding objects and ONLY the narrative passages that discuss them. EVERY OTHER FINDING OBJECT IN ${findings} MUST COME BACK BYTE-IDENTICAL — do not re-derive it, do not re-word it, do not re-order its keys. The driver compares them and records anything that moved.`,
+          scope.ordinals.length ? scope.ordinals.map((o) => `#${o}`).join(", ") : NO_FINDING_NAMED}.`,
+        positions.length ? `THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: ${positions.join("; ")}. ${answers}` : "",
+        // The scope sentence is the one ruled 2026-10-30: the passages a document flag identifies are inside the scope.
+        `Change the named finding objects, any finding you record for the named excluded positions, and the document passages the flags identify. Preserve unaffected findings and passages. If a correction requires another change, record what changed and why. EVERY OTHER FINDING OBJECT IN ${findings} MUST COME BACK BYTE-IDENTICAL — do not re-derive it, do not re-word it, do not re-order its keys. The driver compares them and records anything that moved.`,
         KNOCK_ON,
       ) : "";
       return lines(
@@ -283,6 +295,7 @@ export const REPAIR_COMPOSERS = [
         `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. The independent refutation flagged the corrections below. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, remove the sentence, or verify-flag for re-check) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
         ...correctiveRules({ narrative, findings, placement, rulingsTail }),
         scopeBlock ? lines(scopeBlock, ``) : "",
+        positionsLine ? lines(positionsLine, ``) : "",
         worklist ? lines(worklist, ``) : "",
         `The reviewer's flags, verbatim:`,
         ``,
@@ -290,9 +303,10 @@ export const REPAIR_COMPOSERS = [
         review,
       );
     },
-    // TWO SAMPLES BECAUSE THE COMPOSER HAS TWO SHAPES, and the saving is the whole point of the
+    // THREE SAMPLES BECAUSE THE COMPOSER HAS THREE SHAPES, and the saving is the whole point of the
     // second: a declared scope narrows the pass, an undeclared one leaves it byte-identical to what it
-    // was before that existed. A guard walking only one of them walks half the surface.
+    // was before that existed. The third is an undeclared scope whose flags name an excluded position.
+    // A guard walking only one of them walks part of the surface.
     samples: [
       { name: "no declared scope, no placement tail", tail: "tool",
         args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
@@ -301,6 +315,10 @@ export const REPAIR_COMPOSERS = [
         args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
           rulingsTail: "| axis | ruling |", scope: { scoped: true, ordinals: [1, 4] },
           worklist: "- #1 correct the owner", review: "the flags, verbatim" } },
+      { name: "no declared scope, a flag on an excluded position", tail: "tool",
+        args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
+          rulingsTail: "", scope: { scoped: false, ordinals: [], positions: ["/mark/eu/d1"], positionLabels: ["QZORVEX — Delta AG (/mark/eu/d1), row 2"] },
+          worklist: "", review: "the flags, verbatim" } },
     ],
   },
   {
@@ -316,9 +334,9 @@ export const REPAIR_COMPOSERS = [
     // review could not be read, when the change could not be narrowed, and on a resume after an unread review.
     compose: ({ narrative, findings, placement, rulingsTail, items, renumbered, worklist, review, whole = false }) => lines(
       `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. ${whole ? "After the delivery check, that record was repaired, and the full independent review ran again." : "After the delivery check, that record was repaired, and an independent review then read only what the repair changed and what rests on it."} It flagged the corrections below, and nothing reviews this pass again. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, or remove the sentence) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
-      // An empty list does not reuse the first correction's "every flag is about the document": here an unplaced flag
-      // may be about a finding, and the line below says how to apply one.
-      `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : "(none named; apply each unplaced flag as described below)"}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
+      // An empty list reads as every correction's does (NO_FINDING_NAMED): an unplaced flag may still be about a
+      // finding, and the line below says how to apply one.
+      `THE FLAGS NAME THESE ITEMS: ${items?.length ? items.join(", ") : NO_FINDING_NAMED}. Change only the items the flags are about and the narrative passages that discuss them. Everything else in the record stays as the driver last accepted it from you.`,
       `For a coverage line the repair changed, a flag may ask for its state or its facts to change, not only its words. Make that change only where the line then claims less than it does now, as the narrowing rule below requires. This is the one exception to the rule below that the coverage account is not yours to reopen; every other coverage line keeps its area, its state and every fact it states.`,
       `A flag that names no item is applied to the item it is about; name that item in the "corrections" note. If you cannot tell what the flag is about, change nothing for it and say so in the note.`,
       renumbered ? `Where a flag's own words give a finding a different number from its [on: …], use the [on: …] number. It is the number in your record.` : "",
@@ -347,14 +365,14 @@ export const REPAIR_COMPOSERS = [
     trigger: "verdict-recheck",
     stage: "narrative-refutation",
     key: "narrative-refutation:verdict-recheck",
-    compose: ({ narrative, findings, seniorEyeReview, correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry }) => lines(
+    compose: ({ narrative, findings, seniorEyeReview, correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry, writerExclusions = null }) => lines(
       `This is a fresh session: your earlier refutation is not in your context, and you do NOT redo it from scratch. Your prior verdict and its flags are in ${seniorEyeReview} — open it first — and the source files you refuted against are listed below.`,
       // — WHEN THE SCOPE WAS DECLARED, THE RE-READ IS NARROWED TO IT. The recheck cost 270-510 s on
       // every measured run, and its whole job is to judge whether the corrections are RIGHT — not to
       // re-derive which parts of two long documents changed. The driver already knows: it holds the
       // pre-corrective snapshot and compared every finding outside the declared scope.
       correctionsScope?.scoped
-        ? `The synthesis author applied your flagged corrections. YOU DECLARED WHICH FINDINGS YOUR FLAGS WERE ABOUT, so read narrowly: in ${findings}, verify ${correctionsScope.named.length ? correctionsScope.named.map((o) => `#${o}`).join(", ") : "(no finding — your flags were about the document)"} and the narrative passages in ${narrative} that discuss them. THE DRIVER COMPARED EVERY OTHER FINDING OBJECT against the pre-correction file${correctionsScope.moved.length ? ` and ${correctionsScope.moved.length} moved anyway — ${correctionsScope.moved.map((o) => `#${o}`).join(", ")}; read those too and say whether the change is defended` : " and none moved, so you do not need to re-read them"}. Then re-write ${seniorEyeReview}: the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line, then any corrections that still stand.`
+        ? `The synthesis author applied your flagged corrections. YOU DECLARED WHICH FINDINGS YOUR FLAGS WERE ABOUT, so read narrowly: in ${findings}, verify ${correctionsScope.named.length ? correctionsScope.named.map((o) => `#${o}`).join(", ") : NO_FINDING_NAMED} and the narrative passages in ${narrative} that discuss them.${correctionsScope.positions?.length ? " For each excluded position your flags named, check the resulting finding or renewed exclusion against the evidence and the specific objection you raised. A newly recorded ground alone does not settle the flag. Retain the flag if its factual error, reasoning error, or relevant uncertainty remains." : ""} THE DRIVER COMPARED EVERY OTHER FINDING OBJECT against the pre-correction file${correctionsScope.moved.length ? ` and ${correctionsScope.moved.length} moved anyway — ${correctionsScope.moved.map((o) => `#${o}`).join(", ")}; read those too and say whether the change is defended` : " and none moved, so you do not need to re-read them"}. Then re-write ${seniorEyeReview}: the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line, then any corrections that still stand.`
         : `The synthesis author applied your flagged corrections and re-emitted the narrative ${narrative} AND the machine findings ${findings}. Re-read BOTH updated files — verify the structured findings (owners, tiers, dispositions; a killed finding must be "withdrawn") carry your corrections — re-verify your prior concerns, then re-write ${seniorEyeReview}: the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line, then any corrections that still stand.`,
       // THOSE TWO FILES ARE THE ONLY EVIDENCE THAT EXISTS YET. report.md is BUILT FROM the narrative at
       // report-overview / report-card, both of which run AFTER this gate, so they hold the PREVIOUS
@@ -362,6 +380,8 @@ export const REPAIR_COMPOSERS = [
       // blocked assertions still present, and returned BLOCKING — two steps before the stage that would
       // have rebuilt them. Blocking on that staleness is unwinnable, so say plainly that it is expected.
       `Judge ONLY ${narrative} and ${findings}. The report and the client summary are GENERATED FROM the narrative by stages that run after this gate, so on disk they still carry the previous round's text — that is expected and is NOT evidence a correction failed to land. Do not read them as the deliverable and do not block on them.`,
+      // The writer's exclusions a recheck reads: the ones that changed and the ones its flags named, then the others for reference.
+      ...writerExclusionLines(writerExclusions),
       appliedTable,
       // — WHAT THE DRIVER PUT BACK, and why the reviewer has to be told rather than
       // merely handed the file. Every other row in this document is the seat's judgment; a restored row
@@ -392,6 +412,15 @@ export const REPAIR_COMPOSERS = [
         args: { narrative: "narrative.md", findings: "findings.json", seniorEyeReview: "senior-eye-review.md",
           correctionsScope: { scoped: true, named: [1], moved: [4] },
           appliedTable: "| flag | outcome |", restoredTable: "", evidenceTable: "| finding | meter | what moved |", planAuditCarry: "plan-audit carry" } },
+      // A later review is given every exclusion: the ones it checks, the research obtained after the full review, and
+      // the others for reference.
+      { name: "declared scope, a named position, and the other exclusions for reference", tail: "none",
+        args: { narrative: "narrative.md", findings: "findings.json", seniorEyeReview: "senior-eye-review.md",
+          correctionsScope: { scoped: true, named: [], positions: ["/mark/eu/d1"], moved: [] },
+          appliedTable: "", restoredTable: "", evidenceTable: "", planAuditCarry: "",
+          writerExclusions: { state: "listed", review: "later", changedOnly: true, research: 2,
+            lines: ["- QZORVEX — Delta AG (/mark/eu/d1): placement: sheet-2 — near in sound; excluded by the writer as sign: a different ending"],
+            reference: ["- ZORVA — Epsilon BV (/mark/eu/e1): placement: watchlist-annex — a shared root; excluded by the writer as unrelated-goods: logistics software"] } } },
     ],
   },
   {
@@ -403,17 +432,17 @@ export const REPAIR_COMPOSERS = [
     // correction. VALUES IN: the list `repair-scope.mjs listForReview` computed from the writer's record before
     // and after the repair. The standing tools and notes, the open-items check and the recording lines are the
     // full review's own, read from one shared text in stages.mjs.
-    compose: ({ findings, changes, resting, renumbered, coverageChanged, evidence, registerOnly = false, job = {}, skepticFlags, frameReopenReceipt, floorDecisions = null }) => lines(
+    compose: ({ findings, changes, resting, renumbered, coverageChanged, evidence, registerOnly = false, job = {}, skepticFlags, frameReopenReceipt, floorDecisions = null, writerExclusions = null }) => lines(
       `This is a review of a repair, not a full review. Earlier in this run the narrative was reviewed in full, and the corrections that review raised went to the writer. The delivery check then found a fault, and the writer repaired the record.`,
       `Review only what that repair changed, listed below under WHAT THE REPAIR CHANGED, and any statement elsewhere in the narrative or in the findings record, ${findings}, that rests on a changed item. Such a statement no longer holds if the change leaves it untrue, without its support, or incomplete.`,
       `Everything else stands as this run's earlier reviews left it. Do not flag a statement that rests on no changed item.`,
       `From your own manual, skills/narrative-refutation/SKILL.md, use only the checks that bear on these items. Its whole-report checks, its length target for a review and its expectation that a clean review is rare belong to the full review, not to this one. A clean result is a normal outcome here.`,
       `Check each changed item against the evidence named for it, and each statement that rests on a changed item against the new values.`,
-      `Say what each flag is about. For a finding, put its number from the list below in \`on\`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for "<area>".`,
+      `Say what each flag is about. For a finding, put its number from the list below in \`on\`. For a writer's exclusion, put a record id from its entry in \`positions\`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for "<area>".`,
       renumbered ? `Where a finding below shows two numbers, put the first in \`on\`. The second is its number in findings.json.` : "",
       `Your verdict is about the repair. CLEAR: what changed is sound, and every statement that rests on a changed item still holds. CONDITIONAL: a flag needs a correction. BLOCKING: the change makes the report unsafe to sign, under your manual's verdict logic.`,
       `Your flags go to one correction pass by the writer, and nothing reviews that pass again. Make each fix exact.`,
-      ...refutationStandingLines({ registerOnly, job, floorDecisions }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions, writerExclusions }),
       // A repair that rewrites coverage lines can drop an open item; when coverage is untouched, the full review
       // already checked this.
       coverageChanged ? refutationOpenItemsLine({ skepticFlags, frameReopenReceipt }) : "",
@@ -448,6 +477,13 @@ export const REPAIR_COMPOSERS = [
         args: { findings: "findings.json", registerOnly: true, skepticFlags: "skeptic-flags.json", frameReopenReceipt: "frame-reopen.json",
           changes: [{ kind: "finding", change: "removed", ordinal: 3, delivered: null, before: { ordinal: 3, mark: "NOVA" } }],
           resting: [], renumbered: false, coverageChanged: false, evidence: { coverage: false, finding: true } } },
+      { name: "a changed finding, no exclusion changed, the exclusions for reference", tail: "none",
+        args: { findings: "findings.json", skepticFlags: "skeptic-flags.json", frameReopenReceipt: "frame-reopen.json",
+          changes: [{ kind: "finding", change: "changed", ordinal: 2, delivered: 2, fields: ["band"], before: { band: "Moderate" }, after: { band: "Low" },
+            records: { source_type: "register-vendor", resolved_link: "https://example.invalid/mark/2" } }],
+          resting: [], renumbered: false, coverageChanged: false, evidence: { coverage: false, finding: true }, floorDecisions: [],
+          writerExclusions: { state: "listed", review: "later", changedOnly: true, research: 0, lines: [],
+            reference: ["- ZORVA — Epsilon BV (/mark/eu/e1): placement: watchlist-annex — a shared root; excluded by the writer as unrelated-goods: logistics software"] } } },
     ],
   },
   {

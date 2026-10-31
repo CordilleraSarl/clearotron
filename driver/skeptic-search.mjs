@@ -37,7 +37,7 @@ import { readFileSync, realpathSync, statSync } from "node:fs";
 import { resolve, sep, isAbsolute } from "node:path";
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
 import { answerBudget } from "../shared/answer-parts.mjs";   // the reply size this server was given
-import { RESEARCH_ANSWERS_MD } from "./research-answers.mjs";   // the one artifact whose lines come back whole
+import { RESEARCH_ANSWERS_MD, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs";   // the two artifacts whose lines come back whole
 
 /**
  * Which refusal a failed path resolution earns, from the error's CODE.
@@ -66,6 +66,8 @@ export const SEARCH_LIMITS = Object.freeze({
 // as `research-answers.md`, one question and its answer per line, and finds one by the owner's name (research-answers.mjs).
 // A line cut at `maxLineChars` would hand back the question and drop the answer, so that file's matching lines come
 // back whole, as many as one reply holds. The reply stops between lines, never inside one, and says it left lines out.
+// A later review is handed the research obtained after the full review the same way, in its own file.
+const WHOLE_LINES = new Set([RESEARCH_ANSWERS_MD, RESEARCH_AFTER_REVIEW_MD]);
 const wholeLinesCap = (limits) => {
   const budget = answerBudget();
   return Math.min(limits.wholeLinesChars ?? SEARCH_LIMITS.wholeLinesChars, budget ? Math.floor(budget * 0.75) : Infinity);
@@ -180,7 +182,7 @@ export function searchRunArtifacts(runDir, params, { limits = SEARCH_LIMITS } = 
   const lines = readFileSync(real, "utf8").split("\n");
   const matches = [];
   let total = 0;
-  const whole = realRel === RESEARCH_ANSWERS_MD ? wholeLinesCap(limits) : 0;
+  const whole = WHOLE_LINES.has(realRel) ? wholeLinesCap(limits) : 0;
   let replyChars = 0, replyFull = false;
   for (let i = 0; i < lines.length; i++) {
     const hay = caseSensitive ? lines[i] : lines[i].toLowerCase();

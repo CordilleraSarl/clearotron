@@ -176,7 +176,7 @@ session** (the driver sends the skeptic's concerns as a follow-up under the unit
 records — and is asked to **defend its finding from that evidence or run only the narrow missing sub-query and
 revise**, then re-emit its file. It does **not** redo the search from scratch, and it is **not** switched to a
 fresh `opus` session (that would cold-cache the whole thread — cache is model-specific — for no quality gain over
-arguing from the evidence already in hand; opus judgment happens once, at the re-digest). **A `deferred`
+arguing from the evidence already in hand). **A `deferred`
 coverage-ledger row the table lists as CLOSEABLE is exactly this kind of documented-reason gap** — the owning
 unit resumes and runs the missing question. A deferral the table marks NOT CLOSEABLE is not re-run. This is the
 recall-recovery loop: a *visible* deferral is recoverable; a silent one is not. **If a register unit is re-run,

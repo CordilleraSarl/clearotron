@@ -25,7 +25,7 @@ const REVIEW_OPENING = [
   "Everything else stands as this run's earlier reviews left it. Do not flag a statement that rests on no changed item.",
   "From your own manual, skills/narrative-refutation/SKILL.md, use only the checks that bear on these items. Its whole-report checks, its length target for a review and its expectation that a clean review is rare belong to the full review, not to this one. A clean result is a normal outcome here.",
   "Check each changed item against the evidence named for it, and each statement that rests on a changed item against the new values.",
-  "Say what each flag is about. For a finding, put its number from the list below in `on`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for \"<area>\".",
+  "Say what each flag is about. For a finding, put its number from the list below in `on`. For a writer's exclusion, put a record id from its entry in `positions`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for \"<area>\".",
 ];
 const RENUMBERED = "Where a finding below shows two numbers, put the first in `on`. The second is its number in findings.json.";
 const VERDICT = "Your verdict is about the repair. CLEAR: what changed is sound, and every statement that rests on a changed item still holds. CONDITIONAL: a flag needs a correction. BLOCKING: the change makes the report unsafe to sign, under your manual's verdict logic.";
@@ -117,9 +117,9 @@ test("the one correction after that review opens on where its flags come from an
   assert.ok(c, "the composer is registered");
   const [plain, renumbered, whole] = c.samples.map((s) => c.compose(s.args).split("\n"));
   assert.deepEqual(plain.slice(0, 4), [CORRECTION_OPENING, ITEMS("finding 2, the coverage line for \"register / EU\""), NARROWED, NO_ITEM]);
-  // With no item named, the line says so and points at the rule for an unplaced flag below it: "every flag is about the
-  // document" would be false here, where an unplaced flag may be about a finding (design's wording, 2026-10-18).
-  assert.deepEqual(renumbered.slice(0, 5), [CORRECTION_OPENING, ITEMS("(none named; apply each unplaced flag as described below)"), NARROWED, NO_ITEM, ON_NUMBER]);
+  // With no item named, the line reads as every correction's empty finding list does (design's wording, 2026-10-30),
+  // and the rule for an unplaced flag follows it.
+  assert.deepEqual(renumbered.slice(0, 5), [CORRECTION_OPENING, ITEMS("(no existing finding is named)"), NARROWED, NO_ITEM, ON_NUMBER]);
   // After a whole review the opening says so, and nothing else in the message changes (design's wording, 2026-10-18).
   assert.equal(whole[0], CORRECTION_OPENING.replace("and an independent review then read only what the repair changed and what rests on it.",
     "and the full independent review ran again."), "a whole review's correction is told the review read only the change");

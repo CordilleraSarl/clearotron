@@ -36,17 +36,18 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
-import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
+import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
 import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // a band read with the slices a check could not prove ran taken out
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
+import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./derived-state.mjs";   // the register picture a dispatch was handed, so a replay can be checked against it
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
-import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
+import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
-import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
@@ -107,9 +108,10 @@ import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFlo
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
+import { orderSnapshot, retainAcceptedOrder, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
-import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
+import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
 // THE OFFERING'S own sentence about where the native-language investigation can be bought. It reaches a
@@ -128,13 +130,13 @@ import { seedRunStatus, recordTransition, writeRunStatus, readRunStatus, rollupS
 import { batchMarkName } from "./mark-name.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { publishReport, composeEmailHtml, deliverySubject } from "./publish/index.mjs";
-import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
+import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs"; import { emailConditionsOfReport } from "./publish/email-conditions.mjs";   // what the cover email carries, for the delivery check
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate, readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { bandShapeGoods, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
-import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
+import { romanizedTermsFromPlan, mintSupplementalQid, stableStringify } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT, rowOutsideProviderOffices } from "./register-plan.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 import { waitingCrossCheck, undecidedCrossChecks, withoutWait } from "./cross-check-wait.mjs";   // the cross-checks wait for the reading step   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
@@ -159,7 +161,8 @@ import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebas
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { citedFindingNumbers } from "./finding-citations.mjs";   // the findings an exclusion's ground cites
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, heldBodiesOf, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations, declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -191,7 +194,7 @@ import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
-import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs";
+import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
@@ -3586,29 +3589,195 @@ export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — 
 }
 
 /**
- * THE FLOORS THE WRITER DECLINED, AS THE REVIEW IS TOLD THEM (ruled 2026-10-27): one line per floor on a position the
- * writer declined, with its reason and its ground, after placement's decisions. The writer may decline a mark identical
- * to the applied-for mark on goods the run holds complete, and a review told only placement's decisions read such a
- * floor as one the narrative neither rates nor reasons away, and sent it back. [] when nothing stands. IMPURE.
+ * THE WRITER'S EXCLUSIONS, AS THE REVIEW IS TOLD THEM (ruled 2026-10-29). Every position placement put forward and the
+ * writer was handed, at any tier, that ends in a declination rather than a finding: one entry per position, with
+ * placement's tier and its whole reason (a borderline entry's competing readings live there), the writer's reason and
+ * ground, the position's records for the band tools, and the floors it covers. The review used to be told only the
+ * declinations that covered a floor, so a writer's exclusion of a headline candidate off the floors reached it as an
+ * absence. Read from the run's files each time a message is built, like placement's decisions.
+ *
+ * "NONE" IS A CLAIM, SO IT IS EARNED. `state` is "listed", "none", "unreadable" or "no-positions". "none" means every
+ * position handed to the writer is ended by a finding; an absent ledger is that answer only then, because a position
+ * with no finding and no declination is a decision the record does not hold. An unreadable placements file, ledger or
+ * findings file is "unreadable", never "none". "no-positions" is a run KNOWN to have handed the writer no position: its
+ * placements file reads and carries none. A missing placements file is not that: placement runs on every clearance,
+ * so its record is expected, and a missing one is "unreadable" (ruled 2026-10-30). A finding the report carries ends a
+ * position whatever the ledger still holds; a withdrawn one ends only a position the writer never declined.
+ *
+ * `delivered` is every record the findings the report carries name, and `findings` each finding's owner and
+ * fingerprint, withdrawn ones included, for a later review to establish from the findings themselves which exclusions a
+ * finding now delivers and which a changed finding touches; both are null where the findings cannot be read.
+ *
+ * Each position's `evidence` fingerprints what the run holds of its records, by content (ruled 2026-10-30): each
+ * record's band row with the register's answer as it came, the body the run holds for it, and the goods state the
+ * writer's list was given. Status, classes and that state are not enough: a record's registered goods can be reworded while all three
+ * stay the same, and a body obtained after the full review changes what an exclusion rests on. Only what the run
+ * already holds is compared; nothing is fetched for it. IMPURE.
  */
-export function writerFloorDeclinationLines(P) {   // @internal — driven by its test with a run's own files
+export function writerExclusions(P) {   // @internal — driven by its test with a run's own files
+  const empty = (state) => ({ state, positions: [], undecided: 0, delivered: null, findings: null });
   try {
-    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
-    if (!Array.isArray(floors) || !floors.length) return [];
+    if (!P?.placementModel || !existsSync(P.placementModel)) return empty("unreadable");
+    let placements;
+    try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; } catch { return empty("unreadable"); }
+    const rows = findingsSurfaceRows(P);
+    if (!rows.length) return empty("no-positions");
+    const key = (u) => String(normalizeRecordUri(u) ?? "");
     const declined = readDeclinations(P.runDir);
-    if (!declined.byUri.size) return [];
-    // A declination is the position's: each record of a row the writer was handed reads its row's.
-    const rowOf = new Map();
-    for (const row of findingsSurfaceRows(P))
-      for (const u of (Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri])) rowOf.set(normalizeRecordUri(u), normalizeRecordUri(row?.uri));
-    const out = [];
-    for (const f of floors) {
-      const u = normalizeRecordUri(f?.record_id);
-      const d = u ? declined.byUri.get(rowOf.get(u) ?? u) : null;
-      if (d) out.push(`- ${f.mark_text ?? "(unnamed)"}${f.owner_name ? ` — ${f.owner_name}` : ""} (${f.record_id}): declined by the writer as ${d.reason}: ${d.grounds}`);
+    if (existsSync(declinationCallPaths(P.runDir, 0).ledger) && !declined.present) return empty("unreadable");
+    let delivered, withdrawn, findings;
+    try {
+      const found = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? [];
+      [delivered, withdrawn] = [true, false].map((live) => new Set([...findingUris(found.filter((f) => (f?.disposition !== "withdrawn") === live)).keys()].map(key)));
+      // Each finding as the writer numbered it. A later review's comparison and a ground's "finding 9" both read the
+      // writer's numbering, and from the delivery seam on findings.json is the folded, renumbered record (record-fold.mjs).
+      const modelAt = modelRecordPath(P.runDir, P.findings);
+      const own = modelAt === P.findings ? found : (parseFindingsJsonLenient(readFileSync(modelAt, "utf8"))?.findings ?? []);
+      findings = own.map((f) => ({ ordinal: f?.ordinal ?? null, owner: String(f?.owner?.name ?? f?.owner_name ?? (typeof f?.owner === "string" ? f.owner : "") ?? ""),
+        fp: createHash("sha256").update(JSON.stringify(f ?? null)).digest("hex").slice(0, 16) }));
+    } catch { return empty("unreadable"); }
+    // The goods state each record was given on the writer's list, where the list carries one.
+    const goodsOf = new Map();
+    for (const r of safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows ?? [])
+      for (const m of [r, ...(Array.isArray(r?.members) ? r.members : [])]) if (m?.uri) goodsOf.set(key(m.uri), m.goods ?? null);
+    const bandOf = new Map();
+    for (const row of rows) for (const m of (Array.isArray(row?.members) && row.members.length ? row.members : [row])) bandOf.set(key(m?.uri), m);
+    const entryOf = new Map();
+    for (const e of Array.isArray(placements) ? placements : []) for (const u of entryUris(e)) entryOf.set(key(u), e);
+    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
+    const floorIds = new Set((Array.isArray(floors) ? floors : []).map((f) => key(f?.record_id)).filter(Boolean));
+    const positions = [];
+    let undecided = 0;
+    for (const row of rows) {
+      const members = [...new Set((Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri]).map(key).filter(Boolean))];
+      if (members.some((u) => delivered.has(u))) continue;
+      const d = declined.byUri.get(key(row?.uri));
+      if (!d) { if (!members.some((u) => withdrawn.has(u))) undecided++; continue; }
+      const e = entryOf.get(key(row?.uri)) ?? null;
+      positions.push({ uri: key(row.uri), members, mark: e?.mark ?? row.mark ?? null, owner: e?.owner ?? row.owner ?? null,
+        tier: e?.tier ?? row.tier ?? null, borderline: e?.borderline === true, reason: e?.reason ?? null,
+        writerReason: d.reason ?? null, grounds: d.grounds ?? null, floors: members.filter((u) => floorIds.has(u)),
+        // The findings its ground cites, as the ledger recorded them, or read from the ground of an entry written before
+        // the ledger recorded them: the writer's own number, never a name.
+        cites: Array.isArray(d.cites) ? d.cites : citedFindingNumbers(d.grounds, { bare: false }) });
     }
-    return out;
-  } catch { return []; }
+    // WHAT EACH EXCLUSION RESTS ON, read for its own records only.
+    const band = new Map();
+    for (const r of safeReadJson(P.registerNamedBand)?.enumerated ?? []) if (r?.record_id) band.set(key(r.record_id), r);
+    const bodies = heldBodiesOf(P.runDir, positions.flatMap((p) => p.members));
+    for (const p of positions) p.evidence = createHash("sha256").update(stableStringify(p.members.map((u) => ({ uri: u,
+      record: recordContent(band.get(u) ?? bandOf.get(u)), body: bodies.get(u) ?? null, goodsState: goodsOf.get(u) ?? null }))))
+      .digest("hex").slice(0, 16);
+    return { state: undecided ? "unreadable" : positions.length ? "listed" : "none", positions, undecided, delivered, findings };
+  } catch { return empty("unreadable"); }
+}
+
+// A band row as the record it stands for: the register's fields and its answer as it came (`raw`, which holds the goods
+// wording on every register). What the run adds to it (the questions that found it, how a search scored it, the
+// screen's reading) is left out, so the same record found by another question reads alike. The band keeps the first
+// copy of each record (named-band.mjs mergeNamedBands), so a later search does not swap its answer.
+const SEARCH_SIDE = new Set(["screen", "relevance_score", "match"]);
+const recordContent = (row) => (row && typeof row === "object"
+  ? Object.fromEntries(Object.entries(row).filter(([k]) => !k.startsWith("_") && !SEARCH_SIDE.has(k))) : null);
+
+/** One position's entry, as the review reads it. PURE. */
+export const writerExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${x.members.join(", ")}): `
+  + `placement: ${x.tier ?? "(no tier)"}${x.borderline ? ", borderline" : ""} — ${x.reason ?? "(no reason recorded)"}; `
+  + `excluded by the writer as ${x.writerReason}: ${x.grounds}`
+  + (x.floors.length ? `; covers the floor${x.floors.length > 1 ? "s" : ""} ${x.floors.join(", ")}` : "")
+  + (x.revisedCites?.length ? revisedCitesNote(x.revisedCites) : "");
+
+// THE CONNECTION A GROUND RECORDS, NAMED (2026-10-30). An exclusion whose ground cites a finding that changed after the
+// full review is a decision the later review checks, and its entry says which finding. Model-facing: the later review
+// reads it, and only on such an entry.
+export const revisedCitesNote = (ords) => `; that ground cites ${ords.length === 1 ? `finding ${ords[0]}`
+  : `findings ${ords.slice(0, -1).join(", ")} and ${ords[ords.length - 1]}`}, which changed after the full review`;
+
+/** A position the full review read as excluded that a finding now delivers, as a later review reads it. PURE. */
+export const withdrawnExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${(x.members ?? [x.uri]).join(", ")}): excluded at the full review, now delivered as a finding`;
+
+/** What the full review was shown, kept for the reviews after it; and what the last review was shown, for its flags. */
+export const reviewExclusionsPaths = (P) => ({ full: driverDir(P.runDir, "review-exclusions-full.json"), shown: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE) });
+
+/**
+ * THE LIST A REVIEW IS GIVEN, and the record of it. The full review gets every exclusion. A later review (the recheck
+ * after a correction, the review after a delivery-check repair) starts a fresh session, so it is given every exclusion
+ * too, each once, in two parts (ruled 2026-10-30). First the decisions it is checking: the exclusions whose own
+ * sentence, placement's reason or tier, or records' evidence changed since the full review, the ones touched by a
+ * finding about the same owner that changed, the ones whose ground cites a finding that changed (its entry names it),
+ * the ones its own flags named, and the ones a finding now delivers. Then,
+ * under the ruled reference sentence, the other accepted exclusions with their recorded grounds and ids, a floor's
+ * among them: it reconsiders one only where a change it identified affects its grounds. With no full review on record,
+ * or a record it cannot read, a later review gets the whole list as decisions to check.
+ * An exclusion the full review read is said to be delivered only where a current finding names one of its records,
+ * never because it left the list.
+ *
+ * THE RESEARCH THE RUN OBTAINED AFTER THE FULL REVIEW rides beside them (ruled 2026-10-30): every answer the run did not
+ * hold, with that text, when the full review's list was built, written to `research-after-review.md`. No record links an
+ * answer to an exclusion, so none is joined to one here, and no exclusion is counted changed because research changed:
+ * the reviewer judges the connection from the answers and the grounds. The review's own questions are its check, not
+ * evidence the writer's grounds rest on, so they are left out.
+ *
+ * `{state, review, lines, reference, research, changedOnly}`; the review's flags are checked against
+ * `review-exclusions.json`. IMPURE.
+ */
+export function writerExclusionBlock(P, { review = "full", named = [] } = {}) {   // @internal
+  const x = writerExclusions(P);
+  const at = reviewExclusionsPaths(P);
+  const held = runResearchAnswers(P.runDir, { except: reviewSession });
+  let shown = x.positions, reference = [], changedOnly = false, withdrawn = [], research = 0;
+  if (review !== "full" && x.state !== "unreadable") {
+    const full = safeReadJson(at.full);
+    if (Array.isArray(full?.positions)) {
+      const before = new Map(full.positions.map((p) => [p.uri, p]));
+      const names = new Set(named.map((u) => String(normalizeRecordUri(u) ?? "")));
+      const touched = changedFindingOwners(full.findings, x.findings);
+      const revised = changedFindingOrdinals(full.findings, x.findings);
+      const restsOn = (p) => (Array.isArray(p.cites) ? p.cites : []).filter((o) => revised.has(o));
+      const changed = (p, b) => !b || b.writerReason !== p.writerReason || b.grounds !== p.grounds || b.reason !== p.reason
+        || b.tier !== p.tier || Boolean(b.borderline) !== Boolean(p.borderline) || (b.evidence ?? null) !== (p.evidence ?? null);
+      const checked = (p) => names.has(p.uri) || changed(p, before.get(p.uri)) || touched.has(ownerKey(p.owner)) || restsOn(p).length > 0;
+      shown = x.positions.filter(checked).map((p) => (restsOn(p).length ? { ...p, revisedCites: restsOn(p) } : p));
+      reference = x.positions.filter((p) => !checked(p));
+      const now = new Set(x.positions.map((p) => p.uri));
+      withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri) && (p.members ?? [p.uri]).some((u) => x.delivered?.has(u)));
+      changedOnly = true;
+      // A record from before the answers were kept is read by time: what the run obtained after it was written.
+      const had = Array.isArray(full.research) ? new Set(full.research) : null;
+      research = handResearchAfterReview(P.runDir, held.filter((a) => (had ? !had.has(researchAnswerKey(a)) : a.ts > String(full.ts ?? ""))));
+    }
+  }
+  if (review === "full") handResearchAfterReview(P.runDir, []);
+  try {
+    ensureDriverDir(P.runDir);
+    const record = JSON.stringify({ ts: new Date().toISOString(), review, state: x.state, positions: x.positions, findings: x.findings,
+      research: held.map(researchAnswerKey), shown: shown.map((p) => p.uri), reference: reference.map((p) => p.uri) }, null, 2) + "\n";
+    if (review === "full") atomicWrite(at.full, record);
+    atomicWrite(at.shown, record);
+  } catch (e) { runLog(P.runDir, { event: "review-exclusions-write-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
+  return { state: x.state, review, lines: [...shown.map(writerExclusionLine), ...withdrawn.map(withdrawnExclusionLine)],
+    reference: reference.map(writerExclusionLine), research, changedOnly };
+}
+/** A session of the review itself, under its stage key, a retry of it, or an experiment arm's key for it. PURE. */
+const reviewSession = (s) => /-narrative-refutation(?=$|-)/.test(String(s ?? ""));
+/** An owner's name as two records of it are compared: trimmed, spaced once, in any case. PURE. */
+const ownerKey = (o) => String(o ?? "").replace(/\s+/g, " ").trim().toLowerCase();
+/** The ordinals of the findings that changed between two readings, in the writer's numbering: added, removed or
+ *  rewritten. Empty where either reading is missing, so a record from before findings were kept changes nothing. PURE. */
+export function changedFindingOrdinals(before, after) {   // @internal
+  const out = new Set();
+  if (!Array.isArray(before) || !Array.isArray(after)) return out;
+  const a = new Map(before.map((f) => [f?.ordinal, f])), b = new Map(after.map((f) => [f?.ordinal, f]));
+  for (const o of new Set([...a.keys(), ...b.keys()])) if (a.get(o)?.fp !== b.get(o)?.fp) out.add(o);
+  return out;
+}
+/** The owners of those findings, on either reading. PURE. */
+export function changedFindingOwners(before, after) {   // @internal
+  const out = new Set();
+  const a = new Map((before ?? []).map((f) => [f?.ordinal, f])), b = new Map((after ?? []).map((f) => [f?.ordinal, f]));
+  for (const o of changedFindingOrdinals(before, after))
+    for (const f of [a.get(o), b.get(o)]) if (ownerKey(f?.owner)) out.add(ownerKey(f.owner));
+  return out;
 }
 /** Every record a list of the writer's rows names, a position's members included. PURE. */
 const surfaceUris = (rows) => [...new Set(rows.filter((r) => r?.kind !== "page" && r?.uri)
@@ -3624,8 +3793,6 @@ function surfaceGoodsEvidence(ctx, P, rows) {
     return runPrefix ? goodsEvidenceOfDrops(P, runPrefix, surfaceUris(rows)) : null;
   } catch { return null; }
 }
-/** Every floor decision the review reads: placement's, then the writer's. IMPURE (reads the run). */
-const reviewFloorDecisionLines = (P) => [...placementFloorDecisionLines(P), ...writerFloorDeclinationLines(P)];
 
 export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
@@ -5012,7 +5179,8 @@ function clearedForSeat(runDir, label) {
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   // The review is also pointed at the research behind the findings' use checks, where the writer's record wrote it.
-  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: reviewFloorDecisionLines(ctx.paths),
+  if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths),
+    writerExclusions: writerExclusionBlock(ctx.paths, { review: "full" }),
     researchChecks: ctx.paths.researchChecks && existsSync(ctx.paths.researchChecks) ? ctx.paths.researchChecks : null };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
@@ -5216,7 +5384,9 @@ async function stageOnce(name, ctx, opts = {}) {
       // The reading step's and the writer's fresh sessions are given placement's accepted set-asides as they stand,
       // except a narrow repair: it fixes only the faults or objects it names, and the general order to check each
       // ground would widen it. Its inputs, the decisions file among them, are named as for any other.
-      decisions: NARROW_REPAIR_TRIGGERS.has(trigger) ? null : (messageCtxFor(name, ctx)?.placementSetAsides ?? null),
+      // The review holds no set-asides, and its context records the exclusions its full review was shown, so a
+      // follow-up of it does not build one: that would move the record the reviews after it are compared with.
+      decisions: NARROW_REPAIR_TRIGGERS.has(trigger) || name === "narrative-refutation" ? null : (messageCtxFor(name, ctx)?.placementSetAsides ?? null),
     })
     : (def.message(messageCtxFor(name, ctx)) + (opts.extra ? `\n\n${opts.extra}` : ""));
   // Every stage runs as the forwarding agent (derived from the queue location). An explicit opts.agent wins.
@@ -5257,6 +5427,9 @@ async function stageOnce(name, ctx, opts = {}) {
   }
   runLog(P.runDir, { event: "stage-limit-derived", stage: name, base: def.timeoutSec,
     inputBytes: derivedLimit.inputBytes, derivedLimitSec: derivedLimit.sec, basis: derivedLimit.basis });
+  // The register picture this dispatch is handed, by content (derived-state.mjs), so a replay can tell whether it is
+  // handed the same one. Never throws; [] when the stage's context reaches no derivation.
+  const derivedState = derivedStateOf(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
   const r = await runStage(label, {
     agent: execAgent,
     message,
@@ -5346,6 +5519,7 @@ async function stageOnce(name, ctx, opts = {}) {
     followup: followupDispatch,
     readsTruncated: r.readsTruncated ?? null,
     warm: r.warm ?? null,
+    ...(derivedState.length ? { derivedState } : {}),
     output: out ? outputMeta(out) : null,
     outputWritten: r.wrote ?? null,
     summary: r.json?.summary,
@@ -5945,6 +6119,51 @@ export function stageCharter(stageName, depth, framework = null) {   // @interna
  * A re-emission that is not told the rung is not a repair of the rung's output. It is a fresh write
  * under the default contract, wearing the corrective pass's name.
  */
+/** A flag's position ids as the review's list keys them; null when it names none. PURE. */
+const positionIdsOf = (ids, listed) => {
+  if (!Array.isArray(ids) || !ids.length) return null;
+  const out = [...new Set(ids.map((p) => listed?.get(String(normalizeRecordUri(p) ?? "")) ?? String(normalizeRecordUri(p) ?? p)))];
+  return out.length ? out : null;
+};
+
+/**
+ * WHAT A FLAG IS ABOUT, READ ONE WAY FOR THE CORRECTION AND ITS RECHECK (ruled 2026-10-30). A finding flag names its
+ * findings; a flag on a writer's exclusion names its positions; a flag about the document names the passage, section or
+ * coverage claim in its text, and carries no finding ordinal, which is normal for it. That is a declared target, `[]`,
+ * as the rendered review's `[on: -]` already reads, so a document flag no longer opens every finding for revision. A flag
+ * whose target cannot be read, one with no text, stays `null`, which leaves the pass open: an unidentified target is not
+ * a document one. PURE.
+ */
+export const flagOrdinals = (f) => (Array.isArray(f?.on) && f.on.length ? f.on : String(f?.text ?? "").trim() ? [] : null);   // @internal
+
+/**
+ * The review's flags as the correction and its recheck read them: from the typed call the review recorded, or, for a
+ * review that has none (an archived run, a review the tool refused), parsed from its rendered document. Both read a flag's
+ * target the same way. IMPURE (reads the run's accepted call and its exclusions list).
+ */
+export function correctionRows(P, review, typed = readAcceptedFlags(P?.runDir)) {   // @internal
+  if (!typed) return parseCorrections(review);
+  const listed = listedExclusionPositions(P.runDir);
+  return typed.map((f, i) => ({
+    n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
+    ordinals: flagOrdinals(f),
+    // A writer's excluded position, as the review's list keys it, whichever of its record ids the flag named.
+    positions: positionIdsOf(f.positions, listed),
+  }));
+}
+
+/** The scope with each named position's mark, owner and id, as the corrective pass is told them. IMPURE (reads the run). */
+function withPositionLabels(scope, P) {
+  if (!scope?.positions?.length) return scope;
+  const shown = safeReadJson(reviewExclusionsPaths(P).shown);
+  const byUri = new Map((Array.isArray(shown?.positions) ? shown.positions : []).map((p) => [p.uri, p]));
+  // Its row in the list `record_declination` reads, prepared again before this pass, so keeping an exclusion names the row.
+  const spec = safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows;
+  const rowOf = (u) => (Array.isArray(spec) ? spec.findIndex((r) => r?.kind !== "page" && String(normalizeRecordUri(r?.uri) ?? "") === u) : -1);
+  const label = (u) => { const p = byUri.get(u); const i = rowOf(u); return `${p?.mark ?? "(unnamed)"}${p?.owner ? ` — ${p.owner}` : ""} (${u})${i >= 0 ? `, row ${i}` : ""}`; };
+  return { ...scope, positionLabels: scope.positions.map(label) };
+}
+
 export function correctionsExtra(P, depth = null, framework = null) {   // @internal
   const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
@@ -5968,16 +6187,7 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
   // cannot tell which source produced a worklist cannot tell a missed flag from an absent one, so the
   // choice is written to the run log with the count each source yielded.
   const typed = readAcceptedFlags(P.runDir);
-  const rows = typed
-    ? typed.map((f, i) => ({
-        n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
-        // `on` is OMITTED for a flag about the document rather than a finding, and `correctionScope`
-        // reads `ordinals == null` as "unscoped". Mapping an absent `on` to null rather than [] keeps
-        // that meaning: an empty array would read as "scoped to no findings", which narrows the pass to
-        // nothing instead of widening it to everything.
-        ordinals: Array.isArray(f.on) && f.on.length ? f.on : null,
-      }))
-    : parseCorrections(review);
+  const rows = correctionRows(P, review, typed);
   if (P.runDir) {
     try {
       runLog(P.runDir, {
@@ -5997,8 +6207,9 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
   // finding moved. When every flag declares which finding it is about, the pass is told so, and told
   // that nothing else may move. When any flag declares nothing, this is "" and the dispatch is
   // byte-identical to the one before this existed — the narrowing is bought by the reviewer's own
-  // declaration, never assumed on its behalf.
-  const scope = correctionScope(rows);
+  // declaration, never assumed on its behalf. The positions the flags named ride either way, with their rows.
+  const named = flaggedPositions(rows);
+  const scope = withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P);
   // THE RUNG RIDES THE CORRECTIVE RE-EMISSION, byte-identically with the fresh dispatch. Appended rather
   // than threaded through `repairFollowup`'s fields so both dispatches carry the SAME STRING from the
   // SAME function, and an arm can compare them without knowing how either is assembled.
@@ -7137,7 +7348,8 @@ async function runPostRepairReview(ctx, P, run, scope) {
   const changedInputs = changedInputsOf(scope.changed, { narrative: P.narrative, findings: P.findings });
   const message = repairFollowup("narrative-refutation:post-repair-review", {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
-    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: reviewFloorDecisionLines(P),
+    skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
+    writerExclusions: writerExclusionBlock(P, { review: "later" }),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
@@ -7379,8 +7591,7 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
   const runDir = run.runDir;
   const Pv = { ...P, seniorEyeReview: reviewAfterRepairPath(runDir), correctionsApplied: postRepairCorrectionsPath(runDir), reviewFlags: rec.flags };
   const named = [...new Set(points.filter((x) => x.target.kind !== "none").map((x) => x.target.label))];
-  const rows = rec.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
-    ordinals: Array.isArray(f.on) && f.on.length ? f.on : null }));
+  const rows = rec.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null, ordinals: flagOrdinals(f) }));
   const review = readFileSync(Pv.seniorEyeReview, "utf8");
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
   const followup = repairFollowup("synthesis:post-repair-corrective", {
@@ -7653,11 +7864,17 @@ function plainRegisterExtra(ctx) {
     // parse is a real defect, and the receipt should carry it.
     const doc = parseFindingsJson(readFileSync(P.findings, "utf8"));
 
+    // ONE MARK IS ONE MARK. An order names its mark in `marks` and again in `markName`, so the list held it
+    // twice and the seat was told a run about one mark was about 2 (seen on a saved test run, 2026-10-29).
+    // Deduped on the key the exclusion blanks by, trimmed and in any case, so the count is the number of
+    // names removed before reading.
+    const markKeys = new Set();
     const about = {
       marks: [
         ...(Array.isArray(ctx.job?.marks) ? ctx.job.marks.map((m) => (typeof m === "string" ? m : m?.name)) : []),
         ctx.job?.markName, ctx.job?.name,
-      ].filter((x) => typeof x === "string" && x),
+      ].filter((x) => typeof x === "string" && x)
+        .filter((x) => { const k = x.trim().toLowerCase(); if (!k || markKeys.has(k)) return false; markKeys.add(k); return true; }),
       owners: (doc.findings ?? [])
         .flatMap((f) => [f?.owner, f?.owner_name, f?.owner?.name])
         .filter((x) => typeof x === "string" && x),
@@ -7838,11 +8055,7 @@ async function refute(ctx) {
   // EVERY UNREADABLE STATE RESOLVES TO null = EVERY FINDING: no cut on the row, no findings file, an
   // unparseable one, a manifest with no bands. Wrong toward depth costs time; wrong toward brevity drops
   // work from a report somebody paid for, and the only symptom is a profile nobody asked about missing.
-  ctx.profileSelection = profileOrdinals({
-    findings: safeReadJson(ctx.paths.findings),
-    bandOrder: ctx.framework?.bands ?? null,
-    maxRank: ctx.depth?.profileKeptBandRank ?? null,
-  });
+  ctx.profileSelection = reviewProfileSelection(ctx);
   if (ctx.profileSelection.ordinals)
     runLog(ctx.run.runDir, { event: "profile-selection", of: ctx.profileSelection.total,
       selected: ctx.profileSelection.ordinals.length, keyless: ctx.profileSelection.keyless });
@@ -9894,6 +10107,8 @@ export function instructedScopeOf(job) {
 }
 
 async function pipelineInner(job, opts = {}) {
+  // The order as it arrived, before anything below folds its scope or settles its fields (accepted-order.mjs).
+  const acceptedOrder = orderSnapshot(job);
   assertTierSanity();
   // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
   // Every lane spawns the engine: a knockout does, and so does a run with an injected recordFetcher. So
@@ -10319,6 +10534,12 @@ async function pipelineInner(job, opts = {}) {
       event: "intake-artifacts", rawRequest: Boolean(job.rawRequest), brief: Boolean(job.brief),
     });
   } catch (e) { note(`intake artifact write failed (non-fatal): ${e.message}`); }
+  // THE ORDER AS IT WAS ACCEPTED, kept whole with the run before any stage can fail, so a resume or a stage replay
+  // given no job file runs on the order and not on what status kept of it (accepted-order.mjs). Written once; an order
+  // given again by a resume's job file is kept beside it when it differs, and a job this run rebuilt is never kept.
+  try {
+    retainAcceptedOrder(run.runDir, acceptedOrder, { explicit: opts.explicitJob === true, rebuilt: opts.jobRebuiltFromStatus === true });
+  } catch (e) { note(`accepted-order write failed (non-fatal): ${e.message}`); }
   // WS2 (B3) — the code-authoritative INSTRUCTED SCOPE: what the job fields actually said,
   // written before any model breathes on them. The matter frame must quote these verbatim (the
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
@@ -14448,7 +14669,7 @@ async function pipelineInner(job, opts = {}) {
       // changed is RIGHT. NEVER-KILL: a table that cannot be built just means the recheck reads as it
       // always did, which is today's behaviour exactly.
       try {
-        const rows = parseCorrections(readFileSync(P.seniorEyeReview, "utf8"));
+        const rows = correctionRows(P, readFileSync(P.seniorEyeReview, "utf8"));   // the same reading of each flag as the correction's
         const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.model?.raw ?? preCorrective.raw) : null;   // the flags name the model's ordinals, so both sides are the record the model wrote (record-fold.mjs)
         let postDoc = null;
         try { postDoc = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")); } catch { /* shape defects ride the normal ladder */ }
@@ -14548,6 +14769,7 @@ async function pipelineInner(job, opts = {}) {
             followup: repairFollowup("narrative-refutation:verdict-recheck", {
               narrative: P.narrative, findings: P.findings, seniorEyeReview: P.seniorEyeReview,
               correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry,
+              writerExclusions: writerExclusionBlock(P, { review: "later", named: correctionsScope?.positions ?? [] }),
             }),
           })
         : await stage("narrative-refutation", ctx, { force: true, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck", ...(planAuditExtra(ctx) ? { extra: planAuditExtra(ctx) } : {}) });
@@ -16401,6 +16623,9 @@ async function pipelineInner(job, opts = {}) {
           // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
           // which passes the archived summary.
           reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
+          // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
+          // conditions the email carries, as the email composes them.
+          overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict),
           fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
           // WP-56 B2 — fresh v4 runs expect the standing mark-assessment (structural banner flag when
           // absent). The replay harness's runLint call never passes this, so archived runs never flip.
@@ -16567,11 +16792,11 @@ async function pipelineInner(job, opts = {}) {
           });
           if (r.ok) repaired.push(label);
         };
-        const reportFixable = modelFixable(bySurface("report"));
+        // A citation of a withdrawn or absent finding in the overview's own prose is the overview's to remove, in the
+        // words its repair is given (repair-targets.mjs), so its check's failure is not placed a second time below.
+        const reportFixable = modelFixable(bySurface("report")).filter((f) => f.id !== OVERVIEW_CITATION_ID);
         const reportParts = reportPartsOf(P, findingsForCards, writeUps);
-        // A citation of a withdrawn or absent finding in the overview's own prose is the overview's to remove, although
-        // the reference check that finds it ships its failure as structural (repair-targets.mjs).
-        const overviewCites = overviewCitationFault(lint.failures, reportParts);
+        const overviewCites = overviewCitationFault(lint.failures);
         const reportStructuralOnly = bySurface("report").filter((f) => f.structural);
         if (reportStructuralOnly.length && !reportFixable.length && !overviewCites) {
           runLog(run.runDir, { event: "lint-redo-skipped-structural", surface: "report", failures: reportStructuralOnly.map((f) => f.id) });
@@ -18134,19 +18359,51 @@ function resolveRun(job, opts) {
  * wrote `jurisdictions` and `geography` verbatim from its job at intake (`instructedScopeOf`), so copying
  * them back gives the job its own territories, not a reading of them.
  *
+ * THE ORDER'S MARKS, GOODS AND APPLICANT COME FROM THE SAME SCOPE, for the same reason. The review's
+ * plain-words block reads the marks list, the frame messages print the goods only when the job carries
+ * them, and the self-exclusion seed reads the applicant. The scope keeps each mark's name and nothing
+ * else of its entry, so the marks come back as `{ name }`. An entry's own reference and classes are not
+ * read back; the job's are, from status.
+ *
+ * THE ACCOUNT COMES FROM THE FROZEN PROFILE, `profile` here, and only where this install's roster holds
+ * it. `buildRunContext` resolves the account through `selectCustomer`, which refuses a key the roster
+ * lacks rather than fall back to `generic`. On the install that ran the run the roster holds it. A copy of
+ * the run read where it does not, such as a sandbox on the bundled roster, would be refused for a job
+ * field the resume does not need: the frozen profile governs either way. So the key is left off there,
+ * as it was before it was restored, and the caller says so. `roster` null means not checked.
+ *
+ * THE PRODUCT COMES FROM THE FROZEN SEARCH POLICY, `searchPolicy` here, only when the order named it
+ * (`origins.level` is `job.product`). A product resolved from a saved search, the account's default or
+ * the scope was never on the order, so a job carrying it would be a different order.
+ *
+ * THE PROJECT AND THE ORGANISATION COME FROM THE FROZEN PROFILE TOO: the freeze took `projectKey` from the order,
+ * and stamped a Generic run's `tenant` as its `organisation`. This rebuild is the last resort, for a run that kept no
+ * copy of its order (accepted-order.mjs); the fields only the order held are not here.
+ *
  * THE CALLER MUST CHECK THE SLUG, and `resumeJobRefusal` below is that check. A rebuilt job that derives
  * the run's own slug has reproduced the run's identity — `deriveSlug` reads `ref` and `markName` and
  * nothing else — and one that derives a different slug is a job for a different matter.
  */
-export function jobFromStatus(status, scope = null) {   // @internal
+export function jobFromStatus(status, scope = null, { profile = null, searchPolicy = null, roster = null } = {}) {   // @internal
   const s = status ?? {};
   if (!s.id && !s.ref && !s.markName) return null;   // not a status this can rebuild from
+  const named = Array.isArray(scope?.marks) ? scope.marks.filter((m) => typeof m === "string" && m.trim()) : [];
+  const said = (v) => v != null && String(v).trim() !== "";
+  const account = typeof profile?.profileKey === "string" && profile.profileKey.trim() ? profile.profileKey : null;
+  const product = searchPolicy?.origins?.level === "job.product" && said(searchPolicy?.level) ? searchPolicy.level : null;
   return {
     id: s.id ?? null, ref: s.ref ?? null, markName: s.markName ?? null,
     classes: Array.isArray(s.classes) ? s.classes : null,
     forwarder: s.forwarder ?? null,
+    ...(named.length ? { marks: named.map((name) => ({ name })) } : {}),
+    ...(said(scope?.goods) ? { goods: scope.goods } : {}),
+    ...(said(scope?.customer) ? { customer: scope.customer } : {}),
     ...(Array.isArray(scope?.jurisdictions) ? { jurisdictions: scope.jurisdictions } : {}),
     ...(scope?.geography && typeof scope.geography === "object" ? { geography: scope.geography } : {}),
+    ...(account && (!roster || roster.has(account)) ? { profileKey: account } : {}),
+    ...(said(profile?.projectKey) ? { projectKey: profile.projectKey } : {}),
+    ...(account === "generic" && said(profile?.organisation) ? { tenant: profile.organisation } : {}),
+    ...(product ? { product } : {}),
   };
 }
 
@@ -18442,6 +18699,13 @@ function experimentEngineName() {
  * The cap is deliberately far above any real number of concurrent draws, because this lock exists to be
  * SEEN and never to ration. A draw that blocked here would be a new failure mode in place of an old one.
  */
+/** Which findings the review is asked to ground in a profile, from the findings, the framework's bands and the depth. */
+export const reviewProfileSelection = (ctx) => profileOrdinals({
+  findings: safeReadJson(ctx.paths.findings),
+  bandOrder: ctx.framework?.bands ?? null,
+  maxRank: ctx.depth?.profileKeptBandRank ?? null,
+});
+
 export async function runExperiment(job, opts) {   // @internal
   const lock = await acquireSlot({ dir: config.runLockDir, cap: 1024, prefix: "draw" });
   try {
@@ -18510,7 +18774,7 @@ async function runExperimentInner(job, opts) {
   // what the replay answers from, never a hand-off production's first attempt does not get.
   const shadowCtx = { ...ctx, paths: paths(shadowDir), axis, gridSpecPath: null, clHalfTerms: null,
     researchHandOff: (opts.dispatchTrigger ?? "fresh") !== "fresh" };
-  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly, researchHandOff: shadowCtx.researchHandOff };
+  const inputOpts = { axes: ctx.axes, axis, registerOnly: ctx.registerOnly, researchHandOff: shadowCtx.researchHandOff, dispatchTrigger: opts.dispatchTrigger ?? "fresh" };
   const manifest = sandboxManifest(name, ctx.paths, inputOpts);
   // ── 1. GATHER — the sandbox manifest, not the freshness list ──────────────────────────────────────
   //
@@ -18543,10 +18807,33 @@ async function runExperimentInner(job, opts) {
   // Which derivations run is computed from the manifest — a derivation is replayed because its OUTPUT
   // is in this stage's context, never because the stage was named in a list. Add a derived artifact to
   // the registry and every stage whose context reaches it gets it, with no edit here.
-  const derived = [];
+  //
+  // EXCEPT WHERE THE RUN STILL HOLDS THE PICTURE THE DISPATCH WAS HANDED (derived-state.mjs). An arm that changes
+  // nothing upstream reproduces a pass, and re-deriving from inputs that have grown since hands it a later picture
+  // than the pass read. So where the dispatch this arm reproduces recorded its picture, and the run's files are still
+  // exactly that picture, the run's own derived files are the arm's. A seeded arm re-derives, as it must. Anything
+  // else re-derives as before, and the receipt says the replay is not faithful, and why.
+  const recordedPicture = recordedDerivedState(ctx.paths.runDir, name + (axis ? `:${axis}` : ""), opts.dispatchTrigger ?? "fresh");
+  const currentPicture = derivedStateOf(name, ctx.paths, inputOpts);
+  const changesDerivation = orderProbeSeed() != null;
+  const derived = [], pictureReplay = [];
   for (const id of derivationsFor(name, ctx.paths, inputOpts)) {
-    try { if (DERIVATION_RUNNERS[id](shadowCtx) !== false) derived.push(id); }
-    catch (e) { note(`--experiment: derivation "${id}" threw in the sandbox (${String(e?.message ?? e).slice(0, 120)})`); }
+    const replay = replayOfDerivation(id, recordedPicture, currentPicture, { changesDerivation });
+    // A projection goes through its runner as before, which keeps the run's copy and fills only a gap.
+    if (replay.how === "kept" && CONTEXT_DERIVATIONS.find((d) => d.id === id)?.projection !== true) {
+      for (const w of CONTEXT_DERIVATIONS.find((d) => d.id === id).writes(ctx.paths)) {
+        if (!existsSync(w)) continue;
+        const dst = join(shadowDir, w.slice(ctx.paths.runDir.length + 1));
+        mkdirSync(dirname(dst), { recursive: true }); copyFileSync(w, dst);
+      }
+      pictureReplay.push(replay);
+      continue;
+    }
+    try { if (DERIVATION_RUNNERS[id](shadowCtx) !== false) derived.push(id); pictureReplay.push(replay); }
+    catch (e) {
+      note(`--experiment: derivation "${id}" threw in the sandbox (${String(e?.message ?? e).slice(0, 120)})`);
+      pictureReplay.push({ ...replay, faithful: false, why: "the derivation failed in the sandbox" });
+    }
   }
   // ── 3. REFUSE an incomplete context ───────────────────────────────────────────────────────────────
   //
@@ -18597,6 +18884,9 @@ async function runExperimentInner(job, opts) {
   // with no DECLINATIONS block while the recorder held it to the copied list. Built from the sandbox's
   // own copies, so the canonical run is not touched.
   if (name === "synthesis") prepareDeclinationSpec(shadowCtx, shadowCtx.paths);
+  // A REVIEW ARM IS TOLD WHICH FINDINGS TO PROFILE, as production tells it: the run computes the list just before the
+  // review is dispatched and sets it on the context, so an arm that did not had no grounded-profiles line at all.
+  if (name === "narrative-refutation") shadowCtx.profileSelection = reviewProfileSelection(shadowCtx);
   const sessionKey = `clearance-exp-${ctx.run.slug}-${ctx.run.codename}-${name}${axis ? `-${axis}` : ""}-${ts}`;
   let { text: extra, ids: extraIds } = experimentExtra(shadowCtx, name, opts);
 
@@ -18659,6 +18949,12 @@ async function runExperimentInner(job, opts) {
     // `null` means the run carries no frozen profile (a legacy run), and it is written rather than
     // omitted: absent and "there was none" are different facts and only one of them is a defect.
     ratedUnder: ctx.profile?.profileKey ?? null,
+    // WHICH ORDER THE ARM RAN ON (accepted-order.mjs): the job file it was given, the order the run kept, or a
+    // rebuild from status that lacks the fields named here. Only a whole order makes a faithful replay; whether a
+    // job file is the order, nothing here can say, so `faithful` is null for one.
+    order: opts.orderRecovery
+      ? { source: opts.orderRecovery.source, unrecovered: opts.orderRecovery.unrecovered, faithful: opts.orderRecovery.unrecovered.length === 0 }
+      : { source: "job-file", unrecovered: [], faithful: null },
     dispatchTrigger: opts.dispatchTrigger ?? "fresh",
     // How the arm's research was answered: sent out live, or replayed from the run's own answers.
     research: opts.research === "replay" ? { mode: "replay", answers: replayedAnswers } : { mode: "live" },
@@ -18668,6 +18964,9 @@ async function runExperimentInner(job, opts) {
     // never "dispatched-warm", which is production's alone.
     correctivePass: whichPass,
     seed: orderProbeSeed(), derived, extraChars: extra ? extra.length : 0,
+    // WHETHER THE ARM WAS HANDED THE PICTURE ITS DISPATCH WAS (derived-state.mjs): per derivation, kept or re-derived,
+    // and why a re-derived one is not faithful. `faithfulPicture` is false whenever one is not.
+    pictureReplay, faithfulPicture: pictureReplay.every((x) => x.faithful === true),
     // corruption 2 — WHICH driver-computed blocks this arm actually carried, by id and size.
     // `extraChars` alone could not distinguish "the stage has no blocks" from "its blocks were never
     // registered and silently vanished": both read as 0. The list names what was built, so a reader
@@ -19003,7 +19302,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // exited on a raw V8 stack trace: a non-clean exit with no honest message, and the one shape of
   // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
   // pool check above is a separate refusal and must not swallow this one.
-  let job;
+  let job, orderRecovery = null;
   if (!a.job && a.codename) {
     // ── RESUMING A RUN WHOSE JOB FILE THE BOX NO LONGER HAS ───────────────────────────────────────
     //
@@ -19038,12 +19337,30 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
     catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
     const scope = readInstructedScope(found.dir);
-    job = jobFromStatus(status, scope);
+    // The account and the product from the run's frozen files, and the roster that says whether the account
+    // can ride on this install (jobFromStatus says why it may not).
+    let roster = null;
+    try { roster = loadProfiles(); } catch { /* the run context reads the roster again, and refuses with its reason */ }
+    const frozen = { profile: safeReadJson(driverDir(found.dir, "profile.json")), searchPolicy: safeReadJson(driverDir(found.dir, "search-policy.json")), roster };
+    // The order the run kept at intake, else an older run's retained queue entry, else the rebuild from status
+    // (accepted-order.mjs says which, and why a queue entry was refused).
+    orderRecovery = rebuildRunOrder({ runDir: found.dir, status, scope, profile: frozen.profile,
+      queueDir: config.queueDirForAgent(a.agent || config.defaultAgent), scopeOf: instructedScopeOf,
+      fromStatus: () => jobFromStatus(status, scope, frozen), write: !a.experiment });
+    job = orderRecovery.job;
     const refusal = resumeJobRefusal(job, found.slug);
     if (refusal) { console.error(`error: ${refusal}`); process.exit(2); }
-    console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`
-      + (scope ? "; the order's territories from its instructed scope"
-        : "; the run holds no readable instructed scope, so its territories fall back to the account's defaults"));
+    const fromScope = [job.marks && "marks", job.goods && "goods", job.customer && "applicant", job.jurisdictions && "territories"].filter(Boolean);
+    if (orderRecovery.source !== "status")
+      console.error(`[pipeline] --job not given; the job for ${a.codename} is the order ${orderRecovery.source === "accepted-order"
+        ? "the run kept when it was accepted" : "in the run's retained queue entry, now kept with the run"} (slug ${found.slug} confirmed)`);
+    else console.error(`[pipeline] --job not given; rebuilt the job for ${a.codename} from ${join(found.dir, "status.json")} (slug ${found.slug} confirmed)`
+      + (!scope ? "; the run holds no readable instructed scope, so its territories fall back to the account's defaults"
+        : fromScope.length ? `; the order's ${fromScope.join(", ")} from its instructed scope` : "")
+      + (job.profileKey ? "; its account from the frozen profile"
+        : frozen.profile?.profileKey ? "; its account is not on this install's roster, so the job names none and the frozen profile governs" : "")
+      + (job.product ? "; its product from the frozen search policy" : "")
+      + `; the run holds no copy of its order${orderRecovery.conflict ? ` (its queue entry was refused: ${orderRecovery.conflict})` : ""}, so the job lacks what only the order held: ${orderRecovery.unrecovered.join(", ")}`);
   } else {
     try { job = JSON.parse(readFileSync(a.job, "utf8")); }
     catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
@@ -19056,8 +19373,8 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // hangs `__runRef` on the caller's own opts the moment the run context is built, which is how pipeline()'s
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
-    ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research }
-    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }), records: a.records };
+    ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research, orderRecovery }
+    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? { explicitJob: true } : { jobRebuiltFromStatus: true }), records: a.records };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
@@ -19312,10 +19629,11 @@ function orphanAreaLabel(qid, axis, plan) {
 
 /**
  * The instructed scope this run writes, or null to keep the one already on disk. A resume that rebuilt its
- * job from status.json holds only the job's identity (id, reference, mark, classes, forwarder), so writing
- * the scope from it would replace the order's goods, customer and territories with nothing, and every
- * later reader of the scope would see a narrower matter than was ordered. Such a resume keeps the scope the
- * run started with. A job read from a file, or a run with no scope yet, writes as before. PURE.
+ * job from status.json holds what the run kept of the order, not the order: its identity, and what
+ * `jobFromStatus` reads back from this same scope and the frozen files. Written from it, the scope could
+ * only lose what that reading leaves out, and every later reader of the scope would see a narrower matter
+ * than was ordered. Such a resume keeps the scope the run started with. A job read from a file, or a run
+ * with no scope yet, writes as before. PURE.
  */
 export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
   return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);

@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// A REVIEW ARM IS GIVEN WHAT THE REVIEW READS.
+//
+// The review is told placement's floor decisions and the writer's declinations when its message is built, from the
+// run's files. An `--experiment narrative-refutation` sandbox carried neither the placement form's driver copy nor
+// the declination ledger, so on a saved run the arm was told none of placement's decisions and none of the writer's,
+// while the review it reproduced was told both (measured 2026-10-29). The sandbox now carries every file those two
+// lists read; `sandboxGaps` refuses an arm whose copy lacks one the canonical run holds. An arm reproducing the
+// corrective pass is given the state that pass starts from, which it refused for want of on the same run. An arm
+// reproducing a later review is given what the full review was shown and the run's research, which its list is built from.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { paths } from "../stages.mjs";
+import { sandboxManifest } from "../stage-context.mjs";
+import { driverDir } from "../../shared/driver-dir.mjs";
+
+test("a review arm's sandbox carries placement's form and the writer's declinations, with what they are read against", () => {
+  const P = paths("/run");
+  const held = new Set(sandboxManifest("narrative-refutation", P).map((e) => e.path));
+  for (const f of ["placement-form.form.json", "stage-contracts.json", "declinations.json", "reading-log.jsonl", "goods-evidence.json", "instructed-scope.json"])
+    assert.ok(held.has(driverDir("/run", f)), `the review's sandbox does not carry _driver/${f}`);
+  for (const p of [P.placementModel, P.bandShape, P.registerPositions]) assert.ok(held.has(p), `the review's sandbox does not carry ${p}`);
+});
+
+test("a corrective arm's sandbox carries the state the corrective pass starts from; a first pass's does not", () => {
+  const P = paths("/run");
+  const state = [driverDir("/run", "findings-pre-corrective.json"), P.seniorEyeReview, driverDir("/run", "refutation-calls", "call-001.json"), driverDir("/run", "declinations.json"),
+    driverDir("/run", "review-exclusions.json")];
+  const corrective = new Set(sandboxManifest("synthesis", P, { dispatchTrigger: "corrective" }).map((e) => e.path));
+  for (const p of state) assert.ok(corrective.has(p), `a corrective arm's sandbox does not carry ${p}`);
+  const fresh = new Set(sandboxManifest("synthesis", P).map((e) => e.path));
+  for (const p of state) assert.ok(!fresh.has(p), `a first pass's sandbox carries ${p}, which a first pass is never handed`);
+});
+
+test("a later review's arm carries what the full review was shown and the run's research; a full review's arm carries no research", () => {
+  const P = paths("/run");
+  const full = driverDir("/run", "review-exclusions-full.json"), research = driverDir("/run", "research-answers.jsonl");
+  const later = new Set(sandboxManifest("narrative-refutation", P, { dispatchTrigger: "verdict-recheck" }).map((e) => e.path));
+  assert.ok(later.has(full) && later.has(research), "a later review's arm would read as a run with no full review on record, or be told of no research");
+  // …and what each exclusion's evidence and the writer's numbering are read from, without which every exclusion reads as changed.
+  for (const f of ["declination-spec.json", "fold.json", "findings-unfolded.json"])
+    assert.ok(later.has(driverDir("/run", f)), `a later review's arm does not carry _driver/${f}`);
+  const first = new Set(sandboxManifest("narrative-refutation", P).map((e) => e.path));
+  assert.ok(first.has(full), "a full review's arm does not carry the list it writes over");
+  assert.ok(!first.has(research), "a full review's arm carries research the run got after it");
+});

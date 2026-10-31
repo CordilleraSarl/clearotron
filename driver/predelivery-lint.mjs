@@ -30,6 +30,9 @@ import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyF
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
+import { parseFront } from "./publish/parse.mjs";
+import { citedFindingNumbers } from "./finding-citations.mjs";   // every written form of a citation, read one way
+export { citedFindingNumbers };
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, statedConditions, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
 import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE, ENGINE_PHRASE_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
@@ -239,15 +242,57 @@ export function referenceChecks({ actionsText, fullSurface, searchedNames, surfa
   // The flag rides a FAILURE only. `modelFixable` reads it off failures, so a structural bit on a pass
   // would be a state nothing means and a reader would have to guess at.
   //
-  // THE ZONE IS NOT THE ACTIONS ALONE. `splitBlocks` ends a block at `##` or `###` only, so the only-you
-  // block runs on through the overview's own `# Methodology` up to the first card. A name there is
-  // read as an action line, and on a code-built run it is structural, although the overview wrote it
-  // and the overview's repair could change it. So the orphans ride the failure: the repair reads which
-  // part holds each one, and a citation of a withdrawn or absent finding in the overview's own prose
-  // goes to the overview (repair-targets.mjs).
+  // Each surface's zone is its own action lines (runLint): the report's only-you block alone, and the
+  // conditions the email carries. The names it could not place ride the failure, for the run's record. A
+  // citation of a withdrawn or absent finding in the overview's prose is read by a check of its own
+  // (overviewCitationChecks), whose failure goes to the overview's repair.
   return [{ ...check("reference-integrity", "reference", surface, orphans.length === 0,
     orphans.length ? detail : ""), ...(structural && orphans.length ? { structural: true } : {}),
     ...(orphans.length ? { orphans } : {}) }];
+}
+
+/**
+ * The report's only-you block alone: from its heading to the next heading of any level. `splitBlocks` ends a block at
+ * `##` and `###` only, so the block it returns runs on through the overview's `# Methodology` up to the first card, and
+ * a name there was read as an action line. "" when the report has no such block. PURE.
+ */
+export function onlyYouZone(md) {
+  const out = [];
+  let on = false;
+  for (const ln of String(md ?? "").split("\n")) {
+    const h = ln.match(/^(#{1,6})\s+(.*)/);
+    if (h) on = h[1].length >= 2 && /only you can close/i.test(h[2]);
+    if (on) out.push(ln);
+  }
+  return out.join("\n");
+}
+
+// ── THE OVERVIEW'S OWN PROSE IS READ FOR A CITATION OF A FINDING THE REPORT NO LONGER HAS ────────────
+// The overview can cite a finding by its number. A citation of one the review withdrew, or of one the report does not
+// have, points the reader at nothing. The reference check found such a citation only by accident: its zone ran on into
+// the overview's `# Methodology`, and only "Finding 334", capitalised, read as a name. A run with no rendered action,
+// "finding 334" and the number after a hash sign were all missed. This check reads the overview as its writer wrote it, every written form of
+// a citation, and its failure goes to the overview's repair (repair-targets.mjs overviewCitationFault). The lines code
+// builds into the overview's section from the record (the client's own items and the answers to the instructions) are
+// not the overview's, so they are not read.
+export const OVERVIEW_CITATION_ID = "overview-citation";
+const CODE_BUILT_SECTIONS = /^###\s+(?:Only you can close these|Answers to your instructions)\b[^\n]*\n?[\s\S]*?(?=^#{1,3}\s|$(?![\s\S]))/gm;
+
+/**
+ * The overview's citations of a withdrawn or absent finding. `overviewMd` is the overview as its writer wrote it
+ * (report-overview.md), front matter included; `findings` the record the report was built from, in its delivered
+ * numbering. Emits nothing where either is missing: an archived run replayed without them is not judged on them.
+ * The failure carries `cites`, each `{ordinal, withdrawn}`, for the overview's repair. PURE.
+ */
+export function overviewCitationChecks({ overviewMd, findings }) {
+  if (overviewMd == null || !Array.isArray(findings)) return [];
+  const live = new Set(findings.filter((f) => f && f.disposition !== "withdrawn").map((f) => Number(f.ordinal)));
+  const withdrawn = new Set(findings.filter((f) => f?.disposition === "withdrawn").map((f) => Number(f.ordinal)));
+  const { fm, body } = parseFront(String(overviewMd));
+  const prose = [fm.overall_caption, fm.handling_note, String(body).replace(CODE_BUILT_SECTIONS, "")].filter(Boolean).join("\n");
+  const cites = citedFindingNumbers(prose).filter((n) => !live.has(n)).map((n) => ({ ordinal: n, withdrawn: withdrawn.has(n) }));
+  const detail = cites.length ? `the overview cites ${cites.map((c) => `finding ${c.ordinal} (${c.withdrawn ? "withdrawn" : "absent"})`).join(", ")}, which the report does not carry` : "";
+  return [{ ...check(OVERVIEW_CITATION_ID, "reference", "report", cites.length === 0, detail), ...(cites.length ? { cites } : {}) }];
 }
 
 // ── — AN ASK LONGER THAN THE VERDICT STATEMENT'S CLAUSE IS ONE THE STATEMENT ELLIPSISES ─────────
@@ -2237,7 +2282,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
+export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2258,13 +2303,10 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   if (reportMd) {
     checks.push(...registryChecks({ text: reportMd, recordsByUri, surface: "report", fetchFailures }));
     if (findings) checks.push(...findingProvenanceChecks({ reportMd, findings }));   // B2 — per-card record provenance (confabulation backstop)
-    // V4-3: the MENTION zone is the only-you bucket alone (the asks the lawyer must act on); the
-    // checks-we-ran bucket is a self-introducing findings recap and counts as introduction territory.
-    // Both buckets still compose the email's full surface (that is what the cover carries).
-    const onlyYou = (splitBlocks(reportMd).filter((b) => /only you can close/i.test(b.heading))
-      .map((b) => `${b.heading}\n${b.text}`).join("\n")) || actionsText || "";
-    const actions = (splitBlocks(reportMd).filter((b) => /checks we ran|only you can close/i.test(b.heading))
-      .map((b) => `${b.heading}\n${b.text}`).join("\n")) || actionsText || "";
+    // V4-3: the MENTION zone is the only-you bucket alone (the asks the lawyer must act on), up to the next
+    // heading of any level; the checks-we-ran bucket is a self-introducing findings recap and counts as
+    // introduction territory, and so does the overview's `# Methodology` after it.
+    const onlyYou = onlyYouZone(reportMd) || actionsText || "";
     // — every mark the run knows about: the ones it was asked about and the ones it found.
     const markNames = [...new Set([
       ...(searchedNames ?? []),
@@ -2276,6 +2318,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
     checks.push(...actionsReachabilityChecks({ onlyYouText: onlyYou, actionsRegister, findings }));
     checks.push(...actionBoundLineChecks(actionsRegister, findings));   // — the ask must fit the clause the statement carries
     checks.push(...selfComparisonChecks({ reportMd, searchedNames }));     // wp50/wi10
+    checks.push(...overviewCitationChecks({ overviewMd, findings }));     // a citation in the overview of a finding the report does not carry
     // The EMAIL surface = the report's actions + (on an archived run) the client-summary content —
     // that is what the cover carries. An entity introduced only by a deep report card is an orphan
     // THERE — the delivered TMP8552 email's RTVE failure lived exactly in this gap (the report itself
@@ -2288,9 +2331,17 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
     // report-derived text (composeEmailHtml renders the `# Actions`-derived conditional bound), so the
     // check keeps running over what the mail actually carries. On a REPLAY of an archived run the
     // client summary is still on disk and joins the surface exactly as before — byte-identical.
-    checks.push(...referenceChecks({
-      actionsText: onlyYou, fullSurface: [actions, clientSummaryMd].filter(Boolean).join("\n"), searchedNames, surface: "email", extraVocab, markNames, structural: actionsExpected === true,
-    }).map((c) => ({ ...c, id: `${c.id}:email` })));
+    //
+    // THE EMAIL'S ZONE IS WHAT THE EMAIL CARRIES: the conditions in its box, beside the report's conclusion it quotes.
+    // It used to be the report's two buckets, the methodology included, and so named a party from a line the email
+    // never carried. The caller hands the conditions in, from the function the email composes its box with
+    // (publish/email-conditions.mjs); a caller that hands none is not judged on the email.
+    if (Array.isArray(emailConditions)) {
+      const emailZone = emailConditions.join("\n");
+      checks.push(...referenceChecks({
+        actionsText: emailZone, fullSurface: [emailZone, parseFront(String(reportMd)).fm.overall_caption, clientSummaryMd].filter(Boolean).join("\n"), searchedNames, surface: "email", extraVocab, markNames, structural: actionsExpected === true,
+      }).map((c) => ({ ...c, id: `${c.id}:email` })));
+    }
   }
   if (clientSummaryMd) checks.push(...registryChecks({ text: clientSummaryMd, recordsByUri, surface: "client-summary", fetchFailures }));
   // 404-card caveat (c): a record-verification CLAIM with no fetched record behind any of its citations
@@ -2730,6 +2781,10 @@ const DELIVERY_LINES = {
   "wipo-designation-language": "An international registration is described in terms that do not match how that designation works.",
   // reference — who the document names
   "reference-integrity": "The action list names parties that no finding in the report identifies.",
+  // The email's own check, in the owner's words (ruled 2026-10-30): the line above says the report is wrong.
+  "reference-integrity:email": "The email's conditions name a party that no finding in the report identifies.",
+  // The owner's sentence, word for word (ruled 2026-10-30).
+  "overview-citation": "This report's overview refers to a finding that is no longer in the report; read the overview against the findings list.",
   "self-comparison": "A finding compares a mark against itself.",
   // counting
   "counting-consistency": "The same figure is stated two different ways in the report.",

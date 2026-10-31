@@ -30,7 +30,7 @@ import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { overviewCitationFault, writersCitationFaults } from "../repair-targets.mjs";
 import { foldRecord, keptModelOrdinal } from "../record-fold.mjs";
-import { fourAnswersCoherenceChecks } from "../predelivery-lint.mjs";
+import { fourAnswersCoherenceChecks, overviewCitationChecks } from "../predelivery-lint.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 
 const TEMP_DIRS = [];
@@ -110,10 +110,10 @@ for (const engine of Object.keys(ENGINES)) {
   test(`${engine}: the overview citing a withdrawn finding by its number goes to the overview's repair, which removes it`, async () => {
     const { res, events } = await runPipeline(engine, { ...SCENARIO, MOCK_VERDICT: "CONDITIONAL", MOCK_ACTIONS: "condition", MOCK_OVERVIEW_CITES: "3" });
     const lintFailed = events.findIndex((e) => e.event === "predelivery-lint-failed");
-    assert.ok(lintFailed >= 0 && events[lintFailed].failures.includes("reference-integrity"),
+    assert.ok(lintFailed >= 0 && events[lintFailed].failures.includes("overview-citation"),
       "the delivery check did not find the overview's citation");
     const targets = events.find((e) => e.event === "report-repair-targets");
-    assert.deepEqual([targets?.overview, targets?.record], [["reference-integrity"], []], "the citation was not placed in the overview");
+    assert.deepEqual([targets?.overview, targets?.record], [["overview-citation"], []], "the citation was not placed in the overview, once");
     assert.deepEqual(repairsAfter(events, lintFailed), ["report-overview"], "the repair did not go to the overview alone");
     const msg = dispatches(res.runDir, "report-overview").find((m) => m.includes("the deterministic pre-delivery lint failed these checks"));
     assert.ok(msg, "the overview's repair was not sent");
@@ -123,7 +123,7 @@ for (const engine of Object.keys(ENGINES)) {
       "the overview's correction reached the findings record");
     // The email's check also reads the condition's party, which only the cards introduce: an older fault, and not this one.
     const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8"));
-    assert.ok(!receipt.failures.includes("reference-integrity"), "the delivery check still finds the citation");
+    assert.ok(!receipt.failures.includes("reference-integrity") && !receipt.failures.includes("overview-citation"), "the delivery check still finds the citation");
     assert.ok(!receipt.checks.some((c) => /^reference-integrity/.test(c.id) && /\bFinding 3\b/.test(c.detail ?? "")), "a check still names the citation");
     assert.equal(res.ok, true, JSON.stringify(res));
   });
@@ -132,20 +132,18 @@ for (const engine of Object.keys(ENGINES)) {
 // What the overview is handed, and what it is not.
 const FINDINGS = [{ ordinal: 1, disposition: "adversarial" }, { ordinal: 2, disposition: "adversarial" }, { ordinal: 3, disposition: "withdrawn" }];
 const OVERVIEW = "# Methodology\n\nFinding 3 remains open. Finding 2 is the main obstacle. Finding 9 was not searched.";
-const failure = (id, orphans) => ({ id, family: "reference", surface: id.endsWith(":email") ? "email" : "report", pass: false, structural: true, orphans });
 
-test("a citation of a withdrawn or absent finding is the overview's, once; a live finding's and a party's are not", () => {
-  const got = overviewCitationFault([
-    failure("reference-integrity", ["Finding 3", "Finding 2", "Finding 9", "Brannick Tooling"]),
-    failure("reference-integrity:email", ["Finding 3"]),
-  ], { overview: OVERVIEW, findings: FINDINGS });
+test("a citation of a withdrawn or absent finding is the overview's, once; a live finding's is not", () => {
+  const [check] = overviewCitationChecks({ overviewMd: OVERVIEW, findings: FINDINGS });
+  const got = overviewCitationFault([check, { ...check }]);
   assert.deepEqual(got?.cites, [{ ordinal: 3, withdrawn: true }, { ordinal: 9, withdrawn: false }]);
   assert.equal(got.detail, OVERVIEW_LINE.replace("finding 3 (withdrawn).", "finding 3 (withdrawn); finding 9 (absent)."));
 });
 
-test("a citation the overview's own prose does not hold is not the overview's", () => {
-  assert.equal(overviewCitationFault([failure("reference-integrity", ["Finding 3"])], { overview: "# Methodology\n\nNothing cited.", findings: FINDINGS }), null);
-  assert.equal(overviewCitationFault([failure("reference-integrity", ["Finding 3"])], { overview: null, findings: FINDINGS }), null);
+test("an overview whose prose cites no withdrawn or absent finding is given no citation to remove", () => {
+  assert.equal(overviewCitationFault(overviewCitationChecks({ overviewMd: "# Methodology\n\nFinding 2 is the main obstacle.", findings: FINDINGS })), null);
+  assert.equal(overviewCitationFault([{ id: "reference-integrity", family: "reference", surface: "report", pass: false, orphans: ["Finding 3"] }]), null,
+    "a name the reference check could not place was read as the overview's citation");
 });
 
 test("the writer is handed one ruled line per withdrawn finding, in its own numbering, and none for a finding the run lacks", () => {

@@ -24,8 +24,9 @@
 // message says how many there are and how to find one: by the owner's name, with the artifact search the stage holds.
 // A first attempt has none, and its message is unchanged.
 //
-// A pure leaf: node:fs, node:path and shared/driver-dir.mjs only, so the research server can import it.
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+// A pure leaf: node:fs, node:path, node:crypto and shared/driver-dir.mjs only, so the research server can import it.
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 
@@ -89,6 +90,50 @@ export function researchAnswersFor(runDir, sessionKey, { ofRun = false } = {}) {
 
 /** The file a later attempt is handed, in the run folder, where the artifact search reaches and `_driver/` is not. */
 export const RESEARCH_ANSWERS_MD = "research-answers.md";
+
+// ── A LATER REVIEW IS HANDED THE RESEARCH THE RUN OBTAINED AFTER THE FULL REVIEW ──────────────────────────────────────
+//
+// Research answers count as an exclusion's evidence where its ground depends on them (ruled 2026-10-30), and no record
+// links an answer to an exclusion: an answer names a question, never a record. So the later review is handed every
+// answer the run did not hold when the full review's list was built, and judges the connection itself. On the test
+// machine, 3 of 19 reviewed runs obtained research after the review began: 1, 2 and 36 answers, the largest about 60,000
+// characters. So they go to a file in the run folder, as a later attempt's do, and the message says how many.
+export const RESEARCH_AFTER_REVIEW_MD = "research-after-review.md";
+
+/**
+ * Every research answer the run holds, one per exact question (the latest), oldest first, leaving out the sessions
+ * `except` names before the latest is chosen. [] when there are none, or no record. IMPURE (reads the record).
+ * @returns {{ task: string, text: string, ts: string, session: string|null }[]}
+ */
+export function runResearchAnswers(runDir, { except = () => false } = {}) {
+  if (!runDir) return [];
+  const byTask = new Map();
+  for (const row of rows(driverDir(runDir, RESEARCH_ANSWERS_FILE))) {
+    if (except(row?.session) || typeof row?.task !== "string" || !row.task.trim() || !isResearchAnswer(row.text)) continue;
+    byTask.delete(row.task);
+    byTask.set(row.task, { task: row.task, text: row.text, ts: String(row.ts ?? ""), session: row.session ?? null });
+  }
+  return [...byTask.values()].sort((a, b) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0));
+}
+
+/** One answer as two readings of the run compare it: its question and its text, so the same answer asked again is
+ *  not a change. PURE. */
+export const researchAnswerKey = ({ task, text }) => createHash("sha256").update(`${String(task ?? "").trim()}\u0000${String(text ?? "")}`).digest("hex").slice(0, 16);
+
+/**
+ * Write `answers` to `research-after-review.md` in the run folder, one question and its answer per line, and return
+ * how many; with none, remove a file an earlier reading wrote. 0 when the file could not be written: a message must
+ * never name a file that is not there. IMPURE.
+ */
+export function handResearchAfterReview(runDir, answers) {
+  const p = join(runDir, RESEARCH_AFTER_REVIEW_MD);
+  try {
+    if (!answers?.length) { rmSync(p, { force: true }); return 0; }
+    writeFileSync(`${p}.tmp`, answers.map((a, i) => researchAnswerLine(i + 1, a)).join("\n") + "\n");
+    renameSync(`${p}.tmp`, p);
+    return answers.length;
+  } catch { return 0; }
+}
 
 const oneLine = (s) => String(s ?? "").replace(/\s*\n\s*/g, " ").trim();
 

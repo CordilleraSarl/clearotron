@@ -909,6 +909,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-job-rebuilt-from-its-run-is-the-order-it-ran.test.mjs": {
+          "tests": 6,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "a-job-rebuilt-from-its-run-keeps-the-orders-territories.test.mjs": {
           "tests": 5,
           "asserts": 14,
@@ -1583,7 +1589,7 @@
         },
         "a-refused-search-is-told-apart-from-an-unsupported-one.test.mjs": {
           "tests": 4,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -1703,7 +1709,7 @@
         },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
-          "asserts": 13,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -1722,6 +1728,12 @@
         "a-replayed-arm-answers-its-research-from-the-run.test.mjs": {
           "tests": 6,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-replayed-stage-is-handed-the-register-picture-it-read.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1746,6 +1758,12 @@
         "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
           "tests": 3,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resumed-run-keeps-the-order-it-was-accepted-on.test.mjs": {
+          "tests": 7,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
@@ -1800,6 +1818,12 @@
         "a-run-records-which-register-served-it.test.mjs": {
           "tests": 14,
           "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-repaired-after-a-failure-keeps-its-order.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -1902,6 +1926,12 @@
         "a-search-asks-the-web-on-the-settings-its-report-type-pins.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-search-not-carried-out-says-why-in-plain-words.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -2393,7 +2423,7 @@
         },
         "ab-tooling-honesty.test.mjs": {
           "tests": 16,
-          "asserts": 78,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
@@ -3029,7 +3059,7 @@
         },
         "common-law-seat-tier.test.mjs": {
           "tests": 10,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -6363,6 +6393,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-audit-says-why-a-search-was-not-carried-out.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-audit-stores-register-presence.test.mjs": {
           "tests": 11,
           "asserts": 32,
@@ -6617,7 +6653,7 @@
         },
         "the-driver-lists-the-profiles.test.mjs": {
           "tests": 8,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -6975,6 +7011,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-overview-is-read-for-a-citation-of-a-finding-no-longer-in-the-report.test.mjs": {
+          "tests": 7,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
         "the-owner-of-a-promoted-filing-is-searched.test.mjs": {
           "tests": 16,
           "asserts": 49,
@@ -7053,6 +7095,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-primary-sweep-decides-waiting-families-on-the-judgment-tier.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "the-probe-spawns-the-environment-it-validated.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -7115,7 +7163,7 @@
         },
         "the-reading-step-decides-on-a-crowd.test.mjs": {
           "tests": 3,
-          "asserts": 6,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -7281,6 +7329,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-arm-is-given-what-the-review-reads.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-review-counts-a-wider-answer-as-covering-a-market.test.mjs": {
           "tests": 2,
           "asserts": 4,
@@ -7289,7 +7343,13 @@
         },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
           "tests": 11,
-          "asserts": 27,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-sees-every-position-the-writer-excluded.test.mjs": {
+          "tests": 26,
+          "asserts": 126,
           "skips": 0,
           "todos": 0
         },
@@ -7324,8 +7384,8 @@
           "todos": 0
         },
         "the-reviewing-pass-reads-the-lines-a-client-sees-first.test.mjs": {
-          "tests": 10,
-          "asserts": 27,
+          "tests": 11,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
@@ -7606,8 +7666,8 @@
           "todos": 0
         },
         "the-writer-owes-positions-not-records.test.mjs": {
-          "tests": 6,
-          "asserts": 21,
+          "tests": 8,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -9005,6 +9065,18 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/clarivate/test/a-refused-request-keeps-the-registers-words-in-the-run.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/a-search-refused-before-sending-says-so.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/clarivate/test/an-office-that-refused-the-goods-field-is-left-out-for-the-rest-of-the-run.test.mjs": {
           "tests": 4,
           "asserts": 8,
@@ -9036,8 +9108,8 @@
           "todos": 0
         },
         "providers/euipo/test/deferred-block.test.mjs": {
-          "tests": 6,
-          "asserts": 24,
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

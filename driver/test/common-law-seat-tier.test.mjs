@@ -50,7 +50,7 @@ test("every seat is haiku/low — and the map is still what makes that true, not
   // rather than reading the constant back.
   assert.deepEqual(chainEntries("common-law-half", MEANING_SEAT), [{ model: "haiku", thinking: "low" }],
     "the meaning seat is the one that moved");
-  assert.deepEqual(axisTier("primary-sweep"), { model: "sonnet", thinking: "adaptive" },
+  assert.deepEqual(axisTier("incumbent-class"), { model: "sonnet", thinking: "adaptive" },
     "axisTier's default is still sonnet/adaptive — so a seat that fell through the map would NOT read haiku, "
     + "and this test would catch the map being dropped as redundant");
   for (const seat of GRID_SEATS.filter((s) => s !== MEANING_SEAT))
@@ -110,9 +110,10 @@ test("the haiku+adaptive sanity check reaches the seats — it could not before"
   assert.equal(assertTierSanity(), true);
 });
 
-test("a non-seat axis is untouched — the register tiers still resolve as they did", () => {
+test("a non-seat axis takes its register tier, never a seat's", () => {
   assert.deepEqual(axisTier("saturation-probe"), { model: "haiku", thinking: "off" });
-  assert.deepEqual(axisTier("primary-sweep"), { model: "sonnet", thinking: "adaptive" });
+  assert.deepEqual(axisTier("primary-sweep"), { model: "opus", thinking: "adaptive" });
+  assert.deepEqual(axisTier("transliteration-numeric"), { model: "sonnet", thinking: "adaptive" });
   assert.deepEqual(axisTier("incumbent-class"), { model: "sonnet", thinking: "adaptive" });
 });
 

@@ -75,8 +75,8 @@ The old "exactly one register provider; you will never see both" referred to the
 ## Model
 
 Model tiers are set **per stage by the deterministic driver** — `driver/stages.mjs` is the
-source of truth. Current tiers: register sweep axes (`primary-sweep` / `transliteration-numeric` /
-`incumbent-class`) = `sonnet` / adaptive; `saturation-probe` = `haiku` / off; `clearance-common-law` = `haiku` /
+source of truth. Current tiers: register sweep axis `primary-sweep` = `opus` / adaptive; register sweep axes
+(`transliteration-numeric` / `incumbent-class`) = `sonnet` / adaptive; `saturation-probe` = `haiku` / off; `clearance-common-law` = `haiku` /
 low; register digest + `matter-frame` / `clearance-variants` / `placement-inquiry` / synthesis = `opus`; Step-2.6
 skeptic = `sonnet`; `narrative-refutation` = `opus`. Every stage runs under the
 **forwarding identity** (derived from the queue location); delivery is not an agent capability — it is

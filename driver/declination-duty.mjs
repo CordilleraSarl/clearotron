@@ -42,6 +42,29 @@ const uriSet = (xs) => {
   return out;
 };
 
+/** Every record a spec row stands for: its own, and for an entry's row every record of the entry. PURE. */
+export const positionRecords = (row) => {
+  const uri = normalizeRecordUri(row?.uri ?? row?.record_id);
+  const members = uriSet(Array.isArray(row?.uris) && row.uris.length ? row.uris : [uri]);
+  if (uri) members.add(uri);
+  return members;
+};
+
+/**
+ * Every record of a position a delivered finding ends: each record the findings name, and every record of a row one of
+ * them belongs to. The reading the duty below and the synthesis seam make, so a reader that sets these records' declinations
+ * aside drops exactly the positions the run's trace reads as delivered. PURE.
+ */
+export function recordsOfDeliveredPositions(rows, deliveredUris) {
+  const delivered = uriSet(deliveredUris);
+  const out = new Set(delivered);
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const members = positionRecords(row);
+    if ([...members].some((u) => delivered.has(u))) for (const u of members) out.add(u);
+  }
+  return out;
+}
+
 /**
  * Reconcile what synthesis was handed against what it did with each record.
  *
@@ -84,8 +107,7 @@ export function reconcileDeclinationDuty({ owed = null, deliveredUris = null, de
     seen.add(uri);
     // AN ENTRY'S ROW STANDS FOR ALL ITS RECORDS: a finding naming any of them delivers the entry, and the row's
     // declination declines it. The duty is the entry's; the reader is still told how many records it holds.
-    const members = uriSet(Array.isArray(row?.uris) && row.uris.length ? row.uris : [uri]);
-    members.add(uri);
+    const members = positionRecords(row);
     const isDelivered = [...members].some((u) => delivered.has(u));
     const isDeclined = [...members].some((u) => declined.has(u));
     recordsOwed += members.size;

@@ -88,8 +88,9 @@ They read the GitHub Releases page or `CHANGELOG.md` to decide whether to upgrad
 A note states, in one plain sentence, what is different for that reader after upgrading. Nothing else.
 
 ## Form
-1. One sentence, at most 26 words, ordinary words. A second sentence is allowed only to say what to do
-   about it ("Run `clearotron doctor` after upgrading.").
+1. One sentence, at most 30 words, or 30 in each clause after a semicolon or a colon; ordinary words. A comma
+   ends no clause. A second sentence is allowed only to say what to do about it ("Run `clearotron doctor`
+   after upgrading.").
 2. Lead with the thing the reader knows: the feature, the command, the screen, the situation.
    "The demo…", "Installing from npm…", "Server installs…", "Reports…", "The setup wizard…".
 3. Name the reader by situation, never a bare "you": "Anyone installing with npm can verify…" — or write it
@@ -121,7 +122,7 @@ A note states, in one plain sentence, what is different for that reader after up
 1. `.changeset/README.md` on the public repo: this contract, verbatim, with the three examples — the file
    every contributor reads when adding a note.
 2. `scripts/release-notes-lint.mjs`, run by the release workflow BEFORE the version step and by CI on every
-   PR that adds a `.changeset/*.md`: refuses any banned token, any sentence over 26 words, any `#NNN`, any
+   PR that adds a `.changeset/*.md`: refuses any banned token, any sentence or clause over 30 words, any `#NNN`, any
    path/module name; prints the offending line and the rule. A refused note blocks the merge, not the release.
 3. The PR template: one line — "Release note added under .changeset/, written for a lawyer, passes the lint."
 4. The version step's compiled changelog and the GitHub release body are generated from the notes only, grouped
@@ -133,7 +134,8 @@ A note states, in one plain sentence, what is different for that reader after up
 
 It refuses what is mechanically decidable: issue and pull-request numbers, paths into this source tree,
 module names, flags the user documentation never shows, port numbers, our internal vocabulary, the empty
-phrases, and any sentence over 26 words. It prints the line and the rule.
+phrases, and any sentence over 30 words, or any clause of one after a semicolon or a colon. It prints the line
+and the rule.
 
 It cannot tell whether a sentence is true, or useful, or the right thing to say. A note that passes is
 not thereby a good note — it is a note whose remaining problems are the kind a person has to see. Read it

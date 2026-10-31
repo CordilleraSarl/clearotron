@@ -34,12 +34,13 @@
 import { makeLedger, heldRecordBodies } from "../../_shared/ledger.mjs";
 import { answerKey, compareAnswers, forgetAnswer, noteAnswer, openAnswerMemory, recallAnswer, rememberAnswer } from "../../_shared/answer-memory.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
+import { clipProviderText } from "../../_shared/provider-text.mjs";
 import {
   BATCH_SCREEN_CHUNK, chunk, isAllClass, makeClassifyStatus, screenVerdict,
 } from "../../_shared/screen.mjs";
 import { makeEnumerate, ENUMERATE_NAMES_CHUNK_DEFAULT, parseToolText } from "../../_shared/enumerate.mjs";
 import { makeCountProbe } from "../../_shared/count.mjs";
-import { CAPABILITY_GAP_MARKER, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
+import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
 import { stripGoodsReservedWords } from "../../_shared/term-shape.mjs";   // the goods field parses these words as operators
@@ -90,6 +91,9 @@ export function refToOffice(ref) {
 // `ledgerExtra` rides on the call ledger's row: a /text call names the record ids it fetched, which is
 // what lets a run's usage count a record fetched twice (driver/provider-usage.mjs).
 const REMEMBERED_PATHS = new Set(["/count", "/search", "/resolution/company"]);
+// The register's words on a refused request's row in the run's request log: a refusal names its field and office in
+// well under this, and the log is appended by several processes at once.
+export const REFUSAL_WORDS_LIMIT = 300;
 
 export async function clarivateFetch(apiKey, base, path, { body = null, method = "POST", retries = 1, tctx = null, ledgerExtra = null } = {}) {
   const url = `${base}${path}`;
@@ -140,6 +144,11 @@ export async function clarivateFetch(apiKey, base, path, { body = null, method =
   if (mem) {
     const summary = rememberableAnswer(path, resp.status, parsed, parseError);
     const row = { held: Boolean(held), status: resp.status, rememberable: Boolean(summary) };
+    // A REFUSED ANSWER KEEPS THE REGISTER'S WORDS on its row. This log is the run's own record of each request, and a
+    // status alone does not say why: an office with no goods field and a query the register cannot parse both answer
+    // 400. The call ledger above keeps the whole body, but in the box's file, not the run's. Clipped, so that
+    // concurrent appends to this log stay whole lines.
+    if (!resp.ok) row.words = clipProviderText(parsed?.errorMessage ?? parsed?.message ?? raw, REFUSAL_WORDS_LIMIT);
     if (held && summary) Object.assign(row, compareAnswers(held.summary, summary));
     if (summary && !held) row.stored = rememberAnswer(mem, key, { status: resp.status, raw, summary });
     note(row);
@@ -1280,11 +1289,12 @@ async function countOnce(apiKey, base, p, tctx) {
   // never change on a retry (an office outside the 186-code vocabulary, a term carrying parentheses or
   // a 2-letter operator word this query language cannot state, a missing regions[]).
   // Marked as a capability gap so the plan executor DEFERS the slice — a disclosed coverage row the
-  // lawyer reads — instead of stamping a transient error and grinding the whole run to a fan-in
+  // lawyer reads, whose reason says it was refused before sending — instead of stamping a transient
+  // error and grinding the whole run to a fan-in
   // StageFailure over an answer that will never differ. A real HTTP failure below keeps the transient
   // reading and rides the repair ladder, exactly as before, except a query the service refused as written
   // (countFailureReason above).
-  catch (e) { return { ok: false, total: null, per_office: null, reason: `${CAPABILITY_GAP_MARKER} ${e.message}` }; }
+  catch (e) { return { ok: false, total: null, per_office: null, reason: `${CAPABILITY_GAP_MARKER} ${REFUSED_BEFORE_SENDING} ${e.message}` }; }
 
   const r = await clarivateFetch(apiKey, base, "/count", { body, tctx: { ...tctx, target: String(echoOf(p)).slice(0, 200) } });
   if (!r.ok) return { ok: false, total: null, per_office: null, reason: countFailureReason(r.status, errText(r), body) };
