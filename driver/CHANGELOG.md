@@ -1,5 +1,16 @@
 # clearotron-driver
 
+## 0.5.0-beta.7
+
+### Patch Changes
+
+- Fixed: When deciding whether a wider register search is worth running, the engine now uses its strongest model, so a conflict found only by a wider search is no longer skipped.
+- Fixed: A search the register refused is now recorded with the register's own reason, and a search the engine itself declined to send is no longer reported as a register error.
+- Fixed: A run repaired after a failure now keeps the original order, including who sent it and their instructions, instead of rebuilding a partial one.
+- Fixed: An overview that cites a finding no longer in the report is now sent back for correction before delivery, and flagged for the reviewing lawyer if the citation remains.
+- Fixed: The audit now states in plain words why each unsearched question was not carried out.
+- Fixed: The reviewing step now sees every conflict the writer set aside, with the writer's reason, and can send one back for correction.
+
 ## 0.5.0-beta.6
 
 ### Patch Changes
