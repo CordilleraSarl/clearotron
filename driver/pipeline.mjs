@@ -3601,12 +3601,12 @@ export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — 
  * with no finding and no declination is a decision the record does not hold. An unreadable placements file, ledger or
  * findings file is "unreadable", never "none". "no-positions" is a run KNOWN to have handed the writer no position: its
  * placements file reads and carries none. A missing placements file is not that: placement runs on every clearance,
- * so its record is expected, and a missing one is "unreadable" (ruled 2026-10-30). A finding ends a position whatever
- * the ledger still holds, as the synthesis seam reads it.
+ * so its record is expected, and a missing one is "unreadable" (ruled 2026-10-30). A finding the report carries ends a
+ * position whatever the ledger still holds; a withdrawn one ends only a position the writer never declined.
  *
- * `delivered` is every record the current findings name, and `findings` each finding's owner and fingerprint, for a
- * later review to establish from the findings themselves which exclusions a finding now delivers and which a changed
- * finding touches; both are null where the findings cannot be read.
+ * `delivered` is every record the findings the report carries name, and `findings` each finding's owner and
+ * fingerprint, withdrawn ones included, for a later review to establish from the findings themselves which exclusions a
+ * finding now delivers and which a changed finding touches; both are null where the findings cannot be read.
  *
  * Each position's `evidence` fingerprints what the run holds of its records, by content (ruled 2026-10-30): each
  * record's band row with the register's answer as it came, the body the run holds for it, and the goods state the
@@ -3625,10 +3625,10 @@ export function writerExclusions(P) {   // @internal — driven by its test with
     const key = (u) => String(normalizeRecordUri(u) ?? "");
     const declined = readDeclinations(P.runDir);
     if (existsSync(declinationCallPaths(P.runDir, 0).ledger) && !declined.present) return empty("unreadable");
-    let delivered, findings;
+    let delivered, withdrawn, findings;
     try {
       const found = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? [];
-      delivered = new Set([...findingUris(found).keys()].map(key));
+      [delivered, withdrawn] = [true, false].map((live) => new Set([...findingUris(found.filter((f) => (f?.disposition !== "withdrawn") === live)).keys()].map(key)));
       // Each finding as the writer numbered it. A later review's comparison and a ground's "finding 9" both read the
       // writer's numbering, and from the delivery seam on findings.json is the folded, renumbered record (record-fold.mjs).
       const modelAt = modelRecordPath(P.runDir, P.findings);
@@ -3652,7 +3652,7 @@ export function writerExclusions(P) {   // @internal — driven by its test with
       const members = [...new Set((Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri]).map(key).filter(Boolean))];
       if (members.some((u) => delivered.has(u))) continue;
       const d = declined.byUri.get(key(row?.uri));
-      if (!d) { undecided++; continue; }
+      if (!d) { if (!members.some((u) => withdrawn.has(u))) undecided++; continue; }
       const e = entryOf.get(key(row?.uri)) ?? null;
       positions.push({ uri: key(row.uri), members, mark: e?.mark ?? row.mark ?? null, owner: e?.owner ?? row.owner ?? null,
         tier: e?.tier ?? row.tier ?? null, borderline: e?.borderline === true, reason: e?.reason ?? null,

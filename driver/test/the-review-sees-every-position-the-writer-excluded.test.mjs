@@ -9,9 +9,10 @@
 // position placement put forward that the writer excluded, at any tier, once each, with placement's tier and reason
 // and the writer's ground, under the ruled standard (2026-10-29). A later review starts fresh, so it is told what
 // changed, then the research the run obtained after the full review, then every other exclusion for reference, each
-// once (2026-10-30). A flag names an excluded position by its record id, and the corrective pass is narrowed to it;
-// where another flag declared nothing, the pass stays open and is still told the position and its row. Every mark and
-// owner is invented.
+// once (2026-10-30). A finding the review withdrew delivers nothing, so a position only it names stays the writer's
+// exclusion where the writer declined it. A flag names an excluded position by its record id, and the corrective pass
+// is narrowed to it; where another flag declared nothing, the pass stays open and is still told the position and its
+// row. Every mark and owner is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
@@ -534,4 +535,46 @@ test("a ground citing a finding that did not change stays for reference, and the
   const later = writerExclusionBlock(P, { review: "later" });
   assert.deepEqual(ids(later.lines), [], "the folded file's rewrite reopened an exclusion the writer's record did not change");
   assert.deepEqual(ids(later.reference), ["/mark/eu/c1", "/mark/eu/d1", "/mark/eu/e1"]);
+});
+
+// The review withdrew a finding: the run's own finding 1, on a1, or a second finding naming `id`.
+const KILLED = "the review found the owner's goods never meet the client's";
+const withdrawFinding = (P, id = null) => {
+  const doc = JSON.parse(readFileSync(P.findings, "utf8"));
+  const [first] = doc.findings;
+  if (!id) Object.assign(first, { disposition: "withdrawn", withdrawn_reason: KILLED });
+  else doc.findings.push({ ...structuredClone(first), ordinal: 2, disposition: "withdrawn", withdrawn_reason: KILLED,
+    owner: { ...first.owner, registrations: [{ ...first.owner.registrations[0], uri: `/mark/eu/${id}` }] } });
+  writeFileSync(P.findings, JSON.stringify(doc));
+};
+
+test("a finding the review withdrew delivers nothing: an exclusion only it names stays listed, and is never told as delivered", (t) => {
+  const P = seedRun(t);
+  writerExclusionBlock(P, { review: "full" });
+  withdrawFinding(P, "e1");
+  const later = writerExclusionBlock(P, { review: "later" });
+  assert.ok(!later.lines.some((l) => l.includes("now delivered")), `a withdrawn finding was told as delivering an exclusion: ${later.lines.join(" | ")}`);
+  assert.deepEqual(ids(later.reference), ["/mark/eu/c1", "/mark/eu/d1", "/mark/eu/e1"], "the exclusion only a withdrawn finding names left the list");
+});
+
+test("a declined position whose finding the correction withdrew is the writer's exclusion again, and the later review checks it", (t) => {
+  const P = seedRun(t);
+  appendDeclinations(P.runDir, [{ uri: "/mark/eu/a1", reason: "unrelated-goods", grounds: "Game controllers sold only as spare parts." }]);
+  // At the full review a finding delivers a1, whatever the ledger still holds.
+  assert.deepEqual(ids(writerExclusionBlock(P, { review: "full" }).lines), ["/mark/eu/c1", "/mark/eu/d1", "/mark/eu/e1"]);
+  withdrawFinding(P);
+  const later = writerExclusionBlock(P, { review: "later" });
+  assert.deepEqual(ids(later.lines), ["/mark/eu/a1"], "a position the withdrawal left to the writer's exclusion was not given to the review to check");
+  assert.ok(later.lines[0].includes("excluded by the writer as unrelated-goods: Game controllers sold only as spare parts."), later.lines[0]);
+  assert.deepEqual(ids(later.reference), ["/mark/eu/c1", "/mark/eu/d1", "/mark/eu/e1"]);
+});
+
+test("a position the writer never declined, whose one finding the correction withdrew, is ended by the withdrawal and not read as undecided", (t) => {
+  const P = seedRun(t);
+  writerExclusionBlock(P, { review: "full" });
+  withdrawFinding(P);
+  const later = writerExclusionBlock(P, { review: "later" });
+  assert.equal(later.state, "listed", "a withdrawn finding on a position the writer never declined made the list unreadable");
+  assert.ok(![...later.lines, ...later.reference].some((l) => l.includes("(/mark/eu/a1")), "a position the writer never declined was listed as its exclusion");
+  assert.ok(!later.lines.some((l) => l.includes("now delivered")));
 });
