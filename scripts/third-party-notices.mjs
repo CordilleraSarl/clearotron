@@ -124,6 +124,18 @@ export const DECLARED_LS_PROBLEMS = [
       + 'trigger. The resolution is what #1722 intended and the bundle carries it: `npm pack` puts '
       + 'node_modules/uuid inside the tarball, and verify-publishable installs and runs it.',
   },
+  {
+    match: /^invalid: minimatch@11\./,
+    nearMiss: "invalid: minimatch@10.2.6",
+    reason:
+      'npm reports minimatch as invalid for the same reason as uuid: the root `overrides` move it under '
+      + '`exceljs`, a bundled dependency, out of the ranges its parents declare. Every minimatch before 11.0.1 '
+      + 'carries a denial-of-service advisory (GHSA-g3hv-75wg-m249, 2026-10-30) and none is patched, so the '
+      + 'overrides give readdir-glob and archiver-utils\' glob 11.x. The workbook writer, archiver\'s '
+      + 'directory walk and rimraf on a literal path were measured working on it; glob 7\'s own pattern '
+      + 'walk does not run on 11.x, and nothing this package calls reaches it. eslint\'s own 10.x is a '
+      + 'development dependency and stays as it is.',
+  },
 ];
 
 /** Problems npm reported that nothing here declares. PURE. */
