@@ -22,7 +22,7 @@ that:
 
 | | Provider | How you get it | Coverage |
 |---|---|---|---|
-| **1 — recommended** | `signa` | **Self-serve API key**, issued from the vendor's site. No sales call | 11 offices: US, EU, WIPO/Madrid + 8 |
+| **1 — recommended** | `signa` | **Self-serve API key**, issued from the vendor's site. No sales call | 13 offices: US, EU, WIPO/Madrid + 10 |
 | **2 — free, with real limits** | `free-tier` (`euipo` + `uspto-local`) | Two free accounts, and a 41.5 GB local build for the US half | EU + US, and nothing else. No sound-alike search |
 | **3 — widest coverage** | `corsearch`, `clarivate` | Credential issued by the vendor | Global; Clarivate reaches 186 offices |
 
