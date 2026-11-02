@@ -849,7 +849,7 @@ export const claudeToolAnswerBytes = (env = process.env) =>
 // The mcp-config server env carries ONLY the per-run, non-secret values (session key + ledger paths +
 // agent + the run dir the band tools serve, and the answer size above). Creds (CORSEARCH_SESSION_KEY /
 // PERPLEXITY_API_KEY / EUIPO_*) are inherited from the engine env.
-function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false }) {
+function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null }) {
   const e = {};
   // — see buildGatherMcpConfig: a register server without a run is refused there, so by the time
   // the record-log line below runs, `runDir` is present for every config that could use it.
@@ -862,6 +862,9 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false }
   // the server per turn so the acceptance boundary can refuse a payload naming any other index, which
   // turns O3c's measured 224/0 habit into a structure. Absent for every non-fan-out stage.
   if (recordAxis) e.CLEAROTRON_RECORD_AXIS = String(recordAxis);
+  // THE POSITIONS A CORRECTION'S FLAGS NAME, for which the writer's save may add a finding (synthesis-record.mjs,
+  // `correctionPositions`). The driver's answer for the correction it dispatches, and absent on every other dispatch.
+  if (Array.isArray(correctionPositions) && correctionPositions.length) e[CORRECTION_POSITIONS_ENV] = JSON.stringify(correctionPositions);
   // — THE RUN'S REGISTER, so a recording tool gates a record link at the call as verify.mjs gates the
   // saved file (record-origins.mjs). Handed over explicitly: Codex gives a server only its own `env` and
   // the names it forwards, so a value left to inheritance reaches a Claude server and never a Codex one.
@@ -915,7 +918,16 @@ export function withSendUntil(mcpConfigJson, sendUntilMs) {
   return JSON.stringify(cfg);
 }
 
-export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false } = {}) {
+/** Where a correction's positions reach the save tool's server. */
+export const CORRECTION_POSITIONS_ENV = "CLEAROTRON_CORRECTION_POSITIONS";
+/** The positions a server was handed, or null where it was handed none it can read: no correction's dispatch. PURE. */
+export function correctionPositionsFrom(env = process.env) {
+  let v;
+  try { v = JSON.parse(String(env?.[CORRECTION_POSITIONS_ENV] ?? "")); } catch { return null; }
+  return Array.isArray(v) && v.length && v.every((u) => typeof u === "string") ? v : null;
+}
+
+export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null } = {}) {
   const localKeys = new Set(), bridgeKeys = new Set();
   for (const g of groups) { const r = resolveGroup(g); r.local.forEach((k) => localKeys.add(k)); r.bridges.forEach((k) => bridgeKeys.add(k)); }
   const mcpServers = {};
@@ -945,7 +957,7 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
         + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
-  const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups });
+  const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups, correctionPositions });
   for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env };
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at
   // all, so a case-law tool call had nowhere to log: `tool-calls.jsonl` recorded server/tool/ok and the

@@ -5469,6 +5469,9 @@ async function stageOnce(name, ctx, opts = {}) {
     ...(name === "register-unit" && ctx.registerPlan?.contract?.supplemental_lane
       ? { excludeTools: [REGISTER_ENUMERATE_TOOL] } : {}),
     ...(opts.maxRetries != null ? { maxRetries: opts.maxRetries } : {}),
+    // The correction this dispatch is, when it is one: its save may add the finding for an excluded position its flags
+    // name. Only the correction's own dispatches carry it.
+    ...(opts.correction ? { correction: opts.correction } : {}),
   });
   // run.jsonl "stage" event carries the input→output LINKAGE telemetry (what this stage handed downstream),
   // the WHY (trigger), and the model — the per-attempt execution detail (wall/status/usage) is in _driver/<stage>.jsonl.
@@ -6164,7 +6167,12 @@ function withPositionLabels(scope, P) {
   return { ...scope, positionLabels: scope.positions.map(label) };
 }
 
-export function correctionsExtra(P, depth = null, framework = null) {   // @internal
+/**
+ * The review as the correction reads it, once: the pieces of its message, and the excluded positions its flags name,
+ * which its dispatch also hands the writer's save (synthesis-record.mjs, `correctionPositions`), so the positions the
+ * message names are the positions the save may add a finding for. IMPURE (reads the run).
+ */
+export function correctionReading(P) {   // @internal
   const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
   // — THE FLAGS ARRIVE AS A TYPED WORKLIST, not only as a wall of prose. The reviewer already
@@ -6210,6 +6218,11 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
   // declaration, never assumed on its behalf. The positions the flags named ride either way, with their rows.
   const named = flaggedPositions(rows);
   const scope = withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P);
+  return { review, rulingsTail, worklist, scope, positions: named };
+}
+
+export function correctionsExtra(P, depth = null, framework = null, reading = correctionReading(P)) {   // @internal
+  const { review, rulingsTail, worklist, scope } = reading;
   // THE RUNG RIDES THE CORRECTIVE RE-EMISSION, byte-identically with the fresh dispatch. Appended rather
   // than threaded through `repairFollowup`'s fields so both dispatches carry the SAME STRING from the
   // SAME function, and an arm can compare them without knowing how either is assembled.
@@ -7644,6 +7657,8 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
   return { ran: true, ok: Boolean(pass.ok), rollback, applied };
 }
 
+// `resume.correction` is the first correction's (see its dispatch), handed on by that caller alone: the correction after
+// the review of a repair shares this follow-up and is handed no positions.
 async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   if (!pre) return;                                            // no findings.json before the pass — nothing to enforce
   const { run } = ctx;
@@ -7661,7 +7676,8 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   await stage("synthesis", ctx, {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
     trigger: "corrective-findings",
-    followup: repairFollowup("synthesis:corrective-findings", { findings: P.findings, named, seniorEyeReview: P.seniorEyeReview }) + stageCharter("synthesis", ctx.depth, ctx.framework),
+    ...(resume.correction ? { correction: resume.correction } : {}),
+    followup: repairFollowup("synthesis:corrective-findings", { findings: P.findings, named, seniorEyeReview: P.seniorEyeReview, adds: Boolean(resume.correction) }) + stageCharter("synthesis", ctx.depth, ctx.framework),
   });
   if (readState().stale) {
     runLog(run.runDir, { event: "corrective-findings-stale", named });
@@ -14603,7 +14619,11 @@ async function pipelineInner(job, opts = {}) {
       // silently: if the surface ever did move, the corrective's `row_index` would point into the previous
       // pass's list and a declination would land on the wrong record.
       prepareDeclinationSpec(ctx, P);
-      const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework), sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, trigger: "corrective" });
+      // THE CORRECTION RIDES ITS OWN DISPATCH: the excluded positions its flags name go to the writer's save with this
+      // dispatch, its retries and the follow-up below, and with no other. The message names the same positions.
+      const reading = correctionReading(P);
+      const correction = { positions: reading.positions };
+      const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework, reading), correction, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, trigger: "corrective" });
       // half one — the corrective pass rewrites findings.json under a closed minimal-edit contract,
       // so it is the pass most likely to change one record's fate. Its own account, at its own moment; the
       // winner rule in record-discard.mjs lets this carry cancel an earlier discard.
@@ -14660,7 +14680,7 @@ async function pipelineInner(job, opts = {}) {
             + (repaired.leftRemoved.length ? `. ${repaired.leftRemoved.length} removal(s) the reviewer DID name stay removed.` : "")
             + " The reviewer re-reads the repaired document before it ships.");
         }
-        await enforceCorrectionsReachFindings(ctx, P, preCorrective, { synthesisKey, synthesisModel, synthesisThinking });   // A1 freshness gate
+        await enforceCorrectionsReachFindings(ctx, P, preCorrective, { synthesisKey, synthesisModel, synthesisThinking, correction });   // A1 freshness gate
       }
       // — WHAT THE DRIVER OBSERVED, flag by flag, written before the recheck is dispatched. The
       // recheck's whole cost is re-reading two documents to work out whether its own corrections landed;
@@ -18904,6 +18924,7 @@ async function runExperimentInner(job, opts) {
     reviewerVerdict: existsSync(P.seniorEyeReview),
   });
   const whichPass = correctivePassState({ trigger: opts.dispatchTrigger ?? null, ready: correctiveReady.ready });
+  let armCorrection = null;
   if (opts.dispatchTrigger === "corrective") {
     if (!correctiveReady.ready) {
       // REFUSED BY NAME, never a fresh pass wearing a corrective label — which is exactly the quietly
@@ -18912,7 +18933,9 @@ async function runExperimentInner(job, opts) {
       runLog(ctx.paths.runDir, { event: "experiment-refused", stage: name + (axis ? `:${axis}` : ""), reason: "no-corrective-state" });
       return { ok: false, shadowDir, output: null, fail: "no_corrective_state", correctivePass: whichPass };
     }
-    const blocks = correctionsExtra(P, ctx.depth, ctx.framework);   // depth+framework are RUN-level; only `P` is the sandbox's
+    const reading = correctionReading(P);
+    const blocks = correctionsExtra(P, ctx.depth, ctx.framework, reading);   // depth+framework are RUN-level; only `P` is the sandbox's
+    armCorrection = { positions: reading.positions };   // the arm's save may add what production's may
     extra = [extra, blocks].filter(Boolean).join("\n\n");
     extraIds = [...(extraIds ?? []), { id: "corrective-blocks", chars: blocks.length }];
   }
@@ -19014,7 +19037,7 @@ async function runExperimentInner(job, opts) {
   // ordering is not on the record is an arm nobody can attribute later, and attribution is the entire
   // point of the probe — experiment runs were the one dispatch path that never wrote it.
   runLog(shadowDir, { event: "order-probe", seed: orderProbeSeed() });
-  const r = await stage(name, shadowCtx, { force: true, model, extra, sessionKey, trigger: "experiment" });
+  const r = await stage(name, shadowCtx, { force: true, model, extra, sessionKey, trigger: "experiment", ...(armCorrection ? { correction: armCorrection } : {}) });
   const out = STAGES[name].out ? STAGES[name].out(shadowCtx.paths, axis) : null;
 
   // — AN ARM THAT PRODUCED NOTHING DOES NOT PRINT OK.

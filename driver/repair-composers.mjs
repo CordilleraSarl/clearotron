@@ -46,7 +46,7 @@ import { editRepairTail, abbrev } from "./repair-contract.mjs";
 // `connotation-remedy` quotes the refusal token and turns it into a fix instruction. Both helpers
 // are the gateway's, and calling them here rather than re-deriving the text is the point: one
 // derivation, and a composer that drifts from the hint the gateway gives is impossible by construction.
-import { correctionHint, gridLedgerNameFor } from "./gateway.mjs";
+import { correctionHint, gridLedgerNameFor, patchRows } from "./gateway.mjs";
 import { basename } from "node:path";
 // ── REGISTERED IN PLACE ─────────────────────────────────────────────────────────────────────────────
 // These six are already named, exported, and living beside the subject they repair. Moving them into
@@ -131,7 +131,9 @@ const restingLine = (r) => {
   return `- ${r.label}, which names finding ${(r.ordinals ?? []).join(", ")}: ${r.text}`;
 };
 
-const correctiveRules = ({ narrative, findings, placement, rulingsTail }) => [
+// `adds`: the correction answering a review's flags, whose save may add the finding for an excluded position they name;
+// the correction after the review of a repair is handed no positions and keeps the words for a replacement.
+const correctiveRules = ({ narrative, findings, placement, rulingsTail, adds = false }) => [
   // ── — THE PASS THAT WRITES THE DEFECT ──────────────────────────────────
   //
   // Five verdict refusals in seven days, all one shape: a coverage or search-completion claim
@@ -184,7 +186,7 @@ const correctiveRules = ({ narrative, findings, placement, rulingsTail }) => [
   // on the serial critical path, and a conversion that answered it with "re-send everything
   // through a tool" would have paid that cost back in a different currency. The driver holds the
   // accepted values; the seat sends what changed.
-  `Send it all in ONE \`record_synthesis\` PATCH call, sending only the change: \`narrative\` carrying only the sections you corrected; \`findings_patch\` carrying the complete corrected finding object(s), each with the \`ordinal\` it replaces; and \`findings\` carrying the "corrections" marker and any register from step 3, complete, and never a \`findings[]\` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file to write or edit and nothing you write by hand is read.`,
+  `Send it all in ONE \`record_synthesis\` PATCH call, sending only the change: \`narrative\` carrying only the sections you corrected; \`findings_patch\` carrying ${patchRows(adds)}; and \`findings\` carrying the "corrections" marker and any register from step 3, complete, and never a \`findings[]\` list. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file to write or edit and nothing you write by hand is read.`,
   // 2026-07-04 (the VENZY corrective thrash): three attempts died inventing three different keys
   // while trying to EXPRESS a hold. The contract is closed and every correction is expressible
   // inside it — say so.
@@ -206,13 +208,17 @@ export const REPAIR_COMPOSERS = [
     // nothing else of the review, so a session that starts with nothing would have no flag to apply; the
     // review's own file is named for it to open. `seniorEyeReview` is that file: the run's review on the first
     // cycle, and the review after the delivery-check repair on the pass that applies it.
-    compose: ({ findings, named, seniorEyeReview }) => lines(
+    // `adds` on the first correction's own follow-up, whose save may add the finding for an excluded position its flags
+    // name; the correction after the review of a repair is handed none, and its follow-up keeps the words for a replacement.
+    compose: ({ findings, named, seniorEyeReview, adds = false }) => lines(
       `This is a fresh session: your earlier synthesis is not in your context, and the driver holds the record it last accepted from you. Your corrective pass updated the narrative but did NOT re-emit ${findings} — the structured findings the client report renders from. The review named: ${named.join(", ")}. Its flags are in ${seniorEyeReview}; open it and ${findings} for the findings it names.`,
       `Apply each flag to the finding objects it names: correct the fields, or set "disposition": "withdrawn" + "withdrawn_reason" for a killed finding, and add the "corrections": {"applied": true, "note": "…"} marker inside the call's \`findings\` object. Change nothing else.`,
-      `Send the correction with \`record_synthesis\`, sending only the change: a PATCH call carrying \`findings_patch\` — the complete corrected finding object(s), each with the \`ordinal\` it replaces — and \`findings\` carrying only the "corrections" marker, never a \`findings[]\` list; nothing else. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file for you to write or edit and nothing you write by hand is read.`,
+      `Send the correction with \`record_synthesis\`, sending only the change: a PATCH call carrying \`findings_patch\` — ${patchRows(adds)} — and \`findings\` carrying only the "corrections" marker, never a \`findings[]\` list; nothing else. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. There is no file for you to write or edit and nothing you write by hand is read.`,
     ),
     samples: [{ name: "the standard re-emit demand", tail: "tool",
-      args: { findings: "findings.json", named: ["#1", "#4"], seniorEyeReview: "senior-eye-review.md" } }],
+      args: { findings: "findings.json", named: ["#1", "#4"], seniorEyeReview: "senior-eye-review.md" } },
+    { name: "the first correction's re-emit demand, which may add a finding", tail: "tool",
+      args: { findings: "findings.json", named: ["#1", "#4"], seniorEyeReview: "senior-eye-review.md", adds: true } }],
   },
   {
     trigger: "intake-asks-followup",
@@ -293,7 +299,7 @@ export const REPAIR_COMPOSERS = [
         // exactly as it governs a first draft, and this instruction was the one place the engine invited
         // a hedge into a deliverable. It fired on 4 of 4 delivered clearances in the 2026-08-09 round.
         `This is a fresh session: your earlier synthesis is not in your context, and you do NOT redo it from scratch. The driver holds the record it last accepted from you; your earlier work is in ${narrative} and ${findings} — open them for the parts each flag names — and your inputs are listed below. The independent refutation flagged the corrections below. Apply them (minimum-change per flag — correct the statement to what the evidence supports, demote the tier, remove the sentence, or verify-flag for re-check) to BOTH deliverables. A caveat, hedge, qualifier or disclaimer is NEVER a repair: an unsupported statement is corrected or it is removed, never softened.`,
-        ...correctiveRules({ narrative, findings, placement, rulingsTail }),
+        ...correctiveRules({ narrative, findings, placement, rulingsTail, adds: true }),
         scopeBlock ? lines(scopeBlock, ``) : "",
         positionsLine ? lines(positionsLine, ``) : "",
         worklist ? lines(worklist, ``) : "",

@@ -37,6 +37,7 @@
 // same served-vs-granted delta as the record tools, pinned by the same census.
 import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
+import { correctionPositionsFrom } from "./gather-config.mjs";   // the positions a correction's dispatch hands its save
 import { recordRegisterDigest } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
 import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";
@@ -234,7 +235,9 @@ async function record_synthesis(params) {
   // The intake asks, the plan-execution receipt and the frozen framework are read from the RUN by
   // `recordSynthesis` itself. They are not parameters and there is nothing to thread here: a seat that
   // could hand us its own receipt could waive its own coverage join.
-  return recordSynthesis(runDir, params);
+  // THE CORRECTION'S POSITIONS ARE THE DRIVER'S AND ARE READ HERE, never taken from the payload: a seat that could name
+  // them could add a finding for any position it chose. Absent on every dispatch that is not a correction's.
+  return recordSynthesis(runDir, params, { correction: correctionPositionsFrom(process.env) });
 }
 
 async function search_run_artifacts(params) {
@@ -1098,13 +1101,13 @@ serve({
         findings_patch: {
           type: "array",
           description:
-            "A TARGETED CORRECTION, and the shape the repair prompts ask for. Send the complete corrected finding object(s), each carrying the `ordinal` of the finding it replaces, and send NOTHING else — no `findings[]` list, no `narrative` unless you also corrected a section, and a `findings` object only to carry the registers you changed or the \"corrections\" marker. The driver merges this patch into the last accepted record, keeps the values the patch does not replace, and renders both files. It cannot remove a finding: an ordinal names one to replace, and there is no way to express a deletion. Sending a `findings` document that carries its `findings[]` list instead REPLACES the record, which is how fifteen findings were lost once — if you mean to correct four findings, send four rows here, not a document containing four.",
+            "A TARGETED CORRECTION. Send complete finding objects in `findings_patch`. To change an existing finding, use its current `ordinal`. To add a finding for an excluded position named in this correction's review flags, use a new `ordinal` after the highest in the current record and cite a record from that position. Include `narrative` only for sections you changed, and a `findings` object only for changed registers or the corrections marker. Do not send a `findings[]` list. The driver keeps everything the patch does not change. A patch does not delete findings; withdraw a finding using its existing disposition fields.",
           items: {
             type: "object",
             required: ["ordinal"],
-            description: "One complete finding object. `ordinal` is not optional here: it is the only thing that says WHICH finding this replaces, and a row without one has nowhere to land.",
+            description: "One complete finding object. `ordinal` identifies the finding being changed or the new finding being added for a flagged excluded position.",
             properties: {
-              ordinal: { type: "number", description: "The ordinal of the finding this row replaces, exactly as it appears in the record you emitted. An ordinal this run does not hold is refused rather than appended — a patch corrects, it is not a way to add." },
+              ordinal: { type: "number", description: "For an existing finding, use its current ordinal. For a new finding answering a review flag about an excluded position in this correction, use an unused positive whole number after the highest ordinal in the current record." },
               // ── — THE ROW IS A FINDING, AND THE SCHEMA NOW SAYS WHICH KEYS THAT MEANS ──
               //
               // The description above has always called this "one complete finding object" while the
