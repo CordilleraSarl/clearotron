@@ -7325,7 +7325,7 @@
         },
         "the-review-after-a-repair-is-told-what-changed-and-what-rests-on-it.test.mjs": {
           "tests": 7,
-          "asserts": 33,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
