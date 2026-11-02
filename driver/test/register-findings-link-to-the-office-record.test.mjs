@@ -49,10 +49,28 @@ const EXPECTED = [
   ["wo", SIGNA("wo", "1543782", "1543782", { filingRoute: "madrid_ir" }), "WO 1543782", "https://www3.wipo.int/madrid/monitor/en/showData.jsp?ID=ROM.1543782"],
 ];
 
-test("the table speaks for exactly the offices the vendor lists as live", () => {
+// Offices the vendor lists as live for which no address has yet been checked against a real record. The
+// vendor added Spain and Mexico before the 2026-11-02 sync. Until an address is checked, their records
+// take the register's own link where it gives one, and are otherwise cited by number under the sentence
+// for an office the table does not hold. Saying they publish no page would be false: both offices do.
+const AWAITING_AN_ADDRESS = ["es", "mx"];
+
+test("the table speaks for exactly the offices the vendor lists as live, less those awaiting an address", () => {
   const live = SIGNA_OFFICE_SNAPSHOT.offices.filter((o) => o.status === "live").map((o) => o.jurisdiction.toLowerCase()).sort();
   assert.ok(live.length >= 10, `a floor on the vendor's office list: ${live.length}`);
-  assert.deepEqual(Object.keys(OFFICE_RECORD_PAGES).sort(), live);
+  for (const o of AWAITING_AN_ADDRESS) assert.ok(live.includes(o), `${o} is awaiting an address but is not live`);
+  assert.deepEqual(Object.keys(OFFICE_RECORD_PAGES).sort(), live.filter((o) => !AWAITING_AN_ADDRESS.includes(o)));
+});
+
+test("an office awaiting an address is cited by number and says so, unless the register gives its page", () => {
+  for (const o of AWAITING_AN_ADDRESS) {
+    const rec = SIGNA(o, "1234567", null);
+    assert.deepEqual(officeRecordLink(rec), { office: o, label: `${o.toUpperCase()} 1234567`, href: null, reason: "unknown-office" }, o);
+    assert.deepEqual(officeReasonSentences(new Map([[`/mark/${o}/x`, officeRecordLink(rec)]])),
+      [`${o.toUpperCase()}: we hold no page address for this register, so its registrations are cited by number.`], o);
+    const given = `https://register.example/${o}/1234567`;
+    assert.equal(officeRecordLink({ ...rec, officeUrl: given }).href, given, `${o}: the register's own page is kept`);
+  }
 });
 
 test("every office with a record page is addressed from the vendor's number form, to the exact address", () => {
