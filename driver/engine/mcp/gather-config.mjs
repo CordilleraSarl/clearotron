@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { requireRegisterProvider } from "../../driver.config.mjs";
 import { ledgerPath, runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
+import { CORRECTION_POSITIONS_ENV } from "./correction-positions.mjs";   // the positions a correction hands its save
 
 const MCP_DIR = dirname(fileURLToPath(import.meta.url));
 const NODE = process.execPath;
@@ -916,15 +917,6 @@ export function withSendUntil(mcpConfigJson, sendUntilMs) {
   for (const server of Object.values(cfg.mcpServers))
     if (server && typeof server === "object") server.env = { ...(server.env ?? {}), CLEAROTRON_GATHER_SEND_UNTIL_MS: String(Math.floor(Number(sendUntilMs))) };
   return JSON.stringify(cfg);
-}
-
-/** Where a correction's positions reach the save tool's server. */
-export const CORRECTION_POSITIONS_ENV = "CLEAROTRON_CORRECTION_POSITIONS";
-/** The positions a server was handed, or null where it was handed none it can read: no correction's dispatch. PURE. */
-export function correctionPositionsFrom(env = process.env) {
-  let v;
-  try { v = JSON.parse(String(env?.[CORRECTION_POSITIONS_ENV] ?? "")); } catch { return null; }
-  return Array.isArray(v) && v.length && v.every((u) => typeof u === "string") ? v : null;
 }
 
 export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null } = {}) {

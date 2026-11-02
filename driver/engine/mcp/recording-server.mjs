@@ -37,7 +37,7 @@
 // same served-vs-granted delta as the record tools, pinned by the same census.
 import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
-import { correctionPositionsFrom } from "./gather-config.mjs";   // the positions a correction's dispatch hands its save
+import { correctionPositionsFrom } from "./correction-positions.mjs";   // the positions a correction's dispatch hands its save
 import { recordRegisterDigest } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
 import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";

@@ -267,7 +267,8 @@ function serverReads() {
   assert.ok(read.size >= 40, `the servers read only ${read.size} names — the extractor is broken`);
 
   // What gather-config writes into each server's own entry, for every tool group it knows. Two of those
-  // names it copies only when the driver has them, so they are set here for the look.
+  // names it copies only when the driver has them, so they are set here for the look; and the writer's dispatch is
+  // also built as a correction's, which hands its save the positions its flags name.
   const perServer = new Set();
   const lookEnv = { CLEAROTRON_DATABASE: "euipo", CLEAROTRON_GATHER_SESSION_ID: "id", EUIPO_ENVIRONMENT: "sandbox" };
   const saved = Object.fromEntries(Object.keys(lookEnv).map((k) => [k, process.env[k]]));
@@ -276,9 +277,11 @@ function serverReads() {
     // As the gateway builds them: placement's band server is the one told to serve the shape's group pages, and each
     // turn's copy carries that turn's time to stop sending.
     for (const stage of ["register-unit:primary-sweep", "common-law", "case-law", "placement-inquiry", "synthesis", "report-card", "register-digest", "narrative-refutation"]) {
-      const built = buildGatherMcpConfig(toolGroupsForStage(stage), { sessionKey: "s", agent: "a", runDir: "/run", recordAxis: "x", bandGroups: GROUP_READING_STAGES.has(stage) });
-      const cfg = built ? JSON.parse(withSendUntil(JSON.stringify(built), Date.now())) : null;
-      for (const s of Object.values(cfg?.mcpServers ?? {})) for (const k of Object.keys(s.env ?? {})) perServer.add(k);
+      for (const correctionPositions of stage === "synthesis" ? [null, ["/mark/look/1"]] : [null]) {
+        const built = buildGatherMcpConfig(toolGroupsForStage(stage), { sessionKey: "s", agent: "a", runDir: "/run", recordAxis: "x", bandGroups: GROUP_READING_STAGES.has(stage), correctionPositions });
+        const cfg = built ? JSON.parse(withSendUntil(JSON.stringify(built), Date.now())) : null;
+        for (const s of Object.values(cfg?.mcpServers ?? {})) for (const k of Object.keys(s.env ?? {})) perServer.add(k);
+      }
     }
   } finally { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } }
   assert.ok(perServer.has("CLEAROTRON_BAND_RUN_DIR") && perServer.has("CLEAROTRON_GATHER_SESSION_KEY"),
