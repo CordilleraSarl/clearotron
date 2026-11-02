@@ -887,7 +887,11 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
                         // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
                         // an already-over-budget resume; the caller records the coverage-limited deferral).
     excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
+    // THE CORRECTION THIS DISPATCH IS, when it is one: `{positions}`, the excluded positions its flags name. Its save may
+    // add a finding for them, and its retries say so (`patchRows`); every other dispatch carries none.
+    correction = null,
   } = opts;
+  const adds = Boolean(correction);
   if (!message) throw new Error(`runStage(${name}): message is required`);
   if (!sessionKey) throw new Error(`runStage(${name}): sessionKey is required`);
   const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
@@ -930,7 +934,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // The bound card index rides the same label the grant was resolved from — derived by the SAME
       // declared rule (`perAxis`), never by a second string-sniff that could disagree with it.
       const cfg = buildGatherMcpConfig(groups, { sessionKey, agent, runDir, recordAxis: recordAxisFor(name)?.axis,
-        bandGroups: GROUP_READING_STAGES.has(name) });
+        bandGroups: GROUP_READING_STAGES.has(name), correctionPositions: correction?.positions ?? null });
       gatherMcpConfig = cfg ? JSON.stringify(cfg) : undefined;
       gatherAllowedTools = allowedToolsFor(groups);
       gatherSeatWrites = seatWritesForGroups(groups);   // — the SAME derivation allowedToolsFor uses
@@ -1091,7 +1095,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       try { const fresh = refreshMessage(attempt); if (typeof fresh === "string" && fresh) base = fresh; }
       catch (e) { note(`[${name}] refreshMessage failed on attempt ${attempt}, dispatching the original text: ${String(e?.message ?? e).slice(0, 120)}`); }
     }
-    const effMessage = warm ? warmPatchMessage(lastFail, files, { supplementalLane }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane });
+    const effMessage = warm ? warmPatchMessage(lastFail, files, { supplementalLane, adds }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane, adds });
     note(`[${name}] attempt ${attempt}/${maxRetries + 1}${warm ? " [warm patch]" : ""} (engine=${engine.name} agent=${agent} model=${model ?? "default"} key=${key} timeout=${effTimeout}s)`);
     // The engine runs ONE turn and returns the normalized tuple. Every adapter returns the same shape
     // (zero change); anthropic-agent = claude -p off-gateway with the stall-watchdog. A warm retry threads
@@ -1351,7 +1355,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       note(`[${name}] FORM defect at write time (${triggeredBy.slice(0, 140)}) — repairing INSIDE this dispatch (${formRepairsUsed}/${MAX_FORM_REPAIRS}) at ${rel(target)}; the retry ladder is not charged`);
       //: a form repair is a real model invocation, so it gets its own record rather than hiding
       // inside the attempt it belongs to. Hoisted only to be recordable — the message is unchanged.
-      const repairMessage = warmPatchMessage(triggeredBy, files, { supplementalLane });
+      const repairMessage = warmPatchMessage(triggeredBy, files, { supplementalLane, adds });
       const repairDispatch = envGateOn("CLEAROTRON_DISPATCH_RECORD")
         ? recordDispatch(runDir, name, { attempt, repair: formRepairsUsed + 1, kind: "form-repair", message: repairMessage })
         : null;
@@ -2250,7 +2254,7 @@ function rel(p) {
 // missing_file) get corrective text — a timeout/transport failure is fixed by re-running, not by different content.
 // opts.supplementalLane (trailing + optional, so every positional caller is unchanged): the failing stage
 // ran without register_enumerate, so a hint that names it would contradict the prompt it is appended to.
-export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { supplementalLane = false } = {}) {
+export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { supplementalLane = false, adds = false } = {}) {
   if (attempt <= 1 || !lastFail) return baseMessage;
   // A6 (addendum 2026-07-30): the max_tokens fault wraps the underlying content failure (or stands bare
   // on a transport-shaped turn). The retry must be told the CAUSE was the output ceiling — an unnamed
@@ -2287,7 +2291,7 @@ export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { 
       `\n\nCORRECTION: ${budget}${requiredFileClause(inner, { names, toolWritten })}`;
   return baseMessage +
     `\n\nCORRECTION: your previous attempt failed file validation (${inner}). ${budget}Re-do the task and make sure ` +
-    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane, undispatchable: frameDiffUndispatchable(expectFile, inner), heldRecord: heldSynthesisRecord(files) })}. ` +
+    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane, undispatchable: frameDiffUndispatchable(expectFile, inner), heldRecord: heldSynthesisRecord(files), adds })}. ` +
     requiredFileClause(inner, { names, toolWritten });
 }
 
@@ -2377,16 +2381,22 @@ const CLEARANCE_FINDINGS_TOKEN_RE = /(?<!knockout_|knockoutassess_)findings?_/;
 // patch the follow-ups above it ask for. A record nobody saved yet, or one whose version is being replaced, still
 // takes the complete save.
 // The patch a held record takes, in the tool's own words; the retry for most findings checks leaves the narrative as it is.
-const HELD_RECORD_PATCH = "ONE `record_synthesis` PATCH call, sending only the change: `findings_patch` carrying the complete corrected finding object(s), each with the `ordinal` it replaces, and `findings` carrying any register you corrected, complete, and never a `findings[]` list";
-const HELD_RECORD_RETRY = `Fix exactly that in ${HELD_RECORD_PATCH}; leave the narrative prose unchanged`;
+// On the correction answering a review's flags, and on its retries, the rows are described in the words ruled for that
+// correction (2026-11-02): it may add the finding for an excluded position its flags name (synthesis-record.mjs).
+export const REPLACED_ROWS = "the complete corrected finding object(s), each with the `ordinal` it replaces";
+export const CORRECTION_ROWS = "the complete finding objects you changed or added: keep each existing finding's `ordinal`; for a new finding answering a flag about an excluded position named in this correction, use the next unused ordinal after the highest in the current record and cite a record from that position";
+/** The rows a held record's patch carries: on a correction's dispatch (`adds`), the finding it may add among them. PURE. */
+export const patchRows = (adds = false) => (adds ? CORRECTION_ROWS : REPLACED_ROWS);
+const heldRecordPatch = (adds = false) => `ONE \`record_synthesis\` PATCH call, sending only the change: \`findings_patch\` carrying ${patchRows(adds)}, and \`findings\` carrying any register you corrected, complete, and never a \`findings[]\` list`;
+const heldRecordRetry = (adds = false) => `Fix exactly that in ${heldRecordPatch(adds)}; leave the narrative prose unchanged`;
 const VERSION_FAILURE_RE = /finding_legacy_scale_forbidden|schema_version/;
 // A USE CHECK'S CORRECTION corrects what depends on the finding too, so it never says to leave the narrative as it is
 // (design, 2026-10-28). A held record takes the patch, in the tool's own words, with the narrative sections it changes;
 // a record not yet accepted is completed by its first call, which the line after every hint names. The caller prints a
 // full stop after the hint, so the ruled sentences go without their last one.
 const USE_CHECK_TOKEN_RE = /finding_use_check_(missing|source_missing):/;
-const useCheckCorrection = (heldRecord) => heldRecord
-  ? `${RESEARCH_CORRECTION} Send it in ${HELD_RECORD_PATCH}. In \`narrative\`, send only the sections you changed — the rest are held`
+const useCheckCorrection = (heldRecord, adds = false) => heldRecord
+  ? `${RESEARCH_CORRECTION} Send it in ${heldRecordPatch(adds)}. In \`narrative\`, send only the sections you changed — the rest are held`
   : RESEARCH_CORRECTION.replace(/\.$/, "");
 /**
  * Does the driver hold an accepted synthesis record for the run these files belong to? Read from either of the files
@@ -2397,7 +2407,7 @@ export const heldSynthesisRecord = (files) => {
   return Boolean(f) && existsSync(synthesisCallPaths(dirname(f)).accepted);
 };
 
-export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false } = {}) {
+export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false, adds = false } = {}) {
   // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
   // new hint has one thing to append rather than a branch to reproduce.
   const resaveClause = toolWritten
@@ -2497,8 +2507,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the four ` +
       `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} ` +
-      (USE_CHECK_TOKEN_RE.test(lastFail) ? useCheckCorrection(heldRecord)
-        : heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? HELD_RECORD_RETRY
+      (USE_CHECK_TOKEN_RE.test(lastFail) ? useCheckCorrection(heldRecord, adds)
+        : heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? heldRecordRetry(adds)
         : `Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged`);
   } else if (/coverage_status_offenum/.test(lastFail)) {
     // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON
@@ -3535,7 +3545,7 @@ function repairSiblingName(lastFail, expectFile) {
     : null;
 }
 
-export function warmPatchMessage(lastFail, expectFile, { supplementalLane = false } = {}) {
+export function warmPatchMessage(lastFail, expectFile, { supplementalLane = false, adds = false } = {}) {
   const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
   const names = files.map(rel).join(", ");
   // named_band_missing (2026-07-14, copper-keystone): the band is ABSENT, not defective — the repair is a
@@ -3655,7 +3665,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
       ? `Do NOT redo the work from scratch. This stage's own output is the driver's — it is rendered from your \`${outIsToolWritten.tool}\` call and you hold no tool that writes it, so there is nothing there for you to rewrite or protect.`
       : `Do NOT redo the work from scratch, and do NOT rewrite ${names || "the findings file"} (it already passed validation).`;
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. ${standsClause}\n` +
-      `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files) })}.\n` +
+      `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files), adds })}.\n` +
       `Re-save the COMPLETE corrected JSON at ${sib}. Do not stop until it exists and is valid.`;
   }
   // — A BLIND-FRAME REPAIR IS A TOOL CALL, NOT A FILE WRITE, and this branch is what stops the two
@@ -3707,7 +3717,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
         // DIRECTIVES again, which is the 2026-07-29 reopen loss. Caught by frame-diff-model.test.mjs's
         // cardinality pin, which asserts the warm path carries the full list without the caller passing
         // anything.
-        : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), toolWritten: toolWritten.tool, heldRecord: heldSynthesisRecord(files) })}.\n`) +
+        : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), toolWritten: toolWritten.tool, heldRecord: heldSynthesisRecord(files), adds })}.\n`) +
       `Call \`${toolWritten.tool}\` with the values from the work already in your context — never by writing or editing any file. ` +
       `Do not stop until the tool accepts the call.`;
   }
@@ -3727,7 +3737,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   }
   const defective = failingTarget(lastFail, files) ?? files[0] ?? null;
   return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo the work from scratch.\n` +
-    `Your saved ${defective ? rel(defective) : names || "output"} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files) })}.\n` +
+    `Your saved ${defective ? rel(defective) : names || "output"} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files), adds })}.\n` +
     editRepairTail(defective || names || "the stage output");
 }
 

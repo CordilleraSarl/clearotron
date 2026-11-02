@@ -17,6 +17,7 @@ import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
 import { composeFollowup, refutationStandingLines, REFUTATION_RECORDING_LINES, STAGES, paths } from "../stages.mjs";
 import { correctionsWorklist } from "../corrections-feedforward.mjs";
 import { changedContent, restingOn, listForReview } from "../repair-scope.mjs";
+import { CORRECTION_ROWS, REPLACED_ROWS } from "../gateway.mjs";
 
 const composer = (key) => REPAIR_COMPOSERS.find((c) => c.key === key);
 const REVIEW_OPENING = [
@@ -126,13 +127,16 @@ test("the one correction after that review opens on where its flags come from an
   assert.deepEqual(whole.slice(1), c.compose({ ...c.samples[2].args, whole: false }).split("\n").slice(1), "a whole review changed more than the opening");
   assert.ok(!plain.join("\n").includes("verify-flag for re-check"), "no re-check follows this pass, so the move is not offered");
   // THE RULES AND STEPS ARE THE FIRST CORRECTION'S: every line of the first correction from the narrowing rule
-  // to its save line appears in this one, in the same order.
+  // to its save line appears in this one, in the same order. The save line differs in one phrase: the first correction
+  // may add the finding for an excluded position its flags name, and this one, handed no positions, replaces (ruled
+  // 2026-11-02).
   const first = composer("synthesis:corrective");
   const firstLines = first.compose(first.samples[0].args).split("\n");
   const from = firstLines.findIndex((l) => l.startsWith("A REPAIR MAY NARROW A CLAIM"));
   const to = firstLines.findIndex((l) => l.startsWith("THE FINDINGS CONTRACT IS CLOSED"));
   assert.ok(from > 0 && to > from);
-  const shared = firstLines.slice(from, to + 1);
+  assert.equal(firstLines.slice(from, to + 1).filter((l) => l.includes(CORRECTION_ROWS)).length, 1, "the first correction's save line lost its phrase");
+  const shared = firstLines.slice(from, to + 1).map((l) => l.replace(CORRECTION_ROWS, REPLACED_ROWS));
   const at = plain.indexOf(shared[0]);
   assert.deepEqual(plain.slice(at, at + shared.length), shared);
   assert.ok(plain.includes("If applying a flag genuinely REQUIRES changing a finding outside that list — a knock-on the reviewer did not see — make the change and say which one and why in the \"corrections\" note. A silent edit outside the scope is the one thing this instruction forbids; a reasoned one is not."),

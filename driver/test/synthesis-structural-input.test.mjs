@@ -475,6 +475,7 @@ test("the stale-repair and corrective passes both rebuild the list before they d
     "the stale-repair arm rebuilds it, so an emptied surface empties its list");
   const corrective = src.slice(src.indexOf("const preCorrective = snapshotFindingsForCorrections("),
     src.indexOf('trigger: "corrective" });'));
-  assert.match(corrective, /prepareDeclinationSpec\(ctx, P\);\s*\n\s*const correctivePass = await stage\("synthesis"/,
+  // Between the two, only the reading of the review its message and its positions are composed from.
+  assert.match(corrective, /prepareDeclinationSpec\(ctx, P\);\s*\n(?:\s*\/\/[^\n]*\n)*\s*const reading = correctionReading\(P\);\s*\n\s*const correction = \{ positions: reading\.positions \};\s*\n\s*const correctivePass = await stage\("synthesis"/,
     "the corrective pass rebuilds it immediately before its dispatch");
 });

@@ -73,7 +73,8 @@ test("the sandbox dispatches on the same label production does — one construct
   assert.equal(dispatchLabel("synthesis", null), "synthesis");
   assert.equal(dispatchLabel("synthesis", undefined), "synthesis");
   // runExperiment reaches stageOnce through stage(); there is no second dispatch path to diverge.
-  assert.match(src, /const r = await stage\(name, shadowCtx, \{ force: true, model, extra, sessionKey, trigger: "experiment" \}\)/,
+  // A corrective arm also hands its save the positions its flags name, as production's correction does.
+  assert.match(src, /const r = await stage\(name, shadowCtx, \{ force: true, model, extra, sessionKey, trigger: "experiment", \.\.\.\(armCorrection \? \{ correction: armCorrection \} : \{\}\) \}\)/,
     "the arm dispatches through stage() — if it ever grows its own runStage call, the wiring can diverge and this test is the warning");
 });
 

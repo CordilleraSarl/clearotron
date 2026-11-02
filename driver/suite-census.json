@@ -339,6 +339,18 @@
           "skips": 1,
           "todos": 0
         },
+        "a-correction-adds-the-finding-its-flags-name.test.mjs": {
+          "tests": 12,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-correction-hands-its-positions-to-the-save.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "a-correction-is-checked-against-the-delivered-record.test.mjs": {
           "tests": 9,
           "asserts": 33,
@@ -352,8 +364,8 @@
           "todos": 0
         },
         "a-correction-session-is-told-it-is-fresh-and-sends-only-the-change.test.mjs": {
-          "tests": 11,
-          "asserts": 41,
+          "tests": 12,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -7313,7 +7325,7 @@
         },
         "the-review-after-a-repair-is-told-what-changed-and-what-rests-on-it.test.mjs": {
           "tests": 7,
-          "asserts": 33,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
