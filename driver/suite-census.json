@@ -358,8 +358,8 @@
           "todos": 0
         },
         "a-correction-carries-the-answer-that-names-its-findings.test.mjs": {
-          "tests": 8,
-          "asserts": 23,
+          "tests": 9,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
