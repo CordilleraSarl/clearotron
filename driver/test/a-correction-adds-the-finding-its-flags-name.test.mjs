@@ -77,7 +77,7 @@ const held = (dir) => ({ findings: readFileSync(join(dir, FINDINGS_FILE), "utf8"
 const corrected = () => ({ ...finding(1), legal_position: "The second, corrected." });
 const MARKER = { applied: true, note: "ODRAVEL: corrected; ORVANTE: recorded as a finding" };
 const CORRECTION = { correction: [DECLINED] };
-const UNKNOWN = (o) => new RegExp(`^synthesis_patch_ordinal_unknown:${o} — this run holds no finding with that ordinal, so this patch is aimed at a finding that does not exist\\. Send the ordinal as it appears in the record you emitted$`);
+const UNKNOWN = (o) => new RegExp(`^synthesis_patch_ordinal_unknown:${o} — this row neither updates an existing finding nor adds a finding allowed by this correction\\. Use the existing finding's ordinal for an update\\. Add a new finding only for an excluded position named in this correction's flags that no current finding delivers\\. The added finding must not be withdrawn and must cite a record from that position\\.$`);
 
 /** Refused with this text, and nothing the run holds was written. */
 function refusesUnchanged(dir, call, opts, re, what) {

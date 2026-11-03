@@ -46,7 +46,7 @@ import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, ren
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult } from "./findings-model.mjs";
+import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult, findingOrdinalInvalid } from "./findings-model.mjs";
 import { heldResearchAnswers, isResearchAnswer, questionKey, NO_SEARCH_RESULT } from "./research-answers.mjs";   // a "no result" names a question that completed
 import { writeResearchChecks } from "./research-checks.mjs";   // the research behind the use checks, written for the review
 import { normalizeRecordUri } from "./registry-fidelity.mjs";   // the duty's own reading of a record uri
@@ -780,10 +780,18 @@ function additionsOf(list, rows, positions) {
 // record did not hold, or the run's owed records, named as unaccounted though the stored record held them. On the test
 // run above, the correction was refused as leaving 37 of the run's records unaccounted for, every one of them delivered
 // by the record it was correcting. Such a call is now refused for its first row, in the order sent, that the record
-// cannot take, and the accepted record stands (ruled 2026-11-02). The words are those that row meets on a plain patch,
-// or the parser's for two different rows under one ordinal.
-const unknownOrdinal = (o) => `synthesis_patch_ordinal_unknown:${String(o)} — this run holds no finding with that ordinal, so this patch is aimed at a finding that does not exist. Send the ordinal as it appears in the record you emitted`;
-const PATCH_SHAPE = "synthesis_patch_shape: `findings_patch` is an array of complete finding objects, each carrying the `ordinal` of the finding it replaces";
+// cannot take, and the accepted record stands (ruled 2026-11-02).
+//
+// THE WORDS FOR A ROW THE RECORD CANNOT TAKE, approved 2026-11-03, for the plain patch and the nested one alike. The
+// words a row met before said a patch only replaces, and a correction may now add. A value that is not a finding
+// object meets the shape refusal; a row whose ordinal is missing, not a whole number, or below 1 meets the parser's
+// own words for that ordinal; and a row on an ordinal that neither names a finding the record holds nor adds one this
+// correction allows is told both ways a row is taken. Two different rows under one ordinal meet the parser's words for
+// a list carrying them.
+const unknownOrdinal = (o) => `synthesis_patch_ordinal_unknown:${String(o)} — this row neither updates an existing finding nor adds a finding allowed by this correction. Use the existing finding's ordinal for an update. Add a new finding only for an excluded position named in this correction's flags that no current finding delivers. The added finding must not be withdrawn and must cite a record from that position.`;
+const PATCH_SHAPE = "synthesis_patch_shape: `findings_patch` must be an array of complete finding objects. Each row needs a positive whole-number `ordinal`: an existing finding's ordinal for an update, or a new ordinal for an addition allowed by this correction.";
+// findings-model.mjs, `validateFinding`: an ordinal that is missing, not a whole number, or below 1.
+const ordinalInvalid = (o) => `synthesis_findings_invalid: ${findingOrdinalInvalid(o)}`;
 // findings-model.mjs, `validateFinding`: a list carrying two findings under one ordinal.
 const twoRowsFor = (o) => `synthesis_findings_invalid: finding_ordinal_duplicate:${o} (each finding's ordinal must be unique)`;
 
@@ -805,7 +813,8 @@ export function rejectedRow(stored, call, opts = {}) {
   const adds = additionsOf(list, rows, opts.positions);
   const sent = new Map();
   for (const r of rows) {
-    if (!isRow(r)) return unknownOrdinal(r?.ordinal);
+    if (!isPlainObject(r)) return PATCH_SHAPE;
+    if (!isRow(r)) return ordinalInvalid(r.ordinal);
     if (sent.has(r.ordinal)) { if (!sameValue(sent.get(r.ordinal), r)) return twoRowsFor(r.ordinal); continue; }
     sent.set(r.ordinal, r);
     if (!held.has(r.ordinal) && !adds.has(r)) return unknownOrdinal(r.ordinal);
@@ -905,7 +914,9 @@ export function mergeSynthesisPatch(stored, patch, { positions = null } = {}) {
     const indexed = (list) => new Map(list.map((f, i) => [f?.ordinal, i]));
     let byOrdinal = indexed(out.findings.findings ?? []);
     for (const r of rows) {
-      const at = byOrdinal.get(r?.ordinal);
+      if (!isPlainObject(r)) return { ok: false, reason: PATCH_SHAPE };
+      if (!isRow(r)) return { ok: false, reason: ordinalInvalid(r.ordinal) };
+      const at = byOrdinal.get(r.ordinal);
       if (at === undefined && adds.has(r)) {
         const list = [...(out.findings.findings ?? [])];
         const before = list.findIndex((f) => Number.isInteger(f?.ordinal) && f.ordinal > r.ordinal);

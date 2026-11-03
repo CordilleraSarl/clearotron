@@ -810,6 +810,8 @@ const OWN_RIGHTS_KEYS = ["source"];
 const DEADLINE_KEYS = ["kind", "date"]; // #6 — a CLIENT-facing time-critical date (opposition / SOU / renewal)
 
 const short = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
+/** The parser's words for an ordinal that is missing, not a whole number, or below 1. The save's transport uses them too. */
+export const findingOrdinalInvalid = (ord) => `finding_ordinal_invalid:${short(ord)} (ordinal must be an integer >= 1)`;
 // The version-laddered key allowlists, in ONE place — both parsers (strict + lenient) read it, so a new
 // version can never tighten one path and leave the other on the old list.
 const topKeysFor = (mode) => (mode.v7 ? TOP_KEYS_V7 : mode.v6 ? TOP_KEYS_V6 : mode.v5 ? TOP_KEYS_V5 : mode.v4 ? TOP_KEYS_V4 : TOP_KEYS);
@@ -1379,7 +1381,7 @@ function validateFinding(f, idx, seenOrdinals, mode = { v4: false, manifest: nul
 
   // ordinal — 1-based, integer, unique (the F1/F2 drill-through id; markers and cards share it).
   const ord = f.ordinal;
-  if (!Number.isInteger(ord) || ord < 1) throw new Error(`finding_ordinal_invalid:${short(ord)} (ordinal must be an integer >= 1)`);
+  if (!Number.isInteger(ord) || ord < 1) throw new Error(findingOrdinalInvalid(ord));
   if (seenOrdinals.has(ord)) throw new Error(`finding_ordinal_duplicate:${ord} (each finding's ordinal must be unique)`);
   seenOrdinals.add(ord);
 
