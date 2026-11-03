@@ -345,6 +345,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-correction-after-the-fold-is-handed-the-record-its-patch-updates.test.mjs": {
+          "tests": 8,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
         "a-correction-hands-its-positions-to-the-save.test.mjs": {
           "tests": 6,
           "asserts": 23,
