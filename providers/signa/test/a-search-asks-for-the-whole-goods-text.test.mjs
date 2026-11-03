@@ -5,8 +5,8 @@
 // THE DEFECT. The register's default answer carries "the first 280 characters" of each goods statement and flags
 // the ones it cut; `include: ["full_goods_services"]` returns the full text instead (docs.signa.so, Search
 // Trademarks). The request never asked, so the band held each long statement cut, and the full record was fetched
-// only at delivery, after the writer had written. Measured 2026-11-03 on both engines: a cited record's classes were
-// written up as "cut and unread" while the run went on to fetch them whole.
+// only at delivery, after the writer had written, so a cited record's classes could be written up as "cut and unread"
+// while the run went on to fetch them whole.
 //
 // No vendor measurements and no mark live here; the server below is local and its bodies are invented.
 import { test, after } from "node:test";
