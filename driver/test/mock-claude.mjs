@@ -21,6 +21,9 @@
 //   MOCK_CLAUDE_TOKEN_STREAM=<ms> (+ _COUNT) — usage-bearing partials then a clean result (token movement = progress)
 //   MOCK_CLAUDE_FAIL=1    — emit a result with is_error/subtype:error (a failed turn)
 //   MOCK_CLAUDE_OVERLOADED=1 — the Anthropic 529 overload shape (failed result carrying overloaded_error, exit 1)
+//   MOCK_CLAUDE_REFRESH_LOCKED=<file> — while <file> does not exist, create it and answer as the program does on an
+//                               expired sign-in whose refresh lock another copy holds: the stream in
+//                               fixtures/claude-refresh-locked.jsonl, exit 1. Once <file> exists, answer as usual.
 //   MOCK_CLAUDE_MAXTOK=1  — the A6 output-ceiling shape: a "successful" result (exit 0) whose
 //                           stop_reason is max_tokens, with NO file written (zero usable output)
 //   MOCK_CLAUDE_NOFILE=1  — do not write the output file (drives the missing_file ladder)
@@ -94,6 +97,15 @@ const resumed = resumeIdx >= 0 ? (argv[resumeIdx + 1] ?? "") : "";
 const session = process.env.MOCK_CLAUDE_SESSION || resumed || ("mock-sess-" + Buffer.from(msg).length.toString(36));
 
 const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
+
+// THE SIGN-IN REFRESH ANOTHER COPY HOLDS, once. Captured offline from Claude Code 2.1.295 on 2026-11-03, on an
+// expired sign-in whose refresh lock a frozen copy held: an init, the program's own error message, a failed
+// result, exit 1. Its ids and the init's machine-specific fields are replaced; its words are not.
+if (process.env.MOCK_CLAUDE_REFRESH_LOCKED && !existsSync(process.env.MOCK_CLAUDE_REFRESH_LOCKED)) {
+  writeFileSync(process.env.MOCK_CLAUDE_REFRESH_LOCKED, "locked\n");
+  writeSync(1, readFileSync(new URL("./fixtures/claude-refresh-locked.jsonl", import.meta.url), "utf8"));
+  process.exit(1);
+}
 
 // ── the WIRE MODEL ( corruption 3) ───────────────────────────────────────────────────────────────
 // This used to be the hardcoded literal "claude-haiku-4-5" on the init event regardless of --model,

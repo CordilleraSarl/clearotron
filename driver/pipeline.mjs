@@ -10229,7 +10229,9 @@ async function pipelineInner(job, opts = {}) {
   let engineTurnStartedMs = null, engineTurnEndedMs = null;
   if (!opts.recordFetcher && !koSelector) {
     engineTurnStartedMs = Date.now();
-    engineTurn = await preflightEngineTurn();
+    // `opts.engineTurnWait` stands in for the door's wait before it checks a locked sign-in refresh again,
+    // in tests; a run passes none and waits.
+    engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait });
     engineTurnEndedMs = Date.now();
     if (engineTurn.warning) console.error(engineTurn.warning);
   }
@@ -10374,11 +10376,13 @@ async function pipelineInner(job, opts = {}) {
   // — the engine-turn door's verdict, beside the run it let through. A refusal never reaches here (it
   // throws before any of this exists), so this row answers the two questions that survive: did the door
   // run at all on this lane, and — when it failed open on weather — WHAT it decided to let past. Without
-  // it a proceeded-past-weather run is indistinguishable on the record from one that probed clean.
+  // it a proceeded-past-weather run is indistinguishable on the record from one that probed clean. A door
+  // that checked twice, because the first check met a locked sign-in refresh, says so beside the second.
   try {
     if (engineTurn) runLog(run.runDir, { event: "engine-turn-probe", ok: engineTurn.ok === true,
       engine: engineTurn.engine ?? null, mode: engineTurn.mode ?? null, basis: engineTurn.basis ?? null,
-      lane: engineTurn.ok === true ? "ok" : "weather", detail: engineTurn.detail ?? null });
+      lane: engineTurn.ok === true ? "ok" : "weather", detail: engineTurn.detail ?? null,
+      ...(engineTurn.recheckedAfter ? { recheckedAfter: engineTurn.recheckedAfter } : {}) });
     // — and the same probe as a SPAN the wall decomposition can attribute. Same measurement, second
     // reader: the row above goes to run.jsonl, which that instrument skips by name.
     if (engineTurn) recordSpan(run.runDir, "engine-turn", { startedMs: engineTurnStartedMs, endedMs: engineTurnEndedMs },
