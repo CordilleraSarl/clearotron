@@ -223,6 +223,36 @@ test("a note consumed under EITHER name the version commit goes by is where it b
   assert.equal(placementMain(root), 0);
 });
 
+// ── A REWORD IS NOT A FILING ─────────────────────────────────────────────────────────────────────
+//
+// The stable's changelog is built from the notes in `pre/`, so correcting the wording of one a release already
+// published means editing it there. Read as "put there", that edit named the note misfiled and turned main red
+// (measured on a scratch clone, 2026-11-03). Only an add or a move files a note; an edit keeps its release.
+test("a consumed note reworded after its release is still where the release put it", () => {
+  const root = repo();
+  commitNote(root, join("pre", "reworded.md"), { asRelease: true });
+  writeFileSync(join(root, ".changeset", "pre", "reworded.md"),
+    '---\n"clearotron-driver": patch\n---\n\nFixed: A thing a reader can see, said more plainly.\n');
+  git(root, "commit", "-qam", "Reword a published note");
+  assert.deepEqual(misfiledNotes(root).misfiled, [], "an edit to a published note is not a note filed by hand");
+  assert.equal(placementMain(root), 0);
+});
+
+test("a note moved into the consumed pile by no cut is refused, and an edit after does not clear it", () => {
+  const root = repo();
+  commitNote(root, "never-cut.md", { subject: "a change with its note" });
+  git(root, "mv", ".changeset/never-cut.md", ".changeset/pre/never-cut.md");
+  git(root, "commit", "-q", "-m", "move a note into the consumed pile by hand");
+  assert.deepEqual(misfiledNotes(root).misfiled.map((m) => [m.name, m.subject]),
+    [["never-cut.md", "move a note into the consumed pile by hand"]], "the move that misfiled it is named");
+  writeFileSync(join(root, ".changeset", "pre", "never-cut.md"),
+    '---\n"clearotron-driver": patch\n---\n\nFixed: A thing a reader can see, reworded.\n');
+  git(root, "commit", "-qam", "Reword it");
+  assert.deepEqual(misfiledNotes(root).misfiled.map((m) => [m.name, m.subject]),
+    [["never-cut.md", "move a note into the consumed pile by hand"]], "a later edit neither clears it nor takes the blame");
+  assert.equal(placementMain(root), 1);
+});
+
 test("the two names are not a licence for any bot commit to file a note", () => {
   const root = repo();
   const bot = "--author=github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>";

@@ -101,6 +101,11 @@ export function consumedProvenance(root = ROOT) {
     }
     if (!commit || !line.trim()) continue;
     const parts = line.split("\t");
+    // ONLY AN ADD OR A MOVE PUTS A NOTE THERE. An edit to a note already in `pre/` rewords what a release has
+    // published; it does not file a new one. Read as "put there", a reworded consumed note was named misfiled by
+    // its edit, and the wording the stable's changelog is built from could not be corrected (measured on a
+    // scratch clone, 2026-11-03). Whether a reword still describes the change it was cut for is the reviewer's.
+    if (!/^[AR]/.test(parts[0])) continue;
     const dest = parts[parts.length - 1];           // A → the path; R → the destination
     const m = /^\.changeset\/pre\/(.+)$/.exec(dest);
     if (!m) continue;
