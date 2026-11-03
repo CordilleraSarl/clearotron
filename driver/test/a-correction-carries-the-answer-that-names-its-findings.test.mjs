@@ -94,3 +94,13 @@ test("the gate asks once, only where the findings reached the record, and hands 
   assert.equal((body.match(/await stage\(/g) ?? []).length, 1, "one re-ask, never a loop");
   assert.doesNotMatch(body, /correction: resume\.correction/, "an answer patch adds no finding, so it is handed no positions");
 });
+
+test("the writer's delivery-check repair carries step 4 too, and every other tool's repair is unchanged", () => {
+  const c = composerFor("*:lint-repair");
+  const writer = repairFollowup("*:lint-repair", c.samples.find((x) => x.args.toolWritten?.tool === "record_synthesis").args);
+  assert.match(writer, /When you add, change, or withdraw a finding, check the answers in `four_answers` that depend on that change\./);
+  assert.match(writer, /Fix ONLY what the checks name, and the answers that depend on those changes; change nothing else\./);
+  const other = repairFollowup("*:lint-repair", c.samples.find((x) => x.args.toolWritten?.tool === "record_report_card").args);
+  assert.doesNotMatch(other, /four_answers/, "a report card's repair has no answers to carry");
+  assert.match(other, /Fix ONLY what the checks name; change nothing else\./);
+});
