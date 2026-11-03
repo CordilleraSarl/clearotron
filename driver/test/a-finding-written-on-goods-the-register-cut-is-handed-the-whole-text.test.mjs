@@ -14,6 +14,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { goodsHeldWholeChecks, claimsGoodsCut } from "../predelivery-lint.mjs";
+import { citingModelOrdinal } from "../record-fold.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const URI = "/mark/us/tm_invented-velquarin";
@@ -88,8 +89,30 @@ test("the delivery check is given what the writer had and what was handed, and i
   // The lint is called inline in pipeline.mjs, so its wiring is pinned in the source.
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   assert.match(src, /goodsEvidence: readGoodsEvidence\(run\.runDir\), goodsHanded: readGoodsHanded\(run\.runDir\),/);
-  assert.match(src, /\? \{ \.\.\.f, detail: goodsHeldWholeDetail\(keptModelOrdinal\(fold, f\.ordinal\), f\.uri, f\.goods, f\.state\) \} : f\)/);
+  assert.match(src, /\? \{ \.\.\.f, detail: goodsHeldWholeDetail\(citingModelOrdinal\(fold, f\.ordinal, f\.uri, writersRecord\(\), citesRecord\), f\.uri, f\.goods, f\.state\) \} : f\)/);
   assert.match(src, /if \(goodsHandedNow\.length && repaired\.includes\("synthesis"\)\) \{/);
+});
+
+test("under a fold, the line names the writer's finding that cites the record, which need not be the member the fold kept", () => {
+  // Delivered 7 merges the writer's 8, 9 and 10, and the fold kept 8; delivered 12 merges 14 and 15, and kept 14.
+  // Each record is cited, in the writer's record, by one member only. Delivered 3 is the writer's 3, folded with none.
+  const fold = { map: { modelToFolded: { 3: 3, 8: 7, 9: 7, 10: 7, 14: 12, 15: 12 }, foldedToModel: { 3: [3], 7: [8, 9, 10], 12: [14, 15] } },
+    merges: [{ kept: 8, dropped: [9, 10] }, { kept: 14, dropped: [15] }] };
+  const writers = [[3, "/mark/us/tm_invented-a"], [8, "/mark/us/tm_invented-b"], [9, "/mark/us/tm_invented-c"],
+    [10, "/mark/us/tm_invented-d"], [14, "/mark/us/tm_invented-e"], [15, "/mark/us/tm_invented-f"]].map(([o, uri]) => finding(o, uri));
+  const cites = (wf, uri) => (wf?.owner?.registrations ?? []).some((r) => (r?.uri ?? r) === uri);
+  const target = (ordinal, uri) => citingModelOrdinal(fold, ordinal, uri, writers, cites);
+  assert.equal(target(7, "/mark/us/tm_invented-c"), 9, "a record a merged member cites names that member");
+  assert.equal(target(7, "/mark/us/tm_invented-d"), 10);
+  assert.equal(target(12, "/mark/us/tm_invented-f"), 15);
+  assert.equal(target(7, "/mark/us/tm_invented-b"), 8, "a record the kept member cites names the kept member");
+  assert.equal(target(12, "/mark/us/tm_invented-e"), 14);
+  assert.equal(target(3, "/mark/us/tm_invented-a"), 3, "a finding folded with none is its own");
+  assert.equal(target(7, "/mark/us/tm_invented-none"), 8, "a record no member is read citing names the kept member");
+  // Both members citing it: the kept member first.
+  const both = writers.map((w) => (w.ordinal === 9 ? finding(9, "/mark/us/tm_invented-b") : w));
+  assert.equal(citingModelOrdinal(fold, 7, "/mark/us/tm_invented-b", both, cites), 8);
+  assert.equal(citingModelOrdinal(null, 7, "/mark/us/tm_invented-c", writers, cites), 7, "no fold in force: the ordinal is its own");
 });
 
 test("the finding's own text decides whether it reasoned on a cut statement, read a sentence at a time", () => {

@@ -183,7 +183,7 @@ import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-
 import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal, citingModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
 import { locateReportFaults, reportPartsOf, overviewCitationFault, writersCitationFaults } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
@@ -17058,8 +17058,18 @@ async function pipelineInner(job, opts = {}) {
         const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
         // A finding named for goods the register cut, whose whole text the run holds now, is named in the writer's
         // numbering, in the line's own words: it opens "Finding <N> cites", so the list puts no "finding N:" before it.
+        // Under a fold, N is the writer's finding that cites the record, which need not be the member the fold kept.
+        let writersFindings = null;   // the writer's record, read once and only for a goods line
+        const writersRecord = () => {
+          if (writersFindings) return writersFindings;
+          try { writersFindings = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")).findings ?? []; }
+          catch { writersFindings = []; }
+          return writersFindings;
+        };
+        const citesRecord = (wf, uri) => (Array.isArray(wf?.owner?.registrations) ? wf.owner.registrations : [])
+          .some((reg) => normalizeRecordUri(reg?.uri ?? reg) === uri);
         const inWritersNumbering = (f) => (String(f.id).startsWith("goods-held-whole:")
-          ? { ...f, detail: goodsHeldWholeDetail(keptModelOrdinal(fold, f.ordinal), f.uri, f.goods, f.state) } : f);
+          ? { ...f, detail: goodsHeldWholeDetail(citingModelOrdinal(fold, f.ordinal, f.uri, writersRecord(), citesRecord), f.uri, f.goods, f.state) } : f);
         const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering), ...sentenceFixable, ...recordFixable];
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
         // A writer fault with no writer session to repair it is not repaired, and the run says so.
