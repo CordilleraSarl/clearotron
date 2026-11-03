@@ -32,7 +32,7 @@
 //                               artifact's own provenance, not an assertion somewhere else.
 //   · disposition-union.mjs:113 the anchor is deliberately NOT persisted; only extracted text is durable.
 //   · validateDispositionCall() in disposition-call.mjs  the same rule stated at the other end, so the pair cannot drift.
-//   · coverage-form.mjs:149 SEAT_ROW_CONTRACT     the driver's axis is the driver's; the seat contract governs only rows
+//   · SEAT_ROW_CONTRACT in coverage-form.mjs      the driver's axis is the driver's; the seat contract governs only rows
 //                               the seat adds.
 //   · coverageFormRows() in coverage-form.mjs     determinism, with its mechanism (a fixed axis ordering) beside it.
 //   · stages.mjs "Per-script coverage", "Negative-results matrix"
