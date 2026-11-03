@@ -8543,7 +8543,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
   }
 }
 
-function injectDeferralCoverage(P, runDir, note) {
+export function injectDeferralCoverage(P, runDir, note) {   // @internal — exported so a second pass is testable without a run
   try {
     const rp = driverDir(runDir, "frame-reopen.json");
     if (!existsSync(rp) || !existsSync(P.findings)) return;
@@ -8559,7 +8559,11 @@ function injectDeferralCoverage(P, runDir, note) {
     for (const d of deferrals) {
       const directive = String(d?.directive ?? "").trim();
       if (!directive) continue;
-      const slice = normTxt(directive).split(" ").filter((w) => w.length >= 4).slice(0, 4).join(" ");
+      // THE WORDS ARE THE ONES A ROW CARRIES. A directive is minted with its axis prefix ("source:…"), and every row,
+      // this function's own included, prints it through `plainDirective`. Read raw, the first word looked for was the
+      // prefix, no row ever matched, and each seam pass added the row again: twice over in a record, and back after a
+      // save that removed it (measured on two test runs, 2026-11-03: 9 of 9 directives carried the prefix).
+      const slice = normTxt(plainDirective(directive)).split(" ").filter((w) => w.length >= 4).slice(0, 4).join(" ");
       if (slice && covText.includes(slice)) continue;          // synthesis already weighed it in
       doc.coverage.push(deferralCoverageRow(directive, d?.reason));   // — word-boundary heading, full directive in the note
       added++;
