@@ -47,7 +47,7 @@ import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./deri
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
 import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
-import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL, answerLeftBehind } from "./corrections-feedforward.mjs";
+import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
@@ -7696,31 +7696,31 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   }
 }
 
-// THE ANSWER FOLLOWS THE FINDINGS IT NAMES, asked once, in the gate's one re-ask. A correction that moved findings into
-// the bands the third-party-rights answer rests on, and left the answer naming the findings it named before, is handed
-// the findings it moved (`answerLeftBehind`). The writer brings the answer into line or says why not in the corrections
-// note; nothing is forced. Run only where the findings did reach the record, so the gate never asks twice. What is
-// still owed afterwards is recorded, and the recheck reads the record as it stands.
+// THE ANSWERS FOLLOW THE FINDINGS THEY NAME, asked once, as the gate's one repair. A correction that moved findings an
+// answer citing findings may depend on (`answersLeftBehind`) is handed those findings and the answers that may miss them.
+// The writer updates the answers that depend on them or says why not in the corrections note; nothing is forced. Run
+// only where the findings did reach the record: where they did not, the re-emit above is the one repair, and it may
+// update the answers in the same PATCH. What remains afterwards is recorded, not judged; the recheck reads the answers.
 async function answerFollowsCorrection(ctx, P, pre, resume) {
   const { run } = ctx;
   const leftBehind = () => {
     try {
-      return answerLeftBehind(JSON.parse(pre.model?.raw ?? pre.raw), JSON.parse(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")),
+      return answersLeftBehind(JSON.parse(pre.model?.raw ?? pre.raw), JSON.parse(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")),
         ctx.framework?.bands);
-    } catch { return null; }   // an unreadable record is the ladder's business, not this check's
+    } catch { return []; }   // an unreadable record is the ladder's business, not this check's
   };
-  const owed = leftBehind();
-  if (!owed) return;
-  runLog(run.runDir, { event: "corrective-answer-left-behind", cited: owed.cited, floor: owed.floor, owed: owed.owed });
-  note(`[corrections] the third-party-rights answer names findings ${owed.cited.join(", ")} and not ${owed.owed.map((o) => o.ordinal).join(", ")}, which the correction moved to ${owed.floor} or above — asking once`);
+  const answers = leftBehind();
+  if (!answers.length) return;
+  runLog(run.runDir, { event: "corrective-answers-left-behind", answers });
+  note(`[corrections] ${answers.length} answer(s) in four_answers may miss findings the correction moved (${answers.map((a) => a.answer).join(", ")}) — asking once`);
   await stage("synthesis", ctx, {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
     trigger: "corrective-answers",
-    followup: repairFollowup("synthesis:corrective-answers", { findings: modelRecordPath(run.runDir, P.findings), ...owed }) + stageCharter("synthesis", ctx.depth, ctx.framework),
+    followup: repairFollowup("synthesis:corrective-answers", { findings: modelRecordPath(run.runDir, P.findings), answers }) + stageCharter("synthesis", ctx.depth, ctx.framework),
   });
   const still = leftBehind();
-  runLog(run.runDir, { event: "corrective-answer-after", owed: still ? still.owed : [] });
-  if (still) note(`[corrections] the third-party-rights answer still does not name ${still.owed.map((o) => o.ordinal).join(", ")} — recorded; the recheck reads the record as it stands`);
+  runLog(run.runDir, { event: "corrective-answers-after", answers: still });
+  if (still.length) note(`[corrections] ${still.map((a) => a.answer).join(", ")} still name(s) the findings as before — recorded; any reason the writer gave is in the corrections note, and the recheck reads the answers`);
 }
 
 // (T3a, ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking

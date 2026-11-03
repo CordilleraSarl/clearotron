@@ -414,38 +414,47 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc, { sections = null
 }
 
 /**
- * THE ANSWER A CORRECTION LEFT BEHIND: findings the pass moved that the third-party-rights answer no longer names.
+ * THE ANSWERS A CORRECTION MAY HAVE LEFT BEHIND: findings the pass moved that an answer citing findings may depend on.
  *
- * That answer names the findings its position rests on (`four_answers.third_party_rights.ordinals`), and a
- * correction that raises a finding into those bands, or adds one there, changes what it rests on. On a test run
- * (2026-11-03) a correction raised a finding from Moderate to High and updated the verdict, and the answer kept
- * naming findings 1 to 3 alone. The recheck saw it, but no pass follows the recheck, so the report kept the answer.
+ * Each of the four answers that cites findings names them by ordinal (`four_answers.<answer>.ordinals`). On a test run
+ * (2026-11-03) a correction raised a finding from Moderate to High and updated the verdict, and the third-party-rights
+ * answer kept naming findings 1 to 3. The recheck saw it, but no pass follows the recheck, so the report kept the answer.
  *
- * Owed is a live adversarial finding the pass added or re-banded or re-typed, rated at or above the lowest band
- * among the live findings the answer names, and not named. A finding the pass did not move is never owed: what the
- * writer cited before the correction is its own judgment. `bands` is the framework's ladder, most severe first.
- * Returns `{cited, floor, owed: [{ordinal, band}]}`, or null when nothing is owed or the answer names nothing. PURE.
+ * A REASON TO ASK, NEVER A REQUIRED CITATION (design, 2026-11-03). For each answer that names findings, two things
+ * suggest a missing dependency:
+ *   - a live adversarial finding the pass added, re-banded or re-typed, rated at or above the lowest band among the
+ *     live findings the answer names, and not named by it: a shared band is a reason to check, not a rule;
+ *   - a finding the answer names that the pass withdrew.
+ * A finding the pass did not move is never listed: what the writer cited before the correction is its own judgment. An
+ * answer that names no finding is not checked here, which is not a pass, and no absent answer is invented. Current
+ * citations do not make an answer's prose current; the recheck reads that. `bands` is the framework's ladder, most
+ * severe first. Returns `[{answer, cited, floor, uncited: [{ordinal, band}], withdrawn: [ordinal]}]`, empty when none. PURE.
  */
-export function answerLeftBehind(preDoc, postDoc, bands) {
+export function answersLeftBehind(preDoc, postDoc, bands) {
   const labels = (bands ?? []).map((b) => String(b?.label ?? b ?? "").trim());
   const ladder = labels.map((b) => b.toLowerCase());
   const rank = (band) => ladder.indexOf(String(band ?? "").trim().toLowerCase());
-  const answer = (postDoc?.four_answers ?? postDoc?.fourAnswers)?.third_party_rights;
-  if (!answer || !Array.isArray(answer.ordinals) || !answer.ordinals.length) return null;
+  const answers = postDoc?.four_answers ?? postDoc?.fourAnswers;
+  if (!answers || typeof answers !== "object") return [];
   const live = (f) => f && f.disposition !== "withdrawn";
   const before = byOrdinal(preDoc), after = byOrdinal(postDoc);
-  const cited = new Set(answer.ordinals.map(Number));
-  const ranks = [...cited].map((o) => after.get(o)).filter(live).map((f) => rank(f.band)).filter((i) => i >= 0);
-  if (!ranks.length) return null;
-  const floor = Math.max(...ranks);
-  const owed = [...after.values()].filter((f) => {
-    if (cited.has(f.ordinal) || !live(f) || f.disposition !== "adversarial") return false;
-    const i = rank(f.band);
-    if (i < 0 || i > floor) return false;
-    const was = before.get(f.ordinal);
-    return !was || was.band !== f.band || was.disposition !== f.disposition;
-  }).map((f) => ({ ordinal: f.ordinal, band: f.band }));
-  return owed.length ? { cited: [...cited].sort((a, b) => a - b), floor: labels[floor], owed } : null;
+  const moved = (f) => { const was = before.get(f.ordinal); return !was || was.band !== f.band || was.disposition !== f.disposition; };
+  const out = [];
+  for (const [answer, a] of Object.entries(answers)) {
+    if (!a || !Array.isArray(a.ordinals) || !a.ordinals.length) continue;
+    const cited = new Set(a.ordinals.map(Number));
+    const withdrawn = [...cited].filter((o) => after.get(o)?.disposition === "withdrawn" && before.get(o)?.disposition !== "withdrawn");
+    const ranks = [...cited].map((o) => after.get(o)).filter(live).map((f) => rank(f.band)).filter((i) => i >= 0);
+    const floor = ranks.length ? Math.max(...ranks) : -1;
+    const uncited = floor < 0 ? [] : [...after.values()].filter((f) => {
+      if (cited.has(f.ordinal) || !live(f) || f.disposition !== "adversarial") return false;
+      const i = rank(f.band);
+      return i >= 0 && i <= floor && moved(f);
+    }).map((f) => ({ ordinal: f.ordinal, band: f.band }));
+    if (uncited.length || withdrawn.length)
+      out.push({ answer, cited: [...cited].sort((x, y) => x - y), floor: floor < 0 ? null : labels[floor], uncited, withdrawn });
+  }
+  return out;
 }
 
 /**
