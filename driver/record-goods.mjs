@@ -22,6 +22,7 @@ import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { foldDiacritics } from "./form-neighbourhood.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
+import { savedStatusPages, savedPageStatement, usSerialOf } from "./saved-register-pages.mjs";
 
 /**
  * The registers whose language is English (ruled 2026-10-12): there, a goods statement with no language tag
@@ -215,20 +216,28 @@ export const goodsFor = (index, record) => index?.get(normalizeRecordUri(record?
  *
  * A SEARCH NOW ASKS FOR THE FULL TEXT (providers/signa/src/core.js, buildSearchRequest), and its rows say so
  * (`goods_whole: true`). On such a row an unflagged statement is whole at any length, and a flagged one is still cut.
+ *
+ * THE REGISTER'S OWN PAGE, WHERE THE RUN'S RESEARCH SAVED IT. `pages` are the status pages the run's research saved
+ * (saved-register-pages.mjs `savedStatusPages`). A statement cut or not established whole on a US record's row is read
+ * as the page's statement for its class, whole, where that statement begins with the row's own copy, and it carries the
+ * question that saved the page (`page: {question}`). A statement whole on the row is left as it is, and so is one no
+ * saved page continues.
  */
 export const DEFAULT_ANSWER_CUT = 280;
-export function rowGoods(row) {
+export function rowGoods(row, pages = null) {
   const classes = Array.isArray(row?.raw?.classifications) ? row.raw.classifications : null;
   if (!classes) return null;
   const english = untaggedIsEnglish(normalizeRecordUri(row?.record_id));
+  const serial = pages ? usSerialOf(row) : "";
   const out = [];
   for (const c of classes) {
     const [g] = recordGoods({ _raw: { classifications: [c] } }, { english });
     if (!g) continue;
     const { cut: _cut, unknown: _unknown, ...whole } = g;   // the row's own rule below, not the full record's
-    if (c?.goods_services_text_truncated === true) out.push({ ...whole, cut: true });
-    else if (row?.goods_whole !== true && [...String(c?.goods_services_text ?? "")].length >= DEFAULT_ANSWER_CUT) out.push({ ...whole, unknown: true });
-    else out.push(whole);
+    const mark = c?.goods_services_text_truncated === true ? { cut: true }
+      : row?.goods_whole !== true && [...String(c?.goods_services_text ?? "")].length >= DEFAULT_ANSWER_CUT ? { unknown: true } : null;
+    const page = mark && serial ? savedPageStatement(pages, serial, whole.classes[0], whole.text) : null;
+    out.push(page ? { ...whole, text: page.text, page: { question: page.question } } : { ...whole, ...mark });
   }
   return out.length ? out : null;
 }
@@ -364,8 +373,10 @@ export function instructedOrder(P, job = null) {
  * Any part that cannot be read is simply absent, and the shape sorts without it.
  *
  * A record's goods are its held body's, and where the run holds no body, the statements its band row carries
- * (`rowGoods`). `held` says which: a line's goods are "on file" only where a body is held, because that is the
- * record `band_record` can open. `records` are the band's, so the shape tests goods whenever either is held.
+ * (`rowGoods`), continued from the register's own pages the run's research saved. `held` says which: a line's goods
+ * are "on file" only where a body is held, because that is the record `band_record` can open. `records` are the
+ * band's, so the shape tests goods whenever either is held. The saved pages are read once, for the first record with
+ * no body held.
  */
 export function bandShapeGoods(P, records = []) {
   let model = null;
@@ -383,8 +394,10 @@ export function bandShapeGoods(P, records = []) {
   const stems = true;   // the word list the shape groups on is matched as stems, whichever source it came from
   const hits = goodsWordCounter(words, { stems });
   const held = (r) => goodsFor(index, r);
+  let pages = null;
+  const saved = () => (pages ??= savedStatusPages(P.runDir)());
   const rowsHold = Array.isArray(records) && records.some((r) => r && typeof r === "object" && rowGoods(r));
-  const goods = index.size || rowsHold ? { of: (r) => held(r) ?? rowGoods(r), held: (r) => held(r) != null, hits, matched: goodsWordsMatched(words, { stems }) } : null;
+  const goods = index.size || rowsHold ? { of: (r) => held(r) ?? rowGoods(r, saved()), held: (r) => held(r) != null, hits, matched: goodsWordsMatched(words, { stems }) } : null;
   const goodsTest = { source: product ? "product_words" : words.length ? "goods_words" : "none", words };
   return { goods, goodsTest, goodsWordCount: words.length, dominantTerm: searched || manifestDominant, manifestDominant };
 }

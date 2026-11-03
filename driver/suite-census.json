@@ -489,6 +489,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-cut-statement-is-read-whole-from-the-register-page-the-run-saved.test.mjs": {
+          "tests": 9,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-decision-the-repeated-placement-pass-changes-is-the-one-delivered.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 48,
