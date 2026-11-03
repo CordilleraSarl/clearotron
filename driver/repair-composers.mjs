@@ -179,6 +179,10 @@ const correctiveRules = ({ narrative, findings, placement, rulingsTail, adds = f
   // rewording a note keeps its claims, and the text says so, or the seat reads the two as a conflict
   // and does nothing, which is what it did.
   `3. A flag about a line the reader sees that is NOT a finding — a coverage row's "note", an action's "text", or the mark assessment's "distinctiveness" or "connotation" — is applied in the same PATCH, inside the call's \`findings\` object beside the "corrections" marker: send the complete \`coverage\` array (every row, the unflagged ones exactly as you last sent them), the complete \`actions\` array, or the complete \`mark_assessment\` object, with the flagged line rewritten. A row left out of the array is a row deleted, so send every row. Rewording a coverage note is NOT reopening the coverage account: keep its area, its state and every fact it states, and change only how it says them. A flagged line you leave as written is named in the "corrections" note with the reason, as the flag names it — for example: the coverage line for "<area>": no-change-because …`,
+  // THE ANSWERS THAT NAME THE FINDINGS. The four answers cite the findings they rest on by ordinal, and step 3 names
+  // the other registers a correction may send but not this one, so a correction that raised a finding to High left
+  // the third-party-rights answer naming findings 1 to 3 (test run, 2026-11-03). The transport always took it.
+  `4. If you change a finding's band or disposition, or add a finding, check the answers in \`four_answers\`: an answer that names the findings it rests on must still name every finding it rests on. Send the complete \`four_answers\` object in the same PATCH, inside the call's \`findings\` object beside the "corrections" marker, with each affected answer's \`ordinals\`, \`basis\` and \`read\` brought into line and every other answer exactly as you last sent it.`,
   // ── CONVERTED. `editRepairTail` stood here and ordered targeted Edits of
   // both files. The seat holds no Edit for either any more — but the ECONOMICS that argued for a
   // targeted edit are preserved rather than lost, which is why the call has a patch shape at all:
@@ -198,6 +202,8 @@ const correctiveRules = ({ narrative, findings, placement, rulingsTail, adds = f
     "```",
   ) : "",
 ];
+
+const andList = (xs) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 
 export const REPAIR_COMPOSERS = [
   {
@@ -239,6 +245,23 @@ export const REPAIR_COMPOSERS = [
     singleMember: "matter-frame has exactly one bespoke composer. Recorded rather than left implicit: a "
       + "guard proven at n=1 is proven against nothing about ordering, dedup or cross-composer "
       + "interaction, and the census reds if this stage gains a second one without this note being read.",
+  },
+  {
+    trigger: "corrective-answers",
+    stage: "synthesis",
+    key: "synthesis:corrective-answers",
+    // THE ONE RE-ASK, WHEN THE FINDINGS MOVED AND THE ANSWER DID NOT. `answerLeftBehind` names findings the correction
+    // moved into the bands the third-party-rights answer cites, which it does not name. The writer brings the answer
+    // into line or says why it does not rest on them: nothing is forced, and no other register is sent.
+    compose: ({ findings, cited = [], floor = "", owed = [] }) => lines(
+      `This is a fresh session: your earlier synthesis is not in your context, and the driver holds the record it last accepted from you, in ${findings}. Your correction changed ${owed.map((o) => `finding ${o.ordinal}, now ${o.band}`).join("; ")}. The third-party-rights answer in \`four_answers\` still names only finding${cited.length === 1 ? "" : "s"} ${andList(cited)}, rated ${floor} and above.`,
+      `Bring that answer into line: its \`ordinals\`, \`basis\` and \`read\` name the findings it rests on. If it does not rest on one of these findings, leave it and say why in the "corrections" note.`,
+      `Send it with \`record_synthesis\` in one PATCH call: \`findings\` carrying the complete \`four_answers\` object, with every other answer exactly as you last sent it, and the "corrections" marker; no \`findings_patch\` and never a \`findings[]\` list. The driver merges this patch into the last accepted record and renders both files. There is no file for you to write or edit and nothing you write by hand is read.`,
+    ),
+    samples: [{ name: "one finding the correction raised", tail: "tool",
+      args: { findings: "findings.json", cited: [1, 2, 3], floor: "High", owed: [{ ordinal: 4, band: "High" }] } },
+    { name: "findings the correction raised and added", tail: "tool",
+      args: { findings: "findings.json", cited: [1, 2, 3], floor: "Moderate", owed: [{ ordinal: 39, band: "Moderate" }, { ordinal: 41, band: "Moderate" }] } }],
   },
   {
     trigger: "schema-downlevel",
