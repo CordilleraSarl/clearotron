@@ -4,6 +4,16 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.5.0-beta.8
+
+### New
+
+- Searches on the Signa register now reach Spain and Mexico, so an order naming either country is searched there rather than reported as not covered.
+
+### Fixed
+
+- A conflict the reviewing step sends back for correction can now be reported as a finding; the correction could previously change only findings already in the report.
+
 ## 0.5.0-beta.7
 
 ### Fixed
