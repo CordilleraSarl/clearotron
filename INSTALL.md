@@ -117,7 +117,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   Which register you pick is the first real decision, and the tiers are not equally easy to reach.
   [providers/README.md](providers/README.md) is the canonical ladder and
   [ADR-0001](docs/decisions/0001-register-ladder.md) is the reasoning. The short version: **Signa** is
-  the recommended route (one self-serve key, eleven offices), **`free-tier`** is EU + US with no vendor
+  the recommended route (one self-serve key, thirteen offices), **`free-tier`** is EU + US with no vendor
   contract but a 41.5 GB build for the US half (§3a), and **Corsearch / Clarivate** are the widest
   coverage on a vendor-issued credential. Whatever the chosen register cannot reach becomes a disclosed
   deferred-coverage row rather than a silent gap, at every tier.
