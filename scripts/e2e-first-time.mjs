@@ -219,7 +219,7 @@ export const NOT_COUNTED_EVENTS = {
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean", "screen-gate-evidence",
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
-    "turnaround-reconciliation", "verdict", "verdict-conditions-recorded", "verdict-frontmatter",
+    "turnaround-reconciliation", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-frontmatter",
     "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [

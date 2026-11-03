@@ -7251,6 +7251,37 @@ export function withdrawByToken(reasons = [], clauses = [], guard = new Set(), t
 }
 
 /**
+ * THE CONDITIONS THE RECORD'S ACTIONS STATE, AS THE RECORD NOW STANDS. A repair can rewrite, withdraw or add a forward
+ * legal step, and the list follows it: the entries the record's actions put there (`fromRecord`, by reason) are
+ * replaced by the steps it states now (`now`, each `{ reason, clause }`, in the record's order), at the place the first
+ * of them stood, or at the end where none stood. Every other entry keeps its place, and a step whose reason another
+ * entry carries is left to that entry. Returns the index-aligned arrays as they now stand, the reasons the record now
+ * holds there (`held`), and which reasons went and came. PURE.
+ */
+export function conditionsFollowingTheRecord({ reasons = [], clauses = [], fromRecord = new Set(), now = [] } = {}) {   // @internal — driven by its test
+  const kept = [];
+  let at = -1;
+  for (const [i, r] of reasons.entries()) {
+    if (fromRecord.has(r)) { if (at < 0) at = kept.length; continue; }
+    kept.push([r, clauses[i]]);
+  }
+  const others = new Set(kept.map(([r]) => r));
+  const placed = [];
+  for (const n of now) {
+    if (others.has(n.reason) || placed.some(([r]) => r === n.reason)) continue;
+    placed.push([n.reason, n.clause ?? n.reason]);
+  }
+  const pos = at < 0 ? kept.length : at;
+  const rows = [...kept.slice(0, pos), ...placed, ...kept.slice(pos)];
+  const before = reasons.filter((r) => fromRecord.has(r));
+  const clauseWas = new Map(reasons.map((r, i) => [r, clauses[i]]));
+  const held = placed.map(([r]) => r);
+  return { reasons: rows.map(([r]) => r), clauses: rows.map(([, c]) => c), held: new Set(held),
+    withdrawn: before.filter((r) => !held.includes(r)), added: held.filter((r) => !before.includes(r)),
+    restated: placed.filter(([r, c]) => before.includes(r) && clauseWas.get(r) !== c).map(([r]) => r) };
+}
+
+/**
  * WHAT A REPAIR IN THE DELIVERY CHECK LEFT STALE, AND WHAT OF IT IS QUEUED. A stage is this repair's when it is stale now
  * and was not before the repair, or is stale on an input that has moved since; a stage stale before for the same reasons
  * is not, and stays the guard's. Every stage the repair left stale joins the chain, so its own re-run is followed in turn.
@@ -15044,6 +15075,10 @@ async function pipelineInner(job, opts = {}) {
     // withdrawn against it (ruled 2026-10-19).
     let assessed = verdict;
     let restoredClear = false;   // a closed gap took this run back to CLEAR, so a later writer's judgment meets the floor again
+    // THE REASONS THE RECORD'S OWN ACTIONS PUT IN THE LIST, by the floor's legal-actions arm, so the list can follow the
+    // record when a repair in the delivery check rewrites, withdraws or adds a step (conditionsFollowingTheRecord).
+    let recordConditionReasons = new Set();
+    const DROPPED_CONDITIONS_REASON = "a forward legal step this opinion named could not be recorded, so the conditions listed here are incomplete";
 
     /**
      * Deliver, clamp conservatively, and name the defect in the run record.
@@ -15324,6 +15359,7 @@ async function pipelineInner(job, opts = {}) {
           // (the degenerate re-ask re-runs this floor; dedup is by the reason TEXT for both).
           for (const c of fresh) clampClauses.push(conditionClauses[conditions.indexOf(c)] ?? c);
           clampReasons.push(...fresh);
+          for (const c of fresh) recordConditionReasons.add(c);
           if (verdict === "CLEAR") {
             runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
             note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
@@ -15347,7 +15383,7 @@ async function pipelineInner(job, opts = {}) {
         // do is read as complete — so the reason says INCOMPLETE in the client's own words, and the
         // engine-side detail (ids, defect tokens) rides the note and the log where an engineer reads.
         const droppedConditions = quarantinedConditionRows(fdoc?.actionsQuarantined);
-        const droppedReason = "a forward legal step this opinion named could not be recorded, so the conditions listed here are incomplete";
+        const droppedReason = DROPPED_CONDITIONS_REASON;
         // ONCE, not once per entry. This floor is re-entered — the degenerate re-ask and the delivery
         // block both call it again — so the reason, the clause and the telemetry are guarded by the
         // reason's own presence. An event emitted on every re-entry would inflate any count keyed on
@@ -15356,6 +15392,7 @@ async function pipelineInner(job, opts = {}) {
           clampKinds.actionsDropped = true;
           clampClauses.push(droppedReason);
           clampReasons.push(droppedReason);
+          recordConditionReasons.add(droppedReason);
           runLog(run.runDir, { event: "verdict-conditions-dropped", n: droppedConditions.length,
             ids: droppedConditions.map((q) => q.id), kinds: droppedConditions.map((q) => q.kind),
             errors: droppedConditions.map((q) => String(q.error ?? "").slice(0, 80)) });
@@ -15651,6 +15688,48 @@ async function pipelineInner(job, opts = {}) {
       try { displayVerdict = composeVerdictSidecar().doc; } catch { /* composed again when it is saved */ }
       return false;
     };
+    // THE LABEL OWED IS SAVED before anything is published from it, and the report's own label follows it. Only a run
+    // directory that refuses every save of it ends the run, and then nothing the run writes can be published.
+    const saveTheOwedLabel = () => {
+      if (!labelOwed) return;
+      const owed = labelOwed;
+      labelOwed = null;
+      if (!saveTheLabel(`${owed}, saved again before delivery`))
+        throw new StageFailure("verdict", `the run directory refused every save of the result's label (${owed}) — no surface can be published with it`);
+      applyVerdictFrontMatter();
+    };
+    // THE CONDITIONS FOLLOW THE RECORD AFTER A REPAIR IN THE DELIVERY CHECK. Every surface reads the list from the label,
+    // and the list states the record's forward legal steps as the record stands: a repair that rewrites, withdraws or
+    // adds one moves the list with it, in the record's own words. The result moves only where the floor any result meets
+    // moves it: a CLEAR the repaired steps now condition becomes CONDITIONAL, and nothing is relaxed. A BLOCKING result
+    // states no step of its own, so only a list already stating the record's steps follows it. The caller saves the
+    // label. Returns whether the list, its kinds or the result changed.
+    const followTheRecordsActions = (why) => {
+      if (verdict === "BLOCKING" && !recordConditionReasons.size) return false;
+      let fdoc = null;
+      try { fdoc = existsSync(P.findings) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null; }
+      catch { fdoc = null; }
+      if (!fdoc) return false;   // no record to read: the list stands as stated, and the coherence checks judge it
+      const { conditions, conditionClauses } = deriveActionConditions(fdoc.actions, fdoc.findings);
+      const now = conditions.map((c) => ({ reason: c, clause: conditionClauses[conditions.indexOf(c)] ?? c }));
+      const dropped = quarantinedConditionRows(fdoc.actionsQuarantined).length > 0;
+      if (dropped && recordConditionReasons.has(DROPPED_CONDITIONS_REASON)) now.push({ reason: DROPPED_CONDITIONS_REASON, clause: DROPPED_CONDITIONS_REASON });
+      const state = () => JSON.stringify([clampReasons, clampClauses, Boolean(clampKinds.legalActions), Boolean(clampKinds.actionsDropped)]);
+      const stood = state(), was = verdict;
+      const f = conditionsFollowingTheRecord({ reasons: clampReasons, clauses: clampClauses, fromRecord: recordConditionReasons, now });
+      clampReasons = f.reasons;
+      clampClauses = f.clauses;
+      recordConditionReasons = f.held;
+      if (!conditions.length) delete clampKinds.legalActions;
+      if (!dropped) delete clampKinds.actionsDropped;
+      // The floor runs again only where the repaired steps reach it, as the coherence repair runs it.
+      if (state() !== stood || (verdict === "CLEAR" && (conditions.length || dropped))) applyCoverageFloor();
+      if (state() === stood && verdict === was) return false;
+      runLog(run.runDir, { event: "verdict-conditions-followed", why, withdrawn: f.withdrawn.length, added: f.added.length,
+        restated: f.restated.length, conditions: recordConditionReasons.size, from: was, to: verdict });
+      note(`the conditions follow the record ${why} (${f.withdrawn.length} withdrawn, ${f.added.length} added, ${f.restated.length} restated${verdict === was ? "" : `; ${was} → ${verdict}`})`);
+      return true;
+    };
     try { writeVerdictSidecar(); }
     catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
 
@@ -15810,6 +15889,8 @@ async function pipelineInner(job, opts = {}) {
     // afterwards and therefore never read it as staleness.
     stampCoverageJudgmentRows(P, run.runDir, note, ctx);
     consolidateFindingsFile(P, note, ctx.framework);
+    // The conditions too: a save that rewrote, withdrew or added a forward legal step moves the list with it.
+    followTheRecordsActions("after a save of the record");
     // T2: consolidation can change the live composite set — re-derive the sidecar so every
     // surface joins the FINAL findings (the sidecar must never describe a superseded set).
     // review fix: consolidation can also surface CONDITIONS the floor never saw (a lenient-
@@ -16812,6 +16893,7 @@ async function pipelineInner(job, opts = {}) {
       // an edit to the actions. One attempt; a residual failure ships as the structural banner flag.
       if (lint.failures.some((f) => f.id === "verdict-actions-coherence" || f.id === "verdict-actions-stale" || f.id === "statement-tier" || f.id === "statement-unconditional" || f.id === "statement-stance" || f.id === "statement-conditional-form")) {
         const beforeVerdict = verdict;
+        followTheRecordsActions("in the delivery check's re-derive");   // a stale step goes, as a missing one arrives
         applyCoverageFloor();
         try { writeVerdictSidecar(); }
         catch (e) { throw new StageFailure("verdict", `verdict sidecar re-derive failed (spec-64 coherence repair): ${String(e.message).slice(0, 120)}`); }
@@ -17469,17 +17551,17 @@ async function pipelineInner(job, opts = {}) {
           note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
           staleStages = [];
         }
-        // THE LABEL OWED IS SAVED NOW, before anything is published from it, and the report's own label follows it. Only
-        // a run directory that refuses every save of it ends the run here, and then nothing the run writes can be published.
-        if (labelOwed) {
-          const owed = labelOwed;
-          labelOwed = null;
-          if (!saveTheLabel(`${owed}, saved again before delivery`))
-            throw new StageFailure("verdict", `the run directory refused every save of the result's label (${owed}) — no surface can be published with it`);
-          applyVerdictFrontMatter();
-        }
+        saveTheOwedLabel();   // before anything is published from it
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
+      // THE CONDITIONS FOLLOW THE RECORD AS IT IS DELIVERED, whichever repair above moved it last, and the label owed is
+      // saved before the receipt below and anything published from it. A list that moved is judged again.
+      if (followTheRecordsActions("as the record is delivered")) {
+        saveTheLabel("as the record is delivered");
+        applyVerdictFrontMatter();
+        lint = lintNow();
+      }
+      saveTheOwedLabel();
       // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw
       // below), so ANY later exit from this pass — the staleness throw, a core-artifact throw between here
       // and it, an auto-recovery park — carries the set into reconcilePassStamps. Reconcile must leave these
