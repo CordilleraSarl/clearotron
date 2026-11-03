@@ -29,7 +29,8 @@ import { searchedCovers } from "./frame-diff-model.mjs";                // one c
 import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyFacts } from "./party-facts.mjs";   //
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
-import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
+import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks, normalizeRecordUri } from "./registry-fidelity.mjs";
+import { recordGoods, untaggedIsEnglish } from "./record-goods.mjs";   // a held record's goods, read as the band reads them
 import { parseFront } from "./publish/parse.mjs";
 import { citedFindingNumbers } from "./finding-citations.mjs";   // every written form of a citation, read one way
 export { citedFindingNumbers };
@@ -2275,6 +2276,74 @@ export function actionsRegisterChecks({ actionsRegister, expected }) {
 // the row ALWAYS PASSES — it exists so the receipt artifact and any reviewer can see where the assembly
 // moved words, without triggering a repair loop or a gate. Emitted only when the run actually folded
 // (archived/replay runs have no sidecar and never grow a row).
+// ── A FINDING WRITTEN ON GOODS THE REGISTER CUT, WHOSE WHOLE TEXT THE RUN NOW HOLDS ─────────────────────────
+//
+// A writer reads a record's goods as the band holds them, and a register's search answer can hold a long statement
+// cut, or not establish that it is whole. `goods-evidence.json` is written beside the band shape before the writer
+// writes, so it says which records the writer had that way. The record's whole body can arrive later: a fetch during
+// doubt closure, or the record closure just before this check. Measured 2026-11-03 on both engines: findings said a
+// class was "cut and unread" while the run went on to fetch that class whole, and nothing read the finding again.
+//
+// So a delivered finding is named, with the record's whole statements, for the writer's one repair at this check, when
+// both hold: it rests on such a record, now held whole, and its own text says part of its goods statement is cut or
+// unread (`claimsGoodsCut`). Both halves bound it. On the two saved runs that prompted this, the record half alone
+// named 22 and 34 findings, because half the band was cut and every cited record arrives whole by this check, while
+// the findings that reasoned on the missing part are the ones that say so: 3 and 8. A record whose held body still
+// says cut, or one the run does not hold, is not named. A record whose whole text was once handed to that repair
+// (`handed`, by uri) is not named again: the check after the repair, and a resume, do not report it a second time,
+// whatever numbering the repair's save gives the findings.
+export function goodsHeldWholeChecks({ findings, goodsEvidence, recordsByUri, handed = null }) {
+  const asWritten = new Map();
+  for (const r of Array.isArray(goodsEvidence?.records) ? goodsEvidence.records : []) {
+    const uri = normalizeRecordUri(r?.uri ?? r?.record_id);
+    if (uri && r?.source === "search-row" && (r.state === "cut" || r.state === "unknown")) asWritten.set(uri, r.state);
+  }
+  const named = [], wasHanded = [];
+  for (const f of Array.isArray(findings) ? findings : []) {
+    if (!f || String(f.disposition ?? "") === "withdrawn" || !Number.isInteger(f.ordinal) || !claimsGoodsCut(f)) continue;
+    for (const reg of Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []) {
+      const uri = normalizeRecordUri(reg?.uri ?? reg);
+      if (!uri || !asWritten.has(uri)) continue;
+      const body = recordsByUri?.get?.(uri) ?? null;
+      const goods = body ? recordGoods(body, { english: untaggedIsEnglish(uri) }) : [];
+      if (!goods.length || goods.some((g) => g?.cut || g?.unknown)) continue;
+      if (handed?.has?.(uri)) { wasHanded.push(uri); continue; }
+      named.push({ ...check(`goods-held-whole:${f.ordinal}:${uri}`, "goods-evidence", "narrative", false,
+        goodsHeldWholeDetail(uri, goods, asWritten.get(uri))), ordinal: f.ordinal, uri });
+    }
+  }
+  if (named.length) return named;
+  return [check("goods-held-whole", "goods-evidence", "narrative", true, wasHanded.length
+    ? `${new Set(wasHanded).size} record(s) whose goods the writer had cut had their whole text handed to the delivery repair`
+    : "no delivered finding rests on goods the writer had cut whose whole text the run holds now")];
+}
+
+/**
+ * Does the finding's own text say part of its goods statement is cut or unread? A sentence that names the cut and a
+ * part of a goods statement: "The consultancy list is cut", "a further research clause … is cut and unread", "before a
+ * cut tail". A sentence that says something else is unread ("international designations are unread") is not one. PURE.
+ */
+const CUT_WORD_RE = /\b(?:cut|truncated|unread)\b/i;
+const GOODS_PART_RE = /\b(?:list|lists|clause|clauses|wording|specification|goods|services|class|classes|tail|remainder|statement|statements)\b/i;
+export function claimsGoodsCut(finding) {
+  const texts = [];
+  const walk = (v) => {
+    if (typeof v === "string") texts.push(v);
+    else if (Array.isArray(v)) v.forEach(walk);
+    else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) if (k !== "owner") walk(x);
+  };
+  walk(finding);
+  return texts.some((t) => t.split(/(?<=[.;!?])\s+/).some((sentence) => CUT_WORD_RE.test(sentence) && GOODS_PART_RE.test(sentence)));
+}
+
+/** The line the writer's repair reads for one finding: the record, how its goods were read, and its whole statements. PURE. */
+export function goodsHeldWholeDetail(uri, goods, state) {
+  const statements = goods.map((g) => `${g.classes.length ? `Class ${g.classes.join(", ")}` : "Goods"}: "${g.text}"`).join(". ");
+  return `rests on ${uri}, whose goods you read as the register's search answer ${state === "cut" ? "cut them" : "gave them, not established whole"}. `
+    + `The run now holds the register's whole record: ${statements}. `
+    + "Read this finding's goods comparison again on the whole text, and change its rating only if the whole text requires it.";
+}
+
 export function cardBudgetChecks({ cardFolds }) {
   const folds = Array.isArray(cardFolds) ? cardFolds : [];
   if (!folds.length) return [];
@@ -2282,7 +2351,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
+export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null, goodsEvidence = null, goodsHanded = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2378,6 +2447,9 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   if (reportMd) checks.push(...permissionProseChecks({ text: reportMd, surface: "report" }));
   if (clientSummaryMd) checks.push(...permissionProseChecks({ text: clientSummaryMd, surface: "client-summary", idSuffix: ":client" }));
   if (narrativeMd) checks.push(...permissionProseChecks({ text: narrativeMd, surface: "narrative", idSuffix: ":narrative", structural: true }));
+  // A finding written on goods the register cut, whose whole text the run holds now. Live runs only: the replay
+  // harness passes no goods evidence, so an archived run never grows the check.
+  if (goodsEvidence) checks.push(...goodsHeldWholeChecks({ findings, goodsEvidence, recordsByUri, handed: goodsHanded }));
   // — the narrative's own depth rules, on the narrative surface so they route to the synthesis redo.
   // Its finding headings are in the model's numbering, so they join the record the model wrote when the
   // delivered record is folded (`narrativeFindings`), and the delivered record otherwise.

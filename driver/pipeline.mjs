@@ -1259,6 +1259,19 @@ function goodsEvidenceDocFor(ctx, band, goods = null) {
   return doc;
 }
 
+// THE RECORDS A DELIVERY REPAIR WAS HANDED THE WHOLE GOODS TEXT FOR (predelivery-lint.mjs, goodsHeldWholeChecks), kept
+// beside the run so the check after that repair, and a resume, do not name them again. A missing or unreadable file is
+// an empty set: the check then names them, which costs a repair and never hides a finding.
+const GOODS_HANDED_FILE = "goods-held-whole-handed.json";
+function readGoodsHanded(runDir) {
+  try { return new Set(JSON.parse(readFileSync(driverDir(runDir, GOODS_HANDED_FILE), "utf8"))?.records ?? []); } catch { return new Set(); }
+}
+function recordGoodsHanded(runDir, uris) {
+  const all = new Set([...readGoodsHanded(runDir), ...uris]);
+  ensureDriverDir(runDir);
+  atomicWrite(driverDir(runDir, GOODS_HANDED_FILE), JSON.stringify({ records: [...all].sort() }, null, 2) + "\n");
+}
+
 function recordGoodsEvidenceFor(ctx, band, derived = null) {
   const P = ctx.paths;
   try {
@@ -16670,6 +16683,9 @@ async function pipelineInner(job, opts = {}) {
           // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
           // which passes the archived summary.
           reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
+          // What each record's goods rested on when the writer wrote, and the records whose whole text a delivery repair
+          // was already handed: a finding written on goods the register cut, whose whole body the run holds now.
+          goodsEvidence: readGoodsEvidence(run.runDir), goodsHanded: readGoodsHanded(run.runDir),
           // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
           // conditions the email carries, as the email composes them.
           overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict),
@@ -16901,13 +16917,23 @@ async function pipelineInner(job, opts = {}) {
         const fold = readFold(run.runDir);
         const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
         const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
-        const narrativeFixable = [...modelFixable(bySurface("narrative")), ...sentenceFixable, ...recordFixable];
+        // A finding named for goods the register cut, whose whole text the run holds now, is named in the writer's numbering.
+        const inWritersNumbering = (f) => (String(f.id).startsWith("goods-held-whole:") ? { ...f, finding: keptModelOrdinal(fold, f.ordinal) } : f);
+        const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering), ...sentenceFixable, ...recordFixable];
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
         // A writer fault with no writer session to repair it is not repaired, and the run says so.
         if (narrativeFixable.length && !synthesisKey)
           runLog(run.runDir, { event: "lint-redo-skipped", surface: "writer", why: "no-writer-session", failures: narrativeFixable.map((f) => f.id) });
         if (narrativeFixable.length) await redo("synthesis", narrativeFixable, synthesisKey, synthesisModel, synthesisThinking, P.narrative,
           { findings: modelRecordPath(run.runDir, P.findings), narrative: P.narrative });
+        // The records whose whole goods text this repair was handed, kept so the check after it does not name them again.
+        const goodsHandedNow = narrativeFixable.filter((f) => String(f.id).startsWith("goods-held-whole:")).map((f) => f.uri);
+        if (goodsHandedNow.length && repaired.includes("synthesis")) {
+          try {
+            recordGoodsHanded(run.runDir, goodsHandedNow);
+            runLog(run.runDir, { event: "goods-held-whole-handed", records: [...new Set(goodsHandedNow)].sort() });
+          } catch (e) { note(`pre-delivery lint: the records handed their whole goods text were not recorded: ${e?.message ?? e}`); }
+        }
         if (reassembled) assembleReportMd(P, findingsForCards, assembledOrdinals, { grouped: groupedMembers, byRight });
         // The client-summary redo arm is retired with the stage (2026-08-01). Its `email`-surface
         // failures have not gone unowned: the `:email` reference check now runs over the report-derived
