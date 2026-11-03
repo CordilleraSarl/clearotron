@@ -429,9 +429,9 @@ function finishSearchRequest(body, p) {
   // The register's default answer carries "the first 280 characters" of each goods statement, and
   // `include: ["full_goods_services"]` "returns the full goods and services text instead" (docs.signa.so,
   // Search Trademarks, `include`, top-level as the reference places it; a search is "10 per page" either
-  // way). Without it the band held each long statement cut, and the full record arrived only at delivery:
-  // measured 2026-11-03 on both engines, a cited record's classes were written up as "cut and unread" while
-  // the run went on to fetch them whole. The rows say they were asked for it (`goods_whole`, below).
+  // way). Without it the band held each long statement cut, and the full record arrived only at delivery,
+  // so a cited record's classes could be written up as "cut and unread" while the run went on to fetch them
+  // whole. The rows say they were asked for it (`goods_whole`, below).
   body.include = ["full_goods_services"];
   return body;
 }

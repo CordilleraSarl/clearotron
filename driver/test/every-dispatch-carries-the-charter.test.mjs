@@ -152,8 +152,11 @@ test("every warm dispatch that could carry a charter does — counted, not merel
   // removed and somebody decides deliberately which it was — it is not a free update.
   // 9: the correction after the review of a delivery-check repair joined the first correction's shape — a
   // synthesis followup dispatched on the writer's session key. It starts a fresh session, as every followup does.
-  assert.equal(bite.length, 9,
-    `${bite.length} warm charter-relevant dispatch site(s), expected 9. Adding or removing one is a `
+  // 10: the correction's one re-ask for the answers that may depend on findings it moved (`answerFollowsCorrection`),
+  // in the same shape: a synthesis followup on the writer's session key, which starts a fresh session and carries the
+  // charter. It runs only where the existing re-emit did not, so the gate still dispatches one repair at most.
+  assert.equal(bite.length, 10,
+    `${bite.length} warm charter-relevant dispatch site(s), expected 10. Adding or removing one is a `
     + "decision: say which dispatch, and whether it resumes a session. Sites:\n  "
     + bite.map((s) => `:${s.line} ${s.name}`).join("\n  "));
 

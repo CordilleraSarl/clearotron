@@ -47,7 +47,7 @@ import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./deri
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
 import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
-import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
@@ -7676,7 +7676,7 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
     const sha = createHash("sha256").update(raw).digest("hex");
     return { stale: named.length > 0 && sha === (pre.model?.sha ?? pre.sha) && !(corrections && corrections.applied), sha };
   };
-  if (!readState().stale) return;
+  if (!readState().stale) return answerFollowsCorrection(ctx, P, pre, resume);
   note(`[corrections] findings.json unchanged after the corrective pass (review names: ${named.join(", ")}) — demanding the re-emit`);
   await stage("synthesis", ctx, {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
@@ -7694,6 +7694,33 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
       renameSync(tmp, driverDir(run.runDir, "corrections-state.json"));
     } catch { /* sidecar is best-effort; the runLog event stands */ }
   }
+}
+
+// THE ANSWERS FOLLOW THE FINDINGS THEY NAME, asked once, as the gate's one repair. A correction that moved findings an
+// answer citing findings may depend on (`answersLeftBehind`) is handed those findings and the answers that may miss them.
+// The writer updates the answers that depend on them or says why not in the corrections note; nothing is forced. Run
+// only where the findings did reach the record: where they did not, the re-emit above is the one repair, and it may
+// update the answers in the same PATCH. What remains afterwards is recorded, not judged; the recheck reads the answers.
+async function answerFollowsCorrection(ctx, P, pre, resume) {
+  const { run } = ctx;
+  const leftBehind = () => {
+    try {
+      return answersLeftBehind(JSON.parse(pre.model?.raw ?? pre.raw), JSON.parse(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")),
+        ctx.framework?.bands);
+    } catch { return []; }   // an unreadable record is the ladder's business, not this check's
+  };
+  const answers = leftBehind();
+  if (!answers.length) return;
+  runLog(run.runDir, { event: "corrective-answers-left-behind", answers });
+  note(`[corrections] ${answers.length} answer(s) in four_answers may miss findings the correction moved (${answers.map((a) => a.answer).join(", ")}) — asking once`);
+  await stage("synthesis", ctx, {
+    force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
+    trigger: "corrective-answers",
+    followup: repairFollowup("synthesis:corrective-answers", { findings: modelRecordPath(run.runDir, P.findings), answers }) + stageCharter("synthesis", ctx.depth, ctx.framework),
+  });
+  const still = leftBehind();
+  runLog(run.runDir, { event: "corrective-answers-after", answers: still });
+  if (still.length) note(`[corrections] ${still.map((a) => a.answer).join(", ")} still name(s) the findings as before — recorded; any reason the writer gave is in the corrections note, and the recheck reads the answers`);
 }
 
 // (T3a, ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
