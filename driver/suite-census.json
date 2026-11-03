@@ -280,8 +280,8 @@
           "todos": 0
         },
         "a-codex-renewal-that-fails-for-a-moment-is-not-a-sign-out.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -358,8 +358,8 @@
           "todos": 0
         },
         "a-correction-carries-the-answer-that-names-its-findings.test.mjs": {
-          "tests": 8,
-          "asserts": 23,
+          "tests": 9,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -1110,6 +1110,12 @@
         "a-late-synthesis-save-keeps-the-seams-writes.test.mjs": {
           "tests": 2,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-layer-row-names-every-register-not-searched.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -3898,8 +3904,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 54,
-          "asserts": 282,
+          "tests": 55,
+          "asserts": 289,
           "skips": 0,
           "todos": 0
         },

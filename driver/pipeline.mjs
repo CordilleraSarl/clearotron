@@ -80,7 +80,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 // — the register coverage form: the driver writes it before the digest dispatches, renders the
 // `## Coverage ledger` table and the machine ledger FROM it after the pass, and unions it across passes.
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
-import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows } from "./coverage-form.mjs";
+import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows, isLayerRow, nationalRegistersNotSearched, nationalRegistersNote, orderFormName } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
@@ -8518,8 +8518,34 @@ export function coverageRowAreaLabel(axis, unit) {   // @internal
   return coverageRowAreaFrom(axis, unit, labelled, "(all of it)");
 }
 
-export function coverageJudgmentRows(ledgerRows, planExecution, plan = null) {   // @internal
+// A LAYER ROW NAMES EVERY REGISTER IT LEFT, FROM ITS RECEIPT. The machine ledger keeps a row's axis, status
+// and reason, not its receipt, so the coverage form's layer row is found again by those three: the ledger is
+// rendered from the form, and they are the form row's own. A match must be one form row to one ledger row; any
+// other count leaves the row as it was. Its label is the territory's: the unit has no scope, so the axis's label
+// would say the whole main sweep stood open.
+const normReason = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
+function layerRowNotes(ledgerRows, formRows) {
+  const keyOf = (r) => `${String(r?.axis ?? "").trim().toLowerCase()}\u0000${String(r?.status ?? "").trim().toLowerCase()}\u0000${normReason(r?.reason)}`;
+  const ledgerCount = new Map();
+  for (const r of ledgerRows ?? []) ledgerCount.set(keyOf(r), (ledgerCount.get(keyOf(r)) ?? 0) + 1);
+  const byKey = new Map();
+  for (const f of (formRows ?? []).filter(isLayerRow)) {
+    const k = keyOf(f);
+    byKey.set(k, byKey.has(k) ? null : f);
+  }
+  const notes = new Map();
+  for (const [k, f] of byKey) {
+    if (!f || ledgerCount.get(k) !== 1) continue;
+    const note = nationalRegistersNote(nationalRegistersNotSearched(f.receipt_reason));
+    const territory = orderFormName(String(f.unit ?? "").split(" — ")[0]);
+    if (note && territory) notes.set(k, { note, areaLabel: `${territory}: national registers` });
+  }
+  return { keyOf, notes };
+}
+
+export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, formRows = null) {   // @internal
   const open = [];
+  const layers = layerRowNotes(ledgerRows, formRows);
   for (const r of ledgerRows ?? []) {
     // `withheld-by-judgment` joins `confirmed-clean` in NOT reaching the reader, and for the opposite
     // reason. A clean row has nothing to disclose. A withheld one has something to say, and it is
@@ -8531,8 +8557,10 @@ export function coverageJudgmentRows(ledgerRows, planExecution, plan = null) {  
     if (!r || status === "confirmed-clean" || status === "withheld-by-judgment") continue;
     const reason = String(r.reason ?? "").replace(/\s+/g, " ").trim().slice(0, 160);
     const axis = String(r.axis ?? "").toLowerCase();
-    open.push({ axis, area: coverageRowArea(axis, r.unit), areaLabel: coverageRowAreaLabel(axis, r.unit),
-      note: `${r.status}${reason ? ` — ${reason}` : ""}`, qids: [] });
+    const layer = layers.notes.get(layers.keyOf(r));
+    open.push({ axis, area: coverageRowArea(axis, r.unit),
+      areaLabel: layer ? layer.areaLabel : coverageRowAreaLabel(axis, r.unit),
+      note: `${r.status}${layer ? ` — ${layer.note}` : reason ? ` — ${reason}` : ""}`, qids: [] });
   }
   const skeleton = Array.isArray(planExecution?.skeleton) ? planExecution.skeleton : null;
   const axisOf = new Map();
@@ -8564,7 +8592,8 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
       runLog(runDir, { event: "coverage-judgment-rows", judgment: false, reason: "synthesis emitted no coverage_judgment — none is invented here" });
       return;
     }
-    const rows = coverageJudgmentRows(loadCoverageLedger(runDir).rows, readPlanExecution(ctx), ctx?.registerPlan ?? null);
+    const rows = coverageJudgmentRows(loadCoverageLedger(runDir).rows, readPlanExecution(ctx), ctx?.registerPlan ?? null,
+      readCoverageForm(runDir).rows);
     const discarded = Array.isArray(cj.rows) ? cj.rows.length : 0;
     const next = { ...doc, coverage_judgment: { ...cj } };
     if (rows.length) next.coverage_judgment.rows = rows;

@@ -185,10 +185,13 @@ const open = () => { send({ type: "thread.started", thread_id: session }); send(
 //   MOCK_CODEX_RENEWAL_LINES=<path>   those lines. By default fixtures/codex-renewal-dropped.txt: a dropped
 //                                  connection, captured offline on 2026-11-03, with the stand-in's address
 //                                  replaced by the provider's.
+//   MOCK_CODEX_RENEWAL_STALL=1        the turn does not end: codex keeps retrying a renewal whose connection
+//                                  drops, so the lines are written and the turn goes silent until a watchdog stops it.
 if (process.env.MOCK_CODEX_RENEWAL_FAILED && !existsSync(process.env.MOCK_CODEX_RENEWAL_FAILED)) {
   writeFileSync(process.env.MOCK_CODEX_RENEWAL_FAILED, "failed\n");
   process.stderr.write(readFileSync(process.env.MOCK_CODEX_RENEWAL_LINES || new URL("./fixtures/codex-renewal-dropped.txt", import.meta.url), "utf8"));
   open();
+  if (process.env.MOCK_CODEX_RENEWAL_STALL) { setInterval(() => {}, 1 << 30); await new Promise(() => {}); }
   send({ type: "turn.failed", error: { message: "mock codex turn failure" } });
   process.exit(1);
 }

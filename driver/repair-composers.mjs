@@ -555,9 +555,14 @@ export const REPAIR_COMPOSERS = [
           : `This is a fresh session: your earlier ${label} work is not in your context — ${file} is already written and the deterministic pre-delivery lint failed these checks on it:`,
       ...failures.map((f) => `- ${f.finding != null ? `finding ${f.finding}: ` : ""}${f.detail || f.id}`),
       toolWritten?.tool === "record_synthesis" ? `Read ${findings} and ${narrative}, then correct the finding or narrative section that owns each fault.` : "",
+      // THE ANSWERS RIDE THE WRITER'S ONE REPAIR HERE TOO: a fix that changes a finding (a goods reading refreshed from a
+      // record now held whole, among others) reaches the answers that depend on it, in the correction's own step 4.
+      toolWritten?.tool === "record_synthesis" ? ANSWERS_STEP : "",
       `Where a check quotes the fetched record's true value, correct the identifier to the record's value EXACTLY (the record is the only permitted source for registry identifiers).`,
       `Risk tiers and Level/Composite labels are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
-      `Fix ONLY what the checks name; change nothing else.`,
+      toolWritten?.tool === "record_synthesis"
+        ? `Fix ONLY what the checks name, and the answers that depend on those changes; change nothing else.`
+        : `Fix ONLY what the checks name; change nothing else.`,
       // THE WRITER'S SAVE MERGES A PATCH; EVERY OTHER TOOL HERE TAKES ITS WHOLE PAYLOAD. `record_synthesis`
       // holds the record it last accepted and merges a patch into it, so the writer sends only the change, in
       // the shape its correction message uses. The other tools a delivery repair reaches render their artifact
@@ -970,7 +975,7 @@ export function repairFollowup(key, args) {
   if (!c) {
     throw new Error(`[repair-composers] no registered composer for "${key}". A bespoke repair `
       + `instruction must be registered in driver/repair-composers.mjs before it can reach a seat — an `
-      + `unregistered composer is invisible to the #865 agreement guard, which is the whole of #1183.`);
+      + `unregistered composer is invisible to the recording-agreement guard, which walks only the registry.`);
   }
   return c.compose(args ?? {});
 }

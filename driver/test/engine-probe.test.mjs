@@ -23,7 +23,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -926,6 +926,39 @@ test("through the real codex adapter: a renewal that failed for a moment, then t
     assert.deepEqual(waits, [REFRESH_LOCK_WAIT_MS], "the same single check after a wait that a locked Claude refresh gets");
     assert.equal(door.recheckedAfter.mode, "refresh-failed");
   } finally { delete process.env.MOCK_CODEX_RENEWAL_FAILED; }
+});
+
+test("through the real codex adapter: a renewal still failing when the probe's watchdog stops it, then the door's second check", async () => {
+  // Measured offline on codex 0.162.0, 2026-11-03: on a dropped connection codex retries its renewal until the
+  // probe's watchdog stops the turn, and the door refused the job as "openai-agent is not signed in".
+  const dir = mkdtempSync(join(tmpdir(), "clearotron-codex-renewal-stopped-"));
+  const quick = { timeoutSec: 20, stallSec: 1 };
+  const controls = { MOCK_CODEX_RENEWAL_FAILED: join(dir, "dropped"), MOCK_CODEX_RENEWAL_STALL: "1" };
+  Object.assign(process.env, controls);
+  try {
+    const v = await probeEngineTurn({ env: CODEX, ...quick });
+    assert.equal(v.mode, "refresh-failed", JSON.stringify(v));
+    assert.equal(probeVerdictLane(v), "weather");
+
+    process.env.MOCK_CODEX_RENEWAL_FAILED = join(dir, "dropped-at-the-door");
+    const waits = [];
+    const door = await preflightEngineTurn({ env: CODEX, ...quick, wait: async (ms) => { waits.push(ms); } });
+    assert.equal(door.ok, true, JSON.stringify(door));
+    assert.deepEqual(waits, [REFRESH_LOCK_WAIT_MS]);
+    assert.equal(door.recheckedAfter.mode, "refresh-failed");
+
+    // A refused renewal is still a sign-out when the watchdog stopped the turn: the door refuses it.
+    process.env.MOCK_CODEX_RENEWAL_FAILED = join(dir, "refused");
+    process.env.MOCK_CODEX_RENEWAL_LINES = join(dir, "refused.txt");
+    writeFileSync(process.env.MOCK_CODEX_RENEWAL_LINES, "2026-11-03T13:39:36.110059Z ERROR codex_login::auth::manager: Failed to refresh token status=401 Unauthorized detail=TokenErrorDetail { error_code: Some(\"refresh_token_reused\"), .. }\n");
+    const refused = await probeEngineTurn({ env: CODEX, ...quick });
+    assert.equal(refused.mode, "signed-out", JSON.stringify(refused));
+    process.env.MOCK_CODEX_RENEWAL_FAILED = join(dir, "refused-at-the-door");
+    await assert.rejects(preflightEngineTurn({ env: CODEX, ...quick, wait: async () => {} }), /^Error: \[preflight\] /);
+  } finally {
+    for (const k of [...Object.keys(controls), "MOCK_CODEX_RENEWAL_LINES"]) delete process.env[k];
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("the verdicts on the file: every word in it passes; a word short, or no file, warns; a failed write refuses", () => {
