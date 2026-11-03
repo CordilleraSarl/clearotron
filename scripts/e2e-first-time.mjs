@@ -234,7 +234,7 @@ export const NOT_COUNTED_EVENTS = {
     "assessment-not-completed-delivery", "part-completed", "overview-not-completed-delivery", "review-not-completed-delivery",
     "core-artifact-restored", "searches-not-completed-delivery", "unit-not-completed-delivery",
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
-    "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
+    "corrective-answers-after", "corrective-answers-left-behind", "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
@@ -270,7 +270,7 @@ export const RETIRED_EVENTS = ["known-conflicts-read", "known-conflicts-upsert",
 // because an answer was not accepted as it stood.
 export const COUNTED_TRIGGERS = {
   "action-reemit": REASK, "actions-missing": REASK, "ask-answer-reemit": REASK, "connotation-remedy": REASK,
-  "corrective": REASK, "corrective-findings": REASK, "coverage-closure": REASK, "degenerate-reask": REASK,
+  "corrective": REASK, "corrective-answers": REASK, "corrective-findings": REASK, "coverage-closure": REASK, "degenerate-reask": REASK,
   // the unit left closeable rows deferred
   "envelope": REASK,
   // the skeptic did not accept the unit's answer
