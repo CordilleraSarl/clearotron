@@ -755,7 +755,7 @@
         },
         "a-finding-written-on-goods-the-register-cut-is-handed-the-whole-text.test.mjs": {
           "tests": 5,
-          "asserts": 18,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
