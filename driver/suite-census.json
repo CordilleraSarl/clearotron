@@ -747,6 +747,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-finding-written-on-goods-the-register-cut-is-handed-the-whole-text.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-findings-check-names-every-finding-it-fails-at-once.test.mjs": {
           "tests": 2,
           "asserts": 5,
