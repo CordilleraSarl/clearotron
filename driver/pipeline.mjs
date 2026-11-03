@@ -8554,18 +8554,29 @@ export function injectDeferralCoverage(P, runDir, note) {   // @internal — exp
     // rows — the reader-visible disclosure is the whole point of "can't close → disclose".
     if (!Array.isArray(doc.coverage)) doc.coverage = [];
     const normTxt = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-    const covText = normTxt(doc.coverage.map((c) => `${c.area} ${c.note ?? ""}`).join(" "));
+    // A row may stand in for this one only as the report page lets it (`dedupeFollowUps`, publish/render.mjs): the
+    // driver's own row, or the writer's row restating the gap. A searched-clean row reports the opposite, and an
+    // axis-labelled one ("Register / …") is a plan unit that may only share the words.
+    const standsIn = (c) => String(c.area ?? "").startsWith("Follow-up / ")
+      || (c.state !== "confirmed-clean" && !/\s\/\s/.test(String(c.area ?? "")));
+    const wordsOf = (c) => new Set(normTxt(`${c.area} ${c.note ?? ""}`).split(" "));
+    const rows = doc.coverage.filter(standsIn).map(wordsOf);
     let added = 0;
     for (const d of deferrals) {
       const directive = String(d?.directive ?? "").trim();
       if (!directive) continue;
-      // THE WORDS ARE THE ONES A ROW CARRIES. A directive is minted with its axis prefix ("source:…"), and every row,
-      // this function's own included, prints it through `plainDirective`. Read raw, the first word looked for was the
-      // prefix, no row ever matched, and each seam pass added the row again: twice over in a record, and back after a
-      // save that removed it (measured on two test runs, 2026-11-03: 9 of 9 directives carried the prefix).
-      const slice = normTxt(plainDirective(directive)).split(" ").filter((w) => w.length >= 4).slice(0, 4).join(" ");
-      if (slice && covText.includes(slice)) continue;          // synthesis already weighed it in
-      doc.coverage.push(deferralCoverageRow(directive, d?.reason));   // — word-boundary heading, full directive in the note
+      // THE WORDS ARE THE ONES A ROW CARRIES, AND ONE ROW CARRIES ALL OF THEM. A directive is minted with its axis prefix
+      // ("source:…"), and every row, this function's own included, prints it through `plainDirective`. This looked
+      // for the raw directive's first four long words as one phrase across the whole coverage: the prefix was the
+      // first of them, and a short word between two others ("eu", "and") broke the phrase anyway, so no row matched,
+      // not even the row this function had just added. Each seam pass added it again: twice over in a record, and
+      // back after a save that removed it. Measured on two test runs, 2026-11-03: 9 of 9 directives carried the
+      // prefix, and 4 of one run's 7 a short word between their long ones.
+      const want = normTxt(plainDirective(directive)).split(" ").filter((w) => w.length >= 4).slice(0, 4);
+      if (want.length && rows.some((ws) => want.every((w) => ws.has(w)))) continue;   // synthesis already weighed it in
+      const row = deferralCoverageRow(directive, d?.reason);   // — word-boundary heading, full directive in the note
+      doc.coverage.push(row);
+      rows.push(wordsOf(row));
       added++;
     }
     if (!added) return;
