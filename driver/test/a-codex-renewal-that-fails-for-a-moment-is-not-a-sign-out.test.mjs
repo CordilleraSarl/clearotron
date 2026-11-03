@@ -52,6 +52,16 @@ async function turnWith(lines) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
+/** The same turn when codex does not end it: the renewal lines, then silence until the stall watchdog stops it. */
+async function stoppedTurnWith(lines) {
+  const dir = mkdtempSync(join(tmpdir(), "codex-renewal-stopped-"));
+  try {
+    const env = { ...CODEX, MOCK_CODEX_RENEWAL_FAILED: join(dir, "failed"), MOCK_CODEX_RENEWAL_STALL: "1" };
+    if (lines) { env.MOCK_CODEX_RENEWAL_LINES = join(dir, "lines.txt"); writeFileSync(env.MOCK_CODEX_RENEWAL_LINES, `${lines.join("\n")}\n`); }
+    return await withEnv(env, () => openaiAgentEngine.runTurn({ message: "Reply with the word ok.", model: "haiku", thinking: "low", timeoutSec: 20, stallSec: 1, runDir: dir }));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
 test("a renewal that failed for a passing reason is not a sign-out; one the provider refused still is", async () => {
   for (const [name, lines, refused] of [
     ["a dropped connection (the capture)", null, false],
@@ -79,4 +89,18 @@ test("a stage whose renewal failed for a moment retries, and its second attempt 
     assert.equal(r.attempts, 2, "one failed attempt, then the retry that delivered");
     assert.ok(!(r.attemptFails ?? []).some((f) => /^engine_signed_out:/.test(String(f))), `a passing failure was named a sign-out: ${JSON.stringify(r.attemptFails)}`);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a renewal still failing when the watchdog stopped the turn is read as one; a refused renewal is not", async () => {
+  // On a dropped connection codex retries its renewal until something stops the turn, so the turn is killed,
+  // and the signal the run door reads was set only on a turn that ended by itself.
+  for (const [name, lines, refused] of [
+    ["a dropped connection (the capture)", null, false],
+    ["a 503", PASSING_503, false],
+    ["a 401: the token was already used (0.162.0)", REFUSED_401, true],
+  ]) {
+    const t = await stoppedTurnWith(lines);
+    assert.equal(t.killed, true, `${name}: the watchdog stopped the turn`);
+    assert.equal(Boolean(t.signals?.refreshFailed), !refused, `${name}: refreshFailed`);
+  }
 });
