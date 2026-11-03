@@ -107,10 +107,26 @@ export function renderRefutation(verdict, flags, planAudit) {
   }
   if (planAudit && planAudit.length) {
     out.push("## PLAN-EXECUTION CHECK", "");
-    for (const l of planAudit) out.push(String(l));
+    for (const l of planAudit) out.push(planAuditLine(l));
     out.push("");
   }
   return out.join("\n").replace(/\n+$/, "\n");
+}
+
+// ── A PLAN-AUDIT LINE CANNOT OPEN A SECTION ─────────────────────────────────────────────────────────
+//
+// The audit's lines are the reviewer's own, and the parsers read a markdown heading or a line of capitals as
+// a section heading. One that names corrections ("CORRECTION REVIEW SCOPE", written by a recheck after a
+// correction) became the document's corrections section: `parseCorrections` then read only what followed it,
+// the flags above it counted none, and the round-trip refused both calls of a recheck as
+// `refutation_roundtrip_kinds:fact` (measured on a saved recheck, 2026-11-03). Any heading-shaped line also
+// ends the audit for `countCitedDefects`. Such a line renders in bold, its words unchanged: it still reads as
+// a sub-heading, and no parser reads it as one.
+const SECTION_HEADING = /^#{1,6}\s+\S|^[A-Z][A-Z /&-]{5,}$/;
+function planAuditLine(line) {
+  const s = String(line);
+  const t = s.trim();
+  return SECTION_HEADING.test(t) ? `**${t.replace(/^#{1,6}\s+/, "")}**` : s;
 }
 
 const HEADING_OR_LIST = /^\s*(?:#{1,6}\s|(?:\*{0,2})(?:[-*•]|\d+[.)]|[A-Za-z][.)])(?:\*{0,2})\s)/;
