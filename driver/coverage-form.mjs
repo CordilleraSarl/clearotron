@@ -33,6 +33,7 @@ import { REGISTER_AXES, COVERAGE_STATUSES, normalizeAxis, CROWD_RULING_TOKEN,
 import { shortId } from "./connotation-search.mjs";
 import { openBlocksByAxis, crowdNarrowing, blocksByQidOf, isProviderHardErrorReason, refusedSearchSentence, notSearchedSentence } from "./register-plan.mjs";
 import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
+import OFFERED from "../shared/offered-territories.json" with { type: "json" };   // the order form's own territory names
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
 const DRIVER_KINDS = new Set(["axis", "block", "deferred", "family"]);
@@ -556,8 +557,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
       axis: "primary-sweep", kind: "deferred",
       unit: `${report.territory} — binding registers not all searched`,
       qid: null,
-      receipt_reason: report.unsearched
-        .map((u) => `${u.layer} (${u.office}): ${u.state}`).join("; "),
+      receipt_reason: layerReceipt(report),
       open: true,
       open_because: unsearchedLayerReason(report),
       status: null, reason: null,
@@ -584,6 +584,65 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
     },
   };
 }
+
+// ── THE REGISTERS A LAYER ROW LEFT UNSEARCHED, NAMED IN FULL ────────────────────────────────────────
+//
+// The layer row's receipt holds every register the plan did not search: on an EU order through a provider
+// that holds three member registers, 22 of them. The reader saw a handful. The writer's brief cuts a receipt
+// at 160 characters, so the writer named the first five or so after "including", and the workbook's
+// coverage-judgment row cut the writer's reason at 160 characters again, mid-word. Measured on two test
+// runs, 2026-11-03: 5 to 7 of 22 named, on both engines.
+//
+// The list is the driver's to state, from the receipt, so no model retypes it and none can drop one. The
+// receipt is written and read here, in one module, so the two cannot disagree about its shape.
+
+/** A layer row's receipt: one `layer (OFFICE): state` entry per register the plan did not search. PURE. */
+export function layerReceipt(report) {
+  return report.unsearched.map((u) => `${u.layer} (${u.office}): ${u.state}`).join("; ");
+}
+
+const LAYER_RECEIPT_ENTRY_RE = /^(national|regional|international) \(([A-Z]{2})\): (excludes|unestablished)$/;
+
+/**
+ * The national registers a layer row's receipt names, as office codes, in the receipt's order. null when
+ * the receipt is not one `layerReceipt` wrote, or when it names a register of another layer: an EU-wide or
+ * international gap is a different sentence, and this one does not stretch to it. PURE.
+ */
+export function nationalRegistersNotSearched(receipt) {
+  const entries = String(receipt ?? "").split("; ").filter(Boolean);
+  if (!entries.length) return null;
+  const offices = [];
+  for (const e of entries) {
+    const m = LAYER_RECEIPT_ENTRY_RE.exec(e);
+    if (!m || m[1] !== "national") return null;
+    offices.push(m[2]);
+  }
+  return offices;
+}
+
+const ORDER_FORM_NAMES = new Map([...OFFERED.regions, ...OFFERED.countries].map((t) => [t.code, t.name]));
+
+/** A register or territory code in the order form's words, or "" when the form has no such code. PURE. */
+export function orderFormName(code) {
+  return ORDER_FORM_NAMES.get(String(code ?? "").trim().toUpperCase()) ?? "";
+}
+
+/**
+ * "the national registers of A, B, and C were not searched", every name the order form's own, sorted. null
+ * when a code has no name: a list with a gap in it is the defect this replaces, so the row stays as it was. PURE.
+ */
+export function nationalRegistersNote(offices) {
+  const names = (offices ?? []).map(orderFormName);
+  if (!names.length || names.some((n) => !n)) return null;
+  const sorted = [...new Set(names)].sort((a, b) => a.localeCompare(b, "en"));
+  if (sorted.length === 1) return `the national register of ${sorted[0]} was not searched`;
+  const list = sorted.length === 2 ? `${sorted[0]} and ${sorted[1]}`
+    : `${sorted.slice(0, -1).join(", ")}, and ${sorted[sorted.length - 1]}`;
+  return `the national registers of ${list} were not searched`;
+}
+
+/** Is this form row a binding-layer row (`buildCoverageForm`, stage 1)? PURE. */
+export const isLayerRow = (r) => String(r?.row_id ?? "").startsWith("CL-") && r?.kind === "deferred";
 
 // ── M6 — THE ABSENCE IS AN ARTIFACT, NOT A MISSING ONE ──────────────────────────────────────────
 //
