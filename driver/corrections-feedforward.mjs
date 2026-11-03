@@ -136,6 +136,46 @@ export function linesOf(flagText, lines) {
   return (lines ?? []).filter((l) => namesLine(hay, l) || quotesLine(hay, l.text));
 }
 
+/**
+ * THE LINE A PASS PUT IN A GONE LINE'S PLACE: the same line, renamed. A coverage line is known by its title and an
+ * action by its id, so a flag asking for a new title, answered, left no line under the old key and the line read as
+ * deleted. The reviewing lawyer was then told "removed rather than corrected" of two coverage lines the writer had
+ * retitled as asked (two flags of one test run, 2026-11-03).
+ *
+ * CLAIMED ONLY WHERE THE RECORD SHOWS IT. Among lines of the same kind, the gone line must be the only one gone
+ * between its nearest neighbours the pass kept. Of the lines the pass added between those neighbours, exactly one
+ * must carry at least two in five of the gone line's words, title and text together. A writer can split a line,
+ * so one added line beside it is not enough; the successor is the one that keeps its words. On that run the two
+ * successors kept 0.88 and 0.55 of them, and no other line kept more than 0.18. Anything else (two gone, no
+ * successor, two candidates, the neighbours reordered) stays a removal: a deletion read as a rename would hide it
+ * from the lawyer. The mark assessment's two reads have fixed keys, so neither is ever a rename. Returns the
+ * post-pass line, or null. PURE.
+ */
+const RENAME_SHARE = 0.4;
+const lineWords = (l) => new Set(norm(`${String(l.key).slice(String(l.key).indexOf(":") + 1)} ${l.text}`)
+  .split(" ").filter((w) => w.length > 2));
+export function renamedAs(line, preLines, postLines) {
+  const kindOf = (l) => String(l?.key ?? "").slice(0, Math.max(0, String(l?.key ?? "").indexOf(":")));
+  const kind = kindOf(line);
+  if (kind !== "coverage" && kind !== "action") return null;
+  const before = (preLines ?? []).filter((l) => kindOf(l) === kind);
+  const after = (postLines ?? []).filter((l) => kindOf(l) === kind);
+  const kept = new Set(after.map((l) => l.key));
+  const had = new Set(before.map((l) => l.key));
+  const at = before.findIndex((l) => l.key === line.key);
+  if (at < 0 || kept.has(line.key)) return null;
+  let lo = at - 1; while (lo >= 0 && !kept.has(before[lo].key)) lo--;
+  let hi = at + 1; while (hi < before.length && !kept.has(before[hi].key)) hi++;
+  if (hi - lo !== 2) return null;                                   // another line went from the same gap
+  const from = lo >= 0 ? after.findIndex((l) => l.key === before[lo].key) : -1;
+  const to = hi < before.length ? after.findIndex((l) => l.key === before[hi].key) : after.length;
+  const added = (to > from ? after.slice(from + 1, to) : []).filter((l) => !had.has(l.key));
+  const mine = lineWords(line);
+  if (!mine.size) return null;
+  const keeps = added.filter((l) => { const theirs = lineWords(l); let n = 0; for (const w of mine) if (theirs.has(w)) n++; return n / mine.size >= RENAME_SHARE; });
+  return keeps.length === 1 ? keeps[0] : null;
+}
+
 /** The corrective pass's own words about a line it was flagged on, from the `corrections` register. PURE. */
 function reasonFor(hit, doc) {
   const c = doc?.corrections;
@@ -281,7 +321,7 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc, { sections = null
   const known = knownEntities(preDoc, postDoc);
   const pre = byName(preDoc), post = byName(postDoc);
   const preOrd = byOrdinal(preDoc), postOrd = byOrdinal(postDoc);
-  const preLines = reportLines(preDoc), postLine = new Map(reportLines(postDoc).map((l) => [l.key, l]));
+  const preLines = reportLines(preDoc), postLines = reportLines(postDoc), postLine = new Map(postLines.map((l) => [l.key, l]));
   return (rows ?? []).map((r) => {
     // — a DECLARED ordinal wins over the name match. `targetsOf` is a normalised prose join and it
     // is why six of nine flags on a delivered run resolved to nothing; the declaration is the reviewer's
@@ -320,9 +360,11 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc, { sections = null
     else if (hit.length) {
       // The same three answers a finding gets, asked of the line's own text. REMOVAL WINS, as it does
       // for a finding: a line gone after the pass was answered by deletion, and that is the question.
-      const gone = hit.filter((l) => !postLine.has(l.key));
+      // A line renamed in place is still there, and a new title is a change (`renamedAs`).
+      const now = (l) => postLine.get(l.key) ?? renamedAs(l, preLines, postLines);
+      const gone = hit.filter((l) => !now(l));
       if (gone.length) { outcome = "line-removed"; removed = gone.map((l) => l.label); }
-      else outcome = hit.some((l) => squash(postLine.get(l.key).text) !== squash(l.text)) ? "line-changed" : "line-unchanged";
+      else outcome = hit.some((l) => now(l).key !== l.key || squash(now(l).text) !== squash(l.text)) ? "line-changed" : "line-unchanged";
     }
     else if (declaredOrds.length) {
       // The certain path. Every question below is asked of the finding the reviewer NAMED, by ordinal.
