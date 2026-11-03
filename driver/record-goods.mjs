@@ -209,9 +209,12 @@ export const goodsFor = (index, record) => index?.get(normalizeRecordUri(record?
  * WHOLE ONLY WHERE THE ANSWER SAYS SO. The search answer our request asks for is the register's default, which it
  * documents as "the first 280 characters" of each statement (docs.signa.so, Search Trademarks, "Response options",
  * `include`: "`full_goods_services` returns the full goods and services text instead of the first 280
- * characters"); the request never asks for the full text. So a statement shorter than 280 characters is whole, a
+ * characters"). A row from such an answer reads as before: a statement shorter than 280 characters is whole, a
  * flagged one is cut, and an unflagged one of 280 characters or more is marked `unknown: true`: its completeness is
  * not established, and missing words in it establish nothing.
+ *
+ * A SEARCH NOW ASKS FOR THE FULL TEXT (providers/signa/src/core.js, buildSearchRequest), and its rows say so
+ * (`goods_whole: true`). On such a row an unflagged statement is whole at any length, and a flagged one is still cut.
  */
 export const DEFAULT_ANSWER_CUT = 280;
 export function rowGoods(row) {
@@ -224,7 +227,7 @@ export function rowGoods(row) {
     if (!g) continue;
     const { cut: _cut, unknown: _unknown, ...whole } = g;   // the row's own rule below, not the full record's
     if (c?.goods_services_text_truncated === true) out.push({ ...whole, cut: true });
-    else if ([...String(c?.goods_services_text ?? "")].length >= DEFAULT_ANSWER_CUT) out.push({ ...whole, unknown: true });
+    else if (row?.goods_whole !== true && [...String(c?.goods_services_text ?? "")].length >= DEFAULT_ANSWER_CUT) out.push({ ...whole, unknown: true });
     else out.push(whole);
   }
   return out.length ? out : null;
