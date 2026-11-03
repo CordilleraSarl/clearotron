@@ -975,7 +975,7 @@ export function repairFollowup(key, args) {
   if (!c) {
     throw new Error(`[repair-composers] no registered composer for "${key}". A bespoke repair `
       + `instruction must be registered in driver/repair-composers.mjs before it can reach a seat — an `
-      + `unregistered composer is invisible to the #865 agreement guard, which is the whole of #1183.`);
+      + `unregistered composer is invisible to the recording-agreement guard, which walks only the registry.`);
   }
   return c.compose(args ?? {});
 }
