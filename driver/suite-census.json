@@ -279,6 +279,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-codex-renewal-that-fails-for-a-moment-is-not-a-sign-out.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-codex-stage-runs-without-the-sign-ins-apps.test.mjs": {
           "tests": 1,
           "asserts": 5,
@@ -3868,8 +3874,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 52,
-          "asserts": 272,
+          "tests": 54,
+          "asserts": 282,
           "skips": 0,
           "todos": 0
         },
