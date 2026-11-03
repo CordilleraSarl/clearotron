@@ -4,6 +4,19 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.5.0-beta.9
+
+### Fixed
+
+- A clearance on the Claude engine no longer stops with a false "not signed in" message before the search begins, while the Claude sign-in is being renewed.
+- A clearance on the Codex engine no longer stops as if signed out when the Codex sign-in fails to renew for a moment.
+- A report's list of conditions now shows each legal step as the last correction before delivery left the step, not as first written.
+- The audit workbook no longer lists the same open search twice, once in the report's words and once as a follow-up row with a shortened title.
+- The reviewing lawyer's open questions no longer say a coverage line was removed when a correction gave it the new title the review asked for.
+- Searches on the Signa register now ask for each goods statement in full, so a report weighs an owner's whole goods rather than the first 280 characters.
+- When a late correction adds, changes, or withdraws a finding, the answers in the report's summary panel are now checked against that finding and updated where they rest on it.
+- For a European Union order, the audit workbook now names every national register that was not searched, instead of only the first few.
+
 ## 0.5.0-beta.8
 
 ### New
