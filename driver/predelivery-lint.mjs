@@ -2290,32 +2290,57 @@ export function actionsRegisterChecks({ actionsRegister, expected }) {
 // named 22 and 34 findings, because half the band was cut and every cited record arrives whole by this check, while
 // the findings that reasoned on the missing part are the ones that say so: 3 and 8. A record whose held body still
 // says cut, or one the run does not hold, is not named. A record whose whole text was once handed to that repair
-// (`handed`, by uri) is not named again: the check after the repair, and a resume, do not report it a second time,
-// whatever numbering the repair's save gives the findings.
+// (`handed`, by uri) is not handed again: the check after the repair, and a resume, report its outcome instead
+// (corrected, unresolved, or no outcome established), whatever numbering the repair's save gives the findings.
 export function goodsHeldWholeChecks({ findings, goodsEvidence, recordsByUri, handed = null }) {
   const asWritten = new Map();
   for (const r of Array.isArray(goodsEvidence?.records) ? goodsEvidence.records : []) {
     const uri = normalizeRecordUri(r?.uri ?? r?.record_id);
     if (uri && r?.source === "search-row" && (r.state === "cut" || r.state === "unknown")) asWritten.set(uri, r.state);
   }
-  const named = [], wasHanded = [];
+  const named = [], unresolved = [], corrected = [], handedCited = new Set();
   for (const f of Array.isArray(findings) ? findings : []) {
-    if (!f || String(f.disposition ?? "") === "withdrawn" || !Number.isInteger(f.ordinal) || !claimsGoodsCut(f)) continue;
+    if (!f || String(f.disposition ?? "") === "withdrawn" || !Number.isInteger(f.ordinal)) continue;
+    const claims = claimsGoodsCut(f);
     for (const reg of Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []) {
       const uri = normalizeRecordUri(reg?.uri ?? reg);
       if (!uri || !asWritten.has(uri)) continue;
       const body = recordsByUri?.get?.(uri) ?? null;
       const goods = body ? recordGoods(body, { english: untaggedIsEnglish(uri) }) : [];
       if (!goods.length || goods.some((g) => g?.cut || g?.unknown)) continue;
-      if (handed?.has?.(uri)) { wasHanded.push(uri); continue; }
+      // HANDED ONCE, AND THE OUTCOME KEPT. The repair is not run a second time for a record, and handing the text over
+      // is not the defect resolved: a finding that still says its goods are cut or unread is unresolved, a row that
+      // no repair takes (`structural`), and one that no longer says so is counted as corrected.
+      if (handed?.has?.(uri)) {
+        handedCited.add(uri);
+        if (claims) unresolved.push({ ...check(`goods-held-whole-unresolved:${f.ordinal}:${uri}`, "goods-evidence", "narrative", false,
+          `Finding ${f.ordinal} still says its goods are cut or unread after the delivery repair was given the complete goods statements of ${uri}.`),
+          structural: true, ordinal: f.ordinal, uri });
+        else corrected.push(`${f.ordinal}:${uri}`);
+        continue;
+      }
+      if (!claims) continue;
+      const state = asWritten.get(uri);
       named.push({ ...check(`goods-held-whole:${f.ordinal}:${uri}`, "goods-evidence", "narrative", false,
-        goodsHeldWholeDetail(uri, goods, asWritten.get(uri))), ordinal: f.ordinal, uri });
+        goodsHeldWholeDetail(f.ordinal, uri, goods, state)), ordinal: f.ordinal, uri, goods, state });
     }
   }
-  if (named.length) return named;
-  return [check("goods-held-whole", "goods-evidence", "narrative", true, wasHanded.length
-    ? `${new Set(wasHanded).size} record(s) whose goods the writer had cut had their whole text handed to the delivery repair`
-    : "no delivered finding rests on goods the writer had cut whose whole text the run holds now")];
+  // A record handed to the repair that no delivered finding cites now has no outcome this check can establish.
+  const noOutcome = [...(handed ?? [])].filter((u) => !handedCited.has(u));
+  const summary = handed?.size
+    ? `${corrected.length} finding(s) given complete goods statements by the delivery repair no longer say their goods are cut or unread; `
+      + `${unresolved.length} still do`
+      + (noOutcome.length ? `; ${noOutcome.length} record(s) given to it are cited by no delivered finding, so no outcome is established for them` : "")
+    : "no delivered finding says its goods are cut or unread while the run holds them complete";
+  return [...named, ...unresolved, check("goods-held-whole", "goods-evidence", "narrative", true, summary)];
+}
+
+/** The line the writer's repair reads for one finding, in the numbering the writer's save takes. PURE. */
+export function goodsHeldWholeDetail(ordinal, uri, goods, state) {
+  const statements = goods.map((g) => `${g.classes.length ? `Class ${g.classes.join(", ")}` : "Goods"}: "${g.text}"`).join(". ");
+  return `Finding ${ordinal} cites ${uri}. Its earlier goods evidence was ${state === "cut" ? "cut by the register" : "of unestablished completeness"}. `
+    + `The run now holds these complete goods statements from the register record: ${statements}. `
+    + "Reassess this finding's goods comparison on those statements, and correct any claim that they remain cut or unread. Change its rating only if the evidence requires it.";
 }
 
 /**
@@ -2334,14 +2359,6 @@ export function claimsGoodsCut(finding) {
   };
   walk(finding);
   return texts.some((t) => t.split(/(?<=[.;!?])\s+/).some((sentence) => CUT_WORD_RE.test(sentence) && GOODS_PART_RE.test(sentence)));
-}
-
-/** The line the writer's repair reads for one finding: the record, how its goods were read, and its whole statements. PURE. */
-export function goodsHeldWholeDetail(uri, goods, state) {
-  const statements = goods.map((g) => `${g.classes.length ? `Class ${g.classes.join(", ")}` : "Goods"}: "${g.text}"`).join(". ");
-  return `rests on ${uri}, whose goods you read as the register's search answer ${state === "cut" ? "cut them" : "gave them, not established whole"}. `
-    + `The run now holds the register's whole record: ${statements}. `
-    + "Read this finding's goods comparison again on the whole text, and change its rating only if the whole text requires it.";
 }
 
 export function cardBudgetChecks({ cardFolds }) {

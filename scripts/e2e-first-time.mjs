@@ -113,6 +113,8 @@ export const COUNTED_EVENTS = {
     { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
   "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
+  // a finding still saying its goods are cut or unread after the delivery repair was given their complete statements
+  "goods-held-whole": { kind: FAILED, when: (e) => (Array.isArray(e.unresolved) ? e.unresolved.length : 0) > 0 },
   // a skeptic flag on a code-side axis re-runs its plan queries through the executor
   "escalation-recheck": [{ kind: REASK, when: (e) => e.dispatched === true },
     { kind: FAILED, when: (e) => e.outcome === "repair-budget-exhausted" }],
@@ -181,7 +183,7 @@ export const NOT_COUNTED_EVENTS = {
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
     "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-skipped", "experiment", "experiment-refused", 
+    "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",

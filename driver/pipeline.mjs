@@ -194,7 +194,7 @@ import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
-import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID } from "./predelivery-lint.mjs";
+import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID, goodsHeldWholeDetail } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
@@ -16974,8 +16974,10 @@ async function pipelineInner(job, opts = {}) {
         const fold = readFold(run.runDir);
         const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
         const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
-        // A finding named for goods the register cut, whose whole text the run holds now, is named in the writer's numbering.
-        const inWritersNumbering = (f) => (String(f.id).startsWith("goods-held-whole:") ? { ...f, finding: keptModelOrdinal(fold, f.ordinal) } : f);
+        // A finding named for goods the register cut, whose whole text the run holds now, is named in the writer's
+        // numbering, in the line's own words: it opens "Finding <N> cites", so the list puts no "finding N:" before it.
+        const inWritersNumbering = (f) => (String(f.id).startsWith("goods-held-whole:")
+          ? { ...f, detail: goodsHeldWholeDetail(keptModelOrdinal(fold, f.ordinal), f.uri, f.goods, f.state) } : f);
         const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering), ...sentenceFixable, ...recordFixable];
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
         // A writer fault with no writer session to repair it is not repaired, and the run says so.
@@ -17007,6 +17009,17 @@ async function pipelineInner(job, opts = {}) {
           autoCorrectRegistry();        // doc-27 Item 1b: a re-emission may have reintroduced a wrong identifier — overwrite from the record again
         }
       }
+      // THE GOODS REFRESH'S OUTCOME, kept in the run record whatever this pass did (predelivery-lint.mjs,
+      // goodsHeldWholeChecks): the findings named for the repair, those still saying their goods are cut or unread after
+      // it, and the check's own count of the ones that no longer say so.
+      try {
+        const rows = (lint?.checks ?? []).filter((c) => /^goods-held-whole(?::|-unresolved:|$)/.test(String(c.id)));
+        if (rows.some((c) => c.id !== "goods-held-whole") || readGoodsHanded(run.runDir).size)
+          runLog(run.runDir, { event: "goods-held-whole",
+            named: rows.filter((c) => c.id.startsWith("goods-held-whole:")).map((c) => c.id.slice("goods-held-whole:".length)),
+            unresolved: rows.filter((c) => c.id.startsWith("goods-held-whole-unresolved:")).map((c) => c.id.slice("goods-held-whole-unresolved:".length)),
+            summary: rows.find((c) => c.id === "goods-held-whole")?.detail ?? null });
+      } catch { /* the run record's row is best-effort; the check's own rows are in the receipt below */ }
       // The receipt artifact — ALWAYS written, pass or fail (spec A2's auditor evidence).
       // V4-1: the receipt states the ARTIFACT SET evaluated — surfaces, record set + sources, and the
       // stage labels this session inherited via skip — so an auditor can see the gates ran over

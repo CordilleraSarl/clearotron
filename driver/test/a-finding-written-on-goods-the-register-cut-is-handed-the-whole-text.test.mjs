@@ -34,16 +34,18 @@ const run = (over = {}) => goodsHeldWholeChecks({ findings: [finding(7)], goodsE
 
 test("a finding on a record the writer had cut, whose whole body the run holds now, is named with the whole text", () => {
   const [c, ...rest] = run();
-  assert.equal(rest.length, 0);
+  assert.deepEqual(rest.map((x) => [x.id, x.pass]), [["goods-held-whole", true]], "one named finding, then the check's own summary row");
   assert.equal(c.pass, false);
   assert.equal(c.surface, "narrative", "the writer's one repair at the check takes it");
   assert.equal(c.ordinal, 7);
   assert.equal(c.uri, URI);
-  assert.equal(c.detail, `rests on ${URI}, whose goods you read as the register's search answer cut them. `
-    + `The run now holds the register's whole record: Class 42: "${C42}". Class 44: "${C44}". `
-    + "Read this finding's goods comparison again on the whole text, and change its rating only if the whole text requires it.");
+  // The words design approved for this line (1165), with the delivered number; the repair renders it in the writer's.
+  assert.equal(c.detail, `Finding 7 cites ${URI}. Its earlier goods evidence was cut by the register. `
+    + `The run now holds these complete goods statements from the register record: Class 42: "${C42}". Class 44: "${C44}". `
+    + "Reassess this finding's goods comparison on those statements, and correct any claim that they remain cut or unread. Change its rating only if the evidence requires it.");
+  assert.equal(c.finding, undefined, "the line opens with its own finding number, so the repair's list adds none");
   const [unknown] = run({ goodsEvidence: asWritten("unknown") });
-  assert.match(unknown.detail, /whose goods you read as the register's search answer gave them, not established whole\./);
+  assert.match(unknown.detail, /^Finding 7 cites \S+\. Its earlier goods evidence was of unestablished completeness\. /);
 });
 
 test("nothing is named where the held body is still cut, where the run holds none, or where the writer had the goods whole", () => {
@@ -59,21 +61,34 @@ test("nothing is named where the held body is still cut, where the run holds non
     const checks = run(over);
     assert.equal(checks.length, 1, why);
     assert.equal(checks[0].pass, true, why);
+    assert.equal(checks[0].detail, "no delivered finding says its goods are cut or unread while the run holds them complete", why);
   }
 });
 
-test("a record whose whole text was handed to the delivery repair is not named again, whatever the numbering", () => {
-  const checks = run({ findings: [finding(9)], handed: new Set([URI]) });
-  assert.equal(checks.length, 1);
-  assert.equal(checks[0].pass, true);
-  assert.match(checks[0].detail, /^1 record\(s\) whose goods the writer had cut had their whole text handed to the delivery repair$/);
+test("a record handed to the repair is not handed again, and its outcome is kept, whatever the numbering", () => {
+  // THE WRITER LEFT THE FINDING UNCHANGED: still saying its goods are cut. Unresolved, and no repair takes the row.
+  const left = run({ findings: [finding(9)], handed: new Set([URI]) });
+  const unresolved = left.find((c) => c.id.startsWith("goods-held-whole-unresolved:"));
+  assert.equal(unresolved?.pass, false);
+  assert.equal(unresolved.structural, true, "the one repair is not run again for it");
+  assert.equal(unresolved.id, `goods-held-whole-unresolved:9:${URI}`);
+  assert.equal(left.some((c) => c.id.startsWith("goods-held-whole:")), false, "the record is not handed a second time");
+  assert.match(left.at(-1).detail, /^0 finding\(s\) given complete goods statements by the delivery repair no longer say their goods are cut or unread; 1 still do$/);
+  // THE WRITER CORRECTED IT: the finding no longer says its goods are cut.
+  const fixed = run({ findings: [finding(9, URI, { legal_position: "The owner's class 44 statement covers medical information." })], handed: new Set([URI]) });
+  assert.equal(fixed.length, 1);
+  assert.equal(fixed[0].pass, true);
+  assert.match(fixed[0].detail, /^1 finding\(s\) given complete goods statements by the delivery repair no longer say their goods are cut or unread; 0 still do$/);
+  // NO OUTCOME: the record handed is cited by no delivered finding now.
+  const gone = run({ findings: [finding(9, OTHER)], handed: new Set([URI]) });
+  assert.match(gone.at(-1).detail, /; 1 record\(s\) given to it are cited by no delivered finding, so no outcome is established for them$/);
 });
 
 test("the delivery check is given what the writer had and what was handed, and its repair names the writer's numbering", () => {
   // The lint is called inline in pipeline.mjs, so its wiring is pinned in the source.
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   assert.match(src, /goodsEvidence: readGoodsEvidence\(run\.runDir\), goodsHanded: readGoodsHanded\(run\.runDir\),/);
-  assert.match(src, /startsWith\("goods-held-whole:"\) \? \{ \.\.\.f, finding: keptModelOrdinal\(fold, f\.ordinal\) \} : f\)/);
+  assert.match(src, /\? \{ \.\.\.f, detail: goodsHeldWholeDetail\(keptModelOrdinal\(fold, f\.ordinal\), f\.uri, f\.goods, f\.state\) \} : f\)/);
   assert.match(src, /if \(goodsHandedNow\.length && repaired\.includes\("synthesis"\)\) \{/);
 });
 

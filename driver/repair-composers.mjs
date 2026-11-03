@@ -559,7 +559,11 @@ export const REPAIR_COMPOSERS = [
       // record now held whole, among others) reaches the answers that depend on it, in the correction's own step 4.
       toolWritten?.tool === "record_synthesis" ? ANSWERS_STEP : "",
       `Where a check quotes the fetched record's true value, correct the identifier to the record's value EXACTLY (the record is the only permitted source for registry identifiers).`,
-      `Risk tiers and Level/Composite labels are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
+      // THE WRITER'S RATING LINE ALLOWS A GOODS REASSESSMENT. Read beside a check that hands newly available goods
+      // text, "never re-derive" overrode the repair it sits in; the writer's branch says which check does what.
+      toolWritten?.tool === "record_synthesis"
+        ? `Where a check identifies a mismatch in a copied risk tier or Level/Composite label, copy the quoted finding value exactly. Where a check supplies newly available goods text, reassess only the affected finding on that text; change its rating only if the evidence requires it.`
+        : `Risk tiers and Level/Composite labels are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
       toolWritten?.tool === "record_synthesis"
         ? `Fix ONLY what the checks name, and the answers that depend on those changes; change nothing else.`
         : `Fix ONLY what the checks name; change nothing else.`,
