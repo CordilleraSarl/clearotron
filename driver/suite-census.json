@@ -1395,6 +1395,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-plan-audit-line-cannot-open-a-section.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-plan-run-that-was-not-answered-is-not-a-drift.test.mjs": {
           "tests": 5,
           "asserts": 16,
