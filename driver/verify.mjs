@@ -812,6 +812,9 @@ export function verdictHardenedTo(carried, reviewMd) {
 // a single letter or digit must still be followed by its own `.` or `)`, so `**Note.** …` matches nothing.
 const LIST_MARKER = String.raw`(?:\*{0,2})(?:[-*•]|\d+[.)]|[A-Za-z][.)])(?:\*{0,2})\s+`;
 const LIST_LINE_RE = new RegExp(`^${LIST_MARKER}\\S`);
+/** What every walk below reads as a section heading: a markdown heading, or a line of capitals. One definition,
+ *  exported so the review's renderer (narrative-refutation-record.mjs) keeps its own lines out of it. */
+export const SECTION_HEADING_RE = /^#{1,6}\s+\S|^[A-Z][A-Z /&-]{5,}$/;
 
 export function countCitedDefects(reviewMd) {
   const rest = String(reviewMd ?? "").split("\n").slice(1);
@@ -819,7 +822,7 @@ export function countCitedDefects(reviewMd) {
   let n = 0;
   for (const raw of rest) {
     const ln = raw.trim();
-    if (/^#{1,6}\s+\S/.test(ln) || /^[A-Z][A-Z /&-]{5,}$/.test(ln)) inPlanAudit = /PLAN-EXECUTION CHECK/i.test(ln);
+    if (SECTION_HEADING_RE.test(ln)) inPlanAudit = /PLAN-EXECUTION CHECK/i.test(ln);
     if (inPlanAudit) continue;
     // — SAME LINE SHAPE AS THE PRECISE WALK, ON PURPOSE. These two guards must not share a
     // SELECTOR, and for a while that was read as "must not share anything": this one kept the pre-
@@ -1008,7 +1011,7 @@ export function correctionsSection(reviewMd) {
   const rest = String(reviewMd ?? "").split("\n").slice(1);
   for (const raw of rest) {
     const ln = raw.trim();
-    if (!(/^#{1,6}\s+\S/.test(ln) || /^[A-Z][A-Z /&-]{5,}$/.test(ln))) continue;
+    if (!SECTION_HEADING_RE.test(ln)) continue;
     if (CORRECTIONS_SECTION_RE.test(ln)) return { named: true, heading: ln.replace(/^#+\s*/, "").trim() };
   }
   return { named: false, heading: null };
@@ -1019,7 +1022,7 @@ export function parseCorrections(reviewMd) {
   const rest = String(reviewMd ?? "").split("\n").slice(1);
 
   const { named, heading } = correctionsSection(reviewMd);
-  const isHeading = (ln) => /^#{1,6}\s+\S/.test(ln) || /^[A-Z][A-Z /&-]{5,}$/.test(ln);
+  const isHeading = (ln) => SECTION_HEADING_RE.test(ln);
   void heading;
 
   const candidates = [];

@@ -113,6 +113,8 @@ export const COUNTED_EVENTS = {
     { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
   "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
+  // a finding still saying its goods are cut or unread after the delivery repair was given their complete statements
+  "goods-held-whole": { kind: FAILED, when: (e) => (Array.isArray(e.unresolved) ? e.unresolved.length : 0) > 0 },
   // a skeptic flag on a code-side axis re-runs its plan queries through the executor
   "escalation-recheck": [{ kind: REASK, when: (e) => e.dispatched === true },
     { kind: FAILED, when: (e) => e.outcome === "repair-budget-exhausted" }],
@@ -181,7 +183,7 @@ export const NOT_COUNTED_EVENTS = {
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
     "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-skipped", "experiment", "experiment-refused", 
+    "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
@@ -217,7 +219,7 @@ export const NOT_COUNTED_EVENTS = {
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean", "screen-gate-evidence",
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
-    "turnaround-reconciliation", "verdict", "verdict-conditions-recorded", "verdict-frontmatter",
+    "turnaround-reconciliation", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-frontmatter",
     "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
@@ -234,7 +236,7 @@ export const NOT_COUNTED_EVENTS = {
     "assessment-not-completed-delivery", "part-completed", "overview-not-completed-delivery", "review-not-completed-delivery",
     "core-artifact-restored", "searches-not-completed-delivery", "unit-not-completed-delivery",
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
-    "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
+    "corrective-answers-after", "corrective-answers-left-behind", "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
@@ -270,7 +272,7 @@ export const RETIRED_EVENTS = ["known-conflicts-read", "known-conflicts-upsert",
 // because an answer was not accepted as it stood.
 export const COUNTED_TRIGGERS = {
   "action-reemit": REASK, "actions-missing": REASK, "ask-answer-reemit": REASK, "connotation-remedy": REASK,
-  "corrective": REASK, "corrective-findings": REASK, "coverage-closure": REASK, "degenerate-reask": REASK,
+  "corrective": REASK, "corrective-answers": REASK, "corrective-findings": REASK, "coverage-closure": REASK, "degenerate-reask": REASK,
   // the unit left closeable rows deferred
   "envelope": REASK,
   // the skeptic did not accept the unit's answer

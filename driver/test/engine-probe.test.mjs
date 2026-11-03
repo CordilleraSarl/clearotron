@@ -23,14 +23,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
   PROBE_MODEL, PROBE_THINKING, PROBE_TOOLS, PROBE_FILE, probePrompt, isProbePrompt, probeToolConfig,
-  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, namesPathWhole } from "../engine/probe.mjs";
+  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, namesPathWhole, REFRESH_LOCK_WAIT_MS } from "../engine/probe.mjs";
 import { parseCodexEvent } from "../engine/openai-agent.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
@@ -588,6 +588,89 @@ test("a broken probe is a driver bug, never a client-facing refusal", async () =
   assert.match(v.warning, /does not export a runnable/, "the thrown text rides along — it is the only diagnosis there is");
 });
 
+// ── a sign-in refresh another copy of the program holds: not a sign-out, and checked once more ─────────
+// Measured on the test machine, 2026-11-03: the program renews an expired sign-in under a lock every copy on
+// that sign-in shares, another copy held it, and the program gave up with the first wording below. The
+// signed-out pattern matched its `OAuth`, so the door failed the job as "not signed in", and the same check
+// renewed the sign-in at the first try twelve minutes later.
+
+/**
+ * The three wordings Claude Code 2.1.295 carries for that lock, copied from the program: the line a `-p` turn
+ * ends with, the one an interactive session shows, and the error's own message.
+ */
+const REFRESH_LOCKED_WORDS = [
+  "Failed to refresh OAuth token: another Claude Code process is refreshing it or exited mid-refresh. This is usually transient; retry in a minute, and if it persists close other Claude Code processes or sign in again",
+  "Could not refresh your login because another Claude Code process is refreshing it (or exited mid-refresh) · Try again in a minute; if it keeps happening, close other Claude Code windows or sign in again with /login",
+  "OAuth access token could not be refreshed: another Claude Code process is holding the refresh lock",
+];
+const lockedTurn = () => tupleOf({ stdout: REFRESH_LOCKED_WORDS[0] });
+
+test("a refresh lock another copy holds is not a sign-out, and not a fault this box can be refused for", () => {
+  const failedTurn = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ stderr: "the model produced a teapot" }) });
+  for (const words of REFRESH_LOCKED_WORDS) {
+    const v = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ stdout: words }) });
+    assert.equal(v.mode, "refresh-locked", words);
+    assert.equal(v.basis, "text-match");
+    assert.equal(probeVerdictLane(v), "weather", "a lock that goes stale within a minute is not this box's configuration");
+    // The shipped words for a turn that ran and failed, and the program's own explanation beneath them.
+    assert.equal(v.headline, failedTurn.headline);
+    assert.equal(v.fix, failedTurn.fix);
+    assert.equal(v.detail, words);
+  }
+});
+
+test("a real sign-out still refuses, the expired session included, and it is `oauth` that reads that one", () => {
+  // The 2026-10-31 failure: no usable sign-in, and the box stayed signed out until someone signed it in again.
+  const expired = "Failed to authenticate: OAuth session expired and could not be refreshed";
+  const v = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ stdout: expired }) });
+  assert.equal(v.mode, "signed-out");
+  assert.equal(probeVerdictLane(v), "configuration");
+  assert.equal(classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ stdout: expired.replace("OAuth ", "") }) }).mode, "failed",
+    "without the word the pattern would not read it, so the pattern keeps `oauth` and the lock is read before it");
+  assert.equal(probeVerdictLane(classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ stderr: "Please run /login" }) })), "configuration");
+});
+
+test("the door checks a locked refresh once more, past the lock's 60 s, and a pass starts the run", async () => {
+  const waits = [];
+  let turns = 0;
+  const v = await preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+    wait: async (ms) => { waits.push(ms); },
+    runTurn: async (a) => (++turns === 1 ? lockedTurn() : answering()(a)) });
+  assert.equal(v.ok, true, JSON.stringify(v));
+  assert.equal(turns, 2, "one probe, the wait, one probe more");
+  assert.deepEqual(waits, [REFRESH_LOCK_WAIT_MS]);
+  assert.ok(REFRESH_LOCK_WAIT_MS > 60_000, "the program treats the lock as abandoned 60 s after its holder last renewed it");
+  assert.deepEqual(v.recheckedAfter, { mode: "refresh-locked", basis: "text-match", detail: REFRESH_LOCKED_WORDS[0], waitedMs: REFRESH_LOCK_WAIT_MS },
+    "the run record can tell a second check that passed from a first one");
+});
+
+test("a lock still held at the second check proceeds as weather; a sign-out found then refuses", async () => {
+  const held = await preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+    wait: async () => {}, runTurn: async () => lockedTurn() });
+  assert.equal(held.ok, false, "it does not pretend the engine worked");
+  assert.match(held.warning, /PROCEEDING ANYWAY \(refresh-locked\/text-match\)/);
+  assert.equal(held.recheckedAfter.mode, "refresh-locked");
+
+  let turns = 0;
+  await assert.rejects(() => preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+    wait: async () => {}, runTurn: async () => (++turns === 1 ? lockedTurn() : tupleOf({ stderr: "Please run /login" })) }),
+    (e) => { assert.match(e.message, /^\[preflight\] anthropic-agent is not signed in/); return true; });
+});
+
+test("only a locked refresh makes the door wait", async () => {
+  const waited = [];
+  const wait = async (ms) => { waited.push(ms); };
+  await assert.rejects(() => preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+    wait, runTurn: async () => tupleOf({ stderr: "Please run /login" }) }), /not signed in/);
+  const quota = await preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+    wait, runTurn: async () => tupleOf({ signals: { rateLimited: true, resetsAt: "2026-08-12T17:00:00.000Z" } }) });
+  assert.match(quota.warning, /no-quota/);
+  assert.equal(quota.recheckedAfter, undefined);
+  const okv = await preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode, wait, runTurn: answering() });
+  assert.equal(okv.ok, true);
+  assert.deepEqual(waited, [], "a sign-out, a spent quota and a pass are answered at the first check");
+});
+
 // ── end to end through the REAL adapter, against the offline mock ────────────────────────────────────
 
 test("the real anthropic adapter is driven by its OWN spawn path — mock-claude, never a live CLI", async () => {
@@ -790,6 +873,92 @@ test("through the real claude adapter: a write the program reports as failed is 
   assert.equal(skipped.headline, "anthropic-agent did not write the file its probe asks for");
   const works = await probeWith(CLAUDE, {});
   assert.equal(works.ok, true, JSON.stringify(works));
+});
+
+test("through the real claude adapter: the program's own output under a held refresh lock, then the door's second check", async () => {
+  // The fixture is the program's stream, captured offline; its result carries the first of the three wordings.
+  const captured = readFileSync(join(HERE, "fixtures", "claude-refresh-locked.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+  assert.equal(captured.at(-1).result, REFRESH_LOCKED_WORDS[0]);
+  assert.equal(captured[0].claude_code_version, "2.1.295");
+
+  const marker = () => join(mkdtempSync(join(tmpdir(), "clearotron-refresh-lock-")), "locked");
+  const v = await probeWith(CLAUDE, { MOCK_CLAUDE_REFRESH_LOCKED: marker() });
+  assert.equal(v.mode, "refresh-locked", JSON.stringify(v));
+  assert.equal(v.detail, REFRESH_LOCKED_WORDS[0], "the words reach the verdict as the program wrote them");
+
+  process.env.MOCK_CLAUDE_REFRESH_LOCKED = marker();
+  try {
+    const waits = [];
+    const door = await preflightEngineTurn({ env: CLAUDE, wait: async (ms) => { waits.push(ms); } });
+    assert.equal(door.ok, true, JSON.stringify(door));
+    assert.deepEqual(waits, [REFRESH_LOCK_WAIT_MS]);
+    assert.equal(door.recheckedAfter.mode, "refresh-locked");
+  } finally { delete process.env.MOCK_CLAUDE_REFRESH_LOCKED; }
+});
+
+// ── a Codex sign-in renewal that failed for a moment: not a sign-out at the door either ──────────────
+// Measured offline on codex 0.162.0, 2026-11-03: a dropped connection during the probe's renewal names the
+// renewal address in codex's line, ".../oauth/token", and the signed-out pattern read its `oauth` as a sign-out,
+// so the door refused the job as "openai-agent is not signed in".
+
+test("a Codex renewal that failed for a moment is not a sign-out at the door, whatever its line names", () => {
+  const dropped = readFileSync(join(HERE, "fixtures", "codex-renewal-dropped.txt"), "utf8");
+  const v = classifyProbe({ engine: "openai-agent", tuple: tupleOf({ stderr: dropped, signals: { refreshFailed: true } }) });
+  assert.equal(v.mode, "refresh-failed", JSON.stringify(v));
+  assert.equal(v.basis, "text-match");
+  assert.equal(probeVerdictLane(v), "weather");
+  assert.match(v.detail, /Failed to refresh token: error sending request for url/, "codex's own words ride beneath");
+  // Without the adapter's signal, the same words are what the door refused on: the pattern reads `oauth`.
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: tupleOf({ stderr: dropped }) }).mode, "signed-out");
+});
+
+test("through the real codex adapter: a renewal that failed for a moment, then the door's second check", async () => {
+  const marker = () => join(mkdtempSync(join(tmpdir(), "clearotron-codex-renewal-")), "failed");
+  const v = await probeWith(CODEX, { MOCK_CODEX_RENEWAL_FAILED: marker() });
+  assert.equal(v.mode, "refresh-failed", JSON.stringify(v));
+  assert.equal(probeVerdictLane(v), "weather");
+
+  process.env.MOCK_CODEX_RENEWAL_FAILED = marker();
+  try {
+    const waits = [];
+    const door = await preflightEngineTurn({ env: CODEX, wait: async (ms) => { waits.push(ms); } });
+    assert.equal(door.ok, true, JSON.stringify(door));
+    assert.deepEqual(waits, [REFRESH_LOCK_WAIT_MS], "the same single check after a wait that a locked Claude refresh gets");
+    assert.equal(door.recheckedAfter.mode, "refresh-failed");
+  } finally { delete process.env.MOCK_CODEX_RENEWAL_FAILED; }
+});
+
+test("through the real codex adapter: a renewal still failing when the probe's watchdog stops it, then the door's second check", async () => {
+  // Measured offline on codex 0.162.0, 2026-11-03: on a dropped connection codex retries its renewal until the
+  // probe's watchdog stops the turn, and the door refused the job as "openai-agent is not signed in".
+  const dir = mkdtempSync(join(tmpdir(), "clearotron-codex-renewal-stopped-"));
+  const quick = { timeoutSec: 20, stallSec: 1 };
+  const controls = { MOCK_CODEX_RENEWAL_FAILED: join(dir, "dropped"), MOCK_CODEX_RENEWAL_STALL: "1" };
+  Object.assign(process.env, controls);
+  try {
+    const v = await probeEngineTurn({ env: CODEX, ...quick });
+    assert.equal(v.mode, "refresh-failed", JSON.stringify(v));
+    assert.equal(probeVerdictLane(v), "weather");
+
+    process.env.MOCK_CODEX_RENEWAL_FAILED = join(dir, "dropped-at-the-door");
+    const waits = [];
+    const door = await preflightEngineTurn({ env: CODEX, ...quick, wait: async (ms) => { waits.push(ms); } });
+    assert.equal(door.ok, true, JSON.stringify(door));
+    assert.deepEqual(waits, [REFRESH_LOCK_WAIT_MS]);
+    assert.equal(door.recheckedAfter.mode, "refresh-failed");
+
+    // A refused renewal is still a sign-out when the watchdog stopped the turn: the door refuses it.
+    process.env.MOCK_CODEX_RENEWAL_FAILED = join(dir, "refused");
+    process.env.MOCK_CODEX_RENEWAL_LINES = join(dir, "refused.txt");
+    writeFileSync(process.env.MOCK_CODEX_RENEWAL_LINES, "2026-11-03T13:39:36.110059Z ERROR codex_login::auth::manager: Failed to refresh token status=401 Unauthorized detail=TokenErrorDetail { error_code: Some(\"refresh_token_reused\"), .. }\n");
+    const refused = await probeEngineTurn({ env: CODEX, ...quick });
+    assert.equal(refused.mode, "signed-out", JSON.stringify(refused));
+    process.env.MOCK_CODEX_RENEWAL_FAILED = join(dir, "refused-at-the-door");
+    await assert.rejects(preflightEngineTurn({ env: CODEX, ...quick, wait: async () => {} }), /^Error: \[preflight\] /);
+  } finally {
+    for (const k of [...Object.keys(controls), "MOCK_CODEX_RENEWAL_LINES"]) delete process.env[k];
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("the verdicts on the file: every word in it passes; a word short, or no file, warns; a failed write refuses", () => {

@@ -29,7 +29,7 @@
 // finding has a card is the assembly's choice, not the correction's fate.
 //
 // PURE — no node imports. The pipeline reads and writes the files.
-import { reportLines, linesOf } from "./corrections-feedforward.mjs";
+import { reportLines, linesOf, renamedAs } from "./corrections-feedforward.mjs";
 
 /** The finding fields a correction can change that a report prints from the record. */
 export const DELIVERED_FINDING_FIELDS = Object.freeze(["net", "legal_position", "practical_position"]);
@@ -55,8 +55,8 @@ export function correctionTargets(rows, preDoc, postDoc) {
   const checkable = Boolean(preDoc && postDoc);
   const preOrd = byOrdinal(preDoc), postOrd = byOrdinal(postDoc);
   const preName = byName(preDoc), postName = byName(postDoc);
-  const preLines = reportLines(preDoc);
-  const postLines = new Map(reportLines(postDoc).map((l) => [l.key, l.text]));
+  const preLines = reportLines(preDoc), postList = reportLines(postDoc);
+  const postLines = new Map(postList.map((l) => [l.key, l.text]));
   return (Array.isArray(rows) ? rows : []).map((r) => {
     const out = { n: r?.n ?? null, kind: r?.kind ?? null, applied: r?.outcome ?? null, changes: [] };
     if (!checkable || r?.outcome === "not-checkable") return { ...out, why: "not-checkable" };
@@ -64,8 +64,10 @@ export function correctionTargets(rows, preDoc, postDoc) {
     const add = (c, key) => { if (!seen.has(key)) { seen.add(key); out.changes.push(c); } };
     if (r.outcome === "line-changed") {
       for (const l of linesOf(r.text, preLines)) {
-        const now = postLines.get(l.key);
-        if (now !== undefined && squash(now) !== squash(l.text)) add({ line: l.key, text: now }, l.key);
+        // A line the pass renamed is looked for under its new key, as the applied table joined it.
+        const moved = postLines.has(l.key) ? null : renamedAs(l, preLines, postList);
+        const now = moved ? moved.text : postLines.get(l.key);
+        if (now !== undefined && (moved || squash(now) !== squash(l.text))) add({ line: moved?.key ?? l.key, text: now }, moved?.key ?? l.key);
       }
     } else if (r.outcome === "findings-changed") {
       const declared = (Array.isArray(r.ordinals) ? r.ordinals : []).filter((o) => preOrd.has(o) || postOrd.has(o));

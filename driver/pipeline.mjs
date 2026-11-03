@@ -47,7 +47,7 @@ import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./deri
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
 import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
-import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
@@ -80,7 +80,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 // — the register coverage form: the driver writes it before the digest dispatches, renders the
 // `## Coverage ledger` table and the machine ledger FROM it after the pass, and unions it across passes.
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
-import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows } from "./coverage-form.mjs";
+import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows, isLayerRow, nationalRegistersNotSearched, nationalRegistersNote, orderFormName } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
@@ -183,7 +183,7 @@ import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-
 import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal, citingModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
 import { locateReportFaults, reportPartsOf, overviewCitationFault, writersCitationFaults } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
@@ -194,7 +194,7 @@ import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
-import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID } from "./predelivery-lint.mjs";
+import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID, goodsHeldWholeDetail } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
@@ -1257,6 +1257,19 @@ function goodsEvidenceDocFor(ctx, band, goods = null) {
   // Whether fetches could be read is part of the record: without the ledger, "not held" may hide a failed fetch.
   doc.fetches_read = runPrefix ? (calls.error ? `the register call ledger could not be read: ${calls.error}` : true) : "no run prefix";
   return doc;
+}
+
+// THE RECORDS A DELIVERY REPAIR WAS HANDED THE WHOLE GOODS TEXT FOR (predelivery-lint.mjs, goodsHeldWholeChecks), kept
+// beside the run so the check after that repair, and a resume, do not name them again. A missing or unreadable file is
+// an empty set: the check then names them, which costs a repair and never hides a finding.
+const GOODS_HANDED_FILE = "goods-held-whole-handed.json";
+function readGoodsHanded(runDir) {
+  try { return new Set(JSON.parse(readFileSync(driverDir(runDir, GOODS_HANDED_FILE), "utf8"))?.records ?? []); } catch { return new Set(); }
+}
+function recordGoodsHanded(runDir, uris) {
+  const all = new Set([...readGoodsHanded(runDir), ...uris]);
+  ensureDriverDir(runDir);
+  atomicWrite(driverDir(runDir, GOODS_HANDED_FILE), JSON.stringify({ records: [...all].sort() }, null, 2) + "\n");
 }
 
 function recordGoodsEvidenceFor(ctx, band, derived = null) {
@@ -3563,7 +3576,7 @@ export function withGoodsFrom(ctx, P, rows, read = null) {   // @internal — dr
     const evidence = read ?? goodsEvidenceOfDrops(P, runPrefix, uris);
     return rows.map((r) => {
       const e = r?.kind !== "page" && r?.uri ? evidence.get(r.uri) : null;
-      return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source }) } : r;
+      return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source, question: e.question }) } : r;
     });
   } catch (e) { return unlabelled(e?.message ?? e); }
 }
@@ -7238,6 +7251,37 @@ export function withdrawByToken(reasons = [], clauses = [], guard = new Set(), t
 }
 
 /**
+ * THE CONDITIONS THE RECORD'S ACTIONS STATE, AS THE RECORD NOW STANDS. A repair can rewrite, withdraw or add a forward
+ * legal step, and the list follows it: the entries the record's actions put there (`fromRecord`, by reason) are
+ * replaced by the steps it states now (`now`, each `{ reason, clause }`, in the record's order), at the place the first
+ * of them stood, or at the end where none stood. Every other entry keeps its place, and a step whose reason another
+ * entry carries is left to that entry. Returns the index-aligned arrays as they now stand, the reasons the record now
+ * holds there (`held`), and which reasons went and came. PURE.
+ */
+export function conditionsFollowingTheRecord({ reasons = [], clauses = [], fromRecord = new Set(), now = [] } = {}) {   // @internal — driven by its test
+  const kept = [];
+  let at = -1;
+  for (const [i, r] of reasons.entries()) {
+    if (fromRecord.has(r)) { if (at < 0) at = kept.length; continue; }
+    kept.push([r, clauses[i]]);
+  }
+  const others = new Set(kept.map(([r]) => r));
+  const placed = [];
+  for (const n of now) {
+    if (others.has(n.reason) || placed.some(([r]) => r === n.reason)) continue;
+    placed.push([n.reason, n.clause ?? n.reason]);
+  }
+  const pos = at < 0 ? kept.length : at;
+  const rows = [...kept.slice(0, pos), ...placed, ...kept.slice(pos)];
+  const before = reasons.filter((r) => fromRecord.has(r));
+  const clauseWas = new Map(reasons.map((r, i) => [r, clauses[i]]));
+  const held = placed.map(([r]) => r);
+  return { reasons: rows.map(([r]) => r), clauses: rows.map(([, c]) => c), held: new Set(held),
+    withdrawn: before.filter((r) => !held.includes(r)), added: held.filter((r) => !before.includes(r)),
+    restated: placed.filter(([r, c]) => before.includes(r) && clauseWas.get(r) !== c).map(([r]) => r) };
+}
+
+/**
  * WHAT A REPAIR IN THE DELIVERY CHECK LEFT STALE, AND WHAT OF IT IS QUEUED. A stage is this repair's when it is stale now
  * and was not before the repair, or is stale on an input that has moved since; a stage stale before for the same reasons
  * is not, and stays the guard's. Every stage the repair left stale joins the chain, so its own re-run is followed in turn.
@@ -7676,7 +7720,7 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
     const sha = createHash("sha256").update(raw).digest("hex");
     return { stale: named.length > 0 && sha === (pre.model?.sha ?? pre.sha) && !(corrections && corrections.applied), sha };
   };
-  if (!readState().stale) return;
+  if (!readState().stale) return answerFollowsCorrection(ctx, P, pre, resume);
   note(`[corrections] findings.json unchanged after the corrective pass (review names: ${named.join(", ")}) — demanding the re-emit`);
   await stage("synthesis", ctx, {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
@@ -7694,6 +7738,33 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
       renameSync(tmp, driverDir(run.runDir, "corrections-state.json"));
     } catch { /* sidecar is best-effort; the runLog event stands */ }
   }
+}
+
+// THE ANSWERS FOLLOW THE FINDINGS THEY NAME, asked once, as the gate's one repair. A correction that moved findings an
+// answer citing findings may depend on (`answersLeftBehind`) is handed those findings and the answers that may miss them.
+// The writer updates the answers that depend on them or says why not in the corrections note; nothing is forced. Run
+// only where the findings did reach the record: where they did not, the re-emit above is the one repair, and it may
+// update the answers in the same PATCH. What remains afterwards is recorded, not judged; the recheck reads the answers.
+async function answerFollowsCorrection(ctx, P, pre, resume) {
+  const { run } = ctx;
+  const leftBehind = () => {
+    try {
+      return answersLeftBehind(JSON.parse(pre.model?.raw ?? pre.raw), JSON.parse(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")),
+        ctx.framework?.bands);
+    } catch { return []; }   // an unreadable record is the ladder's business, not this check's
+  };
+  const answers = leftBehind();
+  if (!answers.length) return;
+  runLog(run.runDir, { event: "corrective-answers-left-behind", answers });
+  note(`[corrections] ${answers.length} answer(s) in four_answers may miss findings the correction moved (${answers.map((a) => a.answer).join(", ")}) — asking once`);
+  await stage("synthesis", ctx, {
+    force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
+    trigger: "corrective-answers",
+    followup: repairFollowup("synthesis:corrective-answers", { findings: modelRecordPath(run.runDir, P.findings), answers }) + stageCharter("synthesis", ctx.depth, ctx.framework),
+  });
+  const still = leftBehind();
+  runLog(run.runDir, { event: "corrective-answers-after", answers: still });
+  if (still.length) note(`[corrections] ${still.map((a) => a.answer).join(", ")} still name(s) the findings as before — recorded; any reason the writer gave is in the corrections note, and the recheck reads the answers`);
 }
 
 // (T3a, ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
@@ -8478,8 +8549,34 @@ export function coverageRowAreaLabel(axis, unit) {   // @internal
   return coverageRowAreaFrom(axis, unit, labelled, "(all of it)");
 }
 
-export function coverageJudgmentRows(ledgerRows, planExecution, plan = null) {   // @internal
+// A LAYER ROW NAMES EVERY REGISTER IT LEFT, FROM ITS RECEIPT. The machine ledger keeps a row's axis, status
+// and reason, not its receipt, so the coverage form's layer row is found again by those three: the ledger is
+// rendered from the form, and they are the form row's own. A match must be one form row to one ledger row; any
+// other count leaves the row as it was. Its label is the territory's: the unit has no scope, so the axis's label
+// would say the whole main sweep stood open.
+const normReason = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
+function layerRowNotes(ledgerRows, formRows) {
+  const keyOf = (r) => `${String(r?.axis ?? "").trim().toLowerCase()}\u0000${String(r?.status ?? "").trim().toLowerCase()}\u0000${normReason(r?.reason)}`;
+  const ledgerCount = new Map();
+  for (const r of ledgerRows ?? []) ledgerCount.set(keyOf(r), (ledgerCount.get(keyOf(r)) ?? 0) + 1);
+  const byKey = new Map();
+  for (const f of (formRows ?? []).filter(isLayerRow)) {
+    const k = keyOf(f);
+    byKey.set(k, byKey.has(k) ? null : f);
+  }
+  const notes = new Map();
+  for (const [k, f] of byKey) {
+    if (!f || ledgerCount.get(k) !== 1) continue;
+    const note = nationalRegistersNote(nationalRegistersNotSearched(f.receipt_reason));
+    const territory = orderFormName(String(f.unit ?? "").split(" — ")[0]);
+    if (note && territory) notes.set(k, { note, areaLabel: `${territory}: national registers` });
+  }
+  return { keyOf, notes };
+}
+
+export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, formRows = null) {   // @internal
   const open = [];
+  const layers = layerRowNotes(ledgerRows, formRows);
   for (const r of ledgerRows ?? []) {
     // `withheld-by-judgment` joins `confirmed-clean` in NOT reaching the reader, and for the opposite
     // reason. A clean row has nothing to disclose. A withheld one has something to say, and it is
@@ -8491,8 +8588,10 @@ export function coverageJudgmentRows(ledgerRows, planExecution, plan = null) {  
     if (!r || status === "confirmed-clean" || status === "withheld-by-judgment") continue;
     const reason = String(r.reason ?? "").replace(/\s+/g, " ").trim().slice(0, 160);
     const axis = String(r.axis ?? "").toLowerCase();
-    open.push({ axis, area: coverageRowArea(axis, r.unit), areaLabel: coverageRowAreaLabel(axis, r.unit),
-      note: `${r.status}${reason ? ` — ${reason}` : ""}`, qids: [] });
+    const layer = layers.notes.get(layers.keyOf(r));
+    open.push({ axis, area: coverageRowArea(axis, r.unit),
+      areaLabel: layer ? layer.areaLabel : coverageRowAreaLabel(axis, r.unit),
+      note: `${r.status}${layer ? ` — ${layer.note}` : reason ? ` — ${reason}` : ""}`, qids: [] });
   }
   const skeleton = Array.isArray(planExecution?.skeleton) ? planExecution.skeleton : null;
   const axisOf = new Map();
@@ -8524,7 +8623,8 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
       runLog(runDir, { event: "coverage-judgment-rows", judgment: false, reason: "synthesis emitted no coverage_judgment — none is invented here" });
       return;
     }
-    const rows = coverageJudgmentRows(loadCoverageLedger(runDir).rows, readPlanExecution(ctx), ctx?.registerPlan ?? null);
+    const rows = coverageJudgmentRows(loadCoverageLedger(runDir).rows, readPlanExecution(ctx), ctx?.registerPlan ?? null,
+      readCoverageForm(runDir).rows);
     const discarded = Array.isArray(cj.rows) ? cj.rows.length : 0;
     const next = { ...doc, coverage_judgment: { ...cj } };
     if (rows.length) next.coverage_judgment.rows = rows;
@@ -8543,7 +8643,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
   }
 }
 
-function injectDeferralCoverage(P, runDir, note) {
+export function injectDeferralCoverage(P, runDir, note) {   // @internal — exported so a second pass is testable without a run
   try {
     const rp = driverDir(runDir, "frame-reopen.json");
     if (!existsSync(rp) || !existsSync(P.findings)) return;
@@ -8554,14 +8654,29 @@ function injectDeferralCoverage(P, runDir, note) {
     // rows — the reader-visible disclosure is the whole point of "can't close → disclose".
     if (!Array.isArray(doc.coverage)) doc.coverage = [];
     const normTxt = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-    const covText = normTxt(doc.coverage.map((c) => `${c.area} ${c.note ?? ""}`).join(" "));
+    // A row may stand in for this one only as the report page lets it (`dedupeFollowUps`, publish/render.mjs): the
+    // driver's own row, or the writer's row restating the gap. A searched-clean row reports the opposite, and an
+    // axis-labelled one ("Register / …") is a plan unit that may only share the words.
+    const standsIn = (c) => String(c.area ?? "").startsWith("Follow-up / ")
+      || (c.state !== "confirmed-clean" && !/\s\/\s/.test(String(c.area ?? "")));
+    const wordsOf = (c) => new Set(normTxt(`${c.area} ${c.note ?? ""}`).split(" "));
+    const rows = doc.coverage.filter(standsIn).map(wordsOf);
     let added = 0;
     for (const d of deferrals) {
       const directive = String(d?.directive ?? "").trim();
       if (!directive) continue;
-      const slice = normTxt(directive).split(" ").filter((w) => w.length >= 4).slice(0, 4).join(" ");
-      if (slice && covText.includes(slice)) continue;          // synthesis already weighed it in
-      doc.coverage.push(deferralCoverageRow(directive, d?.reason));   // — word-boundary heading, full directive in the note
+      // THE WORDS ARE THE ONES A ROW CARRIES, AND ONE ROW CARRIES ALL OF THEM. A directive is minted with its axis prefix
+      // ("source:…"), and every row, this function's own included, prints it through `plainDirective`. This looked
+      // for the raw directive's first four long words as one phrase across the whole coverage: the prefix was the
+      // first of them, and a short word between two others ("eu", "and") broke the phrase anyway, so no row matched,
+      // not even the row this function had just added. Each seam pass added it again: twice over in a record, and
+      // back after a save that removed it. Measured on two test runs, 2026-11-03: 9 of 9 directives carried the
+      // prefix, and 4 of one run's 7 a short word between their long ones.
+      const want = normTxt(plainDirective(directive)).split(" ").filter((w) => w.length >= 4).slice(0, 4);
+      if (want.length && rows.some((ws) => want.every((w) => ws.has(w)))) continue;   // synthesis already weighed it in
+      const row = deferralCoverageRow(directive, d?.reason);   // — word-boundary heading, full directive in the note
+      doc.coverage.push(row);
+      rows.push(wordsOf(row));
       added++;
     }
     if (!added) return;
@@ -8884,7 +8999,8 @@ function goodsEvidenceOfDrops(P, runPrefix, uris, gateFetched = null) {
   }
   for (const uri of uris) {
     const e = recordGoodsEvidence(rowOf.get(normalizeRecordUri(uri)) ?? { record_id: uri }, { goods, held, fetches });
-    out.set(uri, { goods: e.state, source: e.source });
+    // A register page the research saved is named by the question that saved it, which the write-up's label carries.
+    out.set(uri, { goods: e.state, source: e.source, ...(e.question != null ? { question: e.question } : {}) });
   }
   return out;
 }
@@ -10229,7 +10345,9 @@ async function pipelineInner(job, opts = {}) {
   let engineTurnStartedMs = null, engineTurnEndedMs = null;
   if (!opts.recordFetcher && !koSelector) {
     engineTurnStartedMs = Date.now();
-    engineTurn = await preflightEngineTurn();
+    // `opts.engineTurnWait` stands in for the door's wait before it checks a locked sign-in refresh again,
+    // in tests; a run passes none and waits.
+    engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait });
     engineTurnEndedMs = Date.now();
     if (engineTurn.warning) console.error(engineTurn.warning);
   }
@@ -10374,11 +10492,13 @@ async function pipelineInner(job, opts = {}) {
   // — the engine-turn door's verdict, beside the run it let through. A refusal never reaches here (it
   // throws before any of this exists), so this row answers the two questions that survive: did the door
   // run at all on this lane, and — when it failed open on weather — WHAT it decided to let past. Without
-  // it a proceeded-past-weather run is indistinguishable on the record from one that probed clean.
+  // it a proceeded-past-weather run is indistinguishable on the record from one that probed clean. A door
+  // that checked twice, because the first check met a locked sign-in refresh, says so beside the second.
   try {
     if (engineTurn) runLog(run.runDir, { event: "engine-turn-probe", ok: engineTurn.ok === true,
       engine: engineTurn.engine ?? null, mode: engineTurn.mode ?? null, basis: engineTurn.basis ?? null,
-      lane: engineTurn.ok === true ? "ok" : "weather", detail: engineTurn.detail ?? null });
+      lane: engineTurn.ok === true ? "ok" : "weather", detail: engineTurn.detail ?? null,
+      ...(engineTurn.recheckedAfter ? { recheckedAfter: engineTurn.recheckedAfter } : {}) });
     // — and the same probe as a SPAN the wall decomposition can attribute. Same measurement, second
     // reader: the row above goes to run.jsonl, which that instrument skips by name.
     if (engineTurn) recordSpan(run.runDir, "engine-turn", { startedMs: engineTurnStartedMs, endedMs: engineTurnEndedMs },
@@ -14955,6 +15075,10 @@ async function pipelineInner(job, opts = {}) {
     // withdrawn against it (ruled 2026-10-19).
     let assessed = verdict;
     let restoredClear = false;   // a closed gap took this run back to CLEAR, so a later writer's judgment meets the floor again
+    // THE REASONS THE RECORD'S OWN ACTIONS PUT IN THE LIST, by the floor's legal-actions arm, so the list can follow the
+    // record when a repair in the delivery check rewrites, withdraws or adds a step (conditionsFollowingTheRecord).
+    let recordConditionReasons = new Set();
+    const DROPPED_CONDITIONS_REASON = "a forward legal step this opinion named could not be recorded, so the conditions listed here are incomplete";
 
     /**
      * Deliver, clamp conservatively, and name the defect in the run record.
@@ -15235,6 +15359,7 @@ async function pipelineInner(job, opts = {}) {
           // (the degenerate re-ask re-runs this floor; dedup is by the reason TEXT for both).
           for (const c of fresh) clampClauses.push(conditionClauses[conditions.indexOf(c)] ?? c);
           clampReasons.push(...fresh);
+          for (const c of fresh) recordConditionReasons.add(c);
           if (verdict === "CLEAR") {
             runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
             note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
@@ -15258,7 +15383,7 @@ async function pipelineInner(job, opts = {}) {
         // do is read as complete — so the reason says INCOMPLETE in the client's own words, and the
         // engine-side detail (ids, defect tokens) rides the note and the log where an engineer reads.
         const droppedConditions = quarantinedConditionRows(fdoc?.actionsQuarantined);
-        const droppedReason = "a forward legal step this opinion named could not be recorded, so the conditions listed here are incomplete";
+        const droppedReason = DROPPED_CONDITIONS_REASON;
         // ONCE, not once per entry. This floor is re-entered — the degenerate re-ask and the delivery
         // block both call it again — so the reason, the clause and the telemetry are guarded by the
         // reason's own presence. An event emitted on every re-entry would inflate any count keyed on
@@ -15267,6 +15392,7 @@ async function pipelineInner(job, opts = {}) {
           clampKinds.actionsDropped = true;
           clampClauses.push(droppedReason);
           clampReasons.push(droppedReason);
+          recordConditionReasons.add(droppedReason);
           runLog(run.runDir, { event: "verdict-conditions-dropped", n: droppedConditions.length,
             ids: droppedConditions.map((q) => q.id), kinds: droppedConditions.map((q) => q.kind),
             errors: droppedConditions.map((q) => String(q.error ?? "").slice(0, 80)) });
@@ -15562,6 +15688,48 @@ async function pipelineInner(job, opts = {}) {
       try { displayVerdict = composeVerdictSidecar().doc; } catch { /* composed again when it is saved */ }
       return false;
     };
+    // THE LABEL OWED IS SAVED before anything is published from it, and the report's own label follows it. Only a run
+    // directory that refuses every save of it ends the run, and then nothing the run writes can be published.
+    const saveTheOwedLabel = () => {
+      if (!labelOwed) return;
+      const owed = labelOwed;
+      labelOwed = null;
+      if (!saveTheLabel(`${owed}, saved again before delivery`))
+        throw new StageFailure("verdict", `the run directory refused every save of the result's label (${owed}) — no surface can be published with it`);
+      applyVerdictFrontMatter();
+    };
+    // THE CONDITIONS FOLLOW THE RECORD AFTER A REPAIR IN THE DELIVERY CHECK. Every surface reads the list from the label,
+    // and the list states the record's forward legal steps as the record stands: a repair that rewrites, withdraws or
+    // adds one moves the list with it, in the record's own words. The result moves only where the floor any result meets
+    // moves it: a CLEAR the repaired steps now condition becomes CONDITIONAL, and nothing is relaxed. A BLOCKING result
+    // states no step of its own, so only a list already stating the record's steps follows it. The caller saves the
+    // label. Returns whether the list, its kinds or the result changed.
+    const followTheRecordsActions = (why) => {
+      if (verdict === "BLOCKING" && !recordConditionReasons.size) return false;
+      let fdoc = null;
+      try { fdoc = existsSync(P.findings) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null; }
+      catch { fdoc = null; }
+      if (!fdoc) return false;   // no record to read: the list stands as stated, and the coherence checks judge it
+      const { conditions, conditionClauses } = deriveActionConditions(fdoc.actions, fdoc.findings);
+      const now = conditions.map((c) => ({ reason: c, clause: conditionClauses[conditions.indexOf(c)] ?? c }));
+      const dropped = quarantinedConditionRows(fdoc.actionsQuarantined).length > 0;
+      if (dropped && recordConditionReasons.has(DROPPED_CONDITIONS_REASON)) now.push({ reason: DROPPED_CONDITIONS_REASON, clause: DROPPED_CONDITIONS_REASON });
+      const state = () => JSON.stringify([clampReasons, clampClauses, Boolean(clampKinds.legalActions), Boolean(clampKinds.actionsDropped)]);
+      const stood = state(), was = verdict;
+      const f = conditionsFollowingTheRecord({ reasons: clampReasons, clauses: clampClauses, fromRecord: recordConditionReasons, now });
+      clampReasons = f.reasons;
+      clampClauses = f.clauses;
+      recordConditionReasons = f.held;
+      if (!conditions.length) delete clampKinds.legalActions;
+      if (!dropped) delete clampKinds.actionsDropped;
+      // The floor runs again only where the repaired steps reach it, as the coherence repair runs it.
+      if (state() !== stood || (verdict === "CLEAR" && (conditions.length || dropped))) applyCoverageFloor();
+      if (state() === stood && verdict === was) return false;
+      runLog(run.runDir, { event: "verdict-conditions-followed", why, withdrawn: f.withdrawn.length, added: f.added.length,
+        restated: f.restated.length, conditions: recordConditionReasons.size, from: was, to: verdict });
+      note(`the conditions follow the record ${why} (${f.withdrawn.length} withdrawn, ${f.added.length} added, ${f.restated.length} restated${verdict === was ? "" : `; ${was} → ${verdict}`})`);
+      return true;
+    };
     try { writeVerdictSidecar(); }
     catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
 
@@ -15721,6 +15889,8 @@ async function pipelineInner(job, opts = {}) {
     // afterwards and therefore never read it as staleness.
     stampCoverageJudgmentRows(P, run.runDir, note, ctx);
     consolidateFindingsFile(P, note, ctx.framework);
+    // The conditions too: a save that rewrote, withdrew or added a forward legal step moves the list with it.
+    followTheRecordsActions("after a save of the record");
     // T2: consolidation can change the live composite set — re-derive the sidecar so every
     // surface joins the FINAL findings (the sidecar must never describe a superseded set).
     // review fix: consolidation can also surface CONDITIONS the floor never saw (a lenient-
@@ -16651,6 +16821,9 @@ async function pipelineInner(job, opts = {}) {
           // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
           // which passes the archived summary.
           reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
+          // What each record's goods rested on when the writer wrote, and the records whose whole text a delivery repair
+          // was already handed: a finding written on goods the register cut, whose whole body the run holds now.
+          goodsEvidence: readGoodsEvidence(run.runDir), goodsHanded: readGoodsHanded(run.runDir),
           // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
           // conditions the email carries, as the email composes them.
           overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict),
@@ -16720,6 +16893,7 @@ async function pipelineInner(job, opts = {}) {
       // an edit to the actions. One attempt; a residual failure ships as the structural banner flag.
       if (lint.failures.some((f) => f.id === "verdict-actions-coherence" || f.id === "verdict-actions-stale" || f.id === "statement-tier" || f.id === "statement-unconditional" || f.id === "statement-stance" || f.id === "statement-conditional-form")) {
         const beforeVerdict = verdict;
+        followTheRecordsActions("in the delivery check's re-derive");   // a stale step goes, as a missing one arrives
         applyCoverageFloor();
         try { writeVerdictSidecar(); }
         catch (e) { throw new StageFailure("verdict", `verdict sidecar re-derive failed (spec-64 coherence repair): ${String(e.message).slice(0, 120)}`); }
@@ -16882,13 +17056,35 @@ async function pipelineInner(job, opts = {}) {
         const fold = readFold(run.runDir);
         const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
         const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
-        const narrativeFixable = [...modelFixable(bySurface("narrative")), ...sentenceFixable, ...recordFixable];
+        // A finding named for goods the register cut, whose whole text the run holds now, is named in the writer's
+        // numbering, in the line's own words: it opens "Finding <N> cites", so the list puts no "finding N:" before it.
+        // Under a fold, N is the writer's finding that cites the record, which need not be the member the fold kept.
+        let writersFindings = null;   // the writer's record, read once and only for a goods line
+        const writersRecord = () => {
+          if (writersFindings) return writersFindings;
+          try { writersFindings = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")).findings ?? []; }
+          catch { writersFindings = []; }
+          return writersFindings;
+        };
+        const citesRecord = (wf, uri) => (Array.isArray(wf?.owner?.registrations) ? wf.owner.registrations : [])
+          .some((reg) => normalizeRecordUri(reg?.uri ?? reg) === uri);
+        const inWritersNumbering = (f) => (String(f.id).startsWith("goods-held-whole:")
+          ? { ...f, detail: goodsHeldWholeDetail(citingModelOrdinal(fold, f.ordinal, f.uri, writersRecord(), citesRecord), f.uri, f.goods, f.state) } : f);
+        const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering), ...sentenceFixable, ...recordFixable];
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
         // A writer fault with no writer session to repair it is not repaired, and the run says so.
         if (narrativeFixable.length && !synthesisKey)
           runLog(run.runDir, { event: "lint-redo-skipped", surface: "writer", why: "no-writer-session", failures: narrativeFixable.map((f) => f.id) });
         if (narrativeFixable.length) await redo("synthesis", narrativeFixable, synthesisKey, synthesisModel, synthesisThinking, P.narrative,
           { findings: modelRecordPath(run.runDir, P.findings), narrative: P.narrative });
+        // The records whose whole goods text this repair was handed, kept so the check after it does not name them again.
+        const goodsHandedNow = narrativeFixable.filter((f) => String(f.id).startsWith("goods-held-whole:")).map((f) => f.uri);
+        if (goodsHandedNow.length && repaired.includes("synthesis")) {
+          try {
+            recordGoodsHanded(run.runDir, goodsHandedNow);
+            runLog(run.runDir, { event: "goods-held-whole-handed", records: [...new Set(goodsHandedNow)].sort() });
+          } catch (e) { note(`pre-delivery lint: the records handed their whole goods text were not recorded: ${e?.message ?? e}`); }
+        }
         if (reassembled) assembleReportMd(P, findingsForCards, assembledOrdinals, { grouped: groupedMembers, byRight });
         // The client-summary redo arm is retired with the stage (2026-08-01). Its `email`-surface
         // failures have not gone unowned: the `:email` reference check now runs over the report-derived
@@ -16905,6 +17101,17 @@ async function pipelineInner(job, opts = {}) {
           autoCorrectRegistry();        // doc-27 Item 1b: a re-emission may have reintroduced a wrong identifier — overwrite from the record again
         }
       }
+      // THE GOODS REFRESH'S OUTCOME, kept in the run record whatever this pass did (predelivery-lint.mjs,
+      // goodsHeldWholeChecks): the findings named for the repair, those still saying their goods are cut or unread after
+      // it, and the check's own count of the ones that no longer say so.
+      try {
+        const rows = (lint?.checks ?? []).filter((c) => /^goods-held-whole(?::|-unresolved:|$)/.test(String(c.id)));
+        if (rows.some((c) => c.id !== "goods-held-whole") || readGoodsHanded(run.runDir).size)
+          runLog(run.runDir, { event: "goods-held-whole",
+            named: rows.filter((c) => c.id.startsWith("goods-held-whole:")).map((c) => c.id.slice("goods-held-whole:".length)),
+            unresolved: rows.filter((c) => c.id.startsWith("goods-held-whole-unresolved:")).map((c) => c.id.slice("goods-held-whole-unresolved:".length)),
+            summary: rows.find((c) => c.id === "goods-held-whole")?.detail ?? null });
+      } catch { /* the run record's row is best-effort; the check's own rows are in the receipt below */ }
       // The receipt artifact — ALWAYS written, pass or fail (spec A2's auditor evidence).
       // V4-1: the receipt states the ARTIFACT SET evaluated — surfaces, record set + sources, and the
       // stage labels this session inherited via skip — so an auditor can see the gates ran over
@@ -17354,17 +17561,17 @@ async function pipelineInner(job, opts = {}) {
           note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
           staleStages = [];
         }
-        // THE LABEL OWED IS SAVED NOW, before anything is published from it, and the report's own label follows it. Only
-        // a run directory that refuses every save of it ends the run here, and then nothing the run writes can be published.
-        if (labelOwed) {
-          const owed = labelOwed;
-          labelOwed = null;
-          if (!saveTheLabel(`${owed}, saved again before delivery`))
-            throw new StageFailure("verdict", `the run directory refused every save of the result's label (${owed}) — no surface can be published with it`);
-          applyVerdictFrontMatter();
-        }
+        saveTheOwedLabel();   // before anything is published from it
         note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
+      // THE CONDITIONS FOLLOW THE RECORD AS IT IS DELIVERED, whichever repair above moved it last, and the label owed is
+      // saved before the receipt below and anything published from it. A list that moved is judged again.
+      if (followTheRecordsActions("as the record is delivered")) {
+        saveTheLabel("as the record is delivered");
+        applyVerdictFrontMatter();
+        lint = lintNow();
+      }
+      saveTheOwedLabel();
       // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw
       // below), so ANY later exit from this pass — the staleness throw, a core-artifact throw between here
       // and it, an auto-recovery park — carries the set into reconcilePassStamps. Reconcile must leave these

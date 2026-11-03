@@ -8,7 +8,9 @@
 //
 //   complete      the run holds the text whole, on a basis the record names: a full record from an operation
 //                 whose goods are whole (the record text, the register's own flag on a retrieved record, the
-//                 bulk register statement), or a search answer's statement shorter than its documented cut;
+//                 bulk register statement), a search answer's statement shorter than its documented cut, or the
+//                 register's own page, saved by the run's research, continuing a statement the search answer cut
+//                 or did not establish whole;
 //   cut           the register marked the statement as cut: a missing word proves nothing;
 //   unknown       goods are held and their completeness is not established: a search answer's unflagged
 //                 statement at or over the default answer's documented cut, a retrieved record's statement with
@@ -191,7 +193,8 @@ export function recordGoodsEvidence(record, { goods = null, held = null, fetches
   const readable = statements?.length ? statements.some((g) => g?.en !== false) : null;
   const cut = (statements ?? []).some((g) => g?.cut === true);
   const unknown = (statements ?? []).some((g) => g?.unknown === true);
-  const row = (state, source, basis) => ({ uri, state, source, basis, readable, held: body, fetch });
+  const page = (statements ?? []).find((g) => g?.page)?.page ?? null;
+  const row = (state, source, basis, extra = null) => ({ uri, state, source, basis, ...extra, readable, held: body, fetch });
   // The statements are a held body's where the reader says so; a reader that cannot tell reads bodies only.
   if (statements?.length && fromBody) {
     const op = body?.goods?.operation ?? "undocumented";
@@ -199,6 +202,10 @@ export function recordGoodsEvidence(record, { goods = null, held = null, fetches
       cut ? "register-flag" : unknown ? (op === "retrieve" ? "retrieved-record-without-flag" : "full-record-operation-undocumented")
         : op === "retrieve" ? "register-flag" : op === "bulk-register" ? "bulk-register-statement" : "full-record");
   }
+  // A search answer's statements that a register page the run's research saved continues whole (record-goods.mjs
+  // `rowGoods`). The record rests on that page once none is left cut or not established whole; where its classes were
+  // continued from pages two questions saved, the question named is its first such class's.
+  if (statements?.length && page && !cut && !unknown) return row("complete", "register-page", "register-page-statement", { question: page.question });
   if (statements?.length) return row(cut ? "cut" : unknown ? "unknown" : "complete", "search-row",
     cut ? "register-flag" : unknown ? "default-answer-at-or-over-its-cut" : "default-answer-under-its-cut");
   if (body) {
@@ -216,10 +223,13 @@ export function recordGoodsEvidence(record, { goods = null, held = null, fetches
  * WHAT A RECORD'S GOODS REST ON, IN THE WORDS THE STAGES READ (the band lookup's `goods_from`, the write-up's list):
  * the supporting evidence the record holds and its completeness, never the last call made for it. "No goods listed"
  * needs a full record from an operation whose goods are whole, with the field there and empty; a record whose goods
- * field is missing is "completeness not established". null where there is no evidence row. PURE.
+ * field is missing is "completeness not established". Goods continued whole from a register page the run's research
+ * saved name the question that saved it (`question`, which a caller passing the row on carries with it). null where
+ * there is no evidence row. PURE.
  */
 export function goodsFromLabel(e) {
   if (!e) return null;
+  if (e.source === "register-page") return registerPageLabel(e.question);
   if (e.source === "record-body") return e.state === "absent" ? "official record, no goods listed"
     : e.state === "cut" ? "official record, cut by the register"
     : e.state === "unknown" ? "official record, completeness not established" : "official record";
@@ -227,6 +237,9 @@ export function goodsFromLabel(e) {
     : e.state === "unknown" ? "search answer, completeness not established" : "search answer";
   return e.state === "unavailable" ? "fetch failed" : "nothing held";
 }
+
+/** What the stages read for goods taken whole from a register page the run's research saved, naming the question. PURE. */
+export const registerPageLabel = (question) => `the register's own page, saved by research question ${question}`;
 
 /** Records counted by state, by source and by basis; `unreadable` counts goods held in no language the engine reads. PURE. */
 export function goodsEvidenceTotals(rows) {

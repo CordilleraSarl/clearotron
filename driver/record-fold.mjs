@@ -170,6 +170,22 @@ export function keptModelOrdinal(state, ordinal) {
   return (state.merges ?? []).find((m) => members.includes(m?.kept))?.kept ?? null;
 }
 
+/**
+ * The model's ordinal behind a folded finding's citation of one record. A folded finding carries the citations of every
+ * member the fold merged into it, so the member it kept may not be the one that cites the record: the answer is the
+ * member whose own finding, in the model's record, cites `uri`, the kept member first. With no fold in force the ordinal
+ * is its own. Where no member's finding is read citing the record, the kept member, as `keptModelOrdinal` answers.
+ * `cites(finding, uri)` says whether a finding of the model's record cites the record. PURE.
+ */
+export function citingModelOrdinal(state, ordinal, uri, modelFindings = [], cites = () => false) {
+  const kept = keptModelOrdinal(state, ordinal);
+  const members = state?.map?.foldedToModel?.[String(ordinal)];
+  if (!Array.isArray(members) || members.length < 2) return kept;
+  const byOrdinal = new Map((Array.isArray(modelFindings) ? modelFindings : []).map((f) => [f?.ordinal, f]));
+  const order = [...(members.includes(kept) ? [kept] : []), ...members.filter((m) => m !== kept)];
+  return order.find((m) => byOrdinal.has(m) && cites(byOrdinal.get(m), uri)) ?? kept;
+}
+
 /** The fold as it stands, to put back if a pass that changed it is rolled back. Never throws. */
 export function snapshotFold(runDir) {
   const state = readFold(runDir);

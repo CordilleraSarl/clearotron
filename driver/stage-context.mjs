@@ -375,6 +375,10 @@ export const CONTEXT_DERIVATIONS = [
       { path: P.crowdContext, why: "the crowd join the shape's crowd descriptors carry" },
       { path: join(P.runDir, "_records"), dir: true, why: "recordDetailIndex — registration/application numbers, IR↔base linkage, Madrid designations; no search row carries them" },
       { path: driverDir(P.runDir, "register-record-bodies.jsonl"), why: "record-goods.mjs bandGoodsIndex: each record's goods, which the groups test against the client's goods words" },
+      // THE REGISTER'S OWN PAGES THE RUN'S RESEARCH SAVED complete a goods statement a search answer cut, so they are an
+      // input of this derivation (saved-register-pages.mjs). Seeded as the canonical run holds the folder, as `_records`
+      // is: a page saved after the replayed stage is in the sandbox too. That is this input's stated replay limit.
+      { path: driverDir(P.runDir, "web-results"), dir: true, why: "saved-register-pages.mjs savedStatusPages: the register's own status pages the run's research saved, which complete a goods statement the search answer cut; seeded as the run holds them, so a page saved after the replayed stage is seeded too" },
       { path: P.registerPlan, why: "record-goods.mjs bandShapeGoods: the word the register's goods-narrowed search asked for, which the shape sorts on" },
       { path: driverDir(P.runDir, "matter-frame-calls", "accepted.json"), why: "withFrameClasses: the classes the frame added for the client's own goods join the in-scope set and the floors" },
       { path: P.instructedScope, why: "record-goods.mjs instructedOrder: the order's goods wording and markets, which the groups sort by" },

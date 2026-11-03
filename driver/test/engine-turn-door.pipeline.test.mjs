@@ -41,7 +41,7 @@ const JOB = {
 /** A run's workspace root plus the env every lane here shares. Returns { root, run } — `run` imports fresh. */
 function harness(env = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-door-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_CLAUDE_REFRESH_LOCKED"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent",
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
@@ -131,6 +131,25 @@ test("an UPSTREAM OVERLOAD does NOT refuse — the door fails open and says so o
   assert.equal(probeRow.ok, false, "and it records that the probe FAILED, not that it passed");
   assert.equal(probeRow.lane, "weather", "on the lane the recovery ladder already uses for an upstream fault");
   assert.equal(probeRow.engine, "anthropic-agent");
+});
+
+test("a sign-in refresh another copy holds is not refused: the door checks again, and the run gets past it", async () => {
+  // The program's own answer when another copy holds its sign-in refresh lock, on the probe's turn only: the
+  // mock replays it once (fixtures/claude-refresh-locked.jsonl) and answers every later turn as usual. On the
+  // test machine, 2026-11-03, the door read that answer as "not signed in" and failed the job before it began.
+  const marker = join(mkdtempSync(join(tmpdir(), "clearotron-door-lock-")), "locked");
+  harness({ MOCK_CLAUDE_REFRESH_LOCKED: marker });
+  const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
+  const waits = [];
+  try {
+    const res = await pipeline({ ...JOB }, { engineTurnWait: async (ms) => { waits.push(ms); } });
+    assert.equal(res.ok, true, JSON.stringify(res));
+    assert.equal(waits.length, 1, "the door waited once, before its second check");
+    const probeRow = runEvents(res.runDir).find((e) => e.event === "engine-turn-probe");
+    assert.equal(probeRow.ok, true, "the second check passed");
+    assert.equal(probeRow.recheckedAfter?.mode, "refresh-locked", "and the record says the first met the lock");
+    assert.match(probeRow.recheckedAfter.detail, /another Claude Code process is refreshing it/);
+  } finally { delete process.env.MOCK_CLAUDE_REFRESH_LOCKED; }
 });
 
 test("a clean engine leaves a passing verdict on the record, so 'the door ran' is checkable", async () => {

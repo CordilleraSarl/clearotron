@@ -10,6 +10,8 @@
 // Env knobs mirror mock-claude (same names where shared, MOCK_CODEX_* where codex-specific):
 //   MOCK_CODEX_STALL=1     — emit the opening events then go SILENT → the engine stall-watchdog must kill it
 //   MOCK_CODEX_FAIL=1      — emit turn.failed + exit 1 (a failed turn → nonzero_exit_1)
+//   MOCK_CODEX_RENEWAL_FAILED=<file> (+ MOCK_CODEX_RENEWAL_LINES) — once, a turn whose sign-in renewal did not get
+//                            through, as codex 0.162.0 reports it (its block follows `open` below)
 //   MOCK_CODEX_NOFILE=1    — do not write the output file (drives the missing_file ladder)
 //   MOCK_CODEX_RESULT=<t>  — the agent_message text (default "mock codex ok")
 //   MOCK_CODEX_SESSION=<id>— thread_id (default derived); a `resume <id>` echoes <id> back as the thread
@@ -175,6 +177,24 @@ if (process.env.MOCK_CODEX_AUTH_LEDGER && codexHomeDir) {
 
 const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
 const open = () => { send({ type: "thread.started", thread_id: session }); send({ type: "turn.started" }); };
+
+// ── A RENEWAL THAT FAILED FOR A PASSING REASON, once. ──
+//   MOCK_CODEX_RENEWAL_FAILED=<file>  while <file> does not exist, create it and fail the turn as codex 0.162.0
+//                                  does when its sign-in renewal does not get through: the renewal lines on
+//                                  stderr, a failed turn, exit 1. Once <file> exists, answer as usual.
+//   MOCK_CODEX_RENEWAL_LINES=<path>   those lines. By default fixtures/codex-renewal-dropped.txt: a dropped
+//                                  connection, captured offline on 2026-11-03, with the stand-in's address
+//                                  replaced by the provider's.
+//   MOCK_CODEX_RENEWAL_STALL=1        the turn does not end: codex keeps retrying a renewal whose connection
+//                                  drops, so the lines are written and the turn goes silent until a watchdog stops it.
+if (process.env.MOCK_CODEX_RENEWAL_FAILED && !existsSync(process.env.MOCK_CODEX_RENEWAL_FAILED)) {
+  writeFileSync(process.env.MOCK_CODEX_RENEWAL_FAILED, "failed\n");
+  process.stderr.write(readFileSync(process.env.MOCK_CODEX_RENEWAL_LINES || new URL("./fixtures/codex-renewal-dropped.txt", import.meta.url), "utf8"));
+  open();
+  if (process.env.MOCK_CODEX_RENEWAL_STALL) { setInterval(() => {}, 1 << 30); await new Promise(() => {}); }
+  send({ type: "turn.failed", error: { message: "mock codex turn failure" } });
+  process.exit(1);
+}
 
 // ── The session rollout. Real codex writes one per session under
 // $CODEX_HOME/sessions/<yyyy>/<mm>/<dd>/rollout-<ts>-<uuid>.jsonl; the engine reads the served model off

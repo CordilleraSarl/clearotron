@@ -153,6 +153,15 @@ const DETAIL_CHARS = 400;
 // Please run /login"); bare "login" is deliberately NOT matched, because it appears in prose that is not
 // about being signed out.
 const SIGNED_OUT_RE = /not logged in|logged out|signed out|please log ?in|\/login\b|claude login|codex login|no auth\.json|credentials? (?:were )?not found|no .* credentials|unauthori[sz]ed|authentication[_ ]error|invalid[_ -]?api[_ -]?key|oauth|\b401\b|\b403\b/i;
+// A SIGN-IN REFRESH ANOTHER COPY OF THE PROGRAM IS HOLDING, which is not a sign-out. The Claude program renews
+// an expired sign-in under a lock that every copy on the same sign-in shares. When another copy holds it and
+// does not renew it, the program gives up and says to retry in a minute, and files that as a server error,
+// not an authentication failure. Claude Code 2.1.295 carries three wordings: the line a `-p` turn ends with,
+// the one an interactive session shows, and the error's own message. Measured on the test machine,
+// 2026-11-03: the first matched `oauth` above, and a job failed at the door as "not signed in" while the same
+// sign-in renewed at the first try twelve minutes later. Read BEFORE that pattern, which keeps `oauth`: "OAuth
+// session expired and could not be refreshed" is a real sign-out and matches through nothing else.
+const REFRESH_LOCKED_RE = /another Claude Code process is (?:refreshing it|holding the refresh lock)/i;
 const TIER_RE = /model[_ -]?not[_ -]?found|unknown model|not a valid model|does not have access|no access to|model .{0,40}(?:not available|unavailable|not supported|unsupported)|unsupported model|no claude model mapped|no GPT tier mapped|permission[_ ]error/i;
 
 const tail = (s) => {
@@ -347,6 +356,22 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
       { resetsAt: s.resetsAt ?? null, detail });
   }
 
+  // A turn that ran and failed, in words that claim nothing they cannot see: the last answer below, and the
+  // locked refresh, whose explanation is the engine's own and rides in `detail`.
+  const ranAndFailed = (mode, basis) => v(mode, basis, `${id} ran but the turn failed (exit ${tuple.code})`,
+    "The engine's stderr below is the whole story; a turn that starts and fails is not a configuration this check can name.", { detail });
+
+  // A SIGN-IN REFRESH ANOTHER COPY IS HOLDING, before the pattern that would read it as a sign-out. It answers
+  // as a turn that ran and failed, with the program's "retry in a minute" beneath, under a mode of its own:
+  // outside the configuration lane, and the one the run door checks again once the lock has gone stale.
+  if (REFRESH_LOCKED_RE.test(text)) return ranAndFailed("refresh-locked", "text-match");
+
+  // A CODEX RENEWAL THAT FAILED WITHOUT BEING REFUSED (the adapter's signal, openai-agent.mjs), before the
+  // sign-in pattern too: a dropped connection's line names the renewal address, ".../oauth/token", and the
+  // pattern read that as a sign-out (measured offline on 0.162.0, 2026-11-03). The same answer as the locked
+  // refresh, and the same second check at the door.
+  if (s.refreshFailed) return ranAndFailed("refresh-failed", "text-match");
+
   // THE MODE STAYS `signed-out` UNDER EVERY WAY OF PAYING, because the run door refuses on the mode and a
   // refused credential is as much this machine's to fix as a signed-out program. Only the words follow how
   // the turn is paid for.
@@ -373,8 +398,7 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
         ? `That is what refused credentials look like, so start there: check ${refused.check}, then run this again. The engine's stderr below is the diagnosis if it is something else.`
         : `That is the signed-out shape, so start there: ${signInLine(id, program)}, then run this again. The engine's stderr below is the diagnosis if it is something else.`, { detail });
 
-  return v("failed", "nonzero-exit", `${id} ran but the turn failed (exit ${tuple.code})`,
-    "The engine's stderr below is the whole story; a turn that starts and fails is not a configuration this check can name.", { detail });
+  return ranAndFailed("failed", "nonzero-exit");
 }
 
 /** What fixes a host that refuses every tool call. On codex it is its own sandbox, and the setting is named. */
@@ -687,18 +711,49 @@ export async function probeEngineTurn({
  * or a missing `runTurn` export escapes as a raw error. That is a driver bug, and a driver bug must not
  * reach a client as a terminal refusal at the door — it fails open, loudly, and the run dies at stage one
  * with the engine's own message if it is real.
+ *
+ * A SIGN-IN REFRESH ANOTHER COPY IS HOLDING IS CHECKED ONCE MORE. The program says to retry in a minute, and
+ * its lock goes stale 60 s after its holder last renewed it, so the door waits `REFRESH_LOCK_WAIT_MS` and runs
+ * the probe again. The second verdict is the door's answer: a pass starts the run, a configuration fault
+ * refuses, and a lock still held is weather like any other. It carries the first as `recheckedAfter`, for the
+ * run record. `opts.wait` stands in for the wait, in tests.
+ *
+ * A CODEX RENEWAL THAT FAILED WITHOUT BEING REFUSED gets the same second check: a passing outage at the
+ * provider's sign-in, which a minute's wait may outlast.
  */
 export async function preflightEngineTurn(opts = {}) {
-  let verdict;
-  try {
-    verdict = await probeEngineTurn(opts);
-  } catch (e) {
-    verdict = { ok: false, engine: String((opts?.env ?? process.env).CLEAROTRON_AI || DEFAULT_ENGINE_ID),
-      mode: "probe-error", basis: "driver-bug", detail: null,
-      headline: "the engine probe itself failed to run", fix: `This is a bug in the probe, not a fault on this box: ${String(e?.message ?? e)}` };
+  let verdict = await doorProbe(opts);
+  if (RECHECKED_MODES.has(verdict.mode)) {
+    const first = verdict;
+    console.error(`[preflight] ${probeFailureText(first)}${first.detail ? `\n  engine said: ${first.detail}` : ""}\n`
+      + `  CHECKING AGAIN in ${REFRESH_LOCK_WAIT_MS / 1000}s (${first.mode}/${first.basis}): the engine could not renew its sign-in just now.`);
+    await (opts.wait ?? sleep)(REFRESH_LOCK_WAIT_MS);
+    verdict = { ...await doorProbe(opts),
+      recheckedAfter: { mode: first.mode, basis: first.basis, detail: first.detail, waitedMs: REFRESH_LOCK_WAIT_MS } };
   }
   if (verdict.ok) return verdict;
   if (probeVerdictLane(verdict) !== "configuration") return { ...verdict, warning: probeWeatherWarning(verdict) };
   const detail = verdict.detail ? `\n  engine said: ${verdict.detail}` : "";
   throw new Error(`[preflight] ${probeFailureText(verdict)}${detail}`);
+}
+
+/**
+ * How long the door waits before checking a locked refresh again: the lock goes stale 60 s after its holder last
+ * renewed it (Claude Code 2.1.295 renews it every 5 s while it holds it), so 65 s from the first answer is past
+ * that whenever the holder stopped.
+ */
+export const REFRESH_LOCK_WAIT_MS = 65_000;
+/** The verdicts the door checks once more after that wait: a sign-in renewal that could not happen just now. */
+const RECHECKED_MODES = new Set(["refresh-locked", "refresh-failed"]);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** One probe, as the door reads it: every throw from underneath is a verdict (see `preflightEngineTurn`). */
+async function doorProbe(opts) {
+  try {
+    return await probeEngineTurn(opts);
+  } catch (e) {
+    return { ok: false, engine: String((opts?.env ?? process.env).CLEAROTRON_AI || DEFAULT_ENGINE_ID),
+      mode: "probe-error", basis: "driver-bug", detail: null,
+      headline: "the engine probe itself failed to run", fix: `This is a bug in the probe, not a fault on this box: ${String(e?.message ?? e)}` };
+  }
 }

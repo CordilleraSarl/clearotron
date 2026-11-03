@@ -76,7 +76,7 @@ test("no repair instruction is composed at its dispatch site — every one goes 
   assert.deepEqual(bespoke.map((b) => `pipeline.mjs:${b.line} ${b.detail}`), [],
     "a repair instruction is composed INLINE at its dispatch site.\n"
     + "  Register it in driver/repair-composers.mjs and call repairFollowup(\"<stage>:<trigger>\", {…}) instead.\n"
-    + "  An unregistered composer is invisible to the #865 agreement guard — it walks the registry, and\n"
+    + "  An unregistered composer is invisible to the recording-agreement guard — it walks the registry, and\n"
     + "  a composer it cannot walk is one that can order a hand-write on a stage whose grant refuses it\n"
     + "  while the guard reports that stage clean in all three directions. That happened, on matter-frame.");
 });

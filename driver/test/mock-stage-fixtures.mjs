@@ -803,7 +803,21 @@ export function synthesisFindings(runDir = null, msg = "") {
   // `finding_ask_answer_key_unknown`. Heals on the repair turn that NAMES the ask_answers array, and on
   // nothing else, so the test shows the named repair is what recovers the run.
   const askAnswerBad = process.env.MOCK_ASK_ANSWER_BAD === "1" && !/"ask_answers" array/.test(msg);
-  return synthesisFindingsInner(runDir, badFinding, actionsAbsent, { actionBroken, askAnswerBad });
+  const text = synthesisFindingsInner(runDir, badFinding, actionsAbsent, { actionBroken, askAnswerBad });
+  // MOCK_LINT_REPAIR_ACTIONS — the writer's delivery-check repair edits the record's forward legal steps, as a repair
+  // that withdraws findings or restates a step does: "rewrite" restates action 1's open-state clause, "drop" removes
+  // action 1, "add" adds a step where the record had none. Keyed on the repair message, so every earlier save carries
+  // the steps as MOCK_ACTIONS wrote them.
+  if (!process.env.MOCK_LINT_REPAIR_ACTIONS || !WRITER_LINT_REPAIR.test(msg)) return text;
+  const doc = JSON.parse(text);
+  if (process.env.MOCK_LINT_REPAIR_ACTIONS === "add" && Array.isArray(doc.actions) && !doc.actions.length) {
+    doc.actions = [{ id: 1, kind: "consent", text: "Obtain consent from Mystery Owner LLC before filing in the US.", ordinals: [1] }];
+    return JSON.stringify(doc);
+  }
+  if (!Array.isArray(doc.actions) || !doc.actions.length) return text;
+  if (process.env.MOCK_LINT_REPAIR_ACTIONS === "rewrite") doc.actions[0] = { ...doc.actions[0], condition: "Consent from Mystery Owner LLC to the filing in the US is not yet in hand." };
+  if (process.env.MOCK_LINT_REPAIR_ACTIONS === "drop") doc.actions = doc.actions.slice(1).map((a, i) => ({ ...a, id: i + 1 }));
+  return JSON.stringify(doc);
 }
 function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent = false, { actionBroken = false, askAnswerBad = false } = {}) {
   // doc 50: the mock mirrors PRODUCTION emission — the CURRENT dictated schema_version, band-rated UNDER
@@ -941,6 +955,10 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
               ...(actionBroken ? { bogus_key: 1 } : {}) }]
         : process.env.MOCK_ACTIONS === "advisory"
           ? [{ id: 1, kind: "client-fact", text: "Confirm whether the older US filing is your own.", ordinals: [] }]
+        // two forward legal steps, each its own condition, so a repair can restate or withdraw one and leave the other
+        : process.env.MOCK_ACTIONS === "two-conditions"
+          ? [{ id: 1, kind: "consent", text: "Obtain consent from Mystery Owner LLC before filing in the US.", condition: "Consent from Mystery Owner LLC is not yet in hand.", ordinals: [1] },
+              { id: 2, kind: "consent", text: "Obtain a letter of consent from Mystery Owner LLC before filing in the EU.", ordinals: [1] }]
           : [],
     }),
   });

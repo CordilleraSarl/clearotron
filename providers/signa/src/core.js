@@ -425,6 +425,14 @@ function finishSearchRequest(body, p) {
   // kernel then cannot test the ceiling and every band returns `incomplete`. So it is not an option
   // the caller may pass; it is a condition of the contract, set here where no call site can forget it.
   body.options = { ...(p.options && typeof p.options === "object" ? p.options : {}), include_total: true };
+  // ── the whole goods text, asked for on EVERY call too ───────────────────────────────────────────
+  // The register's default answer carries "the first 280 characters" of each goods statement, and
+  // `include: ["full_goods_services"]` "returns the full goods and services text instead" (docs.signa.so,
+  // Search Trademarks, `include`, top-level as the reference places it; a search is "10 per page" either
+  // way). Without it the band held each long statement cut, and the full record arrived only at delivery,
+  // so a cited record's classes could be written up as "cut and unread" while the run went on to fetch them
+  // whole. The rows say they were asked for it (`goods_whole`, below).
+  body.include = ["full_goods_services"];
   return body;
 }
 
@@ -592,7 +600,11 @@ export function normalizeRecord(rec, officeHint = null) {
 // near-identical records delivered none of them while reporting success.
 //
 // The signa-named keys stay: rowScreen and the search tool's own output read them.
-function normalizeSearchRow(rec) {
+//
+// `goods_whole` says the request asked for each goods statement whole (`include`, buildSearchRequest), so an
+// unflagged statement on this row is the whole of its class at any length (record-goods.mjs, rowGoods). Absent
+// on a row from an answer that did not ask, which keeps the default answer's rule.
+function normalizeSearchRow(rec, { goodsWhole = false } = {}) {
   const owner0 = Array.isArray(rec.owners) ? rec.owners[0] : null;
   const owner = rec.owner_name ?? owner0?.name ?? null;
   const classes = normalizeClasses(rec);
@@ -617,6 +629,7 @@ function normalizeSearchRow(rec) {
     // the channels that found it, and the terms or filter values it matched. It replaced the per-row
     // `match_explanation` and `matched_terms`, which the register removed on 2026-10-05.
     match: rec.match && typeof rec.match === "object" ? rec.match : null,
+    ...(goodsWhole ? { goods_whole: true } : {}),
     raw: rec,
   };
 }
@@ -662,7 +675,7 @@ export function readTotal(body) {
   return { total: Number.isFinite(p.total_count) ? p.total_count : null, approximate: false };
 }
 
-export function normalizeSearchResponse(body, echoQuery) {
+export function normalizeSearchResponse(body, echoQuery, { goodsWhole = false } = {}) {
   // A NON-ANSWER (the response did not parse, or parsed into something with no data[]) reports
   // total_hits NULL, never 0 — the same rule as the corsearch and clarivate normalizers. It matters
   // MORE here, not less: an empty page 0 with has_more:false simply ENDS the loop, so a truncated 200
@@ -723,7 +736,7 @@ export function normalizeSearchResponse(body, echoQuery) {
     has_more: body?.has_more === true,
     next_cursor: body?.pagination?.cursor ?? null,
     took_ms: meta.execution_time_ms ?? null,
-    results: data.map(normalizeSearchRow),
+    results: data.map((rec) => normalizeSearchRow(rec, { goodsWhole })),
     request_id: body?.request_id ?? null,
   };
 }
@@ -877,7 +890,8 @@ export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}
       + `${unreadable.join(", ")} filter compares letters as written, so it can match nothing. Its zero is not a count `
       + `of filings and is not taken as this search's answer. ${searchTargetLabel(params).slice(0, 120)}` };
   }
-  return { type: "text", text: JSON.stringify(normalizeSearchResponse(r.body, params.query), null, 2) };
+  return { type: "text", text: JSON.stringify(normalizeSearchResponse(r.body, params.query,
+    { goodsWhole: Array.isArray(body.include) && body.include.includes("full_goods_services") }), null, 2) };
 }
 
 // ── A TEXT FILTER CANNOT READ A TERM THAT MIXES ALPHABETS ─────────────────────────────────────────

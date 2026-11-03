@@ -279,6 +279,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-codex-renewal-that-fails-for-a-moment-is-not-a-sign-out.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-codex-stage-runs-without-the-sign-ins-apps.test.mjs": {
           "tests": 1,
           "asserts": 5,
@@ -348,6 +354,12 @@
         "a-correction-after-the-fold-is-handed-the-record-its-patch-updates.test.mjs": {
           "tests": 8,
           "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-correction-carries-the-answer-that-names-its-findings.test.mjs": {
+          "tests": 9,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -480,6 +492,12 @@
         "a-cut-refuses-a-version-already-out.test.mjs": {
           "tests": 4,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-cut-statement-is-read-whole-from-the-register-page-the-run-saved.test.mjs": {
+          "tests": 9,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -735,6 +753,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-finding-written-on-goods-the-register-cut-is-handed-the-whole-text.test.mjs": {
+          "tests": 6,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
         "a-findings-check-names-every-finding-it-fails-at-once.test.mjs": {
           "tests": 2,
           "asserts": 5,
@@ -772,6 +796,12 @@
           "todos": 0
         },
         "a-follow-up-re-runs-only-what-is-missing.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-follow-up-row-is-added-once.test.mjs": {
           "tests": 4,
           "asserts": 9,
           "skips": 0,
@@ -852,6 +882,12 @@
         "a-goods-slice-and-an-added-class-read-as-themselves.test.mjs": {
           "tests": 5,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-goods-statement-asked-for-whole-is-read-whole.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -1074,6 +1110,12 @@
         "a-late-synthesis-save-keeps-the-seams-writes.test.mjs": {
           "tests": 2,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-layer-row-names-every-register-not-searched.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -1350,6 +1392,12 @@
         "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
           "tests": 4,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-plan-audit-line-cannot-open-a-section.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -1678,8 +1726,8 @@
           "todos": 0
         },
         "a-release-note-cannot-be-counted-twice.test.mjs": {
-          "tests": 12,
-          "asserts": 33,
+          "tests": 14,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -1698,6 +1746,12 @@
         "a-removed-control-does-not-delete-the-setting-behind-it.test.mjs": {
           "tests": 6,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-renamed-line-is-not-a-removed-line.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -3856,14 +3910,14 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 46,
-          "asserts": 240,
+          "tests": 55,
+          "asserts": 289,
           "skips": 0,
           "todos": 0
         },
         "engine-turn-door.pipeline.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -6573,6 +6627,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-delivered-conditions-follow-a-repair-that-rewrites-or-drops-a-step.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
         "the-delivered-files-say-what-was-retrieved-not-what-was-read.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -9200,6 +9260,12 @@
         "providers/signa/test/a-rate-limit-refusal-is-waited-out.test.mjs": {
           "tests": 10,
           "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/a-search-asks-for-the-whole-goods-text.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
