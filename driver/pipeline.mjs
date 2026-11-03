@@ -6226,8 +6226,12 @@ export function correctionsExtra(P, depth = null, framework = null, reading = co
   // THE RUNG RIDES THE CORRECTIVE RE-EMISSION, byte-identically with the fresh dispatch. Appended rather
   // than threaded through `repairFollowup`'s fields so both dispatches carry the SAME STRING from the
   // SAME function, and an arm can compare them without knowing how either is assembled.
+  // THE RECORD ITS PATCH UPDATES. The save patches the writer's own record, and the flags name its findings in its
+  // numbering; from the delivery seam on, findings.json is the folded record, renumbered. So while a fold is in force,
+  // a correction re-armed on a later pass is handed the writer's record (record-fold.mjs), as the lint's repair is: a
+  // number read off the folded record names another finding there, and the next one after it a finding already held.
   return repairFollowup("synthesis:corrective", {
-    narrative: P.narrative, findings: P.findings, placement: P.placement,
+    narrative: P.narrative, findings: modelRecordPath(P.runDir, P.findings), placement: P.placement,
     rulingsTail, scope, worklist, review,
   }) + stageCharter("synthesis", depth, framework);
 }
@@ -7607,8 +7611,9 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
   const rows = rec.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null, ordinals: flagOrdinals(f) }));
   const review = readFileSync(Pv.seniorEyeReview, "utf8");
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
+  // The writer's own record, in the numbering of the items and of the patch, while the delivery fold is in force.
   const followup = repairFollowup("synthesis:post-repair-corrective", {
-    narrative: P.narrative, findings: P.findings, placement: P.placement, rulingsTail,
+    narrative: P.narrative, findings: modelRecordPath(runDir, P.findings), placement: P.placement, rulingsTail,
     items: named, renumbered: anyRenumbered(items), worklist: correctionsWorklist(rows, { afterRepair: true }), review, whole,
   });
   const before = lastAcceptedCall(runDir);
@@ -7677,7 +7682,8 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
     trigger: "corrective-findings",
     ...(resume.correction ? { correction: resume.correction } : {}),
-    followup: repairFollowup("synthesis:corrective-findings", { findings: P.findings, named, seniorEyeReview: P.seniorEyeReview, adds: Boolean(resume.correction) }) + stageCharter("synthesis", ctx.depth, ctx.framework),
+    // The writer's own record while a fold is in force, as the correction's own message names it (`correctionsExtra`).
+    followup: repairFollowup("synthesis:corrective-findings", { findings: modelRecordPath(run.runDir, P.findings), named, seniorEyeReview: P.seniorEyeReview, adds: Boolean(resume.correction) }) + stageCharter("synthesis", ctx.depth, ctx.framework),
   });
   if (readState().stale) {
     runLog(run.runDir, { event: "corrective-findings-stale", named });
@@ -14786,8 +14792,10 @@ async function pipelineInner(job, opts = {}) {
       const rc = firstRef.key
         ? await stage("narrative-refutation", ctx, {
             force: true, sessionKey: firstRef.key, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck",
+            // The record its flags and the table above number, which is the writer's own while a fold is in force: a
+            // correction that saved nothing leaves the earlier pass's fold standing (record-fold.mjs).
             followup: repairFollowup("narrative-refutation:verdict-recheck", {
-              narrative: P.narrative, findings: P.findings, seniorEyeReview: P.seniorEyeReview,
+              narrative: P.narrative, findings: modelRecordPath(run.runDir, P.findings), seniorEyeReview: P.seniorEyeReview,
               correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry,
               writerExclusions: writerExclusionBlock(P, { review: "later", named: correctionsScope?.positions ?? [] }),
             }),
@@ -18719,9 +18727,13 @@ function experimentEngineName() {
  * The cap is deliberately far above any real number of concurrent draws, because this lock exists to be
  * SEEN and never to ration. A draw that blocked here would be a new failure mode in place of an old one.
  */
-/** Which findings the review is asked to ground in a profile, from the findings, the framework's bands and the depth. */
+/**
+ * Which findings the review is asked to ground in a profile, from the findings, the framework's bands and the depth. Read
+ * from the writer's own record while a fold is in force, in the numbering of the narrative the review reads and of the
+ * flags it writes (record-fold.mjs).
+ */
 export const reviewProfileSelection = (ctx) => profileOrdinals({
-  findings: safeReadJson(ctx.paths.findings),
+  findings: safeReadJson(modelRecordPath(ctx.paths.runDir, ctx.paths.findings)),
   bandOrder: ctx.framework?.bands ?? null,
   maxRank: ctx.depth?.profileKeptBandRank ?? null,
 });

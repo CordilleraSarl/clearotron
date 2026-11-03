@@ -217,6 +217,9 @@ const correctiveStateReads = (P) => [
   { path: driverDir(P.runDir, "refutation-calls", "call-001.json"), kind: "driver-side", why: "readAcceptedFlags: the review's typed flags, the corrective worklist's source" },
   { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side", why: "the writer's declinations the corrective pass starts from" },
   { path: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE), kind: "driver-side", why: "correctionsExtra names each excluded position a flag is about, with its mark, owner and row, from the exclusions the review was shown" },
+  // The writer's own record while a fold is in force, which the correction is handed in place of the folded one.
+  { path: driverDir(P.runDir, "fold.json"), kind: "driver-side", why: "modelRecordPath: whether findings.json is the folded record, which decides the record correctionsExtra names" },
+  { path: driverDir(P.runDir, "findings-unfolded.json"), kind: "conditional", why: "named in the correction's message only while a fold is in force: the writer's own record, which its patch updates" },
 ];
 
 const UNDECLARED = {
