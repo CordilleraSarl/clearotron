@@ -726,7 +726,19 @@ const RATE_LIMIT_RE = /\b429\b|rate.?limit|usage limit|quota|too many requests|i
 // A SIGN-IN THAT CAN NO LONGER BE REFRESHED, in codex's own words (measured on a live install, 2026-09-11).
 // Narrow on purpose: a register provider's 401 or 403 can land in a stage's stderr too, and reading that as
 // the operator's codex login having expired would send them to sign in again for nothing.
-const REFRESH_FAILED_RE = /refresh token (?:has|was) already been used|access token could not be refreshed|failed to refresh token/i;
+//
+// A REFUSED RENEWAL ONLY: a 401 at renewal, or codex's words for a token spent, expired or revoked. 0.162.0
+// says "Failed to refresh token status=401 …" and "Your access token could not be refreshed because …"; the
+// live capture of 2026-09-11 said "Failed to refresh token: 401 Unauthorized: …already been used…". A bare
+// "failed to refresh token" also matched every renewal that failed for a passing reason, because 0.162.0
+// writes that line for each one: a 503, a dropped connection, and an outage the renewal recovered from
+// within the same turn (measured offline, 2026-11-03). Read as a sign-out, each of those ended the stage's
+// retries on its first attempt.
+const REFRESH_FAILED_RE = /refresh token (?:has|was) already been used|access token could not be refreshed|failed to refresh token(?::| status=) ?401\b/i;
+// …AND A RENEWAL THAT FAILED WITHOUT BEING REFUSED, which is not a sign-out: the line codex writes for any
+// renewal attempt that did not succeed. Its own signal, read only where the refusal above is absent, so the
+// run door can check again after a wait (engine/probe.mjs) while a stage retries as on any failed turn.
+const REFRESH_ATTEMPT_FAILED_RE = /failed to refresh token/i;
 
 // A retry hint, WHEN THE MESSAGE HAPPENS TO CARRY ONE. Two anchored shapes and nothing clever: an
 // explicit timestamp, or a relative delay with a unit. Anything else yields undefined and the driver
@@ -805,6 +817,7 @@ function settleTuple({ r, ev, resumeRef }) {
   const rateLimitText = `${ev.turnFailed || ""}\n${ev.streamError || ""}\n${r.stderr || ""}`;
   const rateLimited = !killed && RATE_LIMIT_RE.test(rateLimitText);
   const signedOut = !killed && REFRESH_FAILED_RE.test(rateLimitText);
+  const refreshFailed = !killed && !signedOut && REFRESH_ATTEMPT_FAILED_RE.test(rateLimitText);
   const resetsAt = rateLimited ? parseResetHint(rateLimitText) : undefined;
   return {
     code: killed ? 137 : (failed ? (r.rawCode || 1) : 0),
@@ -859,6 +872,9 @@ function settleTuple({ r, ev, resumeRef }) {
       // The engine's sign-in could not be refreshed: what the operator runs to fix it. The gateway names the
       // stage's failure with it.
       signedOut: signedOut ? "codex sign-in expired — run `codex login`, then start the search again" : undefined,
+      // A renewal attempt failed and was not refused. Read by the run door only; a stage's ladder treats the
+      // turn as any failed turn.
+      refreshFailed: refreshFailed || undefined,
       // Every tool call refused and none completed: codex's own sandbox on this host, and what fixes it. The
       // turn is still `ok` here; when the stage then fails, the gateway names its failure with this, as it
       // names a sign-in, instead of the missing file the refusal left behind.

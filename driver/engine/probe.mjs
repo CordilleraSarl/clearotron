@@ -366,6 +366,12 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // outside the configuration lane, and the one the run door checks again once the lock has gone stale.
   if (REFRESH_LOCKED_RE.test(text)) return ranAndFailed("refresh-locked", "text-match");
 
+  // A CODEX RENEWAL THAT FAILED WITHOUT BEING REFUSED (the adapter's signal, openai-agent.mjs), before the
+  // sign-in pattern too: a dropped connection's line names the renewal address, ".../oauth/token", and the
+  // pattern read that as a sign-out (measured offline on 0.162.0, 2026-11-03). The same answer as the locked
+  // refresh, and the same second check at the door.
+  if (s.refreshFailed) return ranAndFailed("refresh-failed", "text-match");
+
   // THE MODE STAYS `signed-out` UNDER EVERY WAY OF PAYING, because the run door refuses on the mode and a
   // refused credential is as much this machine's to fix as a signed-out program. Only the words follow how
   // the turn is paid for.
@@ -711,13 +717,16 @@ export async function probeEngineTurn({
  * the probe again. The second verdict is the door's answer: a pass starts the run, a configuration fault
  * refuses, and a lock still held is weather like any other. It carries the first as `recheckedAfter`, for the
  * run record. `opts.wait` stands in for the wait, in tests.
+ *
+ * A CODEX RENEWAL THAT FAILED WITHOUT BEING REFUSED gets the same second check: a passing outage at the
+ * provider's sign-in, which a minute's wait may outlast.
  */
 export async function preflightEngineTurn(opts = {}) {
   let verdict = await doorProbe(opts);
-  if (verdict.mode === "refresh-locked") {
+  if (RECHECKED_MODES.has(verdict.mode)) {
     const first = verdict;
     console.error(`[preflight] ${probeFailureText(first)}${first.detail ? `\n  engine said: ${first.detail}` : ""}\n`
-      + `  CHECKING AGAIN in ${REFRESH_LOCK_WAIT_MS / 1000}s (${first.mode}/${first.basis}), once the engine's sign-in refresh lock has gone stale.`);
+      + `  CHECKING AGAIN in ${REFRESH_LOCK_WAIT_MS / 1000}s (${first.mode}/${first.basis}): the engine could not renew its sign-in just now.`);
     await (opts.wait ?? sleep)(REFRESH_LOCK_WAIT_MS);
     verdict = { ...await doorProbe(opts),
       recheckedAfter: { mode: first.mode, basis: first.basis, detail: first.detail, waitedMs: REFRESH_LOCK_WAIT_MS } };
@@ -734,6 +743,8 @@ export async function preflightEngineTurn(opts = {}) {
  * that whenever the holder stopped.
  */
 export const REFRESH_LOCK_WAIT_MS = 65_000;
+/** The verdicts the door checks once more after that wait: a sign-in renewal that could not happen just now. */
+const RECHECKED_MODES = new Set(["refresh-locked", "refresh-failed"]);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** One probe, as the door reads it: every throw from underneath is a verdict (see `preflightEngineTurn`). */

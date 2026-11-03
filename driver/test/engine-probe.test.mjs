@@ -896,6 +896,38 @@ test("through the real claude adapter: the program's own output under a held ref
   } finally { delete process.env.MOCK_CLAUDE_REFRESH_LOCKED; }
 });
 
+// ── a Codex sign-in renewal that failed for a moment: not a sign-out at the door either ──────────────
+// Measured offline on codex 0.162.0, 2026-11-03: a dropped connection during the probe's renewal names the
+// renewal address in codex's line, ".../oauth/token", and the signed-out pattern read its `oauth` as a sign-out,
+// so the door refused the job as "openai-agent is not signed in".
+
+test("a Codex renewal that failed for a moment is not a sign-out at the door, whatever its line names", () => {
+  const dropped = readFileSync(join(HERE, "fixtures", "codex-renewal-dropped.txt"), "utf8");
+  const v = classifyProbe({ engine: "openai-agent", tuple: tupleOf({ stderr: dropped, signals: { refreshFailed: true } }) });
+  assert.equal(v.mode, "refresh-failed", JSON.stringify(v));
+  assert.equal(v.basis, "text-match");
+  assert.equal(probeVerdictLane(v), "weather");
+  assert.match(v.detail, /Failed to refresh token: error sending request for url/, "codex's own words ride beneath");
+  // Without the adapter's signal, the same words are what the door refused on: the pattern reads `oauth`.
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: tupleOf({ stderr: dropped }) }).mode, "signed-out");
+});
+
+test("through the real codex adapter: a renewal that failed for a moment, then the door's second check", async () => {
+  const marker = () => join(mkdtempSync(join(tmpdir(), "clearotron-codex-renewal-")), "failed");
+  const v = await probeWith(CODEX, { MOCK_CODEX_RENEWAL_FAILED: marker() });
+  assert.equal(v.mode, "refresh-failed", JSON.stringify(v));
+  assert.equal(probeVerdictLane(v), "weather");
+
+  process.env.MOCK_CODEX_RENEWAL_FAILED = marker();
+  try {
+    const waits = [];
+    const door = await preflightEngineTurn({ env: CODEX, wait: async (ms) => { waits.push(ms); } });
+    assert.equal(door.ok, true, JSON.stringify(door));
+    assert.deepEqual(waits, [REFRESH_LOCK_WAIT_MS], "the same single check after a wait that a locked Claude refresh gets");
+    assert.equal(door.recheckedAfter.mode, "refresh-failed");
+  } finally { delete process.env.MOCK_CODEX_RENEWAL_FAILED; }
+});
+
 test("the verdicts on the file: every word in it passes; a word short, or no file, warns; a failed write refuses", () => {
   const words = ["probe-00000001", "probe-00000002", "probe-00000003"];
   const said = tupleOf({ code: 0, stdout: words.join(" ") });
