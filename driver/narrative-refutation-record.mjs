@@ -39,7 +39,7 @@ import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS } from "./verify.mjs";
+import { parseVerdict, countCitedDefects, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
 
@@ -121,12 +121,11 @@ export function renderRefutation(verdict, flags, planAudit) {
 // the flags above it counted none, and the round-trip refused both calls of a recheck as
 // `refutation_roundtrip_kinds:fact` (measured on a saved recheck, 2026-11-03). Any heading-shaped line also
 // ends the audit for `countCitedDefects`. Such a line renders in bold, its words unchanged: it still reads as
-// a sub-heading, and no parser reads it as one.
-const SECTION_HEADING = /^#{1,6}\s+\S|^[A-Z][A-Z /&-]{5,}$/;
+// a sub-heading, and no parser reads it as one. The heading test is the parsers' own (verify.mjs).
 function planAuditLine(line) {
   const s = String(line);
   const t = s.trim();
-  return SECTION_HEADING.test(t) ? `**${t.replace(/^#{1,6}\s+/, "")}**` : s;
+  return SECTION_HEADING_RE.test(t) ? `**${t.replace(/^#{1,6}\s+/, "")}**` : s;
 }
 
 const HEADING_OR_LIST = /^\s*(?:#{1,6}\s|(?:\*{0,2})(?:[-*•]|\d+[.)]|[A-Za-z][.)])(?:\*{0,2})\s)/;
