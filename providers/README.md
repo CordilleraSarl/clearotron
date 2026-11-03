@@ -44,7 +44,7 @@ the vendor's own site, over either adapter that needs a sales agreement.
 
 One API key, issued self-serve from the vendor's own site: no sales call, no contract, no waiting. It
 covers the **US and EU registers together**, plus WIPO/Madrid, the UK, Switzerland, Canada, Australia,
-France, Singapore, Norway and Sweden — **eleven offices**. Native sound-alike search, exact result counts,
+France, Spain, Mexico, Singapore, Norway and Sweden — **thirteen offices**. Native sound-alike search, exact result counts,
 opposition state, and one call returns every layer of rights binding a territory, so an EU trade mark that
 blocks use in France is actually found rather than missed by a national-only search.
 

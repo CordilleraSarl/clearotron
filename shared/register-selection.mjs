@@ -74,9 +74,9 @@ const USPTO_WARNINGS = [
 
 export const PROVIDERS = [
   {
-    id: "signa", label: "Signa — recommended: US + EU + WIPO and eight more offices", cost: "subscription",
+    id: "signa", label: "Signa — recommended: US + EU + WIPO and ten more offices", cost: "subscription",
     covers: "the US and EU registers together, plus WIPO/Madrid, the UK, Switzerland, Canada, Australia, "
-      + "France, Singapore, Norway and Sweden — eleven offices — with native sound-alike search, exact "
+      + "France, Spain, Mexico, Singapore, Norway and Sweden — thirteen offices — with native sound-alike search, exact "
       + "result counts and opposition state. One self-serve key, no sales call.",
     credentials: ["SIGNA_API_KEY"],
     signup: SIGNA_SIGNUP,

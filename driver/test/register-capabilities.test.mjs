@@ -324,9 +324,9 @@ test("resolveRegions translates then coverage-checks, and defers what the provid
   // signa adds no EU or Madrid register, and that is the point of reading the contract rather than
   // appending a code: its offices declare all three layers `returns` (territory_match: "protection"
   // makes ONE France query return the EU and Madrid rights protecting France). What it adds is the EU
-  // members' own registers it covers, France and Sweden; the others are disclosed, not claimed.
+  // members' own registers it covers, Spain, France and Sweden; the others are disclosed, not claimed.
   const r2 = resolveRegions(["US", "EU", "JP"], capabilitiesFor("signa"));
-  assert.deepEqual(r2.regions, ["uspto", "euipo", "inpi-fr", "prv"]);
+  assert.deepEqual(r2.regions, ["uspto", "euipo", "es", "inpi-fr", "prv"]);
   assert.equal(r2.deferred.length, 1);
   assert.equal(r2.deferred[0].jurisdiction, "JP");
   assert.match(r2.deferred[0].reason, /not covered by the active register provider \(signa\)/);

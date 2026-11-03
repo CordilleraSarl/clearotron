@@ -11,14 +11,19 @@
 // now a patch on the registers it carries, merged onto the stored record and judged whole, so nothing the
 // call did not name can move.
 //
-// WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: two
-// different rows for one ordinal, whether both are the call's own, both nested or one of each, a register sent inside
-// the findings object and again beside it with another value, a nested row that is
-// not a finding object with a positive whole-number ordinal, a top-level row that does not name a finding the record
-// holds, a marker the decode does not read, a narrative that is not an object of the sections the tool describes,
-// a key off the record's ladder, an envelope that would re-version the record, and a first save that has no stored
-// record to patch. Those arms below are characterisation:
-// green before and after.
+// WHAT MAIN STILL DECIDES. A shape this change does not newly accept gets main's refusal, byte for byte: a register
+// sent inside the findings object and again beside it with another value, a marker the decode does not read, a
+// narrative that is not an object of the sections the tool describes, a key off the record's ladder, an envelope that
+// would re-version the record, and a first save that has no stored record to patch. Those arms below are
+// characterisation: green before and after.
+//
+// A PATCH THE RECORD CANNOT TAKE FOR ITS ROWS NAMES THE ROW (ruled 2026-11-02). Where the rows are all that keep a
+// call from reading as a patch, main read it as a whole call, or as a record the object replaced, and refused it for
+// a missing spine, a record with no list, the run's owed records, or a row the replaced record did not hold. It is now
+// refused for its first row, in the order sent, that the record cannot take, and nothing the run holds moves: two
+// different rows for one ordinal, in the parser's words for a list carrying them; a row that is not a finding object
+// with a positive whole-number ordinal, a row list that is not a list, and a row aimed at a finding the record does
+// not hold, each in the words it meets on a plain patch.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync, readdirSync } from "node:fs";
@@ -234,18 +239,19 @@ test("the merge reads a findings object with no list as registers onto the store
 
 // ── WHAT MAIN STILL DECIDES: characterisation, green before and after ──────────────────────────────────
 
-test("a nested row that conflicts with a top-level row for the same ordinal keeps main's refusal", () => {
+// The parser's words for a list carrying two findings under one ordinal.
+const DUPLICATE_2 = /^synthesis_findings_invalid: finding_ordinal_duplicate:2 \(each finding's ordinal must be unique\)$/;
+
+test("a nested row that conflicts with a top-level row for the same ordinal is refused for the row", () => {
   const dir = saved();
   const other = { ...ROW2(), legal_position: "A different correction for the same ordinal." };
-  refusesUnchanged(dir, { findings: { findings_patch: [other] }, findings_patch: [ROW2()] },
-    /^synthesis_patch_ordinal_unknown:2 — this run holds no finding with that ordinal/, "a conflicting nested row");
+  refusesUnchanged(dir, { findings: { findings_patch: [other] }, findings_patch: [ROW2()] }, DUPLICATE_2, "a conflicting nested row");
 });
 
-test("two nested rows for one ordinal with different content keep main's refusal", () => {
+test("two nested rows for one ordinal with different content are refused for the row", () => {
   const dir = saved();
   const other = { ...ROW2(), legal_position: "A different correction for the same ordinal." };
-  refusesUnchanged(dir, { findings: { findings_patch: [ROW2(), other] } },
-    /^synthesis_findings_invalid: findings_key_unknown:findings_patch \(keys are EXACTLY: /, "two differing nested rows");
+  refusesUnchanged(dir, { findings: { findings_patch: [ROW2(), other] } }, DUPLICATE_2, "two differing nested rows");
 });
 
 test("a key off the record's ladder inside the findings object keeps main's refusal", () => {
@@ -535,7 +541,7 @@ const VERDICT_ONLY = { verdict: `${NARRATIVE.verdict} Changed.` };
 for (const [what, run, call, re] of [
   ["beside a register", () => saved(), { findings: { coverage: COVERAGE }, made_up_register: 1 }, offLadder("made_up_register")],
   ["beside a register and a row", () => saved(), { findings: { coverage: COVERAGE }, made_up_register: 1, findings_patch: [ROW2()] },
-    /^synthesis_patch_ordinal_unknown:2 — this run holds no finding with that ordinal/],
+    /^synthesis_patch_ordinal_unknown:2 — this row neither updates an existing finding nor adds a finding allowed by this correction/],
   ["beside a whole narrative and a register", () => saved(), { narrative: NARRATIVE, findings: { coverage: COVERAGE }, made_up_register: 1 },
     /^synthesis_findings_invalid: findings_unparseable: "findings" must be a JSON ARRAY of finding objects$/],
   ["beside a corrected verdict and a register", () => saved(), { narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, made_up_register: 1 },
@@ -580,29 +586,35 @@ for (const [what, call, re] of [
 //
 // A finding row names the finding it replaces by its ordinal, a positive whole number. Rows sent inside a list-less
 // findings object are lifted beside the call's own only where every one of them is an object carrying such an
-// ordinal. A nested row that is not (a string, null, an array, a row with no ordinal, or one whose ordinal is
-// text, a fraction, zero or below zero) is no row to lift: the object is read as main reads it, and the call meets main's refusal
-// byte for byte, with or without a narrative or a top-level row beside it.
-const UNKNOWN_ORDINAL_2 = /^synthesis_patch_ordinal_unknown:2 — this run holds no finding with that ordinal, so this patch is aimed at a finding that does not exist\. Send the ordinal as it appears in the record you emitted$/;
+// ordinal. A nested row that is not is no row to lift, and the call is refused for it as a plain patch refuses that row,
+// with or without a narrative or a top-level row beside it: a string, null or an array with the shape refusal, and a
+// row with no ordinal, or one whose ordinal is text, a fraction, zero or below zero, in the parser's words for that
+// ordinal.
+const UNKNOWN = (o) => new RegExp(`^synthesis_patch_ordinal_unknown:${o} — this row neither updates an existing finding nor adds a finding allowed by this correction\\. Use the existing finding's ordinal for an update\\. Add a new finding only for an excluded position named in this correction's flags that no current finding delivers\\. The added finding must not be withdrawn and must cite a record from that position\\.$`);
+// The parser's words for an ordinal that is missing, not a whole number, or below 1, with the transport's prefix.
+const ORDINAL_INVALID = (v) => new RegExp(`^synthesis_findings_invalid: finding_ordinal_invalid:${v} \\(ordinal must be an integer >= 1\\)$`);
+// The shape refusal, for a row list that is not a list and a row that is not a finding object.
+const PATCH_SHAPE = /^synthesis_patch_shape: `findings_patch` must be an array of complete finding objects\. Each row needs a positive whole-number `ordinal`: an existing finding's ordinal for an update, or a new ordinal for an addition allowed by this correction\.$/;
+const UNKNOWN_ORDINAL_2 = UNKNOWN(2);
 const NO_ORDINAL = () => { const { ordinal: _ordinal, ...row } = ROW2(); return row; };
 
 for (const [what, call, re] of [
-  ["a row with no ordinal", () => ({ findings: { findings_patch: [NO_ORDINAL()] } }), offLadder("findings_patch")],
-  ["a row that is a string", () => ({ findings: { findings_patch: ["a row that is text"] } }), offLadder("findings_patch")],
-  ["a row that is null", () => ({ findings: { findings_patch: [null] } }), offLadder("findings_patch")],
-  ["a row that is an array", () => ({ findings: { findings_patch: [[ROW2()]] } }), offLadder("findings_patch")],
-  ["a row whose ordinal is text", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: "2" }] } }), offLadder("findings_patch")],
-  ["a row whose ordinal is not a whole number", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: 2.5 }] } }), offLadder("findings_patch")],
-  ["a row whose ordinal is zero", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: 0 }] } }), offLadder("findings_patch")],
-  ["a row whose ordinal is below zero", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: -1 }] } }), offLadder("findings_patch")],
+  ["a row with no ordinal", () => ({ findings: { findings_patch: [NO_ORDINAL()] } }), ORDINAL_INVALID("")],
+  ["a row that is a string", () => ({ findings: { findings_patch: ["a row that is text"] } }), PATCH_SHAPE],
+  ["a row that is null", () => ({ findings: { findings_patch: [null] } }), PATCH_SHAPE],
+  ["a row that is an array", () => ({ findings: { findings_patch: [[ROW2()]] } }), PATCH_SHAPE],
+  ["a row whose ordinal is text", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: "2" }] } }), ORDINAL_INVALID(2)],
+  ["a row whose ordinal is not a whole number", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: 2.5 }] } }), ORDINAL_INVALID("2\\.5")],
+  ["a row whose ordinal is zero", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: 0 }] } }), ORDINAL_INVALID(0)],
+  ["a row whose ordinal is below zero", () => ({ findings: { findings_patch: [{ ...ROW2(), ordinal: -1 }] } }), ORDINAL_INVALID(-1)],
   ["a row whose ordinal is zero, with a whole narrative, beside a top-level row",
-    () => ({ narrative: NARRATIVE, findings: { findings_patch: [{ ...ROW2(), ordinal: 0 }] }, findings_patch: [ROW2()] }), offLadder("findings_patch")],
-  ["a good row beside a row with no ordinal", () => ({ findings: { findings_patch: [ROW2(), NO_ORDINAL()] } }), offLadder("findings_patch")],
-  ["a row with no ordinal, with a whole narrative", () => ({ narrative: NARRATIVE, findings: { findings_patch: [NO_ORDINAL()] } }), offLadder("findings_patch")],
-  ["a row with no ordinal, beside a top-level row", () => ({ findings: { findings_patch: [NO_ORDINAL()] }, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
-  ["a row that is null, beside a register and a top-level row", () => ({ findings: { coverage: COVERAGE, findings_patch: [null] }, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+    () => ({ narrative: NARRATIVE, findings: { findings_patch: [{ ...ROW2(), ordinal: 0 }] }, findings_patch: [ROW2()] }), ORDINAL_INVALID(0)],
+  ["a good row beside a row with no ordinal", () => ({ findings: { findings_patch: [ROW2(), NO_ORDINAL()] } }), ORDINAL_INVALID("")],
+  ["a row with no ordinal, with a whole narrative", () => ({ narrative: NARRATIVE, findings: { findings_patch: [NO_ORDINAL()] } }), ORDINAL_INVALID("")],
+  ["a row with no ordinal, beside a top-level row", () => ({ findings: { findings_patch: [NO_ORDINAL()] }, findings_patch: [ROW2()] }), ORDINAL_INVALID("")],
+  ["a row that is null, beside a register and a top-level row", () => ({ findings: { coverage: COVERAGE, findings_patch: [null] }, findings_patch: [ROW2()] }), PATCH_SHAPE],
 ]) {
-  test(`a nested row that is not a finding object with a positive whole-number ordinal keeps main's refusal: ${what}`, () => {
+  test(`a nested row that is not a finding object with a positive whole-number ordinal is refused for the row: ${what}`, () => {
     refusesUnchanged(saved(), call(), re, `a nested row that is not a finding object with a positive whole-number ordinal: ${what}`);
   });
 }
@@ -631,39 +643,65 @@ for (const [what, narrative] of [
 //
 // A register patch carries its own rows beside the findings object, and the merge replaces each finding a row names.
 // So a list-less object reads as registers only where every one of those rows is a finding object whose ordinal, a
-// positive whole number, names a finding the stored record holds. A row list that is not a list, or null, a row that
-// is not such an object, or a row aimed at a finding the record does not hold, is read as main reads it, and the call
-// meets main's refusal byte for byte: the list-less record is refused as unparseable, the narrative for its missing
-// spine, or a row for an ordinal the object, read as the whole record, does not hold.
+// positive whole number, names a finding the stored record holds (or adds one for a position a correction's flags
+// name). A row list that is not a list, or null, a row that is not such an object, or a row aimed at a finding the
+// record does not hold is refused for the row, as a plain patch refuses it. Read as main read it, the
+// list-less record was refused as unparseable, the narrative for its missing spine, or a row for an ordinal the object,
+// read as the whole record, did not hold.
 const SPINE_MISSING = /^synthesis_spine_missing: `narrative\.spine` is the dominant-element spine — the cross-finding read no other artifact on this run holds\. It is the core of the product and there is no clean answer that omits it$/;
 const WITH_ROWS = (rows) => ({ narrative: NARRATIVE, findings: { coverage: COVERAGE }, findings_patch: rows });
 
 for (const [what, run, call, re] of [
-  ["a row list that is text", () => saved(), () => WITH_ROWS("a row list sent as text"), UNPARSEABLE],
-  ["a row list that is an object", () => saved(), () => WITH_ROWS({ ordinal: 2 }), UNPARSEABLE],
-  ["a row list that is null", () => saved(), () => WITH_ROWS(null), UNPARSEABLE],
-  ["a row list that is null, with no narrative", () => saved(), () => ({ findings: { coverage: COVERAGE }, findings_patch: null }), UNPARSEABLE],
-  ["a row that is null", () => saved(), () => WITH_ROWS([null]), UNPARSEABLE],
-  ["a row that is text", () => saved(), () => WITH_ROWS(["a row that is text"]), UNPARSEABLE],
-  ["a row with no ordinal", () => saved(), () => WITH_ROWS([NO_ORDINAL()]), UNPARSEABLE],
-  ["a row whose ordinal is zero", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 0 }]), UNPARSEABLE],
-  ["a row whose ordinal is not a whole number", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 2.5 }]), UNPARSEABLE],
-  ["a row whose ordinal is text", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: "2" }]), UNPARSEABLE],
-  ["a row on an ordinal the record does not hold", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 99 }]), UNPARSEABLE],
+  ["a row list that is text", () => saved(), () => WITH_ROWS("a row list sent as text"), PATCH_SHAPE],
+  ["a row list that is an object", () => saved(), () => WITH_ROWS({ ordinal: 2 }), PATCH_SHAPE],
+  ["a row list that is null", () => saved(), () => WITH_ROWS(null), PATCH_SHAPE],
+  ["a row list that is null, with no narrative", () => saved(), () => ({ findings: { coverage: COVERAGE }, findings_patch: null }), PATCH_SHAPE],
+  ["a row that is null", () => saved(), () => WITH_ROWS([null]), PATCH_SHAPE],
+  ["a row that is text", () => saved(), () => WITH_ROWS(["a row that is text"]), PATCH_SHAPE],
+  ["a row with no ordinal", () => saved(), () => WITH_ROWS([NO_ORDINAL()]), ORDINAL_INVALID("")],
+  ["a row whose ordinal is zero", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 0 }]), ORDINAL_INVALID(0)],
+  ["a row whose ordinal is not a whole number", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 2.5 }]), ORDINAL_INVALID("2\\.5")],
+  ["a row whose ordinal is text", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: "2" }]), ORDINAL_INVALID(2)],
+  ["a row on an ordinal the record does not hold", () => saved(), () => WITH_ROWS([{ ...ROW2(), ordinal: 99 }]), UNKNOWN(99)],
   ["a row on an ordinal the record does not hold, beside a corrected verdict", () => saved(),
-    () => ({ narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, findings_patch: [{ ...ROW2(), ordinal: 99 }] }), SPINE_MISSING],
+    () => ({ narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, findings_patch: [{ ...ROW2(), ordinal: 99 }] }), UNKNOWN(99)],
   ["the same, on a run that owes its records", () => saved({ owed: true }),
-    () => ({ narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, findings_patch: [{ ...ROW2(), ordinal: 99 }] }), SPINE_MISSING],
+    () => ({ narrative: VERDICT_ONLY, findings: { coverage: COVERAGE }, findings_patch: [{ ...ROW2(), ordinal: 99 }] }), UNKNOWN(99)],
 ]) {
-  test(`a top-level row list that does not name findings the record holds keeps main's refusal: ${what}`, () => {
+  test(`a top-level row list that does not name findings the record holds is refused for the row: ${what}`, () => {
     refusesUnchanged(run(), call(), re, `a top-level row list that does not name findings the record holds: ${what}`);
   });
 }
 
-test("rows on an ordinal the record does not hold, beside a nested row, keep main's refusal and leave no reading", () => {
+// ── A PLAIN PATCH'S ROW IS REFUSED AS A NESTED ROW IS ────────────────────────────────────────────────
+//
+// A patch carrying its rows with no findings object is the plain form, and its rows meet the same refusals: a row list
+// that is not a list, or a row that is not a finding object, the shape refusal; a row whose ordinal is missing, not a
+// whole number, or below 1, the parser's words for that ordinal; and a row on an ordinal that neither names a finding
+// the record holds nor adds one the correction allows, the words for that. The accepted record stands.
+for (const [what, call, re] of [
+  ["a row list that is text", () => ({ findings_patch: "a row list sent as text" }), PATCH_SHAPE],
+  ["a row that is null", () => ({ findings_patch: [null] }), PATCH_SHAPE],
+  ["a row that is text", () => ({ findings_patch: ["a row that is text"] }), PATCH_SHAPE],
+  ["a row that is an array", () => ({ findings_patch: [[ROW2()]] }), PATCH_SHAPE],
+  ["a row the record holds, before a row that is null", () => ({ findings_patch: [ROW2(), null] }), PATCH_SHAPE],
+  ["a row with no ordinal", () => ({ findings_patch: [NO_ORDINAL()] }), ORDINAL_INVALID("")],
+  ["a row with no ordinal, beside a corrected verdict", () => ({ narrative: VERDICT_ONLY, findings_patch: [NO_ORDINAL()] }), ORDINAL_INVALID("")],
+  ["a row whose ordinal is text", () => ({ findings_patch: [{ ...ROW2(), ordinal: "3" }] }), ORDINAL_INVALID(3)],
+  ["a row whose ordinal is not a whole number", () => ({ findings_patch: [{ ...ROW2(), ordinal: 1.5 }] }), ORDINAL_INVALID("1\\.5")],
+  ["a row whose ordinal is zero", () => ({ findings_patch: [{ ...ROW2(), ordinal: 0 }] }), ORDINAL_INVALID(0)],
+  ["a row whose ordinal is below zero", () => ({ findings_patch: [{ ...ROW2(), ordinal: -1 }] }), ORDINAL_INVALID(-1)],
+  ["a row on an ordinal the record does not hold", () => ({ findings_patch: [{ ...ROW2(), ordinal: 99 }] }), UNKNOWN(99)],
+]) {
+  test(`a plain patch's row that the record cannot take is refused for the row: ${what}`, () => {
+    refusesUnchanged(saved(), call(), re, `a plain patch: ${what}`);
+  });
+}
+
+test("rows on an ordinal the record does not hold, beside a nested row, are refused for the row and leave no reading", () => {
   const dir = saved();
   refusesUnchanged(dir, { findings: { findings_patch: [{ ...record().findings[2], legal_position: "The third, corrected." }] },
-    findings_patch: [ROW2(), { ...ROW2(), ordinal: 99 }] }, UNKNOWN_ORDINAL_2, "a nested row beside a top-level row the record does not hold");
+    findings_patch: [ROW2(), { ...ROW2(), ordinal: 99 }] }, UNKNOWN(99), "a nested row beside a top-level row the record does not hold");
   assert.deepEqual(readings(dir), [], "a call read as main reads it left a reading");
 });
 
@@ -672,50 +710,50 @@ test("rows on an ordinal the record does not hold, beside a nested row, keep mai
 // A row replaces the finding its ordinal names. A call carrying two different rows for one ordinal, both its own,
 // both nested in the findings object, or one of each, does not say which of them is the correction: read as
 // registers, the last was applied and the other dropped without a word, and which one was kept turned on the order
-// the rows were sent in. Such a call is read as main reads it, and meets main's refusal byte for byte, in whichever
-// order its rows come. A row sent again with the same content is one row (below), and a plain patch with no findings
-// object is main's own reading, which keeps the last row as it always did.
+// the rows were sent in. Such a call is refused for the second row, in the parser's words for a list carrying two
+// findings under one ordinal, in whichever order its rows come. A row sent again with the same content is one row
+// (below), and a plain patch with no findings object is main's own reading, which keeps the last row as it always did.
 const ROW2B = () => ({ ...ROW2(), legal_position: "A different correction for the same ordinal." });
 const ROW3 = () => ({ ...record().findings[2], legal_position: "The corrected legal position for the third invented finding." });
 const TWO_ROWS = (rows, findings = { coverage: COVERAGE }) => ({ findings, findings_patch: rows });
 
 for (const [what, run, call, re] of [
-  ["a whole narrative and a register, beside them", () => saved(), () => WITH_ROWS([ROW2(), ROW2B()]), UNPARSEABLE],
-  ["a whole narrative and a register, beside them in the other order", () => saved(), () => WITH_ROWS([ROW2B(), ROW2()]), UNPARSEABLE],
+  ["a whole narrative and a register, beside them", () => saved(), () => WITH_ROWS([ROW2(), ROW2B()]), DUPLICATE_2],
+  ["a whole narrative and a register, beside them in the other order", () => saved(), () => WITH_ROWS([ROW2B(), ROW2()]), DUPLICATE_2],
   ["a whole narrative and a register, beside them with another finding's row between", () => saved(),
-    () => WITH_ROWS([ROW2(), ROW3(), ROW2B()]), UNPARSEABLE],
+    () => WITH_ROWS([ROW2(), ROW3(), ROW2B()]), DUPLICATE_2],
   ["a whole narrative and a register, beside them with the first sent again last", () => saved(),
-    () => WITH_ROWS([ROW2(), ROW2B(), ROW2()]), UNPARSEABLE],
+    () => WITH_ROWS([ROW2(), ROW2B(), ROW2()]), DUPLICATE_2],
   ["a whole narrative and a register, beside them, on a run that owes its records", () => saved({ owed: true }),
-    () => WITH_ROWS([ROW2(), ROW2B()]), /^synthesis_unaccounted_records:3 of 3\b/],
+    () => WITH_ROWS([ROW2(), ROW2B()]), DUPLICATE_2],
   ["a corrected verdict and a register, beside them", () => saved(),
-    () => ({ narrative: VERDICT_ONLY, ...TWO_ROWS([ROW2(), ROW2B()]) }), SPINE_MISSING],
-  ["a register, beside them", () => saved(), () => TWO_ROWS([ROW2(), ROW2B()]), UNKNOWN_ORDINAL_2],
-  ["a register, beside them in the other order", () => saved(), () => TWO_ROWS([ROW2B(), ROW2()]), UNKNOWN_ORDINAL_2],
+    () => ({ narrative: VERDICT_ONLY, ...TWO_ROWS([ROW2(), ROW2B()]) }), DUPLICATE_2],
+  ["a register, beside them", () => saved(), () => TWO_ROWS([ROW2(), ROW2B()]), DUPLICATE_2],
+  ["a register, beside them in the other order", () => saved(), () => TWO_ROWS([ROW2B(), ROW2()]), DUPLICATE_2],
   ["a register and a nested row repeating the second, beside them", () => saved(),
-    () => TWO_ROWS([ROW2(), ROW2B()], { coverage: COVERAGE, findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2(), ROW2B()], { coverage: COVERAGE, findings_patch: [ROW2B()] }), DUPLICATE_2],
   ["a register and a nested row repeating the first, beside them", () => saved(),
-    () => TWO_ROWS([ROW2(), ROW2B()], { coverage: COVERAGE, findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2(), ROW2B()], { coverage: COVERAGE, findings_patch: [ROW2()] }), DUPLICATE_2],
   ["a nested row repeating the second, beside them", () => saved(),
-    () => TWO_ROWS([ROW2(), ROW2B()], { findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2(), ROW2B()], { findings_patch: [ROW2B()] }), DUPLICATE_2],
   ["a nested row repeating the first, beside them", () => saved(),
-    () => TWO_ROWS([ROW2(), ROW2B()], { findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2(), ROW2B()], { findings_patch: [ROW2()] }), DUPLICATE_2],
   ["a nested row repeating the second, beside them in the other order", () => saved(),
-    () => TWO_ROWS([ROW2B(), ROW2()], { findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2B(), ROW2()], { findings_patch: [ROW2()] }), DUPLICATE_2],
   ["a nested row repeating the first, beside them in the other order", () => saved(),
-    () => TWO_ROWS([ROW2B(), ROW2()], { findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2B(), ROW2()], { findings_patch: [ROW2B()] }), DUPLICATE_2],
   ["a nested row and a top-level row, the nested one the original", () => saved(),
-    () => TWO_ROWS([ROW2B()], { findings_patch: [ROW2()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2B()], { findings_patch: [ROW2()] }), DUPLICATE_2],
   ["a nested row and a top-level row, the top-level one sent first", () => saved(),
-    () => ({ findings_patch: [ROW2()], findings: { findings_patch: [ROW2B()] } }), UNKNOWN_ORDINAL_2],
+    () => ({ findings_patch: [ROW2()], findings: { findings_patch: [ROW2B()] } }), DUPLICATE_2],
   ["two nested rows, one of them repeating the top-level row", () => saved(),
-    () => TWO_ROWS([ROW2()], { findings_patch: [ROW2(), ROW2B()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2()], { findings_patch: [ROW2(), ROW2B()] }), DUPLICATE_2],
   ["two nested rows in the other order, one of them repeating the top-level row", () => saved(),
-    () => TWO_ROWS([ROW2()], { findings_patch: [ROW2B(), ROW2()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2()], { findings_patch: [ROW2B(), ROW2()] }), DUPLICATE_2],
   ["a nested row beside a top-level row sent twice", () => saved(),
-    () => TWO_ROWS([ROW2(), ROW2()], { findings_patch: [ROW2B()] }), UNKNOWN_ORDINAL_2],
+    () => TWO_ROWS([ROW2(), ROW2()], { findings_patch: [ROW2B()] }), DUPLICATE_2],
 ]) {
-  test(`a call carrying two different rows for one ordinal keeps main's refusal: ${what}`, () => {
+  test(`a call carrying two different rows for one ordinal is refused for the row: ${what}`, () => {
     refusesUnchanged(run(), call(), re, `two different rows for one ordinal: ${what}`);
   });
 }

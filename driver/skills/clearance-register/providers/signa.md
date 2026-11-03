@@ -99,7 +99,7 @@ Signa's nested record; the full upstream record is under `_raw`):
 `filingRoute` is what lets a finding say which register a right sits on. Use it rather than inferring the
 route from the office code.
 
-## Coverage — Signa's live office set (11) + the disclosure rule
+## Coverage — Signa's live office set (13) + the disclosure rule
 
 Derived from `GET /v1/offices` and committed as a snapshot (`providers/signa/src/offices.generated.js`), so
 a change in what we claim to search arrives as a reviewable diff:
@@ -117,8 +117,10 @@ a change in what we claim to search arrives as a reviewable diff:
 | Singapore | `ipos` | SG |
 | Norway | `nipo` | NO |
 | Sweden | `prv` | SE |
+| Spain OEPM | `es` | ES |
+| Mexico IMPI | `mx` | MX |
 
-**Each of the eleven is searched as a TERRITORY, not as one register.** The adapter sends
+**Each of the thirteen is searched as a TERRITORY, not as one register.** The adapter sends
 `filters.jurisdictions` + `territory_match: "protection"` — every right with effect there, whatever
 register it sits on — rather than `filters.offices`, which searches the national register alone. The
 difference is not a margin. On the same term:
@@ -138,7 +140,7 @@ force there, and a finding may sit on any layer of it.
 
 **NOT covered: China (CNIPA), Germany, Japan, Korea, Benelux, and other nationals.** The territory
 expansion above does not change this and must not be read as widening it: `SIGNA_OFFICE_KEYS` maps only
-these eleven, an unmapped region abandons the translation, and a territory the vendor does not index is
+these thirteen, an unmapped region abandons the translation, and a territory the vendor does not index is
 not reachable by asking the question a different way. A Madrid designation of Germany is found only when
 Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, give
 that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — disclose
@@ -163,7 +165,7 @@ rows.
 **So do not disclose an office-scoped shortfall here; there is not one.** This paragraph described the
 earlier behaviour and outlived it: the executor changed and the doctrine did not, which is the same skew
 that left the grant at two tools while the server served four. The residual gap is the office set above —
-a territory OUTSIDE the eleven, which gets the `deferred` row the previous paragraph specifies.
+a territory OUTSIDE the thirteen, which gets the `deferred` row the previous paragraph specifies.
 
 ## Record base host
 
