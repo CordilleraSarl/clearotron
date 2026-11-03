@@ -867,6 +867,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-goods-statement-asked-for-whole-is-read-whole.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-goods-test-miss-is-not-called-other-goods.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -9218,6 +9224,12 @@
         "providers/signa/test/a-rate-limit-refusal-is-waited-out.test.mjs": {
           "tests": 10,
           "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/a-search-asks-for-the-whole-goods-text.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
