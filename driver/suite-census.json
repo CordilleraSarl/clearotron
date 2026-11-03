@@ -754,8 +754,8 @@
           "todos": 0
         },
         "a-finding-written-on-goods-the-register-cut-is-handed-the-whole-text.test.mjs": {
-          "tests": 5,
-          "asserts": 26,
+          "tests": 6,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -6624,6 +6624,12 @@
         "the-cut-reads-its-version-pull-request-with-fields-gh-accepts.test.mjs": {
           "tests": 3,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-delivered-conditions-follow-a-repair-that-rewrites-or-drops-a-step.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
