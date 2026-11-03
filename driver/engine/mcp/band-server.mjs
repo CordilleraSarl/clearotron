@@ -25,7 +25,8 @@ import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
 import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish, rowGoods } from "../../record-goods.mjs";
-import { recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, goodsFromLabel } from "../../goods-evidence.mjs";
+import { recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, goodsFromLabel, registerPageLabel } from "../../goods-evidence.mjs";
+import { savedStatusPages } from "../../saved-register-pages.mjs";
 import { DEFAULT_LEDGER_PATH } from "../../provider-usage.mjs";
 
 const RUN_DIR = process.env.CLEAROTRON_BAND_RUN_DIR || "";
@@ -301,9 +302,15 @@ const shapeGoodsTest = () => {
   testCache = { words, matched: goodsWordsMatched(words, { stems: true }) };
   return testCache;
 };
+// THE REGISTER'S OWN PAGES THE RUN'S RESEARCH SAVED (saved-register-pages.mjs), read again at the start of each lookup
+// and each record call, never once per server as the held bodies are: a stage's own research question can save a
+// record's page after the stage's first lookup, and the stage reads it from its next one.
+const statusPages = savedStatusPages(RUN_DIR);
+let pagesNow = new Map();
 // The record's body first; where the run holds none, the statements the row carries, as the shape reads them
-// (`rowGoods`, a statement the register cut marked so); a row that carries its goods as one string stands in last.
-const goodsOfRow = (r) => goodsFor(goodsIndex(), r) ?? rowGoods(r)
+// (`rowGoods`, a statement the register cut marked so, or continued from a saved page); a row that carries its goods as
+// one string stands in last.
+const goodsOfRow = (r) => goodsFor(goodsIndex(), r) ?? rowGoods(r, pagesNow)
   ?? (typeof r?.goods === "string" && r.goods.trim() ? [{ classes: [], text: r.goods.trim(), ...(untaggedIsEnglish(r?.record_id) ? {} : { en: false }) }] : null);
 // WHAT A RECORD'S GOODS REST ON, from the run's own files and its fetches, by the shared reader's one rule
 // (goods-evidence.mjs `recordGoodsEvidence`): the supporting evidence the record holds, never the last call made
@@ -386,6 +393,7 @@ function bandLookup(params = {}) {
   }
 
   const all = Array.isArray(band?.enumerated) ? band.enumerated : [];
+  pagesNow = statusPages();
   const hits = [];
   let matched = 0;
   for (const r of all) {
@@ -557,7 +565,8 @@ function bandRecord(params = {}) {
   const parsed = hit.miss !== "unparsable-uri";
   const key = normalizeRecordUri(uri) || normalizeRecordUri(`/${String(uri ?? "").trim().replace(/^\/+/, "")}`);
   const bandRow = parsed && key ? bandRowFor(key) : null;
-  const statements = bandRow ? rowGoods(bandRow) : null;
+  if (bandRow) pagesNow = statusPages();
+  const statements = bandRow ? rowGoods(bandRow, pagesNow) : null;
   const fetched = parsed ? runEvidence().fetches : null;
   const fetch = fetched && key ? (fetched.get(key) ?? fetched.get(key.split("/").pop())) : null;
   const failed = Boolean(fetch?.failed && !fetch.ok);
@@ -572,7 +581,8 @@ function bandRecord(params = {}) {
     return { isError: true, text: `${why} ${rest}` };
   }
   const goodsLines = statements.map((g) => JSON.stringify({ class: g.classes.join(",") || null, text: g.text,
-    goods_from: g.cut ? "search answer, cut by the register" : g.unknown ? "search answer, completeness not established" : "search answer" }));
+    goods_from: g.cut ? "search answer, cut by the register" : g.unknown ? "search answer, completeness not established"
+      : g.page ? registerPageLabel(g.page.question) : "search answer" }));
   const text = [why, ...goodsLines, rest].join("\n");
   const parts = splitAtLines(text, RESPONSE_CHARS);
   const wanted = Number(params.part ?? 1);

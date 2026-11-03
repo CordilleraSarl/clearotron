@@ -3576,7 +3576,7 @@ export function withGoodsFrom(ctx, P, rows, read = null) {   // @internal — dr
     const evidence = read ?? goodsEvidenceOfDrops(P, runPrefix, uris);
     return rows.map((r) => {
       const e = r?.kind !== "page" && r?.uri ? evidence.get(r.uri) : null;
-      return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source }) } : r;
+      return e ? { ...r, goods_from: goodsFromLabel({ state: e.goods, source: e.source, question: e.question }) } : r;
     });
   } catch (e) { return unlabelled(e?.message ?? e); }
 }
@@ -8912,7 +8912,8 @@ function goodsEvidenceOfDrops(P, runPrefix, uris, gateFetched = null) {
   }
   for (const uri of uris) {
     const e = recordGoodsEvidence(rowOf.get(normalizeRecordUri(uri)) ?? { record_id: uri }, { goods, held, fetches });
-    out.set(uri, { goods: e.state, source: e.source });
+    // A register page the research saved is named by the question that saved it, which the write-up's label carries.
+    out.set(uri, { goods: e.state, source: e.source, ...(e.question != null ? { question: e.question } : {}) });
   }
   return out;
 }
