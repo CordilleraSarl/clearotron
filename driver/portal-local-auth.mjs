@@ -415,9 +415,15 @@ export function localCredentialHandoff({ isTTY, resetCommand = "" }) {
  * true is that the secret does not appear in the non-terminal form, and only reading the lines shows
  * that. The arm passes a passphrase in on the non-terminal branch anyway and requires it absent, so a
  * caller that wires the secret through the wrong branch reds rather than leaking.
+ *
+ * HANDED DOWN, IT IS NOT THIS PROCESS'S TO WITHHOLD. Under `clearotron start` this standard error is a
+ * pipe the supervisor reads, so it is never a terminal, and "the passphrase is NOT printed here" landed a
+ * few lines above the supervisor's box that printed it. The supervisor minted it and decides where it
+ * goes, so this says only that it went there.
  */
-export function firstRunCredentialLines({ handoff, credentialPath, email, passphrase = null, resetCommand = "" }) {
+export function firstRunCredentialLines({ handoff, credentialPath, email, passphrase = null, resetCommand = "", handedDown = false }) {
   const head = `local sign-in: no credential at ${credentialPath}, so one has been created for ${email}.`;
+  if (handedDown) return [head, "  Its passphrase is in the box printed below; where it cannot be shown, the box says how to get one."];
   if (handoff?.printPassphrase) {
     return [head, `  PASSPHRASE: ${passphrase}`,
       "  Write it down now. It is not stored anywhere in a form that can be read back, and this line will not be printed again."];

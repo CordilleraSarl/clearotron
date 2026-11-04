@@ -5354,6 +5354,7 @@ const PORT = PORT_CHOICE.port;
       // branch is the wiring mistake the arm plants for, and it would not be visible in the output.
       for (const line of firstRunCredentialLines({
         handoff, credentialPath, email: LOCAL_USER, resetCommand,
+        handedDown: Boolean(String(process.env.PORTAL_LOCAL_PASSPHRASE ?? "").trim()),
         passphrase: handoff.printPassphrase ? established.passphrase : null,
       })) log(line);
       record = readLocalCredential(credentialPath);
