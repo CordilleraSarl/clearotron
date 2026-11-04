@@ -6897,6 +6897,18 @@
           "skips": 0,
           "todos": 0
         },
+        "the-goods-check-reads-the-evidence-the-writer-was-given.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-goods-evidence-is-kept-where-the-writers-record-comes-from-the-salvage.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-goods-record-reads-a-search-rows-goods-through-the-shared-reader.test.mjs": {
           "tests": 3,
           "asserts": 10,
@@ -6904,10 +6916,10 @@
           "todos": 0
         },
         "the-goods-repair-reaches-the-text-a-grouped-finding-displays.test.mjs": {
-          "tests": 6,
-          "asserts": 79,
+          "tests": 7,
+          "asserts": 92,
           "skips": 0,
-          "todos": 1
+          "todos": 0
         },
         "the-grant-sentence-and-its-carve-out-hold-per-provider.test.mjs": {
           "tests": 6,

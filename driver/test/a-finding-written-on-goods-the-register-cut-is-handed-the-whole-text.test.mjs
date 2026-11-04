@@ -91,7 +91,8 @@ test("a record handed to the repair is not handed again, and its outcome is kept
 test("the delivery check is given what the writer had and what was handed, and its repair names the writer's numbering", () => {
   // The lint is called inline in pipeline.mjs, so its wiring is pinned in the source.
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
-  assert.match(src, /goodsEvidence: readGoodsEvidence\(run\.runDir\), goodsHanded: readGoodsHanded\(run\.runDir\),/);
+  assert.match(src, /goodsEvidence: readGoodsEvidenceAsWritten\(run\.runDir\) \?\? readGoodsEvidence\(run\.runDir\), goodsHanded: readGoodsHanded\(run\.runDir\),/,
+    "the check is not given the goods evidence as the writer had it");
   assert.match(src, /const foldUnreadable = fold == null && existsSync\(driverDir\(run\.runDir, FOLD_FILE\)\);/);
   assert.match(src, /const shown = foldUnreadable \? null : keptModelOrdinal\(fold, f\.ordinal\);/);
   assert.match(src, /const citing = shown == null \? null : citingModelOrdinal\(fold, f\.ordinal, f\.uri, writersRecord\(\), citesRecord\);/);

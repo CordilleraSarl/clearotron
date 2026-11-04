@@ -925,11 +925,11 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
     const f = findings.find((x) => String(x.ordinal) === ord.trim());
     if (f && uri && !f.owner.registrations.some((r) => r.uri === uri)) f.owner.registrations.push({ ...f.owner.registrations[0], uri });
   }
-  // MOCK_GOODS_CUT_CLAIM=<ordinal> — that finding's sentence says part of a record's goods statement is cut and unread
-  // (GOODS_CUT_CLAIM), the way a finding written on a statement the register cut says so. Once the writer's
-  // delivery-check repair has corrected it (MOCK_GOODS_REPAIR=correct), no later save says it again. The writer's ordinal.
-  if (process.env.MOCK_GOODS_CUT_CLAIM) {
-    const f = findings.find((x) => String(x.ordinal) === String(process.env.MOCK_GOODS_CUT_CLAIM));
+  // MOCK_GOODS_CUT_CLAIM=<ordinal>[,…] — each such finding's sentence says part of a record's goods statement is cut and
+  // unread (GOODS_CUT_CLAIM), the way a finding written on a statement the register cut says so. Once the writer's
+  // delivery-check repair has corrected one (MOCK_GOODS_REPAIR), no later save says it again. The writer's ordinals.
+  for (const ord of String(process.env.MOCK_GOODS_CUT_CLAIM || "").split(",").map((s) => s.trim()).filter(Boolean)) {
+    const f = findings.find((x) => String(x.ordinal) === ord);
     if (f && !goodsClaimCorrected(runDir).has(f.ordinal)) f.net = `${f.net} ${GOODS_CUT_CLAIM}`;
   }
   // MOCK_FOREIGN_LINK — a seat that copies an office's own page into every register link, and keeps doing
@@ -1184,11 +1184,11 @@ export function namedBand(axis, msg = "") {
     { state: "incomplete", ...(process.env.MOCK_BAND_UNPLANNED ? {} : { qid: `supp:${axis}:mock:crowd:00000002` }), query: `${axis} / bare-element crowd`, total_hits: 2416, fetched: 1, sample: [],
       reason: "crowd descriptor — saturated element, count-only" },
   ];
-  // MOCK_BAND_GOODS_CUT=<uri> — that record's band row carries its class 9 statement as a register's search answer does
-  // when it cut the statement (`raw.classifications`, `goods_services_text_truncated: true`), so the run records the
-  // record's goods as cut by the register. A record the enumerated block does not hold joins it, as finding 1's owner's.
-  if (process.env.MOCK_BAND_GOODS_CUT) {
-    const uri = process.env.MOCK_BAND_GOODS_CUT;
+  // MOCK_BAND_GOODS_CUT=<uri>[,…] — each such record's band row carries its class 9 statement as a register's search
+  // answer does when it cut the statement (`raw.classifications`, `goods_services_text_truncated: true`), so the run
+  // records the record's goods as cut by the register. A record the enumerated block does not hold joins it, as finding
+  // 1's owner's.
+  for (const uri of String(process.env.MOCK_BAND_GOODS_CUT || "").split(",").map((s) => s.trim()).filter(Boolean)) {
     const raw = { classifications: [{ nice_class: 9, goods_services_text: GOODS_STATEMENT_CUT, goods_services_text_truncated: true }] };
     const row = blocks[0].records.find((r) => r.record_id === uri);
     if (row) row.raw = raw;
@@ -1826,11 +1826,12 @@ export function applyStageWrites(msg, argv) {
           return r.refused ? `mock writer's four-answers patch refused: ${r.refused}` : "mock writer patched the four answers";
         }
       }
-      // MOCK_GOODS_REPAIR=correct|ignore — the writer's delivery-check repair, handed a record's complete goods statements
-      // for a finding that says they are cut (MOCK_GOODS_CUT_CLAIM). "correct": ONE patch carrying the finding the line
-      // names for the claim ("Correct the claim in finding <A>", or "Finding <N> cites" where one finding is named), its
-      // GOODS_CUT_CLAIM sentence removed, as the repair message orders; every later save keeps it removed. "ignore": the
-      // repair saves its accepted record again as it stands. Keyed on the repair message.
+      // MOCK_GOODS_REPAIR=correct|first|ignore — the writer's delivery-check repair, handed a record's complete goods
+      // statements for a finding that says they are cut (MOCK_GOODS_CUT_CLAIM). "correct": ONE patch carrying each
+      // finding a goods line names for the claim ("Correct the claim in finding <A>", or "Finding <N> cites" where one
+      // finding is named), its GOODS_CUT_CLAIM sentence removed, as the repair message orders; every later save keeps it
+      // removed. "first": the same for the first goods line alone, so the claims the other lines name are left standing.
+      // "ignore": the repair saves its accepted record again as it stands. Keyed on the repair message.
       if (process.env.MOCK_GOODS_REPAIR === "ignore" && WRITER_LINT_REPAIR.test(msg)) {
         const held = lastAcceptedCall(runDir);
         if (held) {
@@ -1839,16 +1840,18 @@ export function applyStageWrites(msg, argv) {
           return r.refused ? `mock writer refused re-saving its record: ${r.refused}` : "mock writer re-saved its record as it stands";
         }
       }
-      if (process.env.MOCK_GOODS_REPAIR === "correct" && WRITER_LINT_REPAIR.test(msg)) {
-        const named = /Correct the claim in finding (\d+) where/.exec(msg) ?? /Finding (\d+) cites \S+\. Its earlier goods evidence/.exec(msg);
-        const held = named ? lastAcceptedCall(runDir) : null;
-        const f = (held?.findings?.findings ?? []).find((x) => x?.ordinal === Number(named?.[1]));
-        if (f && String(f.net ?? "").includes(GOODS_CUT_CLAIM)) {
+      if ((process.env.MOCK_GOODS_REPAIR === "correct" || process.env.MOCK_GOODS_REPAIR === "first") && WRITER_LINT_REPAIR.test(msg)) {
+        const claimOf = (line) => (/Correct the claim in finding (\d+) where/.exec(line) ?? /\bFinding (\d+) cites \S+\. Its earlier goods evidence/.exec(line))?.[1];
+        const named = msg.split("\n").map(claimOf).filter(Boolean).map(Number);
+        const targets = process.env.MOCK_GOODS_REPAIR === "first" ? named.slice(0, 1) : named;
+        const held = targets.length ? lastAcceptedCall(runDir) : null;
+        const rows = (held?.findings?.findings ?? []).filter((x) => targets.includes(x?.ordinal) && String(x.net ?? "").includes(GOODS_CUT_CLAIM));
+        if (rows.length) {
           recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
-          const r = recordSynthesis(runDir, { findings_patch: [{ ...f, net: f.net.replace(` ${GOODS_CUT_CLAIM}`, "").trim() }] });
+          const r = recordSynthesis(runDir, { findings_patch: rows.map((f) => ({ ...f, net: f.net.replace(` ${GOODS_CUT_CLAIM}`, "").trim() })) });
           if (r.refused || r.write_failed) return `mock writer's goods correction refused: ${r.refused ?? r.write_failed}`;
-          writeFileSync(goodsClaimCorrectedAt(runDir), JSON.stringify([...new Set([...goodsClaimCorrected(runDir), f.ordinal])]) + "\n");
-          return `mock writer corrected the goods claim in finding ${f.ordinal}`;
+          writeFileSync(goodsClaimCorrectedAt(runDir), JSON.stringify([...new Set([...goodsClaimCorrected(runDir), ...rows.map((f) => f.ordinal)])]) + "\n");
+          return `mock writer corrected the goods claim in finding(s) ${rows.map((f) => f.ordinal).join(", ")}`;
         }
       }
       // THE WRITER. The mock drives the PRODUCTION receiver rather than writing the two files, for the
@@ -2079,12 +2082,11 @@ export function applyStageWrites(msg, argv) {
       // The side-write the old narrative.md branch carried. Same guard it had — CANDSELF and the
       // reco knob both suppressed it there, and both still do.
       if (!process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) mockRegisterRecordWrite(runDir, argv);
-      // MOCK_RECORD_GOODS_WHOLE=<uri> — after the writer's save, the run's record log holds that record's whole body, its
-      // goods one complete English class 9 statement (GOODS_STATEMENT_WHOLE), as a fetch after the writer wrote leaves it.
-      // Only the writer's save writes it, so every band shape derived before the writer read the record's goods from its
-      // band row.
-      if (process.env.MOCK_RECORD_GOODS_WHOLE) {
-        const uri = process.env.MOCK_RECORD_GOODS_WHOLE;
+      // MOCK_RECORD_GOODS_WHOLE=<uri>[,…] — after the writer's save, the run's record log holds each such record's whole
+      // body, its goods one complete English class 9 statement (GOODS_STATEMENT_WHOLE), as a fetch after the writer wrote
+      // leaves it. Only the writer's save writes it, so every band shape derived before the writer read the record's goods
+      // from its band row.
+      for (const uri of String(process.env.MOCK_RECORD_GOODS_WHOLE || "").split(",").map((s) => s.trim()).filter(Boolean)) {
         appendMockRecordBody(runDir, argv, uri, { applicationNumber: uri.slice(uri.lastIndexOf("/") + 1), applicationDate: "2020-01-01",
           statusText: "Registered", jurisdiction: "US", goodsServices: [{ classes: [9], language: "en", description: GOODS_STATEMENT_WHOLE }] });
       }

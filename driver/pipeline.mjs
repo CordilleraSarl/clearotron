@@ -162,7 +162,7 @@ import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, reco
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
 import { citedFindingNumbers } from "./finding-citations.mjs";   // the findings an exclusion's ground cites
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, heldBodiesOf, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, heldBodiesOf, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, readGoodsEvidenceAsWritten, GOODS_EVIDENCE_FILE, GOODS_EVIDENCE_AS_WRITTEN_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations, declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
 import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
@@ -5667,11 +5667,48 @@ function sweepStrayArtifacts(ctx, stageName) {
   } catch { /* a hygiene sweep must never be able to affect a run */ }
 }
 
+// ── THE GOODS EVIDENCE AS THE WRITER HAD IT (goods-evidence.mjs GOODS_EVIDENCE_AS_WRITTEN_FILE) ─────────────────────
+//
+// The delivery check compares a finding that says its goods are cut with the goods evidence the writer was given. That
+// evidence is derived again with every band merge, and the first merge of a resumed pass reads the record bodies the
+// run holds by then: a record the writer had as a cut search answer read as an official record, and the check found no
+// outcome for a record it had handed to the repair, or no longer found a claim the repair left standing.
+//
+// So the evidence a cold dispatch of the writer is given is kept, as it stood when the dispatch began, once the stage
+// has returned a record. A writer that skipped wrote nothing new and leaves the copy as it was. A followup, the delivery
+// check's own repair among them, corrects a record written on the copy already kept, so it leaves the copy too: the
+// check after that repair compares the corrected findings with what they were first written on. A writer dispatched
+// with no evidence leaves no copy, so none can describe an earlier writer.
+//
+// The text of the evidence a cold writer dispatch is given, null where it is given none, and undefined where no copy is
+// to be kept. Never throws.
+export function goodsEvidenceForTheWriter(name, ctx, opts = {}) {   // @internal — driven by its test
+  if (name !== "synthesis" || opts.followup || !ctx?.paths?.runDir) return undefined;
+  try { return readFileSync(driverDir(ctx.paths.runDir, GOODS_EVIDENCE_FILE), "utf8"); } catch { return null; }
+}
+/** Keep the evidence `goodsEvidenceForTheWriter` read, once the writer's stage returned a record it wrote. Never throws. */
+export function keepGoodsEvidenceAsWritten(ctx, r, evidence) {   // @internal — driven by its test
+  if (evidence === undefined || !r?.ok || r.skipped) return;
+  const at = driverDir(ctx.paths.runDir, GOODS_EVIDENCE_AS_WRITTEN_FILE);
+  try {
+    if (evidence == null) rmSync(at, { force: true });
+    else { ensureDriverDir(ctx.paths.runDir); atomicWrite(at, evidence); }
+  } catch (e) {
+    note(`[synthesis] the goods evidence the writer was given could not be kept (${String(e?.message ?? e).slice(0, 100)}) — the delivery check reads the evidence as it stands`);
+  }
+}
+
 async function stage(name, ctx, opts = {}) {
+  const writersEvidence = goodsEvidenceForTheWriter(name, ctx, opts);
   let wedgeCycles = 0;
   for (;;) {
     const r = await stageWithChain(name, ctx, opts);
-    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); await afterLateSynthesisSave(name, ctx, r); return r; }
+    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) {
+      sweepStrayArtifacts(ctx, name);
+      keepGoodsEvidenceAsWritten(ctx, r, writersEvidence);
+      await afterLateSynthesisSave(name, ctx, r);
+      return r;
+    }
     wedgeCycles++;
     note(`[${name}] command-lane wedge — the stage timed out with zero progress (saturated lane). Waiting ${Math.round(LANE_WEDGE_BACKOFF_MS / 1000)}s for it to clear, then re-dispatching (${wedgeCycles}/${LANE_WEDGE_CHAIN_RETRIES}); full per-attempt timeouts preserved.`);
     try { runLog(ctx.paths.runDir, { event: "lane-wedge-retry", stage: name + (ctx.axis ? `:${ctx.axis}` : ""), cycle: wedgeCycles, max: LANE_WEDGE_CHAIN_RETRIES }); } catch { /* telemetry best-effort */ }
@@ -14482,8 +14519,13 @@ async function pipelineInner(job, opts = {}) {
     // passes below run on a record that exists, and their failures are theirs. A failure named here, once its recovery
     // is spent, is recorded as the assessment not completed and delivered without it (the run-level catch), never
     // ended on.
+    // The goods evidence this writer is given is kept as written by its stage (around `stage`), and kept here too where
+    // the record comes from the salvage after a failed dispatch: a re-emit, or the record taken with its foreign links
+    // blanked, completes the record that dispatch wrote on that evidence.
+    const writersEvidence = goodsEvidenceForTheWriter("synthesis", ctx);
     const synth = await asPartNotCompleted("assessment", async () =>
       quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis"));   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
+    keepGoodsEvidenceAsWritten(ctx, synth, writersEvidence);
     recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
     // The corrective re-synthesis is dispatched on the WINNING attempt's key AND model/thinking. A followup's first
     // attempt starts fresh, and it never resumes the synthesis session (no engine resumes by key); but if synthesis
@@ -16893,8 +16935,10 @@ async function pipelineInner(job, opts = {}) {
           // which passes the archived summary.
           reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
           // What each record's goods rested on when the writer wrote, and the records whose whole text a delivery repair
-          // was already handed: a finding written on goods the register cut, whose whole body the run holds now.
-          goodsEvidence: readGoodsEvidence(run.runDir), goodsHanded: readGoodsHanded(run.runDir),
+          // was already handed: a finding written on goods the register cut, whose whole body the run holds now. The
+          // evidence is the copy kept when the writer was dispatched cold, which no later band merge rewrites; a run that
+          // kept none, written before the copy existed, is read on the evidence as it stands.
+          goodsEvidence: readGoodsEvidenceAsWritten(run.runDir) ?? readGoodsEvidence(run.runDir), goodsHanded: readGoodsHanded(run.runDir),
           // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
           // conditions the email carries, as the email composes them.
           overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict),

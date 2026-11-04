@@ -41,6 +41,11 @@ import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 
 export const GOODS_EVIDENCE_SCHEMA_VERSION = 1;
 export const GOODS_EVIDENCE_FILE = "goods-evidence.json";
+// THE EVIDENCE AS THE WRITER HAD IT. The record above is derived again with every band merge, the first merge of a
+// resumed pass among them, from the bodies the run holds by then, so a record the writer had as a cut search answer can
+// read later as an official record held whole. The driver keeps the record a cold dispatch of the writer was given
+// (pipeline.mjs, around `stage`), and the delivery check compares the findings with that copy: what they were written on.
+export const GOODS_EVIDENCE_AS_WRITTEN_FILE = "goods-evidence.as-written.json";
 export const GOODS_STATES = Object.freeze(["complete", "cut", "unknown", "absent", "unavailable", "not-held"]);
 
 const uriKey = (u) => normalizeRecordUri(u);
@@ -263,11 +268,20 @@ export function deriveGoodsEvidence({ records = [], goods = null, held = null, f
   return { schema_version: GOODS_EVIDENCE_SCHEMA_VERSION, totals: goodsEvidenceTotals(rows), records: rows };
 }
 
-/** The record the run wrote, or null when there is none or it will not parse. IMPURE. */
-export function readGoodsEvidence(runDir) {
-  const p = driverDir(runDir, GOODS_EVIDENCE_FILE);
+const readDriverJson = (runDir, name) => {
+  const p = driverDir(runDir, name);
   if (!existsSync(p)) return null;
   try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
+};
+
+/** The record the run wrote, or null when there is none or it will not parse. IMPURE. */
+export function readGoodsEvidence(runDir) {
+  return readDriverJson(runDir, GOODS_EVIDENCE_FILE);
+}
+
+/** The record the writer's last cold dispatch was given, or null when the run kept none or it will not parse. IMPURE. */
+export function readGoodsEvidenceAsWritten(runDir) {
+  return readDriverJson(runDir, GOODS_EVIDENCE_AS_WRITTEN_FILE);
 }
 
 /**
