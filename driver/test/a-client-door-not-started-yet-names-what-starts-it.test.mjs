@@ -34,7 +34,7 @@ test("a fresh install's door is not called an unfinished install, and the senten
     assert.match(said.text, /`START-CMD --background` sets up both/,
       `the sentence does not say which command installs the service and the setting:\n${said.text}`);
     // The two measured facts stay: which halves are missing.
-    assert.match(said.text, new RegExp(`${CLIENT_DOOR_UNIT.replace(/\./g, "\\.")} is not installed`));
+    assert.match(said.text, new RegExp(`${CLIENT_DOOR_UNIT.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} is not installed`));
     assert.match(said.text, /account access \(CLIENT_MCP_ACCOUNT_ACCESS\) is off/);
   }
 });
