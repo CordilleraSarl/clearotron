@@ -106,7 +106,11 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
   // extraVocab (WS-B): the run's profile platform names — a customer's marketplaces are standing
   // surfaces for THAT run, not entities needing introduction (else every non-gaming report fires
   // false orphan-reference flags).
-  const inList = (n) => REF_ALLOWLIST.has(n) || (territories && TERRITORY_VOCAB.has(n)) || Boolean(extraVocab?.has?.(n));
+  // A TERRITORY'S OTHER NAMES ARE TERRITORIES TOO. The map names "United Arab Emirates", so "the UAE" in a list of
+  // countries was named as a party by both checks. The names prose uses besides the map's are already listed once,
+  // for the coverage claims (TERRITORY_NAME_TO_CODE); read at call time, because that list is built further down.
+  const inList = (n) => REF_ALLOWLIST.has(n) || (territories && (TERRITORY_VOCAB.has(n) || TERRITORY_NAME_TO_CODE.has(n)))
+    || Boolean(extraVocab?.has?.(n));
   const isVocab = (tok) => {
     const n = norm(tok);
     if (inList(n)) return true;              // whole-phrase entries ("apple app store", "epic games store")
@@ -141,7 +145,14 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
     bulletOpens.add(b.index + b[0].length);
   for (const m of t.matchAll(/\b([A-Z][a-z]+(?:[ \t]+(?:[A-Z][a-z0-9]+|\d+|&)){1,4}(?:[ \t]+(?:LLC|Inc\.?|GmbH|Ltd\.?|S\.?A\.?|AG|Corp\.?))?)\b/g)) {
     const tok = m[1].trim();
-    if (bulletOpens.has(m.index)) continue;
+    // THE VERB GOES, AND THE NAME AFTER IT STAYS. Skipping the whole candidate also skipped the name an item asks
+    // about: "Verify <a person>", where the person is named nowhere else, went unread. So only the opening word is
+    // dropped, and what follows it is read as any other candidate.
+    if (bulletOpens.has(m.index)) {
+      const rest = tok.replace(/^\S+[ \t]+/, "");
+      if (rest !== tok && rest.split(/\s+/).length >= 2 && !isVocab(rest)) add(rest);
+      continue;
+    }
     if (tok.split(/\s+/).length >= 2 && !isVocab(tok)) add(tok);
   }
   return [...out.values()].filter((tok) => !/^TMP\d+/i.test(tok));
@@ -152,6 +163,21 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
 function check(id, family, surface, pass, detail) {
   return { id, family, surface, pass: Boolean(pass), detail: detail ?? "" };
 }
+
+// A row that states a boundary rather than judging the run. It sits among the checks in the run record, and it never
+// fails, so no failure list, delivery line or repair reads it.
+function notice(id, family, surface, detail) {
+  return { ...check(id, family, surface, true, detail), notice: true };
+}
+
+/** The rows written as notices. A run recorded before a row became one carries it as a failure; delivery skips it. */
+export const NOTICE_IDS = new Set(["placement-rows-without-uri"]);
+
+/**
+ * Whether a delivery surface reports this check as failed: it failed, and it is not a notice. A run recorded before a
+ * row became a notice carries it as a failure, and its workbook, rebuilt, would say a check did not pass. PURE.
+ */
+export const deliveredFailure = (c) => Boolean(c) && !c.pass && !NOTICE_IDS.has(c.id);
 
 // Template integrity (A2): NAME(S) populated; every searched name has its own assessment row; rating
 // positions hold searched names, never adverse marks. Works on the parsed client-summary structures the
@@ -188,11 +214,13 @@ export function templateChecks({ headerName, ratedNames, searchedNames }) {
 //     rule enumeration against the real texts; gameable by repetition, accepted — a false orphan is
 //     reader noise, the worse failure under the lint's posture, and a missed one costs one flag).
 // Orphans are reported in ONE check so a noisy heuristic costs one flag line, not many.
-export function referenceChecks({ actionsText, fullSurface, searchedNames, surface = "report", extraVocab = null, markNames = null, structural = false }) {
+// `introducedIn` is text outside the surface that still introduces a party to its reader: for the email, the report
+// it links, outside the report's own action block.
+export function referenceChecks({ actionsText, fullSurface, searchedNames, surface = "report", extraVocab = null, markNames = null, structural = false, introducedIn = "" }) {
   const body = stripHtml(fullSurface);
   const actions = stripHtml(actionsText);
   const rest = body.replace(actions, " ");
-  const restN = norm(rest);
+  const restN = norm(`${rest} ${stripHtml(introducedIn)}`);
   // sentence-segments for the contextualization rule: sentence ends, em/en-dash asides, semicolons
   const segments = body.split(/(?<=[.!?])\s+|\s+[—–]\s+|;\s+/).map(norm);
   const searchedN = (searchedNames ?? []).map(norm);
@@ -2001,11 +2029,14 @@ export function placementsChecks({ placements }) {
   // only ever existed as a placement — and their absence read as a clean pass on all three.
   //
   // So this NEVER blocks and is never structural. It states the boundary, so a zero from a URI-keyed
-  // gate is not read wider than it was measured. Only failing checks' `detail` reaches a reader, which
-  // is why it is written to flag on presence rather than to pass quietly with a count nobody renders.
+  // gate is not read wider than it was measured.
+  //
+  // A NOTICE, NOT A FAILURE (owner ruling, 2026-11-04). It flagged on presence, as a failing check, and so the
+  // lawyer's workbook said "A machine check on the report did not pass." on runs where nothing had failed. It is now
+  // recorded beside the checks, in the run record, with its count and its words, and no delivery surface reads it.
   const withoutUri = placements.filter((e) => !(Array.isArray(e?.records) && e.records.length)).length;
   if (placements.length && withoutUri) {
-    out.push(check("placement-rows-without-uri", "content-model", "placement", false,
+    out.push(notice("placement-rows-without-uri", "content-model", "placement",
       `${withoutUri} of ${placements.length} placement row(s) name no record URI. This is expected for a common-law candidate (records: [] by contract) and is NOT a defect — it is a COVERAGE BOUNDARY: every URI-keyed carry gate in this driver is silent about these rows rather than clearing them, so a clean result from those gates says nothing about this ${withoutUri}. placement-carry's own join is what covers them; read its classes before treating any of this as carried.`));
   }
   return out;
@@ -2335,12 +2366,35 @@ export function goodsHeldWholeChecks({ findings, goodsEvidence, recordsByUri, ha
   return [...named, ...unresolved, check("goods-held-whole", "goods-evidence", "narrative", true, summary)];
 }
 
+const goodsStatements = (goods) => goods.map((g) => `${g.classes.length ? `Class ${g.classes.join(", ")}` : "Goods"}: "${g.text}"`).join(". ");
+
 /** The line the writer's repair reads for one finding, in the numbering the writer's save takes. PURE. */
 export function goodsHeldWholeDetail(ordinal, uri, goods, state) {
-  const statements = goods.map((g) => `${g.classes.length ? `Class ${g.classes.join(", ")}` : "Goods"}: "${g.text}"`).join(". ");
   return `Finding ${ordinal} cites ${uri}. Its earlier goods evidence was ${state === "cut" ? "cut by the register" : "of unestablished completeness"}. `
-    + `The run now holds these complete goods statements from the register record: ${statements}. `
+    + `The run now holds these complete goods statements from the register record: ${goodsStatements(goods)}. `
     + "Reassess this finding's goods comparison on those statements, and correct any claim that they remain cut or unread. Change its rating only if the evidence requires it.";
+}
+
+/**
+ * The line for a grouped finding whose displayed text and whose citation of the record come from different members, in
+ * the numbering the writer's save takes (design, 2026-11-04). The report displays the text of the member the fold kept,
+ * so the repair must reach that member, and it names the member the citation comes from beside it. PURE.
+ */
+export function goodsHeldWholeGroupedDetail(shown, citing, uri, goods) {
+  return `The displayed goods-text claim comes from finding ${shown}. The grouped finding cites ${uri} through finding ${citing}. `
+    + `The run now holds these complete goods statements from that register record: ${goodsStatements(goods)}. `
+    + `Correct the claim in finding ${shown} where these statements resolve it. Reassess finding ${citing}'s goods comparison only where those statements affect it. `
+    + "Change a rating only if the evidence requires it. Preserve unrelated findings and update only conclusions that depend on these changes.";
+}
+
+/**
+ * The goods line for one named finding: the member whose text the report displays (`shown`) and the member whose own
+ * finding cites the record (`citing`), both in the writer's numbering. One finding's line where they are the same
+ * member, both named where they differ, and null where either is not established: a member is never guessed. PURE.
+ */
+export function goodsRepairLine({ shown, citing, uri, goods, state }) {
+  if (!Number.isInteger(shown) || !Number.isInteger(citing)) return null;
+  return shown === citing ? goodsHeldWholeDetail(shown, uri, goods, state) : goodsHeldWholeGroupedDetail(shown, citing, uri, goods);
 }
 
 /**
@@ -2422,10 +2476,17 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
     // It used to be the report's two buckets, the methodology included, and so named a party from a line the email
     // never carried. The caller hands the conditions in, from the function the email composes its box with
     // (publish/email-conditions.mjs); a caller that hands none is not judged on the email.
+    //
+    // A PARTY THE REPORT INTRODUCES IS INTRODUCED TO THE EMAIL'S READER, who reaches the report from the email (owner
+    // ruling, 2026-11-04). The report counts here as it counts for its own check: everything outside its action block,
+    // so a condition cannot introduce itself through the report's copy of it. A report with no action block adds
+    // nothing. Each condition is an item, written as one, so the word that opens it is read as an item's opening.
     if (Array.isArray(emailConditions)) {
-      const emailZone = emailConditions.join("\n");
+      const emailZone = emailConditions.map((c) => `- ${c}`).join("\n");
+      const reportZone = onlyYouZone(reportMd);
       checks.push(...referenceChecks({
         actionsText: emailZone, fullSurface: [emailZone, parseFront(String(reportMd)).fm.overall_caption, clientSummaryMd].filter(Boolean).join("\n"), searchedNames, surface: "email", extraVocab, markNames, structural: actionsExpected === true,
+        introducedIn: reportZone ? String(reportMd).replace(reportZone, " ") : "",
       }).map((c) => ({ ...c, id: `${c.id}:email` })));
     }
   }

@@ -51,7 +51,7 @@ const JOB = {
 
 const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE",
   "MOCK_ACTIONS", "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING",
-  "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_NARRATIVE_OVER_CAP"];
+  "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_NARRATIVE_OVER_CAP", "MOCK_RECHECK_UNREAD", "MOCK_RECHECK_REWRITES", "MOCK_VERDICT_DEFECTS"];
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   const root = tempDir("clearotron-mock-adc-");
@@ -345,3 +345,80 @@ test("T3a/#1674: a review that flips to BLOCKING during the delivery stale-repai
   assert.doesNotMatch(readFileSync(join(res.runDir, "report.md"), "utf8"), /Reviewer's open questions/,
     "a reviewer's note reached the client page");
 });
+
+// ── A RECHECK COUNTS ONLY WHEN IT SAVED AN ACCEPTED REVIEW ──────────────────────────────────────────────────────
+//
+// A recheck whose every save was refused writes no review, and the stage still read ok on the review that stood from
+// before the correction: the driver took that review's verdict, marked the recheck verified and wrote the receipt, so
+// a resume never finished the verification (2026-11-03, both saves of a Codex correction's recheck refused). The arms
+// start from an accepted first review, refuse every save of the recheck, and then let a resumed recheck save one.
+const recheckRecord = (runDir) => JSON.parse(readFileSync(driverDir(runDir, "corrective-recheck.json"), "utf8"));
+const RECHECK = (e) => e.event === "stage" && e.stage === "narrative-refutation" && e.trigger === "verdict-recheck";
+
+test("a recheck whose every save is refused verifies nothing: the entry verdict stands, no receipt, and the record says so", async () => {
+  const { readAcceptedReviewSince } = await import("../narrative-refutation-record.mjs");
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_SKEPTIC: "no flags surfaced",
+    MOCK_ACTIONS: "condition", MOCK_RECHECK_UNREAD: "1" });
+  // THE SILENT CASE, OR THIS PROVES NOTHING: the recheck ran and its stage read ok.
+  assert.equal(events.filter(RECHECK).length, 1, "the recheck was dispatched once");
+  assert.equal(events.find(RECHECK)?.ok, true, "and its stage read ok, on the review that stood");
+  const rec = recheckRecord(res.runDir);
+  assert.ok(existsSync(join(res.runDir, "senior-eye-review.md")), "the review from before the correction is present");
+  assert.equal(readAcceptedReviewSince(res.runDir, 0)?.seq < rec.seq0, true, "an accepted review exists, and it is the first one");
+  assert.equal(readAcceptedReviewSince(res.runDir, rec.seq0), null, "no save of the recheck was accepted");
+  assert.equal(rec.status, "unread");
+  assert.equal(rec.fail, "no-accepted-call");
+  assert.equal(rec.entryVerdict, "CONDITIONAL");
+  assert.equal(rec.verdict, "CONDITIONAL", "the entry verdict stands");
+  assert.ok(!existsSync(driverDir(res.runDir, "corrective-cycle.json")), "no receipt marks the cycle settled");
+  assert.ok(events.some((e) => e.event === "verdict-recheck-unread"), "the run's log says the recheck recorded no review");
+  assert.equal(events.find((e) => e.event === "verdict-2")?.read, false, "and the verdict after it is not a verified one");
+  assert.equal(res.ok, true, `the run still delivers: no delivery stop is added — ${JSON.stringify(res)}`);
+  assert.equal(res.verdict, "CONDITIONAL");
+  // THE LAWYER'S RECORD SAYS SO, in the workbook's shipped Machine QC wording: the cause stays in the run's record.
+  const { NOT_COMPLETED } = await import("../degraded-parts.mjs");
+  const checks = JSON.parse(readFileSync(driverDir(res.runDir, "degraded-parts.json"), "utf8")).parts.find((p) => p.part === "checks");
+  assert.equal(checks?.reason, NOT_COMPLETED, "the checks part is recorded as not completed");
+  assert.match(checks?.cause ?? "", /the review's re-check: it saved no review, so the correction was not verified/);
+});
+
+test("after an unread recheck, a resume runs the cycle again, and a recheck that saves an accepted review completes it", async () => {
+  const { res } = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_SKEPTIC: "no flags surfaced",
+    MOCK_ACTIONS: "condition", MOCK_RECHECK_UNREAD: "once", MOCK_FAIL_STAGE: "record_report_overview" });
+  assert.equal(res.ok, false, "pass 1 dies in the delivery phase, after the unread recheck");
+  assert.equal(recheckRecord(res.runDir).status, "unread");
+  assert.ok(!existsSync(driverDir(res.runDir, "corrective-cycle.json")), "pass 1 left no receipt to stop the resume");
+
+  delete process.env.MOCK_FAIL_STAGE;
+  const codename = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).codename;
+  const { pipeline: resume } = await import(`../pipeline.mjs?bust=${Math.random()}`);
+  const res2 = await resume({ ...JOB }, { codename });
+  assert.equal(res2.ok, true, JSON.stringify(res2));
+  const all = readEvents(res2.runDir);
+  assert.ok(!all.some((e) => e.event === "corrective-cycle-settled"), "the resume did not take the unverified cycle as settled");
+  assert.equal(all.filter(RECHECK).length, 2, "the resume ran the recheck again");
+  const rec = recheckRecord(res2.runDir);
+  assert.equal(rec.status, "read", "the resumed recheck saved an accepted review");
+  assert.ok(Number.isInteger(rec.seq) && rec.seq >= rec.seq0);
+  const receipt = JSON.parse(readFileSync(driverDir(res2.runDir, "corrective-cycle.json"), "utf8"));
+  assert.equal(receipt.entryVerdict, "CONDITIONAL", "and only then is the cycle's receipt written");
+  assert.equal(all.filter((e) => e.event === "verdict-2").at(-1)?.read, true);
+  const checks = JSON.parse(readFileSync(driverDir(res2.runDir, "degraded-parts.json"), "utf8")).parts.find((p) => p.part === "checks");
+  assert.doesNotMatch(checks?.cause ?? "", /re-check/, "the resumed recheck that saved a review clears the record");
+});
+
+test("a recheck saves either way: through the tool, or by rewriting the review file its message names", async () => {
+  // THROUGH THE TOOL: the seat's default. The record says so and the receipt is written.
+  const tool = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_SKEPTIC: "no flags surfaced", MOCK_ACTIONS: "condition" });
+  assert.equal(tool.res.ok, true, JSON.stringify(tool.res));
+  assert.deepEqual([recheckRecord(tool.res.runDir).status, recheckRecord(tool.res.runDir).by], ["read", "tool"]);
+  assert.ok(existsSync(driverDir(tool.res.runDir, "corrective-cycle.json")), "a recheck saved through the tool completes the cycle");
+  // BY THE FILE: a BLOCKING review, rechecked by a seat that rewrites the file to CONDITIONAL and records nothing. Its
+  // verdict is the recheck's, not the entry's, so the rewrite is read as the review it is.
+  const file = await runPipeline({ MOCK_VERDICT: "BLOCKING", MOCK_VERDICT_DEFECTS: "- the coined element is misquoted in the spine (mock)",
+    MOCK_SKEPTIC: "no flags surfaced", MOCK_RECHECK_REWRITES: "CONDITIONAL" });
+  const rec = recheckRecord(file.res.runDir);
+  assert.deepEqual([rec.status, rec.by, rec.entryVerdict, rec.verdict], ["read", "file", "BLOCKING", "CONDITIONAL"]);
+  assert.ok(existsSync(driverDir(file.res.runDir, "corrective-cycle.json")), "a rewritten review completes the cycle too");
+});
+

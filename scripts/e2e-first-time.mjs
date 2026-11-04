@@ -115,6 +115,8 @@ export const COUNTED_EVENTS = {
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
   // a finding still saying its goods are cut or unread after the delivery repair was given their complete statements
   "goods-held-whole": { kind: FAILED, when: (e) => (Array.isArray(e.unresolved) ? e.unresolved.length : 0) > 0 },
+  // a finding named for that repair and not handed to it, because the fold or the member citing the record was not read
+  "goods-held-whole-not-handed": { kind: FAILED, when: (e) => (Array.isArray(e.unhanded) ? e.unhanded.length : 0) > 0 },
   // a skeptic flag on a code-side axis re-runs its plan queries through the executor
   "escalation-recheck": [{ kind: REASK, when: (e) => e.dispatched === true },
     { kind: FAILED, when: (e) => e.outcome === "repair-budget-exhausted" }],
@@ -220,7 +222,7 @@ export const NOT_COUNTED_EVENTS = {
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
     "turnaround-reconciliation", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-frontmatter",
-    "whatif-settled-on-archive", "write-up-forms",
+    "verdict-recomputed-steps-withdrawn", "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
     "audit-not-built-no-findings", "recall-reconciliation-unended-delivered", "late-evidence-no-digest-work", "changed-decision-unread-delivered", "ranking-changed-unread-delivered", "late-evidence-unassessed-delivered",
@@ -242,7 +244,7 @@ export const NOT_COUNTED_EVENTS = {
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
     "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
-    "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3",
+    "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3", "verdict-recheck-unread",
   ],
   "read from its own record: the stage records, the dispatch records and the tool-call log": [
     "answer-part", "attempt", "stage", "settled", "started",

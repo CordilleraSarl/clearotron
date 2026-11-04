@@ -387,6 +387,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-correction-that-withdraws-every-step-gives-the-reviews-clear-back.pipeline.test.mjs": {
+          "tests": 15,
+          "asserts": 68,
+          "skips": 0,
+          "todos": 0
+        },
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
           "tests": 7,
           "asserts": 33,
@@ -754,8 +760,8 @@
           "todos": 0
         },
         "a-finding-written-on-goods-the-register-cut-is-handed-the-whole-text.test.mjs": {
-          "tests": 6,
-          "asserts": 35,
+          "tests": 10,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
@@ -1275,6 +1281,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-narrowed-list-covers-only-the-markets-it-asked.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
           "tests": 5,
           "asserts": 25,
@@ -1371,9 +1383,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-party-the-report-introduces-is-introduced-to-the-email.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-pin-change-asks-for-a-bench-replay.test.mjs": {
           "tests": 16,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-boundary-is-a-notice-not-a-failed-check.test.mjs": {
+          "tests": 2,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -3280,8 +3304,8 @@
           "todos": 0
         },
         "corrective-cycle.test.mjs": {
-          "tests": 8,
-          "asserts": 76,
+          "tests": 11,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -3658,8 +3682,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 40,
-          "asserts": 116,
+          "tests": 41,
+          "asserts": 122,
           "skips": 3,
           "todos": 0
         },
@@ -4937,7 +4961,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 102,
-          "asserts": 863,
+          "asserts": 865,
           "skips": 0,
           "todos": 0
         },
@@ -6713,7 +6737,7 @@
         },
         "the-doubt-carries-its-placement-tier.test.mjs": {
           "tests": 17,
-          "asserts": 56,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -6808,8 +6832,8 @@
           "todos": 0
         },
         "the-first-hour-reads-true.test.mjs": {
-          "tests": 8,
-          "asserts": 42,
+          "tests": 9,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -6873,9 +6897,27 @@
           "skips": 0,
           "todos": 0
         },
+        "the-goods-check-reads-the-evidence-the-writer-was-given.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-goods-evidence-is-kept-where-the-writers-record-comes-from-the-salvage.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-goods-record-reads-a-search-rows-goods-through-the-shared-reader.test.mjs": {
           "tests": 3,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-goods-repair-reaches-the-text-a-grouped-finding-displays.test.mjs": {
+          "tests": 8,
+          "asserts": 115,
           "skips": 0,
           "todos": 0
         },

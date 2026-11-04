@@ -905,9 +905,10 @@ that proves the caller and passes the identity through. Which door runs and what
 once in [docs/SECURITY.md](docs/SECURITY.md); the procedure for standing the second one up, with a
 worked example, is [docs/PORTAL.md](docs/PORTAL.md#putting-your-own-login-provider-in-front).
 
-**Leaving `PORTAL_AUTH_MODE` unset selects auth-proxy, not local.** An install that sets nothing and has
-no proxy in front is the one shape to avoid — the portal refuses to start without an issuer. Say
-`PORTAL_AUTH_MODE=local` if you want the passphrase door.
+**`clearotron start` always runs the local door,** and refuses to start if `PORTAL_AUTH_MODE` names
+another one. Where you run the portal service yourself, without `clearotron start`, an unset
+`PORTAL_AUTH_MODE` selects auth-proxy, and the portal refuses to start without an issuer. Set
+`PORTAL_AUTH_MODE=local` there if you want the local door.
 
 ### It drains its own queue
 

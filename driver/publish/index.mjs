@@ -22,7 +22,7 @@ import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMe
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
-import { deliveryFlagLines } from '../predelivery-lint.mjs';
+import { deliveryFlagLines, deliveredFailure } from '../predelivery-lint.mjs';
 import { unrenderableConditions, clientStatement } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface
 import { runLog } from '../log.mjs';   // — one line in the run record when one does
 import { PROVIDERS, config } from '../driver.config.mjs';
@@ -1038,7 +1038,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // outcome and the text agree perfectly and both are short of a point. It says what happened on the
     // gaps sheet and in the run record now, in the run record's own words, so the borrowed sentence
     // comes off rather than being replaced by a better one (ruled 2026-09-17).
-    lint: (lintSink?.checks ?? []).filter(c => !c.pass && c.id !== 'client-condition-dropped')
+    lint: (lintSink?.checks ?? []).filter(c => deliveredFailure(c) && c.id !== 'client-condition-dropped')
       .map(c => ({ id: c.id ?? '', family: c.family ?? '', detail: c.detail ?? '' })),
     engagement: integritySink?.engagement ?? null,
     registryCorrections: Array.isArray(integritySink?.registryCorrections)

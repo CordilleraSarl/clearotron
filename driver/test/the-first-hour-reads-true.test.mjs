@@ -50,6 +50,24 @@ test("the example clearance the install prints names its job by a path that exis
   assert.match(onboard, /if \(!PACKAGED\) say\(`[^`]*Each still works the old way too/);
 });
 
+// A PAGE THE PACKAGE LINKS IS A PAGE THE PACKAGE CARRIES. A stranger's install of a beta (2026-11-03) followed
+// README and INSTALL.md to QUICKSTART.md, which the package's `files` did not list: the link led nowhere.
+test("every page the README, INSTALL.md and QUICKSTART.md link by a relative path is in the package", () => {
+  const npm = npmInvocation(["pack", "--dry-run", "--json", "--ignore-scripts"]);
+  const out = execFileSync(npm.command, npm.args, { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+    maxBuffer: 64 * 1024 * 1024, env: { ...process.env, npm_config_offline: "true" } });
+  const files = (JSON.parse(out)[0]?.files ?? []).map((f) => f.path);
+  assert.ok(files.length > 500, `npm listed ${files.length} file(s); this arm needs the real list`);
+  const carried = (p) => files.includes(p) || files.some((f) => f.startsWith(`${p.replace(/\/$/, "")}/`));
+  for (const page of ["README.md", "INSTALL.md", "QUICKSTART.md"]) {
+    assert.ok(carried(page), `${page} is not in the package`);
+    const links = [...read(page).matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1].split("#")[0].replace(/^\.\//, ""))
+      .filter((l) => l && !/^[a-z][a-z0-9+.-]*:/i.test(l));
+    assert.ok(links.length > 0, `${page} has no relative link; this arm reads nothing`);
+    for (const l of new Set(links)) assert.ok(carried(l), `${page} links ${l}, which the package does not carry`);
+  }
+});
+
 test("nothing a new reader meets promises a browser window the product never opens", () => {
   for (const f of ["README.md", "QUICKSTART.md", "INSTALL.md"])
     assert.doesNotMatch(read(f), /opens (the report|the portal|it) in your browser/, `${f} promises a browser opens`);

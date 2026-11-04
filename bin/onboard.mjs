@@ -1542,17 +1542,22 @@ export async function runCheck() {
     warn(couldNotDetermine("CLEAROTRON_BOX", unitEnv));
   } else {
     const raw = (boxFileEnv?.CLEAROTRON_BOX ?? "").trim();
+    // THE ACCEPTED NAMES ARE NEVER PRINTED. They are the names of the deployments this build was made for,
+    // and the line offered them to a newcomer to name their own machine after (measured on a fresh install
+    // of a beta, 2026-11-03). An install without units says nothing of an unset name: nothing there reads
+    // it. Installed units are warned, because the services read it, and `start --background` installs the
+    // same units a hosted deployment runs, from the same renderer, so nothing here can tell the two apart.
     if (!raw) {
       // AN ABSENCE IS NOT A MISCONFIGURATION, and this command already separates the two — a machine
       // nobody has configured yet has no box, legitimately, and `--check` on one exits 0 by contract.
       // Reported at `!` so it is visible rather than silent, which is the whole requirement; raising it
       // to `✗` made every unconfigured machine fail its own acceptance arm, and said "fault" about a
       // state that is the normal beginning of an install.
-      warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
-        + `can be read as a statement about a particular box. Set it to one of: ${DEPLOYMENT_BOXES.join(", ")}`);
+      if (hosted) warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
+        + "can be read as a statement about a particular box");
     } else if (!DEPLOYMENT_BOXES.includes(raw)) {
-      problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows `
-        + `(${DEPLOYMENT_BOXES.join(", ")}). An unrecognised name reads as NO box everywhere it is `
+      problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows. `
+        + `An unrecognised name reads as NO box everywhere it is `
         + "consulted, which is quieter than a wrong one and just as wrong");
     } else {
       ok(`this box names itself "${raw}", from ${boxSource}`);

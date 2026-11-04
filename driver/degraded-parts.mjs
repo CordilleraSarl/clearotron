@@ -221,6 +221,10 @@ function checks(runDir, log) {
   const reviewOpen = readPartNotCompleted(runDir, "review");
   if (reviewOpen) failed.push(["the review, not completed", reviewOpen.reason ?? recheck?.fail]);
   else if (recheck) failed.push(["the review's re-check", recheck.fail]);
+  // A re-check that read ok and saved no review verified nothing: the correction stands unreviewed. A later receipt,
+  // which only a re-check that saved a review writes, clears it on a resume.
+  const unread = failedStep(log, "corrective-cycle-receipt", "verdict-recheck-unread");
+  if (unread && !reviewOpen && !recheck) failed.push(["the review's re-check", "it saved no review, so the correction was not verified"]);
   const rollback = failedStep(log, "corrective-cycle-receipt", "corrective-rollback");
   if (rollback) failed.push(["the corrective pass, rolled back", rollback.reason]);
   const crowd = failedStep(log, "crowd-context", "crowd-context-failed");

@@ -173,8 +173,9 @@ export function keptModelOrdinal(state, ordinal) {
 /**
  * The model's ordinal behind a folded finding's citation of one record. A folded finding carries the citations of every
  * member the fold merged into it, so the member it kept may not be the one that cites the record: the answer is the
- * member whose own finding, in the model's record, cites `uri`, the kept member first. With no fold in force the ordinal
- * is its own. Where no member's finding is read citing the record, the kept member, as `keptModelOrdinal` answers.
+ * member whose own finding, in the model's record, cites `uri`, the kept member first. With no fold in force, or a
+ * finding folded with no other, the ordinal is `keptModelOrdinal`'s, whose finding is the one that cites it. Null where
+ * no member's finding is read citing the record: a citation the model's record does not show is not asserted.
  * `cites(finding, uri)` says whether a finding of the model's record cites the record. PURE.
  */
 export function citingModelOrdinal(state, ordinal, uri, modelFindings = [], cites = () => false) {
@@ -183,7 +184,7 @@ export function citingModelOrdinal(state, ordinal, uri, modelFindings = [], cite
   if (!Array.isArray(members) || members.length < 2) return kept;
   const byOrdinal = new Map((Array.isArray(modelFindings) ? modelFindings : []).map((f) => [f?.ordinal, f]));
   const order = [...(members.includes(kept) ? [kept] : []), ...members.filter((m) => m !== kept)];
-  return order.find((m) => byOrdinal.has(m) && cites(byOrdinal.get(m), uri)) ?? kept;
+  return order.find((m) => byOrdinal.has(m) && cites(byOrdinal.get(m), uri)) ?? null;
 }
 
 /** The fold as it stands, to put back if a pass that changed it is rolled back. Never throws. */
