@@ -69,6 +69,19 @@ import { kebab } from "../search-policy.mjs";   // — the mock cites what the m
 const WRITER_LINT_REPAIR = /the deterministic pre-delivery lint failed these checks|The deterministic pre-delivery checks found these faults in content rendered from that record/;
 const PAD = (s, n = 260) => (s.length >= n ? s : s + "\n" + "lorem ipsum ".repeat(Math.ceil((n - s.length) / 12)));
 
+// THE GOODS THE REGISTER CUT, AND THE WHOLE TEXT THE RUN HOLDS LATER (MOCK_BAND_GOODS_CUT, MOCK_RECORD_GOODS_WHOLE,
+// MOCK_GOODS_CUT_CLAIM, MOCK_GOODS_REPAIR). One class 9 statement, as a search answer cut it and as the record's whole
+// body states it, and the sentence a finding written on the cut statement says of it. Exported so a test can name them.
+export const GOODS_STATEMENT_WHOLE = "Downloadable software for planning invented courier routes, and downloadable mobile applications for tracking invented parcel deliveries";
+export const GOODS_STATEMENT_CUT = "Downloadable software for planning invented courier routes, and downloadable mobile applications for";
+export const GOODS_CUT_CLAIM = "The class 9 goods list in the earlier record is cut and unread.";
+// The writer's findings whose goods claim its delivery-check repair corrected, kept in the run so a later save does not
+// say it again. Ordinals are the writer's.
+const goodsClaimCorrectedAt = (runDir) => driverDir(runDir, "mock-goods-claim-corrected.json");
+function goodsClaimCorrected(runDir) {
+  try { return new Set(JSON.parse(readFileSync(goodsClaimCorrectedAt(runDir), "utf8"))); } catch { return new Set(); }
+}
+
 // ── B — FIXTURE TRUTHFULNESS FOR THE CALL RECORDS ───────────────────────────────────────────────────
 // In a real run every MCP tool call passes through stdio-server, which appends a started line before the
 // work and a settled line after it to <runDir>/_driver/tool-calls.jsonl, keyed on (server, seq). The
@@ -888,14 +901,15 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
   // (own ordinal/mark/owner/URI, so consolidation never folds them; band-rated, so each earns a full-
   // prose card). n=1 (the default) is byte-identical to the historical single-finding fixture.
   // MOCK_FINDINGS_TWIN=<ordinal> makes that clone a second filing of finding 1 instead: the same owner and
-  // mark on its own record, which consolidation folds into finding 1 before the cards are built.
+  // mark on its own record, which consolidation folds into finding 1 before the cards are built. A list of
+  // ordinals ("2,3") makes each of those clones one, so three filings fold into one.
   const n = Math.max(1, Number(process.env.MOCK_FINDINGS_N || 1));
-  const twin = Number(process.env.MOCK_FINDINGS_TWIN || 0);
+  const twins = new Set(String(process.env.MOCK_FINDINGS_TWIN || "").split(",").map(Number));
   const findings = [baseFinding, ...Array.from({ length: n - 1 }, (_, i) => {
     const ord = i + 2;
     const f = structuredClone(baseFinding);
     f.ordinal = ord;
-    if (ord !== twin) {
+    if (!twins.has(ord)) {
       f.mark = `PROJECT NOVAPULSE ${ord}`;
       f.owner.name = `Mystery Owner ${ord} LLC`;
     }
@@ -904,6 +918,20 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
     f.source.resolved_link = baseFinding.source.resolved_link ? `https://tm.corsearch.com${f.owner.registrations[0].uri}` : "";
     return f;
   })];
+  // MOCK_FINDING_ALSO_CITES=<ordinal>:<uri>[,…] — that finding also cites that record, a second registration on its
+  // owner, as a filing that names two records does. Ordinals are the writer's, before any fold.
+  for (const pair of String(process.env.MOCK_FINDING_ALSO_CITES || "").split(",").filter(Boolean)) {
+    const [ord, uri] = [pair.slice(0, pair.indexOf(":")), pair.slice(pair.indexOf(":") + 1)];
+    const f = findings.find((x) => String(x.ordinal) === ord.trim());
+    if (f && uri && !f.owner.registrations.some((r) => r.uri === uri)) f.owner.registrations.push({ ...f.owner.registrations[0], uri });
+  }
+  // MOCK_GOODS_CUT_CLAIM=<ordinal> — that finding's sentence says part of a record's goods statement is cut and unread
+  // (GOODS_CUT_CLAIM), the way a finding written on a statement the register cut says so. Once the writer's
+  // delivery-check repair has corrected it (MOCK_GOODS_REPAIR=correct), no later save says it again. The writer's ordinal.
+  if (process.env.MOCK_GOODS_CUT_CLAIM) {
+    const f = findings.find((x) => String(x.ordinal) === String(process.env.MOCK_GOODS_CUT_CLAIM));
+    if (f && !goodsClaimCorrected(runDir).has(f.ordinal)) f.net = `${f.net} ${GOODS_CUT_CLAIM}`;
+  }
   // MOCK_FOREIGN_LINK — a seat that copies an office's own page into every register link, and keeps doing
   // it on every attempt (the R2 shape on 0.4.1-beta.1). Never heals: only the driver's salvage can deliver.
   if (process.env.MOCK_FOREIGN_LINK && process.env.MOCK_FOREIGN_LINK !== "file") {
@@ -1156,6 +1184,20 @@ export function namedBand(axis, msg = "") {
     { state: "incomplete", ...(process.env.MOCK_BAND_UNPLANNED ? {} : { qid: `supp:${axis}:mock:crowd:00000002` }), query: `${axis} / bare-element crowd`, total_hits: 2416, fetched: 1, sample: [],
       reason: "crowd descriptor — saturated element, count-only" },
   ];
+  // MOCK_BAND_GOODS_CUT=<uri> — that record's band row carries its class 9 statement as a register's search answer does
+  // when it cut the statement (`raw.classifications`, `goods_services_text_truncated: true`), so the run records the
+  // record's goods as cut by the register. A record the enumerated block does not hold joins it, as finding 1's owner's.
+  if (process.env.MOCK_BAND_GOODS_CUT) {
+    const uri = process.env.MOCK_BAND_GOODS_CUT;
+    const raw = { classifications: [{ nice_class: 9, goods_services_text: GOODS_STATEMENT_CUT, goods_services_text_truncated: true }] };
+    const row = blocks[0].records.find((r) => r.record_id === uri);
+    if (row) row.raw = raw;
+    else {
+      blocks[0].records.push({ record_id: uri, mark_text: "NOVAPULSE", classes: [9], status: "Registered",
+        owner_name: "Mystery Owner LLC", owner_country: "US", screen_verdict: "surface:in-scope-live", raw });
+      blocks[0].total_hits = blocks[0].records.length;
+    }
+  }
   // FIX test hook: a COLLAPSED dangerous slice — enumerated (claimed hits) but ZERO records reached the band.
   // The healthy enumerated block above stays, so the band is non-empty overall (mirrors the ~220-record real
   // failure where only the dangerous slice was lost); the per-block fail-gate must still FAIL the run.
@@ -1450,6 +1492,12 @@ function recordAxisFromWiring(argv) {
  */
 function mockRegisterRecordWrite(runDir, argv = []) {
   if (!process.env.MOCK_WRITE_RECORD) return;
+  appendMockRecordBody(runDir, argv, "/mark/us/90000001", { applicationNumber: "90000001", registrationNumber: "7100200",
+    applicationDate: "2020-01-01", registrationDate: "2023-04-18", statusText: "Registered", jurisdiction: "US" });
+}
+
+/** One record body in the run's record log, under a session key that prefix-matches the run, as a register fetch leaves it. */
+function appendMockRecordBody(runDir, argv, target, body) {
   const skArg = argv.indexOf("--session-key");
   const sk = skArg >= 0
     ? (argv[skArg + 1] ?? "clearance-record")
@@ -1457,11 +1505,7 @@ function mockRegisterRecordWrite(runDir, argv = []) {
   const recordLog = process.env.CLEAROTRON_REGISTER_RECORD_LOG
     || driverDir(runDir, "register-record-bodies.jsonl");
   mkdirSync(dirname(recordLog), { recursive: true });
-  appendFileSync(recordLog, JSON.stringify({
-    sessionKey: sk, target: "/mark/us/90000001",
-    body: { applicationNumber: "90000001", registrationNumber: "7100200",
-      applicationDate: "2020-01-01", registrationDate: "2023-04-18", statusText: "Registered", jurisdiction: "US" },
-  }) + "\n");
+  appendFileSync(recordLog, JSON.stringify({ sessionKey: sk, target, body }) + "\n");
 }
 
 // A path read out of JSON quoted in the prompt. On Windows its separators arrive escaped (`C:\\Users\\…`),
@@ -1782,6 +1826,31 @@ export function applyStageWrites(msg, argv) {
           return r.refused ? `mock writer's four-answers patch refused: ${r.refused}` : "mock writer patched the four answers";
         }
       }
+      // MOCK_GOODS_REPAIR=correct|ignore — the writer's delivery-check repair, handed a record's complete goods statements
+      // for a finding that says they are cut (MOCK_GOODS_CUT_CLAIM). "correct": ONE patch carrying the finding the line
+      // names for the claim ("Correct the claim in finding <A>", or "Finding <N> cites" where one finding is named), its
+      // GOODS_CUT_CLAIM sentence removed, as the repair message orders; every later save keeps it removed. "ignore": the
+      // repair saves its accepted record again as it stands. Keyed on the repair message.
+      if (process.env.MOCK_GOODS_REPAIR === "ignore" && WRITER_LINT_REPAIR.test(msg)) {
+        const held = lastAcceptedCall(runDir);
+        if (held) {
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, structuredClone(held));
+          return r.refused ? `mock writer refused re-saving its record: ${r.refused}` : "mock writer re-saved its record as it stands";
+        }
+      }
+      if (process.env.MOCK_GOODS_REPAIR === "correct" && WRITER_LINT_REPAIR.test(msg)) {
+        const named = /Correct the claim in finding (\d+) where/.exec(msg) ?? /Finding (\d+) cites \S+\. Its earlier goods evidence/.exec(msg);
+        const held = named ? lastAcceptedCall(runDir) : null;
+        const f = (held?.findings?.findings ?? []).find((x) => x?.ordinal === Number(named?.[1]));
+        if (f && String(f.net ?? "").includes(GOODS_CUT_CLAIM)) {
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, { findings_patch: [{ ...f, net: f.net.replace(` ${GOODS_CUT_CLAIM}`, "").trim() }] });
+          if (r.refused || r.write_failed) return `mock writer's goods correction refused: ${r.refused ?? r.write_failed}`;
+          writeFileSync(goodsClaimCorrectedAt(runDir), JSON.stringify([...new Set([...goodsClaimCorrected(runDir), f.ordinal])]) + "\n");
+          return `mock writer corrected the goods claim in finding ${f.ordinal}`;
+        }
+      }
       // THE WRITER. The mock drives the PRODUCTION receiver rather than writing the two files, for the
       // same reason every arm here does: a fixture that wrote narrative.md and findings.json would be
       // the mock taking the path this conversion deleted, and it would hide the one thing the
@@ -2010,6 +2079,15 @@ export function applyStageWrites(msg, argv) {
       // The side-write the old narrative.md branch carried. Same guard it had — CANDSELF and the
       // reco knob both suppressed it there, and both still do.
       if (!process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) mockRegisterRecordWrite(runDir, argv);
+      // MOCK_RECORD_GOODS_WHOLE=<uri> — after the writer's save, the run's record log holds that record's whole body, its
+      // goods one complete English class 9 statement (GOODS_STATEMENT_WHOLE), as a fetch after the writer wrote leaves it.
+      // Only the writer's save writes it, so every band shape derived before the writer read the record's goods from its
+      // band row.
+      if (process.env.MOCK_RECORD_GOODS_WHOLE) {
+        const uri = process.env.MOCK_RECORD_GOODS_WHOLE;
+        appendMockRecordBody(runDir, argv, uri, { applicationNumber: uri.slice(uri.lastIndexOf("/") + 1), applicationDate: "2020-01-01",
+          statusText: "Registered", jurisdiction: "US", goodsServices: [{ classes: [9], language: "en", description: GOODS_STATEMENT_WHOLE }] });
+      }
       // MOCK_FOREIGN_LINK=file — the links reach the saved file WITHOUT the transport, as a write outside
       // record_synthesis would: the accepted file is rewritten with an office page in every register link.
       if (process.env.MOCK_FOREIGN_LINK === "file") {
