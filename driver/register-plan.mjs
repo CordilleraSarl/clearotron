@@ -2456,7 +2456,7 @@ export function parseRegisterPlan(raw) {
 // A NARROWING ASKS THE SAME QUESTION WITH TIGHTER LIMITS: the same predicate and the same terms, classes and markets
 // within the parent's, and the parent's goods words or fewer of them (a parent with none takes the client's goods
 // words, as the plan holds them), with the same owner. A list counts when its block is `enumerated`: complete, with no
-// error. Only lists reached through such narrowings count, at any depth.
+// error. Only lists reached through such narrowings count, at any depth, and a list covers only the markets it asked.
 //   list-retrieved          a wider question with at least one narrowed list retrieved in full (named in `lists`).
 //   no-list                 a wider question with none: the reading step decides it, with its count on the record.
 //   required-covered        the identical mark's own question, with a retrieved list in every class it asks, in
@@ -2558,10 +2558,15 @@ export function crowdNarrowing(plan, byQid, { mainMarkets = [] } = {}) {
     const inScope = main.length ? (scope.length ? main.filter((m) => scope.includes(m)) : main) : [];
     const cellMarkets = inScope.length ? inScope : (scope.length ? scope : [WORLDWIDE]);
     const cellClasses = classesOf(e).length ? classesOf(e) : ["*"];
+    // A LIST COVERS ONLY THE MARKETS IT ASKED. A register can answer a list narrowed by goods with offices left out, and
+    // the list's block names them (`offices_without_goods_field`). The list is complete for the offices it asked and read
+    // none of the others, so it covers neither those markets nor a worldwide cell. Counted on its plan's markets, a list
+    // that never asked a client's main market stood as that market's required read.
+    const leftOutOf = (d) => marketsOf(byQid.get(d.qid)?.offices_without_goods_field);
     const covers = (c, m) => lists.some((d) => {
-      const dc = classesOf(d), dr = regionsOf(d);
+      const dc = classesOf(d), dr = regionsOf(d), out = leftOutOf(d);
       const classOk = c === "*" ? !dc.length : (!dc.length || dc.includes(c));
-      const marketOk = m === WORLDWIDE ? !dr.length : (!dr.length || dr.includes(m));
+      const marketOk = m === WORLDWIDE ? !dr.length && !out.length : (!dr.length || dr.includes(m)) && !out.includes(m);
       return classOk && marketOk;
     });
     const notCovered = [];
