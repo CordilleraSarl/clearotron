@@ -153,7 +153,7 @@ test("the RECHECK dispatch carries the observed table — asserted on the COMPOS
     "without it the reviewer re-reads two documents to re-derive what the driver already recorded");
   assert.match(src, /correctionsScope\?\.scoped/, "the narrowing is gated on the declaration");
   assert.match(wide, /Re-read BOTH updated files/, "an undeclared review still gets the wide read");
-  assert.match(narrow, /YOU DECLARED WHICH FINDINGS YOUR FLAGS WERE ABOUT/, "the declared branch narrows");
+  assert.match(narrow, /Read narrowly\. Named findings in /, "the declared branch narrows");
   assert.doesNotMatch(narrow, /Re-read BOTH updated files/, "…and the two branches are exclusive");
   assert.ok(src.indexOf("appliedTable") < src.indexOf("planAuditCarry"),
     "and it rides before the plan-audit carry, beside the evidence it is about");
