@@ -1508,13 +1508,13 @@ test("setup says it finished, and says what state it left the box in", () => {
   assert.match(src, /Setup finished\./,
     "the wizard handed the reader a next command and never said it had finished — a reader who has "
     + "skipped answers, which the header invites, cannot otherwise tell what they ended up with");
-  assert.match(src, /What this box has now:/, "and the state has to be stated, not implied by silence");
+  assert.match(src, /What this install has now:/, "and the state has to be stated, not implied by silence");
 
   // EVERY SKIPPABLE ANSWER APPEARS. A summary that lists only what was SET tells a reader nothing about
   // what they skipped, which is the half they cannot reconstruct.
   for (const k of ["CLEAROTRON_DATABASE", "PERPLEXITY_API_KEY", "CLEAROTRON_REPORTS_DIR",
                    "CLEAROTRON_CUSTOMERS_DIR", "CLEAROTRON_REPORTS_URL", "CLEAROTRON_CLIENT_MCP_URL"]) {
-    const at = src.indexOf("What this box has now:");
+    const at = src.indexOf("What this install has now:");
     assert.ok(src.slice(at, at + 1600).includes(k),
       `${k} is skippable and does not appear in the closing summary — the answers a reader skipped are `
       + "exactly the ones they cannot reconstruct");

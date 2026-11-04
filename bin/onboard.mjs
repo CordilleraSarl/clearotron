@@ -4637,11 +4637,16 @@ try {
   // and asserts which command LEADS; a command named here would lead instead, and the guard that has
   // twice caught this screen regressing would start reporting the wrong thing.
   const stateLine = (label, value, absent) => `${value ? "set" : "not set"} — ${label}: ${value || absent}`;
-  say(`\n  ${style.bold("Setup finished.")} Nothing here needs running again.\n`);
-  say("  What this box has now:");
+  // The AI by the name the engine question gives it; none unless one passed its proof turn.
+  const aiChosen = ENGINE_BINARIES[candidate.CLEAROTRON_AI]?.product ?? "";
+  // "NOTHING HERE NEEDS RUNNING AGAIN" ONLY WITH AN AI AND A REGISTER CHOSEN. Without either, setup
+  // has already told the reader to run it again (NO_AI_CHOSEN, and the warning under a missing register).
+  say(`\n  ${style.bold("Setup finished.")}${aiChosen && registerSelected ? " Nothing here needs running again." : ""}\n`);
+  say("  What this install has now:");
   for (const line of [
     // THE ONE PLACE THE ADDRESS IS SHOWN (ruling, 2026-09-10): setup no longer asks for it.
     stateLine("signs in as", candidate.PORTAL_LOCAL_USER, "the local account"),
+    stateLine("AI", aiChosen, "none chosen; the demo works without one, and a real search needs one"),
     stateLine("register", candidate.CLEAROTRON_DATABASE, "no register, so every search refuses until one is chosen"),
     stateLine("web research", present(candidate.PERPLEXITY_API_KEY) ? "a key" : "", "a clearance stops before it starts, and names the missing key; a knockout search runs and discloses the half it skipped"),
     stateLine("data directory", candidate.CLEAROTRON_REPORTS_DIR, "unset"),
@@ -4722,7 +4727,7 @@ try {
     if (needs.length && !enrollable.some((r) => r.configured)) {
       say("\n  Case law");
       say(`  ${needs.join(" and ")} reasons against case law and oppositions. No case-law source is`);
-      say("  enrolled on this box, so that search will run and its report will state the gap rather than");
+      say("  enrolled on this install, so that search will run and its report will state the gap rather than");
       say("  telling you what the courts have decided. Nothing here can set it up: it is a one-time OAuth");
       say("  sign-in, described in providers/oauth-mcp-bridge/README.md, and every other search is");
       say(`  unaffected. \`${invocationPrefix()}clearotron doctor\` reports it at any time.\n`);
