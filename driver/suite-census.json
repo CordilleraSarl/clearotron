@@ -1341,6 +1341,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-package-install-is-not-told-to-use-git.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-packaged-install-names-its-commit-from-build-info.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -6149,7 +6155,7 @@
         },
         "setup-asks-how-claude-is-paid.test.mjs": {
           "tests": 14,
-          "asserts": 96,
+          "asserts": 97,
           "skips": 4,
           "todos": 0
         },
@@ -6168,6 +6174,12 @@
         "setup-promises-a-login-shell-only-when-one-adds-the-directory.test.mjs": {
           "tests": 3,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "setup-says-where-and-when-to-sign-in.test.mjs": {
+          "tests": 4,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -6621,6 +6633,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-copy-npx-fetched-does-not-shadow-the-installed-command.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 3,
+          "todos": 0
+        },
         "the-corrections-section-is-an-allowlist.test.mjs": {
           "tests": 6,
           "asserts": 18,
@@ -6772,6 +6790,12 @@
           "todos": 0
         },
         "the-effort-model-predicts-the-run-it-quotes.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-end-of-setup-agrees-with-what-it-left-unset.test.mjs": {
           "tests": 4,
           "asserts": 10,
           "skips": 0,
