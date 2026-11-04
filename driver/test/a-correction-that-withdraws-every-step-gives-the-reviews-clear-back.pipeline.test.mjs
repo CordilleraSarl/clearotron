@@ -93,7 +93,7 @@ const JOB = {
   ref: "TMP8439", markName: "PROJECT NOVAPULSE", classes: [9, 41], provider: "corsearch",
 };
 const KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_ACTIONS", "MOCK_NARRATIVE_OVER_CAP", "MOCK_LINT_REPAIR_ACTIONS", "MOCK_COVERAGE_INSUFFICIENT",
-  "MOCK_POST_REPAIR_UNREAD", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_FAIL_AFTER_WRITES", "MOCK_CORRECTION_MARKS"];
+  "MOCK_POST_REPAIR_UNREAD", "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_FAIL_AFTER_WRITES", "MOCK_CORRECTION_MARKS", "MOCK_RECHECK_UNREAD"];
 const AS_STARTED = Object.fromEntries(["CLEAROTRON_AI_BILLING", "CODEX_API_KEY", "CLEAROTRON_CODEX_PATH"].map((k) => [k, process.env[k]]));
 const ENGINES = {
   claude: { ...AS_STARTED, CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE },
@@ -212,6 +212,15 @@ test("claude: a coverage judgment standing beside the withdrawn step keeps the r
 
 test("claude: a review that said CONDITIONAL is never lifted when the repair withdraws the step", async () => {
   const run = await runPipeline({ ...WITHDRAW_THE_STEP, MOCK_VERDICT: "CONDITIONAL", MOCK_NARRATIVE_OVER_CAP: "until-lint-repair" });
+  assert.equal(stageEvents(run.events, "synthesis", "lint-repair").length, 1, "premise: the writer repaired its record");
+  assert.deepEqual(recomputed(run.events), []);
+  assert.equal(run.label.verdict, "CONDITIONAL");
+  assert.equal(run.res.ok, true, JSON.stringify(run.res).slice(0, 300));
+});
+
+test("claude: a correction whose recheck saved no review gives nothing back", async () => {
+  const run = await runPipeline({ ...WITHDRAW_THE_STEP, MOCK_VERDICT: "CONDITIONAL", MOCK_NARRATIVE_OVER_CAP: "until-lint-repair", MOCK_RECHECK_UNREAD: "1" });
+  assert.equal(JSON.parse(readFileSync(driverDir(run.res.runDir, "corrective-recheck.json"), "utf8")).status, "unread", "premise: the recheck saved no review");
   assert.equal(stageEvents(run.events, "synthesis", "lint-repair").length, 1, "premise: the writer repaired its record");
   assert.deepEqual(recomputed(run.events), []);
   assert.equal(run.label.verdict, "CONDITIONAL");
