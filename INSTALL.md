@@ -290,13 +290,26 @@ Read the list before you delete anything: one of these directories holds your re
 background services, `clearotron stop` stops them and removes their unit files. `clearotron status` says
 which of the two you have.
 
-**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`
-(which is also what a demo run from `npx` leaves behind), it lives in two places under `~/.local`:
+**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`,
+it lives in two places under `~/.local`:
 
 ```
 ~/.local/lib/node_modules/clearotron
 ~/.local/bin/clearotron
 ```
+
+**The reasoning program, if setup installed it.** Setup puts Claude Code or the Codex CLI in one folder,
+`~/.local/share/clearotron/engines`, or where `CLEAROTRON_ENGINES_DIR` points. Delete the folder to
+remove it.
+
+**What the reasoning program keeps for itself.** Claude Code keeps its sign-in and settings in
+`~/.claude` and `~/.claude.json`, and setup's engine check creates them if they were not there. The
+Codex CLI keeps its sign-in in `~/.codex`. They belong to that program, not to Clearotron: remove them
+only if nothing else on the machine uses it.
+
+**npm's copy, if you ran `npx`.** `npx clearotron` keeps the package it downloaded in npm's cache, under
+`~/.npm/_npx`, beside anything else you have run with `npx`. Deleting `~/.npm/_npx` removes all of them;
+npm downloads again the next time it is asked.
 
 **The settings, and the keys.** `~/.config/clearotron/.env` holds this install's signing secrets, so
 deleting it invalidates every key it ever issued. Beside it: `~/.config/clearotron/token-denylist`, the
