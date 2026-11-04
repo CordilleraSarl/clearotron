@@ -1589,16 +1589,18 @@ export async function runCheck() {
     // THE ACCEPTED NAMES ARE NEVER PRINTED. They are the names of the deployments this build was made for,
     // and the line offered them to a newcomer to name their own machine after (measured on a fresh install
     // of a beta, 2026-11-03). An install without units says nothing of an unset name: nothing there reads
-    // it. Installed units are warned, because the services read it, and `start --background` installs the
+    // it. Installed units are told, because the services read it, and `start --background` installs the
     // same units a hosted deployment runs, from the same renderer, so nothing here can tell the two apart.
     if (!raw) {
       // AN ABSENCE IS NOT A MISCONFIGURATION, and this command already separates the two — a machine
-      // nobody has configured yet has no box, legitimately, and `--check` on one exits 0 by contract.
-      // Reported at `!` so it is visible rather than silent, which is the whole requirement; raising it
-      // to `✗` made every unconfigured machine fail its own acceptance arm, and said "fault" about a
-      // state that is the normal beginning of an install.
-      if (hosted) warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
-        + "can be read as a statement about a particular box");
+      // nobody has configured yet has no name, legitimately, and `--check` on one exits 0 by contract.
+      // Reported so it is visible rather than silent, which is the whole requirement. At `·`, in plain
+      // words, because the reader most likely to see it is a newcomer after `start --background`, who
+      // has nothing to set: a `!` there said the rest of the report could not be trusted and gave them
+      // nothing to do (measured on a fresh install of a beta, 2026-11-04). Raising it to `✗` made every
+      // unconfigured machine fail its own acceptance arm.
+      if (hosted) info(`no CLEAROTRON_BOX in ${boxSource}. Only Clearotron's own servers set it, to name `
+        + "themselves; an install of your own leaves it unset");
     } else if (!DEPLOYMENT_BOXES.includes(raw)) {
       problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows. `
         + `An unrecognised name reads as NO box everywhere it is `
@@ -1811,7 +1813,15 @@ export async function runCheck() {
       + "nothing can be checked here until it names an adapter.");
   } else {
     if (engSel) ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
-    else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this box`);
+    // WHAT THE ORDER-TIME CHECK SAYS, NOT WHAT THE CODE FALLS BACK TO. Every search is refused while the
+    // services lack this (run-requirements.mjs, `runRequirements`, the engine row), whatever the default
+    // below checks. Naming that default here read as "nothing to do", a few lines above "Will a search
+    // run?" listing this very setting (measured on a fresh install of a beta, 2026-11-04). Asked of the
+    // services' own reading (servicesRead), as that section asks it: on a machine with units, their file
+    // may hold the value this command's file does not, and then no search is refused over it.
+    else if (serviceKnown && !servicesRead("CLEAROTRON_AI")) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
+      + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
+    else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
 
     // The line between an ABSENCE and a MISCONFIGURATION. Nothing set and no binary on PATH is a fresh
     // machine — reported, not failed. A variable that names something wrong is a configuration that
@@ -2412,8 +2422,20 @@ export async function runCheck() {
             + (w.branch ? `whose branch ${w.branch} tracks no remote branch` : "which is not on a branch")
             + " — nothing carries them off this machine unless someone pushes them by name");
         } else if (w.state === "not-a-repository") {
-          warn(`${storeDir} is not inside a git repository, so a save through the portal is refused rather than `
-            + "recorded until it is");
+          // NOT MADE YET IS NOT A REFUSAL. With no units, `start` makes its configuration directory a git
+          // repository the first time it runs (bin/start.mjs, the `git init` of `paths.configStore`), and
+          // setup's default puts the store inside it. Before then this warned a newcomer that saves were
+          // refused (measured on a fresh install of a beta, 2026-11-04). "The first time" is start's own
+          // test, no grants file and no repository yet; a store anywhere else is never made one by start.
+          const handed = hosted ? null : startPaths({ env: { ...(serviceFileEnv ?? {}), ...process.env } });
+          if (handed && isInsideCheckout(storeDir, handed.configStore)
+              && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
+            info(`saves to ${storeDir} are recorded from the first \`${invoke("start")}\`, which makes `
+              + `${handed.configStore} a git repository`);
+          } else {
+            warn(`${storeDir} is not inside a git repository, so a save through the portal is refused rather than `
+              + "recorded until it is");
+          }
         } else {
           info(`could not ask git where saves to ${storeDir} go (${w.why}) — a failure to look, not a finding`);
         }
@@ -3239,16 +3261,31 @@ export async function runCheck() {
   // surfaced that state anywhere, which is why it survived to be found by hand.
   {
     const { defaultDenylistPath } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
-    const dl = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v || defaultDenylistPath(homedir());
+    const named = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v;
+    const dl = named || defaultDenylistPath(homedir());
     try {
       const n = readFileSync(dl, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).length;
       ok(`revocation list readable at ${dl} — ${n} revoked key id(s)`);
     } catch (e) {
-      // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
-      // no other surface that would tell them: the door answers 200 either way.
-      blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
-        + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
-        + `Run \`${invoke("start")}\` — it creates the list.`);
+      // THE DEFAULT LIST, NOT WRITTEN YET, IS NOTHING REVOKED. That is the key check's own rule
+      // (shared/scope.mjs, `isRevoked`): every revocation creates the file it writes to, so its absence is
+      // the proof. With no units the first `start` creates it, and before then this warned a newcomer that
+      // revoking would silently do nothing (measured on a fresh install of a beta, 2026-11-04). "Before
+      // then" is start's own first-run test, as for the store above: no grants file and no repository yet.
+      // Once start has run it hands its door this path BY NAME, and a named list the key check cannot read
+      // refuses every key; so does a list the settings name, or one on a machine with units. Those are
+      // still the fault below.
+      const handed = hosted ? null : startPaths({ env: { ...(serviceFileEnv ?? {}), ...process.env } });
+      if (!named && handed && e?.code === "ENOENT"
+          && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
+        info(`no revocation list yet at ${dl}: no key has been revoked. The first \`${invoke("start")}\` creates it.`);
+      } else {
+        // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
+        // no other surface that would tell them: the door answers 200 either way.
+        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
+          + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
+          + `Run \`${invoke("start")}\` — it creates the list.`);
+      }
     }
   }
   // ── IS THIS DOOR'S ACCESS LOG BEING WRITTEN, AND WHERE? ───────────────────────────────────────────
