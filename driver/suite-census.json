@@ -573,6 +573,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-keeps-a-folder-it-did-not-make.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 1,
+          "todos": 0
+        },
         "a-demo-leaves-no-temp-copies.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -6645,6 +6651,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-connect-line-names-the-claude-setup-installed.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 1,
+          "todos": 0
+        },
         "the-connect-route-has-one-author.test.mjs": {
           "tests": 5,
           "asserts": 14,
@@ -6751,6 +6763,12 @@
           "tests": 5,
           "asserts": 19,
           "skips": 1,
+          "todos": 0
+        },
+        "the-demo-reads-no-brief-and-drains-no-queue.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
+          "skips": 0,
           "todos": 0
         },
         "the-demo-says-what-it-is-first.test.mjs": {
@@ -7314,6 +7332,12 @@
         "the-portal-bundle-is-the-one-its-sources-would-build.test.mjs": {
           "tests": 11,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-portal-does-not-withhold-a-passphrase-start-prints.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -8664,6 +8688,12 @@
           "tests": 8,
           "asserts": 24,
           "skips": 1,
+          "todos": 0
+        },
+        "the-portal-boot-check-is-not-logged-as-a-rejection.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
           "todos": 0
         },
         "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {
