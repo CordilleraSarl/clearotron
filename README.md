@@ -28,7 +28,7 @@ machine: no gateway, no platform, and nothing about the names you are clearing r
 npx clearotron demo
 ```
 
-That fetches the published package — it will ask once before downloading — then replays finished
+That fetches the published package — npx asks before it downloads it — then replays finished
 clearances into a local portal and prints the portal's address and the passphrase to sign in with. Open
 the address in your browser. No sign-up, no credentials, no network calls to us. The demo opens three
 ports, 18860, 18861 and 18862; `npx clearotron demo --port <n>` opens n, n+1 and n+2 instead.
@@ -63,6 +63,9 @@ something worth testing:
 ```bash
 npx clearotron@beta install
 ```
+
+The same form shows the beta's demo, `npx clearotron@beta demo`; plain `npx clearotron demo` shows the
+stable's.
 
 What each channel promises, and when a stable is cut: [docs/RELEASES.md](docs/RELEASES.md). If you are not
 sure, the first command is the one you want.

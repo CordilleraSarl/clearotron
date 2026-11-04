@@ -40,6 +40,9 @@ clearotron doctor --probe-engine
 `clearotron` it installed. If `~/.local/bin` is not on your `PATH` yet, type `~/.local/bin/clearotron`. Installing with npm's own global form
 instead is covered in [INSTALL.md](INSTALL.md) §2.
 
+That installs the stable release. For the newest beta, run `npx clearotron@beta install` instead;
+[docs/RELEASES.md](docs/RELEASES.md) says what each one promises.
+
 `doctor` is the one to read. It checks that the reasoning program is there, on `PATH` or as the copy
 setup installed; that it is signed in, by running a turn rather than by finding the executable; and
 that your register credential resolves. An executable that is signed out passes every other check and
@@ -76,7 +79,7 @@ stage stays on disk, so a run survives interruption and a resume re-runs only wh
 ## Then
 
 - See it before you buy anything: `npx clearotron demo` replays a finished clearance with no account, no
-  key and no network.
+  key and no network. `npx clearotron@beta demo` replays the beta's.
 - The four searches, and what each reaches: [README.md](README.md).
 - Everything else — configuration, the config store, the portal, access control:
   [INSTALL.md](INSTALL.md).
