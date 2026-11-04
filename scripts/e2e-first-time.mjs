@@ -222,7 +222,7 @@ export const NOT_COUNTED_EVENTS = {
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
     "turnaround-reconciliation", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-frontmatter",
-    "whatif-settled-on-archive", "write-up-forms",
+    "verdict-recomputed-steps-withdrawn", "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
     "audit-not-built-no-findings", "recall-reconciliation-unended-delivered", "late-evidence-no-digest-work", "changed-decision-unread-delivered", "ranking-changed-unread-delivered", "late-evidence-unassessed-delivered",
