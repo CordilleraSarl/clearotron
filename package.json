@@ -44,6 +44,12 @@
       "glob": {
         "minimatch": "11.0.3"
       }
+    },
+    "eslint": {
+      "minimatch": "11.0.3"
+    },
+    "@eslint/config-array": {
+      "minimatch": "11.0.3"
     }
   },
   "scripts": {
