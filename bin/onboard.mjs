@@ -393,6 +393,7 @@ const prose = (...parts) => { for (const l of wrapProse(parts.join(" "), proseWi
  *
  * @param {Record<string,string>} candidate what setup collected — always wins
  * @param {Record<string,string>} existing  the file as it stands
+ * @param {{ packaged?: boolean }} [how]     whether this is a package install, for the header's command
  */
 /**
  * ── IS THE PORTAL BUNDLE THE ONE ITS SOURCES WOULD BUILD? — ─────────────────
@@ -511,12 +512,24 @@ export function configurationLostToUpgrade({
   return dirs.every((d) => exists(d)) ? { base, dirs, installDir } : null;
 }
 
-export function composeEnvBody(candidate, existing = {}) {
+/**
+ * Why setup keeps a reader's configuration outside the program's own files, said for how the program was
+ * installed. A checkout takes updates with `git pull`; a package has no git, and an update replaces it whole.
+ */
+export const configOutsideWhy = (packaged) => (packaged
+  ? "Your customers and any instructions you override live here, outside the installed package, so an "
+    + "update can replace the package without touching them."
+  : "Your customers and any instructions you override live here, outside the checkout — which is what "
+    + "lets you take updates with `git pull` instead of merging into files you never meant to own.");
+
+export function composeEnvBody(candidate, existing = {}, { packaged = PACKAGED } = {}) {
   // Setup's own answers win: the reader just typed them, and this run is the newer statement.
   const carried = Object.entries(existing).filter(([k]) => !(k in candidate));
   return [
-    "# Written by `npm run setup`. Environment variables always win over this file.",
-    "# It holds credentials: keep it at mode 600, and out of git (.gitignore already covers it).",
+    // NAMED FOR HOW THE PROGRAM WAS INSTALLED: a package has no npm scripts. And no .gitignore is claimed,
+    // because the file is written to the reader's own settings folder (envLocalPath), outside the program.
+    `# Written by \`${packaged ? "clearotron install" : "npm run setup"}\`. Environment variables always win over this file.`,
+    "# It holds credentials: keep it at mode 600, and out of git.",
     "",
     // — VALIDATE under the names the engine reads, WRITE the names an installer should now see.
     // Without this a fresh `npm run setup` emits a .env full of deprecated spellings and the very next
@@ -4418,8 +4431,7 @@ try {
   // making a decision about where their customer data lives without being told they had made it.
   const cfgDefault = join(base, "config");
   say("\n  Where this install keeps its own configuration");
-  prose("Your customers and any instructions you override live here, outside the checkout — which is what",
-        "lets you take updates with `git pull` instead of merging into files you never meant to own.");
+  prose(configOutsideWhy(PACKAGED));
   prose(`Enter accepts ${cfgDefault}, and your customers are written there.`);
   const cfg = await askValue("Configuration directory:", { def: cfgDefault });
 
