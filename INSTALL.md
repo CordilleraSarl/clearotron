@@ -870,8 +870,9 @@ the whole boundary. On a host running nothing else, ignore this and carry on:
 clearotron start
 ```
 
-One command. It starts the portal and the engine door the portal's Start button calls, waits until both
-answer, and prints one address to open. `Ctrl-C` stops both. The second run asks nothing.
+One command. It starts the portal, the engine door the portal's Start button calls, the client door an
+assistant connects to, and the worker that runs what you order. It waits until the portal and the engine
+door answer, and prints one address to open. `Ctrl-C` stops all of them. The second run asks nothing.
 
 **This is not `npx clearotron demo`, and the two are not interchangeable.**
 

@@ -29,12 +29,14 @@ and the engine check is a real turn through the adapter's own spawn path. `--che
 reports what this machine is configured for and writes nothing. Add `--probe-engine` to spend the turn
 deliberately.
 
-`start.mjs` is a supervisor. It starts exactly two children — `driver/portal-service.mjs` (the portal,
-default port 18802) and `mcp-server/http-server.mjs` (the engine door the portal's Start button calls,
-default 18790) — and if either exits it says which and stops the other. Since it also starts a
-third child, `driver/runner.mjs --watch`, which drains the queue, so ordering a clearance from the portal
-runs it. That child is **non-fatal**: an install with no worker is a supported state (`--no-worker`), so a
-worker that dies leaves the portal serving and says what to restart, rather than taking the install down.
+`start.mjs` is a supervisor. It starts four children. `driver/portal-service.mjs` (the portal, default
+port 18802) and `mcp-server/http-server.mjs` (the engine door the portal's Start button calls, default
+18790) are fatal: if either exits, it says which and stops the rest. `mcp-server/http-server-client.mjs`
+(the client door an assistant connects to, default 18811) is non-fatal, and is left to its own unit when
+that unit is already up. The fourth, `driver/runner.mjs --watch`, drains the queue, so ordering a
+clearance from the portal runs it. That child is **non-fatal** too: an install with no worker is a
+supported state (`--no-worker`), so a worker that dies leaves the portal serving and says what to
+restart, rather than taking the install down.
 
 That is where hours of model time and vendor calls are spent, and the consent for it is the portal's own
 review dialog — which prices the run and takes the confirmation — not this file.
@@ -53,8 +55,8 @@ each office's own `status`, and a failed sync exits non-zero with the existing s
 ## Where to start
 
 `example.mjs` (172 lines) is the shortest complete path through the system: frozen example, ordinary
-publisher, local pool, loopback server. Then read the header of `start.mjs` for why the real product is
-two processes and what each of its two doors demands of a caller.
+publisher, local pool, loopback server. Then read the header of `start.mjs` for why the portal and the
+engine door are separate processes, and what each of those two doors demands of a caller.
 
 The long install path is in [`../INSTALL.md`](../INSTALL.md), and the index `uspto-sync` builds is in
 [`../providers/uspto-local/README.md`](../providers/uspto-local/README.md).
