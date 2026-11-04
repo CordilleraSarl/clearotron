@@ -1193,9 +1193,15 @@ test("repair-first A5: a BLOCKING with ZERO cited defects is refused AT THE CALL
 
   // TWO CALLS, ONE TURN — the refusal and the correction. This is what "repaired at the call" looks like
   // in the record, and counting them is what distinguishes it from a seat that simply answered once.
-  const settled = readFileSync(driverDir(res.runDir, "tool-calls.jsonl"), "utf8")
+  // The recheck after the correction is a second turn that saves through the same tool, meets the same refusal and
+  // corrects the same way, so the calls are counted per turn: the first review's are the ones before its verdict.
+  const reviewed = Date.parse(events.find((e) => e.event === "verdict")?.ts ?? "");
+  const all = readFileSync(driverDir(res.runDir, "tool-calls.jsonl"), "utf8")
     .split("\n").filter(Boolean).map((l) => JSON.parse(l))
     .filter((r) => r.tool === "record_narrative_refutation" && r.event === "settled");
+  assert.ok(Number.isFinite(reviewed) && all.every((r) => Number.isFinite(Date.parse(r.ts ?? ""))), "every call and the verdict carry a time");
+  const settled = all.filter((r) => Date.parse(r.ts) <= reviewed);
+  assert.equal(all.length - settled.length, 2, "the recheck's turn is the same two calls: refused, then corrected");
   assert.equal(settled.length, 2,
     `expected two record_narrative_refutation calls — the refused degenerate one and the correction — `
     + `got ${settled.length}. One call means the tool accepted a BLOCKING citing nothing, which is the `

@@ -9637,6 +9637,9 @@ export function buildReasonedNegativesSection(findings) {   // @internal
 // built from and writes the outcome beside it (corrections-delivered.mjs). The last assembly's answer stands.
 // corrections-applied.json, which the open points and the verdict re-check read, is not touched.
 export const CORRECTIONS_DELIVERED_FILE = "corrections-delivered.json";
+// Whether the recheck after the correction saved an accepted review (`read`) or not (`unread`, with why), with the
+// entry verdict and the verdict that stood. An unread recheck is a correction nobody verified.
+export const CORRECTIVE_RECHECK_FILE = "corrective-recheck.json";
 
 /** Keep the basis at the corrective pass, from the two records the applied table was built from. Throws on a write failure; the caller is never-kill. */
 export function recordCorrectionsBasis(runDir, rows, preDoc, postDoc) {   // @internal
@@ -14909,6 +14912,8 @@ async function pipelineInner(job, opts = {}) {
       const planAuditCarry = (ctx.registerPlan && existsSync(P.planExecution))
         ? `Your rewritten review MUST again contain the section titled exactly "PLAN-EXECUTION CHECK" — carry your prior section forward, updated for the corrected narrative/findings (the deterministic validator requires it whenever the plan-execution receipt exists).`
         : "";
+      const recheckSeq0 = nextRefutationSeq(run.runDir);
+      const reviewShaBefore = shaOf(P.seniorEyeReview);
       const rc = firstRef.key
         ? await stage("narrative-refutation", ctx, {
             force: true, sessionKey: firstRef.key, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck",
@@ -14921,9 +14926,31 @@ async function pipelineInner(job, opts = {}) {
             }),
           })
         : await stage("narrative-refutation", ctx, { force: true, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck", ...(planAuditExtra(ctx) ? { extra: planAuditExtra(ctx) } : {}) });
-      verdict = rc.ok ? (parseVerdict(readFileSync(P.seniorEyeReview, "utf8")) ?? entryVerdict) : entryVerdict;
-      correctiveRecheckOk = rc.ok === true;
-      runLog(run.runDir, { event: "verdict-2", verdict });
+      // A RECHECK COUNTS ONLY WHEN THIS DISPATCH SAVED A REVIEW. A reviewer whose every save was refused writes
+      // nothing, and the stage still reads ok on the review that stands from before the correction, so its verdict and
+      // its points would pass as the review of the corrected record, and the receipt would stop a resume from finishing
+      // a verification nobody made. Such a recheck is a failed one: the entry verdict stands, the record says the
+      // correction was not verified, no receipt is written, and the earlier review stays in place as the earlier review.
+      //
+      // TWO WAYS TO SAVE, BOTH COUNTED. The message above orders the review file rewritten, and a seat may do that or
+      // record the review through its tool; both are seen on test runs. So a save is an accepted tool call made since
+      // this dispatch began, or review bytes that differ from the ones before it. A byte-identical rewrite reads as no
+      // save, which costs only a cycle run again on a resume: the same bytes carry the same verdict.
+      const recheckCall = rc.ok ? readAcceptedReviewSince(run.runDir, recheckSeq0) : null;
+      const recheckRewrote = rc.ok && !recheckCall && shaOf(P.seniorEyeReview) !== reviewShaBefore && shaOf(P.seniorEyeReview) != null;
+      const recheckRead = recheckCall ? { by: "tool", seq: recheckCall.seq } : recheckRewrote ? { by: "file", seq: null } : null;
+      if (rc.ok && !recheckRead) {
+        runLog(run.runDir, { event: "verdict-recheck-unread", fail: "no-accepted-call", seq0: recheckSeq0, entryVerdict });
+        note(`[corrections] the recheck after the correction recorded no review — the correction is not verified, the entry verdict (${entryVerdict}) stands, and the review in place is the one from before the correction`);
+      }
+      verdict = recheckRead ? (parseVerdict(readFileSync(P.seniorEyeReview, "utf8")) ?? entryVerdict) : entryVerdict;
+      correctiveRecheckOk = rc.ok === true && Boolean(recheckRead);
+      try {
+        atomicWrite(driverDir(run.runDir, CORRECTIVE_RECHECK_FILE), JSON.stringify({ ts: new Date().toISOString(),
+          status: correctiveRecheckOk ? "read" : "unread", by: recheckRead?.by ?? null, entryVerdict, verdict, seq0: recheckSeq0, seq: recheckRead?.seq ?? null,
+          ...(correctiveRecheckOk ? {} : { fail: rc.ok ? "no-accepted-call" : String(rc.fail ?? "failed").slice(0, 160) }) }, null, 2) + "\n");
+      } catch (e) { note(`[corrections] the recheck's record could not be written (${String(e?.message ?? e).slice(0, 100)}) — the run log still holds the outcome`); }
+      runLog(run.runDir, { event: "verdict-2", verdict, read: correctiveRecheckOk });
       writeRunStatus(ctx, signoffPatch(verdict));
     }
     // AD-2 A1 — the completion receipt, written ONLY when the cycle finished with a verified recheck:
@@ -18401,8 +18428,8 @@ function assessmentArtifacts(P, runDir) {
     P.findings, P.narrative, P.report, P.reportOverview, P.reportCardsDir, P.audit, P.seniorEyeReview, P.caseLaw,
     P.caseLawCitations, P.doubtClosure, P.clientSummary, P.emailBody, P.correctionsApplied,
     join(runDir, REPORT_IDENTITY_FILE), join(runDir, ".published"),
-    ...["verdict.json", "senior-rights.json", "corrections-state.json", "corrective-cycle.json", "predelivery-lint.json",
-      "reasoning-integrity.json"].map((n) => driverDir(runDir, n)),
+    ...["verdict.json", "senior-rights.json", "corrections-state.json", "corrective-cycle.json", CORRECTIVE_RECHECK_FILE,
+      "predelivery-lint.json", "reasoning-integrity.json"].map((n) => driverDir(runDir, n)),
     declinationCallPaths(runDir, 0).ledger,
   ].filter(Boolean);
 }

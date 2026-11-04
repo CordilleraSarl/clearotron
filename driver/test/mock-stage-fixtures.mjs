@@ -1695,7 +1695,7 @@ export function applyStageWrites(msg, argv) {
     }
     return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"})`;
   }
-  if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
+  if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis|you do NOT redo it from scratch/.test(msg)) {
     // — FROM THE ENGINE WIRING, NOT FROM `--add-dir` (runDirFromWiring above). This branch stands in for a RECORDING SERVER's
     // write, and a recording server learns its run from `CLEAROTRON_BAND_RUN_DIR` in the env gather-config
     // hands it (serverEnv() in driver/engine/mcp/gather-config.mjs) — never from the seat's directory
@@ -2022,7 +2022,9 @@ export function applyStageWrites(msg, argv) {
       }
       return "mock synthesis recorded through record_synthesis";
     }
-    if (/record_narrative_refutation/.test(msg)) {
+    // The recheck after a correction names no tool: its message orders the review file rewritten, and a real seat
+    // either does that or records the review through the tool it holds. By default this seat records it.
+    if (/record_narrative_refutation/.test(msg) || /you do NOT redo it from scratch/.test(msg)) {
       // CONVERSION 9 — the reviewer. The four knobs keep their old spellings and are TRANSLATED into
       // values, the same choice conversion 8 made for MOCK_SKEPTIC: rewriting a dozen scenarios would
       // change what those tests are about, and one of them is the only test that drives a late-hardening
@@ -2065,6 +2067,26 @@ export function applyStageWrites(msg, argv) {
           const r = send({ verdict: process.env.MOCK_WHOLE_FALLBACK_VERDICT ?? (flags.length ? "CONDITIONAL" : "CLEAR"), flags, plan_audit: planAudit });
           return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
             : "mock reviewer recorded the whole review after the unread one through record_narrative_refutation";
+        }
+      }
+      // MOCK_RECHECK_UNREAD — the recheck after the correction, recognised by its opening line, has both its saves
+      // refused (a verdict the tool does not take) and ends, so the review from before the correction stands. With
+      // "once", only the run's first recheck: a marker beside the run, outside it, tells a resumed run's recheck apart.
+      // MOCK_RECHECK_REWRITES=<verdict> — the recheck rewrites the review file directly, as its message orders, with
+      // that verdict on the first line and the rest of the file kept, and records nothing through the tool.
+      if (process.env.MOCK_RECHECK_REWRITES && runDir && /you do NOT redo it from scratch/.test(msg)) {
+        const at = join(runDir, "senior-eye-review.md");
+        const was = readFileSync(at, "utf8").split("\n");
+        writeFileSync(at, [process.env.MOCK_RECHECK_REWRITES, ...was.slice(1)].join("\n"));
+        return `mock reviewer rewrote the review file directly (${process.env.MOCK_RECHECK_REWRITES})`;
+      }
+      if (process.env.MOCK_RECHECK_UNREAD && /you do NOT redo it from scratch/.test(msg)) {
+        const marker = runDir ? `${runDir}.mock-recheck-unread` : null;
+        if (process.env.MOCK_RECHECK_UNREAD !== "once" || !(marker && existsSync(marker))) {
+          if (marker) writeFileSync(marker, "1\n");
+          const refusals = [1, 2].map(() => bad(send({ verdict: "SIGNED", flags: [], plan_audit: planAudit })));
+          return refusals.every(Boolean) ? `mock reviewer's recheck saves were both REFUSED by record_narrative_refutation: ${refusals[0]}`
+            : "mock reviewer's recheck save was ACCEPTED, which this knob exists to prevent";
         }
       }
       // MOCK_POST_REPAIR_FLAGS — the review after a delivery-check repair, recognised by its own opening line:

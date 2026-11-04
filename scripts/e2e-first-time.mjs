@@ -242,7 +242,7 @@ export const NOT_COUNTED_EVENTS = {
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
     "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
-    "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3",
+    "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3", "verdict-recheck-unread",
   ],
   "read from its own record: the stage records, the dispatch records and the tool-call log": [
     "answer-part", "attempt", "stage", "settled", "started",

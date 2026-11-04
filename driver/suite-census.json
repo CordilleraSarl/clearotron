@@ -3286,8 +3286,8 @@
           "todos": 0
         },
         "corrective-cycle.test.mjs": {
-          "tests": 8,
-          "asserts": 76,
+          "tests": 11,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -4943,7 +4943,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 102,
-          "asserts": 863,
+          "asserts": 865,
           "skips": 0,
           "todos": 0
         },
