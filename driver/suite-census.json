@@ -388,8 +388,8 @@
           "todos": 0
         },
         "a-correction-is-checked-against-the-delivered-record.test.mjs": {
-          "tests": 9,
-          "asserts": 33,
+          "tests": 10,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -3340,8 +3340,8 @@
           "todos": 0
         },
         "corrective-cycle.test.mjs": {
-          "tests": 11,
-          "asserts": 108,
+          "tests": 13,
+          "asserts": 131,
           "skips": 0,
           "todos": 0
         },
