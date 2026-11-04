@@ -211,6 +211,8 @@ const contains = (parent, child) => parent === child || child.startsWith(parent.
 // path, and is REFUSED with the portal, because publishing into one directory while serving another is
 // a demo that shows a reader an empty archive and says nothing about why.
 const demoBase = resolve(flag("--base") ?? join(homedir(), "trademark-demo"));
+// READ BEFORE ANYTHING BELOW MAKES IT: a folder an earlier `--once` or `--keep` left is kept on exit.
+const baseExisted = existsSync(demoBase);
 if (flag("--pool") && !has("--once")) die(
   "demo: --pool is for --once, which publishes and exits.",
   "",
@@ -422,12 +424,12 @@ function strayFromAnOlderDemo() {
 // control greyed with the reason at it. Re-implementing that here is how there came to be two portals
 // in the first place, so this hands over rather than copies. The dev cockpit keeps its job as a
 // contributor tool; it simply stops being what `demo` opens.
-const startArgs = demoStartArgs({ demoBase, readerBase: flag("--base") != null, keep: has("--keep"),
+const startArgs = demoStartArgs({ demoBase, readerBase: flag("--base") != null, baseExisted, keep: has("--keep"),
   port: flag("--port"), noOpen: has("--no-open") });
 
 // ONLY WHEN THE FOLDER WILL OUTLIVE THE WINDOW. The demo removes what it made when it stops, and the
 // supervisor's banner says so; printing a removal command here as well told the reader the opposite.
-if (flag("--base") != null || has("--keep")) console.log(`  Removing this demo later is one directory:  ${removeDirectory(demoBase)}`);
+if (flag("--base") != null || has("--keep") || baseExisted) console.log(`  Removing this demo later is one directory:  ${removeDirectory(demoBase)}`);
 strayFromAnOlderDemo();
 console.log("");
 
