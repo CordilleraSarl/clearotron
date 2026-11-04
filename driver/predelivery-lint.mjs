@@ -153,6 +153,21 @@ function check(id, family, surface, pass, detail) {
   return { id, family, surface, pass: Boolean(pass), detail: detail ?? "" };
 }
 
+// A row that states a boundary rather than judging the run. It sits among the checks in the run record, and it never
+// fails, so no failure list, delivery line or repair reads it.
+function notice(id, family, surface, detail) {
+  return { ...check(id, family, surface, true, detail), notice: true };
+}
+
+/** The rows written as notices. A run recorded before a row became one carries it as a failure; delivery skips it. */
+export const NOTICE_IDS = new Set(["placement-rows-without-uri"]);
+
+/**
+ * Whether a delivery surface reports this check as failed: it failed, and it is not a notice. A run recorded before a
+ * row became a notice carries it as a failure, and its workbook, rebuilt, would say a check did not pass. PURE.
+ */
+export const deliveredFailure = (c) => Boolean(c) && !c.pass && !NOTICE_IDS.has(c.id);
+
 // Template integrity (A2): NAME(S) populated; every searched name has its own assessment row; rating
 // positions hold searched names, never adverse marks. Works on the parsed client-summary structures the
 // email is assembled from (the email assembly itself is code we control).
@@ -2001,11 +2016,14 @@ export function placementsChecks({ placements }) {
   // only ever existed as a placement — and their absence read as a clean pass on all three.
   //
   // So this NEVER blocks and is never structural. It states the boundary, so a zero from a URI-keyed
-  // gate is not read wider than it was measured. Only failing checks' `detail` reaches a reader, which
-  // is why it is written to flag on presence rather than to pass quietly with a count nobody renders.
+  // gate is not read wider than it was measured.
+  //
+  // A NOTICE, NOT A FAILURE (owner ruling, 2026-11-04). It flagged on presence, as a failing check, and so the
+  // lawyer's workbook said "A machine check on the report did not pass." on runs where nothing had failed. It is now
+  // recorded beside the checks, in the run record, with its count and its words, and no delivery surface reads it.
   const withoutUri = placements.filter((e) => !(Array.isArray(e?.records) && e.records.length)).length;
   if (placements.length && withoutUri) {
-    out.push(check("placement-rows-without-uri", "content-model", "placement", false,
+    out.push(notice("placement-rows-without-uri", "content-model", "placement",
       `${withoutUri} of ${placements.length} placement row(s) name no record URI. This is expected for a common-law candidate (records: [] by contract) and is NOT a defect — it is a COVERAGE BOUNDARY: every URI-keyed carry gate in this driver is silent about these rows rather than clearing them, so a clean result from those gates says nothing about this ${withoutUri}. placement-carry's own join is what covers them; read its classes before treating any of this as carried.`));
   }
   return out;
