@@ -219,11 +219,12 @@ test("every cut word the depth table allows is one the selection can act on", as
 
 // ── 5. the lint row — a disclosure that must not read as a defect ───────────────────────────────────
 
-test("the zero-URI disclosure fires on presence, names the count, and NEVER blocks", () => {
+test("the zero-URI disclosure is recorded on presence as a notice, names the count, and NEVER blocks", () => {
   const rows = [placement("VOLTMAX", "headline-candidate"), { ...placement("NOVA", "sheet-2"), records: [] }];
   const c = placementsChecks({ placements: rows }).find((x) => x.id === "placement-rows-without-uri");
   assert.ok(c, "no placement-rows-without-uri row was produced for a placements set that contains one");
-  assert.equal(c.pass, false, "only a failing check's detail reaches a reader, so a disclosure has to flag");
+  assert.equal(c.notice, true, "the boundary is recorded as a notice (a-placement-boundary-is-a-notice-not-a-failed-check.test.mjs)");
+  assert.equal(c.pass, true, "a notice is not a failed check");
   assert.notEqual(c.structural, true, "this must never block delivery — records: [] is CONTRACTUAL for a "
     + "common-law candidate, and a row that blocks on correct data gets an ignore-list within a week");
   assert.match(c.detail, /1 of 2 placement row\(s\)/);
