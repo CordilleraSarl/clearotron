@@ -52,6 +52,27 @@ export function verdictWithoutTheClosedGap({ verdict, assessed, reasons = [] } =
 }
 
 /**
+ * THE RESULT ONCE A CORRECTION WITHDRAWS EVERY FORWARD LEGAL STEP THAT ALONE MADE IT CONDITIONAL (the owner's decision,
+ * 2026-11-04). The review said CLEAR and the floor raised it to CONDITIONAL on the record's steps (`raisedBySteps`). The
+ * withdrawal must be positive: a readable record whose actions register is a list holds none of them (`withdrawnAt`),
+ * no step was ever dropped as unreadable (`stepsUnreadable`), the review of that change was read after it
+ * (`reviewReadAt`, and no review since went unread), no correction since was rejected (`correctionRejectedAt`), and the
+ * recheck after the first review's correction, where one was owed, was accepted (`recheckUnaccepted`).
+ * Then the result is recomputed as a closed gap's is, from the assessment and the conditions still standing: CLEAR only
+ * when none is left. Anything short of that keeps the result as it stands. Times are ISO strings. PURE.
+ */
+export function verdictWhenTheStepsAreWithdrawn({ verdict, assessed, reasons = [], raisedBySteps = false, stepsUnreadable = false,
+  withdrawnAt = null, reviewReadAt = null, reviewUnread = false, correctionRejectedAt = null, recheckUnaccepted = false } = {}) {
+  if (verdict !== "CONDITIONAL" || assessed !== "CLEAR" || raisedBySteps !== true || stepsUnreadable !== false) return verdict;
+  if (recheckUnaccepted !== false) return verdict;
+  const at = (t) => (typeof t === "string" ? Date.parse(t) : NaN);
+  const withdrawn = at(withdrawnAt), read = at(reviewReadAt);
+  if (!Number.isFinite(withdrawn) || !Number.isFinite(read) || !(read > withdrawn) || reviewUnread !== false) return verdict;
+  if (correctionRejectedAt != null && !(at(correctionRejectedAt) < withdrawn)) return verdict;
+  return verdictWithoutTheClosedGap({ verdict, assessed, reasons });
+}
+
+/**
  * ONE SENTENCE WHEN THE WRITER'S DUTY AND THE RECALL GATE BOTH FIND RECORDS UNADDRESSED. Both state the approved
  * sentence for records neither addressed nor set aside, each out of its own population: the records the writer was
  * owed, and the records the recall gate weighed. Stated twice, the same words would give two totals for "the register
