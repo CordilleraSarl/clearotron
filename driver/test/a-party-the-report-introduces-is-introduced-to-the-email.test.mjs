@@ -22,6 +22,7 @@ import { emailConditionsOfReport } from "../publish/email-conditions.mjs";
 const FINDINGS = [
   { ordinal: 1, mark: "SOLVIRA", owner: { name: "Ostrava Kites" }, disposition: "adversarial" },
   { ordinal: 2, mark: "SOLVIRRA", owner: { name: "Brannick Tooling" }, disposition: "adversarial" },
+  { ordinal: 3, mark: "SOLVERRO", owner: { name: "Pellbridge Mills Ltd" }, disposition: "adversarial" },
 ];
 const report = (you) => `---
 title: SOLVERA
@@ -49,6 +50,9 @@ The register was searched in full.
 
 ## SOLVIRRA — Brannick Tooling
 - ord: 2
+
+## SOLVERRO — Pellbridge Mills Ltd
+- ord: 3
 `;
 const lint = (you) => {
   const reportMd = report(you);
@@ -91,6 +95,10 @@ test("a verb opening an item is dropped, and the name after it is still read", (
   // The person after the verb is named nowhere: the person is named, without the verb, on both surfaces.
   const unnamed = lint("- Verify Halden Rourke's authority to consent before filing.");
   for (const id of [EMAIL, REPORT]) assert.deepEqual(on(unnamed, id)?.orphans, ["Halden Rourke"], `${id} lost the person, or kept the verb`);
+  // An item that opens with a party's own name, not a verb, loses its first word, and the rest still stands in the
+  // name the report gives the party: nothing is named. (A party the report names in another form would be.)
+  const named = lint("- Pellbridge Mills Ltd must consent before filing.");
+  for (const id of [EMAIL, REPORT]) assert.equal(on(named, id)?.pass, true, `${id} named a party the report carries`);
   // A verb followed by one word leaves no name to read, as before.
   assert.deepEqual(properNameCandidates("- Instruct Japanese and Korean counsel.", null, { actionBullets: true }), []);
 });
