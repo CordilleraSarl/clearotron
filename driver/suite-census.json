@@ -3658,8 +3658,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 40,
-          "asserts": 116,
+          "tests": 41,
+          "asserts": 122,
           "skips": 3,
           "todos": 0
         },
@@ -6808,8 +6808,8 @@
           "todos": 0
         },
         "the-first-hour-reads-true.test.mjs": {
-          "tests": 8,
-          "asserts": 42,
+          "tests": 9,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
