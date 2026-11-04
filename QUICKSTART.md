@@ -12,7 +12,7 @@ of its own and calls nothing on your behalf.
 |---|---|---|
 | A reasoning program | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`). Setup installs it if the machine has none. Sign in with the program setup installed (doctor prints its path), or with `claude` or `codex login` if the machine has its own |
 | A register | Sets what the search reaches, and what it costs | [Signa](https://signa.so) — one key, self-serve, US + EU + WIPO and ten more offices |
-| Web research | Covers the open web and the marketplaces | [Perplexity](https://www.perplexity.ai) |
+| Web research | Covers the open web and the marketplaces. The three clearance searches need it; a Knockout search runs without it | [Perplexity](https://www.perplexity.ai) |
 
 The register is the one with a real choice in it. EUIPO and a local USPTO index cost nothing and
 reach one office each; Signa is the recommended paid route and the fastest to a real clearance.

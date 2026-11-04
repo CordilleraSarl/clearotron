@@ -449,7 +449,8 @@ EUIPO_ENVIRONMENT=production              # REQUIRED with euipo — sandbox | pr
                                           # deployments over different corpora. There is no default:
                                           # unset, the adapter refuses by name.
 
-# ── Web research — REQUIRED for all four products (see §1) ─────────────
+# ── Web research — REQUIRED for the three clearance searches (see §1) ──
+#    A Knockout search runs without it and states on the report that the open-web half did not run.
 PERPLEXITY_API_KEY=...
 
 # ── Optional data sources ──────────────────────────────────────────────
