@@ -12,7 +12,7 @@ import { join, dirname, basename, resolve, relative } from "node:path";   // res
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
-import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect, gapPositivelyClosed, verdictWithoutTheClosedGap, jointUnaccounted } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
+import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect, gapPositivelyClosed, verdictWithoutTheClosedGap, verdictWhenTheStepsAreWithdrawn, jointUnaccounted } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
 import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
@@ -7279,6 +7279,15 @@ export function conditionsFollowingTheRecord({ reasons = [], clauses = [], fromR
   return { reasons: rows.map(([r]) => r), clauses: rows.map(([, c]) => c), held: new Set(held),
     withdrawn: before.filter((r) => !held.includes(r)), added: held.filter((r) => !before.includes(r)),
     restated: placed.filter(([r, c]) => before.includes(r) && clauseWas.get(r) !== c).map(([r]) => r) };
+}
+
+/**
+ * IS THE RECORD'S ACTIONS REGISTER A LIST? The one positive sign that a record holding no forward legal step has
+ * withdrawn them, rather than lost them: an unreadable record, a missing register and one that is not a list are not a
+ * withdrawal. Entries dropped as unreadable are the caller's to weigh. PURE.
+ */
+export function actionsRegisterListed(raw) {   // @internal — driven by its test
+  try { return Array.isArray(JSON.parse(String(raw ?? ""))?.actions); } catch { return false; }
 }
 
 /**
@@ -15078,6 +15087,13 @@ async function pipelineInner(job, opts = {}) {
     // THE REASONS THE RECORD'S OWN ACTIONS PUT IN THE LIST, by the floor's legal-actions arm, so the list can follow the
     // record when a repair in the delivery check rewrites, withdraws or adds a step (conditionsFollowingTheRecord).
     let recordConditionReasons = new Set();
+    // WHAT A WITHDRAWAL OF THOSE STEPS NEEDS TO GIVE THE REVIEW'S CLEAR BACK (verdictWhenTheStepsAreWithdrawn): that the
+    // steps raised the result, that none was ever dropped as unreadable, when a readable record last held none of them,
+    // and when a correction in the delivery check was last rejected.
+    let stepsRaisedTheResult = false;
+    let stepsUnreadable = false;
+    let stepsWithdrawnAt = null;
+    let correctionRejectedAt = null;
     const DROPPED_CONDITIONS_REASON = "a forward legal step this opinion named could not be recorded, so the conditions listed here are incomplete";
 
     /**
@@ -15364,6 +15380,7 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
             note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
             verdict = "CONDITIONAL";
+            stepsRaisedTheResult = true;
             writeRunStatus(ctx, signoffPatch(verdict));
           } else if (fresh.length) {
             runLog(run.runDir, { event: "verdict-conditions-recorded", legalActions: fresh.length });
@@ -15383,6 +15400,7 @@ async function pipelineInner(job, opts = {}) {
         // do is read as complete — so the reason says INCOMPLETE in the client's own words, and the
         // engine-side detail (ids, defect tokens) rides the note and the log where an engineer reads.
         const droppedConditions = quarantinedConditionRows(fdoc?.actionsQuarantined);
+        if (droppedConditions.length) stepsUnreadable = true;   // a step nobody can read is never shown withdrawn
         const droppedReason = DROPPED_CONDITIONS_REASON;
         // ONCE, not once per entry. This floor is re-entered — the degenerate re-ask and the delivery
         // block both call it again — so the reason, the clause and the telemetry are guarded by the
@@ -15706,8 +15724,8 @@ async function pipelineInner(job, opts = {}) {
     // label. Returns whether the list, its kinds or the result changed.
     const followTheRecordsActions = (why) => {
       if (verdict === "BLOCKING" && !recordConditionReasons.size) return false;
-      let fdoc = null;
-      try { fdoc = existsSync(P.findings) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null; }
+      let raw = null, fdoc = null;
+      try { if (existsSync(P.findings)) { raw = readFileSync(P.findings, "utf8"); fdoc = parseFindingsJsonLenient(raw); } }
       catch { fdoc = null; }
       if (!fdoc) return false;   // no record to read: the list stands as stated, and the coherence checks judge it
       const { conditions, conditionClauses } = deriveActionConditions(fdoc.actions, fdoc.findings);
@@ -15722,12 +15740,38 @@ async function pipelineInner(job, opts = {}) {
       recordConditionReasons = f.held;
       if (!conditions.length) delete clampKinds.legalActions;
       if (!dropped) delete clampKinds.actionsDropped;
+      // A WITHDRAWAL IS POSITIVE ONLY ON A RECORD WHOSE ACTIONS REGISTER IS A LIST that holds none of the steps. A missing
+      // or malformed register, or one with an entry dropped as unreadable, withdraws nothing.
+      if (f.held.size || conditions.length || dropped) stepsWithdrawnAt = null;
+      else if (f.withdrawn.length) stepsWithdrawnAt = actionsRegisterListed(raw) ? new Date().toISOString() : null;
       // The floor runs again only where the repaired steps reach it, as the coherence repair runs it.
       if (state() !== stood || (verdict === "CLEAR" && (conditions.length || dropped))) applyCoverageFloor();
+      restoreTheReviewsClear();
       if (state() === stood && verdict === was) return false;
       runLog(run.runDir, { event: "verdict-conditions-followed", why, withdrawn: f.withdrawn.length, added: f.added.length,
         restated: f.restated.length, conditions: recordConditionReasons.size, from: was, to: verdict });
       note(`the conditions follow the record ${why} (${f.withdrawn.length} withdrawn, ${f.added.length} added, ${f.restated.length} restated${verdict === was ? "" : `; ${was} → ${verdict}`})`);
+      return true;
+    };
+    // A CORRECTION THAT WITHDREW EVERY STEP THAT ALONE MADE THE RESULT CONDITIONAL gives the review's CLEAR back, once the
+    // review of that change has been read and no correction since was rejected (the owner's decision, 2026-11-04). The
+    // result is recomputed as a closed gap's is, and that CLEAR meets the floor any CLEAR meets. The caller saves the label.
+    const restoreTheReviewsClear = () => {
+      let review = null;
+      try { review = JSON.parse(readFileSync(postRepairRecordPath(run.runDir), "utf8")); } catch { review = null; }
+      const now = verdictWhenTheStepsAreWithdrawn({ verdict, assessed, reasons: clampReasons, raisedBySteps: stepsRaisedTheResult,
+        stepsUnreadable, withdrawnAt: stepsWithdrawnAt, reviewReadAt: review?.status === "read" ? review.ts : null,
+        reviewUnread: review?.status === "unread", correctionRejectedAt,
+        // The correction of the first review owed a recheck the cycle did not get accepted: the assessment is not verified.
+        recheckUnaccepted: (correctiveEntryVerdict === "CONDITIONAL" || correctiveEntryVerdict === "BLOCKING") && !correctiveCycleSettled && !correctiveRecheckOk });
+      if (now === verdict) return false;
+      runLog(run.runDir, { event: "verdict-recomputed-steps-withdrawn", from: verdict, to: now, withdrawnAt: stepsWithdrawnAt, reviewReadAt: review?.ts ?? null });
+      note(`every forward legal step that made the result conditional was withdrawn, the review of that change was read, and nothing else conditions the result — ${verdict} goes back to ${now}, the result the review reached`);
+      verdict = now;
+      restoredClear = now === "CLEAR";
+      stepsRaisedTheResult = false;
+      writeRunStatus(ctx, signoffPatch(verdict));
+      applyCoverageFloor();   // the floor any CLEAR meets
       return true;
     };
     try { writeVerdictSidecar(); }
@@ -17341,6 +17385,7 @@ async function pipelineInner(job, opts = {}) {
             if (review.rec.flags.length) {
               const pass = await runPostRepairCorrection(ctx, P, run, { rec: review.rec, items: review.items, points: review.points,
                 grounds: Boolean(hardened), whole: review.base?.whole === true, synthesisRef: { key: synthesisKey, model: synthesisModel, thinking: synthesisThinking } });
+              if (!pass.ok) correctionRejectedAt = new Date().toISOString();   // a rejected correction gives no result back
               // NOTHING REVIEWS THE CORRECTION: the reviewer's stamp takes what it changed as accounted for, and so
               // does the first cycle's receipt, so a resume re-fires neither.
               settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
