@@ -489,7 +489,9 @@ the packets are being written and are waiting for an integrator to consume them.
 
 `uspto-local` searches a copy of the United States register that you build on your own disk from
 USPTO's public bulk data. No vendor, no invoice, and no extra software — Node 22 ships the database
-engine it uses.
+engine it uses. The download does need a free USPTO.gov account, which asks for ID.me identity
+verification, and the API key from it in `USPTO_API_KEY`; nothing is billed.
+`clearotron sync --from-file <archive>` builds from an archive you already have, with no key.
 
 **The bill is time and disk, not money.** From one complete build read end to end on 2026-08-11 (767
 files, backfile and dailies): **41.5 GB** downloaded, **~9 hours** to ingest at 4.6 GB/h, **20 GB** of
