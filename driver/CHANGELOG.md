@@ -1,5 +1,19 @@
 # clearotron-driver
 
+## 0.5.0-beta.10
+
+### Patch Changes
+
+- Fixed: When a report groups filings of one conflict into one finding, the final checks now ask for a wrong goods claim to be corrected in the text the finding shows.
+- Fixed: A report no longer counts a main market as read in a crowded search when the narrower search by goods left that market's register out.
+- Fixed: The audit workbook no longer calls a name an unidentified party when the report identifies it, or when it is a territory such as the UAE.
+- Fixed: The audit workbook no longer says that a machine check on the report did not pass when no check had failed.
+- Fixed: The audit workbook no longer records a correction as checked when the review after it did not complete, and shows that review as not completed.
+- Fixed: A result made conditional only by legal steps that a later correction withdraws now reads clear again, once the review of that correction accepts it and nothing else is outstanding.
+- Fixed: `clearotron doctor` no longer suggests deployment names to copy, and no longer warns about an unset one on a machine that runs no services.
+- Fixed: The install guide now says that `clearotron start` uses the passphrase sign-in. It no longer says that the command refuses to start without a sign-in provider.
+- Fixed: The package now includes the quickstart guide that the README and the install guide link to.
+
 ## 0.5.0-beta.9
 
 ### Patch Changes
