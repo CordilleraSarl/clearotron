@@ -366,8 +366,9 @@ test("after a failed proof turn setup hands off the sign-in only on a subscripti
   const installed = { source: "installed", path: "/opt/engines/node_modules/@anthropic-ai/claude-code/bin/claude.exe" };
   const sub = signInHandOff(eng, installed, "subscription");
   assert.equal(sub.captureToken, true, "the subscription's token route is offered");
-  assert.equal(sub.lines[0], `if it is signed out: run \`${installed.path}\` once in a terminal and complete the sign-in, then answer yes below.`);
-  assert.match(sub.lines[1], /^on a machine you cannot complete a sign-in on: run `claude setup-token` \(from any machine you can sign in on; on this one the program is /);
+  assert.equal(sub.lines[0], "setup waits in this terminal, so run the commands below in a second one:");
+  assert.equal(sub.lines[1], `if it is signed out: run \`${installed.path}\` once in a terminal and complete the sign-in, then answer yes to "Run the turn again".`);
+  assert.match(sub.lines[2], /^on a machine you cannot complete a sign-in on: run `claude setup-token` \(from any machine you can sign in on; on this one the program is /);
   for (const [id, e] of Object.entries(ENGINE_BINARIES))
     for (const l of signInHandOff(e, installed, "subscription").lines) assert.doesNotMatch(l, /\bbox\b/, `${id}: ${l}`);
   for (const billing of ["cloud", "api-key"]) {

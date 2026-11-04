@@ -120,6 +120,18 @@ export const probingLine = (engineId) =>
   `Probing ${engineId} with one turn on its cheapest model (this SPENDS; ${PROBE_TIMEOUT_SEC}s ceiling)…`;
 export const proveQuestion = ({ engineId, lane }) =>
   `Prove ${engineId} on the ${lane} lane now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
+/**
+ * What setup says just before it asks to prove the engine. Answering no saves nothing and returns to the
+ * engine menu, so the reader is told before answering that the AI is saved only once the turn works. On a
+ * subscription it also says what a turn costs when the program is not signed in yet, nothing, and that the
+ * sign-in follows (signInHandOff); under a key or a cloud account there is no sign-in to follow.
+ */
+export const proofPreamble = ({ product, billing }) => [
+  "A file that exists is not an engine that works — so setup tries one before writing anything.",
+  `It takes a few seconds, and setup saves ${product} as your AI only once this turn works.`,
+  ...(billing === "subscription"
+    ? [`If ${product} is not signed in yet, the turn costs nothing, and setup then shows how to sign in.`] : []),
+];
 
 // HOW CLAUDE IS PAID FOR, IN THE OWNER'S WORDS (2026-09-14): one question, three answers, the third a cloud
 // account. Codex keeps the question it had: a cloud account bills Claude only, and the resolver refuses
@@ -840,6 +852,20 @@ export { ON_A_WINDOWS_DRIVE };
 export { namingProgram };
 
 /**
+ * What setup shows under a failed proof turn as its evidence: the engine's own last words, or that it said
+ * none, and how the verdict was read. A turn refused before the program started (basis "config": a billing
+ * setting, a missing sign-in file, an engine this driver does not ship) has no output to show and nothing
+ * read from it, so it shows neither; the verdict above it names what is missing.
+ */
+export function proofEvidence(v) {
+  if (v.basis === "config") return [];
+  return [
+    v.detail ? `engine said: ${v.detail}` : "engine said: nothing — it produced no output on either stream before it stopped.",
+    ...(v.basis ? [`(that reading is ${v.basis === "text-match" ? "matched out of the text above, not a signal from the provider" : v.basis})`] : []),
+  ];
+}
+
+/**
  * What setup says after a failed proof turn about the step it cannot take for the reader, by how the turn
  * is paid for (`billing`, the billing word). On a subscription that is the sign-in, naming the copy that runs,
  * and the route for a machine with no browser; `captureToken` says whether that route's token is offered for
@@ -851,7 +877,12 @@ export function signInHandOff(eng, bin, billing) {
   if (billing === "cloud") return { lines: ["if you fixed the cloud's sign-in on this machine, answer yes below; to change the answers "
     + "above, answer no and pick the engine again."], captureToken: false };
   if (billing === "api-key") return { lines: ["to give a different key, answer no below and pick the engine again."], captureToken: false };
-  const lines = [`if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes below.`];
+  // SETUP IS STILL WAITING IN THIS TERMINAL, so the commands are run in a second one. Said of the commands,
+  // not as "sign in": these lines follow every failed turn, a spent quota as much as a sign-out. And the yes
+  // it asks for is the retry's, named, because on Claude the token question comes first and wants no after a
+  // browser sign-in.
+  const lines = ["setup waits in this terminal, so run the commands below in a second one:",
+    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "Run the turn again".`];
   // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made on
   // any machine, so its command keeps the bare word, and this machine's copy is named beside it.
   if (eng.headless) {
@@ -4023,10 +4054,9 @@ try {
     //
     // THE CHECK IS UNCHANGED AND THE REFUSAL IS UNCHANGED. He valued both, and the issue puts them out
     // of scope explicitly — what was wrong was the sentence around them, so only the sentence moved.
-    // ONE LINE, saying the two things a reader needs to decide with: this costs a moment now, and
-    // skipping it costs an hour later.
-    info("A file that exists is not an engine that works — so setup tries one before writing anything.");
-    info("It takes a few seconds here. Skipped, a broken engine surfaces an hour into a real search.");
+    // proofPreamble says what a reader needs to decide with: what the turn costs, and that answering no
+    // saves nothing.
+    for (const line of proofPreamble({ product: eng.product, billing: authPick.id })) info(line);
     if (!await confirm(proveQuestion({ engineId: pick.id, lane: authPick.id }), true)) {
       info("Not proven, so not written. Pick again — the last row configures no engine at all.");
       continue;
@@ -4067,10 +4097,9 @@ try {
       //
       // SAY WHICH IT IS, INCLUDING WHEN THERE IS NOTHING. "The engine printed nothing" is itself the
       // diagnosis on a binary that died before it opened its mouth, and printing no line at all leaves
-      // a reader unable to tell that from a wizard that decided not to show them.
-      if (v.detail) info(`engine said: ${v.detail}`);
-      else info("engine said: nothing — it produced no output on either stream before it stopped.");
-      if (v.basis) info(`(that reading is ${v.basis === "text-match" ? "matched out of the text above, not a signal from the provider" : v.basis})`);
+      // a reader unable to tell that from a wizard that decided not to show them. A program refused before it
+      // started said nothing because it never ran, so proofEvidence shows no line for it.
+      for (const line of proofEvidence(v)) info(line);
       // — THE HAND-OFF. Signing in is the one step of this sequence nobody here can perform for
       // someone, so the wizard names the command, waits, and re-probes rather than ending at a
       // description of what is wrong. The text comes from ENGINE_BINARIES so the two adapters cannot
