@@ -103,9 +103,9 @@ test("the port variables are named BEFORE the first `clearotron start`, not only
       `${name} is named only after the command that fails without it — a reader choosing ports must meet `
       + "them where the choice is made");
   }
-  assert.match(before, /fixed defaults shared by every checkout/i,
+  assert.match(before, /fixed defaults shared\s+by every install/i,
     "and the reason must be stated: these are host-wide fixed defaults, not per-install values, which is "
-    + "why a second checkout collides");
+    + "why a second install collides");
 });
 
 // ── — a remedy that exists wherever the harness runs ────────────────────────────────────────

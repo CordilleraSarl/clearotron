@@ -57,7 +57,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
   On WSL, a program on the Windows side can hold a port that WSL reports as free, and the browser reaches
   it first. VS Code's Remote-SSH port forwarding is the common case. If the page that opens is not this
-  install's sign-in, run the same command again with `--port 28802`, or any free number.
+  install's sign-in, run the same command again with `--port 28802`. It opens that number and the next
+  two, so any number works whose next two are free as well.
 
   A *hosted* deployment runs the product as systemd user units, so it needs Linux —
   [driver/systemd/README.md](driver/systemd/README.md).
@@ -112,7 +113,9 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 - **A register credential**, and **`PERPLEXITY_API_KEY`**. Both are required for a real run and both
   fail closed at preflight — before a stage has spent, never at the grid after. The one exception is a
   Knockout search, which runs keyless: it returns register filing counts and states on the report that
-  the open-web half did not run.
+  the open-web half did not run. Only the native-language investigation of China, Hong Kong, Taiwan or
+  Macau uses `SERPAPI_API_KEY`: it searches the Chinese marketplaces through Baidu. Without it, those
+  marketplaces come back as a disclosed gap.
 
   Which register you pick is the first real decision, and the tiers are not equally easy to reach.
   [providers/README.md](providers/README.md) is the canonical ladder and
@@ -288,13 +291,26 @@ Read the list before you delete anything: one of these directories holds your re
 background services, `clearotron stop` stops them and removes their unit files. `clearotron status` says
 which of the two you have.
 
-**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`
-(which is also what a demo run from `npx` leaves behind), it lives in two places under `~/.local`:
+**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`,
+it lives in two places under `~/.local`:
 
 ```
 ~/.local/lib/node_modules/clearotron
 ~/.local/bin/clearotron
 ```
+
+**The reasoning program, if setup installed it.** Setup puts Claude Code or the Codex CLI in one folder,
+`~/.local/share/clearotron/engines`, or where `CLEAROTRON_ENGINES_DIR` points. Delete the folder to
+remove it.
+
+**What the reasoning program keeps for itself.** Claude Code keeps its sign-in and settings in
+`~/.claude` and `~/.claude.json`, and setup's engine check creates them if they were not there. The
+Codex CLI keeps its sign-in in `~/.codex`. They belong to that program, not to Clearotron: remove them
+only if nothing else on the machine uses it.
+
+**npm's copy, if you ran `npx`.** `npx clearotron` keeps the package it downloaded in npm's cache, under
+`~/.npm/_npx`, beside anything else you have run with `npx`. Deleting `~/.npm/_npx` removes all of them;
+npm downloads again the next time it is asked.
 
 **The settings, and the keys.** `~/.config/clearotron/.env` holds this install's signing secrets, so
 deleting it invalidates every key it ever issued. Beside it: `~/.config/clearotron/token-denylist`, the
@@ -431,26 +447,28 @@ CLEAROTRON_BRAND_PRODUCT=Trademark clearance   # what the deliverable is called
 # CLEAROTRON_ADMINISTRATOR_CONTACT=it@your-firm.example
 
 # ── Register provider (choose ONE) ─────────────────────────────────────
-CLEAROTRON_DATABASE=clarivate       # REQUIRED — corsearch | clarivate | signa | euipo | uspto-local | free-tier
+CLEAROTRON_DATABASE=signa                # REQUIRED — signa | free-tier | euipo | uspto-local | corsearch | clarivate
                                          # No default: unset, a run refuses.
-CLARIVATE_API_KEY=...                    # the credential for the provider named above
-# CLARIVATE_API_BASE=...                  # optional; defaults to the adapter's base
-# CORSEARCH_SESSION_KEY=...
-# SIGNA_API_KEY=...
+SIGNA_API_KEY=...                        # the credential for the provider named above
 # SIGNA_BASE_URL=...                      # optional; defaults to the adapter's base
 # CORSEARCH_SESSION_KEY=...               # …or an enterprise vendor, via a sales agreement
-# CLARIVATE_API_KEY=... / CLARIVATE_API_BASE=...
+# CLARIVATE_API_KEY=...
+# CLARIVATE_API_BASE=...                  # optional; defaults to the adapter's base
 # USPTO_LOCAL_DB=/var/lib/trademark/uspto/us.db   # no vendor account — see §3a below
 
 # ── …or the FREE EU register, as the provider (no subscription) ────────
 # CLEAROTRON_DATABASE=euipo
 # EUIPO_CLIENT_ID=... / EUIPO_CLIENT_SECRET=...
-EUIPO_ENVIRONMENT=production              # REQUIRED with euipo — sandbox | production are SEPARATE
+# EUIPO_ENVIRONMENT=production            # REQUIRED with euipo — sandbox | production are SEPARATE
                                           # deployments over different corpora. There is no default:
                                           # unset, the adapter refuses by name.
 
-# ── Web research — REQUIRED for all four products (see §1) ─────────────
+# ── Web research — REQUIRED for the three clearance searches (see §1) ──
+#    A Knockout search runs without it and states on the report that the open-web half did not run.
 PERPLEXITY_API_KEY=...
+
+# ── Chinese marketplaces — only the native-language investigation of China, Hong Kong, Taiwan or Macau
+# SERPAPI_API_KEY=...                     # without it, those marketplaces come back as a disclosed gap
 
 # ── Optional data sources ──────────────────────────────────────────────
 # Case law has NO token variable. Access is free and immediate, and setup is a one-time OAuth login
@@ -483,7 +501,9 @@ the packets are being written and are waiting for an integrator to consume them.
 
 `uspto-local` searches a copy of the United States register that you build on your own disk from
 USPTO's public bulk data. No vendor, no invoice, and no extra software — Node 22 ships the database
-engine it uses.
+engine it uses. The download does need a free USPTO.gov account, which asks for ID.me identity
+verification, and the API key from it in `USPTO_API_KEY`; nothing is billed.
+`clearotron sync --from-file <archive>` builds from an archive you already have, with no key.
 
 **The bill is time and disk, not money.** From one complete build read end to end on 2026-08-11 (767
 files, backfile and dailies): **41.5 GB** downloaded, **~9 hours** to ingest at 4.6 GB/h, **20 GB** of
@@ -736,7 +756,7 @@ Copy or author the companies, context packs and project overlays you want; assum
    **The example above is sized in minutes; a real clearance is sized in hours.**
    The engine sizes a knockout search at 5 to 10 minutes — which is what this job orders — and a clearance
    at up to 2.5 hours.
-   The example run in `demo/` took 2 h 35 m, and it is a clearance, not a knockout. A
+   The three clearances in `demo/` took 64 to 74 minutes each, and its knockout search 4 minutes. A
    single stage of a clearance can legitimately run 45 minutes — let it finish.
    [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
 
@@ -765,11 +785,11 @@ its internal refutation verdict, and then:
 
 ### How long a run takes
 
-Hours, not minutes.
+Minutes for a knockout search, an hour or more for a clearance.
 
-**One measured run.** The sample in `demo/` took **2 h 35 m** from `startedAt` to
-`deliveredAt` (`run/status.json`) — one mark, two classes, one register, 214 register calls, 37 model
-dispatches. That is 1.29× the 2 hours the run quoted itself.
+**Four measured runs.** Each sample in `demo/` records its own wall, from `startedAt` to `deliveredAt`
+in `run/status.json`. The three clearances took **64 to 74 minutes** each, quicker than the quote
+below; the knockout search took **4 minutes**.
 
 **What the engine quotes.** A knockout search is sized at 5 to 10 minutes. A clearance starts at 1.5 hours
 and runs to 2.5 hours — one range for every clearance, whichever lanes it carries
@@ -797,6 +817,13 @@ The command that continues a run is printed whenever a run ends badly — copy t
 
 ```
 node /path/to/driver/pipeline.mjs --job /path/to/job.json --resume <codename>
+```
+
+With the `clearotron` command the install placed, the same command is shorter, and the job file can be
+left out:
+
+```
+clearotron run --resume <codename>
 ```
 
 A run stopped by a **provider rate limit** or parked for **automatic recovery** does not need you at all
@@ -830,24 +857,27 @@ clearotron stop                   # stop it and give the box back — plain `sta
 `--background` never touches the assistant connector: `clearotron connect` opens that door
 and `clearotron disconnect` closes it, separately and on purpose.
 
-**If anything else on this host already runs this product, set its ports first.** The portal (18802)
-and the engine door (18790) are **fixed defaults shared by every checkout on a machine**, so a second
-instance collides with the first and `start` refuses rather than quietly moving. Give it its own pair
+**If anything else on this host already runs this product, set its ports first.** `start` opens three:
+the portal (18802), the engine door (18790) and the client door (18811). They are **fixed defaults shared
+by every install on a machine**, so a second instance meets the first one's ports. Give it its own three
 before the first start:
 
 ```
-PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 clearotron start
+PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 CLIENT_MCP_HTTP_PORT=18822 clearotron start
 ```
 
-A test instance beside a live one needs more than two ports — §8, *Two instances on one machine*, is the
-whole boundary. On a host running nothing else, ignore this and carry on:
+`clearotron start --port 18820` opens the same three: 18820, 18821 and 18822.
+
+A test instance beside a live one needs more than its own ports — §8, *Two instances on one machine*, is
+the whole boundary. On a host running nothing else, ignore this and carry on:
 
 ```
 clearotron start
 ```
 
-One command. It starts the portal and the engine door the portal's Start button calls, waits until both
-answer, and prints one address to open. `Ctrl-C` stops both. The second run asks nothing.
+One command. It starts the portal, the engine door the portal's Start button calls, the client door an
+assistant connects to, and the worker that runs what you order. It waits until the portal and the engine
+door answer, and prints one address to open. `Ctrl-C` stops all of them. The second run asks nothing.
 
 **This is not `npx clearotron demo`, and the two are not interchangeable.**
 
@@ -936,14 +966,16 @@ A queued job whose worker is not running says so on the portal rather than sitti
 identity edge (§8 for what separates one instance from another); this command touches none of them and
 is not a way to set them up.
 
-**And it does not keep this install up to date.** Nothing here pulls; your checkout stays on the commit
-you cloned until you run `npx clearotron update`, which fast-forwards and reinstalls dependencies. It
-refuses over a configuration store kept inside the checkout, and it refuses while a run is queued or in
-flight — `npm ci` rebuilds `node_modules` under whatever is running, and a clearance assembled from
-halves of two builds does not fail, it answers wrongly.
+**And it does not keep this install up to date.** `clearotron update` does. On a package install on
+Linux or macOS it installs the newest stable, or for a beta install the newest beta or stable, whichever
+is later; on Windows it names the npm command to run instead. In a git checkout it fast-forwards the
+checkout and reinstalls dependencies. Either way it refuses over a
+configuration store kept inside the install's own folder, and it refuses while a run is queued or in
+flight — an update replaces the program's files under whatever is running, and a clearance assembled
+from halves of two builds does not fail, it answers wrongly.
 
-**To make that automatic**, this repository ships a unit and an hourly timer that run exactly that
-command, with the same two refusals. They are generic — the checkout path comes from your
+**To make that automatic in a git checkout**, this repository ships a unit and an hourly timer that run
+exactly that command, with the same two refusals. They are generic — the checkout path comes from your
 `EnvironmentFile` — and they neither start nor stop a queue drainer:
 
 ```
@@ -966,12 +998,16 @@ yours to do, and now yours to know about.
 
 ### Ports, and two warnings you will see
 
-The portal is on 18802 and the engine door on 18790, both loopback, and both are **fixed defaults for
-every checkout on the host** rather than per-install values. They move separately: the portal with
-`clearotron start --port <n>` or `PORTAL_SERVICE_PORT=<n>`, the engine door with
-`TRADEMARK_MCP_HTTP_PORT=<n>`. A port already in use produces a sentence saying which port and which
-variable to change, before anything starts — it will not quietly pick another, because whatever sits in
-front of it is still addressed to the old one.
+The portal is on 18802, the engine door on 18790 and the client door on 18811, all loopback, and all
+three are **fixed defaults for every install on the host** rather than per-install values. Each has its
+own variable: `PORTAL_SERVICE_PORT`, `TRADEMARK_MCP_HTTP_PORT` and `CLIENT_MCP_HTTP_PORT`.
+`clearotron start --port <n>` puts the portal on n, and the engine door and the client door on n+1 and
+n+2 unless their own variables are set.
+
+`start` checks every port before anything starts. A port in use is refused when you set its variable, or
+when `CF_ACCESS_TEAM` or an `*_OIDC_ISSUER` setting says a proxy or a sign-in provider sits in front,
+because whatever is in front is still addressed to that number. The refusal names the port and the
+variable to change. Any other port in use moves to the next free number, and `start` prints where it went.
 
 Two lines on a fresh install look worse than they are:
 
@@ -994,10 +1030,10 @@ set:
 - **stdio (local, full tools):**
 
   ```
-  node mcp-server/server.mjs
+  clearotron mcp
   ```
 
-  Register it as a stdio MCP server in your desktop/CLI AI app (Claude Desktop/Code, Cursor, …). It
+  In a git checkout, `node mcp-server/server.mjs` starts the same server. Register it as a stdio MCP server in your desktop/CLI AI app (Claude Desktop/Code, Cursor, …). It
   serves the read tools (list/read/trace/search/telemetry/coverage) plus a gated, single-step "what-if"
   that re-runs one stage in a sandbox.
 
@@ -1007,7 +1043,8 @@ set:
   node mcp-server/http-server.mjs
   ```
 
-  A Streamable-HTTP surface a remote user adds to their chat app by URL.
+  That path is relative to a git checkout. On a package install it is relative to the package's folder,
+  `~/.local/lib/node_modules/clearotron` when `clearotron install` placed it. A Streamable-HTTP surface a remote user adds to their chat app by URL.
 
   **What it serves depends on who is asking, and one half of it spends money.** A caller the edge
   identifies gets the **read** tools (list/read/trace/search/telemetry/coverage) — no spend, no shell.
