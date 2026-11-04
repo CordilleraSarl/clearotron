@@ -552,7 +552,15 @@ export async function knockoutInner(ctx, job, opts = {}) {
     const probeWanted = Boolean(policy.components?.registerProbe);
     let countExec = { count: null, source: "none" };
     if (probeWanted) {
-      const registerAdapter = activeProvider();
+      // — NO REGISTER SET IS A REFUSAL TOO, stamped like the count refusal below. `activeProvider()`
+      // throws a plain Error when CLEAROTRON_DATABASE is unset; unstamped, the ladder guessed "unknown"
+      // from its prose and parked the run to retry a setting no wait can supply, with the reason only
+      // in status.json. The remedy is the deployment, so it ends here, refused, before any spend.
+      let registerAdapter;
+      try { registerAdapter = activeProvider(); }
+      catch (e) {
+        throw new StageFailure("knockout-register-count", e.message, null, { refusal: true, failClass: "deterministic" });
+      }
       const caps = capabilitiesFor(REGISTER_PROVIDER);
       countExec = resolveCountExecutor({
         counter: opts?.countExecutor ?? null, adapter: registerAdapter,
