@@ -62,7 +62,7 @@ test("the lines beside the walls agree with them, and the quickstart gives the q
   assert.ok(INSTALL.includes("### How long a run takes Minutes for a knockout search, an hour or more for a clearance."),
     "How long a run takes does not open with a line its figures agree with");
   const quickstart = readFileSync(join(ROOT, "QUICKSTART.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(quickstart.includes(`A knockout search is quoted at ${DERIVED.knockoutLowMinutes} to ${DERIVED.knockoutHighMinutes} minutes, `
-    + `and the other three at ${DERIVED.clearanceLowHours} to ${DERIVED.clearanceHighHours} hours.`),
+  assert.ok(quickstart.includes(`Clearotron quotes ${DERIVED.knockoutLowMinutes} to ${DERIVED.knockoutHighMinutes} minutes for a knockout search, `
+    + `and ${DERIVED.clearanceLowHours} to ${DERIVED.clearanceHighHours} hours for the other three.`),
   "the quickstart states the quote as how long a search takes, or quotes figures the effort model does not give");
 });
