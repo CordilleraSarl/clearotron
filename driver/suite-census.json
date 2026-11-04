@@ -171,6 +171,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-case-law-source-with-no-known-site-says-it-is-optional.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
           "tests": 35,
           "asserts": 89,
@@ -258,6 +264,12 @@
         "a-client-condition-never-carries-an-engine-token.test.mjs": {
           "tests": 11,
           "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-client-door-not-started-yet-names-what-starts-it.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -2715,6 +2727,12 @@
           "skips": 8,
           "todos": 0
         },
+        "an-install-of-your-own-is-not-asked-to-name-itself.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "an-mcp-route-says-which-challenge-it-answers-with.test.mjs": {
           "tests": 8,
           "asserts": 25,
@@ -3679,6 +3697,12 @@
           "tests": 12,
           "asserts": 28,
           "skips": 5,
+          "todos": 0
+        },
+        "doctor-before-the-first-start-says-what-start-creates.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
           "todos": 0
         },
         "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
@@ -6810,6 +6834,12 @@
         "the-engine-is-given-no-fixed-call-budget.test.mjs": {
           "tests": 1,
           "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-engine-line-agrees-with-what-refuses-a-search.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
