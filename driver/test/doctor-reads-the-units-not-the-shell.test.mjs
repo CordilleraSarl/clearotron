@@ -805,6 +805,22 @@ test("an unset box and an unrecognised one are refused, and refused DIFFERENTLY"
   } finally { rmSync(wrong, { recursive: true, force: true }); }
 });
 
+// A MACHINE THAT RUNS NO UNITS IS NOT ONE OF THE NAMED BOXES. A newcomer's doctor (a fresh install of a beta,
+// 2026-11-03) warned that their environment file named no box and listed ours to choose from. The control is
+// the same machine with the name set: the section still runs and still names it.
+test("a machine that runs no units says nothing of an unset box name, and still names a set one", () => {
+  const plain = mkdtempSync(join(tmpdir(), "f34-plain-"));
+  try {
+    const out = doctor(plain).out;
+    assert.doesNotMatch(out, /CLEAROTRON_BOX/, "an unset name on a machine without units is not a finding");
+    assert.doesNotMatch(out, /prod, preprod, test/, "and the hosted deployments' names are not offered to it");
+    mkdirSync(join(plain, ".config", "clearotron"), { recursive: true });
+    writeFileSync(join(plain, ".config", "clearotron", ".env"), "CLEAROTRON_BOX=test\n");
+    assert.match(doctor(plain).out, /this box names itself "test", from your environment file/,
+      "a set name is still read and named, so the silence above is the unset case and not a skipped section");
+  } finally { rmSync(plain, { recursive: true, force: true }); }
+});
+
 test("a hosted box whose units' file cannot be read says it COULD NOT LOOK, never that the box is unset", () => {
   // THE FOURTH STATE, which the requirement does not name and which is the one that would lie. Units
   // exist and require a file that is not there: every name comes back unknown. Reporting "no

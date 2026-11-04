@@ -1542,13 +1542,17 @@ export async function runCheck() {
     warn(couldNotDetermine("CLEAROTRON_BOX", unitEnv));
   } else {
     const raw = (boxFileEnv?.CLEAROTRON_BOX ?? "").trim();
+    // AN INSTALL WITHOUT UNITS IS NOT ONE OF THE NAMED BOXES. The names are the hosted deployments', each
+    // run as units that carry the setting. On a machine that runs `clearotron start`, nothing reads an
+    // unset name as a fault, and the line told a newcomer to name their laptop after a machine of ours
+    // (measured on a fresh install of a beta, 2026-11-03). A value that is set is still named or refused.
     if (!raw) {
       // AN ABSENCE IS NOT A MISCONFIGURATION, and this command already separates the two — a machine
       // nobody has configured yet has no box, legitimately, and `--check` on one exits 0 by contract.
       // Reported at `!` so it is visible rather than silent, which is the whole requirement; raising it
       // to `✗` made every unconfigured machine fail its own acceptance arm, and said "fault" about a
       // state that is the normal beginning of an install.
-      warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
+      if (hosted) warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
         + `can be read as a statement about a particular box. Set it to one of: ${DEPLOYMENT_BOXES.join(", ")}`);
     } else if (!DEPLOYMENT_BOXES.includes(raw)) {
       problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows `
