@@ -2378,8 +2378,20 @@ export async function runCheck() {
             + (w.branch ? `whose branch ${w.branch} tracks no remote branch` : "which is not on a branch")
             + " — nothing carries them off this machine unless someone pushes them by name");
         } else if (w.state === "not-a-repository") {
-          warn(`${storeDir} is not inside a git repository, so a save through the portal is refused rather than `
-            + "recorded until it is");
+          // NOT MADE YET IS NOT A REFUSAL. With no units, `start` makes its configuration directory a git
+          // repository the first time it runs (bin/start.mjs, the `git init` of `paths.configStore`), and
+          // setup's default puts the store inside it. Before then this warned a newcomer that saves were
+          // refused (measured on a fresh install of a beta, 2026-11-04). "The first time" is start's own
+          // test, no grants file and no repository yet; a store anywhere else is never made one by start.
+          const handed = hosted ? null : startPaths({ env: { ...(serviceFileEnv ?? {}), ...process.env } });
+          if (handed && isInsideCheckout(storeDir, handed.configStore)
+              && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
+            info(`saves to ${storeDir} are recorded from the first \`${invoke("start")}\`, which makes `
+              + `${handed.configStore} a git repository`);
+          } else {
+            warn(`${storeDir} is not inside a git repository, so a save through the portal is refused rather than `
+              + "recorded until it is");
+          }
         } else {
           info(`could not ask git where saves to ${storeDir} go (${w.why}) — a failure to look, not a finding`);
         }
@@ -3205,16 +3217,31 @@ export async function runCheck() {
   // surfaced that state anywhere, which is why it survived to be found by hand.
   {
     const { defaultDenylistPath } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
-    const dl = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v || defaultDenylistPath(homedir());
+    const named = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v;
+    const dl = named || defaultDenylistPath(homedir());
     try {
       const n = readFileSync(dl, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).length;
       ok(`revocation list readable at ${dl} — ${n} revoked key id(s)`);
     } catch (e) {
-      // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
-      // no other surface that would tell them: the door answers 200 either way.
-      blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
-        + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
-        + `Run \`${invoke("start")}\` — it creates the list.`);
+      // THE DEFAULT LIST, NOT WRITTEN YET, IS NOTHING REVOKED. That is the key check's own rule
+      // (shared/scope.mjs, `isRevoked`): every revocation creates the file it writes to, so its absence is
+      // the proof. With no units the first `start` creates it, and before then this warned a newcomer that
+      // revoking would silently do nothing (measured on a fresh install of a beta, 2026-11-04). "Before
+      // then" is start's own first-run test, as for the store above: no grants file and no repository yet.
+      // Once start has run it hands its door this path BY NAME, and a named list the key check cannot read
+      // refuses every key; so does a list the settings name, or one on a machine with units. Those are
+      // still the fault below.
+      const handed = hosted ? null : startPaths({ env: { ...(serviceFileEnv ?? {}), ...process.env } });
+      if (!named && handed && e?.code === "ENOENT"
+          && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
+        info(`no revocation list yet at ${dl}: no key has been revoked. The first \`${invoke("start")}\` creates it.`);
+      } else {
+        // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
+        // no other surface that would tell them: the door answers 200 either way.
+        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
+          + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
+          + `Run \`${invoke("start")}\` — it creates the list.`);
+      }
     }
   }
   // ── IS THIS DOOR'S ACCESS LOG BEING WRITTEN, AND WHERE? ───────────────────────────────────────────
