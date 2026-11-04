@@ -75,6 +75,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-beta-reader-finds-the-beta-form-of-the-first-commands.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-block-that-ran-and-said-nothing-is-not-a-block-that-never-ran.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -6939,6 +6945,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-free-us-register-says-its-download-needs-a-uspto-account.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -7035,8 +7047,20 @@
           "skips": 1,
           "todos": 0
         },
+        "the-install-guide-gives-a-package-install-its-own-commands.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "the-install-guide-says-how-to-remove-it.test.mjs": {
           "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-install-guide-times-the-demo-runs-it-ships.test.mjs": {
+          "tests": 3,
           "asserts": 11,
           "skips": 0,
           "todos": 0
@@ -7212,6 +7236,30 @@
         "the-package-ships-only-the-demo-customers.test.mjs": {
           "tests": 2,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-pages-list-every-process-start-runs.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-pages-name-the-three-ports-start-opens.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-pages-say-what-the-serpapi-key-searches.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-pages-say-which-searches-need-the-research-key.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -7437,6 +7485,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-removal-list-names-what-setup-and-npx-leave-behind.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-repair-order-and-the-tool-schema-agree.test.mjs": {
           "tests": 6,
           "asserts": 27,
@@ -7620,6 +7674,12 @@
         "the-runtime-floor-is-read-not-restated.test.mjs": {
           "tests": 10,
           "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-sample-settings-pick-the-recommended-register.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
