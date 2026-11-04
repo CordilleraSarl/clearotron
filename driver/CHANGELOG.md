@@ -1,5 +1,81 @@
 # clearotron-driver
 
+## 0.5.0
+
+### Minor Changes
+
+- Fixed: Faults the final checks find in a finding's own summary sentence, a short entry, or a grouped line are now corrected before delivery. Before, they shipped as found.
+
+### Patch Changes
+
+- Fixed: The delivery email for a result the review could not sign off now lists the report's "Only you can close these" items.
+- Fixed: A clearance on the Signa register no longer loses searches to a brief rate limit; it waits as long as the register asks and searches again.
+- Fixed: A clearance on the Claude engine no longer stops with a false "not signed in" message before the search begins, while the Claude sign-in is being renewed.
+- Fixed: On the Codex engine, a clearance no longer sees temporary files that another clearance left on the same machine.
+- Fixed: A report's copy for the client is no longer held back when a live finding shares its mark and owner with a finding the review withdrew.
+- Fixed: A clearance on the Codex engine no longer stops as if signed out when the Codex sign-in fails to renew for a moment.
+- Fixed: The engine's strongest model now decides whether a wider register search is worth running, so a conflict only a wider search finds is less likely to be skipped.
+- Fixed: Reports no longer show "Nothing found" in "Where it stands" for a country the register could not search; that country is left out.
+- Fixed: A search with more similar marks than can be read now narrows step by step, and stops once the lists it has read answer it.
+- Fixed: A record whose register lookup failed or came back empty no longer counts as retrieved; the clearance fetches the record again, or says it could not.
+- Fixed: When a register search fails, the report's coverage still lists the other crowded searches whose results were not all read, instead of leaving them out.
+- Fixed: When a clearance fails, its chat notice now goes to the person who asked for it, with a copy to the operator.
+- Fixed: A finding added by a late correction now appears with its own card in the delivered report.
+- Fixed: A finding registered in several countries now shows under each of them in "Where it stands". Before, only its first country showed it, and the others could read "Nothing found".
+- Fixed: A clearance no longer repeats a finished step because a web lookup inside it timed out.
+- Fixed: When a report groups filings of one conflict into one finding, the final checks now ask for a wrong goods claim to be corrected in the text the finding shows.
+- Fixed: When a repeated search re-ranks register records after the report is written, the report now says how many and makes a clear result conditional; the audit trail gives their final ranking.
+- Fixed: A report no longer counts a main market as read in a crowded search when the narrower search by goods left that market's register out.
+- Fixed: The audit workbook no longer calls a name an unidentified party when the report identifies it, or when it is a territory such as the UAE.
+- Fixed: The audit workbook no longer says that a machine check on the report did not pass when no check had failed.
+- Fixed: The audit workbook no longer records a correction as checked when the review after it did not complete, and shows that review as not completed.
+- Fixed: The report and the audit workbook now say a record was "retrieved from the register" rather than "read". The workbook's summary explains what that means.
+- Fixed: A search the register refused is now recorded with the register's own reason, and a search the engine itself declined to send is no longer reported as a register error.
+- Fixed: A register record the engine decided to keep as background now appears in the report's context table, instead of being left out of it.
+- Fixed: A clearance whose register search cannot finish, such as one that keeps timing out, now delivers its report instead of ending with none.
+- Fixed: A clearance repaired after a failure now keeps the original order, including who sent it and their instructions, instead of rebuilding a partial one.
+- Fixed: A clearance that resumes after a pause is now held to the same standard as one that never paused: a live registration identical or near-identical to the mark makes its result conditional, and the report says so, only when the report it delivers leaves that registration unaddressed.
+- Fixed: A clearance resumed after an interruption now searches the territories the order named, not the account's default markets.
+- Fixed: A search that cannot be shown to have run is now listed as not searched, and the report is still delivered.
+- Fixed: When the search for an owner's use of a mark could not run, the report no longer says that search found nothing.
+- Fixed: A conflict the review sends back for correction can now be reported as a finding; the correction could previously change only findings already in the report.
+- Fixed: A register record the engine placed on the watchlist now appears in the audit trail with its reason, instead of being left out.
+- Fixed: A wider register search is no longer set aside because a narrower search returned a short list; the engine now weighs what each waiting search could add to the advice and records the reason for each.
+- Fixed: A citation of a finding the review withdrew, in the report's summary panel or methodology, is now sent back for correction before delivery.
+- Fixed: A result made conditional only by legal steps that a later correction withdraws now reads clear again, once the review of that correction accepts it and nothing else is outstanding.
+- Fixed: A result is no longer held at conditional because a wider search that was rightly withheld was asked for again; such a result can now read clear, and its goods category reads as searched.
+- Fixed: A crowded search already answered by the lists read so far no longer appears among the report's coverage limits; its count is still recorded.
+- Fixed: When the report's writing step is interrupted, the next attempt continues from the findings it had already finished instead of starting again.
+- Fixed: An overview that cites a finding no longer in the report is now sent back for correction before delivery, and flagged for the reviewing lawyer if the citation remains.
+- Fixed: Reports can set aside an identical mark registered for unrelated goods, recording the reason in the audit workbook instead of listing it as a finding.
+- Fixed: A clearance that searched common law or the United Kingdom is no longer flagged as claiming a search it did not run.
+- Fixed: A report's list of conditions now shows each legal step as the last correction before delivery left the step, not as first written.
+- Fixed: `clearotron doctor` no longer suggests deployment names to copy, and no longer warns about an unset one on a machine that runs no services.
+- Fixed: The audit workbook no longer lists the same open search twice, once in the report's words and once as a follow-up row with a shortened title.
+- New: A clearance now stops running follow-up searches after 120, and delivers its report with what it has read.
+- Fixed: Knockout ratings now weigh the earlier filings found for the mark itself, and a clearance's register review now follows the ranking of results made before it, so some ratings change.
+- Fixed: Knockout reports no longer carry two standing caveats. The caveat on a conditional result stays.
+- Fixed: A resumed clearance no longer shows the false line "A machine check on the report did not pass".
+- Fixed: A register record that a repeated search finds after the results were ranked is now ranked and reviewed before the report is written. If that cannot be done, the report is still delivered, and it counts the record among those left open. Before, such a record could be left out of the ranking, the review, and the report.
+- Fixed: A clearance no longer stops without a report when register records it retrieved are still unaddressed at the end; the report is delivered, states once how many remain unaddressed, and makes a clear result conditional.
+- Fixed: The reviewing lawyer's open questions no longer say a coverage line was removed when a correction gave it the new title the review asked for.
+- New: Searches now also use OpenAI's GPT-6.1 Terra.
+- For operators: On the Signa register, follow-up searches now send spellings as lists, so a clearance makes fewer requests.
+- Fixed: Searches on the Signa register now ask for each goods statement in full, so a report weighs an owner's whole goods rather than the first 280 characters.
+- New: Searches on the Signa register now reach Spain and Mexico, so an order naming either country is searched there rather than reported as not covered.
+- For operators: When a client door is not up, `clearotron start` now says why, and that the portal and the engine door are unaffected.
+- Fixed: When a late correction adds, changes, or withdraws a finding, the answers in the report's summary panel are now checked against that finding and updated where they rest on it.
+- Fixed: The Audit Trail now says in plain words why a search was not carried out.
+- Fixed: After a late correction, the Audit Trail delivered with the report is rebuilt to match the corrected result, open questions included; if the Audit Trail cannot be rebuilt, the earlier one is withheld, and the audit workbook is still built from the current findings.
+- Fixed: The Audit Trail now lists each register record set aside while the results were ranked, with the reason given.
+- Fixed: The install guide now says that `clearotron start` uses the passphrase sign-in. It no longer says that the command refuses to start without a sign-in provider.
+- Fixed: The package now includes the quickstart guide that the README and the install guide link to.
+- Fixed: On a crowded field, the report is written from the work the clearance has already done, without reading every register record again.
+- Fixed: The lawyer's report now says why a search was not carried out: the register refused it for the day and a later clearance can repeat it, or the register cannot run that kind of search at all.
+- Fixed: The review now sees every conflict set aside while the report was written, with the reason given, and can send one back for correction.
+- Fixed: When two parties use the same name without a registration, the report keeps a finding for each, instead of keeping only the last one saved.
+- Fixed: For a European Union order, the audit workbook now names every national register that was not searched, instead of only the first few.
+
 ## 0.5.0-beta.10
 
 ### Patch Changes
