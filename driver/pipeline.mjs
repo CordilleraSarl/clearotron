@@ -183,7 +183,7 @@ import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-
 import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal, citingModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal, citingModelOrdinal, FOLD_FILE } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
 import { locateReportFaults, reportPartsOf, overviewCitationFault, writersCitationFaults } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
@@ -194,7 +194,7 @@ import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
-import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID, goodsHeldWholeDetail } from "./predelivery-lint.mjs";
+import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID, goodsRepairLine } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
@@ -17057,8 +17057,12 @@ async function pipelineInner(job, opts = {}) {
         const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
         const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
         // A finding named for goods the register cut, whose whole text the run holds now, is named in the writer's
-        // numbering, in the line's own words: it opens "Finding <N> cites", so the list puts no "finding N:" before it.
-        // Under a fold, N is the writer's finding that cites the record, which need not be the member the fold kept.
+        // numbering, in the line's own words: it opens with the finding it names, so the list puts no "finding N:" before it.
+        // Under a fold the report displays the text of the member the fold kept, and the citation of the record can come
+        // from another member: the line then names both, so the repair reaches the text the report displays (design,
+        // 2026-11-04). Where the fold cannot be read, or no member is read citing the record, the line is not handed: a
+        // member is never guessed, and the run records each finding left unhanded.
+        const foldUnreadable = fold == null && existsSync(driverDir(run.runDir, FOLD_FILE));
         let writersFindings = null;   // the writer's record, read once and only for a goods line
         const writersRecord = () => {
           if (writersFindings) return writersFindings;
@@ -17068,9 +17072,17 @@ async function pipelineInner(job, opts = {}) {
         };
         const citesRecord = (wf, uri) => (Array.isArray(wf?.owner?.registrations) ? wf.owner.registrations : [])
           .some((reg) => normalizeRecordUri(reg?.uri ?? reg) === uri);
-        const inWritersNumbering = (f) => (String(f.id).startsWith("goods-held-whole:")
-          ? { ...f, detail: goodsHeldWholeDetail(citingModelOrdinal(fold, f.ordinal, f.uri, writersRecord(), citesRecord), f.uri, f.goods, f.state) } : f);
-        const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering), ...sentenceFixable, ...recordFixable];
+        const goodsUnhanded = [];
+        const inWritersNumbering = (f) => {
+          if (!String(f.id).startsWith("goods-held-whole:")) return f;
+          const shown = foldUnreadable ? null : keptModelOrdinal(fold, f.ordinal);
+          const citing = shown == null ? null : citingModelOrdinal(fold, f.ordinal, f.uri, writersRecord(), citesRecord);
+          const detail = goodsRepairLine({ shown, citing, uri: f.uri, goods: f.goods, state: f.state });
+          if (detail == null) { goodsUnhanded.push({ id: f.id, why: shown == null ? "fold-not-read" : "no-member-read-citing" }); return null; }
+          return { ...f, detail };
+        };
+        const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering).filter(Boolean), ...sentenceFixable, ...recordFixable];
+        if (goodsUnhanded.length) runLog(run.runDir, { event: "goods-held-whole-not-handed", unhanded: goodsUnhanded });
         if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
         // A writer fault with no writer session to repair it is not repaired, and the run says so.
         if (narrativeFixable.length && !synthesisKey)

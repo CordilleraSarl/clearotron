@@ -115,6 +115,8 @@ export const COUNTED_EVENTS = {
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
   // a finding still saying its goods are cut or unread after the delivery repair was given their complete statements
   "goods-held-whole": { kind: FAILED, when: (e) => (Array.isArray(e.unresolved) ? e.unresolved.length : 0) > 0 },
+  // a finding named for that repair and not handed to it, because the fold or the member citing the record was not read
+  "goods-held-whole-not-handed": { kind: FAILED, when: (e) => (Array.isArray(e.unhanded) ? e.unhanded.length : 0) > 0 },
   // a skeptic flag on a code-side axis re-runs its plan queries through the executor
   "escalation-recheck": [{ kind: REASK, when: (e) => e.dispatched === true },
     { kind: FAILED, when: (e) => e.outcome === "repair-budget-exhausted" }],

@@ -2335,12 +2335,35 @@ export function goodsHeldWholeChecks({ findings, goodsEvidence, recordsByUri, ha
   return [...named, ...unresolved, check("goods-held-whole", "goods-evidence", "narrative", true, summary)];
 }
 
+const goodsStatements = (goods) => goods.map((g) => `${g.classes.length ? `Class ${g.classes.join(", ")}` : "Goods"}: "${g.text}"`).join(". ");
+
 /** The line the writer's repair reads for one finding, in the numbering the writer's save takes. PURE. */
 export function goodsHeldWholeDetail(ordinal, uri, goods, state) {
-  const statements = goods.map((g) => `${g.classes.length ? `Class ${g.classes.join(", ")}` : "Goods"}: "${g.text}"`).join(". ");
   return `Finding ${ordinal} cites ${uri}. Its earlier goods evidence was ${state === "cut" ? "cut by the register" : "of unestablished completeness"}. `
-    + `The run now holds these complete goods statements from the register record: ${statements}. `
+    + `The run now holds these complete goods statements from the register record: ${goodsStatements(goods)}. `
     + "Reassess this finding's goods comparison on those statements, and correct any claim that they remain cut or unread. Change its rating only if the evidence requires it.";
+}
+
+/**
+ * The line for a grouped finding whose displayed text and whose citation of the record come from different members, in
+ * the numbering the writer's save takes (design, 2026-11-04). The report displays the text of the member the fold kept,
+ * so the repair must reach that member, and it names the member the citation comes from beside it. PURE.
+ */
+export function goodsHeldWholeGroupedDetail(shown, citing, uri, goods) {
+  return `The displayed goods-text claim comes from finding ${shown}. The grouped finding cites ${uri} through finding ${citing}. `
+    + `The run now holds these complete goods statements from that register record: ${goodsStatements(goods)}. `
+    + `Correct the claim in finding ${shown} where these statements resolve it. Reassess finding ${citing}'s goods comparison only where those statements affect it. `
+    + "Change a rating only if the evidence requires it. Preserve unrelated findings and update only conclusions that depend on these changes.";
+}
+
+/**
+ * The goods line for one named finding: the member whose text the report displays (`shown`) and the member whose own
+ * finding cites the record (`citing`), both in the writer's numbering. One finding's line where they are the same
+ * member, both named where they differ, and null where either is not established: a member is never guessed. PURE.
+ */
+export function goodsRepairLine({ shown, citing, uri, goods, state }) {
+  if (!Number.isInteger(shown) || !Number.isInteger(citing)) return null;
+  return shown === citing ? goodsHeldWholeDetail(shown, uri, goods, state) : goodsHeldWholeGroupedDetail(shown, citing, uri, goods);
 }
 
 /**
