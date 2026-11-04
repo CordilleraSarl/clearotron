@@ -1077,6 +1077,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-with-no-register-set-is-refused-not-parked.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockouts-owner-lookups-run-side-by-side.test.mjs": {
           "tests": 4,
           "asserts": 13,
