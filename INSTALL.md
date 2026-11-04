@@ -447,21 +447,19 @@ CLEAROTRON_BRAND_PRODUCT=Trademark clearance   # what the deliverable is called
 # CLEAROTRON_ADMINISTRATOR_CONTACT=it@your-firm.example
 
 # ── Register provider (choose ONE) ─────────────────────────────────────
-CLEAROTRON_DATABASE=clarivate       # REQUIRED — corsearch | clarivate | signa | euipo | uspto-local | free-tier
+CLEAROTRON_DATABASE=signa                # REQUIRED — signa | free-tier | euipo | uspto-local | corsearch | clarivate
                                          # No default: unset, a run refuses.
-CLARIVATE_API_KEY=...                    # the credential for the provider named above
-# CLARIVATE_API_BASE=...                  # optional; defaults to the adapter's base
-# CORSEARCH_SESSION_KEY=...
-# SIGNA_API_KEY=...
+SIGNA_API_KEY=...                        # the credential for the provider named above
 # SIGNA_BASE_URL=...                      # optional; defaults to the adapter's base
 # CORSEARCH_SESSION_KEY=...               # …or an enterprise vendor, via a sales agreement
-# CLARIVATE_API_KEY=... / CLARIVATE_API_BASE=...
+# CLARIVATE_API_KEY=...
+# CLARIVATE_API_BASE=...                  # optional; defaults to the adapter's base
 # USPTO_LOCAL_DB=/var/lib/trademark/uspto/us.db   # no vendor account — see §3a below
 
 # ── …or the FREE EU register, as the provider (no subscription) ────────
 # CLEAROTRON_DATABASE=euipo
 # EUIPO_CLIENT_ID=... / EUIPO_CLIENT_SECRET=...
-EUIPO_ENVIRONMENT=production              # REQUIRED with euipo — sandbox | production are SEPARATE
+# EUIPO_ENVIRONMENT=production            # REQUIRED with euipo — sandbox | production are SEPARATE
                                           # deployments over different corpora. There is no default:
                                           # unset, the adapter refuses by name.
 
@@ -758,7 +756,7 @@ Copy or author the companies, context packs and project overlays you want; assum
    **The example above is sized in minutes; a real clearance is sized in hours.**
    The engine sizes a knockout search at 5 to 10 minutes — which is what this job orders — and a clearance
    at up to 2.5 hours.
-   The example run in `demo/` took 2 h 35 m, and it is a clearance, not a knockout. A
+   The three clearances in `demo/` took 64 to 74 minutes each, and its knockout search 4 minutes. A
    single stage of a clearance can legitimately run 45 minutes — let it finish.
    [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
 
@@ -787,11 +785,11 @@ its internal refutation verdict, and then:
 
 ### How long a run takes
 
-Hours, not minutes.
+Minutes for a knockout search, an hour or more for a clearance.
 
-**One measured run.** The sample in `demo/` took **2 h 35 m** from `startedAt` to
-`deliveredAt` (`run/status.json`) — one mark, two classes, one register, 214 register calls, 37 model
-dispatches. That is 1.29× the 2 hours the run quoted itself.
+**Four measured runs.** Each sample in `demo/` records its own wall, from `startedAt` to `deliveredAt`
+in `run/status.json`. The three clearances took **64 to 74 minutes** each, quicker than the quote
+below; the knockout search took **4 minutes**.
 
 **What the engine quotes.** A knockout search is sized at 5 to 10 minutes. A clearance starts at 1.5 hours
 and runs to 2.5 hours — one range for every clearance, whichever lanes it carries

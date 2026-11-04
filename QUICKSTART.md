@@ -70,7 +70,7 @@ prove the install works. Delete that line and the territories decide instead —
 you a full country search, the deepest of the four, with case law on. Narrowing the scope orders
 **more** work, not less.
 
-**A knockout search takes 5 to 10 minutes. The other three take 1.5 to 2.5 hours.** Every finished
+**A knockout search is quoted at 5 to 10 minutes, and the other three at 1.5 to 2.5 hours.** Every finished
 stage stays on disk, so a run survives interruption and a resume re-runs only what is missing.
 
 ## Then
