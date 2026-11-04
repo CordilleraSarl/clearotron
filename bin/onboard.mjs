@@ -1769,7 +1769,15 @@ export async function runCheck() {
       + "nothing can be checked here until it names an adapter.");
   } else {
     if (engSel) ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
-    else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this box`);
+    // WHAT THE ORDER-TIME CHECK SAYS, NOT WHAT THE CODE FALLS BACK TO. Every search is refused while the
+    // services lack this (run-requirements.mjs, `runRequirements`, the engine row), whatever the default
+    // below checks. Naming that default here read as "nothing to do", a few lines above "Will a search
+    // run?" listing this very setting (measured on a fresh install of a beta, 2026-11-04). Asked of the
+    // services' own reading (servicesRead), as that section asks it: on a machine with units, their file
+    // may hold the value this command's file does not, and then no search is refused over it.
+    else if (serviceKnown && !servicesRead("CLEAROTRON_AI")) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
+      + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
+    else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
 
     // The line between an ABSENCE and a MISCONFIGURATION. Nothing set and no binary on PATH is a fresh
     // machine — reported, not failed. A variable that names something wrong is a configuration that
