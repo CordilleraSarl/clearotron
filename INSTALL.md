@@ -819,6 +819,13 @@ The command that continues a run is printed whenever a run ends badly — copy t
 node /path/to/driver/pipeline.mjs --job /path/to/job.json --resume <codename>
 ```
 
+With the `clearotron` command the install placed, the same command is shorter, and the job file can be
+left out:
+
+```
+clearotron run --resume <codename>
+```
+
 A run stopped by a **provider rate limit** or parked for **automatic recovery** does not need you at all
 — it resumes on its own as soon as its window passes, provided something is watching for it. On a server
 that is the systemd units in `driver/systemd/`. Everywhere else, run the watcher yourself:
@@ -959,14 +966,16 @@ A queued job whose worker is not running says so on the portal rather than sitti
 identity edge (§8 for what separates one instance from another); this command touches none of them and
 is not a way to set them up.
 
-**And it does not keep this install up to date.** Nothing here pulls; your checkout stays on the commit
-you cloned until you run `npx clearotron update`, which fast-forwards and reinstalls dependencies. It
-refuses over a configuration store kept inside the checkout, and it refuses while a run is queued or in
-flight — `npm ci` rebuilds `node_modules` under whatever is running, and a clearance assembled from
-halves of two builds does not fail, it answers wrongly.
+**And it does not keep this install up to date.** `clearotron update` does. On a package install on
+Linux or macOS it installs the newest stable, or for a beta install the newest beta or stable, whichever
+is later; on Windows it names the npm command to run instead. In a git checkout it fast-forwards the
+checkout and reinstalls dependencies. Either way it refuses over a
+configuration store kept inside the install's own folder, and it refuses while a run is queued or in
+flight — an update replaces the program's files under whatever is running, and a clearance assembled
+from halves of two builds does not fail, it answers wrongly.
 
-**To make that automatic**, this repository ships a unit and an hourly timer that run exactly that
-command, with the same two refusals. They are generic — the checkout path comes from your
+**To make that automatic in a git checkout**, this repository ships a unit and an hourly timer that run
+exactly that command, with the same two refusals. They are generic — the checkout path comes from your
 `EnvironmentFile` — and they neither start nor stop a queue drainer:
 
 ```
@@ -1021,10 +1030,10 @@ set:
 - **stdio (local, full tools):**
 
   ```
-  node mcp-server/server.mjs
+  clearotron mcp
   ```
 
-  Register it as a stdio MCP server in your desktop/CLI AI app (Claude Desktop/Code, Cursor, …). It
+  In a git checkout, `node mcp-server/server.mjs` starts the same server. Register it as a stdio MCP server in your desktop/CLI AI app (Claude Desktop/Code, Cursor, …). It
   serves the read tools (list/read/trace/search/telemetry/coverage) plus a gated, single-step "what-if"
   that re-runs one stage in a sandbox.
 
@@ -1034,7 +1043,8 @@ set:
   node mcp-server/http-server.mjs
   ```
 
-  A Streamable-HTTP surface a remote user adds to their chat app by URL.
+  That path is relative to a git checkout. On a package install it is relative to the package's folder,
+  `~/.local/lib/node_modules/clearotron` when `clearotron install` placed it. A Streamable-HTTP surface a remote user adds to their chat app by URL.
 
   **What it serves depends on who is asking, and one half of it spends money.** A caller the edge
   identifies gets the **read** tools (list/read/trace/search/telemetry/coverage) — no spend, no shell.

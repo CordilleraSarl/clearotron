@@ -1,6 +1,6 @@
 # bin/
 
-The five commands that take an install from a fresh clone to a running product. They are not the only
+The five commands that take an install from nothing to a running product. They are not the only
 runnable files in the tree — `driver/runner.mjs` drains the queue, and `scripts/` holds the guards and
 probes CI runs — but they are the ones to start from.
 
