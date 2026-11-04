@@ -37,7 +37,7 @@
 // earlier on PATH demotes the bare form rather than confirming it. Identity, not availability. A later
 // sweep tempted to simplify this into `command -v` would be reintroducing the defect, not tidying it.
 import { existsSync, readFileSync } from "node:fs";
-import { basename, join, sep } from "node:path";
+import { basename, delimiter, join, sep } from "node:path";
 import { INSTALL_DIR, inspectShim, pathPosition, shimDir, shimPath } from "./verb-shim.mjs";
 import { chdirPrefix } from "./os-advice.mjs";
 
@@ -165,6 +165,21 @@ export function globalBinDirFrom(dir, platform = process.platform) {
   return `${s.slice(0, -tail.length)}${sep}bin`;
 }
 
+/**
+ * The environment with npx's own folders taken off its PATH, for asking what the reader's shell finds.
+ *
+ * npx puts the bin folder of the copy it fetched, `<npm's cache>/_npx/<id>/node_modules/.bin`, first on the
+ * PATH of the process it starts, and that folder holds a `clearotron`. The install moved out of the cache
+ * runs as that process's child and inherits the same PATH, so the copy npx fetched read as "a different
+ * `clearotron` earlier on your PATH" on every install run through npx. No shell the reader types in has
+ * that folder on its PATH, so it shadows nothing they will type. Every other folder is kept: a
+ * `clearotron` the reader's own PATH finds first is still reported.
+ */
+function readerEnv(env) {
+  const path = String(env?.PATH ?? "");
+  return { ...env, PATH: path.split(delimiter).filter((d) => !/[\\/]_npx[\\/]/.test(d)).join(delimiter) };
+}
+
 export function invocationForm(env = process.env, io = FS, installDir = INSTALL_DIR) {
   const dir = shimDir(env);
   const path = shimPath(env);
@@ -176,7 +191,7 @@ export function invocationForm(env = process.env, io = FS, installDir = INSTALL_
     ? inspectShim(path, io.read ? { installDir, read: io.read } : { installDir })
     : { kind: "absent-or-unreadable", installDir: null };
   if (shim.kind === "ours" && shim.interpreterMissing !== true) {
-    const { onPath, shadowedBy } = pathPosition(dir, env, { exists: io.exists });
+    const { onPath, shadowedBy } = pathPosition(dir, readerEnv(env), { exists: io.exists });
     if (onPath && !shadowedBy) {
       return { form: "bare", prefix: "", shim: path, dir, onPath: true, shadowedBy: null, staleInterpreter: null };
     }
@@ -193,7 +208,7 @@ export function invocationForm(env = process.env, io = FS, installDir = INSTALL_
   // disk would answer differently on a box that really has a global install — the reason the FS note at
   // the top of this file gives for injecting both halves.
   if (globalExe && shim.kind !== "ours" && io.exists(globalExe)) {
-    const { onPath, shadowedBy } = pathPosition(globalDir, env, { exists: io.exists });
+    const { onPath, shadowedBy } = pathPosition(globalDir, readerEnv(env), { exists: io.exists });
     if (onPath && !shadowedBy) {
       return { form: "bare", prefix: "", shim: globalExe, dir: globalDir, onPath: true, shadowedBy: null, staleInterpreter: null, via: "global" };
     }
