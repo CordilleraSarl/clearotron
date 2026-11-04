@@ -754,8 +754,8 @@
           "todos": 0
         },
         "a-finding-written-on-goods-the-register-cut-is-handed-the-whole-text.test.mjs": {
-          "tests": 6,
-          "asserts": 35,
+          "tests": 10,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
@@ -6901,7 +6901,7 @@
           "tests": 6,
           "asserts": 79,
           "skips": 0,
-          "todos": 0
+          "todos": 1
         },
         "the-grant-sentence-and-its-carve-out-hold-per-provider.test.mjs": {
           "tests": 6,
