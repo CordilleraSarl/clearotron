@@ -57,7 +57,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
   On WSL, a program on the Windows side can hold a port that WSL reports as free, and the browser reaches
   it first. VS Code's Remote-SSH port forwarding is the common case. If the page that opens is not this
-  install's sign-in, run the same command again with `--port 28802`, or any free number.
+  install's sign-in, run the same command again with `--port 28802`. It opens that number and the next
+  two, so any number works whose next two are free as well.
 
   A *hosted* deployment runs the product as systemd user units, so it needs Linux —
   [driver/systemd/README.md](driver/systemd/README.md).
@@ -851,17 +852,19 @@ clearotron stop                   # stop it and give the box back — plain `sta
 `--background` never touches the assistant connector: `clearotron connect` opens that door
 and `clearotron disconnect` closes it, separately and on purpose.
 
-**If anything else on this host already runs this product, set its ports first.** The portal (18802)
-and the engine door (18790) are **fixed defaults shared by every checkout on a machine**, so a second
-instance collides with the first and `start` refuses rather than quietly moving. Give it its own pair
+**If anything else on this host already runs this product, set its ports first.** `start` opens three:
+the portal (18802), the engine door (18790) and the client door (18811). They are **fixed defaults shared
+by every install on a machine**, so a second instance meets the first one's ports. Give it its own three
 before the first start:
 
 ```
-PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 clearotron start
+PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 CLIENT_MCP_HTTP_PORT=18822 clearotron start
 ```
 
-A test instance beside a live one needs more than two ports — §8, *Two instances on one machine*, is the
-whole boundary. On a host running nothing else, ignore this and carry on:
+`clearotron start --port 18820` opens the same three: 18820, 18821 and 18822.
+
+A test instance beside a live one needs more than its own ports — §8, *Two instances on one machine*, is
+the whole boundary. On a host running nothing else, ignore this and carry on:
 
 ```
 clearotron start
@@ -987,12 +990,16 @@ yours to do, and now yours to know about.
 
 ### Ports, and two warnings you will see
 
-The portal is on 18802 and the engine door on 18790, both loopback, and both are **fixed defaults for
-every checkout on the host** rather than per-install values. They move separately: the portal with
-`clearotron start --port <n>` or `PORTAL_SERVICE_PORT=<n>`, the engine door with
-`TRADEMARK_MCP_HTTP_PORT=<n>`. A port already in use produces a sentence saying which port and which
-variable to change, before anything starts — it will not quietly pick another, because whatever sits in
-front of it is still addressed to the old one.
+The portal is on 18802, the engine door on 18790 and the client door on 18811, all loopback, and all
+three are **fixed defaults for every install on the host** rather than per-install values. Each has its
+own variable: `PORTAL_SERVICE_PORT`, `TRADEMARK_MCP_HTTP_PORT` and `CLIENT_MCP_HTTP_PORT`.
+`clearotron start --port <n>` puts the portal on n, and the engine door and the client door on n+1 and
+n+2 unless their own variables are set.
+
+`start` checks every port before anything starts. A port in use is refused when you set its variable, or
+when `CF_ACCESS_TEAM` or an `*_OIDC_ISSUER` setting says a proxy or a sign-in provider sits in front,
+because whatever is in front is still addressed to that number. The refusal names the port and the
+variable to change. Any other port in use moves to the next free number, and `start` prints where it went.
 
 Two lines on a fresh install look worse than they are:
 

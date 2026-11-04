@@ -20,8 +20,9 @@ and is what you want when you are working in this tree.
 | `signa-sync.mjs` | — | `node bin/signa-sync.mjs` | One vendor read (`GET /v1/offices`, paged). Needs `SIGNA_API_KEY`. |
 
 `example.mjs` replays `demo` through the ordinary publisher into `~/trademark-demo/pool` and
-serves it on `127.0.0.1:18860`. Every path the demo pool could collide with is checked by realpath and by
-containment before anything is written, because a demo runs on deployed machines too.
+serves it on `127.0.0.1:18860`, with its engine door and client door on 18861 and 18862. Every path
+the demo pool could collide with is checked by realpath and by containment before anything is written,
+because a demo runs on deployed machines too.
 
 `onboard.mjs` validates each answer through the door the engine itself uses before it persists anything,
 and the engine check is a real turn through the adapter's own spawn path. `--check` is the free half: it

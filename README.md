@@ -30,7 +30,8 @@ npx clearotron demo
 
 That fetches the published package — it will ask once before downloading — then replays finished
 clearances into a local portal and prints the portal's address and the passphrase to sign in with. Open
-the address in your browser. No sign-up, no credentials, no network calls to us.
+the address in your browser. No sign-up, no credentials, no network calls to us. The demo opens three
+ports, 18860, 18861 and 18862; `npx clearotron demo --port <n>` opens n, n+1 and n+2 instead.
 
 The demo runs for as long as that window stays open, and removes everything it made when you close it —
 nothing of it is left on the machine, and running it again later starts clean. If you want to keep the
