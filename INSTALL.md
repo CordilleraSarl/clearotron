@@ -112,7 +112,9 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 - **A register credential**, and **`PERPLEXITY_API_KEY`**. Both are required for a real run and both
   fail closed at preflight — before a stage has spent, never at the grid after. The one exception is a
   Knockout search, which runs keyless: it returns register filing counts and states on the report that
-  the open-web half did not run.
+  the open-web half did not run. Only the native-language investigation of China, Hong Kong, Taiwan or
+  Macau uses `SERPAPI_API_KEY`: it searches the Chinese marketplaces through Baidu. Without it, those
+  marketplaces come back as a disclosed gap.
 
   Which register you pick is the first real decision, and the tiers are not equally easy to reach.
   [providers/README.md](providers/README.md) is the canonical ladder and
@@ -452,6 +454,9 @@ EUIPO_ENVIRONMENT=production              # REQUIRED with euipo — sandbox | pr
 # ── Web research — REQUIRED for the three clearance searches (see §1) ──
 #    A Knockout search runs without it and states on the report that the open-web half did not run.
 PERPLEXITY_API_KEY=...
+
+# ── Chinese marketplaces — only the native-language investigation of China, Hong Kong, Taiwan or Macau
+# SERPAPI_API_KEY=...                     # without it, those marketplaces come back as a disclosed gap
 
 # ── Optional data sources ──────────────────────────────────────────────
 # Case law has NO token variable. Access is free and immediate, and setup is a one-time OAuth login

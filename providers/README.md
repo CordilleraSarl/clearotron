@@ -5,8 +5,8 @@ This directory holds one adapter per external data source. Two kinds live here:
 - **Registers** — the trademark offices a clearance searches. **Exactly one is active per install**, chosen
   by `CLEAROTRON_DATABASE`. There is no default and no fallback: unset, a run refuses and names the
   variable.
-- **Research and support** — the marketplace/common-law sweep (`perplexity`), the search-engine grid
-  (`serpapi`), the native-script candidate lane (`jx`), and an OAuth bridge to case-law sources
+- **Research and support** — the marketplace/common-law sweep (`perplexity`), the Chinese marketplace
+  search (`serpapi`), the native-script candidate lane (`jx`), and an OAuth bridge to case-law sources
   (`oauth-mcp-bridge`).
 
 `_shared/` is the register kernel every register adapter is built from — paging, counting, screening,
@@ -132,7 +132,7 @@ costs coverage and says so; over-claiming produces a thin answer that reads as c
 | `perplexity` | `PERPLEXITY_API_KEY` — metered, prepaid credits, no free tier | The common-law and marketplace sweep, on the three clearance searches | A clearance refuses at preflight, before a stage has spent; a Knockout search runs, delivers its register half, and states on the report that the open-web half did not run |
 | `oauth-mcp-bridge` | A one-time OAuth login per source (CourtListener, LegalDataHunter) — **free, immediate access** | The case-law reading, on a Full country search only | The lane stays dark and the run's ledger records that it did not dispatch, so no report can claim "no adverse case law" |
 | `jx` | none of its own — runs on the program the run chose | Native-script (CJK) register candidates | The lane degrades and says so |
-| `serpapi` | `SERPAPI_API_KEY` — free tier available | The search-engine grid inside the CJK lane | Grid cells gap with one named cause |
+| `serpapi` | `SERPAPI_API_KEY` — free tier available | Only the native-language investigation of China, Hong Kong, Taiwan or Macau: it searches the Chinese marketplaces through Baidu | Those marketplaces come back as a disclosed gap, with one named cause |
 
 Case-law setup is an OAuth flow, **not** an environment variable — see
 [`oauth-mcp-bridge/README.md`](oauth-mcp-bridge/README.md).

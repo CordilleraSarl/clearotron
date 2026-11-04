@@ -14,6 +14,10 @@ of its own and calls nothing on your behalf.
 | A register | Sets what the search reaches, and what it costs | [Signa](https://signa.so) — one key, self-serve, US + EU + WIPO and ten more offices |
 | Web research | Covers the open web and the marketplaces. The three clearance searches need it; a Knockout search runs without it | [Perplexity](https://www.perplexity.ai) |
 
+Only the native-language investigation of China, Hong Kong, Taiwan or Macau uses a fourth,
+[SerpAPI](https://serpapi.com): it searches the Chinese marketplaces through Baidu. Without its key,
+`SERPAPI_API_KEY`, those marketplaces come back as a disclosed gap.
+
 The register is the one with a real choice in it. EUIPO and a local USPTO index cost nothing and
 reach one office each; Signa is the recommended paid route and the fastest to a real clearance.
 [The six, and what each reaches](providers/README.md).
