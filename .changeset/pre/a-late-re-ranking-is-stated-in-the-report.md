@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: A repeated search can change the ranking after the report was written, too late to rewrite the report. The report now says how many register records were re-ranked, and that the audit trail gives their final ranking. A clear result becomes conditional.
+Fixed: When a repeated search re-ranks register records after the report is written, the report now says how many and makes a clear result conditional; the audit trail gives their final ranking.

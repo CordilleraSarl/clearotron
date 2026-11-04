@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: The audit now states in plain words why each unsearched question was not carried out.
+Fixed: The Audit Trail now says in plain words why a search was not carried out.

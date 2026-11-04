@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: The reviewing step now sees every conflict the writer set aside, with the writer's reason, and can send one back for correction.
+Fixed: The review now sees every conflict set aside while the report was written, with the reason given, and can send one back for correction.
