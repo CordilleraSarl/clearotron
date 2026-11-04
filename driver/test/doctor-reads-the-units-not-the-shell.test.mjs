@@ -791,13 +791,23 @@ test("an unset box and an unrecognised one are refused, and refused DIFFERENTLY"
     unsetOut = doctor(unset).out;
     assert.match(unsetOut, /no CLEAROTRON_BOX in the units' environment/,
       "a file read successfully that does not carry the name is a real absence, and reportable");
-    assert.match(unsetOut, /prod, test/, "and it says what the accepted values are");
+    assert.doesNotMatch(unsetOut, /\bprod\b|\bpreprod\b/, "the accepted names are not offered to a reader to copy");
   } finally { rmSync(unset, { recursive: true, force: true }); }
+
+  // `clearotron start --background` installs these same units with the local door and writes no name, so a
+  // newcomer's machine is warned too, and must not be handed the names either.
+  const background = installedHome("PORTAL_AUTH_MODE=local\nPORTAL_MCP_URL=http://127.0.0.1:18790\n");
+  try {
+    const out = doctor(background).out;
+    assert.match(out, /no CLEAROTRON_BOX in the units' environment/, "installed units are warned whatever door they run");
+    assert.doesNotMatch(out, /\bprod\b|\bpreprod\b/, "and no line names a deployment this build was made for");
+  } finally { rmSync(background, { recursive: true, force: true }); }
 
   const wrong = installedHome("CLEAROTRON_BOX=staging\n");
   try {
     const out = doctor(wrong).out;
     assert.match(out, /CLEAROTRON_BOX is "staging"/, "refused BY NAME, as the requirement asks");
+    assert.doesNotMatch(out, /\bprod\b|\bpreprod\b/, "the refusal names the value it read, not the ones it accepts");
     assert.doesNotMatch(out, /no CLEAROTRON_BOX in/,
       "a wrong name is not an absent one — reporting it as unset would hide that somebody set something");
     assert.notEqual(out.includes('is "staging"'), unsetOut.includes('is "staging"'),
@@ -805,7 +815,7 @@ test("an unset box and an unrecognised one are refused, and refused DIFFERENTLY"
   } finally { rmSync(wrong, { recursive: true, force: true }); }
 });
 
-// A MACHINE THAT RUNS NO UNITS IS NOT ONE OF THE NAMED BOXES. A newcomer's doctor (a fresh install of a beta,
+// A MACHINE THAT RUNS NO UNITS SAYS NOTHING OF AN UNSET NAME. A newcomer's doctor (a fresh install of a beta,
 // 2026-11-03) warned that their environment file named no box and listed ours to choose from. The control is
 // the same machine with the name set: the section still runs and still names it.
 test("a machine that runs no units says nothing of an unset box name, and still names a set one", () => {
@@ -813,7 +823,7 @@ test("a machine that runs no units says nothing of an unset box name, and still 
   try {
     const out = doctor(plain).out;
     assert.doesNotMatch(out, /CLEAROTRON_BOX/, "an unset name on a machine without units is not a finding");
-    assert.doesNotMatch(out, /prod, preprod, test/, "and the hosted deployments' names are not offered to it");
+    assert.doesNotMatch(out, /\bprod\b|\bpreprod\b/, "and the hosted deployments' names are not offered to it");
     mkdirSync(join(plain, ".config", "clearotron"), { recursive: true });
     writeFileSync(join(plain, ".config", "clearotron", ".env"), "CLEAROTRON_BOX=test\n");
     assert.match(doctor(plain).out, /this box names itself "test", from your environment file/,
