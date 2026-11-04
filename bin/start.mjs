@@ -1023,7 +1023,12 @@ if (isMain) {
   // Declining the worker is a real posture, not a debug switch: someone who wants the old separation —
   // order here, drain deliberately over there — keeps it with this flag, and the closing block tells them
   // exactly how to drain when they do.
-  const wantWorker = !argv.includes("--no-worker");
+  //
+  // NOT IN A DEMO. A demo's orders resolve to reports it already has and never reach the queue, so a
+  // worker there drains nothing the portal puts in it. What it would drain is a job an assistant queued
+  // through the connect line this command prints, and it would run that job on whatever engine this
+  // machine is signed in to: a real clearance, paid for, started from the demo.
+  const wantWorker = !argv.includes("--no-worker") && !argv.includes("--demo");
   const wantBackground = argv.includes("--background");
   // ON WINDOWS THERE IS NO BACKGROUND FORM: it is systemd units. Answered here, before anything is written
   // or systemctl is called, in the owner's sentence and nothing else, so no `start:` prefix either.
@@ -2596,7 +2601,12 @@ if (isMain) {
     for (const line of laterStartLines({ user, reset, credentialPath: credentialNow, source: signIn?.source ?? "install", record })) say(line);
   }
   say("");
-  if (worker) {
+  // A DEMO STARTS NOTHING, so it is not told that confirming commits money: it runs no worker, and the
+  // portal resolves every order to a report it already has (driver/portal-service.mjs, `if (demo)`).
+  if (DEMO) {
+    say("  Ordering a clearance from the portal opens the finished example for that search: every search");
+    say("  here resolves to a report that already exists. Nothing is started and nothing is charged.");
+  } else if (worker) {
     say("  Ordering a clearance from the portal starts it. The portal prices the run and asks you to");
     say("  confirm before anything is spent — that confirmation is the moment money is committed.");
   } else {

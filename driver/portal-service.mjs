@@ -5238,6 +5238,14 @@ const PORT = PORT_CHOICE.port;
     // on one box is the mix the owner's "one LLM provider only ever, API or auth, no mix" ruling ended.
     // Going through `runTurn` means the reader is on whatever the engine is already authenticated as,
     // so it works on a subscription box, works on a codex box, and adds no credential.
+    //
+    // NOT IN A DEMO. The reader is a model turn on whatever engine this machine is signed in to, so in a
+    // demo it was the one button that spent on the visitor's own account. The composer shows the note it
+    // shows wherever reading is off, and the form is filled in by hand.
+    if (isDemo(process.env)) {
+      log("brief reading OFF — this is the demo, and the demo makes no model call.");
+      return null;
+    }
     try {
       const { makeJxTurnRunner } = await import("./engine/jx-turn.mjs");
       const { makeComposeReader } = await import("./compose-read.mjs");
