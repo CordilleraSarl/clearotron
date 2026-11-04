@@ -7079,7 +7079,7 @@
         },
         "the-install-guide-times-the-demo-runs-it-ships.test.mjs": {
           "tests": 3,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },

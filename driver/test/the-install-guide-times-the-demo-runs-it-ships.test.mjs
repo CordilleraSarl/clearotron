@@ -35,6 +35,7 @@ const whole = (m) => String(Math.round(m));
 test("the samples are the four the guide describes, each with a measured wall", () => {
   assert.equal(knockouts.length, 1, "the guide times one knockout sample");
   assert.ok(clearances.length >= 1, "no clearance sample to time");
+  assert.ok(SAMPLES.length > 0, "no demo sample found");
   for (const s of SAMPLES) assert.ok(Number.isFinite(s.minutes) && s.minutes > 0, `${s.product} records no wall`);
 });
 
