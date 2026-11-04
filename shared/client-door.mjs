@@ -316,10 +316,13 @@ export function describeDoorState(door, {
       return { level: "info",
         text: "a process holds the client door's port, and nothing here shows it is this install's door." };
     }
+    // WHAT EACH COMMAND DOES, AND NO VERDICT ON THE INSTALL. This said `start` writes both and that an
+    // installed machine missing them had not finished installing, which a newcomer read right after setup,
+    // before their first start (measured on a fresh install of a beta, 2026-11-04). A foreground `start`
+    // writes neither: it runs the door as its own child. Only `--background` places the unit and the setting.
     return { level: "info",
-      text: `the client door is not set up here — ${missing}. \`${startCmd}\` writes both. Since the `
-        + "2026-09-03 ruling an install places them, so on an installed box this means the install did "
-        + "not finish" };
+      text: `the client door is not set up here — ${missing}. \`${startCmd}\` starts it, `
+        + `and \`${startCmd} --background\` sets up both.` };
   }
   if (door.active === null) {
     // THE PROBE STILL COUNTS HERE. Not asking systemd is not the same as knowing nothing: if the port
