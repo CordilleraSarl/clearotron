@@ -6,7 +6,7 @@
 //
 // The email's check names a party its conditions mention and nothing introduces. It read only the email, so a party
 // the report's cards introduce was named as unintroduced, though the email's reader reaches the report from it. Its
-// name finder took "the UAE", between three full country names, for a party. And a condition opening "Clear" or
+// name finder took "the UAE" in a list of countries for a party. And a condition opening "Clear" or
 // "Verify" was read with the name after it as one name ("Clear <a party>"). Each of these printed the owner's line in
 // the lawyer's workbook on a party that was not missing.
 //

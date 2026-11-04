@@ -42,7 +42,7 @@ test("the same row recorded as a failure, as a run before this change wrote it, 
   const real = { id: "reference-integrity:email", family: "reference", surface: "email", pass: false, detail: "x" };
   assert.deepEqual([archived, real, { ...real, pass: true }].filter(deliveredFailure).map((f) => f.id), ["reference-integrity:email"]);
   assert.deepEqual(deliveryFlagLines([archived, real].filter(deliveredFailure)), ["The email's conditions name a party that no finding in the report identifies."]);
-  // The workbook and the cover mail read their failed checks through it.
+  // The workbook reads its failed checks through it.
   assert.match(readFileSync(new URL("../publish/index.mjs", import.meta.url), "utf8"),
     /lint: \(lintSink\?\.checks \?\? \[\]\)\.filter\(c => deliveredFailure\(c\) && /, "publish reads the failed checks without it");
 });

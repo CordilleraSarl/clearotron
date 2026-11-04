@@ -106,10 +106,9 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
   // extraVocab (WS-B): the run's profile platform names — a customer's marketplaces are standing
   // surfaces for THAT run, not entities needing introduction (else every non-gaming report fires
   // false orphan-reference flags).
-  // A TERRITORY'S OTHER NAMES ARE TERRITORIES TOO. "the UAE", between three full country names in one item, was the
-  // one of the four the map did not know, and both checks named it as a party (a production run, 2026-11-03). The
-  // names prose uses besides the map's are already listed once, for the coverage claims (TERRITORY_NAME_TO_CODE);
-  // read at call time, because that list is built further down this module.
+  // A TERRITORY'S OTHER NAMES ARE TERRITORIES TOO. The map names "United Arab Emirates", so "the UAE" in a list of
+  // countries was named as a party by both checks. The names prose uses besides the map's are already listed once,
+  // for the coverage claims (TERRITORY_NAME_TO_CODE); read at call time, because that list is built further down.
   const inList = (n) => REF_ALLOWLIST.has(n) || (territories && (TERRITORY_VOCAB.has(n) || TERRITORY_NAME_TO_CODE.has(n)))
     || Boolean(extraVocab?.has?.(n));
   const isVocab = (tok) => {
