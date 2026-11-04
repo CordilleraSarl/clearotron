@@ -142,7 +142,7 @@ test("arm 7 — the recheck's re-read is narrowed by the scope, and says what th
   assert.ok(e, "the recheck composer is registered");
   const narrow = e.compose(e.samples[1].args);
   const wide = e.compose(e.samples[0].args);
-  assert.match(narrow, /YOU DECLARED WHICH FINDINGS YOUR FLAGS WERE ABOUT/);
+  assert.match(narrow, /Read narrowly\. Named findings in /);
   assert.match(narrow, /THE DRIVER COMPARED EVERY OTHER FINDING OBJECT/);
   assert.match(narrow, /moved anyway/, "a pass that drifted is handed the list rather than trusted");
   // the saving is the re-read it does NOT ask for — present only when nothing moved outside the scope
