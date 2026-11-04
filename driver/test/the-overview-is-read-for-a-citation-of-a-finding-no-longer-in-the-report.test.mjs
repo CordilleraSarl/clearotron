@@ -68,14 +68,16 @@ test("the report's client list ends at the next heading of any level, so the met
 
 test("the email's check reads the conditions the email carries, as the email composes them", () => {
   // A commercial decision is not a condition: the email does not carry it, so its check does not read it.
-  const you = "- **[your decision]** Whether to buy out Delmont Optics.\n- Obtain consent from Brannick Tooling before filing.";
+  // The party in the condition is one nothing in the report introduces: a party the report's cards introduce is
+  // introduced to the email's reader too (a-party-the-report-introduces-is-introduced-to-the-email.test.mjs).
+  const you = "- **[your decision]** Whether to buy out Delmont Optics.\n- Obtain consent from Kestrel Mills before filing.";
   const md = report({ you });
-  assert.deepEqual(emailConditionsOf(ACTIONS(you).replace(/^# Actions\n\n/, ""), "CONDITIONAL"), ["Obtain consent from Brannick Tooling before filing."]);
+  assert.deepEqual(emailConditionsOf(ACTIONS(you).replace(/^# Actions\n\n/, ""), "CONDITIONAL"), ["Obtain consent from Kestrel Mills before filing."]);
   const email = lint({ reportMd: md }).checks.find((c) => c.id === "reference-integrity:email");
   assert.equal(email?.pass, false, "the email's check did not run, or named nothing");
-  assert.deepEqual(email.orphans, ["Brannick Tooling"], "the email's check read a line the email does not carry, or missed the one it does");
+  assert.deepEqual(email.orphans, ["Kestrel Mills"], "the email's check read a line the email does not carry, or missed the one it does");
   // The email introduces the party in the conclusion it quotes: then it is not an orphan there.
-  const introduced = lint({ reportMd: md.replace("overall_caption: One conflict needs a decision.", "overall_caption: Brannick Tooling holds the one live conflict.") });
+  const introduced = lint({ reportMd: md.replace("overall_caption: One conflict needs a decision.", "overall_caption: Kestrel Mills holds the one live conflict.") });
   assert.equal(introduced.checks.find((c) => c.id === "reference-integrity:email")?.pass, true);
   // On a clear result the email carries no conditions, so its check names nothing.
   assert.equal(lint({ reportMd: md, verdictDoc: { verdict: "CLEAR" } }).checks.find((c) => c.id === "reference-integrity:email")?.pass, true);

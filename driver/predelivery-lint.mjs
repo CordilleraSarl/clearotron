@@ -106,7 +106,12 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
   // extraVocab (WS-B): the run's profile platform names — a customer's marketplaces are standing
   // surfaces for THAT run, not entities needing introduction (else every non-gaming report fires
   // false orphan-reference flags).
-  const inList = (n) => REF_ALLOWLIST.has(n) || (territories && TERRITORY_VOCAB.has(n)) || Boolean(extraVocab?.has?.(n));
+  // A TERRITORY'S OTHER NAMES ARE TERRITORIES TOO. "the UAE", between three full country names in one item, was the
+  // one of the four the map did not know, and both checks named it as a party (a production run, 2026-11-03). The
+  // names prose uses besides the map's are already listed once, for the coverage claims (TERRITORY_NAME_TO_CODE);
+  // read at call time, because that list is built further down this module.
+  const inList = (n) => REF_ALLOWLIST.has(n) || (territories && (TERRITORY_VOCAB.has(n) || TERRITORY_NAME_TO_CODE.has(n)))
+    || Boolean(extraVocab?.has?.(n));
   const isVocab = (tok) => {
     const n = norm(tok);
     if (inList(n)) return true;              // whole-phrase entries ("apple app store", "epic games store")
@@ -141,7 +146,14 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
     bulletOpens.add(b.index + b[0].length);
   for (const m of t.matchAll(/\b([A-Z][a-z]+(?:[ \t]+(?:[A-Z][a-z0-9]+|\d+|&)){1,4}(?:[ \t]+(?:LLC|Inc\.?|GmbH|Ltd\.?|S\.?A\.?|AG|Corp\.?))?)\b/g)) {
     const tok = m[1].trim();
-    if (bulletOpens.has(m.index)) continue;
+    // THE VERB GOES, AND THE NAME AFTER IT STAYS. Skipping the whole candidate also skipped the name an item asks
+    // about: "Verify <a person>", where the person is named nowhere else, went unread. So only the opening word is
+    // dropped, and what follows it is read as any other candidate.
+    if (bulletOpens.has(m.index)) {
+      const rest = tok.replace(/^\S+[ \t]+/, "");
+      if (rest !== tok && rest.split(/\s+/).length >= 2 && !isVocab(rest)) add(rest);
+      continue;
+    }
     if (tok.split(/\s+/).length >= 2 && !isVocab(tok)) add(tok);
   }
   return [...out.values()].filter((tok) => !/^TMP\d+/i.test(tok));
@@ -203,11 +215,13 @@ export function templateChecks({ headerName, ratedNames, searchedNames }) {
 //     rule enumeration against the real texts; gameable by repetition, accepted — a false orphan is
 //     reader noise, the worse failure under the lint's posture, and a missed one costs one flag).
 // Orphans are reported in ONE check so a noisy heuristic costs one flag line, not many.
-export function referenceChecks({ actionsText, fullSurface, searchedNames, surface = "report", extraVocab = null, markNames = null, structural = false }) {
+// `introducedIn` is text outside the surface that still introduces a party to its reader: for the email, the report
+// it links, outside the report's own action block.
+export function referenceChecks({ actionsText, fullSurface, searchedNames, surface = "report", extraVocab = null, markNames = null, structural = false, introducedIn = "" }) {
   const body = stripHtml(fullSurface);
   const actions = stripHtml(actionsText);
   const rest = body.replace(actions, " ");
-  const restN = norm(rest);
+  const restN = norm(`${rest} ${stripHtml(introducedIn)}`);
   // sentence-segments for the contextualization rule: sentence ends, em/en-dash asides, semicolons
   const segments = body.split(/(?<=[.!?])\s+|\s+[—–]\s+|;\s+/).map(norm);
   const searchedN = (searchedNames ?? []).map(norm);
@@ -2440,10 +2454,17 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
     // It used to be the report's two buckets, the methodology included, and so named a party from a line the email
     // never carried. The caller hands the conditions in, from the function the email composes its box with
     // (publish/email-conditions.mjs); a caller that hands none is not judged on the email.
+    //
+    // A PARTY THE REPORT INTRODUCES IS INTRODUCED TO THE EMAIL'S READER, who reaches the report from the email (owner
+    // ruling, 2026-11-04). The report counts here as it counts for its own check: everything outside its action block,
+    // so a condition cannot introduce itself through the report's copy of it. A report with no action block adds
+    // nothing. Each condition is an item, written as one, so the word that opens it is read as an item's opening.
     if (Array.isArray(emailConditions)) {
-      const emailZone = emailConditions.join("\n");
+      const emailZone = emailConditions.map((c) => `- ${c}`).join("\n");
+      const reportZone = onlyYouZone(reportMd);
       checks.push(...referenceChecks({
         actionsText: emailZone, fullSurface: [emailZone, parseFront(String(reportMd)).fm.overall_caption, clientSummaryMd].filter(Boolean).join("\n"), searchedNames, surface: "email", extraVocab, markNames, structural: actionsExpected === true,
+        introducedIn: reportZone ? String(reportMd).replace(reportZone, " ") : "",
       }).map((c) => ({ ...c, id: `${c.id}:email` })));
     }
   }
