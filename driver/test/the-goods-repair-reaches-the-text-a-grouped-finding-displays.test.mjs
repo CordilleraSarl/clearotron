@@ -23,7 +23,8 @@
 // The writer's delivery-check repair removes that sentence from the finding its line names for the claim, or saves its
 // record again as it stands (MOCK_GOODS_REPAIR). A third filing and a second citation (MOCK_FINDINGS_TWIN=2,3,
 // MOCK_FINDING_ALSO_CITES) give one record two citing members. Two records cut and two claims, with a repair that
-// corrects the first line it is handed alone, leave one claim standing through a resume.
+// corrects the first line it is handed alone, leave one claim standing through a resume. A run stopped after the
+// writer's save and before the delivery check ever ran (MOCK_FAIL_STAGE on the overview) is checked on its resume.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
@@ -241,18 +242,25 @@ test("a claim the writer leaves standing is kept as unresolved and displayed, an
 const CORRECTED = { ...SCENARIO, ...cutThenHeld(SECOND) };
 // Finding 3, delivered as finding 2, says the same of the third filing's record, and the repair corrects finding 1 alone.
 const ONE_LEFT_STANDING = { ...SCENARIO, ...cutThenHeld(SECOND, THIRD), MOCK_GOODS_CUT_CLAIM: "1,3", MOCK_GOODS_REPAIR: "first" };
+// The first test's scenario, stopped before the delivery check ever runs: at the overview, the first part built after the
+// writer's save.
+const BEFORE_THE_CHECK = { ...SCENARIO, ...cutThenHeld(SECOND) };
+const cardRebuiltAfterTheRepair = () => {
+  const baseNet = JSON.parse(synthesisFindings(null)).findings[0].net;
+  return ["record_report_card", SECOND, `"net": ${JSON.stringify(baseNet)},`].join("&&");
+};
 const twoPassRuns = new Map();
-const resumedAfterTheRepair = (knobs) => {
+const resumedRun = (knobs, stopAt) => {
   if (!twoPassRuns.has(knobs)) twoPassRuns.set(knobs, (async () => {
     for (const k of MOCK_KNOBS) delete process.env[k];
-    const baseNet = JSON.parse(synthesisFindings(null)).findings[0].net;
-    const stop = ["record_report_card", SECOND, `"net": ${JSON.stringify(baseNet)},`].join("&&");
-    const first = await runPipeline({ ...knobs, MOCK_FAIL_STAGE: stop });
+    const first = await runPipeline({ ...knobs, MOCK_FAIL_STAGE: stopAt() });
     // Read now: a resume that delivers moves the run's folder to the archive.
     const asItStood = (read) => new Map([SECOND, THIRD].map((uri) => [uri, read(first.res.runDir, uri)]));
     const [evidence, held] = [asItStood(evidenceOf), asItStood(heldGoods)];
     const pass1 = { ...first, delivered: existsSync(join(first.res.runDir, ".delivered")),
-      evidence: (uri) => evidence.get(uri), held: (uri) => held.get(uri), repairs: writersRepairs(first.res.runDir) };
+      evidence: (uri) => evidence.get(uri), held: (uri) => held.get(uri), repairs: writersRepairs(first.res.runDir),
+      checked: existsSync(driverDir(first.res.runDir, "predelivery-lint.json")),
+      handedFile: existsSync(driverDir(first.res.runDir, "goods-held-whole-handed.json")) };
     delete process.env.MOCK_FAIL_STAGE;
     // A first pass that delivered leaves nothing to resume, and the controls below say so.
     if (pass1.delivered || first.res.ok) return { pass1, res: first.res, events: first.events, pass2: [] };
@@ -265,6 +273,7 @@ const resumedAfterTheRepair = (knobs) => {
   })());
   return twoPassRuns.get(knobs);
 };
+const resumedAfterTheRepair = (knobs) => resumedRun(knobs, cardRebuiltAfterTheRepair);
 // The first pass stopped after the repair, at the card rebuilt from the corrected record, and delivered nothing.
 const stoppedAfterTheRepair = ({ pass1, pass2, res }) => {
   assert.ok(pass1.events.some((e) => e.event === "stage" && e.stage === "report-card:1" && e.trigger === "stale-repair" && e.fail === "nonzero_exit_1"),
@@ -335,4 +344,46 @@ test("a claim the repair left standing stays unresolved on a resumed run", async
   assert.deepEqual([row?.pass, row?.structural], [false, true], "the delivered receipt does not carry the claim left standing as a row no repair takes");
   assert.equal(goodsRepairs(events).length, 1, "the resume ran a second goods repair");
   assert.deepEqual(handed(events), [[SECOND, THIRD]], "the resume handed a record again");
+});
+
+test("a run stopped before its delivery check, and resumed, has the finding the writer wrote on the cut statement corrected", async () => {
+  const { pass1, res, events, pass2 } = await resumedRun(BEFORE_THE_CHECK, () => "record_report_overview");
+  // CONTROLS — the first pass saved the writer's record on the cut statement, held the record's whole body, and stopped
+  // at the overview: it ran no delivery check and handed nothing. The resumed pass did not dispatch the writer again,
+  // and its band merge read the record as an official record, while the copy kept for the writer reads it as cut.
+  assert.ok(pass1.events.some((e) => e.event === "stage" && e.stage === "synthesis" && e.trigger === "fresh" && e.ok === true), "the first pass saved no writer's record");
+  assert.deepEqual(pass1.evidence(SECOND), ["search-row", "cut"], "the writer did not have the second filing's goods as cut by the register");
+  assert.deepEqual(pass1.held(SECOND), WHOLE, "the first pass did not hold the second filing's goods whole before it stopped");
+  assert.ok(pass1.events.some((e) => e.event === "stage" && e.stage === "report-overview" && e.trigger === "fresh" && e.fail === "nonzero_exit_1"),
+    "the first pass did not stop at the overview");
+  // `record-artifacts` opens the delivery check, and its receipt is written whether it passes or fails.
+  assert.ok(!pass1.events.some((e) => /^(record-artifacts|predelivery-lint-failed|goods-held-whole|goods-held-whole-handed)$/.test(e.event)) && !pass1.checked,
+    "the first pass ran its delivery check");
+  assert.equal(pass1.handedFile, false, "the first pass handed a record");
+  assert.deepEqual([pass1.res.ok, pass1.delivered], [false, false], "the first pass delivered, so nothing was resumed");
+  assert.ok(pass2.length, "no resumed pass is in the run's record");
+  assert.ok(pass2.some((e) => e.event === "skip" && e.stage === "synthesis")
+    && !pass2.some((e) => e.event === "stage" && e.stage === "synthesis" && e.trigger !== "lint-repair"), "the resumed pass dispatched the writer again");
+  const [mergedAt, checkedAt] = [pass2.findLastIndex((e) => e.event === "goods-evidence"), pass2.findIndex((e) => e.event === "record-artifacts")];
+  assert.ok(mergedAt >= 0 && checkedAt > mergedAt, "the resumed pass did not derive the goods evidence again before its delivery check");
+  assert.deepEqual(evidenceOf(res.runDir, SECOND), ["record-body", "complete"], "the resumed pass's band merge did not read the record as an official record");
+  const copy = JSON.parse(readFileSync(driverDir(res.runDir, "goods-evidence.as-written.json"), "utf8")).records.find((r) => r.uri === SECOND);
+  assert.deepEqual([copy?.source, copy?.state], ["search-row", "cut"], "the copy kept for the writer does not read the record as cut");
+
+  // THE CLAIMS. The resumed check names the finding, and the report the run delivers no longer shows the claim.
+  assert.deepEqual({ named: goodsNamed(pass2), claimShown: netLineOf(res.runDir, 1)?.includes(GOODS_CUT_CLAIM) ?? null },
+    { named: [`goods-held-whole:1:${SECOND}`], claimShown: false },
+    "the resumed check did not name the finding the writer wrote on the cut statement, or the delivered report still shows its claim");
+  const repairs = writersRepairs(res.runDir);
+  assert.equal(repairs.length, 1, `the writer was sent ${repairs.length} delivery-check repairs`);
+  assert.ok(repairs[0].split("\n").includes(`- ${groupedLine(1, 2, SECOND)}`), "the writer's repair does not name both members");
+  assert.deepEqual(handed(events), [[SECOND]], "the record was not handed exactly once");
+  assert.equal(goodsRepairs(events).length, 1, "the run did not run exactly one goods repair");
+  assert.deepEqual(outcome(pass2)?.unresolved, [], "the check after the repair still finds the claim");
+  assert.equal(outcome(pass2)?.summary, CORRECTED_SUMMARY);
+  const one = delivered(res.runDir).find((f) => f.ordinal === 1);
+  assert.ok(cites(one, SECOND) && !claimsGoodsCut(one), "delivered finding 1 no longer cites the record, or still says its goods are cut");
+  assert.equal(netLineOf(res.runDir, 1), `- net: ${one.net}`, "finding 1's card does not display its corrected sentence");
+  assert.ok(!readFileSync(join(res.runDir, "report.md"), "utf8").includes(GOODS_CUT_CLAIM), "the delivered report still displays the claim");
+  assert.ok(!published(pass1.root, res.runDir).includes(GOODS_CUT_CLAIM), "the published report still displays the claim");
 });
