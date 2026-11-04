@@ -113,7 +113,8 @@ export async function runTables() {
 }
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal, storeCommitEnv } from "../shared/store-in-repo.mjs";   //
-import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
+import { stdioConnectOffer, WSL_ROW_HEADINGS } from "../shared/stdio-connect.mjs";
+import { namingProgram } from "../driver/engine/probe.mjs";   // the bare `claude` rewritten to the copy setup installed
 import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
@@ -1023,7 +1024,12 @@ if (isMain) {
   // Declining the worker is a real posture, not a debug switch: someone who wants the old separation —
   // order here, drain deliberately over there — keeps it with this flag, and the closing block tells them
   // exactly how to drain when they do.
-  const wantWorker = !argv.includes("--no-worker");
+  //
+  // NOT IN A DEMO. A demo's orders resolve to reports it already has and never reach the queue, so a
+  // worker there drains nothing the portal puts in it. What it would drain is a job an assistant queued
+  // through the connect line this command prints, and it would run that job on whatever engine this
+  // machine is signed in to: a real clearance, paid for, started from the demo.
+  const wantWorker = !argv.includes("--no-worker") && !argv.includes("--demo");
   const wantBackground = argv.includes("--background");
   // ON WINDOWS THERE IS NO BACKGROUND FORM: it is systemd units. Answered here, before anything is written
   // or systemctl is called, in the owner's sentence and nothing else, so no `start:` prefix either.
@@ -2596,7 +2602,12 @@ if (isMain) {
     for (const line of laterStartLines({ user, reset, credentialPath: credentialNow, source: signIn?.source ?? "install", record })) say(line);
   }
   say("");
-  if (worker) {
+  // A DEMO STARTS NOTHING, so it is not told that confirming commits money: it runs no worker, and the
+  // portal resolves every order to a report it already has (driver/portal-service.mjs, `if (demo)`).
+  if (DEMO) {
+    say("  Ordering a clearance from the portal opens the finished example for that search: every search");
+    say("  here resolves to a report that already exists. Nothing is started and nothing is charged.");
+  } else if (worker) {
     say("  Ordering a clearance from the portal starts it. The portal prices the run and asks you to");
     say("  confirm before anything is spent — that confirmation is the moment money is committed.");
   } else {
@@ -2623,7 +2634,8 @@ if (isMain) {
   // install inside WSL can be reached from Windows and from inside the distribution, by two different
   // commands; printing one of them unheaded is how a reader pastes the wrong one. The target is read
   // here and passed, because this module is pure by design and reads no environment of its own.
-  const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
+  const offered = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
+  const connect = connectLinesNamingClaude(offered, resolveEngineProgram(claudeEngine()));
   // "one line" IS DELETED RATHER THAN MADE CONDITIONAL. Under WSL two lines are printed, one per side,
   // and the count was never the point of the sentence — what it promises is no address and no sign-in,
   // which is true on both sides and on every other install.
@@ -2686,6 +2698,30 @@ if (isMain) {
 export function demoBaseIsTheReaders({ baseGiven = false, ownBase = false, base = "", demoDefault = "" } = {}) {
   if (!baseGiven) return false;                                          // start chose it: the demo's own
   return !(ownBase && base && demoDefault && base === demoDefault);      // handed over, and it IS the default
+}
+
+/**
+ * The engine whose program is the `claude` the connect lines run. A function, not a constant: the command
+ * body above runs while this module is still loading, before a constant declared down here exists.
+ */
+function claudeEngine() { return Object.keys(ENGINE_BINARIES).find((k) => ENGINE_BINARIES[k].fallback === "claude"); }
+
+/**
+ * The connect lines, naming the Claude program setup installed when that is the copy this machine runs.
+ *
+ * Setup installs Claude into its own engines folder, which is not on PATH, and the lines said `claude mcp
+ * add …` and `claude mcp list`: a command the reader's shell does not have (measured on a published beta,
+ * after setup had installed it). `namingProgram` is the rewrite setup's own sign-in line uses, and it
+ * changes nothing for a copy on PATH. UNDER WSL ONLY THE ROW RUN INSIDE LINUX is rewritten: the Windows
+ * row runs Windows' own `claude`, and the check line serves both sides, so it keeps the bare word there.
+ * `program` is what resolveEngineProgram answers ({ source, resolved }). PURE.
+ */
+export function connectLinesNamingClaude(connect, program) {
+  const spec = ENGINE_BINARIES[claudeEngine()];
+  const name = (text) => namingProgram(text, spec, { source: program?.source ?? null, path: program?.resolved ?? null });
+  if (connect.variants) return { ...connect,
+    variants: connect.variants.map((v) => (v.heading === WSL_ROW_HEADINGS.insideWsl ? { ...v, text: name(v.text) } : v)) };
+  return { ...connect, command: name(connect.command), verify: name(connect.verify) };
 }
 
 /**

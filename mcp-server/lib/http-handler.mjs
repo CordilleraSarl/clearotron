@@ -11,6 +11,7 @@ import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { AuthError } from "./cf-access.mjs";
 import { appendAudit } from "./audit.mjs";
 import { resolveScope, isFirmDomain, verifyToken, addressesInGrants } from "./scope.mjs";
+import { BOOT_PROBE_HEADER } from "../../shared/trigger-lane.mjs";   // the portal's boot probe names itself with it
 
 const hdr = (v) => (Array.isArray(v) ? v[0] : v);
 
@@ -220,7 +221,12 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         // principal rather than an anonymous transport.
         const tok = readInnerToken(url, req.headers, { allowAuthorization: true });
         if (!tok) {
-          log("auth reject 401: no key presented on the token-only door");
+          // THE PORTAL'S BOOT PROBE IS NOT A REJECTION. It asks, without a key, what this door wants, on
+          // every start, and this line read as an error each time. Its answer is unchanged and still
+          // audited; only a keyless GET that names itself as the probe goes unlogged here, because the
+          // portal logs what it learned. Any other keyless request is still logged as a reject.
+          if (!(req.method === "GET" && hdr(req.headers[BOOT_PROBE_HEADER])))
+            log("auth reject 401: no key presented on the token-only door");
           return refuse(res, 401, { error: "this address needs an access key — put it in your assistant's API-key field, or add ?token=<key> to the URL" });
         }
         let t;

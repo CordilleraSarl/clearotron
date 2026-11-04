@@ -4865,11 +4865,12 @@ const PORT = PORT_CHOICE.port;
   // drift. This asks the same function and prints what it says.
   if (laneWired) {
     try {
-      const { triggerLaneVerdict, HOSTED } = await import("../shared/trigger-lane.mjs");
+      const { triggerLaneVerdict, HOSTED, BOOT_PROBE_HEADER } = await import("../shared/trigger-lane.mjs");
       let probe = null;
       try {
+        // NAMED AS THE PROBE, so the door does not log this expected 401 as a rejection on every start.
         const res = await fetch(new URL("/mcp", MCP_URL), { method: "GET", redirect: "manual",
-          signal: AbortSignal.timeout(2500) });
+          headers: { [BOOT_PROBE_HEADER]: "1" }, signal: AbortSignal.timeout(2500) });
         // THE BODY IS READ BECAUSE THE HEADER DOES NOT SEPARATE THE TWO DOORS. A proxy-fronted door and
         // a key door both refuse with 401 and no `www-authenticate`; each names the credential it wants
         // in the body, and that is the only thing on the wire that tells them apart. Bounded and
@@ -4909,7 +4910,7 @@ const PORT = PORT_CHOICE.port;
           + "that key is honoured behind such a door is not readable from here — it is the shape that took "
           + "the Start button down once, silently, while every other check passed. Submit one clearance "
           + "after any change to the door's auth mode, and read the door's own `auth ON` line.");
-      } else log(`trigger lane: the engine door answered ${probe?.status ?? "?"} and takes an access key.`);
+      } else log("trigger lane: the engine door takes an access key, and this portal holds one.");
     } catch (e) {
       // The probe is a diagnostic. It must never be the reason a portal does not come up.
       log(`trigger lane: could not check whether the engine door accepts this portal (${e.message}) — not a verdict either way.`);
@@ -5238,6 +5239,14 @@ const PORT = PORT_CHOICE.port;
     // on one box is the mix the owner's "one LLM provider only ever, API or auth, no mix" ruling ended.
     // Going through `runTurn` means the reader is on whatever the engine is already authenticated as,
     // so it works on a subscription box, works on a codex box, and adds no credential.
+    //
+    // NOT IN A DEMO. The reader is a model turn on whatever engine this machine is signed in to, so in a
+    // demo it was the one button that spent on the visitor's own account. The composer shows the note it
+    // shows wherever reading is off, and the form is filled in by hand.
+    if (isDemo(process.env)) {
+      log("brief reading OFF — this is the demo, and the demo makes no model call.");
+      return null;
+    }
     try {
       const { makeJxTurnRunner } = await import("./engine/jx-turn.mjs");
       const { makeComposeReader } = await import("./compose-read.mjs");
@@ -5346,6 +5355,7 @@ const PORT = PORT_CHOICE.port;
       // branch is the wiring mistake the arm plants for, and it would not be visible in the output.
       for (const line of firstRunCredentialLines({
         handoff, credentialPath, email: LOCAL_USER, resetCommand,
+        handedDown: Boolean(String(process.env.PORTAL_LOCAL_PASSPHRASE ?? "").trim()),
         passphrase: handoff.printPassphrase ? established.passphrase : null,
       })) log(line);
       record = readLocalCredential(credentialPath);

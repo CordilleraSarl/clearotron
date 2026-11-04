@@ -11,6 +11,11 @@
  * before the supervisor starts. So whether the READER chose it has to travel separately:
  * `--demo-own-base` says it is the demo's default, which is what lets the supervisor remove the folder
  * when the window closes. `--keep` is the reader's, and it travels as given.
+ *
+ * A FOLDER THAT WAS THERE BEFORE THIS DEMO IS NOT ITS TO REMOVE. `demo --once` and `demo --keep` both
+ * leave the default folder behind and say so, and a later plain `demo` published into it and then
+ * removed it on exit, reports and all. `baseExisted` is read before the launcher makes anything, and
+ * such a folder is handed over as the reader's: kept, with the line that says how to remove it.
  */
 /**
  * The Node flag the demo runs under, so Node's one-time warning that its built-in SQLite is experimental
@@ -22,9 +27,9 @@ export const EXPERIMENTAL_WARNING_OFF = "--disable-warning=ExperimentalWarning";
 /** The same flag added to whatever NODE_OPTIONS the reader already has, which is kept. PURE. */
 export const withWarningOff = (nodeOptions) => [nodeOptions, EXPERIMENTAL_WARNING_OFF].filter(Boolean).join(" ");
 
-export function demoStartArgs({ demoBase, readerBase = false, keep = false, port = null, noOpen = false } = {}) {
+export function demoStartArgs({ demoBase, readerBase = false, baseExisted = false, keep = false, port = null, noOpen = false } = {}) {
   const args = ["--demo", "--base", demoBase];
-  if (!readerBase) args.push("--demo-own-base");
+  if (!readerBase && !baseExisted) args.push("--demo-own-base");
   if (keep) args.push("--keep");
   if (port) args.push("--port", String(port));
   if (noOpen) args.push("--no-open");

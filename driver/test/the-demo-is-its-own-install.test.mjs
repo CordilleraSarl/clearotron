@@ -314,7 +314,8 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
     let ports = [];
     try {
       const { real, store } = plantRealInstall(home);
-      demoCredential(home);
+      // The demo's credential is planted once it is up, not before: a demo folder that is already there
+      // when the demo starts is not the demo's to remove, and this arm reads that it removes its own.
       const before = installState(home);
       assert.ok(Object.keys(before.install).length >= 5, "anti-vacuity: the planted install holds files to compare");
       assert.ok(before.credential["portal-local-credential.json"] && before.settings[".env"],
