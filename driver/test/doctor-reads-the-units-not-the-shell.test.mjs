@@ -795,11 +795,11 @@ test("an unset box and an unrecognised one are refused, and refused DIFFERENTLY"
   } finally { rmSync(unset, { recursive: true, force: true }); }
 
   // `clearotron start --background` installs these same units with the local door and writes no name, so a
-  // newcomer's machine is warned too, and must not be handed the names either.
+  // newcomer's machine is told too, and must not be handed the names either.
   const background = installedHome("PORTAL_AUTH_MODE=local\nPORTAL_MCP_URL=http://127.0.0.1:18790\n");
   try {
     const out = doctor(background).out;
-    assert.match(out, /no CLEAROTRON_BOX in the units' environment/, "installed units are warned whatever door they run");
+    assert.match(out, /no CLEAROTRON_BOX in the units' environment/, "installed units are told whatever door they run");
     assert.doesNotMatch(out, /\bprod\b|\bpreprod\b/, "and no line names a deployment this build was made for");
   } finally { rmSync(background, { recursive: true, force: true }); }
 

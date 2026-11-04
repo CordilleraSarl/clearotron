@@ -1545,16 +1545,18 @@ export async function runCheck() {
     // THE ACCEPTED NAMES ARE NEVER PRINTED. They are the names of the deployments this build was made for,
     // and the line offered them to a newcomer to name their own machine after (measured on a fresh install
     // of a beta, 2026-11-03). An install without units says nothing of an unset name: nothing there reads
-    // it. Installed units are warned, because the services read it, and `start --background` installs the
+    // it. Installed units are told, because the services read it, and `start --background` installs the
     // same units a hosted deployment runs, from the same renderer, so nothing here can tell the two apart.
     if (!raw) {
       // AN ABSENCE IS NOT A MISCONFIGURATION, and this command already separates the two — a machine
-      // nobody has configured yet has no box, legitimately, and `--check` on one exits 0 by contract.
-      // Reported at `!` so it is visible rather than silent, which is the whole requirement; raising it
-      // to `✗` made every unconfigured machine fail its own acceptance arm, and said "fault" about a
-      // state that is the normal beginning of an install.
-      if (hosted) warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
-        + "can be read as a statement about a particular box");
+      // nobody has configured yet has no name, legitimately, and `--check` on one exits 0 by contract.
+      // Reported so it is visible rather than silent, which is the whole requirement. At `·`, in plain
+      // words, because the reader most likely to see it is a newcomer after `start --background`, who
+      // has nothing to set: a `!` there said the rest of the report could not be trusted and gave them
+      // nothing to do (measured on a fresh install of a beta, 2026-11-04). Raising it to `✗` made every
+      // unconfigured machine fail its own acceptance arm.
+      if (hosted) info(`no CLEAROTRON_BOX in ${boxSource}. Only Clearotron's own servers set it, to name `
+        + "themselves; an install of your own leaves it unset");
     } else if (!DEPLOYMENT_BOXES.includes(raw)) {
       problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows. `
         + `An unrecognised name reads as NO box everywhere it is `
