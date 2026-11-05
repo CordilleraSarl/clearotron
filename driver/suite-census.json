@@ -8432,6 +8432,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-connection-writes-only-inside-its-demo.test.mjs": {
+          "tests": 2,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
           "asserts": 33,
