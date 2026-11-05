@@ -623,3 +623,12 @@ test("the demo's data directory is its own, so trying the demo costs a real inst
   for (const key of ["pool", "workspace", "queue", "outbox", "locks", "grants", "audit", "configStore", "recipes", "credential", "profiles"])
     assert.notEqual(demo[key], live[key], `${key}: the demo and a real install share this path`);
 });
+
+test("a throw after the first child is spawned goes through the teardown, so no door is left running", () => {
+  const src = bodyOf("bin/start.mjs");
+  const handler = src.indexOf('["uncaughtException", "unhandledRejection"]');
+  const firstSpawn = src.search(/const mcp = start\("the engine door"/);
+  assert.ok(handler > 0 && firstSpawn > 0, "anti-vacuity: the handler or the first spawn is gone or renamed");
+  assert.ok(handler < firstSpawn, "the first child is spawned before anything would stop it on a throw");
+  assert.match(src.slice(handler, src.indexOf('process.on("SIGINT"', handler)), /void shutdown\(1\)/, "a throw does not reach the teardown");
+});

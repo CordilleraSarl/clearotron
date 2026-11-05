@@ -2354,6 +2354,10 @@ if (isMain) {
   // the `stopping` flag is what stops an orderly stop being reported as a crash.
   process.on("SIGINT", () => { void shutdown(0); });
   process.on("SIGTERM", () => { void shutdown(0); });
+  // A THROW BELOW WOULD END THIS PROCESS WITH ITS DOORS STILL UP: each child is in its own process group, so
+  // nothing else stops them. Everything that can go wrong from here goes through the same teardown.
+  for (const event of ["uncaughtException", "unhandledRejection"])
+    process.on(event, (e) => { err(`\nstart: ${String(e?.stack ?? e?.message ?? e)}\n`); void shutdown(1); });
   for (const sig of windowCloseSignals()) process.on(sig, () => { void shutdown(0); });
 
   const healthy = async (url, rec) => {
