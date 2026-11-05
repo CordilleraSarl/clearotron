@@ -634,7 +634,7 @@ if (proofOk) {
     const rawB = readFileSync(join(poolFrozen, runId, name), "utf8");
     if (name === "meta.json") {
       const mA = JSON.parse(rawA), mB = JSON.parse(rawB);
-      for (const k of ["issuedAt"]) { delete mA[k]; delete mB[k]; }
+      for (const k of ["issuedAt", "renderedAt"]) { delete mA[k]; delete mB[k]; }
       const keys = [...new Set([...Object.keys(mA), ...Object.keys(mB)])];
       for (const k of keys) {
         if (JSON.stringify(mA[k]) === JSON.stringify(mB[k])) continue;

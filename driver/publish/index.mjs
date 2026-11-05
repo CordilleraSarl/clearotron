@@ -653,22 +653,14 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const parsed = parseReport(reportMd);
   const { fm } = parsed;
   const deliv = delivery || NEUTRAL_DELIVERY;
-  // §2.9 issue timestamp — bound to GENERATION time in the firm locale (Europe/Zurich; Intl picks CET/CEST by
-  // DST, no hard-coded offset). Computed HERE (publishReport is already non-deterministic — cf. the staff-page/
-  // status pages below) and passed to renderHtml as opts.issued, so the renderer stays a pure function (unit
-  // tests + replay diff its output). e.g. "2026-06-16 · 14:32 CEST".
-  const issued = (() => {
-    try {
-      const d = new Date();
-      const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Zurich', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
-      const time = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Zurich', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
-      const tz = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Zurich', timeZoneName: 'short' }).formatToParts(d).find(p => p.type === 'timeZoneName')?.value || 'CET';
-      return `${date} · ${time} ${tz}`;
-    } catch { return null; }
-  })();
+  // §2.9 issue timestamp — the FIRST issue, from the record (report-dates.mjs), in the firm locale (Europe/Zurich; Intl
+  // picks CET/CEST by DST, no hard-coded offset). A republish is not a new issue. Computed HERE and passed to renderHtml
+  // as opts.issued, so the renderer stays a pure function (unit tests + replay diff its output). e.g. "2026-06-16 · 14:32 CEST".
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
   const poolRunDir = join(poolRoot, runId);
   mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });   // owner and group only; mkdir keeps the pool root's set-GID
+  const dates = reportDates({ runDir: runDir ?? dirname(reportMd), poolRunDir });
+  const issued = zurichStamp(dates.issuedAt, { zone: true });
   // The run dir inherits the web-server group + the set-GID bit AUTOMATICALLY from the set-GID pool root
   // (mode 2750, web-server group) — so files written inside take that group and the web server (Caddy in
   // the reference deployment, mode 0640) can read them. Do NOT chmod this dir: the service account is not
@@ -1297,14 +1289,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
   // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
   // panel reaches the client through the same cleaning path as every other reader-facing block.
-  // Write-once publish timestamp: the index sorts same-day runs by it. A republish (same runId) keeps the
-  // FIRST issue time so re-rendering an old run never bumps it to the top — the §2.9 'issued' display above
-  // still restamps (that is the latest render time; this is the stable ordering key).
-  let issuedAt = new Date().toISOString();
-  try {
-    const prev = JSON.parse(readFileSync(join(poolRunDir, 'meta.json'), 'utf8'));
-    if (prev?.issuedAt) issuedAt = String(prev.issuedAt);
-  } catch { /* first publish */ }
+  // Write-once publish timestamp: the index sorts same-day runs by it, and a republish (same runId) keeps the FIRST
+  // issue time so re-rendering an old run never bumps it to the top. The render's own time is `renderedAt`.
+  const { issuedAt, renderedAt } = dates;
   // Search-depth spine — the run's PRODUCT IDENTITY + attribution stamps, read from
   // the frozen _driver sidecars (never re-derived). Legacy runs simply lack them (regenIndex re-reads every
   // historical meta.json, so consumers null-guard: absent kind reads as 'clearance', the customerKey||
@@ -1386,6 +1373,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // stays byte-identical to a pre-stamp one.
     organisation: organisation ?? undefined,
     issuedAt,
+    renderedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
     engineCommit: engineCommit(),
     // The models that served the run, named as a client may read them (tokens.mjs servedModels). Absent when
@@ -1894,6 +1882,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 // numbers never fit shows up as a count rather than as silence. Kept down here, below every line the rest
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
+import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);
