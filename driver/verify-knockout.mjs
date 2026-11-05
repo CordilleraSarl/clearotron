@@ -3,12 +3,12 @@
 // verify-knockout.mjs — validators + gates for the KNOCKOUT (Depth 1) lane.
 // Same contract as verify.mjs validators: (file, text) -> {ok, reason?} for per-stage outputs (they ride
 // runStage's corrective ladder), plus code-side gates for the merged findings and the pre-publish lint.
-// The receipts discipline: every cited URL must appear in THAT mark's raw research payload or in the register
-// records supplied for that mark — the knockout analogue of the band-truth gate (a finding the driver cannot trace to held evidence is treated as
+// The receipts discipline: every cited URL must trace to a recorded research payload for this batch, a filing
+// held for this batch, or a recorded owner check linked to a held filing — the knockout analogue of the band-truth gate (a finding the driver cannot trace to held evidence is treated as
 // fabricated). It runs at three doors and has NO off switch: CLEAROTRON_KNOCKOUT_URL_GATE is deleted.
 // An env var that disarms a gate makes the gate's absence look exactly like its pass, which is the one
 // failure mode this lane's gates exist to refuse.
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
 import { kebab, kebabCollisions, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
@@ -84,7 +84,7 @@ export function knockoutCitedUrls(f) {
 }
 
 /**
- * Every cited URL ∈ that mark's own raw research payload on disk.
+ * Every cited URL traces to what `urlHeldFor` admits.
  *
  * WHAT A ZERO MEANS, because this gate can pass without doing anything: a batch whose findings cite no
  * URLs at all is `ok` with `checked.urls === 0`. That is not the same answer as "every citation was
@@ -95,32 +95,44 @@ export function knockoutCitedUrls(f) {
  * @returns {{ok: boolean, failures: string[], checked: {marks: number, citing: number, findings: number, urls: number}}}
  */
 /**
- * WHERE A CITED URL MAY COME FROM, for one name: that name's own research payload, or a filing held for this batch under any
- * name, because a filing may bear on more than one name and its id is held the same way (design, 2026-11-05). Another name's web
- * payload is not on the list: its results are that name's search, with no filing to trace them to.
+ * WHERE A CITED URL MAY COME FROM, for any name in the batch: a recorded research payload for this batch, a filing held for this
+ * batch, or a recorded owner check linked to a held filing (design, 2026-11-05). Code checks that the source is held. Whether its
+ * content bears on the name is the model's to explain and the check's to read, and a source's presence supports nothing by itself.
+ * A URL only in raw web results, or any other file the step was not given as evidence, stays outside.
  */
-export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}" is not traceable to this name's research payload or a filing held for this batch. Cite a source from that held evidence.`;
-export function urlHeldFor(runDir, markName) {
-  let filings = null, payload = null;
+export const PERMITTED_SOURCES = "a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing";
+export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}" is not traceable to ${PERMITTED_SOURCES}. Cite a source from that held evidence.`;
+const OWNER_PAYLOAD = /^owner-.+-[0-9a-f]{10}\.md$/;   // the name `ownerPayloadFile` gives a check's answer
+export function urlHeldFor(runDir) {
+  let filings = null;
   try {
     const doc = JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8"));
     filings = JSON.stringify((Array.isArray(doc?.marks) ? doc.marks : []).flatMap((x) => [...(Array.isArray(x?.records) ? x.records : []), ...(Array.isArray(x?.setAsideRecords) ? x.setAsideRecords : [])]));
   } catch { filings = null; }
-  try { payload = readFileSync(join(runDir, "research", `${kebab(markName)}.md`), "utf8"); } catch { payload = null; }
-  return (url) => (filings != null && urlInPayload(url, filings)) || (payload != null && urlInPayload(url, payload));
+  let checks = [];
+  try { checks = JSON.parse(readFileSync(driverDir(runDir, "owner-checks.json"), "utf8")).checks ?? []; } catch { checks = []; }
+  const heldIds = registerRecordIdsHeld(runDir);
+  const linked = new Set(checks.filter((c) => (c?.recordIds ?? []).some((id) => heldIds.has(String(id)))).map((c) => c?.payloadFile));
+  const researchDir = join(runDir, "research");
+  let payload = "";
+  try {
+    payload = readdirSync(researchDir).filter((f) => f.endsWith(".md") && (OWNER_PAYLOAD.test(f) ? linked.has(f) : true)).map((f) => readFileSync(join(researchDir, f), "utf8")).join("\n");
+  } catch { payload = ""; }
+  return (url) => (filings != null && urlInPayload(url, filings)) || urlInPayload(url, payload);
 }
 
 export function knockoutReceipts(runDir, marks) {
   const failures = [];
   const checked = { marks: (marks ?? []).length, citing: 0, findings: 0, urls: 0 };
+  let held = null;
   for (const m of marks ?? []) {
     const list = Array.isArray(m?.findings) ? m.findings : [];
     checked.findings += list.length;
-    let held = null;
+    let citing = false;
     for (const f of list) {
       const cited = knockoutCitedUrls(f);
       if (!cited.length) continue;
-      if (!held) { checked.citing += 1; held = urlHeldFor(runDir, m.name); }
+      if (!citing) { checked.citing += 1; citing = true; held ??= urlHeldFor(runDir); }
       for (const url of cited) {
         checked.urls += 1;
         // One refusal for both kinds of held evidence, so it never tells the model to drop a filing it may cite.
@@ -252,7 +264,7 @@ const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${findin
 export function heldCitationsOnly(runDir, mark) {
   const held = registerRecordIdsHeld(runDir);
   const notKept = [], sourceDefects = [];
-  const urlHeld = urlHeldFor(runDir, mark?.name);
+  const urlHeld = urlHeldFor(runDir);
   const lost = (f, kind, cited) => sourceDefects.push({ mark: mark?.name, name: f?.name, owner: f?.owner, kind, cited, was: { net: f?.net ?? null, basis: f?.basis ?? null, evidence: (f?.evidence ?? []).filter((u) => urlHeld(u)), weighed: (f?.weighedFilings ?? []).filter((id) => held.has(String(id ?? "").trim())) } });
   const isHeld = (raw, say) => {
     const id = String(raw ?? "").trim();

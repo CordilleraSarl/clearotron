@@ -33,14 +33,14 @@ function runWithRecords() {
   return dir;
 }
 
-test("a citation of a filing held for this batch is held evidence, as one from the mark's own payload is", () => {
+test("a citation of a filing held for this batch, or of a recorded payload for it, is held evidence", () => {
   const dir = runWithRecords();
   try {
     const cited = (url) => knockoutReceipts(dir, [{ name: "LANTERNWICK", findings: [{ name: "An invented finding", url }] }]);
     assert.deepEqual(cited("https://wiki.example.test/lanternwick").failures, [], "the payload's own address");
     assert.deepEqual(cited(FILING).failures, [], "a filing held under this mark");
     assert.deepEqual(cited(OTHER).failures, [], "a filing held under another name: it may bear on more than one");
-    assert.deepEqual(cited("https://wiki.example.test/odravel").failures, [REFUSAL("LANTERNWICK", "https://wiki.example.test/odravel")], "another name's web result traces to no filing");
+    assert.deepEqual(cited("https://wiki.example.test/odravel").failures, [], "another name's recorded payload");
     assert.equal(cited("https://nowhere.example.test/invented").ok, false, "an address held nowhere is refused");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
@@ -60,9 +60,9 @@ test("a mark with no payload may still cite a held filing, and nothing else", ()
 // ── ONE RULE, IN EVERY PLACE THE RATING STEP READS IT ─────────────────────────────────────────────────
 // The step's message, its manual and the refusal it meets all state the same rule (design's wording, 2026-10-19).
 // They are engine-independent strings, composed once here; the manual reaches both engines through the step's reads.
-const RULE = "A cited URL must appear in the mark's own research payload or in a filing held for this batch.";
+const RULE = "A cited URL must come from a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing.";
 function REFUSAL(mark, url) {
-  return `knockout_url_unreceipted:${mark}: "${url}" is not traceable to this name's research payload or a filing held for this batch. Cite a source from that held evidence.`;
+  return `knockout_url_unreceipted:${mark}: "${url}" is not traceable to a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing. Cite a source from that held evidence.`;
 }
 test("the rating step's message, its manual and its refusal state one citation rule, and none the old one", async () => {
   const { KO_STAGES, koPaths } = await import("../stages-knockout.mjs");
@@ -75,6 +75,6 @@ test("the rating step's message, its manual and its refusal state one citation r
   assert.ok(msg.includes("skills/knockout-assess/SKILL.md"), "premise: the message names the manual");
   for (const [where, text] of [["the message", msg], ["the manual", manual.replace(/\s+/g, " ")]]) {
     assert.ok(text.includes(RULE), `${where} does not state the rule`);
-    assert.doesNotMatch(text, /THAT mark's research payload|a degraded mark cannot cite URLs/, `${where} still states the old rule`);
+    assert.doesNotMatch(text, /THAT mark's research payload|the mark's own research payload|a degraded mark cannot cite URLs/, `${where} still states the old rule`);
   }
 });

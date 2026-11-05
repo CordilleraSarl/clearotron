@@ -36,7 +36,7 @@ a band that needs sharpening is the band above it, stated as that word.
    `findings[]` record carries one conflicting name, its owner, its band, its evidence and its ground.
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
-   the band and renumbers, so what your order decides is the order inside a band. A cited URL must appear in the mark's own research payload or in a filing held for this batch. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
+   the band and renumbers, so what your order decides is the order inside a band. A cited URL must come from a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
 6. **`registerEstimate`.** Use registerEstimate only where the register component was skipped, under
    RF-15. An empty carried list does not establish that it was skipped. Use the run's recorded state; keep
    a verified zero, a failed question, and an unread answer distinct. With held filings, weigh their
@@ -269,6 +269,10 @@ source as a fact rather than as a word you typed about your own sourcing.
 
 A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.
 
+When you use another name's research payload, explain how its held content bears on this name and its requested use. Keep the original search scope and provenance. A source's presence in the batch does not establish that it supports the claim.
+
+A recorded owner check linked to a held filing is held evidence. You may cite a URL in its saved answer when it supports the finding; preserve the owner and filing it belongs to.
+
 - **`registerReads`** — on the MARK. Rows of `{recordId, read, band?}` for a filing you weighed that did
   **not** become a `findings[]` record. `read` is what you concluded about *that* filing: how its goods meet
   the goods the client asked about, whether it bears on the rating, and why. It prints on that filing's card. `band` is **optional** and is how you rate that
@@ -377,8 +381,9 @@ the merged artifact):
   semicolons stitching facts to a verdict, no arrows, and never an action ("we recommend…").
 - `type` ∈ Famous Brand | Active Business | Cultural Reference | Domain | Descriptive Use | Negative
   Association | Competitor Intelligence. It names what the finding IS, not how bad it is.
-- `evidence` — a NON-EMPTY array of URLs held for this mark. Every one must appear in that mark's own
-  research payload. A finding nobody can open is a bullet with a shape around it.
+- `evidence` — a NON-EMPTY array of URLs, each from a recorded research payload for this batch, a filing
+  held for this batch, or a recorded owner check linked to a held filing. A finding nobody can open is a
+  bullet with a shape around it.
 - `basis` — the ground the band rests on: what the evidence shows about use, reach and the owner. The
   rank is read off the band, so a band with no stated basis is an unarguable ranking.
 

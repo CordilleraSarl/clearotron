@@ -56,15 +56,24 @@ test("every row citing what the run does not hold is left out and named at once,
   assert.deepEqual(JSON.parse(readFileSync(r.captured, "utf8")).params?.marks?.[0]?.registerReads?.length, 3, "the call as sent is not on record");
 });
 
-test("a finding's source is held the same way: a held filing's own URL under any name, and nothing held nowhere", () => {
+test("a finding's source is held the same way: a recorded payload for this batch, a held filing, a linked owner check, and nothing else", () => {
   const run = heldRun();
   mkdirSync(join(run, "research"), { recursive: true });
   writeFileSync(join(run, "research", "lanternwick.md"), "A page: https://shop.example.test/own");
   writeFileSync(join(run, "research", "odravel.md"), "A page: https://shop.example.test/sibling-web");
-  const r = send(run, mark({ findings: [{ ...finding([]), evidence: ["https://shop.example.test/own", SIBLING_URL, "https://shop.example.test/sibling-web", "https://shop.example.test/nowhere"] }] }));
-  assert.deepEqual(stored(run).findings[0].evidence, ["https://shop.example.test/own", SIBLING_URL]);
-  assert.equal(r.not_kept.length, 2, "another name's web result traces to no filing, and an address held nowhere is held by no one");
-  assert.match(r.not_kept[0], /"https:\/\/shop\.example\.test\/sibling-web" is not traceable to this name's research payload or a filing held for this batch\. Cite a source from that held evidence\./);
+  writeFileSync(join(run, "research", "owner-invented-ltd-0123456789.md"), "A linked check: https://shop.example.test/owner-linked");
+  writeFileSync(join(run, "research", "owner-other-ltd-abcdef0123.md"), "An unlinked check: https://shop.example.test/owner-unlinked");
+  writeFileSync(driverDir(run, "owner-checks.json"), JSON.stringify({ schema: 1, checks: [
+    { mark: "ODRAVEL", owner: "Invented Ltd", recordIds: [SIBLING], ok: true, payloadFile: "owner-invented-ltd-0123456789.md" },
+    { mark: "ODRAVEL", owner: "Other Ltd", recordIds: ["/mark/us/no-longer-held"], ok: true, payloadFile: "owner-other-ltd-abcdef0123.md" },
+  ] }));
+  mkdirSync(driverDir(run, "web-results"), { recursive: true });
+  writeFileSync(driverDir(run, "web-results", "raw.json"), JSON.stringify({ url: "https://shop.example.test/raw-only" }));
+  const held = ["https://shop.example.test/own", SIBLING_URL, "https://shop.example.test/sibling-web", "https://shop.example.test/owner-linked"];
+  const r = send(run, mark({ findings: [{ ...finding([]), evidence: [...held, "https://shop.example.test/owner-unlinked", "https://shop.example.test/raw-only", "https://shop.example.test/nowhere"] }] }));
+  assert.deepEqual(stored(run).findings[0].evidence, held);
+  assert.equal(r.not_kept.length, 3, "an owner check linked to no held filing, a URL only in raw web results, and an address held nowhere");
+  assert.match(r.not_kept[0], /"https:\/\/shop\.example\.test\/owner-unlinked" is not traceable to a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing\. Cite a source from that held evidence\./);
 });
 
 test("a source left out stays open until the finding is amended or gains held support, and an unchanged resend answers nothing", () => {
@@ -89,7 +98,8 @@ test("a source left out stays open until the finding is amended or gains held su
   recordKnockoutAssess(other, { marks: [cited(["https://shop.example.test/own"], { net: "The claim, amended to what the held page shows." })] }, { boundOrdinal: 0 });
   assert.deepEqual(knockoutAssessSourceDefects(other, 0).map((d) => d.state), ["answered"], "an amended claim is an answer too");
   recordKnockoutAssess(other, { marks: [mark({ findings: [] })] }, { boundOrdinal: 0 });
-  assert.deepEqual(knockoutAssessSourceDefects(other, 0), [], "a finding gone takes its claim with it");
+  const gone = knockoutAssessSourceDefects(other, 0);
+  assert.deepEqual(gone.map((d) => [d.state, d.removed, d.was.net]), [["answered", true, "An invented net."]], "a finding gone still owes the check a read: its claim may survive in the reasoning");
 });
 
 test("a source cited again is one open row, and a filing the run holds is support as a URL is", () => {

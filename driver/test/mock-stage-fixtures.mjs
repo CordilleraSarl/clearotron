@@ -2654,6 +2654,16 @@ export function applyStageWrites(msg, argv) {
     // would keep every e2e green through a conversion that had broken the transport entirely.
     const verdict = recordKnockoutAssess(runDir, chunk, { boundOrdinal: boundChunk });
     if (!verdict.written) return `mock knockout-assess: the transport refused the composed chunk — ${verdict.refused ?? verdict.write_failed}`;
+    // MOCK_KO_CITE_NOWHERE_THEN: the model's next call in the turn, having heard the source was left out: `amended` or `removed`.
+    if (process.env.MOCK_KO_CITE_NOWHERE_THEN) {
+      const marks = chunk.marks.filter((m) => m.findings.length).map((m) => {
+        const [f, ...rest] = m.findings;
+        return { name: m.name, findings: process.env.MOCK_KO_CITE_NOWHERE_THEN === "removed" ? rest
+          : [{ ...f, net: "An amended claim, on what the run holds.", evidence: f.evidence.filter((u) => u !== process.env.MOCK_KO_CITE_NOWHERE) }, ...rest] };
+      });
+      const next = recordKnockoutAssess(runDir, { marks }, { boundOrdinal: boundChunk });
+      if (!next.written) return `mock knockout-assess: the transport refused the second call — ${next.refused ?? next.write_failed}`;
+    }
     return "mock knockout assess ok";
   }
   // ── THE READING STEP ──────────────────────────────────────────────────

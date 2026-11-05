@@ -32,7 +32,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 const { driverDir } = await import("../../shared/driver-dir.mjs");
-const { knockoutInner } = await import("../pipeline-knockout.mjs");
+const { knockoutInner, sourceAnswerLine } = await import("../pipeline-knockout.mjs");
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 const { applyCorrectionCall, chunkScope, correctionOutcomes, correctionWork, knockoutCorrectionFile, mergedAnswers, movedOutsideScope, rollBackName, summaryBlock, validateKnockoutCorrectionFile, keepChunkBases, correctionWorkPath } = await import("../knockout-correction-record.mjs");
 const { knockoutAssessChunkFile } = await import("../knockout-assess-record.mjs");
@@ -46,7 +46,7 @@ const NAME = "QUILLBRAE", SIBLING = "MOSSVALE";
 
 /** One two-name knockout through the lane, on the mock engine. What the run left. */
 async function knockout(codename, env = {}, { recordLister = async () => ({ ok: true, total: 0, records: [] }), countExecutor = async () => ({ ok: true, total: 0 }) } = {}) {
-  const set = { MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_FAIL_STAGE: undefined,
+  const set = { MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_KO_CITE_NOWHERE_THEN: undefined, MOCK_FAIL_STAGE: undefined,
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: undefined, CODEX_API_KEY: undefined, ...env };
   for (const [k, v] of Object.entries(set)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
   const id = `ko-${codename}`;
@@ -197,7 +197,30 @@ test("a source the rating lost and never restored goes to the correction, though
   const r = await knockout("source-lost", { MOCK_KO_CITE_NOWHERE: "https://nowhere.example.test/invented", MOCK_KO_CORRECTED_BAND: "High" });
   assert.ok(r.stages.includes("knockout-correct#0"), `no correction was dispatched: ${r.stages}`);
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
-  assert.ok(record.defects.some((x) => x.kind === "source" && /not traceable to this name's research payload/.test(x.problem)), JSON.stringify(record.defects));
+  assert.ok(record.defects.some((x) => x.kind === "source" && /not traceable to a recorded research payload for this batch/.test(x.problem)), JSON.stringify(record.defects));
+});
+
+test("a repair the rating step proposed goes to the check, stays on the record if the check fails, and keeps the changed work", async () => {
+  const NOWHERE = "https://nowhere.example.test/invented";
+  const settled = await knockout("source-amended", { MOCK_KO_CITE_NOWHERE: NOWHERE, MOCK_KO_CITE_NOWHERE_THEN: "amended" });
+  assert.ok(settled.stages.includes("knockout-review"), "the check runs");
+  assert.ok(!settled.stages.includes("knockout-correct#0"), "a proposed repair is not a defect until the check says so");
+  assert.equal(existsSync(driverDir(settled.dir, "knockout-corrections.json")), false, "an accepted read settles it");
+  for (const then of ["amended", "removed"]) {
+    const r = await knockout(`source-${then}-unread`, { MOCK_KO_CITE_NOWHERE: NOWHERE, MOCK_KO_CITE_NOWHERE_THEN: then, MOCK_FAIL_STAGE: "record_knockout_review" });
+    assert.equal(r.review.outcome, "stage-failed");
+    const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
+    assert.deepEqual(record.open.map((o) => [o.kind, o.mark, o.state]), [["source", NAME, "not-rechecked"], ["source", SIBLING, "not-rechecked"]], then);
+    assert.match(record.open[0].problem, /not traceable to a recorded research payload for this batch/);
+    assert.ok((await notes(`source-${then}-unread`)).includes(record.open[0].problem), "the reviewing lawyer sees it");
+    if (then === "amended") assert.equal(r.of(r.findings, NAME).findings[0].net, "An amended claim, on what the run holds.", "the valid changed work stays");
+  }
+});
+
+test("the check is given the claim as it stood beside the source left out", () => {
+  const row = { mark: NAME, name: "ONE", cited: "https://nowhere.example.test/x", was: { net: "The owner holds the market.", basis: "A survey." } };
+  assert.equal(sourceAnswerLine(row), `- "QUILLBRAE", finding "ONE": it cited "https://nowhere.example.test/x". The claim then: "The owner holds the market.", on the ground "A survey.".`);
+  assert.match(sourceAnswerLine({ ...row, removed: true }), /finding "ONE", since removed: it cited/);
 });
 
 test("the check is handed the findings the rating step amended after losing a source", () => {
@@ -367,14 +390,23 @@ test("a material row is held to its shape, and to what this run holds", () => {
   writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify(rated()));
   writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [{ recordId: "/mark/em/carried" }], setAsideRecords: [{ recordId: "/mark/em/aside" }] }] }));
   writeFileSync(join(dir, "research", "quillbrae.md"), "A held page: https://example.test/held");
-  writeFileSync(join(dir, "research", "owner-invented-owner.md"), "An owner search's page: https://example.test/owner");
+  writeFileSync(join(dir, "research", "owner-invented-owner-0123456789.md"), "An owner search's page: https://example.test/owner");
+  writeFileSync(join(dir, "research", "owner-gone-owner-abcdef0123.md"), "An owner search for a filing no longer held: https://example.test/owner-gone");
+  writeFileSync(driverDir(dir, "owner-checks.json"), JSON.stringify({ schema: 1, checks: [
+    { mark: NAME, owner: "Invented Owner", recordIds: ["/mark/em/carried"], ok: true, payloadFile: "owner-invented-owner-0123456789.md" },
+    { mark: NAME, owner: "Gone Owner", recordIds: ["/mark/em/gone"], ok: true, payloadFile: "owner-gone-owner-abcdef0123.md" },
+  ] }));
+  mkdirSync(driverDir(dir, "web-results"), { recursive: true });
+  writeFileSync(driverDir(dir, "web-results", "raw.json"), JSON.stringify({ url: "https://example.test/raw-only" }));
   writeFileSync(join(dir, "research", "mossvale.md"), "The other name's web result: https://example.test/other-web");
   const check = (m) => validateKnockoutReviewFile(knockoutReviewFile(dir), JSON.stringify({ material: [m] }));
   assert.match(check({ kind: "band", mark: "STRANGER", problem: "p", rests_on: ["x"] }).reason, /not a name on this record/);
   assert.match(check({ kind: "band", mark: NAME, finding: 9, problem: "p", rests_on: ["/mark/em/carried"] }).reason, /does not hold/);
-  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["/mark/em/invented"] }).reason, /does not hold/);
-  assert.equal(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/owner"] }).ok, true, "an owner search's page is held evidence");
-  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/other-web"] }).reason, /does not hold/, "another name's web result traces to no filing");
+  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["/mark/em/invented"] }).reason, /not traceable to a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing, or a question this run asked\. Copy a recordId, question qid, or URL from what this run holds\./);
+  assert.equal(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/owner"] }).ok, true, "an owner check linked to a held filing is held evidence");
+  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/owner-gone"] }).reason, /not traceable/, "and one linked to none is not");
+  assert.equal(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/other-web"] }).ok, true, "another name's recorded payload is held evidence");
+  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/raw-only"] }).reason, /not traceable/, "a URL only in raw web results is not");
   assert.equal(check({ kind: "exclusion", mark: NAME, problem: "p", rests_on: ["/mark/em/aside"] }).ok, true, "a filing set aside can be raised");
   assert.equal(check({ kind: "missing", mark: NAME, problem: "p", rests_on: ["https://example.test/held"] }).ok, true, "a URL in the name's payload can be raised");
 });
@@ -386,7 +418,7 @@ test("a reference the run does not hold is refused at the call, in the turn, and
   writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [{ recordId: "/mark/em/held" }], terms: [{ qid: "supp:asked" }] }] }));
   const call = (rests_on) => recordKnockoutReview(dir, { material: [{ kind: "missing", mark: NAME, problem: "p", rests_on }] });
   const refused = call(["/mark/em/invented"]);
-  assert.match(String(refused.refused), /rests on "\/mark\/em\/invented", which this run does not hold/);
+  assert.match(String(refused.refused), /rests on "\/mark\/em\/invented", which is not traceable to a recorded research payload for this batch/);
   assert.equal(refused.written, null);
   assert.equal(existsSync(knockoutReviewFile(dir)), false, "nothing is written for the stage to refuse afterwards");
   assert.ok(call(["/mark/em/held", "supp:asked"]).written, "a held filing and a question the run asked are held");

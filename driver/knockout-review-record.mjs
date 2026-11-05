@@ -41,7 +41,7 @@
 //
 // A SECOND PASS READS THE CORRECTED RECORD. Dispatched fresh after a correction, it has its own artifact and
 // its own accepted call, bound by the ordinal in its label, so nothing the first pass sent carries into it.
-import { writeFileSync, readFileSync, readdirSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
@@ -51,7 +51,7 @@ import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned 
 // THE HINT'S fold, and it is imported rather than rebuilt — see nearestAddress. It is a comparison key
 // for saying WHICH line was probably meant; it never decides whether an address resolves.
 import { queryKey } from "./connotation-search.mjs";
-import { registerRecordIdsHeld, urlHeldFor, urlInPayload } from "./verify-knockout.mjs";
+import { PERMITTED_SOURCES, registerRecordIdsHeld, urlHeldFor } from "./verify-knockout.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -228,8 +228,8 @@ export function acceptKnockoutReview(call) {
     if (m.finding !== undefined && !Number.isInteger(m.finding)) return { ok: false, reason: `the material row on "${m.mark}": finding is the finding's ordinal` };
     if (typeof m?.problem !== "string" || !m.problem.trim()) return { ok: false, reason: `the material row on "${m.mark}" says nothing about what is wrong` };
     const rests = m.rests_on;
-    if (rests !== undefined && (!Array.isArray(rests) || rests.some((r) => typeof r !== "string" || !r.trim()))) return { ok: false, reason: `the material row on "${m.mark}": rests_on is a list of recordIds and URLs` };
-    if (MATERIAL_KINDS[m.kind] && !rests?.length) return { ok: false, reason: `the ${m.kind} row on "${m.mark}" names no evidence: send the recordIds or URLs it rests on in rests_on` };
+    if (rests !== undefined && (!Array.isArray(rests) || rests.some((r) => typeof r !== "string" || !r.trim()))) return { ok: false, reason: `the material row on "${m.mark}": rests_on is a list of held recordIds, question qids, and URLs` };
+    if (MATERIAL_KINDS[m.kind] && !rests?.length) return { ok: false, reason: `the ${m.kind} row on "${m.mark}" names no evidence: send the recordIds, question qids, or URLs it rests on in rests_on` };
   }
   const seen = new Set();
   for (const r of rewrites ?? []) {
@@ -453,18 +453,14 @@ function materialFault(m, merged, runDir) {
   const mark = (merged?.marks ?? []).find((r) => String(r?.name ?? "") === m.mark);
   if (!mark) return `the material row names "${m.mark}", which is not a name on this record. Copy it verbatim.`;
   if (m.finding !== undefined && !(mark.findings ?? []).some((f) => f?.ordinal === m.finding)) return `the material row on "${m.mark}" names finding ${m.finding}, which it does not hold.`;
-  // WHAT THE RUN HOLDS, not what it holds under this name: a filing held for this batch may bear on more than one name. A question the
-  // run asked is held too, by its qid. A URL traces to such a filing, to this name's own payload, or to an owner search's page.
-  // Anything else is refused.
+  // WHAT THE RUN HOLDS, not what it holds under this name: a filing, a recorded research payload or an owner check may bear on more than
+  // one name. A question the run asked is held too, by its qid. Anything else is refused, in words about those sources and not the run.
   const records = registerRecordIdsHeld(runDir);
   let questions = new Set();
   try { questions = new Set((JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8")).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
-  const urlHeld = urlHeldFor(runDir, m.mark);
-  const researchDir = join(runDir, "research");
-  let owners = "";
-  try { owners = readdirSync(researchDir).filter((f) => /^owner-.*\.md$/.test(f)).map((f) => readFileSync(join(researchDir, f), "utf8")).join("\n"); } catch { owners = ""; }
-  const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !questions.has(r) && !urlHeld(r) && !urlInPayload(r, owners));
-  return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which this run does not hold. Copy a recordId or a URL from what it holds.` : null;
+  const urlHeld = urlHeldFor(runDir);
+  const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !questions.has(r) && !urlHeld(r));
+  return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which is not traceable to ${PERMITTED_SOURCES}, or a question this run asked. Copy a recordId, question qid, or URL from what this run holds.` : null;
 }
 
 /**
