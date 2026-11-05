@@ -6322,8 +6322,8 @@
           "todos": 0
         },
         "start-command.test.mjs": {
-          "tests": 27,
-          "asserts": 121,
+          "tests": 28,
+          "asserts": 124,
           "skips": 0,
           "todos": 0
         },
@@ -6521,7 +6521,7 @@
         },
         "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
           "tests": 15,
-          "asserts": 62,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -6652,8 +6652,8 @@
           "todos": 0
         },
         "the-connect-line-names-the-claude-setup-installed.test.mjs": {
-          "tests": 3,
-          "asserts": 12,
+          "tests": 4,
+          "asserts": 23,
           "skips": 1,
           "todos": 0
         },
@@ -7258,14 +7258,20 @@
           "todos": 0
         },
         "the-pages-list-every-process-start-runs.test.mjs": {
-          "tests": 3,
-          "asserts": 8,
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
         "the-pages-name-the-three-ports-start-opens.test.mjs": {
           "tests": 3,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-pages-say-what-a-demo-lets-you-do-and-leaves.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
