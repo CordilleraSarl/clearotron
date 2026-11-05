@@ -118,8 +118,10 @@ import { probeCliVersion } from "../driver/engine/cli-version.mjs";   // the eng
 // use. "Its cheapest model" is true of either engine and brands neither.
 export const probingLine = (engineId) =>
   `Probing ${engineId} with one turn on its cheapest model (this SPENDS; ${PROBE_TIMEOUT_SEC}s ceiling)…`;
-export const proveQuestion = ({ engineId, lane }) =>
-  `Prove ${engineId} on the ${lane} lane now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
+/** How each answer to the pay question is said afterwards, keyed by the billing word that answer's id is. */
+export const PAYS_WITH = Object.freeze({ subscription: "your subscription", "api-key": "your API key", cloud: "your cloud account" });
+export const proveQuestion = ({ product, billing }) =>
+  `Prove ${product} on ${PAYS_WITH[billing]} now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
 /**
  * What setup says just before it asks to prove the engine. Answering no saves nothing and returns to the
  * engine menu, so the reader is told before answering that the AI is saved only once the turn works. On a
@@ -533,6 +535,13 @@ export const configOutsideWhy = (packaged) => (packaged
     + "update can replace the package without touching them."
   : "Your customers and any instructions you override live here, outside the checkout — which is what "
     + "lets you take updates with `git pull` instead of merging into files you never meant to own.");
+/** What setup says when the folder a reader named sits inside the program's own files, said the same way. */
+export const configInsideRefusal = (packaged, path, repo) => (packaged
+  ? [`${path} is INSIDE the installed package (${repo}).`,
+    "An update replaces the package and everything in it. Choose a path outside the installed package."]
+  : [`${path} is INSIDE the checkout (${repo}).`,
+    "Everything you write there becomes a local modification to our files: `git pull` conflicts,",
+    "and `git status` that is never clean. Choose a path outside the checkout."]);
 
 export function composeEnvBody(candidate, existing = {}, { packaged = PACKAGED } = {}) {
   // Setup's own answers win: the reader just typed them, and this run is the newer statement.
@@ -3255,10 +3264,10 @@ export async function runCheck() {
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
 
   say("\n  Client connector");
-  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` treats an unreadable
-  // denylist as "not revoked", so a named-but-absent file makes every revocation silently ineffective:
-  // measured on a default install, a revoked key completed a full handshake with nothing logged. Nothing
-  // surfaced that state anywhere, which is why it survived to be found by hand.
+  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` used to read an unreadable denylist as
+  // "not revoked", so a named-but-absent file made every revocation silently ineffective: measured on a
+  // default install, a revoked key completed a full handshake with nothing logged. It now refuses every
+  // key (shared/scope.mjs), and this is where the reader learns why.
   {
     const { defaultDenylistPath } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
     const named = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v;
@@ -3280,10 +3289,10 @@ export async function runCheck() {
           && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
         info(`no revocation list yet at ${dl}: no key has been revoked. The first \`${invoke("start")}\` creates it.`);
       } else {
-        // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
-        // no other surface that would tell them: the door answers 200 either way.
-        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
-          + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
+        // NOT `warn`. The door refuses every key while its list cannot be read, so every assistant connected
+        // to it stops, and this sentence is the door's own (mcp-server/lib/http-handler.mjs).
+        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — this install cannot `
+          + "check whether keys have been revoked, so it is refusing all of them. "
           + `Run \`${invoke("start")}\` — it creates the list.`);
       }
     }
@@ -4055,7 +4064,7 @@ try {
     if (authPick.id === "api-key") {
       if (ambientKeyPresent) {
         apiKey = process.env[eng.apiKeyEnv];
-        info(`${eng.apiKeyEnv} is already in your environment — adopting it, so the .env this writes matches the lane you just proved.`);
+        info(`${eng.apiKeyEnv} is already in your environment — adopting it, so the .env this writes carries the key the test turn uses.`);
       } else {
         apiKey = await askValue(`${eng.apiKeyEnv}:`, { secret: true });
       }
@@ -4094,7 +4103,7 @@ try {
     // proofPreamble says what a reader needs to decide with: what the turn costs, and that answering no
     // saves nothing.
     for (const line of proofPreamble({ product: eng.product, billing: authPick.id })) info(line);
-    if (!await confirm(proveQuestion({ engineId: pick.id, lane: authPick.id }), true)) {
+    if (!await confirm(proveQuestion({ product: eng.product, billing: authPick.id }), true)) {
       info("Not proven, so not written. Pick again — the last row configures no engine at all.");
       continue;
     }
@@ -4103,7 +4112,7 @@ try {
       // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
       const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: settingsInForce() }));
       if (v.ok) {
-        ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
+        ok(`${eng.product} completed a turn on ${PAYS_WITH[authPick.id]} — binary, credential, billing mode and model access all work.`);
         const served = servedLine(v);
         if (served) info(served);
         candidate.CLEAROTRON_AI = pick.id;
@@ -4116,7 +4125,7 @@ try {
         const cloudLines = Object.entries(cloudEnv ?? {}).filter(([k]) => k !== eng.authEnv);
         for (const [k, val] of cloudLines) candidate[k] = val;
         info(`CLEAROTRON_AI=${pick.id}`);
-        info(`${eng.authEnv}=${authPick.id} — the lane the turn above actually ran on.`);
+        info(`${eng.authEnv}=${authPick.id} — how the turn above was paid for.`);
         if (apiKey) info(`${eng.apiKeyEnv}=… — adopted, so a run bills the way you just proved.`);
         for (const [k, val] of cloudLines) info(shownSetting(k, val));
         if (bin.source === "installed") info(`${eng.env}=${eng.fallback} — the engine's default: this machine's own \`${eng.fallback}\` once it has one, and the copy Clearotron installed until then.`);
@@ -4320,7 +4329,7 @@ try {
   // table row carries. A live check runs where one exists, keyed on the credential's name.
   say("\n  Search credentials");
   const liveChecks = { PERPLEXITY_API_KEY: validatePerplexity };
-  for (const [tableLabel, table] of [["research", RESEARCH_PROVIDERS], ["the open-web and marketplace grid", SERP_PROVIDERS]]) {
+  for (const [tableLabel, table] of [["research", RESEARCH_PROVIDERS], ["the Chinese marketplace search", SERP_PROVIDERS]]) {
     for (const adapter of Object.values(table)) {
       const name = adapter.credEnv;
       say("");
@@ -4506,9 +4515,9 @@ try {
   // `<repo>-notes` is not mistaken for a path inside `<repo>`.
   const cfgAbs = resolve(cfg);
   if (isInsideCheckout(cfg, REPO)) {
-    problem(`${cfgAbs} is INSIDE the checkout (${resolve(REPO)}).`);
-    say("  Everything you write there becomes a local modification to our files: `git pull` conflicts,");
-    say("  and `git status` that is never clean. Choose a path outside the checkout.");
+    const [inside, ...why] = configInsideRefusal(PACKAGED, cfgAbs, resolve(REPO));
+    problem(inside);
+    for (const line of why) say(`  ${line}`);
     aborted = "config-inside-checkout";
     throw new Error("config-inside-checkout");
   }

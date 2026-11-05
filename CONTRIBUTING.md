@@ -167,8 +167,8 @@ Both are in `npm run test:full` rather than the fast tier, and neither is someth
 
 **A guard binds prose figures to the code that declares them.** A stage count,
 a timeout, a product sizing — if a document states one, that document is pinned to the constant, and
-deleting the sentence fails as loudly as contradicting it. `README.md`'s "How long a run takes" alone carries
-seven bindings. The patterns match **contiguous text**, so re-wrapping a paragraph such that
+deleting the sentence fails as loudly as contradicting it. `INSTALL.md`'s "How long a run takes" alone carries
+eight bindings. The patterns match **contiguous text**, so re-wrapping a paragraph such that
 `the longest is 45 minutes` breaks across a line makes the restatement invisible to the pattern while
 reading identically to a human. Either keep the sentence, or retire its row in `driver/doc-constants.mjs`
 on purpose.

@@ -1862,7 +1862,7 @@ export const SERP_PROVIDERS = {
     credEnv: "SERPAPI_API_KEY",
     // As above — the field pair setup derives its prompt from (: this key was never
     // prompted for, and a reader who finished setup as designed had every marketplace grid cell gap).
-    absentMeans: "every marketplace grid cell comes back as a disclosed gap instead of a result",
+    absentMeans: "the Chinese marketplaces come back as a disclosed gap",
     obtain: "https://serpapi.com/manage-api-key — self-serve, free tier exists",
     async search({ engine, term, site, count }) {
       if (!process.env.SERPAPI_API_KEY) return { ok: false, cause: "SERPAPI_API_KEY absent from driver env" };
@@ -2104,11 +2104,11 @@ export const ENGINE_BINARIES = {
     // it moved to 2.1.284: a stage that asks for haiku is asking for the current haiku.
     package: "@anthropic-ai/claude-code", floor: "2.1.293",
     // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
-    // declared by the vendor: the engines folder after a fresh install of this package into an empty
-    // folder. Re-measured when the floor moved to 2.1.293: 242 MB for a fresh install of 2.1.293 itself,
-    // on npm 10.9.9, 2026-10-09. A later release can be larger or smaller, so setup says "about".
-    // Re-measure when the floor moves.
-    installMB: 242,
+    // declared by the vendor: the engines folder (`du -sm`) after a fresh install into an empty folder with
+    // setup's own command, which fetches the newest release at or above the floor rather than the floor
+    // itself. Measured 2026-11-05 on npm 10.9.9: 323 MB for 2.1.318; 2.1.293 alone is 242. A later release
+    // can be larger or smaller, so setup says "about". Re-measure when the floor moves.
+    installMB: 323,
     // The licence setup states wherever it tells a reader what they are about to install or use, as the
     // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
     licence: "proprietary third-party software",
@@ -2142,7 +2142,7 @@ export const ENGINE_BINARIES = {
     // judgment-tier stage (the tiers are in engine/openai-agent.mjs). The old floor, 0.154.0, was the
     // permissions feature's (engine/mcp/codex-config.mjs).
     package: "@openai/codex", floor: "0.159.0",
-    installMB: 424,   // re-measured the same way as Claude's, above: a fresh install of 0.159.0 itself, 2026-10-09
+    installMB: 436,   // measured the same way as Claude's, above: setup's command fetched 0.166.0, 2026-11-05; 0.159.0 alone is 424
     licence: "third-party software under the Apache-2.0 licence",   // the package's own "license" field
     label: "OpenAI — each stage runs as a headless `codex exec` turn",
     module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",

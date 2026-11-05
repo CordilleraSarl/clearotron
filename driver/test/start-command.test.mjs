@@ -298,7 +298,7 @@ test("--no-worker is honoured, and the old two-terminal instruction survives ONL
   assert.match(src, /wantWorker\s*\n?\s*\? start\("the worker"/, "the worker is started unconditionally — --no-worker does nothing");
   // The closing block is the whole of the first-run story. A reader who did NOT decline must not be told to
   // run a drain in another terminal — that sentence is what made the queue look broken.
-  assert.match(src, /node driver\/runner\.mjs --watch/, "the --no-worker posture no longer says how to drain by hand");
+  assert.match(src, /invoke\("run-queue"\)\} --watch/, "the --no-worker posture no longer says how to drain by hand");
 });
 
 test("the portal is told about a worker ONLY when this launcher supervises one", () => {

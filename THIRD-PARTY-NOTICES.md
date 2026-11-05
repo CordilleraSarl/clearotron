@@ -173,7 +173,7 @@ will be liable to anyone for any damages related to this
 software or this license, under any kind of legal claim.***
 ```
 
-## @modelcontextprotocol/sdk@1.32.1
+## @modelcontextprotocol/sdk@1.32.2
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/modelcontextprotocol/typescript-sdk
@@ -2781,7 +2781,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ```
 
-## jose@6.2.12
+## jose@6.2.14
 
 - **Licence declared:** `MIT`
 - **Repository:** panva/jose
@@ -5085,7 +5085,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-## react@19.3.0
+## react@19.3.1
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/react/react
@@ -5115,7 +5115,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## react-dom@19.3.0
+## react-dom@19.3.1
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/react/react

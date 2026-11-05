@@ -119,7 +119,7 @@ test("an instance with nothing wired up sends ROWS saying so, and they reach the
   const providers = [
     { key: "register", label: "Trademark register", provider: null, providerLabel: null,
       known: false, configured: false, missing: ["CLEAROTRON_DATABASE"] },
-    { key: "web", label: "Open-web search", provider: "serpapi", providerLabel: "SerpAPI",
+    { key: "web", label: "Chinese marketplace search", provider: "serpapi", providerLabel: "SerpAPI",
       known: true, configured: false, missing: ["SERPAPI_API_KEY"] },
   ];
   const root = mkdtempSync(join(tmpdir(), "cfgview-1439-"));

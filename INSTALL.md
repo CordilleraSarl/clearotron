@@ -816,11 +816,10 @@ resume re-runs only what is missing or invalid.
 The command that continues a run is printed whenever a run ends badly — copy the line it gives you:
 
 ```
-node /path/to/driver/pipeline.mjs --job /path/to/job.json --resume <codename>
+clearotron run --job /path/to/job.json --resume <codename>
 ```
 
-With the `clearotron` command the install placed, the same command is shorter, and the job file can be
-left out:
+The job file can be left out:
 
 ```
 clearotron run --resume <codename>

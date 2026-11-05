@@ -381,7 +381,7 @@ const signInProbe = `(() => {
 const out = {}
 const SPEC = {
   signInName: "Through your organisation's sign-in service",
-  categories: ['Trademark register', 'Common-law and marketplace research', 'Open-web search', 'Case law and oppositions'],
+  categories: ['Trademark register', 'Common-law and marketplace research', 'Chinese marketplace search', 'Case law and oppositions'],
   caseLawGap: 'Until these are set up, a Full country search still runs and its report discloses the case-law gap instead of reporting no adverse case law.',
   adminLine: 'To change the address, the permissions or the companies on it, contact your Clearotron administrator.',
   blurLine: 'On the top bar. It covers every mark and company on screen, and an open report whole. It stays as you left it on this computer.',

@@ -49,6 +49,10 @@ beforeEach(() => {
   delete process.env.MOCK_CLAUDE_TOOL_OVERLAP_ONE_CHUNK;
 });
 
+/** Every tool the row says anything about: measured, or declared unmeasurable under its cause. */
+const toolsAccountedFor = (row) => [...new Set([...Object.keys(row.toolWaitByTool),
+  ...(row.toolWaitUnmeasurable ?? []).filter((u) => u?.cause).map((u) => u.tool)])].sort();
+
 const run = async (key) => {
   await runStage("twoask-stage", {
     agent: "mailagent", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey: key,
@@ -250,10 +254,29 @@ test("tracker issue 1828 the ALTERNATING case is unchanged — one ask, one resu
   const row = await run("twoask-alternating");
   const spec = ` [byTool=${JSON.stringify(row.toolWaitByTool)} total=${row.toolWaitMs}]`;
   assert.equal(row.toolCalls, 3, "three asks" + spec);
-  assert.deepEqual(Object.keys(row.toolWaitByTool).sort(), ["perplexity_ask", "register_execute_plan"],
-    "the two register asks must still POOL under one key, and no third key may appear" + spec);
+  // ONE ASSERTION OVER BOTH CASES. The gauge times when the driver PARSED each line, so a read scheduled late
+  // lands an ask and its result in one chunk and that wait is declared rather than credited. A loaded Windows
+  // runner did exactly that on 2026-11-04: {"register_execute_plan":575}, with no key for the third ask.
+  assert.deepEqual(toolsAccountedFor(row), ["perplexity_ask", "register_execute_plan"],
+    "the two register asks must still POOL under one key, and no third key may appear" + spec
+    + ` [unmeasurable=${JSON.stringify(row.toolWaitUnmeasurable)}]`);
   const parts = Object.values(row.toolWaitByTool).reduce((a, b) => a + b, 0);
   assert.equal(parts, row.toolWaitMs, "the identity holds in the alternating case too" + spec);
+});
+
+test("tracker issue 1828 an ask and its result read in one chunk are declared, and the tool is still accounted for", async () => {
+  // THE LATE READ, DRIVEN. The arm above tolerates this shape because a loaded runner produces it; this one
+  // puts it there on every run, so "declared" is held and not merely allowed.
+  process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([
+    { name: "register_execute_plan", ms: 120 },
+    { name: "perplexity_ask", oneChunk: true },
+  ]);
+  const row = await run("twoask-latereadalternating");
+  const spec = ` [byTool=${JSON.stringify(row.toolWaitByTool)} unmeasurable=${JSON.stringify(row.toolWaitUnmeasurable)}]`;
+  assert.equal(row.toolCalls, 2, "two asks" + spec);
+  assert.deepEqual((row.toolWaitUnmeasurable ?? []).filter((u) => u?.tool === "perplexity_ask").map((u) => u.cause), ["result-in-ask-chunk"],
+    "a wait the reader never saw must be declared, or the tool reads as never having been waited on" + spec);
+  assert.deepEqual(toolsAccountedFor(row), ["perplexity_ask", "register_execute_plan"], "every tool asked for is measured or declared" + spec);
 });
 
 test("tracker issue 1828 results that come back OUT OF ORDER close the ask they belong to", async () => {

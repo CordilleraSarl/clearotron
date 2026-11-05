@@ -109,7 +109,7 @@ test("anything it cannot read exactly once is could-not-look: exit 2, nothing on
     "a missing file": () => { const d = join(DIR, "empty"); mkdirSync(d, { recursive: true }); return d; },
     "a model default gone": () => treeWith({ [MODELS_FILE]: (t) => t.replace(/^const SWEEP .*$/m, "") }),
     "a model default doubled": () => treeWith({ [MODELS_FILE]: (t) => t.replace(/^const CHEAP .*$/m, (l) => `${l}\n${l}`) }),
-    "a floor gone": () => treeWith({ [BINARIES_FILE]: (t) => t.replace(/floor: "[^"]+",(\s*installMB: 424)/, "$1") }),
+    "a floor gone": () => treeWith({ [BINARIES_FILE]: (t) => t.replace(/floor: "[^"]+",(\s*installMB: \d+)/, "$1") }),
     "a commented-out floor": () => treeWith({ [BINARIES_FILE]: (t) => t.replace(/^(\s*)(package: "@openai\/codex", floor: "[^"]+",)/m, "$1// $2") }),
   };
   for (const [name, make] of Object.entries(cases)) {

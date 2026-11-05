@@ -101,7 +101,7 @@ export function mintFromOptions({ scope, sub = null, runId = null, ttlDays, verb
   //
   // The denylist was named FIRST and named without a path — "the TRADEMARK_MCP_TOKEN_DENYLIST file",
   // a variable an operator never set and a file that, on a default install, did not exist. Since
-  // `isRevoked` treats an unreadable list as "not revoked", following that instruction produced a
+  // `isRevoked` then treated an unreadable list as "not revoked", following that instruction produced a
   // revocation that changed nothing, with the key still answering 200 and nothing logged.
   //
   // `grant remove` is first now because it is the lever that works on any install, takes effect on the

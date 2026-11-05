@@ -842,14 +842,19 @@ test("an early STDERR byte does not end the grace — the protocol is on stdout,
   // the middle of its boot.
   //
   //   stderr at ~0ms      ends the grace, origin := ~0
-  //   NOPROG 1200         expires at ~1200ms, DURING the 3000ms stdout boot
+  //   NOPROG 4000         expires at ~4000ms, DURING the 6000ms stdout boot
   //   -> killed, noProgress, toolCalls 0, on a child that was starting up perfectly normally
   //
   // The grace is pinned well above the boot so the ONLY thing this arm can turn on is which stream counts
   // as having spoken. If the fix regressed to "any byte", the kill returns.
+  //
+  // THE CEILING ALSO TIMES WHAT FOLLOWS THE BOOT, and that is not this arm's subject. At NOPROG 1200 a Windows
+  // runner went from the first stdout at 3254ms to a kill at 4913ms with the mock's next line still unread
+  // (2026-11-01): stderr was not what killed it. So the ceiling is well above any such gap, and the boot
+  // above the ceiling and one watchdog look past it.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
-    { MOCK_CLAUDE_STDERR_FIRST: "1", MOCK_CLAUDE_BOOT_MS: "3000",
-      CLEAROTRON_SPAWN_GRACE_MS: "8000", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "1200" });
+    { MOCK_CLAUDE_STDERR_FIRST: "1", MOCK_CLAUDE_BOOT_MS: "6000",
+      CLEAROTRON_SPAWN_GRACE_MS: "12000", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "4000" });
   assert.equal(r.killed, false,
     "killed during a normal startup because one stderr line was read as the child having spoken — the "
     + "grace ended before the protocol began" + specimen(r));

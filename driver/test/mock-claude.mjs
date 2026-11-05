@@ -553,12 +553,19 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     //
     // One entry = one assistant/user round trip. An entry may name SEVERAL tools (`name` an array), which
     // is the shape that decides attribution: the model asks for two tools in one message and waits once.
+    // `oneChunk: true` puts the ask and its result in ONE write, the shape a read scheduled late produces
+    // however long the tool really took, so an arm can drive it without loading the box.
     if (process.env.MOCK_CLAUDE_TOOL_WAIT) {
       for (const [i, step] of JSON.parse(process.env.MOCK_CLAUDE_TOOL_WAIT).entries()) {
         const names = Array.isArray(step.name) ? step.name : [step.name];
-        send({ type: "assistant", message: { role: "assistant", model: wireModel,
+        const ask = { type: "assistant", message: { role: "assistant", model: wireModel,
           content: names.map((n, j) => ({ type: "tool_use", id: `toolu_wait_${i}_${j}`, name: n, input: {} })),
-          usage: { input_tokens: 1, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } } });
+          usage: { input_tokens: 1, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } } };
+        if (step.oneChunk) {
+          process.stdout.write(`${JSON.stringify(ask)}\n${JSON.stringify({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: `toolu_wait_${i}_0` }] } })}\n`);
+          continue;
+        }
+        send(ask);
         const until = Date.now() + Number(step.ms || 0);
         while (Date.now() < until) { /* a real gap: the gauge times wall-clock, not a declared duration */ }
         send({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: `toolu_wait_${i}_0` }] } });

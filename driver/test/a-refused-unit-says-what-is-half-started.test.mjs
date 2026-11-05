@@ -165,6 +165,8 @@ test("and the generic trailer still fires where nothing better was said", { skip
     const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.match(said, /could not use the revocation list/,
       `this drive did not reach a post-write refusal, so it proves nothing about the trailer:\n${said.slice(-1200)}`);
+    assert.match(said.replace(/\s+/g, " "), /cannot check whether keys have been revoked, so it would refuse all of them/,
+      `the refusal does not say what the door would do:\n${said.slice(-1200)}`);
     assert.match(said, /This run had already written state/,
       `the generic trailer is gone from a refusal that has nothing else to say:\n${said.slice(-1200)}`);
   } finally { rmSync(home, { recursive: true, force: true }); }

@@ -1568,8 +1568,8 @@ if (isMain) {
       // revocation list is a door that cannot be revoked from, and starting it anyway is the failure
       // this whole finding is about — the run must not continue "successfully" into that state.
       fatal(`could not use the revocation list at ${denylist} (${String(e?.message ?? e)}).\n`
-        + "  The client door reads this file on every key check and treats an unreadable one as \"not revoked\",\n"
-        + "  so starting without it would make every revocation silently ineffective.");
+        + "  The client door reads this file on every key check. Without it, this install cannot check whether\n"
+        + "  keys have been revoked, so it would refuse all of them.");
     }
   }
 
@@ -2613,7 +2613,7 @@ if (isMain) {
   } else {
     say("  Ordering a clearance from the portal puts the job in the queue and shows it there with its");
     say("  position. You started with --no-worker, so nothing is draining it: run");
-    say("    node driver/runner.mjs --watch");
+    say(`    ${invoke("run-queue")} --watch`);
     say("  in another terminal when you want the queued work done.");
   }
   say("");
