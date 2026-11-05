@@ -1149,8 +1149,14 @@ export function authorize(scope, toolName, args = {}) {
 // account session returns above it, so what-if is visible to a client — and what stops the client face
 // shelling is not this listing but what_if_run's own shape: for an account it ENQUEUES (server.mjs) and
 // the engine is spawned by driver/whatif-worker.mjs, in a service process, exactly as a clearance is.
-export function visibleTools({ kind = "internal", local = false } = {}) {
+//
+// A DEMO OFFERS NONE OF THE TOOLS THAT START WORK, to anybody. It answers from the reports it holds, and a tool
+// request must reach no model, register or paid search: `what_if_run` shells the engine, and `start_run` would
+// queue a search nothing is there to run. The listing is the wall (server.mjs), so no sentence is needed for it.
+export const DEMO_WITHHELD_TOOLS = Object.freeze(["start_run", "what_if_plan", "what_if_run"]);
+export function visibleTools({ kind = "internal", local = false, demo = false } = {}) {
   return (name) => {
+    if (demo && DEMO_WITHHELD_TOOLS.includes(name)) return false;
     const rule = TOOL_SCOPES[name] ?? {};
     const isWhatIf = name === "what_if_plan" || name === "what_if_run";
     if (kind === "user") return !!rule.clientSafe;          // report-link token: plain client layer only

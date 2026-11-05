@@ -145,7 +145,7 @@ test("doctor's engine-program disagreement says which side could not find it, an
 test("doctor prints that disagreement over a capture the services wrote, and nothing over one that agrees", () => {
   // Driven, not read: a real `doctor --check` in a throwaway home whose pool holds a capture written when the
   // services last started, and whose settings file names a program this machine can run.
-  const drive = (binaryPresent, { hosted = false } = {}) => {
+  const drive = (binaryPresent, { hosted = false, unitsNameIt = true } = {}) => {
     const home = mkdtempSync(join(tmpdir(), "advice-capture-"));
     const pool = join(home, "pool");
     mkdirSync(join(pool, "_state"), { recursive: true });
@@ -155,11 +155,12 @@ test("doctor prints that disagreement over a capture the services wrote, and not
     writeFileSync(join(home, ".config", "clearotron", ".env"),
       ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_CLAUDE_PATH=${MOCK}`, `CLEAROTRON_REPORTS_DIR=${pool}`].join("\n") + "\n");
     if (hosted) {
-      // The shipped background units, as written, reading `<home>/.env`, which holds no program setting.
+      // The shipped background units, as written, reading `<home>/.env`.
       const unitDir = join(home, ".config", "systemd", "user");
       mkdirSync(unitDir, { recursive: true });
       for (const u of BACKGROUND_UNITS) writeFileSync(join(unitDir, u), readFileSync(join(SYSTEMD, u), "utf8"));
-      writeFileSync(join(home, ".env"), ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_REPORTS_DIR=${pool}`].join("\n") + "\n");
+      writeFileSync(join(home, ".env"), ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_REPORTS_DIR=${pool}`,
+        ...(unitsNameIt ? [`CLEAROTRON_CLAUDE_PATH=${MOCK}`] : [])].join("\n") + "\n");
     }
     try {
       return { home, out: execFileSync(process.execPath, [ONBOARD, "--check"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
@@ -173,6 +174,11 @@ test("doctor prints that disagreement over a capture the services wrote, and not
   // With units placed, the services read `<home>/.env`, and that file and the program setting are what is named.
   const units = drive(false, { hosted: true });
   assert.match(units.out, new RegExp(`it is not on the PATH they run with: set CLEAROTRON_CLAUDE_PATH to its full path in ${join(units.home, ".env").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}, which they read when they start, then restart them\\.`), units.out);
+  // A program only this command's own settings name says nothing about the services: they would not find it either,
+  // so there is no disagreement, and doctor reads the machine as they do.
+  const notTheirs = drive(false, { hosted: true, unitsNameIt: false });
+  assert.doesNotMatch(notTheirs.out, /this machine reads it as found/, notTheirs.out);
+  assert.match(notTheirs.out, /a search is refused until (?:this is|these are) set in the units' environment: [^\n]*CLEAROTRON_CLAUDE_PATH/, notTheirs.out);
   // CONTROL: the same machine under a capture that found the program says nothing about it, so the line
   // above came from the capture and not from something else doctor prints.
   assert.doesNotMatch(drive(true).out, /recorded the engine program as/);

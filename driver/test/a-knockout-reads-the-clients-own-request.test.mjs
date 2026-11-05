@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
-import { validators as koValidators, alternativesDefect, alternativesOutsideRequest } from "../verify-knockout.mjs";
+import { validators as koValidators, alternativesDefect } from "../verify-knockout.mjs";
 import { acceptKnockoutFrame } from "../knockout-frame-record.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -76,29 +76,19 @@ const NAME = "LAKE MOON / MOON LAKE";
 const frameCall = (alternatives) => ({ schema: 1, scope_note: "An invented note.", batch: { productContext: "An invented batch.", inUseAs: "a title", executionOrder: [NAME] },
   marks: [{ name: NAME, classesPlain: "software (9)", contextFraming: "An invented use.", useKind: "title", places: ["web", "fandom.com"], spellings: [NAME, "LAKEMOON"], ...(alternatives === undefined ? {} : { alternatives }) }] });
 
-test("a row's alternatives: a list of single forms, or none", () => {
-  for (const a of [undefined, null, [], ["LAKE MOON", "MOON LAKE"]]) assert.equal(alternativesDefect(NAME, a), null, JSON.stringify(a));
-  for (const a of ["LAKE MOON", [""], [7]]) assert.match(alternativesDefect(NAME, a), /a list of the written forms of this one item/);
-  for (const a of [["LAKE MOON / MOON LAKE"], ["LAKE MOON, MOON LAKE"], ["LAKE MOON; MOON LAKE"], ["LAKE\nMOON"]]) assert.match(alternativesDefect(NAME, a), /holds more than one form/);
+test("a row's alternatives are checked for shape only: which forms the request gives is the frame's reading of it", () => {
+  for (const a of [undefined, null, [], ["LAKE MOON", "MOON LAKE"], ["LAKE/MOON"], ["LAKE, MOON"], ["LUNAR LAKE"]]) assert.equal(alternativesDefect(NAME, a), null, JSON.stringify(a));
+  for (const a of ["LAKE MOON", [""], ["  "], [7]]) assert.match(alternativesDefect(NAME, a), /a list of the written forms of this one item/);
   assert.equal(acceptKnockoutFrame(frameCall(["LAKE MOON", "MOON LAKE"])).ok, true);
+  assert.equal(acceptKnockoutFrame(frameCall(["LAKE/MOON"])).ok, true, "a form holding a slash was refused for its punctuation");
   assert.equal(acceptKnockoutFrame(frameCall(undefined)).ok, true, "a row with one form was refused");
-  const refused = acceptKnockoutFrame(frameCall(["LAKE MOON / MOON LAKE"]));
-  assert.match(refused.reason, /knockoutframe_alternatives/);
-});
-
-test("a form is the request's: its words are in the name or the request on file, and a form the model thought of is refused", () => {
-  const words = new Set(["the", "other", "order", "tarn", "moon"]);
-  assert.equal(alternativesOutsideRequest(NAME, ["MOON LAKE", "Lake-Moon"], words), null);
-  assert.equal(alternativesOutsideRequest(NAME, ["TARN MOON"], words), null, "a form the request gives was refused");
-  assert.match(alternativesOutsideRequest(NAME, ["LUNAR LAKE"], words), /is not in the request: a form you thought of belongs in spellings/);
-  assert.equal(alternativesOutsideRequest(NAME, ["LUNAR LAKE"], null), null, "with no request on file nothing can be said");
+  assert.match(acceptKnockoutFrame(frameCall("LAKE MOON")).reason, /knockoutframe_alternatives/);
 
   const run = tempRun();
   const plan = join(run, "knockout-plan.json");
-  writeFileSync(join(run, "inbound-request.txt"), "Please look at LAKE MOON, or TARN MOON if that reads better.\n");
+  writeFileSync(join(run, "inbound-request.txt"), "Please look at LAKE MOON.\n");
   const reason = (a) => koValidators.knockoutPlan(plan, JSON.stringify(frameCall(a))).reason ?? "";
-  assert.doesNotMatch(reason(["LAKE MOON", "TARN MOON"]), /alternative/);
-  assert.doesNotMatch(reason(undefined), /alternative/, "a row with no alternatives was refused for them");
-  assert.match(reason(["LUNAR LAKE"]), /alternative "LUNAR LAKE" is not in the request/);
-  assert.match(reason(["LAKE MOON, MOON LAKE"]), /holds more than one form/);
+  // A word the request does not hold is not a reason to refuse here: that is a reading, and the manual's rule governs it.
+  for (const a of [undefined, ["LAKE MOON", "MOON LAKE"], ["LUNAR LAKE"]]) assert.doesNotMatch(reason(a), /alternative/, JSON.stringify(a));
+  assert.match(reason(["  "]), /a list of the written forms of this one item/);
 });

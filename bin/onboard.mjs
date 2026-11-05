@@ -1813,10 +1813,30 @@ export async function runCheck() {
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
   // reason. Which engine is configured comes first now, and the binary is checked through THAT engine's
   // variable.
-  const engSel = effective("CLEAROTRON_AI");
+  //
+  // ON A MACHINE WITH UNITS THIS SECTION DESCRIBES THE SERVICES: which AI, which program, how they pay. They read their
+  // own file and search their own PATH (servicesRead, above), so a shell that chose another AI says nothing about them,
+  // and a file that cannot be read is a failure to look, never a reason to answer from this shell. With no units, the
+  // services are the children of `clearotron start`, and this command's configuration is theirs.
+  const engineRead = (k, names = [k]) => (hosted ? servicesRead(k) : effective(k, names));
+  /** The environment a stage's program would see: `keys` as engineRead reads them, and on a machine with units, the units' PATH and none of this shell's values for those keys. */
+  const engineEnvOf = (keys = []) => {
+    const env = { ...process.env };
+    const unitsPath = hosted ? unitValue(unitEnv, "PATH").value : null;
+    if (unitsPath) env.PATH = unitsPath;
+    for (const k of keys) {
+      if (hosted) delete env[k];
+      const e = engineRead(k);
+      if (e) env[k] = e.v;
+    }
+    return env;
+  };
+  const engSel = engineRead("CLEAROTRON_AI");
   const engineId = String(engSel?.v ?? DEFAULT_ENGINE_ID).trim().toLowerCase();
   const engSpec = ENGINE_BINARIES[engineId];
-  if (engSel && !engSpec) {
+  if (!serviceKnown) {
+    info("the units' environment could not be read, so which AI the services run is not judged here — a failure to look, not a finding");
+  } else if (engSel && !engSpec) {
     problem(`CLEAROTRON_AI="${engSel.v}" (${engSel.from}) is not an engine this driver ships — one of: `
       + `${Object.keys(ENGINE_BINARIES).join(", ")}. The run refuses on this by itself (gateway.selectEngine); `
       + "nothing can be checked here until it names an adapter.");
@@ -1837,12 +1857,12 @@ export async function runCheck() {
     // will fail at run time, and this is the cheap place to learn it.
     // — through `effective`, so the engine binary is found under whichever spelling is set. Read
     // literally, this reported a configured binary as missing on any install the wizard had written.
-    const binEff = effective(engSpec.env, [engSpec.env]);
+    const binEff = engineRead(engSpec.env, [engSpec.env]);
     // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
     // `claude` is not a configuration that can be wrong: it asks PATH, then the copy Clearotron installed.
     const binSet = !!binEff && String(binEff.v).trim() !== engSpec.fallback;
     const binSetting = binEff?.v || engSpec.fallback;
-    const bin = resolveEngineBin(binSetting, { engine: engineId });
+    const bin = resolveEngineBin(binSetting, { engine: engineId, env: engineEnvOf() });
     // WHICH COPY, AND ITS VERSION, because the machine's own install and the one Clearotron installed
     // are both legitimate and behave differently: the first updates itself, the second moves with
     // `clearotron update`. The version comes from the copy's own package.json when npm installed it.
@@ -1927,12 +1947,7 @@ export async function runCheck() {
     // `env[spec.env]` — the CURRENT spelling only — and this file is deliberately not a CLI entry, so
     // the alias layer has not run here. Handed raw process.env it would miss a binary configured
     // under the legacy name and report DEMO on a box that has an engine.
-    const invEnv = { ...process.env };
-    for (const k of ["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((x) => [x.env, x.authEnv, x.apiKeyEnv])]) {
-      if (!k) continue;
-      const e = effective(k, [k]);
-      if (e) invEnv[k] = e.v;
-    }
+    const invEnv = engineEnvOf(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((x) => [x.env, x.authEnv, x.apiKeyEnv])].filter(Boolean));
     const installMode = engineMode(engineInventory(invEnv));
     if (installMode === ENGINE_MODES.DEMO) {
       info("MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
@@ -2003,11 +2018,7 @@ export async function runCheck() {
       // see it, with the .env's values overlaid for the keys an engine spawn is made of. The cloud's names
       // are on it, because with the billing word read from the file and a cloud's switch left to the shell,
       // a cloud file that runs would read as refused.
-      const envForResolve = { ...process.env };
-      for (const k of engineEnvKeys()) {
-        const e = effective(k);
-        if (e) envForResolve[k] = e.v;
-      }
+      const envForResolve = engineEnvOf(engineEnvKeys());
       const billingOf = (eng, env) => {
         try {
           const auth = resolveAuthMode({ engineName: eng, env });
@@ -2029,28 +2040,6 @@ export async function runCheck() {
       // was the only line claiming a verdict it had not reached.
       const engineResolved = !!(bin?.path && bin.executable && !bin.relative);
       (engineResolved || here.say === problem ? here.say : info)(here.text);
-      // AND AS THE SERVICES READ IT, when this machine runs them and that reading differs. The line above is
-      // this command's configuration; the services read their own file, and a start never replaces a line
-      // in it. So a machine whose services pay through a cloud account printed "billing: subscription" here,
-      // two sections above "Will a search run?" reading the services' file. Both are said when they differ.
-      // Read as the services read it (servicesRead), never through this shell.
-      //
-      // A CAUTION ONLY WHEN THIS COMMAND SAYS OTHERWISE. With no billing word in this command's configuration,
-      // the line above is the default and contradicts nothing, and a working api-key or cloud install whose
-      // billing lives in the services' file alone was cautioned on every run from a bare shell. Then it is
-      // information. Never a problem: the services' refusal, if there is one, is reported under that section.
-      if (hosted && serviceKnown) {
-        const envForService = {};
-        for (const k of engineEnvKeys()) {
-          const e = servicesRead(k);
-          if (e) envForService[k] = e.v;
-        }
-        const svc = billingOf(String(envForService.CLEAROTRON_AI ?? DEFAULT_ENGINE_ID).trim().toLowerCase(), envForService);
-        if (svc.text !== here.text) {
-          if (effective(engSpec?.authEnv ?? "CLEAROTRON_AI_BILLING")) warn(`the services read how they pay from ${serviceEnvLabel}, and it says otherwise — ${svc.text}`);
-          else info(`the services pay as ${serviceEnvLabel} says — ${svc.text}`);
-        }
-      }
     } catch (e) {
       problem(String(e?.message ?? e));
     }
@@ -2069,9 +2058,8 @@ export async function runCheck() {
       info("not probed — there is no usable binary to probe. Fix the line above first.");
     } else {
       say(`\n  ${probingLine(engineId)}`);
-      // The engine as a RUN would see it: environment first, .env behind it. Only the engine-selection
-      // keys — the probe must bill exactly the way this box bills and moves no other variable.
-      const probeEnv = { ...process.env };
+      // The engine as a RUN would see it (engineEnvOf). Only the engine-selection keys — the probe must
+      // bill exactly the way this box bills and moves no other variable.
       // The auth variables ride this list for the same reason CLEAROTRON_AI does: without them the
       // probe bills the way the AMBIENT environment says rather than the way this .env says, and
       // "proven" would name a lane no run takes.
@@ -2081,11 +2069,7 @@ export async function runCheck() {
       // install's .env never reached the probe, which then reported the engine signed out while the same
       // token exported into the shell proved it. `engineEnvKeys` is the probe's own list: the copy that is
       // filled is now the copy that is applied.
-      for (const k of engineEnvKeys()) {
-        const e = effective(k);
-        if (e) probeEnv[k] = e.v;
-      }
-      const v = await probeEngineTurn({ env: probeEnv });
+      const v = await probeEngineTurn({ env: engineEnvOf(engineEnvKeys()) });
       if (v.ok) {
         ok(`${engineId} completed a turn — binary, credential and model access all work`);
         const served = servedLine(v);

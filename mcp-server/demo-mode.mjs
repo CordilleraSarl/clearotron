@@ -8,3 +8,9 @@
 // variable because nothing outside this process sets it or reads it, and every environment variable the
 // product reads is a setting an operator is told about.
 export const demoMode = { on: false };
+
+/**
+ * Whether this process serves a demo: `clearotron mcp` said so, or it was started for one, by `clearotron demo` or by
+ * the connect line that demo printed, which is what CLEAROTRON_DEMO=1 means wherever it is read.
+ */
+export const demoServing = (env = process.env) => demoMode.on || env.CLEAROTRON_DEMO === "1";

@@ -114,6 +114,55 @@ test("the import check fails on a package nothing imports", (ctx) => {
   assert.equal(real, true, "the predicate cannot see a real import, so its `false` means nothing");
 });
 
+// ── A PACKAGE'S OWN NODE RANGE HAS TO ADMIT OUR FLOOR ─────────────────────────────────────────────────────────────────
+//
+// Every workflow pins one recent Node, so a dependency that has stopped working on the floor goes green everywhere and
+// fails on a stranger's machine. Measured 2026-11-05: undici 8 declares `>=22.19.0` and throws on import on 22.13 and 22.14,
+// while the product promises 22.13, and its pull requests were red for other reasons, so nobody saw it. The lockfile records
+// each package's declared range, so this reads them without an install, and a range it cannot read is named, not passed.
+const versionParts = (v) => { const m = /^v?(\d+)(?:\.(\d+|[x*]))?(?:\.(\d+|[x*]))?/.exec(v); return m ? [m[1], m[2], m[3]].map((n) => (/^\d+$/.test(n ?? "") ? Number(n) : 0)) : null; };
+const compareParts = (a, b) => { for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] - b[i]; return 0; };
+function nodeRangeAdmits(range, version) {
+  const at = versionParts(version);
+  // `>= 0.6` is one comparator, as npm reads it.
+  return String(range).split("||").some((alternative) => alternative.replace(/([<>=^~])\s+(?=[v\d])/g, "$1").trim().split(/\s+/).filter(Boolean).every((term) => {
+    if (term === "*" || term === "x") return true;
+    const m = /^(>=|<=|>|<|\^|~|=)?\s*(v?\d[\w.*]*)$/.exec(term);
+    const bound = m ? versionParts(m[2]) : null;
+    if (!bound) throw new Error(`a Node range this check cannot read: ${range}`);
+    const c = compareParts(at, bound);
+    switch (m[1]) {
+      case ">=": return c >= 0;
+      case ">": return c > 0;
+      case "<=": return c <= 0;
+      case "<": return c < 0;
+      case "^": return at[0] === bound[0] && c >= 0;
+      case "~": return at[0] === bound[0] && at[1] === bound[1] && c >= 0;
+      default: return at[0] === bound[0] && (!/\./.test(m[2]) || /[x*]/.test(m[2]) || c === 0);
+    }
+  }));
+}
+
+test("no production package declares a Node range that shuts out our floor", () => {
+  const floor = /^>=\s*([\d.]+)$/.exec(JSON.parse(readFileSync(join(REPO, "package.json"), "utf8")).engines.node)?.[1];
+  assert.ok(floor, "the floor is not a plain >= range, so this check cannot read it");
+  const packages = JSON.parse(readFileSync(join(REPO, "package-lock.json"), "utf8")).packages ?? {};
+  const production = Object.entries(packages).filter(([path, p]) => path.includes("node_modules/") && p.dev !== true && p.devOptional !== true);
+  assert.ok(production.length > 100, `premise: the lockfile's production packages, ${production.length}`);
+  const shutOut = production.filter(([, p]) => typeof p.engines?.node === "string" && !nodeRangeAdmits(p.engines.node, floor))
+    .map(([path, p]) => `${path}@${p.version} needs Node ${p.engines.node}`);
+  assert.deepEqual(shutOut, [], `these do not declare our floor, ${floor}: move the floor, as a decision, or keep the older major`);
+});
+
+test("the Node range check reads the shapes npm writes, and refuses what it cannot read", () => {
+  for (const [range, version, want] of [
+    [">=22.19.0", "22.13.0", false], [">=20.18.1", "22.13.0", true], [">= 0.6", "22.13.0", true], [">= 23", "22.13.0", false], [">=22.13.0", "22.13.0", true], [">22.13.0", "22.13.0", false],
+    ["^18.17.0 || ^20.5.0 || >=22.0.0", "22.13.0", true], ["^18 || ^20", "22.13.0", false], [">=18 <21", "22.13.0", false], [">=18 <23", "22.13.0", true],
+    ["~22.13.1", "22.13.0", false], ["~22.13.0", "22.13.4", true], ["22.x", "22.13.0", true], ["22", "22.13.0", true], ["*", "22.13.0", true], ["<=22.12", "22.13.0", false],
+  ]) assert.equal(nodeRangeAdmits(range, version), want, `${range} on ${version}`);
+  assert.throws(() => nodeRangeAdmits("latest", "22.13.0"), /cannot read: latest/);
+});
+
 test("every production package npm resolves has a notices entry", (ctx) => {
   // ── DERIVED WITHOUT ASKING THE GENERATOR ─────────────────────────────────────────────────────
   //

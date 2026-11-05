@@ -41,6 +41,13 @@ export const INSTALL_ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "
 export const STDIO_SERVER_NAME = "trademark-artifacts";
 
 /**
+ * The name a demo's connection registers under. Its own, so registering it can neither replace a real
+ * install's connection on this machine nor be replaced by one, and removing it touches nothing else.
+ */
+export const DEMO_SERVER_NAME = "trademark-artifacts-demo";
+const serverName = (demo) => (demo ? DEMO_SERVER_NAME : STDIO_SERVER_NAME);
+
+/**
  * The one-line registration for an assistant that spawns the server locally. PURE.
  *
  * `workDir` is the reader's workspace root — where runs are read from. It is passed rather than read so
@@ -71,12 +78,12 @@ export function stdioConnectOffer(opts = {}) {
   return {
     command: both.text,
     variants: both.variants,
-    name: STDIO_SERVER_NAME,
+    name: serverName(opts.demo),
     // Deliberately states the two facts a reader needs to judge it: no network, and it only works from a
     // machine with this install on its disk. Both are why it is offered to staff and not to a client.
     note: "Runs the connector from this install's own disk — no address, no sign-in, no network. "
       + "Only works on a machine that has this install: run it where you installed Clearotron.",
-    verify: `claude mcp list   →   ${STDIO_SERVER_NAME}: … ✓ Connected`,
+    verify: `claude mcp list   →   ${serverName(opts.demo)}: … ✓ Connected`,
   };
 }
 
@@ -101,8 +108,10 @@ export function stdioConnectOffer(opts = {}) {
  * published to. Handed over rather than left to the server's own defaults, so it reads what the services
  * read: a demo's own base, not the real install's workspace. Only what is set is written.
  */
-function envOf({ workDir = null, reportsDir = null } = {}) {
-  return { ...(workDir ? { CLEAROTRON_WORK_DIR: workDir } : {}), ...(reportsDir ? { CLEAROTRON_REPORTS_DIR: reportsDir } : {}) };
+function envOf({ workDir = null, reportsDir = null, demo = false } = {}) {
+  return { ...(workDir ? { CLEAROTRON_WORK_DIR: workDir } : {}), ...(reportsDir ? { CLEAROTRON_REPORTS_DIR: reportsDir } : {}),
+    // A DEMO'S CONNECTION SAYS WHOSE IT IS, and the server holds it to that (shared/demo-connection.mjs).
+    ...(demo ? { CLEAROTRON_DEMO: "1" } : {}) };
 }
 const envBlock = (o) => (Object.keys(envOf(o)).length ? { env: envOf(o) } : {});
 
@@ -179,8 +188,8 @@ export const STDIO_ENTRY = "serve.mjs";
 export const WSL_DISTRO_PLACEHOLDER = "YOUR-WSL-DISTRIBUTION";
 export const WSL_DISTRO_FILL_IN = `Replace ${WSL_DISTRO_PLACEHOLDER} with this Linux's name before you paste it: \`wsl -l\` in Windows lists the names.`;
 
-export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl = null, node = process.execPath } = {}) {
-  const vars = envOf({ workDir, reportsDir });
+export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl = null, node = process.execPath, demo = false } = {}) {
+  const vars = envOf({ workDir, reportsDir, demo });
   if (!wsl) return { command: node, args: [server], env: vars, crossesIntoWsl: false };
   const distro = String(wsl.distro ?? "").trim();
   return {
@@ -202,8 +211,8 @@ export const STDIO_SHAPES = Object.freeze({
   "claude-cli": {
     kind: "command",
     where: null,
-    render: ({ server, workDir, reportsDir, platform, wsl, node }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
+    render: ({ server, workDir, reportsDir, platform, wsl, node, demo }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node, demo });
       // WHICH SHELL READS IT. A native Windows install's line is pasted on Windows, and so is the row
       // that crosses into WSL: it exists for an assistant on the Windows side. Everything else is pasted
       // into a POSIX shell.
@@ -213,19 +222,19 @@ export const STDIO_SHAPES = Object.freeze({
       // through the wrapper it is `wsl.exe`, and they stop at the boundary — so on WSL they ride inside
       // the command instead and this line carries none.
       const flags = l.crossesIntoWsl ? ""
-        : Object.entries(envOf({ workDir, reportsDir })).map(([k, v]) => ` -e ${windowsShell ? word(`${k}=${v}`) : `${k}=${word(v)}`}`).join("");
-      return `claude mcp add ${STDIO_SERVER_NAME} --scope user${flags} ${separator(windowsShell)} ${[l.command, ...l.args].map(word).join(" ")}`;
+        : Object.entries(envOf({ workDir, reportsDir, demo })).map(([k, v]) => ` -e ${windowsShell ? word(`${k}=${v}`) : `${k}=${word(v)}`}`).join("");
+      return `claude mcp add ${serverName(demo)} --scope user${flags} ${separator(windowsShell)} ${[l.command, ...l.args].map(word).join(" ")}`;
     },
     after: null,
   },
   "desktop-json": {
     kind: "config",
     where: "Settings → Developer → Edit Config",
-    render: ({ server, workDir, reportsDir, wsl, node }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
+    render: ({ server, workDir, reportsDir, wsl, node, demo }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node, demo });
       return JSON.stringify({
         mcpServers: {
-          [STDIO_SERVER_NAME]: {
+          [serverName(demo)]: {
             command: l.command,
             args: l.args,
             ...(Object.keys(l.env).length ? { env: l.env } : {}),
@@ -240,8 +249,8 @@ export const STDIO_SHAPES = Object.freeze({
   "generic-json": {
     kind: "config",
     where: "your agent's MCP server configuration",
-    render: ({ server, workDir, reportsDir, wsl, node }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
+    render: ({ server, workDir, reportsDir, wsl, node, demo }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node, demo });
       return JSON.stringify({
         command: l.command,
         args: l.args,
@@ -261,10 +270,10 @@ export const STDIO_SHAPES = Object.freeze({
     // Codex does not forward the shell environment, and a credential would have to be forwarded BY NAME
     // rather than written into a file. This server takes no credential — the work directory is a path,
     // not a secret — so `env` is correct here and would not be for a server that wanted a key.
-    render: ({ server, workDir, reportsDir, wsl, node }) => {
-      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node });
+    render: ({ server, workDir, reportsDir, wsl, node, demo }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl, node, demo });
       return [
-        `[mcp_servers.${STDIO_SERVER_NAME}]`,
+        `[mcp_servers.${serverName(demo)}]`,
         `command = ${tomlString(l.command)}`,
         `args = [${l.args.map(tomlString).join(", ")}]`,
         ...(Object.keys(l.env).length
@@ -400,12 +409,12 @@ export function routeNaming(route, name) {
     : { ...route, text: name(route.text) };
 }
 
-export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, wsl = null, node = process.execPath } = {}) {
+export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, wsl = null, node = process.execPath, demo = false } = {}) {
   const spec = Object.hasOwn(STDIO_SHAPES, String(shape ?? "")) ? STDIO_SHAPES[shape] : null;
   if (!spec) return null;
   const server = join(installRoot, "mcp-server", STDIO_ENTRY);
-  const render = (target) => spec.render({ server, workDir, reportsDir, platform, wsl: target, node });
-  const base = { shape, kind: spec.kind, where: spec.where, after: spec.after, name: STDIO_SERVER_NAME };
+  const render = (target) => spec.render({ server, workDir, reportsDir, platform, wsl: target, node, demo });
+  const base = { shape, kind: spec.kind, where: spec.where, after: spec.after, name: serverName(demo) };
   // OFF WSL NOTHING CHANGES: one launcher, no variants, and `variants: null` rather than an empty array
   // so a consumer cannot read "this install has no sides" as "this install has two sides, both missing".
   if (!wsl) return { ...base, text: render(null), variants: null };

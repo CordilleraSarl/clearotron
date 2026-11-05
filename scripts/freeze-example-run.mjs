@@ -173,7 +173,7 @@ const SCRUB = [
 // what varies and why, and step 5 prints them — a normalisation nobody can see is a normalisation that
 // hides the next real difference.
 const VOLATILE = [
-  { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the generation stamp in the firm locale" },
+  { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the issue stamp in the firm locale" },
   { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:669 asOf" },
 ];
 
@@ -634,7 +634,7 @@ if (proofOk) {
     const rawB = readFileSync(join(poolFrozen, runId, name), "utf8");
     if (name === "meta.json") {
       const mA = JSON.parse(rawA), mB = JSON.parse(rawB);
-      for (const k of ["issuedAt"]) { delete mA[k]; delete mB[k]; }
+      for (const k of ["issuedAt", "renderedAt"]) { delete mA[k]; delete mB[k]; }
       const keys = [...new Set([...Object.keys(mA), ...Object.keys(mB)])];
       for (const k of keys) {
         if (JSON.stringify(mA[k]) === JSON.stringify(mB[k])) continue;

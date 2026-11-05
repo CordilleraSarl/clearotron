@@ -460,14 +460,10 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       note(`knockout working record: ${name} is not in the run directory, so the delivered report has no engine text to be checked against`);
     }
   }
-  const issued = (() => {
-    try {
-      const d = new Date();
-      const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Zurich', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
-      const time = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Zurich', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
-      return `${date} · ${time}`;
-    } catch { return null; }
-  })();
+  // WHAT THE RECORD SAYS, NOT THE CLOCK (report-dates.mjs): a republish is neither a new search nor a new issue.
+  const dates = reportDates({ runDir, poolRunDir });
+  const issued = zurichStamp(dates.issuedAt);
+  const searched = zurichStamp(dates.searchedAt);
 
   // the SWEEP ledger → the audit trail. Named apart from the URL-receipts check above on purpose: one
   // is the record of what the driver called, the other is the check that the findings cite what it held.
@@ -714,7 +710,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     };
     const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
-      runId, overall: markBand, issued, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
+      runId, overall: markBand, issued, searched, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
       // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
       // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
       registerRecordsUnreadable,
@@ -805,7 +801,8 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // the clearance publisher reads it. Absent on a company's batch and on one filed before
     // organisations existed.
     organisation: (() => { try { const f = JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
-    issuedAt: (() => { try { const prev = JSON.parse(readFileSync(join(poolRunDir, 'meta.json'), 'utf8')); return prev?.issuedAt ?? new Date().toISOString(); } catch { return new Date().toISOString(); } })(),
+    issuedAt: dates.issuedAt,
+    renderedAt: dates.renderedAt,
     kind: 'knockout-batch',
     marks: (findings.marks ?? []).map((m) => ({ name: m.name, band: m.rating })),
     searchLevel: searchPolicy?.level ?? 'knockout',
@@ -834,7 +831,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // read it. The one `.run` reader in the tree parses report.html front matter and uses it as a DATE
     // fallback, so had this field ever been joined to that one it would have printed a product name where
     // a date belongs. The product is `meta.product`, written from the run's own frozen policy.
-    overall: overall ?? '', badge: bandBadge(framework, overall), date: new Date().toISOString().slice(0, 10),
+    overall: overall ?? '', badge: bandBadge(framework, overall), date: dates.issuedAt.slice(0, 10),
     auditFile, statement,
     framework: framework ? { key: framework.framework_key, title: framework.title, custom: framework.framework_key !== 'house-triage', bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : undefined,
     // Present ⇒ this run has a report-data.json beside its report. The portal reads this to tell a run it
@@ -929,4 +926,5 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 // The office's own page for each listed filing (office-record-links.mjs). Kept down here, below every
 // line the rest of the tree cites by number.
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
+import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';

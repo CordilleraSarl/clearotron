@@ -1816,7 +1816,7 @@ const CAVEAT_LEAD = 'This screen also carries the following limits:';
  * had forgotten asserted it was the one product it provably was not.
  */
 export function renderKnockoutHtml(findings, framework, {
-  runId, overall, issued = null, auditFile = null, probeRan = false, registerCounts = null,
+  runId, overall, issued = null, searched = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
   // — was the filings sidecar PRESENT but unreadable? Defaults to false, so every existing caller — the
   // unit fixtures and both render-check scripts, none of which pass one — renders exactly as it did. It
@@ -1926,7 +1926,7 @@ export function renderKnockoutHtml(findings, framework, {
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
   const requestNotes = marks.flatMap((m) => splitKnockoutNotes(m).request);
-  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, issued, registerCounts);
+  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, searched, registerCounts);
   const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
   // and never as an empty table. A knockout with no sidecar publishes exactly the counts-only document.

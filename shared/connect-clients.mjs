@@ -68,7 +68,7 @@
 // from memory would be a button that looks like it works and does not. `connect-clients-are-data`
 // REFUSES a launch URL that carries no date and no name.
 
-import { KEY_SLOT, STDIO_SERVER_NAME, remoteConnectFor, routeNaming } from "./stdio-connect.mjs";
+import { DEMO_SERVER_NAME, KEY_SLOT, STDIO_SERVER_NAME, remoteConnectFor, routeNaming } from "./stdio-connect.mjs";
 
 /** The two places Clearotron can be, relative to the reader's app. The page asks; the terminal flags. */
 export const ROUTES = Object.freeze(["disk", "public-http"]);
@@ -439,7 +439,7 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
   const author = client.routes?.[route];
   if (!author) return null;
-  const { stdioRoutes = {}, publicAddress = null, keyAddress = null, operator = null, door = null, nameClaude = null, wsl = false } = have;
+  const { stdioRoutes = {}, publicAddress = null, keyAddress = null, operator = null, door = null, nameClaude = null, wsl = false, demo = false } = have;
 
   // EACH COPY RESOLVES TO ITS OWN SHAPE, never to another's. Handing a Codex user `claude mcp add` is a
   // command their machine does not have, delivered with confidence — so a shape this deployment cannot
@@ -467,7 +467,10 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   const asked = author.steps({ operator, door: route === "public-http" ? door : null });
   // THE CHECK LINE RUNS WHERE THE COMMAND DID. Under WSL one hint serves both sides, so it keeps the bare word.
   const hinted = (s) => (route === "disk" && nameClaude && !wsl && s.hint ? { ...s, hint: nameClaude(s.hint) } : s);
-  const steps = asked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s })).map(hinted);
+  // A DEMO'S CONNECTION HAS ITS OWN NAME (stdio-connect.mjs), so a row's words name that one.
+  const spoken = (t) => (typeof t === "string" ? t.replaceAll(STDIO_SERVER_NAME, DEMO_SERVER_NAME) : t);
+  const named = (s) => (route === "disk" && demo ? { ...s, text: spoken(s.text), ...(s.hint ? { hint: spoken(s.hint) } : {}) } : s);
+  const steps = asked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s })).map(hinted).map(named);
   const resolved = steps.every((s, i) => !asked[i].copy || s.copy);
 
   // ── WHEN THE DOOR COULD NOT BE READ, BOTH WAYS ARE ACTUALLY SHOWN ────────────────────────────────
