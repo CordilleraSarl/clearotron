@@ -2154,6 +2154,18 @@ export function applyStageWrites(msg, argv) {
       // "once", only the run's first recheck: a marker beside the run, outside it, tells a resumed run's recheck apart.
       // MOCK_RECHECK_REWRITES=<verdict> — the recheck rewrites the review file directly, as its message orders, with
       // that verdict on the first line and the rest of the file kept, and records nothing through the tool.
+      // MOCK_RECHECK_SAVES_FILE=<a review's whole text> — the recheck writes that review into the file, recording nothing
+      // through the tool, or, with MOCK_RECHECK_TYPED_FIRST=1, after one accepted save through it. "{KEEP_AUDIT}" in the
+      // text stands for the plan-audit section the mock's own review carries, so a case can keep the audit or drop it.
+      if (process.env.MOCK_RECHECK_SAVES_FILE && runDir && /you do NOT redo it from scratch/.test(msg)) {
+        const audit = `## PLAN-EXECUTION CHECK\n\n${planAudit[0] ?? "Audited the execution receipt."}\n`;
+        if (process.env.MOCK_RECHECK_TYPED_FIRST) {
+          const typed = send({ verdict: "CONDITIONAL", flags: [{ kind: "fact", text: "An invented point the typed save raised (mock)." }], plan_audit: planAudit });
+          if (bad(typed)) return `mock reviewer's typed save was REFUSED: ${bad(typed)}`;
+        }
+        writeFileSync(join(runDir, "senior-eye-review.md"), process.env.MOCK_RECHECK_SAVES_FILE.replace("{KEEP_AUDIT}", audit));
+        return "mock reviewer saved the review as a file";
+      }
       if (process.env.MOCK_RECHECK_REWRITES && runDir && /you do NOT redo it from scratch/.test(msg)) {
         const at = join(runDir, "senior-eye-review.md");
         const was = readFileSync(at, "utf8").split("\n");

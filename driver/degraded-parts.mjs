@@ -224,7 +224,9 @@ function checks(runDir, log) {
   // A re-check that read ok and saved no review verified nothing: the correction stands unreviewed. A later receipt,
   // which only a re-check that saved a review writes, clears it on a resume.
   const unread = failedStep(log, "corrective-cycle-receipt", "verdict-recheck-unread");
-  if (unread && !reviewOpen && !recheck) failed.push(["the review's re-check", "it saved no review, so the correction was not verified"]);
+  if (unread && !reviewOpen && !recheck) failed.push(["the review's re-check", String(unread.fail ?? "").startsWith("file-save-refused:")
+    ? `the review it saved as a file was refused (${unread.fail.slice("file-save-refused:".length)}), so the correction was not verified`
+    : "it saved no review, so the correction was not verified"]);
   const rollback = failedStep(log, "corrective-cycle-receipt", "corrective-rollback");
   if (rollback) failed.push(["the corrective pass, rolled back", rollback.reason]);
   const crowd = failedStep(log, "crowd-context", "crowd-context-failed");
