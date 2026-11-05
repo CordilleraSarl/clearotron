@@ -50,6 +50,13 @@ a band that needs sharpening is the band above it, stated as that word.
 
 1. **Class-specific ratings are mandatory** at the framework's material bands: "Medium (Classes 9,
    25, 28, 41)", never a bare band — `classesDriving` carries the class list.
+   Where the filings and use you hold support different conclusions for different groups of the classes
+   searched, say so in `classGroups`: one row per group, with `band`, `ratingQualifier` where it applies,
+   and `classes`. Every class searched belongs to one group. `rating` is the highest group's band and
+   `classesDriving` that group's classes. `basis` and the opening read say what divides the groups, and a
+   finding or filing read that bears on only some classes says which. Where one conclusion holds across
+   the classes searched, leave `classGroups` out. Divide on the requested goods and the evidence, never to
+   soften a rating.
 2. **Crowded field = diluted risk, not amplified.** Many small, non-enforcing players means any one
    player's enforcement power is weaker — a crowded field typically caps at the middle band. The
    gating precondition, and what a crowd may and may not do to a band, are in
@@ -231,8 +238,8 @@ There is no word count; judge it against the other marks in front of you and aga
 which is the **shorter** digest above these.
 
 **Read the two sources together.** Where filings were handed to you for this mark, weigh them in the
-*same passage* as the marketplace and common-law reading — what the screened field shows, what those
-filings do to that reading, and what the two together mean for the band. Never one block per source
+*same passage* as the marketplace and common-law reading — what those filings show, what the screened
+field adds to that reading, and what the two together mean for the band. Never one block per source
 with the reconciliation left to the reader.
 
 ## The typed read (`basis`, `factors`, `counterFactors`, `mitigation`)
@@ -335,7 +342,9 @@ not look identical afterwards.
   "chunkSummary": "<markdown for THIS chunk's marks>",
   "marks": [ { "ref": null, "name": "<verbatim>", "classesSearched": [8], "beltAndBraces": [35],
                "contextFraming": "...", "rating": "<band word>", "ratingQualifier": null,
-               "classesDriving": [8], "bullets": ["..."], "purpleNotes": ["..."],
+               "classesDriving": [8],
+               "classGroups": [ { "band": "<band word>", "ratingQualifier": null, "classes": [8] } ],
+               "bullets": ["..."], "purpleNotes": ["..."],
                "registerEstimate": "...", "parodyNote": null, "crowdedField": false,
                "registerReads": [ { "recordId": "<verbatim from the filings you were given>",
                                     "read": "<what you concluded about THAT filing>",

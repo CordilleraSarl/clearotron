@@ -391,10 +391,15 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
   // fallback exists precisely so this line is never blank.
   const firstCaveat = (findings.batch?.standardCaveats ?? []).map((c) => String(c ?? "").trim()).find(Boolean);
   const caveat = `<p style="${FONT}"><i>${esc(firstCaveat || 'Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.')}</i></p>`;
+  // One band and the classes behind it, or where the evidence divides them, each group's band and classes.
+  const oneBand = (band, qualifier, classes) => `<b style="color:${bandTier(framework, band).txt ?? 'black'}">${esc(band)}${qualifier ? ` (${esc(qualifier)})` : ''}</b>${classes?.length ? ` — Classes ${esc(classes.join(', '))}` : ''}`;
+  const bandLine = (m) => (Array.isArray(m.classGroups) && m.classGroups.length
+    ? m.classGroups.map((g) => oneBand(g.band, g.ratingQualifier, g.classes)).join('; ')
+    : oneBand(m.rating, m.ratingQualifier, m.classesDriving));
   const lines = (findings.marks ?? []).map((m) => {
     const counted = registerCounts ? countLine(countsForMark(registerCounts, m.name)) : null;
     const href = n > 1 ? urlByMark.get(m.name) ?? null : null;
-    return `<li><b>${esc(m.name)}</b>: <b style="color:${bandTier(framework, m.rating).txt ?? 'black'}">${esc(m.rating)}${m.ratingQualifier ? ` (${esc(m.ratingQualifier)})` : ''}</b>${m.classesDriving?.length ? ` — Classes ${esc(m.classesDriving.join(', '))}` : ''}${counted ? ` — ${esc(counted)}` : ''}${m.degraded ? ' — <i>manual verification recommended (automated research unavailable)</i>' : ''}${href ? ` — <a href="${esc(href)}">open this report</a>` : ''}</li>`;
+    return `<li><b>${esc(m.name)}</b>: ${bandLine(m)}${counted ? ` — ${esc(counted)}` : ''}${m.degraded ? ' — <i>manual verification recommended (automated research unavailable)</i>' : ''}${href ? ` — <a href="${esc(href)}">open this report</a>` : ''}</li>`;
   }).join('');
   // A10, extended to this lane 2026-07-31 — the surviving machine-check flags reach the reviewing
   // lawyer WITH the report, in the projection's own words, or they reach nobody. The gate stays a gate:

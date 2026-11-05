@@ -2307,6 +2307,9 @@ export const KNOCKOUT_FINDING_TYPES = [
 // from. `weighedFilings` is optional; verify-knockout.mjs joins every id against the run's own records.
 // `inputs` — the framework's own inputs behind the band, when the run froze a framework METHOD
 // (framework-method.mjs). Required on every knockout finding then, refused otherwise; checked below.
+// How a knockout run's page lists a name's cards: filing evidence first, then web use. Recorded on the run, because a
+// run recorded without it was delivered with its findings first and must re-render that way.
+export const KNOCKOUT_CARD_ORDER = "filings-first";
 export const KNOCKOUT_FINDING_KEYS = Object.freeze(["ordinal", "name", "owner", "band", "inputs", "net", "type", "evidence", "basis", "weighedFilings"]);
 // The throw family is `knockout_`, NOT `findings_`, and that is deliberate: gateway.mjs's
 // repairSiblingName routes every `/findings?_/` token to **findings.json**, which is the clearance

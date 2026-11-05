@@ -59,6 +59,7 @@ import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
+import { KNOCKOUT_CARD_ORDER } from "./findings-model.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
 import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName } from "./knockout-correction-record.mjs";
 import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
@@ -1163,7 +1164,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
     // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
     const composeRecord = () => {
-      const merged = { schema_version: 1, framework: null, batch: null, marks: [] };
+      // cardOrder records how this run's page lists a name's cards, so a delivered report re-renders as it was delivered.
+      const merged = { schema_version: 1, framework: null, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
       const summaries = [];
       for (let c = 0; c < chunks.length; c++) {
         // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks

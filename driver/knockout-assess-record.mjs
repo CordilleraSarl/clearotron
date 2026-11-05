@@ -66,7 +66,7 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 // THE VALIDATOR'S OWN PREDICATE, imported rather than restated. Two spellings of one closed set is how
 // the call and the stage come to disagree about what is legal, which is the defect this check closes.
-import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS, heldCitationsOnly } from "./verify-knockout.mjs";
+import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS, heldCitationsOnly, classGroupsDefect, frozenLadder } from "./verify-knockout.mjs";
 // A FINDING'S KEYS, likewise: the validator's one list, so a key the call records is a key the stage accepts.
 import { KNOCKOUT_FINDING_KEYS } from "./findings-model.mjs";
 
@@ -139,7 +139,7 @@ const DECLARED = Object.freeze({
   batch: ["productContext", "standardCaveats"],
   marks: [
     "ref", "name", "classesSearched", "beltAndBraces", "contextFraming", "rating", "ratingQualifier",
-    "classesDriving", "bullets", "purpleNotes", "registerEstimate", "parodyNote", "crowdedField",
+    "classesDriving", "classGroups", "bullets", "purpleNotes", "registerEstimate", "parodyNote", "crowdedField",
     "findings", "negatives", "degraded",
     // the typed read — required by the validator, absent from the doctrine's own shape block
     "basis", "factors", "counterFactors", "mitigation", "assessment",
@@ -168,6 +168,7 @@ const DECLARED = Object.freeze({
   // and records the framework's inputs, as a finding does (verify-knockout.mjs checkRegisterReadInputs).
   "marks.registerReads": ["recordId", "read", "band", "inputs"],
   "marks.setAside": ["url", "ground"],
+  "marks.classGroups": ["band", "ratingQualifier", "classes"],
   "marks.negatives": ["term", "source", "note"],
 });
 
@@ -369,7 +370,11 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
   const verdict = acceptKnockoutAssess(call, { boundOrdinal });
   if (!verdict.ok)
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };
-  // The one check that reads the run. What it refuses is left out and named, and the rest of the call is kept, so the model
+  // Answered in the turn, not after it: the ladder is the run's, so this check cannot sit in the pure verdict above.
+  const groupsDefect = verdict.model.marks.map((m) => classGroupsDefect(m, frozenLadder(dir))).find(Boolean);
+  if (groupsDefect)
+    return { written: null, refused: groupsDefect, captured: closeCapture({ ok: false, refused: groupsDefect }), capture_failed: captureFailed };
+  // The check that reads the run's citations. What it refuses is left out and named, and the rest of the call is kept, so the model
   // hears it in the turn and has no chunk to send again (verify-knockout.mjs). The stored call is cleaned too, so a later
   // call that merges onto it does not bring a refused row back.
   const kept = verdict.model.marks.map((m) => heldCitationsOnly(dir, m));

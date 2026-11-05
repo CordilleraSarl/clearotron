@@ -82,6 +82,7 @@ for (const [engine, wiring] of [["anthropic-agent", {}], ["openai-agent", { CLEA
     const now = r.of(r.findings, NAME), was = r.of(rated, NAME);
     assert.notEqual(was.rating, "High", "the fixture has to start from another band");
     assert.equal(now.rating, "High", "the rating moved");
+    assert.equal(r.findings.cardOrder, "filings-first", "the run does not record how its page lists a name's cards");
     assert.equal(now.findings[0].band, "High", "the finding moved");
     assert.match(now.basis, /moves to High/, "the name's basis moved with it");
     assert.match(now.assessment, /now screens at High/, "the name's opening read moved with it");
