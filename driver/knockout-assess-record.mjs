@@ -421,10 +421,12 @@ function writeSourceDefects(runDir, chunkNo, chunk, defects) {
   const stored = knockoutAssessSourceDefects(runDir, chunkNo).flatMap((d) => {
     const f = current.get(key(d));
     if (!f) return [];   // the finding and its claim are gone
-    const amended = f.net !== d.was?.net || f.basis !== d.was?.basis || (f.evidence ?? []).some((u) => !(d.was?.evidence ?? []).includes(u));
+    const amended = f.net !== d.was?.net || f.basis !== d.was?.basis || (f.evidence ?? []).some((u) => !(d.was?.evidence ?? []).includes(u)) || (f.weighedFilings ?? []).some((id) => !(d.was?.weighed ?? []).includes(id));
     return [{ ...d, state: amended ? "answered" : "open" }];
   });
-  const open = [...stored, ...defects.map((d) => ({ ...d, state: "open" }))];
+  // A source cited again and left out again is this call's row, whatever became of the claim.
+  const again = new Set(defects.map((d) => JSON.stringify([key(d), d.cited])));
+  const open = [...stored.filter((d) => !again.has(JSON.stringify([key(d), d.cited]))), ...defects.map((d) => ({ ...d, state: "open" }))];
   if (open.length || existsSync(sourceDefectsPath(runDir, chunkNo))) writeFileSync(sourceDefectsPath(runDir, chunkNo), JSON.stringify(open, null, 2) + "\n");
 }
 

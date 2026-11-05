@@ -203,9 +203,9 @@ test("a source the rating lost and never restored goes to the correction, though
 test("the check is handed the findings the rating step amended after losing a source", () => {
   const K = koPaths(mkdtempSync(join(tmpdir(), "ko-source-lines-")));
   const with_ = KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [], sourceAnswers: ['- "QUILLBRAE", finding "ONE": it cited "https://nowhere.example.test/x".'] });
-  assert.match(with_, /AMENDED THESE FINDINGS\. Read each against that problem/);
+  assert.match(with_, /THE FINDINGS THAT CITED THEM CHANGED AFTERWARDS\. Read each against that problem/);
   assert.match(with_, /finding "ONE": it cited/);
-  assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /AMENDED THESE FINDINGS/, "and nothing is said where there is none");
+  assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /CHANGED AFTERWARDS/, "and nothing is said where there is none");
 });
 
 test("with no material defect nothing more is dispatched", async () => {

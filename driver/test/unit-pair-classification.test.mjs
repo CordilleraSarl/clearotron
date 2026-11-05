@@ -264,7 +264,7 @@ const RULED = new Map([
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
   ["knockout-register-read.mjs", 4],
-  ["knockout-assess-record.mjs", 1],
+  ["knockout-assess-record.mjs", 2],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");

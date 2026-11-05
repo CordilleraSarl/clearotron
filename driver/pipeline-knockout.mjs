@@ -260,7 +260,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   return doc;
 }
 
-/** The findings the rating step amended after losing a source, for the check to read against the problem. */
+/** The findings that changed after a source was left out, for the check to read against the problem. */
 const sourceAnswersOf = (runDir, chunks) => chunks.flatMap((_, c) => knockoutAssessSourceDefects(runDir, c)).filter((d) => d.state === "answered")
   .map((d) => `- "${d.mark}", finding "${d.name}": it cited "${d.cited}".`);
 

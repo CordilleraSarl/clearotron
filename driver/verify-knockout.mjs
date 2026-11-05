@@ -253,7 +253,7 @@ export function heldCitationsOnly(runDir, mark) {
   const held = registerRecordIdsHeld(runDir);
   const notKept = [], sourceDefects = [];
   const urlHeld = urlHeldFor(runDir, mark?.name);
-  const lost = (f, kind, cited) => sourceDefects.push({ mark: mark?.name, name: f?.name, owner: f?.owner, kind, cited, was: { net: f?.net ?? null, basis: f?.basis ?? null, evidence: (f?.evidence ?? []).filter((u) => urlHeld(u)) } });
+  const lost = (f, kind, cited) => sourceDefects.push({ mark: mark?.name, name: f?.name, owner: f?.owner, kind, cited, was: { net: f?.net ?? null, basis: f?.basis ?? null, evidence: (f?.evidence ?? []).filter((u) => urlHeld(u)), weighed: (f?.weighedFilings ?? []).filter((id) => held.has(String(id ?? "").trim())) } });
   const isHeld = (raw, say) => {
     const id = String(raw ?? "").trim();
     if (!id || held.has(id)) return true;

@@ -92,6 +92,19 @@ test("a source left out stays open until the finding is amended or gains held su
   assert.deepEqual(knockoutAssessSourceDefects(other, 0), [], "a finding gone takes its claim with it");
 });
 
+test("a source cited again is one open row, and a filing the run holds is support as a URL is", () => {
+  const run = heldRun();
+  mkdirSync(join(run, "research"), { recursive: true });
+  writeFileSync(join(run, "research", "lanternwick.md"), "A page: https://shop.example.test/own");
+  const cited = (evidence, weighedFilings = []) => mark({ findings: [{ ...finding(weighedFilings), evidence }] });
+  const rows = () => knockoutAssessSourceDefects(run, 0).map((d) => [d.kind, d.cited, d.state]);
+  send(run, cited(["https://shop.example.test/own", "https://shop.example.test/nowhere"]));
+  recordKnockoutAssess(run, { marks: [{ ...cited(["https://shop.example.test/own", "https://shop.example.test/nowhere"]), findings: [{ ...finding([]), net: "An amended net.", evidence: ["https://shop.example.test/own", "https://shop.example.test/nowhere"] }] }] }, { boundOrdinal: 0 });
+  assert.deepEqual(rows(), [["evidence", "https://shop.example.test/nowhere", "open"]], "cited again, it is still the open problem, once");
+  recordKnockoutAssess(run, { marks: [{ ...cited(["https://shop.example.test/own"]), findings: [{ ...finding([OWN]), net: "An amended net.", evidence: ["https://shop.example.test/own"] }] }] }, { boundOrdinal: 0 });
+  assert.deepEqual(rows(), [["evidence", "https://shop.example.test/nowhere", "answered"]], "a held filing weighed is held support");
+});
+
 test("what is stored then passes the stage's own check, so the stage cannot fail on it", () => {
   const run = heldRun();
   send(run, mark({ registerReads: [{ recordId: NOWHERE, read: "An invented read." }] }));
