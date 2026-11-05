@@ -103,7 +103,7 @@ test("a chunk that speaks for the register lane is REFUSED — the live 2026-08-
     { chunkSummary: "Note that the register overlay has not been run for these names." }));
   assert.equal(inSummary.ok, false);
   assert.match(inSummary.reason, /knockout_register_claim/);
-  assert.match(inSummary.reason, /cannot see the register lane/);
+  assert.match(inSummary.reason, /do not describe the search/);
 
   // The typed fields are new surface for the same invention, so they are swept too.
   for (const over of [

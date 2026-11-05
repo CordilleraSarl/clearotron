@@ -8,14 +8,17 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { validators as koValidators } from "./verify-knockout.mjs";
+import { validators as koValidators, registerLaneState, PERMITTED_SOURCES } from "./verify-knockout.mjs";
 import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 // — the door owns "did the request name any classes?"; this builder reads it rather than
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
 import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
+import { chunkScope, knockoutCorrectionFile, sameFinding, validateKnockoutCorrectionFile } from "./knockout-correction-record.mjs";
 import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
+import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
+import { narrowingOrderLine } from "./effective-scope.mjs";
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
@@ -71,6 +74,10 @@ export function koPaths(runDir) {
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
     registerRecords: driverDir(runDir, "register-records.json"),
+    // THE READING STEP'S RECORD, a model output and so at the run root: what it carried forward, set aside and did not
+    // ask. The questions and their rows are the register tool's, in the bands under `register-units/`.
+    registerReading: knockoutRegisterFile(runDir),
+    inboundRequest: join(runDir, "inbound-request.txt"),
     // The scoped owner lookups this run owes its promoted filings, and their receipts. Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
     // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
     ownerChecks: driverDir(runDir, "owner-checks.json"),
@@ -176,6 +183,21 @@ export function knockoutBarVerdict({ startedAt = null, deliveredAt = null } = {}
 }
 
 /** The line a stage is told about the client's own request: the message as it came where it is on file, else the brief, which is never called the request, else nothing. */
+/** The lines that say what this run's files establish about its register, where it holds no record of filings to weigh. */
+function registerStateLine(K) {
+  const lane = registerLaneState(K.runDir);
+  if (lane.state === "skipped") return `The register component was skipped on this run, so it holds no filings.`;
+  if (lane.state === "unavailable") return `The register listing was unavailable on this run. Use the recorded counts and failure reason, and keep that gap explicit. The recorded counts: ${K.registerCounts}.${lane.reason ? ` The recorded reason: ${lane.reason}` : ""}`;
+  if (lane.state === "unknown") return `The held files do not establish whether the register component ran. Keep that uncertainty explicit.`;
+  return "";
+}
+const registerRecordHeld = (K) => registerLaneState(K.runDir).state === "held";
+
+// WHERE A SOURCE MAY COME FROM, in one form of words at every step: rating, correction and check.
+const CITED_URL_RULE = `A cited URL must come from ${PERMITTED_SOURCES}.`;
+const SIBLING_SOURCE = `When you use another name's research payload, explain how its held content bears on this name and its requested use. Keep the original search scope and provenance. A source's presence in the batch does not establish that it supports the claim.`;
+const OWNER_SOURCE = `A recorded owner check linked to a held filing is held evidence. You may cite a URL in its saved answer when it supports the finding; preserve the owner and filing it belongs to.`;
+
 const requestLine = (K, onRequest, onBrief) => (existsSync(K.inboundRequest) ? onRequest(K.inboundRequest)
   : existsSync(K.confirmationBrief) ? onBrief(K.confirmationBrief) : "");
 
@@ -303,8 +325,30 @@ export const KO_STAGES = {
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
     ),
   },
-  "knockout-assess": {
+  "knockout-register-read": {
     model: "opus", thinking: "high", timeoutSec: 900, stallSec: 600,
+    // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
+    skillReads: ["skills/knockout-register-read/SKILL.md"],
+    out: (K) => K.registerReading,
+    validate: validateKnockoutRegisterFile,
+    message: ({ K, job = {}, profile = null, readingLines = [], providerDoc = null, inScope = null }) => lines(
+      reads(["skills/knockout-register-read/SKILL.md", providerDoc].filter(Boolean)),
+      `You are reading the register for a KNOCKOUT batch, name by name. You rate nothing; the step after you rates what you carry forward, with your reasons.`,
+      existsSync(K.inboundRequest) ? `The client's request, as it arrived: ${K.inboundRequest}` : "",
+      job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
+      job.upfrontInstructions ? `Requester instructions (verbatim): ${job.upfrontInstructions}` : "",
+      `The instructed scope: ${K.instructedScope}`,
+      `The batch plan, with what each name is for: ${K.plan}`,
+      narrowingOrderLine(job, profile, inScope),
+      `WHAT THE REGISTER HAS ANSWERED SO FAR, name by name. These are counts. For the identical question, decide whether to read the full answer or narrow it by the reading rule. Ask through the propose tool to obtain the list you select; read a held answer without asking it again.`,
+      ...readingLines,
+      `ASK with \`register_propose_supplemental\`: the name's \`axis\` and its band as \`output_path\`, and in \`proposals\` the question with \`nice_classes\` from that name's line and its purpose as \`rationale\`. To read a name's own list, ask \`exact\` on the name. An identical-name read keeps the original scope. Each class added from the client's own goods has its own identical-name question. A narrowing names the crowd it replaces as \`narrows\`. An answer you already hold is not asked again.`,
+      `READ with \`read_register_list\`, by qid. The propose tool's answer shows only the first rows of a list; the list is the whole list, and the order it comes in means nothing.`,
+      `HAND BACK with \`record_knockout_register_read\`, one row per name, when you are done. THERE IS NO FILE FOR YOU TO WRITE. If you call again, send only the names you are correcting: a name you send replaces its row.`,
+    ),
+  },
+  "knockout-assess": {
+    model: "opus", thinking: "high", timeoutSec: 1500, stallSec: 900,
     // ── WHAT THIS STAGE READS, AND WHY IT IS THREE DOCUMENTS NOW ──────────────
     //
     // It read one: its own SKILL.md. So it rated in a framework's band words while never seeing that
@@ -344,16 +388,8 @@ export const KO_STAGES = {
       // has carried a per-mark `contextFraming` all along and nothing ever told this seat to rate with
       // it, so the requester's per-name detail reached the run and stopped. Shipping the doctrine
       // without pointing at the field it turns on is half a fix.
-      `EACH MARK'S "contextFraming" IN THAT PLAN IS WHAT THE NAME IS FOR — a character name, a location, a biome feature, an achievement title. READ IT AND RATE WITH IT: the manner-of-use calibration in the firm-wide reasoning turns on exactly this, and it is per MARK, not per batch. Two names in one batch can sit at different bands on identical evidence because they are used differently. Carry the field through to your own row unchanged.`,
-      // ── THE EVIDENCE BASE IS TWO THINGS NOW, AND IT WAS THE SECOND GAG ───────
-      //
-      // "the ONLY evidence base" is what stopped this seat weighing filings the same run had already
-      // fetched and paid for. Measured on a delivered run: every one of the five filings the reviewing
-      // lawyer built her read on was on disk before this stage started, and none was weighed — they
-      // reached the client as raw cards with no band. The URL rule stays and is scoped: a cited URL must
-      // come from one of the two sources named here, which is the anti-confabulation rule it always was
-      // and never a rule about which of the two.
-      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark.`,
+      `Read each name's contextFraming against the client's request. Apply the manner-of-use calibration to the use the client actually states. Where the frame inferred a use, keep it as a possibility; it does not narrow the instructed scope or lower the rating. Correct a material framing error when the request or evidence contradicts it, and explain the correction in the assessment.`,
+      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. ${CITED_URL_RULE} The batch's other recorded research payloads and its recorded owner checks are under ${K.researchDir}.`,
       ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
       // THE ORDERED TERRITORIES, where the request named some. The web questions used to carry them in
       // their own scope lines and drop what fell outside; the grid returns results and judges nothing, so
@@ -364,7 +400,8 @@ export const KO_STAGES = {
       // NAMED ONLY WHEN IT IS ON DISK. The records land at step 2 of 5 and this stage is step 3 or 4, so
       // the file exists by now on a run that fetched them — and on a run that did not, a dispatch naming
       // a path that is not there teaches the seat that a missing file is normal.
-      existsSync(K.registerRecords)
+      registerStateLine(K),
+      registerRecordHeld(K)
         ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
       // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED ────────────────────────────────────────────
@@ -386,7 +423,7 @@ export const KO_STAGES = {
           `WHAT THESE OWNERS ACTUALLY SELL — the driver ran ONE scoped web search per promoted filing's proprietor BEFORE this stage, so you are not guessing from the company name. Payloads:`,
           ...ownerCheckLines(K),
           `USE THEM. When you write a registerReads row for one of these filings, your "read" must state what the owner actually sells ACCORDING TO THAT PAYLOAD, not what the company's name suggests and not what its class numbers imply. An owner's name is not evidence of its trade. A company name that reads as a line of business is a guess that happens to land sometimes, and the run where it lands is indistinguishable from the run where it does not — which is the reasoning this rule exists to stop.`,
-          `WHERE A PAYLOAD SAYS THE SEARCH FOUND NOTHING, say that plainly in the read — "a search for the proprietor's trade returned nothing" — and reason from the register record alone. Do NOT substitute an inference from the owner's name for the answer the search did not give. The report prints the source line itself, from the driver's own record of the call, so you never type a URL and never need to.`,
+          `WHERE A PAYLOAD SAYS THE SEARCH FOUND NOTHING, say that plainly in the read — "a search for the proprietor's trade returned nothing" — and reason from the register record alone. Do NOT substitute an inference from the owner's name for the answer the search did not give. The report prints the filing card's owner-check source line from the driver's record. A finding may cite a supporting URL from the saved owner check under the held-source rule.`,
         ].join("\n")
         : "",
       // ── THE READ REACHES THE PAGE ────────────────────────────────────────────
@@ -400,30 +437,10 @@ export const KO_STAGES = {
       // the record store above and refuses one it does not hold, so a Register label can never appear on
       // a finding with no register evidence. Omitting either field is always safe: the card keeps its
       // neutral line, which describes the card and is true.
-      existsSync(K.registerRecords)
+      registerRecordHeld(K)
         ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — how its goods meet the goods the client asked about, whether it bears on the rating, and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
         : "",
-      `A DEGRADED mark's row must carry degraded:true and the purple "Manual verification recommended"`,
-      `note; a mark WITH a payload must never claim degraded (the validator joins both against the disk).`,
       `The FROZEN framework in force (rate in ITS band vocabulary, highest→lowest ${framework.bands.map((b) => b.label).join(" · ")}): ${driverDir(K.runDir, "framework.json")}`,
-      // — the band is dictated here because the CODE cannot supply it: the rating is the author's
-      // judgment about blocking power, and the machine can only check that what came back is a word from
-      // the ladder above. The ORDINAL is a different case, and the wording below says so: the machine
-      // ranks on the band and renumbers 1…N (findings-model.mjs validateKnockoutFindings), because the
-      // number is a drill-through key printed as a range in the audit trail, and a gap in it makes that
-      // cell assert findings the run does not hold. What is asked for here is the author's ORDER, which
-      // is what breaks ties inside a band. The shape itself is the skill's (SKILL.md "The finding
-      // record"); this says the two things that are per-TURN — that the ladder named on the line above
-      // is also the per-finding vocabulary, and that the numbering restarts at each mark.
-      `EVERY conflicting name is a typed findings[] record — {ordinal, name, owner, band, ${frameworkMethod ? "inputs, " : ""}net, type,`,
-      `evidence[], basis}, closed keys. Its "band" is a word from the SAME ladder as the mark's rating`,
-      `(never HIGH/MEDIUM/LOW and never a number), and "ordinal" restarts at 1 for EACH mark, most`,
-      `blocking first. The code re-ranks on the band and renumbers, so your order decides ties inside a`,
-      `band — never cite a finding by its number in prose. A named conflict belongs in findings[], not`,
-      `in bullets — write it once.`,
-      // — where the customer's framework states a method (framework-method.mjs), the band is its
-      // table's answer to inputs the seat records on each finding, and the driver checks the two
-      // agree. With no method both lines are empty and the message reads exactly as before.
       frameworkMethod ? methodDictation(frameworkMethod) : "",
       frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
       // A seam for a note about Depth 2, and it stays UNUSED on purpose (2026-07-22). The counts
@@ -466,59 +483,9 @@ export const KO_STAGES = {
       // The depth rule is not stylistic. `# ` opens a SECTION of the delivered report — parseSections
       // splits on /^# /m and batchSummaryOf terminates on it — so a single hash written here ends the
       // client's summary at that line and drops everything after it, silently, on the entry point.
-      `EVERY mark ALSO carries "assessment": the opening read a reader of THIS MARK'S OWN report meets first, before any table. Write it for a client who ordered this one name and nothing else: what the name is, what the landscape around it looks like, what drives the rating.`,
-      `GIVE IT STRUCTURE A READER CAN SCAN — that is what changed. Sub-headers where the content divides, "- " bullets for the load-bearing points, a blank line between blocks. A sub-header is "## " or "### ". NEVER "# ": one hash opens a section of the report itself, and a summary that opens a section ends there and takes the rest of itself off the client's page. A single sub-header over one unbroken block is not structure — the blocks are what make the length readable, and unstructured length is the complaint this replaces.`,
-      `KEEP THE LENGTH. It is still the most useful part of a triage and it is still not rationed. What it now has to be is CONSISTENT: this mark's opening read is the scale of a single-mark report's opening read, and the marks of one batch sit within reach of each other. One assessment several times the size of its siblings is out of family. No word count and none is coming — judge it against the other marks in front of you.`,
-      `SYNTHESISE THE SOURCES, DO NOT SHELVE THEM SEPARATELY. Where filings were handed to you for this mark, weigh them in the SAME passage as the marketplace and common-law reading — what the screened field shows, what those filings do to that reading, and what the two together mean for the band. A reader must not be handed one block per source and left to reconcile them.`,
-      `IT NAMES THIS MARK AND NO OTHER. Each mark's report is delivered on its own, to a reader who may have ordered only that name, so a sibling's name appearing in this paragraph is another client's mark on this client's page. Do not compare across the batch here — the cross-mark reading is what "chunkSummary" is for, and it has its own page.`,
-      `EVERY mark carries the READ as TYPED FIELDS, not as a paragraph:`,
-      `  "basis"          ONE sentence: why this band, for this name, in these classes.`,
-      `  "factors"        2-4 strings, one line each — the load-bearing observations behind the band.`,
-      `  "counterFactors" 1-3 strings — what holds it at this band rather than the next one either way.`,
-      `  "mitigation"     ONE line: the single thing that would move it. "" if nothing would.`,
-      `Each is a standalone line: no semicolon chains, no clause stacking, no restating the band word.`,
-      `Write each observation ONCE — a point made in "factors" is not repeated in "bullets".`,
-      // The other half of part 2's ruling, enforced here rather than hoped for. The live 2026-08-11
-      // report carried "the register overlay has not been run" directly under a table of register counts
-      // the same run had taken. The turn was not lying: it is never shown the count lane's output (rule 1
-      // of register-count.mjs) and it filled the gap with the only thing it had. Nobody who cannot see
-      // the machinery describes it — the renderer owns that sentence and writes it from the sidecars.
-      `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted,`,
-      `overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not`,
-      `in the chunk summary. You cannot see that lane; the report states its coverage in code from the`,
-      `run's own measurements, and the validator refuses a chunk that speaks for it.`,
-      `THAT IS A RULE ABOUT THE LANE, NOT ABOUT THE FILINGS. Where records are given to you above, WEIGH`,
-      `them: whose they are, what they cover, what they are worth against this name. A filing you were`,
-      `handed is evidence like any other and reasoning about it is the job.`,
-      // — THE GROUPED PAGE'S ENTRY POINT, AND IT WAS ORDERED AS ONE BLOCK TOO.
-      // The owner's report on this surface was the same as the per-mark one: "just one block of text —
-      // no sub-headers, bullet points etc. Very hard to digest. This is an important part of the report
-      // — it's the entry point." The order below said "measured sentences" and the doctrine file said
-      // "narrative, not bullets"; both moved together, because a seat given two answers picks one.
-      // It stays the SHORTER digest that sits above the per-mark assessments — that is the owner's
-      // ordering and it is unchanged. Structure is what it gains, not size.
-      `EVERY chunk includes "chunkSummary": the cross-mark read covering THIS chunk's marks (code`,
-      `concatenates the chunks into the batch executive summary — a mark missing from its chunkSummary`,
-      `is missing from the report summary).`,
-      `STRUCTURE IT: a short opening line for what the batch as a whole shows, then one "## <MARK NAME>"`,
-      `sub-header per mark with its band and the one or two things that drive it, bullets where they`,
-      `help. Same depth rule as the per-mark assessment — "## " or "### ", never "# ".`,
-      `IT IS THE SHORTER DIGEST ABOVE THE PER-MARK ASSESSMENTS, not a rival to them. A reader opens this`,
-      `to decide which name to read about; the mark's own page is where the full read lives. Keep it`,
-      `tighter than any one mark's assessment.`,
-      // ── THE RETURN IS A CALL, NOT A FILE (item B) ────────────────────────────
-      //
-      // THE DISPATCH NAMES NO PATH, and on this stage that is not merely the house pattern. This seat
-      // spent 2026-08 writing its chunk through a Bash redirect because the Write tool was already
-      // refused under `_driver/`; closed that bypass and the stage broke the same day, its
-      // corrective ladder exhausting against a dispatch that ordered a write nothing would permit. The
-      // relocation to the run root fixed the permission. This removes the order itself: there is no path
-      // here to hold, the seat's grant carries no Write, and the driver writes the chunk from values.
-      //
-      // THE CHUNK INDEX IS NOT A PARAMETER, and the tool's own description says so to the model. The
-      // driver bound it at dispatch and the record tool reads it from the environment, never from the
-      // payload — because the chunk assignment is exactly what the validator's membership join checks
-      // against, and a seat that could name its own chunk would author the identity its work is judged by.
+      `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted, overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not in the chunk summary. The report states its coverage in code from the run's own measurements, and the validator refuses a chunk that speaks for it. That is a rule about the lane, not about the filings: a filing you were handed is evidence like any other.`,
+      `EVERY conflicting name is a typed findings[] record. A named conflict belongs in findings[], not in bullets — write it once.`,
+      `The manual sets out each mark's record: its \`findings[]\`, its opening read in \`assessment\`, its typed read, and the chunk's \`chunkSummary\`, which code joins into the batch summary, so a mark missing from it is missing from the report.`,
       `HAND YOUR RATINGS BACK BY CALLING \`record_knockout_assess\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none — the driver writes this chunk itself from what you send, and nothing you write by hand is read. You are not told which chunk number to send and there is no field for it: the driver bound that when it dispatched you.`,
       `SEND ONLY WHAT YOU ARE CORRECTING IF YOU CALL AGAIN. A second call MERGES into the first: marks are merged BY NAME, so a mark you omit keeps the rating you already gave it. What you DO send for a mark replaces that mark's whole record, so send a corrected mark complete rather than as a fragment.`,
       chunkNo === 0
@@ -549,12 +516,13 @@ export const KO_STAGES = {
   // that the replacement reads better than what it replaced. A cheaper rung would produce replacements
   // nobody would ship, which is a pass that runs and achieves nothing.
   "knockout-review": {
-    model: "opus", thinking: "high", timeoutSec: 600, stallSec: 420,
+    model: "opus", thinking: "high", timeoutSec: 900, stallSec: 600,
     // DECLARATIVE ONLY on this lane, exactly as the assess stage records: nothing in koStage reads
     // `skillReads`, and the effective read is the `reads([...])` call in the message below. The two are
     // edited together and the asymmetry is written down rather than left to be discovered.
     skillReads: ["skills/clearance-search/report-prose.md"],
-    out: (K) => K.review,
+    // A later pass reads the corrected record, under its own artifact: `knockout-review#1`.
+    out: (K, pass) => (pass ? knockoutReviewFile(K.runDir, pass) : K.review),
     validate: validateKnockoutReviewFile,
     // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
     //
@@ -566,13 +534,27 @@ export const KO_STAGES = {
     // exists to stop. A record the driver's read flags nowhere is handed its first-read lines instead,
     // by the owner's ruling of 2026-10-10, so both branches have rows under them; a record with no such
     // line is not dispatched at all.
-    message: ({ K, evidenceLines = [], firstReadLines = [], exclusionNote = "" }) => lines(
+    message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", recheckTable = "", sourceAnswers = [] }) => lines(
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
-      reads(["skills/clearance-search/report-prose.md"]),
-      `You are the REVIEWING PASS on a knockout screen. The batch is already rated and nothing about that rating is yours to change. Your job is the words.`,
+      reads(["skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
+      `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence, then check its wording. You change no band and no finding yourself.`,
+      requestLine(K, (at) => `The client's request, as it arrived: ${at}`, (at) => `The available brief: ${at}. The original request is not held here.`),
+      recheckTable
+        ? [`THIS IS THE SECOND LOOK. An earlier check raised the defects below. The table says what the driver saw of each, including any the rating step did not answer, and the record you are reading is the record as it now stands.`,
+          recheckTable,
+          `For each row, read the record and judge whether the defect is answered. Agreement is part of that: a changed finding or band must agree with its name's basis, factors, opening read and block in the batch summary. There is no further correction after this one, so send as \`material\` only what is still wrong; it stays on the record for the reviewing lawyer.`].join("\n")
+        : `MATERIAL DEFECTS COME FIRST. A defect is material when repairing it would change what the client is told: a band the framework and the evidence do not support (\`band\`), a filing or use a lawyer would raise that the answer leaves out (\`missing\`), something set aside against the evidence (\`exclusion\`), scope the request asked for that the answer does not cover (\`scope\`), or a line that contradicts the record beneath it (\`contradiction\`). Send each as a \`material\` row: \`kind\`, \`mark\` verbatim, the finding's ordinal as \`finding\` where it is about one, and what is wrong and why it matters as \`problem\`. Identify the held evidence behind the defect in rests_on. A defect about scope, the framework, or internal agreement may instead identify the supplied request passage, framework rule, or rated field in problem. Do not invent a filing or URL to justify that defect. A filing held for this batch may bear on more than one name, so a defect on one name may rest on a filing held under another, by its held recordId and source. You repair nothing: the step that rated the batch answers each row, and the record is then read again. A rating a lawyer could reasonably reach is not a defect, and neither is a preference about wording.`,
+      `Each name's research payload is under ${K.researchDir}.`,
+      `rests_on takes a recordId, a question qid, or a URL from ${PERMITTED_SOURCES}. A failed question's qid supports a statement about the failure, not a finding about filings the question never returned. ${SIBLING_SOURCE}`,
+      sourceAnswers.length
+        ? [`THESE CITATIONS WERE LEFT OUT AS NOT HELD, AND THE FINDINGS THAT CITED THEM CHANGED AFTERWARDS. Read each against that problem: a claim still without held support is a material defect.`, ...sourceAnswers].join("\n")
+        : "",
+      `THE WORDS COME AFTER. A line a reader meets before opening anything is held to this rule.`,
       `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
       `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,
+      existsSync(K.registerRecords) ? `The register record behind it: ${K.registerRecords}. It holds what the reading step carried, what it set aside and why.` : "",
+      `Where this run read the register, \`read_register_list\` reads any of its lists whole, by qid, and fetches nothing. Use it to answer the first question; a rewrite still adds no fact the rating did not weigh.`,
       evidenceLines.length
         ? `THE DRIVER MEASURED THESE LINES. Each row is the line, the ADDRESS that names it, and what a deterministic read found. THIS IS EVIDENCE, NOT A VERDICT: judge each in context and pass over any where the word is the subject rather than the profession's shorthand. ${exclusionNote}`
         : `THE DRIVER'S READ FLAGGED NO LINE ON THIS RECORD, so nothing below is evidence of a fault. These are the lines a reader meets first, each with the ADDRESS that names it. Rewrite one only where it would answer the client's question more plainly; if every line already does, send one \`declined\` row at one of these addresses saying so, rather than inventing a rewrite to fill the call.`,
@@ -583,11 +565,51 @@ export const KO_STAGES = {
       // happen. The address IS the field, so every rewrite this stage returns names the exact line it
       // replaces and the driver writes it there.
       `Send your answer to that first question as \`first_question\` in the same call.`,
-      `HAND YOUR REWRITES BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none for you to write to. Send \`rewrites\`: one row per line you are replacing, each carrying the \`at\` address COPIED VERBATIM from the row above and \`text\`, the replacement prose. The driver writes your text into that field exactly as you send it.`,
+      `HAND YOUR ANSWER BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none for you to write to. Send \`material\` as above, and \`rewrites\`: one row per line you are replacing, each carrying the \`at\` address COPIED VERBATIM from the row above and \`text\`, the replacement prose. The driver writes your text into that field exactly as you send it.`,
       `A REWRITE KEEPS EVERY FACT. You are changing the register, never the content: the same band, the same names, the same reasons, the same conclusion, in the words the reader already owns. Splitting one long sentence into two short ones is the commonest right answer. Dropping the reason to make a line shorter is the commonest wrong one.`,
       `SEND \`declined\` FOR A LINE YOU ARE LEAVING ALONE, with \`why\`. A word that is a mark being screened, a client's own product name, or a term with no plainer form that keeps the meaning — say so and leave it. A line you neither rewrite nor decline is indistinguishable afterwards from a line nobody read.`,
-      `YOU MOVE NOTHING ELSE. No band, no finding, no ordinal, no count, no piece of evidence and no caveat the engine wrote. There is no field for any of them and a payload naming one is refused.`,
+      `A REWRITE MOVES NOTHING ELSE. No band, no finding, no ordinal, no count, no piece of evidence and no caveat the engine wrote. There is no field for any of them and a payload naming one is refused.`,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges BY ADDRESS onto what it already accepted, so a row you omit keeps what you sent for it before.`,
     ),
+  },
+  // A MATERIAL DEFECT'S REPAIR. Dispatched only when the check raised one, per chunk, on the chunk as rated. Its answer is its own
+  // artifact because the chunk it changes is already valid: a turn that called nothing would otherwise pass.
+  "knockout-correct": {
+    model: "opus", thinking: "high", timeoutSec: 1200, stallSec: 600,
+    // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
+    skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
+    out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
+    validate: validateKnockoutCorrectionFile,
+    message: ({ K, job = {}, chunkNo, work = null, chunkMarks = [], frameworkPath = null, frameworkMethod = null }) => {
+      const asRated = (() => { try { return JSON.parse(readFileSync(K.assessChunk(chunkNo), "utf8")); } catch { return null; } })();
+      const scope = chunkScope(work, chunkNo, asRated);
+      const ordinalOf = (d) => (asRated?.marks ?? []).find((m) => m?.name === d.mark)?.findings?.find((f) => sameFinding(f, d.names))?.ordinal;
+      const named = new Set(scope.defects.map((d) => d.mark));
+      return lines(
+        reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
+        `An independent check read this rated batch and raised the defects below. Repair what the evidence supports, and nothing else.`,
+        requestLine(K,
+          (at) => `THE CLIENT'S OWN REQUEST, VERBATIM: ${at}. Read it before you rate. Its stated goods, services, and intended use lead over the plan; the customer's profile fills gaps. Keep a guessed use as a possibility. Do not use that guess to narrow the instructed scope or lower a rating.`,
+          (at) => `AVAILABLE BRIEF: ${at}. The original request is not held here. Read the brief before you rate, keep its stated scope, and distinguish supplied facts from inferred uses. Do not lower a rating on a guessed use.`),
+        `The record as rated: ${K.assessChunk(chunkNo)}. The ordinals you use are the ones in that file.`,
+        `The batch plan: ${K.plan}. The frozen framework's bands: ${driverDir(K.runDir, "framework.json")}.`,
+        `Each name's research payload: ${chunkMarks.filter((m) => named.has(m.name)).map((m) => K.research(kebab(m.name))).join(" · ")}. The batch's other recorded research payloads are under ${K.researchDir}.`,
+        existsSync(K.ownerChecks) ? `The recorded owner checks, with the owner and filing each belongs to: ${K.ownerChecks}.` : "",
+        existsSync(K.registerRecords) ? `The filings this run read: ${K.registerRecords}. \`read_register_list\` reads any question's whole list by qid, and fetches nothing.` : "",
+        orderedTerritories(job).length ? `THE TERRITORIES THIS SCREEN WAS ORDERED FOR: ${orderedTerritories(job).join(", ")}. A use found only outside them is out of scope for this screen.` : "",
+        `THE DEFECTS.`,
+        ...scope.defects.map((d) => `${d.n}. [${d.kind}] "${d.mark}"${d.names ? `, finding ${ordinalOf(d) ?? "?"} (${d.names.name})` : ""}: ${d.problem}${d.rests_on?.length ? ` Rests on: ${d.rests_on.join(", ")}.` : ""}`),
+        `A DEFECT IS ANOTHER READER'S FINDING, NOT AN ORDER. Check it against the evidence. Where it holds, repair the finding or the rating. Where it does not, leave the record and say why.`,
+        frameworkMethod ? methodDictation(frameworkMethod) : "",
+        frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
+        `HAND BACK BY CALLING \`record_knockout_correction\`, sending only what changes. THERE IS NO FILE FOR YOU TO WRITE. For a name: the fields that change. A finding goes back whole under its ordinal, and a new one takes the next ordinal. A name no defect concerns stays unchanged. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged.`,
+        `A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.`,
+        `${CITED_URL_RULE} ${SIBLING_SOURCE}`,
+        OWNER_SOURCE,
+        `BRING EVERY DEPENDENT ANSWER WITH IT. Whatever the repair changes, the name's lines that rest on it change with it: \`basis\`, \`factors\`, \`counterFactors\`, \`mitigation\`, \`assessment\`, \`bullets\`, its \`registerReads\` and its block in \`chunkSummary\`. A rating that moves needs \`basis\`, \`assessment\` and \`chunkSummary\` in the call. The manual's rules still hold: a name is never rated above its worst card.`,
+        `REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS DEFECT ON ITS OWN. Use \`remove_findings\` only where the evidence shows the finding should not be there, and say so.`,
+        `ANSWER EVERY DEFECT in \`answers\`: \`defect\`, \`outcome\` (\`changed\` or \`stands\`), \`why\`, and in \`findings\` the ordinal of any finding this repair moved beyond the one the defect names. If you call again, send only what you are correcting.`,
+      );
+    },
   },
 };

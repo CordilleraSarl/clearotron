@@ -1492,7 +1492,7 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
     // term was asked and answered, and none was left unanswered. Anything else is a listing that did not
     // finish, which this page already has the sentence for.
     const terms = entry.terms ?? [];
-    const ranAndAnswered = terms.length > 0 && terms.every((t) => t.ok);
+    const ranAndAnswered = terms.length > 0 && terms.every((t) => t.ok && !t.setAside);
     return ranAndAnswered
       ? `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`
       : 'The filings listing for this name did not complete, so nothing here says whether one stands.';

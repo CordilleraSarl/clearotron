@@ -1,84 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// register-records.mjs — the FILINGS behind the narrow numbers.
+// register-records.mjs — the neutral record of a filing, and the sentences that speak about a name's filings.
 //
-// A count nobody can inspect is a teaser, not a finding. "59 identical" has no faces: the count
-// predicate returns a total and no rows, so the one question a reader asks next — WHICH filings? — had
-// no answer anywhere, not in the report, not in the workbook, not over MCP.
+// A count nobody can inspect is a teaser, not a finding. The filings behind a knockout's counts are read by its
+// reading step (knockout-register-read.mjs); this module holds what every surface shares about them.
 //
-// This lane answers it for the NARROW predicates only, and lists raw register facts. It is the counts
-// lane's sibling and it inherits every one of its rules unchanged.
-//
-// ══ WHICH PREDICATES, AND WHY NOT THE THIRD ════════════════════════════════════════════════════════
-//
-//   identical  — the mark itself. Listed.
-//   close      — each generated variant form (register-variants.mjs). Listed, per form, with the form
-//                that found it recorded on every row.
-//   containing — NEVER. That column is a breadth proxy over the register's broad name match, and its
-//                figures run to the hundreds; listing it would bury the two narrow answers under a
-//                list nobody asked for and turn a bounded fetch into an unbounded one. The owner ruled
-//                it out and the reason is the same one that keeps the column labelled a proxy.
-//
-// ══ THE RULES, EXTENDED FROM THE COUNTS LANE ═══════════════════════════════════════════════════════
-//
-// 1. NO MODEL TOUCHES A ROW. Code asks, code writes the sidecar, code renders the table. Not one field
-//    passes through a turn, so a row cannot be paraphrased, re-ordered or invented.
-// 2. A FETCH THAT FAILED IS NOT AN EMPTY LIST. `records: []` reads as "no filings" — which is a
-//    finding, and a false one. Every term carries its own status, and a term whose fetch failed says so
-//    with the provider's own words. The absence of the artifact, the absence of a term and an
-//    empty-but-answered term are three different facts and they stay three.
-// 3. NO JUDGMENT IS ADDED. No similarity score, no "this one matters", no status interpretation. The
-//    fields are what the register said: mark, owner, status, classes, territory, and the record's own
-//    address. Whether any of it blocks anything is lawyer work this product does not do.
-//
-// ══ WHERE IT CAN RUN ═══════════════════════════════════════════════════════════════════════════════
-//
-// Off `capabilities.screenSource`, which is already declared and already probed for exactly this
-// question — does a search ROW carry the fields, or do the fields cost a separate billed fetch?
-//
-//   "search-row" / "bulk-endpoint"  euipo, uspto-local, free-tier, corsearch. The rows come back with
-//                                   the search. Listing is one call per term.
-//   "billed-record-fetch"           clarivate. Its search answers with record IDENTIFIERS and nothing
-//                                   else, so the fields cost a further call — but that call is a BATCH
-//                                   of 100 ids (POST /text, TEXT_BATCH_MAX), and it hydrates all 100.
-//                                   Listing is one search + ceil(N/100) screen calls per term. The flag
-//                                   says the fields cost a fetch; it does NOT say the fetch is per
-//                                   record, and reading it that way priced this lane out by ~50× and
-//                                   would have shipped it inert on the register the deployment wires.
-//
-// ══ COST ═══════════════════════════════════════════════════════════════════════════════════════════
-//
-// One call per listed term, on top of the count lane's own call for the same term. They cannot share:
-// the count rides `cheapCountParams` (`limit:1, fields:["uri"]` — the smallest response the API will
-// give), that probe is BUILT BY makeEnumerate as well as by the count kernel, and widening it would
-// change what every enumerate call fetches. So the listing pays its own way, and the receipts ledger
-// carries a line per call with `stage: "records"` on it so the two lanes' costs can be told apart.
-//
-//   corsearch     one billable page-0 search per term. This is where the delta bites.
-//   euipo         free in money, one request against the daily allowance per term.
-//   uspto-local   free — a local SQLite read.
-//   clarivate     one search + one POST /text per 100 listed ids per term — 2 calls at this lane's cap.
-//                 The ids are capped BEFORE the screen, because this provider's search is single-shot
-//                 and returns the complete guid set; screening what came back would be the runaway.
-//
-// This counts CALLS, which is the unit the receipts ledger records. What a call costs under any
-// provider contract is not in this repo, so nothing here converts these into money.
+// 1. NO MODEL TOUCHES A ROW. Code asks, code writes the record, code renders the table. Not one field passes through a
+//    turn, so a row cannot be paraphrased, re-ordered or invented.
+// 2. A FETCH THAT FAILED IS NOT AN EMPTY LIST. `records: []` reads as "no filings", which is a finding and a false one.
+//    A question carries its own status, and the absence of the artifact, the absence of a question and an
+//    empty-but-answered question are three different facts and they stay three.
+// 3. NO JUDGMENT IS ADDED by code. The fields are what the register said: mark, owner, status, classes, territory, and
+//    the record's own address.
 
-import { appendFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
-import { resolveRegions } from "./register-plan.mjs";
-import { reachableRegions } from "./register-availability.mjs";   // — pure; the env binding is injected
-import { variantForms, VARIANT_CAP } from "./register-variants.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
 import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
-
-/** Records per MARK, across every listed term. A bound on cost, on artifact size and on what a reader
- *  can usefully hold — and it is stated wherever the list renders, per the ruling. */
-export const RECORD_CAP = 100;
-
-/** The floor on a single term's share of the cap. Without it a name generating twelve forms would give
- *  each form eight rows, and a form with eight rows tells a reader almost nothing. */
-const PER_TERM_FLOOR = 5;
 
 /** What the listing is, in one client-safe sentence. Rendered verbatim on every surface. */
 export const RECORD_BASIS = "The filings behind the two narrow counts — the name itself and each close "
@@ -106,30 +45,9 @@ export function recordsPreflight({ capabilities, hasAdapter = true }) {
   return null;
 }
 
-// bounded-concurrency fan-out — the same local idiom as register-count.mjs, for the same reason.
-async function runBatched(items, limit, fn) {
-  const results = new Array(items.length);
-  let i = 0;
-  const cap = Number.isFinite(limit) && limit >= 1 ? Math.floor(limit) : 1;
-  const workers = Array.from({ length: Math.max(1, Math.min(cap, items.length)) }, async () => {
-    while (i < items.length) { const idx = i++; results[idx] = await fn(items[idx], idx); }
-  });
-  await Promise.all(workers);
-  return results;
-}
-
-/** The terms one mark is listed under, in report order: the mark, then its generated forms. */
-export function listedTerms(name, { variantCap = VARIANT_CAP } = {}) {
-  const v = variantForms(name, { cap: variantCap });
-  return [
-    { term: v.base, basis: "identical", label: "the name itself" },
-    ...v.forms.map((f) => ({ term: f.form, basis: "close", label: `close variation (${f.rules.join(", ")})`, rules: [...f.rules] })),
-  ];
-}
-
 /** One provider row → the neutral record. Every field is EXPLICIT, and an absent one is null rather
  *  than missing: a blank cell and an unstated field read alike to a human, and only one is honest. */
-function toRecord(row, { term, basis, provider }) {
+export function toRecord(row, { term, basis, provider }) {
   const classes = Array.isArray(row?.classes) ? row.classes
     : (Number.isInteger(row?.classes) ? [row.classes] : null);
   const territory = row?.office ?? (typeof row?.jurisdictions === "string" ? row.jurisdictions : null)
@@ -169,166 +87,6 @@ const goodsOnRow = (row) => {
   const statements = rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) });
   return statements.length ? statements : null;
 };
-
-/**
- * List the filings behind the narrow counts, for every mark in the batch.
- *
- * @param marks   [{ name, classes? }] — the request's rows, same source as the counts lane.
- * @param lister  async (term, { classes, regions, limit }) => { ok, records[], total, reason }
- * @returns the sidecar document, ready to write. Never throws for one mark or one term: a failed fetch
- *          is a recorded status, and the caller decides what a batch-wide failure means.
- */
-export async function listRegisterRecords({
-  marks, classes = null, jurisdictions = null, provider, capabilities,
-  lister, concurrency = 3, ledgerPath = null, now = () => new Date(),
-  cap = RECORD_CAP, variantCap = VARIANT_CAP, unreachable = [],
-}) {
-  const { regions: coveredRegions, deferred, worldwide } = resolveRegions(jurisdictions, capabilities);
-  // — the same office split the count lane above does, for the same reason and with the same
-  // helper. This lane had the identical defect: full declared coverage handed straight to a composite
-  // adapter, which fans out to a member the box cannot reach. Fixing only the counts would leave a
-  // report whose figures cover EU and whose listed filings claim to cover EU+US.
-  //
-  // NO PREFLIGHT REFUSAL HERE, deliberately. The empty-coverage case is caught by countPreflight, which
-  // runs first and throws inside the same `if (probeWanted)` block (pipeline-knockout.mjs), so this lane
-  // is only reached when something is reachable. Adding a second refusal would also change this lane's
-  // contract: recordsPreflight's refusals are non-fatal by design — "the counts are unaffected and still
-  // run" — and a fatal one here would take down the product for a gap in its explanation.
-  const { regions, dropped } = reachableRegions(coveredRegions, unreachable, capabilities?.offices?.covered, worldwide === true);
-  const officeScope = dropped.length
-    ? { listed: regions, unlisted: dropped.map((d) => ({ office: d.office, memberId: d.memberId, missing: [...(d.missing ?? [])] })) }
-    : null;
-  const batchClasses = (Array.isArray(classes) ? classes : []).filter((n) => Number.isInteger(n));
-  const markCap = Number.isFinite(cap) && cap >= 1 ? Math.floor(cap) : 0;
-
-  const rows = await runBatched(marks ?? [], concurrency, async (m) => {
-    const name = String(m?.name ?? "").trim();
-    const own = (Array.isArray(m?.classes) ? m.classes : []).filter((n) => Number.isInteger(n));
-    const scoped = own.length ? own : batchClasses;
-    const terms = listedTerms(name, { variantCap });
-    // THE SHARE IS DECIDED BEFORE THE FIRST CALL, and it is even. The obvious alternative — let the
-    // identical predicate fill the cap and give the forms what is left — silently produces a listing
-    // with no close variations in it on exactly the crowded names where the close variations are the
-    // point. A term with fewer filings than its share simply returns fewer; the unused room is not
-    // redistributed, because doing so would need a second pass and a second call per term.
-    const perTerm = Math.max(PER_TERM_FLOOR, Math.floor(markCap / Math.max(1, terms.length)));
-
-    const seen = new Set();
-    const records = [];
-    let capped = false;
-    const termRows = await runBatched(terms, 1, async (t) => {
-      const started = Date.now();
-      const remaining = markCap - records.length;
-      if (remaining <= 0) {
-        capped = true;
-        // NOT AN EMPTY RESULT. The term was never asked, and saying so is the difference between "no
-        // filings under this form" and "we stopped before we got here".
-        return { ...t, ok: false, fetched: 0, total: null, notAsked: true,
-          reason: `the ${markCap}-record cap for this name was reached before this form was fetched` };
-      }
-      const want = Math.min(perTerm, remaining);
-      let r;
-      try { r = await lister(t.term, { classes: scoped, regions, limit: want, basis: t.basis }); }
-      catch (e) { r = { ok: false, records: null, reason: `record listing threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
-      const ok = Boolean(r?.ok) && Array.isArray(r?.records);
-      let fetched = 0;
-      if (ok) {
-        for (const raw of r.records) {
-          // THE SHARE IS ENFORCED ON INGEST, not only on the request. `limit` is a request to the
-          // provider and a provider is free to answer with more — a fixture does, and so does any
-          // source whose paging knob was named differently from the one we sent (euipo pages on `size`
-          // and would ignore a `limit` entirely). Trusting the request alone let the first term swallow
-          // the whole cap, which is exactly the outcome the even share exists to prevent: a crowded
-          // name crowding its own variants off its own listing.
-          if (fetched >= want) break;
-          if (records.length >= markCap) { capped = true; break; }
-          const rec = toRecord(raw, { term: t.term, basis: t.basis, provider });
-          // Dedupe across terms: one filing can answer the name AND a variation of it, and printing it
-          // twice would inflate a list a reader counts. The FIRST term to find it keeps it, and terms
-          // run in report order, so a filing on the name is attributed to the name.
-          const key = rec.recordId ?? `${rec.mark}|${rec.owner}|${rec.territory}`;
-          if (seen.has(key)) continue;
-          seen.add(key);
-          records.push(rec);
-          fetched += 1;
-        }
-      }
-      if (ledgerPath) {
-        try {
-          appendFileSync(ledgerPath, JSON.stringify({
-            ts: now().toISOString(), stage: "records", mark: name, term: t.term, basis: t.basis,
-            classes: scoped, regions, provider, ok, requested: want, fetched,
-            total: Number.isFinite(r?.total) ? r.total : null, took_ms: Date.now() - started,
-            ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
-            ...(ok && Array.isArray(r?.warnings) && r.warnings.length ? { warnings: r.warnings } : {}),
-            ...(ok ? {} : { cause: String(r?.reason ?? "unknown").slice(0, 300) }),
-          }) + "\n");
-        } catch { /* receipts are best-effort, never fatal */ }
-      }
-      return {
-        ...t, ok, fetched,
-        // How many the register HOLDS under this term, where it said. `fetched` under `total` is the
-        // truncation, and it is stated rather than left for a reader to notice.
-        total: Number.isFinite(r?.total) ? r.total : null,
-        // An approximation is carried as one, exactly as the count lane records it: no number in
-        // `total`, the register's floor beside it. Only a provider whose listing states it sets it.
-        ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
-        // The register's own notes on this answer, as it sent them — absent when it sent none, which is
-        // not evidence that the answer carried no caveat on a register that sends none at all.
-        ...(ok && Array.isArray(r?.warnings) && r.warnings.length ? { warnings: r.warnings } : {}),
-        ...(ok ? {} : { reason: String(r?.reason ?? "the filings could not be fetched").slice(0, 300) }),
-      };
-    });
-
-    return {
-      name,
-      classes: scoped.length ? scoped : null,
-      classScope: scoped.length ? (own.length ? "mark" : "batch") : "all-classes",
-      terms: termRows,
-      records,
-      // The three numbers a reader needs to trust the list: how many are here, how many the register
-      // said there are under the listed terms, and whether the cap cut it.
-      fetched: records.length,
-      // NO SUM WHEN ANY ANSWERED TERM IS APPROXIMATE. An approximation carries a floor and no number, so a
-      // sum around it counts only the exact terms: a name the register answered as more than 10,000 read
-      // "out of 800 hits" beside its two close forms. With no honest total none is stated (recordsLine
-      // drops the clause for a non-number), and the counts line still carries the approximation.
-      available: termRows.some((t) => t.ok && t.approximate === true) ? null
-        : termRows.reduce((n, t) => (Number.isFinite(t.total) ? n + t.total : n), 0),
-      capped: capped || records.length >= markCap,
-      cap: markCap,
-      // — which registers this listing covers, present only when one was dropped. Per-mark for the
-      // same reason as the counts lane: recordsLine is handed one row.
-      ...(officeScope ? { officeScope } : {}),
-      // — territories ordered for this matter that this register does not cover at all. Carried
-      // beside officeScope and never merged with it: covered-but-unreachable and never-covered send an
-      // operator to different places.
-      ...(deferred.length ? { deferredScope: deferred.map((d) => d.jurisdiction) } : {}),
-    };
-  });
-
-  return {
-    schema: 1,
-    provider, providerLabel: capabilities?.label ?? provider,
-    takenAt: now().toISOString(),
-    basis: RECORD_BASIS,
-    cap: markCap,
-    // Stated on the artifact so a reader never has to infer it from an absence: the breadth column is
-    // not listed, on purpose.
-    listedPredicates: ["identical", "close"],
-    excludedPredicates: [{ key: "containing", why: "a breadth proxy over the register's broad name match — its figures run to the hundreds, and listing them would bury the two narrow answers" }],
-    scope: {
-      jurisdictions: (jurisdictions ?? []).length ? jurisdictions : null,
-      regions: regions.length ? regions : null,
-      deferredJurisdictions: deferred.length ? deferred.map((d) => d.jurisdiction) : null,
-      // — covered by the provider, unreachable on this box. See the counts sidecar for why this is
-      // a separate field from the line above and not folded into it.
-      ...(officeScope ? { unreachableOffices: officeScope.unlisted } : {}),
-      classes: batchClasses.length ? batchClasses : null,
-    },
-    marks: rows,
-  };
-}
 
 /** How many marks got at least one filing. Zero means the listing produced nothing anyone can read. */
 export function listedMarks(doc) {
@@ -455,21 +213,23 @@ export function recordsLine(entry) {
     // the byte: a listing whose searches failed already said so, and this is not the item that touches it.
     // A run with both failures and stopped forms therefore still reports only its failures — pre-existing,
     // and left alone rather than widened on the way past.
-    const answered = (entry.terms ?? []).filter((t) => t.ok);
+    // A LIST COUNTED AND NOT READ IS NOT NONE EITHER: the register holds filings under it and this run set them aside.
+    const answered = (entry.terms ?? []).filter((t) => t.ok && !t.setAside);
+    const setAside = (entry.terms ?? []).filter((t) => t.setAside);
     if (failed.length) {
       return `Filings: not available — ${failed.length} of ${(entry.terms ?? []).length} search(es) could not be run.`
         + officeNote + coverageNote;
     }
-    return (answered.length && !skipped.length
+    return (answered.length && !skipped.length && !setAside.length
       ? `Filings: the register returned none under the name or any close variation of it, in the classes counted${unlisted.length ? ` and in the register${(entry.officeScope?.listed ?? []).length === 1 ? "" : "s"} searched (${(entry.officeScope?.listed ?? []).join(", ")})` : ""}.`
       : "Filings: the listing did not complete, so nothing here says whether one stands.")
       + officeNote + coverageNote;
   }
   const parts = [`${entry.records.length} filing${entry.records.length === 1 ? "" : "s"} listed`];
-  // "of N" is the SUM ACROSS THE SEARCHES, not a count of distinct filings — a filing that answers both
-  // the name and a variation of it is listed once here and counted twice there. Worded so a reader does
-  // not read it as a distinct-record total, which would make the listed fraction look smaller than it is.
-  if (Number.isFinite(entry.available) && entry.available > entry.records.length)
+  // "of N" IS THE SAME POPULATION AS THE LIST: the distinct filings this name's questions returned. A filing weighed for this name and
+  // found under another is listed and is no part of that N, so a list holding one states no fraction.
+  const found = entry.records.filter((r) => !r?.foundUnder).length;
+  if (found === entry.records.length && Number.isFinite(entry.available) && entry.available > found)
     parts.push(`out of ${entry.available} hits across the searches run`);
   if (entry.capped) parts.push(`capped at ${entry.cap} per name`);
   if (failed.length) parts.push(`${failed.length} search(es) could not be run`);
@@ -504,12 +264,26 @@ export function resolveRecordExecutor({ lister = null, adapter = null, agentId =
   };
 }
 
-/** The $0 dev/e2e executor: a directory of <term-lower>.json files, each `{ records: [...], total: n }`. */
-function fixtureLister(dir) {
-  return async (term) => {
-    const { readFileSync } = await import("node:fs");
-    const { join } = await import("node:path");
-    const file = join(dir, `${String(term).toLowerCase().replace(/[^a-z0-9]+/g, "-")}.json`);
+const fixtureSlug = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+/**
+ * Which file answers a question. The term alone is the exact question over the run's whole scope. A question with a
+ * filter is a different question and has a different answer, so each filter is in the name: a goods-narrowed question
+ * never reads the crowd's file, and one with no file is a question the fixture does not answer. PURE.
+ */
+export function fixtureFileName(term, { matchMode = "exact", goods = null, regions = null, classes = null, scoped = false } = {}) {
+  const parts = [fixtureSlug(term)];
+  if (matchMode && matchMode !== "exact") parts.push(fixtureSlug(matchMode));
+  if (Array.isArray(goods) && goods.length) parts.push(`goods-${fixtureSlug(goods.join(" "))}`);
+  if (scoped && Array.isArray(regions) && regions.length) parts.push(`in-${fixtureSlug(regions.join(" "))}`);
+  if (scoped && Array.isArray(classes) && classes.length) parts.push(`class-${fixtureSlug(classes.join(" "))}`);
+  return `${parts.join(".")}.json`;
+}
+
+/** The $0 dev/e2e executor: a directory of answer files (fixtureFileName), each `{ records: [...], total: n }`. */
+export function fixtureLister(dir) {
+  return async (term, question = {}) => {
+    const file = join(dir, fixtureFileName(term, question));
     let doc;
     try { doc = JSON.parse(readFileSync(file, "utf8")); }
     catch (e) { return { ok: false, records: null, reason: `record fixture missing for ${term}: ${e.message}` }; }

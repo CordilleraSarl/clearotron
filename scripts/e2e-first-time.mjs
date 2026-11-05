@@ -79,7 +79,7 @@ export const COUNTED_EVENTS = {
   "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "declination-goods-states-failed": FAILED, "review-exclusions-write-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
-  "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
+  "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-register-read-failed": FAILED, "knockout-sweep-outage": FAILED,
   "machine-qc-failed": FAILED, "named-band-invalid": FAILED, "owner-screen-failed": FAILED, "placement-carry-failed": FAILED,
   "plan-qids-provider-hard-error-deferred": FAILED, "predelivery-lint-failed": FAILED, "probe-over-cap-unreadable": FAILED,
   "profile-mismatch-probe-failed": FAILED, "recall-reconciliation-failed": FAILED,
@@ -109,8 +109,8 @@ export const COUNTED_EVENTS = {
   // A workbook that failed to build is recorded only here.
   "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
-  "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "applied" && Number(e.applied) > 0 },
-    { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
+  "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "corrected" || (e.outcome === "applied" && Number(e.applied) > 0) },
+    { kind: FAILED, when: (e) => !["applied", "corrected", "nothing-flagged"].includes(e.outcome) }],
   "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
   // a finding still saying its goods are cut or unread after the delivery repair was given their complete statements
@@ -193,7 +193,7 @@ export const NOT_COUNTED_EVENTS = {
     "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
     "knockout-published", "knockout-receipts", 
-    "knockout-register-records",
+    "knockout-register-records", "knockout-register-read",
     // The run's own span against the ten-minute target, written at delivery because that is the first
     // point at which the run's span is known. Same class as the sweep's line below: a RECORD, never a
     // failure. `overBar: null` on it means the span could not be measured, which is a gap in the record

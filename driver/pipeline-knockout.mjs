@@ -50,15 +50,20 @@ import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./fram
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
-import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecutor } from "./register-records.mjs";
-import { withFilingGoods } from "./filing-goods.mjs";   // the goods the listing's bodies hold, onto its records
+import { recordsPreflight, listedMarks } from "./register-records.mjs";
+import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, openingQid, questionPlanPath,
+  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, addedClassQuestions, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
-import { reviewDispatch, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
+import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
+import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
+import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
+import { knockoutAssessSourceDefects } from "./knockout-assess-record.mjs";
+import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
+import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
 import { writeRunStatus, readRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
@@ -196,16 +201,32 @@ export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for
  * with its counts, so "there was nothing to read" and "the pass never ran" are different rows in the
  * journal rather than one absent one.
  */
-async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
+async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, composeRecord }) {
+  // A ROUND ALREADY BEGUN GOES ON FROM WHERE IT STOOD: a resumed run must not check a half-corrected record as a first look.
+  const begun = readCorrectionWork(run.runDir);
+  if (begun?.stoodDown) return merged;
+  if (begun) return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work: begun, firstReview: readJsonOrNull(knockoutReviewFile(run.runDir)), merged });
+  // A SOURCE THE RATING LOST STAYS OPEN: leaving a reference out does not support the claim it stood behind. It goes to the correction
+  // with whatever the check raises, and where no check or correction follows, it stays on the record for the reviewing lawyer.
+  const sourceDefects = sourceDefectsOf(run.runDir, merged, chunks);
+  // A REPAIR THE RATING STEP PROPOSED WAITS FOR THE CHECK, and stays on the record until an accepted read of it. The changed work stays too.
+  const sourceAnswered = chunks.flatMap((_, c) => knockoutAssessSourceDefects(run.runDir, c)).filter((x) => x.state === "answered");
+  const keepOpen = () => {
+    if (!sourceDefects.length && !sourceAnswered.length) return;
+    atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run",
+      open: [...sourceDefects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state: "not-corrected" })),
+        ...sourceAnswered.map((x) => ({ kind: "source", mark: x.mark, problem: sourceProblem(x), state: "not-rechecked" }))] }, null, 2) + "\n");
+  };
   const d = reviewDispatch(merged, plan);
   const { about } = d;
-  if (!d.dispatch) {
+  if (!d.dispatch && !sourceDefects.length && !sourceAnswered.length) {
     runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0, listed: 0,
       marks: merged.marks.length, excludedMarks: about.marks.length, excludedOwners: about.owners.length });
     return merged;
   }
 
   const keep = (outcome, detail) => {
+    keepOpen();
     runLog(run.runDir, { event: "knockout-review", outcome, flagged: d.flagged, listed: d.listed, applied: 0,
       delivered: "the rated record, unrewritten", ...detail });
     note(`reviewing pass: ${outcome} — the rated record ships unrewritten`);
@@ -214,7 +235,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
 
   try {
     await koStage("knockout-review", ctx, {
-      msgCtx: d.msgCtx,
+      msgCtx: { ...d.msgCtx, sourceAnswers: sourceAnswered.map(sourceAnswerLine) },
     });
   } catch (e) {
     return keep("stage-failed", { reason: String(e?.message ?? e).slice(0, 200) });
@@ -223,6 +244,14 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
   let review;
   try { review = JSON.parse(readFileSync(knockoutReviewFile(run.runDir), "utf8")); }
   catch (e) { return keep("artifact-unreadable", { reason: String(e?.message ?? e).slice(0, 200) }); }
+
+  // A MATERIAL DEFECT GOES TO THE STEP THAT CAN REPAIR IT, once, and the corrected record is read again.
+  if (review.material?.length || sourceDefects.length) {
+    const work = correctionWork({ rated: merged, material: [...(review.material ?? []), ...sourceDefects], chunks });
+    keepChunkBases(run.runDir, chunksOf(work));
+    atomicWrite(correctionWorkPath(run.runDir), JSON.stringify(work, null, 2) + "\n");
+    return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview: review, merged });
+  }
 
   const { doc, receipt } = applyKnockoutReview(merged, review);
   // THE REWRITTEN RECORD GOES THROUGH THE SAME GATE. Not a lighter one and not none: this is the record
@@ -235,6 +264,111 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
     applied: receipt.applied, declined: receipt.declined,
     unresolved: receipt.unresolved.length, refused: receipt.refused.length,
     excludedMarks: about.marks.length, excludedOwners: about.owners.length });
+  return doc;
+}
+
+/** What the check compares: the source left out and the claim as it stood, beside the record it reads. */
+export const sourceAnswerLine = (d) => `- "${d.mark}", finding "${d.name}"${d.removed ? ", since removed" : ""}: it cited "${d.cited}". The claim then: ${JSON.stringify(d.was?.net ?? "")}, on the ground ${JSON.stringify(d.was?.basis ?? "")}.`;
+
+const sourceProblem = (d) => (d.kind === "weighed"
+  ? `This finding listed "${d.cited}" among the filings it weighed, which this run does not hold, and it was left out. Give the claim held support, or amend it.`
+  : `This finding cited "${d.cited}", which is not traceable to ${PERMITTED_SOURCES}, and the citation was left out. Give the claim held support, or amend it.`);
+
+/** The sources the rating step lost and did not address, as defects on the findings they stood behind, in the record's numbering. */
+function sourceDefectsOf(runDir, merged, chunks) {
+  return chunks.flatMap((_, c) => knockoutAssessSourceDefects(runDir, c)).filter((d) => d.state !== "answered").map((d) => {
+    const mark = merged.marks.find((m) => String(m?.name ?? "") === String(d.mark ?? ""));
+    const finding = (mark?.findings ?? []).find((f) => sameFinding(f, d));
+    if (!finding) return null;
+    return { kind: "source", mark: d.mark, finding: finding.ordinal, rests_on: [],
+      problem: sourceProblem(d) };
+  }).filter(Boolean);
+}
+
+const readJsonOrNull = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+const chunksOf = (work) => [...new Set((work?.defects ?? []).map((x) => x.chunk).filter((c) => c != null))];
+
+/**
+ * One correction and one recheck. Each chunk a defect names goes back to the rating step; the record is composed again through the
+ * same steps and gate; and a fresh reader reads the result, with what became of each defect. There is no third look. What it still
+ * finds, and any defect no one answered, stays on the record for the reviewing lawyer. Nothing here can cost a client the report,
+ * and no defect leaves the record by a step failing: a repair the record cannot stand with goes back name by name, and a stage that
+ * fails leaves what it had accepted.
+ */
+async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview, merged }) {
+  const touched = chunksOf(work);
+  const correctedNames = [...new Set(work.defects.map((x) => x.mark))];
+  const log = (outcome, detail = {}) => runLog(run.runDir, { event: "knockout-review", outcome, material: work.defects.length, marks: correctedNames.length, ...detail });
+  const asOpen = (defects, state, reason = null) => defects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state, ...(reason ? { reason } : {}) }));
+  const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
+  const failed = [];
+  for (const c of touched) {
+    try {
+      await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
+    } catch (e) {
+      if (e instanceof StageFailure && e.resetsAt) throw e;
+      failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
+    }
+  }
+  // Back to the record as it was rated, through the same gate, with every defect still open and why.
+  const standDown = (outcome, detail) => {
+    restoreChunkBases(run.runDir, touched);
+    atomicWrite(correctionWorkPath(run.runDir), JSON.stringify({ ...work, stoodDown: outcome }, null, 2) + "\n");
+    keepRecord({ defects: work.defects, outcomes: [], recheck: "not-run", failure: outcome, failedChunks: failed, open: asOpen(work.defects, "not-corrected", outcome) });
+    let rated = merged;
+    try { rated = composeRecord(); } catch (e) { note(`the rated record could not be composed again (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); }
+    log(outcome, { applied: 0, delivered: "the rated record, uncorrected", ...detail });
+    note(`reviewing pass: ${outcome} — the rated record ships uncorrected`);
+    return rated;
+  };
+  if (failed.length === touched.length && !touched.some((c) => existsSync(knockoutCorrectionFile(run.runDir, c)))) return standDown("correction-failed", { reason: failed[0]?.reason });
+
+  // A REPAIR THE RECORD CANNOT STAND WITH GOES BACK, name by name, and the others stay.
+  let corrected = null, gateCause = null;
+  const rolledBack = [];
+  try { corrected = composeRecord(); }
+  catch (e) {
+    gateCause = String(e?.message ?? e).slice(0, 300);
+    for (const name of correctedNames) {
+      const kept = touched.map((c) => [c, readFileSync(K.assessChunk(c), "utf8"), existsSync(knockoutCorrectionFile(run.runDir, c)) ? readFileSync(knockoutCorrectionFile(run.runDir, c), "utf8") : null]);
+      rollBackName(run.runDir, work, name);
+      try { corrected = composeRecord(); rolledBack.push(name); break; }
+      catch { for (const [c, text, receipt] of kept) { writeFileSync(K.assessChunk(c), text); if (receipt != null) writeFileSync(knockoutCorrectionFile(run.runDir, c), receipt); } }
+    }
+    if (!corrected) return standDown("correction-refused-by-the-merged-gate", { reason: gateCause });
+  }
+  const outside = movedOutsideScope(work, corrected);
+  if (outside.marks.length || outside.blocks.length) return standDown("correction-moved-what-no-defect-named", { outside });
+
+  // THE FIRST PASS'S REWRITES STILL STAND WHERE NO DEFECT REOPENED THE LINE. The second pass reads the record with them on it.
+  let doc = corrected;
+  const { doc: rewritten, receipt } = applyKnockoutReview(corrected, rewritesThatSurvive(firstReview, correctedNames));
+  if (validateMergedFindings(run.runDir, rewritten, plan).ok) { doc = rewritten; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
+
+  const answers = correctionAnswers(run.runDir, touched);
+  const outcomes = correctionOutcomes(work, doc, answers);
+  const unresolved = unresolvedFlags(outcomes).map((r) => r.n);
+  const notAnswered = work.defects.filter((x) => outcomes.find((o) => o.n === x.n)?.outcome === "not-answered");
+  const held = { defects: work.defects, outcomes, failedChunks: failed, rolledBack, ...(gateCause ? { gateCause } : {}) };
+
+  const d = reviewDispatch(doc, plan);
+  try {
+    await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes) } });
+  } catch (e) {
+    if (e instanceof StageFailure && e.resetsAt) throw e;
+    // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
+    const reason = String(e?.message ?? e).slice(0, 200);
+    keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });
+    log("recheck-failed", { applied: receipt.applied, unresolved: unresolved.length, reason });
+    return doc;
+  }
+  const second = readJsonOrNull(knockoutReviewFile(run.runDir, 1));
+  const found = second?.material ?? [];
+  const open = [...found, ...asOpen(notAnswered.filter((x) => !found.some((m) => m.mark === x.mark && m.kind === x.kind)), "not-answered")];
+  keepRecord({ ...held, recheck: "ran", open });
+  const again = applyKnockoutReview(doc, second ?? {});
+  if (validateMergedFindings(run.runDir, again.doc, plan).ok) { doc = again.doc; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
+  log("corrected", { applied: receipt.applied + again.receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length, rolledBack: rolledBack.length });
   return doc;
 }
 
@@ -284,6 +418,95 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
     output: outputMeta(out), outputWritten: r.wrote ?? null, ...stageWallFields(tDispatch) });
   if (!r.ok) throw new StageFailure(label, r.fail ?? "failed", r.resetsAt);
   return r;
+}
+
+// ── THE READING STEP, around its model turn ──────────────────────────────────────────────────────────
+//
+// The counts have landed and nothing has been read. The code writes the run's question plan; the turn looks at the counts,
+// asks what the reading rule calls for, and hands back its judgment. The record every later stage reads is built here,
+// from what the register answered and what the turn said.
+//
+// NEVER TERMINAL, the rule this lane has always held for its filings: the counts are the product, and a run that got
+// them delivers. When a turn fails the record keeps every answer the run holds and every decision the turn had settled,
+// with the failure on it, and nothing more is fetched: listing each smaller count is no recovery. A rate limit is not
+// that failure: it parks and resumes as every stage's does, and the resume reuses each answer held.
+async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts, countExec, opts }) {
+  const names = markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null }));
+  const exec = resolveQuestionExecutor({
+    lister: opts?.recordLister ?? null, adapter: activeProvider(),
+    agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`, recordLog: runRecordLogPath(run.runDir),
+    // A fixture run never reaches a live register: if the counts ran on fixtures this lane may not either.
+    offline: countExec.source.startsWith("fixtures:"),
+    fixtureDir: job?.registerFixtures?.records ?? null,
+  });
+  const refusal = countExec.source.startsWith("fixtures:") && exec.source === "none"
+    ? "this run counted from fixtures and its job declares no `registerFixtures.records` directory, so the "
+      + "filings behind the counts were not listed — a fixture run never reaches a live register."
+    : recordsPreflight({ capabilities: ctx.registerCaps, hasAdapter: exec.source !== "none" });
+  if (refusal) {
+    atomicWrite(K.registerRecords, JSON.stringify({
+      schema: 2, provider: REGISTER_PROVIDER, providerLabel: ctx.registerCaps?.label ?? REGISTER_PROVIDER,
+      takenAt: new Date().toISOString(), unavailable: refusal, marks: [],
+    }, null, 2) + "\n");
+    note(`register filings not listed: ${refusal}`);
+    runLog(run.runDir, { event: "knockout-register-records-refused", provider: REGISTER_PROVIDER, reason: refusal });
+    return null;
+  }
+  const unreachable = exec.source === "provider" ? (ctx.registerUnreachable ?? []) : [];
+  const scope = { marks: names, classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null, capabilities: ctx.registerCaps, unreachable };
+  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: REGISTER_PROVIDER, counts, reading, framedMarks: plan.marks,
+    readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
+  try {
+    if (exec.fixtureDir) writeFixtureMarker(run.runDir, exec.fixtureDir);
+    atomicWrite(questionPlanPath(run.runDir), JSON.stringify(knockoutQuestionPlan({ ...scope, framedMarks: plan.marks }), null, 2) + "\n");
+    mkdirSync(join(run.runDir, "register-units"), { recursive: true });
+  } catch (e) {
+    note(`register filings listing failed (non-fatal): ${e.message}`);
+    runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
+    return null;
+  }
+
+  let reading = null;
+  try {
+    // A REGISTER INJECTED IN-PROCESS has no tool server a model turn could reach, so the code asks what the plan owes each name.
+    if (exec.source === "injected") {
+      const framedOf = (name) => (plan.marks ?? []).find((f) => String(f?.name ?? "").trim().toLowerCase() === name.toLowerCase()) ?? null;
+      const owedOf = (name) => [
+        ...((counts.marks ?? []).find((m) => String(m?.name) === name)?.counts?.identical?.total > 0 ? formsOfName(name, framedOf(name)).map((_, i) => formQid(name, i)) : []),
+        ...addedClassQuestions(run.runDir, name).map((q) => q.qid)];
+      await runBatched(names.map((m) => m.name).filter((name) => owedOf(name).length), 3, async (name) => {
+        const r = await exec.execute({ planPath: questionPlanPath(run.runDir), axis: knockoutAxis(name), outputPath: knockoutBandPath(run.runDir, name),
+          qids: owedOf(name) });
+        if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
+      });
+    } else {
+      const inScope = [...new Set(names.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
+      await koStage("knockout-register-read", ctx, { msgCtx: {
+        readingLines: readingTableLines({ marks: names, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
+        providerDoc: activeProvider()?.skillDoc ?? null, inScope,
+      } });
+      reading = JSON.parse(readFileSync(K.registerReading, "utf8"));
+      runLog(run.runDir, { event: "knockout-register-read", names: reading.marks?.length ?? 0 });
+    }
+  } catch (e) {
+    if (e instanceof StageFailure && e.resetsAt) throw e;
+    note(`register reading step did not finish (non-fatal): ${String(e?.message ?? e).slice(0, 200)}`);
+    runLog(run.runDir, { event: "knockout-register-read-failed", cause: String(e?.message ?? e).slice(0, 300) });
+    reading = settledKnockoutReading(run.runDir);
+  }
+  try {
+    const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
+    atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
+    appendQuestionReceipts(K.countLedger, doc, { provider: REGISTER_PROVIDER });
+    runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: exec.source,
+      marks: doc.marks.length, listed: listedMarks(doc), records: doc.marks.reduce((n, m) => n + m.records.length, 0),
+      questions: doc.marks.reduce((n, m) => n + m.terms.filter((t) => t.qid?.startsWith("supp:")).length, 0), reading: reading ? "finished" : "not-finished" });
+    return doc;
+  } catch (e) {
+    note(`register filings listing failed (non-fatal): ${e.message}`);
+    runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
+    return null;
+  }
 }
 
 // ── The sweep's executors: injected (tests) → fixtures dir (the $0 offline guarantee) → the live
@@ -551,6 +774,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // settled here, once, before the paid frame turn — never twenty identical per-mark failures and a
     // published report with an empty column where the product should have been.
     const probeWanted = Boolean(policy.components?.registerProbe);
+    // THE RECORD THAT THIS RUN HAS NO REGISTER COMPONENT, so a later step reads a skip from what ran, and never from a missing file.
+    if (!probeWanted) atomicWrite(driverDir(run.runDir, REGISTER_LANE_FILE), JSON.stringify({ skipped: true }) + "\n");
     let countExec = { count: null, source: "none" };
     if (probeWanted) {
       // — NO REGISTER SET IS A REFUSAL TOO, stamped like the count refusal below. `activeProvider()`
@@ -715,73 +940,6 @@ export async function knockoutInner(ctx, job, opts = {}) {
     if (probeWanted) {
       koStep(ctx, KO_STEP_REGISTER_COUNT);
       ensureDriverDir(run.runDir);
-      // The listing lane, as a step the count lane can run before or after. It returns the listing it
-      // wrote, or null when it was refused or failed; either way it has already recorded why.
-      const listFilings = async () => {
-        let listedDoc = null;
-        // ── 1.6 — THE FILINGS BEHIND THE NARROW COUNTS ( part 5) ─────────────────────────────────
-        //
-        // NEVER TERMINAL, and that is the difference between this lane and the count lane. The counts
-        // ARE the product — none of them means no product, so the run dies. The listing EXPLAINS the
-        // counts: a batch that got its numbers and could not fetch the faces behind them is a smaller
-        // deliverable, not a wrong one, and killing the run would throw away the part that was paid for.
-        // Every failure lands as a recorded reason on the surfaces instead.
-        const recExec = resolveRecordExecutor({
-          lister: opts?.recordLister ?? null, adapter: activeProvider(),
-          agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`,
-          // — this run's record log, not the box's. The knockout lane never reads the record bodies
-          // its batch-screen hydration writes; before this they were pure growth on a global file.
-          recordLog: runRecordLogPath(run.runDir),
-          // The $0 guarantee, threaded rather than re-derived: if the COUNTS ran on fixtures, this lane
-          // may not reach a live register. resolveRecordExecutor refuses instead of falling through.
-          offline: countExec.source.startsWith("fixtures:"),
-          fixtureDir: job?.registerFixtures?.records ?? null,
-        });
-        const recRefusal = countExec.source.startsWith("fixtures:") && recExec.source === "none"
-          // NAMES WHAT THE READER CAN ACT ON. This said `CLEAROTRON_KNOCKOUT_RECORD_FIXTURES` — a variable that
-          // no longer exists — so the sentence now names the job field that does.
-          ? "this run counted from fixtures and its job declares no `registerFixtures.records` directory, so the "
-            + "filings behind the counts were not listed — a fixture run never reaches a live register."
-          : recordsPreflight({ capabilities: ctx.registerCaps, hasAdapter: recExec.source !== "none" });
-        if (recRefusal) {
-          // A structural refusal is RECORDED, not swallowed. Without a sidecar the surfaces cannot tell
-          // "this provider does not list filings" from "nobody asked", and the second reads as an
-          // omission — the same silence part 2 closed one section up.
-          atomicWrite(K.registerRecords, JSON.stringify({
-            schema: 1, provider: REGISTER_PROVIDER, providerLabel: ctx.registerCaps?.label ?? REGISTER_PROVIDER,
-            takenAt: new Date().toISOString(), unavailable: recRefusal, marks: [],
-          }, null, 2) + "\n");
-          note(`register filings not listed: ${recRefusal}`);
-          runLog(run.runDir, { event: "knockout-register-records-refused", provider: REGISTER_PROVIDER, reason: recRefusal });
-        } else {
-          try {
-            const recDoc = withFilingGoods(await listRegisterRecords({
-              marks: markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })),
-              classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
-              provider: REGISTER_PROVIDER, capabilities: ctx.registerCaps,
-              lister: recExec.list, ledgerPath: K.countLedger,
-              // — the SAME split the counts used. Re-deriving it here would let the two halves of one
-              // report narrow to different scopes; `recExec` can also be a fixture lister while the counts
-              // ran live, and the offices a fixture holds are not this box's.
-              unreachable: recExec.source === "provider" ? (ctx.registerUnreachable ?? []) : [],
-              concurrency: 3,   // step 3 — the same constant as the sibling call above
-              ...(process.env.CLEAROTRON_KNOCKOUT_RECORD_CAP ? { cap: Number(process.env.CLEAROTRON_KNOCKOUT_RECORD_CAP) } : {}),
-              ...(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP ? { variantCap: Number(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP) } : {}),
-            }), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
-            atomicWrite(K.registerRecords, JSON.stringify(recDoc, null, 2) + "\n");
-            listedDoc = recDoc;
-            runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: recExec.source,
-              marks: recDoc.marks.length, listed: listedMarks(recDoc), records: recDoc.marks.reduce((n, m) => n + m.records.length, 0) });
-          } catch (e) {
-            // The lane does not throw per mark, so reaching here means something structural broke. It
-            // still must not take the counts down with it — but it must not vanish either.
-            note(`register filings listing failed (non-fatal): ${e.message}`);
-            runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
-          }
-        }
-        return listedDoc;
-      };
-
       // ── THE OWNER LOOKUP, ONCE THE LISTING HAS NAMED THE OWNER AND A COUNT HAS LANDED ──────────────
       //
       // Run after the count gate below, whichever lane went first. A batch where not one mark got a
@@ -825,31 +983,22 @@ export async function knockoutInner(ctx, job, opts = {}) {
         }
       };
 
-      // ── THE LISTING FIRST, ON A REGISTER WHOSE LISTING HOLDS THE COUNT ──────────────────────────────
-      //
-      // The identical and close columns are the exact predicate over a term, and the listing asks exactly
-      // that. On a register that declares its listing carries the register's own total for that question
-      // (`listingAnswersCount`), the listing runs first and the count lane takes those two columns from it
-      // (register-count.mjs listingAnswers) instead of paying for them again. It still asks what the
-      // listing never asks — `containing` — and any term the listing did not answer. Every other register
-      // counts first and lists second, as it always has.
-      const listFirst = ctx.registerCaps?.listingAnswersCount === true;
-      const listedFirst = listFirst ? await listFilings() : null;
       // resume: a settled prior sidecar is reused cell by cell, so a re-run never re-bills a count that
       // already landed — including across a build that ADDED a predicate, where only the new column is
       // bought (register-count.mjs cellSettled).
       let prior = null;
-      try { prior = JSON.parse(readFileSync(K.registerCounts, "utf8")); } catch { /* first attempt */ }
-      const doc = await countRegisterHits({
+      try { prior = unfoldFormCounts(JSON.parse(readFileSync(K.registerCounts, "utf8"))); } catch { /* first attempt */ }
+      const counted0 = await countRegisterHits({
         // Scope comes from the REQUEST (markRows / job.classes), never from the frame's plan. The plan
         // is a model output, and its per-mark classes may carry the frame's own belt-and-braces
         // inference — fine for shaping a research prompt, wrong for a figure the client reads as
         // "filings in my classes". The names are identical either way (the frame validator enforces
         // one row per instructed mark, verbatim), so this is a scope decision, not a set difference.
-        marks: markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })),
+        marks: countRowsOf(markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })), plan.marks),
         classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
         provider: REGISTER_PROVIDER, capabilities: ctx.registerCaps,
         counter: countExec.count, ledgerPath: K.countLedger, prior,
+        joinForms: countExec.source === "provider" && ctx.registerCaps?.exactFormsCountAsOne === true,
         unreachable: ctx.registerUnreachable ?? [],   // — computed once at preflight, above
         concurrency: 3,   // step 3 — was a knob; no environment ever set it
         // The close-variation fan-out's ceiling. A deployment may buy FEWER forms per mark than the code
@@ -857,8 +1006,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // to VARIANT_CAP, so this knob can only ever narrow. Unset ⇒ the code cap, which is the answer
         // for every deployment that has not thought about it.
         ...(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP ? { variantCap: Number(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP) } : {}),
-        ...(listedFirst ? { listed: listedFirst } : {}),
       });
+      // A name given in several written forms is counted as each, and reads as one row from here on.
+      const doc = foldFormCounts(counted0, markRows.map((m) => ({ name: String(m.name) })), plan.marks);
       const counted = countedMarks(doc);
       // Not one mark got a number. The count IS this product — a batch published now would be a plain
       // knockout wearing a Depth 2 label and price, which is the silent substitution the whole
@@ -875,7 +1025,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runLog(run.runDir, { event: "knockout-register-counts", provider: REGISTER_PROVIDER, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
       if (counted < doc.marks.length) note(`register counts: ${doc.marks.length - counted}/${doc.marks.length} mark(s) unavailable — the batch continues (they publish as "not available", never as zero)`);
 
-      await checkOwners(listFirst ? listedFirst : await listFilings());
+      await checkOwners(await readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts: doc, countExec, opts }));
     }
 
     // 2 — the sweep: ONE grid call per mark, receipted, through the clearance grid's own program path.
@@ -1043,96 +1193,102 @@ export async function knockoutInner(ctx, job, opts = {}) {
     for (let c = 0; c < chunks.length; c++) {
       await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     }
+    // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
+    // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
+    const composeRecord = () => {
+      const merged = { schema_version: 1, framework: null, batch: null, marks: [] };
+      const summaries = [];
+      for (let c = 0; c < chunks.length; c++) {
+        // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
+        // were written before the move (or through the Bash bypass closed) resumes without paying for
+        // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
+        const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
+        const part = JSON.parse(readFileSync(chunkPath, "utf8"));
+        if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
+        if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
+        merged.marks.push(...(part.marks ?? []));
+      }
+      if (!merged.batch) merged.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
+      // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
+      // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
+      merged.batch.executiveSummary = summaries.join("\n\n");
+      // ── THE PENDING-REGISTER CAVEAT, CONDITIONAL SINCE RF-10 v3 ────────────────
+      //
+      // "Ratings reflect our common law assessment. Register analysis may adjust ratings in either
+      // direction." This is a CODE DEFAULT that fires when the model supplied no caveat of its own, and
+      // turned it from dormant into the thing that ships.
+      //
+      // BEFORE: a rule in the knockout-assess manual ordered the seat to write that caveat, so the array
+      // arrived non-empty and this default almost never fired. THAT RULE IS RETIRED IN THIS SAME BRANCH —
+      // the seat is no longer told to write it — so the array now arrives EMPTY and this line injects the
+      // sentence unconditionally. Retiring the rule in the doctrine while leaving its default in the code
+      // did not remove the caveat; it made it fire on every run.
+      //
+      // And it is FALSE on the runs it now fires on. The rater is handed this run's fetched register
+      // filings and weighs them, so "register analysis may adjust ratings" describes work that already
+      // happened. RF-10 v3 (synthesis-rules.md): when register analysis ran AND surfaced live filings,
+      // drop the caveat and cite the register evidence directly; where it did not run, it stands and is
+      // the honest thing to say.
+      //
+      // THE DRIVER'S READ, off the run. A seat that could assert whether the register ran could waive its
+      // own caveat. Records present AND non-empty: a file that exists with nothing in it is a register
+      // that surfaced no filings, which is exactly the case the caveat is still true for.
+      // — ONE DERIVATION, shared with the verifier. This was a private copy, and the
+      // lint that checks the result did not have it: it required the caveat unconditionally while this
+      // injected it conditionally, so any run where the seat supplied its own caveats failed by
+      // construction. Two predicates that must agree forever is how they stop agreeing.
+      // — THE SAME DERIVATION THE LINT USES. This counted the array, blanks included, so
+      // `["", "  "]` read as "the rater supplied two" here and as "supplied none" in the verifier. The lint
+      // could not see the disagreement because the survivor sentence below silenced it entirely.
+      if (raterCaveats(merged.batch.standardCaveats).length === 0 && !registerSurfacedFilings(K.registerRecords)) {
+        merged.batch.standardCaveats = ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."];
+      }
+      if (!Array.isArray(merged.batch.standardCaveats)) merged.batch.standardCaveats = [];
+      // ── the survivor sentence, in CODE ( fix 3) ────────────────────────────────────────────────────
+      //
+      // A mark this lane did not knock out is a SURVIVOR. It is not clear, and the document must not be
+      // readable as though it were: the knockout screens, the clearance enumerates, and the whole distance
+      // between them is the work that has not happened yet. Two runs on two matters delivered "Medium,
+      // complete" while missing almost every mark the lawyer named, because a screen cannot know what it
+      // did not look for — so the boundary of the screen is stated by the engine rather than left to the
+      // assessing model, which is the one party that cannot see it.
+      //
+      // APPENDED, never prepended: publish/knockout.mjs's email takes standardCaveats[0], so leading with
+      // this would silently replace the standing caveat in the requester's inbox.
+      const survivorNote = survivorBoundaryNote(policy);
+      if (!merged.batch.standardCaveats.some((c) => SURVIVOR_BOUNDARY_RE.test(String(c))))
+        merged.batch.standardCaveats.push(survivorNote);
+      // ── the skipped-capability sentence, in CODE, for the survivor sentence's own reason ──────
+      //
+      // The per-mark degrade above already reaches the client on every row. This is the RUN-level fact
+      // underneath twenty identical rows: not "research was unavailable for this name" twenty times, but
+      // one capability that never ran on this deployment. The assessing model cannot state it — it is
+      // told a mark is degraded, never why the whole screen is — so the engine states it, exactly as it
+      // states the survivor boundary two lines up.
+      //
+      // APPENDED, never prepended, for the same reason the survivor note is: publish/knockout.mjs's email
+      // takes standardCaveats[0], and leading with this would silently replace the standing caveat in the
+      // requester's inbox.
+      const skippedNote = sweep.skipped ? CAPABILITY_SKIPPED_NOTE[sweep.skipped] : null;
+      if (skippedNote && !merged.batch.standardCaveats.some((c) => String(c) === skippedNote))
+        merged.batch.standardCaveats.push(skippedNote);
+      // The merged gate now also validates the TYPED findings and receipts their citations, and it
+      // NORMALISES as it validates — each finding's band comes back in the frozen deck's own casing — so
+      // it runs BEFORE the artifact is written, not after. The counts are logged because a receipts pass
+      // over zero citations is a different fact from a receipts pass, and only the count can tell them
+      // apart afterwards.
+      // BEFORE THE GATE AND THE WRITE, so the record on disk is the record that ships, and the reviewing
+      // pass never addresses a line inside a section that is about to go.
+      removeNextStepSections(run.runDir, merged.marks);
+      const mv = validateMergedFindings(run.runDir, merged, plan);
+      if (!mv.ok) throw new StageFailure("knockout-assess", `merged findings failed the lint: ${mv.failures.join("; ")}`, null);
+      runLog(run.runDir, { event: "knockout-receipts", ...mv.receipts });
+      atomicWrite(K.findings, JSON.stringify(merged, null, 2) + "\n");
+      return merged;
+    };
     // `let`, because the reviewing pass below returns a REWRITTEN record rather than editing this one:
     // the original has to survive intact as the thing that ships if the pass cannot finish cleanly.
-    let merged = { schema_version: 1, framework: null, batch: null, marks: [] };
-    const summaries = [];
-    for (let c = 0; c < chunks.length; c++) {
-      // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
-      // were written before the move (or through the Bash bypass closed) resumes without paying for
-      // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
-      const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
-      const part = JSON.parse(readFileSync(chunkPath, "utf8"));
-      if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
-      if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
-      merged.marks.push(...(part.marks ?? []));
-    }
-    if (!merged.batch) merged.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
-    // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
-    // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
-    merged.batch.executiveSummary = summaries.join("\n\n");
-    // ── THE PENDING-REGISTER CAVEAT, CONDITIONAL SINCE RF-10 v3 ────────────────
-    //
-    // "Ratings reflect our common law assessment. Register analysis may adjust ratings in either
-    // direction." This is a CODE DEFAULT that fires when the model supplied no caveat of its own, and
-    // turned it from dormant into the thing that ships.
-    //
-    // BEFORE: knockout-assess calibration rule 4 ordered the seat to write that caveat, so the array
-    // arrived non-empty and this default almost never fired. THAT RULE IS RETIRED IN THIS SAME BRANCH —
-    // the seat is no longer told to write it — so the array now arrives EMPTY and this line injects the
-    // sentence unconditionally. Retiring the rule in the doctrine while leaving its default in the code
-    // did not remove the caveat; it made it fire on every run.
-    //
-    // And it is FALSE on the runs it now fires on. The rater is handed this run's fetched register
-    // filings and weighs them, so "register analysis may adjust ratings" describes work that already
-    // happened. RF-10 v3 (synthesis-rules.md): when register analysis ran AND surfaced live filings,
-    // drop the caveat and cite the register evidence directly; where it did not run, it stands and is
-    // the honest thing to say.
-    //
-    // THE DRIVER'S READ, off the run. A seat that could assert whether the register ran could waive its
-    // own caveat. Records present AND non-empty: a file that exists with nothing in it is a register
-    // that surfaced no filings, which is exactly the case the caveat is still true for.
-    // — ONE DERIVATION, shared with the verifier. This was a private copy, and the
-    // lint that checks the result did not have it: it required the caveat unconditionally while this
-    // injected it conditionally, so any run where the seat supplied its own caveats failed by
-    // construction. Two predicates that must agree forever is how they stop agreeing.
-    // — THE SAME DERIVATION THE LINT USES. This counted the array, blanks included, so
-    // `["", "  "]` read as "the rater supplied two" here and as "supplied none" in the verifier. The lint
-    // could not see the disagreement because the survivor sentence below silenced it entirely.
-    if (raterCaveats(merged.batch.standardCaveats).length === 0 && !registerSurfacedFilings(K.registerRecords)) {
-      merged.batch.standardCaveats = ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."];
-    }
-    if (!Array.isArray(merged.batch.standardCaveats)) merged.batch.standardCaveats = [];
-    // ── the survivor sentence, in CODE ( fix 3) ────────────────────────────────────────────────────
-    //
-    // A mark this lane did not knock out is a SURVIVOR. It is not clear, and the document must not be
-    // readable as though it were: the knockout screens, the clearance enumerates, and the whole distance
-    // between them is the work that has not happened yet. Two runs on two matters delivered "Medium,
-    // complete" while missing almost every mark the lawyer named, because a screen cannot know what it
-    // did not look for — so the boundary of the screen is stated by the engine rather than left to the
-    // assessing model, which is the one party that cannot see it.
-    //
-    // APPENDED, never prepended: publish/knockout.mjs's email takes standardCaveats[0], so leading with
-    // this would silently replace the standing caveat in the requester's inbox.
-    const survivorNote = survivorBoundaryNote(policy);
-    if (!merged.batch.standardCaveats.some((c) => SURVIVOR_BOUNDARY_RE.test(String(c))))
-      merged.batch.standardCaveats.push(survivorNote);
-    // ── the skipped-capability sentence, in CODE, for the survivor sentence's own reason ──────
-    //
-    // The per-mark degrade above already reaches the client on every row. This is the RUN-level fact
-    // underneath twenty identical rows: not "research was unavailable for this name" twenty times, but
-    // one capability that never ran on this deployment. The assessing model cannot state it — it is
-    // told a mark is degraded, never why the whole screen is — so the engine states it, exactly as it
-    // states the survivor boundary two lines up.
-    //
-    // APPENDED, never prepended, for the same reason the survivor note is: publish/knockout.mjs's email
-    // takes standardCaveats[0], and leading with this would silently replace the standing caveat in the
-    // requester's inbox.
-    const skippedNote = sweep.skipped ? CAPABILITY_SKIPPED_NOTE[sweep.skipped] : null;
-    if (skippedNote && !merged.batch.standardCaveats.some((c) => String(c) === skippedNote))
-      merged.batch.standardCaveats.push(skippedNote);
-    // The merged gate now also validates the TYPED findings and receipts their citations, and it
-    // NORMALISES as it validates — each finding's band comes back in the frozen deck's own casing — so
-    // it runs BEFORE the artifact is written, not after. The counts are logged because a receipts pass
-    // over zero citations is a different fact from a receipts pass, and only the count can tell them
-    // apart afterwards.
-    // BEFORE THE GATE AND THE WRITE, so the record on disk is the record that ships, and the reviewing
-    // pass never addresses a line inside a section that is about to go.
-    removeNextStepSections(run.runDir, merged.marks);
-    const mv = validateMergedFindings(run.runDir, merged, plan);
-    if (!mv.ok) throw new StageFailure("knockout-assess", `merged findings failed the lint: ${mv.failures.join("; ")}`, null);
-    runLog(run.runDir, { event: "knockout-receipts", ...mv.receipts });
-    atomicWrite(K.findings, JSON.stringify(merged, null, 2) + "\n");
+    let merged = composeRecord();
     // ── THE REVIEWING PASS, AFTER THE RECORD IS ON DISK AND BEFORE ANYTHING READS IT ─────────────────
     //
     // ORDER MATTERS THREE WAYS. The record is written FIRST so the stage's validator has something to
@@ -1146,7 +1302,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // NO NEW STEP LABEL. `stepTotal` is derived from `koSteps()`, so adding one would renumber the
     // progress screen a client watches for a pass that takes a minute. It runs inside "Knockout
     // assessment", which is what it is part of.
-    merged = await knockoutReviewingPass({ ctx, run, K, merged, plan });
+    merged = await knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, composeRecord });
     try { writeFileSync(K.assessment, String(merged.batch.executiveSummary ?? "")); } catch { /* prose mirror, best-effort */ }
 
     // 4 — publish (report + workbook + meta + index)
@@ -1163,6 +1319,12 @@ export async function knockoutInner(ctx, job, opts = {}) {
     writeRunStatus(ctx, { stoppable: false });
     koStep(ctx, "Report & publish");
     const overall = worstBand(ctx.framework, merged.marks);
+    // A set-aside filing the rating cites moves up with the carried ones, so the report has its row.
+    try {
+      const held = JSON.parse(readFileSync(K.registerRecords, "utf8"));
+      const moved = withCitedFilings(held, merged);
+      if (moved !== held) atomicWrite(K.registerRecords, JSON.stringify(moved, null, 2) + "\n");
+    } catch { /* no record on this run, or none readable: publish says which */ }
     const published = await publishKnockout({
       runId, codename: run.codename, runDir: run.runDir,
       findings: merged, plan, framework: ctx.framework, overall,

@@ -419,7 +419,7 @@ export function mergeDegradedRows(...lists) {
 // The listing of filings and the owner lookups each end in one run-log event, a success or a failure, and
 // the last of the pair is the step's state at delivery, so a resume that succeeded clears it. The
 // plain-language review logs its outcome; the three that ship the rater's wording unreviewed are failures.
-const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-by-the-merged-gate"];
+const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-by-the-merged-gate", "correction-failed", "correction-refused-by-the-merged-gate", "correction-moved-what-no-defect-named", "recheck-failed"];
 
 /** Which of the knockout's whole steps ended failed, each with its raw cause for the run's record. */
 export function knockoutStepFailures(runDir) {
@@ -427,10 +427,13 @@ export function knockoutStepFailures(runDir) {
   const listing = lastEvent(log, ["knockout-register-records", "knockout-register-records-refused", "knockout-register-records-failed"]);
   const owners = failedStep(log, "knockout-owner-checks", "knockout-owner-checks-failed");
   const review = lastEvent(log, ["knockout-review"]);
+  const reading = lastEvent(log, ["knockout-register-read", "knockout-register-read-failed"]);
   const cause = (e) => String(e?.cause ?? e?.reason ?? e?.outcome ?? e?.event ?? "no cause recorded");
   return {
     listing: listing?.event === "knockout-register-records-failed" ? { reason: reasonFor(cause(listing)), cause: cause(listing) } : null,
     ownerChecks: owners ? { reason: reasonFor(cause(owners)), cause: cause(owners) } : null,
+    // The reading step failed and the run carried what it held: the questions it had not asked never ran.
+    reading: reading?.event === "knockout-register-read-failed" ? { reason: reasonFor(cause(reading)), cause: cause(reading) } : null,
     review: REVIEW_FAILED.includes(review?.outcome) ? { reason: reasonFor(cause(review)), cause: `${review.outcome}: ${cause({ reason: review.reason })}` } : null,
   };
 }

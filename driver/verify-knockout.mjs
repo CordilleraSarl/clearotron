@@ -3,12 +3,12 @@
 // verify-knockout.mjs — validators + gates for the KNOCKOUT (Depth 1) lane.
 // Same contract as verify.mjs validators: (file, text) -> {ok, reason?} for per-stage outputs (they ride
 // runStage's corrective ladder), plus code-side gates for the merged findings and the pre-publish lint.
-// The receipts discipline: every cited URL must appear in THAT mark's raw research payload or in the register
-// records supplied for that mark — the knockout analogue of the band-truth gate (a finding the driver cannot trace to held evidence is treated as
+// The receipts discipline: every cited URL must trace to a recorded research payload for this batch, a filing
+// held for this batch, or a recorded owner check linked to a held filing — the knockout analogue of the band-truth gate (a finding the driver cannot trace to held evidence is treated as
 // fabricated). It runs at three doors and has NO off switch: CLEAROTRON_KNOCKOUT_URL_GATE is deleted.
 // An env var that disarms a gate makes the gate's absence look exactly like its pass, which is the one
 // failure mode this lane's gates exist to refuse.
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
 import { kebab, kebabCollisions, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
@@ -84,7 +84,7 @@ export function knockoutCitedUrls(f) {
 }
 
 /**
- * Every cited URL ∈ that mark's own raw research payload on disk.
+ * Every cited URL traces to what `urlHeldFor` admits.
  *
  * WHAT A ZERO MEANS, because this gate can pass without doing anything: a batch whose findings cite no
  * URLs at all is `ok` with `checked.urls === 0`. That is not the same answer as "every citation was
@@ -95,42 +95,48 @@ export function knockoutCitedUrls(f) {
  * @returns {{ok: boolean, failures: string[], checked: {marks: number, citing: number, findings: number, urls: number}}}
  */
 /**
- * THE REGISTER FILINGS THE RATING STEP WAS HANDED, per mark, as text (register-records.json, which the rating
- * message names when it is on disk). The message lets a citation come from the mark's own payload or from the
- * filings supplied for that mark, so the receipts check reads both; another mark's filings license nothing.
+ * WHERE A CITED URL MAY COME FROM, for any name in the batch: a recorded research payload for this batch, a filing held for this
+ * batch, or a recorded owner check linked to a held filing (design, 2026-11-05). Code checks that the source is held. Whether its
+ * content bears on the name is the model's to explain and the check's to read, and a source's presence supports nothing by itself.
+ * A URL only in raw web results, or any other file the step was not given as evidence, stays outside.
  */
-function suppliedRecordsByMark(runDir) {
+export const PERMITTED_SOURCES = "a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing";
+export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}" is not traceable to ${PERMITTED_SOURCES}. Cite a source from that held evidence.`;
+const OWNER_PAYLOAD = /^owner-.+-[0-9a-f]{10}\.md$/;   // the name `ownerPayloadFile` gives a check's answer
+export function urlHeldFor(runDir) {
+  let filings = null;
   try {
     const doc = JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8"));
-    return new Map((Array.isArray(doc?.marks) ? doc.marks : []).filter((x) => x?.name)
-      .map((x) => [String(x.name).trim().toLowerCase(), JSON.stringify(Array.isArray(x.records) ? x.records : [])]));
-  } catch { return new Map(); }
+    filings = JSON.stringify((Array.isArray(doc?.marks) ? doc.marks : []).flatMap((x) => [...(Array.isArray(x?.records) ? x.records : []), ...(Array.isArray(x?.setAsideRecords) ? x.setAsideRecords : [])]));
+  } catch { filings = null; }
+  let checks = [];
+  try { checks = JSON.parse(readFileSync(driverDir(runDir, "owner-checks.json"), "utf8")).checks ?? []; } catch { checks = []; }
+  const heldIds = registerRecordIdsHeld(runDir);
+  const linked = new Set(checks.filter((c) => (c?.recordIds ?? []).some((id) => heldIds.has(String(id)))).map((c) => c?.payloadFile));
+  const researchDir = join(runDir, "research");
+  let payload = "";
+  try {
+    payload = readdirSync(researchDir).filter((f) => f.endsWith(".md") && (OWNER_PAYLOAD.test(f) ? linked.has(f) : true)).map((f) => readFileSync(join(researchDir, f), "utf8")).join("\n");
+  } catch { payload = ""; }
+  return (url) => (filings != null && urlInPayload(url, filings)) || urlInPayload(url, payload);
 }
 
 export function knockoutReceipts(runDir, marks) {
   const failures = [];
   const checked = { marks: (marks ?? []).length, citing: 0, findings: 0, urls: 0 };
-  const supplied = suppliedRecordsByMark(runDir);
+  let held = null;
   for (const m of marks ?? []) {
     const list = Array.isArray(m?.findings) ? m.findings : [];
     checked.findings += list.length;
-    const records = supplied.get(String(m?.name ?? "").trim().toLowerCase()) ?? null;
-    let payload = null, opened = false;
+    let citing = false;
     for (const f of list) {
       const cited = knockoutCitedUrls(f);
       if (!cited.length) continue;
-      if (!opened) {
-        opened = true;
-        checked.citing += 1;
-        try { payload = readFileSync(join(runDir, "research", `${kebab(m.name)}.md`), "utf8"); } catch { payload = null; }
-      }
+      if (!citing) { checked.citing += 1; citing = true; held ??= urlHeldFor(runDir); }
       for (const url of cited) {
         checked.urls += 1;
-        if (records != null && urlInPayload(url, records)) continue;   // a filing supplied for this mark
-        // One refusal for both branches (design's wording, 2026-10-19): the register records supplied for the mark are
-        // held evidence too, so a refusal never tells the model to drop one of them.
-        if (payload == null || !urlInPayload(url, payload))
-          failures.push(`knockout_url_unreceipted:${m.name}: "${url}" does not appear in the mark's own research payload or in the register records supplied for that mark — cite only held evidence`);
+        // One refusal for both kinds of held evidence, so it never tells the model to drop a filing it may cite.
+        if (!held(url)) failures.push(urlNotHeld(m.name, url));
       }
     }
   }
@@ -145,12 +151,12 @@ export function knockoutReceipts(runDir, marks) {
 // rating field is a second vocabulary waiting to happen, which is exactly what rules out.
 //
 // THE SET IS ONE WORD, and it is one word because ONE is what the doctrine attests. knockout-assess
-// SKILL.md exemplifies "Medium (low)" and calibration rule 6 says enforcer profiling "can cap a middle
+// SKILL.md exemplifies "Medium (low)" and calibration rule 4 says enforcer profiling "can cap a middle
 // band at its '(low)' qualifier". Nothing in the doctrine, and no artifact in this repo, carries any
 // other value. So the qualifier can SOFTEN a band and never sharpen it — minting "high" or "mid" to make
 // the set look like a scale would be this build inventing vocabulary in the change that forbids it.
 //
-// ABSENCE, RECORDED. Calibration rule 5 tells the model to use a customer framework's own dispute-type
+// ABSENCE, RECORDED. Calibration rule 3 tells the model to use a customer framework's own dispute-type
 // notation (an A–E matrix) "exactly", and the mark row has no field for one: the framework manifest
 // carries band words and order ONLY (framework.mjs: never a mapping table), so there is no vocabulary to
 // validate such a notation against. It is not admitted here — a notation smuggled into this field would
@@ -231,37 +237,66 @@ export function registerRecordIdsFor(runDir, markName) {
   const doc = readJson(driverDir(runDir, "register-records.json"));
   const want = String(markName ?? "").trim().toLowerCase();
   const entry = (Array.isArray(doc?.marks) ? doc.marks : []).find((e) => String(e?.name ?? "").trim().toLowerCase() === want);
-  return new Set((Array.isArray(entry?.records) ? entry.records : [])
+  return new Set([...(Array.isArray(entry?.records) ? entry.records : []), ...(Array.isArray(entry?.setAsideRecords) ? entry.setAsideRecords : [])]
     .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
 }
 
-const readNotHeld = (mark, id) => `mark "${mark}": registerReads cites "${id}", which is not a record this run holds for that mark. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it`;
-const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${finding}" lists weighedFilings "${id}", which is not a record this run holds for that mark. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence`;
+/** Every register recordId this run holds, under any name: what a check may rest a defect on. Empty set when the lane did not run. */
+export function registerRecordIdsHeld(runDir) {
+  const doc = readJson(driverDir(runDir, "register-records.json"));
+  return new Set((Array.isArray(doc?.marks) ? doc.marks : []).flatMap((e) => [...(Array.isArray(e?.records) ? e.records : []), ...(Array.isArray(e?.setAsideRecords) ? e.setAsideRecords : [])])
+    .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
+}
+
+const readNotHeld = (mark, id) => `mark "${mark}": registerReads cites "${id}", which is not a record this run holds. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it`;
+const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${finding}" lists weighedFilings "${id}", which is not a record this run holds. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence`;
 
 /**
- * THE SAME RULE, WHILE THE MODEL CAN STILL ACT ON IT. The stage's validator reads this join after the turn has ended, so a
- * rating that cited a filing held under another name in the batch finished the whole chunk, failed, and on its one retry
- * failed the same way: 2 of 4 draws on a saved batch, 2026-11-05, on 13 and 7 such rows. Refusing the call would not do: a
- * refused call is not kept, and those draws' accepted chunks took 554 to 662 s of a 900 s attempt, so there is no room to send
- * one again. So the record tool keeps the call and leaves out only what the rule refuses, and names every row it left out in
- * the rule's own words. The model can cite the filing where it is held, or leave it. The rule stands: a report is delivered
- * per name, and a source chip must stand beside a filing that report lists. Returns `{mark, notKept}`. PURE-ish.
+ * THE RULE, WHILE THE MODEL CAN STILL ACT ON IT. The stage's validator reads this join after the turn has ended, so a rating that
+ * cited something the run does not hold finished the whole chunk, failed, and on its one retry failed the same way. Refusing the
+ * call would not do: a refused call is not kept, and accepted chunks on a saved batch, 2026-11-05, took 554 to 662 s of a 900 s
+ * attempt, so there is no room to send one again. So the record tool keeps the call and leaves out only what the rule refuses, and
+ * names every row it left out. A filing held for this batch may bear on more than one name, so its id and its source are held
+ * whichever name found it (design, 2026-11-05). A finding that loses a source keeps its claim, and leaving the reference out does
+ * not support it, so each such loss is returned as a source defect, with the claim as it stood. Returns `{mark, notKept,
+ * sourceDefects}`. PURE-ish.
  */
 export function heldCitationsOnly(runDir, mark) {
-  const held = registerRecordIdsFor(runDir, mark?.name);
-  const notKept = [];
+  const held = registerRecordIdsHeld(runDir);
+  const notKept = [], sourceDefects = [];
+  const urlHeld = urlHeldFor(runDir);
+  const lost = (f, kind, cited) => sourceDefects.push({ mark: mark?.name, name: f?.name, owner: f?.owner, kind, cited, was: { net: f?.net ?? null, basis: f?.basis ?? null, evidence: (f?.evidence ?? []).filter((u) => urlHeld(u)), weighed: (f?.weighedFilings ?? []).filter((id) => held.has(String(id ?? "").trim())) } });
   const isHeld = (raw, say) => {
     const id = String(raw ?? "").trim();
     if (!id || held.has(id)) return true;
     notKept.push(say(id));
     return false;
   };
-  if (!Array.isArray(mark?.registerReads) && !Array.isArray(mark?.findings)) return { mark, notKept };
+  if (!Array.isArray(mark?.registerReads) && !Array.isArray(mark?.findings)) return { mark, notKept, sourceDefects };
   const out = { ...mark };
   if (Array.isArray(mark.registerReads)) out.registerReads = mark.registerReads.filter((row) => isHeld(row?.recordId, (id) => readNotHeld(mark.name, id)));
-  if (Array.isArray(mark.findings)) out.findings = mark.findings.map((f) => (Array.isArray(f?.weighedFilings)
-    ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => weighedNotHeld(mark.name, f?.name, bad))) } : f));
-  return { mark: notKept.length ? out : mark, notKept };
+  if (Array.isArray(mark.findings)) out.findings = mark.findings.map((f) => {
+    const kept = Array.isArray(f?.weighedFilings) ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => { lost(f, "weighed", bad); return weighedNotHeld(mark.name, f?.name, bad); })) } : f;
+    if (!Array.isArray(f?.evidence)) return kept;
+    const evidence = f.evidence.filter((url) => { if (urlHeld(url)) return true; lost(f, "evidence", url); notKept.push(urlNotHeld(mark.name, url)); return false; });
+    return evidence.length === f.evidence.length ? kept : { ...kept, evidence };
+  });
+  return { mark: notKept.length ? out : mark, notKept, sourceDefects };
+}
+
+/**
+ * What the run's files say of its register, from what ran, never from what is missing. `skipped` only where the run recorded that it
+ * has no register component (the file the lane writes when it starts). `held`: a record of questions and filings, an empty one
+ * included. `unavailable`: counts were taken and the listing could not run, or its record says why. `unknown`: nothing establishes
+ * what ran. An estimate is owed on the first alone.
+ */
+export const REGISTER_LANE_FILE = "register-lane.json";
+export function registerLaneState(runDir) {
+  if (readJson(driverDir(runDir, REGISTER_LANE_FILE))?.skipped === true) return { state: "skipped" };
+  const doc = readJson(driverDir(runDir, "register-records.json"));
+  if (doc?.unavailable) return { state: "unavailable", reason: String(doc.unavailable) };
+  if (doc) return { state: "held" };
+  return { state: existsSync(driverDir(runDir, "register-counts.json")) ? "unavailable" : "unknown", reason: null };
 }
 
 export const KNOCKOUT_RATING_QUALIFIERS = ["low"];
@@ -590,11 +625,12 @@ export const validators = {
       // beside the filings it is guessing about.
       //
       // THE DRIVER'S READ, NOT THE SEAT'S. Whether the register ran is a fact about the run; a seat that
-      // could assert it could waive its own requirement by claiming a lane it cannot see. `dirname(file)`
-      // is the run dir — `assessChunk` writes `knockout-assess-<n>.json` into it (stages-knockout.mjs).
-      const registerRan = existsSync(driverDir(dirname(file), "register-records.json"));
+      // could assert it could waive its own requirement by claiming a lane it cannot see.
+      // SKIPPED, NOT EMPTY. An empty carried list, a verified zero, a failed question and a listing that could not run are all
+      // something other than a skip. Only a run that recorded the skip owes an estimate.
+      const registerRan = registerLaneState(runDir).state !== "skipped";
       if (!registerRan && ladder.length && idx < ladder.length - 1 && !(typeof m.registerEstimate === "string" && m.registerEstimate.trim()))
-        return { ok: false, reason: `mark "${m.name}": registerEstimate is required above the lowest band on a run with no fetched register records (RF-15 v3 — estimation stands where the register did not run)` };
+        return { ok: false, reason: `mark "${m.name}": registerEstimate is required above the lowest band on a run that skipped the register (RF-15)` };
       // ── THE PER-MARK OPENING ASSESSMENT IS OWED ON A MULTI-MARK BATCH ───────
       //
       // ONLY on a multi-mark batch, and that is the whole scope of it. A single-mark run's document
@@ -630,7 +666,7 @@ export const validators = {
       if (m.registerReads !== undefined && m.registerReads !== null) {
         if (!Array.isArray(m.registerReads))
           return { ok: false, reason: `mark "${m.name}": registerReads must be an ARRAY of { recordId, read, band? } rows, or omitted entirely` };
-        const held = registerRecordIdsFor(runDir, m.name);
+        const held = registerRecordIdsHeld(runDir);
         for (const row of m.registerReads) {
           const id = String(row?.recordId ?? "").trim();
           const read = String(row?.read ?? "").trim();
@@ -676,7 +712,7 @@ export const validators = {
         if (f?.weighedFilings === undefined || f?.weighedFilings === null) continue;
         if (!Array.isArray(f.weighedFilings))
           return { ok: false, reason: `mark "${m.name}": findings[].weighedFilings must be an ARRAY of register record ids, or omitted` };
-        const held = registerRecordIdsFor(runDir, m.name);
+        const held = registerRecordIdsHeld(runDir);
         for (const raw of f.weighedFilings) {
           const id = String(raw ?? "").trim();
           if (!id || !held.has(id))
@@ -695,7 +731,7 @@ export const validators = {
       // for exactly the same invention.
       const claim = [prose, c.chunkSummary].filter(Boolean).join("\n").match(REGISTER_CLAIM_RE);
       if (claim)
-        return { ok: false, reason: `knockout_register_claim:${m.name}: "${claim[0].trim()}" — this turn cannot see the register lane and must not describe it. The report states register coverage in code, from the run's own count sidecar; a summary that says the registers were not run, above a table of counts that were, is the contradiction this rule closes. Delete the clause` };
+        return { ok: false, reason: `knockout_register_claim:${m.name}: "${claim[0].trim()}" — weigh the filings you hold and do not describe the search. The report states register coverage in code, from the run's own count sidecar; a summary that says the registers were not run, above a table of counts that were, is the contradiction this rule closes. Delete the clause` };
       const toneOrFigure = toneOrFigureRefusal(m, prose);
       if (toneOrFigure) return { ok: false, reason: toneOrFigure };
       // PR-5 — a "tool was blocked / lacked permission" explanation for missing coverage is a false
@@ -865,7 +901,7 @@ export function validateMergedFindings(runDir, merged, plan) {
   // reader meets in the executive summary. The renderer owns register coverage; nothing else states it.
   {
     const claim = mergedProse.match(REGISTER_CLAIM_RE);
-    if (claim) failures.push(`knockout_register_claim: "${claim[0].trim()}" — the assessing turn cannot see the register lane and must not describe it; the report states coverage in code from the run's own count sidecar`);
+    if (claim) failures.push(`knockout_register_claim: "${claim[0].trim()}" — weigh the filings and do not describe the search; the report states coverage in code from the run's own count sidecar`);
   }
   // ── — the typed findings and their receipts, ON THE MERGED ARTIFACT ────────────────────────────
   // This function is the ONLY gate pipeline-knockout.mjs runs on the composed output, and until now it
@@ -958,7 +994,7 @@ export function markRatedAboveItsCards(framework, m) {
   // NO CARDS, NOTHING TO BE ABOVE — and the code stops here deliberately.
   //
   // The doctrine says a name with nothing found against it takes the bottom band, and that belongs in
-  // the reasoning where it is written (calibration rule 8). Enforcing it HERE would be a second rule in
+  // the reasoning where it is written (calibration rule 6). Enforcing it HERE would be a second rule in
   // code: a floor that forces a band down, which is what the ruling forbids in terms — "do not replace
   // the removed rule with another floor, cap or word list. The two rulings are the whole requirement."
   //

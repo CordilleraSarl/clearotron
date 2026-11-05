@@ -306,6 +306,7 @@ const PLANTED = Object.freeze({
     full: {
       schema_version: 1,
       first_question: "Yes: it names who could object, how strong each is, and what the client should do.",
+      material: [{ kind: "scope", mark: "NOVAPULSE", problem: "The request asks about drinks and the answer leaves out class 32." }],
       rewrites: [
         { at: { field: "basis", mark: "NOVAPULSE" },
           text: "The name is already crowded in drinks. Two live registrations sit close to it.",

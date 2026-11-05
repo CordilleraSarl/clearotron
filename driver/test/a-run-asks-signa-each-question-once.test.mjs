@@ -54,7 +54,6 @@ const { runRecordLogPath } = await import("../../providers/_shared/ledger-path.m
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { signaFetch, rememberableAnswer } = await import("../../providers/signa/src/core.js");
 const { capabilitiesFor } = await import("../register-capabilities.mjs");
-const { countRegisterHits, listingAnswers } = await import("../register-count.mjs");
 const { PROVIDERS } = await import("../driver.config.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
 
@@ -248,73 +247,27 @@ test("a held answer whose next-page cursor is too old is asked again, and the wa
 
 // ── the knockout ────────────────────────────────────────────────────────────────────────────────────
 
-// The territories as both lanes hold them after translation into this register's office keys.
-const { resolveRegions } = await import("../register-plan.mjs");
-const EU = resolveRegions(["EU"], SIGNA).regions;
-// THE FORMS ARE THE GENERATOR'S OWN. This fixture named forms `variantForms` never produces for its word,
-// so every close-form check sat behind an `if` that never ran. COPPER's four forms are COPER, KOPPER,
-// COPPAR and CUPPER; each case below is one of them, and the arm asserts the forms exist before reading them.
-const LISTED = {
-  scope: { regions: EU },
-  marks: [{ name: "COPPER", classes: [9], terms: [
-    { term: "COPPER", basis: "identical", ok: true, fetched: 5, total: 12 },
-    { term: "COPER", basis: "close", ok: true, fetched: 0, total: 0 },
-    { term: "KOPPER", basis: "close", ok: true, fetched: 5, total: null, approximate: true, floor: 10000 },
-    { term: "COPPAR", basis: "close", ok: false, fetched: 0, total: null, reason: "failed" },
-    { term: "CUPPER", basis: "close", ok: false, fetched: 0, total: null, notAsked: true },
-  ] }],
-};
-
-test("the count lane takes the identical and close figures the listing answered, and asks the rest", async () => {
-  const asked = [];
-  const counter = async (term, p) => { asked.push(`${p.key}:${term}`); return { ok: true, total: 7 }; };
-  const doc = await countRegisterHits({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
-    capabilities: SIGNA, counter, variantCap: 12, listed: LISTED });
-  const m = doc.marks[0];
-  assert.equal(m.counts.identical.total, 12);
-  assert.equal(m.counts.identical.source, "listing");
-  assert.ok(asked.includes("containing:COPPER"), "the listing never asks `containing`, so the count lane does");
-  assert.ok(!asked.includes("identical:COPPER"));
-  const forms = Object.fromEntries(m.counts.close.forms.map((f) => [f.form, f]));
-  for (const f of ["COPER", "KOPPER", "COPPAR", "CUPPER"]) assert.ok(forms[f], `${f} is a form the count lane generated`);
-  assert.equal(forms.COPER.source, "listing");
-  assert.equal(forms.COPER.total, 0);
-  assert.equal(forms.KOPPER.approximate, true, "an approximate listing total stays an approximation");
-  assert.equal(forms.KOPPER.floor, 10000);
-  assert.ok(!asked.includes("close:COPER") && !asked.includes("close:KOPPER"), "what the listing answered is not asked again");
-  for (const f of ["COPPAR", "CUPPER"]) assert.ok(asked.includes(`close:${f}`), `${f} was not answered by the listing, so it is counted`);
-});
-
-test("a listing over a different scope answers nothing", async () => {
-  assert.ok(listingAnswers(LISTED, { regions: EU }), "the same territories answer");
-  assert.equal(listingAnswers({ ...LISTED, scope: { regions: resolveRegions(["US"], SIGNA).regions } }, { regions: EU }), null);
-  const asked = [];
-  const counter = async (term, p) => { asked.push(`${p.key}:${term}`); return { ok: true, total: 1 }; };
-  await countRegisterHits({ marks: [{ name: "COPPER", classes: [25] }], jurisdictions: ["EU"], provider: "signa",
-    capabilities: SIGNA, counter, listed: LISTED });
-  assert.ok(asked.includes("identical:COPPER"), "class 25 was not the question the listing asked");
-});
-
 // NO "OUT OF N HITS" WHEN ANY TERM IS APPROXIMATE. The name at the register's approximation (floor 10,000)
 // and two close forms at 400 each read "out of 800 hits": the sum counted only the exact terms. Driven
 // through the real listing and the real filings line.
 test("the filings line states no hit total when any listed term's total is approximate", async () => {
-  const { listRegisterRecords, recordsLine } = await import("../register-records.mjs");
+  const { recordsLine } = await import("../register-records.mjs");
+  const { readingDoc } = await import("./knockout-reading-fixture.mjs");
   const lister = (answers) => async (term) => {
     const a = answers[term] ?? { total: 0 };
     return { ok: true, records: [{ record_id: `/mark/eu/${term}-1`, mark_text: term, owner_name: "Owner", classes: [9], status: "Registered" }],
       total: a.total ?? null, ...(a.approximate ? { approximate: true, floor: a.floor } : {}) };
   };
-  const run = (answers) => listRegisterRecords({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
-    capabilities: SIGNA, lister: lister(answers), variantCap: 2 });
+  const run = async (answers) => (await readingDoc({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
+    capabilities: SIGNA, lister: lister(answers), variantCap: 2 })).doc;
   const approx = (await run({ COPPER: { approximate: true, floor: 10000 }, COPER: { total: 400 }, KOPPER: { total: 400 } })).marks[0];
   assert.ok(approx.terms.some((t) => t.approximate === true), "premise: the name's total is an approximation");
   assert.equal(approx.available, null, "no honest sum exists, so none is carried");
   assert.doesNotMatch(recordsLine(approx), /out of \d/, "and none is printed");
-  // THE CONTROL: every total exact, and the sum is stated as before.
+  // AND EXACT TOTALS ON QUESTIONS NOT READ ARE NO FIGURE TO COMPARE A LIST WITH: the near forms were counted, and no one read them.
   const exact = (await run({ COPPER: { total: 12 }, COPER: { total: 400 }, KOPPER: { total: 400 } })).marks[0];
-  assert.equal(exact.available, 812);
-  assert.match(recordsLine(exact), /out of 812 hits across the searches run/);
+  assert.equal(exact.available, null);
+  assert.doesNotMatch(recordsLine(exact), /out of \d/);
 });
 
 test("the Signa listing carries the register's total and its approximation", async () => {
@@ -355,7 +308,7 @@ async function knockout(mode, codename) {
     const order = [];
     const res = await knockoutInner(ctx, job, {
       countExecutor: async (term, p) => { order.push(`count:${p.key}:${term}`); return { ok: true, total: 3 }; },
-      recordLister: async (term) => { order.push(`list:${term}`); return { ok: true, total: 3, records: [] }; },
+      recordLister: async (term, { classes }) => { order.push(`list:${term}:${classes}`); return { ok: true, total: 3, records: [] }; },
     });
     return { res, order, ctx };
   } finally {
@@ -365,23 +318,22 @@ async function knockout(mode, codename) {
 }
 const events = (d) => readFileSync(driverDir(d, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 
-test("a knockout lists first and counts only what the listing never asks", async () => {
+test("a knockout counts each form once, and reads the list only of a name with filings", async () => {
   const { res, order } = await knockout("on", "birch-beacon");
   assert.equal(res?.ok, true, `the knockout did not deliver: ${JSON.stringify(res)}`);
-  const firstCount = order.findIndex((o) => o.startsWith("count:"));
-  const lastList = order.map((o) => o.startsWith("list:")).lastIndexOf(true);
-  assert.ok(firstCount > lastList, `the listing ran first: ${order.join(" → ")}`);
-  assert.deepEqual(order.filter((o) => o.startsWith("count:")), ["count:containing:TIMBER"],
-    "identical and close came from the listing's totals");
+  const firstList = order.findIndex((o) => o.startsWith("list:"));
+  const lastCount = order.map((o) => o.startsWith("count:")).lastIndexOf(true);
+  assert.ok(lastCount < firstList, `the counts ran first: ${order.join(" → ")}`);
+  assert.deepEqual(order.filter((o) => o.startsWith("list:")), ["list:TIMBER:", "list:TIMBER:35"], "the name's own list and the class the frame added, and no mechanical form's");
+  assert.equal(new Set(order).size, order.length, `a question went out twice: ${order.join(" → ")}`);
   assert.ok(events(res.runDir).some((e) => e.event === "answer-memory" && e.mode === "on"));
   assert.equal(existsSync(driverDir(res.runDir, ANSWER_MEMORY_DIR)), false, "the held answers did not travel into the archive");
 });
 
-test("with the memory switch off the knockout still lists first, and the run holds no memory", async () => {
+test("with the memory switch off the order is the same, and the run holds no memory", async () => {
   const { res, order } = await knockout("off", "teal-quill");
   assert.equal(res?.ok, true, `the knockout did not deliver: ${JSON.stringify(res)}`);
-  assert.deepEqual(order.filter((o) => o.startsWith("count:")), ["count:containing:TIMBER"],
-    "the register's declaration decides the order, not the memory switch");
+  assert.deepEqual(order.filter((o) => o.startsWith("list:")), ["list:TIMBER:", "list:TIMBER:35"], "the memory switch decides nothing about what is asked");
   const ev = events(res.runDir);
   assert.ok(ev.some((e) => e.event === "answer-memory" && e.mode === "off"));
   assert.deepEqual(readdirSync(driverDir(res.runDir)).filter((f) => f.startsWith("register-answer")), []);
@@ -390,13 +342,16 @@ test("with the memory switch off the knockout still lists first, and the run hol
 test("the knockout listing keeps the register's own warnings, on the term and in the ledger", async () => {
   // The clearance sweep carried them and the knockout dropped them, so a knockout run could not show
   // what a clearance run shows — `expanded_fallback` above all, which says a total counts records.
-  const { listRegisterRecords } = await import("../register-records.mjs");
+  const { readingDoc } = await import("./knockout-reading-fixture.mjs");
+  const { appendQuestionReceipts } = await import("../knockout-register-read.mjs");
   const dir = mkdtempSync(join(tmpdir(), "ko-warnings-"));
   const ledgerPath = join(dir, "records.jsonl");
   const WARN = [{ code: "expanded_fallback", message: "invented" }];
-  const lister = async (term) => ({ ok: true, records: [], total: 0, ...(term === "COPPER" ? { warnings: WARN } : {}) });
-  const doc = await listRegisterRecords({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
-    capabilities: SIGNA, lister, variantCap: 1, ledgerPath });
+  const FILING = { record_id: "/mark/eu/tm_1", mark_text: "COPPER", owner_name: "Owner", classes: [9], status: "Registered" };
+  const lister = async (term) => (term === "COPPER" ? { ok: true, records: [FILING], total: 1, warnings: WARN } : { ok: true, records: [], total: 0 });
+  const { doc } = await readingDoc({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
+    capabilities: SIGNA, lister, variantCap: 1, root: dir });
+  appendQuestionReceipts(ledgerPath, doc, { provider: "signa" });
   const terms = doc.marks[0].terms;
   assert.deepEqual(terms.find((t) => t.term === "COPPER").warnings, WARN);
   assert.equal("warnings" in terms.find((t) => t.term !== "COPPER"), false, "a term the register sent no warning on carries none");

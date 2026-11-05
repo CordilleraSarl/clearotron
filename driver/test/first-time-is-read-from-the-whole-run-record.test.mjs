@@ -158,6 +158,8 @@ test("a summary event or a skip counts in the state that is a failure, and not i
   assert.deepEqual(read([{ event: "knockout-register-counts", marks: 4, counted: 3 }]).rows.map((r) => r.kind), ["step failed"]);
   assert.equal(read([{ event: "knockout-register-counts", marks: 4, counted: 4 }]).firstTime, true);
   assert.deepEqual(read([{ event: "knockout-review", outcome: "stage-failed", applied: 0 }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.deepEqual(read([{ event: "knockout-review", outcome: "corrected", applied: 0 }]).rows.map((r) => r.kind), ["repair"], "a defect corrected is a repair");
+  assert.deepEqual(read([{ event: "knockout-review", outcome: "correction-failed", applied: 0 }]).rows.map((r) => r.kind), ["step failed"], "a correction that failed is a failure");
   assert.deepEqual(read([{ event: "knockout-review", outcome: "applied", applied: 2 }]).rows.map((r) => r.kind), ["repair"],
     "a rater's text the plain-English pass rewrote was not accepted as it stood");
   for (const outcome of ["nothing-flagged", "applied"]) assert.equal(read([{ event: "knockout-review", outcome, applied: 0 }]).firstTime, true);

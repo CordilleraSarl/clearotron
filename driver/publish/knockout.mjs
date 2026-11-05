@@ -157,6 +157,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // cell `—`. A run with none of them builds the workbook it built before.
   const partRow = (name, reason) => ({ 'Mark': '—', 'Search Term': '—', 'Source / Context': name,
     'Result Summary': `FAILED — ${plainDeferralReason(reason)}`, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
+  if (degraded.reading) trailRows.push(partRow(PART_NAMES.register, degraded.reading.reason));
   if (degraded.review) trailRows.push(partRow(RULED_WORDS.plainLanguageReview, degraded.review.reason));
   if (degraded.machineChecks) trailRows.push(partRow(PART_NAMES.machineChecks, degraded.machineChecks.reason));
   if (degraded.aboutThisRequest) trailRows.push(partRow(PART_NAMES.aboutThisRequest, degraded.aboutThisRequest.reason));
@@ -211,6 +212,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // registers hold), which never belonged beside a counted figure on a client-facing page.
   // Additive and conditional: a run with no working notes produces the same workbook it always did.
   const noteRows = [];
+  // WHAT THE LOOK AT THE CORRECTED RECORD STILL FOUND, for the reviewing lawyer, in its own words. Not on the client's report.
+  for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': 'Internal note', 'Note': p.problem });
   for (const m of findings.marks ?? []) {
     for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': 'Internal note', 'Note': n });
     if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': 'Register estimate (model)', 'Note': m.registerEstimate });
@@ -281,7 +284,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           // WHICH QUESTION FOUND IT, on every row. A filing on the name and a filing on a generated
           // variant are different facts, and a sheet that fuses them is a sheet that overstates.
           'Matched form': r.matchedForm ?? '—',
-          'Basis': r.matchedBasis === 'close' ? 'close variation' : 'identical',
+          'Basis': r.foundUnder ? '—' : r.matchedBasis === 'close' ? 'close variation' : 'identical',
           'Trademark': r.mark ?? '—', 'Owner': r.owner ?? '—', 'Status': r.status ?? '—',
           'Classes': (r.classes ?? []).join(', ') || '—', 'Territory': r.territory ?? '—',
           'Filed': r.applicationDate ?? '—', 'Registered': r.registrationDate ?? '—',
@@ -302,9 +305,18 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           'Note': !t.reason ? 'the search did not run' : t.notAsked ? t.reason : plainCause(t.reason),
         });
       }
-      if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
+      // An added class's question that has no answer is on the sheet as what it is, with the reason where one was given.
+      for (const t of e.terms ?? []) {
+        if (!t.unresolved) continue;
         recordRows.push({
-          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': 'none found',
+          'Mark': m.name, 'Matched form': t.term, 'Basis': 'identical', 'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': (t.classes ?? []).join(', ') || '—', 'Territory': '—',
+          'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': t.reason ?? 'the search did not run',
+        });
+      }
+      if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
+        // A count above zero that nothing read is not none: the register holds filings under it.
+        recordRows.push({
+          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': (e.terms ?? []).some((t) => t.setAside) ? 'not available' : 'none found',
           'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—',
           'Record': '—', 'Note': recordsLine(e) ?? '',
         });
@@ -598,10 +610,11 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     && existsSync(join(runDir, 'research', `${kebab(name)}.md`))
     && !sweepReceipts.some((r) => r?.mark === name && !r.question))
     .map((mark) => ({ mark, preset: koPreset }));
+  const openPoints = (() => { try { return JSON.parse(readFileSync(driverDir(runDir, 'knockout-corrections.json'), 'utf8')).open ?? []; } catch { return []; } })();
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
   await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
-    listing: registerRecords ? null : steps.listing, review: steps.review, machineChecks: machineChecksFailed,
-    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept,
+    listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
+    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept, openPoints,
   });
   grpRead(join(poolRunDir, auditFile), 0o640);
 

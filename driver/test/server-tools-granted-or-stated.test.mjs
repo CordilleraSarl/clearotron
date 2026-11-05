@@ -49,6 +49,9 @@ function toolsRegisteredBy(script) {
 // Server modules that exist and are reachable by NO grant. Same rule as an ungranted tool, one level up:
 // a module nobody can call is fine when deliberate and a dead surface when not.
 const SERVERS_GRANTED_TO_NOTHING = Object.freeze({
+  // Mounted in place of the active register under the `register` key, on a run whose job declares fixtures, and on no
+  // other. It serves the propose tool the reading step already holds, so it adds no grant.
+  "fixture-register-server.mjs": "a fixture run's register, swapped in by the run's own marker; it reaches no register",
   "stdio-server.mjs":
     "NOT a server. It is the shared stdio/JSON-RPC bootstrap every other module calls `serve()` from, and " +
     "it is caught here only by its name. Listed rather than filtered out by a special case, so the reader " +
@@ -393,7 +396,7 @@ const RECORDING_GRANTS = Object.freeze({
   //     grant is still its one record tool. Its reads are enumerable — the skill doc, the triage deck, the
   //     firm-wide spine, the plan and the per-mark payloads the dispatch names by path — so it takes the
   //     frame-diff ruling and gets no `search_run_artifacts`.
-  "knockout-assess": Object.freeze(["mcp__recording-knockout-assess__record_knockout_assess"]),
+  "knockout-assess": Object.freeze(["mcp__recording-knockout-assess__read_register_list", "mcp__recording-knockout-assess__record_knockout_assess"]),
   //   · knockout-frame is the lane's second and last, and the first recording stage that is not fanned at
   //     all — no `:` axis, no `#` chunk. Its grant is still its one record tool: it FRAMES and its own
   //     dispatch says it does not search, so a retrieval grant here would contradict its orders.
@@ -460,7 +463,19 @@ const RECORDING_GRANTS = Object.freeze({
   // would be a band change wearing a rewrite's clothes, on the one stage whose whole claim is that it
   // decides nothing.
   "knockout-review": Object.freeze([
+    "mcp__recording-knockout-review__read_register_list",
     "mcp__recording-knockout-review__record_knockout_review",
+  ]),
+  // A material defect's repair: its read of the run's own lists, and its record tool.
+  "knockout-correct": Object.freeze([
+    "mcp__recording-knockout-correct__read_register_list",
+    "mcp__recording-knockout-correct__record_knockout_correction",
+  ]),
+  // The knockout's reading step: the register's propose tool alone, its read of the run's own lists, and its record tool.
+  "knockout-register-read": Object.freeze([
+    "mcp__recording-knockout-register-read__read_register_list",
+    "mcp__recording-knockout-register-read__record_knockout_register_read",
+    "mcp__register__register_propose_supplemental",
   ]),
 });
 
@@ -503,7 +518,7 @@ test("RECORDING: every served tool is granted to exactly one stage, and each sta
   // THE LOOSENING IS BOUNDED, and the bound is what keeps this from becoming a hole: every home must be
   // the stage's OWN derived key. A read tool appearing under a key that is not its holder's would mean
   // two stages sharing one mount — the same defect as a shared writer, one surface over.
-  const READ_SURFACE = new Set(["search_run_artifacts"]);
+  const READ_SURFACE = new Set(["search_run_artifacts", "read_register_list"]);
   for (const t of served) {
     const holders = homes.get(t) ?? [];
     if (READ_SURFACE.has(t)) {

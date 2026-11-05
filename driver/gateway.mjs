@@ -72,7 +72,7 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // CALL: the seat's grant carries no Write, so a ladder handing it the write form would order a
   // hand-write it cannot perform, on a stage whose failure is deliberately quiet.
   ["knockout-review.json", { tool: "record_knockout_review", what: "your rewrites of the lines a reader sees first",
-    refusals: (runDir) => knockoutReviewRefusalsFor(runDir) }],
+    refusals: (runDir) => knockoutReviewRefusalsFor(runDir) }], ["knockout-register.json", { tool: "record_knockout_register_read", what: "what you carried forward, set aside and did not ask", refusals: (runDir) => knockoutRegisterRefusalsFor(runDir) }],
   [BLIND_FRAME_MODEL_FILE, { tool: "record_blind_frame", what: "the threat model" }],
   [SKEPTIC_FLAGS_FILE, { tool: "record_skeptic", what: "your flags and escalation decisions" }],
   ["senior-eye-review.md", { tool: "record_narrative_refutation", what: "your verdict and typed flags" }],
@@ -201,6 +201,8 @@ export const TOOL_WRITTEN_PATTERNS = Object.freeze([
     what: "this chunk's rated assessment",
     sample: basename(knockoutAssessChunkFile("", 0)),
   }),
+  Object.freeze({ re: KNOCKOUT_CORRECTION_RE, tool: "record_knockout_correction", what: "your answer to each defect, and what you repaired", sample: basename(knockoutCorrectionFile("", 0)) }),
+  Object.freeze({ re: KNOCKOUT_RECHECK_RE, tool: "record_knockout_review", what: "your second look at the corrected record", sample: basename(knockoutReviewFile("", 1)) }),
 ]);
 
 /**
@@ -234,11 +236,11 @@ export { everyToolCallRefused };
 import { unitRefusalsFor } from "./register-unit-record.mjs";
 // The chunk artifact's name shape, IMPORTED from the module that constructs the path — never restated
 // here. See TOOL_WRITTEN_PATTERNS below for why this table reads a pattern instead of owning one.
-import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
+import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-assess-record.mjs"; import { KNOCKOUT_CORRECTION_RE, knockoutCorrectionFile } from "./knockout-correction-record.mjs";
 // The frame transport's refusal reader, so a missing plan or note can be told apart from a stage that
 // never called its tool — the distinction, which its sibling stage still lacks.
-import { frameRefusalsFor } from "./knockout-frame-record.mjs";
-import { knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
+import { frameRefusalsFor } from "./knockout-frame-record.mjs"; import { knockoutRegisterRefusalsFor } from "./knockout-register-record.mjs";
+import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.

@@ -67,6 +67,7 @@ test("a run whose framework states no method is not offered the inputs fields; o
 test("every other tool is listed exactly as declared, whatever the run", async () => {
   const declared = await listTools(null);
   const listed = await listTools(runDir({ method: false }));
-  for (const t of declared.filter((x) => x.name !== "record_knockout_assess"))
+  for (const t of declared.filter((x) => x.name !== "record_knockout_assess" && x.name !== "record_knockout_correction"))
     assert.deepEqual(listed.find((x) => x.name === t.name), t, `${t.name} changed with the run`);
+  assert.doesNotMatch(JSON.stringify(listed.find((x) => x.name === "record_knockout_correction").inputSchema), /"inputs"/, "a correction on a run with no method is not offered inputs either");
 });

@@ -234,8 +234,8 @@ it, not one inherited dormant.
 throws, so a run refuses at start rather than calling a vendor nobody chose. The clearance pipeline
 consumes two provider verbs directly — `recordFetch` (screen-gate, senior-rights, citation-closure
 code fetches) and `executePlan` (pure-code re-execution of dictated plan slices during fan-in and
-reopen repairs); the knockout lane it dispatches into adds `countHits` and `listRecords`, so four
-verbs run with no model in the data path, and every shipped adapter implements all four. On top of
+reopen repairs); the knockout lane it dispatches into adds `countHits`, and the house-mark check adds
+`listRecords`, so four verbs run with no model in the data path, and every shipped adapter implements all four. On top of
 those sit the gather tools the engine exposes to sweep stages. Adapter anatomy and the verification
 checklist for a new register estate: [08](08-development-guide.md).
 
