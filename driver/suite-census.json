@@ -567,6 +567,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-connection-stays-with-its-demo.test.mjs": {
+          "tests": 7,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
         "a-demo-container-holds-both-lanes.test.mjs": {
           "tests": 4,
           "asserts": 20,
@@ -1878,6 +1884,12 @@
         "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
           "tests": 6,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-report-prints-the-dates-of-its-record.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -3742,8 +3754,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 41,
-          "asserts": 122,
+          "tests": 45,
+          "asserts": 128,
           "skips": 3,
           "todos": 0
         },
