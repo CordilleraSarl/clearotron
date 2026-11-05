@@ -1560,7 +1560,7 @@ serve({
                 type: "array",
                 description: "Questions you considered and did not ask, and why.",
                 items: { type: "object", required: ["question", "why"], properties: {
-                  question: { type: "string", description: "The question, in words." },
+                  question: { type: "string", description: "The question, in words. An added class's question goes by the qid your opening message gives it." },
                   why: { type: "string", description: "Why you did not ask it." },
                 } },
               },

@@ -19,7 +19,7 @@ import { basename, dirname, join } from "node:path";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
-import { carriedIds, formQid, formsOfName, knockoutBandBlocks, knockoutProposals, openingQid, questionsOwed } from "./knockout-register-read.mjs";
+import { addedClassQuestions, carriedIds, formQid, formsOfName, knockoutBandBlocks, knockoutProposals, namesAddedClass, openingQid, questionsOwed } from "./knockout-register-read.mjs";
 
 const TOKEN = "knockoutregisterread";
 const SCHEMA_VERSION = 1;
@@ -98,8 +98,9 @@ function rowDefect(row, n, { counts, plan, runDir }) {
   const stranger = [...carried].find((id) => !held.has(id));
   if (stranger) return `${TOKEN}_carried:${n}: "${stranger}" is not a record this name's questions returned. Copy record_id from the list you read.`;
   const { entries } = knockoutProposals(runDir, n);
+  const addedQuestions = addedClassQuestions(runDir, n);
   const asked = new Set([...blocks.keys(), ...entries.map((e) => String(e?.qid)), ...["identical", "containing", "close"].map((k) => openingQid(n, k)),
-    ...formsOfName(n, framed).map((_, i) => formQid(n, i))]);
+    ...formsOfName(n, framed).map((_, i) => formQid(n, i)), ...addedQuestions.map((q) => q.qid)]);
   const unknown = row.set_aside.find((r) => !asked.has(r.question));
   if (unknown) return `${TOKEN}_set_aside:${n}: "${unknown.question}" is not a question on this name. Name the question by its qid.`;
   for (const r of row.set_aside) {
@@ -109,13 +110,16 @@ function rowDefect(row, n, { counts, plan, runDir }) {
     const both = (r.records ?? []).find((id) => carried.has(id));
     if (both) return `${TOKEN}_set_aside_records:${n}: "${both}" is both carried and set aside. Keep it in one.`;
   }
-  const owed = questionsOwed({ name: n, countsEntry, blocks, proposals: entries, carried, framed });
+  const owed = questionsOwed({ name: n, countsEntry, blocks, proposals: entries, carried, framed, addedQuestions });
   const notAsked = owed.find((o) => o.mustAsk);
   if (notAsked) return `${TOKEN}_identical:${n}: the register counts ${notAsked.count} under this name and no question was asked on it. Ask it: read the list if you can read it in full, or narrow it. A reason does not stand in for the name's own question.`;
+  const silent = owed.find((o) => o.addedClass != null && ![...row.not_asked, ...row.set_aside].some((r) => namesAddedClass(r.question, o)));
+  if (silent) return `${TOKEN}_added_class:${n}: Class ${silent.addedClass} was added for this name, but its identical-name question has no outcome. Ask that question, reuse its held answer for the same scope, or record why it remains unresolved. Keep the original instructed classes unchanged.`;
   // A FILING IS ACCOUNTED FOR ONCE, wherever it is said. A row naming filings holds only those, so it excuses no other.
   const accounted = new Set([...carried, ...row.set_aside.flatMap((r) => r.records ?? rowsUnder(r.question))]);
   const said = new Set(row.set_aside.map((r) => r.question));
   const unsaid = owed.flatMap((o) => {
+    if (o.addedClass != null) return [];
     if (o.records) { const left = o.records.filter((id) => !accounted.has(id)); return left.length ? [`${o.question} (${left.length} of its ${o.count} uncarried filings, ${o.kind})`] : []; }
     return said.has(o.question) ? [] : [`${o.question} (${o.count ?? "count unknown"}, ${o.kind}${o.unread ? `: ${o.unread.join(", ")} not read` : ""})`];
   });

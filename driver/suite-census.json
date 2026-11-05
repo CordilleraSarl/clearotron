@@ -1108,8 +1108,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
-          "tests": 41,
-          "asserts": 183,
+          "tests": 42,
+          "asserts": 192,
           "skips": 0,
           "todos": 0
         },

@@ -308,7 +308,7 @@ async function knockout(mode, codename) {
     const order = [];
     const res = await knockoutInner(ctx, job, {
       countExecutor: async (term, p) => { order.push(`count:${p.key}:${term}`); return { ok: true, total: 3 }; },
-      recordLister: async (term) => { order.push(`list:${term}`); return { ok: true, total: 3, records: [] }; },
+      recordLister: async (term, { classes }) => { order.push(`list:${term}:${classes}`); return { ok: true, total: 3, records: [] }; },
     });
     return { res, order, ctx };
   } finally {
@@ -324,7 +324,7 @@ test("a knockout counts each form once, and reads the list only of a name with f
   const firstList = order.findIndex((o) => o.startsWith("list:"));
   const lastCount = order.map((o) => o.startsWith("count:")).lastIndexOf(true);
   assert.ok(lastCount < firstList, `the counts ran first: ${order.join(" → ")}`);
-  assert.deepEqual(order.filter((o) => o.startsWith("list:")), ["list:TIMBER"], "the name's own list, and no mechanical form's");
+  assert.deepEqual(order.filter((o) => o.startsWith("list:")), ["list:TIMBER:9", "list:TIMBER:35"], "the name's own list and the class the frame added, and no mechanical form's");
   assert.equal(new Set(order).size, order.length, `a question went out twice: ${order.join(" → ")}`);
   assert.ok(events(res.runDir).some((e) => e.event === "answer-memory" && e.mode === "on"));
   assert.equal(existsSync(driverDir(res.runDir, ANSWER_MEMORY_DIR)), false, "the held answers did not travel into the archive");
@@ -333,7 +333,7 @@ test("a knockout counts each form once, and reads the list only of a name with f
 test("with the memory switch off the order is the same, and the run holds no memory", async () => {
   const { res, order } = await knockout("off", "teal-quill");
   assert.equal(res?.ok, true, `the knockout did not deliver: ${JSON.stringify(res)}`);
-  assert.deepEqual(order.filter((o) => o.startsWith("list:")), ["list:TIMBER"], "the memory switch decides nothing about what is asked");
+  assert.deepEqual(order.filter((o) => o.startsWith("list:")), ["list:TIMBER:9", "list:TIMBER:35"], "the memory switch decides nothing about what is asked");
   const ev = events(res.runDir);
   assert.ok(ev.some((e) => e.event === "answer-memory" && e.mode === "off"));
   assert.deepEqual(readdirSync(driverDir(res.runDir)).filter((f) => f.startsWith("register-answer")), []);

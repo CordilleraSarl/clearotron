@@ -495,6 +495,32 @@ test("a question over an added class does not answer the name's original scope, 
   assert.equal(doc.marks[0].terms[0].state, "narrowed", "a read over one of two classes did not read the name's own question");
 });
 
+test("a class the frame added needs an outcome: an answer, or a reason that leaves it unresolved", () => {
+  const framed = [{ name: NAME, classes: [9], beltAndBraces: [35] }];
+  const dir = runWith({ total: 0 });
+  writeFileSync(questionPlanPath(dir), JSON.stringify(knockoutQuestionPlan({ marks, classes: [9], jurisdictions: ["EU"], capabilities: CLARIVATE, framedMarks: framed })));
+  const qid = openingQid(NAME, "added-class-35");
+  const send = (row) => recordKnockoutRegisterRead(dir, { marks: [{ name: NAME, carried: [], set_aside: [], not_asked: [], ...row }] });
+  assert.equal(send({}).refused, `knockoutregisterread_added_class:${NAME}: Class 35 was added for this name, but its identical-name question has no outcome. Ask that question, reuse its held answer for the same scope, or record why it remains unresolved. Keep the original instructed classes unchanged.`);
+  const reading = { marks: [{ name: NAME, carried: [], set_aside: [], not_asked: [{ question: qid, why: "the client's goods do not reach retail" }] }] };
+  assert.ok(send(reading.marks[0]).written, "a stated reason is an outcome");
+  assert.ok(send({ not_asked: [{ question: "the identical name in class 35", why: "the same" }] }).written, "in words, where it names the class");
+  assert.match(String(send({ not_asked: [{ question: "class 350", why: "not this class" }] }).refused), /Class 35 was added/, "and only that class");
+  const doc = (read, entries = [], blocks = new Map()) => knockoutRecordsDoc({ marks, classes: [9], jurisdictions: ["EU"], provider: "clarivate", capabilities: CLARIVATE, framedMarks: framed,
+    counts: JSON.parse(readFileSync(driverDir(dir, "register-counts.json"), "utf8")), reading: read,
+    readBlocks: () => blocks, readProposals: () => ({ entries, rejected: [] }) }).marks[0];
+  const row = (m) => m.terms.find((t) => t.qid === qid);
+  assert.deepEqual([row(doc(reading)).state, row(doc(reading)).unresolved, row(doc(reading)).reason], ["not-asked", true, "the client's goods do not reach retail"], "it stays unresolved, with its reason");
+  assert.match(String(recordsLine(doc(reading))), /did not complete/, "and nothing says the name came back clean");
+  assert.equal(row(doc(null)).unresolved, true, "a reading that did not finish records the same gap");
+  const asked = [{ qid: "supp:35", predicate: "exact", term: NAME, nice_classes: ["35"] }];
+  const held = new Map([["supp:35", listBlock("supp:35", [])]]);
+  assert.equal(row(doc(null, asked, held)), undefined, "an answered question owes nothing");
+  writeFileSync(knockoutBandPath(dir, NAME), JSON.stringify([listBlock("supp:35", [])]));
+  writeFileSync(join(dir, "register-units", `${knockoutAxis(NAME)}-supplemental-plan.json`), JSON.stringify({ entries: asked }));
+  assert.ok(send({}).written, "the answered question is the outcome, with nothing more to say");
+});
+
 test("a repair sends only the names it corrects, and a turn that ends early leaves what it had settled", () => {
   const id = openingQid(NAME, "identical");
   const other = "MOSSVALE";

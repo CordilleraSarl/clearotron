@@ -112,6 +112,15 @@ export function knockoutQuestionPlan({ marks, classes = null, jurisdictions = nu
   };
 }
 
+/** The questions the frame's added classes owe one name, from the run's frozen plan: each class's identical-name question. */
+export function addedClassQuestions(runDir, name) {
+  let plan = null;
+  try { plan = JSON.parse(readFileSync(questionPlanPath(runDir), "utf8")); } catch { return []; }
+  return addedOf(plan, name);
+}
+const addedOf = (plan, name) => (plan?.entries ?? []).filter((e) => e?.axis === knockoutAxis(name) && e?.added_class_reason)
+  .map((e) => ({ qid: String(e.qid), class: String(e.nice_classes?.[0]) }));
+
 /** The blocks of one name's band as they stand, by qid. A band not yet written holds none. */
 export function knockoutBandBlocks(runDir, name) {
   const out = new Map();
@@ -129,6 +138,12 @@ export function knockoutProposals(runDir, name) {
     return { entries: Array.isArray(doc?.entries) ? doc.entries : [], rejected: Array.isArray(doc?.rejected) ? doc.rejected : [] };
   } catch { return { entries: [], rejected: [] }; }
 }
+
+/** Does this row of a reading record speak for that added class's question: by its qid, or by naming the class? PURE. */
+export const namesAddedClass = (question, owed) => {
+  const said = String(question ?? "");
+  return said === owed.question || new RegExp(`\\bclass(?:es)?\\s*${owed.addedClass}\\b`, "i").test(said);
+};
 
 /** The record ids a reading record's `carried` groups hold, flattened. PURE. */
 export const carriedIds = (row) => new Set((row?.carried ?? []).flatMap((g) => (Array.isArray(g?.records) ? g.records : [])).map(String));
@@ -155,7 +170,7 @@ const onlyAddedClasses = (e, framed) => {
  * carried, and every count or crowd nothing narrowed or read. A zero and a failure are not on it: the first says
  * itself, and the second is the engine's to report, not the model's to excuse. PURE over its inputs.
  */
-export function questionsOwed({ name, countsEntry = null, blocks = new Map(), proposals = [], carried = new Set(), framed = null }) {
+export function questionsOwed({ name, countsEntry = null, blocks = new Map(), proposals = [], carried = new Set(), framed = null, addedQuestions = [] }) {
   const owed = [];
   const answered = (e) => wasRead(blocks.get(String(e?.qid)));
   const narrowedBy = (qid) => proposals.some((e) => e?.narrows === qid && answered(e));
@@ -198,6 +213,13 @@ export function questionsOwed({ name, countsEntry = null, blocks = new Map(), pr
     const unread = under.filter((f) => f.holds && !read.has(norm(f.form))).map((f) => String(f.form));
     if (under.length ? !unread.length : narrowedBy(qid)) continue;
     owed.push({ question: qid, count: total, kind: "counted-not-read", ...(under.length > 1 && unread.length ? { unread } : {}) });
+  }
+  // AN ADDED CLASS OWES AN OUTCOME THOUGH NOTHING WAS COUNTED IN IT: the plan took it on. An answer of any kind is one; a crowd
+  // or a failure goes on as any other question's does.
+  for (const q of addedQuestions) {
+    if (!blocks.has(q.qid) && !proposals.some((e) => e?.predicate === "exact" && forms.some((f) => isForm(e, f)) && (e?.nice_classes ?? []).map(String).includes(q.class) && blocks.has(String(e?.qid)))) {
+      owed.push({ question: q.qid, count: null, kind: "added-class-no-outcome", addedClass: q.class });
+    }
   }
   const byQid = new Map(proposals.map((e) => [String(e?.qid), e]));
   const formOfQid = (qid) => forms.find((_, i) => formQid(name, i) === qid) ?? forms.find((f) => isForm(byQid.get(qid), f)) ?? null;
@@ -290,6 +312,7 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
   const officeScope = dropped.length
     ? { listed: regions, unlisted: dropped.map((d) => ({ office: d.office, memberId: d.memberId, missing: [...(d.missing ?? [])] })) } : null;
   const batchClasses = ints(classes);
+  const plan = knockoutQuestionPlan({ marks, classes, jurisdictions, capabilities, unreachable, framedMarks });
   const countsByName = new Map((counts?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
   const readingByName = new Map((reading?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
   const framedByName = new Map((framedMarks ?? []).map((f) => [String(f?.name ?? "").trim().toLowerCase(), f]));
@@ -339,6 +362,14 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
         ...(holds && !stackRead ? { setAside: true } : {}) });
     }
     for (const e of entries) terms.push(questionRow({ entry: e, block: blocks.get(String(e?.qid)), formKeys }));
+    // AN ADDED CLASS WITH NO ANSWER STAYS ON THE RECORD UNRESOLVED, with the reason where one was given: neither searched nor
+    // clean. A reading that did not finish leaves the same gap, recorded the same way.
+    const owedAdded = questionsOwed({ name, countsEntry: null, blocks, proposals: entries, framed: framedByName.get(key) ?? null, addedQuestions: addedOf(plan, name) }).filter((o) => o.addedClass != null);
+    for (const o of owedAdded) {
+      const said = [...(read?.not_asked ?? []), ...(read?.set_aside ?? [])].find((r) => namesAddedClass(r?.question, o));
+      terms.push({ term: name.toUpperCase(), basis: "identical", label: "the name itself", qid: o.question, predicate: "exact", classes: [Number(o.addedClass)], ok: true, fetched: 0, total: null,
+        state: "not-asked", unresolved: true, setAside: true, ...(said ? { reason: String(said.why).slice(0, 300) } : {}) });
+    }
 
     // A QUESTION THE STEP ASKED AND THE RUN DID NOT SEND is on the record as one, the safety net's refusal included:
     // never a clean answer, and never missing.
@@ -499,6 +530,7 @@ export function readingTableLines({ marks, counts, classes = null, framedMarks =
   const framedByName = new Map((framedMarks ?? []).map((f) => [String(f?.name ?? "").trim().toLowerCase(), f]));
   const countsByName = new Map((counts?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
   const cell = (c) => (Number.isFinite(c?.total) ? String(c.total) : "not available");
+  const instructed = new Set((marks ?? []).flatMap((m) => classesForName(m, classes, framedByName.get(String(m?.name ?? "").trim().toLowerCase()) ?? null)));
   return (marks ?? []).map((m) => {
     const name = String(m?.name ?? "").trim();
     const key = name.toLowerCase();
@@ -506,13 +538,13 @@ export function readingTableLines({ marks, counts, classes = null, framedMarks =
     const c = countsByName.get(key)?.counts ?? {};
     const nearSpellings = (c.close?.forms ?? []).map((f) => f?.form).filter(Boolean).join(" · ");
     const nice = classesForName(m, classes, framed);
-    const added = ints(framed?.beltAndBraces).filter((n) => !nice.includes(n));
+    const added = ints(framed?.beltAndBraces).filter((n) => !instructed.has(n));
     const forms = formsOfName(name, framed);
     const own = c.identical?.alternatives
       ? forms.map((f, i) => `"${f}" (\`${formQid(name, i)}\`): ${cell(c.identical.alternatives.find((a) => String(a?.term).toLowerCase() === f.toLowerCase()))}`).join("; ")
       : `(\`${openingQid(name, "identical")}\`): ${cell(c.identical)}`;
     return [
-      `- "${name}": axis \`${knockoutAxis(name)}\`, band \`${knockoutBandPath(runDir, name)}\`, classes [${nice.join(", ")}]${added.length ? `, added by the frame [${added.join(", ")}]` : ""}.`,
+      `- "${name}": axis \`${knockoutAxis(name)}\`, band \`${knockoutBandPath(runDir, name)}\`, classes [${nice.join(", ")}]${added.length ? `, added by the frame: ${added.map((n) => `class ${n} (\`${openingQid(name, `added-class-${n}`)}\`)`).join(", ")}` : ""}.`,
       `  Identical ${own}. Containing (\`${openingQid(name, "containing")}\`): ${cell(c.containing)}. Mechanical near-spellings${nearSpellings ? ` ${nearSpellings}` : ""} (\`${openingQid(name, "close")}\`): ${cell(c.close)}.`,
     ].join("\n");
   });

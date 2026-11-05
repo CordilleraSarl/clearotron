@@ -305,6 +305,14 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           'Note': !t.reason ? 'the search did not run' : t.notAsked ? t.reason : plainCause(t.reason),
         });
       }
+      // An added class's question that has no answer is on the sheet as what it is, with the reason where one was given.
+      for (const t of e.terms ?? []) {
+        if (!t.unresolved) continue;
+        recordRows.push({
+          'Mark': m.name, 'Matched form': t.term, 'Basis': 'identical', 'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': (t.classes ?? []).join(', ') || '—', 'Territory': '—',
+          'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': t.reason ?? 'the search did not run',
+        });
+      }
       if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
         // A count above zero that nothing read is not none: the register holds filings under it.
         recordRows.push({

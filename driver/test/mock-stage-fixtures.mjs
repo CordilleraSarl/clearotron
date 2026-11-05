@@ -39,7 +39,7 @@ import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
 import { recordKnockoutCorrection } from "../knockout-correction-record.mjs";
-import { knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutProposals, questionsOwed } from "../knockout-register-read.mjs";
+import { addedClassQuestions, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutProposals, questionsOwed } from "../knockout-register-read.mjs";
 import { fixtureRecordsDir } from "../register-fixture-marker.mjs";
 import { fixtureFileName } from "../register-records.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
@@ -2688,7 +2688,7 @@ export function applyStageWrites(msg, argv) {
       }
       const blocks = knockoutBandBlocks(runDir, name);
       const held = [...blocks.values()].flatMap((b) => (b?.records ?? []).map((r) => r.record_id)).filter(Boolean);
-      const owed = questionsOwed({ name, countsEntry, blocks, proposals: knockoutProposals(runDir, name).entries, carried: new Set(held) });
+      const owed = questionsOwed({ name, countsEntry, blocks, proposals: knockoutProposals(runDir, name).entries, carried: new Set(held), addedQuestions: addedClassQuestions(runDir, name) });
       marks.push({ name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings" }] : [],
         set_aside: owed.map((o) => ({ question: o.question, why: "mock reading: reading it would not change the advice" })), not_asked: [] });
     }

@@ -52,7 +52,7 @@ import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILIT
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
 import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, openingQid, questionPlanPath,
-  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
+  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, addedClassQuestions, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
@@ -417,13 +417,15 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
 
   let reading = null;
   try {
-    // A REGISTER INJECTED IN-PROCESS has no tool server a model turn could reach, so the code asks each name's own question.
+    // A REGISTER INJECTED IN-PROCESS has no tool server a model turn could reach, so the code asks what the plan owes each name.
     if (exec.source === "injected") {
       const framedOf = (name) => (plan.marks ?? []).find((f) => String(f?.name ?? "").trim().toLowerCase() === name.toLowerCase()) ?? null;
-      const withFilings = (counts.marks ?? []).filter((m) => (m?.counts?.identical?.total ?? 0) > 0).map((m) => String(m.name));
-      await runBatched(withFilings, 3, async (name) => {
+      const owedOf = (name) => [
+        ...((counts.marks ?? []).find((m) => String(m?.name) === name)?.counts?.identical?.total > 0 ? formsOfName(name, framedOf(name)).map((_, i) => formQid(name, i)) : []),
+        ...addedClassQuestions(run.runDir, name).map((q) => q.qid)];
+      await runBatched(names.map((m) => m.name).filter((name) => owedOf(name).length), 3, async (name) => {
         const r = await exec.execute({ planPath: questionPlanPath(run.runDir), axis: knockoutAxis(name), outputPath: knockoutBandPath(run.runDir, name),
-          qids: formsOfName(name, framedOf(name)).map((_, i) => formQid(name, i)) });
+          qids: owedOf(name) });
         if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
       });
     } else {

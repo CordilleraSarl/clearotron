@@ -248,12 +248,13 @@ each observation ONCE: a point made in `factors` is not repeated in `bullets`.
 
 ## What the register reading hands you
 
-The step before you read the register name by name, and its work is yours to build on. Each filing in the file you are
-handed is one it carried forward, and `carriedBecause` says why. On each name, `reading.setAside` is what it set aside and
-why, with `setAsideRecords` holding those filings whole; `reading.notAsked` is what it chose not to ask; `reading.openQuestions`
-is what it could not settle. Do not read the lists again to rebuild this. Where something in front of you contradicts a
-set-aside, read that question's whole list with `read_register_list` by its qid, which fetches nothing, and cite the filing
-by its `recordId` as usual: it then reaches the report with the carried ones.
+The step before you read the register name by name, and its work is yours to build on. On each name in the file you are
+handed, `records` are the filings it carried forward, and `carriedBecause` says why. `setAsideRecords` are the filings it
+read and set aside, whole, and `reading.setAside` says why, by question. `reading.notAsked` is what it did not ask, with its
+reason; a class it records there stays unresolved, neither searched nor clean. `reading.openQuestions` is what it could not
+settle. Do not read the lists again to rebuild this. Reconsider a set-aside where the client's scope, the evidence or a
+specific concern gives reason: read that question's whole list with `read_register_list` by its qid, which fetches nothing,
+and cite the filing by its `recordId` as usual. It then reaches the report with the carried ones.
 
 ## Saying which filing you weighed (`registerReads`, `weighedFilings`)
 
