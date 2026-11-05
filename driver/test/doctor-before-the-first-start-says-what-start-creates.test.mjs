@@ -24,7 +24,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { handRunEnv } from "./drive-env.mjs";
 
@@ -54,11 +54,16 @@ function setUpHome({ store = "trademark/config/profiles", extra = "" } = {}) {
   return home;
 }
 
+// Doctor asks git about the store, and on Windows git is in neither POSIX folder.
+const WINDOWS = process.platform === "win32";
+const SEARCHED = [NODE_BIN, ...(WINDOWS ? [process.env.PATH] : ["/usr/bin", "/bin"])].join(delimiter);
+
 function doctor(home) {
   try {
     return execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: "pipe", timeout: 120_000,
-      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}),
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: SEARCHED, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1",
+        ...(WINDOWS ? { SystemRoot: process.env.SystemRoot } : {}) }, {}),
     });
   } catch (e) { return `${e.stdout ?? ""}${e.stderr ?? ""}`; }
 }
@@ -79,7 +84,7 @@ test("before the first start, the revocation list and the store are things start
     const store = lineWith(out, "recorded from the first");
     assert.ok(store, `doctor no longer says when saves to the store are recorded:\n${out}`);
     assert.match(store, /^ {2}· /, store);
-    assert.match(store, /start`, which makes .*trademark\/config a git repository/, store);
+    assert.match(store, /start`, which makes .*trademark[\\/]config a git repository/, store);
     assert.doesNotMatch(summary(out), /revocation list|git repository/, "the summary still lists what the first start creates");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
@@ -113,7 +118,7 @@ test("the control: the default list missing after a start has run still blocks",
 test("the control: a store outside the directory start initialises still warns", () => {
   const home = setUpHome({ store: "elsewhere/profiles" });
   try {
-    assert.match(doctor(home), /! .*elsewhere\/profiles is not inside a git repository, so a save through the portal is refused/);
+    assert.match(doctor(home), /! .*elsewhere[\\/]profiles is not inside a git repository, so a save through the portal is refused/);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
@@ -125,7 +130,7 @@ test("the control: after the first start, the list and the repository it left ar
     execFileSync("git", ["-C", repo, "init", "-q", "-b", "main"]);
     const out = doctor(home);
     assert.match(out, /✓ revocation list readable at .*token-denylist — 0 revoked key id\(s\)/, out);
-    assert.match(out, /saves to .*trademark\/config\/profiles are committed in/, out);
+    assert.match(out, /saves to .*trademark[\\/]config[\\/]profiles are committed in/, out);
     assert.doesNotMatch(out, /no revocation list yet|recorded from the first/, "the before-start lines are printed after it");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
