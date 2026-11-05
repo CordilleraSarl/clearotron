@@ -235,6 +235,32 @@ export function registerRecordIdsFor(runDir, markName) {
     .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
 }
 
+const readNotHeld = (mark, id) => `mark "${mark}": registerReads cites "${id}", which is not a record this run holds for that mark. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it`;
+const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${finding}" lists weighedFilings "${id}", which is not a record this run holds for that mark. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence`;
+
+/**
+ * THE SAME REFUSAL, WHILE THE MODEL CAN STILL ACT ON IT. The stage's validator reads this join after the turn has ended, so a
+ * rating that cited a filing held under another name in the batch finished the whole chunk, failed, and on its one retry
+ * failed the same way: 2 of 4 draws on a saved batch, 2026-11-05. The record tool now asks at the call, so the model can
+ * correct it and send again in the same turn. A filing under another name stays refused: a report is delivered per name, and
+ * a source chip must stand beside a filing that report lists. Null when every cited id is one this run holds for the mark.
+ * PURE-ish.
+ */
+export function registerCitationRefusal(runDir, mark) {
+  const held = registerRecordIdsFor(runDir, mark?.name);
+  for (const row of Array.isArray(mark?.registerReads) ? mark.registerReads : []) {
+    const id = String(row?.recordId ?? "").trim();
+    if (id && !held.has(id)) return readNotHeld(mark.name, id);
+  }
+  for (const f of Array.isArray(mark?.findings) ? mark.findings : []) {
+    for (const raw of Array.isArray(f?.weighedFilings) ? f.weighedFilings : []) {
+      const id = String(raw ?? "").trim();
+      if (id && !held.has(id)) return weighedNotHeld(mark.name, f?.name, id);
+    }
+  }
+  return null;
+}
+
 export const KNOCKOUT_RATING_QUALIFIERS = ["low"];
 export function normalizeKnockoutQualifier(v) {
   const word = String(v ?? "").trim().replace(/^\(+|\)+$/g, "").trim().toLowerCase();
@@ -608,7 +634,7 @@ export const validators = {
           if (!id) return { ok: false, reason: `mark "${m.name}": a registerReads row has no recordId — cite the record's own id, verbatim from the filings you were given` };
           if (!read) return { ok: false, reason: `mark "${m.name}": registerReads row "${id}" has an empty read. Omit the row rather than sending an empty one: a filing with no read keeps the card's neutral line, which is true` };
           if (!held.has(id))
-            return { ok: false, reason: `mark "${m.name}": registerReads cites "${id}", which is not a record this run holds for that mark. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it` };
+            return { ok: false, reason: readNotHeld(m.name, id) };
           // The band is OPTIONAL and, when present, is the same closed vocabulary the mark's own rating
           // uses — the card prints it as this filing's rating, so a word outside the frozen ladder would
           // put a chip on the page in a dialect the framework does not define. Absence stays free: a read
@@ -651,7 +677,7 @@ export const validators = {
         for (const raw of f.weighedFilings) {
           const id = String(raw ?? "").trim();
           if (!id || !held.has(id))
-            return { ok: false, reason: `mark "${m.name}": finding "${f?.name}" lists weighedFilings "${id}", which is not a record this run holds for that mark. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence` };
+            return { ok: false, reason: weighedNotHeld(m.name, f?.name, id) };
         }
       }
       if (m.degraded && !(Array.isArray(m.purpleNotes) && m.purpleNotes.some((n) => /manual verification/i.test(n))))
