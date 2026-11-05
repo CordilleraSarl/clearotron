@@ -1060,8 +1060,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 24,
-          "asserts": 138,
+          "tests": 26,
+          "asserts": 150,
           "skips": 0,
           "todos": 0
         },
@@ -2170,8 +2170,8 @@
           "todos": 0
         },
         "a-session-cut-off-keeps-its-own-stream-and-what-it-spent.test.mjs": {
-          "tests": 5,
-          "asserts": 22,
+          "tests": 6,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },

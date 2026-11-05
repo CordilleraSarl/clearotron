@@ -58,7 +58,7 @@ import { capabilitiesFor } from "./register-capabilities.mjs";
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE } from "./verify-knockout.mjs";
+import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
 import { KNOCKOUT_CARD_ORDER } from "./findings-model.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
 import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
@@ -210,10 +210,17 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   // A SOURCE THE RATING LOST STAYS OPEN: leaving a reference out does not support the claim it stood behind. It goes to the correction
   // with whatever the check raises, and where no check or correction follows, it stays on the record for the reviewing lawyer.
   const sourceDefects = sourceDefectsOf(run.runDir, merged, chunks);
-  const keepOpen = () => { if (sourceDefects.length) atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run", open: sourceDefects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state: "not-corrected" })) }, null, 2) + "\n"); };
+  // A REPAIR THE RATING STEP PROPOSED WAITS FOR THE CHECK, and stays on the record until an accepted read of it. The changed work stays too.
+  const sourceAnswered = chunks.flatMap((_, c) => knockoutAssessSourceDefects(run.runDir, c)).filter((x) => x.state === "answered");
+  const keepOpen = () => {
+    if (!sourceDefects.length && !sourceAnswered.length) return;
+    atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run",
+      open: [...sourceDefects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state: "not-corrected" })),
+        ...sourceAnswered.map((x) => ({ kind: "source", mark: x.mark, problem: sourceProblem(x), state: "not-rechecked" }))] }, null, 2) + "\n");
+  };
   const d = reviewDispatch(merged, plan);
   const { about } = d;
-  if (!d.dispatch && !sourceDefects.length) {
+  if (!d.dispatch && !sourceDefects.length && !sourceAnswered.length) {
     runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0, listed: 0,
       marks: merged.marks.length, excludedMarks: about.marks.length, excludedOwners: about.owners.length });
     return merged;
@@ -229,7 +236,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
 
   try {
     await koStage("knockout-review", ctx, {
-      msgCtx: { ...d.msgCtx, sourceAnswers: sourceAnswersOf(run.runDir, chunks) },
+      msgCtx: { ...d.msgCtx, sourceAnswers: sourceAnswered.map(sourceAnswerLine) },
     });
   } catch (e) {
     return keep("stage-failed", { reason: String(e?.message ?? e).slice(0, 200) });
@@ -261,9 +268,12 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   return doc;
 }
 
-/** The findings that changed after a source was left out, for the check to read against the problem. */
-const sourceAnswersOf = (runDir, chunks) => chunks.flatMap((_, c) => knockoutAssessSourceDefects(runDir, c)).filter((d) => d.state === "answered")
-  .map((d) => `- "${d.mark}", finding "${d.name}": it cited "${d.cited}".`);
+/** What the check compares: the source left out and the claim as it stood, beside the record it reads. */
+export const sourceAnswerLine = (d) => `- "${d.mark}", finding "${d.name}"${d.removed ? ", since removed" : ""}: it cited "${d.cited}". The claim then: ${JSON.stringify(d.was?.net ?? "")}, on the ground ${JSON.stringify(d.was?.basis ?? "")}.`;
+
+const sourceProblem = (d) => (d.kind === "weighed"
+  ? `This finding listed "${d.cited}" among the filings it weighed, which this run does not hold, and it was left out. Give the claim held support, or amend it.`
+  : `This finding cited "${d.cited}", which is not traceable to ${PERMITTED_SOURCES}, and the citation was left out. Give the claim held support, or amend it.`);
 
 /** The sources the rating step lost and did not address, as defects on the findings they stood behind, in the record's numbering. */
 function sourceDefectsOf(runDir, merged, chunks) {
@@ -272,9 +282,7 @@ function sourceDefectsOf(runDir, merged, chunks) {
     const finding = (mark?.findings ?? []).find((f) => sameFinding(f, d));
     if (!finding) return null;
     return { kind: "source", mark: d.mark, finding: finding.ordinal, rests_on: [],
-      problem: d.kind === "weighed"
-        ? `This finding listed "${d.cited}" among the filings it weighed, which this run does not hold, and it was left out. Give the claim held support, or amend it.`
-        : `This finding cited "${d.cited}", which is not traceable to this name's research payload or a filing held for this batch, and the citation was left out. Give the claim held support, or amend it.` };
+      problem: sourceProblem(d) };
   }).filter(Boolean);
 }
 

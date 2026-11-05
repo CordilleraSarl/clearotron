@@ -55,7 +55,7 @@ read and from the client's request.
 
 - **A near form** is a spelling someone could plausibly have filed for this name. Ask it as `exact`; several spellings
   go as `terms` in one question. The mechanical near-spellings in your opening message came from a fixed table and were
-  counted, not read. Read them only if their count and the request justify it.
+  counted, not read. Read them only if their count and the request justify it. If a justified sound-alike question fails or the register has no such mode, choose plausible spellings that could answer the unresolved point and ask them as `exact`, grouped in one supported `terms` question. Reuse answers already held for those spellings and scope. If no useful spelling can be proposed, record why rather than manufacture variants. An exact answer covers those spellings only; retain the failed or unsupported sound-alike question and explain any remaining uncertainty.
 - **A word or phrase that carries the name** may justify a containing search, `default`. Not every word of every name
   does.
 - **A name your opening message lists in several written forms** is one item: each form has its own count and its own
@@ -64,7 +64,7 @@ read and from the client's request.
   by office with no score, so neither their order nor their number says what is close, and some will not be close at
   all. A register with no such search says so, and that is not a clean answer.
 
-A verified zero answers that exact question and permits the next justified question. A failure does not. A question that failed or was not sent is not a zero. A tool's note
+A verified zero answers that exact question. A failure leaves it unanswered; it does not prevent another justified question. A question that failed or was not sent is not a zero. A tool's note
 beside a crowd may name `unit.md`; for you those are the steps above.
 
 ### What you hand back

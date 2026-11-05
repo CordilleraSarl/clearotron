@@ -413,7 +413,8 @@ const sourceDefectsPath = (runDir, chunkNo) => join(knockoutAssessCallPaths(Stri
 
 /**
  * The findings of this chunk whose source was left out. A row is `answered` once the finding comes back with its claim amended or new
- * held support, for the check to read against the problem. An unchanged resend answers nothing, and an open row goes to the correction.
+ * held support, or goes, for the check to read against the problem. An unchanged resend answers nothing, and an open row goes to the
+ * correction. A row never leaves on its own account: the claim may survive a finding dropped or renamed, and only an accepted read settles it.
  */
 export function knockoutAssessSourceDefects(runDir, chunkNo) {
   try { return JSON.parse(readFileSync(sourceDefectsPath(runDir, chunkNo), "utf8")); } catch { return []; }
@@ -425,7 +426,7 @@ function writeSourceDefects(runDir, chunkNo, chunk, defects) {
   const current = new Map((chunk?.marks ?? []).flatMap((m) => (m?.findings ?? []).map((f) => [key({ mark: m?.name, name: f?.name, owner: f?.owner }), f])));
   const stored = knockoutAssessSourceDefects(runDir, chunkNo).flatMap((d) => {
     const f = current.get(key(d));
-    if (!f) return [];   // the finding and its claim are gone
+    if (!f) return [{ ...d, state: "answered", removed: true }];
     const amended = f.net !== d.was?.net || f.basis !== d.was?.basis || (f.evidence ?? []).some((u) => !(d.was?.evidence ?? []).includes(u)) || (f.weighedFilings ?? []).some((id) => !(d.was?.weighed ?? []).includes(id));
     return [{ ...d, state: amended ? "answered" : "open" }];
   });
