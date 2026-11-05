@@ -348,7 +348,7 @@ export const KO_STAGES = {
     ),
   },
   "knockout-assess": {
-    model: "opus", thinking: "high", timeoutSec: 1200, stallSec: 600,
+    model: "opus", thinking: "high", timeoutSec: 1500, stallSec: 900,
     // ── WHAT THIS STAGE READS, AND WHY IT IS THREE DOCUMENTS NOW ──────────────
     //
     // It read one: its own SKILL.md. So it rated in a framework's band words while never seeing that
@@ -423,7 +423,7 @@ export const KO_STAGES = {
           `WHAT THESE OWNERS ACTUALLY SELL — the driver ran ONE scoped web search per promoted filing's proprietor BEFORE this stage, so you are not guessing from the company name. Payloads:`,
           ...ownerCheckLines(K),
           `USE THEM. When you write a registerReads row for one of these filings, your "read" must state what the owner actually sells ACCORDING TO THAT PAYLOAD, not what the company's name suggests and not what its class numbers imply. An owner's name is not evidence of its trade. A company name that reads as a line of business is a guess that happens to land sometimes, and the run where it lands is indistinguishable from the run where it does not — which is the reasoning this rule exists to stop.`,
-          `WHERE A PAYLOAD SAYS THE SEARCH FOUND NOTHING, say that plainly in the read — "a search for the proprietor's trade returned nothing" — and reason from the register record alone. Do NOT substitute an inference from the owner's name for the answer the search did not give. The report prints the source line itself, from the driver's own record of the call, so you never type a URL and never need to.`,
+          `WHERE A PAYLOAD SAYS THE SEARCH FOUND NOTHING, say that plainly in the read — "a search for the proprietor's trade returned nothing" — and reason from the register record alone. Do NOT substitute an inference from the owner's name for the answer the search did not give. The report prints the filing card's owner-check source line from the driver's record. A finding may cite a supporting URL from the saved owner check under the held-source rule.`,
         ].join("\n")
         : "",
       // ── THE READ REACHES THE PAGE ────────────────────────────────────────────
@@ -546,7 +546,7 @@ export const KO_STAGES = {
           `For each row, read the record and judge whether the defect is answered. Agreement is part of that: a changed finding or band must agree with its name's basis, factors, opening read and block in the batch summary. There is no further correction after this one, so send as \`material\` only what is still wrong; it stays on the record for the reviewing lawyer.`].join("\n")
         : `MATERIAL DEFECTS COME FIRST. A defect is material when repairing it would change what the client is told: a band the framework and the evidence do not support (\`band\`), a filing or use a lawyer would raise that the answer leaves out (\`missing\`), something set aside against the evidence (\`exclusion\`), scope the request asked for that the answer does not cover (\`scope\`), or a line that contradicts the record beneath it (\`contradiction\`). Send each as a \`material\` row: \`kind\`, \`mark\` verbatim, the finding's ordinal as \`finding\` where it is about one, and what is wrong and why it matters as \`problem\`. Identify the held evidence behind the defect in rests_on. A defect about scope, the framework, or internal agreement may instead identify the supplied request passage, framework rule, or rated field in problem. Do not invent a filing or URL to justify that defect. A filing held for this batch may bear on more than one name, so a defect on one name may rest on a filing held under another, by its held recordId and source. You repair nothing: the step that rated the batch answers each row, and the record is then read again. A rating a lawyer could reasonably reach is not a defect, and neither is a preference about wording.`,
       `Each name's research payload is under ${K.researchDir}.`,
-      `rests_on takes a recordId, a question qid, or a URL from ${PERMITTED_SOURCES}. ${SIBLING_SOURCE}`,
+      `rests_on takes a recordId, a question qid, or a URL from ${PERMITTED_SOURCES}. A failed question's qid supports a statement about the failure, not a finding about filings the question never returned. ${SIBLING_SOURCE}`,
       sourceAnswers.length
         ? [`THESE CITATIONS WERE LEFT OUT AS NOT HELD, AND THE FINDINGS THAT CITED THEM CHANGED AFTERWARDS. Read each against that problem: a claim still without held support is a material defect.`, ...sourceAnswers].join("\n")
         : "",
