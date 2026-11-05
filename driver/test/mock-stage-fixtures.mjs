@@ -2643,7 +2643,8 @@ export function applyStageWrites(msg, argv) {
           // carries an http URL — which is what makes the e2e walk the whole path: the chunk validator's
           // typed arm, the merged gate, the receipts join against the payload on disk, and a conflict
           // rendered on the report page. A payload with no URL still yields [], as a clean mark should.
-          findings: koMockFindings(runDir, n, band),
+          // MOCK_KO_CITE_NOWHERE: a source the run does not hold, on the mark's first finding, the way a model's bad citation lands.
+          findings: koMockFindings(runDir, n, band).map((f, j) => (process.env.MOCK_KO_CITE_NOWHERE && j === 0 ? { ...f, evidence: [...f.evidence, process.env.MOCK_KO_CITE_NOWHERE] } : f)),
           negatives: deg ? [] : [{ term: n, source: "web, marketplaces, app stores", note: "no results of significance" }],
           degraded: deg ? { reason: "research unavailable" } : null };
       }),

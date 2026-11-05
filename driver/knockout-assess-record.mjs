@@ -59,7 +59,7 @@
 // CHECK membership. Derive identity FROM the marks and the membership guard becomes the decision: a seat
 // that rates the wrong marks no longer fails a check — it writes to a different chunk file and passes.
 // That is the guard and the thing it guards collapsing into each other.
-import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
@@ -379,6 +379,7 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
   // call that merges onto it does not bring a refused row back.
   const kept = verdict.model.marks.map((m) => heldCitationsOnly(dir, m));
   const notKept = kept.flatMap((k) => k.notKept);
+  const defects = kept.flatMap((k) => k.sourceDefects);
   if (notKept.length) {
     verdict.model.marks = kept.map((k) => k.mark);
     call.marks = (Array.isArray(call.marks) ? call.marks : []).map((m) => heldCitationsOnly(dir, m).mark);
@@ -391,6 +392,7 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
     // The shared envelope, so every transport writes the same shape. The chunk is not restated in it —
     // it is the directory this file sits in.
     writeFileSync(paths.accepted, acceptedEnvelope(call, now()));
+    writeSourceDefects(dir, chunkNo, received, defects);
   } catch (e) {
     return { written: null, refused: null, write_failed: String(e?.message ?? e).slice(0, 200),
       captured: closeCapture({ ok: false, write_failed: true }), capture_failed: captureFailed };
@@ -405,6 +407,21 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
     captured: closeCapture({ ok: true, ...(notKept.length ? { not_kept: notKept } : {}) }),
     capture_failed: captureFailed,
   };
+}
+
+const sourceDefectsPath = (runDir, chunkNo) => join(knockoutAssessCallPaths(String(runDir ?? ""), chunkNo).dir, "source-defects.json");
+
+/** The findings of this chunk whose source was left out and has not been sent again. Each stays open for the correction that follows. */
+export function knockoutAssessSourceDefects(runDir, chunkNo) {
+  try { return JSON.parse(readFileSync(sourceDefectsPath(runDir, chunkNo), "utf8")); } catch { return []; }
+}
+
+// A finding sent again answers its own earlier defect, for good or with a new one in this call's list.
+function writeSourceDefects(runDir, chunkNo, received, defects) {
+  const key = (d) => JSON.stringify([nameKey(d?.mark), nameKey(d?.name), nameKey(d?.owner)]);
+  const resent = new Set((Array.isArray(received?.marks) ? received.marks : []).flatMap((m) => (Array.isArray(m?.findings) ? m.findings : []).map((f) => key({ mark: m?.name, name: f?.name, owner: f?.owner }))));
+  const open = [...knockoutAssessSourceDefects(runDir, chunkNo).filter((d) => !resent.has(key(d))), ...defects];
+  if (open.length || existsSync(sourceDefectsPath(runDir, chunkNo))) writeFileSync(sourceDefectsPath(runDir, chunkNo), JSON.stringify(open, null, 2) + "\n");
 }
 
 /** Was this chunk written through the typed transport? The ruled discriminator. */

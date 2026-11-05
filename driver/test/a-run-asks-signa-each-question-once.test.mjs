@@ -264,10 +264,10 @@ test("the filings line states no hit total when any listed term's total is appro
   assert.ok(approx.terms.some((t) => t.approximate === true), "premise: the name's total is an approximation");
   assert.equal(approx.available, null, "no honest sum exists, so none is carried");
   assert.doesNotMatch(recordsLine(approx), /out of \d/, "and none is printed");
-  // THE CONTROL: every total exact, and the sum is stated as before.
+  // AND EXACT TOTALS ON QUESTIONS NOT READ ARE NO FIGURE TO COMPARE A LIST WITH: the near forms were counted, and no one read them.
   const exact = (await run({ COPPER: { total: 12 }, COPER: { total: 400 }, KOPPER: { total: 400 } })).marks[0];
-  assert.equal(exact.available, 812);
-  assert.match(recordsLine(exact), /out of 812 hits across the searches run/);
+  assert.equal(exact.available, null);
+  assert.doesNotMatch(recordsLine(exact), /out of \d/);
 });
 
 test("the Signa listing carries the register's total and its approximation", async () => {

@@ -37,7 +37,8 @@ const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 const { applyCorrectionCall, chunkScope, correctionOutcomes, correctionWork, knockoutCorrectionFile, mergedAnswers, movedOutsideScope, rollBackName, summaryBlock, validateKnockoutCorrectionFile, keepChunkBases, correctionWorkPath } = await import("../knockout-correction-record.mjs");
 const { knockoutAssessChunkFile } = await import("../knockout-assess-record.mjs");
 const { acceptKnockoutReview, knockoutReviewFile, rewritesThatSurvive, validateKnockoutReviewFile } = await import("../knockout-review-record.mjs");
-const { KO_STAGES } = await import("../stages-knockout.mjs");
+const { KO_STAGES, koPaths } = await import("../stages-knockout.mjs");
+const { registerLaneState, REGISTER_LANE_FILE } = await import("../verify-knockout.mjs");
 
 const NAME = "QUILLBRAE", SIBLING = "MOSSVALE";
 
@@ -45,7 +46,7 @@ const NAME = "QUILLBRAE", SIBLING = "MOSSVALE";
 
 /** One two-name knockout through the lane, on the mock engine. What the run left. */
 async function knockout(codename, env = {}, { recordLister = async () => ({ ok: true, total: 0, records: [] }), countExecutor = async () => ({ ok: true, total: 0 }) } = {}) {
-  const set = { MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_FAIL_STAGE: undefined,
+  const set = { MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_FAIL_STAGE: undefined,
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: undefined, CODEX_API_KEY: undefined, ...env };
   for (const [k, v] of Object.entries(set)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
   const id = `ko-${codename}`;
@@ -190,10 +191,43 @@ test("a repair may weigh a filing held under another name: it reaches that name'
   assert.ok(!/Found (?:under|by)[^<]*MOSSVALE/.test(html), "and no line says it was found by a search on the other name");
 });
 
+test("a source the rating lost and never restored goes to the correction, though the check raised nothing", async () => {
+  const clean = await knockout("source-control");
+  assert.ok(clean.of(clean.findings, NAME).findings.length, "premise: the rated name holds a finding");
+  // The rating's call is the real transport's, so the loss is planted the way a model's bad citation lands.
+  const r = await knockout("source-lost", { MOCK_KO_CITE_NOWHERE: "https://nowhere.example.test/invented", MOCK_KO_CORRECTED_BAND: "High" });
+  assert.ok(r.stages.includes("knockout-correct#0"), `no correction was dispatched: ${r.stages}`);
+  const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
+  assert.ok(record.defects.some((x) => x.kind === "source" && /not traceable to this name's research payload/.test(x.problem)), JSON.stringify(record.defects));
+});
+
 test("with no material defect nothing more is dispatched", async () => {
   const r = await knockout("clean");
   assert.deepEqual(r.stages.filter((s) => /correct|review/.test(s)), ["knockout-review"]);
   assert.equal(existsSync(driverDir(r.dir, "knockout-correction-work.json")), false);
+});
+
+// ── WHAT THE FILES ESTABLISH ABOUT THE REGISTER ──────────────────────────────────────────────────────
+
+test("a skip is read from what the run recorded, and a missing file establishes nothing", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ko-lane-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  const K = koPaths(dir);
+  const msg = () => KO_STAGES["knockout-assess"].message({ K, job: {}, chunkNo: 0, chunkMarks: [{ name: NAME }], chunkTotal: 1, framework: { bands: [{ label: "High" }] }, frameworkPath: null, frameworkMethod: null });
+  assert.equal(registerLaneState(dir).state, "unknown");
+  assert.ok(msg().includes("The held files do not establish whether the register component ran. Keep that uncertainty explicit."));
+  writeFileSync(driverDir(dir, "register-counts.json"), "{}");
+  assert.equal(registerLaneState(dir).state, "unavailable");
+  assert.ok(msg().includes("The register listing was unavailable on this run. Use the recorded counts and failure reason, and keep that gap explicit."));
+  writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ unavailable: "the listing could not run", marks: [] }));
+  assert.deepEqual(registerLaneState(dir), { state: "unavailable", reason: "the listing could not run" });
+  assert.ok(msg().includes("The recorded reason: the listing could not run"));
+  writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [] }] }));
+  assert.equal(registerLaneState(dir).state, "held", "an empty carried list is a register that ran");
+  assert.doesNotMatch(msg(), /was skipped on this run/);
+  writeFileSync(driverDir(dir, REGISTER_LANE_FILE), JSON.stringify({ skipped: true }));
+  assert.equal(registerLaneState(dir).state, "skipped");
+  assert.ok(msg().includes("The register component was skipped on this run, so it holds no filings."));
 });
 
 // ── WHAT A CALL MAY REACH ────────────────────────────────────────────────────────────────────────────

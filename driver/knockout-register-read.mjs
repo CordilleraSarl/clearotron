@@ -408,11 +408,11 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
     const namedUnder = (qid) => new Set((read?.set_aside ?? []).filter((g) => g.question === qid).flatMap((g) => g.records ?? []));
     const setAsideIds = (qid) => rowsOf(blocks.get(qid)).map((r) => String(r?.record_id ?? "")).filter((id) => setAside.has(id) && !namedUnder(qid).has(id));
 
-    // How many the register holds under the questions a reader meets: the name, the forms and each question that is
-    // not a narrowing of one already counted. Stated only when every one of them gave a number.
-    const counted = terms.filter((t) => !t.narrows && t.ok && t.qid !== openingQid(name, "close"));
-    const noSum = counted.some((t) => !Number.isFinite(t.total)) || (formsCell?.forms?.length > 0 && !Number.isFinite(formsTotal));
-    const available = noSum ? null : counted.reduce((n, t) => n + t.total, 0) + (formsTotal ?? 0);
+    // WHAT THE LIST CAN BE COMPARED WITH: the distinct filings the name's questions returned, stated only where every question was read
+    // or answered zero. A sum across questions counted one filing once per question, and the name's own count again beside the
+    // re-ask that read it, and a question not read holds filings no one can say apart from these. A fraction compares one population.
+    const wholeRead = terms.length > 0 && terms.every((t) => t.ok && (t.state === "read" || t.state === "zero"));
+    const available = wholeRead ? records.length + setAsideRecords.length : null;
     return {
       name,
       classes: scoped.length ? scoped : null,
