@@ -70,6 +70,7 @@ import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";   // — pure; the env binding is injected
 import { variantForms, VARIANT_CAP } from "./register-variants.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
+import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
 
 /** Records per MARK, across every listed term. A bound on cost, on artifact size and on what a reader
  *  can usefully hold — and it is stated wherever the list renders, per the ruling. */
@@ -158,8 +159,16 @@ function toRecord(row, { term, basis, provider }) {
     matchedBasis: basis,
     url: row?.record_url ?? null,
     provider,
+    // WHAT THE FILING COVERS, where the search row itself says. A register whose goods come with the full record says
+    // nothing here, and filing-goods.mjs reads them from the body the run holds, which also says how far they go.
+    goods: goodsOnRow(row),
   };
 }
+
+const goodsOnRow = (row) => {
+  const statements = rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) });
+  return statements.length ? statements : null;
+};
 
 /**
  * List the filings behind the narrow counts, for every mark in the batch.

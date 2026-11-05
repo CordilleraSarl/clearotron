@@ -51,6 +51,7 @@ import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, k
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecutor } from "./register-records.mjs";
+import { withFilingGoods } from "./filing-goods.mjs";   // the goods the listing's bodies hold, onto its records
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
@@ -754,7 +755,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           runLog(run.runDir, { event: "knockout-register-records-refused", provider: REGISTER_PROVIDER, reason: recRefusal });
         } else {
           try {
-            const recDoc = await listRegisterRecords({
+            const recDoc = withFilingGoods(await listRegisterRecords({
               marks: markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })),
               classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
               provider: REGISTER_PROVIDER, capabilities: ctx.registerCaps,
@@ -766,7 +767,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
               concurrency: 3,   // step 3 — the same constant as the sibling call above
               ...(process.env.CLEAROTRON_KNOCKOUT_RECORD_CAP ? { cap: Number(process.env.CLEAROTRON_KNOCKOUT_RECORD_CAP) } : {}),
               ...(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP ? { variantCap: Number(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP) } : {}),
-            });
+            }), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
             atomicWrite(K.registerRecords, JSON.stringify(recDoc, null, 2) + "\n");
             listedDoc = recDoc;
             runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: recExec.source,
