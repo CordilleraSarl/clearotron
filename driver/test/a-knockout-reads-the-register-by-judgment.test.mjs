@@ -22,12 +22,13 @@ import { capabilitiesFor } from "../register-capabilities.mjs";
 import { fixtureFileName, fixtureLister, recordsLine } from "../register-records.mjs";
 import { writeFixtureMarker } from "../register-fixture-marker.mjs";
 import { executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutListView, knockoutProposals,
-  knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, unfoldFormCounts, withCitedFilings, withHeldGoods } from "../knockout-register-read.mjs";
+  knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, runPrefixOfSession, unfoldFormCounts, withCitedFilings, withHeldGoods } from "../knockout-register-read.mjs";
 import { registerRecordIdsFor } from "../verify-knockout.mjs";
 import { ownersOwedACheck } from "../owner-use-check.mjs";
 import { acceptKnockoutRegister, recordKnockoutRegisterRead, validateKnockoutRegisterFile, knockoutRegisterFile, mergeKnockoutRegisterCall } from "../knockout-register-record.mjs";
 import { readingDoc } from "./knockout-reading-fixture.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
+import { beginAnswerMemory } from "../../providers/_shared/answer-memory.mjs";
 
 const CLARIVATE = capabilitiesFor("clarivate");
 const NAME = "QUILLBRAE";
@@ -270,9 +271,11 @@ test("the rating step and the review can read a list set aside, and nothing on t
   const dir = mkdtempSync(join(tmpdir(), "ko-review-"));
   mkdirSync(driverDir(dir), { recursive: true });
   const K = koPaths(dir);
-  assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /read_register_list/, "a path the run does not hold is not named");
+  assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /register-records\.json/, "a path the run does not hold is not named");
   writeFileSync(K.registerRecords, "{}");
-  assert.match(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /read_register_list/);
+  const message = KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] });
+  assert.match(message, /register-records\.json/);
+  assert.match(message, /read_register_list/);
 });
 
 test("the mechanical forms are one question on a register that answers a joined count, and the total is the same", async () => {
@@ -298,6 +301,46 @@ test("the mechanical forms are one question on a register that answers a joined 
   assert.equal(calls.length, 3, "the name, its containing count and one joined count");
   assert.deepEqual(cell.forms.map((f) => f.form), forms, "the forms stay listed beside the figure");
   assert.doesNotMatch(variantFormsLine(joined.marks[0]) ?? "", /could be counted|could not be counted/);
+});
+
+test("on Clarivate the name's count is asked once on the wire: the step's own question reuses it through the run's memory", async () => {
+  const { PROVIDERS } = await import("../driver.config.mjs");
+  const realFetch = globalThis.fetch;
+  const prior = { key: process.env.CLARIVATE_API_KEY, base: process.env.CLARIVATE_API_BASE };
+  process.env.CLARIVATE_API_KEY = "fixture-key";
+  process.env.CLARIVATE_API_BASE = "https://clarivate.test";
+  const called = [];
+  const list = [{ id: "g-em", registrationOfficeCode: "EM", markVerbalElementText: NAME, niceClassifications: [{ classNumber: 9 }], status: { cmNormalisedStatus: "Registered" } }];
+  globalThis.fetch = async (url) => {
+    const { pathname } = new URL(String(url));
+    called.push(pathname);
+    const body = pathname === "/count" ? { counts: { EM: 1 } } : pathname === "/search" ? { ids: { EM: ["g-em"] }, took: 1 } : { trademarks: list, nonTrademarks: [] };
+    return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
+  };
+  try {
+    const runDir = mkdtempSync(join(tmpdir(), "ko-memory-"));
+    mkdirSync(driverDir(runDir), { recursive: true });
+    const memory = beginAnswerMemory(runDir, "clarivate");
+    assert.equal(memory.mode, "on", "the premise: this register's memory is on by default");
+    const recordLog = driverDir(runDir, "register-record-bodies.jsonl");
+    const context = { agentId: "t", sessionKey: "t", recordLog };
+    const marks = [{ name: NAME, classes: [9] }];
+    const plan = knockoutQuestionPlan({ marks, jurisdictions: ["EU"], capabilities: CLARIVATE });
+    const counted = await PROVIDERS.clarivate.countHits({ name: NAME, matchMode: "exact", classes: [9], regions: plan.regions }, context);
+    assert.deepEqual([counted.ok, counted.total], [true, 1]);
+    assert.deepEqual(called, ["/count"]);
+    writeFileSync(questionPlanPath(runDir), JSON.stringify(plan));
+    const axis = knockoutAxis(NAME);
+    const reply = await proposeSupplemental({ axis, output_path: knockoutBandPath(runDir, NAME), proposals: [{ predicate: "exact", term: NAME, nice_classes: [9], rationale: "the name's own list" }] },
+      { kind: "propose_supplemental", recordLog, agentId: "t", sessionKey: "t" },
+      { capabilities: CLARIVATE, executePlan: async (params, tctx) => (await import("../../providers/clarivate/src/core.js")).doExecutePlan("fixture-key", "https://clarivate.test", params, tctx) });
+    assert.ok(JSON.parse(reply.text).minted.length === 1, reply.text);
+    assert.deepEqual(called.filter((p) => p === "/count"), ["/count"], "the second question reused the first count");
+    assert.equal(called.filter((p) => p === "/search").length, 1);
+  } finally {
+    globalThis.fetch = realFetch;
+    for (const [k, v] of [["CLARIVATE_API_KEY", prior.key], ["CLARIVATE_API_BASE", prior.base]]) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+  }
 });
 
 test("Clarivate's adapter sends a joined count as one exact question over the forms", async () => {
@@ -454,6 +497,17 @@ test("a list is read whole with the goods the run holds, in the shipped states, 
   assert.notEqual(byId.none.goodsState, "complete", "no goods on file is said");
   assert.deepEqual(byId.none.goods, []);
   assert.match(knockoutListView(dir, { qid: "nothing" }).error, /no question/);
+});
+
+test("a fetch that failed reads as failed in a list, not as a record never held", () => {
+  const id = openingQid(NAME, "identical");
+  const dir = runWith({ total: 1, blocks: [listBlock(id, [row("gone")])] });
+  const callLog = join(dir, "register-calls.jsonl");
+  writeFileSync(callLog, JSON.stringify({ tool: "record_fetch", sessionKey: "clearance-invented-run-knockout-register-read", target: "/mark/em/gone", ok: false, http_status: 503 }) + "\n");
+  const failed = knockoutListView(dir, { qid: id }, { runPrefix: "clearance-invented-run", callLog }).rows[0];
+  assert.equal(failed.goodsState, "unavailable");
+  assert.equal(knockoutListView(dir, { qid: id }).rows[0].goodsState, "not-held", "no ledger to read says only that the run holds none");
+  assert.equal(runPrefixOfSession("clearance-invented-run-knockout-assess#2-rerun1"), "clearance-invented-run");
 });
 
 test("what the step set aside carries its goods too, so the rating step can read it without asking again", () => {

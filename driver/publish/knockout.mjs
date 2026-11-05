@@ -157,6 +157,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // cell `—`. A run with none of them builds the workbook it built before.
   const partRow = (name, reason) => ({ 'Mark': '—', 'Search Term': '—', 'Source / Context': name,
     'Result Summary': `FAILED — ${plainDeferralReason(reason)}`, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
+  if (degraded.reading) trailRows.push(partRow(PART_NAMES.register, degraded.reading.reason));
   if (degraded.review) trailRows.push(partRow(RULED_WORDS.plainLanguageReview, degraded.review.reason));
   if (degraded.machineChecks) trailRows.push(partRow(PART_NAMES.machineChecks, degraded.machineChecks.reason));
   if (degraded.aboutThisRequest) trailRows.push(partRow(PART_NAMES.aboutThisRequest, degraded.aboutThisRequest.reason));
@@ -604,7 +605,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     .map((mark) => ({ mark, preset: koPreset }));
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
   await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
-    listing: registerRecords ? null : steps.listing, review: steps.review, machineChecks: machineChecksFailed,
+    listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
     aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept,
   });
   grpRead(join(poolRunDir, auditFile), 0o640);

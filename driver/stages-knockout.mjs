@@ -585,9 +585,8 @@ export const KO_STAGES = {
       `You are the REVIEWING PASS on a knockout screen. The batch is already rated and nothing about that rating is yours to change. Your job is the words.`,
       `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
       `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,
-      existsSync(K.registerRecords)
-        ? `The register record behind it: ${K.registerRecords}. It holds what the reading step carried, what it set aside and why. \`read_register_list\` reads any of its lists whole, by qid, and fetches nothing. Use them to answer the first question; a rewrite still adds no fact the rating did not weigh.`
-        : "",
+      existsSync(K.registerRecords) ? `The register record behind it: ${K.registerRecords}. It holds what the reading step carried, what it set aside and why.` : "",
+      `Where this run read the register, \`read_register_list\` reads any of its lists whole, by qid, and fetches nothing. Use it to answer the first question; a rewrite still adds no fact the rating did not weigh.`,
       evidenceLines.length
         ? `THE DRIVER MEASURED THESE LINES. Each row is the line, the ADDRESS that names it, and what a deterministic read found. THIS IS EVIDENCE, NOT A VERDICT: judge each in context and pass over any where the word is the subject rather than the profession's shorthand. ${exclusionNote}`
         : `THE DRIVER'S READ FLAGGED NO LINE ON THIS RECORD, so nothing below is evidence of a fault. These are the lines a reader meets first, each with the ADDRESS that names it. Rewrite one only where it would answer the client's question more plainly; if every line already does, send one \`declined\` row at one of these addresses saying so, rather than inventing a rewrite to fill the call.`,

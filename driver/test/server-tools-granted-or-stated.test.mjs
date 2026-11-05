@@ -513,7 +513,7 @@ test("RECORDING: every served tool is granted to exactly one stage, and each sta
   // THE LOOSENING IS BOUNDED, and the bound is what keeps this from becoming a hole: every home must be
   // the stage's OWN derived key. A read tool appearing under a key that is not its holder's would mean
   // two stages sharing one mount — the same defect as a shared writer, one surface over.
-  const READ_SURFACE = new Set(["search_run_artifacts"]);
+  const READ_SURFACE = new Set(["search_run_artifacts", "read_register_list"]);
   for (const t of served) {
     const holders = homes.get(t) ?? [];
     if (READ_SURFACE.has(t)) {

@@ -354,6 +354,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
         providerDoc: activeProvider()?.skillDoc ?? null, inScope,
       } });
       reading = JSON.parse(readFileSync(K.registerReading, "utf8"));
+      runLog(run.runDir, { event: "knockout-register-read", names: reading.marks?.length ?? 0 });
     }
   } catch (e) {
     if (e instanceof StageFailure && e.resetsAt) throw e;
@@ -363,7 +364,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     catch (e2) { note(`register list did not complete (non-fatal): ${String(e2?.message ?? e2).slice(0, 200)}`); }
   }
   try {
-    const doc = withHeldGoods(build(reading), run.runDir);
+    const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
     appendQuestionReceipts(K.countLedger, doc, { provider: REGISTER_PROVIDER });
     runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: exec.source,

@@ -427,10 +427,13 @@ export function knockoutStepFailures(runDir) {
   const listing = lastEvent(log, ["knockout-register-records", "knockout-register-records-refused", "knockout-register-records-failed"]);
   const owners = failedStep(log, "knockout-owner-checks", "knockout-owner-checks-failed");
   const review = lastEvent(log, ["knockout-review"]);
+  const reading = lastEvent(log, ["knockout-register-read", "knockout-register-read-failed"]);
   const cause = (e) => String(e?.cause ?? e?.reason ?? e?.outcome ?? e?.event ?? "no cause recorded");
   return {
     listing: listing?.event === "knockout-register-records-failed" ? { reason: reasonFor(cause(listing)), cause: cause(listing) } : null,
     ownerChecks: owners ? { reason: reasonFor(cause(owners)), cause: cause(owners) } : null,
+    // The reading step failed and the run carried each name's own list: its narrowing and wider questions never ran.
+    reading: reading?.event === "knockout-register-read-failed" ? { reason: reasonFor(cause(reading)), cause: cause(reading) } : null,
     review: REVIEW_FAILED.includes(review?.outcome) ? { reason: reasonFor(cause(review)), cause: `${review.outcome}: ${cause({ reason: review.reason })}` } : null,
   };
 }

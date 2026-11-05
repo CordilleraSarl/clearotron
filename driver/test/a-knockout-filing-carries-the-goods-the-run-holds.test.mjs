@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { withFilingGoods, shortGoodsView, filingRecordName, FILING_RECORDS_DIR, GOODS_VIEW_CHARS } from "../filing-goods.mjs";
-import { listRegisterRecords } from "../register-records.mjs";
+import { readingDoc } from "./knockout-reading-fixture.mjs";
 
 const TEMP = [];
 const tempRun = () => { const d = mkdtempSync(join(tmpdir(), "filing-goods-")); TEMP.push(d); mkdirSync(driverDir(d), { recursive: true }); return d; };
@@ -95,7 +95,7 @@ test("goods the search row carries are read from the row, and its cuts stay cuts
     row("rec_cut", { goods_services_text: "softw", goods_services_text_truncated: true }),
     row("rec_long", { goods_services_text: LONG }),
   ] });
-  const listed = await listRegisterRecords({ marks: [{ name: "LANTERNWICK" }], classes: [9], provider: "signa", capabilities: { id: "signa", offices: {} }, lister, variantCap: 0 });
+  const { doc: listed } = await readingDoc({ marks: [{ name: "LANTERNWICK" }], classes: [9], provider: "signa", capabilities: { id: "signa", offices: {} }, lister, variantCap: 0 });
   assert.equal(listed.marks[0].records[0].goods[0].text, "software", "the neutral record dropped the row's goods");
   const run = tempRun();
   const [whole, cut, long] = withFilingGoods(listed, run).marks[0].records;

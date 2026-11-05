@@ -452,10 +452,11 @@ test("the declared chunked row resolves its grant AND binds its ordinal, under t
   assert.equal(PER_AXIS_STAGES.includes("knockout-assess"), false,
     "declaring one fan-out form must not confer the other — a chunked stage is not an axis stage");
 
-  // The grant carries the record tool and takes the hand-write tool away: the chunk file is the driver's.
+  // The grant carries the record tool and takes the hand-write tool away: the chunk file is the driver's. Beside it, the
+  // read of the run's own register lists, which dials nothing, so no retrieval surface is widened.
   const granted = allowedToolsFor(toolGroupsForStage("knockout-assess#0")).split(/\s+/).filter(Boolean);
   assert.deepEqual(granted.filter((t) => t.startsWith("mcp__")),
-    ["mcp__recording-knockout-assess__record_knockout_assess"], "one record tool, no widened retrieval surface");
+    ["mcp__recording-knockout-assess__record_knockout_assess", "mcp__recording-knockout-assess__read_register_list"], "one record tool, no widened retrieval surface");
   assert.equal(seatWritesForGroups(toolGroupsForStage("knockout-assess#0")), false,
     "seatWrites false — a grant that kept the writer would leave the old hand-written path executable");
 });

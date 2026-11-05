@@ -505,7 +505,7 @@ export function readingTableLines({ marks, counts, classes = null, framedMarks =
  * in the shipped evidence states (filing-goods.mjs), and where its whole held record is, one `Read` away. Nothing is
  * fetched. A row with no goods on file says so, and that is not a mismatch with the client's goods.
  */
-export function knockoutListView(runDir, { qid }) {
+export function knockoutListView(runDir, { qid }, goodsOptions = {}) {
   const want = String(qid ?? "").trim();
   if (!want) return { error: "qid is required: the question whose list you are reading, as the propose tool or your opening message named it." };
   const dir = join(String(runDir ?? ""), BAND_DIR);
@@ -520,7 +520,7 @@ export function knockoutListView(runDir, { qid }) {
   }
   if (!found) return { error: `no question "${want}" has an answer in this run's bands. Ask it first; a name's counted opening questions have no list until one is read.` };
   const records = rowsOf(found).map((r) => toRecord(neutralRow(r), { term: null, basis: null, provider: null }));
-  const held = withFilingGoods({ marks: [{ records }] }, runDir).marks[0].records;
+  const held = withFilingGoods({ marks: [{ records }] }, runDir, goodsOptions).marks[0].records;
   return {
     qid: want, state: found.state ?? null, total_hits: found.total_hits ?? null,
     ...(found.reason ? { reason: String(found.reason).slice(0, 300) } : {}),
@@ -532,12 +532,18 @@ export function knockoutListView(runDir, { qid }) {
   };
 }
 
-/** The record with its goods on every row it holds, the carried and the set aside alike. Sends nothing. */
-export function withHeldGoods(doc, runDir) {
-  const carried = withFilingGoods(doc, runDir);
-  const setAside = withFilingGoods({ marks: (carried?.marks ?? []).map((m) => ({ records: m?.setAsideRecords ?? [] })) }, runDir);
+/**
+ * The record with its goods on every row it holds, the carried and the set aside alike. Sends nothing. `runPrefix` is what
+ * lets a fetch that failed read as failed, not as a record never held: the call ledger answers it by run.
+ */
+export function withHeldGoods(doc, runDir, goodsOptions = {}) {
+  const carried = withFilingGoods(doc, runDir, goodsOptions);
+  const setAside = withFilingGoods({ marks: (carried?.marks ?? []).map((m) => ({ records: m?.setAsideRecords ?? [] })) }, runDir, goodsOptions);
   return { ...carried, marks: (carried?.marks ?? []).map((m, i) => (m?.setAsideRecords?.length ? { ...m, setAsideRecords: setAside.marks[i].records } : m)) };
 }
+
+/** The run a stage's session key belongs to: the key as the lane composes it, without its stage label. PURE. */
+export const runPrefixOfSession = (sessionKey) => String(sessionKey ?? "").replace(/-knockout-[a-z-]+(#\d+)?(-rerun\d+)?$/, "") || null;
 
 export const questionPlanPath = (runDir) => driverDir(runDir, QUESTION_PLAN_FILE);
 

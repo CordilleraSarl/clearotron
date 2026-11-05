@@ -8,7 +8,7 @@
 // as a search that never ran, and a filing whose link was removed gave no reason. Each is now a row in the
 // workbook's own columns and words, and the report is as it was. The first arms drive the knockout lane
 // itself with the failure planted; the rest hand the workbook builder each part directly.
-import { mkdirSync, mkdtempSync, readdirSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -59,7 +59,7 @@ async function readSheets(path) {
 }
 
 /** One knockout through the lane, with `plant` run on its run directory first; the workbook it published. */
-async function knockout(codename, { plant = () => {} } = {}) {
+async function knockout(codename, { plant = () => {}, fixtures = null } = {}) {
   const id = `ko-${codename}`;
   const studioRoot = join(ROOT, "studio", id);
   const dir = join(studioRoot, "clearance-search", "runs", "lanternwick", `2026-09-25-${codename}`);
@@ -67,11 +67,11 @@ async function knockout(codename, { plant = () => {} } = {}) {
   plant(dir);
   const run = { runDir: dir, studioRoot, slug: "lanternwick", date: "2026-09-25", codename, archiveDir: join(studioRoot, "archive", `2026-09-25-${codename}`) };
   const job = { id, markName: "LANTERNWICK", marks: [{ name: "LANTERNWICK" }], classes: [4], jurisdictions: ["EU"],
-    forwarder: "jordan", msgId: `<${id}@x>`, ref: `E2E-${codename}` };
+    forwarder: "jordan", msgId: `<${id}@x>`, ref: `E2E-${codename}`, ...(fixtures ? { registerFixtures: { records: fixtures } } : {}) };
   const ctx = { run, job, agent: "mailagent", paths: { runDir: dir }, profile: {},
     searchPolicy: { level: "knockout-register", stageLabel: "Knockout + register", components: { registerProbe: true } } };
   const res = await knockoutInner(ctx, job, {
-    recordLister: async (term) => ({ ok: true, total: null, records: term === "LANTERNWICK" ? [FILING] : [] }),
+    ...(fixtures ? {} : { recordLister: async (term) => ({ ok: true, total: null, records: term === "LANTERNWICK" ? [FILING] : [] }) }),
     countExecutor: async () => ({ ok: true, total: 3 }),
     gridExecutor: async (spec) => answeredGrid(spec, [{ title: "Lanternwick candles", url: "https://example.test/lanternwick" }]),
     sweepExecutor: async () => ({ ok: true, text: "Brightmoor sells candles. https://example.test/brightmoor" }),
@@ -89,6 +89,18 @@ test("the filings listing that failed as a whole is `not available` for each nam
   assert.ok(filings, "no Register Filings sheet: the failed listing left nothing");
   assert.deepEqual(filings.map((r) => [r["Mark"], r["Trademark"], r["Note"]]), [["LANTERNWICK", "not available", LEFT_OPEN]]);
   assert.ok(!/EISDIR|illegal operation/i.test(JSON.stringify(filings)), "the raw cause reached a reader's cell");
+});
+
+test("a reading step that did not finish leaves the name's own list carried and one Degraded row, and the run delivers", async () => {
+  const fixtures = mkdtempSync(join(ROOT, "fixtures-"));
+  writeFileSync(join(fixtures, "lanternwick.json"), JSON.stringify({ total: 1, records: [FILING] }));
+  // A folder where the step's record goes: it cannot be read back, which is the step failing as a whole.
+  const { filings, trail } = await knockout("reading-failed", { fixtures, plant: (dir) => mkdirSync(join(dir, "knockout-register.json")) });
+  assert.ok(filings.some((r) => r["Trademark"] === FILING.mark_text), `the name's own filing did not reach the record: ${JSON.stringify(filings)}`);
+  const row = trail.find((r) => r["Source / Context"] === "Register");
+  assert.ok(row, `no trail row says the reading did not finish: ${JSON.stringify(trail)}`);
+  assert.deepEqual([row["OK/Degraded"], row["Result Summary"]], ["Degraded", `FAILED — ${LEFT_OPEN}`]);
+  assert.ok(!/EISDIR|illegal operation/i.test(JSON.stringify(trail)), "the raw cause reached a reader's cell");
 });
 
 test("owner lookups that failed as a whole are each a Degraded row with the lookup's own query", async () => {

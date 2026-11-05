@@ -67,7 +67,7 @@ import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
-import { knockoutListView } from "../../knockout-register-read.mjs";
+import { knockoutListView, runPrefixOfSession } from "../../knockout-register-read.mjs";
 
 async function record_blind_frame(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
@@ -141,7 +141,7 @@ async function read_register_list(params) {
   if (!runDir) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
   }
-  return knockoutListView(runDir, params ?? {});
+  return knockoutListView(runDir, params ?? {}, { runPrefix: runPrefixOfSession(process.env.CLEAROTRON_GATHER_SESSION_KEY) });
 }
 
 async function record_clearance_variants(params) {
