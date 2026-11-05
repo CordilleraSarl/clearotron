@@ -4732,7 +4732,8 @@ try {
 
   say(`\n  ${style.bold("Start here:")}\n`);
   say(`    ${invocationPrefix()}clearotron start\n`);
-  say("      Starts the portal and the engine door and prints one address to open in your browser. That");
+  say("      Starts the portal, the engine door, the client door and the worker, and prints one address to");
+  say("      open in your browser. That");
   say("      address is the product: you order a clearance from it and read the report there.\n");
   // THE ONE SENTENCE A READER NEEDS BEFORE THEY OPEN THAT ADDRESS, and setup was the only one of the
   // three commands that never said it. A port can be free where the product runs and taken where the

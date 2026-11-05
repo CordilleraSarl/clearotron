@@ -21,7 +21,7 @@
 //
 // ── ONE PROCESS OR SEVERAL? SEVERAL, AND THIS IS THE LIST ────────────────────────────────────────────
 //
-// This file is a SUPERVISOR. It starts two child processes and nothing else:
+// This file is a SUPERVISOR. It starts four child processes and nothing else:
 //
 //   driver/portal-service.mjs     the product: the UI, the API, the sign-in, the config surface.
 //   mcp-server/http-server.mjs    the engine door the portal's Start button calls over real MCP.
@@ -38,7 +38,7 @@
 // stays a separate process for the reason the hosted deployment keeps it one: it pulls the MCP
 // Streamable-HTTP transport (undici) that nothing else in the portal needs.
 //
-// A CRASH IS REPORTED, NEVER ABSORBED. If either child exits while this command is running, that is
+// A CRASH IS REPORTED, NEVER ABSORBED. If a fatal child exits while this command is running, that is
 // named on stderr — which one, and with what code — and everything else is stopped. A supervisor that
 // let one child die and left the other serving would turn a dead trigger lane into a red panel in the
 // browser, which is the shape of failure this whole command exists to remove.

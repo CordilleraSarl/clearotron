@@ -44,3 +44,13 @@ test("the install guide names every process start runs, and Ctrl-C stops them al
   for (const c of CHILDREN) assert.ok(paragraph.includes(c.name), `INSTALL.md §6 does not say start runs ${c.name}`);
   assert.doesNotMatch(paragraph, /stops both/, "INSTALL.md §6 says Ctrl-C stops two processes");
 });
+
+test("the verb list, setup's closing screen and the contributor's guide name every process start runs", async () => {
+  const { SUMMARY } = await import("../../bin/clearotron.mjs");
+  const closing = flat(read("bin/onboard.mjs")).match(/clearotron start\\n`\); say\("\s*(Starts [^"]+)"\); say\("\s*([^"]+)"/);
+  assert.ok(closing, "setup's closing screen no longer says what start starts");
+  const row = flat(read("AGENTS.md")).match(/\| `start` \| ([^|]+)\|/)?.[1] ?? "";
+  for (const [where, text] of [["the verb list", SUMMARY.start], ["setup's closing screen", closing[1]], ["AGENTS.md", row]])
+    for (const c of CHILDREN) assert.ok(text.includes(c.name.replace(/^the /, "")), `${where} does not say start runs ${c.name}: ${text}`);
+  assert.doesNotMatch(flat(read("bin/start.mjs")), /starts two child processes/, "the supervisor's own header still counts two");
+});
