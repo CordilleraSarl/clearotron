@@ -22,7 +22,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -89,6 +89,12 @@ test("the control: a revocation list the settings name, and cannot be read, stil
   try {
     const out = doctor(home);
     assert.match(out, /! the revocation list at \/nonexistent\/a-named-revocation-list cannot be read \(ENOENT\)/, out);
+    // What the key check does then, in the door's own words: it refuses every key, and doctor used to say the opposite.
+    const said = "this install cannot check whether keys have been revoked, so it is refusing all of them";
+    assert.ok(out.replace(/\s+/g, " ").includes(said), `doctor does not say what the door does:\n${out}`);
+    assert.doesNotMatch(out, /NOT REVOKED/, out);
+    assert.ok(readFileSync(new URL("../../mcp-server/lib/http-handler.mjs", import.meta.url), "utf8").includes(said),
+      "the door's sentence moved; doctor reuses it");
     assert.match(summary(out), /revocation list/, "a list the key check fails closed on dropped out of the summary");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });

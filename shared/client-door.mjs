@@ -177,8 +177,8 @@ export function keyIssueCommand({ prefix = "", demo = false, user = null, base =
 export function ensureDenylistFile(path, io) {
   if (io.exists(path)) {
     // PRESENT IS NOT THE SAME AS READABLE, and only one of the two makes revocation work. A list the
-    // door cannot open is the exact state `isRevoked` turns into "not revoked" — the same landmine as an
-    // absent one, wearing a passing existence check. Read it here, where the door is still startable.
+    // door cannot open makes `isRevoked` refuse every key, so every assistant stops, behind a passing
+    // existence check. Read it here, where the door is still startable.
     if (io.read) io.read(path);
     return { path, created: false };
   }

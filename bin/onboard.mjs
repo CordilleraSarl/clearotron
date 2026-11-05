@@ -3255,10 +3255,10 @@ export async function runCheck() {
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
 
   say("\n  Client connector");
-  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` treats an unreadable
-  // denylist as "not revoked", so a named-but-absent file makes every revocation silently ineffective:
-  // measured on a default install, a revoked key completed a full handshake with nothing logged. Nothing
-  // surfaced that state anywhere, which is why it survived to be found by hand.
+  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` used to read an unreadable denylist as
+  // "not revoked", so a named-but-absent file made every revocation silently ineffective: measured on a
+  // default install, a revoked key completed a full handshake with nothing logged. It now refuses every
+  // key (shared/scope.mjs), and this is where the reader learns why.
   {
     const { defaultDenylistPath } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
     const named = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v;
@@ -3280,10 +3280,10 @@ export async function runCheck() {
           && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
         info(`no revocation list yet at ${dl}: no key has been revoked. The first \`${invoke("start")}\` creates it.`);
       } else {
-        // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
-        // no other surface that would tell them: the door answers 200 either way.
-        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
-          + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
+        // NOT `warn`. The door refuses every key while its list cannot be read, so every assistant connected
+        // to it stops, and this sentence is the door's own (mcp-server/lib/http-handler.mjs).
+        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — this install cannot `
+          + "check whether keys have been revoked, so it is refusing all of them. "
           + `Run \`${invoke("start")}\` — it creates the list.`);
       }
     }
