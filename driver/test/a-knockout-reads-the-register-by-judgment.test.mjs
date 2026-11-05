@@ -138,7 +138,7 @@ test("a crowded exact answer is counted, not read, and a goods narrowing answers
   assert.equal(m.records.length, 40, "the selected list is read in full");
   assert.deepEqual(questionsOwed({ name: NAME, countsEntry: { counts: { identical: { total: 903 } } }, blocks: knockoutBandBlocks(held, NAME),
     proposals: knockoutProposals(held, NAME).entries, carried: new Set(m.records.map((r) => r.recordId)) }), [], "a narrowing that answered the crowd leaves nothing owed");
-  assert.equal(m.available, 903, "a narrowing is not counted as more filings beside the crowd it narrows");
+  assert.equal(m.available, null, "a crowd no one read holds filings no one can count against this list");
 });
 
 test("a justified containing search, a near form and a sound-alike question are each their own question, with their own predicate", async () => {
@@ -236,7 +236,7 @@ test("a resume reuses each form's count: the folded record unfolds to the rows t
 
 // ── THE HANDOFF ────────────────────────────────────────────────────────────────────────────────
 
-test("a filing weighed for another name reaches that name's page, keeps where it was found, and changes no count", () => {
+test("a filing weighed for another name reaches that name's page and its listed count, keeps where it was found, and leaves its search figures", () => {
   const terms = [{ basis: "identical", ok: true, total: 0, fetched: 0, state: "zero" }];
   const doc = { marks: [{ name: NAME, records: [], fetched: 0, available: 0, terms },
     { name: "MOSSVALE", records: [{ recordId: "a", matchedForm: "MOSSVALE", matchedBasis: "identical", question: "q1", carriedBecause: "same goods" }], fetched: 1,
@@ -249,9 +249,27 @@ test("a filing weighed for another name reaches that name's page, keeps where it
     "no field says this name was searched for it, and where it was found rides apart");
   assert.equal(moved.marks[0].fetched, 0, "this name's searches found no more than they did");
   assert.deepEqual(moved.marks[0].terms, terms, "and its questions are as they were");
-  assert.equal(recordsLine(moved.marks[0]), recordsLine(doc.marks[0]), "its line says the same");
+  assert.match(recordsLine(moved.marks[0]), /^2 filings listed/, "the list says what the page shows");
+  assert.doesNotMatch(recordsLine({ ...moved.marks[0], available: 9 }), /out of/, "and compares it with no search figure: they are different populations");
   assert.deepEqual(moved.marks[1], doc.marks[1], "the filing stays where it was found");
   assert.equal(withCitedFilings(doc, rated(["held-nowhere"])), doc, "an id held nowhere changes nothing, and the gate refuses it");
+});
+
+test("a list is compared with the distinct filings its questions returned, and only where every question was read", async () => {
+  const own = rows(5);
+  const askedTwice = { entries: [{ qid: "supp:own", predicate: "exact", term: NAME, nice_classes: [9] }, { qid: "supp:wide", predicate: "default", term: NAME, nice_classes: [9] }], rejected: [] };
+  const counts = { marks: [{ name: NAME, counts: { identical: { total: 5 }, containing: { total: 5 }, close: { total: 0, forms: [] } } }] };
+  const docWith = (blocks, reading) => knockoutRecordsDoc({ marks, classes: [9], provider: "clarivate", capabilities: CLARIVATE, counts, reading,
+    readBlocks: () => new Map(blocks.map((b) => [b.qid, b])), readProposals: () => askedTwice }).marks[0];
+  const read = docWith([listBlock("supp:own", own), listBlock("supp:wide", own)], null);
+  assert.equal(read.available, 5, "the name asked twice and a wider question over the same filings are five filings, not fifteen");
+  assert.equal(recordsLine(read), "5 filings listed.");
+  const reading = { marks: [{ name: NAME, carried: [{ records: own.slice(0, 2).map((r) => r.record_id), why: "same goods" }], set_aside: [{ question: "supp:own", why: "other goods" }], not_asked: [] }] };
+  const carriedTwo = docWith([listBlock("supp:own", own), listBlock("supp:wide", own)], reading);
+  assert.match(recordsLine(carriedTwo), /^2 filings listed, out of 5 hits across the searches run/);
+  const crowded = docWith([listBlock("supp:own", own), { qid: "supp:wide", state: "incomplete", total_hits: 900, records: [] }], reading);
+  assert.equal(crowded.available, null, "a crowd no one read holds filings no one can count against this list");
+  assert.doesNotMatch(String(recordsLine(crowded)), /out of/);
 });
 
 test("a set-aside filing the rating cites moves up with the carried ones; one it does not stays set aside", () => {

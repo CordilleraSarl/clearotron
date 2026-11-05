@@ -62,7 +62,7 @@ test("a mark with no payload may still cite a held filing, and nothing else", ()
 // They are engine-independent strings, composed once here; the manual reaches both engines through the step's reads.
 const RULE = "A cited URL must appear in the mark's own research payload or in a filing held for this batch.";
 function REFUSAL(mark, url) {
-  return `knockout_url_unreceipted:${mark}: "${url}", which this run does not hold. Cite only held evidence: this mark's own research payload, or a filing held for this batch`;
+  return `knockout_url_unreceipted:${mark}: "${url}" is not traceable to this name's research payload or a filing held for this batch. Cite a source from that held evidence.`;
 }
 test("the rating step's message, its manual and its refusal state one citation rule, and none the old one", async () => {
   const { KO_STAGES, koPaths } = await import("../stages-knockout.mjs");

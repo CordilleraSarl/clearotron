@@ -166,10 +166,8 @@ export function normalizeRegisterRecordLinks(doc) {
  * It states the truncation and the failures, because both are the difference between "these are the
  * filings" and "these are some of the filings".
  */
-export function recordsLine(entryAsHeld) {
-  if (!entryAsHeld) return null;
-  // A filing weighed for this name and found under another is on its page, and is no part of what this name's searches found.
-  const entry = { ...entryAsHeld, records: (entryAsHeld.records ?? []).filter((r) => !r?.foundUnder) };
+export function recordsLine(entry) {
+  if (!entry) return null;
   const failed = (entry.terms ?? []).filter((t) => !t.ok && !t.notAsked);
   const skipped = (entry.terms ?? []).filter((t) => t.notAsked);
   // — the register(s) this listing did not reach, appended to whichever sentence comes back below.
@@ -228,10 +226,10 @@ export function recordsLine(entryAsHeld) {
       + officeNote + coverageNote;
   }
   const parts = [`${entry.records.length} filing${entry.records.length === 1 ? "" : "s"} listed`];
-  // "of N" is the SUM ACROSS THE SEARCHES, not a count of distinct filings — a filing that answers both
-  // the name and a variation of it is listed once here and counted twice there. Worded so a reader does
-  // not read it as a distinct-record total, which would make the listed fraction look smaller than it is.
-  if (Number.isFinite(entry.available) && entry.available > entry.records.length)
+  // "of N" IS THE SAME POPULATION AS THE LIST: the distinct filings this name's questions returned. A filing weighed for this name and
+  // found under another is listed and is no part of that N, so a list holding one states no fraction.
+  const found = entry.records.filter((r) => !r?.foundUnder).length;
+  if (found === entry.records.length && Number.isFinite(entry.available) && entry.available > found)
     parts.push(`out of ${entry.available} hits across the searches run`);
   if (entry.capped) parts.push(`capped at ${entry.cap} per name`);
   if (failed.length) parts.push(`${failed.length} search(es) could not be run`);

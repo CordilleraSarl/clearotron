@@ -99,7 +99,7 @@ export function knockoutCitedUrls(f) {
  * name, because a filing may bear on more than one name and its id is held the same way (design, 2026-11-05). Another name's web
  * payload is not on the list: its results are that name's search, with no filing to trace them to.
  */
-export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}", which this run does not hold. Cite only held evidence: this mark's own research payload, or a filing held for this batch`;
+export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}" is not traceable to this name's research payload or a filing held for this batch. Cite a source from that held evidence.`;
 export function urlHeldFor(runDir, markName) {
   let filings = null, payload = null;
   try {
@@ -245,34 +245,46 @@ const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${findin
  * call would not do: a refused call is not kept, and accepted chunks on a saved batch, 2026-11-05, took 554 to 662 s of a 900 s
  * attempt, so there is no room to send one again. So the record tool keeps the call and leaves out only what the rule refuses, and
  * names every row it left out. A filing held for this batch may bear on more than one name, so its id and its source are held
- * whichever name found it (design, 2026-11-05). Returns `{mark, notKept}`. PURE-ish.
+ * whichever name found it (design, 2026-11-05). A finding that loses a source keeps its claim, and leaving the reference out does
+ * not support it, so each such loss is returned as a source defect, which stays open until the finding comes back or a correction
+ * answers it. Returns `{mark, notKept, sourceDefects}`. PURE-ish.
  */
 export function heldCitationsOnly(runDir, mark) {
   const held = registerRecordIdsHeld(runDir);
-  const notKept = [];
+  const notKept = [], sourceDefects = [];
+  const lost = (f, kind, cited) => sourceDefects.push({ mark: mark?.name, name: f?.name, owner: f?.owner, kind, cited });
   const isHeld = (raw, say) => {
     const id = String(raw ?? "").trim();
     if (!id || held.has(id)) return true;
     notKept.push(say(id));
     return false;
   };
-  if (!Array.isArray(mark?.registerReads) && !Array.isArray(mark?.findings)) return { mark, notKept };
+  if (!Array.isArray(mark?.registerReads) && !Array.isArray(mark?.findings)) return { mark, notKept, sourceDefects };
   const out = { ...mark };
   const urlHeld = urlHeldFor(runDir, mark?.name);
   if (Array.isArray(mark.registerReads)) out.registerReads = mark.registerReads.filter((row) => isHeld(row?.recordId, (id) => readNotHeld(mark.name, id)));
   if (Array.isArray(mark.findings)) out.findings = mark.findings.map((f) => {
-    const kept = Array.isArray(f?.weighedFilings) ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => weighedNotHeld(mark.name, f?.name, bad))) } : f;
+    const kept = Array.isArray(f?.weighedFilings) ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => { lost(f, "weighed", bad); return weighedNotHeld(mark.name, f?.name, bad); })) } : f;
     if (!Array.isArray(f?.evidence)) return kept;
-    const evidence = f.evidence.filter((url) => { if (urlHeld(url)) return true; notKept.push(urlNotHeld(mark.name, url)); return false; });
+    const evidence = f.evidence.filter((url) => { if (urlHeld(url)) return true; lost(f, "evidence", url); notKept.push(urlNotHeld(mark.name, url)); return false; });
     return evidence.length === f.evidence.length ? kept : { ...kept, evidence };
   });
-  return { mark: notKept.length ? out : mark, notKept };
+  return { mark: notKept.length ? out : mark, notKept, sourceDefects };
 }
 
-/** Was the register component skipped on this run? No record at all, or one that says why it could not list. An empty one was not. */
-export function registerWasSkipped(runDir) {
+/**
+ * What the run's files say of its register, from what ran, never from what is missing. `skipped` only where the run recorded that it
+ * has no register component (the file the lane writes when it starts). `held`: a record of questions and filings, an empty one
+ * included. `unavailable`: counts were taken and the listing could not run, or its record says why. `unknown`: nothing establishes
+ * what ran. An estimate is owed on the first alone.
+ */
+export const REGISTER_LANE_FILE = "register-lane.json";
+export function registerLaneState(runDir) {
+  if (readJson(driverDir(runDir, REGISTER_LANE_FILE))?.skipped === true) return { state: "skipped" };
   const doc = readJson(driverDir(runDir, "register-records.json"));
-  return !doc || Boolean(doc.unavailable);
+  if (doc?.unavailable) return { state: "unavailable", reason: String(doc.unavailable) };
+  if (doc) return { state: "held" };
+  return { state: existsSync(driverDir(runDir, "register-counts.json")) ? "unavailable" : "unknown", reason: null };
 }
 
 export const KNOCKOUT_RATING_QUALIFIERS = ["low"];
@@ -603,11 +615,11 @@ export const validators = {
       // THE DRIVER'S READ, NOT THE SEAT'S. Whether the register ran is a fact about the run; a seat that
       // could assert it could waive its own requirement by claiming a lane it cannot see. `dirname(file)`
       // is the run dir — `assessChunk` writes `knockout-assess-<n>.json` into it (stages-knockout.mjs).
-      // SKIPPED, NOT EMPTY. An empty carried list, a verified zero and a failed question are all a register that ran; the record
-      // says which, and only a run with no record, or one that says it could not list, owes an estimate.
-      const registerRan = !registerWasSkipped(dirname(file));
+      // SKIPPED, NOT EMPTY. An empty carried list, a verified zero, a failed question and a listing that could not run are all
+      // something other than a skip. Only a run that recorded the skip owes an estimate.
+      const registerRan = registerLaneState(dirname(file)).state !== "skipped";
       if (!registerRan && ladder.length && idx < ladder.length - 1 && !(typeof m.registerEstimate === "string" && m.registerEstimate.trim()))
-        return { ok: false, reason: `mark "${m.name}": registerEstimate is required above the lowest band on a run with no fetched register records (RF-15 v3 — estimation stands where the register did not run)` };
+        return { ok: false, reason: `mark "${m.name}": registerEstimate is required above the lowest band on a run that skipped the register (RF-15)` };
       // ── THE PER-MARK OPENING ASSESSMENT IS OWED ON A MULTI-MARK BATCH ───────
       //
       // ONLY on a multi-mark batch, and that is the whole scope of it. A single-mark run's document

@@ -20,7 +20,7 @@ import { validators } from "../verify-knockout.mjs";
 // the first probe of this arm accepted all four: the ladder is read from `_driver/framework.json`, not
 // from the chunk, and without that sidecar the arm never runs at all. A control that cannot run is not
 // a control, and the tell was the expected refusal simply not appearing.
-test("RF-15 v3 — the register estimate is required only where the run fetched no register records", () => {
+test("RF-15 v3 — the register estimate is required only where the run recorded that it skipped the register", () => {
   const FW = { framework_key: "triage", bands: [{ label: "High" }, { label: "Medium" }, { label: "Low" }] };
   const mkRun = (withRecords) => {
     const d = mkdtempSync(join(tmpdir(), "ko-rf15-"));
@@ -29,6 +29,7 @@ test("RF-15 v3 — the register estimate is required only where the run fetched 
     writeFileSync(join(d, "research", "testmark.md"), "# research payload for TESTMARK\n\nSome findings.\n");
     writeFileSync(join(d, "_driver", "framework.json"), JSON.stringify(FW));
     if (withRecords) writeFileSync(join(d, "_driver", "register-records.json"), "{}");
+    else writeFileSync(join(d, "_driver", "register-lane.json"), JSON.stringify({ skipped: true }));
     return join(d, "knockout-assess-0.json");
   };
   const mark = {
@@ -46,7 +47,7 @@ test("RF-15 v3 — the register estimate is required only where the run fetched 
   // The one refusal: no records on disk, so estimation is still the honest answer and it is owed.
   const owed = validators.knockoutAssessChunk(mkRun(false), chunk({}));
   assert.equal(owed.ok, false);
-  assert.match(owed.reason, /registerEstimate is required above the lowest band on a run with no fetched register records/);
+  assert.match(owed.reason, /registerEstimate is required above the lowest band on a run that skipped the register/);
 
   // …and the three that must NOT refuse.
   assert.equal(validators.knockoutAssessChunk(mkRun(false), chunk({ registerEstimate: ESTIMATE })).ok, true,

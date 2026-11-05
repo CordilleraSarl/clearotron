@@ -58,9 +58,10 @@ import { capabilitiesFor } from "./register-capabilities.mjs";
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
+import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE } from "./verify-knockout.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
-import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName } from "./knockout-correction-record.mjs";
+import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
+import { knockoutAssessSourceDefects } from "./knockout-assess-record.mjs";
 import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
@@ -205,15 +206,20 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   const begun = readCorrectionWork(run.runDir);
   if (begun?.stoodDown) return merged;
   if (begun) return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work: begun, firstReview: readJsonOrNull(knockoutReviewFile(run.runDir)), merged });
+  // A SOURCE THE RATING LOST STAYS OPEN: leaving a reference out does not support the claim it stood behind. It goes to the correction
+  // with whatever the check raises, and where no check or correction follows, it stays on the record for the reviewing lawyer.
+  const sourceDefects = sourceDefectsOf(run.runDir, merged, chunks);
+  const keepOpen = () => { if (sourceDefects.length) atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run", open: sourceDefects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state: "not-corrected" })) }, null, 2) + "\n"); };
   const d = reviewDispatch(merged, plan);
   const { about } = d;
-  if (!d.dispatch) {
+  if (!d.dispatch && !sourceDefects.length) {
     runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0, listed: 0,
       marks: merged.marks.length, excludedMarks: about.marks.length, excludedOwners: about.owners.length });
     return merged;
   }
 
   const keep = (outcome, detail) => {
+    keepOpen();
     runLog(run.runDir, { event: "knockout-review", outcome, flagged: d.flagged, listed: d.listed, applied: 0,
       delivered: "the rated record, unrewritten", ...detail });
     note(`reviewing pass: ${outcome} — the rated record ships unrewritten`);
@@ -233,8 +239,8 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   catch (e) { return keep("artifact-unreadable", { reason: String(e?.message ?? e).slice(0, 200) }); }
 
   // A MATERIAL DEFECT GOES TO THE STEP THAT CAN REPAIR IT, once, and the corrected record is read again.
-  if (review.material?.length) {
-    const work = correctionWork({ rated: merged, material: review.material, chunks });
+  if (review.material?.length || sourceDefects.length) {
+    const work = correctionWork({ rated: merged, material: [...(review.material ?? []), ...sourceDefects], chunks });
     keepChunkBases(run.runDir, chunksOf(work));
     atomicWrite(correctionWorkPath(run.runDir), JSON.stringify(work, null, 2) + "\n");
     return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview: review, merged });
@@ -252,6 +258,19 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
     unresolved: receipt.unresolved.length, refused: receipt.refused.length,
     excludedMarks: about.marks.length, excludedOwners: about.owners.length });
   return doc;
+}
+
+/** The sources the rating step lost and did not restore, as defects on the findings they stood behind, in the record's numbering. */
+function sourceDefectsOf(runDir, merged, chunks) {
+  return chunks.flatMap((_, c) => knockoutAssessSourceDefects(runDir, c)).map((d) => {
+    const mark = merged.marks.find((m) => String(m?.name ?? "") === String(d.mark ?? ""));
+    const finding = (mark?.findings ?? []).find((f) => sameFinding(f, d));
+    if (!finding) return null;
+    return { kind: "source", mark: d.mark, finding: finding.ordinal, rests_on: [],
+      problem: d.kind === "weighed"
+        ? `This finding listed "${d.cited}" among the filings it weighed, which this run does not hold, and it was left out. Give the claim held support, or amend it.`
+        : `This finding cited "${d.cited}", which is not traceable to this name's research payload or a filing held for this batch, and the citation was left out. Give the claim held support, or amend it.` };
+  }).filter(Boolean);
 }
 
 const readJsonOrNull = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -743,6 +762,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // settled here, once, before the paid frame turn — never twenty identical per-mark failures and a
     // published report with an empty column where the product should have been.
     const probeWanted = Boolean(policy.components?.registerProbe);
+    // THE RECORD THAT THIS RUN HAS NO REGISTER COMPONENT, so a later step reads a skip from what ran, and never from a missing file.
+    if (!probeWanted) atomicWrite(driverDir(run.runDir, REGISTER_LANE_FILE), JSON.stringify({ skipped: true }) + "\n");
     let countExec = { count: null, source: "none" };
     if (probeWanted) {
       // — NO REGISTER SET IS A REFUSAL TOO, stamped like the count refusal below. `activeProvider()`

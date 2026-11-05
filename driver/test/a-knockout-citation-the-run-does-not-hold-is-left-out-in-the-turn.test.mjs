@@ -13,7 +13,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, existsSync, rmSync, readFileSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { recordKnockoutAssess, knockoutAssessChunkFile } from "../knockout-assess-record.mjs";
+import { recordKnockoutAssess, knockoutAssessChunkFile, knockoutAssessSourceDefects } from "../knockout-assess-record.mjs";
 import { heldCitationsOnly } from "../verify-knockout.mjs";
 
 const TEMP = [];
@@ -64,7 +64,20 @@ test("a finding's source is held the same way: a held filing's own URL under any
   const r = send(run, mark({ findings: [{ ...finding([]), evidence: ["https://shop.example.test/own", SIBLING_URL, "https://shop.example.test/sibling-web", "https://shop.example.test/nowhere"] }] }));
   assert.deepEqual(stored(run).findings[0].evidence, ["https://shop.example.test/own", SIBLING_URL]);
   assert.equal(r.not_kept.length, 2, "another name's web result traces to no filing, and an address held nowhere is held by no one");
-  assert.match(r.not_kept[0], /"https:\/\/shop\.example\.test\/sibling-web", which this run does not hold\./);
+  assert.match(r.not_kept[0], /"https:\/\/shop\.example\.test\/sibling-web" is not traceable to this name's research payload or a filing held for this batch\. Cite a source from that held evidence\./);
+});
+
+test("a source left out stays open until the finding comes back: leaving the reference out does not support the claim", () => {
+  const run = heldRun();
+  mkdirSync(join(run, "research"), { recursive: true });
+  writeFileSync(join(run, "research", "lanternwick.md"), "A page: https://shop.example.test/own");
+  const cited = (evidence) => mark({ findings: [{ ...finding([]), evidence }] });
+  send(run, cited(["https://shop.example.test/own", "https://shop.example.test/nowhere"]));
+  assert.deepEqual(knockoutAssessSourceDefects(run, 0).map((d) => [d.mark, d.name, d.kind, d.cited]), [["LANTERNWICK", "An invented conflict", "evidence", "https://shop.example.test/nowhere"]]);
+  recordKnockoutAssess(run, { marks: [{ name: "LANTERNWICK", basis: "A new basis." }] }, { boundOrdinal: 0 });
+  assert.equal(knockoutAssessSourceDefects(run, 0).length, 1, "a call that did not send the finding did not answer it");
+  recordKnockoutAssess(run, { marks: [cited(["https://shop.example.test/own"])] }, { boundOrdinal: 0 });
+  assert.deepEqual(knockoutAssessSourceDefects(run, 0), [], "the finding came back on held support");
 });
 
 test("what is stored then passes the stage's own check, so the stage cannot fail on it", () => {

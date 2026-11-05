@@ -8,7 +8,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { validators as koValidators } from "./verify-knockout.mjs";
+import { validators as koValidators, registerLaneState } from "./verify-knockout.mjs";
 import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 // — the door owns "did the request name any classes?"; this builder reads it rather than
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
@@ -183,11 +183,15 @@ export function knockoutBarVerdict({ startedAt = null, deliveredAt = null } = {}
 }
 
 /** The line a stage is told about the client's own request: the message as it came where it is on file, else the brief, which is never called the request, else nothing. */
-/** Does this run hold a register record to weigh? A record that says why it could not list holds none. */
-const registerRecordHeld = (K) => {
-  if (!existsSync(K.registerRecords)) return false;
-  try { return !JSON.parse(readFileSync(K.registerRecords, "utf8"))?.unavailable; } catch { return false; }
-};
+/** The lines that say what this run's files establish about its register, where it holds no record of filings to weigh. */
+function registerStateLine(K) {
+  const lane = registerLaneState(K.runDir);
+  if (lane.state === "skipped") return `The register component was skipped on this run, so it holds no filings.`;
+  if (lane.state === "unavailable") return `The register listing was unavailable on this run. Use the recorded counts and failure reason, and keep that gap explicit. The recorded counts: ${K.registerCounts}.${lane.reason ? ` The recorded reason: ${lane.reason}` : ""}`;
+  if (lane.state === "unknown") return `The held files do not establish whether the register component ran. Keep that uncertainty explicit.`;
+  return "";
+}
+const registerRecordHeld = (K) => registerLaneState(K.runDir).state === "held";
 
 const requestLine = (K, onRequest, onBrief) => (existsSync(K.inboundRequest) ? onRequest(K.inboundRequest)
   : existsSync(K.confirmationBrief) ? onBrief(K.confirmationBrief) : "");
@@ -391,9 +395,7 @@ export const KO_STAGES = {
       // NAMED ONLY WHEN IT IS ON DISK. The records land at step 2 of 5 and this stage is step 3 or 4, so
       // the file exists by now on a run that fetched them — and on a run that did not, a dispatch naming
       // a path that is not there teaches the seat that a missing file is normal.
-      !registerRecordHeld(K)
-        ? `The register component was skipped on this run, so it holds no filings.`
-        : "",
+      registerStateLine(K),
       registerRecordHeld(K)
         ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
