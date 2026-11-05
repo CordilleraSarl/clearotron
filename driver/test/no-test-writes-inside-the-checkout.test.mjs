@@ -22,7 +22,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, cpSync, symlinkSync, chmodSync, utimesSync, statSync } from "node:fs";
+import { mkdtempSync, mkdirSync, realpathSync, writeFileSync, rmSync, cpSync, symlinkSync, chmodSync, utimesSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -228,6 +228,20 @@ test("the portal's audit log lands in the run's temp root, not in the checkout",
     const seen = JSON.parse(r.said.split("\n").find((l) => l.startsWith("{")));
     assert.ok(seen.audit, "PORTAL_AUDIT was not set, so the portal would fall back to the checkout root");
     assert.ok(seen.audit.startsWith(seen.tmp), `PORTAL_AUDIT (${seen.audit}) is not inside the run root (${seen.tmp})`);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test("a run inside a run on the same checkout leaves the write to the outer run, which still reads it", () => {
+  const root = fakeCheckout();
+  try {
+    const write = `require("node:fs").writeFileSync(require("node:path").join(process.argv[1], "a-neighbour-wrote-this.txt"), "x")`;
+    const nested = drive(root, write, root, { CT_WATCHED_CHECKOUT: realpathSync(root) });
+    assert.equal(nested.code, 0, nested.said);
+    assert.doesNotMatch(nested.said, /THIS RUN WROTE INSIDE THE CHECKOUT/);
+    rmSync(join(root, "a-neighbour-wrote-this.txt"), { force: true });
+    const outer = drive(root, write, root, { CT_WATCHED_CHECKOUT: "/another/checkout" });
+    assert.equal(outer.code, 1, "a run watching this checkout still reads it");
+    assert.match(outer.said, /THIS RUN WROTE INSIDE THE CHECKOUT/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
