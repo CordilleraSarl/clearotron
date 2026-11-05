@@ -14,7 +14,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { composeEnvBody, configOutsideWhy } from "../../bin/onboard.mjs";
+import { composeEnvBody, configInsideRefusal, configOutsideWhy } from "../../bin/onboard.mjs";
 import { envLocalPath } from "../../shared/env-local.mjs";
 import { isInsideCheckout } from "../../shared/inside-checkout.mjs";
 
@@ -49,4 +49,15 @@ test("setup tells a package install how its configuration survives an update, wi
   assert.match(configOutsideWhy(false), /`git pull`/, "a checkout takes updates with git, and is told so");
   // Setup prints it for the route it is running on.
   assert.match(readFileSync(ONBOARD, "utf8"), /prose\(configOutsideWhy\(PACKAGED\)\);/);
+});
+
+test("setup refuses a configuration folder inside a package without speaking of git", () => {
+  const packaged = configInsideRefusal(true, "/p/lib/node_modules/clearotron/config", "/p/lib/node_modules/clearotron").join(" ");
+  assert.doesNotMatch(packaged, /git|checkout/, `a package install was told about git: ${packaged}`);
+  assert.match(packaged, /INSIDE the installed package/);
+  assert.match(packaged, /An update replaces the package/, "the reason is still given");
+  const checkout = configInsideRefusal(false, "/c/config", "/c").join(" ");
+  assert.match(checkout, /INSIDE the checkout/, "a checkout keeps its word");
+  assert.match(checkout, /`git pull` conflicts/);
+  assert.match(readFileSync(ONBOARD, "utf8"), /configInsideRefusal\(PACKAGED, cfgAbs, resolve\(REPO\)\)/, "setup does not print it for its route");
 });

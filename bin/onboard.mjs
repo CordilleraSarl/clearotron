@@ -535,6 +535,13 @@ export const configOutsideWhy = (packaged) => (packaged
     + "lets you take updates with `git pull` instead of merging into files you never meant to own.");
 
 export function composeEnvBody(candidate, existing = {}, { packaged = PACKAGED } = {}) {
+/** What setup says when the folder a reader named sits inside the program's own files, said the same way. */
+export const configInsideRefusal = (packaged, path, repo) => (packaged
+  ? [`${path} is INSIDE the installed package (${repo}).`,
+    "An update replaces the package and everything in it. Choose a path outside the installed package."]
+  : [`${path} is INSIDE the checkout (${repo}).`,
+    "Everything you write there becomes a local modification to our files: `git pull` conflicts,",
+    "and `git status` that is never clean. Choose a path outside the checkout."]);
   // Setup's own answers win: the reader just typed them, and this run is the newer statement.
   const carried = Object.entries(existing).filter(([k]) => !(k in candidate));
   return [
@@ -4506,9 +4513,9 @@ try {
   // `<repo>-notes` is not mistaken for a path inside `<repo>`.
   const cfgAbs = resolve(cfg);
   if (isInsideCheckout(cfg, REPO)) {
-    problem(`${cfgAbs} is INSIDE the checkout (${resolve(REPO)}).`);
-    say("  Everything you write there becomes a local modification to our files: `git pull` conflicts,");
-    say("  and `git status` that is never clean. Choose a path outside the checkout.");
+    const [inside, ...why] = configInsideRefusal(PACKAGED, cfgAbs, resolve(REPO));
+    problem(inside);
+    for (const line of why) say(`  ${line}`);
     aborted = "config-inside-checkout";
     throw new Error("config-inside-checkout");
   }
