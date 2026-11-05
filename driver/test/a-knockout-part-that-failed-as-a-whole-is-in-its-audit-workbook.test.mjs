@@ -91,12 +91,19 @@ test("the filings listing that failed as a whole is `not available` for each nam
   assert.ok(!/EISDIR|illegal operation/i.test(JSON.stringify(filings)), "the raw cause reached a reader's cell");
 });
 
-test("a reading step that did not finish leaves the name's own list carried and one Degraded row, and the run delivers", async () => {
+test("a reading step that did not finish lists nothing further, keeps what it held, and leaves one Degraded row, and the run delivers", async () => {
   const fixtures = mkdtempSync(join(ROOT, "fixtures-"));
   writeFileSync(join(fixtures, "lanternwick.json"), JSON.stringify({ total: 1, records: [FILING] }));
   // A folder where the step's record goes: it cannot be read back, which is the step failing as a whole.
-  const { filings, trail } = await knockout("reading-failed", { fixtures, plant: (dir) => mkdirSync(join(dir, "knockout-register.json")) });
-  assert.ok(filings.some((r) => r["Trademark"] === FILING.mark_text), `the name's own filing did not reach the record: ${JSON.stringify(filings)}`);
+  const unread = await knockout("reading-failed-unread", { fixtures, plant: (dir) => mkdirSync(join(dir, "knockout-register.json")) });
+  assert.ok(!unread.filings.some((r) => r["Trademark"] === FILING.mark_text), `a failed turn fetched a list nothing asked for: ${JSON.stringify(unread.filings)}`);
+  assert.ok(unread.filings.every((r) => r["Trademark"] !== "none found"), `filings counted and not read read as none: ${JSON.stringify(unread.filings)}`);
+  const { filings, trail } = await knockout("reading-failed", { fixtures, plant: (dir) => {
+    mkdirSync(join(dir, "knockout-register.json"));
+    mkdirSync(join(dir, "register-units"), { recursive: true });
+    writeFileSync(join(dir, "register-units", "ko-lanternwick-band.json"), JSON.stringify([{ qid: "ko-lanternwick:identical", state: "enumerated", total_hits: 1, records: [FILING] }]));
+  } });
+  assert.ok(filings.some((r) => r["Trademark"] === FILING.mark_text), `the filing the turn had read did not reach the record: ${JSON.stringify(filings)}`);
   const row = trail.find((r) => r["Source / Context"] === "Register");
   assert.ok(row, `no trail row says the reading did not finish: ${JSON.stringify(trail)}`);
   assert.deepEqual([row["OK/Degraded"], row["Result Summary"]], ["Degraded", `FAILED — ${LEFT_OPEN}`]);

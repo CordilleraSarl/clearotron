@@ -48,6 +48,8 @@ Every question you ask is recorded with its count. A narrowing replaces nothing 
 replaces stays on the record with its count. What was counted and not read is set aside with that count,
 never marked clean.
 
+Base a decision that goods are unrelated on the held wording. If the short view is cut or its completeness is unknown, ask `read_register_list` with the filing's `record_id` for the full wording held. Missing or incomplete wording does not establish that the goods are unrelated; keep any unresolved goods question explicit.
+
 ### Near forms and wider questions
 
 When the name's own list is read and more searching would change the advice, choose the next question from what you
@@ -64,7 +66,7 @@ read and from the client's request.
   by office with no score, so neither their order nor their number says what is close, and some will not be close at
   all. A register with no such search says so, and that is not a clean answer.
 
-A zero says only that this question found nothing. A question that failed or was not sent is not a zero. A tool's note
+A verified zero answers that exact question and permits the next justified question. A failure does not. A question that failed or was not sent is not a zero. A tool's note
 beside a crowd may name `unit.md`; for you those are the steps above.
 
 ### What you hand back
@@ -74,4 +76,4 @@ where what its owners actually sell would change how it reads; the driver then s
 step. `set_aside`: per question,
 what you read or counted and did not carry, and why; one reason covers a group, and no record needs a paragraph of its
 own. `not_asked`: what you considered and did not ask, and why. `open_questions`: what you could not settle, for the step
-that rates the name. A name with nothing on the register hands back empty lists.
+that rates the name. If no filing is carried forward, keep `carried` empty. Still record the unread or unresolved questions and their reasons.

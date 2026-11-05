@@ -61,6 +61,7 @@ export const knockoutBandPath = (runDir, name) => join(String(runDir ?? ""), BAN
 export const openingQid = (name, key) => `${knockoutAxis(name)}:${key}`;
 
 const ints = (v) => (Array.isArray(v) ? v : []).filter((n) => Number.isInteger(n));
+const sameClassList = (a, b) => JSON.stringify([...a].map(String).sort()) === JSON.stringify([...b].map(String).sort());
 
 /** The classes one name is searched in: its own where the request names them, else the batch's, else the frame's. PURE. */
 export function classesForName(row, batchClasses, framed = null) {
@@ -139,6 +140,15 @@ const wasRead = (block) => block?.state === "enumerated" && block?.error !== tru
 const hasFailed = (block) => Boolean(block) && block.error === true;
 /** A block the register answered with a count too large to fetch. */
 const isCrowd = (block) => Boolean(block) && block.state === "incomplete" && block.error !== true;
+/** Every term one question named, trimmed and in lower case. PURE. */
+const termsAsked = (e) => (Array.isArray(e?.terms) ? e.terms : [e?.term]).map((t) => String(t ?? "").trim().toLowerCase()).filter(Boolean);
+/** Does this question reach only classes the frame added? It then has no bearing on the name's original scope. PURE. */
+const onlyAddedClasses = (e, framed) => {
+  const added = new Set(ints(framed?.beltAndBraces).map(String));
+  for (const c of ints(framed?.classes)) added.delete(String(c));
+  const asked = Array.isArray(e?.nice_classes) ? e.nice_classes.map(String) : [];
+  return asked.length > 0 && asked.every((c) => added.has(c));
+};
 
 /**
  * Which questions the reading record must say something about, per name: every list read whose rows were not all
@@ -151,8 +161,7 @@ export function questionsOwed({ name, countsEntry = null, blocks = new Map(), pr
   const narrowedBy = (qid) => proposals.some((e) => e?.narrows === qid && answered(e));
   const norm = (v) => String(v ?? "").trim().toLowerCase();
   const forms = formsOfName(name, framed);
-  const isForm = (e, form) => norm(e?.term) === norm(form);
-  const isOwnForm = (e) => forms.some((f) => isForm(e, f));
+  const isForm = (e, form) => termsAsked(e).includes(norm(form));
   const identical = countsEntry?.counts?.identical;
   const figures = Array.isArray(identical?.alternatives) ? identical.alternatives : [{ term: forms[0], total: identical?.total }];
 
@@ -163,7 +172,7 @@ export function questionsOwed({ name, countsEntry = null, blocks = new Map(), pr
     const total = figures.find((f) => norm(f?.term) === norm(form))?.total;
     if (!(Number.isFinite(total) && total > 0)) return;
     const qid = formQid(name, i);
-    const onForm = proposals.filter((e) => e?.predicate === "exact" && isForm(e, form));
+    const onForm = proposals.filter((e) => e?.predicate === "exact" && isForm(e, form) && !onlyAddedClasses(e, framed));
     if (!blocks.has(qid) && !onForm.some((e) => blocks.has(String(e?.qid)))) {
       owed.push({ question: qid, count: total, kind: "identical-not-asked", mustAsk: true });
       return;
@@ -173,15 +182,22 @@ export function questionsOwed({ name, countsEntry = null, blocks = new Map(), pr
     if (!read && !failed && !narrowedBy(qid)) owed.push({ question: qid, count: total, kind: "counted-not-read" });
   });
 
+  // A COMBINED COUNT IS ANSWERED FORM BY FORM. Reading one variant says nothing about the others under the same number, so
+  // the count stays owed until every form that can hold a filing has been read, or a row says why not.
+  const heldTerms = (predicate) => new Set(proposals.filter((e) => e?.predicate === predicate && answered(e)).flatMap(termsAsked));
   const opening = [
-    ["containing", countsEntry?.counts?.containing?.total, (e) => e?.predicate === "default" && isOwnForm(e)],
-    ["close", countsEntry?.counts?.close?.total, (e) => e?.predicate === "exact" && !isOwnForm(e)],
+    ["containing", countsEntry?.counts?.containing, "default", (c) => (Array.isArray(c?.alternatives) ? c.alternatives.map((a) => ({ form: a?.term, holds: a?.total > 0 })) : [{ form: forms[0], holds: true }])],
+    ["close", countsEntry?.counts?.close, "exact", (c) => (Array.isArray(c?.forms) ? c.forms : []).map((f) => ({ form: f?.form, holds: c.joined === true || f?.total > 0 || f?.approximate === true }))],
   ];
-  for (const [key, total, reads] of opening) {
+  for (const [key, cell, predicate, formsUnder] of opening) {
+    const total = cell?.total;
     if (!(Number.isFinite(total) && total > 0)) continue;
     const qid = openingQid(name, key);
-    if (narrowedBy(qid) || proposals.some((e) => reads(e) && answered(e))) continue;
-    owed.push({ question: qid, count: total, kind: "counted-not-read" });
+    const under = formsUnder(cell);
+    const read = heldTerms(predicate);
+    const unread = under.filter((f) => f.holds && !read.has(norm(f.form))).map((f) => String(f.form));
+    if (under.length ? !unread.length : narrowedBy(qid)) continue;
+    owed.push({ question: qid, count: total, kind: "counted-not-read", ...(under.length > 1 && unread.length ? { unread } : {}) });
   }
   const byQid = new Map(proposals.map((e) => [String(e?.qid), e]));
   const formOfQid = (qid) => forms.find((_, i) => formQid(name, i) === qid) ?? forms.find((f) => isForm(byQid.get(qid), f)) ?? null;
@@ -190,14 +206,14 @@ export function questionsOwed({ name, countsEntry = null, blocks = new Map(), pr
     if (isCrowd(block)) {
       // A crowd on a form's own question is answered by any list read on that form; any other by what names it.
       const form = byQid.get(qid)?.predicate === "exact" || !byQid.has(qid) ? formOfQid(qid) : null;
-      if (narrowedBy(qid) || (form && proposals.some((e) => e?.predicate === "exact" && isForm(e, form) && answered(e)))) continue;
+      if (narrowedBy(qid) || (form && proposals.some((e) => e?.predicate === "exact" && isForm(e, form) && !onlyAddedClasses(e, framed) && answered(e)))) continue;
       if (owed.some((o) => o.question === qid)) continue;
       owed.push({ question: qid, count: block.total_hits ?? null, kind: "crowd-not-read" });
       continue;
     }
     if (!wasRead(block)) continue;
-    const unread = rowsOf(block).filter((r) => !carried.has(String(r?.record_id ?? "")));
-    if (unread.length) owed.push({ question: qid, count: unread.length, kind: "read-not-carried" });
+    const unread = rowsOf(block).map((r) => String(r?.record_id ?? "")).filter((id) => !carried.has(id));
+    if (unread.length) owed.push({ question: qid, count: unread.length, kind: "read-not-carried", records: unread });
   }
   return owed;
 }
@@ -247,8 +263,8 @@ function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowe
   const approximate = cell?.approximate === true;
   const answered = counted || approximate;
   const failed = hasFailed(block) || (!answered && !wasRead(block));
-  // Read by the code when no step finished, or by the question the step asked on the name. A list a narrowing answered
-  // keeps its own count and its own state: the crowd it replaced stays on the record.
+  // Read under its own qid, or by a question on the name that kept the name's scope. A list a narrowing answered keeps
+  // its own count and its own state: the crowd it replaced stays on the record.
   const read = wasRead(block) || plainRead;
   const total = counted ? cell.total : (Number.isFinite(block?.total_hits) ? block.total_hits : null);
   return { term: form.toUpperCase(), basis: "identical", label: "the name itself", qid, predicate: "exact",
@@ -264,9 +280,8 @@ function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowe
  * The run's record of its filings, as every later stage reads it: one row per question, the rows the reading step
  * carried forward, and what it set aside. PURE over its inputs.
  *
- * `reading` is the reading step's accepted record, or null when the step did not finish. Then every row the code read
- * of the name's own list is carried, so the rating step still has what the run paid for, and the step's absence is on
- * the record.
+ * `reading` is what the reading step had settled when it ended. A name with no row in it carries every row its questions
+ * hold, so the rating step still has what the run paid for, and the step's absence is on the record.
  */
 export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null, provider, capabilities = null, unreachable = [],
   counts = null, reading = null, readBlocks, readProposals, framedMarks = [], now = () => new Date() }) {
@@ -300,8 +315,9 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
       const qid = formQid(name, i);
       const block = blocks.get(qid);
       const figure = Array.isArray(identicalCell?.alternatives) ? identicalCell.alternatives.find((a) => String(a?.term).toLowerCase() === form.toLowerCase()) : identicalCell;
-      const onForm = entries.filter((e) => e?.predicate === "exact" && String(e?.term ?? "").trim().toLowerCase() === form.toLowerCase() && wasRead(blocks.get(String(e?.qid))));
-      const isPlain = (e) => !e?.goods_text?.length && !e?.regions?.length;
+      const onForm = entries.filter((e) => e?.predicate === "exact" && termsAsked(e).includes(form.toLowerCase()) && !onlyAddedClasses(e, framedByName.get(key)) && wasRead(blocks.get(String(e?.qid))));
+      const sameScope = (e) => !e?.nice_classes?.length || sameClassList(e.nice_classes, scoped);
+      const isPlain = (e) => !e?.goods_text?.length && !e?.regions?.length && sameScope(e);
       terms.push(identicalRow({ term: form, qid, cell: figure, block, plainRead: onForm.some(isPlain), narrowed: onForm.some((e) => !isPlain(e)) }));
       ownLists.push({ form, qid, block });
     });
@@ -332,8 +348,8 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
         ok: false, fetched: 0, total: null, state: "not-asked", ...(r?.issue ? { refused: String(r.issue).slice(0, 300) } : {}) });
     }
 
-    // THE ROWS. Carried by the reading step with its reason, or, with no reading record, the name's own list as the
-    // code read it. Every other row read stays with the question that found it, so a later step can reach it.
+    // THE ROWS. Carried by the reading step with its reason, or, with no row for the name, all it held. Every other row
+    // read stays with the question that found it, so a later step can reach it.
     const carried = read ? carriedIds(read) : null;
     const groupOf = new Map((read?.carried ?? []).flatMap((g) => (g?.records ?? []).map((id) => [String(id), g])));
     const found = new Map();
@@ -357,7 +373,9 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
     // A row carried under one question and read again under another is carried, whichever came first.
     for (const id of found.keys()) setAside.delete(id);
     const setAsideRecords = [...setAside.values()];
-    const setAsideIds = (qid) => setAsideRecords.filter((r) => r.question === qid).map((r) => r.recordId);
+    // A ROW NAMING FILINGS HOLDS THOSE; A ROW NAMING NONE ANSWERS FOR THE REST OF THAT QUESTION'S LIST.
+    const namedUnder = (qid) => new Set((read?.set_aside ?? []).filter((g) => g.question === qid).flatMap((g) => g.records ?? []));
+    const setAsideIds = (qid) => rowsOf(blocks.get(qid)).map((r) => String(r?.record_id ?? "")).filter((id) => setAside.has(id) && !namedUnder(qid).has(id));
 
     // How many the register holds under the questions a reader meets: the name, the forms and each question that is
     // not a narrowing of one already counted. Stated only when every one of them gave a number.
@@ -502,10 +520,10 @@ export function readingTableLines({ marks, counts, classes = null, framedMarks =
 
 /**
  * One list in full, as a later step reads it: every row the question returned, each with the goods the run holds for it
- * in the shipped evidence states (filing-goods.mjs), and where its whole held record is, one `Read` away. Nothing is
- * fetched. A row with no goods on file says so, and that is not a mismatch with the client's goods.
+ * in the shipped evidence states (filing-goods.mjs). With `record_id`, all the wording this run holds for that one filing.
+ * Nothing is fetched. A row with no goods on file says so, and that is not a mismatch with the client's goods.
  */
-export function knockoutListView(runDir, { qid }, goodsOptions = {}) {
+export function knockoutListView(runDir, { qid, record_id: recordId = null }, goodsOptions = {}) {
   const want = String(qid ?? "").trim();
   if (!want) return { error: "qid is required: the question whose list you are reading, as the propose tool or your opening message named it." };
   const dir = join(String(runDir ?? ""), BAND_DIR);
@@ -521,15 +539,26 @@ export function knockoutListView(runDir, { qid }, goodsOptions = {}) {
   if (!found) return { error: `no question "${want}" has an answer in this run's bands. Ask it first; a name's counted opening questions have no list until one is read.` };
   const records = rowsOf(found).map((r) => toRecord(neutralRow(r), { term: null, basis: null, provider: null }));
   const held = withFilingGoods({ marks: [{ records }] }, runDir, goodsOptions).marks[0].records;
+  if (recordId != null && String(recordId).trim()) {
+    const one = held.find((r) => r.recordId === String(recordId).trim());
+    if (!one) return { error: `no filing "${String(recordId).slice(0, 120)}" under question "${want}". Copy record_id from that question's list.` };
+    return { qid: want, record_id: one.recordId, goods_state: one.goodsState, goods_from: one.goodsFrom, ...heldWording(one, runDir) };
+  }
   return {
     qid: want, state: found.state ?? null, total_hits: found.total_hits ?? null,
     ...(found.reason ? { reason: String(found.reason).slice(0, 300) } : {}),
     ...(found.error ? { error_answer: true } : {}),
     ...(found.per_office_counts ? { per_office_counts: found.per_office_counts } : {}),
     rows: held.map((r) => ({ record_id: r.recordId, mark: r.mark, owner: r.owner, owner_country: r.ownerCountry, status: r.status, office: r.territory, classes: r.classes,
-      filed: r.applicationDate, registered: r.registrationDate, goods: r.goods, goodsState: r.goodsState, goodsFrom: r.goodsFrom, goodsShortened: r.goodsShortened,
-      ...(r.fullRecord ? { fullRecord: join(String(runDir ?? ""), r.fullRecord) } : {}) })),
+      filed: r.applicationDate, registered: r.registrationDate, goods: r.goods, goods_state: r.goodsState, goods_from: r.goodsFrom, goods_shortened: r.goodsShortened })),
   };
+}
+
+/** All the wording held for one filing: its whole held record where one was written, else the statements its view carries. */
+function heldWording(record, runDir) {
+  try { if (record.fullRecord) return { full_record: JSON.parse(readFileSync(join(String(runDir ?? ""), record.fullRecord), "utf8")) }; }
+  catch { /* the view below is what is left to read */ }
+  return { goods: record.goods };
 }
 
 /**

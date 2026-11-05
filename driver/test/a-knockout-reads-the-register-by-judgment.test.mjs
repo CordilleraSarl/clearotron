@@ -8,7 +8,7 @@
 // would choose: a replay on saved data measures that.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
@@ -25,7 +25,7 @@ import { executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutB
   knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, runPrefixOfSession, unfoldFormCounts, withCitedFilings, withHeldGoods } from "../knockout-register-read.mjs";
 import { registerRecordIdsFor } from "../verify-knockout.mjs";
 import { ownersOwedACheck } from "../owner-use-check.mjs";
-import { acceptKnockoutRegister, recordKnockoutRegisterRead, validateKnockoutRegisterFile, knockoutRegisterFile, mergeKnockoutRegisterCall } from "../knockout-register-record.mjs";
+import { acceptKnockoutRegister, recordKnockoutRegisterRead, settledKnockoutReading, validateKnockoutRegisterFile, knockoutRegisterFile, mergeKnockoutRegisterCall } from "../knockout-register-record.mjs";
 import { readingDoc } from "./knockout-reading-fixture.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { beginAnswerMemory } from "../../providers/_shared/answer-memory.mjs";
@@ -404,11 +404,11 @@ test("a fixture run never falls through to a live register", () => {
 // ── THE READING RECORD ─────────────────────────────────────────────────────────────────────────
 
 /** A run on disk with `blocks` as one name's band, its counts and its scope. */
-function runWith({ total = 0, blocks = [], entries = [] }) {
+function runWith({ total = 0, close = { total: 0, forms: [] }, blocks = [], entries = [] }) {
   const dir = mkdtempSync(join(tmpdir(), "ko-record-"));
   mkdirSync(driverDir(dir), { recursive: true });
   writeFileSync(driverDir(dir, "instructed-scope.json"), JSON.stringify({ marks: [NAME] }));
-  writeFileSync(driverDir(dir, "register-counts.json"), JSON.stringify({ marks: [{ name: NAME, counts: { identical: { total }, containing: { total: 0 }, close: { total: 0, forms: [] } } }] }));
+  writeFileSync(driverDir(dir, "register-counts.json"), JSON.stringify({ marks: [{ name: NAME, counts: { identical: { total }, containing: { total: 0 }, close } }] }));
   mkdirSync(join(dir, "register-units"), { recursive: true });
   writeFileSync(knockoutBandPath(dir, NAME), JSON.stringify(blocks));
   writeFileSync(join(dir, "register-units", `${knockoutAxis(NAME)}-supplemental-plan.json`), JSON.stringify({ entries }));
@@ -451,6 +451,67 @@ test("a repair call merges by name, and a row needs its reason", () => {
   assert.equal(acceptKnockoutRegister({ marks: [{ name: "A", carried: [], set_aside: [{ question: "q" }], not_asked: [] }] }).ok, false);
 });
 
+test("a set-aside row naming filings covers those and no others, and its ids must be that question's", () => {
+  const id = openingQid(NAME, "identical");
+  const dir = runWith({ total: 3, blocks: [listBlock(id, rows(3))] });
+  const send = (setAside, carried = [{ records: ["/mark/em/r0"], why: "same goods" }]) => recordKnockoutRegisterRead(dir, { marks: [{ name: NAME, carried, set_aside: setAside, not_asked: [] }] });
+  assert.match(String(send([{ question: id, records: ["/mark/em/r1"], why: "unrelated goods" }]).refused), /1 of its 2 uncarried filings/, "a subset does not excuse the rest");
+  assert.match(String(send([{ question: id, records: ["/mark/em/stranger"], why: "x" }]).refused), /not a filing of/);
+  assert.match(String(send([{ question: id, records: ["/mark/em/r0", "/mark/em/r1"], why: "x" }, { question: id, why: "y" }]).refused), /both carried and set aside/);
+  assert.ok(send([{ question: id, records: ["/mark/em/r1"], why: "other goods" }, { question: id, records: ["/mark/em/r2"], why: "dead" }]).written, "every filing accounted for");
+  assert.ok(send([{ question: id, why: "one reason for the rest" }]).written, "one reason may cover a whole question's remaining rows");
+});
+
+test("a filing accounted for under one question need not be said again under a narrower one that returned it", () => {
+  const id = openingQid(NAME, "identical");
+  const narrow = "supp:narrow";
+  const dir = runWith({ total: 3, blocks: [listBlock(id, rows(3)), listBlock(narrow, rows(2))] });
+  assert.ok(recordKnockoutRegisterRead(dir, { marks: [{ name: NAME, carried: [], set_aside: [{ question: id, why: "unrelated goods" }], not_asked: [] }] }).written);
+});
+
+test("reading one variant does not discharge a combined count over the others", () => {
+  const close = { total: 7, joined: true, forms: [{ form: "TONIQ", rules: ["q"] }, { form: "TONNIC", rules: ["n"] }] };
+  const proposals = (terms) => terms.map((t, i) => ({ qid: `supp:${i}`, predicate: "exact", term: t, nice_classes: ["9"] }));
+  const blocks = (terms) => new Map(terms.map((t, i) => [`supp:${i}`, listBlock(`supp:${i}`, [])]));
+  const owedWith = (terms) => questionsOwed({ name: NAME, countsEntry: { counts: { identical: { total: 0 }, containing: { total: 0 }, close } }, blocks: blocks(terms), proposals: proposals(terms) });
+  assert.deepEqual(owedWith(["TONIQ"]).map((o) => o.unread), [["TONNIC"]], "the variant not read stays owed, by name");
+  assert.deepEqual(owedWith(["TONIQ", "TONNIC"]), [], "every variant read leaves nothing owed");
+  const read = [{ qid: "supp:0", predicate: "exact", term: "TONIQ", nice_classes: ["9"] }];
+  const held = runWith({ total: 0, close, blocks: [listBlock("supp:0", [])], entries: read });
+  const send = (setAside) => recordKnockoutRegisterRead(held, { marks: [{ name: NAME, carried: [], set_aside: setAside, not_asked: [] }] });
+  assert.match(String(send([]).refused), /counted-not-read: TONNIC not read/, "the refusal names the variant");
+  assert.ok(send([{ question: openingQid(NAME, "close"), why: "the other spelling cannot be read as this name" }]).written, "a stated reason answers it");
+});
+
+test("a question over an added class does not answer the name's original scope, and a read over fewer classes is a narrowing", () => {
+  const framed = { name: NAME, classes: [9], beltAndBraces: [35] };
+  const added = [{ qid: "supp:0", predicate: "exact", term: NAME, nice_classes: ["35"] }];
+  const counted = { counts: { identical: { total: 4 }, containing: { total: 0 }, close: { total: 0 } } };
+  const owed = questionsOwed({ name: NAME, countsEntry: counted, blocks: new Map([["supp:0", listBlock("supp:0", [])]]), proposals: added, framed });
+  assert.equal(owed.find((o) => o.mustAsk)?.question, openingQid(NAME, "identical"), "the instructed scope is still owed its question");
+  const one = [{ qid: "supp:0", predicate: "exact", term: NAME, nice_classes: ["9"] }];
+  const doc = knockoutRecordsDoc({ marks: [{ name: NAME, classes: [9, 12] }], classes: [9, 12], provider: "clarivate", capabilities: CLARIVATE, counts: { marks: [{ name: NAME, ...counted }] }, reading: null,
+    readBlocks: () => new Map([["supp:0", listBlock("supp:0", rows(1))]]), readProposals: () => ({ entries: one, rejected: [] }) });
+  assert.equal(doc.marks[0].terms[0].state, "narrowed", "a read over one of two classes did not read the name's own question");
+});
+
+test("a repair sends only the names it corrects, and a turn that ends early leaves what it had settled", () => {
+  const id = openingQid(NAME, "identical");
+  const other = "MOSSVALE";
+  const dir = runWith({ total: 2, blocks: [listBlock(id, rows(2))] });
+  writeFileSync(driverDir(dir, "instructed-scope.json"), JSON.stringify({ marks: [NAME, other] }));
+  const good = { name: NAME, carried: [{ records: ["/mark/em/r0"], why: "same goods" }], set_aside: [{ question: id, why: "unrelated goods" }], not_asked: [] };
+  assert.equal(settledKnockoutReading(dir), null, "nothing accepted is nothing settled");
+  const first = recordKnockoutRegisterRead(dir, { marks: [good] });
+  assert.match(String(first.refused), /no row for "MOSSVALE"/);
+  assert.match(String(first.refused), /Every other name stands/);
+  assert.equal(existsSync(knockoutRegisterFile(dir)), false, "the record is written whole or not at all");
+  assert.deepEqual(settledKnockoutReading(dir).marks.map((m) => m.name), [NAME], "what stands survives a turn that ends here");
+  const second = recordKnockoutRegisterRead(dir, { marks: [{ name: other, carried: [], set_aside: [], not_asked: [] }] });
+  assert.ok(second.written, second.refused);
+  assert.deepEqual(JSON.parse(readFileSync(knockoutRegisterFile(dir), "utf8")).marks.map((m) => m.name).sort(), [NAME, other].sort());
+});
+
 test("what the step carried reaches the record with its reason; what it set aside stays reachable, with explicit membership", () => {
   const id = openingQid(NAME, "identical");
   const list = rows(3);
@@ -466,7 +527,7 @@ test("what the step carried reaches the record with its reason; what it set asid
   assert.equal(view.rows.length, 3, "a later step can still read the rows set aside");
 });
 
-test("a reading step that did not finish leaves the name's own list carried, and says so", () => {
+test("a reading step that did not finish leaves what the run held carried, and says so", () => {
   const id = openingQid(NAME, "identical");
   const dir = runWith({ total: 2, blocks: [listBlock(id, rows(2))] });
   const doc = knockoutRecordsDoc({ ...scope, counts: JSON.parse(readFileSync(driverDir(dir, "register-counts.json"), "utf8")), reading: null,
@@ -477,7 +538,7 @@ test("a reading step that did not finish leaves the name's own list carried, and
 
 // ── READING A LIST ─────────────────────────────────────────────────────────────────────────────
 
-test("a list is read whole with the goods the run holds, in the shipped states, and the whole record is one Read away", () => {
+test("a list is read whole with the goods the run holds, in the shipped states, and one filing's whole wording by its record_id", () => {
   const id = openingQid(NAME, "identical");
   const list = [row("short"), row("long"), row("none")];
   const dir = runWith({ total: 3, blocks: [listBlock(id, list)] });
@@ -489,12 +550,16 @@ test("a list is read whole with the goods the run holds, in the shipped states, 
   assert.equal(view.total_hits, 3);
   assert.equal(view.rows.length, 3);
   const byId = Object.fromEntries(view.rows.map((r) => [r.record_id.split("/").pop(), r]));
-  assert.equal(byId.short.goodsState, "complete");
+  assert.equal(byId.short.goods_state, "complete");
   assert.deepEqual(byId.short.goods, ["9: tonic water"]);
-  assert.equal(byId.long.goodsShortened, true, "the view says it cut a statement");
+  assert.equal(byId.long.goods_shortened, true, "the view says it cut a statement");
   assert.ok(byId.long.goods[0].length < LONG.length);
-  assert.match(readFileSync(byId.long.fullRecord, "utf8"), /tonic water tonic water/, "the whole held record is there to read, with nothing fetched");
-  assert.notEqual(byId.none.goodsState, "complete", "no goods on file is said");
+  const whole = knockoutListView(dir, { qid: id, record_id: byId.long.record_id });
+  assert.match(JSON.stringify(whole.full_record), /tonic water tonic water/, "the whole held record is there to read, with nothing fetched");
+  assert.equal(whole.goods_state, "complete");
+  assert.deepEqual(knockoutListView(dir, { qid: id, record_id: byId.none.record_id }).goods, [], "no wording held is said, not filled in");
+  assert.match(knockoutListView(dir, { qid: id, record_id: "/mark/em/stranger" }).error, /no filing/);
+  assert.notEqual(byId.none.goods_state, "complete", "no goods on file is said");
   assert.deepEqual(byId.none.goods, []);
   assert.match(knockoutListView(dir, { qid: "nothing" }).error, /no question/);
 });
@@ -505,8 +570,8 @@ test("a fetch that failed reads as failed in a list, not as a record never held"
   const callLog = join(dir, "register-calls.jsonl");
   writeFileSync(callLog, JSON.stringify({ tool: "record_fetch", sessionKey: "clearance-invented-run-knockout-register-read", target: "/mark/em/gone", ok: false, http_status: 503 }) + "\n");
   const failed = knockoutListView(dir, { qid: id }, { runPrefix: "clearance-invented-run", callLog }).rows[0];
-  assert.equal(failed.goodsState, "unavailable");
-  assert.equal(knockoutListView(dir, { qid: id }).rows[0].goodsState, "not-held", "no ledger to read says only that the run holds none");
+  assert.equal(failed.goods_state, "unavailable");
+  assert.equal(knockoutListView(dir, { qid: id }).rows[0].goods_state, "not-held", "no ledger to read says only that the run holds none");
   assert.equal(runPrefixOfSession("clearance-invented-run-knockout-assess#2-rerun1"), "clearance-invented-run");
 });
 

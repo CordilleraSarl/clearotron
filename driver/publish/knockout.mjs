@@ -304,8 +304,9 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
         });
       }
       if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
+        // A count above zero that nothing read is not none: the register holds filings under it.
         recordRows.push({
-          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': 'none found',
+          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': (e.terms ?? []).some((t) => t.setAside) ? 'not available' : 'none found',
           'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—',
           'Record': '—', 'Note': recordsLine(e) ?? '',
         });

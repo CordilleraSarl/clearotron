@@ -432,7 +432,7 @@ export function knockoutStepFailures(runDir) {
   return {
     listing: listing?.event === "knockout-register-records-failed" ? { reason: reasonFor(cause(listing)), cause: cause(listing) } : null,
     ownerChecks: owners ? { reason: reasonFor(cause(owners)), cause: cause(owners) } : null,
-    // The reading step failed and the run carried each name's own list: its narrowing and wider questions never ran.
+    // The reading step failed and the run carried what it held: the questions it had not asked never ran.
     reading: reading?.event === "knockout-register-read-failed" ? { reason: reasonFor(cause(reading)), cause: cause(reading) } : null,
     review: REVIEW_FAILED.includes(review?.outcome) ? { reason: reasonFor(cause(review)), cause: `${review.outcome}: ${cause({ reason: review.reason })}` } : null,
   };

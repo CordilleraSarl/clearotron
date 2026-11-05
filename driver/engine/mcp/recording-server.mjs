@@ -1414,16 +1414,16 @@ serve({
   }, {
     name: "read_register_list",
     description:
-      "Read one question's list in full: every filing the register returned for it, with the goods this run holds. " +
-      "Pass `qid` from your opening message or the propose tool's answer. A row's `goodsState` says how far its goods go: " +
-      "complete, cut, unknown, absent, unavailable or not-held; only the first is the whole statement, and none of the " +
-      "others means the goods are unrelated. `goodsShortened` means the view cut a statement, and `fullRecord` is the whole " +
-      "held record, for the Read tool. This reads what the run already holds and fetches nothing.",
+      "Read the held answer to one question by `qid`, with its filings and goods evidence. A row's `goods_state` " +
+      "distinguishes complete, cut, unknown, absent, unavailable, and not-held wording. Pass `record_id` as well to read " +
+      "all wording held for that filing. This reads existing evidence and makes no register call. Full wording is available " +
+      "only where this run holds it.",
     inputSchema: {
       type: "object",
       required: ["qid"],
       properties: {
         qid: { type: "string", description: "The question whose list you are reading." },
+        record_id: { type: "string", description: "OPTIONAL: one filing of that list, to read all wording held for it." },
       },
     },
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
@@ -1450,7 +1450,7 @@ serve({
               name: { type: "string", description: "The instructed name, verbatim." },
               carried: {
                 type: "array",
-                description: "What a lawyer would raise with the client. Group filings that share one reason; an empty list says there are none.",
+                description: "The filings selected for assessment, grouped by reason. An empty list means none were selected; it does not state that the register holds no filings.",
                 items: { type: "object", required: ["records", "why"], properties: {
                   records: { type: "array", items: { type: "string" }, description: "record_id values, copied from the list you read." },
                   why: { type: "string", description: "Why this group is carried forward, in one reason." },

@@ -60,6 +60,7 @@ import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // â€
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
+import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
 import { writeRunStatus, readRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // â€” the identity seed is shared; the stepper is not
@@ -294,8 +295,9 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
 // from what the register answered and what the turn said.
 //
 // NEVER TERMINAL, the rule this lane has always held for its filings: the counts are the product, and a run that got
-// them delivers. When a turn fails the code reads the name's own lists and carries them, with the failure on the record.
-// A rate limit is not that failure: it parks and resumes as every stage's does, and the resume reuses each answer held.
+// them delivers. When a turn fails the record keeps every answer the run holds and every decision the turn had settled,
+// with the failure on it, and nothing more is fetched: listing each smaller count is no recovery. A rate limit is not
+// that failure: it parks and resumes as every stage's does, and the resume reuses each answer held.
 async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts, countExec, opts }) {
   const names = markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null }));
   const exec = resolveQuestionExecutor({
@@ -332,22 +334,18 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     return null;
   }
 
-  // Each name's own list, read by the code. Only where no model turn asked: a zero is settled by its count, and a crowd
-  // over the executor's limit comes back as the crowd it is.
-  const readOwnLists = async () => {
-    const framedOf = (name) => (plan.marks ?? []).find((f) => String(f?.name ?? "").trim().toLowerCase() === name.toLowerCase()) ?? null;
-    const withFilings = (counts.marks ?? []).filter((m) => (m?.counts?.identical?.total ?? 0) > 0).map((m) => String(m.name));
-    await runBatched(withFilings, 3, async (name) => {
-      const r = await exec.execute({ planPath: questionPlanPath(run.runDir), axis: knockoutAxis(name), outputPath: knockoutBandPath(run.runDir, name),
-        qids: formsOfName(name, framedOf(name)).map((_, i) => formQid(name, i)) });
-      if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
-    });
-  };
   let reading = null;
   try {
-    // A REGISTER INJECTED IN-PROCESS has no tool server a model turn could reach, so the code asks what it can.
-    if (exec.source === "injected") await readOwnLists();
-    else {
+    // A REGISTER INJECTED IN-PROCESS has no tool server a model turn could reach, so the code asks each name's own question.
+    if (exec.source === "injected") {
+      const framedOf = (name) => (plan.marks ?? []).find((f) => String(f?.name ?? "").trim().toLowerCase() === name.toLowerCase()) ?? null;
+      const withFilings = (counts.marks ?? []).filter((m) => (m?.counts?.identical?.total ?? 0) > 0).map((m) => String(m.name));
+      await runBatched(withFilings, 3, async (name) => {
+        const r = await exec.execute({ planPath: questionPlanPath(run.runDir), axis: knockoutAxis(name), outputPath: knockoutBandPath(run.runDir, name),
+          qids: formsOfName(name, framedOf(name)).map((_, i) => formQid(name, i)) });
+        if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
+      });
+    } else {
       const inScope = [...new Set(names.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
       await koStage("knockout-register-read", ctx, { msgCtx: {
         readingLines: readingTableLines({ marks: names, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
@@ -360,8 +358,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     if (e instanceof StageFailure && e.resetsAt) throw e;
     note(`register reading step did not finish (non-fatal): ${String(e?.message ?? e).slice(0, 200)}`);
     runLog(run.runDir, { event: "knockout-register-read-failed", cause: String(e?.message ?? e).slice(0, 300) });
-    try { await readOwnLists(); }
-    catch (e2) { note(`register list did not complete (non-fatal): ${String(e2?.message ?? e2).slice(0, 200)}`); }
+    reading = settledKnockoutReading(run.runDir);
   }
   try {
     const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
