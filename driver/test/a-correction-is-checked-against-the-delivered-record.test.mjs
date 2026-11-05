@@ -19,6 +19,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths as stagePaths } from "../stages.mjs";
 import { assembleReportMd, buildReviewerOpenPointsSection } from "../pipeline.mjs";
 import { recordRefutation } from "../narrative-refutation-record.mjs";
+import { shaOf } from "../stage-freshness.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "../reviewer-open-points.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 
@@ -232,19 +233,20 @@ test("a point that hardened the verdict prints after its correction changed what
 
 // ── THE EARLIER REVIEW'S POINTS, WHEN THE RECHECK AFTER THE CORRECTION SAVED NONE ───────────────────────────────────
 // The review in place is then the one from before the correction, and the record says so under its own heading, naming
-// that review by its file, for as long as nothing has saved a review since the recheck began. A review saved
-// afterwards, by a later pass or by a recheck that read, takes the heading away: the record is as before.
+// that review by its file, for as long as those bytes stand. A review saved over them, by a later pass or by a recheck
+// that read, takes the heading away: the record is as before.
 const EARLIER_HEADING = "#### Earlier review \u2014 correction not rechecked";   // an em dash, as approved
 const SOURCE = "*(`senior-eye-review.md`)*";   // the review the points come from, as a value
-test("the earlier review's heading stands while nothing has saved a review since the unread recheck, and goes once one is", () => {
+test("the earlier review's heading stands while that review is in place after the unread recheck, and goes once another is saved over it", () => {
   const { dir, P, doc } = assembledRun();
   try {
     const EARLIER = "An invented ground the review before the correction raised about ODRAVEL.";
     const LATER = "An invented ground a later review raised about MARVETTE.";
-    const recheck = (status) => writeFileSync(driverDir(dir, "corrective-recheck.json"), JSON.stringify({ status, entryVerdict: "BLOCKING",
-      verdict: "BLOCKING", seq0: 2, seq: status === "read" ? 2 : null }) + "\n");
     const applied = JSON.parse(readFileSync(P.correctionsApplied, "utf8")).rows;
     assert.ok(recordRefutation(dir, { verdict: "BLOCKING", flags: [{ kind: "fact", text: EARLIER }] }).written, "premise: the first review was saved");
+    const reviewSha = shaOf(P.seniorEyeReview);   // the review the recheck found
+    const recheck = (status) => writeFileSync(driverDir(dir, "corrective-recheck.json"), JSON.stringify({ status, entryVerdict: "BLOCKING",
+      verdict: "BLOCKING", seq0: 2, seq: status === "read" ? 2 : null, reviewSha }) + "\n");
     recheck("unread");
     assembleReportMd(P, doc.findings, [1, 2, 3]);
     // Today's section, with the heading and the review's file between its own heading and the lead, and nothing else.
@@ -264,8 +266,11 @@ test("the earlier review's heading stands while nothing has saved a review since
     assert.equal(readdirOpenPoints(dir), later, "the heading outlived a recheck that saved a review");
     // A refusal that cites nothing, which the tool no longer takes but an older review on disk can be, takes the heading
     // the same way: the section's other return.
-    const bare = buildReviewerOpenPointsSection("BLOCKING\n", [], { earlier: { review: "senior-eye-review.md" } });
+    const bare = buildReviewerOpenPointsSection("BLOCKING\n", [], { earlier: { review: "senior-eye-review.md", inPlace: true } });
     assert.ok(bare.startsWith(`### Reviewer's open questions\n\n${EARLIER_HEADING}\n\n${SOURCE}\n\n`
       + "**The independent reviewer did not sign this report off, and cited no specific defect.**"), bare);
+    // …unless that refusal is a later review's, which stays in place while the earlier one is kept beside it.
+    assert.ok(!buildReviewerOpenPointsSection("BLOCKING\n", [], { earlier: { review: "_driver/review-before-repair.md", inPlace: false } })
+      .includes(EARLIER_HEADING), "a later review's refusal was named as the earlier review's");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
