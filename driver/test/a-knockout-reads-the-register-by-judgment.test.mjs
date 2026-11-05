@@ -564,6 +564,25 @@ test("a list is read whole with the goods the run holds, in the shipped states, 
   assert.match(knockoutListView(dir, { qid: "nothing" }).error, /no question/);
 });
 
+test("goods that came on the search row reach the list and its whole wording, with no body held", () => {
+  const id = openingQid(NAME, "identical");
+  const onRow = (classifications, extra = {}) => row("onrow", NAME, { raw: { classifications }, ...extra });
+  const c = (nice, text, extra = {}) => ({ nice_class: nice, goods_services_text: text, goods_services_language: "en", ...extra });
+  const listed = (r) => { const dir = runWith({ total: 1, blocks: [listBlock(id, [r])] }); return { dir, view: knockoutListView(dir, { qid: id }).rows[0] }; };
+  const { dir, view } = listed(onRow([c(9, "tonic water"), c(35, "retail of tonic water")]));
+  assert.deepEqual(view.goods, ["9: tonic water", "35: retail of tonic water"]);
+  assert.notEqual(view.goods_state, "not-held", "goods held on the search row are held");
+  assert.equal(view.goods_shortened, false);
+  const whole = knockoutListView(dir, { qid: id, record_id: view.record_id });
+  assert.deepEqual(whole.goods, ["9: tonic water", "35: retail of tonic water"], "a view that cut nothing is all the wording held");
+  assert.equal(listed(onRow([c(9, "tonic water and", { goods_services_text_truncated: true })])).view.goods_state, "cut", "the register's own cut stays a cut");
+  assert.equal(listed(onRow([c(9, "tonic ".repeat(60))])).view.goods_state, "unknown", "a default answer at its length limit is not known whole");
+  const long = "tonic water ".repeat(200);
+  const shortened = listed(onRow([c(9, long)], { goods_whole: true }));
+  assert.equal(shortened.view.goods_shortened, true);
+  assert.equal(knockoutListView(shortened.dir, { qid: id, record_id: shortened.view.record_id }).full_record.goods[0].text, long.trim(), "a statement the view cut is whole behind its record_id");
+});
+
 test("a fetch that failed reads as failed in a list, not as a record never held", () => {
   const id = openingQid(NAME, "identical");
   const dir = runWith({ total: 1, blocks: [listBlock(id, [row("gone")])] });

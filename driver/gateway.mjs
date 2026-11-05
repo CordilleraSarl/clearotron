@@ -201,6 +201,8 @@ export const TOOL_WRITTEN_PATTERNS = Object.freeze([
     what: "this chunk's rated assessment",
     sample: basename(knockoutAssessChunkFile("", 0)),
   }),
+  Object.freeze({ re: KNOCKOUT_CORRECTION_RE, tool: "record_knockout_correction", what: "your answer to each defect, and what you repaired", sample: basename(knockoutCorrectionFile("", 0)) }),
+  Object.freeze({ re: KNOCKOUT_RECHECK_RE, tool: "record_knockout_review", what: "your second look at the corrected record", sample: basename(knockoutReviewFile("", 1)) }),
 ]);
 
 /**
@@ -234,11 +236,11 @@ export { everyToolCallRefused };
 import { unitRefusalsFor } from "./register-unit-record.mjs";
 // The chunk artifact's name shape, IMPORTED from the module that constructs the path — never restated
 // here. See TOOL_WRITTEN_PATTERNS below for why this table reads a pattern instead of owning one.
-import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
+import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-assess-record.mjs"; import { KNOCKOUT_CORRECTION_RE, knockoutCorrectionFile } from "./knockout-correction-record.mjs";
 // The frame transport's refusal reader, so a missing plan or note can be told apart from a stage that
 // never called its tool — the distinction, which its sibling stage still lacks.
 import { frameRefusalsFor } from "./knockout-frame-record.mjs"; import { knockoutRegisterRefusalsFor } from "./knockout-register-record.mjs";
-import { knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
+import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.

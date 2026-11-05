@@ -212,6 +212,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // registers hold), which never belonged beside a counted figure on a client-facing page.
   // Additive and conditional: a run with no working notes produces the same workbook it always did.
   const noteRows = [];
+  // WHAT THE LOOK AT THE CORRECTED RECORD STILL FOUND, for the reviewing lawyer, in its own words. Not on the client's report.
+  for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': 'Internal note', 'Note': p.problem });
   for (const m of findings.marks ?? []) {
     for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': 'Internal note', 'Note': n });
     if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': 'Register estimate (model)', 'Note': m.registerEstimate });
@@ -604,10 +606,11 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     && existsSync(join(runDir, 'research', `${kebab(name)}.md`))
     && !sweepReceipts.some((r) => r?.mark === name && !r.question))
     .map((mark) => ({ mark, preset: koPreset }));
+  const openPoints = (() => { try { return JSON.parse(readFileSync(driverDir(runDir, 'knockout-corrections.json'), 'utf8')).open ?? []; } catch { return []; } })();
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
   await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
     listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
-    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept,
+    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept, openPoints,
   });
   grpRead(join(poolRunDir, auditFile), 0o640);
 

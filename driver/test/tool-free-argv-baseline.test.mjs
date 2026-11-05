@@ -197,7 +197,7 @@ test("the walk is reading a real argv — the same resolution with groups produc
 // So it is named here instead. The membership assertion below is against the UNION, which keeps both
 // directions live: a conversion that forgets to retire its BASELINE row still reds, and so does a row
 // here for a stage that is not in the category.
-const BORN_TYPED = Object.freeze(["knockout-register-read", "knockout-review"]);
+const BORN_TYPED = Object.freeze(["knockout-correct", "knockout-register-read", "knockout-review"]);
 
 test("the category holds EXACTLY the stages whose rows were retired, plus the ones born typed", () => {
   // INVERTED, never deleted. This asserted `RECORDING_STAGES` was empty; blind-frame's conversion made

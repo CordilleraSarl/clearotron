@@ -576,11 +576,13 @@ const RECORDING = Object.freeze({
   // THE LANE'S THIRD CONVERSION, and the only stage on it that was born typed — there is no
   // pre-conversion knockout-review that wrote its own file, so nothing here is a migration.
   //
-  // NOT FANNED. The pass reads the WHOLE merged record in one turn, because the rule it applies is about
+  // NOT FANNED BY NAME. The pass reads the WHOLE merged record in one turn, because the rule it applies is about
   // consistency across the lines a reader meets: two marks' basis lines rewritten in separate turns drift
-  // apart in register, which is the defect the pass exists to remove.
+  // apart in register, which is the defect the pass exists to remove. The suffix says WHICH PASS: `#1` is the
+  // fresh read of a corrected record, under its own artifact.
   "knockout-review": {
     seatWrites: false,
+    perChunk: true,
     tools: Object.freeze(["record_knockout_review", "read_register_list"]),
     reason: "hands back rewrites as VALUES, each naming the line it replaces by the typed address the "
       + "driver measured and handed over. The address is what makes this a transport rather than a "
@@ -589,6 +591,15 @@ const RECORDING = Object.freeze({
       + "this run's record, so a seat learns while it can still send a repair turn. EXPECTED FROM THE "
       + "DICTATION'S ORDERED CALLS, UNMEASURED PRE-CONVERSION — this lane's seats hold no tools today, "
       + "so the first converted run is where the count comes from",
+  },
+  // A MATERIAL DEFECT'S REPAIR, per chunk, dispatched only when the check raised one.
+  "knockout-correct": {
+    seatWrites: false,
+    perChunk: true,
+    tools: Object.freeze(["record_knockout_correction", "read_register_list"]),
+    reason: "hands back only what a defect's repair changes, as VALUES merged onto the chunk as rated, so a name or a "
+      + "finding no defect names cannot move and the corrected chunk passes the rated chunk's gates at the call. Born "
+      + "typed. EXPECTED FROM THE DICTATION'S ORDERED CALLS, UNMEASURED: the first saved-data run is where the count comes from",
   },
 });
 
@@ -1352,6 +1363,7 @@ export const RECORDING_TOOLS = Object.freeze({
   // rewrite that adds a fact the rating never weighed. Its one read is the merged record the dispatch
   // names by path, which the seeded Read grant serves.
   "knockout-review": Object.freeze(["Read", "mcp__recording-knockout-review__read_register_list", "mcp__recording-knockout-review__record_knockout_review"]),
+  "knockout-correct": Object.freeze(["Read", "mcp__recording-knockout-correct__read_register_list", "mcp__recording-knockout-correct__record_knockout_correction"]),
   // THE WRITER. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a
   // derived row would compare a value with itself. This stage keeps three retrieval groups, and O1
   // compares the WHOLE grant, so they are listed: a row naming only the recording half would be a row

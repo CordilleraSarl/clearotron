@@ -38,6 +38,7 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
+import { recordKnockoutCorrection } from "../knockout-correction-record.mjs";
 import { knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutProposals, questionsOwed } from "../knockout-register-read.mjs";
 import { fixtureRecordsDir } from "../register-fixture-marker.mjs";
 import { fixtureFileName } from "../register-records.mjs";
@@ -2716,9 +2717,46 @@ export function applyStageWrites(msg, argv) {
       catch { /* a row whose address will not parse is not one this mock can answer */ }
     }
     if (!declined.length) return "mock knockout-review: the dispatch carried no address to answer — the driver measures them and puts them in the message";
-    const verdict = recordKnockoutReview(runDir, { first_question: "mock review: the report answers the client's question", declined });
+    // MOCK_KO_MATERIAL: the defects a first look raises, as JSON. MOCK_KO_MATERIAL_OPEN: what the look at the corrected record
+    // still finds. That look says what it read off the record on disk, so a test can see the corrected record reached it.
+    const pass = recordAxisFromWiring(argv);
+    const raised = pass ? process.env.MOCK_KO_MATERIAL_OPEN : process.env.MOCK_KO_MATERIAL;
+    const material = raised ? JSON.parse(raised) : [];
+    const reads = pass ? ((JSON.parse(readFileSync(join(runDir, "knockout-findings.json"), "utf8")).marks ?? []).map((m) => `${m.name}: ${m.rating}`).join("; ")) : "the report answers the client's question";
+    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined }, { boundOrdinal: pass });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout review ok";
+  }
+  // ── A MATERIAL DEFECT'S REPAIR ──────────────────────────────────────────────
+  //
+  // THROUGH THE REAL TRANSPORT, sending only what changes, as a seat is told to. Each flagged finding and its name move to
+  // MOCK_KO_CORRECTED_BAND, with the name's dependent answers; MOCK_KO_CORRECTION_STANDS answers each defect with no change.
+  if (/record_knockout_correction/.test(msg)) {
+    const runDir = runDirFromWiring(argv);
+    if (!runDir) return "mock knockout-correct: no run dir in the engine wiring";
+    const boundChunk = recordAxisFromWiring(argv);
+    if (boundChunk === null) return "mock knockout-correct: no chunk ordinal bound in the engine wiring";
+    recordMockToolCall(runDir, "record_knockout_correction", "recording-knockout-correct");
+    const work = JSON.parse(readFileSync(driverDir(runDir, "knockout-correction-work.json"), "utf8"));
+    const held = JSON.parse(readFileSync(join(runDir, `knockout-assess-${Number(boundChunk)}.json`), "utf8"));
+    const defects = work.defects.filter((d) => d.chunk === Number(boundChunk));
+    if (process.env.MOCK_KO_CORRECTION_STANDS) {
+      const stands = recordKnockoutCorrection(runDir, { answers: defects.map((d) => ({ defect: d.n, outcome: "stands", why: "mock correction: the evidence does not support the defect" })) }, { boundOrdinal: boundChunk });
+      return stands.written ? "mock knockout correction ok" : `mock knockout-correct: the transport refused the composed call — ${stands.refused ?? stands.write_failed}`;
+    }
+    const band = process.env.MOCK_KO_CORRECTED_BAND;
+    const names = [...new Set(defects.map((d) => d.mark))];
+    const marks = names.map((name) => {
+      const mark = held.marks.find((m) => m.name === name);
+      const flagged = defects.filter((d) => d.mark === name && d.names).map((d) => d.names);
+      return { name, rating: band, basis: `${name} moves to ${band} on the conflict the check named.`,
+        assessment: `${name} now screens at ${band}, on the conflict the check named. The name was searched against marketplace and common-law use in the classes this chunk covers, and the read below sets out what the sweep found. A knockout screen triages; it does not clear.`,
+        findings: (mark.findings ?? []).filter((f) => flagged.some((n) => n.name === f.name && n.owner === f.owner)).map((f) => ({ ...f, band, net: `The conflict the check named is more serious than first rated for ${name}.` })) };
+    });
+    const chunkSummary = `${held.chunkSummary}\n\n${names.map((n) => `## ${n}\nRated ${band} on the conflict the check named.`).join("\n\n")}`;
+    const verdict = recordKnockoutCorrection(runDir, { answers: defects.map((d) => ({ defect: d.n, outcome: "changed", why: "mock correction: the evidence supports the defect" })), chunkSummary, marks }, { boundOrdinal: boundChunk });
+    if (!verdict.written) return `mock knockout-correct: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
+    return "mock knockout correction ok";
   }
   // Repair-first A4: the single-artifact findings repair names ONLY findings.json ("Fix ONLY these
   // objects …", then the shared repair tail aimed at <findings.json>) — mirror the tool-shape: rewrite

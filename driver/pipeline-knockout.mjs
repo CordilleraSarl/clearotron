@@ -59,7 +59,9 @@ import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
-import { reviewDispatch, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
+import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
+import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, movedOutsideScope, readCorrectionWork, restoreChunkBases } from "./knockout-correction-record.mjs";
+import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
@@ -198,7 +200,10 @@ export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for
  * with its counts, so "there was nothing to read" and "the pass never ran" are different rows in the
  * journal rather than one absent one.
  */
-async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
+async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, composeRecord }) {
+  // A ROUND ALREADY BEGUN GOES ON FROM WHERE IT STOOD: a resumed run must not check a half-corrected record as a first look.
+  const begun = readCorrectionWork(run.runDir);
+  if (begun) return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work: begun, firstReview: readJsonOrNull(knockoutReviewFile(run.runDir)), merged });
   const d = reviewDispatch(merged, plan);
   const { about } = d;
   if (!d.dispatch) {
@@ -226,6 +231,14 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
   try { review = JSON.parse(readFileSync(knockoutReviewFile(run.runDir), "utf8")); }
   catch (e) { return keep("artifact-unreadable", { reason: String(e?.message ?? e).slice(0, 200) }); }
 
+  // A MATERIAL DEFECT GOES TO THE STEP THAT CAN REPAIR IT, once, and the corrected record is read again.
+  if (review.material?.length) {
+    const work = correctionWork({ rated: merged, material: review.material, chunks });
+    keepChunkBases(run.runDir, chunksOf(work));
+    atomicWrite(correctionWorkPath(run.runDir), JSON.stringify(work, null, 2) + "\n");
+    return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview: review, merged });
+  }
+
   const { doc, receipt } = applyKnockoutReview(merged, review);
   // THE REWRITTEN RECORD GOES THROUGH THE SAME GATE. Not a lighter one and not none: this is the record
   // a client receives, and the only reason it is trusted is that it passed what the rated one passed.
@@ -237,6 +250,74 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
     applied: receipt.applied, declined: receipt.declined,
     unresolved: receipt.unresolved.length, refused: receipt.refused.length,
     excludedMarks: about.marks.length, excludedOwners: about.owners.length });
+  return doc;
+}
+
+const readJsonOrNull = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+const chunksOf = (work) => [...new Set((work?.defects ?? []).map((x) => x.chunk).filter((c) => c != null))];
+
+/**
+ * One correction and one recheck. Each chunk a defect names goes back to the rating step; the record is composed again
+ * through the same steps and gate; and a fresh reader reads the result. There is no third look: what it still finds stays on
+ * the record, for the reviewing lawyer. Nothing here can cost a client the report. A correction that cannot pass the gate
+ * puts the rated chunks back, and a recheck that fails leaves the corrected record standing with that said.
+ */
+async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview, merged }) {
+  const touched = chunksOf(work);
+  const correctedNames = [...new Set(work.defects.map((x) => x.mark))];
+  const log = (outcome, detail = {}) => runLog(run.runDir, { event: "knockout-review", outcome, material: work.defects.length, marks: correctedNames.length, ...detail });
+  const failed = [];
+  for (const c of touched) {
+    try {
+      await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
+    } catch (e) {
+      if (e instanceof StageFailure && e.resetsAt) throw e;
+      failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
+    }
+  }
+  // Back to the record as it was rated, and through the same gate. The chunks are the record a resume composes from.
+  const standDown = (outcome, detail) => {
+    restoreChunkBases(run.runDir, touched);
+    let rated = merged;
+    try { rated = composeRecord(); } catch (e) { note(`the rated record could not be composed again (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); }
+    log(outcome, { applied: 0, delivered: "the rated record, uncorrected", ...detail });
+    note(`reviewing pass: ${outcome} — the rated record ships uncorrected`);
+    return rated;
+  };
+
+  if (failed.length === touched.length) return standDown("correction-failed", { reason: failed[0]?.reason });
+  let corrected;
+  try { corrected = composeRecord(); }
+  catch (e) { return standDown("correction-refused-by-the-merged-gate", { reason: String(e?.message ?? e).slice(0, 300) }); }
+  const outside = movedOutsideScope(work, corrected);
+  if (outside.marks.length || outside.findings.length) return standDown("correction-moved-what-no-defect-named", { outside });
+
+  // THE FIRST PASS'S REWRITES STILL STAND WHERE NO DEFECT REOPENED THE LINE. The second pass reads the record with them on it.
+  let doc = corrected;
+  const { doc: rewritten, receipt } = applyKnockoutReview(corrected, rewritesThatSurvive(firstReview, correctedNames));
+  if (validateMergedFindings(run.runDir, rewritten, plan).ok) { doc = rewritten; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
+
+  const answers = correctionAnswers(run.runDir, touched);
+  const outcomes = correctionOutcomes(work, doc, answers);
+  const unresolved = unresolvedFlags(outcomes).map((r) => r.n);
+  const held = { defects: work.defects, outcomes, failedChunks: failed };
+  const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
+
+  const d = reviewDispatch(doc, plan);
+  try {
+    await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes) } });
+  } catch (e) {
+    if (e instanceof StageFailure && e.resetsAt) throw e;
+    keepRecord({ ...held, recheck: "failed", open: [] });
+    log("recheck-failed", { applied: receipt.applied, unresolved: unresolved.length, reason: String(e?.message ?? e).slice(0, 200) });
+    return doc;
+  }
+  const second = readJsonOrNull(knockoutReviewFile(run.runDir, 1));
+  const open = second?.material ?? [];
+  keepRecord({ ...held, recheck: "ran", open });
+  const again = applyKnockoutReview(doc, second ?? {});
+  if (validateMergedFindings(run.runDir, again.doc, plan).ok) { doc = again.doc; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
+  log("corrected", { applied: receipt.applied + again.receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length });
   return doc;
 }
 
@@ -1057,96 +1138,102 @@ export async function knockoutInner(ctx, job, opts = {}) {
     for (let c = 0; c < chunks.length; c++) {
       await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     }
+    // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
+    // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
+    const composeRecord = () => {
+      const composed = { schema_version: 1, framework: null, batch: null, marks: [] };
+      const summaries = [];
+      for (let c = 0; c < chunks.length; c++) {
+        // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
+        // were written before the move (or through the Bash bypass closed) resumes without paying for
+        // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
+        const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
+        const part = JSON.parse(readFileSync(chunkPath, "utf8"));
+        if (c === 0) { composed.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; composed.batch = part.batch ?? null; }
+        if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
+        composed.marks.push(...(part.marks ?? []));
+      }
+      if (!composed.batch) composed.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
+      // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
+      // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
+      composed.batch.executiveSummary = summaries.join("\n\n");
+      // ── THE PENDING-REGISTER CAVEAT, CONDITIONAL SINCE RF-10 v3 ────────────────
+      //
+      // "Ratings reflect our common law assessment. Register analysis may adjust ratings in either
+      // direction." This is a CODE DEFAULT that fires when the model supplied no caveat of its own, and
+      // turned it from dormant into the thing that ships.
+      //
+      // BEFORE: knockout-assess calibration rule 4 ordered the seat to write that caveat, so the array
+      // arrived non-empty and this default almost never fired. THAT RULE IS RETIRED IN THIS SAME BRANCH —
+      // the seat is no longer told to write it — so the array now arrives EMPTY and this line injects the
+      // sentence unconditionally. Retiring the rule in the doctrine while leaving its default in the code
+      // did not remove the caveat; it made it fire on every run.
+      //
+      // And it is FALSE on the runs it now fires on. The rater is handed this run's fetched register
+      // filings and weighs them, so "register analysis may adjust ratings" describes work that already
+      // happened. RF-10 v3 (synthesis-rules.md): when register analysis ran AND surfaced live filings,
+      // drop the caveat and cite the register evidence directly; where it did not run, it stands and is
+      // the honest thing to say.
+      //
+      // THE DRIVER'S READ, off the run. A seat that could assert whether the register ran could waive its
+      // own caveat. Records present AND non-empty: a file that exists with nothing in it is a register
+      // that surfaced no filings, which is exactly the case the caveat is still true for.
+      // — ONE DERIVATION, shared with the verifier. This was a private copy, and the
+      // lint that checks the result did not have it: it required the caveat unconditionally while this
+      // injected it conditionally, so any run where the seat supplied its own caveats failed by
+      // construction. Two predicates that must agree forever is how they stop agreeing.
+      // — THE SAME DERIVATION THE LINT USES. This counted the array, blanks included, so
+      // `["", "  "]` read as "the rater supplied two" here and as "supplied none" in the verifier. The lint
+      // could not see the disagreement because the survivor sentence below silenced it entirely.
+      if (raterCaveats(composed.batch.standardCaveats).length === 0 && !registerSurfacedFilings(K.registerRecords)) {
+        composed.batch.standardCaveats = ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."];
+      }
+      if (!Array.isArray(composed.batch.standardCaveats)) composed.batch.standardCaveats = [];
+      // ── the survivor sentence, in CODE ( fix 3) ────────────────────────────────────────────────────
+      //
+      // A mark this lane did not knock out is a SURVIVOR. It is not clear, and the document must not be
+      // readable as though it were: the knockout screens, the clearance enumerates, and the whole distance
+      // between them is the work that has not happened yet. Two runs on two matters delivered "Medium,
+      // complete" while missing almost every mark the lawyer named, because a screen cannot know what it
+      // did not look for — so the boundary of the screen is stated by the engine rather than left to the
+      // assessing model, which is the one party that cannot see it.
+      //
+      // APPENDED, never prepended: publish/knockout.mjs's email takes standardCaveats[0], so leading with
+      // this would silently replace the standing caveat in the requester's inbox.
+      const survivorNote = survivorBoundaryNote(policy);
+      if (!composed.batch.standardCaveats.some((c) => SURVIVOR_BOUNDARY_RE.test(String(c))))
+        composed.batch.standardCaveats.push(survivorNote);
+      // ── the skipped-capability sentence, in CODE, for the survivor sentence's own reason ──────
+      //
+      // The per-mark degrade above already reaches the client on every row. This is the RUN-level fact
+      // underneath twenty identical rows: not "research was unavailable for this name" twenty times, but
+      // one capability that never ran on this deployment. The assessing model cannot state it — it is
+      // told a mark is degraded, never why the whole screen is — so the engine states it, exactly as it
+      // states the survivor boundary two lines up.
+      //
+      // APPENDED, never prepended, for the same reason the survivor note is: publish/knockout.mjs's email
+      // takes standardCaveats[0], and leading with this would silently replace the standing caveat in the
+      // requester's inbox.
+      const skippedNote = sweep.skipped ? CAPABILITY_SKIPPED_NOTE[sweep.skipped] : null;
+      if (skippedNote && !composed.batch.standardCaveats.some((c) => String(c) === skippedNote))
+        composed.batch.standardCaveats.push(skippedNote);
+      // The merged gate now also validates the TYPED findings and receipts their citations, and it
+      // NORMALISES as it validates — each finding's band comes back in the frozen deck's own casing — so
+      // it runs BEFORE the artifact is written, not after. The counts are logged because a receipts pass
+      // over zero citations is a different fact from a receipts pass, and only the count can tell them
+      // apart afterwards.
+      // BEFORE THE GATE AND THE WRITE, so the record on disk is the record that ships, and the reviewing
+      // pass never addresses a line inside a section that is about to go.
+      removeNextStepSections(run.runDir, composed.marks);
+      const mv = validateMergedFindings(run.runDir, composed, plan);
+      if (!mv.ok) throw new StageFailure("knockout-assess", `merged findings failed the lint: ${mv.failures.join("; ")}`, null);
+      runLog(run.runDir, { event: "knockout-receipts", ...mv.receipts });
+      atomicWrite(K.findings, JSON.stringify(composed, null, 2) + "\n");
+      return composed;
+    };
     // `let`, because the reviewing pass below returns a REWRITTEN record rather than editing this one:
     // the original has to survive intact as the thing that ships if the pass cannot finish cleanly.
-    let merged = { schema_version: 1, framework: null, batch: null, marks: [] };
-    const summaries = [];
-    for (let c = 0; c < chunks.length; c++) {
-      // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
-      // were written before the move (or through the Bash bypass closed) resumes without paying for
-      // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
-      const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
-      const part = JSON.parse(readFileSync(chunkPath, "utf8"));
-      if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
-      if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
-      merged.marks.push(...(part.marks ?? []));
-    }
-    if (!merged.batch) merged.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
-    // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
-    // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
-    merged.batch.executiveSummary = summaries.join("\n\n");
-    // ── THE PENDING-REGISTER CAVEAT, CONDITIONAL SINCE RF-10 v3 ────────────────
-    //
-    // "Ratings reflect our common law assessment. Register analysis may adjust ratings in either
-    // direction." This is a CODE DEFAULT that fires when the model supplied no caveat of its own, and
-    // turned it from dormant into the thing that ships.
-    //
-    // BEFORE: knockout-assess calibration rule 4 ordered the seat to write that caveat, so the array
-    // arrived non-empty and this default almost never fired. THAT RULE IS RETIRED IN THIS SAME BRANCH —
-    // the seat is no longer told to write it — so the array now arrives EMPTY and this line injects the
-    // sentence unconditionally. Retiring the rule in the doctrine while leaving its default in the code
-    // did not remove the caveat; it made it fire on every run.
-    //
-    // And it is FALSE on the runs it now fires on. The rater is handed this run's fetched register
-    // filings and weighs them, so "register analysis may adjust ratings" describes work that already
-    // happened. RF-10 v3 (synthesis-rules.md): when register analysis ran AND surfaced live filings,
-    // drop the caveat and cite the register evidence directly; where it did not run, it stands and is
-    // the honest thing to say.
-    //
-    // THE DRIVER'S READ, off the run. A seat that could assert whether the register ran could waive its
-    // own caveat. Records present AND non-empty: a file that exists with nothing in it is a register
-    // that surfaced no filings, which is exactly the case the caveat is still true for.
-    // — ONE DERIVATION, shared with the verifier. This was a private copy, and the
-    // lint that checks the result did not have it: it required the caveat unconditionally while this
-    // injected it conditionally, so any run where the seat supplied its own caveats failed by
-    // construction. Two predicates that must agree forever is how they stop agreeing.
-    // — THE SAME DERIVATION THE LINT USES. This counted the array, blanks included, so
-    // `["", "  "]` read as "the rater supplied two" here and as "supplied none" in the verifier. The lint
-    // could not see the disagreement because the survivor sentence below silenced it entirely.
-    if (raterCaveats(merged.batch.standardCaveats).length === 0 && !registerSurfacedFilings(K.registerRecords)) {
-      merged.batch.standardCaveats = ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."];
-    }
-    if (!Array.isArray(merged.batch.standardCaveats)) merged.batch.standardCaveats = [];
-    // ── the survivor sentence, in CODE ( fix 3) ────────────────────────────────────────────────────
-    //
-    // A mark this lane did not knock out is a SURVIVOR. It is not clear, and the document must not be
-    // readable as though it were: the knockout screens, the clearance enumerates, and the whole distance
-    // between them is the work that has not happened yet. Two runs on two matters delivered "Medium,
-    // complete" while missing almost every mark the lawyer named, because a screen cannot know what it
-    // did not look for — so the boundary of the screen is stated by the engine rather than left to the
-    // assessing model, which is the one party that cannot see it.
-    //
-    // APPENDED, never prepended: publish/knockout.mjs's email takes standardCaveats[0], so leading with
-    // this would silently replace the standing caveat in the requester's inbox.
-    const survivorNote = survivorBoundaryNote(policy);
-    if (!merged.batch.standardCaveats.some((c) => SURVIVOR_BOUNDARY_RE.test(String(c))))
-      merged.batch.standardCaveats.push(survivorNote);
-    // ── the skipped-capability sentence, in CODE, for the survivor sentence's own reason ──────
-    //
-    // The per-mark degrade above already reaches the client on every row. This is the RUN-level fact
-    // underneath twenty identical rows: not "research was unavailable for this name" twenty times, but
-    // one capability that never ran on this deployment. The assessing model cannot state it — it is
-    // told a mark is degraded, never why the whole screen is — so the engine states it, exactly as it
-    // states the survivor boundary two lines up.
-    //
-    // APPENDED, never prepended, for the same reason the survivor note is: publish/knockout.mjs's email
-    // takes standardCaveats[0], and leading with this would silently replace the standing caveat in the
-    // requester's inbox.
-    const skippedNote = sweep.skipped ? CAPABILITY_SKIPPED_NOTE[sweep.skipped] : null;
-    if (skippedNote && !merged.batch.standardCaveats.some((c) => String(c) === skippedNote))
-      merged.batch.standardCaveats.push(skippedNote);
-    // The merged gate now also validates the TYPED findings and receipts their citations, and it
-    // NORMALISES as it validates — each finding's band comes back in the frozen deck's own casing — so
-    // it runs BEFORE the artifact is written, not after. The counts are logged because a receipts pass
-    // over zero citations is a different fact from a receipts pass, and only the count can tell them
-    // apart afterwards.
-    // BEFORE THE GATE AND THE WRITE, so the record on disk is the record that ships, and the reviewing
-    // pass never addresses a line inside a section that is about to go.
-    removeNextStepSections(run.runDir, merged.marks);
-    const mv = validateMergedFindings(run.runDir, merged, plan);
-    if (!mv.ok) throw new StageFailure("knockout-assess", `merged findings failed the lint: ${mv.failures.join("; ")}`, null);
-    runLog(run.runDir, { event: "knockout-receipts", ...mv.receipts });
-    atomicWrite(K.findings, JSON.stringify(merged, null, 2) + "\n");
+    let merged = composeRecord();
     // ── THE REVIEWING PASS, AFTER THE RECORD IS ON DISK AND BEFORE ANYTHING READS IT ─────────────────
     //
     // ORDER MATTERS THREE WAYS. The record is written FIRST so the stage's validator has something to
@@ -1160,7 +1247,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // NO NEW STEP LABEL. `stepTotal` is derived from `koSteps()`, so adding one would renumber the
     // progress screen a client watches for a pass that takes a minute. It runs inside "Knockout
     // assessment", which is what it is part of.
-    merged = await knockoutReviewingPass({ ctx, run, K, merged, plan });
+    merged = await knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, composeRecord });
     try { writeFileSync(K.assessment, String(merged.batch.executiveSummary ?? "")); } catch { /* prose mirror, best-effort */ }
 
     // 4 — publish (report + workbook + meta + index)

@@ -41,7 +41,7 @@ export function clearanceDispatches(runDir) {
   return out;
 }
 
-/** The knockout lane's three stages, composed from the lane's own context shape. */
+/** The knockout lane's stages, composed from the lane's own context shape. */
 export function knockoutDispatches(runDir) {
   const K = koPaths(runDir);
   const framework = loadFrameworkManifest((rel) => join(DRIVER, rel), TRIAGE_FRAMEWORK);
@@ -50,13 +50,15 @@ export function knockoutDispatches(runDir) {
     "knockout-assess": { K, job: {}, chunkNo: 0, chunkMarks: [{ name: "INVENTED NAME" }], chunkTotal: 1,
       framework, frameworkPath: TRIAGE_FRAMEWORK, frameworkMethod: null },
     "knockout-register-read": { K, job: {}, readingLines: [] },
-    "knockout-review": { K, evidenceLines: [], firstReadLines: [], exclusionNote: "" },
+    "knockout-correct": { K, job: {}, chunkNo: 0, chunkMarks: [{ name: "INVENTED NAME" }], framework, frameworkPath: TRIAGE_FRAMEWORK, frameworkMethod: null,
+      work: { defects: [{ n: 1, kind: "band", mark: "INVENTED NAME", chunk: 0, problem: "The band is not supported.", rests_on: [] }] } },
+    "knockout-review": { K, frameworkPath: TRIAGE_FRAMEWORK, evidenceLines: [], firstReadLines: [], exclusionNote: "" },
   };
   const missing = Object.keys(KO_STAGES).filter((n) => !ctxs[n]);
   if (missing.length) throw new Error(`no knockout context for ${missing.join(", ")}: add one so its instructions are checked`);
   return Object.entries(ctxs).map(([name, ctx]) => {
     const declared = [...(KO_STAGES[name].skillReads ?? [])];
-    if (name === "knockout-assess") declared.push(TRIAGE_FRAMEWORK);
+    if (["knockout-assess", "knockout-correct", "knockout-review"].includes(name)) declared.push(TRIAGE_FRAMEWORK);
     return { name, label: "knockout", message: KO_STAGES[name].message(ctx), declared };
   });
 }

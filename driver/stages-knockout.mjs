@@ -14,6 +14,7 @@ import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
 import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
+import { chunkScope, knockoutCorrectionFile, validateKnockoutCorrectionFile } from "./knockout-correction-record.mjs";
 import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
@@ -577,12 +578,13 @@ export const KO_STAGES = {
   // that the replacement reads better than what it replaced. A cheaper rung would produce replacements
   // nobody would ship, which is a pass that runs and achieves nothing.
   "knockout-review": {
-    model: "opus", thinking: "high", timeoutSec: 600, stallSec: 420,
+    model: "opus", thinking: "high", timeoutSec: 900, stallSec: 600,
     // DECLARATIVE ONLY on this lane, exactly as the assess stage records: nothing in koStage reads
     // `skillReads`, and the effective read is the `reads([...])` call in the message below. The two are
     // edited together and the asymmetry is written down rather than left to be discovered.
     skillReads: ["skills/clearance-search/report-prose.md"],
-    out: (K) => K.review,
+    // A later pass reads the corrected record, under its own artifact: `knockout-review#1`.
+    out: (K, pass) => (pass ? knockoutReviewFile(K.runDir, pass) : K.review),
     validate: validateKnockoutReviewFile,
     // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
     //
@@ -594,11 +596,19 @@ export const KO_STAGES = {
     // exists to stop. A record the driver's read flags nowhere is handed its first-read lines instead,
     // by the owner's ruling of 2026-10-10, so both branches have rows under them; a record with no such
     // line is not dispatched at all.
-    message: ({ K, evidenceLines = [], firstReadLines = [], exclusionNote = "" }) => lines(
+    message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", recheckTable = "" }) => lines(
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
-      reads(["skills/clearance-search/report-prose.md"]),
-      `You are the REVIEWING PASS on a knockout screen. The batch is already rated and nothing about that rating is yours to change. Your job is the words.`,
+      reads(["skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
+      `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence, then check its wording. You change no band and no finding yourself.`,
+      requestLine(K, (at) => `The client's request, as it arrived: ${at}`, (at) => `The available brief: ${at}. The original request is not held here.`),
+      recheckTable
+        ? [`THIS IS THE SECOND LOOK. An earlier check raised the defects below, the rating step has answered them, and the record you are reading is the corrected one.`,
+          recheckTable,
+          `For each row, read the corrected record and judge whether the defect is answered. Agreement is part of that: a changed finding or band must agree with its name's basis, factors, opening read and block in the batch summary. There is no further correction after this one, so send as \`material\` only what is still wrong; it stays on the record for the reviewing lawyer.`].join("\n")
+        : `MATERIAL DEFECTS COME FIRST. A defect is material when repairing it would change what the client is told: a band the framework and the evidence do not support (\`band\`), a filing or use a lawyer would raise that the answer leaves out (\`missing\`), something set aside against the evidence (\`exclusion\`), scope the request asked for that the answer does not cover (\`scope\`), or a line that contradicts the record beneath it (\`contradiction\`). Send each as a \`material\` row: \`kind\`, \`mark\` verbatim, the finding's ordinal as \`finding\` where it is about one, what is wrong and why it matters as \`problem\`, and in \`rests_on\` the recordIds or URLs it rests on. You repair nothing: the step that rated the batch answers each row, and the record is then read again. A rating a lawyer could reasonably reach is not a defect, and neither is a preference about wording.`,
+      `Each name's research payload is under ${K.researchDir}.`,
+      `THE WORDS COME AFTER. A line a reader meets before opening anything is held to this rule.`,
       `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
       `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,
       existsSync(K.registerRecords) ? `The register record behind it: ${K.registerRecords}. It holds what the reading step carried, what it set aside and why.` : "",
@@ -613,11 +623,47 @@ export const KO_STAGES = {
       // happen. The address IS the field, so every rewrite this stage returns names the exact line it
       // replaces and the driver writes it there.
       `Send your answer to that first question as \`first_question\` in the same call.`,
-      `HAND YOUR REWRITES BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none for you to write to. Send \`rewrites\`: one row per line you are replacing, each carrying the \`at\` address COPIED VERBATIM from the row above and \`text\`, the replacement prose. The driver writes your text into that field exactly as you send it.`,
+      `HAND YOUR ANSWER BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none for you to write to. Send \`material\` as above, and \`rewrites\`: one row per line you are replacing, each carrying the \`at\` address COPIED VERBATIM from the row above and \`text\`, the replacement prose. The driver writes your text into that field exactly as you send it.`,
       `A REWRITE KEEPS EVERY FACT. You are changing the register, never the content: the same band, the same names, the same reasons, the same conclusion, in the words the reader already owns. Splitting one long sentence into two short ones is the commonest right answer. Dropping the reason to make a line shorter is the commonest wrong one.`,
       `SEND \`declined\` FOR A LINE YOU ARE LEAVING ALONE, with \`why\`. A word that is a mark being screened, a client's own product name, or a term with no plainer form that keeps the meaning — say so and leave it. A line you neither rewrite nor decline is indistinguishable afterwards from a line nobody read.`,
-      `YOU MOVE NOTHING ELSE. No band, no finding, no ordinal, no count, no piece of evidence and no caveat the engine wrote. There is no field for any of them and a payload naming one is refused.`,
+      `A REWRITE MOVES NOTHING ELSE. No band, no finding, no ordinal, no count, no piece of evidence and no caveat the engine wrote. There is no field for any of them and a payload naming one is refused.`,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges BY ADDRESS onto what it already accepted, so a row you omit keeps what you sent for it before.`,
     ),
+  },
+  // A MATERIAL DEFECT'S REPAIR. Dispatched only when the check raised one, per chunk, on the chunk as rated. Its answer is its own
+  // artifact because the chunk it changes is already valid: a turn that called nothing would otherwise pass.
+  "knockout-correct": {
+    model: "opus", thinking: "high", timeoutSec: 900, stallSec: 600,
+    // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
+    skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
+    out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
+    validate: validateKnockoutCorrectionFile,
+    message: ({ K, job = {}, chunkNo, work = null, chunkMarks = [], frameworkPath = null, frameworkMethod = null }) => {
+      const asRated = (() => { try { return JSON.parse(readFileSync(K.assessChunk(chunkNo), "utf8")); } catch { return null; } })();
+      const scope = chunkScope(work, chunkNo, asRated);
+      const ordinalOf = (d) => (asRated?.marks ?? []).find((m) => m?.name === d.mark)?.findings?.find((f) => f?.name === d.names?.name && f?.owner === d.names?.owner)?.ordinal;
+      const named = new Set(scope.defects.map((d) => d.mark));
+      return lines(
+        reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
+        `An independent check read this rated batch and raised the defects below. Repair what the evidence supports, and nothing else.`,
+        requestLine(K,
+          (at) => `THE CLIENT'S OWN REQUEST, VERBATIM: ${at}. Read it before you rate. Its stated goods, services, and intended use lead over the plan; the customer's profile fills gaps. Keep a guessed use as a possibility. Do not use that guess to narrow the instructed scope or lower a rating.`,
+          (at) => `AVAILABLE BRIEF: ${at}. The original request is not held here. Read the brief before you rate, keep its stated scope, and distinguish supplied facts from inferred uses. Do not lower a rating on a guessed use.`),
+        `The record as rated: ${K.assessChunk(chunkNo)}. The ordinals you use are the ones in that file.`,
+        `The batch plan: ${K.plan}. The frozen framework's bands: ${driverDir(K.runDir, "framework.json")}.`,
+        `Each name's research payload: ${chunkMarks.filter((m) => named.has(m.name)).map((m) => K.research(kebab(m.name))).join(" · ")}.`,
+        existsSync(K.registerRecords) ? `The filings this run read: ${K.registerRecords}. \`read_register_list\` reads any question's whole list by qid, and fetches nothing.` : "",
+        orderedTerritories(job).length ? `THE TERRITORIES THIS SCREEN WAS ORDERED FOR: ${orderedTerritories(job).join(", ")}. A use found only outside them is out of scope for this screen.` : "",
+        `THE DEFECTS.`,
+        ...scope.defects.map((d) => `${d.n}. [${d.kind}] "${d.mark}"${d.names ? `, finding ${ordinalOf(d) ?? "?"} (${d.names.name})` : ""}: ${d.problem}${d.rests_on?.length ? ` Rests on: ${d.rests_on.join(", ")}.` : ""}`),
+        `A DEFECT IS ANOTHER READER'S FINDING, NOT AN ORDER. Check it against the evidence. Where it holds, repair the finding or the rating. Where it does not, leave the record and say why.`,
+        frameworkMethod ? methodDictation(frameworkMethod) : "",
+        frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
+        `HAND BACK BY CALLING \`record_knockout_correction\`, sending only what changes. THERE IS NO FILE FOR YOU TO WRITE. For a name: the fields that change. A finding goes back whole under its ordinal, and a new one takes the next ordinal. A name or a finding no defect names stays as it is, and the tool refuses a change to it.`,
+        `BRING EVERY DEPENDENT ANSWER WITH IT. Whatever the repair changes, the name's lines that rest on it change with it: \`basis\`, \`factors\`, \`counterFactors\`, \`mitigation\`, \`assessment\`, \`bullets\`, its \`registerReads\` and its block in \`chunkSummary\`. A rating that moves needs \`basis\`, \`assessment\` and \`chunkSummary\` in the call. The manual's rules still hold: a name is never rated above its worst card.`,
+        `REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS DEFECT ON ITS OWN. Use \`remove_findings\` only where the evidence shows the finding should not be there, and say so.`,
+        `ANSWER EVERY DEFECT in \`answers\`: \`defect\`, \`outcome\` (\`changed\` or \`stands\`) and \`why\`. If you call again, send only what you are correcting.`,
+      );
+    },
   },
 };

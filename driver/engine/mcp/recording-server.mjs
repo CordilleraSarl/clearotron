@@ -66,6 +66,7 @@ import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
+import { recordKnockoutCorrection } from "../../knockout-correction-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
 import { knockoutListView, runPrefixOfSession } from "../../knockout-register-read.mjs";
 
@@ -123,9 +124,17 @@ async function record_knockout_review(params) {
   if (!runDir) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
   }
-  // NO BOUND ORDINAL. The pass reads the whole merged record in one turn, so there is nothing for the
-  // driver to bind and nothing for a payload to usurp — the same asymmetry knockout-frame states.
-  return recordKnockoutReview(runDir, params);
+  // THE ORDINAL, WHERE THERE IS ONE, SAYS WHICH PASS AND IS THE DRIVER'S: the first read has none, and the fresh read of a
+  // corrected record is bound by its label, so no payload can write over the other's answer.
+  return recordKnockoutReview(runDir, params, { boundOrdinal: String(process.env.CLEAROTRON_RECORD_AXIS ?? "") || null });
+}
+
+async function record_knockout_correction(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) {
+    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
+  }
+  return recordKnockoutCorrection(runDir, params, { boundOrdinal: String(process.env.CLEAROTRON_RECORD_AXIS ?? "") || null });
 }
 
 async function record_knockout_register_read(params) {
@@ -1349,7 +1358,8 @@ serve({
   }, {
     name: "record_knockout_review",
     description:
-      "Hand back your REWRITES of the lines a reader meets first, as VALUES. The driver writes them into " +
+      "Hand back the MATERIAL DEFECTS you found and your REWRITES of the lines a reader meets first, as VALUES. A material " +
+      "defect goes to the step that rated the batch, and you repair nothing. The driver writes a rewrite into " +
       "the rated record itself, so you never format JSON and never write a file. Each rewrite names the " +
       "line it replaces by the `at` address you were handed in the dispatch, copied verbatim — you do " +
       "not quote the sentence and there is no field for one. An address naming no line on this run's " +
@@ -1364,6 +1374,20 @@ serve({
         first_question: {
           type: "string",
           description: "Your answer to the question the dispatch opens with, in your own words.",
+        },
+        material: {
+          type: "array",
+          description: "What would change what the client is told. Empty or left out where you found nothing of that weight.",
+          items: {
+            type: "object", additionalProperties: false, required: ["kind", "mark", "problem"],
+            properties: {
+              kind: { type: "string", enum: ["band", "missing", "exclusion", "scope", "contradiction"], description: "band: not supported by the framework and evidence. missing: a filing or use a lawyer would raise is left out. exclusion: set aside against the evidence. scope: the request asked for what the answer does not cover. contradiction: a line disagrees with the record beneath it." },
+              mark: { type: "string", description: "The name on the record, verbatim." },
+              finding: { type: "integer", description: "The finding's ordinal, where the defect is about one." },
+              problem: { type: "string", description: "What is wrong and why it matters to the client." },
+              rests_on: { type: "array", items: { type: "string" }, description: "The recordIds and URLs this rests on, copied from what the run holds. Required for band, missing and exclusion." },
+            },
+          },
         },
         rewrites: {
           type: "array",
@@ -1411,6 +1435,72 @@ serve({
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: record_knockout_review,
+  }, {
+    name: "record_knockout_correction",
+    schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
+    description:
+      "Hand back your repair of the defects you were given, as VALUES, sending only what changes. The driver merges it onto " +
+      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name or a finding no " +
+      "defect names, and a rating that moves without its dependent answers. A repair turn may send only what it corrects.",
+    inputSchema: {
+      type: "object",
+      required: ["answers"],
+      additionalProperties: false,
+      properties: {
+        answers: {
+          type: "array",
+          description: "One row per defect.",
+          items: { type: "object", additionalProperties: false, required: ["defect", "outcome", "why"], properties: {
+            defect: { type: "integer", description: "The defect's number." },
+            outcome: { type: "string", enum: ["changed", "stands"], description: "changed: you repaired it. stands: the evidence does not support the defect, and the record stays." },
+            why: { type: "string", description: "What you changed, or why the record stands." },
+          } },
+        },
+        chunkSummary: { type: "string", description: "The whole of this chunk's summary as it now reads, where the repair changes it. Required when a rating moves." },
+        marks: {
+          type: "array",
+          description: "One row per name you repair, carrying only the fields that change.",
+          items: {
+            type: "object", required: ["name"],
+            properties: {
+              name: { type: "string", description: "The name, verbatim." },
+              rating: { type: "string", description: "The band, in the framework's words." },
+              ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+              classesDriving: { type: "array", items: { type: "integer" }, description: "The classes behind the band." },
+              basis: { type: "string", description: "One sentence: why this band, for this name, in these classes." },
+              factors: { type: "array", items: { type: "string" }, description: "2 to 4 load-bearing observations, one line each." },
+              counterFactors: { type: "array", items: { type: "string" }, description: "1 to 3: what holds it at this band." },
+              mitigation: { type: "string", description: "One line: the single thing that would move it, or empty." },
+              assessment: { type: "string", description: "This name's opening read, whole." },
+              bullets: { type: "array", items: { type: "string" }, description: "Replaces the name's bullets." },
+              purpleNotes: { type: "array", items: { type: "string" }, description: "Replaces the name's notes." },
+              registerReads: { type: "array", items: { type: "object" }, description: "Replaces the name's rows of {recordId, read, band?, inputs?}." },
+              setAside: { type: "array", items: { type: "object" }, description: "Replaces the name's rows of {url, ground}." },
+              negatives: { type: "array", items: { type: "object" }, description: "Replaces the name's rows of {term, source, note}." },
+              findings: {
+                type: "array",
+                description: "Only the findings you change or add, each whole.",
+                items: { type: "object", required: ["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis"], properties: {
+                  ordinal: { type: "integer", description: "An existing finding's ordinal, or the next one for a new finding." },
+                  name: { type: "string", description: "The conflicting name, verbatim." },
+                  owner: { type: "string", description: "The party behind it, or \"not established on the searched material\"." },
+                  band: { type: "string", description: "A word from the framework's ladder." },
+                  inputs: { type: "object", description: "The framework's own inputs for this finding, where it states a method." },
+                  net: { type: "string", description: "One conclusion sentence." },
+                  type: { type: "string", description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
+                  evidence: { type: "array", items: { type: "string" }, description: "URLs held for this name." },
+                  basis: { type: "string", description: "The ground the band rests on." },
+                  weighedFilings: { type: "array", items: { type: "string" }, description: "The register record ids this finding's reasoning used." },
+                } },
+              },
+              remove_findings: { type: "array", items: { type: "integer" }, description: "Ordinals a defect names that the evidence shows should not be there." },
+            },
+          },
+        },
+      },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_knockout_correction,
   }, {
     name: "read_register_list",
     description:

@@ -38,6 +38,8 @@ const KO_CTX = {
   // the write-order sweep is looking for a path the seat is told to write to, and the evidence rows are
   // where a path would appear if one ever did.
   "knockout-register-read": () => ({ K, job: {}, readingLines: ['- "TESTMARK": axis `ko-testmark`, band `/tmp/invented/register-units/ko-testmark-band.json`, classes [9].'] }),
+  "knockout-correct": () => ({ K, job: {}, chunkNo: 0, chunkMarks: [{ name: "TESTMARK" }],
+    work: { defects: [{ n: 1, kind: "band", mark: "TESTMARK", chunk: 0, problem: "The band is not supported.", rests_on: ["https://example.test/a"] }] } }),
   "knockout-review": () => ({ K,
     evidenceLines: [`- TESTMARK's basis line — address {"field":"basis","mark":"TESTMARK"} — 40 words in one sentence.`],
     exclusionNote: "The 1 mark(s) this run is about were removed before reading." }),

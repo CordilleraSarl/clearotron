@@ -466,6 +466,11 @@ const RECORDING_GRANTS = Object.freeze({
     "mcp__recording-knockout-review__read_register_list",
     "mcp__recording-knockout-review__record_knockout_review",
   ]),
+  // A material defect's repair: its read of the run's own lists, and its record tool.
+  "knockout-correct": Object.freeze([
+    "mcp__recording-knockout-correct__read_register_list",
+    "mcp__recording-knockout-correct__record_knockout_correction",
+  ]),
   // The knockout's reading step: the register's propose tool alone, its read of the run's own lists, and its record tool.
   "knockout-register-read": Object.freeze([
     "mcp__recording-knockout-register-read__read_register_list",

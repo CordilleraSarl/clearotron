@@ -1047,6 +1047,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
+          "tests": 13,
+          "asserts": 64,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-filing-carries-the-goods-the-run-holds.test.mjs": {
           "tests": 8,
           "asserts": 36,
@@ -1096,8 +1102,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
-          "tests": 40,
-          "asserts": 175,
+          "tests": 41,
+          "asserts": 183,
           "skips": 0,
           "todos": 0
         },

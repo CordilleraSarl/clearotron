@@ -419,7 +419,7 @@ export function mergeDegradedRows(...lists) {
 // The listing of filings and the owner lookups each end in one run-log event, a success or a failure, and
 // the last of the pair is the step's state at delivery, so a resume that succeeded clears it. The
 // plain-language review logs its outcome; the three that ship the rater's wording unreviewed are failures.
-const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-by-the-merged-gate"];
+const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-by-the-merged-gate", "correction-failed", "correction-refused-by-the-merged-gate", "correction-moved-what-no-defect-named", "recheck-failed"];
 
 /** Which of the knockout's whole steps ended failed, each with its raw cause for the run's record. */
 export function knockoutStepFailures(runDir) {
