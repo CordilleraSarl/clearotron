@@ -229,7 +229,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
 
   try {
     await koStage("knockout-review", ctx, {
-      msgCtx: d.msgCtx,
+      msgCtx: { ...d.msgCtx, sourceAnswers: sourceAnswersOf(run.runDir, chunks) },
     });
   } catch (e) {
     return keep("stage-failed", { reason: String(e?.message ?? e).slice(0, 200) });
@@ -261,9 +261,13 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   return doc;
 }
 
-/** The sources the rating step lost and did not restore, as defects on the findings they stood behind, in the record's numbering. */
+/** The findings that changed after a source was left out, for the check to read against the problem. */
+const sourceAnswersOf = (runDir, chunks) => chunks.flatMap((_, c) => knockoutAssessSourceDefects(runDir, c)).filter((d) => d.state === "answered")
+  .map((d) => `- "${d.mark}", finding "${d.name}": it cited "${d.cited}".`);
+
+/** The sources the rating step lost and did not address, as defects on the findings they stood behind, in the record's numbering. */
 function sourceDefectsOf(runDir, merged, chunks) {
-  return chunks.flatMap((_, c) => knockoutAssessSourceDefects(runDir, c)).map((d) => {
+  return chunks.flatMap((_, c) => knockoutAssessSourceDefects(runDir, c)).filter((d) => d.state !== "answered").map((d) => {
     const mark = merged.marks.find((m) => String(m?.name ?? "") === String(d.mark ?? ""));
     const finding = (mark?.findings ?? []).find((f) => sameFinding(f, d));
     if (!finding) return null;

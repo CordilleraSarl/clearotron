@@ -392,7 +392,7 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
     // The shared envelope, so every transport writes the same shape. The chunk is not restated in it —
     // it is the directory this file sits in.
     writeFileSync(paths.accepted, acceptedEnvelope(call, now()));
-    writeSourceDefects(dir, chunkNo, received, defects);
+    writeSourceDefects(dir, chunkNo, verdict.model, defects);
   } catch (e) {
     return { written: null, refused: null, write_failed: String(e?.message ?? e).slice(0, 200),
       captured: closeCapture({ ok: false, write_failed: true }), capture_failed: captureFailed };
@@ -411,16 +411,27 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
 
 const sourceDefectsPath = (runDir, chunkNo) => join(knockoutAssessCallPaths(String(runDir ?? ""), chunkNo).dir, "source-defects.json");
 
-/** The findings of this chunk whose source was left out and has not been sent again. Each stays open for the correction that follows. */
+/**
+ * The findings of this chunk whose source was left out. A row is `answered` once the finding comes back with its claim amended or new
+ * held support, for the check to read against the problem. An unchanged resend answers nothing, and an open row goes to the correction.
+ */
 export function knockoutAssessSourceDefects(runDir, chunkNo) {
   try { return JSON.parse(readFileSync(sourceDefectsPath(runDir, chunkNo), "utf8")); } catch { return []; }
 }
 
-// A finding sent again answers its own earlier defect, for good or with a new one in this call's list.
-function writeSourceDefects(runDir, chunkNo, received, defects) {
+// CODE DOES NOT JUDGE THE CLAIM. It reads whether the finding changed, and leaves whether that answers the problem to the check.
+function writeSourceDefects(runDir, chunkNo, chunk, defects) {
   const key = (d) => JSON.stringify([nameKey(d?.mark), nameKey(d?.name), nameKey(d?.owner)]);
-  const resent = new Set((Array.isArray(received?.marks) ? received.marks : []).flatMap((m) => (Array.isArray(m?.findings) ? m.findings : []).map((f) => key({ mark: m?.name, name: f?.name, owner: f?.owner }))));
-  const open = [...knockoutAssessSourceDefects(runDir, chunkNo).filter((d) => !resent.has(key(d))), ...defects];
+  const current = new Map((chunk?.marks ?? []).flatMap((m) => (m?.findings ?? []).map((f) => [key({ mark: m?.name, name: f?.name, owner: f?.owner }), f])));
+  const stored = knockoutAssessSourceDefects(runDir, chunkNo).flatMap((d) => {
+    const f = current.get(key(d));
+    if (!f) return [];   // the finding and its claim are gone
+    const amended = f.net !== d.was?.net || f.basis !== d.was?.basis || (f.evidence ?? []).some((u) => !(d.was?.evidence ?? []).includes(u)) || (f.weighedFilings ?? []).some((id) => !(d.was?.weighed ?? []).includes(id));
+    return [{ ...d, state: amended ? "answered" : "open" }];
+  });
+  // A source cited again and left out again is this call's row, whatever became of the claim.
+  const again = new Set(defects.map((d) => JSON.stringify([key(d), d.cited])));
+  const open = [...stored.filter((d) => !again.has(JSON.stringify([key(d), d.cited]))), ...defects.map((d) => ({ ...d, state: "open" }))];
   if (open.length || existsSync(sourceDefectsPath(runDir, chunkNo))) writeFileSync(sourceDefectsPath(runDir, chunkNo), JSON.stringify(open, null, 2) + "\n");
 }
 

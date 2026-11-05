@@ -415,7 +415,16 @@ export function validateKnockoutReviewFile(file, text) {
   let merged;
   try { merged = JSON.parse(readFileSync(findingsFile, "utf8")); }
   catch (e) { return { ok: false, reason: `the merged record will not parse, so no address could be checked: ${e.message}` }; }
+  const fault = joinFault(doc, merged, runDir);
+  return fault ? { ok: false, reason: fault } : { ok: true };
+}
 
+/**
+ * THE JOIN AGAINST THE RUN'S RECORD: why this answer cannot stand, or null. It runs at the recording call as well as at the stage's end,
+ * so a bad address or reference is refused while the seat can still repair it in its turn. Heard only at the end, it cost a whole
+ * attempt each time: on a saved batch, 2026-11-05, two refusals of one reference spent 430 s and 50,000 generated tokens on one stage.
+ */
+function joinFault(doc, merged, runDir) {
   const knownAts = knockoutVisibleProse(merged).map((v) => v.at);
   const known = new Set(knownAts.map((a) => addressKey(a)));
   const owned = new Set(knockoutVisibleProse(merged).filter((v) => v.at?.engineOwned).map((v) => addressKey(v.at)));
@@ -426,17 +435,17 @@ export function validateKnockoutReviewFile(file, text) {
   };
   for (const r of doc.rewrites ?? []) {
     const key = addressKey(r.at);
-    if (owned.has(key)) return { ok: false, reason: `the rewrite for ${r.at.field} names a caveat the engine wrote, not a seat — it is not offered and cannot be changed` };
-    if (!known.has(key)) return { ok: false, reason: `the rewrite for ${r.at.field}${r.at.mark ? ` on "${r.at.mark}"` : ""} names no line on this record${hint(r.at)}` };
+    if (owned.has(key)) return `the rewrite for ${r.at.field} names a caveat the engine wrote, not a seat — it is not offered and cannot be changed`;
+    if (!known.has(key)) return `the rewrite for ${r.at.field}${r.at.mark ? ` on "${r.at.mark}"` : ""} names no line on this record${hint(r.at)}`;
   }
   for (const d of doc.declined ?? []) {
-    if (!known.has(addressKey(d.at))) return { ok: false, reason: `the declined row for ${d.at.field}${d.at.mark ? ` on "${d.at.mark}"` : ""} names no line on this record${hint(d.at)}` };
+    if (!known.has(addressKey(d.at))) return `the declined row for ${d.at.field}${d.at.mark ? ` on "${d.at.mark}"` : ""} names no line on this record${hint(d.at)}`;
   }
   for (const m of doc.material ?? []) {
     const fault = materialFault(m, merged, runDir);
-    if (fault) return { ok: false, reason: fault };
+    if (fault) return fault;
   }
-  return { ok: true };
+  return null;
 }
 
 /** Why a material row cannot be joined to what this run holds, or null. Whether the defect is real is the reader's judgment. */
@@ -444,14 +453,17 @@ function materialFault(m, merged, runDir) {
   const mark = (merged?.marks ?? []).find((r) => String(r?.name ?? "") === m.mark);
   if (!mark) return `the material row names "${m.mark}", which is not a name on this record. Copy it verbatim.`;
   if (m.finding !== undefined && !(mark.findings ?? []).some((f) => f?.ordinal === m.finding)) return `the material row on "${m.mark}" names finding ${m.finding}, which it does not hold.`;
-  // WHAT THE RUN HOLDS, not what it holds under this name: a filing held for this batch may bear on more than one name. A URL traces
-  // to such a filing, to this name's own payload, or to an owner search's page. Anything else is refused.
+  // WHAT THE RUN HOLDS, not what it holds under this name: a filing held for this batch may bear on more than one name. A question the
+  // run asked is held too, by its qid. A URL traces to such a filing, to this name's own payload, or to an owner search's page.
+  // Anything else is refused.
   const records = registerRecordIdsHeld(runDir);
+  let questions = new Set();
+  try { questions = new Set((JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8")).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
   const urlHeld = urlHeldFor(runDir, m.mark);
   const researchDir = join(runDir, "research");
   let owners = "";
   try { owners = readdirSync(researchDir).filter((f) => /^owner-.*\.md$/.test(f)).map((f) => readFileSync(join(researchDir, f), "utf8")).join("\n"); } catch { owners = ""; }
-  const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !urlHeld(r) && !urlInPayload(r, owners));
+  const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !questions.has(r) && !urlHeld(r) && !urlInPayload(r, owners));
   return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which this run does not hold. Copy a recordId or a URL from what it holds.` : null;
 }
 
@@ -570,6 +582,14 @@ export function recordKnockoutReview(runDir, received, { boundOrdinal = null, no
   if (!verdict.ok) {
     journal(verdict.reason);
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };
+  }
+
+  // Where the record is on disk the seat hears the join now, in its turn. Where it is not, the stage's own check says it could not look.
+  const held = (() => { try { return JSON.parse(readFileSync(join(dir, "knockout-findings.json"), "utf8")); } catch { return null; } })();
+  const fault = held ? joinFault(verdict.model, held, dir) : null;
+  if (fault) {
+    journal(fault);
+    return { written: null, refused: fault, captured: closeCapture({ ok: false, refused: fault }), capture_failed: captureFailed };
   }
 
   const file = knockoutReviewFile(dir, pass);

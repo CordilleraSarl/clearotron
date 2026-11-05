@@ -36,7 +36,7 @@ const { knockoutInner } = await import("../pipeline-knockout.mjs");
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 const { applyCorrectionCall, chunkScope, correctionOutcomes, correctionWork, knockoutCorrectionFile, mergedAnswers, movedOutsideScope, rollBackName, summaryBlock, validateKnockoutCorrectionFile, keepChunkBases, correctionWorkPath } = await import("../knockout-correction-record.mjs");
 const { knockoutAssessChunkFile } = await import("../knockout-assess-record.mjs");
-const { acceptKnockoutReview, knockoutReviewFile, rewritesThatSurvive, validateKnockoutReviewFile } = await import("../knockout-review-record.mjs");
+const { acceptKnockoutReview, knockoutReviewFile, recordKnockoutReview, rewritesThatSurvive, validateKnockoutReviewFile } = await import("../knockout-review-record.mjs");
 const { KO_STAGES, koPaths } = await import("../stages-knockout.mjs");
 const { registerLaneState, REGISTER_LANE_FILE } = await import("../verify-knockout.mjs");
 
@@ -236,6 +236,14 @@ test("a source the rating lost and never restored goes to the correction, though
   assert.ok(record.defects.some((x) => x.kind === "source" && /not traceable to this name's research payload/.test(x.problem)), JSON.stringify(record.defects));
 });
 
+test("the check is handed the findings the rating step amended after losing a source", () => {
+  const K = koPaths(mkdtempSync(join(tmpdir(), "ko-source-lines-")));
+  const with_ = KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [], sourceAnswers: ['- "QUILLBRAE", finding "ONE": it cited "https://nowhere.example.test/x".'] });
+  assert.match(with_, /THE FINDINGS THAT CITED THEM CHANGED AFTERWARDS\. Read each against that problem/);
+  assert.match(with_, /finding "ONE": it cited/);
+  assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /CHANGED AFTERWARDS/, "and nothing is said where there is none");
+});
+
 test("with no material defect nothing more is dispatched", async () => {
   const r = await knockout("clean");
   assert.deepEqual(r.stages.filter((s) => /correct|review/.test(s)), ["knockout-review"]);
@@ -405,6 +413,20 @@ test("a material row is held to its shape, and to what this run holds", () => {
   assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/other-web"] }).reason, /does not hold/, "another name's web result traces to no filing");
   assert.equal(check({ kind: "exclusion", mark: NAME, problem: "p", rests_on: ["/mark/em/aside"] }).ok, true, "a filing set aside can be raised");
   assert.equal(check({ kind: "missing", mark: NAME, problem: "p", rests_on: ["https://example.test/held"] }).ok, true, "a URL in the name's payload can be raised");
+});
+
+test("a reference the run does not hold is refused at the call, in the turn, and a question's qid is held", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ko-material-call-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify(rated()));
+  writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [{ recordId: "/mark/em/held" }], terms: [{ qid: "supp:asked" }] }] }));
+  const call = (rests_on) => recordKnockoutReview(dir, { material: [{ kind: "missing", mark: NAME, problem: "p", rests_on }] });
+  const refused = call(["/mark/em/invented"]);
+  assert.match(String(refused.refused), /rests on "\/mark\/em\/invented", which this run does not hold/);
+  assert.equal(refused.written, null);
+  assert.equal(existsSync(knockoutReviewFile(dir)), false, "nothing is written for the stage to refuse afterwards");
+  assert.ok(call(["/mark/em/held", "supp:asked"]).written, "a held filing and a question the run asked are held");
+  assert.equal(recordKnockoutReview(mkdtempSync(join(tmpdir(), "ko-no-record-")), { material: [{ kind: "scope", mark: NAME, problem: "p" }] }).refused, null, "with no record on disk the stage's own check says it could not look");
 });
 
 test("only a first pass's rewrites on lines no defect reopened carry over", () => {

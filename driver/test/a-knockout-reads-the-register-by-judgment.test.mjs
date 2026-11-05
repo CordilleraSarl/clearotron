@@ -255,6 +255,16 @@ test("a filing weighed for another name reaches that name's page and its listed 
   assert.equal(withCitedFilings(doc, rated(["held-nowhere"])), doc, "an id held nowhere changes nothing, and the gate refuses it");
 });
 
+test("a name whose own question failed is a failure, not a crowd set aside, and its count stands", () => {
+  const asked = { entries: [{ qid: "supp:own", predicate: "exact", term: NAME, nice_classes: [9] }], rejected: [] };
+  const counts = { marks: [{ name: NAME, counts: { identical: { total: 9 }, containing: { total: 0 }, close: { total: 0, forms: [] } } }] };
+  const doc = knockoutRecordsDoc({ marks, classes: [9], provider: "clarivate", capabilities: CLARIVATE, counts, reading: null,
+    readBlocks: () => new Map([["supp:own", { qid: "supp:own", state: "incomplete", error: true, reason: "provider error", records: [] }]]), readProposals: () => asked }).marks[0];
+  const opening = doc.terms.find((t) => t.basis === "identical" && t.qid === openingQid(NAME, "identical"));
+  assert.deepEqual([opening.state, opening.ok, opening.total, opening.setAside], ["failed", true, 9, undefined]);
+  assert.match(recordsLine(doc), /^Filings: not available — 1 of \d+ search\(es\) could not be run/, "one question failed, counted once");
+});
+
 test("a list is compared with the distinct filings its questions returned, and only where every question was read", async () => {
   const own = rows(5);
   const askedTwice = { entries: [{ qid: "supp:own", predicate: "exact", term: NAME, nice_classes: [9] }, { qid: "supp:wide", predicate: "default", term: NAME, nice_classes: [9] }], rejected: [] };
@@ -698,14 +708,16 @@ test("the opening message hands over the request, the counts, and the tools by n
   assert.doesNotMatch(without, /inbound-request/, "a path the run does not hold is not named");
 });
 
-test("the manual carries the clearance's reading rule word for word, and sets no number on reading", () => {
+test("the manual carries the clearance's reading rule word for word, narrows the goods in its own words, and sets no number on reading", () => {
   const read = (rel) => readFileSync(fileURLToPath(new URL(`../skills/${rel}`, import.meta.url)), "utf8");
   const manual = read("knockout-register-read/SKILL.md");
   const unit = read("clearance-register/unit.md");
   for (const heading of ["### At every step: look at what you have before you work on it", "### Read the identical mark first. Look at the count before you read anything"])
     assert.ok(manual.includes(heading) && unit.includes(heading), heading);
-  const step = (text) => text.slice(text.indexOf("1. Ask again for the identical mark"), text.indexOf("A list you have read answers"));
-  assert.equal(step(manual), step(unit), "the narrowing steps drifted from the clearance's");
+  const step = (text) => text.slice(text.indexOf("3. Still a crowd?"), text.indexOf("A list you have read answers"));
+  assert.ok(step(manual).length > 0);
+  assert.equal(step(manual), step(unit), "the market steps drifted from the clearance's");
+  assert.match(manual, /Use the provider's supported OR form\. Read that list\.\n2\. Still a crowd\? Split the goods question by its dominant goods terms/);
   assert.doesNotMatch(manual, /record cap|100 records|first \d+ /i);
 });
 

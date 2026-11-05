@@ -168,12 +168,15 @@
 //                               is written once at dispatch and nothing enforces against the flag later; a reader
 //                               holding the flag holds the per-derivation entries it was folded from. (CITED BY
 //                               SYMBOL AND NO LINE, per CONTRIBUTING.md.)
-//   · `knockoutRecordsDoc` in knockout-register-read.mjs hands `plainRead` and `narrowed` to `identicalRow` in the SAME
-//                               expression, off the one `onForm` list. They choose that row's state and nothing keeps
-//                               them. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `knockoutRecordsDoc` in knockout-register-read.mjs hands `plainRead`, `narrowed` and `askFailed` to `identicalRow` in the
+//                               SAME expression, off the one `onForm` list and the name's own questions. They choose that row's state and
+//                               nothing keeps them. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //   · `foldFormCounts` in knockout-register-read.mjs mints the close cell's `truncated` in the SAME object literal as the
 //                               `forms`, `generated` and `counted` it qualifies, off the one `rows` list. Whoever reads
 //                               the cell holds them all. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `writeSourceDefects` in knockout-assess-record.mjs chooses a row's `state` in the SAME expression, off the claim the row kept and
+//                               the finding the call just accepted, and chooses it again at every accepted call. The first look reads it
+//                               after the last of them, before any correction writes. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
 //   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
@@ -260,7 +263,8 @@ const RULED = new Map([
   ["pipeline.mjs", 3], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
-  ["knockout-register-read.mjs", 3],
+  ["knockout-register-read.mjs", 4],
+  ["knockout-assess-record.mjs", 2],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");

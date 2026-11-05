@@ -1390,7 +1390,7 @@ serve({
               mark: { type: "string", description: "The name on the record, verbatim." },
               finding: { type: "integer", description: "The finding's ordinal, where the defect is about one." },
               problem: { type: "string", description: "What is wrong and why it matters to the client." },
-              rests_on: { type: "array", items: { type: "string" }, description: "The held evidence behind the defect: recordIds and URLs copied from what the run holds. Required for missing and exclusion. A defect about scope, the framework or internal agreement may name its source in problem instead." },
+              rests_on: { type: "array", items: { type: "string" }, description: "The held evidence behind the defect: recordIds, question qids and URLs copied from what the run holds. Required for missing and exclusion. A defect about scope, the framework or internal agreement may name its source in problem instead." },
             },
           },
         },

@@ -484,6 +484,7 @@ export const KO_STAGES = {
       // splits on /^# /m and batchSummaryOf terminates on it — so a single hash written here ends the
       // client's summary at that line and drops everything after it, silently, on the entry point.
       `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted, overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not in the chunk summary. The report states its coverage in code from the run's own measurements, and the validator refuses a chunk that speaks for it. That is a rule about the lane, not about the filings: a filing you were handed is evidence like any other.`,
+      `EVERY conflicting name is a typed findings[] record. A named conflict belongs in findings[], not in bullets — write it once.`,
       `The manual sets out each mark's record: its \`findings[]\`, its opening read in \`assessment\`, its typed read, and the chunk's \`chunkSummary\`, which code joins into the batch summary, so a mark missing from it is missing from the report.`,
       `HAND YOUR RATINGS BACK BY CALLING \`record_knockout_assess\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none — the driver writes this chunk itself from what you send, and nothing you write by hand is read. You are not told which chunk number to send and there is no field for it: the driver bound that when it dispatched you.`,
       `SEND ONLY WHAT YOU ARE CORRECTING IF YOU CALL AGAIN. A second call MERGES into the first: marks are merged BY NAME, so a mark you omit keeps the rating you already gave it. What you DO send for a mark replaces that mark's whole record, so send a corrected mark complete rather than as a fragment.`,
@@ -533,7 +534,7 @@ export const KO_STAGES = {
     // exists to stop. A record the driver's read flags nowhere is handed its first-read lines instead,
     // by the owner's ruling of 2026-10-10, so both branches have rows under them; a record with no such
     // line is not dispatched at all.
-    message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", recheckTable = "" }) => lines(
+    message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", recheckTable = "", sourceAnswers = [] }) => lines(
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
       reads(["skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
@@ -545,6 +546,9 @@ export const KO_STAGES = {
           `For each row, read the record and judge whether the defect is answered. Agreement is part of that: a changed finding or band must agree with its name's basis, factors, opening read and block in the batch summary. There is no further correction after this one, so send as \`material\` only what is still wrong; it stays on the record for the reviewing lawyer.`].join("\n")
         : `MATERIAL DEFECTS COME FIRST. A defect is material when repairing it would change what the client is told: a band the framework and the evidence do not support, including one band where the evidence divides the requested goods, or a division it does not support (\`band\`), a filing or use a lawyer would raise that the answer leaves out (\`missing\`), something set aside against the evidence (\`exclusion\`), scope the request asked for that the answer does not cover, including reasoning that never connects the requested use and the held goods to the conclusion (\`scope\`), or a line that contradicts the record beneath it (\`contradiction\`). Send each as a \`material\` row: \`kind\`, \`mark\` verbatim, the finding's ordinal as \`finding\` where it is about one, and what is wrong and why it matters as \`problem\`. Identify the held evidence behind the defect in rests_on. A defect about scope, the framework, or internal agreement may instead identify the supplied request passage, framework rule, or rated field in problem. Do not invent a filing or URL to justify that defect. A filing held for this batch may bear on more than one name, so a defect on one name may rest on a filing held under another, by its held recordId and source. You repair nothing: the step that rated the batch answers each row, and the record is then read again. A rating a lawyer could reasonably reach is not a defect, and neither is a preference about wording.`,
       `Each name's research payload is under ${K.researchDir}.`,
+      sourceAnswers.length
+        ? [`THESE CITATIONS WERE LEFT OUT AS NOT HELD, AND THE FINDINGS THAT CITED THEM CHANGED AFTERWARDS. Read each against that problem: a claim still without held support is a material defect.`, ...sourceAnswers].join("\n")
+        : "",
       `THE WORDS COME AFTER. A line a reader meets before opening anything is held to this rule.`,
       `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
       `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,
@@ -570,7 +574,7 @@ export const KO_STAGES = {
   // A MATERIAL DEFECT'S REPAIR. Dispatched only when the check raised one, per chunk, on the chunk as rated. Its answer is its own
   // artifact because the chunk it changes is already valid: a turn that called nothing would otherwise pass.
   "knockout-correct": {
-    model: "opus", thinking: "high", timeoutSec: 900, stallSec: 600,
+    model: "opus", thinking: "high", timeoutSec: 1200, stallSec: 600,
     // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
