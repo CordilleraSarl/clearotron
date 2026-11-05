@@ -367,7 +367,7 @@ test('engine and provider rows survive the hop with the fields the page renders'
     providers: [
       { key: 'register', label: 'Trademark register', provider: null, providerLabel: null,
         known: false, configured: false, missing: ['CLEAROTRON_DATABASE'] },
-      { key: 'web', label: 'Open-web search', provider: 'serpapi', providerLabel: 'SerpAPI',
+      { key: 'web', label: 'Chinese marketplace search', provider: 'serpapi', providerLabel: 'SerpAPI',
         known: true, configured: true, missing: [] },
     ],
   }, () => api.adminConfig())
