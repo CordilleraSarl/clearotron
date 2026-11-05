@@ -6598,8 +6598,8 @@
           "todos": 0
         },
         "the-bundle-ships-no-commentary.test.mjs": {
-          "tests": 2,
-          "asserts": 3,
+          "tests": 3,
+          "asserts": 5,
           "skips": 2,
           "todos": 0
         },
