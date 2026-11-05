@@ -66,6 +66,8 @@ import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
+import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
+import { knockoutListView } from "../../knockout-register-read.mjs";
 
 async function record_blind_frame(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
@@ -124,6 +126,22 @@ async function record_knockout_review(params) {
   // NO BOUND ORDINAL. The pass reads the whole merged record in one turn, so there is nothing for the
   // driver to bind and nothing for a payload to usurp — the same asymmetry knockout-frame states.
   return recordKnockoutReview(runDir, params);
+}
+
+async function record_knockout_register_read(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) {
+    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
+  }
+  return recordKnockoutRegisterRead(runDir, params);
+}
+
+async function read_register_list(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) {
+    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
+  }
+  return knockoutListView(runDir, params ?? {});
 }
 
 async function record_clearance_variants(params) {
@@ -1393,6 +1411,77 @@ serve({
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: record_knockout_review,
+  }, {
+    name: "read_register_list",
+    description:
+      "Read one question's list in full: every filing the register returned for it, with the goods this run holds. " +
+      "Pass `qid` from your opening message or the propose tool's answer. A row's goods_state says complete, shortened " +
+      "or absent; absent means this run holds none, which is not a mismatch with the client's goods. Pass `record_id` as " +
+      "well for that filing's goods whole. This reads what the run already holds and fetches nothing.",
+    inputSchema: {
+      type: "object",
+      required: ["qid"],
+      properties: {
+        qid: { type: "string", description: "The question whose list you are reading." },
+        record_id: { type: "string", description: "OPTIONAL: one filing of that list, with its goods whole." },
+      },
+    },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: read_register_list,
+  }, {
+    name: "record_knockout_register_read",
+    description:
+      "Hand back your reading as VALUES, one row per instructed name, names verbatim. The driver checks every record " +
+      "id against what the name's questions returned and writes knockout-register.json. A repair turn may send only the " +
+      "names it corrects; a name you send replaces its stored row whole. It is refused while a list you read, a crowd or " +
+      "a count has nothing saying what became of it, and the refusal names the question.",
+    inputSchema: {
+      type: "object",
+      required: ["marks"],
+      properties: {
+        schema_version: { type: "number", description: "Accepted and ignored — the driver writes the schema version it owns." },
+        marks: {
+          type: "array",
+          description: "One row per instructed name.",
+          items: {
+            type: "object",
+            required: ["name", "carried", "set_aside", "not_asked"],
+            properties: {
+              name: { type: "string", description: "The instructed name, verbatim." },
+              carried: {
+                type: "array",
+                description: "What a lawyer would raise with the client. Group filings that share one reason; an empty list says there are none.",
+                items: { type: "object", required: ["records", "why"], properties: {
+                  records: { type: "array", items: { type: "string" }, description: "record_id values, copied from the list you read." },
+                  why: { type: "string", description: "Why this group is carried forward, in one reason." },
+                } },
+              },
+              set_aside: {
+                type: "array",
+                description: "What you set aside and why, by question. One row answers for the rows of that question you did not carry, unless `records` names some of them. A count or crowd you did not read belongs here too.",
+                items: { type: "object", required: ["question", "why"], properties: {
+                  question: { type: "string", description: "The question's qid." },
+                  records: { type: "array", items: { type: "string" }, description: "OPTIONAL: these filings only, where the question's rows were set aside for different reasons." },
+                  why: { type: "string", description: "Why it was set aside." },
+                } },
+              },
+              not_asked: {
+                type: "array",
+                description: "Questions you considered and did not ask, and why.",
+                items: { type: "object", required: ["question", "why"], properties: {
+                  question: { type: "string", description: "The question, in words." },
+                  why: { type: "string", description: "Why you did not ask it." },
+                } },
+              },
+              open_questions: { type: "array", items: { type: "string" }, description: "OPTIONAL: what this reading could not settle, for the step that rates the name." },
+              alternatives: { type: "array", items: { type: "string" }, description: "OPTIONAL: where the instructed name holds two word orders or spellings, the terms you asked for it, each its own exact question. They stand in for the name's own count and stay tied to it." },
+            },
+          },
+        },
+      },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_knockout_register_read,
   }, {
     name: "record_knockout_frame",
     description:

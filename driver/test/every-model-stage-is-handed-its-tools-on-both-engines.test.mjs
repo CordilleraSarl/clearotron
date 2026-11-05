@@ -258,7 +258,9 @@ test("every server a stage mounts, started as the stage starts it, serves each t
         if (!shownNotPermitted.length) problems.push(`${label}: the recording server now lists only the stage's own tools — update this test and the tool audit`);
         for (const n of shownNotPermitted) if (!OTHER_STAGES_RECORDING_TOOLS.has(n)) problems.push(`${label}: Claude is shown ${n}, which no stage may call`);
       } else {
-        const known = (label.endsWith(" (supplemental lane)") && name === "register") ? ["register_enumerate"] : [];
+        // The knockout's reading step may call the propose tool alone, and on Claude the server still lists the rest.
+        const known = (label.endsWith(" (supplemental lane)") && name === "register") ? ["register_enumerate"]
+          : (baseOf(label) === "knockout-register-read" && name === "register") ? served.map((t) => t.name).filter((n) => n !== "register_propose_supplemental").sort() : [];
         if (JSON.stringify(shownNotPermitted) !== JSON.stringify(known)) problems.push(`${label}: Claude is shown ${name} tools it may not call: ${shownNotPermitted.join(", ") || "none"}, expected ${known.join(", ") || "none"}`);
       }
     }

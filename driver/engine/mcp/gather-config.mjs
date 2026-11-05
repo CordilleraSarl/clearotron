@@ -10,6 +10,7 @@
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { requireRegisterProvider } from "../../driver.config.mjs";
+import { fixtureRecordsDir } from "../../register-fixture-marker.mjs";
 import { ledgerPath, runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
 import { CORRECTION_POSITIONS_ENV } from "./correction-positions.mjs";   // the positions a correction hands its save
 
@@ -558,6 +559,20 @@ const RECORDING = Object.freeze({
       + "CALLS, UNMEASURED PRE-CONVERSION — this lane's seats hold no tools today, so the first "
       + "converted run is where the count comes from",
   },
+  // THE KNOCKOUT'S READING STEP. It holds the register's propose tool beside this key (`toolGroupsForStage` below),
+  // reads what its questions returned through `read_register_list`, a read of this run's own bands and held records that
+  // dials nothing, and hands its judgment back as VALUES. The questions themselves are the register tool's to record, so
+  // this key carries no retrieval.
+  "knockout-register-read": {
+    seatWrites: false,
+    keepsRetrieval: true,
+    tools: Object.freeze(["record_knockout_register_read", "read_register_list"]),
+    reason: "hands back the filings it carries forward, what it set aside and why, and what it chose not to ask as "
+      + "VALUES through record_knockout_register_read, so the driver joins each record id to the band at the call and "
+      + "refuses a record that leaves a read list, a crowd or a count unaccounted for. Born typed: there was no earlier "
+      + "form of this stage. EXPECTED FROM THE DICTATION'S ORDERED CALLS, UNMEASURED: the first replay on saved data is "
+      + "where the count comes from",
+  },
   // THE LANE'S THIRD CONVERSION, and the only stage on it that was born typed — there is no
   // pre-conversion knockout-review that wrote its own file, so nothing here is a migration.
   //
@@ -810,6 +825,9 @@ function resolveGroup(group) {
     // aggregate EUIPO, so the second call buys nothing and costs wall time. EUIPO reaches a run only as
     // the ACTIVE register — or as a member of the `free-tier` composite above.
     case "register":   return { local: ["register"], bridges: [], extra: [] };
+    // THE REGISTER'S PROPOSE TOOL ALONE, for a stage whose every question must be minted, receipted and joined to its
+    // name. The same server under the same key; only the grant is narrower, and it reads the same on both engines.
+    case "register-questions": return { local: ["register"], bridges: [], extra: [], only: ["register_propose_supplemental"] };
     case "band":       return { local: ["band"], bridges: [], extra: [] };
     // COVERAGE. `bridges: []` is load-bearing exactly as on the recording group below: this group's
     // one promise is that it widens no retrieval surface — it carries the digest's record tool and
@@ -951,6 +969,8 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
   }
   const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups, correctionPositions });
   for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env };
+  // A FIXTURE RUN NEVER REACHES A LIVE REGISTER, and its job says so: the same key serves its canned answers.
+  if (localKeys.has("register") && runDir && fixtureRecordsDir(runDir)) mcpServers.register.args = [join(MCP_DIR, "fixture-register-server.mjs")];
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at
   // all, so a case-law tool call had nowhere to log: `tool-calls.jsonl` recorded server/tool/ok and the
   // bridge could not write what was asked or what came back. That is why a cited authority and an
@@ -987,6 +1007,9 @@ export function toolGroupsForStage(name = "") {
   // the seat's, and the two are separate artifacts with separate writers. An allowlist growing by one
   // token on an already-tooled stage, so no argv-surface transition fires.
   if (name.startsWith("register-unit")) return ["register", "unit-note"];
+  // THE KNOCKOUT'S READING STEP asks the register what the clearance's reading turn asks it, through the same tool, and
+  // hands its judgment back on its own key. RETRIEVAL AND RECORDING, composed as the other two such branches compose it.
+  if (name === "knockout-register-read") return ["register-questions", recordingKey("knockout-register-read")];
   // PR-8 (reading layer): the band-consuming judgment stages hold the READ-ONLY band tools — the shape,
   // record lookups over the frozen band, and the run's fetched official records (band_record finally
   // feeds _records/ to judgment) — every call logged to the reading audit.
@@ -1315,6 +1338,12 @@ export const RECORDING_TOOLS = Object.freeze({
   // retrieval grant here would contradict its own dispatch. Its reads are the instructed-scope sidecar
   // and its skill doc, which the seeded Read grant serves.
   "knockout-frame": Object.freeze(["Read", "mcp__recording-knockout-frame__record_knockout_frame"]),
+  // THE READING STEP. BY HAND, like every row here. `Read`, its record tool, its read of the run's own lists, and the
+  // register's propose tool alone, so every question it asks is minted, receipted and joined to its name.
+  "knockout-register-read": Object.freeze(["Read",
+    "mcp__recording-knockout-register-read__read_register_list",
+    "mcp__recording-knockout-register-read__record_knockout_register_read",
+    "mcp__register__register_propose_supplemental"]),
   // THE LANE'S THIRD AND LAST CONVERSION. BY HAND, like every row here — O1 asserts the resolved grant
   // EQUALS this row, so a derived row would compare a value with itself.
   //
@@ -1494,7 +1523,7 @@ export function allowedToolsFor(groups = []) {
   const tools = seatWritesForGroups(groups) ? new Set(["Read", "Write", "Edit"]) : new Set(["Read"]);
   for (const g of groups) {
     const r = resolveGroup(g);
-    for (const k of r.local) localEntry(k).tools.forEach((t) => tools.add(`mcp__${k}__${t}`));
+    for (const k of r.local) (r.only ?? localEntry(k).tools).forEach((t) => tools.add(`mcp__${k}__${t}`));
     for (const k of r.bridges) tools.add(`mcp__${k}__*`);    // whole bridge server (its tools are namespaced)
     r.extra.forEach((t) => tools.add(t));
   }

@@ -58,6 +58,10 @@
     {
       "tool": "record_synthesis",
       "why": "CLOSED by mergeSynthesisPatch plus synthesis_patch_without_base — pinned by the-repair-order-and-the-tool-schema-agree.test.mjs, not re-planted here"
+    },
+    {
+      "tool": "record_knockout_register_read",
+      "why": "merges by name, pinned in a-knockout-reads-the-register-by-judgment.test.mjs; a row it omits keeps what was accepted, and a run with no instructed scope refuses it, so the census's bare fixture cannot reach it"
     }
   ],
   "known_open": [

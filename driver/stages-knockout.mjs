@@ -16,6 +16,8 @@ import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
 import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
+import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
+import { narrowingOrderLine } from "./effective-scope.mjs";
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
@@ -71,6 +73,10 @@ export function koPaths(runDir) {
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
     registerRecords: driverDir(runDir, "register-records.json"),
+    // THE READING STEP'S RECORD, a model output and so at the run root: what it carried forward, set aside and did not
+    // ask. The questions and their rows are the register tool's, in the bands under `register-units/`.
+    registerReading: knockoutRegisterFile(runDir),
+    inboundRequest: join(runDir, "inbound-request.txt"),
     // The scoped owner lookups this run owes its promoted filings, and their receipts. Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
     // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
     ownerChecks: driverDir(runDir, "owner-checks.json"),
@@ -288,6 +294,28 @@ export const KO_STAGES = {
       `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, useKind (task 2c: in one to three words, the kind of use this name is searched for), places (task 2d: the places THIS name is searched on, two or more, one of them the whole web, as many as the name needs), spellings (task 2e) and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
       `Send \`batch\`: productContext, inUseAs (task 2c), and executionOrder as a permutation of your mark names. THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.`,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
+    ),
+  },
+  "knockout-register-read": {
+    model: "opus", thinking: "high", timeoutSec: 900, stallSec: 600,
+    // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
+    skillReads: ["skills/knockout-register-read/SKILL.md"],
+    out: (K) => K.registerReading,
+    validate: validateKnockoutRegisterFile,
+    message: ({ K, job = {}, profile = null, readingLines = [], providerDoc = null, inScope = null }) => lines(
+      reads(["skills/knockout-register-read/SKILL.md", providerDoc].filter(Boolean)),
+      `You are reading the register for a KNOCKOUT batch, name by name. You rate nothing; the step after you rates what you carry forward, with your reasons.`,
+      existsSync(K.inboundRequest) ? `The client's request, as it arrived: ${K.inboundRequest}` : "",
+      job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
+      job.upfrontInstructions ? `Requester instructions (verbatim): ${job.upfrontInstructions}` : "",
+      `The instructed scope: ${K.instructedScope}`,
+      `The batch plan, with what each name is for: ${K.plan}`,
+      narrowingOrderLine(job, profile, inScope),
+      `WHAT THE REGISTER HAS ANSWERED SO FAR, name by name. A list the fetch limit allowed is already read into that name's band, under the name's identical qid.`,
+      ...readingLines,
+      `ASK with \`register_propose_supplemental\`: the name's \`axis\` and its band as \`output_path\`, and in \`proposals\` the question with \`nice_classes\` from that name's line and its purpose as \`rationale\`. A narrowing names the crowd it replaces as \`narrows\`. An answer you already hold is not asked again.`,
+      `READ with \`read_register_list\`, by qid. The propose tool's answer shows only the first rows of a list; the list is the whole list, and the order it comes in means nothing.`,
+      `HAND BACK with \`record_knockout_register_read\`, one row per name, when you are done. THERE IS NO FILE FOR YOU TO WRITE. If you call again, send only the names you are correcting: a name you send replaces its row.`,
     ),
   },
   "knockout-assess": {

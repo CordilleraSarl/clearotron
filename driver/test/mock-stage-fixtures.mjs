@@ -37,6 +37,8 @@ import { recordBlindFrame } from "../blind-frame-record.mjs";
 import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
+import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
+import { knockoutBandBlocks, questionsOwed } from "../knockout-register-read.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
 import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall, synthesisCallPaths } from "../synthesis-record.mjs";
 import { repairBasePath } from "../repair-scope.mjs";
@@ -2648,6 +2650,29 @@ export function applyStageWrites(msg, argv) {
     const verdict = recordKnockoutAssess(runDir, chunk, { boundOrdinal: boundChunk });
     if (!verdict.written) return `mock knockout-assess: the transport refused the composed chunk — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout assess ok";
+  }
+  // ── THE READING STEP ──────────────────────────────────────────────────
+  //
+  // ASKS NOTHING MORE AND ANSWERS THROUGH THE REAL TRANSPORT. Its names come from the run's instructed scope and the
+  // filings it carries are those the code already read into each band, so every record id passes the real join. A
+  // count nothing read is set aside with a reason, which is what a seat that stopped there has to do.
+  if (/record_knockout_register_read/.test(msg)) {
+    const runDir = runDirFromWiring(argv);
+    if (!runDir) return "mock knockout-register-read: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guesses";
+    recordMockToolCall(runDir, "record_knockout_register_read", "recording-knockout-register-read");
+    const scope = JSON.parse(readFileSync(driverDir(runDir, "instructed-scope.json"), "utf8"));
+    const counts = JSON.parse(readFileSync(driverDir(runDir, "register-counts.json"), "utf8"));
+    const marks = (scope.marks ?? []).map((name) => {
+      const blocks = knockoutBandBlocks(runDir, name);
+      const held = [...blocks.values()].flatMap((b) => (b?.records ?? []).map((r) => r.record_id)).filter(Boolean);
+      const carried = new Set(held);
+      const owed = questionsOwed({ name, countsEntry: (counts.marks ?? []).find((m) => m.name === name) ?? null, blocks, carried });
+      return { name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings" }] : [],
+        set_aside: owed.map((o) => ({ question: o.question, why: "mock reading: reading it would not change the advice" })), not_asked: [] };
+    });
+    const verdict = recordKnockoutRegisterRead(runDir, { marks });
+    if (!verdict.written) return `mock knockout-register-read: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
+    return "mock knockout register reading ok";
   }
   // ── THE REVIEWING PASS ────────────────────────────────────────────────────────────────────────────
   //

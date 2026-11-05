@@ -49,6 +49,7 @@ export function knockoutDispatches(runDir) {
     "knockout-frame": { K, job: {}, profile: {} },
     "knockout-assess": { K, job: {}, chunkNo: 0, chunkMarks: [{ name: "INVENTED NAME" }], chunkTotal: 1,
       framework, frameworkPath: TRIAGE_FRAMEWORK, frameworkMethod: null },
+    "knockout-register-read": { K, job: {}, readingLines: [] },
     "knockout-review": { K, evidenceLines: [], firstReadLines: [], exclusionNote: "" },
   };
   const missing = Object.keys(KO_STAGES).filter((n) => !ctxs[n]);

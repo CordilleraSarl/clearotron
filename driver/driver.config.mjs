@@ -1122,7 +1122,7 @@ export const PROVIDERS = {
       const base = process.env.CLARIVATE_API_BASE || DEFAULT_BASE;
       try {
         return await doCountHits(process.env.CLARIVATE_API_KEY, base,
-          { name, match_mode: matchMode, nice_classes: classes ?? [], ...(regions?.length ? { regions } : {}) },
+          { ...(Array.isArray(name) ? { names: name } : { name }), match_mode: matchMode, nice_classes: classes ?? [], ...(regions?.length ? { regions } : {}) },
           { kind: "count_hits", agentId, sessionKey, sessionId: null, recordLog });
       } catch (e) { return { ok: false, total: null, reason: `count threw: ${e.message}` }; }
     },

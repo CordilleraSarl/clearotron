@@ -285,12 +285,9 @@ export const CAPABILITIES = Object.freeze({
   // compiled and then deferred, and a deferred look-alike was counted as a search not completed. `false`
   // leaves those spellings out of the form band and lists them there as not searched, as on Signa.
   mixedScriptQuery: false,
-  // A knockout's listing already holds its count. The listing's `/search` asks the count lane's exact
-  // question, with the same body `/count` takes, and returns every matching id, so its length is the
-  // register's total. A knockout therefore lists first and takes the identical and close counts from the
-  // listing (driver/register-count.mjs listingAnswers). A term the listing did not answer, including one
-  // `/search` refuses for exceeding the result ceiling, is counted with `/count` as before.
-  listingAnswersCount: true,
+  // A joined exact question answers one count over its spellings, and a filing has one spelling, so a knockout counts
+  // its mechanical forms in one call (driver/register-count.mjs). Saved runs hold 42 such answers, on lists up to 20 wide.
+  exactFormsCountAsOne: true,
   // No phoneme expansion knob: PHONETIC_WORD_MARK_SPECIFICATION is the whole surface; the client cannot
   // hand it a variant list. (/similarity/word/* — which would be the expansion surface — is genuinely
   // not available on this provider; the endpoint answers 403. Do NOT wire it.)

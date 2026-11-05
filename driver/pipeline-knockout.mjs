@@ -50,7 +50,9 @@ import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./fram
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
-import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecutor } from "./register-records.mjs";
+import { recordsPreflight, listedMarks } from "./register-records.mjs";
+import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, openingQid, questionPlanPath,
+  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, countsWithAlternatives } from "./knockout-register-read.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
@@ -283,6 +285,90 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
     output: outputMeta(out), outputWritten: r.wrote ?? null, ...stageWallFields(tDispatch) });
   if (!r.ok) throw new StageFailure(label, r.fail ?? "failed", r.resetsAt);
   return r;
+}
+
+// ── THE READING STEP, around its model turn ──────────────────────────────────────────────────────────
+//
+// The counts have landed. The code writes the run's question plan and reads each name's own list where the register
+// gave one, up to the executor's fetch limit, so a name's own filings are in hand whatever the model turn does. The turn
+// then asks what the reading rule calls for and hands back its judgment. The record every later stage reads is built
+// here, from what the register answered and what the turn said.
+//
+// NEVER TERMINAL, the rule this lane has always held for its filings: the counts are the product, and a run that got
+// them delivers. A turn that fails leaves the name's own list carried and the failure on the record. A rate limit is not
+// that failure: it parks and resumes as every stage's does, and the resume reuses each answer already held.
+async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts, countExec, opts, registered }) {
+  const names = markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null }));
+  const exec = resolveQuestionExecutor({
+    lister: opts?.recordLister ?? null, adapter: activeProvider(),
+    agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`, recordLog: runRecordLogPath(run.runDir),
+    // A fixture run never reaches a live register: if the counts ran on fixtures this lane may not either.
+    offline: countExec.source.startsWith("fixtures:"),
+    fixtureDir: job?.registerFixtures?.records ?? null,
+  });
+  const refusal = countExec.source.startsWith("fixtures:") && exec.source === "none"
+    ? "this run counted from fixtures and its job declares no `registerFixtures.records` directory, so the "
+      + "filings behind the counts were not listed — a fixture run never reaches a live register."
+    : recordsPreflight({ capabilities: ctx.registerCaps, hasAdapter: exec.source !== "none" });
+  if (refusal) {
+    atomicWrite(K.registerRecords, JSON.stringify({
+      schema: 2, provider: REGISTER_PROVIDER, providerLabel: ctx.registerCaps?.label ?? REGISTER_PROVIDER,
+      takenAt: new Date().toISOString(), unavailable: refusal, marks: [],
+    }, null, 2) + "\n");
+    note(`register filings not listed: ${refusal}`);
+    runLog(run.runDir, { event: "knockout-register-records-refused", provider: REGISTER_PROVIDER, reason: refusal });
+    return null;
+  }
+  const unreachable = exec.source === "provider" ? (ctx.registerUnreachable ?? []) : [];
+  const scope = { marks: names, classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null, capabilities: ctx.registerCaps, unreachable };
+  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: REGISTER_PROVIDER, counts, reading,
+    readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
+  try {
+    if (exec.fixtureDir) writeFixtureMarker(run.runDir, exec.fixtureDir);
+    atomicWrite(questionPlanPath(run.runDir), JSON.stringify(knockoutQuestionPlan({ ...scope, framedMarks: plan.marks }), null, 2) + "\n");
+    mkdirSync(join(run.runDir, "register-units"), { recursive: true });
+    // Each name's own list, where the register holds one. A zero is settled by its count and asks nothing more.
+    const withFilings = (counts.marks ?? []).filter((m) => (m?.counts?.identical?.total ?? 0) > 0).map((m) => String(m.name));
+    await runBatched(withFilings, 3, async (name) => {
+      const r = await exec.execute({ planPath: questionPlanPath(run.runDir), axis: knockoutAxis(name), outputPath: knockoutBandPath(run.runDir, name), qids: [openingQid(name, "identical")] });
+      if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
+    });
+  } catch (e) {
+    note(`register filings listing failed (non-fatal): ${e.message}`);
+    runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
+    return null;
+  }
+
+  let reading = null;
+  try {
+    const inScope = [...new Set(names.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
+    await koStage("knockout-register-read", ctx, { msgCtx: {
+      readingLines: readingTableLines({ marks: names, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
+      providerDoc: activeProvider()?.skillDoc ?? null, inScope,
+    } });
+    reading = JSON.parse(readFileSync(K.registerReading, "utf8"));
+  } catch (e) {
+    if (e instanceof StageFailure && e.resetsAt) throw e;
+    note(`register reading step did not finish (non-fatal): ${String(e?.message ?? e).slice(0, 200)}`);
+    runLog(run.runDir, { event: "knockout-register-read-failed", cause: String(e?.message ?? e).slice(0, 300) });
+  }
+  try {
+    const doc = build(reading);
+    atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
+    if (reading?.marks?.some((m) => m?.alternatives?.length)) {
+      registered.counts = countsWithAlternatives(counts, reading, { readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
+      atomicWrite(K.registerCounts, JSON.stringify(registered.counts, null, 2) + "\n");
+    }
+    appendQuestionReceipts(K.countLedger, doc, { provider: REGISTER_PROVIDER });
+    runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: exec.source,
+      marks: doc.marks.length, listed: listedMarks(doc), records: doc.marks.reduce((n, m) => n + m.records.length, 0),
+      questions: doc.marks.reduce((n, m) => n + m.terms.filter((t) => t.qid?.startsWith("supp:")).length, 0), reading: reading ? "finished" : "not-finished" });
+    return doc;
+  } catch (e) {
+    note(`register filings listing failed (non-fatal): ${e.message}`);
+    runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
+    return null;
+  }
 }
 
 // ── The sweep's executors: injected (tests) → fixtures dir (the $0 offline guarantee) → the live
@@ -714,73 +800,6 @@ export async function knockoutInner(ctx, job, opts = {}) {
     if (probeWanted) {
       koStep(ctx, KO_STEP_REGISTER_COUNT);
       ensureDriverDir(run.runDir);
-      // The listing lane, as a step the count lane can run before or after. It returns the listing it
-      // wrote, or null when it was refused or failed; either way it has already recorded why.
-      const listFilings = async () => {
-        let listedDoc = null;
-        // ── 1.6 — THE FILINGS BEHIND THE NARROW COUNTS ( part 5) ─────────────────────────────────
-        //
-        // NEVER TERMINAL, and that is the difference between this lane and the count lane. The counts
-        // ARE the product — none of them means no product, so the run dies. The listing EXPLAINS the
-        // counts: a batch that got its numbers and could not fetch the faces behind them is a smaller
-        // deliverable, not a wrong one, and killing the run would throw away the part that was paid for.
-        // Every failure lands as a recorded reason on the surfaces instead.
-        const recExec = resolveRecordExecutor({
-          lister: opts?.recordLister ?? null, adapter: activeProvider(),
-          agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`,
-          // — this run's record log, not the box's. The knockout lane never reads the record bodies
-          // its batch-screen hydration writes; before this they were pure growth on a global file.
-          recordLog: runRecordLogPath(run.runDir),
-          // The $0 guarantee, threaded rather than re-derived: if the COUNTS ran on fixtures, this lane
-          // may not reach a live register. resolveRecordExecutor refuses instead of falling through.
-          offline: countExec.source.startsWith("fixtures:"),
-          fixtureDir: job?.registerFixtures?.records ?? null,
-        });
-        const recRefusal = countExec.source.startsWith("fixtures:") && recExec.source === "none"
-          // NAMES WHAT THE READER CAN ACT ON. This said `CLEAROTRON_KNOCKOUT_RECORD_FIXTURES` — a variable that
-          // no longer exists — so the sentence now names the job field that does.
-          ? "this run counted from fixtures and its job declares no `registerFixtures.records` directory, so the "
-            + "filings behind the counts were not listed — a fixture run never reaches a live register."
-          : recordsPreflight({ capabilities: ctx.registerCaps, hasAdapter: recExec.source !== "none" });
-        if (recRefusal) {
-          // A structural refusal is RECORDED, not swallowed. Without a sidecar the surfaces cannot tell
-          // "this provider does not list filings" from "nobody asked", and the second reads as an
-          // omission — the same silence part 2 closed one section up.
-          atomicWrite(K.registerRecords, JSON.stringify({
-            schema: 1, provider: REGISTER_PROVIDER, providerLabel: ctx.registerCaps?.label ?? REGISTER_PROVIDER,
-            takenAt: new Date().toISOString(), unavailable: recRefusal, marks: [],
-          }, null, 2) + "\n");
-          note(`register filings not listed: ${recRefusal}`);
-          runLog(run.runDir, { event: "knockout-register-records-refused", provider: REGISTER_PROVIDER, reason: recRefusal });
-        } else {
-          try {
-            const recDoc = await listRegisterRecords({
-              marks: markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })),
-              classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
-              provider: REGISTER_PROVIDER, capabilities: ctx.registerCaps,
-              lister: recExec.list, ledgerPath: K.countLedger,
-              // — the SAME split the counts used. Re-deriving it here would let the two halves of one
-              // report narrow to different scopes; `recExec` can also be a fixture lister while the counts
-              // ran live, and the offices a fixture holds are not this box's.
-              unreachable: recExec.source === "provider" ? (ctx.registerUnreachable ?? []) : [],
-              concurrency: 3,   // step 3 — the same constant as the sibling call above
-              ...(process.env.CLEAROTRON_KNOCKOUT_RECORD_CAP ? { cap: Number(process.env.CLEAROTRON_KNOCKOUT_RECORD_CAP) } : {}),
-              ...(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP ? { variantCap: Number(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP) } : {}),
-            });
-            atomicWrite(K.registerRecords, JSON.stringify(recDoc, null, 2) + "\n");
-            listedDoc = recDoc;
-            runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: recExec.source,
-              marks: recDoc.marks.length, listed: listedMarks(recDoc), records: recDoc.marks.reduce((n, m) => n + m.records.length, 0) });
-          } catch (e) {
-            // The lane does not throw per mark, so reaching here means something structural broke. It
-            // still must not take the counts down with it — but it must not vanish either.
-            note(`register filings listing failed (non-fatal): ${e.message}`);
-            runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
-          }
-        }
-        return listedDoc;
-      };
-
       // ── THE OWNER LOOKUP, ONCE THE LISTING HAS NAMED THE OWNER AND A COUNT HAS LANDED ──────────────
       //
       // Run after the count gate below, whichever lane went first. A batch where not one mark got a
@@ -824,16 +843,6 @@ export async function knockoutInner(ctx, job, opts = {}) {
         }
       };
 
-      // ── THE LISTING FIRST, ON A REGISTER WHOSE LISTING HOLDS THE COUNT ──────────────────────────────
-      //
-      // The identical and close columns are the exact predicate over a term, and the listing asks exactly
-      // that. On a register that declares its listing carries the register's own total for that question
-      // (`listingAnswersCount`), the listing runs first and the count lane takes those two columns from it
-      // (register-count.mjs listingAnswers) instead of paying for them again. It still asks what the
-      // listing never asks — `containing` — and any term the listing did not answer. Every other register
-      // counts first and lists second, as it always has.
-      const listFirst = ctx.registerCaps?.listingAnswersCount === true;
-      const listedFirst = listFirst ? await listFilings() : null;
       // resume: a settled prior sidecar is reused cell by cell, so a re-run never re-bills a count that
       // already landed — including across a build that ADDED a predicate, where only the new column is
       // bought (register-count.mjs cellSettled).
@@ -849,6 +858,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
         provider: REGISTER_PROVIDER, capabilities: ctx.registerCaps,
         counter: countExec.count, ledgerPath: K.countLedger, prior,
+        joinForms: countExec.source === "provider" && ctx.registerCaps?.exactFormsCountAsOne === true,
         unreachable: ctx.registerUnreachable ?? [],   // — computed once at preflight, above
         concurrency: 3,   // step 3 — was a knob; no environment ever set it
         // The close-variation fan-out's ceiling. A deployment may buy FEWER forms per mark than the code
@@ -856,7 +866,6 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // to VARIANT_CAP, so this knob can only ever narrow. Unset ⇒ the code cap, which is the answer
         // for every deployment that has not thought about it.
         ...(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP ? { variantCap: Number(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP) } : {}),
-        ...(listedFirst ? { listed: listedFirst } : {}),
       });
       const counted = countedMarks(doc);
       // Not one mark got a number. The count IS this product — a batch published now would be a plain
@@ -874,7 +883,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runLog(run.runDir, { event: "knockout-register-counts", provider: REGISTER_PROVIDER, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
       if (counted < doc.marks.length) note(`register counts: ${doc.marks.length - counted}/${doc.marks.length} mark(s) unavailable — the batch continues (they publish as "not available", never as zero)`);
 
-      await checkOwners(listFirst ? listedFirst : await listFilings());
+      const registered = { counts: doc };
+      await checkOwners(await readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts: doc, countExec, opts, registered }));
+      registerCounts = registered.counts;
     }
 
     // 2 — the sweep: ONE grid call per mark, receipted, through the clearance grid's own program path.

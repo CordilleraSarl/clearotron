@@ -19560,7 +19560,7 @@ export function retiredFlagRefusal(argv) {   // @internal
 // the warning string, which was true of all three entries and would have become false of the fourth —
 // a line that dates every retirement to the first one is worse than a line with no date at all.
 const RETIRED_ENV = {
-  CLEAROTRON_KNOCKOUT_MODE: ["2026-07-27", "knockout availability is a property of the BUILD and the wired provider (search-policy.mjs BUILT)"],
+  CLEAROTRON_KNOCKOUT_MODE: ["2026-07-27", "knockout availability is a property of the BUILD and the wired provider (search-policy.mjs BUILT)"], CLEAROTRON_KNOCKOUT_RECORD_CAP: ["2026-11-05", "a knockout reads the lists its reading step selects, in full; there is no record cap"],
   CLEAROTRON_JX_LANES: ["2026-07-27", "the jx lane decision is frozen into the run's search policy; the per-lane CLEAROTRON_NATIVE_LANGUAGE_<XX> switches are still live"],
   CLEAROTRON_RECIPES_MODE: ["2026-07-27", "a saved search is honoured wherever it resolves"],
 

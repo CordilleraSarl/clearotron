@@ -49,6 +49,9 @@ function toolsRegisteredBy(script) {
 // Server modules that exist and are reachable by NO grant. Same rule as an ungranted tool, one level up:
 // a module nobody can call is fine when deliberate and a dead surface when not.
 const SERVERS_GRANTED_TO_NOTHING = Object.freeze({
+  // Mounted in place of the active register under the `register` key, on a run whose job declares fixtures, and on no
+  // other. It serves the propose tool the reading step already holds, so it adds no grant.
+  "fixture-register-server.mjs": "a fixture run's register, swapped in by the run's own marker; it reaches no register",
   "stdio-server.mjs":
     "NOT a server. It is the shared stdio/JSON-RPC bootstrap every other module calls `serve()` from, and " +
     "it is caught here only by its name. Listed rather than filtered out by a special case, so the reader " +
@@ -461,6 +464,12 @@ const RECORDING_GRANTS = Object.freeze({
   // decides nothing.
   "knockout-review": Object.freeze([
     "mcp__recording-knockout-review__record_knockout_review",
+  ]),
+  // The knockout's reading step: the register's propose tool alone, its read of the run's own lists, and its record tool.
+  "knockout-register-read": Object.freeze([
+    "mcp__recording-knockout-register-read__read_register_list",
+    "mcp__recording-knockout-register-read__record_knockout_register_read",
+    "mcp__register__register_propose_supplemental",
   ]),
 });
 

@@ -40,7 +40,9 @@ pinEnv(process.env, "CLEAROTRON_DATABASE", "corsearch");
 
 const { publishKnockout } = await import("../publish/knockout.mjs");
 const { PROVIDERS } = await import("../driver.config.mjs");
-const { RECORD_BASIS, listRegisterRecords, resolveRecordExecutor } = await import("../register-records.mjs");
+const { RECORD_BASIS } = await import("../register-records.mjs");
+const { readingDoc } = await import("./knockout-reading-fixture.mjs");
+const { capabilitiesFor } = await import("../register-capabilities.mjs");
 const { officeRecordLink, reasonCellFor } = await import("../publish/office-record-links.mjs");
 const { kebab } = await import("../stages-knockout.mjs");
 const { knockoutEvidence } = await import("../../mcp-server/lib/knockout.mjs");
@@ -77,11 +79,11 @@ async function listOnSigna(status, body) {
     return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
   };
   try {
-    const exec = resolveRecordExecutor({ adapter: PROVIDERS.signa });
-    assert.equal(exec.source, "provider", "the listing reached Signa's own adapter");
-    const doc = await listRegisterRecords({
-      marks: [{ name: MARK, classes: [9] }], provider: "signa", capabilities: { id: "signa" }, lister: exec.list,
-    });
+    const recordLog = join(mkdtempSync(join(ROOT, "signa-")), "register-record-bodies.jsonl");
+    const context = { agentId: "t", sessionKey: "t", recordLog };
+    const { doc } = await readingDoc({ marks: [{ name: MARK, classes: [9] }], provider: "signa", capabilities: capabilitiesFor("signa"), root: ROOT,
+      counter: async (term, p, { classes, regions }) => PROVIDERS.signa.countHits({ name: term, matchMode: p.matchMode, classes, regions }, context),
+      execute: (params) => PROVIDERS.signa.executePlan(params, context) });
     assert.ok(calls.length >= 1 && calls.every((u) => u.startsWith("https://signa.test/")), "every search went to the stand-in vendor");
     return doc;
   } finally {
@@ -346,17 +348,19 @@ async function listOnCompumark() {
   globalThis.fetch = async (url) => {
     const { host, pathname } = new URL(String(url));
     called.push(`${host}${pathname}`);
-    const body = pathname === "/search" ? { ids, took: 1 } : { trademarks: COMPUMARK_RECORDS, nonTrademarks: [] };
+    const counts = Object.fromEntries(Object.entries(ids).map(([office, g]) => [office, g.length]));
+    const body = pathname === "/count" ? { counts } : pathname === "/search" ? { ids, took: 1 } : { trademarks: COMPUMARK_RECORDS, nonTrademarks: [] };
     return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
   };
   try {
-    // The executor's own call (resolveRecordExecutor), with the offices named outright: a run hands the
-    // lister the offices it resolved from the matter, and a record log of the run's own.
-    const recordLog = join(mkdtempSync(join(ROOT, "compumark-")), "register-records.jsonl");
-    const lister = (term, { classes, limit }) => PROVIDERS.clarivate.listRecords(
-      { name: term, matchMode: "exact", classes, regions: ["US", "EU", "GB", "CN"], limit }, { agentId: "t", sessionKey: "t", recordLog });
-    const doc = await listRegisterRecords({ marks: [{ name: MARK, classes: [9] }], provider: "clarivate", capabilities: { id: "clarivate" }, lister });
-    assert.deepEqual([...new Set(called)].sort(), ["clarivate.test/search", "clarivate.test/text"], "every call went to the stand-in vendor");
+    // With the offices named outright: a run asks over the offices it resolved from the matter, with a record log of its own.
+    const recordLog = join(mkdtempSync(join(ROOT, "compumark-")), "register-record-bodies.jsonl");
+    const context = { agentId: "t", sessionKey: "t", recordLog };
+    const { doc } = await readingDoc({ marks: [{ name: MARK, classes: [9] }], provider: "clarivate", capabilities: capabilitiesFor("clarivate"),
+      jurisdictions: ["US", "EU", "GB", "CN"], root: ROOT,
+      counter: async (term, p, { classes, regions }) => PROVIDERS.clarivate.countHits({ name: term, matchMode: p.matchMode, classes, regions }, context),
+      execute: (params) => PROVIDERS.clarivate.executePlan(params, context) });
+    assert.deepEqual([...new Set(called)].sort(), ["clarivate.test/count", "clarivate.test/search", "clarivate.test/text"], "every call went to the stand-in vendor");
     return doc;
   } finally {
     globalThis.fetch = realFetch;
