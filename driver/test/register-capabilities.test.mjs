@@ -786,7 +786,7 @@ test("EXECUTOR (A1): a plan-defect entry is REFUSED at dispatch — error:true, 
   // a hand-shaped frozen plan carrying the 2026-07-28 defect classes, plus one clean entry
   const plan = { entries: [
     { qid: "primary-sweep:exact:wavo-star", axis: "primary-sweep", predicate: "exact", term: "WAVO*", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
-    { qid: "primary-sweep:exact:label", axis: "primary-sweep", predicate: "exact", term: "WAVU, WAPO one-keystroke neighbours of WAVO", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
+    { qid: "primary-sweep:exact:label", axis: "primary-sweep", predicate: "exact", term: "IRONWHIZK, IRONWHISQ one-keystroke neighbours of IRONWHISK", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
     { qid: "primary-sweep:exact:slogan", axis: "primary-sweep", predicate: "exact", term: "I CAN'T BELIEVE IT'S NOT BUTTER", term_literal: true, nice_classes: ["29"], regions: [], expected_kind: "enumerate" },
     { qid: "primary-sweep:exact:clean", axis: "primary-sweep", predicate: "exact", term: "WAVO", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
   ] };

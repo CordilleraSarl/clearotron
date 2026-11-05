@@ -184,7 +184,7 @@ test("mint (A1): term-shape/term-predicate lint at the proposal seam — the mod
     { predicate: "exact", term: "WAVO*", nice_classes: [5] },                                       // wildcard under literal
     { predicate: "wildcard", term: "WAVO", nice_classes: [5] },                                     // star-less pattern
     { predicate: "exact", term: "Reverse-order WAVO composites (TROPICAL WAVO, ISLAND WAVO)", nice_classes: [5] },  // label
-    { predicate: "default", term: "SLUSH FREEZE, SLUSH ICE, SLUSH POP", nice_classes: [32] },       // the prose family
+    { predicate: "default", term: "IRONWHISK SODA, IRONWHISK JUICE, IRONWHISK TONIC", nice_classes: [32] },       // the prose family
     { predicate: "wildcard", term: "WAVO*", nice_classes: [5] },                                    // agreeing pair — minted
     { predicate: "exact", term: "I CAN'T BELIEVE IT'S NOT BUTTER", term_literal: true, nice_classes: [29] },  // escape hatch
     { predicate: "owner", term: "KESTREL BEVERAGES INC., SOCIÉTÉ ORGANISÉE SELON LES LOIS DE L'ETAT DU DELAWARE", nice_classes: [32] },  // owner names exempt
