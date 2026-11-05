@@ -1,15 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE REGISTER'S WORDS FOR NO GOODS ARE NOT GOODS.
+// THE REGISTER'S WORDS FOR NO GOODS ARE NOT GOODS ON A KNOCKOUT'S FILING RECORD.
 //
 // A record can carry a statement whose whole text says there is none. Read as goods, it made a record with nothing listed read
-// as complete, and its words were tested against the client's. Each goods reader goes through the one rule here.
+// as complete. A knockout's filing record leaves such statements out. The full engine's goods test reads them as it always
+// has: that is a separate decision, and these arms hold its path unchanged.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { recordGoods, recordGoodsProvenance, saysNoGoods } from "../record-goods.mjs";
+import { recordGoods as readGoods, recordGoodsProvenance as readProvenance, saysNoGoods } from "../record-goods.mjs";
 import { recordGoodsEvidence, goodsFromLabel } from "../goods-evidence.mjs";
 
+const recordGoods = (body) => readGoods(body, { noGoodsPhrases: true });
+const recordGoodsProvenance = (body) => readProvenance(body, { noGoodsPhrases: true });
 const statement = (description, extra = {}) => ({ classes: [9], language: "en", description, ...extra });
 const body = (...goodsServices) => ({ goodsServices });
 
@@ -46,4 +49,14 @@ test("a record whose only statement says so reads as listing none, not as comple
   assert.deepEqual([row.state, row.basis, goodsFromLabel(row)], ["absent", "full-record-without-goods", "official record, no goods listed"]);
   assert.deepEqual(recordGoodsProvenance(body(statement("computer software"), statement("No greek supported", { language: "el" }))), { operation: "record-text", field: "listed" });
   assert.deepEqual(recordGoodsProvenance({ goodsAndServices: "No goods available" }), { operation: "bulk-register", field: "empty" });
+});
+
+test("the full engine's path is unchanged: with no option asked for, the phrases read as they always have", () => {
+  const b = body(statement("No goods available"));
+  assert.deepEqual(readGoods(b), [{ classes: ["9"], text: "No goods available" }]);
+  assert.deepEqual(readProvenance(b), { operation: "record-text", field: "listed" });
+  assert.deepEqual(readGoods(body({ classes: [9], language: "de", description: "Software", translation: "No goods available", translation_language: "en" })),
+    [{ classes: ["9"], text: "No goods available", alt: "Software" }]);
+  assert.deepEqual(readProvenance({ goodsAndServices: "No goods available" }), { operation: "bulk-register", field: "listed" });
+  assert.deepEqual(readProvenance({ goodsServices: [] }), { operation: "record-text", field: "empty" });
 });

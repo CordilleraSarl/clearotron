@@ -239,26 +239,29 @@ const readNotHeld = (mark, id) => `mark "${mark}": registerReads cites "${id}", 
 const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${finding}" lists weighedFilings "${id}", which is not a record this run holds for that mark. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence`;
 
 /**
- * THE SAME REFUSAL, WHILE THE MODEL CAN STILL ACT ON IT. The stage's validator reads this join after the turn has ended, so a
+ * THE SAME RULE, WHILE THE MODEL CAN STILL ACT ON IT. The stage's validator reads this join after the turn has ended, so a
  * rating that cited a filing held under another name in the batch finished the whole chunk, failed, and on its one retry
- * failed the same way: 2 of 4 draws on a saved batch, 2026-11-05. The record tool now asks at the call, so the model can
- * correct it and send again in the same turn. A filing under another name stays refused: a report is delivered per name, and
- * a source chip must stand beside a filing that report lists. Null when every cited id is one this run holds for the mark.
- * PURE-ish.
+ * failed the same way: 2 of 4 draws on a saved batch, 2026-11-05, on 13 and 7 such rows. Refusing the call would not do: a
+ * refused call is not kept, and those draws' accepted chunks took 554 to 662 s of a 900 s attempt, so there is no room to send
+ * one again. So the record tool keeps the call and leaves out only what the rule refuses, and names every row it left out in
+ * the rule's own words. The model can cite the filing where it is held, or leave it. The rule stands: a report is delivered
+ * per name, and a source chip must stand beside a filing that report lists. Returns `{mark, notKept}`. PURE-ish.
  */
-export function registerCitationRefusal(runDir, mark) {
+export function heldCitationsOnly(runDir, mark) {
   const held = registerRecordIdsFor(runDir, mark?.name);
-  for (const row of Array.isArray(mark?.registerReads) ? mark.registerReads : []) {
-    const id = String(row?.recordId ?? "").trim();
-    if (id && !held.has(id)) return readNotHeld(mark.name, id);
-  }
-  for (const f of Array.isArray(mark?.findings) ? mark.findings : []) {
-    for (const raw of Array.isArray(f?.weighedFilings) ? f.weighedFilings : []) {
-      const id = String(raw ?? "").trim();
-      if (id && !held.has(id)) return weighedNotHeld(mark.name, f?.name, id);
-    }
-  }
-  return null;
+  const notKept = [];
+  const isHeld = (raw, say) => {
+    const id = String(raw ?? "").trim();
+    if (!id || held.has(id)) return true;
+    notKept.push(say(id));
+    return false;
+  };
+  if (!Array.isArray(mark?.registerReads) && !Array.isArray(mark?.findings)) return { mark, notKept };
+  const out = { ...mark };
+  if (Array.isArray(mark.registerReads)) out.registerReads = mark.registerReads.filter((row) => isHeld(row?.recordId, (id) => readNotHeld(mark.name, id)));
+  if (Array.isArray(mark.findings)) out.findings = mark.findings.map((f) => (Array.isArray(f?.weighedFilings)
+    ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => weighedNotHeld(mark.name, f?.name, bad))) } : f));
+  return { mark: notKept.length ? out : mark, notKept };
 }
 
 export const KNOCKOUT_RATING_QUALIFIERS = ["low"];

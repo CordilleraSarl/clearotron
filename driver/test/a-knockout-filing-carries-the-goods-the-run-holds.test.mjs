@@ -109,6 +109,21 @@ test("goods the search row carries are read from the row, and its cuts stay cuts
   assert.deepEqual([rec.goods, rec.goodsState], [["9: the whole held statement"], "complete"]);
 });
 
+test("a record whose only statement is the register's words for no goods lists none, and a real statement beside such words stands", () => {
+  const only = tempRun();
+  logBodies(only, [[ID, body([statement("No goods available")])]]);
+  const a = one(only);
+  assert.deepEqual([a.goods, a.goodsState, a.goodsFrom], [[], "absent", "official record, no goods listed"]);
+  const beside = tempRun();
+  logBodies(beside, [[ID, body([statement("computer software"), { classes: [9], language: "el", description: "No greek supported" }])]]);
+  const b = one(beside);
+  assert.deepEqual([b.goods, b.goodsState], [["9: computer software"], "complete"]);
+  // From a search row too.
+  const rows = tempRun();
+  const c = one(rows, { goods: [{ classes: ["9"], text: "words the row carried" }] });
+  assert.deepEqual([c.goods, c.goodsState], [["9: words the row carried"], "complete"]);
+});
+
 test("a statement cut in the view with no body behind it keeps its whole text on file, under a safe name", () => {
   const run = tempRun();
   const long = "y".repeat(GOODS_VIEW_CHARS + 50);
