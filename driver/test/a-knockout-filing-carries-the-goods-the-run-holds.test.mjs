@@ -124,6 +124,12 @@ test("a record whose only statement is the register's words for no goods lists n
   assert.deepEqual([c.goods, c.goodsState], [["9: words the row carried"], "complete"]);
 });
 
+test("a held original that a marker gave way to says its language in the view", () => {
+  const run = tempRun();
+  logBodies(run, [[ID, body([{ classes: [9], language: "de", description: "Software", translation: "No goods available", translation_language: "en" }])]]);
+  assert.deepEqual(one(run).goods, ["9 (de): Software"]);
+});
+
 test("a statement cut in the view with no body behind it keeps its whole text on file, under a safe name", () => {
   const run = tempRun();
   const long = "y".repeat(GOODS_VIEW_CHARS + 50);
