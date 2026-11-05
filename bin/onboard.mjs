@@ -888,7 +888,7 @@ export function signInHandOff(eng, bin, billing) {
   if (billing === "api-key") return { lines: ["to give a different key, answer no below and pick the engine again."], captureToken: false };
   // SETUP IS STILL WAITING IN THIS TERMINAL, so the commands are run in a second one. Said of the commands,
   // not as "sign in": these lines follow every failed turn, a spent quota as much as a sign-out. And the yes
-  // it asks for is the retry's, named, because on Claude the token question comes first and wants no after a
+  // it asks for is the retry's, named. On Claude a token question follows the retry, and it wants a no after a
   // browser sign-in.
   const lines = ["setup waits in this terminal, so run the commands below in a second one:",
     `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "Run the turn again".`];
@@ -4137,26 +4137,6 @@ try {
       // subscription's step, and on a cloud or under a key the verdict above has named what to check.
       const handOff = signInHandOff(eng, bin, authPick.id);
       for (const line of handOff.lines) info(line);
-      // ── THE HEADLESS ENDING ────────────────────────────────────────────────
-      //
-      // On a box with no browser the interactive sign-in cannot complete, and the documented route had
-      // no documented ending: `claude setup-token` walks the sign-in on ANY machine and prints a token
-      // this box can hold — but its name appeared nowhere in this repository, so a reader over SSH was
-      // told to sign in interactively and left there. The token is captured BY PASTE: the vendor's
-      // stream layout is not ours to guess at, and a paste works whatever it prints where. Codex's
-      // headless ending writes its own auth file and there is nothing to capture — the command is
-      // named, and the re-probe is the proof either way.
-      if (handOff.captureToken) {
-        // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
-        const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });
-        const tok = answer.value ?? (answer.yes
-          ? await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." }) : null);
-        if (tok !== null) {
-          candidate[eng.headless.tokenEnv] = tok;
-          authEnv[eng.headless.tokenEnv] = tok;   // the re-probe below must prove the sign-in WITH it
-          info(`${eng.headless.tokenEnv} captured — the turn below proves it before anything is written.`);
-        }
-      }
       // — found in review, and the same trap closed one prompt over. The default
       // was YES, so Enter re-ran a probe that CANNOT succeed until the reader has signed in somewhere
       // else — and the wizard's own header tells them Enter is the safe key. Driven with Enter it went
@@ -4169,6 +4149,30 @@ try {
         info("Not proven, so not written. Back to the engine menu — its last row configures no engine: "
           + "the demo and a replayed report still work, and a real clearance refuses by name until one is set.");
         continue engine;
+      }
+      // ── THE HEADLESS ENDING ────────────────────────────────────────────────
+      //
+      // On a box with no browser the interactive sign-in cannot complete, and the documented route had
+      // no documented ending: `claude setup-token` walks the sign-in on ANY machine and prints a token
+      // this box can hold — but its name appeared nowhere in this repository, so a reader over SSH was
+      // told to sign in interactively and left there. The token is captured BY PASTE: the vendor's
+      // stream layout is not ours to guess at, and a paste works whatever it prints where. Codex's
+      // headless ending writes its own auth file and there is nothing to capture — the command is
+      // named, and the re-probe is the proof either way.
+      //
+      // ASKED AFTER THE RETRY'S YES, NOT BEFORE IT. The hand-off above asks for that yes by name, and a reader
+      // who had signed in in the browser met this question first, which wants a no from them. The turn has not
+      // run again yet, so a token pasted here is still the one it proves.
+      if (handOff.captureToken) {
+        // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
+        const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });
+        const tok = answer.value ?? (answer.yes
+          ? await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." }) : null);
+        if (tok !== null) {
+          candidate[eng.headless.tokenEnv] = tok;
+          authEnv[eng.headless.tokenEnv] = tok;   // the re-probe below must prove the sign-in WITH it
+          info(`${eng.headless.tokenEnv} captured — the turn below proves it before anything is written.`);
+        }
       }
     }
   }

@@ -6275,7 +6275,7 @@
         },
         "setup-says-where-and-when-to-sign-in.test.mjs": {
           "tests": 4,
-          "asserts": 21,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },

@@ -68,6 +68,12 @@ test("the sign-in is run in a second terminal, and the yes it asks for is the re
   }
   // The question named is the one setup asks.
   assert.match(SRC, /confirm\("Fixed it\? Run the turn again", false\)/);
+  // AND IT IS ASKED FIRST. A reader who signed in in the browser met the token question before it, which wants a no
+  // from them, so the yes the hand-off asks for landed on the wrong question.
+  const retryAt = SRC.indexOf('confirm("Fixed it? Run the turn again", false)');
+  const tokenAt = SRC.indexOf("Did that give you a token to paste?");
+  assert.ok(retryAt > -1 && tokenAt > -1, "an anchor is missing from bin/onboard.mjs");
+  assert.ok(retryAt < tokenAt, "the token question is asked before the retry the hand-off names");
 });
 
 test("a program refused before it started shows no engine output, and the refusal reads in plain words", async () => {
