@@ -347,6 +347,9 @@ export function makeExecutePlan(deps) {
     //     silent zero, and a caller who wired an executor without a contract has declared even less
     //     than one who left the field null.
     capabilities = null,
+    // What a question asked in another form (`exact_substituted`) takes from the answers the run already holds, or null
+    // to send it: (compiled query, [{entry, query, block}], entry) → a block. A provider with no such reader always sends.
+    answerFromHeld = null,
   } = deps;
 
   // ── the I/O seam (see ./transport-guard.mjs) ──────────────────────────────────────────────────────
@@ -739,7 +742,47 @@ export function makeExecutePlan(deps) {
     // PAST ITS TIME TO STOP SENDING, A CALL SENDS NO NEW QUESTION (send-until.mjs). The question is not reached by
     // this call and keeps whatever block the band holds for it; the call returns what it has, naming it.
     const notReached = [];
+    // ── A QUESTION ASKED IN ANOTHER FORM READS THE RUN'S ANSWERS FIRST (ruled 2026-11-05) ─────────────────────────────
+    // Every answer on record: this call's, and every band in this run's folder, taken-out slices read as open. Axes run in
+    // parallel, so an answer that lands later is not seen and the question is sent: that costs its request and loses nothing.
+    const heldOnRecord = () => {
+      const folder = dirname(outPath);
+      let names = [];
+      try { names = readdirSync(folder); } catch { names = []; }
+      const byQid = new Map();
+      const addEntries = (doc) => { for (const x of Array.isArray(doc?.entries) ? doc.entries : []) if (x?.qid && !byQid.has(x.qid)) byQid.set(x.qid, x); };
+      addEntries(plan);
+      const read = (file) => { try { return JSON.parse(readFileSync(file, "utf8")); } catch { return null; } };
+      if (driverDir) addEntries(read(join(driverDir, "register-plan.json")));
+      for (const f of names.filter((n) => n.endsWith("-supplemental-plan.json"))) addEntries(read(join(folder, f)));
+      const answers = new Map();
+      const takenOut = slicesTakenOutByAxis(dirname(folder));
+      for (const f of names.filter((n) => n.endsWith("-band.json"))) {
+        const prior = read(join(folder, f));
+        const ofAxis = takenOut.get(f.slice(0, -"-band.json".length));
+        for (const b of Array.isArray(prior) ? bandWithSlicesOut(prior, ofAxis).blocks : []) if (b?.qid) answers.set(b.qid, b);
+      }
+      for (const b of blocks) if (b?.qid) answers.set(b.qid, b);
+      return [...answers.values()].map((block) => ({ entry: byQid.get(block.qid), block })).filter((h) => h.entry);
+    };
+    const heldAnswer = (e) => {
+      if (!e?.exact_substituted || typeof answerFromHeld !== "function") return null;
+      try {
+        const compile = (x) => withPlanRegions(buildEntryQuery(x, predicateParams(x), plan), plan);
+        const held = heldOnRecord().filter((h) => h.entry.qid !== e.qid).flatMap((h) => {
+          try { return [{ ...h, query: compile(h.entry) }]; } catch { return []; }
+        });
+        return answerFromHeld(compile(e), held, e);
+      } catch { return null; }   // a question that cannot be read against the record is still a question: it is sent
+    };
     const runEntry = async (e) => {
+      const held = heldAnswer(e);
+      if (held) {
+        blocks.push({ ...held, qid: e.qid, query: describeEntry(e) });
+        stateByQid.set(e.qid, held.error ? "error" : held.state);
+        keepAnswersSoon();
+        return;
+      }
       if (pastSendUntil(tctx)) { notReached.push(e.qid); return; }
       if (driverDir && followUpClass(e, { identicalTerms }) === "counted") {
         const room = followUpRoom(driverDir, FOLLOW_UP_SEARCH_LIMIT, e, { answered: answeredBefore });
@@ -770,7 +813,8 @@ export function makeExecutePlan(deps) {
       keepAnswersSoon();
     };
 
-    for (const e of targeted.filter((x) => !x.when)) await runEntry(e);
+    // A question asked in another form goes last, so it can read what the others answered.
+    for (const e of [...targeted.filter((x) => !x.when && !x.exact_substituted), ...targeted.filter((x) => !x.when && x.exact_substituted)]) await runEntry(e);
     const skipped = [];
     for (const e of targeted.filter((x) => x.when)) {
       // A CROWD IS WHAT HOLDS A CHILD BACK, and only a crowd. `enumerated` is the state of a question
