@@ -115,6 +115,17 @@ test("a source cited again is one open row, and a filing the run holds is suppor
   assert.deepEqual(rows(), [["evidence", "https://shop.example.test/nowhere", "answered"]], "a held filing weighed is held support");
 });
 
+test("a call the stage would still refuse says so in its reply, while the model can answer it", () => {
+  const run = heldRun();
+  mkdirSync(join(run, "research"), { recursive: true });
+  writeFileSync(join(run, "research", "lanternwick.md"), "A page: https://shop.example.test/own");
+  const lost = send(run, mark({ findings: [{ ...finding([OWN]), type: "Active Business", evidence: ["https://shop.example.test/nowhere"] }] }));
+  assert.ok(lost.written, "the rest of the call is kept");
+  assert.match(String(lost.still_refused), /knockout_finding_evidence_missing/, "its only citation went, and the turn must hear what that leaves");
+  const repaired = recordKnockoutAssess(run, { marks: [{ name: "LANTERNWICK", findings: [{ ...finding([OWN]), type: "Active Business", evidence: ["https://shop.example.test/own"] }] }] }, { boundOrdinal: 0 });
+  assert.doesNotMatch(String(repaired.still_refused), /knockout_finding_evidence_missing/, "and it stops saying so once answered");
+});
+
 test("what is stored then passes the stage's own check, so the stage cannot fail on it", () => {
   const run = heldRun();
   send(run, mark({ registerReads: [{ recordId: NOWHERE, read: "An invented read." }] }));

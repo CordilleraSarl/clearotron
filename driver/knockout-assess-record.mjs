@@ -66,7 +66,7 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 // THE VALIDATOR'S OWN PREDICATE, imported rather than restated. Two spellings of one closed set is how
 // the call and the stage come to disagree about what is legal, which is the defect this check closes.
-import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS, heldCitationsOnly } from "./verify-knockout.mjs";
+import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS, heldCitationsOnly, validators } from "./verify-knockout.mjs";
 // A FINDING'S KEYS, likewise: the validator's one list, so a key the call records is a key the stage accepts.
 import { KNOCKOUT_FINDING_KEYS } from "./findings-model.mjs";
 
@@ -393,11 +393,17 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
       captured: closeCapture({ ok: false, write_failed: true }), capture_failed: captureFailed };
   }
 
+  // THE STAGE'S OWN CHECK, HEARD WHILE THE MODEL CAN STILL ANSWER IT. A call can pass here and be refused when the turn ends, and that
+  // costs the whole attempt: measured 2026-11-05 at 62k generated tokens, on findings left with no citation after their sources went.
+  let stillRefused = null;
+  try { const stage = validators.knockoutAssessChunk(at, JSON.stringify(verdict.model)); if (!stage.ok) stillRefused = stage.reason; } catch { stillRefused = null; }
+
   return {
     written: at,
     refused: null,
     chunk: chunkNo,
     marks: verdict.model.marks.length,
+    ...(stillRefused ? { still_refused: stillRefused } : {}),
     ...(notKept.length ? { not_kept: notKept } : {}),
     captured: closeCapture({ ok: true, ...(notKept.length ? { not_kept: notKept } : {}) }),
     capture_failed: captureFailed,
