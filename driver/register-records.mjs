@@ -21,12 +21,24 @@ import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
 
 /**
  * Was this listing made by the reading step? Its sentences say what that step did. A listing written before it keeps the
- * sentences it was delivered with, and its own `basis` is the one it was delivered under, so an archived run re-renders
- * as delivered. PURE.
+ * sentences the product printed for it until then, so an archived run re-renders as delivered. PURE.
  */
 export const readByJudgment = (doc) => Number(doc?.schema) >= 2;
-/** The sentence under a listing, as that listing was delivered. PURE. */
-export const recordBasisOf = (doc) => doc?.basis ?? RECORD_BASIS;
+/**
+ * The sentence under a listing: the shipped one for its kind. PURE.
+ *
+ * NEVER THE TEXT STORED IN ITS FILE. Until the reading step every page printed one constant for every listing, whatever the
+ * file held, and an older file holds a word since retired from what a client reads: "weighed", which the sentence in
+ * `ARCHIVED_RECORD_BASIS` replaced with "rated". Measured 2026-11-05: an archived listing whose file still held that word
+ * printed it again once the stored text was trusted.
+ */
+export const recordBasisOf = (doc) => (readByJudgment(doc) ? RECORD_BASIS : ARCHIVED_RECORD_BASIS);
+
+/** What a listing written before the reading step is, in the sentence the product printed for it. Rendered verbatim. */
+export const ARCHIVED_RECORD_BASIS = "The filings behind the two narrow counts — the name itself and each close "
+  + "variation of it — as the register holds them, class-scoped exactly as the counts were. Raw register "
+  + "facts only: nothing here is rated, ranked or interpreted, and a filing appearing in this list is "
+  + "not a finding that it blocks anything.";
 
 /** What the listing is, in one client-safe sentence. Rendered verbatim on every surface. */
 export const RECORD_BASIS = "The filings this search read and carried forward: the name itself and the near "

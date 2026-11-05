@@ -1132,8 +1132,8 @@
           "todos": 0
         },
         "a-knockout-report-says-what-its-search-did.test.mjs": {
-          "tests": 8,
-          "asserts": 26,
+          "tests": 9,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },

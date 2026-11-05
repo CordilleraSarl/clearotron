@@ -10,7 +10,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const { RECORD_BASIS, recordsLine } = await import("../register-records.mjs");
+const { RECORD_BASIS, ARCHIVED_RECORD_BASIS, recordsLine } = await import("../register-records.mjs");
 const { renderKnockoutHtml, knockoutReportData } = await import("../publish/render-knockout.mjs");
 const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
 const ExcelJS = (await import("exceljs")).default;
@@ -41,6 +41,19 @@ test("the sentence under the filings list says what the search did, and an archi
   const data = (d) => knockoutReportData({ marks: [MARK], batch: { executiveSummary: "x", standardCaveats: [] } }, FW, { runId: "r", codename: "c", overall: "Notable", issued: "i", registerRecords: d }).registerFilingsBasis;
   assert.equal(data(READ()), RECORD_BASIS);
   assert.equal(data(ARCHIVED()), OLD_BASIS);
+});
+
+test("a listing prints the shipped sentence for its kind, never the text its file was written with", () => {
+  // The shipped string reused byte for byte: the sentence every page printed for every listing before the reading step.
+  assert.equal(ARCHIVED_RECORD_BASIS, OLD_BASIS);
+  const STORED = "An older sentence this file was written with, holding a word since retired.";
+  const data = (d) => knockoutReportData({ marks: [MARK], batch: { executiveSummary: "x", standardCaveats: [] } }, FW, { runId: "r", codename: "c", overall: "Notable", issued: "i", registerRecords: d }).registerFilingsBasis;
+  const esc = (s) => s.replace(/&/g, "&amp;");
+  for (const [listing, shipped] of [[{ ...ARCHIVED(), basis: STORED }, OLD_BASIS], [{ ...READ(), basis: STORED }, RECORD_BASIS]]) {
+    assert.ok(page(listing).includes(esc(shipped)), "the listing lost the shipped sentence for its kind");
+    assert.ok(!page(listing).includes(STORED), "the text stored in the file reached the page");
+    assert.equal(data(listing), shipped);
+  }
 });
 
 test("a filing's card says which search found it, because that search need not be a close variation", () => {
