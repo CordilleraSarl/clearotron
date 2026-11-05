@@ -33,7 +33,7 @@ import { fileURLToPath } from "node:url";
 
 import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
-import { demoMode } from "./demo-mode.mjs";
+import { demoServing } from "./demo-mode.mjs";
 import { PRODUCTS } from "../driver/products.mjs";
 
 // The offering writes its own schema prose. A hand-typed "up to 20 names" beside a wall that refuses at
@@ -200,7 +200,7 @@ function runSummary(run) {
   // field is what made the list unanswerable in the first place.
   const facts = runProfileFacts(run);
   return {
-    ...(demoMode.on ? { demo: DEMO_LABEL } : {}),
+    ...(demoServing() ? { demo: DEMO_LABEL } : {}),
     runId: run.runId, slug: run.slug, codename: run.codename, date: run.date, agent: run.agent,
     client: facts.known
       ? { key: facts.account, name: facts.clientName }
@@ -841,7 +841,7 @@ export function withAnnotations(def) {
 }
 
 export function attachHandlers(server, { scope = { kind: "ops", runId: null }, local = true } = {}) {
-  const allow = visibleTools({ kind: scope.kind, local });
+  const allow = visibleTools({ kind: scope.kind, local, demo: demoServing() });
   const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => withAnnotations(describeForAudience(d, scope.kind)));
   server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: toolDefs }));
 

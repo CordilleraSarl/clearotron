@@ -2557,7 +2557,7 @@ async function connectorDoorKind(url) {
         // Windows-side one. Nothing draws this field today; it is on the wire, and a field that answers
         // differently from the rows is a trap for whoever draws it next.
         const stdio = seesEverything(principal)
-          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })
+          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget(), demo: isDemo(process.env) })
           : null;
 
         // ── THE PAGE IS HANDED ANSWERS, NOT FACTS TO REASON FROM ─────────────
@@ -2582,10 +2582,11 @@ async function connectorDoorKind(url) {
         const offers = connectOffers({
           stdioRoutes: stdio
             ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) =>
-                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })]))
+                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget(), demo: isDemo(process.env) })]))
             : {},
           wsl: isWsl(),
           nameClaude: claudeNamer(),
+          demo: isDemo(process.env),
           // ONE ADDRESS, and it is the publicly reachable one ( §5). The
           // `localAddress` and `clientDoorStanding` inputs are gone with the axis that read them: no
           // surface serves a loopback address to anybody, and the door's running-or-not stopped being

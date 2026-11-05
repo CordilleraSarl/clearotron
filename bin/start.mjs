@@ -2640,7 +2640,7 @@ if (isMain) {
   // install inside WSL can be reached from Windows and from inside the distribution, by two different
   // commands; printing one of them unheaded is how a reader pastes the wrong one. The target is read
   // here and passed, because this module is pure by design and reads no environment of its own.
-  const offered = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
+  const offered = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), demo: DEMO, ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
   const connect = connectLinesNamingClaude(offered, resolveEngineProgram(claudeEngine()));
   // "one line" IS DELETED RATHER THAN MADE CONDITIONAL. Under WSL two lines are printed, one per side,
   // and the count was never the point of the sentence — what it promises is no address and no sign-in,

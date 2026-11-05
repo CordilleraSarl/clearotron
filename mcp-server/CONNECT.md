@@ -24,6 +24,10 @@ It reads run directories off your disk. So:
 - **With no install, it shows you the demo.** `npx clearotron mcp` starts this server from the npm package.
   On a machine with no install it answers from the four sample runs `npx clearotron demo` replays, and every
   row says it is the demo. On a machine with an install it reads that install's runs.
+- **A demo starts nothing.** Connected to a demo, an assistant can read and explain its sample reports, and
+  the tools that start work are not offered. The line `clearotron demo` prints registers as
+  `trademark-artifacts-demo`, beside any connection to a real install, and it stops working when that demo's
+  folder is gone.
 - **Nothing here spends money on its own,** with two exceptions that are gated and named: `start_run`
   enqueues a real clearance, and `what_if_run` re-runs one pipeline stage. Both are refused by default on
   a sensible allowlist — see "Hold two tools back" below.
