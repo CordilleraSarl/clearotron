@@ -5272,8 +5272,8 @@
           "todos": 0
         },
         "production-dependencies.test.mjs": {
-          "tests": 4,
-          "asserts": 7,
+          "tests": 6,
+          "asserts": 12,
           "skips": 3,
           "todos": 0
         },
