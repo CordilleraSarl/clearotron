@@ -17,7 +17,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
-import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
+import { recordGoods, rowGoods, saysNoGoods, untaggedIsEnglish } from "./record-goods.mjs";
 
 /** What the listing is, in one client-safe sentence. Rendered verbatim on every surface. */
 export const RECORD_BASIS = "The filings behind the two narrow counts — the name itself and each close "
@@ -84,7 +84,7 @@ export function toRecord(row, { term, basis, provider }) {
 }
 
 const goodsOnRow = (row) => {
-  const statements = rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) });
+  const statements = (rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) })).filter((g) => !saysNoGoods(g?.text));
   return statements.length ? statements : null;
 };
 

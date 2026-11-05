@@ -45,6 +45,16 @@ const textOf = (v) => (typeof v === "string" ? v
   : Array.isArray(v) ? v.map(textOf).filter(Boolean).join("; ")
   : v && typeof v === "object" ? textOf(v.text ?? v.terms ?? v.description ?? "") : "");
 
+// THE REGISTER'S WORDS FOR NO GOODS. A record can carry a statement whose whole text says there is none: "No goods
+// available", or "No greek supported" in a language slot beside the real statements. Measured 2026-11-05 on 530,215 saved
+// record bodies: 5,025 statements of the first kind, with "- " before it on 576 more, and 173,754 of the second, and on 11,258
+// bodies such statements were all the goods the record had. A knockout's filing record asks to have them left out
+// (`noGoodsPhrases`, filing-goods.mjs), and a translation that says so gives way to its original. The full engine's goods
+// test reads them as it always has until that is decided on its own count. The list is the registers' own phrases.
+const NOT_GOODS_RE = /^(?:no goods available|no [a-z]+ supported|no list|not listed|not specified|)$/i;
+/** Does this whole statement say there are no goods? An empty one does too. PURE. */
+export const saysNoGoods = (text) => NOT_GOODS_RE.test(String(text ?? "").trim().replace(/^[-–—\s]+/, "").replace(/[.\s]+$/, ""));
+
 /**
  * The goods of one official record body: [{classes, text}], one entry per class statement, or [] when the body
  * carries none. PURE. Each provider's shape, as its own code writes it:
@@ -56,7 +66,7 @@ const textOf = (v) => (typeof v === "string" ? v
  *   · anything else carrying goodsAndServices: read generically, class where one is named.
  * English is preferred where a statement offers it; otherwise the statement's own text.
  */
-export function recordGoods(body, { english = true } = {}) {
+export function recordGoods(body, { english = true, noGoodsPhrases = false } = {}) {
   const b = Array.isArray(body) ? body[0] : body;
   if (!b || typeof b !== "object") return [];
   const out = [];
@@ -64,17 +74,18 @@ export function recordGoods(body, { english = true } = {}) {
   // client's English goods words, so it is unknown to the goods test, never a mismatch.
   const push = (classes, text, original = null, en = true) => {
     const t = String(text ?? "").trim(), o = String(original ?? "").trim();
-    if (t) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, ...(o && o !== t ? { alt: o } : {}), ...(en ? {} : { en: false }) });
+    if (t && !(noGoodsPhrases && saysNoGoods(t))) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, ...(o && o !== t && !(noGoodsPhrases && saysNoGoods(o)) ? { alt: o } : {}), ...(en ? {} : { en: false }) });
   };
   const tagged = (lang) => String(lang ?? "").trim() !== "";
   if (Array.isArray(b.goodsServices)) {
     for (const g of b.goodsServices) {
       // English as written; untagged, English only on an English-language register; else the translation,
       // tagged English, or untagged on such a register; else the original, unread.
+      const translation = noGoodsPhrases && saysNoGoods(textOf(g?.translation)) ? null : g?.translation;
       if (isEnglish(g?.language)) push(g?.classes, textOf(g?.description), null, true);
-      else if (!tagged(g?.language) && !g?.translation) push(g?.classes, textOf(g?.description), null, english);
-      else if (g?.translation && (isEnglish(g?.translation_language) || (!tagged(g?.translation_language) && english))) push(g?.classes, textOf(g.translation), textOf(g?.description), true);
-      else push(g?.classes, textOf(g?.description ?? g?.translation), null, false);
+      else if (!tagged(g?.language) && !translation) push(g?.classes, textOf(g?.description), null, english);
+      else if (translation && (isEnglish(g?.translation_language) || (!tagged(g?.translation_language) && english))) push(g?.classes, textOf(translation), textOf(g?.description), true);
+      else push(g?.classes, textOf(g?.description ?? translation), null, false);
     }
   }
   if (out.length === 0 && Array.isArray(b?._raw?.classifications)) {
@@ -121,16 +132,16 @@ export function recordGoods(body, { english = true } = {}) {
  * `field` is `listed` (the field is there with goods), `empty` (there, listing none) or `none` (not there at
  * all): a body whose goods field is missing, or that will not parse, is not one that lists no goods.
  */
-export function recordGoodsProvenance(body) {
+export function recordGoodsProvenance(body, { noGoodsPhrases = false } = {}) {
   const b = Array.isArray(body) ? body[0] : body;
   if (!b || typeof b !== "object") return { operation: "undocumented", field: "none" };
-  const said = (v) => String(textOf(v) ?? "").trim() !== "";
+  const said = (v) => (noGoodsPhrases ? !saysNoGoods(textOf(v)) : String(textOf(v) ?? "").trim() !== "");
   if (Array.isArray(b.goodsServices))
     return { operation: "record-text", field: b.goodsServices.some((g) => said(g?.description) || said(g?.translation)) ? "listed" : "empty" };
   if (Array.isArray(b?._raw?.classifications))
     return { operation: "retrieve", field: b._raw.classifications.some((c) => said(c?.goods_services_text)) ? "listed" : "empty" };
-  if (typeof b.goodsAndServices === "string") return { operation: "bulk-register", field: b.goodsAndServices.trim() ? "listed" : "empty" };
-  if (b.goodsAndServices != null) return { operation: "undocumented", field: recordGoods(b).length ? "listed" : "empty" };
+  if (typeof b.goodsAndServices === "string") return { operation: "bulk-register", field: said(b.goodsAndServices) ? "listed" : "empty" };
+  if (b.goodsAndServices != null) return { operation: "undocumented", field: recordGoods(b, { noGoodsPhrases }).length ? "listed" : "empty" };
   return { operation: "undocumented", field: "none" };
 }
 

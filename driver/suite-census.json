@@ -1060,8 +1060,14 @@
           "todos": 0
         },
         "a-knockout-filing-carries-the-goods-the-run-holds.test.mjs": {
-          "tests": 8,
-          "asserts": 36,
+          "tests": 9,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-filing-held-under-another-name-is-left-out-in-the-turn.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -7554,6 +7560,12 @@
         "the-register-wording-follows-the-ruled-crowd-method.test.mjs": {
           "tests": 6,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-registers-words-for-no-goods-are-not-goods.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
