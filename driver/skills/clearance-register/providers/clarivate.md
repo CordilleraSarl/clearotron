@@ -79,8 +79,8 @@ Two things to know when you read the results:
 **A term you pass is never silently re-parsed.** Parentheses, or (outside `wildcard`) a stray `*`/`?`,
 are **REJECTED** with a plain-English error and the slice defers — there is no escape syntax for those.
 An operator word *inside* a phrase is handled for you: "BLACK AND DECKER" goes out as
-`*BLACK ADJ A?D ADJ DECKER*` (the `?` stops the parser reading AND as an operator). The one term that
-still defers is a bare two-letter operator word — `OR` alone has no interior character to wildcard.
+`*BLACK ADJ2 DECKER*`, its other words in order. The term that still defers is one made only of
+operator words, such as `OR` alone.
 
 `names[]` (an OR-stack) becomes ONE value joined with explicit ` OR `. The safe width is **496 terms** —
 the bound is the JSON parser's document-nesting cap, which the register names in the refusal it answers a
