@@ -279,7 +279,7 @@ export function providerInventory(env = process.env) {
 
   for (const [group, label, table] of [
     ["research", "Common-law and marketplace research", RESEARCH_PROVIDERS],
-    ["web", "Open-web search", SERP_PROVIDERS],
+    ["web", "Chinese marketplace search", SERP_PROVIDERS],
   ]) {
     // Looped rather than named, so a second research or search adapter appears here the day it is
     // wired instead of the day somebody remembers this file.

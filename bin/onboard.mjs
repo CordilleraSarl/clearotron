@@ -4320,7 +4320,7 @@ try {
   // table row carries. A live check runs where one exists, keyed on the credential's name.
   say("\n  Search credentials");
   const liveChecks = { PERPLEXITY_API_KEY: validatePerplexity };
-  for (const [tableLabel, table] of [["research", RESEARCH_PROVIDERS], ["the open-web and marketplace grid", SERP_PROVIDERS]]) {
+  for (const [tableLabel, table] of [["research", RESEARCH_PROVIDERS], ["the Chinese marketplace search", SERP_PROVIDERS]]) {
     for (const adapter of Object.values(table)) {
       const name = adapter.credEnv;
       say("");

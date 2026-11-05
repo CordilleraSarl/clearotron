@@ -294,7 +294,7 @@ test("a snapshot written before the engine recorded this OMITS the keys, and rea
 test("the writer's values survive the round trip", () => {
   const engine = { id: "openai-agent", vendor: "OpenAI", known: true, binaryPresent: true,
     billing: { mode: "api-key", apiBilled: true, missing: [] } };
-  const providers = [{ key: "web", label: "Open-web search", provider: "serpapi",
+  const providers = [{ key: "web", label: "Chinese marketplace search", provider: "serpapi",
     providerLabel: "SerpAPI", known: true, configured: false, missing: ["SERPAPI_API_KEY"] }];
   const snap = buildFlagSnapshot(ENGINE_ENV, { capturedAt: AT, engine, providers });
   assert.deepEqual(engineFor(snap), engine);

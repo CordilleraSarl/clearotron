@@ -1862,7 +1862,7 @@ export const SERP_PROVIDERS = {
     credEnv: "SERPAPI_API_KEY",
     // As above — the field pair setup derives its prompt from (: this key was never
     // prompted for, and a reader who finished setup as designed had every marketplace grid cell gap).
-    absentMeans: "every marketplace grid cell comes back as a disclosed gap instead of a result",
+    absentMeans: "the Chinese marketplaces come back as a disclosed gap",
     obtain: "https://serpapi.com/manage-api-key — self-serve, free tier exists",
     async search({ engine, term, site, count }) {
       if (!process.env.SERPAPI_API_KEY) return { ok: false, cause: "SERPAPI_API_KEY absent from driver env" };

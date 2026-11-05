@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { SERP_LANES, JURISDICTION_ADAPTERS } from "../jx-lanes.mjs";
 import { SERP_ENGINES } from "../../providers/serpapi/src/core.js";
 import { SERP_PROVIDERS } from "../driver.config.mjs";
+import { providerInventory } from "../config-inventory.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const flat = (f) => readFileSync(join(ROOT, f), "utf8").replace(/\s+/g, " ");
@@ -59,4 +60,13 @@ test("every page that lists the research keys says what the SerpAPI key searches
     assert.match(text, /those marketplaces come back as a disclosed gap/i, `${page} does not say what happens without the SerpAPI key`);
     assert.doesNotMatch(text, /open-web and marketplace grid|search-engine grid inside the CJK/, `${page} still describes the SerpAPI key the old way`);
   }
+});
+
+test("setup and the portal's settings list describe the SerpAPI key in the pages' words", () => {
+  assert.equal(SERP_PROVIDERS.serpapi.absentMeans, "the Chinese marketplaces come back as a disclosed gap");
+  const setup = flat("bin/onboard.mjs");
+  assert.ok(setup.includes('["the Chinese marketplace search", SERP_PROVIDERS]'), "setup does not say what the SerpAPI key is used for");
+  assert.doesNotMatch(setup, /open-web and marketplace grid/, "setup still describes the SerpAPI key the old way");
+  const row = providerInventory({}).find((r) => r.provider === "serpapi");
+  assert.equal(row?.label, "Chinese marketplace search", "the settings list does not name what the SerpAPI key searches");
 });
