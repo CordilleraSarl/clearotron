@@ -489,29 +489,23 @@ export const countRowsOf = (marks, framedMarks = []) => {
 };
 
 /**
- * The record once the rating step has spoken, so the report has a row for what the rating rests on. A set-aside filing it cited
- * moves up with the carried ones: a later step may overturn a set-aside, and this is how that reaches the page. A filing held
- * under a sibling that it cited is copied under the name it was weighed for, and stays where it was found. PURE.
+ * The record once the rating step has spoken: a set-aside filing it cited moves up with the carried ones, so the report
+ * has a row for what the rating rests on. A later step may overturn a set-aside, and this is how that reaches the page. PURE.
  */
 export function withCitedFilings(doc, findings) {
+  if (!doc?.marks?.some((m) => m?.setAsideRecords?.length)) return doc;
   const marksByName = new Map((findings?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
-  const anywhere = new Map((doc?.marks ?? []).flatMap((m) => [...(m?.records ?? []), ...(m?.setAsideRecords ?? [])].map((r) => [String(r?.recordId), { row: r, name: m.name }])));
-  let changed = false;
-  const marks = (doc?.marks ?? []).map((entry) => {
+  return { ...doc, marks: doc.marks.map((entry) => {
     const rated = marksByName.get(String(entry?.name ?? "").trim().toLowerCase());
-    if (!rated) return entry;
+    if (!entry?.setAsideRecords?.length || !rated) return entry;
     const cited = new Set([...(rated.registerReads ?? []).map((r) => r?.recordId), ...(rated.findings ?? []).flatMap((f) => f?.weighedFilings ?? [])].filter(Boolean).map(String));
-    const moved = (entry.setAsideRecords ?? []).filter((r) => cited.has(String(r?.recordId)));
-    const own = new Set([...(entry.records ?? []), ...(entry.setAsideRecords ?? [])].map((r) => String(r?.recordId)));
-    const fromSiblings = [...cited].filter((id) => !own.has(id) && anywhere.has(id)).map((id) => ({ ...anywhere.get(id).row, citedFromName: anywhere.get(id).name }));
-    if (!moved.length && !fromSiblings.length) return entry;
-    changed = true;
-    const left = (entry.setAsideRecords ?? []).filter((r) => !cited.has(String(r?.recordId)));
+    const moved = entry.setAsideRecords.filter((r) => cited.has(String(r?.recordId)));
+    if (!moved.length) return entry;
+    const left = entry.setAsideRecords.filter((r) => !cited.has(String(r?.recordId)));
     const { setAsideRecords: _old, ...rest } = entry;
-    const records = [...(entry.records ?? []), ...moved.map((r) => ({ ...r, citedFromSetAside: true })), ...fromSiblings];
-    return { ...rest, records, fetched: records.length, ...(left.length ? { setAsideRecords: left } : {}) };
-  });
-  return changed ? { ...doc, marks } : doc;
+    return { ...rest, records: [...entry.records, ...moved.map((r) => ({ ...r, citedFromSetAside: true }))], fetched: entry.records.length + moved.length,
+      ...(left.length ? { setAsideRecords: left } : {}) };
+  }) };
 }
 
 /** One ledger line per question, beside the counts' own, so one file answers what the register lane asked. */

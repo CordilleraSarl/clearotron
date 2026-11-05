@@ -1048,8 +1048,8 @@
           "todos": 0
         },
         "a-knockout-conflict-carries-its-framework-inputs.test.mjs": {
-          "tests": 7,
-          "asserts": 43,
+          "tests": 6,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
@@ -1108,8 +1108,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
-          "tests": 43,
-          "asserts": 198,
+          "tests": 42,
+          "asserts": 192,
           "skips": 0,
           "todos": 0
         },

@@ -23,7 +23,7 @@ import { fixtureFileName, fixtureLister, recordsLine } from "../register-records
 import { writeFixtureMarker } from "../register-fixture-marker.mjs";
 import { executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutListView, knockoutProposals,
   knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, runPrefixOfSession, unfoldFormCounts, withCitedFilings, withHeldGoods } from "../knockout-register-read.mjs";
-import { registerRecordIdsFor, registerRecordIdsHeld } from "../verify-knockout.mjs";
+import { registerRecordIdsFor } from "../verify-knockout.mjs";
 import { ownersOwedACheck } from "../owner-use-check.mjs";
 import { acceptKnockoutRegister, recordKnockoutRegisterRead, settledKnockoutReading, validateKnockoutRegisterFile, knockoutRegisterFile, mergeKnockoutRegisterCall } from "../knockout-register-record.mjs";
 import { readingDoc } from "./knockout-reading-fixture.mjs";
@@ -235,21 +235,6 @@ test("a resume reuses each form's count: the folded record unfolds to the rows t
 });
 
 // ── THE HANDOFF ────────────────────────────────────────────────────────────────────────────────
-
-test("a filing held under a sibling that the rating cites joins the name it was weighed for, and stays where it was found", () => {
-  const doc = { marks: [{ name: NAME, records: [] , fetched: 0 }, { name: "MOSSVALE", records: [{ recordId: "a" }], fetched: 1, setAsideRecords: [{ recordId: "b" }] }] };
-  const rated = (ids) => ({ marks: [{ name: NAME, registerReads: ids.map((recordId) => ({ recordId, read: "r" })), findings: [] }, { name: "MOSSVALE" }] });
-  const moved = withCitedFilings(doc, rated(["a", "b"]));
-  assert.deepEqual(moved.marks[0].records.map((r) => [r.recordId, r.citedFromName]), [["a", "MOSSVALE"], ["b", "MOSSVALE"]]);
-  assert.equal(moved.marks[0].fetched, 2);
-  assert.deepEqual(moved.marks[1], doc.marks[1], "it stays where it was found");
-  assert.equal(withCitedFilings(doc, rated(["held-nowhere"])), doc, "an id held nowhere changes nothing, and the gate refuses it");
-  const dir = mkdtempSync(join(tmpdir(), "ko-sibling-"));
-  mkdirSync(driverDir(dir), { recursive: true });
-  writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify(doc));
-  assert.deepEqual([...registerRecordIdsHeld(dir)].sort(), ["a", "b"]);
-  assert.deepEqual([...registerRecordIdsFor(dir, NAME)], [], "under the name itself it holds none until it is cited");
-});
 
 test("a set-aside filing the rating cites moves up with the carried ones; one it does not stays set aside", () => {
   const doc = { marks: [{ name: NAME, records: [{ recordId: "a" }], fetched: 1, setAsideRecords: [{ recordId: "b" }, { recordId: "c" }] }] };
