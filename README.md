@@ -34,10 +34,11 @@ the address in your browser. No sign-up, no credentials, no network calls to us.
 ports, 18860, 18861 and 18862; `npx clearotron demo --port <n>` opens n, n+1 and n+2 instead.
 
 The demo runs for as long as that window stays open, and removes everything it made when you close it —
-nothing of it is left on the machine, and running it again later starts clean. If you want to keep the
-sample reports after closing the window, run `npx clearotron demo --keep`; it prints the one command
-that removes the folder when you are done with it. `npx clearotron demo --once` publishes the reports and
-exits, and keeps the folder the same way.
+only npm's own copy of the package stays, in its cache, and running it again later starts clean. If you
+want to keep the sample reports after closing the window, run `npx clearotron demo --keep`; it prints the
+one command that removes the folder when you are done with it. `npx clearotron demo --once` publishes the
+reports and exits, and keeps the folder the same way. A demo started over a folder either of those left
+keeps it too, and says how to remove it.
 
 **Then install it.**
 

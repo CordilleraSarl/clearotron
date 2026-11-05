@@ -23,10 +23,12 @@
 //
 // This file is a SUPERVISOR. It starts four child processes and nothing else:
 //
-//   driver/portal-service.mjs     the product: the UI, the API, the sign-in, the config surface.
-//   mcp-server/http-server.mjs    the engine door the portal's Start button calls over real MCP.
+//   driver/portal-service.mjs        the product: the UI, the API, the sign-in, the config surface.
+//   mcp-server/http-server.mjs       the engine door the portal's Start button calls over real MCP.
+//   mcp-server/http-server-client.mjs  the client door an assistant connects to. Not fatal if it exits.
+//   driver/runner.mjs --watch        the worker that runs what is ordered, unless --no-worker.
 //
-// FOUR services and one process were the alternative, and the reason it is two is not taste. The portal
+// MORE SERVICES WERE THE ALTERNATIVE, and the reason there are not is not taste. The portal
 // ALREADY constructs profile-service and recipe-service in-process (portal-service.mjs — "profile-service
 // is constructed IN-PROCESS rather than called over HTTP"), running the same routers, the same
 // validators and the same git-commit path with the portal's own verified identity as the author. So two
@@ -2338,7 +2340,7 @@ if (isMain) {
     if (DEMO && !READER_BASE && !DEMO_KEEP) {
       try {
         rmSync(paths.base, { recursive: true, force: true });
-        say(`\n  The demo removed everything it created: ${paths.base} is gone, and nothing of it is left on this machine.`);
+        say(`\n  The demo removed everything it created: ${paths.base} is gone.`);
       } catch (e) {
         // A FAILED CLEANUP IS SAID, NOT SWALLOWED. The promise this prints is the one thing a reader
         // cannot check for themselves once the window closes.
@@ -2352,12 +2354,12 @@ if (isMain) {
 
   // Ctrl-C, and whatever a terminal or a parent supervisor sends. Both land on the same teardown, and
   // the `stopping` flag is what stops an orderly stop being reported as a crash.
-  process.on("SIGINT", () => { void shutdown(0); });
-  process.on("SIGTERM", () => { void shutdown(0); });
   // A THROW BELOW WOULD END THIS PROCESS WITH ITS DOORS STILL UP: each child is in its own process group, so
   // nothing else stops them. Everything that can go wrong from here goes through the same teardown.
   for (const event of ["uncaughtException", "unhandledRejection"])
     process.on(event, (e) => { err(`\nstart: ${String(e?.stack ?? e?.message ?? e)}\n`); void shutdown(1); });
+  process.on("SIGINT", () => { void shutdown(0); });
+  process.on("SIGTERM", () => { void shutdown(0); });
   for (const sig of windowCloseSignals()) process.on(sig, () => { void shutdown(0); });
 
   const healthy = async (url, rec) => {
@@ -2647,6 +2649,7 @@ if (isMain) {
   say("");
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
+  const checkPerRow = connect.variants?.some((v) => v.verify !== connect.verify);
   if (connect.variants) {
     for (const v of connect.variants) {
       say(`    ${v.heading}`); say(`      ${v.text}`); if (v.hint) say(`      ${v.hint}`);
@@ -2657,7 +2660,6 @@ if (isMain) {
     say(`    ${connect.command}`);
     say("");
   }
-  const checkPerRow = connect.variants?.some((v) => v.verify !== connect.verify);
   if (!checkPerRow) { say(`  Check it:  ${connect.verify}`); say(""); }
   // ── WHERE TO TYPE THE THINGS JUST PRINTED ( — F31) ───────────────────────
   //

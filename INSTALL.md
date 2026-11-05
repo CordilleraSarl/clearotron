@@ -885,7 +885,7 @@ door answer, and prints one address to open. `Ctrl-C` stops all of them. The sec
 | what it is | a finished report, replayed | the running product |
 | credentials | none | whatever a real run needs (§3) |
 | model calls | none | yes, once you order a clearance |
-| what you can do | read | sign in, configure, order, read |
+| what you can do | sign in and read; an order opens the finished example for that search | sign in, configure, order, read |
 
 Use the demo to see what this system produces. Use `clearotron start` to run it.
 

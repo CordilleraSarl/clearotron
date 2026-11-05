@@ -2,8 +2,8 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // CTRL-C TAKES THE DEMO'S FOLDER WITH IT, LIKE ANY OTHER STOP.
 //
-// The README promises the demo "removes everything it made when you close it — nothing of it is left on
-// the machine". Most readers close it with Ctrl-C, which is not the orderly stop the removal was written
+// The README promises the demo "removes everything it made when you close it". Most readers close it with
+// Ctrl-C, which is not the orderly stop the removal was written
 // against: if the signal path bypassed the teardown, or exited before it, the promise would hold only
 // for the way almost nobody stops it, and the folder would be left behind in the ordinary case.
 //
@@ -63,7 +63,7 @@ test("a failed removal is said rather than swallowed", () => {
   // cleanup that failed must not print that it succeeded.
   const body = shutdownBody();
   assert.match(body, /could not remove/, "a failed cleanup no longer says so");
-  const good = body.indexOf("is gone, and nothing of it is left");
+  const good = body.indexOf("removed everything it created");
   const bad = body.indexOf("could not remove");
   assert.ok(good > 0 && bad > 0, "one of the two outcomes is no longer stated");
   assert.ok(body.slice(0, bad).includes("try {"), "the success line is not inside the guarded block");
