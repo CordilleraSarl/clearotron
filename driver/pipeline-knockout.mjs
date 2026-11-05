@@ -52,7 +52,7 @@ import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILIT
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
 import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, openingQid, questionPlanPath,
-  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings } from "./knockout-register-read.mjs";
+  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
@@ -363,7 +363,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     catch (e2) { note(`register list did not complete (non-fatal): ${String(e2?.message ?? e2).slice(0, 200)}`); }
   }
   try {
-    const doc = build(reading);
+    const doc = withHeldGoods(build(reading), run.runDir);
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
     appendQuestionReceipts(K.countLedger, doc, { provider: REGISTER_PROVIDER });
     runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: exec.source,

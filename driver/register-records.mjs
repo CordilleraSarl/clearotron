@@ -17,6 +17,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
+import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
 
 /** What the listing is, in one client-safe sentence. Rendered verbatim on every surface. */
 export const RECORD_BASIS = "The filings behind the two narrow counts — the name itself and each close "
@@ -76,8 +77,16 @@ export function toRecord(row, { term, basis, provider }) {
     matchedBasis: basis,
     url: row?.record_url ?? null,
     provider,
+    // WHAT THE FILING COVERS, where the search row itself says. A register whose goods come with the full record says
+    // nothing here, and filing-goods.mjs reads them from the body the run holds, which also says how far they go.
+    goods: goodsOnRow(row),
   };
 }
+
+const goodsOnRow = (row) => {
+  const statements = rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) });
+  return statements.length ? statements : null;
+};
 
 /** How many marks got at least one filing. Zero means the listing produced nothing anyone can read. */
 export function listedMarks(doc) {

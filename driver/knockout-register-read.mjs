@@ -34,13 +34,10 @@ import { reachableRegions } from "./register-availability.mjs";
 import { RECORD_BASIS, fixtureLister, toRecord } from "./register-records.mjs";
 import { ENUMERATE_CEILING_DEFAULT } from "../providers/_shared/enumerate.mjs";
 export { writeFixtureMarker } from "./register-fixture-marker.mjs";
-import { bandGoodsIndex, goodsFor } from "./record-goods.mjs";
+import { withFilingGoods } from "./filing-goods.mjs";
 
 export const QUESTION_PLAN_FILE = "register-plan.json";
 export const BAND_DIR = "register-units";
-
-/** Longest goods text a list row carries before it says `shortened`; the whole text is one call away, unbought. */
-export const LIST_GOODS_CHARS = 600;
 
 /** The register axis of one instructed name. The research key, so two names can never share one. PURE. */
 export const knockoutAxis = (name) => `ko-${kebab(name)}`;
@@ -503,28 +500,12 @@ export function readingTableLines({ marks, counts, classes = null, framedMarks =
   });
 }
 
-/** Text of one goods statement cut for a list row, and whether anything was cut. PURE. */
-function cutGoods(goods, limit) {
-  let left = limit;
-  let cut = false;
-  const out = [];
-  for (const g of goods ?? []) {
-    const chars = [...String(g?.text ?? "")];
-    if (left <= 0) { cut = cut || chars.length > 0; continue; }
-    const take = chars.slice(0, left).join("");
-    if (take.length < chars.join("").length) cut = true;
-    left -= chars.length;
-    out.push({ classes: g?.classes ?? [], text: take });
-  }
-  return { out, cut };
-}
-
 /**
- * One list in full, as the reading step reads it: every row the question returned, with the goods the run holds for
- * it. `record_id` asks for one row with its goods whole, read from what the run already holds, so nothing is fetched
- * again. A record with no goods on file says so: absent is not a mismatch with the client's goods.
+ * One list in full, as a later step reads it: every row the question returned, each with the goods the run holds for it
+ * in the shipped evidence states (filing-goods.mjs), and where its whole held record is, one `Read` away. Nothing is
+ * fetched. A row with no goods on file says so, and that is not a mismatch with the client's goods.
  */
-export function knockoutListView(runDir, { qid, record_id: recordId = null }, { names = [] } = {}) {
+export function knockoutListView(runDir, { qid }) {
   const want = String(qid ?? "").trim();
   if (!want) return { error: "qid is required: the question whose list you are reading, as the propose tool or your opening message named it." };
   const dir = join(String(runDir ?? ""), BAND_DIR);
@@ -537,29 +518,25 @@ export function knockoutListView(runDir, { qid, record_id: recordId = null }, { 
     for (const b of Array.isArray(doc) ? doc : []) if (String(b?.qid ?? "") === want) found = b;
     if (found) break;
   }
-  if (!found) return { error: `no question "${want}" has an answer in this run's bands. Ask it first; a name's counted opening questions have no list until one is read.`, names };
-  const held = bandGoodsIndex(runDir);
-  const viewRow = (r, whole) => {
-    const goods = goodsFor(held, r);
-    const { out, cut } = cutGoods(goods, whole ? Infinity : LIST_GOODS_CHARS);
-    return {
-      record_id: r?.record_id ?? null, mark: r?.mark_text ?? null, owner: r?.owner_name ?? null, owner_country: r?.owner_country ?? null,
-      status: r?.status ?? null, office: r?.office ?? null, classes: r?.classes ?? null,
-      filed: r?.application_date ?? null, registered: r?.registration_date ?? null,
-      goods: out, goods_state: !goods?.length ? "absent" : cut ? "shortened" : "complete",
-    };
-  };
-  if (recordId != null) {
-    const row = rowsOf(found).find((r) => String(r?.record_id ?? "") === String(recordId));
-    return row ? { qid: want, row: viewRow(row, true) } : { error: `record "${recordId}" is not in the list of ${want}.` };
-  }
+  if (!found) return { error: `no question "${want}" has an answer in this run's bands. Ask it first; a name's counted opening questions have no list until one is read.` };
+  const records = rowsOf(found).map((r) => toRecord(neutralRow(r), { term: null, basis: null, provider: null }));
+  const held = withFilingGoods({ marks: [{ records }] }, runDir).marks[0].records;
   return {
     qid: want, state: found.state ?? null, total_hits: found.total_hits ?? null,
     ...(found.reason ? { reason: String(found.reason).slice(0, 300) } : {}),
     ...(found.error ? { error_answer: true } : {}),
     ...(found.per_office_counts ? { per_office_counts: found.per_office_counts } : {}),
-    rows: rowsOf(found).map((r) => viewRow(r, false)),
+    rows: held.map((r) => ({ record_id: r.recordId, mark: r.mark, owner: r.owner, owner_country: r.ownerCountry, status: r.status, office: r.territory, classes: r.classes,
+      filed: r.applicationDate, registered: r.registrationDate, goods: r.goods, goodsState: r.goodsState, goodsFrom: r.goodsFrom, goodsShortened: r.goodsShortened,
+      ...(r.fullRecord ? { fullRecord: join(String(runDir ?? ""), r.fullRecord) } : {}) })),
   };
+}
+
+/** The record with its goods on every row it holds, the carried and the set aside alike. Sends nothing. */
+export function withHeldGoods(doc, runDir) {
+  const carried = withFilingGoods(doc, runDir);
+  const setAside = withFilingGoods({ marks: (carried?.marks ?? []).map((m) => ({ records: m?.setAsideRecords ?? [] })) }, runDir);
+  return { ...carried, marks: (carried?.marks ?? []).map((m, i) => (m?.setAsideRecords?.length ? { ...m, setAsideRecords: setAside.marks[i].records } : m)) };
 }
 
 export const questionPlanPath = (runDir) => driverDir(runDir, QUESTION_PLAN_FILE);

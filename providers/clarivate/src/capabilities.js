@@ -249,6 +249,10 @@ export const CAPABILITIES = Object.freeze({
   // `null` means the compiler keeps asking the contains form at every length, which is what this
   // register has always been sent. A declared number must come from the vendor, not from a guess.
   containsMinLength: null,
+  // The words this register parses as commands inside the exact field, which has no escape syntax (core.js,
+  // assertSearchableTerm). A phrase holding one is asked as its words in order, where the same words are
+  // dropped and the gap widens (register-plan.mjs, exactOperatorSubstitution).
+  exactOperatorWords: Object.freeze(["AND", "OR", "NOT"]),
   // The operator the goods clause rides. `EQUALS` on WHOLE WORDS: `CONTAINS` is a hard 400 here
   // exactly as it is on APPLICANT_NAME, and so is a mid-word wildcard. Several words are asked for
   // with `OR` inside the value.

@@ -300,6 +300,48 @@ export function containsFormSubstitution(term, capabilities) {
       + `same classes and goods words` };
 }
 
+// ── AN EXACT PHRASE THE REGISTER CANNOT STATE IS ASKED AS ITS WORDS IN ORDER (ruled 2026-11-05) ─────────────────────────
+//
+// A register that parses AND, OR and NOT inside its exact field refuses a phrase holding one, and the question used to be
+// set aside and disclosed. The same phrase compiles on the contains form: the operator word is dropped and the gap it
+// leaves widens, so the phrase's words are asked in order. That holds the phrase as written and may hold more. The entry
+// asks that form with the same classes, offices, goods words and owner, and carries `exact_substituted`, so the plan says
+// which question was asked in another form and why; the coverage ledger reads it as any other search. A term of nothing
+// but such words has no name left to search and stays set aside. Single letters are words like any other, and a register
+// that declares no such words is never touched. A plan frozen before this keeps its exact entry and its deferral.
+//
+// In a stack, only the phrase moves: it takes its own entry, and the other names stay exact and ask as written.
+
+/** The substitution an exact phrase needs on this register, or null when it needs none. PURE. */
+export function exactOperatorSubstitution(term, capabilities) {
+  const declared = capabilities?.exactOperatorWords;
+  if (!Array.isArray(declared) || !declared.length) return null;
+  const words = String(term ?? "").replace(/[^\p{L}\p{N}\s]+/gu, " ").split(/\s+/).filter(Boolean);
+  const isOperator = (w) => declared.includes(w.toUpperCase());
+  if (!words.some(isOperator) || words.every(isOperator)) return null;
+  return { from: "exact", to: "default", term: String(term),
+    reason: `the register (${capabilities.id ?? "unknown"}) reads AND, OR and NOT as commands inside an exact phrase, so this term was `
+      + `asked as its words in order, with the same classes, offices and goods words` };
+}
+
+/**
+ * An exact entry with its phrases moved to entries of their own, or null when none needs it. Parentheses come out of a moved
+ * phrase, because the exact form strips them and the contains form refuses them. PURE.
+ */
+export function exactOperatorEntries(entry, capabilities) {
+  if (String(entry?.predicate ?? "") !== "exact") return null;
+  const names = Array.isArray(entry.terms) ? entry.terms : [entry.term];
+  const moved = names.filter((t) => exactOperatorSubstitution(t, capabilities));
+  if (!moved.length) return null;
+  const { terms: _terms, term: _term, ...rest } = entry;
+  const kept = names.filter((t) => !moved.includes(t));
+  return [
+    ...(kept.length ? [{ ...rest, ...(kept.length === 1 ? { term: kept[0] } : { terms: kept }) }] : []),
+    ...moved.map((t) => ({ ...rest, predicate: "default", term: String(t).replace(/[()]/g, " ").replace(/\s+/g, " ").trim(),
+      exact_substituted: exactOperatorSubstitution(t, capabilities) })),
+  ];
+}
+
 /**
  * 2026-07-29 hardening — is a VARIANTS-MODEL value un-searchable as a mark term? Returns the
  * plain-English reason, or null. Two classes shipped as silent nil "cleans" on the 2026-07-28 run
@@ -1185,6 +1227,10 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   const entries = [];
   const seen = new Set();
   const push = (e) => {
+    const moved = exactOperatorEntries(e, caps);
+    return moved ? moved.map(pushOne)[0] : pushOne(e);
+  };
+  const pushOne = (e) => {
     // — termIdentity, not slug. The `#N` loop STAYS: it is the net for a genuine duplicate
     // question, and `register_plan_qid_duplicate` throws only on entries that reach it already
     // identical. What changes is that it stops firing for terms that merely share a script — it was
@@ -2721,6 +2767,8 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set(), 
       ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
       // The register's floor when it answered "at least N" instead of a count: total_hits stays null beside it.
       ...(Number.isFinite(b.total_floor) ? { total_floor: b.total_floor } : {}),
+      // An answer the run already held: nothing was sent, and this names the search it came from.
+      ...(b.reused_from ? { reused_from: b.reused_from } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));

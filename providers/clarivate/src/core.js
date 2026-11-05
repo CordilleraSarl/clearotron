@@ -40,6 +40,7 @@ import {
 } from "../../_shared/screen.mjs";
 import { makeEnumerate, ENUMERATE_NAMES_CHUNK_DEFAULT, parseToolText } from "../../_shared/enumerate.mjs";
 import { makeCountProbe } from "../../_shared/count.mjs";
+import { answerFromHeldList } from "./wider-list.js";
 import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
@@ -297,12 +298,12 @@ export const MATCH_MODE_TO_FIELD = Object.freeze({
 //     token is dropped from the chain. Kept, it matches nothing and would zero the whole phrase.
 const PHRASE_OPERATOR = "ADJ";
 // ── A TERM MUST BE ONE MARK, ON EVERY MARK-FIELD PREDICATE ────────────────────────────────────────
-// The supplemental/cross-check lanes sometimes mint a LIST or a DESCRIPTION into the term field. All
-// three of these appeared in one frozen plan, EACH minted twice — once `default`,
-// once `exact`:
-//   "SLUSH FREEZE, SLUSH ICE, SLUSH POP"                     three terms crammed into one
-//   "TIKTOK / TIK- famous-neighbour family"                  a description of a family, not a name
-//   "WAVU, WAPO one-keystroke neighbours of WAVO"
+// The supplemental/cross-check lanes sometimes mint a LIST or a DESCRIPTION into the term field. Terms
+// of all three shapes below appeared in one frozen plan, EACH minted twice — once `default`,
+// once `exact`. These examples are invented:
+//   "IRONWHISK SODA, IRONWHISK JUICE, IRONWHISK TONIC"      three terms crammed into one
+//   "NOVAPULSE / NOVA- famous-neighbour family"             a description of a family, not a name
+//   "IRONWHIZK, IRONWHISQ one-keystroke neighbours of IRONWHISK"
 //
 // Searched, they return 0 — and a 0 here reads as CLEAN, which is the one outcome this contract must
 // never produce by accident. On that run the `default` twins deferred loudly while the `exact` twins
@@ -711,7 +712,7 @@ export function buildSearchRequest(p) {
   if (markTerms.length) {
     const values = markTerms.map((t) => {
       // SHAPE FIRST, on the RAW term. stripPunctuation dissolves the very separators that mark a term
-      // out as a list ("SLUSH FREEZE, SLUSH ICE, SLUSH POP" → one long name → 0 → reads as CLEAN), so
+      // out as a list ("IRONWHISK SODA, IRONWHISK JUICE, IRONWHISK TONIC" → one long name → 0 → reads as CLEAN), so
       // an `exact` slice checked after stripping is checked too late. compilePhraseValue re-checks for
       // the phrase modes; this is the one call that covers `exact`.
       assertSingleMarkShape(t);
@@ -2045,6 +2046,9 @@ const __executePlan = makeExecutePlan({
   // scope, already translated to office codes at compile time); with no plan regions either, the
   // provider still fails loud rather than sweeping something that was never asked for.
   buildEntryQuery: makeRegionRequiredBuildEntryQuery(substituteRomanizedNames),
+  // An exact phrase asked as its words in order reads the run's answers first (wider-list.js).
+  answerFromHeld: (query, held, entry) => answerFromHeldList({ want: buildSearchRequest(query), literal: entry.term, markField: MARK_FIELD,
+    held: held.flatMap((h) => { try { return [{ qid: h.block.qid, block: h.block, body: buildSearchRequest(h.query) }]; } catch { return []; } }) }),
   // predicateParams → the WILDCARD predicate is Clarivate-shaped, and inheriting the shared default
   // here would silently mis-serve a slice this provider CAN execute.
   //

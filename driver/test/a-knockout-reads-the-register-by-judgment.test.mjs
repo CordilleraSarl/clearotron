@@ -22,7 +22,7 @@ import { capabilitiesFor } from "../register-capabilities.mjs";
 import { fixtureFileName, fixtureLister, recordsLine } from "../register-records.mjs";
 import { writeFixtureMarker } from "../register-fixture-marker.mjs";
 import { executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutListView, knockoutProposals,
-  knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, unfoldFormCounts, withCitedFilings, LIST_GOODS_CHARS } from "../knockout-register-read.mjs";
+  knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, unfoldFormCounts, withCitedFilings, withHeldGoods } from "../knockout-register-read.mjs";
 import { registerRecordIdsFor } from "../verify-knockout.mjs";
 import { ownersOwedACheck } from "../owner-use-check.mjs";
 import { acceptKnockoutRegister, recordKnockoutRegisterRead, validateKnockoutRegisterFile, knockoutRegisterFile, mergeKnockoutRegisterCall } from "../knockout-register-record.mjs";
@@ -434,25 +434,37 @@ test("a reading step that did not finish leaves the name's own list carried, and
 
 // ── READING A LIST ─────────────────────────────────────────────────────────────────────────────
 
-test("a list is read whole with the goods the run holds: complete, shortened and absent are three states, and the whole text is one call away", () => {
+test("a list is read whole with the goods the run holds, in the shipped states, and the whole record is one Read away", () => {
   const id = openingQid(NAME, "identical");
   const list = [row("short"), row("long"), row("none")];
   const dir = runWith({ total: 3, blocks: [listBlock(id, list)] });
-  const LONG = "tonic water ".repeat(120);
+  const LONG = "tonic water ".repeat(200);
   const bodies = [["short", "tonic water"], ["long", LONG]].map(([k, text]) => JSON.stringify({ target: `/mark/em/${k}`,
     body: { goodsServices: [{ classes: [9], language: "en", description: text }] } }));
   writeFileSync(driverDir(dir, "register-record-bodies.jsonl"), bodies.join("\n") + "\n");
   const view = knockoutListView(dir, { qid: id });
   assert.equal(view.total_hits, 3);
+  assert.equal(view.rows.length, 3);
   const byId = Object.fromEntries(view.rows.map((r) => [r.record_id.split("/").pop(), r]));
-  assert.equal(byId.short.goods_state, "complete");
-  assert.equal(byId.long.goods_state, "shortened");
-  assert.ok(byId.long.goods[0].text.length <= LIST_GOODS_CHARS);
-  assert.equal(byId.none.goods_state, "absent", "no goods on file is said, and is not a mismatch");
-  const whole = knockoutListView(dir, { qid: id, record_id: "/mark/em/long" });
-  assert.equal(whole.row.goods_state, "complete");
-  assert.equal(whole.row.goods[0].text, LONG.trim());
+  assert.equal(byId.short.goodsState, "complete");
+  assert.deepEqual(byId.short.goods, ["9: tonic water"]);
+  assert.equal(byId.long.goodsShortened, true, "the view says it cut a statement");
+  assert.ok(byId.long.goods[0].length < LONG.length);
+  assert.match(readFileSync(byId.long.fullRecord, "utf8"), /tonic water tonic water/, "the whole held record is there to read, with nothing fetched");
+  assert.notEqual(byId.none.goodsState, "complete", "no goods on file is said");
+  assert.deepEqual(byId.none.goods, []);
   assert.match(knockoutListView(dir, { qid: "nothing" }).error, /no question/);
+});
+
+test("what the step set aside carries its goods too, so the rating step can read it without asking again", () => {
+  const id = openingQid(NAME, "identical");
+  const dir = runWith({ total: 2, blocks: [listBlock(id, rows(2))] });
+  writeFileSync(driverDir(dir, "register-record-bodies.jsonl"), JSON.stringify({ target: "/mark/em/r1", body: { goodsServices: [{ classes: [9], language: "en", description: "garden shears" }] } }) + "\n");
+  const reading = { marks: [{ name: NAME, carried: [{ records: ["/mark/em/r0"], why: "same goods" }], set_aside: [{ question: id, why: "unrelated goods" }], not_asked: [] }] };
+  const doc = withHeldGoods(knockoutRecordsDoc({ ...scope, counts: JSON.parse(readFileSync(driverDir(dir, "register-counts.json"), "utf8")), reading,
+    readBlocks: (n) => knockoutBandBlocks(dir, n), readProposals: (n) => knockoutProposals(dir, n) }), dir);
+  assert.deepEqual(doc.marks[0].setAsideRecords[0].goods, ["9: garden shears"]);
+  assert.equal(doc.marks[0].setAsideRecords[0].goodsState, "complete");
 });
 
 test("the propose tool's answer is not the list: 30 rows answered, all 30 read", async () => {

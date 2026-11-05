@@ -1415,15 +1415,15 @@ serve({
     name: "read_register_list",
     description:
       "Read one question's list in full: every filing the register returned for it, with the goods this run holds. " +
-      "Pass `qid` from your opening message or the propose tool's answer. A row's goods_state says complete, shortened " +
-      "or absent; absent means this run holds none, which is not a mismatch with the client's goods. Pass `record_id` as " +
-      "well for that filing's goods whole. This reads what the run already holds and fetches nothing.",
+      "Pass `qid` from your opening message or the propose tool's answer. A row's `goodsState` says how far its goods go: " +
+      "complete, cut, unknown, absent, unavailable or not-held; only the first is the whole statement, and none of the " +
+      "others means the goods are unrelated. `goodsShortened` means the view cut a statement, and `fullRecord` is the whole " +
+      "held record, for the Read tool. This reads what the run already holds and fetches nothing.",
     inputSchema: {
       type: "object",
       required: ["qid"],
       properties: {
         qid: { type: "string", description: "The question whose list you are reading." },
-        record_id: { type: "string", description: "OPTIONAL: one filing of that list, with its goods whole." },
       },
     },
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
