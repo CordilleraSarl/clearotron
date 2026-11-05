@@ -263,9 +263,9 @@ test("every version measured below the boundary is refused, and the boundary its
 
 test("the recorded install size moved with the floor, as the table says it must", () => {
   // The engine table says to re-measure when the floor moves, because setup states this figure to a
-  // reader before it installs. Measured 2026-10-09 on a fresh install of the floor version into an empty
-  // folder: 242 MB for 2.1.293, against 233 recorded for 2.1.284 and 214 for the floor before that.
-  assert.equal(CLAUDE.installMB, 242,
+  // reader before it installs. Measured 2026-11-05 with setup's own command, which fetches the newest
+  // release at or above the floor, into an empty folder: 323 MB for 2.1.318, against 242 for 2.1.293 alone.
+  assert.equal(CLAUDE.installMB, 323,
     "the install size is the one recorded for an earlier floor; re-measure it or setup tells a reader a "
     + "number that was true for a different release");
 });
