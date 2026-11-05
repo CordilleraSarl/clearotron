@@ -2613,7 +2613,7 @@ if (isMain) {
   } else {
     say("  Ordering a clearance from the portal puts the job in the queue and shows it there with its");
     say("  position. You started with --no-worker, so nothing is draining it: run");
-    say("    node driver/runner.mjs --watch");
+    say(`    ${invoke("run-queue")} --watch`);
     say("  in another terminal when you want the queued work done.");
   }
   say("");

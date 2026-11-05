@@ -232,6 +232,7 @@ import { RunCancelled, isCancelled, assertNotCancelledBeforePublish } from "./ca
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { CLIENT_ACTION, assessmentNotCompletedNote } from "../shared/client-failure-note.mjs";   // — the action, worded once; this surface names the mark itself
 import { stopReason } from "../shared/stop-reason.mjs";   // — one builder, four cancel sites
+import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 
 // Fix-1 (deterministic common-law closure): the lanes that dictate a supplementary grid SPEC (the driver
 // writes the spec, the plugin writes the ledger, the driver folds it in code). One tag per lane so
@@ -19542,16 +19543,17 @@ export function retiredEnvWarnings(env = process.env) {
 //
 // Pure and exported so every branch is testable with no run, no run dir and no spend.
 //
-// ABSOLUTE PATHS on purpose: this line is read hours later, possibly from a different directory, and a
-// relative path that silently resolves somewhere else would be a worse answer than no line at all.
-export function resumeCommand({ script, jobPath, codename, agent = null }) {   // @internal
+// THE PRODUCT'S OWN VERB, in the form that reaches this install from any directory, and an ABSOLUTE job path:
+// this line is read hours later, possibly from a different directory, and a relative path that silently
+// resolves somewhere else would be a worse answer than no line at all.
+export function resumeCommand({ jobPath, codename, agent = null, command = reachableCommand }) {   // @internal
   // THE IDENTITY IS THE CODENAME, NOT THE JOB PATH, and requiring both is what made this print nothing
   // on the failures that most needed it. A resume rebuilds the job from the run's own status when no
   // `--job` is given, so a command without one is valid — and it is the only valid one by the time a
   // failure has made a resume necessary, because the queue entry carrying the job is long consumed.
   // Requiring a path here meant every such failure was told "nothing to resume", which was false.
-  if (!script || !codename) return null;
-  return `node ${script}${jobPath ? ` --job ${jobPath}` : ""}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
+  if (!codename) return null;
+  return `${command("run")}${jobPath ? ` --job ${jobPath}` : ""}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
 }
 
 // The stderr lines a non-clean exit owes its reader, as an array (empty = say nothing further).
@@ -19568,12 +19570,12 @@ export function resumeCommand({ script, jobPath, codename, agent = null }) {   /
 // And where NO identity exists yet (the door preflights: tier sanity, engine binary, register credential,
 // an unresolvable resume codename), the honest line says there is nothing to resume rather than printing a
 // command with a hole in it.
-export function resumeAdvice({ result = null, error = null, signal = null, script = null, jobPath = null, agent = null, codename = null, experiment = false, noResume = false } = {}) {   // @internal
+export function resumeAdvice({ result = null, error = null, signal = null, jobPath = null, agent = null, codename = null, experiment = false, noResume = false, command = reachableCommand } = {}) {   // @internal
   if (result?.ok) return [];
   if (experiment) return [];
   if (noResume || error?.noResume) return [];
   if (result?.cancelled) return [`stopped at ${result.failedStage ?? "an early stage"} because you asked — terminal. Nothing was delivered and nothing resumes; start a new run when you want one.`];
-  const cmd = resumeCommand({ script, jobPath, codename, agent });
+  const cmd = resumeCommand({ jobPath, codename, agent, command });
   // No identity yet: the door preflights and the unresolvable-codename guard all fire before a run dir
   // exists, and a signal can arrive there too. Say there is nothing to resume rather than print a command
   // with a hole in it — and do not point at an "error above" when a signal is what happened.
@@ -19582,10 +19584,10 @@ export function resumeAdvice({ result = null, error = null, signal = null, scrip
     : "nothing to resume: this stopped before the run had an identity, so no work was started and none was lost. Fix the error above and run the same command again."];
   // A park is NOT a failure, and the difference is the reader's whole decision: wait, or act. Both park
   // kinds resume themselves wherever something re-invokes the runner — the systemd units on a server, or
-  // `runner.mjs --watch` on a machine that has none — so the line says that first and offers the manual
+  // `clearotron run-queue --watch` on a machine that has none — so the line says that first and offers the manual
   // command second. On a laptop with neither, the manual command is the only path, which is exactly why
   // it is printed rather than left to be looked up.
-  const watching = script ? `node ${join(dirname(script), "runner.mjs")} --watch` : "node driver/runner.mjs --watch";
+  const watching = `${command("run-queue")} --watch`;
   const lines = [];
   if (result?.postponed && result.recovery) {
     lines.push(`parked for automatic recovery${result.resetsAt ? ` until ${result.resetsAt}` : ""} — nothing failed terminally and every finished stage is kept.`);
@@ -19745,11 +19747,10 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research, orderRecovery }
     : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? { explicitJob: true } : { jobRebuiltFromStatus: true }), records: a.records };
-  const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
   // in the exit advice would reintroduce it one layer along.
-  const advise = (o) => { for (const line of resumeAdvice({ script, jobPath: a.job ? resolve(a.job) : null, agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
+  const advise = (o) => { for (const line of resumeAdvice({ jobPath: a.job ? resolve(a.job) : null, agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
 
   // ── the laptop case: a closed lid, a shutdown, a ^C ────────────────────────────────────────────────
   // Until now this CLI had NO signal handler: node's default die-now killed the process mid-stage, the run
