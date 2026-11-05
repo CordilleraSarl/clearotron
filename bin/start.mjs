@@ -1392,12 +1392,12 @@ if (isMain) {
     //
     // Three conditions, and each is a different reason:
     //   · the address is genuinely taken — anything else is not this case;
-    //   · the reader did not state this port, so no one is addressed to it. An explicitly set port is
-    //     a stated address and is refused exactly as before;
+    //   · the reader did not state this port, so no one is addressed to it. A port set by its variable or
+    //     by `--port` is a stated address and is refused exactly as before;
     //   · nothing fronts these doors, so nothing outside resolves to the old number.
     // With any of those false the refusal below fires unchanged, which is the whole of the previous
     // behaviour kept intact underneath this.
-    if (code === "EADDRINUSE" && key && !fronted.length && !String(process.env[portVar] ?? "").trim()) {
+    if (code === "EADDRINUSE" && key && !fronted.length && !portFlag && !String(process.env[portVar] ?? "").trim()) {
       const next = await nextFreePort(port, async (p) => (await probe(p)) === null, { claimed: claimedPorts });
       // NULL IS NOT A FALLBACK. Nothing free in range means the reader is told the truth about the
       // port they asked for, rather than sent to one this could not prove was free either.

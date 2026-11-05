@@ -277,6 +277,7 @@ test("the move is wired behind all three conditions, and the refusal still stand
   assert.ok(guard, "the move is gone, or its guard no longer keys on the address being taken");
   assert.match(guard, /!fronted\.length/, "a fronted deployment would have its doors moved out from under it");
   assert.match(guard, /process\.env\[portVar\]/, "a port the reader stated would be moved");
+  assert.match(guard, /!portFlag/, "a port the reader chose with --port would be moved");
 
   // AND THE REFUSAL IS STILL THERE. Replacing it rather than falling through to it would turn every
   // other bind failure — EACCES, a fronted collision, an exhausted range — into silence.
