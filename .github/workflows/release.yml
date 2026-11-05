@@ -40,8 +40,9 @@
 # pipeline that waited for one would cut versions forever and never publish.
 #
 # `workflow_dispatch` WITHOUT `cut: beta` IS STILL THE REHEARSAL and still cannot publish: the publish
-# step runs `--dry-run` on that input, from any branch. A dispatched CUT is held to `main` by the branch
-# check in the same step, because it can publish.
+# step runs `--dry-run` on that input. It runs from `main` only: the `npm` environment admits no other
+# branch, so a rehearsal dispatched from one stops there before any step runs (measured 2026-11-05). A
+# dispatched CUT is held to `main` by the branch check in the same step as well, because it can publish.
 name: Release
 
 on:
@@ -1169,8 +1170,8 @@ jobs:
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
       #    is `beta` — the on-demand cut. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
-      #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
-      #    publish, and a cut may not.
+      #    DISPATCHED CUT TO `main`, whatever the environment admits. Today the `npm` environment admits
+      #    only `main`, so a rehearsal from another branch stops at the environment before this step.
       #  · a tag and the manifest must name the same version. A tag is the one thing a person makes by
       #    hand, and one that disagrees with the manifest ships an artefact nobody can trace back. It
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
@@ -1654,8 +1655,8 @@ jobs:
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
       #    is `beta` — the on-demand cut. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
-      #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
-      #    publish, and a cut may not.
+      #    DISPATCHED CUT TO `main`, whatever the environment admits. Today the `npm` environment admits
+      #    only `main`, so a rehearsal from another branch stops at the environment before this step.
       #  · a tag and the manifest must name the same version. A tag is the one thing a person makes by
       #    hand, and one that disagrees with the manifest ships an artefact nobody can trace back. It
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
