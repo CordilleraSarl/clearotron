@@ -18,7 +18,7 @@
 import { test, after } from "node:test";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling; the default is taken only when NO spelling holds one
 import assert from "node:assert/strict";
-import { mkdtempSync, chmodSync, readFileSync, existsSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { mkdtempSync, chmodSync, readFileSync, existsSync, writeFileSync, mkdirSync, rmSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -420,5 +420,99 @@ test("a recheck saves either way: through the tool, or by rewriting the review f
   const rec = recheckRecord(file.res.runDir);
   assert.deepEqual([rec.status, rec.by, rec.entryVerdict, rec.verdict], ["read", "file", "BLOCKING", "CONDITIONAL"]);
   assert.ok(existsSync(driverDir(file.res.runDir, "corrective-cycle.json")), "a rewritten review completes the cycle too");
+});
+
+// ── THE EARLIER REVIEW'S POINTS SAY WHOSE THEY ARE ─────────────────────────────────────────────────────────────────────
+//
+// An unread recheck leaves the review from before the correction in place, and the reviewing lawyer's open-points record
+// is built from it. The record puts those points under the approved heading and names that review by its file, with
+// no sentence added; a recheck that then saves a review takes the heading away. The client's page, its email and the
+// published files carry none of it.
+const EARLIER_HEADING = "#### Earlier review \u2014 correction not rechecked";   // an em dash, as approved
+const SOURCE = "*(`senior-eye-review.md`)*";   // the review the points come from, as a value
+const openPoints = (runDir) => readFileSync(driverDir(runDir, "reviewer-open-questions.md"), "utf8");
+const REVIEWS = (e) => e.event === "stage" && e.stage === "narrative-refutation";
+const POST_REPAIR = ["post-repair-review.json", "post-repair-corrections.json"];
+const filesUnder = (dir, skip) => (existsSync(dir) ? readdirSync(dir, { withFileTypes: true }) : [])
+  .flatMap((e) => (skip.includes(e.name) ? [] : e.isDirectory() ? filesUnder(join(dir, e.name), skip) : [join(dir, e.name)]));
+// Every cell of every sheet of a workbook, as text. It is compressed, so its bytes would carry no phrase whatever it held.
+async function workbookText(file) {
+  const ExcelJS = (await import("exceljs")).default;
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(file);
+  const out = [];
+  wb.eachSheet((ws) => ws.eachRow((row) => row.eachCell((c) => out.push(String(c.text ?? c.value ?? "")))));
+  return out.join("\n");
+}
+
+test("after a recheck that saved no review, the open points sit under the earlier review's heading, which names that review", async () => {
+  const { buildReviewerOpenPointsSection } = await import("../pipeline.mjs");
+  const POINT = "an invented ground the review before the correction raised about the spine (mock)";
+  const { res, root, events } = await runPipeline({ MOCK_VERDICT: "BLOCKING", MOCK_VERDICT_DEFECTS: `- ${POINT}`,
+    MOCK_SKEPTIC: "no flags surfaced", MOCK_RECHECK_UNREAD: "1" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  // THE STATE, OR THIS PROVES NOTHING: one recheck that saved nothing, the review in place the one it found, saved by call 1.
+  const rec = recheckRecord(res.runDir);
+  assert.deepEqual([rec.status, rec.fail], ["unread", "no-accepted-call"]);
+  const review = readFileSync(join(res.runDir, "senior-eye-review.md"), "utf8");
+  assert.ok(review.startsWith("BLOCKING") && review.includes(POINT), "the review in place is not the one from before the correction");
+  const saved = JSON.parse(readFileSync(driverDir(res.runDir, "refutation-calls", "call-001.json"), "utf8"));
+  assert.deepEqual([saved.accepted, saved.seq < rec.seq0, saved.params?.flags?.[0]?.text], [true, true, POINT],
+    "call 1 is not the accepted save of the review from before the recheck");
+  for (const f of POST_REPAIR) assert.ok(!existsSync(driverDir(res.runDir, f)), `premise: no review after a repair, but ${f} is on record`);
+
+  // THE RECORD: today's section, with the heading and the review's file between its own heading and the lead.
+  // Nothing in it is dropped or reworded: the ground and the lead are the earlier review's, as they were.
+  const applied = JSON.parse(readFileSync(driverDir(res.runDir, "corrections-applied.json"), "utf8")).rows;
+  const [head, ...rest] = buildReviewerOpenPointsSection(review, applied).split("\n\n");
+  assert.equal(head, "### Reviewer's open questions");
+  assert.ok(rest.join("\n\n").includes(POINT), "premise: the earlier review's ground prints");
+  assert.equal(openPoints(res.runDir), [head, EARLIER_HEADING, SOURCE, ...rest].join("\n\n") + "\n");
+
+  // NOTHING ELSE MOVES: two reviews dispatched (the first and its recheck), and no file a client is sent, and none
+  // published or kept outside `_driver/`, carries the heading or names the review; the ground stays off the page and email.
+  assert.equal(events.filter(REVIEWS).length, 2, "an extra review was dispatched");
+  const files = [...filesUnder(res.runDir, ["_driver"]), ...filesUnder(join(root, "pool"), [])];
+  assert.ok(files.some((f) => f.endsWith("report.html")) && files.some((f) => f.endsWith("email-body.md")), "premise: the client's files were written");
+  for (const f of files) {
+    const text = f.endsWith(".xlsx") ? await workbookText(f) : readFileSync(f, "utf8");
+    assert.ok(!text.includes("correction not rechecked") && !text.includes(SOURCE), `${f} carries the record's new words`);
+  }
+  for (const f of ["report.md", "email-body.md"]) assert.ok(!readFileSync(join(res.runDir, f), "utf8").includes(POINT), `the ground reached ${f}`);
+});
+
+test("when a later recheck saves an accepted review, the heading is gone and the points are the new review's", async () => {
+  const { buildReviewerOpenPointsSection } = await import("../pipeline.mjs");
+  const EARLIER = "an invented ground the review before the correction raised (mock)";
+  const LATER = "an invented ground the review of the corrected record raised (mock)";
+  const { res } = await runPipeline({ MOCK_VERDICT: "BLOCKING", MOCK_VERDICT_DEFECTS: `- ${EARLIER}`, MOCK_SKEPTIC: "no flags surfaced",
+    MOCK_RECHECK_UNREAD: "once", MOCK_FAIL_STAGE: "record_report_overview" });
+  assert.equal(res.ok, false, "pass 1 dies in the delivery phase, after the unread recheck");
+  assert.equal(recheckRecord(res.runDir).status, "unread");
+
+  // The resumed recheck saves a review of its own: the same verdict, on a different ground.
+  delete process.env.MOCK_FAIL_STAGE;
+  process.env.MOCK_VERDICT_DEFECTS = `- ${LATER}`;
+  const codename = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8")).codename;
+  const { pipeline: resume } = await import(`../pipeline.mjs?bust=${Math.random()}`);
+  const res2 = await resume({ ...JOB }, { codename });
+  assert.equal(res2.ok, true, JSON.stringify(res2));
+  // THE STATE: the resumed recheck saved the review in place, no other review was dispatched, and none after a repair.
+  const all = readEvents(res2.runDir);
+  assert.equal(recheckRecord(res2.runDir).status, "read", "the resumed recheck saved no review");
+  assert.deepEqual([all.filter(REVIEWS).length, all.filter(RECHECK).length], [3, 2], "the first review was dispatched again, or a recheck was not");
+  const review = readFileSync(join(res2.runDir, "senior-eye-review.md"), "utf8");
+  assert.ok(review.startsWith("BLOCKING") && review.includes(LATER) && !review.includes(EARLIER), "the review in place is not the recheck's");
+  for (const f of POST_REPAIR) assert.ok(!existsSync(driverDir(res2.runDir, f)), `premise: no review after a repair, but ${f} is on record`);
+
+  // THE RECORD IS TODAY'S: what the builder makes of the new review and the correction's rows, byte for byte. The new
+  // review's ground prints as the reviewer's; the earlier review's ground the correction could not show closed still
+  // prints with its outcome, as it always has.
+  const open = openPoints(res2.runDir);
+  assert.ok(!open.includes("correction not rechecked") && !open.includes(SOURCE), "the heading outlived the recheck that saved a review");
+  assert.ok(open.includes(LATER), "the new review's ground is not in the record");
+  assert.ok(open.includes(EARLIER), "the earlier ground the correction could not show closed left the record");
+  const applied = JSON.parse(readFileSync(driverDir(res2.runDir, "corrections-applied.json"), "utf8")).rows;
+  assert.equal(open, `${buildReviewerOpenPointsSection(review, applied)}\n`);
 });
 

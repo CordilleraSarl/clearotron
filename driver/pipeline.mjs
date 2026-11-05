@@ -9252,6 +9252,8 @@ const softNorm = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "")
 export const CODE_BUILT_SECTIONS = Object.freeze({   // @internal
   onlyYou: "### Only you can close these",
   reviewerOpenPoints: "### Reviewer's open questions",
+  // Under it, the points of the review that stood when the recheck after the correction saved none.
+  earlierReview: "#### Earlier review — correction not rechecked",
   askAnswers: "### Answers to your instructions",
   reasonedNegatives: "# Reasoned negatives",
 });
@@ -9476,7 +9478,18 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // impossible, and rendering nothing would ship a report whose body reads as reviewed while the reviewer
 // refused. Silence is the one thing the section exists to prevent. The wording is the sidecar's own,
 // already carried at the degenerate branch above — one sentence for one fact, in both places.
-export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {   // @internal
+//
+// ── THE EARLIER REVIEW'S POINTS SAY WHOSE THEY ARE (heading approved 2026-11-04) ──────────────────
+//
+// A recheck after the correction that saved no review leaves the review from before the correction in
+// place, and its verdict stands. Built from it with nothing said, the points read as the reviewer's view of
+// the corrected record, and nobody reviewed that record. So the caller passes `earlier` — the review's file
+// (earlierReviewNotRechecked) — and the section puts everything it prints under
+// `CODE_BUILT_SECTIONS.earlierReview`, with that file as a value and no sentence added. The lead goes under
+// it too, because the lead is chosen by that review's verdict. The points, their outcomes and the leads are
+// untouched, nothing is dropped, and the section's own heading stays first for every reader that keys on
+// it. Without `earlier`, not a byte of the section changes.
+export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null, { earlier = null } = {}) {   // @internal
   const blocking = parseVerdict(reviewMd) === "BLOCKING";
   const cited = blocking ? parseCorrections(reviewMd) : [];
   const unfixed = (Array.isArray(appliedRows) ? appliedRows : []).filter((r) => r?.ground === true || unresolvedFlags([r]).length);
@@ -9492,6 +9505,10 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     seen.add(key);
     rows.push(r);
   }
+  // The earlier review's heading, then where its points come from, as a value: the review's file.
+  const fromEarlier = earlier
+    ? [CODE_BUILT_SECTIONS.earlierReview, "", ...(earlier.review ? [`*(\`${earlier.review}\`)*`, ""] : [])]
+    : [];
   if (!rows.length) {
     // Signed, and nothing left open: no section. This is the majority of runs and it is the whole
     // reason the emptiness is checked AFTER the union rather than by the verdict.
@@ -9499,6 +9516,7 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     return [
       "### Reviewer's open questions",
       "",
+      ...fromEarlier,
       "**The independent reviewer did not sign this report off, and cited no specific defect.** A "
       + "refusal without a named ground is not a finding you can act on — read the reviewer's own note "
       + "before relying on this report.",
@@ -9554,7 +9572,7 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
       + "closed.** Each was put back to the drafting pass; what the run could establish about each one "
       + "is noted against it. They are open questions for the reviewing lawyer's judgment — not "
       + "conditions for you to satisfy, and not steps that complete the work.";
-  return [CODE_BUILT_SECTIONS.reviewerOpenPoints, "", lead, "", items.join("\n")].join("\n");
+  return [CODE_BUILT_SECTIONS.reviewerOpenPoints, "", ...fromEarlier, lead, "", items.join("\n")].join("\n");
 }
 
 // PR-9 — the code-built "Answers to your instructions" section, the only-you pattern one lane over:
@@ -9686,6 +9704,29 @@ export const CORRECTIONS_DELIVERED_FILE = "corrections-delivered.json";
 // Whether the recheck after the correction saved an accepted review (`read`) or not (`unread`, with why), with the
 // entry verdict and the verdict that stood. An unread recheck is a correction nobody verified.
 export const CORRECTIVE_RECHECK_FILE = "corrective-recheck.json";
+
+/**
+ * The review the open points come from when the recheck after the correction saved none, as `{review}`: the review's
+ * file, relative to the run. null when the recheck saved a review, when a review has been saved since it began, or
+ * when its record cannot be read; each of those builds the open points as they were. Never throws.
+ *
+ * WHILE NOTHING HAS SAVED A REVIEW SINCE, THE REVIEW IN PLACE IS THE ONE FROM BEFORE THE CORRECTION, and so is every
+ * point the record prints: that review's own grounds, and the correction's rows, which are its flags. A review saved
+ * after the recheck began (a delivery-check repair's, or the recheck's own on a stage that then failed) puts its own
+ * points into the same record, and naming those the earlier review's would misplace them the other way.
+ *
+ * NO CALL IS NAMED. The last accepted review call is not always the save of the file in place: a narrowed review after
+ * a repair is accepted and the whole review then put back, and a recheck may save by rewriting the file. The file is
+ * what the points were built from, so the file is what the record names.
+ */
+function earlierReviewNotRechecked(P) {
+  try {
+    const runDir = dirname(P.report);
+    const recheck = JSON.parse(readFileSync(driverDir(runDir, CORRECTIVE_RECHECK_FILE), "utf8"));
+    if (recheck?.status !== "unread" || !Number.isInteger(recheck.seq0) || readAcceptedReviewSince(runDir, recheck.seq0)) return null;
+    return { review: relative(runDir, P.seniorEyeReview).replace(/\\/g, "/") };
+  } catch { return null; }
+}
 
 /** Keep the basis at the corrective pass, from the two records the applied table was built from. Throws on a write failure; the caller is never-kill. */
 export function recordCorrectionsBasis(runDir, rows, preDoc, postDoc) {   // @internal
@@ -9851,8 +9892,9 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
         if (rows.length) applied = [...(applied ?? []), ...rows];
       }
     } catch { /* no review after a repair on this run */ }
+    // …and where the recheck after the correction saved no review, the review in place is named as the earlier one.
     const openPoints = existsSync(P.seniorEyeReview)
-      ? buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied)
+      ? buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied, { earlier: earlierReviewNotRechecked(P) })
       : "";
     const record = driverDir(dirname(P.report), REVIEWER_OPEN_QUESTIONS_FILE);
     if (openPoints) {
