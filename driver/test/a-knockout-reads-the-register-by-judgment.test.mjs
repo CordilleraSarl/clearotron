@@ -21,8 +21,10 @@ import { countRegisterHits, variantFormsLine } from "../register-count.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { fixtureFileName, fixtureLister, recordsLine } from "../register-records.mjs";
 import { writeFixtureMarker } from "../register-fixture-marker.mjs";
-import { countsWithAlternatives, executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutListView, knockoutProposals,
-  knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, LIST_GOODS_CHARS } from "../knockout-register-read.mjs";
+import { executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutListView, knockoutProposals,
+  knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, unfoldFormCounts, withCitedFilings, LIST_GOODS_CHARS } from "../knockout-register-read.mjs";
+import { registerRecordIdsFor } from "../verify-knockout.mjs";
+import { ownersOwedACheck } from "../owner-use-check.mjs";
 import { acceptKnockoutRegister, recordKnockoutRegisterRead, validateKnockoutRegisterFile, knockoutRegisterFile, mergeKnockoutRegisterCall } from "../knockout-register-record.mjs";
 import { readingDoc } from "./knockout-reading-fixture.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
@@ -63,6 +65,56 @@ test("a manageable exact list is read in full: no share, no cut, whatever order 
   assert.deepEqual(again.marks[0].records.map((r) => r.recordId).sort(), m.records.map((r) => r.recordId).sort());
 });
 
+// ── THE MODEL SEES THE COUNT BEFORE ANYTHING IS READ ────────────────────────────────────────────
+
+test("below the fetch limit and above it, nothing is read until the step asks: the count alone is the first answer", async () => {
+  for (const [label, total] of [["below the limit", 130], ["at the edge", 600], ["above the limit", 903]]) {
+    const asked = [];
+    const lister = standIn({ [NAME]: total > 600 ? total : rows(total) }, asked);
+    const dir = mkdtempSync(join(tmpdir(), "ko-count-first-"));
+    mkdirSync(driverDir(dir), { recursive: true });
+    const counts = await countRegisterHits({ ...scope, variantCap: 0, counter: async (term, p, o) => {
+      const r = await lister(term, { ...o, matchMode: p.matchMode, count: true });
+      return r?.ok ? { ok: true, total: r.total } : { ok: false, total: null, reason: r?.reason };
+    } });
+    writeFileSync(driverDir(dir, "instructed-scope.json"), JSON.stringify({ marks: [NAME] }));
+    writeFileSync(driverDir(dir, "register-counts.json"), JSON.stringify(counts));
+    writeFileSync(questionPlanPath(dir), JSON.stringify(knockoutQuestionPlan({ ...scope })));
+    assert.equal(counts.marks[0].counts.identical.total, total, label);
+    assert.equal(knockoutBandBlocks(dir, NAME).size, 0, `${label}: nothing was read with the counts`);
+    // The step may not leave the name's own question unasked, whatever its count.
+    const refused = recordKnockoutRegisterRead(dir, { marks: [{ name: NAME, carried: [], set_aside: [{ question: openingQid(NAME, "identical"), why: "looks crowded" }], not_asked: [] }] });
+    assert.match(String(refused.refused), /no question was asked on it/, `${label}: a reason does not stand in for the name's own question`);
+    // Asked: a list it can read comes back whole; a crowd comes back as the crowd it is, with nothing fetched.
+    const reply = JSON.parse((await ask(dir, NAME, lister, [{ predicate: "exact", term: NAME, nice_classes: [9], rationale: "the name's own list" }])).text);
+    const block = knockoutBandBlocks(dir, NAME).get(reply.minted[0]);
+    if (total > 600) {
+      assert.equal(block.state, "incomplete", label);
+      assert.equal(block.total_hits, total, label);
+      assert.deepEqual(block.records ?? [], [], `${label}: nothing is fetched over the limit`);
+    } else {
+      assert.equal(block.state, "enumerated", label);
+      assert.equal(block.records.length, total, `${label}: the selected list is read in full`);
+    }
+  }
+});
+
+test("a list under the limit can still be narrowed first: the step chooses, and nothing was fetched for the wider list", async () => {
+  const asked = [];
+  const wide = rows(500);
+  const lister = standIn({ [NAME]: wide, [`${NAME}|goods:tonic`]: wide.slice(0, 12) }, asked);
+  const { doc, runDir } = await readingDoc({ ...scope, lister, variantCap: 0, execute: async () => ({ ok: true }), ask: async ({ runDir: dir }) => {
+    asked.length = 0;
+    await ask(dir, NAME, lister, [{ predicate: "exact", term: NAME, nice_classes: [9], goods_words: ["tonic"], narrows: openingQid(NAME, "identical"), rationale: "narrowed before reading" }]);
+  }, reading: null });
+  assert.deepEqual(asked.map((a) => a.goods), [["tonic"]], "the only question sent was the narrowed one");
+  const m = doc.marks[0];
+  assert.equal(m.records.length, 12);
+  assert.equal(m.terms.find((t) => t.qid === openingQid(NAME, "identical")).state, "narrowed", "the wider list stays on the record, answered by the narrowing");
+  assert.deepEqual(questionsOwed({ name: NAME, countsEntry: { counts: { identical: { total: 500 } } }, blocks: knockoutBandBlocks(runDir, NAME),
+    proposals: knockoutProposals(runDir, NAME).entries, carried: new Set(m.records.map((r) => r.recordId)) }), []);
+});
+
 test("a crowded exact answer is counted, not read, and a goods narrowing answers it with both counts on the record", async () => {
   const narrowed = rows(40, "g");
   const lister = standIn({ [NAME]: 903, [`${NAME}|goods:tonic`]: narrowed });
@@ -77,7 +129,7 @@ test("a crowded exact answer is counted, not read, and a goods narrowing answers
   const m = doc.marks[0];
   const crowd = m.terms.find((t) => t.qid === openingQid(NAME, "identical"));
   assert.equal(crowd.total, 903, "the crowd stays on the record with its count");
-  assert.equal(crowd.state, "crowd-not-read");
+  assert.equal(crowd.state, "narrowed");
   const answer = m.terms.find((t) => t.narrows === openingQid(NAME, "identical"));
   assert.equal(answer.total, 40);
   assert.deepEqual(answer.goods, ["tonic"]);
@@ -145,27 +197,82 @@ test("zero, failed, not asked and a crowd not read are four different states", (
   assert.equal(stateOf("C"), "not-asked");
 });
 
-test("alternative word orders are asked separately, stay tied to the instructed item, and a list is refused as one term", async () => {
+test("alternative word orders are counted and asked separately, stay tied to the instructed item, and a list is refused as one term", async () => {
   const LISTED = "BRAE QUILL / QUILL BRAE";
-  const lister = standIn({ "BRAE QUILL": [row("a1", "BRAE QUILL")], "QUILL BRAE": [] });
-  const scoped = { ...scope, marks: [{ name: LISTED, classes: [9] }] };
-  const reading = { marks: [{ name: LISTED, carried: [{ records: ["/mark/em/a1"], why: "the filed word order" }], set_aside: [], not_asked: [], alternatives: ["BRAE QUILL", "QUILL BRAE"] }] };
-  let run = null;
-  const { doc, counts } = await readingDoc({ ...scoped, lister, variantCap: 0, reading, counter: async () => ({ ok: false, total: null, unsupported: true, reason: "capability-gap: list-shaped" }),
-    ask: async ({ runDir }) => {
-      run = runDir;
-      const refused = JSON.parse((await ask(runDir, LISTED, lister, [{ predicate: "exact", term: LISTED, nice_classes: [9] }])).text);
-      assert.equal(refused.minted.length, 0, "a list is not one exact name");
-      assert.ok(refused.rejected.length >= 1);
-      await ask(runDir, LISTED, lister, [{ predicate: "exact", term: "BRAE QUILL", nice_classes: [9], rationale: "the first order supplied" }, { predicate: "exact", term: "QUILL BRAE", nice_classes: [9], rationale: "the second order supplied" }]);
-    } });
+  const framedMarks = [{ name: LISTED, alternatives: ["BRAE QUILL", "QUILL BRAE"] }];
+  const asked = [];
+  const lister = standIn({ "BRAE QUILL": [row("a1", "BRAE QUILL")], "QUILL BRAE": 0, [`BRAE QUILL|default`]: 2, [`QUILL BRAE|default`]: 0 }, asked);
+  const scoped = { ...scope, marks: [{ name: LISTED, classes: [9] }], framedMarks };
+  const { doc, counts } = await readingDoc({ ...scoped, lister, variantCap: 0, ask: async ({ runDir }) => {
+    const refused = JSON.parse((await ask(runDir, LISTED, lister, [{ predicate: "exact", term: LISTED, nice_classes: [9] }])).text);
+    assert.equal(refused.minted.length, 0, "a list is not one exact name");
+    assert.ok(refused.rejected.length >= 1);
+  } });
+  assert.ok(!asked.some((a) => a.term === LISTED), "the list itself never reached the register");
   const m = doc.marks[0];
   assert.equal(m.name, LISTED);
   assert.deepEqual(m.terms.filter((t) => t.basis === "identical").map((t) => t.term).sort(), ["BRAE QUILL", "QUILL BRAE"]);
   assert.deepEqual(m.records.map((r) => r.matchedBasis), ["identical"]);
-  const fixed = countsWithAlternatives(counts, reading, { readBlocks: (n) => knockoutBandBlocks(run, n), readProposals: (n) => knockoutProposals(run, n) });
-  assert.equal(fixed.marks[0].counts.identical.total, 1, "the name's count is its alternatives' answers");
-  assert.deepEqual(fixed.marks[0].counts.identical.alternatives.map((a) => a.term), ["BRAE QUILL", "QUILL BRAE"]);
+  const cell = counts.marks[0].counts.identical;
+  assert.equal(counts.marks.length, 1, "one row for the one requested item");
+  assert.equal(cell.total, 1, "the name's count is its forms' answers");
+  assert.deepEqual(cell.alternatives.map((a) => [a.term, a.total]), [["BRAE QUILL", 1], ["QUILL BRAE", 0]]);
+  assert.equal(counts.marks[0].counts.containing.total, 2);
+});
+
+test("a form with no answer leaves the name's count open, never a smaller sum", async () => {
+  const framedMarks = [{ name: "A / B", alternatives: ["BRAEMOSS", "MOSSBRAE"] }];
+  const { counts } = await readingDoc({ ...scope, marks: [{ name: "A / B", classes: [9] }], framedMarks, variantCap: 0, lister: standIn({ BRAEMOSS: 4 }) });
+  assert.equal(counts.marks[0].counts.identical.total, null);
+  assert.match(String(counts.marks[0].counts.identical.unavailable), /no saved answer/);
+});
+
+test("a resume reuses each form's count: the folded record unfolds to the rows the count lane holds", async () => {
+  const framedMarks = [{ name: "A / B", alternatives: ["BRAEMOSS", "MOSSBRAE"] }];
+  const { counts } = await readingDoc({ ...scope, marks: [{ name: "A / B", classes: [9] }], framedMarks, variantCap: 0, lister: standIn({ BRAEMOSS: 4, MOSSBRAE: 0, "BRAEMOSS|default": 4, "MOSSBRAE|default": 0 }) });
+  assert.deepEqual(unfoldFormCounts(counts).marks.map((m) => m.name), ["BRAEMOSS", "MOSSBRAE"]);
+});
+
+// ── THE HANDOFF ────────────────────────────────────────────────────────────────────────────────
+
+test("a set-aside filing the rating cites moves up with the carried ones; one it does not stays set aside", () => {
+  const doc = { marks: [{ name: NAME, records: [{ recordId: "a" }], fetched: 1, setAsideRecords: [{ recordId: "b" }, { recordId: "c" }] }] };
+  const moved = withCitedFilings(doc, { marks: [{ name: NAME, registerReads: [{ recordId: "b", read: "the goods are the client's" }], findings: [{ weighedFilings: ["a"] }] }] });
+  assert.deepEqual(moved.marks[0].records.map((r) => r.recordId), ["a", "b"]);
+  assert.equal(moved.marks[0].records[1].citedFromSetAside, true);
+  assert.deepEqual(moved.marks[0].setAsideRecords.map((r) => r.recordId), ["c"]);
+  assert.equal(moved.marks[0].fetched, 2);
+  assert.equal(withCitedFilings(doc, { marks: [{ name: NAME }] }).marks[0].records.length, 1, "nothing cited, nothing moved");
+});
+
+test("what the step sets aside the rating step may cite: its ids join the run's record, and only this name's", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ko-cite-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [{ recordId: "a" }], setAsideRecords: [{ recordId: "b" }] }, { name: "MOSSVALE", records: [{ recordId: "z" }] }] }));
+  assert.deepEqual([...registerRecordIdsFor(dir, NAME)].sort(), ["a", "b"]);
+  assert.deepEqual([...registerRecordIdsFor(dir, "MOSSVALE")], ["z"]);
+});
+
+test("the owners searched are those the step named, with no cap; a run whose step did not finish keeps the bounded rule", () => {
+  const records = ["Alder", "Birch", "Cedar", "Damson", "Elm"].map((o, i) => ({ recordId: `r${i}`, owner: `${o} Ltd`, status: "Registered", classes: [9] }));
+  const named = ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { ownerChecks: ["r0", "r3", "r4"] } }] });
+  assert.deepEqual(named.map((o) => o.owner), ["Alder Ltd", "Damson Ltd", "Elm Ltd"], "judgment names them, in any number");
+  assert.deepEqual(ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { ownerChecks: [] } }] }), [], "the step named none, so none is searched");
+  assert.equal(ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { notFinished: true } }] }).length, 3, "no reading record: the promoted filings, bounded");
+});
+
+test("the rating step and the review can read a list set aside, and nothing on them can ask the register", () => {
+  for (const stage of ["knockout-assess#0", "knockout-review"]) {
+    const grant = allowedToolsFor(toolGroupsForStage(stage)).split(" ");
+    assert.ok(grant.some((t) => t.endsWith("__read_register_list")), `${stage} cannot read the lists`);
+    assert.ok(!grant.some((t) => t.startsWith("mcp__register__")), `${stage} holds a register tool`);
+  }
+  const dir = mkdtempSync(join(tmpdir(), "ko-review-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  const K = koPaths(dir);
+  assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /read_register_list/, "a path the run does not hold is not named");
+  writeFileSync(K.registerRecords, "{}");
+  assert.match(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /read_register_list/);
 });
 
 test("the mechanical forms are one question on a register that answers a joined count, and the total is the same", async () => {
@@ -279,11 +386,11 @@ test("the record refuses a read list, a crowd and a count left unaccounted for, 
   assert.equal(validateKnockoutRegisterFile(ok.written, readFileSync(ok.written, "utf8")).ok, true);
 });
 
-test("a count nothing read is owed a reason, a zero and a failure are not", () => {
+test("a crowd the step asked and could not read is owed a reason, a zero and a failure are not", () => {
   const id = openingQid(NAME, "identical");
-  const crowd = runWith({ total: 903 });
+  const crowd = runWith({ total: 903, blocks: [{ qid: "q-crowd", state: "incomplete", total_hits: 903 }], entries: [{ qid: "q-crowd", predicate: "exact", term: NAME }] });
   assert.match(String(recordKnockoutRegisterRead(crowd, { marks: [{ name: NAME, carried: [], set_aside: [], not_asked: [] }] }).refused), /counted-not-read/);
-  assert.ok(recordKnockoutRegisterRead(crowd, { marks: [{ name: NAME, carried: [], set_aside: [{ question: id, why: "a crowd; the client's own goods answered nothing further" }], not_asked: [] }] }).written);
+  assert.ok(recordKnockoutRegisterRead(crowd, { marks: [{ name: NAME, carried: [], set_aside: [{ question: id, why: "a crowd; the client's own goods answered nothing further" }, { question: "q-crowd", why: "the same crowd" }], not_asked: [] }] }).written);
   const clean = runWith({ total: 0, blocks: [{ qid: "q-fail", state: "incomplete", total_hits: 0, error: true, reason: "provider error" }], entries: [{ qid: "q-fail", predicate: "exact", term: "QUILLBREY" }] });
   assert.ok(recordKnockoutRegisterRead(clean, { marks: [{ name: NAME, carried: [], set_aside: [], not_asked: [] }] }).written, "a zero says itself, and a failure is the engine's to report");
 });

@@ -58,18 +58,20 @@ read and from the client's request.
   counted, not read. Read them only if their count and the request justify it.
 - **A word or phrase that carries the name** may justify a containing search, `default`. Not every word of every name
   does.
-- **Where the instructed name holds alternatives**, two word orders or two spellings, ask each on its own under that
-  name's axis, and name them as `alternatives` on that name's row. Never send the list as one term, and never split a
-  name that is simply written with a slash.
+- **A name your opening message lists in several written forms** is one item: each form has its own count and its own
+  question, on that name's axis. Never send a list as one term.
 - **A sound-alike question**, `phonetic`, may answer a near-form question you have justified. Its filings come grouped
   by office with no score, so neither their order nor their number says what is close, and some will not be close at
   all. A register with no such search says so, and that is not a clean answer.
 
-A zero says only that this question found nothing. A question that failed or was not sent is not a zero.
+A zero says only that this question found nothing. A question that failed or was not sent is not a zero. A tool's note
+beside a crowd may name `unit.md`; for you those are the steps above.
 
 ### What you hand back
 
-One row per name. `carried`: the filings a lawyer would raise, in groups that share a reason. `set_aside`: per question,
+One row per name. `carried`: the filings a lawyer would raise, in groups that share a reason. Mark a group `check_owner`
+where what its owners actually sell would change how it reads; the driver then searches those owners before the rating
+step. `set_aside`: per question,
 what you read or counted and did not carry, and why; one reason covers a group, and no record needs a paragraph of its
 own. `not_asked`: what you considered and did not ask, and why. `open_questions`: what you could not settle, for the step
 that rates the name. A name with nothing on the register hands back empty lists.

@@ -396,7 +396,7 @@ const RECORDING_GRANTS = Object.freeze({
   //     grant is still its one record tool. Its reads are enumerable — the skill doc, the triage deck, the
   //     firm-wide spine, the plan and the per-mark payloads the dispatch names by path — so it takes the
   //     frame-diff ruling and gets no `search_run_artifacts`.
-  "knockout-assess": Object.freeze(["mcp__recording-knockout-assess__record_knockout_assess"]),
+  "knockout-assess": Object.freeze(["mcp__recording-knockout-assess__read_register_list", "mcp__recording-knockout-assess__record_knockout_assess"]),
   //   · knockout-frame is the lane's second and last, and the first recording stage that is not fanned at
   //     all — no `:` axis, no `#` chunk. Its grant is still its one record tool: it FRAMES and its own
   //     dispatch says it does not search, so a retrieval grant here would contradict its orders.
@@ -463,6 +463,7 @@ const RECORDING_GRANTS = Object.freeze({
   // would be a band change wearing a rewrite's clothes, on the one stage whose whole claim is that it
   // decides nothing.
   "knockout-review": Object.freeze([
+    "mcp__recording-knockout-review__read_register_list",
     "mcp__recording-knockout-review__record_knockout_review",
   ]),
   // The knockout's reading step: the register's propose tool alone, its read of the run's own lists, and its record tool.

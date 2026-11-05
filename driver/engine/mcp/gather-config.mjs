@@ -549,7 +549,7 @@ const RECORDING = Object.freeze({
   "knockout-assess": {
     seatWrites: false,
     perChunk: true,
-    tools: Object.freeze(["record_knockout_assess"]),
+    tools: Object.freeze(["record_knockout_assess", "read_register_list"]),
     reason: "hands back the per-chunk rated assessment as VALUES through record_knockout_assess instead "
       + "of writing knockout-assess-<n>.json itself, so the band, the class arrays and the typed read "
       + "(basis / factors / counterFactors / mitigation) are accepted or refused BY PATH at the call "
@@ -581,7 +581,7 @@ const RECORDING = Object.freeze({
   // apart in register, which is the defect the pass exists to remove.
   "knockout-review": {
     seatWrites: false,
-    tools: Object.freeze(["record_knockout_review"]),
+    tools: Object.freeze(["record_knockout_review", "read_register_list"]),
     reason: "hands back rewrites as VALUES, each naming the line it replaces by the typed address the "
       + "driver measured and handed over. The address is what makes this a transport rather than a "
       + "matching problem: prose quoted back has to be found again in the record, and the finder then "
@@ -1329,7 +1329,7 @@ export const RECORDING_TOOLS = Object.freeze({
   //
   // No search tool: this stage's reads are enumerable — its skill doc, the deck, the firm-wide spine, the
   // plan, and the per-mark payloads the dispatch names by path. `Read` serves all of them.
-  "knockout-assess": Object.freeze(["Read", "mcp__recording-knockout-assess__record_knockout_assess"]),
+  "knockout-assess": Object.freeze(["Read", "mcp__recording-knockout-assess__read_register_list", "mcp__recording-knockout-assess__record_knockout_assess"]),
   // THE LANE'S SECOND AND LAST CONVERSION. BY HAND, like every row here — O1 asserts the resolved grant
   // EQUALS this row, so a derived row would compare a value with itself.
   //
@@ -1351,7 +1351,7 @@ export const RECORDING_TOOLS = Object.freeze({
   // and no register tools — the pass reads lines and rewrites them, and a retrieval grant would invite a
   // rewrite that adds a fact the rating never weighed. Its one read is the merged record the dispatch
   // names by path, which the seeded Read grant serves.
-  "knockout-review": Object.freeze(["Read", "mcp__recording-knockout-review__record_knockout_review"]),
+  "knockout-review": Object.freeze(["Read", "mcp__recording-knockout-review__read_register_list", "mcp__recording-knockout-review__record_knockout_review"]),
   // THE WRITER. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a
   // derived row would compare a value with itself. This stage keeps three retrieval groups, and O1
   // compares the WHOLE grant, so they are listed: a row naming only the recording half would be a row

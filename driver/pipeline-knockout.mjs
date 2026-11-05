@@ -52,7 +52,7 @@ import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILIT
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
 import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, openingQid, questionPlanPath,
-  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, countsWithAlternatives } from "./knockout-register-read.mjs";
+  readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings } from "./knockout-register-read.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
@@ -289,15 +289,14 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
 
 // ── THE READING STEP, around its model turn ──────────────────────────────────────────────────────────
 //
-// The counts have landed. The code writes the run's question plan and reads each name's own list where the register
-// gave one, up to the executor's fetch limit, so a name's own filings are in hand whatever the model turn does. The turn
-// then asks what the reading rule calls for and hands back its judgment. The record every later stage reads is built
-// here, from what the register answered and what the turn said.
+// The counts have landed and nothing has been read. The code writes the run's question plan; the turn looks at the counts,
+// asks what the reading rule calls for, and hands back its judgment. The record every later stage reads is built here,
+// from what the register answered and what the turn said.
 //
 // NEVER TERMINAL, the rule this lane has always held for its filings: the counts are the product, and a run that got
-// them delivers. A turn that fails leaves the name's own list carried and the failure on the record. A rate limit is not
-// that failure: it parks and resumes as every stage's does, and the resume reuses each answer already held.
-async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts, countExec, opts, registered }) {
+// them delivers. When a turn fails the code reads the name's own lists and carries them, with the failure on the record.
+// A rate limit is not that failure: it parks and resumes as every stage's does, and the resume reuses each answer held.
+async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts, countExec, opts }) {
   const names = markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null }));
   const exec = resolveQuestionExecutor({
     lister: opts?.recordLister ?? null, adapter: activeProvider(),
@@ -321,44 +320,51 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
   }
   const unreachable = exec.source === "provider" ? (ctx.registerUnreachable ?? []) : [];
   const scope = { marks: names, classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null, capabilities: ctx.registerCaps, unreachable };
-  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: REGISTER_PROVIDER, counts, reading,
+  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: REGISTER_PROVIDER, counts, reading, framedMarks: plan.marks,
     readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
   try {
     if (exec.fixtureDir) writeFixtureMarker(run.runDir, exec.fixtureDir);
     atomicWrite(questionPlanPath(run.runDir), JSON.stringify(knockoutQuestionPlan({ ...scope, framedMarks: plan.marks }), null, 2) + "\n");
     mkdirSync(join(run.runDir, "register-units"), { recursive: true });
-    // Each name's own list, where the register holds one. A zero is settled by its count and asks nothing more.
-    const withFilings = (counts.marks ?? []).filter((m) => (m?.counts?.identical?.total ?? 0) > 0).map((m) => String(m.name));
-    await runBatched(withFilings, 3, async (name) => {
-      const r = await exec.execute({ planPath: questionPlanPath(run.runDir), axis: knockoutAxis(name), outputPath: knockoutBandPath(run.runDir, name), qids: [openingQid(name, "identical")] });
-      if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
-    });
   } catch (e) {
     note(`register filings listing failed (non-fatal): ${e.message}`);
     runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
     return null;
   }
 
+  // Each name's own list, read by the code. Only where no model turn asked: a zero is settled by its count, and a crowd
+  // over the executor's limit comes back as the crowd it is.
+  const readOwnLists = async () => {
+    const framedOf = (name) => (plan.marks ?? []).find((f) => String(f?.name ?? "").trim().toLowerCase() === name.toLowerCase()) ?? null;
+    const withFilings = (counts.marks ?? []).filter((m) => (m?.counts?.identical?.total ?? 0) > 0).map((m) => String(m.name));
+    await runBatched(withFilings, 3, async (name) => {
+      const r = await exec.execute({ planPath: questionPlanPath(run.runDir), axis: knockoutAxis(name), outputPath: knockoutBandPath(run.runDir, name),
+        qids: formsOfName(name, framedOf(name)).map((_, i) => formQid(name, i)) });
+      if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
+    });
+  };
   let reading = null;
   try {
-    const inScope = [...new Set(names.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
-    await koStage("knockout-register-read", ctx, { msgCtx: {
-      readingLines: readingTableLines({ marks: names, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
-      providerDoc: activeProvider()?.skillDoc ?? null, inScope,
-    } });
-    reading = JSON.parse(readFileSync(K.registerReading, "utf8"));
+    // A REGISTER INJECTED IN-PROCESS has no tool server a model turn could reach, so the code asks what it can.
+    if (exec.source === "injected") await readOwnLists();
+    else {
+      const inScope = [...new Set(names.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
+      await koStage("knockout-register-read", ctx, { msgCtx: {
+        readingLines: readingTableLines({ marks: names, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
+        providerDoc: activeProvider()?.skillDoc ?? null, inScope,
+      } });
+      reading = JSON.parse(readFileSync(K.registerReading, "utf8"));
+    }
   } catch (e) {
     if (e instanceof StageFailure && e.resetsAt) throw e;
     note(`register reading step did not finish (non-fatal): ${String(e?.message ?? e).slice(0, 200)}`);
     runLog(run.runDir, { event: "knockout-register-read-failed", cause: String(e?.message ?? e).slice(0, 300) });
+    try { await readOwnLists(); }
+    catch (e2) { note(`register list did not complete (non-fatal): ${String(e2?.message ?? e2).slice(0, 200)}`); }
   }
   try {
     const doc = build(reading);
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
-    if (reading?.marks?.some((m) => m?.alternatives?.length)) {
-      registered.counts = countsWithAlternatives(counts, reading, { readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
-      atomicWrite(K.registerCounts, JSON.stringify(registered.counts, null, 2) + "\n");
-    }
     appendQuestionReceipts(K.countLedger, doc, { provider: REGISTER_PROVIDER });
     runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: exec.source,
       marks: doc.marks.length, listed: listedMarks(doc), records: doc.marks.reduce((n, m) => n + m.records.length, 0),
@@ -847,14 +853,14 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // already landed — including across a build that ADDED a predicate, where only the new column is
       // bought (register-count.mjs cellSettled).
       let prior = null;
-      try { prior = JSON.parse(readFileSync(K.registerCounts, "utf8")); } catch { /* first attempt */ }
-      const doc = await countRegisterHits({
+      try { prior = unfoldFormCounts(JSON.parse(readFileSync(K.registerCounts, "utf8"))); } catch { /* first attempt */ }
+      const counted0 = await countRegisterHits({
         // Scope comes from the REQUEST (markRows / job.classes), never from the frame's plan. The plan
         // is a model output, and its per-mark classes may carry the frame's own belt-and-braces
         // inference — fine for shaping a research prompt, wrong for a figure the client reads as
         // "filings in my classes". The names are identical either way (the frame validator enforces
         // one row per instructed mark, verbatim), so this is a scope decision, not a set difference.
-        marks: markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })),
+        marks: countRowsOf(markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })), plan.marks),
         classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
         provider: REGISTER_PROVIDER, capabilities: ctx.registerCaps,
         counter: countExec.count, ledgerPath: K.countLedger, prior,
@@ -867,6 +873,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // for every deployment that has not thought about it.
         ...(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP ? { variantCap: Number(process.env.CLEAROTRON_KNOCKOUT_VARIANT_CAP) } : {}),
       });
+      // A name given in several written forms is counted as each, and reads as one row from here on.
+      const doc = foldFormCounts(counted0, markRows.map((m) => ({ name: String(m.name) })), plan.marks);
       const counted = countedMarks(doc);
       // Not one mark got a number. The count IS this product — a batch published now would be a plain
       // knockout wearing a Depth 2 label and price, which is the silent substitution the whole
@@ -883,9 +891,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runLog(run.runDir, { event: "knockout-register-counts", provider: REGISTER_PROVIDER, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
       if (counted < doc.marks.length) note(`register counts: ${doc.marks.length - counted}/${doc.marks.length} mark(s) unavailable — the batch continues (they publish as "not available", never as zero)`);
 
-      const registered = { counts: doc };
-      await checkOwners(await readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts: doc, countExec, opts, registered }));
-      registerCounts = registered.counts;
+      await checkOwners(await readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts: doc, countExec, opts }));
     }
 
     // 2 — the sweep: ONE grid call per mark, receipted, through the clearance grid's own program path.
@@ -1173,6 +1179,12 @@ export async function knockoutInner(ctx, job, opts = {}) {
     writeRunStatus(ctx, { stoppable: false });
     koStep(ctx, "Report & publish");
     const overall = worstBand(ctx.framework, merged.marks);
+    // A set-aside filing the rating cites moves up with the carried ones, so the report has its row.
+    try {
+      const held = JSON.parse(readFileSync(K.registerRecords, "utf8"));
+      const moved = withCitedFilings(held, merged);
+      if (moved !== held) atomicWrite(K.registerRecords, JSON.stringify(moved, null, 2) + "\n");
+    } catch { /* no record on this run, or none readable: publish says which */ }
     const published = await publishKnockout({
       runId, codename: run.codename, runDir: run.runDir,
       findings: merged, plan, framework: ctx.framework, overall,

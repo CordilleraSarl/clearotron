@@ -79,7 +79,7 @@ export const COUNTED_EVENTS = {
   "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "declination-goods-states-failed": FAILED, "review-exclusions-write-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
-  "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
+  "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-register-read-failed": FAILED, "knockout-sweep-outage": FAILED,
   "machine-qc-failed": FAILED, "named-band-invalid": FAILED, "owner-screen-failed": FAILED, "placement-carry-failed": FAILED,
   "plan-qids-provider-hard-error-deferred": FAILED, "predelivery-lint-failed": FAILED, "probe-over-cap-unreadable": FAILED,
   "profile-mismatch-probe-failed": FAILED, "recall-reconciliation-failed": FAILED,

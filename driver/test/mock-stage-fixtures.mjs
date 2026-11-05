@@ -38,7 +38,10 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
-import { knockoutBandBlocks, questionsOwed } from "../knockout-register-read.mjs";
+import { knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutProposals, questionsOwed } from "../knockout-register-read.mjs";
+import { fixtureRecordsDir } from "../register-fixture-marker.mjs";
+import { fixtureFileName } from "../register-records.mjs";
+import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
 import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall, synthesisCallPaths } from "../synthesis-record.mjs";
 import { repairBasePath } from "../repair-scope.mjs";
@@ -2662,14 +2665,32 @@ export function applyStageWrites(msg, argv) {
     recordMockToolCall(runDir, "record_knockout_register_read", "recording-knockout-register-read");
     const scope = JSON.parse(readFileSync(driverDir(runDir, "instructed-scope.json"), "utf8"));
     const counts = JSON.parse(readFileSync(driverDir(runDir, "register-counts.json"), "utf8"));
-    const marks = (scope.marks ?? []).map((name) => {
+    const fixtures = fixtureRecordsDir(runDir);
+    const marks = [];
+    for (const name of scope.marks ?? []) {
+      const countsEntry = (counts.marks ?? []).find((m) => m.name === name) ?? null;
+      if (knockoutBandBlocks(runDir, name).size) return `mock knockout-register-read: a list of ${name} was read before this step asked for it`;
+      // THE NAME'S OWN QUESTION, AS THE STEP ASKS IT. Minted by the real mint; answered from the run's fixtures, or as a
+      // failure where the run holds none. Synchronous, so it writes what the executor would write.
+      if (countsEntry?.counts?.identical?.total > 0) {
+        const axis = knockoutAxis(name);
+        const { minted } = mintSupplementalEntries(axis, [{ predicate: "exact", term: name, nice_classes: (countsEntry.classes ?? [9]).map(String), rationale: "mock reading: the name's own list" }], {});
+        const [entry] = minted;
+        const band = knockoutBandPath(runDir, name);
+        mkdirSync(dirname(band), { recursive: true });
+        writeFileSync(join(dirname(band), `${axis}-supplemental-plan.json`), JSON.stringify({ schema: "register-plan/1", entries: minted }));
+        let answer = null;
+        try { answer = fixtures ? JSON.parse(readFileSync(join(fixtures, fixtureFileName(name)), "utf8")) : null; } catch { answer = null; }
+        writeFileSync(band, JSON.stringify([answer
+          ? { qid: entry.qid, state: "enumerated", total_hits: answer.total ?? answer.records.length, count: answer.records.length, records: answer.records }
+          : { qid: entry.qid, state: "incomplete", total_hits: 0, fetched: 0, sample: [], error: true, reason: "provider error: mock: this run holds no answer" }]));
+      }
       const blocks = knockoutBandBlocks(runDir, name);
       const held = [...blocks.values()].flatMap((b) => (b?.records ?? []).map((r) => r.record_id)).filter(Boolean);
-      const carried = new Set(held);
-      const owed = questionsOwed({ name, countsEntry: (counts.marks ?? []).find((m) => m.name === name) ?? null, blocks, carried });
-      return { name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings" }] : [],
-        set_aside: owed.map((o) => ({ question: o.question, why: "mock reading: reading it would not change the advice" })), not_asked: [] };
-    });
+      const owed = questionsOwed({ name, countsEntry, blocks, proposals: knockoutProposals(runDir, name).entries, carried: new Set(held) });
+      marks.push({ name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings" }] : [],
+        set_aside: owed.map((o) => ({ question: o.question, why: "mock reading: reading it would not change the advice" })), not_asked: [] });
+    }
     const verdict = recordKnockoutRegisterRead(runDir, { marks });
     if (!verdict.written) return `mock knockout-register-read: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout register reading ok";

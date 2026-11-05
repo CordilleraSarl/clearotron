@@ -1454,6 +1454,7 @@ serve({
                 items: { type: "object", required: ["records", "why"], properties: {
                   records: { type: "array", items: { type: "string" }, description: "record_id values, copied from the list you read." },
                   why: { type: "string", description: "Why this group is carried forward, in one reason." },
+                  check_owner: { type: "boolean", description: "OPTIONAL: true where what these filings' owners actually sell would change how they are read. The driver then runs one web search per owner before the rating step." },
                 } },
               },
               set_aside: {
@@ -1474,7 +1475,6 @@ serve({
                 } },
               },
               open_questions: { type: "array", items: { type: "string" }, description: "OPTIONAL: what this reading could not settle, for the step that rates the name." },
-              alternatives: { type: "array", items: { type: "string" }, description: "OPTIONAL: where the instructed name holds two word orders or spellings, the terms you asked for it, each its own exact question. They stand in for the name's own count and stay tied to it." },
             },
           },
         },

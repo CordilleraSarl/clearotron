@@ -14,6 +14,10 @@
 // own mint and executor: `register_propose_supplemental`, with its goods, market and class narrowing, its 600-record
 // fetch limit, its capability gaps and its safety net. What differs is the lever: the plan holds only the name itself.
 //
+// THE MODEL SEES THE COUNT BEFORE ANYTHING IS READ. Code takes the counts and fetches nothing; the step then reads a list
+// it can read in full or narrows the question, and the name's own question is one it must ask. Code reads a name's own
+// list itself only when no model turn can: the step failed, or a test injected its register in-process.
+//
 // WHAT THE RECORD SAYS. A zero, a failure, a question not asked and a crowd not read are four different facts, and
 // `terms` keeps them four. Counts come from the register. What the reading step carried forward goes to the rating
 // step; what it set aside stays on the record with its reason, and in the band with its rows.
@@ -40,6 +44,18 @@ export const LIST_GOODS_CHARS = 600;
 
 /** The register axis of one instructed name. The research key, so two names can never share one. PURE. */
 export const knockoutAxis = (name) => `ko-${kebab(name)}`;
+
+/**
+ * The forms a name is asked as: its written alternatives where the request gives one item in more than one spelling or
+ * word order (the frame's `alternatives`), each its own question and all tied to the name; else the name itself. PURE.
+ */
+export function formsOfName(name, framed = null) {
+  const alternatives = (Array.isArray(framed?.alternatives) ? framed.alternatives : []).map((t) => String(t ?? "").trim()).filter(Boolean);
+  return alternatives.length ? alternatives : [String(name ?? "").trim()];
+}
+
+/** The qid of one form's own question: the name's identical qid, or that with its position after the first. PURE. */
+export const formQid = (name, i = 0) => (i ? `${openingQid(name, "identical")}:${i}` : openingQid(name, "identical"));
 
 /** The band one name's questions are written to, inside this run's folder. PURE. */
 export const knockoutBandPath = (runDir, name) => join(String(runDir ?? ""), BAND_DIR, `${knockoutAxis(name)}-band.json`);
@@ -79,8 +95,8 @@ export function knockoutQuestionPlan({ marks, classes = null, jurisdictions = nu
   const added = new Map();
   for (const { name, framed, nice } of rows) {
     const axis = knockoutAxis(name);
-    entries.push({ qid: openingQid(name, "identical"), axis, predicate: "exact", term: name, nice_classes: nice, regions: [],
-      provenance: "mark", expected_kind: "enumerate", origin: "plan" });
+    formsOfName(name, framed).forEach((term, i) => entries.push({ qid: formQid(name, i), axis, predicate: "exact", term, nice_classes: nice, regions: [],
+      provenance: "mark", expected_kind: "enumerate", origin: "plan" }));
     for (const c of ints(framed?.beltAndBraces).map(String)) {
       if (instructed.has(c)) continue;
       const reason = String(framed?.classesPlain ?? "").trim() || "added by the frame for the client's own goods";
@@ -132,31 +148,53 @@ const isCrowd = (block) => Boolean(block) && block.state === "incomplete" && blo
  * carried, and every count or crowd nothing narrowed or read. A zero and a failure are not on it: the first says
  * itself, and the second is the engine's to report, not the model's to excuse. PURE over its inputs.
  */
-export function questionsOwed({ name, countsEntry = null, blocks = new Map(), proposals = [], carried = new Set() }) {
+export function questionsOwed({ name, countsEntry = null, blocks = new Map(), proposals = [], carried = new Set(), framed = null }) {
   const owed = [];
-  const answers = (qid) => proposals.some((e) => e?.narrows === qid && wasRead(blocks.get(String(e?.qid))));
-  const asked = (test) => proposals.some((e) => test(e) && wasRead(blocks.get(String(e?.qid))));
-  const nameKey = String(name ?? "").trim().toLowerCase();
-  const isName = (e) => String(e?.term ?? "").trim().toLowerCase() === nameKey;
+  const answered = (e) => wasRead(blocks.get(String(e?.qid)));
+  const narrowedBy = (qid) => proposals.some((e) => e?.narrows === qid && answered(e));
+  const norm = (v) => String(v ?? "").trim().toLowerCase();
+  const forms = formsOfName(name, framed);
+  const isForm = (e, form) => norm(e?.term) === norm(form);
+  const isOwnForm = (e) => forms.some((f) => isForm(e, f));
+  const identical = countsEntry?.counts?.identical;
+  const figures = Array.isArray(identical?.alternatives) ? identical.alternatives : [{ term: forms[0], total: identical?.total }];
+
+  // A FORM'S OWN QUESTION IS ASKED WHATEVER ITS COUNT. A count above zero with no question on the form is not work that
+  // can be set aside with a reason: the rule reads the identical mark first, narrowing it if it is a crowd. A question
+  // the register then failed to answer has been asked.
+  forms.forEach((form, i) => {
+    const total = figures.find((f) => norm(f?.term) === norm(form))?.total;
+    if (!(Number.isFinite(total) && total > 0)) return;
+    const qid = formQid(name, i);
+    const onForm = proposals.filter((e) => e?.predicate === "exact" && isForm(e, form));
+    if (!blocks.has(qid) && !onForm.some((e) => blocks.has(String(e?.qid)))) {
+      owed.push({ question: qid, count: total, kind: "identical-not-asked", mustAsk: true });
+      return;
+    }
+    const read = wasRead(blocks.get(qid)) || onForm.some(answered);
+    const failed = hasFailed(blocks.get(qid)) || onForm.some((e) => hasFailed(blocks.get(String(e?.qid))));
+    if (!read && !failed && !narrowedBy(qid)) owed.push({ question: qid, count: total, kind: "counted-not-read" });
+  });
 
   const opening = [
-    ["identical", countsEntry?.counts?.identical?.total, (e) => e?.predicate === "exact" && isName(e) && !e?.goods_text?.length],
-    ["containing", countsEntry?.counts?.containing?.total, (e) => e?.predicate === "default" && isName(e)],
-    ["close", countsEntry?.counts?.close?.total, (e) => e?.predicate === "exact" && !isName(e)],
+    ["containing", countsEntry?.counts?.containing?.total, (e) => e?.predicate === "default" && isOwnForm(e)],
+    ["close", countsEntry?.counts?.close?.total, (e) => e?.predicate === "exact" && !isOwnForm(e)],
   ];
-  const identicalBlock = blocks.get(openingQid(name, "identical"));
   for (const [key, total, reads] of opening) {
     if (!(Number.isFinite(total) && total > 0)) continue;
     const qid = openingQid(name, key);
-    if (key === "identical" && wasRead(identicalBlock)) continue;
-    if (answers(qid) || asked(reads)) continue;
+    if (narrowedBy(qid) || proposals.some((e) => reads(e) && answered(e))) continue;
     owed.push({ question: qid, count: total, kind: "counted-not-read" });
   }
+  const byQid = new Map(proposals.map((e) => [String(e?.qid), e]));
+  const formOfQid = (qid) => forms.find((_, i) => formQid(name, i) === qid) ?? forms.find((f) => isForm(byQid.get(qid), f)) ?? null;
   for (const [qid, block] of blocks) {
     if (hasFailed(block)) continue;
     if (isCrowd(block)) {
-      if (answers(qid)) continue;
-      if (qid === openingQid(name, "identical") && owed.some((o) => o.question === qid)) continue;
+      // A crowd on a form's own question is answered by any list read on that form; any other by what names it.
+      const form = byQid.get(qid)?.predicate === "exact" || !byQid.has(qid) ? formOfQid(qid) : null;
+      if (narrowedBy(qid) || (form && proposals.some((e) => e?.predicate === "exact" && isForm(e, form) && answered(e)))) continue;
+      if (owed.some((o) => o.question === qid)) continue;
       owed.push({ question: qid, count: block.total_hits ?? null, kind: "crowd-not-read" });
       continue;
     }
@@ -183,10 +221,9 @@ function neutralRow(r) {
 }
 
 /** What one question was, for the record's `terms` row and for the basis a report prints. PURE. */
-function questionRow({ entry, block, name, alternatives = new Set() }) {
+function questionRow({ entry, block, formKeys = new Set() }) {
   const term = entry?.term ?? (Array.isArray(entry?.terms) ? entry.terms.join(" | ") : null);
-  const asked = String(entry?.term ?? "").trim().toLowerCase();
-  const isExactName = entry?.predicate === "exact" && !entry?.goods_text?.length && (asked === String(name).trim().toLowerCase() || alternatives.has(asked));
+  const isExactName = entry?.predicate === "exact" && formKeys.has(String(entry?.term ?? "").trim().toLowerCase());
   const failed = hasFailed(block);
   const crowd = isCrowd(block);
   const fetched = wasRead(block) ? rowsOf(block).length : 0;
@@ -208,20 +245,22 @@ function questionRow({ entry, block, name, alternatives = new Set() }) {
 }
 
 /** The name's own question, from its count and, where it was read, its block. A failed read is a failure whatever was counted. PURE. */
-function identicalRow({ name, cell, block }) {
+function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowed = false }) {
   const counted = Number.isFinite(cell?.total);
   const approximate = cell?.approximate === true;
   const answered = counted || approximate;
   const failed = hasFailed(block) || (!answered && !wasRead(block));
-  const read = wasRead(block);
+  // Read by the code when no step finished, or by the question the step asked on the name. A list a narrowing answered
+  // keeps its own count and its own state: the crowd it replaced stays on the record.
+  const read = wasRead(block) || plainRead;
   const total = counted ? cell.total : (Number.isFinite(block?.total_hits) ? block.total_hits : null);
-  return { term: name.toUpperCase(), basis: "identical", label: "the name itself", qid: openingQid(name, "identical"), predicate: "exact",
-    ok: !failed, fetched: read ? rowsOf(block).length : 0, total: approximate ? null : total,
-    state: failed ? "failed" : read ? "read" : total === 0 ? "zero" : "crowd-not-read",
+  return { term: form.toUpperCase(), basis: "identical", label: "the name itself", qid, predicate: "exact",
+    ok: !failed, fetched: wasRead(block) ? rowsOf(block).length : 0, total: approximate ? null : total,
+    state: failed ? "failed" : read ? "read" : total === 0 ? "zero" : narrowed ? "narrowed" : "crowd-not-read",
     ...(approximate ? { approximate: true, floor: Number.isFinite(cell?.floor) ? cell.floor : null } : {}),
     ...(Array.isArray(block?.warnings) && block.warnings.length ? { warnings: block.warnings } : {}),
     ...(failed ? { reason: String(block?.reason ?? cell?.cause ?? cell?.unavailable ?? "the register did not answer this question").slice(0, 300) } : {}),
-    ...(!failed && !read && (total > 0 || approximate) ? { setAside: true } : {}) };
+    ...(!failed && !read && !narrowed && (total > 0 || approximate) ? { setAside: true } : {}) };
 }
 
 /**
@@ -233,7 +272,7 @@ function identicalRow({ name, cell, block }) {
  * the record.
  */
 export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null, provider, capabilities = null, unreachable = [],
-  counts = null, reading = null, readBlocks, readProposals, now = () => new Date() }) {
+  counts = null, reading = null, readBlocks, readProposals, framedMarks = [], now = () => new Date() }) {
   const { regions: covered, deferred, worldwide } = resolveRegions(jurisdictions, capabilities);
   const { regions, dropped } = reachableRegions(covered, unreachable, capabilities?.offices?.covered, worldwide === true);
   const officeScope = dropped.length
@@ -241,6 +280,7 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
   const batchClasses = ints(classes);
   const countsByName = new Map((counts?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
   const readingByName = new Map((reading?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
+  const framedByName = new Map((framedMarks ?? []).map((f) => [String(f?.name ?? "").trim().toLowerCase(), f]));
 
   const rows = (marks ?? []).map((m) => {
     const name = String(m?.name ?? "").trim();
@@ -254,23 +294,30 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
 
     const terms = [];
     const identicalCell = countsEntry?.counts?.identical;
-    const identicalBlock = blocks.get(openingQid(name, "identical"));
-    // A NAME THAT HOLDS ALTERNATIVES was asked as each of them: they stand in for its own question, which no register can
-    // answer as a list, and each stays tied to this name.
-    const alternatives = new Set((read?.alternatives ?? []).map((t) => String(t).trim().toLowerCase()));
-    if (!alternatives.size) terms.push(identicalRow({ name, cell: identicalCell, block: identicalBlock }));
+    // ONE ROW PER FORM OF THE NAME, all tied to it. A name given in two word orders is asked as each, and neither is a
+    // near form of the other.
+    const forms = formsOfName(name, framedByName.get(key));
+    const formKeys = new Set(forms.map((f) => f.toLowerCase()));
+    const ownLists = [];
+    forms.forEach((form, i) => {
+      const qid = formQid(name, i);
+      const block = blocks.get(qid);
+      const figure = Array.isArray(identicalCell?.alternatives) ? identicalCell.alternatives.find((a) => String(a?.term).toLowerCase() === form.toLowerCase()) : identicalCell;
+      const onForm = entries.filter((e) => e?.predicate === "exact" && String(e?.term ?? "").trim().toLowerCase() === form.toLowerCase() && wasRead(blocks.get(String(e?.qid))));
+      const isPlain = (e) => !e?.goods_text?.length && !e?.regions?.length;
+      terms.push(identicalRow({ term: form, qid, cell: figure, block, plainRead: onForm.some(isPlain), narrowed: onForm.some((e) => !isPlain(e)) }));
+      ownLists.push({ form, qid, block });
+    });
     // THE COUNTED FORMS, each as the question it was. Counted, not listed: a form with filings under it that nothing
     // read is a crowd not read, which is what stops a report saying no filing stands. A joined count holds no per-form
     // figure, so its total is the question's and its forms ride beside it.
     const formsCell = countsEntry?.counts?.close;
-    const stackRead = entries.some((e) => e?.predicate === "exact" && !alternatives.has(String(e?.term ?? "").trim().toLowerCase())
-      && String(e?.term ?? "").trim().toLowerCase() !== key && wasRead(blocks.get(String(e?.qid))));
+    const stackRead = entries.some((e) => e?.predicate === "exact" && !formKeys.has(String(e?.term ?? "").trim().toLowerCase()) && wasRead(blocks.get(String(e?.qid))));
     const formsTotal = Number.isFinite(formsCell?.total) ? formsCell.total : null;
     for (const f of Array.isArray(formsCell?.forms) ? formsCell.forms : []) {
       const n = formsCell.joined ? null : (Number.isFinite(f?.total) ? f.total : null);
       const approx = f?.approximate === true;
       const answered = formsCell.joined ? formsTotal !== null : (n !== null || approx);
-      if (!answered && alternatives.size) continue;   // a list-shaped name's forms: its alternatives were asked instead
       const holds = formsCell.joined ? formsTotal > 0 : (n > 0 || approx);
       terms.push({ term: f?.form ?? null, basis: "close", label: `close variation (${(f?.rules ?? []).join(", ")})`, qid: openingQid(name, "close"), predicate: "exact",
         ok: answered, fetched: 0, total: n, state: !answered ? "failed" : holds ? "crowd-not-read" : "zero",
@@ -278,7 +325,7 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
         ...(!answered ? { reason: String(f?.cause ?? f?.unavailable ?? formsCell?.cause ?? formsCell?.unavailable ?? "the register did not answer this question").slice(0, 300) } : {}),
         ...(holds && !stackRead ? { setAside: true } : {}) });
     }
-    for (const e of entries) terms.push(questionRow({ entry: e, block: blocks.get(String(e?.qid)), name, alternatives }));
+    for (const e of entries) terms.push(questionRow({ entry: e, block: blocks.get(String(e?.qid)), formKeys }));
 
     // A QUESTION THE STEP ASKED AND THE RUN DID NOT SEND is on the record as one, the safety net's refusal included:
     // never a clean answer, and never missing.
@@ -291,36 +338,34 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
     // THE ROWS. Carried by the reading step with its reason, or, with no reading record, the name's own list as the
     // code read it. Every other row read stays with the question that found it, so a later step can reach it.
     const carried = read ? carriedIds(read) : null;
-    const whyCarried = new Map((read?.carried ?? []).flatMap((g) => (g?.records ?? []).map((id) => [String(id), g?.why ?? null])));
+    const groupOf = new Map((read?.carried ?? []).flatMap((g) => (g?.records ?? []).map((id) => [String(id), g])));
     const found = new Map();
-    const setAsideIds = new Map();
+    const setAside = new Map();
     const take = (block, term, basis, qid) => {
       if (!wasRead(block)) return;
       for (const raw of rowsOf(block)) {
         const id = String(raw?.record_id ?? "");
         if (!id || found.has(id)) continue;
-        if (carried && !carried.has(id)) {
-          if (!setAsideIds.has(qid)) setAsideIds.set(qid, new Set());
-          setAsideIds.get(qid).add(id);
-          continue;
-        }
-        found.set(id, { ...toRecord(neutralRow(raw), { term, basis, provider }), question: qid,
-          ...(whyCarried.get(id) ? { carriedBecause: whyCarried.get(id) } : {}) });
+        const row = { ...toRecord(neutralRow(raw), { term, basis, provider }), question: qid };
+        if (carried && !carried.has(id)) { if (!setAside.has(id)) setAside.set(id, row); continue; }
+        found.set(id, { ...row, ...(groupOf.get(id)?.why ? { carriedBecause: groupOf.get(id).why } : {}) });
       }
     };
-    take(identicalBlock, name.toUpperCase(), "identical", openingQid(name, "identical"));
+    for (const { form, qid, block } of ownLists) take(block, form.toUpperCase(), "identical", qid);
     for (const e of entries) {
-      const row = questionRow({ entry: e, block: blocks.get(String(e?.qid)), name, alternatives });
+      const row = questionRow({ entry: e, block: blocks.get(String(e?.qid)), formKeys });
       take(blocks.get(String(e?.qid)), row.term, row.basis, row.qid);
     }
     const records = [...found.values()];
     // A row carried under one question and read again under another is carried, whichever came first.
-    for (const ids of setAsideIds.values()) for (const id of [...ids]) if (found.has(id)) ids.delete(id);
+    for (const id of found.keys()) setAside.delete(id);
+    const setAsideRecords = [...setAside.values()];
+    const setAsideIds = (qid) => setAsideRecords.filter((r) => r.question === qid).map((r) => r.recordId);
 
     // How many the register holds under the questions a reader meets: the name, the forms and each question that is
     // not a narrowing of one already counted. Stated only when every one of them gave a number.
     const counted = terms.filter((t) => !t.narrows && t.ok && t.qid !== openingQid(name, "close"));
-    const noSum = counted.some((t) => !Number.isFinite(t.total)) || (formsCell?.forms?.length > 0 && !Number.isFinite(formsTotal) && !alternatives.size);
+    const noSum = counted.some((t) => !Number.isFinite(t.total)) || (formsCell?.forms?.length > 0 && !Number.isFinite(formsTotal));
     const available = noSum ? null : counted.reduce((n, t) => n + t.total, 0) + (formsTotal ?? 0);
     return {
       name,
@@ -331,10 +376,12 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
       fetched: records.length,
       available,
       capped: false,
+      // WHAT THE STEP READ AND DID NOT CARRY, whole, so the rating step and the review can reach it and cite it.
+      ...(setAsideRecords.length ? { setAsideRecords } : {}),
       reading: read
-        ? { setAside: (read.set_aside ?? []).map((g) => ({ ...g, records: g.records ?? [...(setAsideIds.get(g.question) ?? [])] })),
+        ? { setAside: (read.set_aside ?? []).map((g) => ({ ...g, records: g.records ?? setAsideIds(g.question) })),
             notAsked: read.not_asked ?? [], openQuestions: read.open_questions ?? [],
-            ...(alternatives.size ? { alternatives: read.alternatives } : {}) }
+            ownerChecks: (read.carried ?? []).filter((g) => g?.check_owner === true).flatMap((g) => g.records ?? []) }
         : { notFinished: true },
       ...(officeScope ? { officeScope } : {}),
       ...(deferred.length ? { deferredScope: deferred.map((d) => d.jurisdiction) } : {}),
@@ -359,28 +406,60 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
 }
 
 /**
- * The counts, with each name the reading step found to hold alternatives counted as those alternatives. The register
- * cannot count a list as one name, so the name's own cell was left open; each alternative's answer is the register's own
- * figure, and the cell says where its number came from. A name with any alternative unanswered keeps its open cell. PURE.
+ * The counts of a name given in several forms, one row per name. The count lane counted each form as its own name, because
+ * no register can count a list as one; the name's cells are their sum and say where the number came from, and a form with
+ * no answer leaves the cell open, as a partial sweep does. The forms' own rows stay on it, so a resume re-bills none. PURE.
  */
-export function countsWithAlternatives(counts, reading, { readBlocks, readProposals }) {
-  if (!counts) return counts;
-  const out = structuredClone(counts);
-  for (const row of reading?.marks ?? []) {
-    if (!row?.alternatives?.length) continue;
-    const entry = (out.marks ?? []).find((m) => String(m?.name ?? "").trim().toLowerCase() === String(row.name ?? "").trim().toLowerCase());
-    if (!entry?.counts) continue;
-    const blocks = readBlocks(row.name);
-    const { entries } = readProposals(row.name);
-    const answers = row.alternatives.map((t) => {
-      const e = entries.find((x) => x?.predicate === "exact" && !x?.goods_text?.length && String(x?.term ?? "").trim().toLowerCase() === String(t).trim().toLowerCase());
-      const total = blocks.get(String(e?.qid))?.total_hits;
-      return { term: t, total: Number.isFinite(total) ? total : null };
-    });
-    if (answers.some((a) => a.total === null)) continue;
-    entry.counts.identical = { total: answers.reduce((n, a) => n + a.total, 0), source: "alternatives", alternatives: answers };
-  }
-  return out;
+export function foldFormCounts(counts, marks, framedMarks = []) {
+  const framedByName = new Map((framedMarks ?? []).map((f) => [String(f?.name ?? "").trim().toLowerCase(), f]));
+  const rowsByName = new Map((counts?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
+  const folded = (marks ?? []).flatMap((m) => {
+    const name = String(m?.name ?? "").trim();
+    const forms = formsOfName(name, framedByName.get(name.toLowerCase()));
+    const rows = forms.map((f) => rowsByName.get(f.toLowerCase())).filter(Boolean);
+    if (forms.length === 1 && forms[0].toLowerCase() === name.toLowerCase()) return rows;
+    if (!rows.length) return [];
+    const cell = (key) => {
+      const each = rows.map((r) => ({ term: r.name, total: r.counts?.[key]?.total ?? null, ...(r.counts?.[key]?.unavailable ? { unavailable: r.counts[key].unavailable } : {}) }));
+      const open = each.find((a) => !Number.isFinite(a.total));
+      return { total: open ? null : each.reduce((n, a) => n + a.total, 0), source: "alternatives", alternatives: each, ...(open ? { unavailable: open.unavailable ?? "not every written form could be counted" } : {}) };
+    };
+    const closeForms = rows.flatMap((r) => r.counts?.close?.forms ?? []);
+    return [{ ...rows[0], name, formRows: rows,
+      counts: { identical: cell("identical"), containing: cell("containing"), close: { ...cell("close"), forms: closeForms,
+        generated: rows.reduce((n, r) => n + (r.counts?.close?.generated ?? 0), 0), counted: rows.reduce((n, r) => n + (r.counts?.close?.counted ?? 0), 0),
+        truncated: rows.some((r) => r.counts?.close?.truncated), ...(rows.every((r) => r.counts?.close?.joined) ? { joined: true } : {}) } } }];
+  });
+  return { ...counts, marks: folded };
+}
+
+/** A folded counts record back to the rows the count lane reuses on a resume. PURE. */
+export const unfoldFormCounts = (counts) => (counts ? { ...counts, marks: (counts.marks ?? []).flatMap((m) => m?.formRows ?? [m]) } : counts);
+
+/** The rows the count lane counts: each written form of each name, on its own. PURE. */
+export const countRowsOf = (marks, framedMarks = []) => {
+  const framedByName = new Map((framedMarks ?? []).map((f) => [String(f?.name ?? "").trim().toLowerCase(), f]));
+  return (marks ?? []).flatMap((m) => formsOfName(m?.name, framedByName.get(String(m?.name ?? "").trim().toLowerCase())).map((form) => ({ ...m, name: form })));
+};
+
+/**
+ * The record once the rating step has spoken: a set-aside filing it cited moves up with the carried ones, so the report
+ * has a row for what the rating rests on. A later step may overturn a set-aside, and this is how that reaches the page. PURE.
+ */
+export function withCitedFilings(doc, findings) {
+  if (!doc?.marks?.some((m) => m?.setAsideRecords?.length)) return doc;
+  const marksByName = new Map((findings?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
+  return { ...doc, marks: doc.marks.map((entry) => {
+    const rated = marksByName.get(String(entry?.name ?? "").trim().toLowerCase());
+    if (!entry?.setAsideRecords?.length || !rated) return entry;
+    const cited = new Set([...(rated.registerReads ?? []).map((r) => r?.recordId), ...(rated.findings ?? []).flatMap((f) => f?.weighedFilings ?? [])].filter(Boolean).map(String));
+    const moved = entry.setAsideRecords.filter((r) => cited.has(String(r?.recordId)));
+    if (!moved.length) return entry;
+    const left = entry.setAsideRecords.filter((r) => !cited.has(String(r?.recordId)));
+    const { setAsideRecords: _old, ...rest } = entry;
+    return { ...rest, records: [...entry.records, ...moved.map((r) => ({ ...r, citedFromSetAside: true }))], fetched: entry.records.length + moved.length,
+      ...(left.length ? { setAsideRecords: left } : {}) };
+  }) };
 }
 
 /** One ledger line per question, beside the counts' own, so one file answers what the register lane asked. */
@@ -400,7 +479,7 @@ export function appendQuestionReceipts(ledgerPath, doc, { provider, now = () => 
   }
 }
 
-/** The lines the reading step opens on, code-owned and one per name: what it may ask under, and what the register said. PURE. */
+/** The lines the reading step opens on, code-owned and one per name: what it may ask under, and the counts. Nothing is read yet. PURE. */
 export function readingTableLines({ marks, counts, classes = null, framedMarks = [], runDir }) {
   const framedByName = new Map((framedMarks ?? []).map((f) => [String(f?.name ?? "").trim().toLowerCase(), f]));
   const countsByName = new Map((counts?.marks ?? []).map((m) => [String(m?.name ?? "").trim().toLowerCase(), m]));
@@ -410,12 +489,16 @@ export function readingTableLines({ marks, counts, classes = null, framedMarks =
     const key = name.toLowerCase();
     const framed = framedByName.get(key) ?? null;
     const c = countsByName.get(key)?.counts ?? {};
-    const forms = (c.close?.forms ?? []).map((f) => f?.form).filter(Boolean).join(" · ");
+    const nearSpellings = (c.close?.forms ?? []).map((f) => f?.form).filter(Boolean).join(" · ");
     const nice = classesForName(m, classes, framed);
     const added = ints(framed?.beltAndBraces).filter((n) => !nice.includes(n));
+    const forms = formsOfName(name, framed);
+    const own = c.identical?.alternatives
+      ? forms.map((f, i) => `"${f}" (\`${formQid(name, i)}\`): ${cell(c.identical.alternatives.find((a) => String(a?.term).toLowerCase() === f.toLowerCase()))}`).join("; ")
+      : `(\`${openingQid(name, "identical")}\`): ${cell(c.identical)}`;
     return [
       `- "${name}": axis \`${knockoutAxis(name)}\`, band \`${knockoutBandPath(runDir, name)}\`, classes [${nice.join(", ")}]${added.length ? `, added by the frame [${added.join(", ")}]` : ""}.`,
-      `  Identical (\`${openingQid(name, "identical")}\`): ${cell(c.identical)}. Containing (\`${openingQid(name, "containing")}\`): ${cell(c.containing)}. Mechanical near-spellings${forms ? ` ${forms}` : ""} (\`${openingQid(name, "close")}\`): ${cell(c.close)}.`,
+      `  Identical ${own}. Containing (\`${openingQid(name, "containing")}\`): ${cell(c.containing)}. Mechanical near-spellings${nearSpellings ? ` ${nearSpellings}` : ""} (\`${openingQid(name, "close")}\`): ${cell(c.close)}.`,
     ].join("\n");
   });
 }
@@ -544,7 +627,7 @@ export async function executeQuestionsWithLister(lister, { plan_path: planPath, 
   mkdirSync(dirname(outputPath), { recursive: true });
   writeFileSync(`${outputPath}.tmp`, JSON.stringify([...band.filter((b) => !owned.has(String(b?.qid))), ...blocks], null, 2) + "\n");
   renameSync(`${outputPath}.tmp`, outputPath);
-  return { type: "text", text: JSON.stringify({ executed: blocks.length, skipped: [], states }) };
+  return { type: "text", text: JSON.stringify({ skipped: [], states }) };
 }
 
 /**

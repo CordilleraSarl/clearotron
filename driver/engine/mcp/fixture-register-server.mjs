@@ -7,28 +7,27 @@
 import { serve } from "./stdio-server.mjs";
 import { proposeSupplemental } from "./supplemental.mjs";
 import { CLARIVATE_PROPOSE_TOOL } from "./clarivate-propose-tool.mjs";
+import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, as a live register's server says it
 import { capabilitiesFor } from "../../register-capabilities.mjs";
 import { fixtureRecordsDir } from "../../register-fixture-marker.mjs";
 import { fixtureLister } from "../../register-records.mjs";
 import { executeQuestionsWithLister } from "../../knockout-register-read.mjs";
 
 const runDir = process.env.CLEAROTRON_BAND_RUN_DIR || "";
-const dir = fixtureRecordsDir(runDir);
-if (!dir) {
-  process.stderr.write("fixture-register-server: this run declares no fixture directory, and this server reaches no register\n");
-  process.exit(1);
-}
-const lister = fixtureLister(dir);
-
 serve({
-  name: "register",
+  name: "register", noteFor: crowdNoteFor,
   tools: [{
     name: "register_propose_supplemental",
     ...CLARIVATE_PROPOSE_TOOL,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-    handler: (a) => proposeSupplemental(a, { kind: "propose_supplemental", recordLog: process.env.CLEAROTRON_REGISTER_RECORD_LOG || null }, {
-      executePlan: (params) => executeQuestionsWithLister(lister, params),
-      capabilities: capabilitiesFor(process.env.CLEAROTRON_DATABASE),
-    }),
+    handler: (a) => {
+      const dir = fixtureRecordsDir(runDir);
+      if (!dir) return { type: "text", text: "ERROR: this run declares no fixture directory, and this server reaches no register." };
+      const lister = fixtureLister(dir);
+      return proposeSupplemental(a, { kind: "propose_supplemental", recordLog: process.env.CLEAROTRON_REGISTER_RECORD_LOG || null }, {
+        executePlan: (params) => executeQuestionsWithLister(lister, params),
+        capabilities: capabilitiesFor(process.env.CLEAROTRON_DATABASE),
+      });
+    },
   }],
 });

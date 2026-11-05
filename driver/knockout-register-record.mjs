@@ -18,15 +18,15 @@ import { basename, dirname, join } from "node:path";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
-import { carriedIds, knockoutBandBlocks, knockoutProposals, openingQid, questionsOwed } from "./knockout-register-read.mjs";
+import { carriedIds, formQid, formsOfName, knockoutBandBlocks, knockoutProposals, openingQid, questionsOwed } from "./knockout-register-read.mjs";
 
 const TOKEN = "knockoutregisterread";
 const SCHEMA_VERSION = 1;
 
 const DECLARED = {
   "": ["schema_version", "marks"],
-  marks: ["name", "carried", "set_aside", "not_asked", "open_questions", "alternatives"],
-  "marks.carried": ["records", "why"],
+  marks: ["name", "carried", "set_aside", "not_asked", "open_questions"],
+  "marks.carried": ["records", "why", "check_owner"],
   "marks.set_aside": ["question", "records", "why"],
   "marks.not_asked": ["question", "why"],
 };
@@ -76,11 +76,10 @@ export function acceptKnockoutRegister(call) {
       }
     }
     marks.push({ name,
-      carried: m.carried.map((g) => ({ records: [...new Set(g.records.map((r) => String(r)))], why: text(g.why) })),
+      carried: m.carried.map((g) => ({ records: [...new Set(g.records.map((r) => String(r)))], why: text(g.why), ...(g.check_owner === true ? { check_owner: true } : {}) })),
       set_aside: m.set_aside.map((r) => ({ question: text(r.question), ...(Array.isArray(r.records) && r.records.length ? { records: r.records.map(String) } : {}), why: text(r.why) })),
       not_asked: m.not_asked.map((r) => ({ question: text(r.question), why: text(r.why) })),
-      open_questions: (Array.isArray(m.open_questions) ? m.open_questions : []).map(text).filter(Boolean),
-      ...(Array.isArray(m.alternatives) && m.alternatives.length ? { alternatives: m.alternatives.map(text).filter(Boolean) } : {}) });
+      open_questions: (Array.isArray(m.open_questions) ? m.open_questions : []).map(text).filter(Boolean) });
   }
   return { ok: true, model: { schema_version: SCHEMA_VERSION, marks } };
 }
@@ -101,6 +100,8 @@ export function checkKnockoutRegisterAgainstRun(model, runDir) {
 
   const counts = readJson(driverDir(runDir, "register-counts.json"));
   const countsFor = (n) => (counts?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(n)) ?? null;
+  const plan = readJson(join(runDir, "knockout-plan.json"));
+  const framedFor = (n) => (plan?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(n)) ?? null;
   for (const n of instructed) {
     const row = byName.get(nameKey(n));
     const blocks = knockoutBandBlocks(runDir, n);
@@ -109,12 +110,13 @@ export function checkKnockoutRegisterAgainstRun(model, runDir) {
     const stranger = [...carried].find((id) => !held.has(id));
     if (stranger) return { ok: false, reason: `${TOKEN}_carried:${n}: "${stranger}" is not a record this name's questions returned. Copy record_id from the list you read.` };
     const { entries } = knockoutProposals(runDir, n);
-    const asked = new Set([...blocks.keys(), ...entries.map((e) => String(e?.qid)), ...["identical", "containing", "close"].map((k) => openingQid(n, k))]);
+    const asked = new Set([...blocks.keys(), ...entries.map((e) => String(e?.qid)), ...["identical", "containing", "close"].map((k) => openingQid(n, k)),
+      ...formsOfName(n, framedFor(n)).map((_, i) => formQid(n, i))]);
     const unknown = row.set_aside.find((r) => !asked.has(r.question));
     if (unknown) return { ok: false, reason: `${TOKEN}_set_aside:${n}: "${unknown.question}" is not a question on this name. Name the question by its qid.` };
-    const unasked = (row.alternatives ?? []).find((t) => !entries.some((e) => e?.predicate === "exact" && nameKey(e?.term) === nameKey(t)));
-    if (unasked) return { ok: false, reason: `${TOKEN}_alternatives:${n}: "${unasked}" was not asked. Ask each alternative on its own as an exact question.` };
-    const owed = questionsOwed({ name: n, countsEntry: countsFor(n), blocks, proposals: entries, carried });
+    const owed = questionsOwed({ name: n, countsEntry: countsFor(n), blocks, proposals: entries, carried, framed: framedFor(n) });
+    const notAsked = owed.find((o) => o.mustAsk);
+    if (notAsked) return { ok: false, reason: `${TOKEN}_identical:${n}: the register counts ${notAsked.count} under this name and no question was asked on it. Ask it: read the list if you can read it in full, or narrow it. A reason does not stand in for the name's own question.` };
     const said = new Set(row.set_aside.map((r) => r.question));
     const unsaid = owed.filter((o) => !said.has(o.question));
     if (unsaid.length) {

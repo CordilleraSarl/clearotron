@@ -103,7 +103,7 @@ function suppliedRecordsByMark(runDir) {
   try {
     const doc = JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8"));
     return new Map((Array.isArray(doc?.marks) ? doc.marks : []).filter((x) => x?.name)
-      .map((x) => [String(x.name).trim().toLowerCase(), JSON.stringify(Array.isArray(x.records) ? x.records : [])]));
+      .map((x) => [String(x.name).trim().toLowerCase(), JSON.stringify([...(Array.isArray(x.records) ? x.records : []), ...(Array.isArray(x.setAsideRecords) ? x.setAsideRecords : [])])]));
   } catch { return new Map(); }
 }
 
@@ -231,7 +231,7 @@ export function registerRecordIdsFor(runDir, markName) {
   const doc = readJson(driverDir(runDir, "register-records.json"));
   const want = String(markName ?? "").trim().toLowerCase();
   const entry = (Array.isArray(doc?.marks) ? doc.marks : []).find((e) => String(e?.name ?? "").trim().toLowerCase() === want);
-  return new Set((Array.isArray(entry?.records) ? entry.records : [])
+  return new Set([...(Array.isArray(entry?.records) ? entry.records : []), ...(Array.isArray(entry?.setAsideRecords) ? entry.setAsideRecords : [])]
     .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
 }
 
