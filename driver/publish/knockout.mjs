@@ -500,10 +500,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // the same catch and neither flag. A run whose counts file is present but corrupt therefore published
   // the sentence for a run that never took any counts.
   //
-  // `registerCountsUnreadable` HAS NO CONSUMER YET, deliberately. The page's line for an absent counts
-  // file says none could be taken, and there is no shipped sentence for a file that could not be read —
-  // writing one is a decision about what a client is told, not a defect fix. The distinction is recorded
-  // here so the decision has something to key on when it is made.
+  // `registerCountsUnreadable` HAS NO CONSUMER, deliberately. The page's line for an absent counts file
+  // says only that the saved records do not establish whether counts were taken, which is as true of a
+  // file that could not be read. The distinction is recorded here for a later decision that needs it.
   let registerCountsUnreadable = false;
   if (!registerCounts) {
     try { registerCounts = JSON.parse(readFileSync(driverDir(runDir, 'register-counts.json'), 'utf8')); }

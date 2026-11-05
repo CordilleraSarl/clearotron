@@ -512,7 +512,7 @@ test("the report prints the figures as their own section, and the model's guess 
   // ── THE TIER-ABSENCE LINE ( part 2) ───────────────────────────────────────────────────────────
   // A knockout that bought no register step used to render NOTHING about the registers, and silence
   // read as an omission to the one reader the product serves. It now says which it is — and says the
-  // opposite thing when the product DID include counts and none could be taken.
+  // opposite thing when the product DID include counts and the run holds none.
   const plain = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: null, probeRan: false });
   assert.match(plain, /not included in this product tier/, "absence reads as a tier fact, never as an omission");
   assert.match(plain, /identical · containing · close variations/, "and names what the tier that has them includes");
@@ -533,9 +533,12 @@ test("the report prints the figures as their own section, and the model's guess 
   assert.match(sourced, /Counted [^<]*on Corsearch/,
     "a run WITH counts does not name its register data source — a reader cannot tell whose register was counted");
 
-  const failed = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: null, probeRan: true });
-  assert.match(failed, /none could be taken on this run/, "a bought-but-failed count is a gap, not a lesser tier");
-  assert.doesNotMatch(failed, /not included in this product tier/,
+  // A RUN THAT BOUGHT THE COUNTS AND HOLDS NO COUNTS FILE says what its files establish, and no more: a
+  // failure nothing recorded is not told as one, and no reason is promised that the workbook cannot hold.
+  const unknown = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: null, probeRan: true });
+  assert.match(unknown, /Register hit-counts are part of this search\. The saved records do not establish whether they were taken\./);
+  assert.doesNotMatch(unknown, /none could be taken|reason is recorded in the audit workbook/, "a failure no file records was told as one");
+  assert.doesNotMatch(unknown, /not included in this product tier/,
     "…and must never tell a client who paid for counts that their product does not have them");
 });
 
