@@ -173,7 +173,7 @@ const SCRUB = [
 // what varies and why, and step 5 prints them — a normalisation nobody can see is a normalisation that
 // hides the next real difference.
 const VOLATILE = [
-  { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the generation stamp in the firm locale" },
+  { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the issue stamp in the firm locale" },
   { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:669 asOf" },
 ];
 

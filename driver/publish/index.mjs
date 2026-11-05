@@ -653,14 +653,22 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const parsed = parseReport(reportMd);
   const { fm } = parsed;
   const deliv = delivery || NEUTRAL_DELIVERY;
-  // §2.9 issue timestamp — the FIRST issue, from the record (report-dates.mjs), in the firm locale (Europe/Zurich; Intl
-  // picks CET/CEST by DST, no hard-coded offset). A republish is not a new issue. Computed HERE and passed to renderHtml
-  // as opts.issued, so the renderer stays a pure function (unit tests + replay diff its output). e.g. "2026-06-16 · 14:32 CEST".
+  // §2.9 issue timestamp — the FIRST issue, read from the record (report-dates.mjs), in the firm locale
+  // (Europe/Zurich; Intl picks CET/CEST by DST, no hard-coded offset). e.g. "2026-06-16 · 14:32 CEST".
+  //
+  // A REPUBLISH IS NOT A NEW ISSUE. This was bound to generation time, so the page restamped on every render
+  // while meta.json kept the first issue for the index: a report's page disagreed with its own record, and a
+  // demo's example read as issued today. The two are now one value, and the render's own time is `renderedAt`,
+  // recorded apart from both.
+  //
+  // Computed HERE (publishReport is already non-deterministic — cf. the staff-page/status pages below) and
+  // passed to renderHtml as opts.issued, so the renderer stays a pure function (unit tests + replay diff its
+  // output).
+  const dates = reportDates({ runDir: runDir ?? dirname(reportMd), poolRunDir: join(poolRoot, runId) });
+  const issued = zurichStamp(dates.issuedAt, { zone: true });
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
   const poolRunDir = join(poolRoot, runId);
   mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });   // owner and group only; mkdir keeps the pool root's set-GID
-  const dates = reportDates({ runDir: runDir ?? dirname(reportMd), poolRunDir });
-  const issued = zurichStamp(dates.issuedAt, { zone: true });
   // The run dir inherits the web-server group + the set-GID bit AUTOMATICALLY from the set-GID pool root
   // (mode 2750, web-server group) — so files written inside take that group and the web server (Caddy in
   // the reference deployment, mode 0640) can read them. Do NOT chmod this dir: the service account is not
