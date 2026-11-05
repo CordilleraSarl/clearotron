@@ -747,7 +747,12 @@ if (process.platform !== "win32") {
     process.env.PATH = npmShimDir + delimiter + process.env.PATH;
   }
 }
-const repoBefore = snapshotRepo(REPO_ROOT);
+// A RUN INSIDE A RUN ON THE SAME CHECKOUT DOES NOT JUDGE THAT CHECKOUT. The runner's own tests drive nested runs while the rest of
+// the suite is working, so a nested read over the shared tree counts its neighbours' files as its own, and a neighbour's fixture
+// that lives for a moment turned a green command red, in whichever shard the two files happened to land together. The outermost
+// run still reads the whole run, and a test of this guard runs on its own copy of the tree, which it is alone in watching.
+const WATCHES_CHECKOUT = String(process.env.CT_WATCHED_CHECKOUT ?? "") !== REPO_ROOT;
+const repoBefore = WATCHES_CHECKOUT ? snapshotRepo(REPO_ROOT) : null;
 // AND THE HOME IT RUNS AS, read at the same moment for the same reason (`repo-writes.mjs` says which
 // folders and why). HOME as the child inherits it, which is the home every unpinned product command in
 // the run resolves.
@@ -810,6 +815,7 @@ child = spawn(argv[0], argv.slice(1), {
     // saying nothing about which filesystem locations count as temporary, and conflating the two is what
     // made a correctly contained sibling read as somebody's live estate.
     CT_TEST_MACHINE_TMP: MACHINE_TMP,
+    CT_WATCHED_CHECKOUT: REPO_ROOT,
     TRADEMARK_MCP_AUDIT_LOG: String(process.env.TRADEMARK_MCP_AUDIT_LOG ?? "").trim()
       || join(root, "mcp-access.jsonl"),
     // AND THE PORTAL'S AUDIT LOG, for the same reason and by the same rule as the line above it.
@@ -842,7 +848,7 @@ child.on("close", (code, signal) => {
   // fixture proves nothing and re-raising is the honest answer. The guard below never runs on that path.
   if (signal) { process.kill(process.pid, signal); return; }
 
-  const wrote = repoWrites(repoBefore, snapshotRepo(REPO_ROOT), REPO_ROOT);
+  const wrote = WATCHES_CHECKOUT ? repoWrites(repoBefore, snapshotRepo(REPO_ROOT), REPO_ROOT) : [];
   if (wrote.length) for (const line of explainRepoWrites(wrote)) console.error(line);
   const wroteHome = repoWrites(homeBefore, snapshotHome(RUN_HOME), RUN_HOME);
   if (wroteHome.length) for (const line of explainHomeWrites(wroteHome, RUN_HOME)) console.error(line);
