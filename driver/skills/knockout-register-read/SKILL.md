@@ -26,10 +26,8 @@ full. If it is not, do not read it and do not leave it: narrow the same question
 is, then read that list in full and decide. Each step keeps the limits of the steps before it. Stop at the first
 step that gives you a list you can read.
 
-1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
-   that list.
-2. Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the instructed
-   classes. Read each list.
+1. Ask again for the identical mark, in the instructed classes, limited to the client's goods. Choose the phrases and dominant goods terms that cover the requested goods, including their ordinary singular or plural forms where needed. Where the provider matches a multi-word goods term as an ordered phrase, include the dominant goods terms as alternatives in that same question; a phrase alone can miss a broader description of those goods. Use the provider's supported OR form. Read that list.
+2. Still a crowd? Split the goods question by its dominant goods terms where that narrows it, then by each instructed class, keeping the earlier scope limits. Read each selected list. Reuse an answer already held for the same question and scope.
 3. Still a crowd? Ask again one question per market, from the one list your opening message names. Read those
    lists.
 4. Still a crowd after step 3? The narrowing ends. Record it with its count: the field is crowded there.

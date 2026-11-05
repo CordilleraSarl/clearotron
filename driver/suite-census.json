@@ -1049,7 +1049,7 @@
         },
         "a-knockout-citation-the-run-does-not-hold-is-left-out-in-the-turn.test.mjs": {
           "tests": 6,
-          "asserts": 23,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -1060,8 +1060,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 20,
-          "asserts": 116,
+          "tests": 22,
+          "asserts": 124,
           "skips": 0,
           "todos": 0
         },
@@ -1114,8 +1114,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
-          "tests": 44,
-          "asserts": 204,
+          "tests": 45,
+          "asserts": 208,
           "skips": 0,
           "todos": 0
         },

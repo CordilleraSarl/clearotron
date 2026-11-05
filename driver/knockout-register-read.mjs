@@ -280,7 +280,7 @@ function questionRow({ entry, block, formKeys = new Set() }) {
 }
 
 /** The name's own question, from its count and, where it was read, its block. A failed read is a failure whatever was counted. PURE. */
-function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowed = false }) {
+function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowed = false, askFailed = false }) {
   const counted = Number.isFinite(cell?.total);
   const approximate = cell?.approximate === true;
   const answered = counted || approximate;
@@ -291,11 +291,12 @@ function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowe
   const total = counted ? cell.total : (Number.isFinite(block?.total_hits) ? block.total_hits : null);
   return { term: form.toUpperCase(), basis: "identical", label: "the name itself", qid, predicate: "exact",
     ok: !failed, fetched: wasRead(block) ? rowsOf(block).length : 0, total: approximate ? null : total,
-    state: failed ? "failed" : read ? "read" : total === 0 ? "zero" : narrowed ? "narrowed" : "crowd-not-read",
+    state: failed ? "failed" : read ? "read" : total === 0 ? "zero" : narrowed ? "narrowed" : askFailed ? "failed" : "crowd-not-read",
     ...(approximate ? { approximate: true, floor: Number.isFinite(cell?.floor) ? cell.floor : null } : {}),
     ...(Array.isArray(block?.warnings) && block.warnings.length ? { warnings: block.warnings } : {}),
     ...(failed ? { reason: String(block?.reason ?? cell?.cause ?? cell?.unavailable ?? "the register did not answer this question").slice(0, 300) } : {}),
-    ...(!failed && !read && !narrowed && (total > 0 || approximate) ? { setAside: true } : {}) };
+    // THE COUNT STANDS, AND THE QUESTION ASKED ON IT HAS ITS OWN ROW SAYING IT FAILED, so this one is neither a crowd set aside nor a second failure.
+    ...(!failed && !read && !narrowed && !askFailed && (total > 0 || approximate) ? { setAside: true } : {}) };
 }
 
 /**
@@ -341,7 +342,9 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
       const onForm = entries.filter((e) => e?.predicate === "exact" && termsAsked(e).includes(form.toLowerCase()) && !onlyAddedClasses(e, framedByName.get(key)) && wasRead(blocks.get(String(e?.qid))));
       const sameScope = (e) => !e?.nice_classes?.length || sameClassList(e.nice_classes, scoped);
       const isPlain = (e) => !e?.goods_text?.length && !e?.regions?.length && sameScope(e);
-      terms.push(identicalRow({ term: form, qid, cell: figure, block, plainRead: onForm.some(isPlain), narrowed: onForm.some((e) => !isPlain(e)) }));
+      const askedOnForm = entries.filter((e) => e?.predicate === "exact" && termsAsked(e).includes(form.toLowerCase()) && !onlyAddedClasses(e, framedByName.get(key)));
+      const askFailed = !onForm.length && askedOnForm.some((e) => hasFailed(blocks.get(String(e?.qid))));
+      terms.push(identicalRow({ term: form, qid, cell: figure, block, plainRead: onForm.some(isPlain), narrowed: onForm.some((e) => !isPlain(e)), askFailed }));
       ownLists.push({ form, qid, block });
     });
     // THE COUNTED FORMS, each as the question it was. Counted, not listed: a form with filings under it that nothing

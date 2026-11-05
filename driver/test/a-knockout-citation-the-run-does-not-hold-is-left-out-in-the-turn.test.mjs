@@ -67,17 +67,29 @@ test("a finding's source is held the same way: a held filing's own URL under any
   assert.match(r.not_kept[0], /"https:\/\/shop\.example\.test\/sibling-web" is not traceable to this name's research payload or a filing held for this batch\. Cite a source from that held evidence\./);
 });
 
-test("a source left out stays open until the finding comes back: leaving the reference out does not support the claim", () => {
+test("a source left out stays open until the finding is amended or gains held support, and an unchanged resend answers nothing", () => {
   const run = heldRun();
   mkdirSync(join(run, "research"), { recursive: true });
-  writeFileSync(join(run, "research", "lanternwick.md"), "A page: https://shop.example.test/own");
-  const cited = (evidence) => mark({ findings: [{ ...finding([]), evidence }] });
+  writeFileSync(join(run, "research", "lanternwick.md"), "Pages: https://shop.example.test/own https://shop.example.test/more");
+  const cited = (evidence, extra = {}) => mark({ findings: [{ ...finding([]), evidence, ...extra }] });
   send(run, cited(["https://shop.example.test/own", "https://shop.example.test/nowhere"]));
-  assert.deepEqual(knockoutAssessSourceDefects(run, 0).map((d) => [d.mark, d.name, d.kind, d.cited]), [["LANTERNWICK", "An invented conflict", "evidence", "https://shop.example.test/nowhere"]]);
+  const states = () => knockoutAssessSourceDefects(run, 0).map((d) => [d.mark, d.name, d.kind, d.cited, d.state]);
+  const open = ["LANTERNWICK", "An invented conflict", "evidence", "https://shop.example.test/nowhere", "open"];
+  assert.deepEqual(states(), [open]);
   recordKnockoutAssess(run, { marks: [{ name: "LANTERNWICK", basis: "A new basis." }] }, { boundOrdinal: 0 });
-  assert.equal(knockoutAssessSourceDefects(run, 0).length, 1, "a call that did not send the finding did not answer it");
+  assert.deepEqual(states(), [open], "a call that did not touch the finding did not answer it");
   recordKnockoutAssess(run, { marks: [cited(["https://shop.example.test/own"])] }, { boundOrdinal: 0 });
-  assert.deepEqual(knockoutAssessSourceDefects(run, 0), [], "the finding came back on held support");
+  assert.deepEqual(states(), [open], "the same claim sent again with the citation gone has not been supported or amended");
+  recordKnockoutAssess(run, { marks: [cited(["https://shop.example.test/own", "https://shop.example.test/more"])] }, { boundOrdinal: 0 });
+  assert.deepEqual(states().map((d) => d[4]), ["answered"], "new held support is an answer for the check to read");
+  const other = heldRun();
+  mkdirSync(join(other, "research"), { recursive: true });
+  writeFileSync(join(other, "research", "lanternwick.md"), "A page: https://shop.example.test/own");
+  send(other, cited(["https://shop.example.test/own", "https://shop.example.test/nowhere"]));
+  recordKnockoutAssess(other, { marks: [cited(["https://shop.example.test/own"], { net: "The claim, amended to what the held page shows." })] }, { boundOrdinal: 0 });
+  assert.deepEqual(knockoutAssessSourceDefects(other, 0).map((d) => d.state), ["answered"], "an amended claim is an answer too");
+  recordKnockoutAssess(other, { marks: [mark({ findings: [] })] }, { boundOrdinal: 0 });
+  assert.deepEqual(knockoutAssessSourceDefects(other, 0), [], "a finding gone takes its claim with it");
 });
 
 test("what is stored then passes the stage's own check, so the stage cannot fail on it", () => {

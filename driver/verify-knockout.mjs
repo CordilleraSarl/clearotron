@@ -246,13 +246,14 @@ const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${findin
  * attempt, so there is no room to send one again. So the record tool keeps the call and leaves out only what the rule refuses, and
  * names every row it left out. A filing held for this batch may bear on more than one name, so its id and its source are held
  * whichever name found it (design, 2026-11-05). A finding that loses a source keeps its claim, and leaving the reference out does
- * not support it, so each such loss is returned as a source defect, which stays open until the finding comes back or a correction
- * answers it. Returns `{mark, notKept, sourceDefects}`. PURE-ish.
+ * not support it, so each such loss is returned as a source defect, with the claim as it stood. Returns `{mark, notKept,
+ * sourceDefects}`. PURE-ish.
  */
 export function heldCitationsOnly(runDir, mark) {
   const held = registerRecordIdsHeld(runDir);
   const notKept = [], sourceDefects = [];
-  const lost = (f, kind, cited) => sourceDefects.push({ mark: mark?.name, name: f?.name, owner: f?.owner, kind, cited });
+  const urlHeld = urlHeldFor(runDir, mark?.name);
+  const lost = (f, kind, cited) => sourceDefects.push({ mark: mark?.name, name: f?.name, owner: f?.owner, kind, cited, was: { net: f?.net ?? null, basis: f?.basis ?? null, evidence: (f?.evidence ?? []).filter((u) => urlHeld(u)) } });
   const isHeld = (raw, say) => {
     const id = String(raw ?? "").trim();
     if (!id || held.has(id)) return true;
@@ -261,7 +262,6 @@ export function heldCitationsOnly(runDir, mark) {
   };
   if (!Array.isArray(mark?.registerReads) && !Array.isArray(mark?.findings)) return { mark, notKept, sourceDefects };
   const out = { ...mark };
-  const urlHeld = urlHeldFor(runDir, mark?.name);
   if (Array.isArray(mark.registerReads)) out.registerReads = mark.registerReads.filter((row) => isHeld(row?.recordId, (id) => readNotHeld(mark.name, id)));
   if (Array.isArray(mark.findings)) out.findings = mark.findings.map((f) => {
     const kept = Array.isArray(f?.weighedFilings) ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => { lost(f, "weighed", bad); return weighedNotHeld(mark.name, f?.name, bad); })) } : f;
