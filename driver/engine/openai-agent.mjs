@@ -1014,6 +1014,8 @@ export const openaiAgentEngine = {
       if (!ev.model) ev.model = readServedModel(codexHome, spawnedAtMs);
       // A turn cut off before turn.completed: what it spent, from the same rollout (readRolloutUsage).
       if (!ev.usage) { ev.usage = readRolloutUsage(codexHome, spawnedAtMs); ev.usageFromRollout = ev.usage != null; }
+      // A resumed turn's turn.completed states its thread's running total, earlier turns included. Its own share is in the same rollout.
+      else if (resumeRef) ev.usage = readRolloutUsage(codexHome, spawnedAtMs) ?? ev.usage;
       return settleTuple({ r, ev, resumeRef });
     } finally {
       // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the

@@ -100,6 +100,18 @@ test("a codex turn cut off by the watchdog keeps what it spent, counted as rebui
   assert.equal(r.stream?.file, streamFile);
 });
 
+test("a resumed codex turn counts its own share, not its thread's running total, and stays a measured turn", async (t) => {
+  const PINNED = { CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-test",
+    MOCK_CODEX_ROLLOUT_TOKENS: JSON.stringify([{ input_tokens: 4000, cached_input_tokens: 3000, output_tokens: 250 }]) };
+  const saved = Object.fromEntries(Object.keys(PINNED).map((k) => [k, process.env[k]]));
+  for (const [k, v] of Object.entries(PINNED)) pinEnv(process.env, k, v);
+  t.after(() => { for (const k of Object.keys(PINNED)) { if (saved[k] === undefined) delete process.env[k]; else pinEnv(process.env, k, saved[k]); } });
+  const r = await codex.openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60, resumeRef: "an-invented-thread" });
+  assert.equal(r.code, 0, r.stderr);
+  assert.deepEqual(r.usage, { input: 1000, output: 250, cacheRead: 3000, cacheWrite: 0, total: 4250 }, "the resumed turn was charged the stream's running total");
+  assert.equal(r.signals?.usageStreamed, undefined, "a completed turn was marked as rebuilt");
+});
+
 test("a codex turn that completed keeps the stream's own count, and is not marked as rebuilt", async (t) => {
   const PINNED = { CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-test",
     MOCK_CODEX_ROLLOUT_TOKENS: JSON.stringify([{ input_tokens: 4000, output_tokens: 250 }]) };
