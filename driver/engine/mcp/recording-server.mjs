@@ -1311,6 +1311,11 @@ serve({
               },
               classesSearched: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
+              classGroups: { type: "array", minItems: 2, description: "OPTIONAL: when separating the requested goods changes the advice under the frozen framework. Every class searched belongs to one group, and rating is the highest group's band.", items: { type: "object", required: ["band", "classes"], properties: {
+                band: { type: "string", description: "The band for this group, in the framework's words." },
+                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
+              } } },
               beltAndBraces: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
               negatives: {
                 type: "array",
@@ -1469,6 +1474,11 @@ serve({
               rating: { type: "string", description: "The band, in the framework's words." },
               ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
               classesDriving: { type: "array", items: { type: "integer" }, description: "The classes behind the band." },
+              classGroups: { type: "array", minItems: 2, description: "Where this repair changes the conclusion by class group: every row as it now reads.", items: { type: "object", required: ["band", "classes"], properties: {
+                band: { type: "string", description: "The band for this group, in the framework's words." },
+                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
+              } } },
               basis: { type: "string", description: "One sentence: why this band, for this name, in these classes." },
               factors: { type: "array", items: { type: "string" }, description: "2 to 4 load-bearing observations, one line each." },
               counterFactors: { type: "array", items: { type: "string" }, description: "1 to 3: what holds it at this band." },

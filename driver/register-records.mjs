@@ -19,9 +19,18 @@ import { join } from "node:path";
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
 import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
 
+/**
+ * Was this listing made by the reading step? Its sentences say what that step did. A listing written before it keeps the
+ * sentences it was delivered with, and its own `basis` is the one it was delivered under, so an archived run re-renders
+ * as delivered. PURE.
+ */
+export const readByJudgment = (doc) => Number(doc?.schema) >= 2;
+/** The sentence under a listing, as that listing was delivered. PURE. */
+export const recordBasisOf = (doc) => doc?.basis ?? RECORD_BASIS;
+
 /** What the listing is, in one client-safe sentence. Rendered verbatim on every surface. */
-export const RECORD_BASIS = "The filings behind the two narrow counts — the name itself and each close "
-  + "variation of it — as the register holds them, class-scoped exactly as the counts were. Raw register "
+export const RECORD_BASIS = "The filings this search read and carried forward: the name itself and the near "
+  + "names and wider searches it chose, as the register holds them. Raw register "
   // "RATED", NOT "WEIGHED" (owner,) — the word only; the disclaimer this sentence
   // exists to make is untouched, and it is the load-bearing half: a filing in this list is not a
   // finding that it blocks anything.
@@ -166,6 +175,19 @@ export function normalizeRegisterRecordLinks(doc) {
  * It states the truncation and the failures, because both are the difference between "these are the
  * filings" and "these are some of the filings".
  */
+export const NONE_CARRIED_FORWARD = "Filings: none were carried forward for assessment.";
+/**
+ * The reading finished and kept no filing, and this is not a clean answer: a question stayed open, a list was set aside, or
+ * one was not asked. It says so without claiming the register holds none. A reading that did not finish is a failed listing,
+ * and an archived listing has no reading at all. PURE.
+ */
+export function noneCarriedForward(entry) {
+  if (!entry || entry.records?.length || !entry.reading || entry.reading.notFinished) return false;
+  const terms = entry.terms ?? [];
+  if (terms.some((t) => !t.ok && !t.notAsked)) return false;
+  return !(terms.some((t) => t.ok && !t.setAside) && !terms.some((t) => t.notAsked) && !terms.some((t) => t.setAside));
+}
+
 export function recordsLine(entry) {
   if (!entry) return null;
   const failed = (entry.terms ?? []).filter((t) => !t.ok && !t.notAsked);
@@ -222,6 +244,7 @@ export function recordsLine(entry) {
     }
     return (answered.length && !skipped.length && !setAside.length
       ? `Filings: the register returned none under the name or any close variation of it, in the classes counted${unlisted.length ? ` and in the register${(entry.officeScope?.listed ?? []).length === 1 ? "" : "s"} searched (${(entry.officeScope?.listed ?? []).join(", ")})` : ""}.`
+      : noneCarriedForward(entry) ? NONE_CARRIED_FORWARD
       : "Filings: the listing did not complete, so nothing here says whether one stands.")
       + officeNote + coverageNote;
   }

@@ -557,7 +557,8 @@ test("a class the frame added needs an outcome: an answer, or a reason that leav
     readBlocks: () => blocks, readProposals: () => ({ entries, rejected: [] }) }).marks[0];
   const row = (m) => m.terms.find((t) => t.qid === qid);
   assert.deepEqual([row(doc(reading)).state, row(doc(reading)).unresolved, row(doc(reading)).reason], ["not-asked", true, "the client's goods do not reach retail"], "it stays unresolved, with its reason");
-  assert.match(String(recordsLine(doc(reading))), /did not complete/, "and nothing says the name came back clean");
+  assert.equal(recordsLine(doc(reading)), "Filings: none were carried forward for assessment.", "and nothing says the name came back clean");
+  assert.match(String(recordsLine(doc(null))), /did not complete/, "a reading that did not finish keeps the failure's own sentence");
   assert.equal(row(doc(null)).unresolved, true, "a reading that did not finish records the same gap");
   const asked = [{ qid: "supp:35", predicate: "exact", term: NAME, nice_classes: ["35"] }];
   const held = new Map([["supp:35", listBlock("supp:35", [])]]);

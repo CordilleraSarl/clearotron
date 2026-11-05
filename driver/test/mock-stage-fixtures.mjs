@@ -2623,7 +2623,10 @@ export function applyStageWrites(msg, argv) {
             + `common-law use in the classes this chunk covers, and the read below sets out what the sweep `
             + `found and what it could not reach. A knockout screen triages; it does not clear.`,
           contextFraming: "mock framing", rating: band, ratingQualifier: null,
-          classesDriving: [9], bullets: deg ? ["Rated on linguistic properties — research unavailable."] : ["No significant common-law conflicts identified in the mock payload."],
+          // MOCK_KO_CLASS_GROUPS: this name's answer by class group, as JSON keyed by name, through the real transport's check.
+          ...(() => { const split = process.env.MOCK_KO_CLASS_GROUPS ? JSON.parse(process.env.MOCK_KO_CLASS_GROUPS)[n] : null;
+            return split ? { classesSearched: split.flatMap((g) => g.classes), rating: split[0].band, classGroups: split } : {}; })(),
+          classesDriving: process.env.MOCK_KO_CLASS_GROUPS && JSON.parse(process.env.MOCK_KO_CLASS_GROUPS)[n] ? JSON.parse(process.env.MOCK_KO_CLASS_GROUPS)[n][0].classes : [9], bullets: deg ? ["Rated on linguistic properties — research unavailable."] : ["No significant common-law conflicts identified in the mock payload."],
           // — the TYPED read. Emitted by the mock because the chunk validator requires it on every
           // fresh turn: without it the knockout e2e would prove only that the validator refuses, and
           // would stop exercising the lane it exists to walk end to end.
@@ -2756,6 +2759,8 @@ export function applyStageWrites(msg, argv) {
       return stands.written ? "mock knockout correction ok" : `mock knockout-correct: the transport refused the composed call — ${stands.refused ?? stands.write_failed}`;
     }
     const band = process.env.MOCK_KO_CORRECTED_BAND;
+    // MOCK_KO_CORRECTED_GROUPS sends the name's class groups as they now read, as JSON.
+    const correctedGroups = process.env.MOCK_KO_CORRECTED_GROUPS ? JSON.parse(process.env.MOCK_KO_CORRECTED_GROUPS) : null;
     // MOCK_KO_CORRECTION_PARTIAL answers the first defect only. MOCK_KO_CORRECTED_READS adds these filing reads to the name, as JSON.
     const answering = process.env.MOCK_KO_CORRECTION_PARTIAL ? defects.slice(0, 1) : defects;
     const reads = process.env.MOCK_KO_CORRECTED_READS ? JSON.parse(process.env.MOCK_KO_CORRECTED_READS) : null;
@@ -2763,7 +2768,7 @@ export function applyStageWrites(msg, argv) {
     const marks = names.map((name) => {
       const mark = held.marks.find((m) => m.name === name);
       const flagged = answering.filter((d) => d.mark === name && d.names).map((d) => d.names);
-      return { name, ...(reads ? { registerReads: reads } : {}), rating: band, basis: `${name} moves to ${band} on the conflict the check named.`,
+      return { name, ...(reads ? { registerReads: reads } : {}), ...(correctedGroups ? { classGroups: correctedGroups, classesDriving: correctedGroups[0].classes } : {}), rating: band, basis: `${name} moves to ${band} on the conflict the check named.`,
         assessment: `${name} now screens at ${band}, on the conflict the check named. The name was searched against marketplace and common-law use in the classes this chunk covers, and the read below sets out what the sweep found. A knockout screen triages; it does not clear.`,
         findings: (mark.findings ?? []).filter((f) => flagged.some((n) => n.name === f.name && n.owner === f.owner)).map((f) => ({ ...f, band, net: `The conflict the check named is more serious than first rated for ${name}.` })) };
     });

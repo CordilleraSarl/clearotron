@@ -338,6 +338,56 @@ const bandIdx = (ladder, word) => ladder.findIndex((l) => l.toLowerCase() === St
 // ladder, the interactive skill's rule, generalized by position); registerEstimate above the lowest.
 const materialIdxMax = (ladder) => ladder.length - 3;   // inclusive index bound for "material"
 
+/** The frozen ladder of a run, worst first, or none where the run holds no framework. */
+export const frozenLadder = (runDir) => ladderOf(readJson(driverDir(runDir, "framework.json")));
+
+// ── A NAME'S CONCLUSION BY CLASS GROUP ───────────────────────────────────────────────
+//
+// `rating` and `classesDriving` say nothing of the other classes searched, and an answer can differ by
+// group: on a lawyer's eight-name report two names carried two bands, each with its class list. So a mark
+// may send `classGroups`. It is optional and rests on the evidence, not on a framework flag: no framework
+// deck states a rule by class group, so a gate there would have nothing to read.
+//
+// The band column prints these rows as facts in place of the one chip, which is what each check is for: a
+// word off the ladder has no colour, a class in two rows gets two answers, a class in none loses the line
+// that used to name it, and a top row that disagrees with `rating` or `classesDriving` puts two answers on
+// one page. PURE.
+const groupKey = (g) => `${String(g?.band ?? "").trim().toLowerCase()}|${normalizeKnockoutQualifier(g?.ratingQualifier) ?? ""}`;
+/** The groups as a reader meets them: the highest band first, and within a band the one with no qualifier. PURE. */
+const groupsHighestFirst = (groups, ladder) => [...groups].sort((x, y) => bandIdx(ladder, x.band) - bandIdx(ladder, y.band)
+  || Number(Boolean(x.ratingQualifier)) - Number(Boolean(y.ratingQualifier)));
+export function classGroupsDefect(mark, ladder = []) {
+  const groups = mark?.classGroups;
+  if (groups == null) return null;
+  const say = (what) => `knockout_class_groups:${mark?.name}: ${what}`;
+  if (!Array.isArray(groups) || groups.length < 2 || new Set(groups.map(groupKey)).size < 2)
+    return say("classGroups needs two or more rows that differ in band or qualifier. Where one conclusion holds, leave it out.");
+  if (new Set(groups.map(groupKey)).size < groups.length) return say("Combine groups with the same band and qualifier.");
+  const seen = new Set();
+  const searched = Array.isArray(mark?.classesSearched) ? new Set(mark.classesSearched) : new Set();
+  for (const g of groups) {
+    if (ladder.length && bandIdx(ladder, g?.band) < 0) return say(`band ${g?.band} is not in the framework's ladder.`);
+    if (g?.ratingQualifier != null && !normalizeKnockoutQualifier(g.ratingQualifier))
+      return say(`ratingQualifier ${g.ratingQualifier} is not one of ${KNOCKOUT_RATING_QUALIFIERS.join(" / ")}.`);
+    if (!Array.isArray(g?.classes) || !g.classes.length || !g.classes.every((n) => Number.isInteger(n) && n >= 1 && n <= 45))
+      return say("each group's classes must be Nice-class integers (1–45).");
+    for (const n of g.classes) {
+      if (seen.has(n)) return say(`class ${n} sits in two groups.`);
+      if (searched.size && !searched.has(n)) return say(`class ${n} is in a group but was not searched.`);
+      seen.add(n);
+    }
+  }
+  for (const n of searched) if (!seen.has(n)) return say(`class ${n} was searched and is in no group.`);
+  if (ladder.length) {
+    const top = groupsHighestFirst(groups, ladder)[0];
+    if (groupKey(top) !== groupKey({ band: mark?.rating, ratingQualifier: mark?.ratingQualifier }))
+      return say(`rating is ${mark?.rating}${mark?.ratingQualifier ? ` (${mark.ratingQualifier})` : ""}, but the highest group is ${top.band}${top.ratingQualifier ? ` (${top.ratingQualifier})` : ""}. They must agree.`);
+    const driving = Array.isArray(mark?.classesDriving) ? mark.classesDriving : [];
+    if (driving.length !== top.classes.length || !top.classes.every((n) => driving.includes(n))) return say("classesDriving must contain the highest group's classes.");
+  }
+  return null;
+}
+
 // ── The web search's two lists, checked as the search program will read them ─────────────────────────
 //
 // The program searches every place verbatim: the literal `web` is the whole web, and any other entry is
@@ -612,6 +662,8 @@ export const validators = {
       const idx = ladder.length ? bandIdx(ladder, rating) : -1;
       if (ladder.length && idx <= materialIdxMax(ladder) && !(Array.isArray(m.classesDriving) && m.classesDriving.length))
         return { ok: false, reason: `mark "${m.name}": classesDriving is mandatory at "${rating}" (class-specific ratings — calibration rule 1)` };
+      const groupsDefect = classGroupsDefect(m, ladder);
+      if (groupsDefect) return { ok: false, reason: groupsDefect };
       // ── CONDITIONAL SINCE RF-15 v3, AND IT HAD TO MOVE WITH THE DOCTRINE ──────
       //
       // This demanded `registerEstimate` on every mark above the lowest band, unconditionally, citing
@@ -945,6 +997,9 @@ export function validateMergedFindings(runDir, merged, plan) {
     }
     const above = markRatedAboveItsCards(manifest, m);
     if (above) failures.push(above);
+    const groupsDefect = classGroupsDefect(m, ladderOf(manifest));
+    if (groupsDefect) failures.push(groupsDefect);
+    else if (Array.isArray(m.classGroups)) m.classGroups = groupsHighestFirst(m.classGroups, ladderOf(manifest));
   }
   const receipts = knockoutReceipts(runDir, marks);
   failures.push(...receipts.failures);
