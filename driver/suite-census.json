@@ -6653,7 +6653,7 @@
         },
         "the-connect-line-names-the-claude-setup-installed.test.mjs": {
           "tests": 4,
-          "asserts": 23,
+          "asserts": 26,
           "skips": 1,
           "todos": 0
         },
