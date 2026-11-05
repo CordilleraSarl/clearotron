@@ -58,9 +58,9 @@ test("termPredicateIssue: an anchored-star term under a LITERAL predicate is the
 test("termShapeIssue: label/prose-shaped strings fire; marks — including 3-4 word marks — never do on word count alone", () => {
   // the 2026-07-28 label family (A2) and the prose-under-exact family
   assert.match(termShapeIssue("Reverse-order WAVO composites (TROPICAL WAVO, ISLAND WAVO)") ?? "", /label\/prose-shaped/);
-  assert.match(termShapeIssue("SLUSH FREEZE, SLUSH ICE, SLUSH POP") ?? "", /words/);
-  assert.match(termShapeIssue("TIKTOK / TIK- famous-neighbour family") ?? "", /label\/prose-shaped/);
-  assert.match(termShapeIssue("WAVU, WAPO one-keystroke neighbours of WAVO") ?? "", /words/);
+  assert.match(termShapeIssue("IRONWHISK SODA, IRONWHISK JUICE, IRONWHISK TONIC") ?? "", /words/);
+  assert.match(termShapeIssue("NOVAPULSE / NOVA- famous-neighbour family") ?? "", /label\/prose-shaped/);
+  assert.match(termShapeIssue("IRONWHIZK, IRONWHISQ one-keystroke neighbours of IRONWHISK") ?? "", /words/);
   // punctuation signals on 3-4 word strings
   assert.match(termShapeIssue("WAVO family (composites)") ?? "", /parenthetical/);
   assert.match(termShapeIssue("WAVO — the family") ?? "", /sentence punctuation/);
