@@ -12,8 +12,9 @@
 // change quietly undoing it. A config flag nobody checks is a config flag that gets flipped back.
 //
 // WHAT IS ALLOWED, AND WHY IT IS NOT A LOOPHOLE. Two kinds of comment legitimately survive:
-//   * Bundler REGION MARKERS — Rolldown emits `//#region <module path>` / `//#endregion` as structural
-//     scaffolding. They name module paths, carry no prose, and removing them is not in our gift.
+//   * Bundler MODULE MARKERS — Rolldown opens each module with `// <module path>` as structural scaffolding
+//     (`//#region` pairs until its 1.2.15). They name module paths, carry no prose, and `comments: false`
+//     does not remove them.
 //   * LICENCE and copyright headers, which a distributor is obliged to reproduce. Stripping those would
 //     trade one defect for a worse one.
 // Everything else is commentary and does not belong in a client's download.
@@ -29,8 +30,9 @@ const ASSETS = join(REPO, "portal-ui", "dist", "assets");
 // A line that is only a comment. An inline trailing comment after real code is not what this is about —
 // the defect is whole lines of prose riding along.
 const COMMENT_LINE = /^\s*(\/\/|\*|\/\*)/;
-// Rolldown's structural scaffolding.
-const REGION_MARKER = /^\s*\/\/#(region|endregion)\b/;
+// Rolldown's structural scaffolding: one word, a path to a file. A sentence has spaces in it. `\0` opens the id
+// of a module the bundler made itself.
+const MODULE_MARKER = /^\s*\/\/ (?:\\0)?\S*\/\S*\.\w+$/;
 // Licence and attribution, which must survive.
 const LEGAL = /SPDX-License-Identifier|@license|@preserve|\bCopyright\b|\bLicensed under\b/i;
 
@@ -48,7 +50,7 @@ test("the built portal bundle carries no engineering commentary", (ctx) => {
     const lines = readFileSync(join(ASSETS, f), "utf8").split("\n");
     for (const [i, line] of lines.entries()) {
       if (!COMMENT_LINE.test(line)) continue;
-      if (REGION_MARKER.test(line)) continue;
+      if (MODULE_MARKER.test(line)) continue;
       if (LEGAL.test(line)) continue;
       offenders.push(`${f}:${i + 1}  ${line.trim().slice(0, 100)}`);
     }
@@ -59,7 +61,7 @@ test("the built portal bundle carries no engineering commentary", (ctx) => {
     + "browser, and something has turned it off or worked around it");
 });
 
-test("the arm is not vacuous — the bundle it read has real content and real region markers", (ctx) => {
+test("the arm is not vacuous — the bundle it read has real content and real module markers", (ctx) => {
   // The control. An arm that silently read an empty directory, or a file with no comments of any kind,
   // would pass the assertion above while proving nothing about comment stripping.
   const files = bundles();
@@ -67,7 +69,14 @@ test("the arm is not vacuous — the bundle it read has real content and real re
 
   const all = files.map((f) => readFileSync(join(ASSETS, f), "utf8")).join("\n");
   assert.ok(all.length > 100_000, `the bundle is ${all.length} bytes — too small to be the real portal`);
-  assert.ok(/^\s*\/\/#region\b/m.test(all),
-    "no region markers at all: either the bundler changed or this arm is reading something that is not "
+  assert.ok(all.split("\n").some((l) => MODULE_MARKER.test(l)),
+    "no module markers at all: either the bundler changed or this arm is reading something that is not "
     + "the Rolldown output it was written against, and its allowances no longer mean what they say");
+});
+
+test("a sentence is not a module marker, and a module's path is", () => {
+  for (const line of ["// src/main.tsx", "  // ../node_modules/react/cjs/react.production.js", "// \\0rolldown/runtime.js"])
+    assert.ok(MODULE_MARKER.test(line), `a module marker reads as commentary: ${line}`);
+  for (const line of ["// which file paths staff keep", "// TODO", "// see src/main.tsx for why", "// and/or"])
+    assert.ok(!MODULE_MARKER.test(line), `commentary passes as a module marker: ${line}`);
 });
