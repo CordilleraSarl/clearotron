@@ -1,23 +1,28 @@
 ---
 name: knockout-assess
-description: Rate every mark of a KNOCKOUT batch from its raw research payload, in the customer's configured band vocabulary — triage judgment, receipted evidence, measured tone. Emits knockout-findings.json.
+description: Rate every mark of a KNOCKOUT batch from its research payload and the filings you hold, in the customer's configured band vocabulary. Triage judgment, receipted evidence, measured tone. Emits knockout-findings.json.
 ---
 
-# Knockout assessment (Stage C of the knockout doctrine — reviewer-calibrated)
+# Knockout assessment
 
 You rate each mark of the batch for **triage**: "is there an obvious blocker to USING this name in
-the market?" — from the mark's raw common-law research payload (`research/<mark>.md`), the frame's
-context framing, the filings and owner searches you are handed, and nothing else. This is NOT a clearance: no register conclusions, no filing
-advice. Ratings use **the frozen framework's band vocabulary** (`_driver/framework.json` — the
-customer's own ladder when configured, else the house triage ladder). State the band WORD. The only
-sub-gradation is `ratingQualifier: "low"` — it CAPS a band ("Medium (low)", calibration rule 6) and
-there is no other value: a band that needs sharpening is the band above it, stated as that word.
+the market?" This screens; it does not clear, and it gives no filing advice.
+
+**What you hold is the whole evidence base:** the client's request, the plan with each mark's context
+framing, each mark's raw research payload (`research/<mark>.md`), and, when the register component ran,
+the filings the reading step carried forward, what it set aside, and the owner searches made for them.
+
+**Rate in the frozen framework's words** (`_driver/framework.json`: the customer's own ladder when
+configured, else the house triage ladder). State the band WORD. The only sub-gradation is
+`ratingQualifier: "low"`. It CAPS a band ("Medium (low)", calibration rule 4) and there is no other value:
+a band that needs sharpening is the band above it, stated as that word.
 
 ## Per mark — the mandatory sequence
 
 1. **Context framing FIRST** (from the plan; correct it only if plainly wrong): coined vs common
-   phrase vs cultural echo. It frames what the name READS as, and the evidence bullets draw on it.
-   The band does not: no framing raises or lowers a rating (calibration rule 3, retired).
+   phrase vs cultural echo. It frames what the name READS as, and the evidence bullets draw on it. It
+   does not set, floor or lift a band. A risk that belongs to the NAME rather than to one user is its
+   own `findings[]` record, rated there: Famous Brand and Cultural Reference are card types for that.
 2. **Parody / evocation check**: does the name echo a famous mark or property even without identical
    ownership ("Free Range 1s" echoes "Air Force 1s")? Flag it even when nobody owns the echoed form.
 3. **Band per the framework ladder**, applying the calibration rules below.
@@ -32,14 +37,10 @@ there is no other value: a band that needs sharpening is the band above it, stat
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
    the band and renumbers, so what your order decides is the order inside a band. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
-6. **RETIRED — you are given the filings now, so you do not estimate them.**
-   This ordered an expectation sentence ("moderate volume of filings expected") and forbade a register
-   conclusion, because this seat could not see the register lane. It can: the run's fetched records are
-   passed to you when they exist. The replacement is RF-15 v3 in
-   `../clearance-search/firm-wide-reasoning.md` — estimation becomes one of three confirmation states once
-   the register actually ran. Where it did not run, the estimate is still the honest answer and RF-15
-   says so.
-   *The number is kept and not reused* — see calibration rule 4 for why.
+6. **`registerEstimate`, only where no filings reached you.** With filings in hand you weigh them
+   instead (RF-15 v3 in `../clearance-search/firm-wide-reasoning.md`). Where the register did not run, the
+   estimate is the honest answer: it is an EXPECTATION and labels itself as one, ending with a sentence
+   in the shape of "This is an expectation only, not a search result."
 7. **Purple notes** (internal, for the reviewing lawyer): belt-and-braces additions, famous-brand
    adjacency, institutional-knowledge gaps ("Confirm firm history on [MARK]"),
    register-pending notes, prior-use mitigation.
@@ -53,42 +54,14 @@ there is no other value: a band that needs sharpening is the band above it, stat
    gating precondition, and what a crowd may and may not do to a band, are in
    `../clearance-search/firm-wide-reasoning.md` → *Volume is not a risk multiplier*; read it there rather
    than from a summary here.
-   *(Its closing sentence — "the top bands are reserved for dominant, well-resourced,
-   known-to-enforce rights holders" — is RETIRED. That is owner size and fame driving a band, which the
-   framework decks forbid in terms: "Optics — owner size, fame, partnership — never move the legal
-   read." It was the only instruction in this seat's context licensing that move, and the readiest
-   explanation for a famous owner's hit rated well above the lawyer's grade. The rest of the rule stands
-   and is doctrine.)*
-3. **RETIRED — how ordinary the words are is a note for the reviewing lawyer, never a band.**
-   This forbade the lowest band for a common English phrase and put a floor a band above it. On a
-   scale that ends in Low it kept an everyday name off "no issues found"; on a client scale with no
-   Low band the floor landed one band higher still, and three names went out rated above every
-   conflict card on their own pages — twelve cards, all at the bottom band, under three names a band
-   above them, with nothing on the page to explain it. The reviewing lawyer rated the cards right and
-   the names wrong.
-   **Removed for every client, not only where it misfired** (owner, 2026-09-15). Keeping it on scales
-   that have a Low band was considered and rejected; so was explaining the gap on the report, because
-   a report that explains a wrong rating is still wrong.
-   Say what the words are in the reading — coined, compound, everyday phrase, cultural echo — and let
-   it inform the evidence bullets. It does not set, floor or lift a band. A risk that belongs to the
-   NAME rather than to one user is written as its own `findings[]` record and rated there; Famous
-   Brand and Cultural Reference are already card types for exactly that.
-   *The number is kept and not reused*, for the reason rule 4 gives below.
-4. **RETIRED — the caveat is conditional now, and it is not this file's to state.**
-   This rule ordered the pending-register caveat on *every* summary, unconditionally. When the register
-   ran and surfaced live filings, that sentence tells a client its ratings are common-law only while the
-   same run holds the filings — which is what shipped. The replacement is RF-10 v3 in
-   `../clearance-search/firm-wide-reasoning.md`: when register analysis ran AND surfaced live filings, drop
-   the caveat and cite the register evidence directly; otherwise it stands.
-   *The number is kept and not reused.* `verify-knockout.mjs` and two other files address these rules by
-   number, so renumbering would silently repoint five live references at the wrong rule.5. **Dispute-type notation only when the customer's framework defines it** (e.g. an A–E / dispute
+3. **Dispute-type notation only when the customer's framework defines it** (e.g. an A–E / dispute
    matrix): use their notation exactly; the house triage ladder has none — never invent one.
-6. **Enforcer profiling matters** at the material bands: portfolio brand? opposition history?
+4. **Enforcer profiling matters** at the material bands: portfolio brand? opposition history?
    institutional or individual filer? "No large brands or assertive enforcers" can cap a middle band
    at its "(low)" qualifier.
-7. **Client's prior use mitigates, doesn't eliminate.** Rate the full external landscape first; note
+5. **Client's prior use mitigates, doesn't eliminate.** Rate the full external landscape first; note
    the mitigation separately in a purple bullet.
-8. **A NAME IS NEVER RATED ABOVE THE WORST CARD ON ITS PAGE.** The page is one judgment: the name's
+6. **A NAME IS NEVER RATED ABOVE THE WORST CARD ON ITS PAGE.** The page is one judgment: the name's
    band, its basis line, its Why and Why-not boxes and its opening read all have to agree with each
    other and with the cards under them. A reader who sees a band on the name and a milder band on
    every card beneath it has been given two answers and no way to choose.
@@ -103,9 +76,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
    reading, a risk that belongs to the NAME rather than to one user. Write it as a `findings[]`
    record and rate it there, where a reader can see what it is and disagree with it. A band lifted
    without a card is a conclusion with its evidence left out.
-   The driver checks this and REFUSES, naming the card it read: it never rewrites your band. A
-   corrected band you reasoned is the product; a band a script lowered under prose that still argues
-   for the old one is worse than the defect it replaced.
+   The driver checks this and REFUSES, naming the card it read: it never rewrites your band.
 
 ## Degraded marks (research unavailable or null — never inflate)
 
@@ -117,10 +88,7 @@ there is no other value: a band that needs sharpening is the band above it, stat
 
 ## Assert nothing you did not examine (non-optional at every depth)
 
-This lane screens; it does not enumerate. It holds the marketplace and common-law research payload for
-each mark, and — when the register component is configured — the filings it fetched and the owner searches
-made for them. That is the whole evidence base. Everything below
-follows from writing only what it supports.
+Everything below follows from writing only what your evidence supports.
 
 1. **A survivor is never "clear".** Never "clear", "clean", "no conflicts found", "clear to proceed".
    The screen ending without a blocker is a result about the screen, not about the mark.
@@ -128,18 +96,17 @@ follows from writing only what it supports.
    empty there — "no exact-name energy drink was identified in the supplement and grocery
    marketplaces screened" is supportable; "there is no conflicting use" is not. `negatives[]` is
    where a scoped absence belongs, and every entry carries the `source` that bounds it.
-3. **No claim that the register is clear, and equally none that it is crowded.** Weigh the register
-   evidence supplied for each mark. The report states search coverage from the run's recorded results.
-   `registerEstimate` is an EXPECTATION and must label itself as one, ending with a sentence in
-   the shape of "This is an expectation only, not a search result."
+3. **Weigh the filings; do not describe the search.** A filing you were handed is evidence like any
+   other: whose it is, what it covers, what it is worth against this name. Claim neither that the register
+   is clear nor that it is crowded.
 4. **Crowded-field reasoning is about the field you actually screened.** Rule 2 of the calibration
    rules is judgment over the marketplace and common-law evidence in this mark's own payload and its
    `findings[]` — cite that evidence. It is never a claim about filings, families, or how many marks
    share a token. `crowdedField: true` means "the payload I read
    shows a crowded field", and if the payload does not show one, it is `false`.
 
-The engine appends the depth boundary to `batch.standardCaveats` itself, so never write your own
-version of it — one sentence, from the code, naming the depth the run was actually configured at.
+The engine appends the depth boundary to `batch.standardCaveats` itself, and the standing caveat where
+one is owed, so never write your own version of either.
 
 ## Tone rules
 
@@ -256,19 +223,28 @@ load-bearing points, a blank line between blocks.
 A single sub-header over one unbroken block is not structure. The blocks are what make the length
 readable.
 
-**Keep the length; make it consistent.** This is still the most useful part of a triage and it is still
-not rationed — the 2026-08-31 ruling is *"keep the length, add the structure, so long as length is
-consistent more or less."* What it must now be is in scale: this mark's opening read is the size of a
-single-mark report's opening read, and the marks of one batch sit within reach of each other. One
-assessment several times its siblings' is out of family. There is no word count and none is coming;
-judge it against the other marks in front of you and against `chunkSummary`, which is the **shorter**
-digest above these.
+**Keep the length; make it consistent.** This is the most useful part of a triage and it is not
+rationed. This mark's opening read is the size of a single-mark report's opening read, and the marks of
+one batch sit within reach of each other. One assessment several times its siblings' is out of family.
+There is no word count; judge it against the other marks in front of you and against `chunkSummary`,
+which is the **shorter** digest above these.
 
 **Read the two sources together.** Where filings were handed to you for this mark, weigh them in the
 *same passage* as the marketplace and common-law reading — what the screened field shows, what those
 filings do to that reading, and what the two together mean for the band. Never one block per source
-with the reconciliation left to the reader. (This is about how you WRITE what you were given. It says
-nothing about what was searched, which is not this seat's to describe — see the rules above.)
+with the reconciliation left to the reader.
+
+## The typed read (`basis`, `factors`, `counterFactors`, `mitigation`)
+
+Every mark carries the read as typed fields, not as a paragraph:
+
+- `basis`: ONE sentence: why this band, for this name, in these classes.
+- `factors`: 2-4 strings, one line each: the load-bearing observations behind the band.
+- `counterFactors`: 1-3 strings: what holds it at this band rather than the next one either way.
+- `mitigation`: ONE line: the single thing that would move it. "" if nothing would.
+
+Each is a standalone line: no semicolon chains, no clause stacking, no restating the band word. Write
+each observation ONCE: a point made in `factors` is not repeated in `bullets`.
 
 ## What the register reading hands you
 
@@ -304,9 +280,8 @@ source as a fact rather than as a word you typed about your own sourcing.
 line, which describes the card and claims nothing about the rating. So:
 
 > **Never invent a read to fill a row, and never write "not weighed" as a read.** A filing you did not
-> weigh simply gets no row. The failure this replaces was a card asserting the rating did not turn on a
-> filing when the rating had; a row you wrote to look complete would be the same defect with your name
-> on it.
+> weigh simply gets no row. A row written to look complete would tell the reader the rating turned, or
+> did not turn, on a filing you never reasoned from.
 
 ## Saying what you put down (`setAside`)
 
@@ -314,9 +289,9 @@ line, which describes the card and claims nothing about the rating. So:
 did not carry, not a reason to re-weigh anything: the rating you have already reached stands exactly as it
 is, and nothing in this section asks you to raise or lower it.
 
-The web search hands you every result it got. Some become `findings[]`. The rest you read and put down,
-and until now that decision left no trace: a result you judged irrelevant and a result you never opened
-looked identical afterwards. `setAside` is where the judgment goes.
+The web search hands you every result it got. Some become `findings[]`. The rest you read and put down.
+`setAside` is where that judgment goes, so a result you judged irrelevant and a result you never opened do
+not look identical afterwards.
 
 - **Rows of `{url, ground}`** on the MARK, for a result the search returned that you are **not** carrying
   as a finding. `ground` is what it turned out to be, or why it does not bear on this name — one line.
@@ -339,10 +314,9 @@ looked identical afterwards. `setAside` is where the judgment goes.
 - **Chunk summary** (`chunkSummary` — EVERY chunk emits one for ITS marks): marks grouped by band, why,
   key evidence inline, practical mitigating factors. Code concatenates the chunks into the batch
   executive summary, so a mark you skip here is missing from the report.
-  **Structured, and it used to say "narrative, not bullets".** Owner, 2026-08-31, on the grouped page
-  this composes: "just one block of text — no sub-headers, bullet points etc. Very hard to digest…
-  it's the entry point." Write a short opening line for what the batch shows, then one `## <MARK NAME>`
-  sub-header per mark carrying its band and what drives it, bullets where they help.
+  **Structure it:** a short opening line for what the batch shows, then one `## <MARK NAME>` sub-header
+  per mark carrying its band and what drives it, bullets where they help. A sub-header is `## ` or `### `,
+  never `# `.
   **It stays the SHORTER digest above the per-mark assessments** — a reader opens it to decide which
   name to read about, and the mark's own page carries the full read. Keep it tighter than any one
   mark's `assessment`.
@@ -381,14 +355,10 @@ looked identical afterwards. `setAside` is where the judgment goes.
 (the validator is `findings-model.mjs validateKnockoutFinding`, and it runs at the chunk and again on
 the merged artifact):
 
-- `ordinal` — integer ≥ 1, unique within the mark, most blocking first. **The number you write is not
-  the number that ships**: the code ranks the mark's findings on their bands and renumbers them 1…N
-  contiguously, and yours is what breaks ties inside a band. The reader's drill-through key is
-  `<MARK> #<ordinal>`, the same key on the report and in the audit workbook, and the workbook's audit
-  trail prints it as a RANGE (`<MARK> #1–#4`) — which is why a gap in the numbering cannot be allowed
-  to reach it, and why the machine writes it rather than asking you to. Two consequences for you:
-  number them 1, 2, 3 in your own blocking order, and **never cite a finding by its number in prose** —
-  `net`, `basis` and the bullets say what the conflict IS, never "see #3".
+- `ordinal` — integer ≥ 1, unique within the mark, most blocking first. The code ranks the mark's
+  findings on their bands and renumbers them, and yours breaks ties inside a band. So number them 1, 2, 3 in
+  your own blocking order, and **never cite a finding by its number in prose** — `net`, `basis` and the
+  bullets say what the conflict IS, never "see #3".
 - `name` — the conflicting name, verbatim as the evidence carries it. Never the mark being screened.
 - `owner` — the party behind that name. If the searched material does not establish one, write
   "not established on the searched material". **Never guess an owner**: an invented seller is an

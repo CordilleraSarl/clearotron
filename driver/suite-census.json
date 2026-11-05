@@ -1043,7 +1043,7 @@
         },
         "a-knockout-conflict-carries-its-framework-inputs.test.mjs": {
           "tests": 6,
-          "asserts": 40,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
@@ -1115,7 +1115,7 @@
         },
         "a-knockout-run-with-no-method-is-not-offered-inputs.test.mjs": {
           "tests": 2,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

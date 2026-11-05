@@ -1163,7 +1163,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // direction." This is a CODE DEFAULT that fires when the model supplied no caveat of its own, and
       // turned it from dormant into the thing that ships.
       //
-      // BEFORE: knockout-assess calibration rule 4 ordered the seat to write that caveat, so the array
+      // BEFORE: a rule in the knockout-assess manual ordered the seat to write that caveat, so the array
       // arrived non-empty and this default almost never fired. THAT RULE IS RETIRED IN THIS SAME BRANCH —
       // the seat is no longer told to write it — so the array now arrives EMPTY and this line injects the
       // sentence unconditionally. Retiring the rule in the doctrine while leaving its default in the code

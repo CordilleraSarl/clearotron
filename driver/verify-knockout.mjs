@@ -145,12 +145,12 @@ export function knockoutReceipts(runDir, marks) {
 // rating field is a second vocabulary waiting to happen, which is exactly what rules out.
 //
 // THE SET IS ONE WORD, and it is one word because ONE is what the doctrine attests. knockout-assess
-// SKILL.md exemplifies "Medium (low)" and calibration rule 6 says enforcer profiling "can cap a middle
+// SKILL.md exemplifies "Medium (low)" and calibration rule 4 says enforcer profiling "can cap a middle
 // band at its '(low)' qualifier". Nothing in the doctrine, and no artifact in this repo, carries any
 // other value. So the qualifier can SOFTEN a band and never sharpen it — minting "high" or "mid" to make
 // the set look like a scale would be this build inventing vocabulary in the change that forbids it.
 //
-// ABSENCE, RECORDED. Calibration rule 5 tells the model to use a customer framework's own dispute-type
+// ABSENCE, RECORDED. Calibration rule 3 tells the model to use a customer framework's own dispute-type
 // notation (an A–E matrix) "exactly", and the mark row has no field for one: the framework manifest
 // carries band words and order ONLY (framework.mjs: never a mapping table), so there is no vocabulary to
 // validate such a notation against. It is not admitted here — a notation smuggled into this field would
@@ -683,7 +683,7 @@ export const validators = {
       // for exactly the same invention.
       const claim = [prose, c.chunkSummary].filter(Boolean).join("\n").match(REGISTER_CLAIM_RE);
       if (claim)
-        return { ok: false, reason: `knockout_register_claim:${m.name}: "${claim[0].trim()}" — this turn cannot see the register lane and must not describe it. The report states register coverage in code, from the run's own count sidecar; a summary that says the registers were not run, above a table of counts that were, is the contradiction this rule closes. Delete the clause` };
+        return { ok: false, reason: `knockout_register_claim:${m.name}: "${claim[0].trim()}" — weigh the filings you hold and do not describe the search. The report states register coverage in code, from the run's own count sidecar; a summary that says the registers were not run, above a table of counts that were, is the contradiction this rule closes. Delete the clause` };
       const toneOrFigure = toneOrFigureRefusal(m, prose);
       if (toneOrFigure) return { ok: false, reason: toneOrFigure };
       // PR-5 — a "tool was blocked / lacked permission" explanation for missing coverage is a false
@@ -853,7 +853,7 @@ export function validateMergedFindings(runDir, merged, plan) {
   // reader meets in the executive summary. The renderer owns register coverage; nothing else states it.
   {
     const claim = mergedProse.match(REGISTER_CLAIM_RE);
-    if (claim) failures.push(`knockout_register_claim: "${claim[0].trim()}" — the assessing turn cannot see the register lane and must not describe it; the report states coverage in code from the run's own count sidecar`);
+    if (claim) failures.push(`knockout_register_claim: "${claim[0].trim()}" — weigh the filings and do not describe the search; the report states coverage in code from the run's own count sidecar`);
   }
   // ── — the typed findings and their receipts, ON THE MERGED ARTIFACT ────────────────────────────
   // This function is the ONLY gate pipeline-knockout.mjs runs on the composed output, and until now it
@@ -946,7 +946,7 @@ export function markRatedAboveItsCards(framework, m) {
   // NO CARDS, NOTHING TO BE ABOVE — and the code stops here deliberately.
   //
   // The doctrine says a name with nothing found against it takes the bottom band, and that belongs in
-  // the reasoning where it is written (calibration rule 8). Enforcing it HERE would be a second rule in
+  // the reasoning where it is written (calibration rule 6). Enforcing it HERE would be a second rule in
   // code: a floor that forces a band down, which is what the ruling forbids in terms — "do not replace
   // the removed rule with another floor, cap or word list. The two rulings are the whole requirement."
   //

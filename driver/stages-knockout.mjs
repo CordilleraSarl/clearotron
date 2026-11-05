@@ -373,15 +373,7 @@ export const KO_STAGES = {
       // has carried a per-mark `contextFraming` all along and nothing ever told this seat to rate with
       // it, so the requester's per-name detail reached the run and stopped. Shipping the doctrine
       // without pointing at the field it turns on is half a fix.
-      `EACH MARK'S "contextFraming" IN THAT PLAN IS WHAT THE NAME IS FOR — a character name, a location, a biome feature, an achievement title. READ IT AND RATE WITH IT: the manner-of-use calibration in the firm-wide reasoning turns on exactly this, and it is per MARK, not per batch. Two names in one batch can sit at different bands on identical evidence because they are used differently. Carry the field through to your own row unchanged.`,
-      // ── THE EVIDENCE BASE IS TWO THINGS NOW, AND IT WAS THE SECOND GAG ───────
-      //
-      // "the ONLY evidence base" is what stopped this seat weighing filings the same run had already
-      // fetched and paid for. Measured on a delivered run: every one of the five filings the reviewing
-      // lawyer built her read on was on disk before this stage started, and none was weighed — they
-      // reached the client as raw cards with no band. The URL rule stays and is scoped: a cited URL must
-      // come from one of the two sources named here, which is the anti-confabulation rule it always was
-      // and never a rule about which of the two.
+      `Each mark's "contextFraming" in that plan is what the name is for, as the request states it or as the frame read it: a character name, a location, an achievement title. Rate with it: the manner-of-use calibration in the firm-wide reasoning is per MARK, so two names can sit at different bands on identical evidence. Where the framing goes beyond what the request says, it is a possible use, and it does not narrow the scope or lower a rating. Carry the field through to your own row unchanged.`,
       `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark.`,
       ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
       // THE ORDERED TERRITORIES, where the request named some. The web questions used to carry them in
@@ -432,27 +424,7 @@ export const KO_STAGES = {
       existsSync(K.registerRecords)
         ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — how its goods meet the goods the client asked about, whether it bears on the rating, and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
         : "",
-      `A DEGRADED mark's row must carry degraded:true and the purple "Manual verification recommended"`,
-      `note; a mark WITH a payload must never claim degraded (the validator joins both against the disk).`,
       `The FROZEN framework in force (rate in ITS band vocabulary, highest→lowest ${framework.bands.map((b) => b.label).join(" · ")}): ${driverDir(K.runDir, "framework.json")}`,
-      // — the band is dictated here because the CODE cannot supply it: the rating is the author's
-      // judgment about blocking power, and the machine can only check that what came back is a word from
-      // the ladder above. The ORDINAL is a different case, and the wording below says so: the machine
-      // ranks on the band and renumbers 1…N (findings-model.mjs validateKnockoutFindings), because the
-      // number is a drill-through key printed as a range in the audit trail, and a gap in it makes that
-      // cell assert findings the run does not hold. What is asked for here is the author's ORDER, which
-      // is what breaks ties inside a band. The shape itself is the skill's (SKILL.md "The finding
-      // record"); this says the two things that are per-TURN — that the ladder named on the line above
-      // is also the per-finding vocabulary, and that the numbering restarts at each mark.
-      `EVERY conflicting name is a typed findings[] record — {ordinal, name, owner, band, ${frameworkMethod ? "inputs, " : ""}net, type,`,
-      `evidence[], basis}, closed keys. Its "band" is a word from the SAME ladder as the mark's rating`,
-      `(never HIGH/MEDIUM/LOW and never a number), and "ordinal" restarts at 1 for EACH mark, most`,
-      `blocking first. The code re-ranks on the band and renumbers, so your order decides ties inside a`,
-      `band — never cite a finding by its number in prose. A named conflict belongs in findings[], not`,
-      `in bullets — write it once.`,
-      // — where the customer's framework states a method (framework-method.mjs), the band is its
-      // table's answer to inputs the seat records on each finding, and the driver checks the two
-      // agree. With no method both lines are empty and the message reads exactly as before.
       frameworkMethod ? methodDictation(frameworkMethod) : "",
       frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
       // A seam for a note about Depth 2, and it stays UNUSED on purpose (2026-07-22). The counts
@@ -495,59 +467,8 @@ export const KO_STAGES = {
       // The depth rule is not stylistic. `# ` opens a SECTION of the delivered report — parseSections
       // splits on /^# /m and batchSummaryOf terminates on it — so a single hash written here ends the
       // client's summary at that line and drops everything after it, silently, on the entry point.
-      `EVERY mark ALSO carries "assessment": the opening read a reader of THIS MARK'S OWN report meets first, before any table. Write it for a client who ordered this one name and nothing else: what the name is, what the landscape around it looks like, what drives the rating.`,
-      `GIVE IT STRUCTURE A READER CAN SCAN — that is what changed. Sub-headers where the content divides, "- " bullets for the load-bearing points, a blank line between blocks. A sub-header is "## " or "### ". NEVER "# ": one hash opens a section of the report itself, and a summary that opens a section ends there and takes the rest of itself off the client's page. A single sub-header over one unbroken block is not structure — the blocks are what make the length readable, and unstructured length is the complaint this replaces.`,
-      `KEEP THE LENGTH. It is still the most useful part of a triage and it is still not rationed. What it now has to be is CONSISTENT: this mark's opening read is the scale of a single-mark report's opening read, and the marks of one batch sit within reach of each other. One assessment several times the size of its siblings is out of family. No word count and none is coming — judge it against the other marks in front of you.`,
-      `SYNTHESISE THE SOURCES, DO NOT SHELVE THEM SEPARATELY. Where filings were handed to you for this mark, weigh them in the SAME passage as the marketplace and common-law reading — what the screened field shows, what those filings do to that reading, and what the two together mean for the band. A reader must not be handed one block per source and left to reconcile them.`,
-      `IT NAMES THIS MARK AND NO OTHER. Each mark's report is delivered on its own, to a reader who may have ordered only that name, so a sibling's name appearing in this paragraph is another client's mark on this client's page. Do not compare across the batch here — the cross-mark reading is what "chunkSummary" is for, and it has its own page.`,
-      `EVERY mark carries the READ as TYPED FIELDS, not as a paragraph:`,
-      `  "basis"          ONE sentence: why this band, for this name, in these classes.`,
-      `  "factors"        2-4 strings, one line each — the load-bearing observations behind the band.`,
-      `  "counterFactors" 1-3 strings — what holds it at this band rather than the next one either way.`,
-      `  "mitigation"     ONE line: the single thing that would move it. "" if nothing would.`,
-      `Each is a standalone line: no semicolon chains, no clause stacking, no restating the band word.`,
-      `Write each observation ONCE — a point made in "factors" is not repeated in "bullets".`,
-      // The other half of part 2's ruling, enforced here rather than hoped for. The live 2026-08-11
-      // report carried "the register overlay has not been run" directly under a table of register counts
-      // the same run had taken. The turn was not lying: it is never shown the count lane's output (rule 1
-      // of register-count.mjs) and it filled the gap with the only thing it had. Nobody who cannot see
-      // the machinery describes it — the renderer owns that sentence and writes it from the sidecars.
-      `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted,`,
-      `overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not`,
-      `in the chunk summary. You cannot see that lane; the report states its coverage in code from the`,
-      `run's own measurements, and the validator refuses a chunk that speaks for it.`,
-      `THAT IS A RULE ABOUT THE LANE, NOT ABOUT THE FILINGS. Where records are given to you above, WEIGH`,
-      `them: whose they are, what they cover, what they are worth against this name. A filing you were`,
-      `handed is evidence like any other and reasoning about it is the job.`,
-      // — THE GROUPED PAGE'S ENTRY POINT, AND IT WAS ORDERED AS ONE BLOCK TOO.
-      // The owner's report on this surface was the same as the per-mark one: "just one block of text —
-      // no sub-headers, bullet points etc. Very hard to digest. This is an important part of the report
-      // — it's the entry point." The order below said "measured sentences" and the doctrine file said
-      // "narrative, not bullets"; both moved together, because a seat given two answers picks one.
-      // It stays the SHORTER digest that sits above the per-mark assessments — that is the owner's
-      // ordering and it is unchanged. Structure is what it gains, not size.
-      `EVERY chunk includes "chunkSummary": the cross-mark read covering THIS chunk's marks (code`,
-      `concatenates the chunks into the batch executive summary — a mark missing from its chunkSummary`,
-      `is missing from the report summary).`,
-      `STRUCTURE IT: a short opening line for what the batch as a whole shows, then one "## <MARK NAME>"`,
-      `sub-header per mark with its band and the one or two things that drive it, bullets where they`,
-      `help. Same depth rule as the per-mark assessment — "## " or "### ", never "# ".`,
-      `IT IS THE SHORTER DIGEST ABOVE THE PER-MARK ASSESSMENTS, not a rival to them. A reader opens this`,
-      `to decide which name to read about; the mark's own page is where the full read lives. Keep it`,
-      `tighter than any one mark's assessment.`,
-      // ── THE RETURN IS A CALL, NOT A FILE (item B) ────────────────────────────
-      //
-      // THE DISPATCH NAMES NO PATH, and on this stage that is not merely the house pattern. This seat
-      // spent 2026-08 writing its chunk through a Bash redirect because the Write tool was already
-      // refused under `_driver/`; closed that bypass and the stage broke the same day, its
-      // corrective ladder exhausting against a dispatch that ordered a write nothing would permit. The
-      // relocation to the run root fixed the permission. This removes the order itself: there is no path
-      // here to hold, the seat's grant carries no Write, and the driver writes the chunk from values.
-      //
-      // THE CHUNK INDEX IS NOT A PARAMETER, and the tool's own description says so to the model. The
-      // driver bound it at dispatch and the record tool reads it from the environment, never from the
-      // payload — because the chunk assignment is exactly what the validator's membership join checks
-      // against, and a seat that could name its own chunk would author the identity its work is judged by.
+      `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted, overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not in the chunk summary. The report states its coverage in code from the run's own measurements, and the validator refuses a chunk that speaks for it. That is a rule about the lane, not about the filings: a filing you were handed is evidence like any other.`,
+      `The manual sets out each mark's record: its \`findings[]\`, its opening read in \`assessment\`, its typed read, and the chunk's \`chunkSummary\`, which code joins into the batch summary, so a mark missing from it is missing from the report.`,
       `HAND YOUR RATINGS BACK BY CALLING \`record_knockout_assess\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none — the driver writes this chunk itself from what you send, and nothing you write by hand is read. You are not told which chunk number to send and there is no field for it: the driver bound that when it dispatched you.`,
       `SEND ONLY WHAT YOU ARE CORRECTING IF YOU CALL AGAIN. A second call MERGES into the first: marks are merged BY NAME, so a mark you omit keeps the rating you already gave it. What you DO send for a mark replaces that mark's whole record, so send a corrected mark complete rather than as a fragment.`,
       chunkNo === 0
