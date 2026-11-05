@@ -341,32 +341,15 @@ export function spellingsDefect(name, spellings) {
 // ── ONE ITEM'S WRITTEN FORMS ───────────────────────────────────────────────────────────────────────────────────────
 //
 // `alternatives` says where the request gives one item more than one way: each form is asked of the register on its own and
-// stays tied to the row. It is the request's, so a form is one list entry and every word of it is in the name or the
-// request. A form the model thought of belongs in `spellings`, which reach the web. Absent or empty: one form.
+// stays tied to the row. Which forms the request gives is the frame's reading of the request, so only the shape is checked
+// here. Punctuation cannot tell a list from a name that holds a slash, and a word found somewhere in the request does not
+// show the client supplied that form. Absent or empty: one form.
 
 /** Why a row's `alternatives` cannot stand as sent, or null. Shape only. PURE. */
 export function alternativesDefect(name, alternatives) {
   if (alternatives == null) return null;
-  const refusal = `mark "${name}": alternatives is a list of the written forms of this one item, or leave it out`;
-  if (!Array.isArray(alternatives) || alternatives.some((a) => typeof a !== "string" || !a.trim())) return refusal;
-  const listShaped = alternatives.find((a) => /[,;/|\n]/.test(a));
-  return listShaped != null ? `mark "${name}": alternative "${String(listShaped).slice(0, 60)}" holds more than one form: send each as its own entry` : null;
-}
-
-const wordsIn = (text) => String(text ?? "").normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
-
-/** The words of the client's request on file for this run, or null where none is on file. */
-function requestWords(runDir) {
-  const held = ["inbound-request.txt", "confirmation-brief.md"].flatMap((f) => { try { return [readFileSync(join(runDir, f), "utf8")]; } catch { return []; } });
-  return held.length ? new Set(held.flatMap(wordsIn)) : null;
-}
-
-/** A form whose words are in neither the name nor the request on file, or null. With no request on file nothing can be said. PURE. */
-export function alternativesOutsideRequest(name, alternatives, words) {
-  if (!words || !Array.isArray(alternatives)) return null;
-  const own = new Set(wordsIn(name));
-  const outside = alternatives.find((a) => wordsIn(a).some((w) => !own.has(w) && !words.has(w)));
-  return outside != null ? `mark "${name}": alternative "${String(outside).slice(0, 60)}" is not in the request: a form you thought of belongs in spellings` : null;
+  return !Array.isArray(alternatives) || alternatives.some((a) => typeof a !== "string" || !a.trim())
+    ? `mark "${name}": alternatives is a list of the written forms of this one item, or leave it out` : null;
 }
 
 export function useKindDefect(name, useKind) {
@@ -406,7 +389,7 @@ export const validators = {
       if (typeof m.contextFraming !== "string" || !m.contextFraming.trim()) return { ok: false, reason: `mark "${m.name}": contextFraming is required (the rating hangs off it)` };
       const useKindRefused = useKindDefect(m.name, m.useKind);
       if (useKindRefused) return { ok: false, reason: useKindRefused };
-      const alternativesRefused = alternativesDefect(m.name, m.alternatives) ?? alternativesOutsideRequest(m.name, m.alternatives, requestWords(dirname(String(file ?? ""))));
+      const alternativesRefused = alternativesDefect(m.name, m.alternatives);
       if (alternativesRefused) return { ok: false, reason: alternativesRefused };
       // WHERE THIS NAME IS SEARCHED (ruling 570). Required per name on a fresh plan; a plan frozen before
       // the field existed carries the batch's list instead and `knockoutGridSpec` falls back to it, so an
