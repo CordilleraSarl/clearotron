@@ -8297,7 +8297,7 @@
         },
         "verify-knockout.test.mjs": {
           "tests": 5,
-          "asserts": 27,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
