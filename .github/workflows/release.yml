@@ -1341,7 +1341,7 @@ jobs:
       - name: No secret leaves in the packed bytes
         run: |
           set -euo pipefail
-          curl -sSfL -o gitleaks.tgz \
+          curl -sSfL --retry 5 --retry-delay 10 -o gitleaks.tgz \
             "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
           tar -xzf gitleaks.tgz gitleaks
@@ -1850,7 +1850,7 @@ jobs:
       - name: No secret leaves in the packed bytes
         run: |
           set -euo pipefail
-          curl -sSfL -o gitleaks.tgz \
+          curl -sSfL --retry 5 --retry-delay 10 -o gitleaks.tgz \
             "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
           tar -xzf gitleaks.tgz gitleaks
