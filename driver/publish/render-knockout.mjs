@@ -52,7 +52,7 @@ const STRIP = Object.freeze([
   ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
 ]);
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
-import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
+import { recordBasisOf, readByJudgment, noneCarriedForward, NONE_CARRIED_FORWARD, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes, KNOCKOUT_CARD_ORDER } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
@@ -760,7 +760,7 @@ function filingsSection(marks, registerRecords) {
     const more = e.records.length > shown.length
       ? ` Showing ${shown.length} of ${e.records.length}, most material first — the filings this`
         + ` assessment weighed before the rest, then live filings before dead,`
-        + ` in the searched classes before outside them, the name itself before its close variations.`
+        + ` in the searched classes before outside them, the name itself before ${readByJudgment(registerRecords) ? 'other searches' : 'its close variations'}.`
         + ` The full list is in the audit workbook's Register Filings sheet.`
       : ' The same rows are in the audit workbook\'s Register Filings sheet, most material first.';
     return `<div class="ko-filings">
@@ -769,7 +769,7 @@ function filingsSection(marks, registerRecords) {
       <p class="ko-basis">${esc(line ?? '')}${esc(more)}</p>
     </div>`;
   }).join('');
-  return `<div class="panel ko-glance">${blocks}<p class="ko-basis">${esc(RECORD_BASIS)}${officeLinkNote(registerRecords)}</p></div>`;
+  return `<div class="panel ko-glance">${blocks}<p class="ko-basis">${esc(recordBasisOf(registerRecords))}${officeLinkNote(registerRecords)}</p></div>`;
 }
 
 // Once, under the filings: what a linked number opens and, per office, why the rest are cited by number.
@@ -1079,8 +1079,9 @@ function registerStatement(r, provider) {
     ? `class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}`
     : 'classes not stated on the record';
   // A close-variation card says WHICH near-form matched, because the name at the head of the sentence is
-  // then not the name the client asked about and a reader must not have to guess which it is.
-  const via = r.matchedBasis === 'close' && r.matchedForm ? ` Found under the close variation ${r.matchedForm}.` : '';
+  // then not the name the client asked about and a reader must not have to guess which it is. A filing the reading
+  // step found names its question, and that question may be a wider search, which is no close variation.
+  const via = r.matchedBasis === 'close' && r.matchedForm ? (r.question ? ` Found by a search on ${r.matchedForm}.` : ` Found under the close variation ${r.matchedForm}.`) : '';
   return `${lead} ${owner}, ${cls}.${via}`;
 }
 
@@ -1488,7 +1489,7 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
     const classWhere = classes.length ? ` in class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : '';
     const one = cards.length === 1;
     const refs = cards.map((c) => c.ref).join(', ');
-    return `${one ? 'A filing' : `${cards.length} filings`} of this name or a close variation of it `
+    return `${one ? 'A filing' : `${cards.length} filings`} of this name or ${readByJudgment(registerRecords) ? 'a name near it' : 'a close variation of it'} `
       + `stand${one ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`;
   }
   const records = entry.records ?? [];
@@ -1503,6 +1504,7 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
     const ranAndAnswered = terms.length > 0 && terms.every((t) => t.ok && !t.setAside);
     return ranAndAnswered
       ? `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`
+      : noneCarriedForward(entry) ? NONE_CARRIED_FORWARD
       : 'The filings listing for this name did not complete, so nothing here says whether one stands.';
   }
   return `${records.length} filing${records.length === 1 ? ' is' : 's are'} listed for this name below; `
@@ -2306,7 +2308,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
       };
     }),
     registerCountBasis: registerCounts ? COUNT_BASIS : null,
-    registerFilingsBasis: registerRecords && !registerRecords.unavailable ? RECORD_BASIS : null,
+    registerFilingsBasis: registerRecords && !registerRecords.unavailable ? recordBasisOf(registerRecords) : null,
     registerProvider: registerCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? null) : null,
   };
 }

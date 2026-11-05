@@ -338,7 +338,8 @@ export const frozenLadder = (runDir) => ladderOf(readJson(driverDir(runDir, "fra
 //
 // The band column prints these rows as facts in place of the one chip, which is what each check is for: a
 // word off the ladder has no colour, a class in two rows gets two answers, a class in none loses the line
-// that used to name it, and a top row that disagrees with `rating` puts two answers beside the gauge. PURE.
+// that used to name it, and a top row that disagrees with `rating` or `classesDriving` puts two answers on
+// one page. PURE.
 const groupKey = (g) => `${String(g?.band ?? "").trim().toLowerCase()}|${normalizeKnockoutQualifier(g?.ratingQualifier) ?? ""}`;
 /** The groups as a reader meets them: the highest band first, and within a band the one with no qualifier. PURE. */
 const groupsHighestFirst = (groups, ladder) => [...groups].sort((x, y) => bandIdx(ladder, x.band) - bandIdx(ladder, y.band)
@@ -349,6 +350,7 @@ export function classGroupsDefect(mark, ladder = []) {
   const say = (what) => `knockout_class_groups:${mark?.name}: ${what}`;
   if (!Array.isArray(groups) || groups.length < 2 || new Set(groups.map(groupKey)).size < 2)
     return say("classGroups needs two or more rows that differ in band or qualifier. Where one conclusion holds, leave it out.");
+  if (new Set(groups.map(groupKey)).size < groups.length) return say("Combine groups with the same band and qualifier.");
   const seen = new Set();
   const searched = Array.isArray(mark?.classesSearched) ? new Set(mark.classesSearched) : new Set();
   for (const g of groups) {
@@ -368,6 +370,8 @@ export function classGroupsDefect(mark, ladder = []) {
     const top = groupsHighestFirst(groups, ladder)[0];
     if (groupKey(top) !== groupKey({ band: mark?.rating, ratingQualifier: mark?.ratingQualifier }))
       return say(`rating is ${mark?.rating}${mark?.ratingQualifier ? ` (${mark.ratingQualifier})` : ""}, but the highest group is ${top.band}${top.ratingQualifier ? ` (${top.ratingQualifier})` : ""}. They must agree.`);
+    const driving = Array.isArray(mark?.classesDriving) ? mark.classesDriving : [];
+    if (driving.length !== top.classes.length || !top.classes.every((n) => driving.includes(n))) return say("classesDriving must contain the highest group's classes.");
   }
   return null;
 }

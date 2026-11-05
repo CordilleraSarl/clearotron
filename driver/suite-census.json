@@ -1060,8 +1060,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 20,
-          "asserts": 117,
+          "tests": 22,
+          "asserts": 130,
           "skips": 0,
           "todos": 0
         },
@@ -1091,7 +1091,7 @@
         },
         "a-knockout-name-can-answer-by-class-group.test.mjs": {
           "tests": 15,
-          "asserts": 44,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
@@ -1121,13 +1121,19 @@
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
           "tests": 44,
-          "asserts": 204,
+          "asserts": 205,
           "skips": 0,
           "todos": 0
         },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-report-says-what-its-search-did.test.mjs": {
+          "tests": 8,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },

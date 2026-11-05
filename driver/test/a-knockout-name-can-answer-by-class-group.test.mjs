@@ -33,6 +33,9 @@ test("each thing the band column could not print truthfully is refused in plain 
   assert.equal(refused({ classGroups: [GROUPS[1]] }), said(ONE));
   assert.equal(refused({ classGroups: [{ band: "Notable", classes: [3, 21] }, { band: "Notable", classes: [9, 28] }] }), said(ONE));
   assert.equal(refused({ classGroups: [{ band: "Awful", classes: [3, 21] }, GROUPS[1]] }), said("band Awful is not in the framework's ladder."));
+  assert.equal(refused({ classGroups: [{ band: "Slight", classes: [3] }, { band: "Slight", classes: [21] }, GROUPS[1]] }), said("Combine groups with the same band and qualifier."));
+  assert.equal(refused({ classesDriving: [9] }), said("classesDriving must contain the highest group's classes."));
+  assert.equal(refused({ classesDriving: [3, 9, 28] }), said("classesDriving must contain the highest group's classes."));
   assert.equal(refused({ classGroups: [{ band: "Slight", classes: [3, 21, 9] }, GROUPS[1]] }), said("class 9 sits in two groups."));
   assert.equal(refused({ classGroups: [{ band: "Slight", classes: [3] }, GROUPS[1]] }), said("class 21 was searched and is in no group."));
   assert.equal(refused({ classGroups: [{ band: "Slight", classes: [3, 21, 41] }, GROUPS[1]] }), said("class 41 is in a group but was not searched."));
@@ -151,8 +154,9 @@ test("the email's band line says each group's band and classes, and a name with 
 
 test("the manual, the check and the repair each say what they owe a divided answer", () => {
   const manual = readFileSync(new URL("../skills/knockout-assess/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
-  assert.ok(manual.includes("say so in `classGroups`: one row per group"), "the manual does not teach the field");
-  assert.ok(manual.includes("Divide on the requested goods and the evidence, never to soften a rating."), "the manual does not bound it");
+  assert.ok(manual.includes("record `classGroups`: one row per distinct band and qualifier"), "the manual does not teach the field");
+  assert.ok(manual.includes("Divide on the requested goods and evidence, never to soften a rating."), "the manual does not bound it");
+  assert.ok(!/"classGroups": \[ \{/.test(manual), "the manual's one-class example teaches a call the tool refuses");
   assert.ok(manual.includes("what those filings show, what the screened field adds to that reading"), "the opening read does not lead with the filings");
   const K = { runDir: "/run", findings: "/run/f.json", researchDir: "/run/research", registerRecords: "/run/none.json", assessChunk: () => "/run/none.json", plan: "/run/p.json", research: () => "/run/r.md" };
   const review = KO_STAGES["knockout-review"].message({ K });

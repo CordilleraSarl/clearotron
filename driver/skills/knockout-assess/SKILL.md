@@ -50,12 +50,14 @@ a band that needs sharpening is the band above it, stated as that word.
 
 1. **Class-specific ratings are mandatory** at the framework's material bands: "Medium (Classes 9,
    25, 28, 41)", never a bare band — `classesDriving` carries the class list.
-   Where the filings and use you hold support different conclusions for different groups of the classes
-   searched, say so in `classGroups`: one row per group, with `band`, `ratingQualifier` where it applies,
-   and `classes`. Every class searched belongs to one group. `rating` is the highest group's band and
-   `classesDriving` that group's classes. `basis` and the opening read say what divides the groups, and a
-   finding or filing read that bears on only some classes says which. Where one conclusion holds across
-   the classes searched, leave `classGroups` out. Divide on the requested goods and the evidence, never to
+   Where applying the frozen framework to the requested goods and held evidence gives different conclusions
+   for different groups of the classes searched, record `classGroups`: one row per distinct band and
+   qualifier, with `band`, `ratingQualifier` where it applies, and `classes`. Every class searched belongs to
+   exactly one group. Combine classes with the same band and qualifier. `rating` and `ratingQualifier` match
+   the highest group under the framework's ladder and the existing qualifier rule; `classesDriving` contains
+   that group's classes. `basis` and the opening read explain what divides the groups, and a finding or filing
+   read that bears on only some classes says which. Keep evidence gaps explicit. Where one conclusion holds
+   across the classes searched, leave `classGroups` out. Divide on the requested goods and evidence, never to
    soften a rating.
 2. **Crowded field = diluted risk, not amplified.** Many small, non-enforcing players means any one
    player's enforcement power is weaker — a crowded field typically caps at the middle band. The
@@ -342,9 +344,7 @@ not look identical afterwards.
   "chunkSummary": "<markdown for THIS chunk's marks>",
   "marks": [ { "ref": null, "name": "<verbatim>", "classesSearched": [8], "beltAndBraces": [35],
                "contextFraming": "...", "rating": "<band word>", "ratingQualifier": null,
-               "classesDriving": [8],
-               "classGroups": [ { "band": "<band word>", "ratingQualifier": null, "classes": [8] } ],
-               "bullets": ["..."], "purpleNotes": ["..."],
+               "classesDriving": [8], "bullets": ["..."], "purpleNotes": ["..."],
                "registerEstimate": "...", "parodyNote": null, "crowdedField": false,
                "registerReads": [ { "recordId": "<verbatim from the filings you were given>",
                                     "read": "<what you concluded about THAT filing>",

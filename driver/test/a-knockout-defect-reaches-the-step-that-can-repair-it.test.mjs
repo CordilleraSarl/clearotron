@@ -46,7 +46,7 @@ const NAME = "QUILLBRAE", SIBLING = "MOSSVALE";
 
 /** One two-name knockout through the lane, on the mock engine. What the run left. */
 async function knockout(codename, env = {}, { recordLister = async () => ({ ok: true, total: 0, records: [] }), countExecutor = async () => ({ ok: true, total: 0 }) } = {}) {
-  const set = { MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_FAIL_STAGE: undefined,
+  const set = { MOCK_KO_CLASS_GROUPS: undefined, MOCK_KO_CORRECTED_GROUPS: undefined, MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_FAIL_STAGE: undefined,
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: undefined, CODEX_API_KEY: undefined, ...env };
   for (const [k, v] of Object.entries(set)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
   const id = `ko-${codename}`;
@@ -141,7 +141,7 @@ test("a correction that fails leaves the rated record standing and the defect on
   assert.equal(r.json(driverDir(r.dir, "knockout-correction-work.json")).stoodDown, "correction-failed", "a resumed run does not go through the round again");
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
   assert.deepEqual(record.open.map((o) => [o.mark, o.problem, o.state]), [[NAME, DEFECT.problem, "not-corrected"]], "a failed step cannot erase the defect");
-  assert.ok((await notes("correction-failed")).includes(DEFECT.problem), "the reviewing lawyer sees it");
+  assert.ok((await notes("correction-failed")).includes(`Not corrected in this run: ${DEFECT.problem}`), "the reviewing lawyer sees it, and why it is open");
 });
 
 test("a recheck that fails leaves the corrected record standing, and calls no defect answered", async () => {
@@ -151,7 +151,7 @@ test("a recheck that fails leaves the corrected record standing, and calls no de
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
   assert.equal(record.recheck, "failed");
   assert.deepEqual(record.open.map((o) => [o.problem, o.state]), [[DEFECT.problem, "not-rechecked"]]);
-  assert.ok((await notes("recheck-failed")).includes(DEFECT.problem));
+  assert.ok((await notes("recheck-failed")).includes(`Corrected, but not read again: ${DEFECT.problem}`));
 });
 
 test("a repair that answers one defect of two is kept, and the second look is told the other was not answered", async () => {
@@ -164,6 +164,7 @@ test("a repair that answers one defect of two is kept, and the second look is to
   const dispatch = readFileSync(driverDir(r.dir, "knockout-review#1.attempt1.dispatch.txt"), "utf8");
   assert.match(dispatch, /including any the rating step did not answer/);
   assert.match(dispatch, /not-answered/, "the second look is told what actually happened");
+  assert.ok((await notes("partial")).includes(`Not answered: ${other.problem}`), "the reviewing lawyer sees which one no answer reached");
 });
 
 test("a repair may weigh a filing held under another name: it reaches that name's report as weighed, and no count moves", async () => {
@@ -189,6 +190,40 @@ test("a repair may weigh a filing held under another name: it reaches that name'
   assert.ok(html.includes(read), "its report shows the filing it weighed, with the read");
   assert.ok(html.includes("MOSSVALE DRINKS"), "and the filing's own mark");
   assert.ok(!/Found (?:under|by)[^<]*MOSSVALE/.test(html), "and no line says it was found by a search on the other name");
+});
+
+test("an answer by class group reaches the report and the email, a name with none reads as before, and a correction changes the split", async () => {
+  const split = [{ band: "Manageable", classes: [9, 28] }, { band: "Low", classes: [3, 21] }];
+  const reports = (codename) => {
+    const pool = join(ROOT, "pool");
+    const files = readdirSync(pool, { recursive: true }).map(String).filter((f) => f.includes(codename));
+    const read = (end) => readFileSync(join(pool, files.find((f) => f.endsWith(end))), "utf8");
+    return { name: read("report-quillbrae.html"), sibling: read("report-mossvale.html") };
+  };
+  const chips = (html) => [...html.matchAll(/<span class="ko-band"[^>]*>([^<]+)<\/span>\s*<p class="ko-classes">Classes ([^<]+)<\/p>/g)].map((m) => [m[1], m[2]]);
+  const r = await knockout("split", { MOCK_KO_CLASS_GROUPS: JSON.stringify({ [NAME]: split }) });
+  assert.deepEqual(r.of(r.findings, NAME).classGroups.map((g) => g.band), ["Manageable", "Low"]);
+  assert.equal(r.of(r.findings, SIBLING).classGroups, undefined, "the other name sent none");
+  const { name, sibling } = reports("split");
+  assert.deepEqual(chips(name).slice(0, 2), [["Manageable", "9, 28"], ["Low", "3, 21"]], "the band column prints each group");
+  assert.equal(chips(sibling).length, 1, "a name with no groups keeps its one chip");
+  const mail = readFileSync(join(r.dir, "email-body.md"), "utf8");
+  assert.match(mail, /Manageable<\/b> — Classes 9, 28; <b[^>]*>Low<\/b> — Classes 3, 21/, "the email says each group's band and classes");
+
+  const moved = [{ band: "High", classes: [9] }, { band: "Medium", classes: [28] }, { band: "Low", classes: [3, 21] }];
+  const c = await knockout("resplit", { MOCK_KO_CLASS_GROUPS: JSON.stringify({ [NAME]: split }), MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTED_GROUPS: JSON.stringify(moved) });
+  assert.equal(c.review.outcome, "corrected", JSON.stringify(c.review));
+  assert.deepEqual(c.of(c.findings, NAME).classGroups.map((g) => g.band), ["High", "Medium", "Low"]);
+  assert.deepEqual(chips(reports("resplit").name).slice(0, 3), [["High", "9"], ["Medium", "28"], ["Low", "3, 21"]], "the report reads the corrected split");
+  assert.match(readFileSync(join(c.dir, "email-body.md"), "utf8"), /High<\/b> — Classes 9; <b[^>]*>Medium<\/b> — Classes 28; <b[^>]*>Low<\/b> — Classes 3, 21/);
+});
+
+test("a correction that moves the rating and leaves the groups behind is refused, so the two cannot disagree on the page", async () => {
+  const split = [{ band: "Manageable", classes: [9, 28] }, { band: "Low", classes: [3, 21] }];
+  const r = await knockout("stale-split", { MOCK_KO_CLASS_GROUPS: JSON.stringify({ [NAME]: split }), MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High" });
+  assert.equal(r.review.outcome, "correction-failed", JSON.stringify(r.review));
+  assert.equal(r.of(r.findings, NAME).rating, "Manageable", "the rated band stands");
+  assert.deepEqual(r.of(r.findings, NAME).classGroups.map((g) => g.band), ["Manageable", "Low"], "with the groups that agree with it");
 });
 
 test("a source the rating lost and never restored goes to the correction, though the check raised nothing", async () => {

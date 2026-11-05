@@ -16,7 +16,7 @@ import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
 import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
-import { RECORD_BASIS, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
+import { RECORD_BASIS, noneCarriedForward, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, knockoutReportData } from './render-knockout.mjs';
@@ -213,7 +213,9 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // Additive and conditional: a run with no working notes produces the same workbook it always did.
   const noteRows = [];
   // WHAT THE LOOK AT THE CORRECTED RECORD STILL FOUND, for the reviewing lawyer, in its own words. Not on the client's report.
-  for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': 'Internal note', 'Note': p.problem });
+  // Where the run could not close it, the note says why, so the lawyer can tell a repair that failed from a look that did not run.
+  const OPEN_BECAUSE = { 'not-corrected': 'Not corrected in this run: ', 'not-rechecked': 'Corrected, but not read again: ', 'not-answered': 'Not answered: ' };
+  for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': 'Internal note', 'Note': `${OPEN_BECAUSE[p.state] ?? ''}${p.problem}` });
   for (const m of findings.marks ?? []) {
     for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': 'Internal note', 'Note': n });
     if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': 'Register estimate (model)', 'Note': m.registerEstimate });
@@ -268,6 +270,10 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   const linkDropped = (mark, r) => dropped.has(`${mark}\u0000${r?.recordId ?? null}`);
   if (registerRecords) {
     const recordRows = [];
+    // The cell says which question found the filing: `default` is the register's containing search. An owner search is no
+    // question about the name, so it gets no word here. An archived listing names no predicate, so it reads as it did.
+    const basisCell = (basis, predicate) => (predicate === 'default' ? 'containing search' : predicate === 'phonetic' ? 'sound-alike search'
+      : predicate === 'owner' ? '—' : basis === 'close' ? 'close variation' : 'identical');
     for (const m of findings.marks ?? []) {
       const e = recordsForMark(registerRecords, m.name);
       if (!e) {
@@ -284,7 +290,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           // WHICH QUESTION FOUND IT, on every row. A filing on the name and a filing on a generated
           // variant are different facts, and a sheet that fuses them is a sheet that overstates.
           'Matched form': r.matchedForm ?? '—',
-          'Basis': r.foundUnder ? '—' : r.matchedBasis === 'close' ? 'close variation' : 'identical',
+          'Basis': r.foundUnder ? '—' : basisCell(r.matchedBasis, (e.terms ?? []).find((t) => t.qid != null && t.qid === r.question)?.predicate),
           'Trademark': r.mark ?? '—', 'Owner': r.owner ?? '—', 'Status': r.status ?? '—',
           'Classes': (r.classes ?? []).join(', ') || '—', 'Territory': r.territory ?? '—',
           'Filed': r.applicationDate ?? '—', 'Registered': r.registrationDate ?? '—',
@@ -299,7 +305,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       for (const t of e.terms ?? []) {
         if (t.ok) continue;
         recordRows.push({
-          'Mark': m.name, 'Matched form': t.term, 'Basis': t.basis === 'close' ? 'close variation' : 'identical',
+          'Mark': m.name, 'Matched form': t.term, 'Basis': basisCell(t.basis, t.predicate),
           'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—',
           'Filed': '—', 'Registered': '—', 'Record': '—',
           'Note': !t.reason ? 'the search did not run' : t.notAsked ? t.reason : plainCause(t.reason),
@@ -316,7 +322,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
         // A count above zero that nothing read is not none: the register holds filings under it.
         recordRows.push({
-          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': (e.terms ?? []).some((t) => t.setAside) ? 'not available' : 'none found',
+          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': noneCarriedForward(e) ? 'none carried forward' : (e.terms ?? []).some((t) => t.setAside) ? 'not available' : 'none found',
           'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—',
           'Record': '—', 'Note': recordsLine(e) ?? '',
         });
