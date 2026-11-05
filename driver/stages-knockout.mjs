@@ -346,7 +346,7 @@ export const KO_STAGES = {
     // THE LIMIT HAS TO COVER THE WRITING. This stage records one long call at its end, and Codex writes that call in silence,
     // so an attempt killed while writing keeps nothing. Measured in testing, 2026-11-05, with the kill lifted, on saved evidence
     // for eight names in fourteen classes: six Codex draws took 1,043 to 1,331 s and each recorded on its first attempt. At 900 s
-    // every one of those would have been killed. Under that limit, four draws with class groups took up to 2,396 s and three of
+    // every one of those would have been killed. Under that limit, four draws with class groups took up to 2,397 s and three of
     // them failed the stage, and two without were accepted, one after a retry. One attempt was killed for 600 s of silence while it wrote.
     model: "opus", thinking: "high", timeoutSec: 1500, stallSec: 900,
     // ── WHAT THIS STAGE READS, AND WHY IT IS THREE DOCUMENTS NOW ──────────────
