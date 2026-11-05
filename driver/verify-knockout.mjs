@@ -95,42 +95,36 @@ export function knockoutCitedUrls(f) {
  * @returns {{ok: boolean, failures: string[], checked: {marks: number, citing: number, findings: number, urls: number}}}
  */
 /**
- * THE REGISTER FILINGS THE RATING STEP WAS HANDED, per mark, as text (register-records.json, which the rating
- * message names when it is on disk). The message lets a citation come from the mark's own payload or from the
- * filings supplied for that mark, so the receipts check reads both; another mark's filings license nothing.
+ * WHERE A CITED URL MAY COME FROM, for one name: that name's own research payload, or a filing held for this batch under any
+ * name, because a filing may bear on more than one name and its id is held the same way (design, 2026-11-05). Another name's web
+ * payload is not on the list: its results are that name's search, with no filing to trace them to.
  */
-function suppliedRecordsByMark(runDir) {
+export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}", which this run does not hold. Cite only held evidence: this mark's own research payload, or a filing held for this batch`;
+export function urlHeldFor(runDir, markName) {
+  let filings = null, payload = null;
   try {
     const doc = JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8"));
-    return new Map((Array.isArray(doc?.marks) ? doc.marks : []).filter((x) => x?.name)
-      .map((x) => [String(x.name).trim().toLowerCase(), JSON.stringify([...(Array.isArray(x.records) ? x.records : []), ...(Array.isArray(x.setAsideRecords) ? x.setAsideRecords : [])])]));
-  } catch { return new Map(); }
+    filings = JSON.stringify((Array.isArray(doc?.marks) ? doc.marks : []).flatMap((x) => [...(Array.isArray(x?.records) ? x.records : []), ...(Array.isArray(x?.setAsideRecords) ? x.setAsideRecords : [])]));
+  } catch { filings = null; }
+  try { payload = readFileSync(join(runDir, "research", `${kebab(markName)}.md`), "utf8"); } catch { payload = null; }
+  return (url) => (filings != null && urlInPayload(url, filings)) || (payload != null && urlInPayload(url, payload));
 }
 
 export function knockoutReceipts(runDir, marks) {
   const failures = [];
   const checked = { marks: (marks ?? []).length, citing: 0, findings: 0, urls: 0 };
-  const supplied = suppliedRecordsByMark(runDir);
   for (const m of marks ?? []) {
     const list = Array.isArray(m?.findings) ? m.findings : [];
     checked.findings += list.length;
-    const records = supplied.get(String(m?.name ?? "").trim().toLowerCase()) ?? null;
-    let payload = null, opened = false;
+    let held = null;
     for (const f of list) {
       const cited = knockoutCitedUrls(f);
       if (!cited.length) continue;
-      if (!opened) {
-        opened = true;
-        checked.citing += 1;
-        try { payload = readFileSync(join(runDir, "research", `${kebab(m.name)}.md`), "utf8"); } catch { payload = null; }
-      }
+      if (!held) { checked.citing += 1; held = urlHeldFor(runDir, m.name); }
       for (const url of cited) {
         checked.urls += 1;
-        if (records != null && urlInPayload(url, records)) continue;   // a filing supplied for this mark
-        // One refusal for both branches (design's wording, 2026-10-19): the register records supplied for the mark are
-        // held evidence too, so a refusal never tells the model to drop one of them.
-        if (payload == null || !urlInPayload(url, payload))
-          failures.push(`knockout_url_unreceipted:${m.name}: "${url}" does not appear in the mark's own research payload or in the register records supplied for that mark — cite only held evidence`);
+        // One refusal for both kinds of held evidence, so it never tells the model to drop a filing it may cite.
+        if (!held(url)) failures.push(urlNotHeld(m.name, url));
       }
     }
   }
@@ -242,20 +236,19 @@ export function registerRecordIdsHeld(runDir) {
     .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
 }
 
-const readNotHeld = (mark, id) => `mark "${mark}": registerReads cites "${id}", which is not a record this run holds for that mark. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it`;
-const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${finding}" lists weighedFilings "${id}", which is not a record this run holds for that mark. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence`;
+const readNotHeld = (mark, id) => `mark "${mark}": registerReads cites "${id}", which is not a record this run holds. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it`;
+const weighedNotHeld = (mark, finding, id) => `mark "${mark}": finding "${finding}" lists weighedFilings "${id}", which is not a record this run holds. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence`;
 
 /**
- * THE SAME RULE, WHILE THE MODEL CAN STILL ACT ON IT. The stage's validator reads this join after the turn has ended, so a
- * rating that cited a filing held under another name in the batch finished the whole chunk, failed, and on its one retry
- * failed the same way: 2 of 4 draws on a saved batch, 2026-11-05, on 13 and 7 such rows. Refusing the call would not do: a
- * refused call is not kept, and those draws' accepted chunks took 554 to 662 s of a 900 s attempt, so there is no room to send
- * one again. So the record tool keeps the call and leaves out only what the rule refuses, and names every row it left out in
- * the rule's own words. The model can cite the filing where it is held, or leave it. The rule stands: a report is delivered
- * per name, and a source chip must stand beside a filing that report lists. Returns `{mark, notKept}`. PURE-ish.
+ * THE RULE, WHILE THE MODEL CAN STILL ACT ON IT. The stage's validator reads this join after the turn has ended, so a rating that
+ * cited something the run does not hold finished the whole chunk, failed, and on its one retry failed the same way. Refusing the
+ * call would not do: a refused call is not kept, and accepted chunks on a saved batch, 2026-11-05, took 554 to 662 s of a 900 s
+ * attempt, so there is no room to send one again. So the record tool keeps the call and leaves out only what the rule refuses, and
+ * names every row it left out. A filing held for this batch may bear on more than one name, so its id and its source are held
+ * whichever name found it (design, 2026-11-05). Returns `{mark, notKept}`. PURE-ish.
  */
 export function heldCitationsOnly(runDir, mark) {
-  const held = registerRecordIdsFor(runDir, mark?.name);
+  const held = registerRecordIdsHeld(runDir);
   const notKept = [];
   const isHeld = (raw, say) => {
     const id = String(raw ?? "").trim();
@@ -265,10 +258,21 @@ export function heldCitationsOnly(runDir, mark) {
   };
   if (!Array.isArray(mark?.registerReads) && !Array.isArray(mark?.findings)) return { mark, notKept };
   const out = { ...mark };
+  const urlHeld = urlHeldFor(runDir, mark?.name);
   if (Array.isArray(mark.registerReads)) out.registerReads = mark.registerReads.filter((row) => isHeld(row?.recordId, (id) => readNotHeld(mark.name, id)));
-  if (Array.isArray(mark.findings)) out.findings = mark.findings.map((f) => (Array.isArray(f?.weighedFilings)
-    ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => weighedNotHeld(mark.name, f?.name, bad))) } : f));
+  if (Array.isArray(mark.findings)) out.findings = mark.findings.map((f) => {
+    const kept = Array.isArray(f?.weighedFilings) ? { ...f, weighedFilings: f.weighedFilings.filter((id) => isHeld(id, (bad) => weighedNotHeld(mark.name, f?.name, bad))) } : f;
+    if (!Array.isArray(f?.evidence)) return kept;
+    const evidence = f.evidence.filter((url) => { if (urlHeld(url)) return true; notKept.push(urlNotHeld(mark.name, url)); return false; });
+    return evidence.length === f.evidence.length ? kept : { ...kept, evidence };
+  });
   return { mark: notKept.length ? out : mark, notKept };
+}
+
+/** Was the register component skipped on this run? No record at all, or one that says why it could not list. An empty one was not. */
+export function registerWasSkipped(runDir) {
+  const doc = readJson(driverDir(runDir, "register-records.json"));
+  return !doc || Boolean(doc.unavailable);
 }
 
 export const KNOCKOUT_RATING_QUALIFIERS = ["low"];
@@ -599,7 +603,9 @@ export const validators = {
       // THE DRIVER'S READ, NOT THE SEAT'S. Whether the register ran is a fact about the run; a seat that
       // could assert it could waive its own requirement by claiming a lane it cannot see. `dirname(file)`
       // is the run dir — `assessChunk` writes `knockout-assess-<n>.json` into it (stages-knockout.mjs).
-      const registerRan = existsSync(driverDir(dirname(file), "register-records.json"));
+      // SKIPPED, NOT EMPTY. An empty carried list, a verified zero and a failed question are all a register that ran; the record
+      // says which, and only a run with no record, or one that says it could not list, owes an estimate.
+      const registerRan = !registerWasSkipped(dirname(file));
       if (!registerRan && ladder.length && idx < ladder.length - 1 && !(typeof m.registerEstimate === "string" && m.registerEstimate.trim()))
         return { ok: false, reason: `mark "${m.name}": registerEstimate is required above the lowest band on a run with no fetched register records (RF-15 v3 — estimation stands where the register did not run)` };
       // ── THE PER-MARK OPENING ASSESSMENT IS OWED ON A MULTI-MARK BATCH ───────
@@ -637,7 +643,7 @@ export const validators = {
       if (m.registerReads !== undefined && m.registerReads !== null) {
         if (!Array.isArray(m.registerReads))
           return { ok: false, reason: `mark "${m.name}": registerReads must be an ARRAY of { recordId, read, band? } rows, or omitted entirely` };
-        const held = registerRecordIdsFor(runDir, m.name);
+        const held = registerRecordIdsHeld(runDir);
         for (const row of m.registerReads) {
           const id = String(row?.recordId ?? "").trim();
           const read = String(row?.read ?? "").trim();
@@ -683,7 +689,7 @@ export const validators = {
         if (f?.weighedFilings === undefined || f?.weighedFilings === null) continue;
         if (!Array.isArray(f.weighedFilings))
           return { ok: false, reason: `mark "${m.name}": findings[].weighedFilings must be an ARRAY of register record ids, or omitted` };
-        const held = registerRecordIdsFor(runDir, m.name);
+        const held = registerRecordIdsHeld(runDir);
         for (const raw of f.weighedFilings) {
           const id = String(raw ?? "").trim();
           if (!id || !held.has(id))

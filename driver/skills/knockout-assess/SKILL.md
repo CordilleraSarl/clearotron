@@ -19,7 +19,7 @@ a band that needs sharpening is the band above it, stated as that word.
 
 ## Per mark — the mandatory sequence
 
-1. **Context framing FIRST** (from the plan; correct it only if plainly wrong): coined vs common
+1. **Context framing FIRST** (from the plan, read against the client's request): coined vs common
    phrase vs cultural echo. It frames what the name READS as, and the evidence bullets draw on it. It
    does not set, floor or lift a band. A risk that belongs to the NAME rather than to one user is its
    own `findings[]` record, rated there: Famous Brand and Cultural Reference are card types for that.
@@ -36,11 +36,12 @@ a band that needs sharpening is the band above it, stated as that word.
    `findings[]` record carries one conflicting name, its owner, its band, its evidence and its ground.
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
-   the band and renumbers, so what your order decides is the order inside a band. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
-6. **`registerEstimate`, only where no filings reached you.** With filings in hand you weigh them
-   instead (RF-15 v3 in `../clearance-search/firm-wide-reasoning.md`). Where the register did not run, the
-   estimate is the honest answer: it is an EXPECTATION and labels itself as one, ending with a sentence
-   in the shape of "This is an expectation only, not a search result."
+   the band and renumbers, so what your order decides is the order inside a band. A cited URL must appear in the mark's own research payload or in a filing held for this batch. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
+6. **`registerEstimate`.** Use registerEstimate only where the register component was skipped, under
+   RF-15. An empty carried list does not establish that it was skipped. Use the run's recorded state; keep
+   a verified zero, a failed question, and an unread answer distinct. With held filings, weigh their
+   evidence. Where it is owed it is an EXPECTATION and labels itself as one, ending with a sentence in the
+   shape of "This is an expectation only, not a search result."
 7. **Purple notes** (internal, for the reviewing lawyer): belt-and-braces additions, famous-brand
    adjacency, institutional-knowledge gaps ("Confirm firm history on [MARK]"),
    register-pending notes, prior-use mitigation.
@@ -250,9 +251,10 @@ each observation ONCE: a point made in `factors` is not repeated in `bullets`.
 
 The step before you read the register name by name, and its work is yours to build on. On each name in the file you are
 handed, `records` are the filings it carried forward, and `carriedBecause` says why. `setAsideRecords` are the filings it
-read and set aside, whole, and `reading.setAside` says why, by question. `reading.notAsked` is what it did not ask, with its
-reason; a class it records there stays unresolved, neither searched nor clean. `reading.openQuestions` is what it could not
-settle. Do not read the lists again to rebuild this. Reconsider a set-aside where the client's scope, the evidence or a
+read and set aside, with their goods views, and `reading.setAside` says why, by question. `terms` is each question with its
+`state`: `read`, `narrowed`, `zero` (a verified zero), `failed` (no answer), `crowd-not-read` or `not-asked`. `reading.notAsked`
+is what it did not ask, with its reason; a class it records there stays unresolved, neither searched nor clean.
+`reading.openQuestions` is what it could not settle. Do not read the lists again to rebuild this. Reconsider a set-aside where the client's scope, the evidence or a
 specific concern gives reason: read that question's whole list with `read_register_list` by its qid, which fetches nothing,
 and cite the filing by its `recordId` as usual. It then reaches the report with the carried ones.
 
@@ -264,6 +266,8 @@ your job. These two fields are how what you concluded reaches the reader instead
 **Cite a filing by its own `recordId`, copied verbatim** from the file you were given. The driver joins
 every id against that store and refuses one it does not hold — so the report can state a filing's
 source as a fact rather than as a word you typed about your own sourcing.
+
+A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.
 
 - **`registerReads`** — on the MARK. Rows of `{recordId, read, band?}` for a filing you weighed that did
   **not** become a `findings[]` record. `read` is what you concluded about *that* filing: how its goods meet

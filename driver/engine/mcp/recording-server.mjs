@@ -1385,7 +1385,7 @@ serve({
               mark: { type: "string", description: "The name on the record, verbatim." },
               finding: { type: "integer", description: "The finding's ordinal, where the defect is about one." },
               problem: { type: "string", description: "What is wrong and why it matters to the client." },
-              rests_on: { type: "array", items: { type: "string" }, description: "The recordIds and URLs this rests on, copied from what the run holds. Required for band, missing and exclusion." },
+              rests_on: { type: "array", items: { type: "string" }, description: "The held evidence behind the defect: recordIds and URLs copied from what the run holds. Required for missing and exclusion. A defect about scope, the framework or internal agreement may name its source in problem instead." },
             },
           },
         },
@@ -1440,8 +1440,9 @@ serve({
     schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
       "Hand back your repair of the defects you were given, as VALUES, sending only what changes. The driver merges it onto " +
-      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name or a finding no " +
-      "defect names, and a rating that moves without its dependent answers. A repair turn may send only what it corrects.",
+      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name no defect concerns, " +
+      "a moved finding no answer accounts for, and a rating that moves without its dependent answers. A repair turn may send " +
+      "only what it corrects, and what it has repaired is kept.",
     inputSchema: {
       type: "object",
       required: ["answers"],
@@ -1454,6 +1455,7 @@ serve({
             defect: { type: "integer", description: "The defect's number." },
             outcome: { type: "string", enum: ["changed", "stands"], description: "changed: you repaired it. stands: the evidence does not support the defect, and the record stays." },
             why: { type: "string", description: "What you changed, or why the record stands." },
+            findings: { type: "array", items: { type: "integer" }, description: "OPTIONAL: the ordinal of any finding this repair moved beyond the one the defect names." },
           } },
         },
         chunkSummary: { type: "string", description: "The whole of this chunk's summary as it now reads, where the repair changes it. Required when a rating moves." },
@@ -1493,7 +1495,7 @@ serve({
                   weighedFilings: { type: "array", items: { type: "string" }, description: "The register record ids this finding's reasoning used." },
                 } },
               },
-              remove_findings: { type: "array", items: { type: "integer" }, description: "Ordinals a defect names that the evidence shows should not be there." },
+              remove_findings: { type: "array", items: { type: "integer" }, description: "Ordinals the evidence shows should not be there." },
             },
           },
         },

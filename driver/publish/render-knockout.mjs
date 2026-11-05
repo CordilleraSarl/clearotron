@@ -1483,7 +1483,7 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
     return `${one ? 'A filing' : `${cards.length} filings`} of this name or a close variation of it `
       + `stand${one ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`;
   }
-  const records = entry.records ?? [];
+  const records = (entry.records ?? []).filter((r) => !r?.foundUnder);
   if (!records.length) {
     // THE CLEAN NEGATIVE NEEDS POSITIVE EVIDENCE, and it used to need only the absence of a refusal. The
     // test was `some((t) => !t.ok)`, so a listing carrying NO terms at all — nothing asked — answered false

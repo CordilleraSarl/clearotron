@@ -90,7 +90,7 @@
     "stages-knockout.mjs": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/matter-frame/SKILL.md": {
       "literal-json-skeleton": 0,
@@ -190,6 +190,6 @@
   },
   "totals": {
     "stages": 43,
-    "files": 63
+    "files": 62
   }
 }

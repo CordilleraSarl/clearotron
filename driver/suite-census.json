@@ -1047,6 +1047,12 @@
           "skips": 2,
           "todos": 0
         },
+        "a-knockout-citation-the-run-does-not-hold-is-left-out-in-the-turn.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-conflict-carries-its-framework-inputs.test.mjs": {
           "tests": 6,
           "asserts": 39,
@@ -1054,20 +1060,14 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 13,
-          "asserts": 66,
+          "tests": 18,
+          "asserts": 103,
           "skips": 0,
           "todos": 0
         },
         "a-knockout-filing-carries-the-goods-the-run-holds.test.mjs": {
           "tests": 9,
           "asserts": 39,
-          "skips": 0,
-          "todos": 0
-        },
-        "a-knockout-filing-held-under-another-name-is-left-out-in-the-turn.test.mjs": {
-          "tests": 4,
-          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -1103,7 +1103,7 @@
         },
         "a-knockout-rating-may-cite-the-filings-it-was-handed.test.mjs": {
           "tests": 3,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -1114,8 +1114,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
-          "tests": 42,
-          "asserts": 192,
+          "tests": 43,
+          "asserts": 198,
           "skips": 0,
           "todos": 0
         },

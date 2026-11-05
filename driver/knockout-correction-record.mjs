@@ -7,17 +7,18 @@
 // because a band and a finding are the rating step's to reason. So a defect goes back to that step, for one correction and
 // one recheck, as an address and never as prose to match. Nothing else about the batch is reopened.
 //
-// WHAT STANDS, STANDS BY CONSTRUCTION. A call may touch only the names a defect names and, inside one, only the findings a
-// defect names, plus a new finding where a defect says one is missing. A sibling cannot drift, because no field reaches it.
-// A call sends only what changes, and its rows merge onto the chunk the run already holds.
+// WHAT STANDS, STANDS BY CONSTRUCTION. A call may touch only the names a defect concerns, and a name no defect concerns cannot
+// drift, nor its block in the summary, because no field reaches them. Inside an affected name the repair reaches what it needs,
+// and says which defect each moved finding serves. A call sends only what changes, and its rows merge onto the chunk the run holds.
 //
 // THE CHUNK IS THE RECORD, so a corrected batch composes as a rated one does, through the same steps and the same gate, and
-// a resumed run reads the correction back rather than losing it. The chunk as first rated is kept beside the run's work:
-// the record the check read, and what comes back if the corrected record cannot pass the gate.
+// a resumed run reads the correction back rather than losing it. An accepted repair stands when later work fails: only a change
+// the record cannot stand with goes back, name by name, from the chunk as first rated, which is kept beside the run's work.
 //
 // A DEPENDENT ANSWER MOVES WITH WHAT IT DEPENDS ON. A rating that moves brings its basis, its opening read and the batch
 // summary with it, and the summary's block for the name has to carry the band the name now has. Whether the prose is right
 // is the recheck's to read; these checks only stop an answer being left behind on the old band.
+import { createHash } from "node:crypto";
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 
@@ -70,25 +71,24 @@ export function keepChunkBases(runDir, chunkNos) {
   }
 }
 
-/** Put the chunks back as they were rated. The round's work says it stood down, so a resumed run does not go through it again. */
+/** Put the chunks back as they were rated, where the record could stand with none of the round's repairs. */
 export function restoreChunkBases(runDir, chunkNos) {
   for (const c of chunkNos) {
     if (existsSync(chunkBasePath(runDir, c))) copyFileSync(chunkBasePath(runDir, c), knockoutAssessChunkFile(runDir, c));
   }
 }
 
-/** Which marks and which findings of one chunk the round may touch, read against the chunk as rated. PURE. */
+/** Which names of one chunk the round concerns, read against the chunk as rated, with the findings a defect names. PURE. */
 export function chunkScope(work, chunkNo, base) {
   const byMark = new Map();
   const defects = (work?.defects ?? []).filter((d) => d.chunk === Number(chunkNo));
   for (const d of defects) {
     const key = nameKey(d.mark);
-    const row = byMark.get(key) ?? { flagged: new Set(), adds: false };
+    const row = byMark.get(key) ?? { named: new Set() };
     if (d.names) {
       const mark = (base?.marks ?? []).find((m) => nameKey(m?.name) === key);
-      for (const f of mark?.findings ?? []) if (sameFinding(f, d.names)) row.flagged.add(f.ordinal);
+      for (const f of mark?.findings ?? []) if (sameFinding(f, d.names)) row.named.add(f.ordinal);
     }
-    if (["missing", "exclusion", "scope"].includes(d.kind)) row.adds = true;
     byMark.set(key, row);
   }
   return { defects, byMark };
@@ -104,28 +104,22 @@ export function summaryBlock(summary, name) {
   return lines.slice(at, end < 0 ? lines.length : end).join("\n");
 }
 
-function patchedFindings(mark, baseMark, row, scope, refuse) {
+function patchedFindings(mark, row, stop) {
   const out = new Map((mark?.findings ?? []).map((f) => [f?.ordinal, f]));
-  const asRated = new Map((baseMark?.findings ?? []).map((f) => [f?.ordinal, f]));
   for (const f of row.findings ?? []) {
-    if (!Number.isInteger(f?.ordinal)) return refuse(`finding_ordinal:${row.name}: each finding names its ordinal: an existing one to replace it, or the next one for a new finding.`);
-    const was = asRated.get(f.ordinal);
-    if (was && !scope.flagged.has(f.ordinal) && withoutOrdinal(was) !== withoutOrdinal(f)) return refuse(`finding_scope:${row.name}: no defect names finding ${f.ordinal}, so it stays as it is.`);
-    if (!was && !scope.adds) return refuse(`finding_new:${row.name}: no defect on this name asks for a new finding, and ${f.ordinal} is not one it holds.`);
+    if (!Number.isInteger(f?.ordinal)) return stop(`finding_ordinal:${row.name}: each finding names its ordinal: an existing one to replace it, or the next one for a new finding.`);
     out.set(f.ordinal, f);
   }
-  for (const o of row.remove_findings ?? []) {
-    if (!scope.flagged.has(o)) return refuse(`finding_remove:${row.name}: no defect names finding ${o}, so it stays as it is.`);
-    out.delete(o);
-  }
+  for (const o of row.remove_findings ?? []) out.delete(o);
   return [...out.values()].sort((a, b) => a.ordinal - b.ordinal);
 }
 
 /**
- * The chunk with one call applied, or why it cannot be. PURE. `held` is the chunk as it now stands, and `base` as it was
- * rated: scope is read against the second, so a repair may re-send what an earlier call changed.
+ * The chunk with one call applied, or why it cannot be. PURE. \`held\` is the chunk as it now stands. A name no defect concerns,
+ * and its block in the summary, stay as they are; a defect's repair may reach whatever findings of its own name it needs, and
+ * says which (\`mergedAnswers\`), so the check that follows can read the connection.
  */
-export function applyCorrectionCall({ held, base, call, scope }) {
+export function applyCorrectionCall({ held, call, scope }) {
   const refuse = (what) => ({ ok: false, reason: `${TOKEN}_${what}` });
   let failure = null;
   const stop = (what) => { failure = refuse(what); return null; };
@@ -133,15 +127,13 @@ export function applyCorrectionCall({ held, base, call, scope }) {
   const moved = [];
   for (const row of Array.isArray(call?.marks) ? call.marks : []) {
     const name = String(row?.name ?? "");
-    const inScope = scope.byMark.get(nameKey(name));
-    if (!inScope) return refuse(`scope:${name}: no material defect names this mark. Leave it as it stands.`);
+    if (!scope.byMark.has(nameKey(name))) return refuse(`scope:${name}: no material defect concerns this name. Leave it as it stands.`);
     const i = marks.findIndex((m) => nameKey(m?.name) === nameKey(name));
     if (i < 0) return refuse(`scope:${name}: this name is not in the chunk you were handed.`);
-    const baseMark = (base?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(name));
     const { findings: _findings, remove_findings: _removed, ...fields } = row;
     const next = { ...marks[i], ...fields };
     if (row.findings !== undefined || row.remove_findings !== undefined) {
-      next.findings = patchedFindings(marks[i], baseMark, row, inScope, stop);
+      next.findings = patchedFindings(marks[i], row, stop);
       if (failure) return failure;
     }
     const was = `${marks[i].rating}|${marks[i].ratingQualifier ?? ""}`, now = `${next.rating}|${next.ratingQualifier ?? ""}`;
@@ -155,6 +147,10 @@ export function applyCorrectionCall({ held, base, call, scope }) {
     moved.push(name);
   }
   const chunkSummary = call?.chunkSummary ?? held?.chunkSummary;
+  for (const m of marks) {
+    if (scope.byMark.has(nameKey(m?.name))) continue;
+    if (summaryBlock(chunkSummary, m.name) !== summaryBlock(held?.chunkSummary, m.name)) return refuse(`summary:${m.name}: no defect concerns this name, so its block in chunkSummary stays as it was.`);
+  }
   for (const name of moved) {
     const m = marks.find((x) => nameKey(x?.name) === nameKey(name));
     const block = summaryBlock(chunkSummary, name);
@@ -163,7 +159,18 @@ export function applyCorrectionCall({ held, base, call, scope }) {
   return { ok: true, chunk: { ...held, marks, chunkSummary } };
 }
 
-/** The answers so far with this call's merged on by defect, or why they cannot stand. PURE. */
+/** The ordinals of a name's findings that differ from the chunk as rated: changed, added or removed. PURE. */
+function findingsMoved(baseMark, mark) {
+  const was = new Map((baseMark?.findings ?? []).map((f) => [f?.ordinal, f]));
+  const now = new Map((mark?.findings ?? []).map((f) => [f?.ordinal, f]));
+  return [...new Set([...was.keys(), ...now.keys()])].filter((o) => JSON.stringify(was.get(o)) !== JSON.stringify(now.get(o)));
+}
+
+/**
+ * The answers so far with this call's merged on by defect, or why they cannot stand. PURE. A defect not yet answered is left open,
+ * not refused: what the call did repair is kept. Every finding the repair moved is one a defect names or an answer claims, so a
+ * change never goes unexplained to the check that reads it.
+ */
 export function mergedAnswers(stored, received, scope, { base, chunk }) {
   const refuse = (what) => ({ ok: false, reason: `${TOKEN}_${what}` });
   const known = new Map(scope.defects.map((d) => [d.n, d]));
@@ -172,18 +179,24 @@ export function mergedAnswers(stored, received, scope, { base, chunk }) {
     if (!known.has(a?.defect)) return refuse(`answers: there is no defect ${a?.defect} on this chunk.`);
     if (!["changed", "stands"].includes(a?.outcome)) return refuse(`answers: defect ${a.defect} takes outcome "changed" or "stands".`);
     if (typeof a?.why !== "string" || !a.why.trim()) return refuse(`answers: defect ${a.defect} carries no reason. Write down what you changed, or why the record stands.`);
-    byDefect.set(a.defect, { defect: a.defect, outcome: a.outcome, why: a.why.trim() });
+    byDefect.set(a.defect, { defect: a.defect, outcome: a.outcome, why: a.why.trim(), ...(Array.isArray(a.findings) && a.findings.length ? { findings: a.findings } : {}) });
   }
-  const unanswered = scope.defects.filter((d) => !byDefect.has(d.n)).map((d) => d.n);
-  if (unanswered.length) return refuse(`answers: defect ${unanswered.join(", ")} has no answer. Each is answered changed or stands, with its reason.`);
+  const of = (doc, name) => (doc?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(name));
   for (const a of byDefect.values()) {
     if (a.outcome !== "changed") continue;
     const d = known.get(a.defect);
-    const of = (doc) => (doc?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(d.mark));
-    if (JSON.stringify(of(base)) === JSON.stringify(of(chunk))) return refuse(`answers: defect ${a.defect} says changed, and nothing on ${d.mark} differs from the rated record. Send the change, or answer stands with your reason.`);
+    if (JSON.stringify(of(base, d.mark)) === JSON.stringify(of(chunk, d.mark))) return refuse(`answers: defect ${a.defect} says changed, and nothing on ${d.mark} differs from the rated record. Send the change, or answer stands with your reason.`);
   }
-  return { ok: true, answers: [...byDefect.values()].sort((x, y) => x.defect - y.defect) };
+  for (const [key, row] of scope.byMark) {
+    const mark = of(chunk, key);
+    const claimed = new Set([...row.named, ...[...byDefect.values()].filter((a) => nameKey(known.get(a.defect)?.mark) === key).flatMap((a) => a.findings ?? [])]);
+    const silent = findingsMoved(of(base, key), mark).find((o) => !claimed.has(o));
+    if (silent !== undefined) return refuse(`answers: finding ${silent} on ${mark?.name ?? key} changed, and no answer says which defect it serves. Name it in that answer's findings, or leave it as it was.`);
+  }
+  return { ok: true, answers: [...byDefect.values()].sort((x, y) => x.defect - y.defect), open: scope.defects.filter((d) => !byDefect.has(d.n)).map((d) => d.n) };
 }
+
+const chunkSha = (text) => createHash("sha256").update(text).digest("hex");
 
 export function recordKnockoutCorrection(runDir, received, { boundOrdinal = null, now = () => new Date().toISOString() } = {}) {
   const dir = String(runDir ?? "");
@@ -208,7 +221,7 @@ export function recordKnockoutCorrection(runDir, received, { boundOrdinal = null
   if (!work || !held || !base) return refused(`${TOKEN}_state: this run holds no correction for chunk ${chunkNo}.`);
   const scope = chunkScope(work, chunkNo, base);
 
-  const applied = applyCorrectionCall({ held, base, call: rest, scope });
+  const applied = applyCorrectionCall({ held, call: rest, scope });
   if (!applied.ok) return refused(applied.reason);
   const receipt = knockoutCorrectionFile(dir, chunkNo);
   const answers = mergedAnswers(readJson(receipt)?.answers, receivedAnswers, scope, { base, chunk: applied.chunk });
@@ -223,26 +236,54 @@ export function recordKnockoutCorrection(runDir, received, { boundOrdinal = null
 
   try {
     writeFileSync(file, text);
-    writeFileSync(receipt, JSON.stringify({ schema_version: SCHEMA_VERSION, chunk: chunkNo, answers: answers.answers }, null, 2) + "\n");
+    writeFileSync(receipt, JSON.stringify({ schema_version: SCHEMA_VERSION, chunk: chunkNo, chunkSha: chunkSha(text), answers: answers.answers }, null, 2) + "\n");
   } catch (e) {
     return { written: null, refused: null, write_failed: String(e?.message ?? e).slice(0, 200), captured: closeCapture({ ok: false, write_failed: true }), capture_failed: cap.failed };
   }
   try { writeFileSync(knockoutAssessCallPaths(dir, chunkNo).accepted, acceptedEnvelope(shape.model, now())); }
   catch { /* the chunk is the record; this is only the base a later rating call would merge onto */ }
-  return { written: receipt, refused: null, chunk: chunkNo, answers: answers.answers.length, captured: closeCapture({ ok: true }), capture_failed: cap.failed };
+  return { written: receipt, refused: null, chunk: chunkNo, answers: answers.answers.length, ...(answers.open.length ? { still_open: answers.open } : {}), captured: closeCapture({ ok: true }), capture_failed: cap.failed };
 }
 
-/** Is this correction's answer whole? koStage's skip-if-valid read, and the stage's own check. */
+/** Is this correction's answer whole, and of the chunk as it stands? koStage's skip-if-valid read, and the stage's own check. */
 export function validateKnockoutCorrectionFile(file, content) {
   let doc;
   try { doc = JSON.parse(content); } catch (e) { return { ok: false, reason: `not valid JSON: ${e.message}` }; }
   const dir = dirname(file);
   const runDir = basename(dir) === DRIVER_DIR ? dirname(dir) : dir;
+  const chunkNo = Number(basename(file).match(/(\d+)\.json$/)?.[1]);
+  if (doc?.chunk !== chunkNo) return { ok: false, reason: `this answer is not chunk ${chunkNo}'s.` };
   const work = readCorrectionWork(runDir);
   if (!work) return { ok: false, reason: "this run holds no correction, so this answer cannot be checked." };
-  const said = new Set((Array.isArray(doc?.answers) ? doc.answers : []).map((a) => a?.defect));
-  const open = (work.defects ?? []).filter((d) => d.chunk === doc?.chunk && !said.has(d.n)).map((d) => d.n);
+  const owed = (work.defects ?? []).filter((d) => d.chunk === chunkNo);
+  if (!owed.length) return { ok: false, reason: `no defect is on chunk ${chunkNo}.` };
+  let held = null;
+  try { held = readFileSync(knockoutAssessChunkFile(runDir, chunkNo), "utf8"); } catch { held = null; }
+  if (held == null || doc.chunkSha !== chunkSha(held)) return { ok: false, reason: "this answer is not of the chunk as it now stands." };
+  const said = new Set([...(Array.isArray(doc.answers) ? doc.answers : []).map((a) => a?.defect), ...(doc.rolledBack ?? [])]);
+  const open = owed.filter((d) => !said.has(d.n)).map((d) => d.n);
   return open.length ? { ok: false, reason: `defect ${open.join(", ")} has no answer.` } : { ok: true };
+}
+
+/**
+ * Take one name's repair back out of its chunk, because the record cannot stand with it: its row and its summary block return as
+ * rated, and its defects leave the answers as rolled back, so they stay open and a resumed run does not ask again.
+ */
+export function rollBackName(runDir, work, name) {
+  const defects = (work?.defects ?? []).filter((d) => nameKey(d.mark) === nameKey(name));
+  const chunkNo = defects[0]?.chunk;
+  if (chunkNo == null) return;
+  const base = readJson(chunkBasePath(runDir, chunkNo)), held = readJson(knockoutAssessChunkFile(runDir, chunkNo));
+  const rated = (base?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(name));
+  if (!base || !held || !rated) return;
+  const was = summaryBlock(base.chunkSummary, name), now = summaryBlock(held.chunkSummary, name);
+  const chunkSummary = was != null && now != null ? held.chunkSummary.replace(now, () => was) : held.chunkSummary;
+  const text = JSON.stringify({ ...held, chunkSummary, marks: held.marks.map((m) => (nameKey(m?.name) === nameKey(name) ? rated : m)) }, null, 2) + "\n";
+  writeFileSync(knockoutAssessChunkFile(runDir, chunkNo), text);
+  const receipt = readJson(knockoutCorrectionFile(runDir, chunkNo));
+  const ns = new Set(defects.map((d) => d.n));
+  if (receipt) writeFileSync(knockoutCorrectionFile(runDir, chunkNo), JSON.stringify({ ...receipt, chunkSha: chunkSha(text),
+    answers: (receipt.answers ?? []).filter((a) => !ns.has(a.defect)), rolledBack: [...new Set([...(receipt.rolledBack ?? []), ...ns])] }, null, 2) + "\n");
 }
 
 /** The refusals journalled for this chunk, newest last. The accessor a tool-written row carries. */
@@ -261,16 +302,18 @@ export function correctionAnswers(runDir, chunkNos) {
 }
 
 /**
- * What the driver saw of each defect, comparing the record the check read with the corrected one: in the shape and the
- * words the full engine's table and its resolved set read (corrections-feedforward.mjs). Findings are joined by identity,
- * because the gate renumbers on the band. A correction's own account rides as its reason, and never decides. PURE.
+ * What the driver saw of each defect, comparing the record the check read with the current one: in the shape and the words the full
+ * engine's table and its resolved set read (corrections-feedforward.mjs). Findings are joined by identity, because the gate
+ * renumbers on the band. A correction's own account rides as its reason and never decides, and a defect no one answered says so. PURE.
  */
 export function correctionOutcomes(work, after, answers = new Map()) {
   const of = (doc, name) => (doc?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(name)) ?? null;
   return (work?.defects ?? []).map((d) => {
     const was = of(work.rated, d.mark), now = of(after, d.mark);
-    const common = { n: d.n, kind: d.kind, typed: true, text: d.problem, ordinals: d.finding != null ? [d.finding] : null,
-      ...(answers.get(d.n) ? { reason: answers.get(d.n).why } : {}) };
+    const answer = answers.get(d.n);
+    const common = { n: d.n, kind: d.kind, typed: true, text: d.problem, ordinals: d.finding != null ? [d.finding] : null, ...(answer ? { reason: answer.why } : {}) };
+    const moved = JSON.stringify(was) !== JSON.stringify(now);
+    if (!answer && !moved) return { ...common, targets: [d.names?.name ?? d.mark], outcome: "not-answered", removed: [] };
     if (d.names) {
       const label = d.names.name ?? `finding ${d.finding}`;
       const before = (was?.findings ?? []).find((f) => sameFinding(f, d.names));
@@ -278,30 +321,22 @@ export function correctionOutcomes(work, after, answers = new Map()) {
       if (!current) return { ...common, targets: [label], outcome: "findings-removed", removed: [label] };
       return { ...common, targets: [label], outcome: withoutOrdinal(before) !== withoutOrdinal(current) ? "findings-changed" : "findings-unchanged", removed: [] };
     }
-    const moved = JSON.stringify(was) !== JSON.stringify(now);
     return { ...common, targets: [d.mark], outcome: moved ? "line-changed" : "line-unchanged", removed: [] };
   });
 }
 
 /**
- * What moved that no defect named, or an empty answer. A call cannot reach these, so a row here is a fault between the chunk
- * and the record, not a seat's edit: the caller keeps the rated record. PURE.
+ * What moved under a name no defect concerns, or an empty answer: its record, or its block in the batch summary. A call cannot reach
+ * these, so a row here is a fault between the chunk and the record, and the caller keeps the rated record. PURE.
  */
 export function movedOutsideScope(work, after) {
-  const flaggedNames = new Set((work?.defects ?? []).map((d) => nameKey(d.mark)));
-  const marks = [], findings = [];
+  const concerned = new Set((work?.defects ?? []).map((d) => nameKey(d.mark)));
+  const marks = [], blocks = [];
   for (const was of work?.rated?.marks ?? []) {
+    if (concerned.has(nameKey(was?.name))) continue;
     const now = (after?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(was?.name)) ?? null;
-    if (!flaggedNames.has(nameKey(was?.name))) {
-      if (JSON.stringify(was) !== JSON.stringify(now)) marks.push(was.name);
-      continue;
-    }
-    const named = (work.defects ?? []).filter((d) => nameKey(d.mark) === nameKey(was.name) && d.names).map((d) => d.names);
-    for (const f of was.findings ?? []) {
-      if (named.some((n) => sameFinding(f, n))) continue;
-      const current = (now?.findings ?? []).find((x) => sameFinding(x, f));
-      if (!current || withoutOrdinal(f) !== withoutOrdinal(current)) findings.push({ mark: was.name, name: f.name });
-    }
+    if (JSON.stringify(was) !== JSON.stringify(now)) marks.push(was.name);
+    if (summaryBlock(work.rated?.batch?.executiveSummary, was.name) !== summaryBlock(after?.batch?.executiveSummary, was.name)) blocks.push(was.name);
   }
-  return { marks, findings };
+  return { marks, blocks };
 }

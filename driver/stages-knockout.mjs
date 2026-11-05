@@ -183,6 +183,12 @@ export function knockoutBarVerdict({ startedAt = null, deliveredAt = null } = {}
 }
 
 /** The line a stage is told about the client's own request: the message as it came where it is on file, else the brief, which is never called the request, else nothing. */
+/** Does this run hold a register record to weigh? A record that says why it could not list holds none. */
+const registerRecordHeld = (K) => {
+  if (!existsSync(K.registerRecords)) return false;
+  try { return !JSON.parse(readFileSync(K.registerRecords, "utf8"))?.unavailable; } catch { return false; }
+};
+
 const requestLine = (K, onRequest, onBrief) => (existsSync(K.inboundRequest) ? onRequest(K.inboundRequest)
   : existsSync(K.confirmationBrief) ? onBrief(K.confirmationBrief) : "");
 
@@ -373,8 +379,8 @@ export const KO_STAGES = {
       // has carried a per-mark `contextFraming` all along and nothing ever told this seat to rate with
       // it, so the requester's per-name detail reached the run and stopped. Shipping the doctrine
       // without pointing at the field it turns on is half a fix.
-      `Each mark's "contextFraming" in that plan is what the name is for, as the request states it or as the frame read it: a character name, a location, an achievement title. Rate with it: the manner-of-use calibration in the firm-wide reasoning is per MARK, so two names can sit at different bands on identical evidence. Where the framing goes beyond what the request says, it is a possible use, and it does not narrow the scope or lower a rating. Carry the field through to your own row unchanged.`,
-      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own research payload or in the register records supplied for that mark.`,
+      `Read each name's contextFraming against the client's request. Apply the manner-of-use calibration to the use the client actually states. Where the frame inferred a use, keep it as a possibility; it does not narrow the instructed scope or lower the rating. Correct a material framing error when the request or evidence contradicts it, and explain the correction in the assessment.`,
+      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own research payload or in a filing held for this batch.`,
       ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
       // THE ORDERED TERRITORIES, where the request named some. The web questions used to carry them in
       // their own scope lines and drop what fell outside; the grid returns results and judges nothing, so
@@ -385,7 +391,10 @@ export const KO_STAGES = {
       // NAMED ONLY WHEN IT IS ON DISK. The records land at step 2 of 5 and this stage is step 3 or 4, so
       // the file exists by now on a run that fetched them — and on a run that did not, a dispatch naming
       // a path that is not there teaches the seat that a missing file is normal.
-      existsSync(K.registerRecords)
+      !registerRecordHeld(K)
+        ? `The register component was skipped on this run, so it holds no filings.`
+        : "",
+      registerRecordHeld(K)
         ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
       // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED ────────────────────────────────────────────
@@ -421,7 +430,7 @@ export const KO_STAGES = {
       // the record store above and refuses one it does not hold, so a Register label can never appear on
       // a finding with no register evidence. Omitting either field is always safe: the card keeps its
       // neutral line, which describes the card and is true.
-      existsSync(K.registerRecords)
+      registerRecordHeld(K)
         ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — how its goods meet the goods the client asked about, whether it bears on the rating, and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
         : "",
       `The FROZEN framework in force (rate in ITS band vocabulary, highest→lowest ${framework.bands.map((b) => b.label).join(" · ")}): ${driverDir(K.runDir, "framework.json")}`,
@@ -524,10 +533,10 @@ export const KO_STAGES = {
       `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence, then check its wording. You change no band and no finding yourself.`,
       requestLine(K, (at) => `The client's request, as it arrived: ${at}`, (at) => `The available brief: ${at}. The original request is not held here.`),
       recheckTable
-        ? [`THIS IS THE SECOND LOOK. An earlier check raised the defects below, the rating step has answered them, and the record you are reading is the corrected one.`,
+        ? [`THIS IS THE SECOND LOOK. An earlier check raised the defects below. The table says what the driver saw of each, including any the rating step did not answer, and the record you are reading is the record as it now stands.`,
           recheckTable,
-          `For each row, read the corrected record and judge whether the defect is answered. Agreement is part of that: a changed finding or band must agree with its name's basis, factors, opening read and block in the batch summary. There is no further correction after this one, so send as \`material\` only what is still wrong; it stays on the record for the reviewing lawyer.`].join("\n")
-        : `MATERIAL DEFECTS COME FIRST. A defect is material when repairing it would change what the client is told: a band the framework and the evidence do not support (\`band\`), a filing or use a lawyer would raise that the answer leaves out (\`missing\`), something set aside against the evidence (\`exclusion\`), scope the request asked for that the answer does not cover (\`scope\`), or a line that contradicts the record beneath it (\`contradiction\`). Send each as a \`material\` row: \`kind\`, \`mark\` verbatim, the finding's ordinal as \`finding\` where it is about one, what is wrong and why it matters as \`problem\`, and in \`rests_on\` the recordIds or URLs it rests on. You repair nothing: the step that rated the batch answers each row, and the record is then read again. A rating a lawyer could reasonably reach is not a defect, and neither is a preference about wording.`,
+          `For each row, read the record and judge whether the defect is answered. Agreement is part of that: a changed finding or band must agree with its name's basis, factors, opening read and block in the batch summary. There is no further correction after this one, so send as \`material\` only what is still wrong; it stays on the record for the reviewing lawyer.`].join("\n")
+        : `MATERIAL DEFECTS COME FIRST. A defect is material when repairing it would change what the client is told: a band the framework and the evidence do not support (\`band\`), a filing or use a lawyer would raise that the answer leaves out (\`missing\`), something set aside against the evidence (\`exclusion\`), scope the request asked for that the answer does not cover (\`scope\`), or a line that contradicts the record beneath it (\`contradiction\`). Send each as a \`material\` row: \`kind\`, \`mark\` verbatim, the finding's ordinal as \`finding\` where it is about one, and what is wrong and why it matters as \`problem\`. Identify the held evidence behind the defect in rests_on. A defect about scope, the framework, or internal agreement may instead identify the supplied request passage, framework rule, or rated field in problem. Do not invent a filing or URL to justify that defect. A filing held for this batch may bear on more than one name, so a defect on one name may rest on a filing held under another, by its held recordId and source. You repair nothing: the step that rated the batch answers each row, and the record is then read again. A rating a lawyer could reasonably reach is not a defect, and neither is a preference about wording.`,
       `Each name's research payload is under ${K.researchDir}.`,
       `THE WORDS COME AFTER. A line a reader meets before opening anything is held to this rule.`,
       `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
@@ -580,10 +589,11 @@ export const KO_STAGES = {
         `A DEFECT IS ANOTHER READER'S FINDING, NOT AN ORDER. Check it against the evidence. Where it holds, repair the finding or the rating. Where it does not, leave the record and say why.`,
         frameworkMethod ? methodDictation(frameworkMethod) : "",
         frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
-        `HAND BACK BY CALLING \`record_knockout_correction\`, sending only what changes. THERE IS NO FILE FOR YOU TO WRITE. For a name: the fields that change. A finding goes back whole under its ordinal, and a new one takes the next ordinal. A name or a finding no defect names stays as it is, and the tool refuses a change to it.`,
+        `HAND BACK BY CALLING \`record_knockout_correction\`, sending only what changes. THERE IS NO FILE FOR YOU TO WRITE. For a name: the fields that change. A finding goes back whole under its ordinal, and a new one takes the next ordinal. A name no defect concerns stays unchanged. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged.`,
+        `A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.`,
         `BRING EVERY DEPENDENT ANSWER WITH IT. Whatever the repair changes, the name's lines that rest on it change with it: \`basis\`, \`factors\`, \`counterFactors\`, \`mitigation\`, \`assessment\`, \`bullets\`, its \`registerReads\` and its block in \`chunkSummary\`. A rating that moves needs \`basis\`, \`assessment\` and \`chunkSummary\` in the call. The manual's rules still hold: a name is never rated above its worst card.`,
         `REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS DEFECT ON ITS OWN. Use \`remove_findings\` only where the evidence shows the finding should not be there, and say so.`,
-        `ANSWER EVERY DEFECT in \`answers\`: \`defect\`, \`outcome\` (\`changed\` or \`stands\`) and \`why\`. If you call again, send only what you are correcting.`,
+        `ANSWER EVERY DEFECT in \`answers\`: \`defect\`, \`outcome\` (\`changed\` or \`stands\`), \`why\`, and in \`findings\` the ordinal of any finding this repair moved beyond the one the defect names. If you call again, send only what you are correcting.`,
       );
     },
   },

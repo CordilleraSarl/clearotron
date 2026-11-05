@@ -2745,16 +2745,19 @@ export function applyStageWrites(msg, argv) {
       return stands.written ? "mock knockout correction ok" : `mock knockout-correct: the transport refused the composed call — ${stands.refused ?? stands.write_failed}`;
     }
     const band = process.env.MOCK_KO_CORRECTED_BAND;
-    const names = [...new Set(defects.map((d) => d.mark))];
+    // MOCK_KO_CORRECTION_PARTIAL answers the first defect only. MOCK_KO_CORRECTED_READS adds these filing reads to the name, as JSON.
+    const answering = process.env.MOCK_KO_CORRECTION_PARTIAL ? defects.slice(0, 1) : defects;
+    const reads = process.env.MOCK_KO_CORRECTED_READS ? JSON.parse(process.env.MOCK_KO_CORRECTED_READS) : null;
+    const names = [...new Set(answering.map((d) => d.mark))];
     const marks = names.map((name) => {
       const mark = held.marks.find((m) => m.name === name);
-      const flagged = defects.filter((d) => d.mark === name && d.names).map((d) => d.names);
-      return { name, rating: band, basis: `${name} moves to ${band} on the conflict the check named.`,
+      const flagged = answering.filter((d) => d.mark === name && d.names).map((d) => d.names);
+      return { name, ...(reads ? { registerReads: reads } : {}), rating: band, basis: `${name} moves to ${band} on the conflict the check named.`,
         assessment: `${name} now screens at ${band}, on the conflict the check named. The name was searched against marketplace and common-law use in the classes this chunk covers, and the read below sets out what the sweep found. A knockout screen triages; it does not clear.`,
         findings: (mark.findings ?? []).filter((f) => flagged.some((n) => n.name === f.name && n.owner === f.owner)).map((f) => ({ ...f, band, net: `The conflict the check named is more serious than first rated for ${name}.` })) };
     });
     const chunkSummary = `${held.chunkSummary}\n\n${names.map((n) => `## ${n}\nRated ${band} on the conflict the check named.`).join("\n\n")}`;
-    const verdict = recordKnockoutCorrection(runDir, { answers: defects.map((d) => ({ defect: d.n, outcome: "changed", why: "mock correction: the evidence supports the defect" })), chunkSummary, marks }, { boundOrdinal: boundChunk });
+    const verdict = recordKnockoutCorrection(runDir, { answers: answering.map((d) => ({ defect: d.n, outcome: "changed", why: "mock correction: the evidence supports the defect" })), chunkSummary, marks }, { boundOrdinal: boundChunk });
     if (!verdict.written) return `mock knockout-correct: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout correction ok";
   }

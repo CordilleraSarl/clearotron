@@ -236,6 +236,24 @@ test("a resume reuses each form's count: the folded record unfolds to the rows t
 
 // ── THE HANDOFF ────────────────────────────────────────────────────────────────────────────────
 
+test("a filing weighed for another name reaches that name's page, keeps where it was found, and changes no count", () => {
+  const terms = [{ basis: "identical", ok: true, total: 0, fetched: 0, state: "zero" }];
+  const doc = { marks: [{ name: NAME, records: [], fetched: 0, available: 0, terms },
+    { name: "MOSSVALE", records: [{ recordId: "a", matchedForm: "MOSSVALE", matchedBasis: "identical", question: "q1", carriedBecause: "same goods" }], fetched: 1,
+      setAsideRecords: [{ recordId: "b", matchedForm: "MOSS VALE", matchedBasis: "close", question: "q2" }] }] };
+  const rated = (ids) => ({ marks: [{ name: NAME, registerReads: ids.map((recordId) => ({ recordId, read: "r" })), findings: [] }, { name: "MOSSVALE" }] });
+  const moved = withCitedFilings(doc, rated(["a", "b"]));
+  assert.deepEqual(moved.marks[0].records, [
+    { recordId: "a", matchedForm: null, matchedBasis: null, foundUnder: { name: "MOSSVALE", question: "q1", form: "MOSSVALE", basis: "identical" } },
+    { recordId: "b", matchedForm: null, matchedBasis: null, foundUnder: { name: "MOSSVALE", question: "q2", form: "MOSS VALE", basis: "close" } }],
+    "no field says this name was searched for it, and where it was found rides apart");
+  assert.equal(moved.marks[0].fetched, 0, "this name's searches found no more than they did");
+  assert.deepEqual(moved.marks[0].terms, terms, "and its questions are as they were");
+  assert.equal(recordsLine(moved.marks[0]), recordsLine(doc.marks[0]), "its line says the same");
+  assert.deepEqual(moved.marks[1], doc.marks[1], "the filing stays where it was found");
+  assert.equal(withCitedFilings(doc, rated(["held-nowhere"])), doc, "an id held nowhere changes nothing, and the gate refuses it");
+});
+
 test("a set-aside filing the rating cites moves up with the carried ones; one it does not stays set aside", () => {
   const doc = { marks: [{ name: NAME, records: [{ recordId: "a" }], fetched: 1, setAsideRecords: [{ recordId: "b" }, { recordId: "c" }] }] };
   const moved = withCitedFilings(doc, { marks: [{ name: NAME, registerReads: [{ recordId: "b", read: "the goods are the client's" }], findings: [{ weighedFilings: ["a"] }] }] });

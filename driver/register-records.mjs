@@ -166,8 +166,10 @@ export function normalizeRegisterRecordLinks(doc) {
  * It states the truncation and the failures, because both are the difference between "these are the
  * filings" and "these are some of the filings".
  */
-export function recordsLine(entry) {
-  if (!entry) return null;
+export function recordsLine(entryAsHeld) {
+  if (!entryAsHeld) return null;
+  // A filing weighed for this name and found under another is on its page, and is no part of what this name's searches found.
+  const entry = { ...entryAsHeld, records: (entryAsHeld.records ?? []).filter((r) => !r?.foundUnder) };
   const failed = (entry.terms ?? []).filter((t) => !t.ok && !t.notAsked);
   const skipped = (entry.terms ?? []).filter((t) => t.notAsked);
   // — the register(s) this listing did not reach, appended to whichever sentence comes back below.

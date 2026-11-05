@@ -284,7 +284,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           // WHICH QUESTION FOUND IT, on every row. A filing on the name and a filing on a generated
           // variant are different facts, and a sheet that fuses them is a sheet that overstates.
           'Matched form': r.matchedForm ?? '—',
-          'Basis': r.matchedBasis === 'close' ? 'close variation' : 'identical',
+          'Basis': r.foundUnder ? '—' : r.matchedBasis === 'close' ? 'close variation' : 'identical',
           'Trademark': r.mark ?? '—', 'Owner': r.owner ?? '—', 'Status': r.status ?? '—',
           'Classes': (r.classes ?? []).join(', ') || '—', 'Territory': r.territory ?? '—',
           'Filed': r.applicationDate ?? '—', 'Registered': r.registrationDate ?? '—',
@@ -313,7 +313,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': t.reason ?? 'the search did not run',
         });
       }
-      if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
+      if (!(e.records ?? []).some((r) => !r.foundUnder) && (e.terms ?? []).every((t) => t.ok)) {
         // A count above zero that nothing read is not none: the register holds filings under it.
         recordRows.push({
           'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': (e.terms ?? []).some((t) => t.setAside) ? 'not available' : 'none found',

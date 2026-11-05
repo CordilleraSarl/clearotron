@@ -60,7 +60,7 @@ import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // �
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
-import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, movedOutsideScope, readCorrectionWork, restoreChunkBases } from "./knockout-correction-record.mjs";
+import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName } from "./knockout-correction-record.mjs";
 import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
@@ -258,15 +258,18 @@ const readJsonOrNull = (p) => { try { return JSON.parse(readFileSync(p, "utf8"))
 const chunksOf = (work) => [...new Set((work?.defects ?? []).map((x) => x.chunk).filter((c) => c != null))];
 
 /**
- * One correction and one recheck. Each chunk a defect names goes back to the rating step; the record is composed again
- * through the same steps and gate; and a fresh reader reads the result. There is no third look: what it still finds stays on
- * the record, for the reviewing lawyer. Nothing here can cost a client the report. A correction that cannot pass the gate
- * puts the rated chunks back, and a recheck that fails leaves the corrected record standing with that said.
+ * One correction and one recheck. Each chunk a defect names goes back to the rating step; the record is composed again through the
+ * same steps and gate; and a fresh reader reads the result, with what became of each defect. There is no third look. What it still
+ * finds, and any defect no one answered, stays on the record for the reviewing lawyer. Nothing here can cost a client the report,
+ * and no defect leaves the record by a step failing: a repair the record cannot stand with goes back name by name, and a stage that
+ * fails leaves what it had accepted.
  */
 async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview, merged }) {
   const touched = chunksOf(work);
   const correctedNames = [...new Set(work.defects.map((x) => x.mark))];
   const log = (outcome, detail = {}) => runLog(run.runDir, { event: "knockout-review", outcome, material: work.defects.length, marks: correctedNames.length, ...detail });
+  const asOpen = (defects, state, reason = null) => defects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state, ...(reason ? { reason } : {}) }));
+  const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
   for (const c of touched) {
     try {
@@ -276,23 +279,35 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
       failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
     }
   }
-  // Back to the record as it was rated, and through the same gate. The chunks are the record a resume composes from.
+  // Back to the record as it was rated, through the same gate, with every defect still open and why.
   const standDown = (outcome, detail) => {
     restoreChunkBases(run.runDir, touched);
     atomicWrite(correctionWorkPath(run.runDir), JSON.stringify({ ...work, stoodDown: outcome }, null, 2) + "\n");
+    keepRecord({ defects: work.defects, outcomes: [], recheck: "not-run", failure: outcome, failedChunks: failed, open: asOpen(work.defects, "not-corrected", outcome) });
     let rated = merged;
     try { rated = composeRecord(); } catch (e) { note(`the rated record could not be composed again (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); }
     log(outcome, { applied: 0, delivered: "the rated record, uncorrected", ...detail });
     note(`reviewing pass: ${outcome} — the rated record ships uncorrected`);
     return rated;
   };
+  if (failed.length === touched.length && !touched.some((c) => existsSync(knockoutCorrectionFile(run.runDir, c)))) return standDown("correction-failed", { reason: failed[0]?.reason });
 
-  if (failed.length === touched.length) return standDown("correction-failed", { reason: failed[0]?.reason });
-  let corrected;
+  // A REPAIR THE RECORD CANNOT STAND WITH GOES BACK, name by name, and the others stay.
+  let corrected = null, gateCause = null;
+  const rolledBack = [];
   try { corrected = composeRecord(); }
-  catch (e) { return standDown("correction-refused-by-the-merged-gate", { reason: String(e?.message ?? e).slice(0, 300) }); }
+  catch (e) {
+    gateCause = String(e?.message ?? e).slice(0, 300);
+    for (const name of correctedNames) {
+      const kept = touched.map((c) => [c, readFileSync(K.assessChunk(c), "utf8"), existsSync(knockoutCorrectionFile(run.runDir, c)) ? readFileSync(knockoutCorrectionFile(run.runDir, c), "utf8") : null]);
+      rollBackName(run.runDir, work, name);
+      try { corrected = composeRecord(); rolledBack.push(name); break; }
+      catch { for (const [c, text, receipt] of kept) { writeFileSync(K.assessChunk(c), text); if (receipt != null) writeFileSync(knockoutCorrectionFile(run.runDir, c), receipt); } }
+    }
+    if (!corrected) return standDown("correction-refused-by-the-merged-gate", { reason: gateCause });
+  }
   const outside = movedOutsideScope(work, corrected);
-  if (outside.marks.length || outside.findings.length) return standDown("correction-moved-what-no-defect-named", { outside });
+  if (outside.marks.length || outside.blocks.length) return standDown("correction-moved-what-no-defect-named", { outside });
 
   // THE FIRST PASS'S REWRITES STILL STAND WHERE NO DEFECT REOPENED THE LINE. The second pass reads the record with them on it.
   let doc = corrected;
@@ -302,24 +317,27 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const answers = correctionAnswers(run.runDir, touched);
   const outcomes = correctionOutcomes(work, doc, answers);
   const unresolved = unresolvedFlags(outcomes).map((r) => r.n);
-  const held = { defects: work.defects, outcomes, failedChunks: failed };
-  const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
+  const notAnswered = work.defects.filter((x) => outcomes.find((o) => o.n === x.n)?.outcome === "not-answered");
+  const held = { defects: work.defects, outcomes, failedChunks: failed, rolledBack, ...(gateCause ? { gateCause } : {}) };
 
   const d = reviewDispatch(doc, plan);
   try {
     await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes) } });
   } catch (e) {
     if (e instanceof StageFailure && e.resetsAt) throw e;
-    keepRecord({ ...held, recheck: "failed", open: [] });
-    log("recheck-failed", { applied: receipt.applied, unresolved: unresolved.length, reason: String(e?.message ?? e).slice(0, 200) });
+    // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
+    const reason = String(e?.message ?? e).slice(0, 200);
+    keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });
+    log("recheck-failed", { applied: receipt.applied, unresolved: unresolved.length, reason });
     return doc;
   }
   const second = readJsonOrNull(knockoutReviewFile(run.runDir, 1));
-  const open = second?.material ?? [];
+  const found = second?.material ?? [];
+  const open = [...found, ...asOpen(notAnswered.filter((x) => !found.some((m) => m.mark === x.mark && m.kind === x.kind)), "not-answered")];
   keepRecord({ ...held, recheck: "ran", open });
   const again = applyKnockoutReview(doc, second ?? {});
   if (validateMergedFindings(run.runDir, again.doc, plan).ok) { doc = again.doc; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
-  log("corrected", { applied: receipt.applied + again.receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length });
+  log("corrected", { applied: receipt.applied + again.receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length, rolledBack: rolledBack.length });
   return doc;
 }
 
@@ -1145,7 +1163,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
     // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
     const composeRecord = () => {
-      const composed = { schema_version: 1, framework: null, batch: null, marks: [] };
+      const merged = { schema_version: 1, framework: null, batch: null, marks: [] };
       const summaries = [];
       for (let c = 0; c < chunks.length; c++) {
         // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
@@ -1153,14 +1171,14 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
         const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
         const part = JSON.parse(readFileSync(chunkPath, "utf8"));
-        if (c === 0) { composed.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; composed.batch = part.batch ?? null; }
+        if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
         if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
-        composed.marks.push(...(part.marks ?? []));
+        merged.marks.push(...(part.marks ?? []));
       }
-      if (!composed.batch) composed.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
+      if (!merged.batch) merged.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
       // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
       // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
-      composed.batch.executiveSummary = summaries.join("\n\n");
+      merged.batch.executiveSummary = summaries.join("\n\n");
       // ── THE PENDING-REGISTER CAVEAT, CONDITIONAL SINCE RF-10 v3 ────────────────
       //
       // "Ratings reflect our common law assessment. Register analysis may adjust ratings in either
@@ -1189,10 +1207,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // — THE SAME DERIVATION THE LINT USES. This counted the array, blanks included, so
       // `["", "  "]` read as "the rater supplied two" here and as "supplied none" in the verifier. The lint
       // could not see the disagreement because the survivor sentence below silenced it entirely.
-      if (raterCaveats(composed.batch.standardCaveats).length === 0 && !registerSurfacedFilings(K.registerRecords)) {
-        composed.batch.standardCaveats = ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."];
+      if (raterCaveats(merged.batch.standardCaveats).length === 0 && !registerSurfacedFilings(K.registerRecords)) {
+        merged.batch.standardCaveats = ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."];
       }
-      if (!Array.isArray(composed.batch.standardCaveats)) composed.batch.standardCaveats = [];
+      if (!Array.isArray(merged.batch.standardCaveats)) merged.batch.standardCaveats = [];
       // ── the survivor sentence, in CODE ( fix 3) ────────────────────────────────────────────────────
       //
       // A mark this lane did not knock out is a SURVIVOR. It is not clear, and the document must not be
@@ -1205,8 +1223,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // APPENDED, never prepended: publish/knockout.mjs's email takes standardCaveats[0], so leading with
       // this would silently replace the standing caveat in the requester's inbox.
       const survivorNote = survivorBoundaryNote(policy);
-      if (!composed.batch.standardCaveats.some((c) => SURVIVOR_BOUNDARY_RE.test(String(c))))
-        composed.batch.standardCaveats.push(survivorNote);
+      if (!merged.batch.standardCaveats.some((c) => SURVIVOR_BOUNDARY_RE.test(String(c))))
+        merged.batch.standardCaveats.push(survivorNote);
       // ── the skipped-capability sentence, in CODE, for the survivor sentence's own reason ──────
       //
       // The per-mark degrade above already reaches the client on every row. This is the RUN-level fact
@@ -1219,8 +1237,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // takes standardCaveats[0], and leading with this would silently replace the standing caveat in the
       // requester's inbox.
       const skippedNote = sweep.skipped ? CAPABILITY_SKIPPED_NOTE[sweep.skipped] : null;
-      if (skippedNote && !composed.batch.standardCaveats.some((c) => String(c) === skippedNote))
-        composed.batch.standardCaveats.push(skippedNote);
+      if (skippedNote && !merged.batch.standardCaveats.some((c) => String(c) === skippedNote))
+        merged.batch.standardCaveats.push(skippedNote);
       // The merged gate now also validates the TYPED findings and receipts their citations, and it
       // NORMALISES as it validates — each finding's band comes back in the frozen deck's own casing — so
       // it runs BEFORE the artifact is written, not after. The counts are logged because a receipts pass
@@ -1228,12 +1246,12 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // apart afterwards.
       // BEFORE THE GATE AND THE WRITE, so the record on disk is the record that ships, and the reviewing
       // pass never addresses a line inside a section that is about to go.
-      removeNextStepSections(run.runDir, composed.marks);
-      const mv = validateMergedFindings(run.runDir, composed, plan);
+      removeNextStepSections(run.runDir, merged.marks);
+      const mv = validateMergedFindings(run.runDir, merged, plan);
       if (!mv.ok) throw new StageFailure("knockout-assess", `merged findings failed the lint: ${mv.failures.join("; ")}`, null);
       runLog(run.runDir, { event: "knockout-receipts", ...mv.receipts });
-      atomicWrite(K.findings, JSON.stringify(composed, null, 2) + "\n");
-      return composed;
+      atomicWrite(K.findings, JSON.stringify(merged, null, 2) + "\n");
+      return merged;
     };
     // `let`, because the reviewing pass below returns a REWRITTEN record rather than editing this one:
     // the original has to survive intact as the thing that ships if the pass cannot finish cleanly.
