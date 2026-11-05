@@ -818,7 +818,9 @@ export const anthropicAgentEngine = {
         if (periodStart === null || openAsks.length === 0) return;
         const k = periodKey() || "?";
         const spent = Math.max(0, now - periodStart);
-        if (spent > 0) {
+        // A period seen across two chunks is measured even when the clock reads it as 0 ms, as a coarse clock can:
+        // its ask is named with what the clock gave. Crediting only a positive wait dropped it, unmeasured and undeclared.
+        if (spent > 0 || periodChunk !== chunkSeq) {
           toolWaitMs += spent;
           toolWaitByTool[k] = (toolWaitByTool[k] ?? 0) + spent;
         }

@@ -324,6 +324,20 @@ test("ONE ask for several tools is ONE interval under ONE key — never counted 
   assert.equal(row.toolCalls, 2, "two tool_use blocks were still asked for");
 });
 
+test("a wait the clock reads as 0 ms still names its ask, rather than vanishing unmeasured and undeclared", async () => {
+  // Measured on the Windows suite, 2026-11-05: the arm above saw byTool={} and unmeasurable=[] for an ask whose result
+  // arrived in a later chunk inside the same clock reading. Frozen here, so every period reads 0 ms on any machine.
+  process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([{ name: ["band_lookup", "band_record"], ms: 120 }]);
+  const real = Date.now, frozen = real();
+  Date.now = () => frozen;
+  try { await runIt("clearotron-tooltime-zero").catch(() => {}); } finally { Date.now = real; }
+  const row = rows(driverDir(dir, "tool-time-stage.jsonl"))[0];
+  const declared = (row.toolWaitUnmeasurable ?? []).filter((u) => u?.cause).map((u) => u.tool);
+  assert.deepEqual(Object.keys(row.toolWaitByTool).length ? Object.keys(row.toolWaitByTool) : declared, ["band_lookup+band_record"],
+    `the ask vanished: byTool=${JSON.stringify(row.toolWaitByTool)} unmeasurable=${JSON.stringify(row.toolWaitUnmeasurable)}`);
+  assert.equal(row.toolWaitMs, 0, "a frozen clock cannot have measured a wait");
+});
+
 test("activeMs separates GENERATING from WAITING, and a no-tool turn reports the whole wall", async () => {
   // The field that makes a wall kill readable: a turn killed with most of its elapsed in tool wait is a
   // different event from one that ground for the whole budget generating, and `wall` alone cannot say which.
