@@ -1558,6 +1558,9 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       // would fail the same way on the next refusal that is about neither. A `code` field is decidable.
       // The message beside it is deliberately general: a screen that knows the code composes its own
       // sentence, and a screen that does not must never fall back to the code.
+      // AN INSTALL THAT CANNOT RUN A SEARCH answers the order doors with the runner's own client sentence, which is
+      // written for a person to read, so this code keeps it rather than the general line below.
+      if (refused?.code === 'not_configured') return { kind: 'gate', message: errorsOf(body)[0] ?? 'That could not be done. Nothing was changed.', detail: refused }
       if (refused) return { kind: 'gate', message: 'That could not be done. Nothing was changed.', detail: refused }
       const msg = errorsOf(body)[0] ?? 'This action could not be completed.'
       return /version|conflict/i.test(msg) && !/confirmation|plan again|re-confirm/i.test(msg)

@@ -549,6 +549,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       case 'collision':
         return { title: 'That cannot be searched as written', lines: r.errors }
       case 'gate':
+        // AN INSTALL THAT CANNOT RUN A SEARCH is not a changed request, so it takes the heading of a search that did
+        // not start, under the runner's own sentence. Every other gate is the edited review its heading names.
+        if (r.detail?.code === 'not_configured') return { title: 'The search was not started', lines: [r.message] }
         // Verbatim: these seven strings are written to be read by a human and say precisely what to do.
         return { title: 'The request changed', lines: [r.message] }
       case 'rateLimited':

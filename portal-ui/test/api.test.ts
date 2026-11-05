@@ -110,6 +110,18 @@ test('409 written as `errors[]` reaches the reader — the demo refusal is the o
   assert.notEqual(message, 'This action could not be completed.')
 })
 
+test('409 from an install that cannot run a search keeps the sentence and carries its code', async () => {
+  // The order doors answer with the runner's own client sentence and `code: "not_configured"`, so the screen can
+  // head the box as a search that did not start rather than as an edited review. The code is for the screen;
+  // the sentence is what the reader sees.
+  const sentence = 'This installation is not configured to run searches yet. Nothing has been searched and '
+    + 'nothing has been charged. Please contact whoever administers it.'
+  const refused = await withFetch(409, { ok: false, errors: [sentence], code: 'not_configured' }, () => api.runs('demo-company'))
+  assert.equal(refused.kind, 'gate')
+  assert.equal(refused.kind === 'gate' ? refused.message : '', sentence, 'the reader lost the runner\'s sentence to the general line')
+  assert.equal(refused.kind === 'gate' ? refused.detail?.code : null, 'not_configured')
+})
+
 test('409 with neither spelling still says something, and says it once', async () => {
   // The fallback is the last resort, not the first. A body carrying no refusal at all must not render
   // empty — an empty gate message is a dialog with a title and nothing in it.

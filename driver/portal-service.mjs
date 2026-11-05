@@ -1948,10 +1948,14 @@ export function makePortalService({
       // above says belongs at submission. So the review and the start both ask the runner's question, of the
       // runner's tables, and nothing is queued. The sentence is the client one the runner already writes: it
       // names no setting, which a browser must never be shown. A demo walks its own flow and is not asked.
-      const configurationRefusal = async () => {
+      // `code` lets the screen give the box its own heading rather than the edited-review one, and the audit row is
+      // the operator's record of the refusal: the order doors are not admin writes, so nothing files one for them.
+      const configurationRefusal = async (door, account) => {
         if (demo) return null;
         const refusal = await orderRefusal();
-        return refusal ? { status: 409, json: { ok: false, errors: [refusal.client] } } : null;
+        if (!refusal) return null;
+        audit({ event: door, by: principal.email, account, ok: false, refused: "not_configured", missing: refusal.names });
+        return { status: 409, json: { ok: false, errors: [refusal.client], code: "not_configured" } };
       };
 
       // /portal/api/run/plan — the confirmation gate (no spend)
@@ -1960,7 +1964,7 @@ export function makePortalService({
         const account = assertPrincipal(principal, { account: body.account ?? query.account ?? null, tenant, run: true });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         const job = jobFor({ principal, account, tenant, body });
-        const notConfigured = await configurationRefusal();
+        const notConfigured = await configurationRefusal("plan", account);
         if (notConfigured) return notConfigured;
         const gates = planGates(job);
         if (gates.fail) return gates.fail;
@@ -2013,7 +2017,7 @@ export function makePortalService({
         const account = assertPrincipal(principal, { account: body.account ?? null, tenant: body.tenant ?? null, run: true });
         if (!account) return { status: 400, json: { error: "name an account" } };
         const job = jobFor({ principal, account, tenant: body.tenant ?? null, body });
-        const notConfigured = await configurationRefusal();   // asked again: the install may have changed since the review
+        const notConfigured = await configurationRefusal("trigger", account);   // asked again: the install may have changed since the review
         if (notConfigured) return notConfigured;
         const gates = planGates(job);   // re-gated: the token is necessary, never sufficient
         if (gates.fail) return gates.fail;
