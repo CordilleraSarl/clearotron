@@ -1089,6 +1089,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-reads-the-clients-own-request.test.mjs": {
+          "tests": 5,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
           "tests": 35,
           "asserts": 153,
@@ -5993,7 +5999,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 121,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },

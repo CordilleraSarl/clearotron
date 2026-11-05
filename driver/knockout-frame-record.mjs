@@ -51,7 +51,7 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 import { kebabCollisions } from "./search-policy.mjs";
 // The plan's own checks for the web search's lists, one definition: the call is refused with the plan's
 // sentence, so the seat hears the rule once, in the same words, whichever door it reaches first.
-import { placesDefect, spellingsDefect, useKindDefect } from "./verify-knockout.mjs";
+import { placesDefect, spellingsDefect, useKindDefect, alternativesDefect } from "./verify-knockout.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -86,7 +86,7 @@ export function knockoutFrameCallPaths(runDir) {
 const DECLARED = Object.freeze({
   "": ["schema", "batch", "marks", "scope_note"],
   batch: ["productContext", "inUseAs", "places", "umbrellaBrandNote", "executionOrder"],
-  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "places", "spellings", "priorKnowledge", "priority"],
+  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "places", "spellings", "alternatives", "priorKnowledge", "priority"],
 });
 
 /** Refuse an undeclared key by path, through the shared implementation every transport now uses. */
@@ -201,6 +201,8 @@ export function acceptKnockoutFrame(params) {
       }
       const spellingsRefused = spellingsDefect(name, m?.spellings);
       if (spellingsRefused) defects.push(`knockoutframe_spellings:${name} — ${spellingsRefused}`);
+      const alternativesRefused = alternativesDefect(name, m?.alternatives);
+      if (alternativesRefused) defects.push(`knockoutframe_alternatives:${name} — ${alternativesRefused}`);
       for (const ck of ["classes", "beltAndBraces"]) {
         if (m?.[ck] != null && !isClassArray(m[ck]))
           defects.push(`knockoutframe_classes:${name}.${ck} must be Nice-class integers 1–45 — these interpolate into report and email HTML, so a free string is both a contract break and an injection surface`);

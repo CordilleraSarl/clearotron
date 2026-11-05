@@ -1551,6 +1551,7 @@ serve({
               // resolves whichever way it happens to trust.
               places: { type: "array", items: { type: "string" }, description: "The places THIS name is searched on: two or more, one of them \"web\" (the whole web) and each other a site's bare host. No upper limit — name as many as this name needs, and no more, because every place is another search of every spelling. Two names in one batch may have different lists." },
               spellings: { type: "array", items: { type: "string" }, description: "2 or 3 ways this name is written, the name as instructed among them. Each is searched on every place THIS name names." },
+              alternatives: { type: "array", items: { type: "string" }, description: "Each written form of this one item, where the request gives more than one spelling or word order. Omit otherwise." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },
               priority: { type: "number", description: "This mark's position in the execution order." },
             },

@@ -115,6 +115,9 @@ export function koPaths(runDir) {
     // back to this and nothing ever writes it again. Delete once no resumable run predates the move.
     assessChunkLegacy: (n) => driverDir(runDir, `knockout-assess-${n}.json`),
     instructedScope: driverDir(runDir, "instructed-scope.json"),
+    // The client's own words, written at intake as on the clearance lane (stages.mjs, the same two names).
+    inboundRequest: join(runDir, "inbound-request.txt"),
+    confirmationBrief: join(runDir, "confirmation-brief.md"),
     // as on the clearance lane, and apart from instructed-scope.json for the same reason: the frame
     // quotes that file's values verbatim. Written at intake, read by no stage.
     defaultTerritories: driverDir(runDir, "default-territories.json"),
@@ -177,6 +180,10 @@ export function knockoutBarVerdict({ startedAt = null, deliveredAt = null } = {}
   const runMinutes = Number(((b - a) / 60000).toFixed(1));
   return { runMinutes, overBar: runMinutes > KNOCKOUT_MINUTES_BAR };
 }
+
+/** The line a stage is told about the client's own request: the message as it came where it is on file, else the brief, which is never called the request, else nothing. */
+const requestLine = (K, onRequest, onBrief) => (existsSync(K.inboundRequest) ? onRequest(K.inboundRequest)
+  : existsSync(K.confirmationBrief) ? onBrief(K.confirmationBrief) : "");
 
 /** The territories the request ordered, as the job carries them; empty for a worldwide screen. PURE. */
 export const orderedTerritories = (job) =>
@@ -265,6 +272,12 @@ export const KO_STAGES = {
       // was sold under. That is a rendering concession for old artifacts, not live vocabulary.
       `You are framing a KNOCKOUT SEARCH batch — a triage pass. You frame, you do NOT search.`,
       `The instructed scope (AUTHORITATIVE — quote mark names verbatim from it): ${K.instructedScope}`,
+      // THE REQUEST LEADS. The structured brief can hold no goods at all while the client's message states them: on a
+      // saved eight-name batch, 2026-10-28, the goods field was empty, neither this stage nor the rating read the message,
+      // and uses guessed from the customer's profile steered the ratings.
+      requestLine(K,
+        (at) => `The VERBATIM inbound request is archived at ${at}. Read it before you frame: it leads on the goods, services and intended use, and the customer's profile only fills what it leaves open.`,
+        (at) => `The archived original request is not available here. Read the available brief at ${at} before you frame. Use its stated scope and keep inferred uses explicit; the customer's profile fills gaps.`),
       job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
       job.customer ? `Applicant (context only — never searched): ${job.customer}` : "",
       profile?.industry ? `Customer industry (context for marketplace selection): ${profile.industry}.` : "",
@@ -349,6 +362,9 @@ export const KO_STAGES = {
       `You are rating chunk ${chunkNo + 1}/${chunkTotal} of a KNOCKOUT batch — triage, not clearance.`,
       `Rate ONLY these marks (one entry each, names verbatim): ${chunkMarks.map((m) => m.name).join(" · ")}.`,
       `The batch plan (context framing, classes, priorities): ${K.plan}`,
+      requestLine(K,
+        (at) => `THE CLIENT'S OWN REQUEST, VERBATIM: ${at}. Read it before you rate. Its stated goods, services, and intended use lead over the plan; the customer's profile fills gaps. Keep a guessed use as a possibility. Do not use that guess to narrow the instructed scope or lower a rating.`,
+        (at) => `AVAILABLE BRIEF: ${at}. The original request is not held here. Read the brief before you rate, keep its stated scope, and distinguish supplied facts from inferred uses. Do not lower a rating on a guessed use.`),
       // ── contextFraming IS A RATING INPUT, AND SAYING SO IS THE OTHER HALF OF THE DOCTRINE ─────────
       //
       // The firm-wide reasoning calibrates on MANNER OF USE — a character name inside a franchise sits
@@ -377,7 +393,7 @@ export const KO_STAGES = {
       // the file exists by now on a run that fetched them — and on a run that did not, a dispatch naming
       // a path that is not there teaches the seat that a missing file is normal.
       existsSync(K.registerRecords)
-        ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read them and WEIGH them for the marks you are rating. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
+        ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
       // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED ────────────────────────────────────────────
       //
@@ -413,7 +429,7 @@ export const KO_STAGES = {
       // a finding with no register evidence. Omitting either field is always safe: the card keeps its
       // neutral line, which describes the card and is true.
       existsSync(K.registerRecords)
-        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — whether it bears on the rating and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
+        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — how its goods meet the goods the client asked about, whether it bears on the rating, and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
         : "",
       `A DEGRADED mark's row must carry degraded:true and the purple "Manual verification recommended"`,
       `note; a mark WITH a payload must never claim degraded (the validator joins both against the disk).`,
