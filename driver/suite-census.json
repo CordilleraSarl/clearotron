@@ -4840,8 +4840,8 @@
           "todos": 0
         },
         "no-test-writes-inside-the-checkout.test.mjs": {
-          "tests": 21,
-          "asserts": 58,
+          "tests": 22,
+          "asserts": 62,
           "skips": 2,
           "todos": 0
         },
