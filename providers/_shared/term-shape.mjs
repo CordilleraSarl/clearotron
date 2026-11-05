@@ -153,7 +153,7 @@ export function termMarkupIssue(term) {
  *     compiler's manifest-provenance term_literal stamp exists for);
  *   - `(` — a parenthetical is annotation, never mark text;
  *   - `—` (em-dash) or `;` — sentence punctuation;
- *   - a space-flanked `/` — an enumeration separator ("TIKTOK / TIK- family"), NOT the tight slash
+ *   - a space-flanked `/` — an enumeration separator ("NOVAPULSE / NOVA- family"), NOT the tight slash
  *     marks legitimately carry (24/7, GUNS N/ROSES).
  */
 export function termShapeIssue(term) {

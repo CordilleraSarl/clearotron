@@ -297,12 +297,12 @@ export const MATCH_MODE_TO_FIELD = Object.freeze({
 //     token is dropped from the chain. Kept, it matches nothing and would zero the whole phrase.
 const PHRASE_OPERATOR = "ADJ";
 // ── A TERM MUST BE ONE MARK, ON EVERY MARK-FIELD PREDICATE ────────────────────────────────────────
-// The supplemental/cross-check lanes sometimes mint a LIST or a DESCRIPTION into the term field. All
-// three of these appeared in one frozen plan, EACH minted twice — once `default`,
-// once `exact`:
-//   "SLUSH FREEZE, SLUSH ICE, SLUSH POP"                     three terms crammed into one
-//   "TIKTOK / TIK- famous-neighbour family"                  a description of a family, not a name
-//   "WAVU, WAPO one-keystroke neighbours of WAVO"
+// The supplemental/cross-check lanes sometimes mint a LIST or a DESCRIPTION into the term field. Terms
+// of all three shapes below appeared in one frozen plan, EACH minted twice — once `default`,
+// once `exact`. These examples are invented:
+//   "IRONWHISK SODA, IRONWHISK JUICE, IRONWHISK TONIC"      three terms crammed into one
+//   "NOVAPULSE / NOVA- famous-neighbour family"             a description of a family, not a name
+//   "IRONWHIZK, IRONWHISQ one-keystroke neighbours of IRONWHISK"
 //
 // Searched, they return 0 — and a 0 here reads as CLEAN, which is the one outcome this contract must
 // never produce by accident. On that run the `default` twins deferred loudly while the `exact` twins
@@ -711,7 +711,7 @@ export function buildSearchRequest(p) {
   if (markTerms.length) {
     const values = markTerms.map((t) => {
       // SHAPE FIRST, on the RAW term. stripPunctuation dissolves the very separators that mark a term
-      // out as a list ("SLUSH FREEZE, SLUSH ICE, SLUSH POP" → one long name → 0 → reads as CLEAN), so
+      // out as a list ("IRONWHISK SODA, IRONWHISK JUICE, IRONWHISK TONIC" → one long name → 0 → reads as CLEAN), so
       // an `exact` slice checked after stripping is checked too late. compilePhraseValue re-checks for
       // the phrase modes; this is the one call that covers `exact`.
       assertSingleMarkShape(t);
