@@ -22,7 +22,7 @@ import { createHash } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { recordGoods, recordGoodsProvenance, recordAsServed, untaggedIsEnglish } from "./record-goods.mjs";
+import { recordGoods, recordAsServed, untaggedIsEnglish } from "./record-goods.mjs";
 import { heldBodiesOf, heldRecordProvenance, readRunCallRows, recordFetchOutcomes, recordGoodsEvidence, goodsFromLabel } from "./goods-evidence.mjs";
 import { DEFAULT_LEDGER_PATH } from "./provider-usage.mjs";
 
@@ -43,7 +43,8 @@ export function shortGoodsView(statements, limit = GOODS_VIEW_CHARS) {
     const cut = chars.length > limit;
     if (cut) shortened = true;
     const text = cut ? `${chars.slice(0, limit).join("")}…` : chars.join("");
-    return Array.isArray(g?.classes) && g.classes.length ? `${g.classes.join(", ")}: ${text}` : text;
+    const where = [Array.isArray(g?.classes) && g.classes.length ? g.classes.join(", ") : "", g?.language ? `(${g.language})` : ""].filter(Boolean).join(" ");
+    return where ? `${where}: ${text}` : text;
   });
   return { goods, shortened };
 }
@@ -81,11 +82,9 @@ export function withFilingGoods(doc, runDir, { runPrefix = null, callLog = DEFAU
   const carried = (rec) => {
     const key = normalizeRecordUri(rec?.recordId);
     const body = key ? bodies.get(key) ?? null : null;
-    // The register's words for no goods are not goods here: a record holding only those lists none (record-goods.mjs).
-    const fromBody = body ? recordGoods(body, { english: untaggedIsEnglish(key), noGoodsPhrases: true }) : [];
+    const fromBody = body ? recordGoods(body, { english: untaggedIsEnglish(key) }) : [];
     const statements = fromBody.length ? fromBody : (Array.isArray(rec?.goods) ? rec.goods : []);
-    const heldHere = body && held.has(key) ? new Map([[key, { ...held.get(key), goods: recordGoodsProvenance(body, { noGoodsPhrases: true }) }]]) : held;
-    const evidence = recordGoodsEvidence({ record_id: rec?.recordId }, { goods: { of: () => statements, held: () => fromBody.length > 0 }, held: heldHere, fetches });
+    const evidence = recordGoodsEvidence({ record_id: rec?.recordId }, { goods: { of: () => statements, held: () => fromBody.length > 0 }, held, fetches });
     const view = shortGoodsView(statements, limit);
     const fullRecord = !rec?.recordId ? null
       : body ? keep(rec.recordId, recordAsServed(`${JSON.stringify(body, null, 2)}\n`).text)

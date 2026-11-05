@@ -70,7 +70,7 @@ import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";   // — pure; the env binding is injected
 import { variantForms, VARIANT_CAP } from "./register-variants.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
-import { recordGoods, rowGoods, saysNoGoods, untaggedIsEnglish } from "./record-goods.mjs";
+import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
 
 /** Records per MARK, across every listed term. A bound on cost, on artifact size and on what a reader
  *  can usefully hold — and it is stated wherever the list renders, per the ruling. */
@@ -166,7 +166,7 @@ function toRecord(row, { term, basis, provider }) {
 }
 
 const goodsOnRow = (row) => {
-  const statements = (rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) })).filter((g) => !saysNoGoods(g?.text));
+  const statements = rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) });
   return statements.length ? statements : null;
 };
 

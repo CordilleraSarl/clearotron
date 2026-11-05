@@ -1054,8 +1054,8 @@
           "todos": 0
         },
         "a-knockout-filing-carries-the-goods-the-run-holds.test.mjs": {
-          "tests": 9,
-          "asserts": 39,
+          "tests": 10,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -7552,8 +7552,8 @@
           "todos": 0
         },
         "the-registers-words-for-no-goods-are-not-goods.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
