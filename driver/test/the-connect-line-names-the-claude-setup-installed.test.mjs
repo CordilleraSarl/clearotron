@@ -28,6 +28,7 @@ const LINES = stdioConnectOffer({ workDir: "/w", reportsDir: "/p" });
 
 // Imported where it is used, so the real start below still runs against a tree that does not have it.
 const naming = async () => (await import("../../bin/start.mjs")).connectLinesNamingClaude;
+const screen = async () => (await import("../../bin/start.mjs")).connectScreen;
 
 test("the copy setup installed is named by its path, and a copy on PATH keeps the bare word", async () => {
   const connectLinesNamingClaude = await naming();
@@ -52,6 +53,14 @@ test("under WSL only the row run inside Linux names the installed copy", async (
   assert.equal(row(named, WSL_ROW_HEADINGS.fromWindows).verify, wsl.verify, "the Windows row checks Windows' own claude");
   assert.equal(row(named, WSL_ROW_HEADINGS.insideWsl).verify, `${INSTALLED}${wsl.verify.slice("claude".length)}`,
     "the check line typed inside Linux runs a claude that shell does not have");
+  const connectScreen = await screen();
+  const lines = connectScreen(named);
+  assert.deepEqual(lines.filter((l) => l.includes("Check it:")).map((l) => l.trim()),
+    [`Check it:  ${wsl.verify}`, `Check it:  ${INSTALLED}${wsl.verify.slice("claude".length)}`], "each row does not carry its own check");
+  // THE CONTROLS: with one answer for both rows, or no rows at all, the check is said once, last.
+  const onPath = connectLinesNamingClaude(wsl, { source: "path", resolved: "/usr/local/bin/claude" });
+  assert.deepEqual(connectScreen(onPath).filter((l) => l.includes("Check it:")), [`  Check it:  ${wsl.verify}`]);
+  assert.deepEqual(connectScreen(LINES).slice(-2), [`  Check it:  ${LINES.verify}`, ""]);
 });
 
 test("the portal's page and `clearotron connect` name the installed copy, in the command and in its check", () => {

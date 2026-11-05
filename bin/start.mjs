@@ -2649,18 +2649,7 @@ if (isMain) {
   say("");
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
-  const checkPerRow = connect.variants?.some((v) => v.verify !== connect.verify);
-  if (connect.variants) {
-    for (const v of connect.variants) {
-      say(`    ${v.heading}`); say(`      ${v.text}`); if (v.hint) say(`      ${v.hint}`);
-      if (checkPerRow) say(`      Check it:  ${v.verify}`);
-      say("");
-    }
-  } else {
-    say(`    ${connect.command}`);
-    say("");
-  }
-  if (!checkPerRow) { say(`  Check it:  ${connect.verify}`); say(""); }
+  for (const line of connectScreen(connect)) say(line);
   // ── WHERE TO TYPE THE THINGS JUST PRINTED ( — F31) ───────────────────────
   //
   // This block prints commands and then HOLDS THE TERMINAL in the foreground, so not one of them can be
@@ -2733,6 +2722,19 @@ export function connectLinesNamingClaude(connect, program) {
     variants: connect.variants.map((v) => (v.heading === WSL_ROW_HEADINGS.insideWsl
       ? { ...v, text: name(v.text), verify: name(connect.verify) } : { ...v, verify: connect.verify })) };
   return { ...connect, command: name(connect.command), verify: name(connect.verify) };
+}
+
+/**
+ * The lines under "Connect your assistant": each row, then the check line once, or under each row when the
+ * rows' checks differ. PURE.
+ */
+export function connectScreen(connect) {
+  const perRow = Boolean(connect.variants?.some((v) => v.verify && v.verify !== connect.verify));
+  const rows = connect.variants
+    ? connect.variants.flatMap((v) => [`    ${v.heading}`, `      ${v.text}`, ...(v.hint ? [`      ${v.hint}`] : []),
+      ...(perRow ? [`      Check it:  ${v.verify}`] : []), ""])
+    : [`    ${connect.command}`, ""];
+  return perRow ? rows : [...rows, `  Check it:  ${connect.verify}`, ""];
 }
 
 /**

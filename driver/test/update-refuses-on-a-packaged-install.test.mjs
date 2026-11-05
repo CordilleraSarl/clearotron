@@ -119,7 +119,7 @@ test("the refusal names the channel the install came from, and a project install
   assert.equal(under("C:/npm/node_modules/clearotron", "0.5.1-beta.2"), "npm install -g clearotron@beta", "a beta stays a beta");
   assert.equal(under("/srv/shop/node_modules/clearotron", "0.5.1-beta.2", true), "cd /srv/shop && npm install clearotron@beta",
     "a global install would leave a project's own copy behind");
-  assert.equal(under("/home/u/.npm/_npx/ab12/node_modules/clearotron", "0.5.0", true), "npm install -g clearotron@latest",
+  assert.equal(under("/opt/npm-cache/_npx/ab12/node_modules/clearotron", "0.5.0", true), "npm install -g clearotron@latest",
     "npx's cache holds a package.json of its own, and that folder is not a project");
 });
 
