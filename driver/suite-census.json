@@ -1096,8 +1096,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-clients-own-request.test.mjs": {
-          "tests": 5,
-          "asserts": 30,
+          "tests": 4,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
