@@ -2644,13 +2644,17 @@ if (isMain) {
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
   if (connect.variants) {
-    for (const v of connect.variants) { say(`    ${v.heading}`); say(`      ${v.text}`); if (v.hint) say(`      ${v.hint}`); say(""); }
+    for (const v of connect.variants) {
+      say(`    ${v.heading}`); say(`      ${v.text}`); if (v.hint) say(`      ${v.hint}`);
+      if (checkPerRow) say(`      Check it:  ${v.verify}`);
+      say("");
+    }
   } else {
     say(`    ${connect.command}`);
     say("");
   }
-  say(`  Check it:  ${connect.verify}`);
-  say("");
+  const checkPerRow = connect.variants?.some((v) => v.verify !== connect.verify);
+  if (!checkPerRow) { say(`  Check it:  ${connect.verify}`); say(""); }
   // ── WHERE TO TYPE THE THINGS JUST PRINTED ( — F31) ───────────────────────
   //
   // This block prints commands and then HOLDS THE TERMINAL in the foreground, so not one of them can be
@@ -2713,14 +2717,15 @@ function claudeEngine() { return Object.keys(ENGINE_BINARIES).find((k) => ENGINE
  * add …` and `claude mcp list`: a command the reader's shell does not have (measured on a published beta,
  * after setup had installed it). `namingProgram` is the rewrite setup's own sign-in line uses, and it
  * changes nothing for a copy on PATH. UNDER WSL ONLY THE ROW RUN INSIDE LINUX is rewritten: the Windows
- * row runs Windows' own `claude`, and the check line serves both sides, so it keeps the bare word there.
+ * row runs Windows' own `claude`. The check line is said per row there when the two differ (`verify` on each).
  * `program` is what resolveEngineProgram answers ({ source, resolved }). PURE.
  */
 export function connectLinesNamingClaude(connect, program) {
   const spec = ENGINE_BINARIES[claudeEngine()];
   const name = (text) => namingProgram(text, spec, { source: program?.source ?? null, path: program?.resolved ?? null });
   if (connect.variants) return { ...connect,
-    variants: connect.variants.map((v) => (v.heading === WSL_ROW_HEADINGS.insideWsl ? { ...v, text: name(v.text) } : v)) };
+    variants: connect.variants.map((v) => (v.heading === WSL_ROW_HEADINGS.insideWsl
+      ? { ...v, text: name(v.text), verify: name(connect.verify) } : { ...v, verify: connect.verify })) };
   return { ...connect, command: name(connect.command), verify: name(connect.verify) };
 }
 

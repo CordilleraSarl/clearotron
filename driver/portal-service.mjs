@@ -49,6 +49,7 @@ import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVers
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
 import { doorKind } from "../shared/mcp-challenge.mjs";   // — one reading of what a connector asks for, shared with doctor
+import { claudeNamer } from "./engine/probe.mjs";   // names the copy setup installed, which is not on PATH
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 
 /**
@@ -2584,6 +2585,7 @@ async function connectorDoorKind(url) {
                 [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })]))
             : {},
           wsl: isWsl(),
+          nameClaude: claudeNamer(),
           // ONE ADDRESS, and it is the publicly reachable one ( §5). The
           // `localAddress` and `clientDoorStanding` inputs are gone with the axis that read them: no
           // surface serves a loopback address to anybody, and the door's running-or-not stopped being

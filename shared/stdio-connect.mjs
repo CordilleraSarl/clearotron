@@ -387,6 +387,19 @@ export function remoteConnectFor(shape, { address = null } = {}) {
  */
 export const WSL_ROW_HEADINGS = Object.freeze({ fromWindows: "From Windows", insideWsl: "Inside WSL" });
 
+/**
+ * A route with its program word rewritten by `name`, for a surface that knows which copy this machine runs.
+ *
+ * ONLY THE `claude-cli` SHAPE NAMES A PROGRAM. Under WSL only the row run inside Linux is rewritten: the Windows
+ * row runs Windows' own `claude`, and `text` stays that row's. PURE.
+ */
+export function routeNaming(route, name) {
+  if (route?.shape !== "claude-cli") return route;
+  return route.variants
+    ? { ...route, variants: route.variants.map((v) => (v.heading === WSL_ROW_HEADINGS.insideWsl ? { ...v, text: name(v.text) } : v)) }
+    : { ...route, text: name(route.text) };
+}
+
 export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, wsl = null, node = process.execPath } = {}) {
   const spec = Object.hasOwn(STDIO_SHAPES, String(shape ?? "")) ? STDIO_SHAPES[shape] : null;
   if (!spec) return null;

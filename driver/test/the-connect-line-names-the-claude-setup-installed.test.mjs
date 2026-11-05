@@ -11,11 +11,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { delimiter, join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { WSL_ROW_HEADINGS, stdioConnectOffer } from "../../shared/stdio-connect.mjs";
+import { STDIO_SHAPES, WSL_ROW_HEADINGS, stdioConnectFor, stdioConnectOffer } from "../../shared/stdio-connect.mjs";
+import { connectOffers } from "../../shared/connect-clients.mjs";
+import { namingProgram } from "../engine/probe.mjs";
+import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -42,10 +45,36 @@ test("under WSL only the row run inside Linux names the installed copy", async (
   const row = (o, heading) => o.variants.find((v) => v.heading === heading);
   assert.ok(row(wsl, WSL_ROW_HEADINGS.fromWindows) && row(wsl, WSL_ROW_HEADINGS.insideWsl), "anti-vacuity: the composer wrote no WSL pair");
   const named = connectLinesNamingClaude(wsl, { source: "installed", resolved: INSTALLED });
-  assert.deepEqual(row(named, WSL_ROW_HEADINGS.fromWindows), row(wsl, WSL_ROW_HEADINGS.fromWindows), "the Windows row runs Windows' own claude");
+  assert.equal(row(named, WSL_ROW_HEADINGS.fromWindows).text, row(wsl, WSL_ROW_HEADINGS.fromWindows).text, "the Windows row runs Windows' own claude");
   assert.equal(row(named, WSL_ROW_HEADINGS.insideWsl).text, `${INSTALLED}${row(wsl, WSL_ROW_HEADINGS.insideWsl).text.slice("claude".length)}`,
     "the row run inside Linux kept the bare word");
-  assert.equal(named.verify, wsl.verify, "the check line serves both sides under WSL");
+  assert.equal(named.verify, wsl.verify, "the line a surface prints once stays the Windows side's");
+  assert.equal(row(named, WSL_ROW_HEADINGS.fromWindows).verify, wsl.verify, "the Windows row checks Windows' own claude");
+  assert.equal(row(named, WSL_ROW_HEADINGS.insideWsl).verify, `${INSTALLED}${wsl.verify.slice("claude".length)}`,
+    "the check line typed inside Linux runs a claude that shell does not have");
+});
+
+test("the portal's page and `clearotron connect` name the installed copy, in the command and in its check", () => {
+  const name = (text) => namingProgram(text, ENGINE_BINARIES["anthropic-agent"], { source: "installed", path: INSTALLED });
+  const routes = (o = {}) => Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) => [shape, stdioConnectFor(shape, { workDir: "/w", reportsDir: "/p", ...o })]));
+  const disk = (have) => connectOffers(have).find((o) => o.client.id === "claude-code" && o.route === "disk");
+  const words = (offer) => JSON.stringify(offer.steps);
+  const bare = disk({ stdioRoutes: routes() });
+  assert.match(words(bare), /"text":"claude mcp add /, "anti-vacuity: the row does not hand over a bare claude");
+  assert.match(words(bare), /`claude mcp list`/, "anti-vacuity: the row does not say how to check it");
+  const named = disk({ stdioRoutes: routes(), nameClaude: name });
+  assert.ok(words(named).includes(`"text":"${INSTALLED} mcp add `), `the command is still the bare word: ${words(named)}`);
+  assert.ok(words(named).includes(`\`${INSTALLED} mcp list\``), `the check is still the bare word: ${words(named)}`);
+  assert.doesNotMatch(words(named), /"text":"claude mcp add |`claude mcp list`/);
+  // Another app's route names no program of ours, and it is left as it was.
+  const other = (have) => connectOffers(have).filter((o) => o.route === "disk" && o.client.id !== "claude-code").map(words);
+  assert.deepEqual(other({ stdioRoutes: routes(), nameClaude: name }), other({ stdioRoutes: routes() }));
+  // UNDER WSL ONE HINT SERVES BOTH SIDES, so only the row run inside Linux moves.
+  const wsl = disk({ stdioRoutes: routes({ wsl: { distro: "Ubuntu" } }), wsl: true, nameClaude: name });
+  assert.ok(words(wsl).includes(`"text":"${INSTALLED} mcp add `), "the row run inside Linux kept the bare word");
+  assert.match(words(wsl), /`claude mcp list`/, "the hint that serves both sides was rewritten for one");
+  for (const file of ["driver/portal-service.mjs", "bin/connect.mjs"])
+    assert.match(readFileSync(new URL(`../../${file}`, import.meta.url), "utf8"), /nameClaude: claudeNamer\(/, `${file} does not hand its offers the rewrite`);
 });
 
 test("a real start, with Claude only in setup's engines folder, prints a connect line that names it", { timeout: 180000, skip: process.platform === "win32" ? "the planted copy is a POSIX script" : false }, async () => {

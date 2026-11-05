@@ -68,7 +68,7 @@
 // from memory would be a button that looks like it works and does not. `connect-clients-are-data`
 // REFUSES a launch URL that carries no date and no name.
 
-import { KEY_SLOT, STDIO_SERVER_NAME, remoteConnectFor } from "./stdio-connect.mjs";
+import { KEY_SLOT, STDIO_SERVER_NAME, remoteConnectFor, routeNaming } from "./stdio-connect.mjs";
 
 /** The two places Clearotron can be, relative to the reader's app. The page asks; the terminal flags. */
 export const ROUTES = Object.freeze(["disk", "public-http"]);
@@ -439,7 +439,7 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
   const author = client.routes?.[route];
   if (!author) return null;
-  const { stdioRoutes = {}, publicAddress = null, keyAddress = null, operator = null, door = null } = have;
+  const { stdioRoutes = {}, publicAddress = null, keyAddress = null, operator = null, door = null, nameClaude = null, wsl = false } = have;
 
   // EACH COPY RESOLVES TO ITS OWN SHAPE, never to another's. Handing a Codex user `claude mcp add` is a
   // command their machine does not have, delivered with confidence — so a shape this deployment cannot
@@ -449,7 +449,8 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   // so its steps resolve there and never at the host that refuses a key.
   const resolveAt = (address) => route === "disk"
     ? (shape) => {
-        const r = Object.hasOwn(stdioRoutes, shape ?? "") ? stdioRoutes[shape] : null;
+        const stated = Object.hasOwn(stdioRoutes, shape ?? "") ? stdioRoutes[shape] : null;
+        const r = stated && nameClaude ? routeNaming(stated, nameClaude) : stated;
         return r ? { kind: "block", text: r.text, stdio: r } : null;
       }
     : (shape) => {
@@ -464,7 +465,9 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   // WHAT THE DOOR ANSWERS, handed to every row rather than decided per row: one reading, so two apps
   // on one page cannot describe one deployment two ways — which is the defect this carries.
   const asked = author.steps({ operator, door: route === "public-http" ? door : null });
-  const steps = asked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s }));
+  // THE CHECK LINE RUNS WHERE THE COMMAND DID. Under WSL one hint serves both sides, so it keeps the bare word.
+  const hinted = (s) => (route === "disk" && nameClaude && !wsl && s.hint ? { ...s, hint: nameClaude(s.hint) } : s);
+  const steps = asked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s })).map(hinted);
   const resolved = steps.every((s, i) => !asked[i].copy || s.copy);
 
   // ── WHEN THE DOOR COULD NOT BE READ, BOTH WAYS ARE ACTUALLY SHOWN ────────────────────────────────

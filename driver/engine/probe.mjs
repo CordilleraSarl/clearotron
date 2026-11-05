@@ -187,6 +187,16 @@ export function namingProgram(text, eng, bin) {
   return String(text).replace(new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`, "g"), (_, before) => `${before}${program}`);
 }
 
+/**
+ * The rewrite the connect surfaces apply to a `claude` command: the copy setup installed by its path, and any
+ * other copy as the bare word. Setup installs Claude into its own engines folder, which is not on PATH.
+ */
+export function claudeNamer(env = process.env) {
+  const engine = Object.keys(ENGINE_BINARIES).find((k) => ENGINE_BINARIES[k].fallback === "claude");
+  const program = resolveEngineProgram(engine, { env });
+  return (text) => namingProgram(text, ENGINE_BINARIES[engine], { source: program?.source ?? null, path: program?.resolved ?? null });
+}
+
 // THE HEADLESS ROUTE, WHERE THE ENGINE HAS ONE. The interactive sign-in is the one thing a server with no
 // browser cannot do, and it was the only remedy this offered — including to a box that had configured the
 // route built for servers. The engine table already carries that route; this reads it rather than a copy.

@@ -47,6 +47,7 @@ import { execFileSync } from "node:child_process";
 import { createServer } from "node:net";
 import { CONNECT_CLIENTS, WHERE_FLAG, clientById, leadRouteFor, plainStep, whatItNeeds } from "../shared/connect-clients.mjs";
 import { stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";
+import { claudeNamer } from "../driver/engine/probe.mjs";   // names the copy setup installed, which is not on PATH
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { defaultDenylistPath, clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT, demoTokenSecretPath, keyPurposeLine, demoConnectCommand } from "../shared/client-door.mjs";
 import { readRunning } from "../shared/running-start.mjs";
@@ -212,6 +213,7 @@ function deploymentHas(env = process.env) {
     stdioRoutes: Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) =>
       [shape, stdioConnectFor(shape, { workDir: env.CLEAROTRON_WORK_DIR || null, reportsDir: env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget({ env }) })])),
     wsl: isWsl({ env }),
+    nameClaude: claudeNamer(env),
     // WHERE THE DOOR BINDS — not an address handed to any assistant. It is the loopback address the
     // unit listens on, and `enablePlan` needs it to write the unit. It used to be passed to the
     // resolver as `localAddress` and served to Cowork as somewhere to connect, which is the false
