@@ -311,7 +311,7 @@ export const KO_STAGES = {
       `The instructed scope: ${K.instructedScope}`,
       `The batch plan, with what each name is for: ${K.plan}`,
       narrowingOrderLine(job, profile, inScope),
-      `WHAT THE REGISTER HAS COUNTED, name by name. Nothing has been read yet: you decide what is read, and each name's own question is yours to ask.`,
+      `WHAT THE REGISTER HAS COUNTED, name by name. Nothing has been read yet: you decide what is read, and each name's own question is yours to ask. A count of zero needs no list.`,
       ...readingLines,
       `ASK with \`register_propose_supplemental\`: the name's \`axis\` and its band as \`output_path\`, and in \`proposals\` the question with \`nice_classes\` from that name's line and its purpose as \`rationale\`. To read a name's own list, ask \`exact\` on the name. A narrowing names the crowd it replaces as \`narrows\`. An answer you already hold is not asked again.`,
       `READ with \`read_register_list\`, by qid. The propose tool's answer shows only the first rows of a list; the list is the whole list, and the order it comes in means nothing.`,
