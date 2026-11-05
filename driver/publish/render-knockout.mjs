@@ -790,17 +790,12 @@ function officeLinkNote(registerRecords) {
 // through this same function and must still say which it was.
 //
 // Two different absences, two different sentences, and collapsing them would be the defect one layer up:
-// a run whose product includes counts has not been told it is a lesser tier.
-//
-// SUCH A RUN SAYS ONLY WHAT ITS FILES ESTABLISH. A live run that bought the counts publishes with a counts
-// file holding every name, or stops before it publishes, so the first arm is reached only when that file is
-// missing, unreadable or empty. The line used to say that none could be taken and that the per-name reason
-// was in the audit workbook, and the run established neither: the workbook's counts sheet is written from
-// that same file. A count that failed for a name is told in the counts table, from the file that recorded it.
+// a run whose product includes counts but whose count FAILED has not been told it is a lesser tier — it
+// has a gap, and the reason for it is on the page beside the mark.
 function tierAbsenceLine(registerCounts, probeRan) {
   if (registerCounts?.marks?.length) return null;
   return probeRan
-    ? 'Register hit-counts are part of this search. The saved records do not establish whether they were taken.'
+    ? 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.'
     : 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.';
 }
 

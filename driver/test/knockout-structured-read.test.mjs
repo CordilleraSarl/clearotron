@@ -243,11 +243,10 @@ test("the register line comes from the SIDECAR, and says a different thing in ea
     "a figure that failed says so where the number would have been, with the reader's line for it");
   assert.doesNotMatch(failed, /HTTP 502/, "the provider's own words reached the page");
 
-  // 3 — the product includes counts and the run holds no sidecar at all: what its files do not establish is
-  // said as such, with the product named, and no failure or reason is claimed for it.
+  // 3 — the product includes counts and the lane produced no sidecar at all.
   const none = RENDER([markRow()], { registerCounts: null, probeRan: true });
-  assert.match(none, /Register hit-counts are part of this search\. The saved records do not establish whether they were taken\./);
-  assert.doesNotMatch(none, /none could be taken|reason is recorded in the audit workbook/, "a failure no file records was told as one");
+  assert.match(none, /hit-counts are part of this search, and none could be taken on this run/);
+  assert.match(none, /a gap in this run, not a limit of the product/, "and says which of the two it is");
 
   // 4 — a replay of a product that never bought the probe.
   const tier = RENDER([markRow()], { registerCounts: null, probeRan: false });
