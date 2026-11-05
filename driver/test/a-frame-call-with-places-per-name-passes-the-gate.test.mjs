@@ -64,7 +64,7 @@ const VALUES = {
   batch: { productContext: "A software tool for invented test data.", inUseAs: "a software product or app", umbrellaBrandNote: null, executionOrder: ["VELTRIN"] },
   mark: { ref: null, name: "VELTRIN", classes: [9, 42], beltAndBraces: [35], classesPlain: "Software, and software services.",
     contextFraming: "The name of the tool itself.", useKind: "software app", places: ["web", "example.com"],
-    spellings: ["VELTRIN", "VELTRYN"], priorKnowledge: null, priority: 1 },
+    spellings: ["VELTRIN", "VELTRYN"], alternatives: [], priorKnowledge: null, priority: 1 },
 };
 
 function manualShapedCall() {

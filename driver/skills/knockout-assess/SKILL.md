@@ -223,8 +223,9 @@ never mentions the request is filed under the name and prints in the wrong place
 
 A note about the name opens on what the lawyer should do about the name:
 
-> "Pull Acme Mapping's full goods list at clearance. It is the record most likely to change the picture in
-> either direction."
+Use the missing-goods note only when no wording is held; open a shortened held record before concluding that wording is missing.
+
+> "Goods wording is not held for this filing, so its relevance to the requested goods remains unresolved."
 
 > "Search Classes 42 and 39 in their own right. Both carry live WAYPOINT filings, not spillover from
 > Class 9."
@@ -279,8 +280,8 @@ every id against that store and refuses one it does not hold — so the report c
 source as a fact rather than as a word you typed about your own sourcing.
 
 - **`registerReads`** — on the MARK. Rows of `{recordId, read, band?}` for a filing you weighed that did
-  **not** become a `findings[]` record. `read` is what you concluded about *that* filing: whether it bears
-  on the rating, and why. It prints on that filing's card. `band` is **optional** and is how you rate that
+  **not** become a `findings[]` record. `read` is what you concluded about *that* filing: how its goods meet
+  the goods the client asked about, whether it bears on the rating, and why. It prints on that filing's card. `band` is **optional** and is how you rate that
   filing on its own — in the framework's band words, the same vocabulary as the mark's rating. Send it
   whenever you formed a view on the filing itself: a registered right is often the one hard legal fact on
   the page, and with no band its card is the only one carrying no rating while softer uses around it carry

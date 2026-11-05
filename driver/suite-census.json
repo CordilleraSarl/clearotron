@@ -1089,6 +1089,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-reads-the-clients-own-request.test.mjs": {
+          "tests": 5,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -5987,7 +5993,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 121,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },
