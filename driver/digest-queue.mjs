@@ -11,7 +11,7 @@
 // the stage-freshness staleness contract, so the cascade multiplies.
 //
 // THE DESIGN (owner-approved): the queue is the ONLY path to a non-fresh re-digest. Mechanisms keep
-// their own cheap unit-level work (warm unit followups, driver code-fetches) but stop calling the
+// their own cheap unit-level work (unit followups, driver code-fetches) but stop calling the
 // digest themselves — they MINT durable queue items instead, and the digest reconciles queued items
 // at defined settlement points: ONCE before synthesis, plus at most one bounded late flush for
 // post-synthesis triggers. Receipts survive resume: an item's receiptKey is minted at most once for
@@ -119,9 +119,9 @@ export function markFlushed(queue, ids, flushedAt) {
 //     it. Today the correction fires late; queued, it would never fire at all. `markFlushed` receipts
 //     only the items captured BEFORE the pass, so the orphan would sit pending and silent.
 //  2. IT IS NOT THE COST THE FUNNEL BOUNDS. The funnel exists to stop N cold opus passes each
-//     invalidating the back half. Reconcile sends a WARM followup on the digest's own live session
-//     (`sessionKey: r.sessionKey`) — the same class of cheap unit-level work the header already
-//     exempts for escalation/envelope/screen-gate, not the cold pass it forbids.
+//     invalidating the back half. Reconcile sends a followup on the digest's own key
+//     (`sessionKey: r.sessionKey`), a fresh session doing scoped unit-level work: the same class the header
+//     already exempts for escalation/envelope/screen-gate, not the full pass it forbids.
 //  3. ITS DURABILITY IS SOLVED ELSEWHERE, NOT MISSING. A queued item survives a crash; so does this,
 //     by a different mechanism — the followup receipt rides the recall-reconciliation artifact
 //     (`carryRecallFollowup`), bounded per unended-set signature by RECALL_FOLLOWUP_MAX, and the
@@ -153,7 +153,7 @@ export const DIGEST_OWN_PASS_EXEMPTIONS = Object.freeze([
 
 // ── the consolidated settlement followup ───────────────────────────────────────────────────────────
 
-// The standard digest-resume preamble every warm re-digest opens with (verbatim from the legacy
+// The standard digest preamble every re-digest followup opens with (verbatim from the legacy
 // escalation/envelope/frame-reopen followups — shared so the OFF path stays byte-identical).
 export const DIGEST_RESUME_PREAMBLE =
   "This is a fresh session: your earlier register-digest work is not in your context, and the unit files are among the inputs listed below. Your prior digest is the findings file named below. Do NOT redo it from scratch.";

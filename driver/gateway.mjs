@@ -462,18 +462,18 @@ export function tokensPerSec(usage, wall) {
   return Math.round((out / w) * 100) / 100;
 }
 
-// #5b — stop a warm/followup resume after ONE attempt when it ran to the HARD WALL. A followup (escalation,
-// envelope close, frame-reopen "enumerate to exhaustion" sweep) resumes an already-loaded session; if it
-// SIGKILLed at the full timeout+60 wall (signals.hardWall, NOT a 0-token stall), the same work re-issued at a
-// 1.5× extension just burns another full wall — so break and let the caller record the coverage-limited
-// deferral. The signal is `followup` (or a `warm` content-retry): NOTE `warm` ALONE never fires here on a
-// timeout — warmEligible() excludes `timeout`, so `warm` is always false on a timeout chain. That is exactly
-// the dead-code bug this predicate fixes: before threading `followup`, a hard-wall followup burned TWO attempts
-// (~2.5× the wall) instead of ONE (~1×). A STALL (no hardWall) is NOT stopped here — it keeps the normal
-// one-extended-shot retry, since a transient stall can clear. PURE + exported for test (the live hard-wall path
-// needs a 60s wall-clock kill, untestable in the offline suite — this predicate IS the policy under test).
-export function followupHardWallStop({ fail, warm, followup, signals }) {
-  return fail === "timeout" && (Boolean(warm) || Boolean(followup)) && Boolean(signals?.hardWall);
+// #5b — stop a WARM attempt after ONE try when it ran to the HARD WALL. The warm patch is the one rung that resumes
+// a session: it is passed the session that just produced a content failure. If that resumed turn was SIGKILLed at
+// the full timeout+60 wall (signals.hardWall, NOT a 0-token stall), break and let the caller record the
+// coverage-limited deferral. A warm attempt can itself time out; warmEligible() only stops the attempt AFTER a
+// timeout from being warm. A FOLLOWUP IS NOT STOPPED HERE. It is a new stage() call, attempt 1, with no resumeRef,
+// so it is a fresh session with its own wall. This rule used to stop it too, on the premise that it resumed an
+// already-loaded session, and that premise was false; it now gets the one extended retry any fresh dispatch gets.
+// Measured 2026-11-05 over saved runs: no follow-up attempt and no warm attempt had timed out, so neither form of
+// the rule had decided a run. A STALL (no hardWall) is NOT stopped here: it keeps its one retry at the same budget,
+// since a transient stall can clear. PURE + exported for test: the live path needs a wall-clock kill.
+export function warmHardWallStop({ fail, warm, signals }) {
+  return fail === "timeout" && Boolean(warm) && Boolean(signals?.hardWall);
 }
 
 // D3 — Anthropic overload (HTTP 529 / overloaded_error). Through claude -p a 529 surfaces as a FAILED
@@ -885,9 +885,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     validate,
     maxRetries = config.maxRetries,
     runDir,
-    followup = false,   // #5b: this run is a warm-resume / followup (escalation, envelope close, frame-reopen
-                        // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
-                        // an already-over-budget resume; the caller records the coverage-limited deferral).
+    followup = false,   // the caller's word that this dispatch is a followup: a FRESH session (attempt 1, no
+                        // resumeRef), journalled on every row beside `warm`. At its hard wall it takes the same
+                        // one extended retry as any fresh dispatch (warmHardWallStop stops only a warm attempt).
     excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
     // THE CORRECTION THIS DISPATCH IS, when it is one: `{positions}`, the excluded positions its flags name. Its save may
     // add a finding for them, and its retries say so (`patchRows`); every other dispatch carries none.
@@ -1952,8 +1952,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     }
 
     // sessionKey = the key that actually SUCCEEDED (attempt 1 = base key; a retry = `${base}-rerunN`). Callers
-    // that re-run a stage as a follow-up must resume THIS key, not the base key — else they resume a failed
-    // attempt's empty/partial session and lose the warm cache (winning-key hardening).
+    // that re-run a stage as a follow-up pass THIS key, so the follow-up's records sit beside the attempt that
+    // won (winning-key hardening). No engine resumes by key: resumeRef is the only continuity a turn has.
     if (!fail) return { ok: true, json, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(json), sessionKey: key, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
     attemptFails.push(fail);
     lastFail = fail;
@@ -2177,13 +2177,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // Timeout-aware retry: a genuinely over-budget/hung stage will just re-time-out on an identical
     // attempt (the v14 delivery burned 3 × 600s). Give it exactly ONE longer shot, then stop.
     if (fail === "timeout") {
-      // A warm-resume / followup (frame-reopen sweep, escalation, envelope close) that ran to its HARD WALL
-      // won't fit a 1.5× extension — break after this one attempt and let the caller record the coverage-limited
-      // DEFERRAL (which the gate clamps CLEAR→CONDITIONAL). See followupHardWallStop: the live signal is
-      // `followup` (threaded from stageOnce), NOT `warm` — `warm` is always false on a timeout chain, which is
-      // why this was dead code before the thread (a hard-wall followup burned ~2.5× the wall instead of ~1×).
-      if (followupHardWallStop({ fail, warm, followup, signals: turn.signals })) {
-        note(`[${name}] warm/followup hit the hard wall — breaking (a 1.5× extension won't fit; recording the deferral)`);
+      // A WARM attempt, the one rung that resumes a session, that ran to its HARD WALL breaks after this attempt,
+      // and the caller records the coverage-limited DEFERRAL (which the gate clamps CLEAR→CONDITIONAL). A
+      // FOLLOWUP is a fresh session and is not stopped here: it takes the one extended retry below, as any fresh
+      // dispatch does. Until 2026-11-05 a followup stopped here too, on the false premise that it resumed a loaded
+      // session. See warmHardWallStop.
+      if (warmHardWallStop({ fail, warm, signals: turn.signals })) {
+        note(`[${name}] warm attempt hit the hard wall — breaking (recording the deferral)`);
         break;
       }
       if (timeoutRetriesUsed >= 1) {

@@ -3059,7 +3059,7 @@ function quarantineCoverageLedger(ctx, failReason, trigger) {
 
 // ── — THE SAVE-ONLY FOLLOWUP IS GONE, BECAUSE NOTHING ASKS THE MODEL TO SAVE ANYTHING ─────────
 //
-// `ensureCoverageLedgerSaved` dispatched a warm followup that DICTATED the machine ledger's JSON schema
+// `ensureCoverageLedgerSaved` dispatched a followup that DICTATED the machine ledger's JSON schema
 // by hand — "a JSON ARRAY, one object per prose Coverage-ledger table row, keys EXACTLY {axis, scope,
 // status, reason}…" — a fourth copy of a contract that lives in coverage-ledger.parseCoverageLedgerJson.
 // The artifact it asked for is now derived by the driver from the coverage form, so a missing JSON can
@@ -3089,7 +3089,7 @@ function noteCoverageLedgerAbsent(ctx, trigger) {
 //
 // Artifact: _driver/recall-reconciliation.json (the gate-visible discrepancy list; crowd memberships
 // counted on the delivered surface, enumerated only here). Event: `recall-reconciliation` on every
-// derivation — unended:0 is ASSERTED, never absent. Enforcement: unended ⇒ ONE warm followup on the
+// derivation — unended:0 is ASSERTED, never absent. Enforcement: unended ⇒ ONE followup on the
 // winning digest session dictating the three ending forms (at most RECALL_FOLLOWUP_MAX attempts per
 // unended-set signature, so a park/resume gets a fresh attempt without ever looping); what remains
 // unended after that ships NAMED from the pre-verdict floor, through the terminal guards' deliver-and-clamp (the
@@ -4291,7 +4291,7 @@ async function enforceRecallReconciliation(ctx, r, trigger) {
   const P = ctx.paths;
   let artifact = deriveRecallReconciliation(ctx, trigger);
   if (!artifact?.computable || !artifact.totals.unended) return;
-  // one warm followup per unended-set signature, bounded across resumes (RECALL_FOLLOWUP_MAX):
+  // one followup per unended-set signature, bounded across resumes (RECALL_FOLLOWUP_MAX):
   // the receipt rides the artifact file itself, so a crash between followup and re-derive re-arms
   // at most one extra attempt — bounded either way by the recovery ladder's identical-signature stop.
   // The receipt now SURVIVES the re-derive (carryRecallFollowup inside writeArtifact) — before that
@@ -5449,8 +5449,8 @@ async function stageOnce(name, ctx, opts = {}) {
     message,
     model,
     thinking,
-    // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
-    // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
+    // opts.sessionKey names the key a prior run won on (winning-key hardening), so a followup's records sit
+    // beside it; else the canonical base key. No engine resumes by key (A-1): a followup is fresh either way.
     sessionKey: opts.sessionKey ?? stageSessionKey(ctx, name, keyAxis),
     timeoutSec: derivedLimit.sec ?? def.timeoutSec,
     derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
@@ -5474,8 +5474,8 @@ async function stageOnce(name, ctx, opts = {}) {
     ...(patch == null && typeof def.refreshCtx === "function"
       ? { refreshMessage: () => def.message(messageCtxFor(name, def.refreshCtx(ctx))) + (opts.extra ? `\n\n${opts.extra}` : "") }
       : {}),
-    // #5b: a followup is a warm session resume — tell runStage so a hard-wall timeout breaks after ONE attempt
-    // (an already-over-budget resume can't fit the 1.5× extension; this restores ~1× the wall, was ~2.5×).
+    // The caller's word that this is a followup: a FRESH session (A-1), journalled on every attempt row. At its
+    // hard wall it takes the same one extended retry as any dispatch (gateway.mjs warmHardWallStop).
     followup: opts.followup != null,
     // copper-lattice re-route: a supplemental-lane register unit never sees register_enumerate — its
     // judgment additions ride register_propose_supplemental (contract-gated so frozen pre-flag resumes
@@ -5728,8 +5728,8 @@ async function stage(name, ctx, opts = {}) {
 // rather than armed — see driver.config.mjs for the reasoning. The retry ladder is now the whole, honest
 // failure story: below it a stage FAILS, loudly, and the run parks or reports.
 //
-// followups (warm resume) and explicitly model-pinned calls still delegate straight to stageOnce, because
-// they carry their own model (the cache is model-specific and a resume must not move it).
+// followups and explicitly model-pinned calls still delegate straight to stageOnce, on their own model. The
+// reason given for followups was a resumed session's model-specific cache, which a fresh session does not have.
 async function stageWithChain(name, ctx, opts = {}) {
   if (opts.followup || opts.model) return stageOnce(name, ctx, opts);
   const [entry] = chainEntries(name, ctx.axis);
@@ -6145,9 +6145,9 @@ export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {   // @int
  * The architecture's delivery rule: the directive is composed ONCE per run and rides every dispatch of
  * that family — fresh, corrective, re-dispatch — with the inclusion asserted at the call site.
  *
- * WHY A WARM DISPATCH NEEDS IT AT ALL. A dispatch with no `sessionKey` is a fresh turn: the driver
+ * WHY A FOLLOWUP DISPATCH NEEDS IT AT ALL. A dispatch with no `sessionKey` is a fresh turn: the driver
  * rebuilds the whole message from `STAGES.<name>.message`, and the directive is in there. A dispatch
- * WITH a `sessionKey` resumes a session and sends only its followup — so it inherits nothing the
+ * WITH a `sessionKey` sends its followup in place of that message — so it inherits nothing the
  * message builder produces. That is not a theoretical gap: it is how the delivered narrative came from
  * a pass carrying no directive at all while the fresh pass carried one.
  *
@@ -6890,7 +6890,7 @@ export function partitionDeliveryStale(staleStages) {   // @internal
 // entities actually reached findings.json (the file every client surface renders from). Deterministic:
 // proper-name candidates from the review ∩ the findings' marks/owner names = the named set; if the
 // file is byte-unchanged (or every named finding's object is) and no corrections marker landed, fire
-// ONE warm followup demanding the re-emit; a terminal miss NEVER withholds (never-withhold) — it logs,
+// ONE followup demanding the re-emit; a terminal miss NEVER withholds (never-withhold) — it logs,
 // flags the internal review bar, and closes the CLIENT export via _driver/corrections-state.json.
 export function snapshotFindingsForCorrections(P, runDir) {   // @internal
   let raw = null;
@@ -8433,7 +8433,7 @@ export function registerJurisdictions(job, profile) {   // @internal
 // (this is a delivery-quality pass, never a gate; a malformed findings.json is already handled upstream).
 // A6 — the intake-ask register. Parse the matter-frame's "### Intake asks" section into
 // machine rows, freeze them at _driver/intake-asks.json (temp+rename), and expose ctx.intakeAsks to
-// every downstream message builder. Section missing on a fresh run ⇒ ONE warm save-only followup
+// every downstream message builder. Section missing on a fresh run ⇒ ONE save-only followup
 // (the grid-ledger-followup posture), then proceed with [] + a logged note — never-kill, replay-safe
 // (archived runs simply have no sidecar and all consumers falsy-skip).
 export function parseIntakeAsks(matterContextMd) {   // @internal
@@ -10830,7 +10830,7 @@ async function pipelineInner(job, opts = {}) {
       const bind = { customer: String(b.customer), exclusions: Array.isArray(b.exclusions) ? b.exclusions.map(String) : [] };
       // WS-B: a bound applicant that IS the profile customer activates the profile's exclusion seed —
       // union it into the reply's exclusions so EVERY downstream consumer (fold, digest-message
-      // block, warm-redigest followup) sees one combined set, not just the matter-frame line.
+      // block, re-digest followup) sees one combined set, not just the matter-frame line.
       if (applicantMatchesProfile(ctx.profile, bind.customer) && ctx.profile?.selfExclusionOwners?.length) {
         bind.exclusions = [...new Set([...bind.exclusions, ...ctx.profile.selfExclusionOwners])];
         ctx.exclusionSeed = ctx.profile.selfExclusionOwners;
@@ -11363,7 +11363,7 @@ async function pipelineInner(job, opts = {}) {
     // The common-law member's result, BY NAME. It was read as gatherResults[0] in four places, which was
     // only ever correct because the member is built first and always present — drop it for a register-only
     // run and [0] silently becomes a register unit, and the grid-ledger pass below would then send a
-    // "you are RESUMING your own common-law session" followup into it rather than skip (its guard is
+    // grid-ledger save followup addressed to the common-law session into it rather than skip (its guard is
     // gridVariants × !skipped × no-ledger, and gridVariants comes from the manifest either way).
     const clIndex = gather.findIndex((g) => g.name === "common-law");
     const clMember = () => (clIndex >= 0 ? gatherResults[clIndex] : null);
@@ -12396,8 +12396,8 @@ async function pipelineInner(job, opts = {}) {
     }
 
     // WS2 (B3) — the plan⇄band IDENTITY JOIN (plan mode only; legacy runs have no plan and skip).
-    // Every guard-active plan entry must own a band block carrying its qid. A missing qid gets ONE warm
-    // targeted followup on the owning axis's winning session dictating exactly the unexecuted entries;
+    // Every guard-active plan entry must own a band block carrying its qid. A missing qid gets ONE
+    // targeted followup on the owning axis's winning key dictating exactly the unexecuted entries;
     // whatever is still missing is a StageFailure — a clean can never ship over a slice the PLAN dictated
     // and nothing ran (the F2/F3 seam). The receipt (_driver/plan-execution.json, incl. the code-derived
     // coverage skeleton) is what the digest ledger gate and the refutation plan-audit read.
@@ -12610,7 +12610,7 @@ async function pipelineInner(job, opts = {}) {
     // Machine-receipts contract gate (post-mortem §1b): a FRESH common-law run under a dictated key list
     // must save the grid stdout JSON (the validator already exact-joins it when present). A resumed run
     // that skipped the stage is exempt (archived/pre-machine-receipts artifacts are legacy by design).
-    // One warm followup on the winning session asks for just the save; still missing ⇒ the run fails —
+    // One followup on the winning session asks for just the save; still missing ⇒ the run fails —
     // a new run silently on the legacy prose path would be the inference disease growing back.
     // A1 split: this lane is single-member only BY CONSTRUCTION — each half validator is ledger-or-fail
     // (its spec sidecar always dictates the grid), and mergeCommonLawArtifacts just wrote the canonical
@@ -12633,7 +12633,7 @@ async function pipelineInner(job, opts = {}) {
     // ── V4-4: coverage closure — a gap the machine can close itself never ships as a recommendation ──
     // At the point the run consumes the common-law findings on its way to synthesis (fresh, resumed, or
     // skipped — V4-1 semantics: this operates on the FILE, not on session events). Coverage-limited cells
-    // not exempted by a mechanical-error gap/ledger entry get ONE warm corrective followup on the stage's
+    // not exempted by a mechanical-error gap/ledger entry get ONE corrective followup on the stage's
     // winning session, dictating exactly the missing variant×platform cells (batched at the profile-
     // derived ceiling, the convention). Whatever survives ships as a GENUINE attempted-and-unreachable front-matter
     // note with a priced offer — never as a "commission a re-run" recommendation (the S&I line-154
@@ -12767,8 +12767,8 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "closure-partition", cells: closable.length,
               per_half: Object.fromEntries(GRID_HALVES.map((h) => [h, cellJobs[h].length])),
               unassigned: bal.unassigned.length });
-          // CONCURRENCY (2026-07-13): the two half followups run CONCURRENTLY on their OWN warm half-
-          // sessions (the same runBatched fan-out that dispatched the half gather members) — the halves are
+          // CONCURRENCY (2026-07-13): the two half followups run CONCURRENTLY on their OWN half keys,
+          // each a fresh session (the same runBatched fan-out that dispatched the half gather members) — the halves are
           // independent, so serializing them only doubled the closure wall.
           await runBatched(GRID_HALVES, config.gatherConcurrency, async (h) => {
             const cells = cellJobs[h];
@@ -12809,8 +12809,8 @@ async function pipelineInner(job, opts = {}) {
     // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
     // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
     // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act
-    // on the gaps: a targeted SUPPLEMENTAL SWEEP of the missing variant/field/source, then ONE warm
-    // re-digest — generalizing the screen-gate's warm-re-digest channel from commission (a drop without a
+    // on the gaps: a targeted SUPPLEMENTAL SWEEP of the missing variant/field/source, then ONE re-digest
+    // followup — generalizing the screen-gate's re-digest channel from commission (a drop without a
     // fetch) to OMISSION (a layer never scoped). Bounded exactly like escalation/envelope/coverage-closure:
     // an idempotency receipt (set-equality on the firing directives), ONE re-digest per pass, a byte-diff
     // guard, NO in-process re-diff, one-shot (CLEAROTRON_FRAME_REOPEN_MAX). Same digest-lock as escalation:
@@ -13400,9 +13400,9 @@ async function pipelineInner(job, opts = {}) {
               else note(`frame-reopen: ${a} unchanged after the supplemental sweep`);
             } else {
               regMechFail = r.fail; note(`frame-reopen: ${a} supplemental sweep failed mechanically (${r.fail})`);
-              // doc-44: a core coverage sweep must NOT be one-shot-then-abandon. On a TIMEOUT (the warm resume hit
-              // the hard wall — a dead session a re-resume can't revive), do ONE fresh, SCOPED re-sweep of the SAME
-              // near-form threats through the normal fallback chain (retries + BACKUP PROVIDER — a warm followup is
+              // doc-44: a core coverage sweep must NOT be one-shot-then-abandon. On a TIMEOUT (the followup used its
+              // own attempts, its extended retry included, and still hit the wall), do ONE fresh, SCOPED re-sweep of the SAME
+              // near-form threats through the normal fallback chain (retries + BACKUP PROVIDER — a followup is
               // single-model and can't cross-provider). Scoped (not the whole axis) + bounded detail-fetch so it
               // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
               if (/timeout/.test(String(regMechFail))) {
@@ -13897,8 +13897,8 @@ async function pipelineInner(job, opts = {}) {
         const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
           { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) }).held;
         followup += escalationHeldNote(escHeld);
-        // No opts.model → stays on this axis's original tier (axisTier: sonnet/haiku) so the resume is a warm
-        // cache hit. sessionKey: unitKey[a] resumes the EXACT key the unit won on. force bypasses idempotency.
+        // No opts.model → stays on this axis's original tier (axisTier: sonnet/haiku); the followup is a fresh
+        // session, so no cache rides on it. sessionKey: unitKey[a] names the EXACT key the unit won on. force bypasses idempotency.
         const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "escalation" });
         if (!r.ok) return { axis: a, changed: false, ok: false };
         const afterUnit = readFileSync(P.registerUnit(a), "utf8");
@@ -13942,7 +13942,7 @@ async function pipelineInner(job, opts = {}) {
     // Floor obligations = `deferred` Coverage-ledger rows (planned but never run — incl. material
     // jurisdictions the digest reconciliation found unsearched). `coverage-limited` rows are documented
     // accepted limits (Lever 4) — a re-run cannot close them, so they are not floors here. Close mechanics
-    // mirror the skeptic-escalation block above: warm followup on the owning unit's winning session,
+    // mirror the skeptic-escalation block above: a followup on the owning unit's winning key,
     // byte-diff guard, ONE re-digest for materially-changed axes. Same audit-spine lock: never re-fire
     // past synthesis. The decision (envelope arithmetic + choice) is always logged; whatever remains
     // unclosed at delivery is stated in the report with its MECHANICAL cause (front-matter, code-built).
@@ -14127,9 +14127,9 @@ async function pipelineInner(job, opts = {}) {
     // RECOVER-THEN-DISCLOSE (completes the Fix-3 escalation): the gate is correct and must never be silenced,
     // but the flagged marks are FETCHABLE — a high-conflict run (KINETIC) where the digest took the
     // name-inferred shortcut on a few marks should SELF-HEAL, not die. So on the first violation we do ONE
-    // warm followup re-digest that forces the worker to record_fetch the flagged URIs and re-decide on their
-    // REAL goods (mirrors the coverage-ledger recoverCoverageLedger / candidate-self warm-followup pattern,
-    // resuming the WINNING digest session so the worker keeps its screening context). Whatever is STILL
+    // followup re-digest that forces the worker to record_fetch the flagged URIs and re-decide on their
+    // REAL goods (mirrors the coverage-ledger recoverCoverageLedger / candidate-self followup pattern, on the
+    // WINNING digest key; a fresh session, so the message names the findings it re-decides). Whatever is STILL
     // violating after that one recovery pass is disclosed as unexamined + clamps the verdict (owner
     // decision 2026-07-22 — the terminal branch below); the gate never silently passes a drop.
     {
@@ -14568,7 +14568,7 @@ async function pipelineInner(job, opts = {}) {
     // the same wrong premise — and composeFollowup's own doc block records that a followup dispatch is
     // NOT a resumed session but a fresh attempt 1, so it holds nothing of its own.
     //
-    // The true reason the warm followups do not carry the blocks is simply that they pass no `extra`:
+    // The true reason the followups do not carry the blocks is simply that they pass no `extra`:
     // they are targeted corrections to work that exists, and their message is the correction. That is a
     // live choice, not a mechanism that forbids it — the corrective re-synthesis below could be given
     // the blocks by passing `extra`, and if a corrective pass is ever found rewriting a coverage claim
@@ -14604,7 +14604,7 @@ async function pipelineInner(job, opts = {}) {
     // doc 50 — the dictation demands schema_version 4 (band-rated under the framework in force).
     // The demand fires ONLY when synthesis actually RAN this turn: a skip-resumed stage (a parked run
     // whose prior v3 findings.json still validates on the legacy path) keeps its declared version —
-    // forcing a mid-run contract switch across the deploy boundary would burn a warm followup fighting
+    // forcing a mid-run contract switch across the deploy boundary would burn a followup fighting
     // the run's own frozen artifact. Logged loudly instead; that run's gates judge it as v3.
     if (declaredSv !== null && declaredSv < 4 && synth.skipped) {
       note(`[findings] schema_version ${declaredSv} retained on a resumed run (pre-doc-50 artifact) — v${declaredSv} gates apply; no re-emit demanded`);
@@ -15192,7 +15192,7 @@ async function pipelineInner(job, opts = {}) {
     // ── P2-A pre-verdict floor: the reconciliation's hard discrepancy list ─────────────────────────
     // screened-live dominant-element candidates ∖ endings is read here as it always was, and it no longer THROWS:
     // the owner's ruling of 2026-10-19 that a run is never held replaces the Round-2 rule that this one class never
-    // ships. The run first recovers what it can in-run (the digest seam's warm followups; placement assessing late
+    // ships. The run first recovers what it can in-run (the digest seam's followups; placement assessing late
     // evidence before the writer); whatever is still unended ships NAMED, through the terminal guards' deliver-and-clamp
     // (`clampOnTheRecallGate`, beside the floor duty's clamp below), never as a run that delivers nothing.
 
@@ -15936,7 +15936,7 @@ async function pipelineInner(job, opts = {}) {
     if (verdict === "BLOCKING") {
       // Repair-first A5 (2026-07-05): the reviewer verdict is documented noisy (the U1 comment above —
       // "flips on byte-identical input"), so before the terminal the gate refuses a DEGENERATE artifact:
-      // a carried BLOCKING whose own file no longer says BLOCKING (the copper-spire shape — a failed warm
+      // a carried BLOCKING whose own file no longer says BLOCKING (the copper-spire shape — a failed
       // re-check silently kept the stale entry verdict while the review on disk said CLEAR), or a
       // BLOCKING citing ZERO defects (nothing exists for the corrective ladder to fix). ONE forced-fresh
       // re-ask demands the verdict + file-anchored defects. A REASONED blocking is never re-rolled —
@@ -17230,7 +17230,7 @@ async function pipelineInner(job, opts = {}) {
         if (shellFixable.length && rov) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
-        // narrative that broke the rules is the run shipping the defect with a note attached. ONE warm
+        // narrative that broke the rules is the run shipping the defect with a note attached. ONE followup
         // pass, named violations; a second overrun ships and the lint row is the record.
         //
         // A FAULT IN A LINE COMPOSED FROM THE RECORD (a finding's own sentence, a short entry, a grouped line) is the
