@@ -42,7 +42,7 @@ const correctionCallDir = (runDir, chunkNo) => driverDir(runDir, join("knockout-
 const nameKey = (s) => String(s ?? "").trim().toLowerCase();
 const readJson = (path) => { try { return JSON.parse(readFileSync(path, "utf8")); } catch { return null; } };
 /** A finding's identity across a renumbering: the gate re-ranks on the band, so an ordinal does not survive a move. */
-const sameFinding = (a, b) => nameKey(a?.name) === nameKey(b?.name) && nameKey(a?.owner) === nameKey(b?.owner);
+export const sameFinding = (a, b) => nameKey(a?.name) === nameKey(b?.name) && nameKey(a?.owner) === nameKey(b?.owner);
 const withoutOrdinal = (f) => { const { ordinal: _ordinal, ...rest } = f ?? {}; return JSON.stringify(rest); };
 
 /**
@@ -70,7 +70,7 @@ export function keepChunkBases(runDir, chunkNos) {
   }
 }
 
-/** Put the chunks back as they were rated, and take the round's answers away with them. */
+/** Put the chunks back as they were rated. The round's work says it stood down, so a resumed run does not go through it again. */
 export function restoreChunkBases(runDir, chunkNos) {
   for (const c of chunkNos) {
     if (existsSync(chunkBasePath(runDir, c))) copyFileSync(chunkBasePath(runDir, c), knockoutAssessChunkFile(runDir, c));

@@ -362,9 +362,10 @@ export function knockoutCoverage(run) {
  * product, including the word "verdict".
  *
  * `knockout-assess` is chunked (`knockout-assess#N`), so a caller may name the bare stage or one chunk. The
- * reviewing pass that follows it is a stage of its own, and its rewrites reach the record a reader receives.
+ * reviewing pass that follows it is a stage of its own, and its rewrites reach the record a reader receives. A material
+ * defect it names goes back through `knockout-correct#N`, and `knockout-review#1` reads the corrected record.
  */
-export const KNOCKOUT_STAGES = ["knockout-frame", "knockout-sweep", "knockout-register", "knockout-register-read", "knockout-assess", "knockout-review"];
+export const KNOCKOUT_STAGES = ["knockout-frame", "knockout-sweep", "knockout-register", "knockout-register-read", "knockout-assess", "knockout-review", "knockout-correct"];
 
 export function knockoutStageFor(target) {
   const t = String(target ?? "").trim();

@@ -1048,14 +1048,14 @@
           "todos": 0
         },
         "a-knockout-conflict-carries-its-framework-inputs.test.mjs": {
-          "tests": 6,
-          "asserts": 39,
+          "tests": 7,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
           "tests": 13,
-          "asserts": 64,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -1108,8 +1108,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
-          "tests": 42,
-          "asserts": 192,
+          "tests": 43,
+          "asserts": 198,
           "skips": 0,
           "todos": 0
         },
@@ -4331,7 +4331,7 @@
         },
         "first-time-is-read-from-the-whole-run-record.test.mjs": {
           "tests": 10,
-          "asserts": 63,
+          "asserts": 65,
           "skips": 0,
           "todos": 0
         },

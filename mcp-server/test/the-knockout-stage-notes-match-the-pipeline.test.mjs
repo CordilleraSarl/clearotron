@@ -20,7 +20,7 @@ test("every stage the knockout pipeline dispatches is in the connector's list, t
   // The stages a run's event log records, each through `koStage`. The sweep and the register are steps the
   // pipeline runs in code, and the list carries them for the artifacts they write.
   const dispatched = new Set([...PIPELINE.matchAll(/koStage\(\s*"(knockout-[a-z-]+)"/g)].map((m) => m[1]));
-  assert.deepEqual([...dispatched].sort(), ["knockout-assess", "knockout-frame", "knockout-register-read", "knockout-review"], "guard: the source read the stages it dispatches");
+  assert.deepEqual([...dispatched].sort(), ["knockout-assess", "knockout-correct", "knockout-frame", "knockout-register-read", "knockout-review"], "guard: the source read the stages it dispatches");
   for (const s of dispatched) assert.ok(KNOCKOUT_STAGES.includes(s), `the pipeline dispatches ${s}, and the connector does not list it`);
 });
 

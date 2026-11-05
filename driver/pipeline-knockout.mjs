@@ -203,6 +203,7 @@ export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for
 async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, composeRecord }) {
   // A ROUND ALREADY BEGUN GOES ON FROM WHERE IT STOOD: a resumed run must not check a half-corrected record as a first look.
   const begun = readCorrectionWork(run.runDir);
+  if (begun?.stoodDown) return merged;
   if (begun) return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work: begun, firstReview: readJsonOrNull(knockoutReviewFile(run.runDir)), merged });
   const d = reviewDispatch(merged, plan);
   const { about } = d;
@@ -278,6 +279,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   // Back to the record as it was rated, and through the same gate. The chunks are the record a resume composes from.
   const standDown = (outcome, detail) => {
     restoreChunkBases(run.runDir, touched);
+    atomicWrite(correctionWorkPath(run.runDir), JSON.stringify({ ...work, stoodDown: outcome }, null, 2) + "\n");
     let rated = merged;
     try { rated = composeRecord(); } catch (e) { note(`the rated record could not be composed again (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); }
     log(outcome, { applied: 0, delivered: "the rated record, uncorrected", ...detail });

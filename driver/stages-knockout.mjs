@@ -14,7 +14,7 @@ import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
 import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
-import { chunkScope, knockoutCorrectionFile, validateKnockoutCorrectionFile } from "./knockout-correction-record.mjs";
+import { chunkScope, knockoutCorrectionFile, sameFinding, validateKnockoutCorrectionFile } from "./knockout-correction-record.mjs";
 import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
@@ -562,7 +562,7 @@ export const KO_STAGES = {
     message: ({ K, job = {}, chunkNo, work = null, chunkMarks = [], frameworkPath = null, frameworkMethod = null }) => {
       const asRated = (() => { try { return JSON.parse(readFileSync(K.assessChunk(chunkNo), "utf8")); } catch { return null; } })();
       const scope = chunkScope(work, chunkNo, asRated);
-      const ordinalOf = (d) => (asRated?.marks ?? []).find((m) => m?.name === d.mark)?.findings?.find((f) => f?.name === d.names?.name && f?.owner === d.names?.owner)?.ordinal;
+      const ordinalOf = (d) => (asRated?.marks ?? []).find((m) => m?.name === d.mark)?.findings?.find((f) => sameFinding(f, d.names))?.ordinal;
       const named = new Set(scope.defects.map((d) => d.mark));
       return lines(
         reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),

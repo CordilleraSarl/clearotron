@@ -235,6 +235,16 @@ export function registerRecordIdsFor(runDir, markName) {
     .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
 }
 
+/**
+ * Every register recordId this run holds, under any name. A rating may weigh a filing held under a sibling: the step was handed
+ * it, and whether it bears on this name is its judgment. An id held nowhere is still refused. Empty set when the lane did not run.
+ */
+export function registerRecordIdsHeld(runDir) {
+  const doc = readJson(driverDir(runDir, "register-records.json"));
+  return new Set((Array.isArray(doc?.marks) ? doc.marks : []).flatMap((e) => [...(Array.isArray(e?.records) ? e.records : []), ...(Array.isArray(e?.setAsideRecords) ? e.setAsideRecords : [])])
+    .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
+}
+
 export const KNOCKOUT_RATING_QUALIFIERS = ["low"];
 export function normalizeKnockoutQualifier(v) {
   const word = String(v ?? "").trim().replace(/^\(+|\)+$/g, "").trim().toLowerCase();
@@ -601,14 +611,14 @@ export const validators = {
       if (m.registerReads !== undefined && m.registerReads !== null) {
         if (!Array.isArray(m.registerReads))
           return { ok: false, reason: `mark "${m.name}": registerReads must be an ARRAY of { recordId, read, band? } rows, or omitted entirely` };
-        const held = registerRecordIdsFor(runDir, m.name);
+        const held = registerRecordIdsHeld(runDir);
         for (const row of m.registerReads) {
           const id = String(row?.recordId ?? "").trim();
           const read = String(row?.read ?? "").trim();
           if (!id) return { ok: false, reason: `mark "${m.name}": a registerReads row has no recordId — cite the record's own id, verbatim from the filings you were given` };
           if (!read) return { ok: false, reason: `mark "${m.name}": registerReads row "${id}" has an empty read. Omit the row rather than sending an empty one: a filing with no read keeps the card's neutral line, which is true` };
           if (!held.has(id))
-            return { ok: false, reason: `mark "${m.name}": registerReads cites "${id}", which is not a record this run holds for that mark. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it` };
+            return { ok: false, reason: `mark "${m.name}": registerReads cites "${id}", which is not a record this run holds. The id must be copied from the filings you were handed — the driver joins it against the store and never takes your word for it` };
           // The band is OPTIONAL and, when present, is the same closed vocabulary the mark's own rating
           // uses — the card prints it as this filing's rating, so a word outside the frozen ladder would
           // put a chip on the page in a dialect the framework does not define. Absence stays free: a read
@@ -647,11 +657,11 @@ export const validators = {
         if (f?.weighedFilings === undefined || f?.weighedFilings === null) continue;
         if (!Array.isArray(f.weighedFilings))
           return { ok: false, reason: `mark "${m.name}": findings[].weighedFilings must be an ARRAY of register record ids, or omitted` };
-        const held = registerRecordIdsFor(runDir, m.name);
+        const held = registerRecordIdsHeld(runDir);
         for (const raw of f.weighedFilings) {
           const id = String(raw ?? "").trim();
           if (!id || !held.has(id))
-            return { ok: false, reason: `mark "${m.name}": finding "${f?.name}" lists weighedFilings "${id}", which is not a record this run holds for that mark. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence` };
+            return { ok: false, reason: `mark "${m.name}": finding "${f?.name}" lists weighedFilings "${id}", which is not a record this run holds. The source chip is derived from this list, so an id the driver cannot join would put a Register label on a finding with no register evidence` };
         }
       }
       if (m.degraded && !(Array.isArray(m.purpleNotes) && m.purpleNotes.some((n) => /manual verification/i.test(n))))

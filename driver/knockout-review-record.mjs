@@ -41,7 +41,7 @@
 //
 // A SECOND PASS READS THE CORRECTED RECORD. Dispatched fresh after a correction, it has its own artifact and
 // its own accepted call, bound by the ordinal in its label, so nothing the first pass sent carries into it.
-import { writeFileSync, readFileSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
@@ -51,8 +51,7 @@ import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned 
 // THE HINT'S fold, and it is imported rather than rebuilt — see nearestAddress. It is a comparison key
 // for saying WHICH line was probably meant; it never decides whether an address resolves.
 import { queryKey } from "./connotation-search.mjs";
-import { kebab } from "./search-policy.mjs";
-import { registerRecordIdsFor, urlInPayload } from "./verify-knockout.mjs";
+import { registerRecordIdsHeld, urlInPayload } from "./verify-knockout.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -445,11 +444,14 @@ function materialFault(m, merged, runDir) {
   const mark = (merged?.marks ?? []).find((r) => String(r?.name ?? "") === m.mark);
   if (!mark) return `the material row names "${m.mark}", which is not a name on this record. Copy it verbatim.`;
   if (m.finding !== undefined && !(mark.findings ?? []).some((f) => f?.ordinal === m.finding)) return `the material row on "${m.mark}" names finding ${m.finding}, which it does not hold.`;
-  const records = registerRecordIdsFor(runDir, m.mark);
-  let payload = "";
-  try { payload = readFileSync(join(runDir, "research", `${kebab(m.mark)}.md`), "utf8"); } catch { payload = ""; }
-  const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !urlInPayload(r, payload));
-  return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which this run does not hold for that name. Copy a recordId or a URL from what it holds.` : null;
+  // WHAT THE RUN HOLDS, not what it holds under this name: an owner search's page, or a filing held under a sibling, is evidence
+  // a check can rest on. An address held nowhere is still refused.
+  const records = registerRecordIdsHeld(runDir);
+  const researchDir = join(runDir, "research");
+  let held = "";
+  try { held = readdirSync(researchDir).filter((f) => f.endsWith(".md")).map((f) => readFileSync(join(researchDir, f), "utf8")).join("\n"); } catch { held = ""; }
+  const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !urlInPayload(r, held));
+  return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which this run does not hold. Copy a recordId or a URL from what it holds.` : null;
 }
 
 /**

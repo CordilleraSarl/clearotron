@@ -241,3 +241,13 @@ test("arm 6: the chip, the data row and the workbook cell show the inputs beside
   assert.equal(await bandCell(METHOD), "Serious · Claim Grade R · Harbour");
   assert.equal(await bandCell(null), "Serious");
 });
+
+test("a read may weigh a filing the run holds under a sibling name, and an id held nowhere is refused", () => {
+  const d = run({ method: null });
+  writeFileSync(driverDir(d, "register-records.json"), JSON.stringify({ marks: [{ name: "TESTMARK", records: [] }, { name: "SIBLING", records: [{ recordId: RECORD_ID, mark: "LUMENREED", owner: "Lumenreed GmbH" }] }] }));
+  const gate = (reads, weighed) => validators.knockoutAssessChunk(join(d, "knockout-assess-0.json"), chunk(weighed ? [{ ...FINDING, band: "Slight", weighedFilings: weighed }] : [], reads));
+  assert.deepEqual(gate([{ recordId: RECORD_ID, read }]), { ok: true }, "the read of a sibling's filing stands");
+  assert.deepEqual(gate(undefined, [RECORD_ID]), { ok: true }, "and so does a finding that weighed one");
+  assert.match(gate([{ recordId: "R-NOWHERE", read }]).reason, /registerReads cites "R-NOWHERE", which is not a record this run holds\./);
+  assert.match(gate(undefined, ["R-NOWHERE"]).reason, /lists weighedFilings "R-NOWHERE", which is not a record this run holds\./);
+});

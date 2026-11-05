@@ -109,8 +109,8 @@ export const COUNTED_EVENTS = {
   // A workbook that failed to build is recorded only here.
   "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
-  "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "applied" && Number(e.applied) > 0 },
-    { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
+  "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "corrected" || (e.outcome === "applied" && Number(e.applied) > 0) },
+    { kind: FAILED, when: (e) => !["applied", "corrected", "nothing-flagged"].includes(e.outcome) }],
   "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
   // a finding still saying its goods are cut or unread after the delivery repair was given their complete statements

@@ -123,6 +123,7 @@ test("a correction that fails leaves the rated record standing, and the run deli
   assert.equal(r.review.outcome, "correction-failed");
   assert.equal(r.of(r.findings, NAME).rating, r.of(clean.findings, NAME).rating, "the rated band stands");
   assert.equal(existsSync(knockoutReviewFile(r.dir, 1)), false, "with nothing corrected there is nothing to read again");
+  assert.equal(r.json(driverDir(r.dir, "knockout-correction-work.json")).stoodDown, "correction-failed", "a resumed run does not go through the round again");
 });
 
 test("with no material defect nothing more is dispatched", async () => {
@@ -217,10 +218,12 @@ test("a material row is held to its shape, and to what this run holds", () => {
   writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify(rated()));
   writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [{ recordId: "/mark/em/carried" }], setAsideRecords: [{ recordId: "/mark/em/aside" }] }] }));
   writeFileSync(join(dir, "research", "quillbrae.md"), "A held page: https://example.test/held");
+  writeFileSync(join(dir, "research", "owner-invented-owner.md"), "An owner search's page: https://example.test/owner");
   const check = (m) => validateKnockoutReviewFile(knockoutReviewFile(dir), JSON.stringify({ material: [m] }));
   assert.match(check({ kind: "band", mark: "STRANGER", problem: "p", rests_on: ["x"] }).reason, /not a name on this record/);
   assert.match(check({ kind: "band", mark: NAME, finding: 9, problem: "p", rests_on: ["/mark/em/carried"] }).reason, /does not hold/);
-  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["/mark/em/invented"] }).reason, /does not hold for that name/);
+  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["/mark/em/invented"] }).reason, /does not hold/);
+  assert.equal(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/owner"] }).ok, true, "an owner search's page is held evidence");
   assert.equal(check({ kind: "exclusion", mark: NAME, problem: "p", rests_on: ["/mark/em/aside"] }).ok, true, "a filing set aside can be raised");
   assert.equal(check({ kind: "missing", mark: NAME, problem: "p", rests_on: ["https://example.test/held"] }).ok, true, "a URL in the name's payload can be raised");
 });
