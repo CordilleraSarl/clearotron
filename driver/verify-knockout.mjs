@@ -677,11 +677,10 @@ export const validators = {
       // beside the filings it is guessing about.
       //
       // THE DRIVER'S READ, NOT THE SEAT'S. Whether the register ran is a fact about the run; a seat that
-      // could assert it could waive its own requirement by claiming a lane it cannot see. `dirname(file)`
-      // is the run dir — `assessChunk` writes `knockout-assess-<n>.json` into it (stages-knockout.mjs).
+      // could assert it could waive its own requirement by claiming a lane it cannot see.
       // SKIPPED, NOT EMPTY. An empty carried list, a verified zero, a failed question and a listing that could not run are all
       // something other than a skip. Only a run that recorded the skip owes an estimate.
-      const registerRan = registerLaneState(dirname(file)).state !== "skipped";
+      const registerRan = registerLaneState(runDir).state !== "skipped";
       if (!registerRan && ladder.length && idx < ladder.length - 1 && !(typeof m.registerEstimate === "string" && m.registerEstimate.trim()))
         return { ok: false, reason: `mark "${m.name}": registerEstimate is required above the lowest band on a run that skipped the register (RF-15)` };
       // ── THE PER-MARK OPENING ASSESSMENT IS OWED ON A MULTI-MARK BATCH ───────

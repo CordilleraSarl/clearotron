@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { validators } from "../verify-knockout.mjs";
 
 // ── RF-15 v3: the register estimate is owed where the register did NOT run ─────
@@ -48,6 +48,9 @@ test("RF-15 v3 — the register estimate is required only where the run recorded
   const owed = validators.knockoutAssessChunk(mkRun(false), chunk({}));
   assert.equal(owed.ok, false);
   assert.match(owed.reason, /registerEstimate is required above the lowest band on a run that skipped the register/);
+  // A chunk an older run wrote under `_driver/` belongs to the same run, and the skip is read from the run, not from the chunk's folder.
+  const older = join(dirname(mkRun(false)), "_driver", "knockout-assess-0.json");
+  assert.match(validators.knockoutAssessChunk(older, chunk({})).reason, /registerEstimate is required above the lowest band/);
 
   // …and the three that must NOT refuse.
   assert.equal(validators.knockoutAssessChunk(mkRun(false), chunk({ registerEstimate: ESTIMATE })).ok, true,
