@@ -151,6 +151,8 @@ import { resolveEffectiveScope } from "./effective-scope.mjs";
 import { quoteForJob } from "./run-quote.mjs";
 import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor, registerLabelFor, caseLawReadyFor } from "./flag-snapshot.mjs";
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
+import { orderTimeRefusal } from "./run-requirements.mjs";   // the runner's own test for "can this install run a search"
+import { runTables } from "./order-tables.mjs";               // …asked of the runner's own tables, so the two cannot disagree
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
@@ -1238,6 +1240,10 @@ export function makePortalService({
   // bootstrap below is the only place that reads the environment for it, and `bin/start.mjs` is the
   // only thing that sets it.
   demo = false,
+  // — CAN THIS INSTALL RUN A SEARCH? The runner's own question (`orderTimeRefusal`, asked of order-tables.mjs),
+  // injected for the reason `demo` is: the bootstrap below is the only place that reads the environment for it,
+  // and a fixture can drive both answers. The default refuses nothing, which is every fixture that does not ask.
+  orderRefusal = async () => null,
   audit = () => {},
   // The audit log's PATH, for the one surface that reads it back rather than writing to it
   // (/portal/admin/observed). Separate from `audit` above because that is a sink and this is a source,
@@ -1934,12 +1940,28 @@ export function makePortalService({
         return { status: 429, json: { ok: false, errors: [allowanceExhaustedLine(limit, BRAND.name)] } };
       };
 
+      // ── AN INSTALL THAT CANNOT SEARCH REFUSES HERE, WHERE THE PERSON IS ─────────────────────────
+      //
+      // The runner asks this at intake and refuses the order there (runner.mjs, `orderTimeRefusal`). The portal
+      // asked nothing: it said "queued", the runner's refusal reached only its terminal and a sidecar in the
+      // queue, and the order then vanished from every page, which is the outcome the queue scan's own rule
+      // above says belongs at submission. So the review and the start both ask the runner's question, of the
+      // runner's tables, and nothing is queued. The sentence is the client one the runner already writes: it
+      // names no setting, which a browser must never be shown. A demo walks its own flow and is not asked.
+      const configurationRefusal = async () => {
+        if (demo) return null;
+        const refusal = await orderRefusal();
+        return refusal ? { status: 409, json: { ok: false, errors: [refusal.client] } } : null;
+      };
+
       // /portal/api/run/plan — the confirmation gate (no spend)
       if (parts[1] === "api" && parts[2] === "run" && parts[3] === "plan" && method === "POST") {
         const tenant = body.tenant ?? query.tenant ?? null;
         const account = assertPrincipal(principal, { account: body.account ?? query.account ?? null, tenant, run: true });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         const job = jobFor({ principal, account, tenant, body });
+        const notConfigured = await configurationRefusal();
+        if (notConfigured) return notConfigured;
         const gates = planGates(job);
         if (gates.fail) return gates.fail;
         const overQuota = await quotaRefusal(account, job.tenant ?? null);
@@ -1991,6 +2013,8 @@ export function makePortalService({
         const account = assertPrincipal(principal, { account: body.account ?? null, tenant: body.tenant ?? null, run: true });
         if (!account) return { status: 400, json: { error: "name an account" } };
         const job = jobFor({ principal, account, tenant: body.tenant ?? null, body });
+        const notConfigured = await configurationRefusal();   // asked again: the install may have changed since the review
+        if (notConfigured) return notConfigured;
         const gates = planGates(job);   // re-gated: the token is necessary, never sufficient
         if (gates.fail) return gates.fail;
         // re-checked for the same reason the gates are: a token minted while the account still had
@@ -5292,7 +5316,9 @@ const PORT = PORT_CHOICE.port;
     // only thing that sets it, and it sets it explicitly rather than passing the operator's inherited
     // environment through, so a stray `.env` can neither put a live install into demo mode nor take a
     // demo out of one. Anything but the literal "1" is not a demo.
-    demo: isDemo(process.env) });   // — one name, shared with the MCP door
+    demo: isDemo(process.env),   // — one name, shared with the MCP door
+    // The runner's own order-time test, asked of the runner's own tables: the portal refuses what the runner would.
+    orderRefusal: async () => orderTimeRefusal(process.env, await runTables()) });
   const { RateLimiter } = await import("../mcp-server/lib/ratelimit.mjs");
   const limiter = new RateLimiter({ perMinute: Number(process.env.PORTAL_RATE_PER_MIN || 120) });
   const { createServer } = await import("node:http");

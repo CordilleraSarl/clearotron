@@ -29,6 +29,7 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES, withFoldedGoods } from "./queue-markers.mjs";
 import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal, START_ENV_FILE_FLAG, startEnvFileOf } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
+import { runTables } from "./order-tables.mjs";   // the tables the portal's order door reads too, so the two cannot disagree
 import { unitEnvPath, envFileRead } from "../shared/env-local.mjs";   // the file the units read, named by its one author
 import { fileURLToPath } from "node:url";
 import { config, preflightDeploymentUrls } from "./driver.config.mjs";
@@ -790,19 +791,9 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // been notified" on a box with no outbox. `failAtIntake` writes the honest refusal and the run never
 // starts, so nothing is spent and nothing is promised.
 
-let __runTables = null;
-export async function runTables() {   // exported for the requirement-check wiring test
-  // AT CALL TIME, never a static import. `driver/run-requirements.mjs`'s header states the reason and it
-  // is load-bearing: the register SELECTION table lives in `bin/onboard.mjs`, a CLI entry point, and a
-  // static import from `driver/` would point the driver at `bin/` — the cycle that makes `clearotron
-  // doctor` exit 13 after printing most of a report.
-  if (!__runTables) {
-    const { PROVIDERS } = await import("../bin/onboard.mjs");
-    const { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } = await import("./driver.config.mjs");
-    __runTables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
-  }
-  return __runTables;
-}
+// The tables the intake wall checks an order against. They live in order-tables.mjs, which the portal's order door
+// reads too, so the two ask one question of the same tables. Re-exported for the requirement-check wiring test.
+export { runTables };
 
 async function claimAndPrep(jsonFile, qdir, agentId) {
   const base = jsonFile.replace(/\.json$/, "");

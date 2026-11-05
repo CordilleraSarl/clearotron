@@ -709,7 +709,7 @@ const unitTypeOf = (u) => {
 // it has worked", which is the failure its own comment records being found by driving it twice.
 //
 // AND THEY MUST BE DISARMED, not merely unpinned. The worker drains continuously; leaving the timer
-// armed puts a second claimant on the queue. The claim itself is atomic — `runner.mjs:714` renames
+// armed puts a second claimant on the queue. The claim itself is atomic — `claimAndPrep` in runner.mjs renames
 // `<id>.json` to the lock path and only one racer wins — so this is not double-execution. What it does
 // cost is the admission cap: counts are serial per queue while queues drain concurrently, so two
 // claimers can overshoot a per-account cap by a bounded one per queue. A bounded overshoot is not a
