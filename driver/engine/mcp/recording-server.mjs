@@ -1311,7 +1311,7 @@ serve({
               },
               classesSearched: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
-              classGroups: { type: "array", minItems: 2, description: "OPTIONAL: where the evidence supports different conclusions for different groups of the classes searched. Every class searched belongs to one group, and rating is the highest group's band.", items: { type: "object", required: ["band", "classes"], properties: {
+              classGroups: { type: "array", minItems: 2, description: "OPTIONAL: when separating the requested goods changes the advice under the frozen framework. Every class searched belongs to one group, and rating is the highest group's band.", items: { type: "object", required: ["band", "classes"], properties: {
                 band: { type: "string", description: "The band for this group, in the framework's words." },
                 ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
                 classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },

@@ -50,15 +50,17 @@ a band that needs sharpening is the band above it, stated as that word.
 
 1. **Class-specific ratings are mandatory** at the framework's material bands: "Medium (Classes 9,
    25, 28, 41)", never a bare band — `classesDriving` carries the class list.
-   Where applying the frozen framework to the requested goods and held evidence gives different conclusions
-   for different groups of the classes searched, record `classGroups`: one row per distinct band and
-   qualifier, with `band`, `ratingQualifier` where it applies, and `classes`. Every class searched belongs to
-   exactly one group. Combine classes with the same band and qualifier. `rating` and `ratingQualifier` match
-   the highest group under the framework's ladder and the existing qualifier rule; `classesDriving` contains
-   that group's classes. `basis` and the opening read explain what divides the groups, and a finding or filing
-   read that bears on only some classes says which. Keep evidence gaps explicit. Where one conclusion holds
-   across the classes searched, leave `classGroups` out. Divide on the requested goods and evidence, never to
-   soften a rating.
+   Use `classGroups` when separating the requested goods changes the advice under the frozen framework.
+   Different band words or qualifiers alone do not require a split. Where a split is needed, record one row
+   per distinct band and qualifier, with `band`, `ratingQualifier` where it applies, and `classes`. Every
+   class searched belongs to exactly one group. Combine classes with the same band and qualifier. `rating` and
+   `ratingQualifier` match the highest group under the framework's ladder and the existing qualifier rule;
+   `classesDriving` contains that group's classes. `basis` and the opening read explain what divides the
+   groups, and a finding or filing read that bears on only some classes says which. Keep evidence gaps
+   explicit. Where one conclusion answers the request across the classes searched, leave `classGroups` out.
+   Below the framework's material bands, keep one overall conclusion unless the distinction changes the
+   advice; explain useful goods distinctions in the reasoning. Divide on the requested goods and evidence,
+   never to soften a rating.
 2. **Crowded field = diluted risk, not amplified.** Many small, non-enforcing players means any one
    player's enforcement power is weaker — a crowded field typically caps at the middle band. The
    gating precondition, and what a crowd may and may not do to a band, are in

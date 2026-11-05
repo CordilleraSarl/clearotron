@@ -248,7 +248,7 @@ test("a repair the rating step proposed goes to the check, stays on the record i
     const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
     assert.deepEqual(record.open.map((o) => [o.kind, o.mark, o.state]), [["source", NAME, "not-rechecked"], ["source", SIBLING, "not-rechecked"]], then);
     assert.match(record.open[0].problem, /not traceable to a recorded research payload for this batch/);
-    assert.ok((await notes(`source-${then}-unread`)).includes(record.open[0].problem), "the reviewing lawyer sees it");
+    assert.ok((await notes(`source-${then}-unread`)).includes(`Corrected, but not read again: ${record.open[0].problem}`), "the reviewing lawyer sees it, and why it is open");
     if (then === "amended") assert.equal(r.of(r.findings, NAME).findings[0].net, "An amended claim, on what the run holds.", "the valid changed work stays");
   }
 });

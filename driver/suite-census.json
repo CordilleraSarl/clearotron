@@ -1091,7 +1091,7 @@
         },
         "a-knockout-name-can-answer-by-class-group.test.mjs": {
           "tests": 15,
-          "asserts": 48,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },

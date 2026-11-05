@@ -154,7 +154,9 @@ test("the email's band line says each group's band and classes, and a name with 
 
 test("the manual, the check and the repair each say what they owe a divided answer", () => {
   const manual = readFileSync(new URL("../skills/knockout-assess/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
-  assert.ok(manual.includes("record `classGroups`: one row per distinct band and qualifier"), "the manual does not teach the field");
+  assert.ok(manual.includes("Use `classGroups` when separating the requested goods changes the advice under the frozen framework."), "the manual does not teach the field");
+  assert.ok(manual.includes("Different band words or qualifiers alone do not require a split."), "the manual does not say when to leave it");
+  assert.ok(manual.includes("Below the framework's material bands, keep one overall conclusion unless the distinction changes the advice"), "the manual does not bound it below the material bands");
   assert.ok(manual.includes("Divide on the requested goods and evidence, never to soften a rating."), "the manual does not bound it");
   assert.ok(!/"classGroups": \[ \{/.test(manual), "the manual's one-class example teaches a call the tool refuses");
   assert.ok(manual.includes("what those filings show, what the screened field adds to that reading"), "the opening read does not lead with the filings");
