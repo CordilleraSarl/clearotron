@@ -11,8 +11,8 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { degradedParts, degradedPartRows, PART_NAMES, RULED_WORDS, NOT_COMPLETED, COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED }
-  from "../degraded-parts.mjs";
+import { degradedParts, degradedPartRows, PART_NAMES, RULED_WORDS, NOT_COMPLETED, COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED,
+  VERDICT_FLOORS_PASS, VERDICT_FLOOR_FAILED } from "../degraded-parts.mjs";
 import { deferralCoverageRow } from "../deferral-row.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths as stagePaths } from "../stages.mjs";
@@ -82,6 +82,22 @@ test("an evidence stamp left standing, or a check of the stamps that threw, is t
   const cleared = delivered(t, [{ event: "basis-derivation-failed", fail: "induced" }, { event: "basis-derivation", demoted: 0 }]);
   writeFileSync(driverDir(cleared, "basis-derivation.json"), JSON.stringify({ demoted: 0, rows: [] }));
   assert.deepEqual(parts(cleared), [], "a later derivation that wrote every demotion clears both");
+});
+
+test("a comparison of a correction's evidence stamps that threw is a failed check, and a later comparison clears it", (t) => {
+  const threw = degradedParts(delivered(t, [{ event: "evidence-claim-invariant", ok: false, why: "induced" }]));
+  assert.deepEqual(threw.map((p) => [p.part, p.name]), [["checks", PART_NAMES.machineQc]]);
+  assert.match(threw[0].cause, /the check of a correction's evidence stamps: induced/);
+  assert.deepEqual(parts(delivered(t, [{ event: "evidence-claim-invariant", ok: false, why: "induced" },
+    { event: "evidence-claim-invariant", violations: 0, byArm: {} }])), [], "the comparison's last word is its state");
+});
+
+test("a floor of the verdict that threw on its last entry is a failed check; a later entry that ran clears it", (t) => {
+  const failed = { event: VERDICT_FLOOR_FAILED, floor: "common-law", fail: "induced" };
+  const threw = degradedParts(delivered(t, [{ event: VERDICT_FLOORS_PASS }, failed]));
+  assert.deepEqual(threw.map((p) => [p.part, p.name]), [["checks", PART_NAMES.machineQc]]);
+  assert.match(threw[0].cause, /the common-law floor: induced/);
+  assert.deepEqual(parts(delivered(t, [{ event: VERDICT_FLOORS_PASS }, failed, { event: VERDICT_FLOORS_PASS }])), []);
 });
 
 // ── each step, made to fail by its own input ──────────────────────────────────────────────────────────────────

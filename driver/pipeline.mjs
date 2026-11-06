@@ -121,7 +121,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories, narrowingMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED, COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED, COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED, VERDICT_FLOORS_PASS, VERDICT_FLOOR_FAILED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -15500,6 +15500,8 @@ async function pipelineInner(job, opts = {}) {
     // stale BLOCKING to CLEAR — that outcome must pass the SAME deliver-conditional floor, never
     // bypass it because the clamp already ran once.
     const applyCoverageFloor = () => {
+    // Each entry is the floors' state, so delivery reads only a floor that threw since the last of these.
+    runLog(run.runDir, { event: VERDICT_FLOORS_PASS });
     // review fix: the machinery arm below must judge the verdict AS IT ENTERED the floor —
     // when the legalActions arm clamps CLEAR→CONDITIONAL first, the machinery gaps (coverage, frame,
     // screen-gate, senior, registerGap) must still be computed and APPENDED, or a run
@@ -15622,7 +15624,12 @@ async function pipelineInner(job, opts = {}) {
         // the dedup and deliver CLEAR — the precise defect this issue is about.
         if (clReason && verdict === "CLEAR") { verdict = "CONDITIONAL"; writeRunStatus(ctx, signoffPatch(verdict)); }
       }
-    } catch (e) { note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
+    } catch (e) {
+      note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`);
+      // Nothing else would clamp this: the audit workbook names it (degraded-parts.mjs, checks).
+      try { runLog(run.runDir, { event: VERDICT_FLOOR_FAILED, floor: "common-law", fail: String(e?.message ?? e).slice(0, 200) }); }
+      catch { /* the note above still stands */ }
+    }
     if (entryVerdict === "CLEAR") {
       const frameGap = ctx.frameReopenGap === true;
       let frameDeferrals = [];

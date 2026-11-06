@@ -70,6 +70,11 @@ export const DEGRADED_PARTS_FILE = "degraded-parts.json";
 export const COVERAGE_ROWS_PASS = "coverage-rows-pass";
 export const COVERAGE_ROW_NOT_ADDED = "coverage-row-not-added";
 
+// The run-log events of the verdict's floors (pipeline.mjs, applyCoverageFloor): one at each entry, the floor being
+// re-entered whenever the verdict can move, and one for each floor that threw in it.
+export const VERDICT_FLOORS_PASS = "verdict-floors-pass";
+export const VERDICT_FLOOR_FAILED = "verdict-floor-failed";
+
 const readJsonl = (p) => {
   try {
     return readFileSync(p, "utf8").split("\n").filter((l) => l.trim())
@@ -95,6 +100,12 @@ export function lastAttempt(runDir, stage) {
 const lastEvent = (log, names) => {
   for (let i = log.length - 1; i >= 0; i--) if (names.includes(log[i]?.event)) return log[i];
   return null;
+};
+
+/** The events after the last `marker`, or the whole log when it holds none. */
+const sinceLast = (log, marker) => {
+  for (let i = log.length - 1; i >= 0; i--) if (log[i]?.event === marker) return log.slice(i + 1);
+  return log;
 };
 
 const reasonFor = (fail) => (/timeout|timed out/i.test(String(fail ?? "")) ? TIMED_OUT : NOT_COMPLETED);
@@ -242,6 +253,13 @@ function checks(runDir, log) {
   // reads as the step's last word here; whether that state is itself a missing part is not settled by this check.
   const floorDuty = failedStep(log, "floor-duty", "floor-duty-failed");
   if (floorDuty) failed.push(["the floor duty", floorDuty.fail]);
+  // The comparison after a corrective pass of the record before and after it, which sends a stamp the pass promoted
+  // without a register call to the review. One that threw compared nothing.
+  const claims = lastEvent(log, ["evidence-claim-invariant"]);
+  if (claims?.ok === false) failed.push(["the check of a correction's evidence stamps", claims.why]);
+  // A floor of the verdict that threw on its last entry, which could not clamp what it exists to clamp.
+  for (const f of sinceLast(log, VERDICT_FLOORS_PASS).filter((e) => e?.event === VERDICT_FLOOR_FAILED))
+    failed.push([`the ${f.floor ?? "verdict"} floor`, f.fail]);
   if (!failed.length) return null;
   return { part: "checks", name: PART_NAMES.machineQc, reason: reasonFor(failed.map(([, why]) => why).join("; ")),
     cause: failed.map(([what, why]) => `${what}: ${why ?? "no cause recorded"}`).join("; ") };
@@ -293,9 +311,7 @@ function officialRecords(runDir, log) {
 // again: a later pass in which every adder succeeded clears an earlier failure, and a failure in the last pass stands
 // when no pass came after it.
 function coverageRows(runDir, log) {
-  let since = -1;
-  for (let i = log.length - 1; i >= 0; i--) if (log[i]?.event === COVERAGE_ROWS_PASS) { since = i; break; }
-  const failed = log.slice(since + 1).filter((e) => e?.event === COVERAGE_ROW_NOT_ADDED);
+  const failed = sinceLast(log, COVERAGE_ROWS_PASS).filter((e) => e?.event === COVERAGE_ROW_NOT_ADDED);
   if (!failed.length) return null;
   return { part: "coverage-rows", name: PART_NAMES.coverage, reason: reasonFor(failed.map((e) => e.fail).join("; ")),
     cause: failed.map((e) => `${e.adder ?? "an adder"}: ${e.fail ?? "no cause recorded"}`).join("; ") };
