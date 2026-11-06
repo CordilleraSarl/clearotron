@@ -82,6 +82,12 @@ test("a demo boots with its brief reader off and no worker, and does not say an 
     const unlisted = filed.split("\n").filter((l) => /^\[[\w-]+\] /.test(l) && demoLineOnScreen(l) && !DEMO_ALARM.test(l));
     assert.deepEqual(unlisted, [], "a fresh demo shows these lines; add each to DEMO_ROUTINE_LINES in bin/start.mjs if it is routine");
 
+    // ANOTHER ASSISTANT HAS A COMMAND, AND THE CLIENT DOOR KEEPS ITS KEY ROUTE (owner's words, 2026-11-06).
+    assert.match(said, /^ {2}Another assistant\? Run `.*clearotron connect --base \S*trademark-demo` in a second terminal and pick it\.$/m,
+      "the demo does not say how to connect an assistant other than Claude Code");
+    assert.match(said, /It refuses every caller until a key is issued: .*clearotron connect --base \S*trademark-demo --where elsewhere$/m,
+      "the client door's line no longer names the command that mints its key");
+
     assert.match(filed, /brief reading OFF — this is the demo/, `the portal did not say its brief reader is off:\n${safe(filed).slice(-3000)}`);
     assert.doesNotMatch(said + filed, /brief reading ON/, "the demo's portal can read a brief, which is a model turn");
     assert.ok(!existsSync(join(locks, HEARTBEAT_FILE)), "a worker is draining the demo's queue");

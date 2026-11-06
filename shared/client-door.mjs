@@ -153,9 +153,9 @@ export function keyPurposeLine({ email, brand, reset }) {
  * in one step, so nobody issues a key by hand (owner, 2026-09-19). A demo keeps its own secret and guest
  * list in its folder, which is why the folder is named.
  */
-export function demoConnectCommand({ prefix = "", base }) {
+export function demoConnectCommand({ prefix = "", base, where = null }) {
   const q = (d) => (/\s/.test(d) ? `"${d}"` : d);
-  return `${prefix}clearotron connect --base ${q(base)}`;
+  return `${prefix}clearotron connect --base ${q(base)}${where ? ` --where ${where}` : ""}`;
 }
 
 export function keyIssueCommand({ prefix = "", demo = false, user = null, base = null, defaultBase = null } = {}) {

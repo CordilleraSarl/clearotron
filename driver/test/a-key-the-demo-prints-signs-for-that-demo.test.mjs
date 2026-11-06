@@ -48,8 +48,9 @@ test("the printed command names the demo's own account and base, and nothing ext
 test("the start banner prints that command, and a demo signs with the secret in its base", () => {
   const src = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
   // A demo's own line is `connect --base` now (owner, 2026-09-19): it mints the key AND names the door, and
-  // it signs with the same secret in the base. An install's line is still `key issue`.
-  assert.match(src, /until a key is issued: \$\{DEMO \? demoConnectCommand\(\{ prefix: invocationPrefix\(\), base: paths\.base \}\) : keyIssueCommand\(\{ prefix: invocationPrefix\(\), demo: DEMO, user, base: paths\.base,/);
+  // it signs with the same secret in the base. Its key route is `--where elsewhere`, since the same command
+  // without it asks which assistant (owner's words, 2026-11-06). An install's line is still `key issue`.
+  assert.match(src, /until a key is issued: \$\{DEMO \? demoConnectCommand\(\{ prefix: invocationPrefix\(\), base: paths\.base, where: "elsewhere" \}\) : keyIssueCommand\(\{ prefix: invocationPrefix\(\), demo: DEMO, user, base: paths\.base,/);
   assert.match(src, /const tokenSecret = DEMO\s*\n\s*\? demoTokenSecret\(paths\.base, \{/);
 });
 
