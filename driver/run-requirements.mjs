@@ -369,6 +369,17 @@ export function whatIsMissing(rows = []) {
 }
 
 /**
+ * The first two sentences of the refusal the person who runs the install is shown, in the owner's words
+ * (2026-11-06): what the install lacks for a search (`missing`, as whatIsMissing words it) and the command
+ * that sets it up. `install` is that command as the reader types it: the portal names `clearotron install`,
+ * and `doctor` names it as it runs from where doctor ran. One composer, so the portal's sentence and
+ * doctor's opening cannot drift apart. PURE.
+ */
+export function cannotSearchYet(missing, install = "clearotron install") {
+  return `This install cannot run a search yet: ${missing}. Run \`${install}\` in a terminal to set it up.`;
+}
+
+/**
  * The order-time refusal, in two vocabularies, from ONE list.
  *
  * `operator` NAMES THE VARIABLES AND THE FILE, because the person reading it can go and set them.
@@ -423,8 +434,7 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
     // THE PERSON WHO RUNS THE INSTALL is shown what is missing and the command that sets it, in the owner's words
     // (2026-11-06). The portal shows this to a person who sees everything, the one its Installation settings
     // page is for, and the client sentence to everyone else. A gap with no phrase keeps the client sentence.
-    installer: gap ? `This install cannot run a search yet: ${gap}. Run \`clearotron install\` in a terminal to set it up. `
-      + "Nothing has been searched and nothing has been charged." : CLIENT_REFUSAL,
+    installer: gap ? `${cannotSearchYet(gap)} Nothing has been searched and nothing has been charged.` : CLIENT_REFUSAL,
   };
 }
 

@@ -3819,6 +3819,12 @@
           "skips": 0,
           "todos": 0
         },
+        "doctor-opens-with-whether-a-search-can-run.test.mjs": {
+          "tests": 5,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
           "tests": 45,
           "asserts": 128,
