@@ -137,3 +137,18 @@ test("a real start, with Claude only in setup's engines folder, prints a connect
     rmSync(home, { recursive: true, force: true });
   }
 });
+
+test("a demo on a machine with no Claude program says so before its connect line, and only then", async () => {
+  // The line runs Claude Code. Printed alone on a machine without it, it failed as "claude: command not found".
+  const { connectPrerequisiteLines } = await import("../../bin/start.mjs");
+  const said = (o) => connectPrerequisiteLines(o).map((l) => l.trim()).join(" ");
+  assert.equal(said({ demo: true, program: { resolved: null } }),
+    "This needs Claude Code, and this machine does not have it. Install Claude Code, then run the line below.");
+  // CONTROLS: a demo on a machine that has the program, and a real install, whose setup offers the program.
+  assert.deepEqual(connectPrerequisiteLines({ demo: true, program: { resolved: "/opt/example/bin/claude" } }), []);
+  assert.deepEqual(connectPrerequisiteLines({ demo: false, program: { resolved: null } }), []);
+  // And it is printed where the reader meets the connect line: after the heading, before the line itself.
+  const src = readFileSync(new URL("../../bin/start.mjs", import.meta.url), "utf8");
+  assert.match(src, /say\("  Connect your assistant to this install — no address and no sign-in:"\);\n\s*say\(""\);\n\s*for \(const line of connectPrerequisiteLines\(\{ demo: DEMO, program: claudeProgram \}\)\) say\(line\);/,
+    "the line is no longer said straight above the demo's connect line");
+});

@@ -2643,12 +2643,14 @@ if (isMain) {
   // commands; printing one of them unheaded is how a reader pastes the wrong one. The target is read
   // here and passed, because this module is pure by design and reads no environment of its own.
   const offered = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), demo: DEMO, ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
-  const connect = connectLinesNamingClaude(offered, resolveEngineProgram(claudeEngine()));
+  const claudeProgram = resolveEngineProgram(claudeEngine());
+  const connect = connectLinesNamingClaude(offered, claudeProgram);
   // "one line" IS DELETED RATHER THAN MADE CONDITIONAL. Under WSL two lines are printed, one per side,
   // and the count was never the point of the sentence — what it promises is no address and no sign-in,
   // which is true on both sides and on every other install.
   say("  Connect your assistant to this install — no address and no sign-in:");
   say("");
+  for (const line of connectPrerequisiteLines({ demo: DEMO, program: claudeProgram })) say(line);
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
   for (const line of connectScreen(connect)) say(line);
@@ -2724,6 +2726,18 @@ export function connectLinesNamingClaude(connect, program) {
     variants: connect.variants.map((v) => (v.heading === WSL_ROW_HEADINGS.insideWsl
       ? { ...v, text: name(v.text), verify: name(connect.verify) } : { ...v, verify: connect.verify })) };
   return { ...connect, command: name(connect.command), verify: name(connect.verify) };
+}
+
+/**
+ * What a demo says before its connect line when this machine has no Claude program. The line runs Claude Code,
+ * and printed alone it failed as "claude: command not found" on a machine without it; the owner's words
+ * (2026-11-06). A real install's setup offers the program, so it is not told this. `program` is what
+ * resolveEngineProgram answers for Claude. PURE.
+ */
+export function connectPrerequisiteLines({ demo = false, program = null } = {}) {
+  if (!demo || program?.resolved) return [];
+  return fitTo(96, "This needs Claude Code, and this machine does not have it. Install Claude Code, then run the line below.")
+    .map((l) => `  ${l}`);
 }
 
 /**
