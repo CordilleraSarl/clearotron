@@ -1889,7 +1889,7 @@
         },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
-          "asserts": 15,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
