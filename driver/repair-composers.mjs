@@ -156,7 +156,7 @@ const correctiveRules = ({ narrative, findings, placement, rulingsTail, adds = f
   // broadening happens.
   //
   // AND THE RESOLUTION WITH THE LINE ABOVE IS STATED, BECAUSE THE TWO LOOK LIKE THEY FIGHT.
-  // "Never softened" forbids adding hedges; "may never broaden" requires claiming less. A model
+  // "Never softened" forbids adding hedges; "narrow it" requires claiming less. A model
   // handed both without the distinction will pick one. Narrowing is not hedging: stating a
   // smaller claim, or removing the claim, is a correction; keeping the same claim and wrapping it
   // in "may" or "appears to" is the hedge. Said in the text, not just here.
@@ -169,8 +169,15 @@ const correctiveRules = ({ narrative, findings, placement, rulingsTail, adds = f
   // corrective pair, by `evidenceClaimViolations` (pipeline.mjs ~10973) — but it reads
   // `findings.json` meters, and a narrative sentence with no findings-side counterpart is invisible
   // to it. That prose gap is conversion-era work, not an instruction. This is the instruction.
-  `A REPAIR MAY NARROW A CLAIM AND MAY NEVER BROADEN ONE. If a flagged statement is wrong because it claims too much, the correction states LESS: strike the claim, or replace it with the smaller claim the evidence actually carries. Never restate the same claim in different words, and never replace a specific sentence with a general one. NARROWING IS NOT HEDGING and the rule above still holds — claiming less is a correction; keeping the claim and wrapping it in "may", "appears to" or "broadly" is the hedge that is forbidden.`,
-  `THE COVERAGE ACCOUNT IS NOT YOURS TO REOPEN HERE. Do not introduce any statement about what was searched, counted, screened, finished, or came back empty that is not already in ${narrative}. That account was settled when you wrote it against the evidence in front of you; this pass has the reviewer's flags and not that evidence, so it is not in a position to widen it. Deleting a false coverage sentence is a correction. Replacing it with a different coverage sentence is not — strike it and say nothing in its place.`,
+  `REPAIR THE FLAGGED CLAIM TO WHAT ITS HELD EVIDENCE SUPPORTS. If the error is an overclaim, narrow it: remove the unsupported part or replace it with the smaller supported claim. Do not replace a specific result with a general conclusion. Narrowing is not hedging: reduce the claim itself rather than keeping it behind “may”, “appears to” or “broadly”.`,
+  // A CORRECTION KEEPS THE TRUE PART OF THE PASSAGE IT CORRECTS. The rule that stood here ordered a false
+  // coverage sentence struck with nothing in its place, beside the rule above that allows the smaller supported
+  // claim, and the two disagreed. In one test run's correction, two true zero results that shared a passage with
+  // a wrong statement went with it, and no coverage line the reader sees kept them (read on saved data,
+  // 2026-11-05). A fact this pass restates or corrects comes from a record it can name and open at this step,
+  // inside that record's limits; a reviewer's suggested wording is a proposal, not that record. Design's wording
+  // (2026-11-05).
+  `CORRECT ONLY THE FLAGGED COVERAGE ACCOUNT. Preserve true, relevant coverage facts already in ${narrative}. Where a flagged passage mixes a true fact with an error, correct only the error; you may restate the supported part or correct its factual details from an identified record held at this step. Read that record before relying on it, and keep its question, territory, class, mode and outcome limits. A zero for one question is not a general absence of rights, and a failed, skipped or unread question is not a zero. If the supporting record is unavailable or does not settle the claim, remove the unsupported part and keep the uncertainty explicit. Reconcile the corresponding coverage fields. Do not reopen unrelated coverage, add a new search or claim more than the held record establishes.`,
   `IF YOU REMOVE THE SUPPORT FOR A CLAIM, THE CLAIM GOES WITH IT. Deleting the evidence and leaving the sentence standing does not make it safer, it makes it unsupported and therefore stronger than the record allows. A run was refused for exactly this.`,
   `1. Correct the flagged narrative sections — send back ONLY the sections a flag names, and every section the flags do not name is left out and comes back byte-identical;`,
   `2. mirror every correction into the finding objects the flags name (owner names, levels/composites, meters). A finding the review KILLS is not deleted: keep its object, set "disposition": "withdrawn" and add "withdrawn_reason": "<the review flag that killed it>". Add a "corrections": {"applied": true, "note": "<one line per flagged entity: corrected / withdrawn / no-change-because-…>"} marker inside the call's \`findings\` object.`,
@@ -178,7 +185,7 @@ const correctiveRules = ({ narrative, findings, placement, rulingsTail, adds = f
   // ordinal, so step 2 cannot reach them, and nothing said where a rewrite of one goes: seven such
   // flags survived one clearance on the test box, each recorded as naming nothing (2026-09-11). The
   // channel already existed — a PATCH copies a top-level register of the findings document through
-  // — and this names it. The coverage-account rule above forbids NEW claims about what was searched;
+  // — and this names it. The coverage-account rule above forbids claims the held record does not establish;
   // rewording a note keeps its claims, and the text says so, or the seat reads the two as a conflict
   // and does nothing, which is what it did.
   `3. A flag about a line the reader sees that is NOT a finding — a coverage row's "note", an action's "text", or the mark assessment's "distinctiveness" or "connotation" — is applied in the same PATCH, inside the call's \`findings\` object beside the "corrections" marker: send the complete \`coverage\` array (every row, the unflagged ones exactly as you last sent them), the complete \`actions\` array, or the complete \`mark_assessment\` object, with the flagged line rewritten. A row left out of the array is a row deleted, so send every row. Rewording a coverage note is NOT reopening the coverage account: keep its area, its state and every fact it states, and change only how it says them. A flagged line you leave as written is named in the "corrections" note with the reason, as the flag names it — for example: the coverage line for "<area>": no-change-because …`,

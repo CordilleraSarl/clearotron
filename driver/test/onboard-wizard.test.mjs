@@ -2,7 +2,8 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // bin/onboard.mjs — `clearotron install` and `clearotron doctor` (still `npm run setup` too).
 //
-// The wizard's promise is that nothing is persisted until it has been checked against the real service.
+// The wizard's promise is that nothing is persisted until it has been checked against the real service, except a
+// paid register key, which is written on the reader's word because checking it would cost them.
 // These tests hold the parts of that promise a machine can hold offline: the check writes nothing, an
 // absence and a misconfiguration are told apart, the provider preflight cannot be fooled by whatever the
 // operator's shell happens to have set, and the door the EUIPO credential is validated through refuses a
@@ -690,6 +691,8 @@ test("--check names an engine id the driver does not ship, and does not invent a
 // the engine suite already spawns — so the assertion "it did/did not dial anything" is made from the
 // mock's own call log rather than from a live CLI.
 const MOCK_CLAUDE = join(REPO, "driver", "test", "mock-claude.mjs");
+// The closing line of a check whose probe started the AI program, in the approved words.
+const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test turn keeps its own files.";
 
 test("--check does NOT spend a turn unless it is asked to", () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-probe-"));
@@ -698,6 +701,9 @@ test("--check does NOT spend a turn unless it is asked to", () => {
     const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
     assert.equal(r.code, 0, r.out);
     assert.equal(existsSync(log), false, "a --check that dials a provider is a check that can fail for reasons that are not about this machine");
+    // CONTROL for the closing line below: with no turn spent, nothing outside this command could have written either.
+    assert.match(r.out, /Nothing was written\./, r.out);
+    assert.ok(!r.out.includes(TURN_KEPT_ITS_FILES), "a check that ran no turn speaks of the turn's files");
     assert.match(r.out, /--probe-engine/, "…and it says the check it did NOT make, rather than implying the engine is fine");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
@@ -717,6 +723,12 @@ test("--check --probe-engine proves the engine with one turn, and still writes n
       "the cheapest rung of both tier tables, built by the adapter's own buildClaudeArgs");
     assert.deepEqual(treeStamp(join(REPO, "bin")), before, "bin/ untouched");
     assert.equal(existsSync(join(CLI_ROOT, ".env")), beforeEnv, "no .env conjured");
+    // THE TURN'S PROGRAM KEEPS ITS OWN FILES, under ~/.claude and ~/.cache, so the closing line no longer says
+    // nothing was written: it says what this command wrote, and what the turn's program keeps.
+    // This install has no register, so the check closes on the line for an unfinished install; both of the endings
+    // without a problem count end the same way.
+    assert.ok(r.out.includes(`Nothing is MISconfigured — fix those and nothing else here needs changing. ${TURN_KEPT_ITS_FILES}`), r.out);
+    assert.doesNotMatch(r.out, /Nothing was written/, "the closing line says nothing was written after a turn that started the AI program");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -731,6 +743,21 @@ test("the probe reports a signed-out engine as signed out, not as 'cannot run'",
     assert.match(r.out, /exited before it produced anything/, r.out);
     assert.match(r.out, /signed-out shape/, "it names the mode rather than shrugging at 'cannot run'");
     assert.match(r.out, /run `claude` once/, "…and the next thing the reader does");
+    // A program that started and failed still ran, so the problem count's closing line says so too.
+    assert.ok(r.out.includes(`problem(s). ${TURN_KEPT_ITS_FILES}`), r.out);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a probe refused before the AI program starts keeps the line that nothing was written", () => {
+  // The Codex adapter refuses a subscription turn with no sign-in file before it starts anything, so no program
+  // ran and nothing outside this command could have written. The mock is named all the same, so nothing real
+  // could start if that ever changed.
+  const dir = mkdtempSync(join(tmpdir(), "onboard-refused-"));
+  try {
+    const r = run(["--check", "--probe-engine"], { CLEAROTRON_AI: "openai-agent", CLEAROTRON_AI_BILLING: "subscription", CODEX_API_KEY: "",
+      CLEAROTRON_OPENAI_AUTH_FILE: join(dir, "no-sign-in-here", "auth.json"), CLEAROTRON_CODEX_PATH: join(REPO, "driver", "test", "mock-codex.mjs") });
+    assert.match(r.out, /Nothing was written/, r.out);
+    assert.ok(!r.out.includes(TURN_KEPT_ITS_FILES), `a turn that never started is said to keep files: ${r.out}`);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

@@ -50,3 +50,31 @@ test("the ending calls the reader's computer an install, not by our own word for
   assert.ok(said.some((s) => s.includes("What this ")), "the summary's heading was not found among what the ending prints");
   assert.deepEqual(said.filter((s) => /\bbox\b/.test(s)), [], "a printed line calls the reader's computer by our own word for it");
 });
+
+test("setup sends the reader to re-run it, never to a page that cannot change a setting", () => {
+  // The Installation settings page shows each setting's state; nothing on it can set one. Setup said to set the
+  // register "there" twice, and the ending said "or on the Installation settings page".
+  const said = [...SRC.matchAll(/(?:say|info|warn)\((["`])(.*?)\1\)/g)].map((m) => m[2]);
+  assert.ok(said.some((s) => s.includes("Installation settings page says it too. Re-run setup when you have a credential.")),
+    "the register step no longer says the page shows the gap, and to re-run setup");
+  assert.deepEqual(said.filter((s) => /\bset (it|them) there\b|\bon the Installation settings page\b/.test(s)), [],
+    "a printed line sends the reader to set something on the Installation settings page");
+  assert.ok(ENDING.includes("Set it by re-running \\`${invocationPrefix()}clearotron install\\`.`"), "the ending's register line changed shape");
+});
+
+test("with no register chosen, the ending suggests the demo and no first real clearance", () => {
+  // The closing lines suggested `run --job` a few lines above the warning that `run` will refuse at its door.
+  const also = ENDING.indexOf("Also: ");
+  assert.ok(also > 0, "the ending's Also line is not where this arm reads it");
+  const block = ENDING.slice(ENDING.lastIndexOf("if (registerSelected) {", also), ENDING.indexOf("\n", ENDING.indexOf("} else say(", also)) + 1);
+  assert.match(block, /^if \(registerSelected\) \{\n[^\n]*no model calls;`\)\}`\);\n[^\n]*run --job[^\n]*\n\s*\} else say\([^\n]*replays a finished report with no keys and no model calls\.`\)\}`\);/,
+    `the first-clearance line is no longer printed only when a register is chosen: ${block}`);
+});
+
+test("setup's opening promises only what it does", () => {
+  // A paid register key is written on the reader's word, unchecked: checking it would cost them. And the
+  // organisation's name cannot be skipped.
+  assert.ok(SRC.includes("Nothing is written until each credential you give has been checked, except a paid register key: checking it would cost you, so it is written on your word."));
+  assert.ok(SRC.includes('subtitle: "one pass, and everything here but your organisation\'s name is skippable"'));
+  assert.ok(!SRC.includes("every credential you give has been checked against the real service"), "the old promise is back");
+});

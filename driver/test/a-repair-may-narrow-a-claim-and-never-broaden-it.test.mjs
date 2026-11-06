@@ -47,21 +47,28 @@ test("the three declared shapes really are different dispatches — the control 
 
 test("a repair may narrow and never broaden — in EVERY shape, not only the scoped one", () => {
   for (const { name, text } of shapes()) {
-    assert.match(text, /MAY NARROW A CLAIM AND MAY NEVER BROADEN ONE/,
+    assert.match(text, /REPAIR THE FLAGGED CLAIM TO WHAT ITS HELD EVIDENCE SUPPORTS\. If the error is an overclaim, narrow it/,
       `${name}: a rule that reaches only the scoped dispatch is absent from most of them`);
-    assert.match(text, /never replace a specific sentence with a general one/, name);
+    assert.match(text, /Do not replace a specific result with a general conclusion/, name);
   }
 });
 
-test("the coverage account may not be reopened, and the rule names the file it governs", () => {
+test("a correction keeps the true coverage facts of the passage it corrects, and the rule names the file it governs", () => {
   for (const { name, args } of CORRECTIVE.samples.map((s) => ({ name: s.name, args: s.args }))) {
     const text = CORRECTIVE.compose(args);
-    assert.match(text, /THE COVERAGE ACCOUNT IS NOT YOURS TO REOPEN HERE/, name);
+    assert.match(text, /CORRECT ONLY THE FLAGGED COVERAGE ACCOUNT/, name);
     // The interpolation has to be LIVE: a refactor that drops `${narrative}` leaves an instruction
     // about "the narrative" with no path in it, on a pass whose whole context is two file names.
-    assert.ok(text.includes(`that is not already in ${args.narrative}`),
+    assert.ok(text.includes(`Preserve true, relevant coverage facts already in ${args.narrative}.`),
       `${name}: the coverage rule must name the narrative path, not the word "narrative"`);
-    assert.match(text, /Replacing it with a different coverage sentence is not/, name);
+    // THE TWO RULES NO LONGER DISAGREE. The rule this one replaced ordered a false coverage sentence struck with
+    // nothing in its place, beside a rule that allows the smaller supported claim; a correction then removed two true
+    // zero results that shared a passage with the wrong statement. Neither half of the old order survives in any shape.
+    assert.doesNotMatch(text, /say nothing in its place|strike the claim/i, `${name}: the order to strike a coverage sentence whole is back`);
+    // A fact the pass keeps or corrects comes from a record it can open here, inside that record's limits; a record
+    // it cannot open leaves the claim smaller and the uncertainty said, never a fact supplied in its place.
+    assert.match(text, /from an identified record held at this step\. Read that record before relying on it/, name);
+    assert.match(text, /If the supporting record is unavailable or does not settle the claim, remove the unsupported part and keep the uncertainty explicit/, name);
   }
 });
 
@@ -71,8 +78,8 @@ test("'narrowing is not hedging' ships WITH the never-soften rule, or the two co
   // the distinction a model picks one, and the one it picks is the one that reads as more permissive.
   for (const { name, text } of shapes()) {
     assert.match(text, /never softened/, `${name}: the rule the distinction resolves must still be here`);
-    assert.match(text, /NARROWING IS NOT HEDGING/, `${name}: and the distinction that resolves it`);
-    assert.ok(text.indexOf("never softened") < text.indexOf("NARROWING IS NOT HEDGING"),
+    assert.match(text, /Narrowing is not hedging/, `${name}: and the distinction that resolves it`);
+    assert.ok(text.indexOf("never softened") < text.indexOf("Narrowing is not hedging"),
       `${name}: the resolution must follow the rule it resolves — a reader meets them in order`);
   }
 });

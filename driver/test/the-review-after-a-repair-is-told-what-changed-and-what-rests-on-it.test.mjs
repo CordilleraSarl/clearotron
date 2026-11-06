@@ -132,7 +132,7 @@ test("the one correction after that review opens on where its flags come from an
   // 2026-11-02).
   const first = composer("synthesis:corrective");
   const firstLines = first.compose(first.samples[0].args).split("\n");
-  const from = firstLines.findIndex((l) => l.startsWith("A REPAIR MAY NARROW A CLAIM"));
+  const from = firstLines.findIndex((l) => l.startsWith("REPAIR THE FLAGGED CLAIM"));
   const to = firstLines.findIndex((l) => l.startsWith("THE FINDINGS CONTRACT IS CLOSED"));
   assert.ok(from > 0 && to > from);
   assert.equal(firstLines.slice(from, to + 1).filter((l) => l.includes(CORRECTION_ROWS)).length, 1, "the first correction's save line lost its phrase");

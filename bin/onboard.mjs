@@ -1512,8 +1512,13 @@ export function readOwnProcesses(repo, { table = processTable() } = {}) {
     .map((p) => ({ pid: p.pid, startedAt: p.startedAt, cmd: p.cmd.slice(0, 120) }));
 }
 
+// The closing line of a check whose engine probe ran a test turn: the turn's AI program writes its own files
+// under ~/.claude and ~/.cache, so "Nothing was written" was true of this command and not of the turn.
+const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test turn keeps its own files.";
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
+  // Whether the engine probe's turn started the AI program (TURN_KEPT_ITS_FILES); one refused first did not.
+  let probeTurnRan = false;
   say(`  repo: ${REPO}`);
 
   // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
@@ -2070,6 +2075,7 @@ export async function runCheck() {
       // token exported into the shell proved it. `engineEnvKeys` is the probe's own list: the copy that is
       // filled is now the copy that is applied.
       const v = await probeEngineTurn({ env: engineEnvOf(engineEnvKeys()) });
+      probeTurnRan = v.ok || v.basis !== "config";
       if (v.ok) {
         ok(`${engineId} completed a turn — binary, credential and model access all work`);
         const served = servedLine(v);
@@ -2560,7 +2566,7 @@ export async function runCheck() {
   if (!prov) {
     blocking(`no register is selected — CLEAROTRON_DATABASE is not set and there is NO default, so every search refuses until one is`);
     info(`  set it to one of: ${PROVIDERS.map((p) => p.id).join(", ")} — any one of them is enough, and none needs another`);
-    info(`  re-run \`${invoke("install")}\`, or set it on the Installation settings page`);
+    info(`  re-run \`${invoke("install")}\` to set it`);
   }
   else {
     const spec = PROVIDERS.find((p) => p.id === prov.v);
@@ -3647,17 +3653,17 @@ export async function runCheck() {
     // different actions from the reader — edit a file versus fix a credential — and a single number
     // covering both sends them to the wrong one.
     if (inert.length) parts.push(`${inert.length} setting(s) being ignored`);
-    say(`  ${parts.join(" and ")}. Nothing was written — this command only reads.\n`);
+    say(`  ${parts.join(" and ")}. ${probeTurnRan ? TURN_KEPT_ITS_FILES : "Nothing was written — this command only reads."}\n`);
     return 1;
   }
   // The exit status stays 0: an unfinished install is not a broken one, and `--check` separates an
   // absence from a misconfiguration. What changed is that the closing line no longer says nothing is
   // wrong while something that stops the product stands above it.
   if (blockers.length) {
-    say("  Nothing is MISconfigured — fix those and nothing else here needs changing. Nothing was written.\n");
+    say(`  Nothing is MISconfigured — fix those and nothing else here needs changing. ${probeTurnRan ? TURN_KEPT_ITS_FILES : "Nothing was written."}\n`);
     return 0;
   }
-  say("  Nothing wrong with what is configured. Nothing was written.\n");
+  say(`  Nothing wrong with what is configured. ${probeTurnRan ? TURN_KEPT_ITS_FILES : "Nothing was written."}\n`);
   return 0;
 }
 
@@ -3847,7 +3853,7 @@ let aborted = null;
 try {
   say("\n  Trademark clearance engine — setup\n");
   say("  One question at a time. Enter takes the default in brackets.");
-  say("  Nothing is written until every credential you give has been checked against the real service.\n");
+  say("  Nothing is written until each credential you give has been checked, except a paid register key: checking it would cost you, so it is written on your word.\n");
 
   // ── BEFORE YOU START, derived from what the product declares it needs ──────
   //
@@ -3855,13 +3861,13 @@ try {
   // what to prepare by failing the question — the owner's own first run, in his words. The list below
   // is DERIVED: the engines from ENGINE_BINARIES, the search vendors from the same adapter tables the
   // prompts loop over, each wearing its own table row's where-to-get line. A hand-kept copy here would
-  // be the SERPAPI defect again, one screen earlier. Everything is skippable; the list says so.
+  // be the SERPAPI defect again, one screen earlier. Everything but the organisation's name is skippable.
   // THE BANNER — once, on entry, named (ruling 2026-08-31). Not on every
   // command: a banner every verb prints is how a product becomes tiresome to use twice. It sits here
   // rather than at the top of main() so that `--check`, which writes nothing and is run repeatedly,
   // does not wear it either.
   say("");
-  say(banner({ title: "Clearotron setup", subtitle: "one pass, and everything here is skippable", style,
+  say(banner({ title: "Clearotron setup", subtitle: "one pass, and everything here but your organisation's name is skippable", style,
                mark: bracketAsciiCells(), columns: process.stdout.columns }));
   say("");
   say(`  ${style.bold("Before you start")} — what this setup can take, so nothing here surprises you:`);
@@ -4246,7 +4252,7 @@ try {
     say("");
     info("No register is selected, and nothing register-related will be written.");
     info(`Every search refuses until one is set — \`${invoke("doctor")}\` says so on every run, and the`);
-    info("  Installation settings page says it too. Re-run setup, or set it there, when you have a credential.");
+    info("  Installation settings page says it too. Re-run setup when you have a credential.");
   }
   for (const k of registerSelected ? (spec.optionalCredentials ?? []) : []) {
     if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
@@ -4732,8 +4738,12 @@ try {
   // use, with no number, so the three commands cannot drift into three answers.
   for (const line of foreignPageHint("start")) say(`      ${line}`);
   say("");
-  say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
-  say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
+  // A FIRST REAL CLEARANCE IS SUGGESTED ONLY WHERE ONE CAN RUN. With no register chosen, the line suggesting
+  // `run` sat a few lines above the warning that `run` will refuse at its door.
+  if (registerSelected) {
+    say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
+    say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
+  } else say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls.`)}`);
   // THE OLD WAY IS A CHECKOUT'S. A package has no npm scripts where its reader stands.
   if (!PACKAGED) say(`  ${style.dim("Each still works the old way too — `npm start`, `node driver/pipeline.mjs`.")}`);
   say("");
@@ -4803,7 +4813,7 @@ try {
     say(`    \`${invocationPrefix()}clearotron demo\` and \`${invocationPrefix()}clearotron start\` work now. A real`);
     say("    clearance needs one register — any one is enough, and none requires another:");
     say(`      ${PROVIDERS.map((p) => p.id).join(", ")}`);
-    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`, or on the Installation settings page.`);
+    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`.`);
     say(`    \`${invocationPrefix()}clearotron doctor\` says which state this install is in, at any time.\n`);
   }
 } catch (e) {

@@ -154,6 +154,10 @@ test("doctor names the no-register state, and does not fail the install for bein
     "…and what it costs, or the reader learns the state without learning the consequence");
   assert.match(out, /any one of them is enough, and none needs another/,
     "one register per install — a reader must not think they need a second");
+  // The Installation settings page shows a setting's state and cannot change one, so the route doctor names is the
+  // one that sets it.
+  assert.match(out, /re-run `[^`]*install` to set it\n/, out);
+  assert.doesNotMatch(out, /Installation settings page/, "doctor sends the reader to set the register on a page that cannot set it");
   assert.equal(rc, 0,
     "an install that deliberately selected no register is UNFINISHED, not broken: `problem` here would "
     + "fail doctor on a posture setup was told to allow");
