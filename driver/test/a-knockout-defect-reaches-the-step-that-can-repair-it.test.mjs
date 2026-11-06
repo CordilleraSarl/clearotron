@@ -267,6 +267,23 @@ test("the check is handed the findings the rating step amended after losing a so
   assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /CHANGED AFTERWARDS/, "and nothing is said where there is none");
 });
 
+test("the check reads the knockout's own doctrine, and a link in its prose standard brings in no clearance rule", () => {
+  const K = koPaths(mkdtempSync(join(tmpdir(), "ko-doctrine-")));
+  const msg = KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] });
+  for (const manual of ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md"]) {
+    assert.ok(msg.includes(manual), `the check is not given ${manual}`);
+    assert.ok(KO_STAGES["knockout-review"].skillReads.includes(manual), `${manual} is not declared`);
+  }
+  assert.match(msg, /its links do not import clearance-only finding or placement rules into this screen\. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band\./);
+});
+
+test("a correction brings classesDriving with the other answers that rest on its repair", () => {
+  const K = koPaths(mkdtempSync(join(tmpdir(), "ko-driving-")));
+  const work = correctionWork({ rated: rated(), material: [{ kind: "band", mark: NAME, finding: 1, problem: "p", rests_on: ["x"] }], chunks: [[NAME, SIBLING]] });
+  const msg = KO_STAGES["knockout-correct"].message({ K, work, chunkNo: 0, chunkMarks: [{ name: NAME }, { name: SIBLING }], framework: { bands: [{ label: "High" }, { label: "Low" }] } });
+  assert.match(msg, /`classGroups`, `classesDriving`, its `registerReads`/);
+});
+
 test("with no material defect nothing more is dispatched", async () => {
   const r = await knockout("clean");
   assert.deepEqual(r.stages.filter((s) => /correct|review/.test(s)), ["knockout-review"]);
