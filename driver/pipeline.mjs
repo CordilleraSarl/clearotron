@@ -418,8 +418,8 @@ export function isFallbackEligible(fail) {   // @internal
 
 // A5 strike predicate — is this run.jsonl stage-row failure a CONTENT verdict (counts toward the
 // invalid-artifact strike cap) rather than infra weather (breaks the streak)? isFallbackEligible alone
-// is NOT enough: it matches only the model-fallback token set, but the trail also carries transient
-// shapes that never enter the fallback chain — `rate_limited` (the subscription 5h cap), bare
+// is NOT enough: it matches only the transient-infrastructure token set, but the trail also carries
+// transient shapes that set does not match — `rate_limited` (the subscription 5h cap), bare
 // `unparseable_json`, and prose transport causes from code-side units ("… direct execution failed:
 // HTTP 502 …"). repairs.mjs's own doctrine says those are sampling noise, not a content verdict — so
 // anything classifyFailureReason calls transient breaks the streak too. Exported so the strike tests
@@ -5366,7 +5366,7 @@ async function stageOnce(name, ctx, opts = {}) {
   //
   // The task order is deliberately NOT restored: `def.message(ctx)` stays out, because re-commissioning
   // the stage fights the followup's own "do NOT redo it". freshMessage (doc-44 — a standalone message on a
-  // fresh session that STILL goes through the fallback chain, unlike followup which is single-model) gets
+  // fresh session, dispatched as any fresh stage is: its one model, with the gateway's own retries) gets
   // the same composition for the same reason: it is equally a session with nothing in it.
   //
   // The declared inputs are filtered to what is ON DISK here, not in stages.mjs — that module is a pure
@@ -10693,7 +10693,7 @@ async function pipelineInner(job, opts = {}) {
   };
   // The settlement flush: ONE warm re-digest carrying every queued segment (plus the frame-reopen
   // segment when that block fired), sectioned, ending with the standard FULL re-emission contract.
-  // Timeout ⇒ one fresh retry through the fallback chain (the legacy frame-reopen re-digest's own
+  // Timeout ⇒ one retry on a fresh session, on the same model (the legacy frame-reopen re-digest's own
   // recovery). A flush that still fails leaves its items PENDING (durable — the late flush or the next
   // resume's settlement gets one more chance) and the run continues on the prior digest: the funnel
   // never gates delivery. On success, items are receipted (markFlushed — they can never re-fire), the
@@ -10714,7 +10714,7 @@ async function pipelineInner(job, opts = {}) {
     const trigger = pass === "late" ? "late-flush" : "settlement-flush";
     let rd = await runDigest(ctx, { force: true, followup, sessionKey: ctx.digestKey, trigger });
     if (!rd.ok && /timeout/.test(String(rd.fail))) {
-      note(`digest-funnel: ${trigger} timed out — ONE fresh retry through the fallback chain`);
+      note(`digest-funnel: ${trigger} timed out — ONE retry on a fresh session, same model`);
       runLog(run.runDir, { event: "digest-flush-timeout", pass, fail: String(rd.fail).slice(0, 120) });
       rd = await runDigest(ctx, { force: true, trigger: `${trigger}-retry` });
     }
@@ -12127,7 +12127,7 @@ async function pipelineInner(job, opts = {}) {
           // record discloses: its recovery is spent, and its band is read as the last pass left it.
           const dispatched = disclosedAxes.has(a) ? null : await dispatchPlanQids(a, null, "taint-dispatch");
           if (dispatched) repairs.push(`taint-dispatch:${dispatched}`);
-          // T1 — ONE fresh in-loop re-run, pre-synthesis only (a fresh full pass, full fallback chain)
+          // T1 — ONE fresh in-loop re-run, pre-synthesis only (a fresh full pass on the stage's one model)
           // — held until the real result is in hand; see the push below the taint re-read.
           let taintRerunDispatch = null;
 // — ONE ceiling, named once and read by BOTH ends. A literal repeated at the record site is a
@@ -13402,11 +13402,11 @@ async function pipelineInner(job, opts = {}) {
               regMechFail = r.fail; note(`frame-reopen: ${a} supplemental sweep failed mechanically (${r.fail})`);
               // doc-44: a core coverage sweep must NOT be one-shot-then-abandon. On a TIMEOUT (the followup used its
               // own attempts, its extended retry included, and still hit the wall), do ONE fresh, SCOPED re-sweep of the SAME
-              // near-form threats through the normal fallback chain (retries + BACKUP PROVIDER — a followup is
-              // single-model and can't cross-provider). Scoped (not the whole axis) + bounded detail-fetch so it
+              // near-form threats on a fresh session: the stage's one model and the gateway's retries, as any fresh
+              // stage gets. There is no second model or provider. Scoped (not the whole axis) + bounded detail-fetch so it
               // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
               if (/timeout/.test(String(regMechFail))) {
-                note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
+                note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry on a fresh session (same model, the gateway's retries)`);
                 const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives,
                   supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
                 const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
@@ -13438,7 +13438,7 @@ async function pipelineInner(job, opts = {}) {
           // and surfaces the newly-enumerated conflicts as findings — this block runs BEFORE synthesis).
           // T1 (J2/G8): the re-digest honors the block's NON-FATAL contract — the old must here
           // killed a full run on a re-digest timeout AFTER the sweeps had already landed (the F5
-          // 48%-timeout class). One fresh retry through the fallback chain on a timeout; still failing ⇒
+          // 48%-timeout class). One retry on a fresh session, same model, on a timeout; still failing ⇒
           // the swept register directives are DEMOTED back to deferrals (open coverage row + the
           // CLEAR→CONDITIONAL clamp — "can't close → disclose") and the run continues on the prior digest.
           // CROWDED-FIELD FIX (teal-gantry, 2026-07-21) — RETIRED BY, and this is the whole win.

@@ -481,8 +481,8 @@ export function warmHardWallStop({ fail, warm, signals }) {
 // generically it looked like `nonzero_exit_1` and the ladder re-attempted INSTANTLY, hammering an API
 // that just said "go away" (and burning the retry budget in seconds — the 04:30 restart-window shape).
 // Detect it and reclassify to `status_overloaded`, the token the normalized --json envelope already
-// produces for the same condition: FALLBACK_ELIGIBLE routes it to the chain's model cascade,
-// TRANSIENT_RE routes an exhausted chain to the recovery park (.postponed + escalating backoff) — the
+// produces for the same condition: the stage fails on its one model (there is no model cascade), and
+// TRANSIENT_RE routes that failure to the recovery park (.postponed + escalating backoff) — the
 // existing machinery owns the re-attempt; runStage breaks its own ladder on it (mirrors lane_wedge).
 // The 529 match is deliberately ANCHORED (api error / http prefix, or overload vocabulary within the
 // same line) so a stray "529" in ordinary output never misroutes a real content failure. PURE + exported.
@@ -1617,11 +1617,11 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     fail = classifyWedge(fail, usage, turn.signals);
     // D3: an Anthropic 529/overload hides inside the generic transport tokens (nonzero_exit_1 through
     // claude -p) — reclassify to status_overloaded so it stops the same-model ladder below and rides the
-    // chain cascade / recovery park instead. Only the transport shapes are eligible: a timeout/wedge has
+    // recovery park instead. Only the transport shapes are eligible: a timeout/wedge has
     // its own policy, and a content failure must never be laundered into a transient by a stray match.
     if (fail && /^(nonzero_exit_|status_error$|unparseable_json$)/.test(fail) && isOverloaded({ json, stdout: turn.stdout, stderr })) fail = "status_overloaded";
     // Rate-limit / session-cap (429): the standalone engine maps EVERY tier to the one Claude subscription, so
-    // the fallback cascade is futile — classify distinctly (NOT in FALLBACK_ELIGIBLE) and carry resetsAt so the
+    // a re-run on any tier is futile — classify distinctly (NOT in FALLBACK_ELIGIBLE) and carry resetsAt so the
     // pipeline POSTPONES the run to resetsAt instead of failing it. (Overrides the nonzero_exit_1 a 429 shows as.)
     // Guarded on `fail`: a turn whose finished, validated artifact was just accepted (the exit-1 rescue above)
     // stays accepted — the NEXT stage's first turn hits the same cap at 0 tokens spent and postpones cleanly.
@@ -1971,7 +1971,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // repeat-signature terminal) owns what happens next, with proper accounting — that lane's single
     // fresh sample replaces the blind third attempt this used to buy. Scoped to the content classes
     // (missing_file / invalid_file / max_tokens_no_output — same stage, same validator string); every
-    // transport class keeps its own policy (timeout's single extended shot, the chain cascade, the
+    // transport class keeps its own policy (timeout's single extended shot, and the
     // wedge/overload breaks above and below).
     //
     // BUILD 2 — A4's PREMISE FAILS ON EXACTLY ONE ATTEMPT, AND IT IS THE ONE IT USUALLY FIRES ON.
@@ -2141,8 +2141,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     }
 
     // Lane-wedge: the turn never got a command lane (0 tokens). The extended ×1.5 shot can't help (it produced
-    // nothing), and switching models can't fix a SHARED lane — so stop here and let the chain cascade fast. The
-    // chain-level lane-wedge retry (stage() in pipeline.mjs) waits for the lane to clear and retries the chain.
+    // nothing), and another attempt on a SHARED lane cannot help — so stop here and hand it on fast. The
+    // lane-wedge retry in stage() (pipeline.mjs) waits for the lane to clear and dispatches the stage again.
     if (fail === "lane_wedge") break;
     //: a model mismatch is a CONFIGURATION fault, not a transient. The next attempt sends the same
     // argv to the same provider and gets the same substitution, so retrying only buys the wrong model
@@ -2168,8 +2168,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     }
     // D3: overload (529 / status_overloaded) — stop the ladder here: an in-ladder re-attempt hammers an
     // API that just said it is overloaded, seconds apart, on the SAME model. Breaking hands the failure
-    // to the existing machinery: the chain cascades models (FALLBACK_ELIGIBLE) and an exhausted chain
-    // parks the run for recovery with escalating backoff (TRANSIENT_RE → .postponed).
+    // to the existing machinery: the stage fails on its one model (there is no model cascade), and that
+    // failure parks the run for recovery with escalating backoff (TRANSIENT_RE → .postponed).
     if (fail === "status_overloaded") break;
     // Rate-limit: do NOT retry (every retry hits the same capped subscription) and do NOT fall back — return
     // immediately so the pipeline can postpone + auto-resume after the window. resetsAt rides the result.

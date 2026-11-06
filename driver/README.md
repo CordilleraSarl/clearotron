@@ -95,8 +95,8 @@ kind of thing a module is before you open it.
 - Retries never re-dispatch the same second an attempt failed: every retry waits
   `CLEAROTRON_RETRY_BACKOFF_MS` first (default 20000; attempt 1 never waits; the wait holds no turn
   slot). Anthropic 529/overload failures are classified `status_overloaded` and stop the same-model
-  ladder after ONE attempt — the chain's model cascade and the recovery park (`.postponed` +
-  escalating backoff) own the re-attempt.
+  ladder after ONE attempt — the recovery park (`.postponed` + escalating backoff) owns the
+  re-attempt, on the same model: there is no model cascade.
 
 ## Run it ($0 first, then live)
 

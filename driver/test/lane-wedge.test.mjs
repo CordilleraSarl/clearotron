@@ -60,12 +60,12 @@ test("#5b warmHardWallStop: a WARM hard-wall timeout stops after ONE attempt; a 
 });
 
 
-test("lane_wedge IS cross-provider-fallback-eligible (the chain cascades providers on a wedge)", () => {
+test("lane_wedge is transient infrastructure, which a caller may re-run on the same model", () => {
   assert.equal(isFallbackEligible("lane_wedge"), true);
   assert.equal(isFallbackEligible("timeout"), true);
 });
 
-test("content failures still never cascade (the quality-floor guardrail is intact)", () => {
+test("content failures are never re-run as infrastructure (the quality-floor guardrail is intact)", () => {
   assert.equal(isFallbackEligible("invalid_file:x/narrative.md:finding_registration_invalid"), false);
   assert.equal(isFallbackEligible("missing_file:x"), false);
   assert.equal(isFallbackEligible(null), false);
