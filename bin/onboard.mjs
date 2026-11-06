@@ -243,7 +243,7 @@ export const cloudAccount = (cloud) =>
 export const servedLine = (v) => (v?.served || v?.provider)
   ? `served by ${v.served ?? "a model the program did not name"}${v.provider ? `; the program names its provider "${v.provider}"` : ""}.`
   : null;
-import { runRequiredNames, missingRequirements, billingRefusalWords, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
+import { runRequiredNames, missingRequirements, billingRefusalWords, whatIsMissing, cannotSearchYet, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 // one synopsis reader for every verb that prints one.
@@ -1529,7 +1529,6 @@ export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
   // Whether the engine probe's turn started the AI program (TURN_KEPT_ITS_FILES); one refused first did not.
   let probeTurnRan = false;
-  say(`  repo: ${REPO}`);
 
   // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
   //
@@ -1554,8 +1553,298 @@ export async function runCheck() {
         home: homedir() })
     : null;
 
-  // — CURRENT, not just configured. Printed before anything else because a stale deployment
-  // makes every line below it a report about the wrong build.
+  // Read the file up here rather than at the `.env` heading below: the opening is the first that needs
+  // `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
+  // is not applying — see readEnvFile's header.
+  // `fileEnv` is read at the top of runCheck now — the Deployment section needs it to name the box on a
+  // box that runs no units, and a `const` used above its declaration is a dead-zone crash, not a
+  // fallback. It reached here as one on the first draft of that section: harmless on a hosted box,
+  // where the ternary never evaluates this branch, and fatal on every install without units.
+  // Environment wins over the file (the loader contract), so report the effective value and say which
+  // source it came from — a value read from the wrong place is the whole class of bug here.
+  // ── CHECK 1 — THE CHECKER READS EVERY SPELLING THE ENGINE ACCEPTS ─────────────────────────
+  //
+  // This read `process.env[k]` and `fileEnv[k]` for the LITERAL key, while the writer below maps every
+  // key and writes the CLEAROTRON_* name. So on an install THIS WIZARD had
+  // just configured correctly, `--check` reported every renamed variable as NOT SET, and told the
+  // operator to go and set the old name — the one the engine is moving away from.
+  //
+  // Batch 1 recorded this trap in the opposite direction ("validating under names the engine reads while
+  // writing names that would warn"). It survived its own fix in mirror image, which is why carries
+  // the write-point check forward as a standing requirement rather than a one-off.
+  //
+  // CURRENT SPELLING FIRST, then the retired ones — the same order `applyEnvAliases` resolves in, so the
+  // checker cannot disagree with the engine about which value wins when an operator has both set during
+  // the migration. `from` names the spelling that answered, so an operator running on an old name can
+  // see that they are, instead of being told everything is fine.
+  //
+  // `from` NAMES THE SOURCE, NOT THE SPELLING, and the first cut of this got that wrong. It appended
+  // the answering spelling so "an operator on an old name can see that they are" — but `applyEnvAliases`
+  // runs ungated at load and populates the CURRENT name from the old one, so the current spelling always
+  // answers first and the label always named it. On a box configured entirely under retired names it
+  // therefore reported the new spelling as the one that had answered: not merely uninformative, but the
+  // opposite of what happened. The evidence it wanted is destroyed before this function can see it.
+  //
+  // THAT OPERATOR IS NO LONGER TOLD ANYTHING, and this note used to claim otherwise. It described a
+  // deprecation notice `applyEnvAliases` printed at load, from the translation itself. There is no
+  // translation and no notice: the owner ruled both out on 2026-08-26 (no migration, no legacy support,
+  // and — asked directly — no check for the old names either), because a box reaches this code through
+  // the install and the boxes that predated the rename are rebuilt rather than upgraded. The 2026-09-04
+  // global rename extended that to the whole namespace. An old name is a line in a file nothing reads,
+  // and the paragraph above describes a configuration that no longer occurs.
+  const effective = (k, names = [k]) => {
+    for (const name of names) {
+      if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
+      if (present(fileEnv[name])) return { v: fileEnv[name], from: ".env", name };
+    }
+    return null;
+  };
+
+  // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
+  //
+  // F34: two sections asserted facts about the units while reading the operator's shell, and both of
+  // their reported problems were false on a correctly-running install. Resolving this once, here, is
+  // deliberate — a second reader would drift from this one exactly as the composer and the checker did
+  // in F41, and the drift is invisible because both sides keep passing their own arms.
+  // The reading itself was hoisted AGAIN, to the top of runCheck, so the Deployment section can name
+  // the box from the file the units load. `unitDir`, `hosted`, `unitEnv` and `startPaths` are all in
+  // scope from there; nothing between here and there consumed them, which is why the move is safe.
+
+  // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION ──────────────────────────────────────────────
+  //
+  // The reading above was hoisted here from further down for this. It used to be resolved BELOW the
+  // door check, so the one section making the loudest claim about the running service — "NOBODY can
+  // use this portal" — was the one section that could not consult it.
+  //
+  // MEASURED 2026-09-06 on a healthy packaged install: `doctor` printed that ✗ and exited 1 on a box
+  // where the local user signs in and `GET /portal/api/me` returned `{"role":"staff"}`. The units' file
+  // carried `PORTAL_STAFF_DOMAINS=localhost` (a staff-domain rule, since deleted), the identity was
+  // `<user>@localhost`, and the running service admitted it as staff. This command read the CLI's own
+  // `.env`, where neither that name nor `PORTAL_AUTH_MODE` appeared — so the check was not ignoring the
+  // auth mode, it never saw it. What admits a person now is their entry in the grants file, and the
+  // units' file is still the only place that names which grants file.
+  //
+  // The disclosure was already here and one severity too quiet: a `·` saying "what THIS environment
+  // implies, not what the running service serves", directly above a `✗` phrased in the present
+  // indicative about the live box. A caveat does not repair a false claim standing beside it.
+  //
+  // SO THE VALUES COME FROM THE FILE THE SERVICE READS when this box is hosted, and the source is named
+  // beside the verdict rather than left to a caveat. Not an exemption for `PORTAL_AUTH_MODE=local`,
+  // which was the fix originally filed: that variable is absent from the file this command was reading,
+  // so exempting on it would have changed nothing at all.
+  const serviceEnvLabel = hosted ? "the units' environment" : "your environment file";
+  const serviceEnvFile = hosted ? join(homedir(), ".env") : READ_ENV_PATH();
+  // A HOSTED BOX WHOSE UNIT ENVIRONMENT COULD NOT BE READ ANSWERS `null`, NEVER `fileEnv`. Falling back
+  // to the CLI's file there would reproduce this defect exactly, and silently — `unitEnvironment`
+  // already distinguishes a failure to look, and the door check below refuses to claim a lockout on one.
+  const serviceKnown = !hosted || unitEnv?.known === true;
+  const serviceFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
+  const effectiveForService = (k, names = [k]) => {
+    for (const name of names) {
+      if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
+      if (serviceFileEnv && present(serviceFileEnv[name])) return { v: serviceFileEnv[name], from: serviceEnvLabel, name };
+    }
+    return null;
+  };
+  // WHAT THE SERVICES THEMSELVES READ, for the two judgements that decide whether a search runs: how they
+  // pay, and "Will a search run?". On a machine with units, that is their file and nothing else: they run
+  // with CLEAROTRON_NO_ENV_FILE=1, so doctor's shell never reaches them. Layered as effectiveForService
+  // layers it, a cloud switch this shell exported for its own use was judged the services' own, and doctor
+  // reported "a search is refused" on services that ran; a billing word here asked them for a key they did
+  // not need. With no units, the services are the children of `clearotron start` and inherit its shell, so
+  // effectiveForService is the true answer there.
+  const servicesRead = (k) => (!hosted ? effectiveForService(k)
+    : serviceFileEnv && present(serviceFileEnv[k]) ? { v: serviceFileEnv[k], from: serviceEnvLabel, name: k } : null);
+
+  // ON A MACHINE WITH UNITS THIS SECTION DESCRIBES THE SERVICES: which AI, which program, how they pay. They read their
+  // own file and search their own PATH (servicesRead, above), so a shell that chose another AI says nothing about them,
+  // and a file that cannot be read is a failure to look, never a reason to answer from this shell. With no units, the
+  // services are the children of `clearotron start`, and this command's configuration is theirs.
+  const engineRead = (k, names = [k]) => (hosted ? servicesRead(k) : effective(k, names));
+  /** The environment a stage's program would see: `keys` as engineRead reads them, and on a machine with units, the units' PATH and none of this shell's values for those keys. */
+  const engineEnvOf = (keys = []) => {
+    const env = { ...process.env };
+    const unitsPath = hosted ? unitValue(unitEnv, "PATH").value : null;
+    if (unitsPath) env.PATH = unitsPath;
+    for (const k of keys) {
+      if (hosted) delete env[k];
+      const e = engineRead(k);
+      if (e) env[k] = e.v;
+    }
+    return env;
+  };
+  const engSel = engineRead("CLEAROTRON_AI");
+  const engineId = String(engSel?.v ?? DEFAULT_ENGINE_ID).trim().toLowerCase();
+  const engSpec = ENGINE_BINARIES[engineId];
+
+  // ONE READER FOR THE REGISTER AND THE RESEARCH KEY, the services' own. Only a machine with units has a
+  // second environment to read; with no units, the services are started from this command's own file, and
+  // `effective` has always read and labelled exactly that.
+  const serviceValue = hosted ? effectiveForService : effective;
+
+  // ── WHAT THE OPENING NEEDS FROM THE ENGINE SECTION, READ BEFORE IT ─────────────────────────────────
+  //
+  // The opening says whether the engine program resolves (the sign-in line) and, under --probe-engine,
+  // runs the turn on the copy that resolves. Both are read here, once, and the Engine section still
+  // prints every line about them. `engineJudged` is that section's own condition: it judges nothing when
+  // the units' environment cannot be read, or when CLEAROTRON_AI names no engine this driver ships.
+  const engineJudged = serviceKnown && !(engSel && !engSpec);
+  // — through `effective`, so the engine binary is found under whichever spelling is set. Read
+  // literally, this reported a configured binary as missing on any install the wizard had written.
+  const binEff = engineJudged ? engineRead(engSpec.env, [engSpec.env]) : null;
+  // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
+  // `claude` is not a configuration that can be wrong: it asks PATH, then the copy Clearotron installed.
+  const binSet = engineJudged && !!binEff && String(binEff.v).trim() !== engSpec.fallback;
+  const binSetting = engineJudged ? (binEff?.v || engSpec.fallback) : null;
+  const bin = engineJudged ? resolveEngineBin(binSetting, { engine: engineId, env: engineEnvOf() }) : null;
+  // How the mode is read, and why its environment is normalised first, is the Engine section's note
+  // WHICH MODE THIS INSTALL IS IN.
+  const invEnv = engineJudged
+    ? engineEnvOf(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((x) => [x.env, x.authEnv, x.apiKeyEnv])].filter(Boolean))
+    : null;
+  const installMode = engineJudged ? engineMode(engineInventory(invEnv)) : null;
+  // THE COMMAND THE READER CAN TYPE FROM HERE, as the demo line names its own. A bare `clearotron` is not
+  // on PATH for an install run from npx, and now that the engine program comes with the install this is
+  // the line most installs see first. The opening prints it when it leads and the Engine section prints
+  // it otherwise; null where that section would print the demo lines instead.
+  const signInLine = engineJudged && installMode !== ENGINE_MODES.DEMO
+    ? "The engine program is installed. Whether it is signed in cannot be read from disk: run "
+      + `\`${reachableCommand("doctor --probe-engine")}\` to find out.`
+    : null;
+
+  // ONE TURN, WHEREVER IT RUNS. The engine as a RUN would see it (engineEnvOf). Only the engine-selection
+  // keys — the probe must bill exactly the way this machine bills and moves no other variable. The auth
+  // variables ride this list for the same reason CLEAROTRON_AI does: without them the probe bills the way
+  // the AMBIENT environment says rather than the way this .env says, and "proven" would name a way of
+  // paying that no run takes.
+  //
+  // THE CREDENTIALS RIDE IT TOO, and did not. This was a second copy of the list `applyEngineEnv`
+  // applies, and it had dropped the API key and the headless token — so a token kept only in this
+  // install's .env never reached the probe, which then reported the engine signed out while the same
+  // token exported into the shell proved it. `engineEnvKeys` is the probe's own list: the copy that is
+  // filled is now the copy that is applied.
+  const runTurn = async () => {
+    const v = await probeEngineTurn({ env: engineEnvOf(engineEnvKeys()) });
+    probeTurnRan = v.ok || v.basis !== "config";
+    return v;
+  };
+  /** What a turn's verdict prints, wherever the turn ran. */
+  const sayTurn = (v) => {
+    if (v.ok) {
+      ok(`${engineId} completed a turn — binary, credential and model access all work`);
+      const served = servedLine(v);
+      if (served) info(served);
+      // The ONLY route to READY. Everything else in this block reads the filesystem, and a signed-out
+      // CLI passes every filesystem test there is — which is why this line is here and not above.
+      ok("MODE: engine ready — proven by the turn just spent, not inferred from a file being executable.");
+    }
+    else {
+      problem(probeFailureText(v));
+      if (v.detail) info(`engine said: ${v.detail}`);
+    }
+  };
+
+  // ── WILL A SEARCH RUN? — THE ORDER-TIME GATE'S OWN QUESTION, OF THE ENVIRONMENT A RUN WILL HAVE ──
+  //
+  // Every section reads one requirement from YOUR shell and this command's .env. A search is refused by
+  // a different reader: `orderTimeRefusal`, at order time, against the runner's environment — a
+  // background unit's, on a machine that has them. So this command could pass an install the run then
+  // refused: it found `claude` on this shell's PATH while the unit, which has no such PATH, was refused
+  // for an engine path it had never been given. Asking the gate's own authority of the units' environment
+  // is what makes an install this command passes one that can run. `blocking`, not `problem`: an install
+  // that is not configured yet is unfinished rather than broken, and the exit status keeps that contract.
+  //
+  // ASKED ONCE, BEFORE ANYTHING ELSE IS PRINTED, because the opening is its answer. `atOrder` is null
+  // when the units' environment could not be read; sayWillASearchRun prints the section wherever it goes.
+  const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
+  const atOrder = (() => {
+    if (!serviceKnown) return null;
+    // UNTIL NOTHING NEW IS NAMED: which names a run needs depends on values read in the pass before. The
+    // register and the engine name their credentials, their program and the billing word; a billing word of
+    // `cloud` names the cloud switches and the gateway address; a switch found becomes the blocking row, and
+    // the cloud's other settings are named only where the view already holds them. Two passes stopped before
+    // the billing word was read, so a machine that pays through a cloud account was checked as a subscription
+    // one and its missing switch went unreported. It stops at the first pass that finds no new value: the names
+    // asked for depend only on the values found, so the next pass would ask for the names this one just read.
+    const view = {};
+    // Read as the services read it (servicesRead): a value in this shell never reaches a unit.
+    const fill = (names) => { for (const n of names) { const e = servicesRead(n); if (e) view[n] = e.v; } };
+    fill([REGISTER_ENV, ENGINE_ENV]);
+    let before;
+    do { before = Object.keys(view).length; fill(runRequiredNames(view, tables)); } while (Object.keys(view).length > before);
+    // AND THE PATH THE SERVICES SEARCH, so the engine's program is looked for where a run looks for it.
+    // The view held the settings and no PATH, so a `claude` on the services' PATH, with no path setting and
+    // no copy installed by setup, was reported as a search refused while the run found it and ran. On a
+    // machine with units that PATH is the units' own (every unit sets it, with `%h` for the home, which the
+    // unit reader expands); never this shell's, which the units do not inherit. With no units, the
+    // services are the children of `clearotron start`, which inherit the PATH of the shell it runs in.
+    const servicesPath = hosted ? unitValue(unitEnv, "PATH").value : process.env.PATH;
+    if (servicesPath) view.PATH = servicesPath;
+    return missingRequirements(view, tables).atOrder;
+  })();
+  const sayWillASearchRun = () => {
+    say("\n  Will a search run?");
+    if (!serviceKnown) {
+      info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
+    } else if (atOrder.length) {
+      blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);
+      for (const r of atOrder) info(`  ${r.name} — ${r.why}`);
+    } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
+  };
+  const sayResearch = () => {
+    say("\n  Research provider");
+    // The same reader as the register, for the same reason: this is a key the services use.
+    const px = serviceKnown ? serviceValue("PERPLEXITY_API_KEY") : null;
+    if (!serviceKnown) info("the units' environment could not be read, so whether the services hold PERPLEXITY_API_KEY is not judged here — a failure to look, not a finding");
+    else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
+    else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
+  };
+
+  // ── THE OPENING: WHETHER A SEARCH CAN RUN, WHAT STOPS IT, AND THE NEXT ACTION ─────────────────────
+  //
+  // A newcomer reads this command from the top, and the top was its path and its build: the answer to
+  // "can this install search" sat halfway down, a screen away from the command that changes it (measured
+  // on a packaged install, 2026-11-06: line 52 of 100). So the answer comes first, and every section
+  // below keeps every line it had.
+  //
+  // ON A MACHINE WITH NO UNITS WHOSE SEARCH IS REFUSED, the opening is the refusal the portal gives the
+  // person who runs the install, from the same composer (cannotSearchYet), with the command as it is
+  // typed from here. A machine with units is not told that: its services read `~/.env`, which setup does
+  // not write, so running setup alone would not reach them. A refusal with no words for what is missing
+  // has no such sentence, and opens as every other state does.
+  //
+  // EVERY OTHER STATE OPENS WITH "Will a search run?" ITSELF, then the sign-in line when the program
+  // resolves, or, under --probe-engine on an install that can search, the turn that answers it. The turn
+  // is announced before it spends anything, and above the heading: a line that starts a section would end
+  // "Will a search run?" for any reader that splits this output at its headings.
+  //
+  // "Research provider" comes second in every state: it is the one setting that stops three of the four
+  // searches and that the order-time answer does not cover.
+  const missingWords = serviceKnown && atOrder.length ? whatIsMissing(atOrder) : "";
+  const leadIsTheRefusal = !hosted && missingWords !== "";
+  const turnLeads = PROBE_ENGINE && serviceKnown && atOrder.length === 0 && engineJudged && bin.executable && !bin.relative;
+  const signInLineLeads = !leadIsTheRefusal && !PROBE_ENGINE && signInLine !== null;
+  // ONE LINE, AS EVERY LINE BELOW IS, and the terminal wraps it. Wrapped here at spaces, it broke the command
+  // apart wherever the install's path made a long word: `cd <path> && npx clearotron install` on three lines.
+  if (leadIsTheRefusal) say(`  ${cannotSearchYet(missingWords, invoke("install"))}`);
+  else {
+    let turn = null;
+    if (turnLeads) {
+      say(`  ${probingLine(engineId)}`);
+      turn = await runTurn();
+    }
+    sayWillASearchRun();
+    if (signInLineLeads) info(signInLine);
+    if (turn) sayTurn(turn);
+  }
+  sayResearch();
+
+  // The path this command runs from, with the build it names below it.
+  say(`\n  repo: ${REPO}`);
+
+  // — CURRENT, not just configured. Printed first among the sections about this install's build,
+  // because a stale deployment makes every line below it a report about the wrong build. The opening
+  // and the research key come before it, because a newcomer's first question is whether a search runs.
   say("\n  Deployment");
   const cur = deploymentCurrency();
   if (cur.state === "current") ok(`up to date with ${cur.upstream} as of the last fetch`);
@@ -1720,135 +2009,11 @@ export async function runCheck() {
   if (nodeV.ok) ok(`node ${nodeV.current}`);
   else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer; node:sqlite is not a built-in module before then`);
 
-  // Read the file up here rather than at the `.env` heading below: the engine section is the first that
-  // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
-  // is not applying — see readEnvFile's header.
-  // `fileEnv` is read at the top of runCheck now — the Deployment section needs it to name the box on a
-  // box that runs no units, and a `const` used above its declaration is a dead-zone crash, not a
-  // fallback. It reached here as one on the first draft of that section: harmless on a hosted box,
-  // where the ternary never evaluates this branch, and fatal on every install without units.
-  // Environment wins over the file (the loader contract), so report the effective value and say which
-  // source it came from — a value read from the wrong place is the whole class of bug here.
-  // ── CHECK 1 — THE CHECKER READS EVERY SPELLING THE ENGINE ACCEPTS ─────────────────────────
-  //
-  // This read `process.env[k]` and `fileEnv[k]` for the LITERAL key, while the writer below maps every
-  // key and writes the CLEAROTRON_* name. So on an install THIS WIZARD had
-  // just configured correctly, `--check` reported every renamed variable as NOT SET, and told the
-  // operator to go and set the old name — the one the engine is moving away from.
-  //
-  // Batch 1 recorded this trap in the opposite direction ("validating under names the engine reads while
-  // writing names that would warn"). It survived its own fix in mirror image, which is why carries
-  // the write-point check forward as a standing requirement rather than a one-off.
-  //
-  // CURRENT SPELLING FIRST, then the retired ones — the same order `applyEnvAliases` resolves in, so the
-  // checker cannot disagree with the engine about which value wins when an operator has both set during
-  // the migration. `from` names the spelling that answered, so an operator running on an old name can
-  // see that they are, instead of being told everything is fine.
-  //
-  // `from` NAMES THE SOURCE, NOT THE SPELLING, and the first cut of this got that wrong. It appended
-  // the answering spelling so "an operator on an old name can see that they are" — but `applyEnvAliases`
-  // runs ungated at load and populates the CURRENT name from the old one, so the current spelling always
-  // answers first and the label always named it. On a box configured entirely under retired names it
-  // therefore reported the new spelling as the one that had answered: not merely uninformative, but the
-  // opposite of what happened. The evidence it wanted is destroyed before this function can see it.
-  //
-  // THAT OPERATOR IS NO LONGER TOLD ANYTHING, and this note used to claim otherwise. It described a
-  // deprecation notice `applyEnvAliases` printed at load, from the translation itself. There is no
-  // translation and no notice: the owner ruled both out on 2026-08-26 (no migration, no legacy support,
-  // and — asked directly — no check for the old names either), because a box reaches this code through
-  // the install and the boxes that predated the rename are rebuilt rather than upgraded. The 2026-09-04
-  // global rename extended that to the whole namespace. An old name is a line in a file nothing reads,
-  // and the paragraph above describes a configuration that no longer occurs.
-  const effective = (k, names = [k]) => {
-    for (const name of names) {
-      if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
-      if (present(fileEnv[name])) return { v: fileEnv[name], from: ".env", name };
-    }
-    return null;
-  };
-
-  // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
-  //
-  // F34: two sections asserted facts about the units while reading the operator's shell, and both of
-  // their reported problems were false on a correctly-running install. Resolving this once, here, is
-  // deliberate — a second reader would drift from this one exactly as the composer and the checker did
-  // in F41, and the drift is invisible because both sides keep passing their own arms.
-  // The reading itself was hoisted AGAIN, to the top of runCheck, so the Deployment section can name
-  // the box from the file the units load. `unitDir`, `hosted`, `unitEnv` and `startPaths` are all in
-  // scope from there; nothing between here and there consumed them, which is why the move is safe.
-
-  // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION ──────────────────────────────────────────────
-  //
-  // The reading above was hoisted here from further down for this. It used to be resolved BELOW the
-  // door check, so the one section making the loudest claim about the running service — "NOBODY can
-  // use this portal" — was the one section that could not consult it.
-  //
-  // MEASURED 2026-09-06 on a healthy packaged install: `doctor` printed that ✗ and exited 1 on a box
-  // where the local user signs in and `GET /portal/api/me` returned `{"role":"staff"}`. The units' file
-  // carried `PORTAL_STAFF_DOMAINS=localhost` (a staff-domain rule, since deleted), the identity was
-  // `<user>@localhost`, and the running service admitted it as staff. This command read the CLI's own
-  // `.env`, where neither that name nor `PORTAL_AUTH_MODE` appeared — so the check was not ignoring the
-  // auth mode, it never saw it. What admits a person now is their entry in the grants file, and the
-  // units' file is still the only place that names which grants file.
-  //
-  // The disclosure was already here and one severity too quiet: a `·` saying "what THIS environment
-  // implies, not what the running service serves", directly above a `✗` phrased in the present
-  // indicative about the live box. A caveat does not repair a false claim standing beside it.
-  //
-  // SO THE VALUES COME FROM THE FILE THE SERVICE READS when this box is hosted, and the source is named
-  // beside the verdict rather than left to a caveat. Not an exemption for `PORTAL_AUTH_MODE=local`,
-  // which was the fix originally filed: that variable is absent from the file this command was reading,
-  // so exempting on it would have changed nothing at all.
-  const serviceEnvLabel = hosted ? "the units' environment" : "your environment file";
-  const serviceEnvFile = hosted ? join(homedir(), ".env") : READ_ENV_PATH();
-  // A HOSTED BOX WHOSE UNIT ENVIRONMENT COULD NOT BE READ ANSWERS `null`, NEVER `fileEnv`. Falling back
-  // to the CLI's file there would reproduce this defect exactly, and silently — `unitEnvironment`
-  // already distinguishes a failure to look, and the door check below refuses to claim a lockout on one.
-  const serviceKnown = !hosted || unitEnv?.known === true;
-  const serviceFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
-  const effectiveForService = (k, names = [k]) => {
-    for (const name of names) {
-      if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
-      if (serviceFileEnv && present(serviceFileEnv[name])) return { v: serviceFileEnv[name], from: serviceEnvLabel, name };
-    }
-    return null;
-  };
-  // WHAT THE SERVICES THEMSELVES READ, for the two judgements that decide whether a search runs: how they
-  // pay, and "Will a search run?". On a machine with units, that is their file and nothing else: they run
-  // with CLEAROTRON_NO_ENV_FILE=1, so doctor's shell never reaches them. Layered as effectiveForService
-  // layers it, a cloud switch this shell exported for its own use was judged the services' own, and doctor
-  // reported "a search is refused" on services that ran; a billing word here asked them for a key they did
-  // not need. With no units, the services are the children of `clearotron start` and inherit its shell, so
-  // effectiveForService is the true answer there.
-  const servicesRead = (k) => (!hosted ? effectiveForService(k)
-    : serviceFileEnv && present(serviceFileEnv[k]) ? { v: serviceFileEnv[k], from: serviceEnvLabel, name: k } : null);
-
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
   // reason. Which engine is configured comes first now, and the binary is checked through THAT engine's
   // variable.
-  //
-  // ON A MACHINE WITH UNITS THIS SECTION DESCRIBES THE SERVICES: which AI, which program, how they pay. They read their
-  // own file and search their own PATH (servicesRead, above), so a shell that chose another AI says nothing about them,
-  // and a file that cannot be read is a failure to look, never a reason to answer from this shell. With no units, the
-  // services are the children of `clearotron start`, and this command's configuration is theirs.
-  const engineRead = (k, names = [k]) => (hosted ? servicesRead(k) : effective(k, names));
-  /** The environment a stage's program would see: `keys` as engineRead reads them, and on a machine with units, the units' PATH and none of this shell's values for those keys. */
-  const engineEnvOf = (keys = []) => {
-    const env = { ...process.env };
-    const unitsPath = hosted ? unitValue(unitEnv, "PATH").value : null;
-    if (unitsPath) env.PATH = unitsPath;
-    for (const k of keys) {
-      if (hosted) delete env[k];
-      const e = engineRead(k);
-      if (e) env[k] = e.v;
-    }
-    return env;
-  };
-  const engSel = engineRead("CLEAROTRON_AI");
-  const engineId = String(engSel?.v ?? DEFAULT_ENGINE_ID).trim().toLowerCase();
-  const engSpec = ENGINE_BINARIES[engineId];
   if (!serviceKnown) {
     info("the units' environment could not be read, so which AI the services run is not judged here — a failure to look, not a finding");
   } else if (engSel && !engSpec) {
@@ -1869,15 +2034,8 @@ export async function runCheck() {
 
     // The line between an ABSENCE and a MISCONFIGURATION. Nothing set and no binary on PATH is a fresh
     // machine — reported, not failed. A variable that names something wrong is a configuration that
-    // will fail at run time, and this is the cheap place to learn it.
-    // — through `effective`, so the engine binary is found under whichever spelling is set. Read
-    // literally, this reported a configured binary as missing on any install the wizard had written.
-    const binEff = engineRead(engSpec.env, [engSpec.env]);
-    // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
-    // `claude` is not a configuration that can be wrong: it asks PATH, then the copy Clearotron installed.
-    const binSet = !!binEff && String(binEff.v).trim() !== engSpec.fallback;
-    const binSetting = binEff?.v || engSpec.fallback;
-    const bin = resolveEngineBin(binSetting, { engine: engineId, env: engineEnvOf() });
+    // will fail at run time, and this is the cheap place to learn it. The program (`bin`) is resolved above
+    // the opening, which needs it; this section still says everything about it.
     // WHICH COPY, AND ITS VERSION, because the machine's own install and the one Clearotron installed
     // are both legitimate and behave differently: the first updates itself, the second moves with
     // `clearotron update`. The version comes from the copy's own package.json when npm installed it.
@@ -1962,8 +2120,8 @@ export async function runCheck() {
     // `env[spec.env]` — the CURRENT spelling only — and this file is deliberately not a CLI entry, so
     // the alias layer has not run here. Handed raw process.env it would miss a binary configured
     // under the legacy name and report DEMO on a box that has an engine.
-    const invEnv = engineEnvOf(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((x) => [x.env, x.authEnv, x.apiKeyEnv])].filter(Boolean));
-    const installMode = engineMode(engineInventory(invEnv));
+    //
+    // `invEnv` and `installMode` are read that way above the opening, which needs the mode for its sign-in line.
     if (installMode === ENGINE_MODES.DEMO) {
       info("MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
         + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`);
@@ -1976,13 +2134,7 @@ export async function runCheck() {
       // restart a service — neither of which can change the answer, because the refusal is about the
       // platform rather than the binary. Naming WSL2 is the only instruction that ends this state.
       for (const line of leaveDemoAdvice(engSpec)) info(line);
-    } else {
-      // THE COMMAND THE READER CAN TYPE FROM HERE, as the demo line above names its own. A bare
-      // `clearotron` is not on PATH for an install run from npx, and now that the engine program comes
-      // with the install this is the line most installs see first.
-      info("The engine program is installed. Whether it is signed in cannot be read from disk: run "
-        + `\`${reachableCommand("doctor --probe-engine")}\` to find out.`);
-    }
+    } else if (!signInLineLeads) info(signInLine);   // printed here unless the opening carries it
 
     // AND WHETHER THE ENGINE AGREES, which is a different question from the one above and the reason an
     // outside user gave up on this product. This command reads its OWN environment; the portal's New
@@ -2071,33 +2223,10 @@ export async function runCheck() {
       info("whether it is SIGNED IN is not checked here — add --probe-engine to spend one cheap turn proving it");
     } else if (!bin.executable || bin.relative) {
       info("not probed — there is no usable binary to probe. Fix the line above first.");
-    } else {
+    } else if (!turnLeads) {
+      // The turn runs here unless it ran for the opening; runTurn and sayTurn are the same either way.
       say(`\n  ${probingLine(engineId)}`);
-      // The engine as a RUN would see it (engineEnvOf). Only the engine-selection keys — the probe must
-      // bill exactly the way this box bills and moves no other variable.
-      // The auth variables ride this list for the same reason CLEAROTRON_AI does: without them the
-      // probe bills the way the AMBIENT environment says rather than the way this .env says, and
-      // "proven" would name a lane no run takes.
-      //
-      // THE CREDENTIALS RIDE IT TOO, and did not. This was a second copy of the list `applyEngineEnv`
-      // applies, and it had dropped the API key and the headless token — so a token kept only in this
-      // install's .env never reached the probe, which then reported the engine signed out while the same
-      // token exported into the shell proved it. `engineEnvKeys` is the probe's own list: the copy that is
-      // filled is now the copy that is applied.
-      const v = await probeEngineTurn({ env: engineEnvOf(engineEnvKeys()) });
-      probeTurnRan = v.ok || v.basis !== "config";
-      if (v.ok) {
-        ok(`${engineId} completed a turn — binary, credential and model access all work`);
-        const served = servedLine(v);
-        if (served) info(served);
-        // The ONLY route to READY. Everything else in this block reads the filesystem, and a signed-out
-        // CLI passes every filesystem test there is — which is why this line is here and not above.
-        ok("MODE: engine ready — proven by the turn just spent, not inferred from a file being executable.");
-      }
-      else {
-        problem(probeFailureText(v));
-        if (v.detail) info(`engine said: ${v.detail}`);
-      }
+      sayTurn(await runTurn());
     }
   }
 
@@ -2556,10 +2685,8 @@ export async function runCheck() {
   // no register was selected, one screen above "nothing a search is refused for is missing from the units'
   // environment": one install, two answers, and the fix it named was already set. effectiveForService is
   // the reader that check asks, so the two lines cannot disagree; where it cannot read the units, this
-  // says it could not look rather than reporting the register absent.
-  // Only a HOSTED box has a second environment to read; with no units, the services are started from
-  // this command's own file, and `effective` has always read and labelled exactly that.
-  const serviceValue = hosted ? effectiveForService : effective;
+  // says it could not look rather than reporting the register absent. That reader is `serviceValue`, above
+  // the opening, which shares it with the research section.
   const prov = serviceKnown ? serviceValue("CLEAROTRON_DATABASE") : null;
   if (!serviceKnown) {
     info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
@@ -2602,12 +2729,7 @@ export async function runCheck() {
     }
   }
 
-  say("\n  Research provider");
-  // The same reader as the register, for the same reason: this is a key the services use.
-  const px = serviceKnown ? serviceValue("PERPLEXITY_API_KEY") : null;
-  if (!serviceKnown) info("the units' environment could not be read, so whether the services hold PERPLEXITY_API_KEY is not judged here — a failure to look, not a finding");
-  else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
-  else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
+  // "Research provider" is printed second, right after the opening (sayResearch).
 
   // ── — THE LANES A PRODUCT DECLARES IT NEEDS, BEFORE A REPORT NAMES THEM ──
   //
@@ -2624,47 +2746,10 @@ export async function runCheck() {
   // doctor that hangs on a box with no route — so this reports ENROLMENT, and says plainly that a
   // source which is enrolled can still fail at run time. The owner's own report says `CONNECTION_CLOSED`
   // on exactly that case.
-  // ── WILL A SEARCH RUN? — THE ORDER-TIME GATE'S OWN QUESTION, OF THE ENVIRONMENT A RUN WILL HAVE ──
   //
-  // Every section above reads one requirement from YOUR shell and this command's .env. A search is
-  // refused by a different reader: `orderTimeRefusal`, at order time, against the runner's environment —
-  // a background unit's, on a box that has them. So this command could pass an install the run then
-  // refused: it found `claude` on this shell's PATH while the unit, which has no such PATH, was refused
-  // for an engine path it had never been given. Asking the gate's own authority of the units' environment
-  // is what makes an install this command passes one that can run. `blocking`, not `problem`: an install
-  // that is not configured yet is unfinished rather than broken, and the exit status keeps that contract.
-  say("\n  Will a search run?");
-  if (!serviceKnown) {
-    info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
-  } else {
-    const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
-    // UNTIL NOTHING NEW IS NAMED: which names a run needs depends on values read in the pass before. The
-    // register and the engine name their credentials, their program and the billing word; a billing word of
-    // `cloud` names the cloud switches and the gateway address; a switch found becomes the blocking row, and
-    // the cloud's other settings are named only where the view already holds them. Two passes stopped before
-    // the billing word was read, so a machine that pays through a cloud account was checked as a subscription
-    // one and its missing switch went unreported. It stops at the first pass that finds no new value: the names
-    // asked for depend only on the values found, so the next pass would ask for the names this one just read.
-    const view = {};
-    // Read as the services read it (servicesRead): a value in this shell never reaches a unit.
-    const fill = (names) => { for (const n of names) { const e = servicesRead(n); if (e) view[n] = e.v; } };
-    fill([REGISTER_ENV, ENGINE_ENV]);
-    let before;
-    do { before = Object.keys(view).length; fill(runRequiredNames(view, tables)); } while (Object.keys(view).length > before);
-    // AND THE PATH THE SERVICES SEARCH, so the engine's program is looked for where a run looks for it.
-    // The view held the settings and no PATH, so a `claude` on the services' PATH, with no path setting and
-    // no copy installed by setup, was reported as a search refused while the run found it and ran. On a
-    // machine with units that PATH is the units' own (every unit sets it, with `%h` for the home, which the
-    // unit reader expands); never this shell's, which the units do not inherit. With no units, the
-    // services are the children of `clearotron start`, which inherit the PATH of the shell it runs in.
-    const servicesPath = hosted ? unitValue(unitEnv, "PATH").value : process.env.PATH;
-    if (servicesPath) view.PATH = servicesPath;
-    const { atOrder } = missingRequirements(view, tables);
-    if (atOrder.length) {
-      blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);
-      for (const r of atOrder) info(`  ${r.name} — ${r.why}`);
-    } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
-  }
+  // "Will a search run?" keeps this place when the opening was the refusal's own sentence, which says the
+  // same thing without the names; in every other state it is the opening (sayWillASearchRun).
+  if (leadIsTheRefusal) sayWillASearchRun();
 
   say("\n  Case law and other capabilities");
   {
