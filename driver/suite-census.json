@@ -579,6 +579,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-files-its-routine-startup-lines.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-demo-keeps-a-folder-it-did-not-make.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -6851,7 +6857,7 @@
         },
         "the-demo-reads-no-brief-and-drains-no-queue.test.mjs": {
           "tests": 1,
-          "asserts": 7,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

@@ -128,7 +128,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, demoTokenSecretPath, keyIssueCommand, demoConnectCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
-import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, unlinkSync, writeFileSync, appendFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke, reachableCommand, foreignPageHint } from "../shared/invocation.mjs";   // — the banner names the verb
 // RE-EXPORTED, NOT RE-DECLARED. The sentence moved to a module that imports nothing of ours, because
@@ -406,6 +406,45 @@ export function clientDoorDownLines({ host, port, exited }) {
     `  Client door  NOT RUNNING on ${host}:${port} — ${exited ? "its output above says why" : "it did not answer within 30s"}. The portal and`,
     "               the engine door are unaffected; a client assistant cannot connect until it is up.",
   ];
+}
+
+/**
+ * THE LINES A HEALTHY DEMO'S SERVICES PRINT AS THEY COME UP, measured on a fresh demo (2026-11-06), each as its service tags it.
+ * Only these go to the startup file alone. A FILTER THAT LISTS WHAT TO SHOW WOULD HIDE A FAILURE IT DID NOT FORESEE: a door that
+ * cannot read its roster, or a sign-in that is unavailable, says so in a line with no FATAL or WARNING in it. So the list is of
+ * what may be filed, and every other line stays on the screen as well. A new routine line shows until it is added here; the
+ * fresh-demo test names it. ABOVE THE MAIN BLOCK, which reads them before any line below it has run.
+ */
+export const DEMO_ROUTINE_LINES = [
+  /^auth ON — /,
+  /^key path: none configured /,
+  /^roster: \d+ customer\(s\) from /,
+  /^This is `clearotron demo`: /,
+  /^listening on http:\/\//,
+  /^audit log: /,
+  /^trigger lane: the engine door takes an access key, and this portal holds one\.$/,
+  /^trigger lane: ops token sub=/,
+  /^settings surface ON — /,
+  /^saved searches ON — /,
+  /^brief reading OFF — this is the demo/,
+  /^local sign-in: no credential at /,
+  /^ {2}Its passphrase is in the box printed below;/,
+  /^API-KEY door — /,
+  /^client ACCOUNT access ON — /,
+  /^stopping — issued keys SURVIVE this stop/,
+];
+
+/**
+ * Whether a demo service's line belongs on the screen as well as in the startup file. A line with no service tag (the rest of
+ * a refusal, a stack trace) or with an alarm in it always shows; a tagged routine line does not; a blank line does not. PURE.
+ */
+export const DEMO_ALARM = /⚠|\bWARN(?:ING)?\b|\bFATAL\b|\bERROR\b|\bMISSING\b/;
+export function demoLineOnScreen(line) {
+  const s = String(line ?? "");
+  if (!s.trim()) return false;
+  if (DEMO_ALARM.test(s)) return true;
+  const tagged = /^\[[\w-]+\] (.*)$/.exec(s);
+  return !(tagged && DEMO_ROUTINE_LINES.some((re) => re.test(tagged[1])));
 }
 
 export function resolvePorts(env = {}) {
@@ -2242,6 +2281,15 @@ if (isMain) {
   const children = [];
   let stopping = false;
 
+  // THE DEMO'S STARTUP FILE, in the demo's own folder, so removing the demo removes it. Every service line is written to it; the
+  // screen keeps every line but a healthy start's routine ones (`demoLineOnScreen`), and a service that stops answering has its
+  // last lines put on the screen before the sentence that points at them, so nothing that explains a failure stays only in the file.
+  const DEMO_STARTUP_LOG = DEMO ? join(paths.base, "startup.log") : null;
+  const fileDemoLine = (line) => {
+    try { appendFileSync(DEMO_STARTUP_LOG, `${line}\n`); } catch { process.stderr.write(`${line}\n`); return; }
+    if (demoLineOnScreen(line)) process.stderr.write(`${line}\n`);
+  };
+  const showFiledTail = (rec) => { if (DEMO) for (const line of rec.tail) process.stderr.write(`${line}\n`); };
   const start = (name, script, env, { args = [], fatal = true, clientDoor = false } = {}) => {
     const child = spawn(process.execPath, [join(REPO, script), ...args], {
       cwd: REPO,
@@ -2262,7 +2310,10 @@ if (isMain) {
       // stderr holds the whole of it — and leaving it alone keeps the child's terminal detection and any
       // progress rendering intact. Piping a stream costs the child its TTY, so only the stream that has to
       // be read is piped.
-      stdio: ["ignore", "inherit", "pipe"],
+      // A DEMO FILES ITS SERVICES' ROUTINE LINES (owner's words, 2026-11-06): its first screen is the progress, the sign-in, the
+      // connect line and how to stop, and a reader met nineteen developer lines above the passphrase box. Both streams are read,
+      // every line goes to the startup file, and any line but a healthy start's routine ones still reaches the screen.
+      stdio: ["ignore", DEMO ? "pipe" : "inherit", "pipe"],
       env: childProcessEnv(process.env, env),
     });
     // The last lines of that child's stderr, forwarded on as they arrive so nothing is delayed or
@@ -2277,12 +2328,22 @@ if (isMain) {
     const keep = (line) => { if (line.trim()) tail.push(line); while (tail.length > 12) tail.shift(); };
     child.stderr?.setEncoding("utf8");
     child.stderr?.on("data", (chunk) => {
-      process.stderr.write(chunk);
+      if (!DEMO) process.stderr.write(chunk);
       const parts = (pending + String(chunk)).split("\n");
       pending = parts.pop() ?? "";
-      for (const line of parts) keep(line);
+      for (const line of parts) { keep(line); if (DEMO) fileDemoLine(line); }
     });
-    child.stderr?.on("end", () => { keep(pending); pending = ""; });
+    child.stderr?.on("end", () => { keep(pending); if (DEMO && pending) fileDemoLine(pending); pending = ""; });
+    if (DEMO) {
+      let out = "";
+      child.stdout?.setEncoding("utf8");
+      child.stdout?.on("data", (chunk) => {
+        const parts = (out + String(chunk)).split("\n");
+        out = parts.pop() ?? "";
+        for (const line of parts) fileDemoLine(line);
+      });
+      child.stdout?.on("end", () => { if (out) fileDemoLine(out); out = ""; });
+    }
     const rec = { name, script, child, alive: true, tail };
     children.push(rec);
     child.on("exit", (code, signal) => {
@@ -2372,11 +2433,16 @@ if (isMain) {
     }
   };
 
+  if (DEMO) {
+    // THIS START'S LINES ONLY: a folder the reader named keeps its file between demos, and the line below points at this one.
+    try { writeFileSync(DEMO_STARTUP_LOG, ""); } catch { /* each line then shows on the screen instead */ }
+    say(`  Startup details are in \`${DEMO_STARTUP_LOG}\`.`);
+  }
   // The face first: the portal reads its trigger key's posture at boot and logs what the lane is capped
   // to, so having the far end already listening keeps that line honest rather than optimistic.
   const mcp = start("the engine door", "mcp-server/http-server.mjs", envs.mcp);
   if (!await healthy(`http://${HOST}:${ports.mcp}/healthz`, mcp)) {
-    if (mcp.alive) { err(`\nstart: the engine door did not answer on ${HOST}:${ports.mcp} within 30s — its output above says why.\n`); await shutdown(1); }
+    if (mcp.alive) { showFiledTail(mcp); err(`\nstart: the engine door did not answer on ${HOST}:${ports.mcp} within 30s — its output above says why.\n`); await shutdown(1); }
     await new Promise(() => {});   // its exit handler is already tearing down
   }
 
@@ -2433,7 +2499,7 @@ if (isMain) {
   const portal = start("the portal", "driver/portal-service.mjs",
     mintedPassphrase ? { ...envs.portal, PORTAL_LOCAL_PASSPHRASE: mintedPassphrase } : envs.portal);
   if (!await healthy(`http://${HOST}:${ports.portal}/portal/health`, portal)) {
-    if (portal.alive) { err(`\nstart: the portal did not answer on ${HOST}:${ports.portal} within 30s — its output above says why.\n`); await shutdown(1); }
+    if (portal.alive) { showFiledTail(portal); err(`\nstart: the portal did not answer on ${HOST}:${ports.portal} within 30s — its output above says why.\n`); await shutdown(1); }
     await new Promise(() => {});
   }
 
