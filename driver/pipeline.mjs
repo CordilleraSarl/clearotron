@@ -121,7 +121,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories, narrowingMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED, COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -8661,6 +8661,15 @@ export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, for
   return rows.filter((r) => r.area && r.note);
 }
 
+// A COVERAGE ROW THAT WAS NOT ADDED. Each adder below catches its own failure and the run goes on (ruled 2026-09-25:
+// deliver, and flag in the audit what still failed), so the row it exists to add is missing from the report and
+// the workbook. Its note is the run's own line; this event is what delivery reads (degraded-parts.mjs, coverageRows),
+// so the audit workbook names the part. It never throws from the catch that calls it.
+function coverageRowNotAdded(runDir, adder, e) {
+  try { runLog(runDir, { event: COVERAGE_ROW_NOT_ADDED, adder, fail: String(e?.message || e).replace(/\s+/g, " ").slice(0, 200) }); }
+  catch { /* the note the caller wrote still stands */ }
+}
+
 export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
@@ -8687,6 +8696,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
     note(`[coverage-judgment] rows[] written from the ledger + the plan-execution receipt: ${rows.length} open slice(s)${discarded ? `; ${discarded} authored row(s) replaced` : ""}`);
   } catch (e) {
     note(`[coverage-judgment] rows[] stamp skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "coverage-judgment", e);
   }
 }
 
@@ -8732,6 +8742,7 @@ export function injectDeferralCoverage(P, runDir, note) {   // @internal — exp
     note(`[frame-reopen] injected ${added} deferral coverage row(s) — the reader sees every unclosed directive`);
   } catch (e) {
     note(`[frame-reopen] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "frame-reopen", e);
   }
 }
 
@@ -8940,6 +8951,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
     note(`[script-scope] injected the Stage-1.5 honesty coverage row for ${added.join(", ")} — in-scope territory on a run whose ${added.length === 1 ? "lane" : "lanes"} did not run (coverage-limited: a disclosed limit, never a verdict clamp)`);
   } catch (e) {
     note(`[script-scope] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "script-scope", e);
   }
 }
 
@@ -9016,6 +9028,7 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
     note(`[lane-depth] injected the depth-shortfall coverage row for ${added.join(", ")} — configured full, delivered less (coverage-limited: a disclosed limit, never a verdict clamp)`);
   } catch (e) {
     note(`[lane-depth] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "lane-depth", e);
   }
 }
 
@@ -9135,6 +9148,7 @@ export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @inte
     note(`[screen-gate] injected ${added} unexamined-drop coverage row(s) — the reader sees every mark the run could not examine`);
   } catch (e) {
     note(`[screen-gate] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "screen-gate", e);
   }
 }
 
@@ -16031,6 +16045,9 @@ async function pipelineInner(job, opts = {}) {
     // THE SEAM'S WRITES ARE ONE CLOSURE, so they can run again: a synthesis save after this point rewrites
     // findings.json from the seat's own call, and every write below went with it (`stage()` re-runs them).
     const seamWrites = async () => {
+    // A pass follows each rewrite of findings.json and adds the rows below again, so delivery reads only the adders
+    // that failed since the last of these.
+    runLog(run.runDir, { event: COVERAGE_ROWS_PASS });
     injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
@@ -19993,6 +20010,7 @@ export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — e
     runLog(runDir, { event: "meaning-gap-coverage", added });
   } catch (e) {
     note(`[common-law] meaning-gap coverage skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "meaning-gap", e);
   }
 }
 

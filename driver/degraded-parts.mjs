@@ -64,6 +64,12 @@ export const NOT_COMPLETED = "unfinished";            // → the row's fallback:
 
 export const DEGRADED_PARTS_FILE = "degraded-parts.json";
 
+// The run-log events of the coverage rows the driver adds once synthesis has settled (pipeline.mjs, the seam):
+// one at the start of each pass, and one for each adder that failed in it. Each adder catches its own failure
+// and the run goes on, so the event is the only trace that the row it exists to add is missing.
+export const COVERAGE_ROWS_PASS = "coverage-rows-pass";
+export const COVERAGE_ROW_NOT_ADDED = "coverage-row-not-added";
+
 const readJsonl = (p) => {
   try {
     return readFileSync(p, "utf8").split("\n").filter((l) => l.trim())
@@ -231,6 +237,11 @@ function checks(runDir, log) {
   if (rollback) failed.push(["the corrective pass, rolled back", rollback.reason]);
   const crowd = failedStep(log, "crowd-context", "crowd-context-failed");
   if (crowd) failed.push(["the crowd counts", crowd.fail]);
+  // The floor duty: whether every live identical or near-identical register record came back on the placement form.
+  // A derivation that threw checked nothing. One that could not be computed writes its own `floor-duty` event, which
+  // reads as the step's last word here; whether that state is itself a missing part is not settled by this check.
+  const floorDuty = failedStep(log, "floor-duty", "floor-duty-failed");
+  if (floorDuty) failed.push(["the floor duty", floorDuty.fail]);
   if (!failed.length) return null;
   return { part: "checks", name: PART_NAMES.machineQc, reason: reasonFor(failed.map(([, why]) => why).join("; ")),
     cause: failed.map(([what, why]) => `${what}: ${why ?? "no cause recorded"}`).join("; ") };
@@ -275,7 +286,38 @@ function officialRecords(runDir, log) {
     cause: `the fetch ledger could not be read: ${last.ledgerError}` };
 }
 
-const CHECKS = [assessment, overview, courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords];
+// The coverage rows the driver adds to the report and the workbook once synthesis has settled: the follow-ups left
+// open, the native-language scope, a lane short of its depth, the marks the screen gate left unexamined, the meaning
+// searches that did not complete, and the coverage judgment's own rows. An adder that failed left its row out and
+// the run went on. Only the last pass counts, because a pass follows each rewrite of findings.json and adds the rows
+// again: a later pass in which every adder succeeded clears an earlier failure, and a failure in the last pass stands
+// when no pass came after it.
+function coverageRows(runDir, log) {
+  let since = -1;
+  for (let i = log.length - 1; i >= 0; i--) if (log[i]?.event === COVERAGE_ROWS_PASS) { since = i; break; }
+  const failed = log.slice(since + 1).filter((e) => e?.event === COVERAGE_ROW_NOT_ADDED);
+  if (!failed.length) return null;
+  return { part: "coverage-rows", name: PART_NAMES.coverage, reason: reasonFor(failed.map((e) => e.fail).join("; ")),
+    cause: failed.map((e) => `${e.adder ?? "an adder"}: ${e.fail ?? "no cause recorded"}`).join("; ") };
+}
+
+// The evidence stamps on the cards. At each seam the driver demotes a "verified from record" stamp that the reading
+// log cannot back. A demotion it could not write leaves that stamp standing, and its record says how many; a
+// derivation that threw checked none of them. Both leave the cards claiming records they cannot show, so they are
+// the official records' line. A later derivation that wrote every demotion clears both.
+function evidenceStamps(runDir, log) {
+  const threw = failedStep(log, "basis-derivation", "basis-derivation-failed");
+  let record = null;
+  try { record = JSON.parse(readFileSync(driverDir(runDir, "basis-derivation.json"), "utf8")); } catch { record = null; }
+  const standing = threw ? 0 : Number(record?.unwritable) || 0;
+  if (!threw && !standing) return null;
+  return { part: "evidence-stamps", name: RULED_WORDS.officialRecords, reason: NOT_COMPLETED,
+    cause: threw ? `the check of the cards' evidence stamps failed: ${threw.fail ?? "no cause recorded"}`
+      : `${standing} verified-from-record stamp(s) the reading log cannot back could not be demoted` };
+}
+
+const CHECKS = [assessment, overview, courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords,
+  coverageRows, evidenceStamps];
 
 /**
  * Every part of this clearance run that failed and still ships, read from the run directory as it stands
