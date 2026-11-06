@@ -2,8 +2,10 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
 // A KNOCKOUT'S WEB SWEEP RUNS BESIDE ITS REGISTER READING once the counts have passed their check, and not at all when the count
-// check fails. Names here are invented.
-import { mkdirSync, mkdtempSync, readFileSync, existsSync } from "node:fs";
+// check fails. The rating starts only when both branches have settled, whichever finishes first. A branch that fails waits for
+// the other, and a stop asked for during the two ends the run with both settled, their finished work kept and the rating not
+// started. Names here are invented.
+import { mkdirSync, mkdtempSync, readFileSync, existsSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -32,6 +34,7 @@ import assert from "node:assert/strict";
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
 const { koPaths } = await import("../stages-knockout.mjs");
+const { requestCancel } = await import("../cancel.mjs");
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "NOVAPULSE", "IRONWHISK", "CLUVENDRA", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY"];
@@ -83,4 +86,69 @@ test("the web sweep runs beside the register reading once the counts have passed
   const none = await knockout("no-count", names, {}, { gridExecutor: grid, countExecutor: async () => ({ ok: false, total: null, reason: "an invented outage" }) });
   assert.ok(none.thrown || none.res?.ok === false, "a batch with no count stops, as before");
   assert.equal(starts.length, 0, "and no web search is spent on it");
+});
+
+// ── WHICHEVER BRANCH FINISHES FIRST, A FAILURE IN EITHER, AND A STOP (design, 2026-11-06) ───────────────────────────────────────
+
+const FILING = (name) => ({ record_id: "/mark/em/invented-1", mark_text: name, owner_name: "Invented Owner GmbH", owner_country: "DE", status: "Registered",
+  classes: [4], office: "em", raw: { classifications: [{ nice_class: 4, goods_services_text: "Candles; wicks." }] } });
+const counted = (names) => async (term, p) => ({ ok: true, total: term === names[0] && p.key === "identical" ? 1 : 0 });
+const wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+const at = (journal, pred) => journal.findIndex(pred);
+const assessTurn = (e) => /^knockout-assess#/.test(String(e.stage ?? ""));
+
+test("when the register reading finishes first, the rating still waits for the sweep", async () => {
+  const names = NAMES.slice(0, 2);
+  let sweptAt = 0, listedAt = 0;
+  const r = await knockout("register-first", names, {}, {
+    countExecutor: counted(names),
+    recordLister: async (term) => { listedAt = Date.now(); return term === names[0] ? { ok: true, total: 1, records: [FILING(names[0])] } : { ok: true, total: 0, records: [] }; },
+    gridExecutor: async (spec) => { await wait(1500); sweptAt = Date.now(); return answeredGrid(spec, [{ title: "An invented listing", url: "https://example.test/listing" }]); },
+  });
+  assert.equal(r.res?.ok, true, `the knockout did not deliver: ${r.thrown?.message ?? JSON.stringify(r.res)}`);
+  assert.ok(listedAt > 0 && sweptAt > listedAt, "premise: the register was read before the sweep finished");
+  const firstRating = at(r.journal, assessTurn);
+  assert.ok(firstRating > at(r.journal, (e) => e.event === "knockout-sweep-total"), "the rating started before the sweep had settled");
+  assert.ok(firstRating > at(r.journal, (e) => e.event === "knockout-owner-checks"), "the rating started before the register reading had settled");
+});
+
+test("a sweep that fails while the register is still being read waits for the reading, ends the run, and starts no rating", async () => {
+  // The sweep fails at once and the reading takes a while: the failure has nobody awaiting it until the reading ends. Before the
+  // promise was handled from the start, this ended the process, with no terminal status written.
+  const names = NAMES.slice(0, 2);
+  let listedAt = 0;
+  const r = await knockout("sweep-fails", names, {}, {
+    countExecutor: counted(names),
+    recordLister: async (term) => { await wait(1500); listedAt = Date.now(); return term === names[0] ? { ok: true, total: 1, records: [FILING(names[0])] } : { ok: true, total: 0, records: [] }; },
+    gridExecutor: async () => ({ ok: false, cause: "an invented provider error" }),
+  });
+  assert.ok(r.thrown || r.res?.ok === false, "a batch whose every web search failed delivered");
+  assert.ok(listedAt > 0, "the register reading was cut short rather than allowed to settle");
+  assert.ok(r.journal.some((e) => e.event === "knockout-owner-checks"), "the register reading's work was not finished and recorded");
+  assert.equal(r.journal.some(assessTurn), false, "a rating was started on a batch with no web results");
+  assert.equal(existsSync(r.K.assessChunk(0)), false, "a rating was written");
+});
+
+test("a stop asked for during the two branches ends the run with both settled, their work kept, and the rating not started", async () => {
+  const names = NAMES.slice(0, 2);
+  let sweptAt = 0;
+  const runDir = join(ROOT, "studio", "ko-stopped", "clearance-search", "runs", "quillbrae", "2026-11-06-stopped");   // as knockout() lays it out
+  const r = await knockout("stopped", names, {}, {
+    countExecutor: counted(names),
+    recordLister: async (term) => {
+      // The stop arrives while both branches run, as a person pressing Stop would send it.
+      requestCancel(runDir, { via: "test" });
+      await wait(300);
+      return term === names[0] ? { ok: true, total: 1, records: [FILING(names[0])] } : { ok: true, total: 0, records: [] };
+    },
+    gridExecutor: async (spec) => { await wait(1200); sweptAt = Date.now(); return answeredGrid(spec, [{ title: "An invented listing", url: "https://example.test/listing" }]); },
+  });
+  assert.equal(r.res?.cancelled, true, `the run did not end as stopped: ${r.thrown?.message ?? JSON.stringify(r.res)}`);
+  assert.ok(sweptAt > 0, "premise: the sweep ran");
+  for (const name of names) assert.ok(existsSync(r.K.research(name.toLowerCase())), `the sweep's finished payload for ${name} was not kept`);
+  assert.equal(existsSync(r.K.assessChunk(0)), false, "the rating ran after the stop");
+  const status = r.json(join(r.dir, "status.json"));
+  assert.notEqual(status.stepLabel, "Knockout assessment", "the status names the rating as begun after the stop");
+  // The terminal status is written once the sweep has settled, never while it still runs.
+  assert.ok(statSync(join(r.dir, "status.json")).mtimeMs >= sweptAt, "the run's last status was written while the sweep still ran");
 });

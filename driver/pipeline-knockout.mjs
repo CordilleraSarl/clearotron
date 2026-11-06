@@ -44,7 +44,7 @@ import {
   // implementation; a second copy here would be a second thing to keep true.
   decideRecovery, failureSignature, classifyFailureReason, countRecoveryLanes, weatherCeilingFor,
 } from "./repairs.mjs";
-import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
+import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
@@ -1074,7 +1074,12 @@ export async function knockoutInner(ctx, job, opts = {}) {
       return { degraded, recovered };
     };
     let sweepRun = null;
-    const startSweep = () => (sweepRun ??= sweepMarks());
+    // HANDLED FROM THE START. A sweep that fails while the register is still being read rejects with nothing awaiting it yet, and
+    // an unhandled rejection ends the process with no status written. The reading's `finally` and the await below take its failure.
+    const startSweep = () => {
+      if (!sweepRun) { sweepRun = sweepMarks(); sweepRun.catch(() => {}); }
+      return sweepRun;
+    };
 
     // 1.5 — STAGE 0.5: the register hit-counts. Pure code — no stage, no model, no turn. It runs
     // BEFORE the sweep because it is the cheap deterministic question and the client sees its answer
@@ -1182,6 +1187,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
 
     // 3 — assess (chunked ≤8/turn; merged + gated in code). DEGRADED per the DISK truth (payload
     // presence), never the in-memory Map alone — resume-proof: a prior attempt's degrades count too.
+    // A STOP ASKED FOR WHILE THE TWO RESEARCH BRANCHES RAN ends the run here, with both settled and their work kept: the rating does
+    // not start, and the status does not name it as begun. The turn boundary would refuse its first turn anyway.
+    if (isCancelled(run.runDir)) throw new RunCancelled("knockout-assess", readCancel(run.runDir));
     koStep(ctx, "Knockout assessment");
     const chunkRows = planMarks.map((m) => {
       const has = existsSync(K.research(kebab(m.name)));
