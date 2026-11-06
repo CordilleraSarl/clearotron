@@ -525,7 +525,7 @@ export const KO_STAGES = {
     // DECLARATIVE ONLY on this lane, exactly as the assess stage records: nothing in koStage reads
     // `skillReads`, and the effective read is the `reads([...])` call in the message below. The two are
     // edited together and the asymmetry is written down rather than left to be discovered.
-    skillReads: ["skills/clearance-search/report-prose.md"],
+    skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md"],
     // A later pass reads the corrected record, under its own artifact: `knockout-review#1`.
     out: (K, pass) => (pass ? knockoutReviewFile(K.runDir, pass) : K.review),
     validate: validateKnockoutReviewFile,
@@ -542,8 +542,9 @@ export const KO_STAGES = {
     message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", recheckTable = "", sourceAnswers = [] }) => lines(
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
-      reads(["skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
+      reads(["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
       `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence, then check its wording. You change no band and no finding yourself.`,
+      `Apply the frozen framework, the knockout assessment manual and shared firm-wide reasoning. Read report-prose.md for writing standards; its links do not import clearance-only finding or placement rules into this screen. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band. Never invent attribution or a right; explain what the held evidence supports and what remains uncertain.`,
       requestLine(K, (at) => `The client's request, as it arrived: ${at}`, (at) => `The available brief: ${at}. The original request is not held here.`),
       recheckTable
         ? [`THIS IS THE SECOND LOOK. An earlier check raised the defects below. The table says what the driver saw of each, including any the rating step did not answer, and the record you are reading is the record as it now stands.`,
@@ -611,7 +612,7 @@ export const KO_STAGES = {
         `A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.`,
         `${CITED_URL_RULE} ${SIBLING_SOURCE}`,
         OWNER_SOURCE,
-        `BRING EVERY DEPENDENT ANSWER WITH IT. Whatever the repair changes, the name's lines that rest on it change with it: \`basis\`, \`factors\`, \`counterFactors\`, \`mitigation\`, \`assessment\`, \`bullets\`, \`classGroups\`, its \`registerReads\` and its block in \`chunkSummary\`. A rating that moves needs \`basis\`, \`assessment\` and \`chunkSummary\` in the call. The manual's rules still hold: a name is never rated above its worst card.`,
+        `BRING EVERY DEPENDENT ANSWER WITH IT. Whatever the repair changes, the name's lines that rest on it change with it: \`basis\`, \`factors\`, \`counterFactors\`, \`mitigation\`, \`assessment\`, \`bullets\`, \`classGroups\`, \`classesDriving\`, its \`registerReads\` and its block in \`chunkSummary\`. A rating that moves needs \`basis\`, \`assessment\` and \`chunkSummary\` in the call. The manual's rules still hold: a name is never rated above its worst card.`,
         `REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS DEFECT ON ITS OWN. Use \`remove_findings\` only where the evidence shows the finding should not be there, and say so.`,
         `ANSWER EVERY DEFECT in \`answers\`: \`defect\`, \`outcome\` (\`changed\` or \`stands\`), \`why\`, and in \`findings\` the ordinal of any finding this repair moved beyond the one the defect names. If you call again, send only what you are correcting.`,
       );
