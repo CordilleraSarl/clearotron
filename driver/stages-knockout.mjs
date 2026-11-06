@@ -488,6 +488,14 @@ export const KO_STAGES = {
       // The depth rule is not stylistic. `# ` opens a SECTION of the delivered report — parseSections
       // splits on /^# /m and batchSummaryOf terminates on it — so a single hash written here ends the
       // client's summary at that line and drops everything after it, silently, on the entry point.
+      //
+      // ── THE WHOLE CONTRACT, IN ONE INSTRUCTION (design, 2026-11-06) ───────────────────────────────────────
+      //
+      // Reviewing the knockout against the lawyer's original instructions, design kept the full opening, its structure, a broadly
+      // consistent scale across the batch and the typed fields' requirements; an earlier proposal to shorten the opening and drop
+      // those requirements was withdrawn. The line below says so to the rating step and changes none of it: the manual's "keep
+      // the length" and the validators' minimums stand. Model words, landed as approved.
+      `Give each name a complete opening assessment for a client reading that name's report alone. Explain the relevant landscape, what drives the rating, and what matters for the client's decision. Preserve the established depth and a broadly consistent scale across the batch. Use sub-headings, short paragraphs and bullets to make the assessment easy to scan. Keep the existing structured fields and their requirements. Do not invent observations or repeat a point merely to fill space; preserve the material supporting and contrary facts, goods and class distinctions, implications and search limitations needed to understand the advice. The batch summary compares the names separately and does not replace any name's own opening assessment.`,
       `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted, overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not in the chunk summary. The report states its coverage in code from the run's own measurements, and the validator refuses a chunk that speaks for it. That is a rule about the lane, not about the filings: a filing you were handed is evidence like any other.`,
       `EVERY conflicting name is a typed findings[] record. A named conflict belongs in findings[], not in bullets — write it once.`,
       `The manual sets out each mark's record: its \`findings[]\`, its opening read in \`assessment\`, its typed read, and the chunk's \`chunkSummary\`, which code joins into the batch summary, so a mark missing from it is missing from the report.`,
