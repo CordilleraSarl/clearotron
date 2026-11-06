@@ -1694,6 +1694,10 @@ export function makePortalService({
           // or the general advice when nothing could be read. Only `engineMode: "demo"` can make this
           // anything but false; see `engineProgramDisputed`.
           engineProgramDisputed: await engineProgramDisputed(meEngineMode),
+          // WHETHER THIS INSTALL CAN RUN A SEARCH AT ALL, by the runner's own order-time test (`orderRefusal`). Home leaves
+          // out its invite to start one when it cannot, because the order would be refused at the review. A demo walks its
+          // own ordering flow, so it reads as able.
+          canSearch: demo ? true : !(await orderRefusal()),
           // HOW THIS INSTALL ARRIVED, so a screen can name the setup command the reader can actually
           // type. `npm run setup` and `npx clearotron install` are the same wizard and each one is
           // unrunnable on the other route; the no-engine notice named one of them and was wrong for

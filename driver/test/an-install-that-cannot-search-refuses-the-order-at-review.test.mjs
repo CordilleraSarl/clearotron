@@ -69,6 +69,16 @@ test("the screen heads this refusal as a search that did not start, not as a cha
     "the not-configured refusal no longer has its own heading on the New clearance screen");
 });
 
+test("/me says the install cannot search, so Home leaves out its invite to start one", async () => {
+  const me = async (opts) => (await service(opts).svc.route("GET", "/portal/api/me", PRINCIPAL, {})).json.canSearch;
+  assert.equal(await me({}), false, "an install the runner would refuse reads as able to search");
+  assert.equal(await me({ orderRefusal: async () => null }), true, "the control: a configured install reads as able");
+  assert.equal(await me({ demo: true }), true, "a demo walks its own ordering flow and reads as able");
+  const home = readFileSync(new URL("../../portal-ui/src/screens/Home.tsx", import.meta.url), "utf8");
+  assert.match(home, /canRun\(ctx\.me\) && ctx\.me\.canSearch !== false \? ' Start one with New clearance\.' : ''/,
+    "Home's invite no longer depends on whether the install can search");
+});
+
 test("a demo walks its own ordering flow and is not asked", async () => {
   const { svc } = service({ demo: true });
   const plan = await svc.route("POST", "/portal/api/run/plan", PRINCIPAL, ORDER);
