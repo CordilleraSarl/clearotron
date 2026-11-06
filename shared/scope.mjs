@@ -1153,7 +1153,8 @@ export function authorize(scope, toolName, args = {}) {
 // A DEMO OFFERS NONE OF THE TOOLS THAT START WORK, to anybody. It answers from the reports it holds, and a tool
 // request must reach no model, register or paid search: `what_if_run` shells the engine, and `start_run` would
 // queue a search nothing is there to run. The listing is the wall (server.mjs), so no sentence is needed for it.
-export const DEMO_WITHHELD_TOOLS = Object.freeze(["start_run", "what_if_plan", "what_if_run"]);
+// `what_if_result` goes with them: it collects what `what_if_run` made, and a demo holds no experiment to collect.
+export const DEMO_WITHHELD_TOOLS = Object.freeze(["start_run", "what_if_plan", "what_if_run", "what_if_result"]);
 export function visibleTools({ kind = "internal", local = false, demo = false } = {}) {
   return (name) => {
     if (demo && DEMO_WITHHELD_TOOLS.includes(name)) return false;

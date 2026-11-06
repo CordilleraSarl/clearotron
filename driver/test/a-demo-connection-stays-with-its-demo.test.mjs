@@ -62,6 +62,10 @@ test("no audience is offered a tool that starts work in a demo, and only those t
     }
   }
   assert.equal(visibleTools({ kind: "ops", local: true })("what_if_run"), true, "the control: a real install's local operator keeps it");
+  // A demo holds no experiment, so the tool that collects one goes with the tools that start one; a real install's
+  // signed-in client keeps it.
+  assert.equal(visibleTools({ kind: "account", demo: true })("what_if_result"), false, "a demo offers a collector with nothing to collect");
+  assert.equal(visibleTools({ kind: "account" })("what_if_result"), true, "the control: a real install's client lost what_if_result");
 });
 
 test("the binding pins the demo's whole layout, exactly as the supervisor lays it out", () => {

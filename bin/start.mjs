@@ -2740,11 +2740,6 @@ export function connectScreen(connect) {
 }
 
 /**
- * A sentence broken at spaces into lines of at most `width` characters, for the framed box. The withheld
- * lines come from the portal's composer, written for a log line of any length; inside the frame they are
- * broken to the width of the lines they stand in for. A word longer than `width` keeps its own line. PURE.
- */
-/**
  * What a terminal start says about ordering when it runs a worker. `missing` is what the install lacks for a
  * search, in the phrases the portal uses (whatIsMissing), or "" when it lacks nothing. An install that cannot
  * search has its orders refused, so it is told that, in the owner's words (2026-11-06), and not that an order
@@ -2759,6 +2754,11 @@ export function orderingLines({ missing = "", install = "clearotron install" } =
     + `Run \`${install}\` in a terminal to set it up.`).map((l) => `  ${l}`);
 }
 
+/**
+ * A sentence broken at spaces into lines of at most `width` characters, for the framed box. The withheld
+ * lines come from the portal's composer, written for a log line of any length; inside the frame they are
+ * broken to the width of the lines they stand in for. A word longer than `width` keeps its own line. PURE.
+ */
 export function fitTo(width, text) {
   const out = [];
   let line = "";
