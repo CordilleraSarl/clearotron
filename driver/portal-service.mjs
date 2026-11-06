@@ -1954,7 +1954,7 @@ export function makePortalService({
         if (demo) return null;
         const refusal = await orderRefusal();
         if (!refusal) return null;
-        audit({ event: door, by: principal.email, account, ok: false, refused: "not_configured", missing: refusal.names });
+        audit({ event: door === "plan" ? "plan" : "trigger", by: principal.email, account, ok: false, refused: "not_configured", missing: refusal.names });
         return { status: 409, json: { ok: false, errors: [refusal.client], code: "not_configured" } };
       };
 
