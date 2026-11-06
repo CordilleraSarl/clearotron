@@ -1610,9 +1610,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // a wedge is a `timeout` fail that breaks the ladder immediately, so no later attempt exists to judge.
     if (killClass) killSeen = true;
     // Lane-wedge reclassification (see isLaneWedge): a 0-token timeout is a saturated command lane, not a slow
-    // model. Becoming `lane_wedge` makes the retry policy skip the wasteful extended shot; the chain (pipeline.mjs)
-    // cascades providers on it and retries the whole chain if EVERY provider wedges (a shared lane is not
-    // provider-specific). teal-bastion 2026-06-15.
+    // model. Becoming `lane_wedge` makes the retry policy skip the wasteful extended shot; stage() (pipeline.mjs)
+    // waits for the lane to clear and dispatches the stage again on its one model (a shared lane is not
+    // model-specific). teal-bastion 2026-06-15.
     // See classifyWedge: a 0-token timeout is a saturated-lane wedge UNLESS it's a hard-wall over-budget kill.
     fail = classifyWedge(fail, usage, turn.signals);
     // D3: an Anthropic 529/overload hides inside the generic transport tokens (nonzero_exit_1 through
