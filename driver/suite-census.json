@@ -1125,6 +1125,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-recheck-reads-the-defects-and-what-they-could-affect.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,
