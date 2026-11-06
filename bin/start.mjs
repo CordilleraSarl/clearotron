@@ -86,7 +86,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
 // the driver must not point at `bin/`.
-import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
+import { runRequiredNames, missingRequirements, whatIsMissing, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
 import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
 import { spawnsDetached, killWindowsTreesNow } from "../driver/engine/engine-spawn.mjs";   // Windows has no process group to stop
@@ -2614,8 +2614,10 @@ if (isMain) {
     say("  Ordering a clearance from the portal opens the finished example for that search: every search");
     say("  here resolves to a report that already exists. Nothing is started and nothing is charged.");
   } else if (worker) {
-    say("  Ordering a clearance from the portal starts it. The portal prices the run and asks you to");
-    say("  confirm before anything is spent — that confirmation is the moment money is committed.");
+    // ASKED OF THE ENVIRONMENT THE WORKER WAS HANDED, by the runner's own order-time test: an order is refused
+    // there until the install can search, and this line said an order starts a run whatever the install held.
+    const cannot = missingRequirements(childProcessEnv(process.env, envs.worker), await runTables()).atOrder;
+    for (const line of orderingLines({ missing: whatIsMissing(cannot), install: invoke("install") })) say(line);
   } else {
     say("  Ordering a clearance from the portal puts the job in the queue and shows it there with its");
     say("  position. You started with --no-worker, so nothing is draining it: run");
@@ -2742,6 +2744,21 @@ export function connectScreen(connect) {
  * lines come from the portal's composer, written for a log line of any length; inside the frame they are
  * broken to the width of the lines they stand in for. A word longer than `width` keeps its own line. PURE.
  */
+/**
+ * What a terminal start says about ordering when it runs a worker. `missing` is what the install lacks for a
+ * search, in the phrases the portal uses (whatIsMissing), or "" when it lacks nothing. An install that cannot
+ * search has its orders refused, so it is told that, in the owner's words (2026-11-06), and not that an order
+ * starts a run.
+ */
+export function orderingLines({ missing = "", install = "clearotron install" } = {}) {
+  if (!missing) {
+    return ["  Ordering a clearance from the portal starts it. The portal prices the run and asks you to",
+      "  confirm before anything is spent — that confirmation is the moment money is committed."];
+  }
+  return fitTo(96, `Ordering a clearance from the portal is refused until this install can run a search: ${missing}. `
+    + `Run \`${install}\` in a terminal to set it up.`).map((l) => `  ${l}`);
+}
+
 export function fitTo(width, text) {
   const out = [];
   let line = "";

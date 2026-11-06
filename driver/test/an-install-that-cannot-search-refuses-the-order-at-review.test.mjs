@@ -128,3 +128,19 @@ test("the portal and the runner read one set of order tables, and the running po
   assert.match(src, /orderRefusal: async \(\) => orderTimeRefusal\(process\.env, await runTables\(\)\)/,
     "the bootstrap no longer hands the running portal the runner's order-time question");
 });
+
+test("a terminal start says an order is refused until the install can search, and what it lacks", async () => {
+  // `clearotron start` said "Ordering a clearance from the portal starts it" whatever the install held, so a reader
+  // who had chosen nothing was told their order would start a run. It now asks the runner's question of the
+  // environment its worker is handed, and says the owner's sentence with the portal's phrases.
+  const { orderingLines } = await import("../../bin/start.mjs");
+  const { missing } = await UNCONFIGURED();
+  const said = orderingLines({ missing, install: "clearotron install" }).map((l) => l.trim()).join(" ");
+  assert.equal(said, "Ordering a clearance from the portal is refused until this install can run a search: "
+    + "no AI is chosen and no register is chosen. Run `clearotron install` in a terminal to set it up.");
+  // CONTROL: an install that can search keeps today's words, which promise a priced run.
+  assert.match(orderingLines({ missing: "" }).join(" "), /Ordering a clearance from the portal starts it\./);
+  const src = readFileSync(new URL("../../bin/start.mjs", import.meta.url), "utf8");
+  assert.match(src, /const cannot = missingRequirements\(childProcessEnv\(process\.env, envs\.worker\), await runTables\(\)\)\.atOrder;\n\s*for \(const line of orderingLines\(\{ missing: whatIsMissing\(cannot\), install: invoke\("install"\) \}\)\) say\(line\);/,
+    "the terminal start no longer asks the runner's question of the worker's own environment");
+});
