@@ -303,14 +303,18 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const asOpen = (defects, state, reason = null) => defects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state, ...(reason ? { reason } : {}) }));
   const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
-  for (const c of touched) {
+  const thrown = [];
+  await runBatched(touched, KO_CONCURRENT_TURNS, async (c) => {
     try {
       await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     } catch (e) {
-      if (e instanceof StageFailure && e.resetsAt) throw e;
+      thrown.push({ c, e });
       failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
     }
-  }
+  });
+  failed.sort((a, b) => a.chunk - b.chunk);
+  const limited = thrown.find((x) => x.e instanceof StageFailure && x.e.resetsAt);
+  if (limited) throw limited.e;
   // Back to the record as it was rated, through the same gate, with every defect still open and why.
   const standDown = (outcome, detail) => {
     restoreChunkBases(run.runDir, touched);
@@ -570,6 +574,12 @@ export function resolveSweepExecutor(opts) {   // exported for its test, like re
 // bounded-concurrency fan-out (local copy of the runBatched idiom — pipeline.mjs's is private).
 // A non-finite limit collapses to 1 worker, never to zero (Array.from({length: NaN}) is [] — a typo'd
 // concurrency env var would otherwise silently skip the ENTIRE sweep; review 2026-07-17).
+// A group's failure, the first by group order, unless one carries a rate limit's reset: that one decides when to try again.
+const firstFailure = (failures) => (failures.find((f) => f.e instanceof StageFailure && f.e.resetsAt) ?? [...failures].sort((a, b) => a.c - b.c)[0]).e;
+
+// AT MOST THREE MODEL TURNS AT ONCE, for the rating groups and for their corrections (design, 2026-11-05).
+const KO_CONCURRENT_TURNS = 3;
+
 async function runBatched(items, limit, fn) {
   const results = new Array(items.length);
   let i = 0;
@@ -1168,7 +1178,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     } catch { /* the receipts are the record; a summary that could not be read never fails a sweep */ }
     }
 
-    // 3 — assess (chunked ≤8/turn; merged + gated in code). DEGRADED per the DISK truth (payload
+    // 3 — assess (chunked ≤3/turn, side by side; merged + gated in code). DEGRADED per the DISK truth (payload
     // presence), never the in-memory Map alone — resume-proof: a prior attempt's degrades count too.
     koStep(ctx, "Knockout assessment");
     const chunkRows = planMarks.map((m) => {
@@ -1191,26 +1201,41 @@ export async function knockoutInner(ctx, job, opts = {}) {
         }
       }
     }
-    for (let c = 0; c < chunks.length; c++) {
-      await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
-    }
+    // THE GROUPS ARE RATED SIDE BY SIDE. Each writes only its own chunk, under its own session and call folder, and all are joined
+    // before anything is composed. A group that fails leaves the others' accepted chunks for a resume, which re-runs only what failed.
+    const assessFailures = [];
+    await runBatched(chunks.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
+      try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } }); }
+      catch (e) { assessFailures.push({ c, e }); }
+    });
+    if (assessFailures.length) throw firstFailure(assessFailures);
     // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
     // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
     const composeRecord = () => {
       // cardOrder records how this run's page lists a name's cards, so a delivered report re-renders as it was delivered.
       const merged = { schema_version: 1, framework: null, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
-      const summaries = [];
+      const summaries = [], batches = [];
       for (let c = 0; c < chunks.length; c++) {
         // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
         // were written before the move (or through the Bash bypass closed) resumes without paying for
         // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
         const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
         const part = JSON.parse(readFileSync(chunkPath, "utf8"));
-        if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
+        if (c === 0) merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) };
+        // EVERY GROUP RATES ON THE FROZEN LADDER, or nothing is composed: a group rated on another is not part of this batch.
+        else if (part.framework && JSON.stringify(part.framework.ladder ?? null) !== JSON.stringify(merged.framework.ladder ?? null))
+          throw new Error(`knockout_compose_framework: group ${c + 1} was rated on a different ladder from group 1`);
+        if (part.batch) batches.push(part.batch);
         if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
         merged.marks.push(...(part.marks ?? []));
       }
-      if (!merged.batch) merged.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
+      // THE BATCH IS THE WHOLE BATCH'S. Its scope is the frozen plan's, never one group's, and every group's batch-wide caveat is
+      // kept, in group order, once.
+      const caveats = [];
+      for (const b of batches) for (const x of (Array.isArray(b?.standardCaveats) ? b.standardCaveats : [])) {
+        if (!caveats.some((y) => String(y).trim() === String(x).trim())) caveats.push(x);
+      }
+      merged.batch = { ...(batches[0] ?? {}), productContext: plan.batch?.productContext ?? batches[0]?.productContext ?? "", standardCaveats: caveats };
       // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
       // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
       merged.batch.executiveSummary = summaries.join("\n\n");

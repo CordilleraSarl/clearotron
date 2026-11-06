@@ -2590,6 +2590,12 @@ export function applyStageWrites(msg, argv) {
     const boundChunk = recordAxisFromWiring(argv);
     if (boundChunk === null) return "mock knockout-assess: no chunk ordinal bound in the engine wiring — the driver binds CLEAROTRON_RECORD_AXIS per fanned turn, and a mock that picked its own chunk would author the identity the membership join checks";
     recordMockToolCall(runDir, "record_knockout_assess", "recording-knockout-assess");
+    // MOCK_KO_ASSESS_HOLD_MS: hold the turn and log when it ran (MOCK_KO_ASSESS_LOG), so a test can see the groups overlap.
+    if (process.env.MOCK_KO_ASSESS_HOLD_MS) {
+      const start = Date.now();
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Number(process.env.MOCK_KO_ASSESS_HOLD_MS));
+      if (process.env.MOCK_KO_ASSESS_LOG) appendFileSync(process.env.MOCK_KO_ASSESS_LOG, JSON.stringify({ chunk: Number(boundChunk), start, end: Date.now() }) + "\n");
+    }
     let ladder = ["Very High", "High", "Medium", "Manageable", "Low"];
     let fwKey = "house-triage";
     try { const fw = JSON.parse(readFileSync(driverDir(runDir, "framework.json"), "utf8")); ladder = fw.bands.map((b) => b.label); fwKey = fw.framework_key; } catch { /* default */ }
@@ -2598,11 +2604,12 @@ export function applyStageWrites(msg, argv) {
     const degradedSet = new Set([...msg.matchAll(/^- (.+?):\s+(?:[A-Za-z]:)?[\\/]\S+\s+\(DEGRADED/gm)].map((m) => m[1]));
     const band = process.env.MOCK_KO_BAND || ladder[ladder.length - 2] || ladder[0];   // second-lowest by default
     const chunk = {
+      // MOCK_KO_GROUP_CONTEXT: the first group narrows the batch's scope. MOCK_KO_LATER_CAVEAT: a later group sends a batch-wide caveat.
       ...(Number(boundChunk) === 0 ? {
         framework: { source: fwKey, ladder },
-        batch: { productContext: "mock consumer product line",
+        batch: { productContext: process.env.MOCK_KO_GROUP_CONTEXT || "mock consumer product line",
           standardCaveats: ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."] },
-      } : {}),
+      } : process.env.MOCK_KO_LATER_CAVEAT ? { batch: { standardCaveats: [process.env.MOCK_KO_LATER_CAVEAT] } } : {}),
       // EVERY chunk narrates its own marks — code composes the batch executive summary from these
       chunkSummary: `Based on the knockout search results, ${rows.join(", ")} present${rows.length === 1 ? "s" : ""} no obvious blockers in this chunk; see per-mark rows.`,
       marks: rows.map((n) => {
