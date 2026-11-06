@@ -16,12 +16,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdtempSync, mkdirSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
 import { HEARTBEAT_FILE } from "../worker-heartbeat.mjs";
+import { DEMO_ALARM, demoLineOnScreen } from "../../bin/start.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 // The closing block's last line in a demo: the summary has ended once it is printed.
@@ -67,8 +68,22 @@ test("a demo boots with its brief reader off and no worker, and does not say an 
     const locks = join(home, "trademark-demo", "locks");
     assert.ok(existsSync(locks), "anti-vacuity: the demo made its lock directory, where a worker would beat");
 
-    assert.match(said, /brief reading OFF — this is the demo/, `the portal did not say its brief reader is off:\n${safe(said).slice(-3000)}`);
-    assert.doesNotMatch(said, /brief reading ON/, "the demo's portal can read a brief, which is a model turn");
+    // THE SERVICES' ROUTINE LINES ARE FILED, AND THE SCREEN SAYS WHERE (owner's words, 2026-11-06).
+    const startupLog = join(home, "trademark-demo", "startup.log");
+    assert.ok(said.includes(`Startup details are in \`${startupLog}\`.`), `the demo did not say where its startup details are:\n${safe(said).slice(-3000)}`);
+    const filed = readFileSync(startupLog, "utf8");
+    // WHICH LINES ARE ROUTINE IS THE FILTER'S ANSWER, NOT THIS FILE'S: a checkout with no built portal page prints the portal's
+    // `listening on` line with `ui=MISSING`, which rightly stays on the screen, as the offline suites run.
+    const routine = filed.split("\n").filter((l) => l.trim() && !demoLineOnScreen(l));
+    assert.ok(routine.some((l) => /^\[trademark-artifacts-http\] listening on /.test(l)), "anti-vacuity: the engine door's own lines are not in the startup file");
+    assert.deepEqual(routine.filter((l) => said.includes(l)), [], "a routine service line is still on the demo's screen");
+    // A NEW ROUTINE LINE IS NAMED HERE, not left on every demo's screen: a fresh demo prints no service line that shows
+    // without an alarm in it.
+    const unlisted = filed.split("\n").filter((l) => /^\[[\w-]+\] /.test(l) && demoLineOnScreen(l) && !DEMO_ALARM.test(l));
+    assert.deepEqual(unlisted, [], "a fresh demo shows these lines; add each to DEMO_ROUTINE_LINES in bin/start.mjs if it is routine");
+
+    assert.match(filed, /brief reading OFF — this is the demo/, `the portal did not say its brief reader is off:\n${safe(filed).slice(-3000)}`);
+    assert.doesNotMatch(said + filed, /brief reading ON/, "the demo's portal can read a brief, which is a model turn");
     assert.ok(!existsSync(join(locks, HEARTBEAT_FILE)), "a worker is draining the demo's queue");
     assert.match(said, /Nothing is started and nothing is charged/, "the demo did not say what ordering in it does");
     assert.doesNotMatch(said, /the moment money is committed/, "the demo told its visitor that ordering commits money");
