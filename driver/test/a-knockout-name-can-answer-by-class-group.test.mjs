@@ -165,5 +165,5 @@ test("the manual, the check and the repair each say what they owe a divided answ
   assert.ok(review.includes("including one band where the evidence divides the requested goods, or a division it does not support (`band`)"));
   assert.ok(review.includes("including reasoning that never connects the requested use and the held goods to the conclusion (`scope`)"));
   const repair = KO_STAGES["knockout-correct"].message({ K, chunkNo: 0, work: { defects: [] } });
-  assert.ok(repair.includes("`bullets`, `classGroups`, its `registerReads`"));
+  assert.ok(repair.includes("`bullets`, `classGroups`, `classesDriving`, its `registerReads`"));
 });
