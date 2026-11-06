@@ -44,7 +44,7 @@ import {
   // implementation; a second copy here would be a second thing to keep true.
   decideRecovery, failureSignature, classifyFailureReason, countRecoveryLanes, weatherCeilingFor,
 } from "./repairs.mjs";
-import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
+import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
@@ -933,6 +933,154 @@ export async function knockoutInner(ctx, job, opts = {}) {
     const plan = JSON.parse(readFileSync(K.plan, "utf8"));
     const planMarks = plan.marks;
 
+    // THE WEB SWEEP NEEDS ONLY THE PLAN. Where the register is counted it starts once the counts have passed their check, and runs beside
+    // the register reading and its owner checks; elsewhere it starts here. The rating waits for both, and a branch that fails waits for the
+    // other to settle, so nothing is left running.
+    const sweepMarks = async () => {
+      koStep(ctx, "Sweeping marks");
+      // WHEN THE SWEEP STARTED, for the minutes recorded against the owner's bar after it. The sweep's own
+      // wall clock, not the sum of the marks' — they run side by side, so a sum would report minutes nobody
+      // waited. Epoch, never a formatted time.
+      const sweepStartedAt = Date.now();
+      const { grid, source } = sweep;
+      const { preset, reasoning } = KNOCKOUT_WEB;
+      // step 3 — was a knob; no environment ever set it. The `Number.isFinite` guard beside it went
+      // with the read: a constant cannot be typo'd, which is the hazard that guard existed for.
+      const concurrency = 3;
+      let callNo = 0;
+      const degraded = new Map();
+      const outaged = new Set();   // the subset of `degraded` whose cause was a 429/5xx — see the all-failed branch
+      const recovered = [];   // previously-degraded marks whose re-sweep succeeded — their stale assess chunks must be invalidated
+      if (sweep.skipped) {
+        // acceptance 6 — NOT ATTEMPTED. No executor is called, so nothing is billed, nothing can
+        // 429, and no `.failed` sentinel is written: there is no failure here to record, and writing one
+        // would tell a resumed run that a sweep was tried.
+        //
+        // Every mark takes the named cause, and that is the ENTIRE downstream wiring. The assess stage
+        // already reads it (stages-knockout.mjs renders "(DEGRADED: … — apply the null-results doctrine,
+        // never inflate)"), verify-knockout.mjs already REFUSES a row that holds no payload and does not
+        // carry degraded:true plus a manual-verification note, and the renderers already print it. The
+        // null-results doctrine carries this case; it needed no new path, only a cause.
+        for (const m of planMarks) degraded.set(m.name, CAPABILITY_SKIPPED_CAUSE[sweep.skipped] ?? sweep.skipped);
+        runLog(run.runDir, { event: "knockout-sweep-skipped", marks: planMarks.length, executor: source, cause: sweep.skipped });
+        note(`knockout sweep: not run (${sweep.skipped}) — the screen delivers its register half and discloses the rest`);
+      } else {
+      runLog(run.runDir, { event: "knockout-sweep-start", marks: planMarks.length, executor: source, preset, reasoning: reasoning.effort, resultsPerCell: KNOCKOUT_WEB.resultsPerCell, concurrency });
+      await runBatched(planMarks, concurrency, async (m) => {
+        const out = K.research(kebab(m.name));
+        if (existsSync(out)) return;   // per-mark resume: only missing payloads re-sweep
+        const hadFailed = existsSync(out + ".failed");
+        const spec = knockoutGridSpec(m, plan.batch, { outputPath: out });
+        const started = Date.now();
+        const n = ++callNo;
+        // ONE MORE CALL WHEN THE PROGRAM, NOT THE PROVIDER, FAILED. The search program is written by the
+        // provider's model each call, and the clearance grid's own guidance retries once when it did not run
+        // or printed something unreadable. A provider outage is not retried here: the provider call retried
+        // a 429 or 5xx already, and the all-failed branch below parks the batch on it.
+        let r = null, attempts = 0;
+        const raw = [];   // every attempt's, in order: a retried call's first answer is evidence too
+        if (!spec.terms.length || !spec.platforms.length) {
+          r = { ok: false, cause: "the plan names no spellings or no places for this mark" };
+        } else {
+          while (attempts < 2) {
+            attempts++;
+            try { r = await grid(spec, { mark: m.name, preset, reasoning }); }
+            catch (e) { r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
+            if (Array.isArray(r?.raw) && r.raw.length) raw.push({ attempt: attempts, items: r.raw });
+            if (r?.ok || r?.outage === true || !/^grid: /.test(String(r?.cause ?? ""))) break;
+          }
+        }
+        // THE RAW RESULTS ARE KEPT, whether the call answered or not: what the provider returned is the only
+        // record of which pages a search reached, and the ledger keeps only what each cell asked for.
+        if (raw.length) {
+          try {
+            mkdirSync(dirname(K.webResults(kebab(m.name))), { recursive: true });
+            writeFileSync(K.webResults(kebab(m.name)), JSON.stringify({ mark: m.name, callNo: n, attempts: raw }, null, 1) + "\n");
+          } catch { /* the ledger below is the receipt; a raw-results write never fails a mark */ }
+        }
+        const row = {
+          ts: new Date().toISOString(), mark: m.name, callNo: n, preset, reasoning: reasoning.effort, executor: source,
+          spellings: spec.terms, places: spec.platforms, ...(spec.use ? { use: spec.use } : {}), resultsPerCell: spec.results_per_cell,
+          cells: r?.requested ?? spec.terms.length * spec.platforms.length,
+          // The mark's whole wall time, both attempts when there were two: what the client waited for.
+          present: r?.present ?? 0, attempts, took_ms: Date.now() - started,
+          bytes: r?.bytes ?? (r?.ledgerJson ? Buffer.byteLength(r.ledgerJson) : 0),
+          ok: Boolean(r?.ok && r?.ledgerJson), ...(r?.ok && r?.ledgerJson ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }),
+        };
+        try { appendFileSync(K.sweepLedger, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ }
+        if (row.ok) {
+          // THE LEDGER IS THE PAYLOAD. The rating step reads it as it came back: every cell, the listings
+          // each search returned, and any search that could not run. It is data, with no words of ours in it.
+          writeFileSync(out, r.ledgerJson + "\n");
+          if (hadFailed) {
+            try { rmSync(out + ".failed"); } catch { /* best-effort */ }
+            recovered.push(m.name);
+          }
+        } else {
+          degraded.set(m.name, row.cause);
+          if (r?.outage === true) outaged.add(m.name);
+          writeFileSync(out + ".failed", `research failed: ${row.cause}\n`);
+        }
+      });
+      if (degraded.size >= planMarks.length) {
+        // EVERY mark failed. Whether that ends the batch or pauses it depends on why, and until now it
+        // always ended it: the throw carried a prose reason, and StageFailure sets `rateLimited` by an EXACT
+        // string match on `reason === "rate_limited"`, so `rateLimited` was false, the lane's own catch wrote
+        // .failed immediately, so the run reported a hard failure for a provider hiccup. When this was
+        // written the rate-limit re-throw through pipeline()'s outer catch was the lane's ONLY escape
+        // hatch and this path could not reach it. added a second one — the class-aware
+        // ladder in the catch below — and an outage-shaped reason classifies TRANSIENT there, so this
+        // block is no longer the difference between a park and a dead run. It stays because it is the
+        // BETTER answer: `rate_limited` postpones on the provider's own clock through the outer catch,
+        // where the ladder would spend a recovery attempt to learn the same thing.
+        //
+        // ALL of them must be outage-shaped, not merely one. A batch where two marks hit a 429 and one hit a
+        // bad key is a broken configuration wearing an outage's clothes; parking it would auto-resume
+        // forever and bury the real error. Anything mixed, anything unexplained, stays terminal.
+        //
+        // resetsAt is null: the provider does not surface Retry-After through this path, and runner.mjs's
+        // postponedDueAt already applies the default backoff for a null. Better an honest null than a
+        // fabricated deadline.
+        if (outaged.size >= planMarks.length) {
+          note(`knockout sweep: all ${planMarks.length} research calls failed with an outage-shaped status — postponing rather than failing the batch`);
+          runLog(run.runDir, { event: "knockout-sweep-outage", marks: planMarks.length, executor: source });
+          throw new StageFailure("knockout-sweep", "rate_limited", null);
+        }
+        throw new StageFailure("knockout-sweep", `all ${planMarks.length} research calls failed (executor ${source}) — nothing to assess`, null);
+      }
+      if (degraded.size) note(`knockout sweep: ${degraded.size}/${planMarks.length} mark(s) degraded — the batch continues (null-results doctrine)`);
+      // ── WHAT THE SWEEP COST, BESIDE THE BAR (ruling 570) ─────────────────────────────────────────────
+      //
+      // The frame chooses each name's places with no cap, so the only way to know what a knockout costs is
+      // to record it. Cells come from the RECEIPTS ON DISK rather than the loop's own variables: a resumed
+      // run's earlier marks are in the ledger and not in this process, and the ledger is what a reader has
+      // afterwards. The bar is recorded, not applied — nothing above or below this line reads it.
+      try {
+        const rows = readFileSync(K.sweepLedger, "utf8").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+        const cells = rows.reduce((n, r) => n + (Number.isFinite(r?.cells) ? r.cells : 0), 0);
+        const places = rows.reduce((n, r) => Math.max(n, Array.isArray(r?.places) ? r.places.length : 0), 0);
+        // THE SWEEP'S OWN ELAPSED TIME, UNDER A NAME THAT SAYS SO, and the bar is no longer asserted here.
+        // The bar is about the RUN (ruling 591) and this span is one stage of it: both knockouts of
+        // 2026-09-26 recorded `overBar: false` at 0.6 and 0.8 minutes while the runs took 14.4 minutes
+        // wall, which e2e scored as over. A bar recorded against the wrong quantity is worse than an
+        // unrecorded one, because the field's name says it answered the question. It is recorded at
+        // delivery instead, where the run's own start is readable.
+        const sweepMinutes = Number(((Date.now() - sweepStartedAt) / 60000).toFixed(1));
+        runLog(run.runDir, { event: "knockout-sweep-total", marks: planMarks.length, calls: rows.length,
+          cells, mostPlacesForOneName: places, sweepMinutes });
+        note(`knockout sweep: ${cells} cell(s) across ${rows.length} call(s) in ${sweepMinutes} min`);
+      } catch { /* the receipts are the record; a summary that could not be read never fails a sweep */ }
+      }
+      return { degraded, recovered };
+    };
+    let sweepRun = null;
+    // HANDLED FROM THE START. A sweep that fails while the register is still being read rejects with nothing awaiting it yet, and
+    // an unhandled rejection ends the process with no status written. The reading's `finally` and the await below take its failure.
+    const startSweep = () => {
+      if (!sweepRun) { sweepRun = sweepMarks(); sweepRun.catch(() => {}); }
+      return sweepRun;
+    };
+
     // 1.5 — STAGE 0.5: the register hit-counts. Pure code — no stage, no model, no turn. It runs
     // BEFORE the sweep because it is the cheap deterministic question and the client sees its answer
     // first; it runs after the frame only so the batch's shape is settled and a frame failure costs
@@ -1026,150 +1174,22 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runLog(run.runDir, { event: "knockout-register-counts", provider: REGISTER_PROVIDER, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
       if (counted < doc.marks.length) note(`register counts: ${doc.marks.length - counted}/${doc.marks.length} mark(s) unavailable — the batch continues (they publish as "not available", never as zero)`);
 
-      await checkOwners(await readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts: doc, countExec, opts }));
+      const sweeping = startSweep();
+      try { await checkOwners(await readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts: doc, countExec, opts })); }
+      finally { await sweeping.catch(() => {}); }
     }
 
     // 2 — the sweep: ONE grid call per mark, receipted, through the clearance grid's own program path.
     // Every spelling the frame named for the mark is searched once on every place it named for the batch,
     // and every result is kept, with no summary (stages-knockout.mjs, KNOCKOUT_WEB). A mark whose call
     // fails is degraded on its own; the rest of the batch goes on.
-    koStep(ctx, "Sweeping marks");
-    // WHEN THE SWEEP STARTED, for the minutes recorded against the owner's bar after it. The sweep's own
-    // wall clock, not the sum of the marks' — they run side by side, so a sum would report minutes nobody
-    // waited. Epoch, never a formatted time.
-    const sweepStartedAt = Date.now();
-    const { grid, source } = sweep;
-    const { preset, reasoning } = KNOCKOUT_WEB;
-    // step 3 — was a knob; no environment ever set it. The `Number.isFinite` guard beside it went
-    // with the read: a constant cannot be typo'd, which is the hazard that guard existed for.
-    const concurrency = 3;
-    let callNo = 0;
-    const degraded = new Map();
-    const outaged = new Set();   // the subset of `degraded` whose cause was a 429/5xx — see the all-failed branch
-    const recovered = [];   // previously-degraded marks whose re-sweep succeeded — their stale assess chunks must be invalidated
-    if (sweep.skipped) {
-      // acceptance 6 — NOT ATTEMPTED. No executor is called, so nothing is billed, nothing can
-      // 429, and no `.failed` sentinel is written: there is no failure here to record, and writing one
-      // would tell a resumed run that a sweep was tried.
-      //
-      // Every mark takes the named cause, and that is the ENTIRE downstream wiring. The assess stage
-      // already reads it (stages-knockout.mjs renders "(DEGRADED: … — apply the null-results doctrine,
-      // never inflate)"), verify-knockout.mjs already REFUSES a row that holds no payload and does not
-      // carry degraded:true plus a manual-verification note, and the renderers already print it. The
-      // null-results doctrine carries this case; it needed no new path, only a cause.
-      for (const m of planMarks) degraded.set(m.name, CAPABILITY_SKIPPED_CAUSE[sweep.skipped] ?? sweep.skipped);
-      runLog(run.runDir, { event: "knockout-sweep-skipped", marks: planMarks.length, executor: source, cause: sweep.skipped });
-      note(`knockout sweep: not run (${sweep.skipped}) — the screen delivers its register half and discloses the rest`);
-    } else {
-    runLog(run.runDir, { event: "knockout-sweep-start", marks: planMarks.length, executor: source, preset, reasoning: reasoning.effort, resultsPerCell: KNOCKOUT_WEB.resultsPerCell, concurrency });
-    await runBatched(planMarks, concurrency, async (m) => {
-      const out = K.research(kebab(m.name));
-      if (existsSync(out)) return;   // per-mark resume: only missing payloads re-sweep
-      const hadFailed = existsSync(out + ".failed");
-      const spec = knockoutGridSpec(m, plan.batch, { outputPath: out });
-      const started = Date.now();
-      const n = ++callNo;
-      // ONE MORE CALL WHEN THE PROGRAM, NOT THE PROVIDER, FAILED. The search program is written by the
-      // provider's model each call, and the clearance grid's own guidance retries once when it did not run
-      // or printed something unreadable. A provider outage is not retried here: the provider call retried
-      // a 429 or 5xx already, and the all-failed branch below parks the batch on it.
-      let r = null, attempts = 0;
-      const raw = [];   // every attempt's, in order: a retried call's first answer is evidence too
-      if (!spec.terms.length || !spec.platforms.length) {
-        r = { ok: false, cause: "the plan names no spellings or no places for this mark" };
-      } else {
-        while (attempts < 2) {
-          attempts++;
-          try { r = await grid(spec, { mark: m.name, preset, reasoning }); }
-          catch (e) { r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
-          if (Array.isArray(r?.raw) && r.raw.length) raw.push({ attempt: attempts, items: r.raw });
-          if (r?.ok || r?.outage === true || !/^grid: /.test(String(r?.cause ?? ""))) break;
-        }
-      }
-      // THE RAW RESULTS ARE KEPT, whether the call answered or not: what the provider returned is the only
-      // record of which pages a search reached, and the ledger keeps only what each cell asked for.
-      if (raw.length) {
-        try {
-          mkdirSync(dirname(K.webResults(kebab(m.name))), { recursive: true });
-          writeFileSync(K.webResults(kebab(m.name)), JSON.stringify({ mark: m.name, callNo: n, attempts: raw }, null, 1) + "\n");
-        } catch { /* the ledger below is the receipt; a raw-results write never fails a mark */ }
-      }
-      const row = {
-        ts: new Date().toISOString(), mark: m.name, callNo: n, preset, reasoning: reasoning.effort, executor: source,
-        spellings: spec.terms, places: spec.platforms, ...(spec.use ? { use: spec.use } : {}), resultsPerCell: spec.results_per_cell,
-        cells: r?.requested ?? spec.terms.length * spec.platforms.length,
-        // The mark's whole wall time, both attempts when there were two: what the client waited for.
-        present: r?.present ?? 0, attempts, took_ms: Date.now() - started,
-        bytes: r?.bytes ?? (r?.ledgerJson ? Buffer.byteLength(r.ledgerJson) : 0),
-        ok: Boolean(r?.ok && r?.ledgerJson), ...(r?.ok && r?.ledgerJson ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }),
-      };
-      try { appendFileSync(K.sweepLedger, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ }
-      if (row.ok) {
-        // THE LEDGER IS THE PAYLOAD. The rating step reads it as it came back: every cell, the listings
-        // each search returned, and any search that could not run. It is data, with no words of ours in it.
-        writeFileSync(out, r.ledgerJson + "\n");
-        if (hadFailed) {
-          try { rmSync(out + ".failed"); } catch { /* best-effort */ }
-          recovered.push(m.name);
-        }
-      } else {
-        degraded.set(m.name, row.cause);
-        if (r?.outage === true) outaged.add(m.name);
-        writeFileSync(out + ".failed", `research failed: ${row.cause}\n`);
-      }
-    });
-    if (degraded.size >= planMarks.length) {
-      // EVERY mark failed. Whether that ends the batch or pauses it depends on why, and until now it
-      // always ended it: the throw carried a prose reason, and StageFailure sets `rateLimited` by an EXACT
-      // string match on `reason === "rate_limited"`, so `rateLimited` was false, the lane's own catch wrote
-      // .failed immediately, so the run reported a hard failure for a provider hiccup. When this was
-      // written the rate-limit re-throw through pipeline()'s outer catch was the lane's ONLY escape
-      // hatch and this path could not reach it. added a second one — the class-aware
-      // ladder in the catch below — and an outage-shaped reason classifies TRANSIENT there, so this
-      // block is no longer the difference between a park and a dead run. It stays because it is the
-      // BETTER answer: `rate_limited` postpones on the provider's own clock through the outer catch,
-      // where the ladder would spend a recovery attempt to learn the same thing.
-      //
-      // ALL of them must be outage-shaped, not merely one. A batch where two marks hit a 429 and one hit a
-      // bad key is a broken configuration wearing an outage's clothes; parking it would auto-resume
-      // forever and bury the real error. Anything mixed, anything unexplained, stays terminal.
-      //
-      // resetsAt is null: the provider does not surface Retry-After through this path, and runner.mjs's
-      // postponedDueAt already applies the default backoff for a null. Better an honest null than a
-      // fabricated deadline.
-      if (outaged.size >= planMarks.length) {
-        note(`knockout sweep: all ${planMarks.length} research calls failed with an outage-shaped status — postponing rather than failing the batch`);
-        runLog(run.runDir, { event: "knockout-sweep-outage", marks: planMarks.length, executor: source });
-        throw new StageFailure("knockout-sweep", "rate_limited", null);
-      }
-      throw new StageFailure("knockout-sweep", `all ${planMarks.length} research calls failed (executor ${source}) — nothing to assess`, null);
-    }
-    if (degraded.size) note(`knockout sweep: ${degraded.size}/${planMarks.length} mark(s) degraded — the batch continues (null-results doctrine)`);
-    // ── WHAT THE SWEEP COST, BESIDE THE BAR (ruling 570) ─────────────────────────────────────────────
-    //
-    // The frame chooses each name's places with no cap, so the only way to know what a knockout costs is
-    // to record it. Cells come from the RECEIPTS ON DISK rather than the loop's own variables: a resumed
-    // run's earlier marks are in the ledger and not in this process, and the ledger is what a reader has
-    // afterwards. The bar is recorded, not applied — nothing above or below this line reads it.
-    try {
-      const rows = readFileSync(K.sweepLedger, "utf8").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
-      const cells = rows.reduce((n, r) => n + (Number.isFinite(r?.cells) ? r.cells : 0), 0);
-      const places = rows.reduce((n, r) => Math.max(n, Array.isArray(r?.places) ? r.places.length : 0), 0);
-      // THE SWEEP'S OWN ELAPSED TIME, UNDER A NAME THAT SAYS SO, and the bar is no longer asserted here.
-      // The bar is about the RUN (ruling 591) and this span is one stage of it: both knockouts of
-      // 2026-09-26 recorded `overBar: false` at 0.6 and 0.8 minutes while the runs took 14.4 minutes
-      // wall, which e2e scored as over. A bar recorded against the wrong quantity is worse than an
-      // unrecorded one, because the field's name says it answered the question. It is recorded at
-      // delivery instead, where the run's own start is readable.
-      const sweepMinutes = Number(((Date.now() - sweepStartedAt) / 60000).toFixed(1));
-      runLog(run.runDir, { event: "knockout-sweep-total", marks: planMarks.length, calls: rows.length,
-        cells, mostPlacesForOneName: places, sweepMinutes });
-      note(`knockout sweep: ${cells} cell(s) across ${rows.length} call(s) in ${sweepMinutes} min`);
-    } catch { /* the receipts are the record; a summary that could not be read never fails a sweep */ }
-    }
+    const { degraded, recovered } = await startSweep();
 
     // 3 — assess (chunked ≤8/turn; merged + gated in code). DEGRADED per the DISK truth (payload
     // presence), never the in-memory Map alone — resume-proof: a prior attempt's degrades count too.
+    // A STOP ASKED FOR WHILE THE TWO RESEARCH BRANCHES RAN ends the run here, with both settled and their work kept: the rating does
+    // not start, and the status does not name it as begun. The turn boundary would refuse its first turn anyway.
+    if (isCancelled(run.runDir)) throw new RunCancelled("knockout-assess", readCancel(run.runDir));
     koStep(ctx, "Knockout assessment");
     const chunkRows = planMarks.map((m) => {
       const has = existsSync(K.research(kebab(m.name)));

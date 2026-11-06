@@ -2720,14 +2720,15 @@ export function applyStageWrites(msg, argv) {
   // IT DECLINES RATHER THAN REWRITES. A fixture inventing replacement prose would put mock sentences on
   // the record every knockout e2e then asserts against, and the rewrite path is driven by its own arms
   // against a real record. What the e2e needs from this branch is that the stage COMPLETES through the
-  // real transport, which a declined row does exactly as well.
+  // real transport, which a declined row does exactly as well. It records the clean read ONCE, as the
+  // check is told to: one row, at the first address the dispatch carries.
   if (/record_knockout_review/.test(msg)) {
     const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock knockout-review: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
     recordMockToolCall(runDir, "record_knockout_review", "recording-knockout-review");
     const declined = [];
     for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
-      try { declined.push({ at: JSON.parse(m[1]), why: "mock review: the line reads plainly enough in context" }); }
+      try { declined.push({ at: JSON.parse(m[1]), why: "mock review: the lines read plainly enough in context" }); break; }
       catch { /* a row whose address will not parse is not one this mock can answer */ }
     }
     if (!declined.length) return "mock knockout-review: the dispatch carried no address to answer — the driver measures them and puts them in the message";

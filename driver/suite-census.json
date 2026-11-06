@@ -1125,6 +1125,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-recheck-reads-the-defects-and-what-they-could-affect.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -1140,6 +1146,12 @@
         "a-knockout-run-with-no-method-is-not-offered-inputs.test.mjs": {
           "tests": 2,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-web-sweep-runs-beside-its-register-reading.test.mjs": {
+          "tests": 4,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -3640,8 +3652,8 @@
           "todos": 0
         },
         "depth-ladder-reaches-the-prompt.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -3658,8 +3670,8 @@
           "todos": 0
         },
         "depth-ladder-rung-discipline.test.mjs": {
-          "tests": 8,
-          "asserts": 15,
+          "tests": 9,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4157,7 +4169,7 @@
         },
         "every-dispatch-carries-the-charter.test.mjs": {
           "tests": 7,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -6761,7 +6773,7 @@
         },
         "the-corrective-pass-inherits-the-depth-rung.test.mjs": {
           "tests": 3,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -7200,6 +7212,12 @@
         "the-knockout-adds-a-class-only-for-the-clients-goods.test.mjs": {
           "tests": 2,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-check-reads-as-a-knockout-and-records-a-clean-read-once.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -8447,6 +8465,12 @@
         "a-demo-connection-writes-only-inside-its-demo.test.mjs": {
           "tests": 2,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-demo-names-no-tool-it-withholds.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },

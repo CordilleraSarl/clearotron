@@ -34,6 +34,8 @@
 // It is a DESCRIPTION and never an order: plan_run is still the free preview of a specific request, and
 // start_run is still the only thing that spends.
 
+import { demoServing } from "../demo-mode.mjs";
+import { demoText } from "./demo-texts.mjs";   // — a demo's note names no tool it withholds
 import { ORDERABLE_PRODUCTS, PRODUCT_POLICIES, productAvailability, gateCause, UNAVAILABLE_NOTE, loadRecipes } from "../../driver/search-policy.mjs";
 import { productRow } from "../../driver/product-rows.mjs";
 import { PRODUCTS, productName } from "../../driver/products.mjs";
@@ -351,7 +353,7 @@ export function describeOptions(args = {}, { scope, now = Date.now() } = {}) {
   const territories = registerTerritoriesFor(snapshot);
 
   return {
-    _note: _NOTE,
+    _note: demoServing() ? demoText("describe_options:note", _NOTE) : _NOTE,
     products: products(built, registerCanCountFor(snapshot), territories),
     // What this deployment's register can actually search, in the composer's own display names. Omitted
     // — not nulled — when the snapshot does not say, and `null` when the register declares no

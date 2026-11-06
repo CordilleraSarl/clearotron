@@ -59,7 +59,7 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
     why: "the repair verdict the same row tests with `ok: outcome === \"repaired\"`; judged, not dispatched" },
   { file: "driver/gateway.mjs", noun: "settled", sites: 2, atWriteSite: 2, verdict: "result",
     why: "counts read off the coverage/placement unions" },
-  { file: "driver/pipeline-knockout.mjs", noun: "recovered", sites: 1, atWriteSite: 1, verdict: "result",
+  { file: "driver/pipeline-knockout.mjs", noun: "recovered", sites: 2, atWriteSite: 1, verdict: "result",
     why: "written after the chunk files were actually removed" },
   { file: "driver/knockout-correction-record.mjs", noun: "outcome", sites: 5, atWriteSite: 0, verdict: "out-of-scope",
     why: "the model's answer to a defect, `changed` or `stands`, and the driver's own reading of a defect beside it, both read back and never returned by a call being logged" },

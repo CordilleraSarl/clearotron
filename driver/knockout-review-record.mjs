@@ -26,10 +26,10 @@
 // re-send the other twenty, and a partial payload that DELETED the rest is the failure that rule exists
 // to stop.
 //
-// `declined[]` — merged the same way, by address. A seat that read a flag and judged the word to be the
-// subject rather than the profession's shorthand says so here. This is not decoration: the pass is
-// handed evidence and never a verdict, so "I looked and it is fine" and "I did not look" must be
-// different states in the artifact, or the residue cannot be read afterwards.
+// `declined[]` — merged the same way, by address. A clean read is recorded here once: one row saying the
+// lines stand. A seat may also say why it left a flagged line alone, and is not asked to: a line it leaves
+// alone owes no row. "I looked and it is fine" and "I did not look" stay different states in the
+// artifact because an empty call is refused below, not because every line carries a row.
 //
 // `material[]` — REPLACED when present, KEPT when absent. It is the pass's whole answer to whether the
 // client is being told the right thing, so half of one is not a thing.

@@ -3,7 +3,7 @@
 [QUICKSTART.md](QUICKSTART.md) gets one search running in three commands. This is everything else.
 
 Two documents in one file, and most readers need only the first. The engine needs no agent gateway — the
-reasoning stages' only external LLM dependency is a coding CLI: the Claude CLI (the default) or the codex
+reasoning stages' only external LLM dependency is a coding CLI: the Claude CLI or the codex
 CLI. Two other lanes call model APIs of their own: web research (`PERPLEXITY_API_KEY`, required for the
 three clearance searches — §1; a Knockout search runs without it and discloses the half it skipped).
 The native-script candidate lane no longer asks for a key of its own: it runs on
