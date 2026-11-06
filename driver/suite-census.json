@@ -1048,8 +1048,8 @@
           "todos": 0
         },
         "a-knockout-batch-is-rated-in-small-groups-side-by-side.test.mjs": {
-          "tests": 7,
-          "asserts": 43,
+          "tests": 8,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },

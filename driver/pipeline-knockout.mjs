@@ -304,6 +304,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
   const thrown = [];
+  // A RATE LIMIT STARTS NOTHING MORE: the corrections already running finish, and none is sent into the same limit.
   await runBatched(touched, KO_CONCURRENT_TURNS, async (c) => {
     try {
       await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
@@ -311,9 +312,9 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
       thrown.push({ c, e });
       failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
     }
-  });
+  }, { stop: () => thrown.some(rateLimited) });
   failed.sort((a, b) => a.chunk - b.chunk);
-  const limited = thrown.find((x) => x.e instanceof StageFailure && x.e.resetsAt);
+  const limited = thrown.find(rateLimited);
   if (limited) throw limited.e;
   // Back to the record as it was rated, through the same gate, with every defect still open and why.
   const standDown = (outcome, detail) => {
@@ -575,7 +576,8 @@ export function resolveSweepExecutor(opts) {   // exported for its test, like re
 // A non-finite limit collapses to 1 worker, never to zero (Array.from({length: NaN}) is [] — a typo'd
 // concurrency env var would otherwise silently skip the ENTIRE sweep; review 2026-07-17).
 // A group's failure, the first by group order, unless one carries a rate limit's reset: that one decides when to try again.
-const firstFailure = (failures) => (failures.find((f) => f.e instanceof StageFailure && f.e.resetsAt) ?? [...failures].sort((a, b) => a.c - b.c)[0]).e;
+const rateLimited = (f) => f.e instanceof StageFailure && Boolean(f.e.resetsAt);
+const firstFailure = (failures) => (failures.find(rateLimited) ?? [...failures].sort((a, b) => a.c - b.c)[0]).e;
 
 /**
  * Why a group's framework echo does not name the frozen framework, or null. The two are compared as values, the framework's key and its
@@ -594,12 +596,13 @@ export function frameworkEchoFault(echo, frozen) {
 // AT MOST THREE MODEL TURNS AT ONCE, for the rating groups and for their corrections (design, 2026-11-05).
 const KO_CONCURRENT_TURNS = 3;
 
-async function runBatched(items, limit, fn) {
+// `stop`, when given, is asked before each item is taken: once it answers true no further item starts, and those running finish.
+async function runBatched(items, limit, fn, { stop = null } = {}) {
   const results = new Array(items.length);
   let i = 0;
   const cap = Number.isFinite(limit) && limit >= 1 ? Math.floor(limit) : 1;
   const workers = Array.from({ length: Math.max(1, Math.min(cap, items.length)) }, async () => {
-    while (i < items.length) { const idx = i++; results[idx] = await fn(items[idx], idx); }
+    while (i < items.length && !stop?.()) { const idx = i++; results[idx] = await fn(items[idx], idx); }
   });
   await Promise.all(workers);
   return results;
@@ -1230,10 +1233,12 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // THE GROUPS ARE RATED SIDE BY SIDE. Each writes only its own chunk, under its own session and call folder, and all are joined
     // before anything is composed. A group that fails leaves the others' accepted chunks for a resume, which re-runs only what failed.
     const assessFailures = [];
+    // A RATE LIMIT STARTS NOTHING MORE: the groups already running finish and keep their work, no further group is sent into the
+    // same limit, and the resume rates only the groups that did not finish.
     await runBatched(chunks.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
       try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } }); }
       catch (e) { assessFailures.push({ c, e }); }
-    });
+    }, { stop: () => assessFailures.some(rateLimited) });
     if (assessFailures.length) throw firstFailure(assessFailures);
     // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
     // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.

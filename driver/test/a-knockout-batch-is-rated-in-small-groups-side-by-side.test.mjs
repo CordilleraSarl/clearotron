@@ -37,7 +37,7 @@ const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths } = await import("../stage
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "NOVAPULSE", "IRONWHISK", "CLUVENDRA", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY"];
-const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_KO_FIRST_FRAMEWORK", "MOCK_KO_LATER_FRAMEWORK", "MOCK_FAIL_STAGE"];
+const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_KO_FIRST_FRAMEWORK", "MOCK_KO_LATER_FRAMEWORK", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH"];
 
 /** One knockout of these names through the lane, on the mock engine. What the run left, whether or not it delivered. */
 async function knockout(codename, names, env = {}, executors = {}) {
@@ -117,6 +117,23 @@ test("a group that fails leaves the others' work, and a resume runs only that gr
   const after = resumed.journal.slice(before).filter((e) => /^knockout-assess#/.test(String(e.stage)));
   assert.deepEqual(after.filter((e) => e.event === "stage").map((e) => e.stage), ["knockout-assess#1"], "only the failed group runs again");
   assert.deepEqual(after.filter((e) => e.event === "skip").map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-assess#2"]);
+});
+
+test("a group that meets a rate limit starts no further group, and a resume rates only what did not finish", async () => {
+  const log = join(ROOT, "limited.jsonl");
+  const limited = await knockout("rate-limited", NAMES, { MOCK_KO_ASSESS_HOLD_MS: "1500", MOCK_KO_ASSESS_LOG: log,
+    MOCK_CLAUDE_RATELIMIT: String(Math.floor(Date.now() / 1000) + 3600), MOCK_CLAUDE_RATELIMIT_MATCH: "You are rating chunk 1/4" });
+  assert.ok(limited.thrown || limited.res?.ok === false, "the lane does not deliver with groups missing");
+  const sent = limited.journal.filter((e) => /^knockout-assess#/.test(String(e.stage)) && e.event === "stage").map((e) => e.stage).sort();
+  assert.deepEqual(sent, ["knockout-assess#0", "knockout-assess#1", "knockout-assess#2"], "the fourth group was sent into the limit");
+  for (const c of [1, 2]) assert.ok(existsSync(limited.K.assessChunk(c)), `group ${c + 1}, already running, kept its work`);
+  for (const c of [0, 3]) assert.equal(existsSync(limited.K.assessChunk(c)), false, `group ${c + 1} has no chunk`);
+  const before = limited.journal.length;
+  const resumed = await knockout("rate-limited", NAMES);
+  assert.equal(resumed.res?.ok, true, `the resume did not deliver: ${resumed.thrown?.message ?? JSON.stringify(resumed.res)}`);
+  const after = resumed.journal.slice(before).filter((e) => /^knockout-assess#/.test(String(e.stage)));
+  assert.deepEqual(after.filter((e) => e.event === "stage").map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-assess#3"], "only the unfinished groups are rated again");
+  assert.deepEqual(resumed.findings.marks.map((m) => m.name), NAMES);
 });
 
 test("the web sweep runs beside the register reading once the counts have passed, and not at all when no count was taken", async () => {
