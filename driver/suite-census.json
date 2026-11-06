@@ -1143,6 +1143,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-web-sweep-runs-beside-its-register-reading.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 2,
           "asserts": 11,
