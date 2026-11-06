@@ -3652,8 +3652,8 @@
           "todos": 0
         },
         "depth-ladder-reaches-the-prompt.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -3670,8 +3670,8 @@
           "todos": 0
         },
         "depth-ladder-rung-discipline.test.mjs": {
-          "tests": 8,
-          "asserts": 15,
+          "tests": 9,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4169,7 +4169,7 @@
         },
         "every-dispatch-carries-the-charter.test.mjs": {
           "tests": 7,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -6773,7 +6773,7 @@
         },
         "the-corrective-pass-inherits-the-depth-rung.test.mjs": {
           "tests": 3,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

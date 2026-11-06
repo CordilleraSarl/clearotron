@@ -38,14 +38,15 @@ function fixtureP() {
   return P;
 }
 
-test("the corrective dispatch carries the rung BYTE-IDENTICALLY with the fresh one", () => {
+test("the corrective dispatch carries no prose rung, as the fresh one carries none", () => {
+  // RE-AIMED, NOT DELETED (design, 2026-11-06). The prose rung's rules for per-finding write-ups left the synthesis dispatch: the
+  // call records sections only and says those write-ups are not a field. The corrective pass re-emits the whole narrative, so it
+  // must not bring the retired rules back by the door this file was written to watch.
   const P = fixtureP();
-  const fresh = proseRungDirective(depth(WORLDWIDE));
-  assert.ok(fresh.length > 100,
-    "the fixture built no fresh directive, so the comparison below would hold over an empty string");
-  assert.ok(correctionsExtra(P, depth(WORLDWIDE)).includes(fresh),
-    "the corrective dispatch does not carry the depth rung — it re-emits the whole narrative, so the "
-    + "rung governs a draft and not the delivery");
+  const retired = proseRungDirective(depth(WORLDWIDE));
+  assert.ok(retired.length > 100, "the fixture built no retired directive, so the comparison below would hold over an empty string");
+  assert.ok(!correctionsExtra(P, depth(WORLDWIDE)).includes(retired), "the corrective dispatch still carries the retired prose rung");
+  assert.doesNotMatch(correctionsExtra(P, depth(WORLDWIDE)), /DEPTH OF WRITING/, "the corrective dispatch carries a depth-of-writing rule");
 });
 
 test("the UNGRADED product adds nothing — the corrective pass stays byte-identical there", () => {

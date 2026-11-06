@@ -664,6 +664,10 @@ export function inquiryRungDirective(depth) {
  * ABSENT PARAMETERS MEAN NO DIRECTIVE, which is what byte-identical means for the ungraded product: it
  * is told nothing new, rather than told a permissive version of the rule.
  */
+// — RETIRED FROM THE SYNTHESIS DISPATCH, and kept as a tombstone like profileRungDirective above (design, 2026-11-06). The
+// synthesis call records sections only, and its own message says per-finding write-ups are not a field, so this directive's rules
+// for those write-ups contradicted the message it rode in. Nothing calls it. The depth fields it read stay, because the narrative's
+// depth check still reads them for an older narrative that does carry per-finding prose.
 export function proseRungDirective(depth, bandOrder = null) {
   const rank = Number(depth?.narrativeKeptBandRank);
   const maxWords = Number(depth?.narrativeWriteUpWords);
@@ -3133,8 +3137,6 @@ export const STAGES = {
       // confusion. Conditional read (frameworkFor pattern); doctrine TABLES live elsewhere, untouched.
       reads(synthesisSkillReads({ profile, job })),
       `Produce the joint synthesis narrative (dominant-element spine, cross-pollination Option-D cap N=10, actual-use check, owner workup on high-risk findings, rate each conflict net of merits defences UNDER THE FRAMEWORK YOU JUST READ — state the likelihood of confusion in plain words, then give the band those words require under the framework's own definitions (the prose and the band are one judgment and may not disagree), coverage honesty). WHERE THE MATTER RATIFIED MORE THAN ONE FORM OF THE NAME — a second spelling the instruction told you to read as a variant of the same candidate — REASON EACH FORM THROUGH THE FRAMEWORK ON ITS OWN, then say in the narrative which conflicts move between them and why, naming the form each read belongs to. A conflict that turns on one form exactly is not the same exposure for the other, and a reader choosing between the forms cannot act on a single undifferentiated read. Where every conflict lands the same on both, say so in one line — "the reads are the same for both forms" — as an asserted finding rather than a silence: a reader must be able to tell a matter where the forms do not differ from one where nobody looked. This changes the NARRATIVE and nothing about the report's shape: one overall band as today, and never a second one.`,
-      // — the prose rung. Empty on a one-country run, and `lines` drops it.
-      proseRungDirective(depth, framework?.bands ?? null),
       // doc 50 — THE RATING AUTHORITY: the framework read above (the customer's own, or the Generic default)
       // rates this matter. All framework-derived strings below come from the FROZEN manifest — never hardcoded.
       framework ? `FRAMEWORK IN FORCE (the rating authority for this customer): ${framework.title} — rate every conflict by reasoning through ITS band definitions (Legal position first, then Practical position, then Potential outcomes — or its matrix where it states one). Its bands, highest to lowest, are EXACTLY: ${framework.bands.map((b) => b.label).join(" / ")}. Voice the client side as it does: "${framework.entity_label}". Where the framework states ceilings or matrix mappings, honour them exactly as written — they are its own anti-escalation mechanism; no practical or optics factor lifts a rating past what its stated method yields. A conflict ${framework.entity_label} clearly wins with no material risk is NOT a rated conflict: give it NO band — disposition "off-field" (commercial awareness) if worth the client knowing, else omit it. The framework's lowest band (${framework.bands[framework.bands.length - 1].label}) is for real-but-manageable residual risk — nuisance claims, weak strategic complaints, registration obstacles — never for clear wins.${frameworkMethod ? `\n${methodDictation(frameworkMethod)}` : ""}` : "",   // + the framework's stated method, only where it states one (framework-method.mjs)

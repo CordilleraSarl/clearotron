@@ -35,7 +35,7 @@ import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
@@ -6154,13 +6154,10 @@ export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {   // @int
  * Composed from the same function the fresh dispatch uses, so the two are the same string rather than
  * two texts that agree today.
  */
-export function stageCharter(stageName, depth, framework = null) {   // @internal
-  // THE BAND ORDER RIDES THE CHARTER, because rule 2 names the run's own band labels and a warm dispatch
-  // that composed them from nothing would send a DIFFERENT directive to the same seat — which is the
-  // whole failure this helper exists to prevent, reintroduced one argument down.
-  const directive = stageName === "synthesis" ? proseRungDirective(depth, framework?.bands ?? null)
-    : stageName === "placement-inquiry" ? inquiryRungDirective(depth)
-      : "";
+export function stageCharter(stageName, depth) {   // @internal
+  // SYNTHESIS CARRIES NO DEPTH RUNG ANY MORE: its per-finding write-up rules contradicted the synthesis call, which records
+  // sections only (design, 2026-11-06). The placement inquiry's rung still rides every dispatch of that stage.
+  const directive = stageName === "placement-inquiry" ? inquiryRungDirective(depth) : "";
   return directive ? `\n\n${directive}` : "";
 }
 

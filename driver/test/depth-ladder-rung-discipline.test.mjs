@@ -38,6 +38,12 @@ const RUNGS = Object.entries(stages)
 const CONVERTED = {
   profileRungDirective: { to: "profileSelectionDirective", from: "./profile-selection.mjs" },
 };
+/**
+ * Rungs RETIRED with no replacement, and therefore correctly uncalled. `proseRungDirective` gave rules for per-finding write-ups in
+ * the narrative, and the synthesis call records sections only and says those write-ups are not a field, so the rules contradicted
+ * the message they rode in (design, 2026-11-06). The arm at the end of this file asserts that nothing calls it.
+ */
+const RETIRED_RUNGS = new Set(["proseRungDirective"]);
 
 /** The depth field each rung reads, derived from its own name: proseRungDirective → narrativeProse. */
 const FIELD_OF = {
@@ -60,7 +66,7 @@ test("every rung is CALLED by a stage — a defined-but-unwired rung grades noth
   const src = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8")
     .split("\n").filter((l) => !/^export function \w+RungDirective\(/.test(l)).join("\n");
   for (const { name } of RUNGS) {
-    if (CONVERTED[name]) continue;   // asserted by the arm at the end of this file instead
+    if (CONVERTED[name] || RETIRED_RUNGS.has(name)) continue;   // asserted by the arms at the end of this file instead
     // `(depth` NOT `(depth)`: a rung that grew a second argument — the prose rung takes the run's band
     // order now — is still called, and an exact-paren match would report it unwired. That reads as the
     // vacuous pass this arm exists to catch, in the opposite direction.
@@ -174,5 +180,17 @@ test("a CONVERTED rung's replacement IS wired — 'uncalled' and 'converted' loo
     assert.match(src, new RegExp(`\\b${to}\\(`),
       `${name} is marked converted and its replacement ${to} is never called — the product is ungraded `
       + "with a comment explaining why the old function is unused");
+  }
+});
+
+test("a RETIRED rung is called by no stage — retired means gone from every dispatch, not merely unlisted", () => {
+  const src = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8")
+    .split("\n").filter((l) => !/^export function \w+RungDirective\(/.test(l)).join("\n");
+  const pipeline = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  assert.ok(RETIRED_RUNGS.size, "nothing is marked retired — this arm reads nothing");
+  for (const name of RETIRED_RUNGS) {
+    assert.ok(RUNGS.some((r) => r.name === name), `${name} is marked retired and is no longer exported: drop it from RETIRED_RUNGS`);
+    for (const [where, text] of [["stages.mjs", src], ["pipeline.mjs", pipeline]])
+      assert.equal([...text.matchAll(new RegExp(`\\b${name}\\(`, "g"))].length, 0, `${where} still calls the retired ${name}`);
   }
 });
