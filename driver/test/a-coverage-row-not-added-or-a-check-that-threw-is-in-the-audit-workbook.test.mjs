@@ -100,6 +100,14 @@ test("a floor of the verdict that threw on its last entry is a failed check; a l
   assert.deepEqual(parts(delivered(t, [{ event: VERDICT_FLOORS_PASS }, failed, { event: VERDICT_FLOORS_PASS }])), []);
 });
 
+test("the names delivery reads are the literal names the pipeline writes", () => {
+  // The run log's names are written as literals so that they can be read from the source and classed; this holds the
+  // reader's constants to them, so neither side can be renamed alone.
+  const source = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  for (const name of [COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED, VERDICT_FLOORS_PASS, VERDICT_FLOOR_FAILED])
+    assert.ok(source.includes(`event: "${name}"`), `pipeline.mjs writes the event ${name}`);
+});
+
 // ── each step, made to fail by its own input ──────────────────────────────────────────────────────────────────
 
 const ADDERS = [

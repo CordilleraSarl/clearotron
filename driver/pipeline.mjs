@@ -121,7 +121,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories, narrowingMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED, COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED, VERDICT_FLOORS_PASS, VERDICT_FLOOR_FAILED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -8663,7 +8663,7 @@ export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, for
 // the workbook. Its note is the run's own line; this event is what delivery reads (degraded-parts.mjs, coverageRows),
 // so the audit workbook names the part. It never throws from the catch that calls it.
 function coverageRowNotAdded(runDir, adder, e) {
-  try { runLog(runDir, { event: COVERAGE_ROW_NOT_ADDED, adder, fail: String(e?.message || e).replace(/\s+/g, " ").slice(0, 200) }); }
+  try { runLog(runDir, { event: "coverage-row-not-added", adder, fail: String(e?.message || e).replace(/\s+/g, " ").slice(0, 200) }); }
   catch { /* the note the caller wrote still stands */ }
 }
 
@@ -15501,7 +15501,7 @@ async function pipelineInner(job, opts = {}) {
     // bypass it because the clamp already ran once.
     const applyCoverageFloor = () => {
     // Each entry is the floors' state, so delivery reads only a floor that threw since the last of these.
-    runLog(run.runDir, { event: VERDICT_FLOORS_PASS });
+    runLog(run.runDir, { event: "verdict-floors-pass" });
     // review fix: the machinery arm below must judge the verdict AS IT ENTERED the floor —
     // when the legalActions arm clamps CLEAR→CONDITIONAL first, the machinery gaps (coverage, frame,
     // screen-gate, senior, registerGap) must still be computed and APPENDED, or a run
@@ -15627,7 +15627,7 @@ async function pipelineInner(job, opts = {}) {
     } catch (e) {
       note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`);
       // Nothing else would clamp this: the audit workbook names it (degraded-parts.mjs, checks).
-      try { runLog(run.runDir, { event: VERDICT_FLOOR_FAILED, floor: "common-law", fail: String(e?.message ?? e).slice(0, 200) }); }
+      try { runLog(run.runDir, { event: "verdict-floor-failed", floor: "common-law", fail: String(e?.message ?? e).slice(0, 200) }); }
       catch { /* the note above still stands */ }
     }
     if (entryVerdict === "CLEAR") {
@@ -16051,7 +16051,7 @@ async function pipelineInner(job, opts = {}) {
     const seamWrites = async () => {
     // A pass follows each rewrite of findings.json and adds the rows below again, so delivery reads only the adders
     // that failed since the last of these.
-    runLog(run.runDir, { event: COVERAGE_ROWS_PASS });
+    runLog(run.runDir, { event: "coverage-rows-pass" });
     injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered

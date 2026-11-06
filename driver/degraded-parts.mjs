@@ -66,12 +66,13 @@ export const DEGRADED_PARTS_FILE = "degraded-parts.json";
 
 // The run-log events of the coverage rows the driver adds once synthesis has settled (pipeline.mjs, the seam):
 // one at the start of each pass, and one for each adder that failed in it. Each adder catches its own failure
-// and the run goes on, so the event is the only trace that the row it exists to add is missing.
+// and the run goes on, so the event is the only trace that the row it exists to add is missing. The pipeline writes
+// these names as literals, because the run log's names are read from the source and classed (scripts/e2e-first-time.mjs).
 export const COVERAGE_ROWS_PASS = "coverage-rows-pass";
 export const COVERAGE_ROW_NOT_ADDED = "coverage-row-not-added";
 
 // The run-log events of the verdict's floors (pipeline.mjs, applyCoverageFloor): one at each entry, the floor being
-// re-entered whenever the verdict can move, and one for each floor that threw in it.
+// re-entered whenever the verdict can move, and one for each floor that threw in it. Written as literals, as above.
 export const VERDICT_FLOORS_PASS = "verdict-floors-pass";
 export const VERDICT_FLOOR_FAILED = "verdict-floor-failed";
 
