@@ -72,8 +72,11 @@ test("a demo boots with its brief reader off and no worker, and does not say an 
     const startupLog = join(home, "trademark-demo", "startup.log");
     assert.ok(said.includes(`Startup details are in \`${startupLog}\`.`), `the demo did not say where its startup details are:\n${safe(said).slice(-3000)}`);
     const filed = readFileSync(startupLog, "utf8");
-    assert.match(filed, /^\[portal-service\] listening on /m, "anti-vacuity: the portal's own lines are not in the startup file");
-    assert.doesNotMatch(said, /^\[portal-service\] listening on /m, "a routine service line is still on the demo's screen");
+    // WHICH LINES ARE ROUTINE IS THE FILTER'S ANSWER, NOT THIS FILE'S: a checkout with no built portal page prints the portal's
+    // `listening on` line with `ui=MISSING`, which rightly stays on the screen, as the offline suites run.
+    const routine = filed.split("\n").filter((l) => l.trim() && !demoLineOnScreen(l));
+    assert.ok(routine.some((l) => /^\[trademark-artifacts-http\] listening on /.test(l)), "anti-vacuity: the engine door's own lines are not in the startup file");
+    assert.deepEqual(routine.filter((l) => said.includes(l)), [], "a routine service line is still on the demo's screen");
     // A NEW ROUTINE LINE IS NAMED HERE, not left on every demo's screen: a fresh demo prints no service line that shows
     // without an alarm in it.
     const unlisted = filed.split("\n").filter((l) => /^\[[\w-]+\] /.test(l) && demoLineOnScreen(l) && !DEMO_ALARM.test(l));
