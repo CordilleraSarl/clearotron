@@ -127,6 +127,15 @@ test('/me says whether the install can run a search, and an older server reads a
   assert.equal(isOk(unable) ? unable.value.canSearch : null, false)
   const older = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true } }, () => api.me())
   assert.equal(isOk(older) ? older.value.canSearch : null, true, 'a server that says nothing was read as unable to search')
+  // And the refusal the review would give this reader comes with it, to be said before a search is filled in.
+  const refusal = 'This install cannot run a search yet: no AI is chosen. Run `clearotron install` in a terminal to set it up. '
+    + 'Nothing has been searched and nothing has been charged.'
+  const said = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true }, canSearch: false, searchRefusal: refusal }, () => api.me())
+  assert.equal(isOk(said) ? said.value.searchRefusal : undefined, refusal)
+  assert.equal(isOk(older) ? older.value.searchRefusal : undefined, null, 'a server that says nothing carries a refusal')
+  // A refusal beside an install that can search is not shown: the two facts would disagree on screen.
+  const able = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true }, canSearch: true, searchRefusal: refusal }, () => api.me())
+  assert.equal(isOk(able) ? able.value.searchRefusal : undefined, null)
 })
 
 test('409 with neither spelling still says something, and says it once', async () => {

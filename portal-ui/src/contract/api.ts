@@ -338,6 +338,12 @@ export type Me = {
    */
   readonly canSearch?: boolean
   /**
+   * When this install cannot run a search, the refusal the review would give this reader: what is missing and the
+   * command that sets it for the person who runs the install, the client sentence for everyone else. Home and New
+   * clearance show it before anyone fills a search in. Null when the install can search, or the server says nothing.
+   */
+  readonly searchRefusal?: string | null
+  /**
    * HOW THIS INSTALL ARRIVED, so a screen can name the setup command this reader can actually type.
    *
    *   'packaged'  installed as a package — `npx clearotron install`
@@ -1041,6 +1047,11 @@ export type EngineState = {
   readonly programSetting: string | null
   /** Which setup command this install can run — the word `/me` sends. Null ⇒ an older service. */
   readonly setupRoute: 'packaged' | 'checkout' | null
+  /**
+   * Whether an AI is chosen at all. False ⇒ `id` is the code's default, which nobody saved, and every search is
+   * refused at the order. A capture from an older build says nothing, and reads as chosen, as it did.
+   */
+  readonly selected: boolean
 }
 
 /**
@@ -1926,6 +1937,7 @@ export const api = {
       engineProgramDisputed:
         b['engineProgramDisputed'] === true ? true : b['engineProgramDisputed'] === false ? false : null,
       canSearch: b['canSearch'] !== false,
+      searchRefusal: b['canSearch'] === false && typeof b['searchRefusal'] === 'string' ? b['searchRefusal'] : null,
       // Same closed set, same reason as engineMode above. This value chooses which command a reader is
       // told to type, so an unrecognised string must never reach the screen — it lands as null and the
       // screen names both routes instead.
@@ -2577,6 +2589,7 @@ export const api = {
               install: asString(e['install']),
               programSetting: asString(e['programSetting']),
               setupRoute: e['setupRoute'] === 'packaged' ? 'packaged' : e['setupRoute'] === 'checkout' ? 'checkout' : null,
+              selected: e['selected'] !== false,
             }
           })()
         : null,

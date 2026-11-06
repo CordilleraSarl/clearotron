@@ -69,6 +69,11 @@ export type EngineFacts = {
   readonly programSetting?: string | null
   /** Which setup command this install can run. Null or absent ⇒ both are named. */
   readonly setupRoute?: 'packaged' | 'checkout' | null
+  /**
+   * Whether an AI is chosen at all. False means `id` is the code's default, which nobody saved, and every search is
+   * refused at the order. Absent from an older service, which then reads as it did.
+   */
+  readonly selected?: boolean
 }
 
 /** The setup wizard as this reader can run it. Both spellings when the service did not say which. */
@@ -76,6 +81,9 @@ export type EngineFacts = {
 // only in a source checkout, so the row names the command every install can run. The search screen's
 // notice is the one place that picks by route (one-name-per-command.test.mjs names it).
 const SETUP_COMMAND = '`npx clearotron install`'
+
+// The search screen's headline for an install with no engine, and the Engine row's fault when no AI is chosen.
+const NO_ENGINE = 'No search engine is attached to this install.'
 
 /** "a", "a and b", "a, b and c". */
 const listed = (xs: readonly string[], and = 'and'): string =>
@@ -158,6 +166,9 @@ export function engineRowFaults(
   { programDisputed = false }: { readonly programDisputed?: boolean } = {},
 ): readonly string[] {
   const reason = engine.billing.reason ?? null
+  // NO AI CHOSEN IS THE ONE FAULT, in the search screen's own words. Every other fault would be about the code's
+  // default, which nobody chose, so none of them is said.
+  if (engine.selected === false) return [NO_ENGINE]
   return [
     ...(engine.known ? [] : [`This build does not ship an engine called ${engine.id}.`]),
     // WITHOUT THE VARIABLE'S NAME. This row is on Installation settings, which is read in screen shares by
@@ -252,7 +263,7 @@ export function engineNotice({ programDisputed }: { readonly programDisputed: bo
   }
   return {
     state: 'absent',
-    headline: 'No search engine is attached to this install.',
+    headline: NO_ENGINE,
     // SETUP INSTALLS THE PROGRAM NOW. This said "install a reasoning CLI and sign in, then run the setup
     // wizard again", from before setup offered the install itself; it now names setup as the one step.
     before: 'Everything else works — the example report, its audit trail and the assistant connection are '
@@ -290,6 +301,8 @@ export function engineRow(
   readonly faults: readonly string[]
 } {
   const faults = engineRowFaults(engine, { programDisputed })
+  // THE UNSET SELECTION, SHOWN AS UNSET: not the default's name, not its id, and not what would pay for it.
+  if (engine.selected === false) return { ok: false, name: 'Not set', mono: '', state: 'Missing', faults }
   return {
     ok: faults.length === 0,
     name: engine.vendor ?? engine.id,

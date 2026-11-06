@@ -320,3 +320,19 @@ test('the no-engine notice names a command THIS reader can run', () => {
   assert.match(fn, /if you installed the package/,
     'the unknown-route branch picks one command instead of naming both')
 })
+
+test('an install that cannot run a search says so in place of the review button, before the brief is sent', () => {
+  // The review would be refused with the runner's sentence, so the footer shows that sentence instead of a button
+  // that leads to it, as demo mode does. The brief can still be written. The settings page is offered only to the
+  // person who can open it.
+  assert.match(SRC, /searchRefusal=\{ctx\.me\.canSearch === false \? ctx\.me\.searchRefusal \?\? null : null\}/,
+    'the footer is no longer told whether this install can run a search')
+  const at = SRC.indexOf(') : searchRefusal ? (')
+  assert.ok(at > 0, 'the footer no longer has a branch for an install that cannot run a search')
+  const branch = SRC.slice(at, SRC.indexOf(') : (', at))
+  assert.match(branch, /<Ticked text=\{searchRefusal\} \/>/, 'the refusal is not the text the footer shows')
+  assert.doesNotMatch(branch, /onReview/, 'the review button is offered beside the refusal it would meet')
+  assert.match(branch, /\{onSettings \? \(/, 'the settings link is offered to a reader who cannot open the page')
+  // And a refusal line names its command as code, in both lists a refusal can land in.
+  assert.equal(SRC.split('<Ticked text={l} />').length - 1, 2, 'a refusal line no longer draws its command as code')
+})

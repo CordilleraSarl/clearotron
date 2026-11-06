@@ -130,7 +130,11 @@ export function engineInventory(env = process.env) {
   // `vendor`, NOT `label`. The label in that table is the mechanism — "each stage runs as a headless
   // `claude -p` turn" — which is exactly the back-end detail took off this page. The id travels
   // beside it because it is what an operator types into an environment file.
-  return { id, vendor: spec?.vendor ?? null, known: Boolean(spec), billing, binaryPresent };
+  // WHETHER ANY AI IS CHOSEN, by the order wall's own test (run-requirements.mjs, the ENGINE_ENV row: set, once
+  // trimmed). With none chosen, `id` above is the code's default, which nobody saved, and every search is refused
+  // at the order; the page drew that default as a configured, green engine.
+  const selected = String(env.CLEAROTRON_AI ?? "").trim() !== "";
+  return { id, vendor: spec?.vendor ?? null, known: Boolean(spec), billing, binaryPresent, selected };
 }
 
 /**

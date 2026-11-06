@@ -143,17 +143,21 @@ export function billingRefusalWords(message) {
  */
 export function runRequirements(env = {}, { registers = [], engines = {}, defaultEngine = null, resolveEngine = null } = {}) {
   const out = [];
+  // What each row is about, for the words an install's operator is shown (whatIsMissing): set before each part below.
+  let about = "store";
   const push = (name, blocking, why, at = ORDER) =>
-    out.push({ name, blocking, why, at, present: Boolean(val(env, name)) });
+    out.push({ name, blocking, why, at, about, present: Boolean(val(env, name)) });
 
   // WRITTEN BY START ITSELF, so its absence is this product's fault and not a reader's — see the header.
   push(POOL_ENV, true, "the directory a finished report is written into — without it a run has nowhere to deliver", START);
 
   // ── THE REGISTER, AND ITS CREDENTIALS FROM THE PROVIDER'S OWN ROW ────────────────────────────────
   const register = val(env, REGISTER_ENV);
+  about = "register";
   push(REGISTER_ENV, true, "the register a search reads — the driver refuses by name at the first stage when it is unset, and there is no default");
   const spec = (registers ?? []).find((p) => p.id === register);
   if (spec) {
+    about = "credentials";
     for (const k of spec.credentials ?? [])
       push(k, true, `required by the ${spec.id} register — a run cannot verify a registry citation without it`);
     // OPTIONAL ON THE PROVIDER'S OWN TERMS: an absent one narrows the offices searched and the run
@@ -165,10 +169,12 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
   // that sentence and says it better. What is reported here is only that the NAME is set.
 
   // ── THE ENGINE, AND THE BINARY IT DRIVES ─────────────────────────────────────────────────────────
+  about = "ai";
   push(ENGINE_ENV, true, "which reasoning engine runs the stages");
   const engineId = val(env, ENGINE_ENV) || defaultEngine || "";
   const engine = (engines ?? {})[engineId];
   if (engine?.env) {
+    about = "program";
     push(engine.env, true, `the path to the ${engine.vendor} CLI this engine drives — a stage cannot dispatch without it`);
     // FOUND IS WHAT COUNTS, NOT SET. A program on this environment's PATH, or the copy installed with
     // Clearotron, needs no path written anywhere, and asking only whether the variable was set refused an
@@ -183,6 +189,7 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     }
   }
   if (engine?.authEnv) {
+    about = "payment";
     const ways = payWays(engineId, engine);
     const said = ways.map((m) => PAY_WORDS[m]);
     push(engine.authEnv, false, `how the engine is paid for — ${said.length > 1 ? `${said.slice(0, -1).join(", ")} or ${said.at(-1)}` : said[0]}; `
@@ -244,7 +251,7 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
         // And it is not an alternative to read or carry: `anyOf` is handed to the composer too, and the
         // set-and-off line would travel through it.
         const off = Object.values(CLOUD_SWITCH).filter((k) => val(env, k));
-        out.push({ name: CLOUD_SWITCH.vertex, anyOf: CLOUD_ROUTES.filter((k) => !off.includes(k)), blocking: true, at: ORDER, present: false,
+        out.push({ name: CLOUD_SWITCH.vertex, anyOf: CLOUD_ROUTES.filter((k) => !off.includes(k)), blocking: true, at: ORDER, about, present: false,
           why: `${payWord} pays through a cloud account and nothing names which one — set `
             + `${["vertex", "foundry", "bedrock"].map((c) => `${CLOUD_SWITCH[c]}=1 for ${CLOUD_CREDENTIAL_CHECK[c].who}`).join(", ")}, `
             + `or ANTHROPIC_BASE_URL for a gateway`
@@ -296,6 +303,7 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     }
   }
 
+  about = "research";
   push(RESEARCH_ENV, false, "the three clearance searches carry the common-law grid and refuse at preflight without it; a Knockout search still runs and discloses the half it skipped");
 
   return out;
@@ -337,6 +345,29 @@ export function missingRequirements(env = {}, tables = {}) {
   };
 }
 
+// ── WHAT IS MISSING, IN THE WORDS THE PERSON WHO RUNS THE INSTALL IS SHOWN ─────────────────────────────────
+//
+// The owner's words (2026-11-06): one phrase per kind of missing setting, in this order, joined by "and". The
+// portal's refusal to that person and `clearotron start`'s line about ordering both fill their gap with these.
+const MISSING_WORDS = Object.freeze([
+  ["ai", "no AI is chosen"],
+  ["register", "no register is chosen"],
+  ["credentials", "the register's credentials are missing"],
+  ["program", "the AI's program is not installed"],
+  ["payment", "the AI's payment is not set up"],
+]);
+
+/**
+ * The phrases for what the order-time rows `rows` are about, joined by "and"; "" when none has one. With no AI
+ * chosen, the program and the payment rows are the default AI's, which nobody chose, so "no AI is chosen" says
+ * all of it.
+ */
+export function whatIsMissing(rows = []) {
+  const kinds = new Set(rows.map((r) => r.about));
+  if (kinds.has("ai")) { kinds.delete("program"); kinds.delete("payment"); }
+  return MISSING_WORDS.filter(([k]) => kinds.has(k)).map(([, words]) => words).join(" and ");
+}
+
 /**
  * The order-time refusal, in two vocabularies, from ONE list.
  *
@@ -354,6 +385,7 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
   const missing = missingRequirements(env, tables).atOrder;
   if (!missing.length) return null;
   const names = missing.map((r) => r.name);
+  const gap = whatIsMissing(missing);
   // EVERY FILE THAT REACHES THIS RUN, EACH NAMED BY WHAT READS IT — the rule `bin/start.mjs` already
   // follows, for the reason it gives: two copies of this sentence is how one of them comes to name a file
   // the reader cannot use. This copy named only `envFile`, the file background units read. A runner
@@ -381,15 +413,23 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
       : " Run `clearotron install` in a terminal to configure them, or set them in the file this install's units read.";
   return {
     names,
+    missing: gap,
     operator: `this installation cannot run a search yet — it is installed but not configured:\n`
       + missing.map((r) => `    ${r.name} — ${r.why}`).join("\n")
       + `\n\n  Nothing has been searched and nothing has been spent.${where}`,
     // ONE SENTENCE, NO NAMES, AND NO PROMISE. "Contact" rather than "we have been notified": this
     // product has no outbox on a box in this state, so a notice would be the F41 lie one level up.
-    client: "This installation is not configured to run searches yet. Nothing has been searched and "
-      + "nothing has been charged. Please contact whoever administers it.",
+    client: CLIENT_REFUSAL,
+    // THE PERSON WHO RUNS THE INSTALL is shown what is missing and the command that sets it, in the owner's words
+    // (2026-11-06). The portal shows this to a person who sees everything, the one its Installation settings
+    // page is for, and the client sentence to everyone else. A gap with no phrase keeps the client sentence.
+    installer: gap ? `This install cannot run a search yet: ${gap}. Run \`clearotron install\` in a terminal to set it up. `
+      + "Nothing has been searched and nothing has been charged." : CLIENT_REFUSAL,
   };
 }
+
+const CLIENT_REFUSAL = "This installation is not configured to run searches yet. Nothing has been searched and "
+  + "nothing has been charged. Please contact whoever administers it.";
 
 // THE ENV FILE `clearotron start` READ, when it started this runner: the one file a refusal can honestly
 // name for a runner that read none itself (`startFile` above). A command-line flag rather than a variable,

@@ -86,7 +86,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
 // the driver must not point at `bin/`.
-import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
+import { runRequiredNames, missingRequirements, whatIsMissing, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
 import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
 import { spawnsDetached, killWindowsTreesNow } from "../driver/engine/engine-spawn.mjs";   // Windows has no process group to stop
@@ -2614,8 +2614,10 @@ if (isMain) {
     say("  Ordering a clearance from the portal opens the finished example for that search: every search");
     say("  here resolves to a report that already exists. Nothing is started and nothing is charged.");
   } else if (worker) {
-    say("  Ordering a clearance from the portal starts it. The portal prices the run and asks you to");
-    say("  confirm before anything is spent — that confirmation is the moment money is committed.");
+    // ASKED OF THE ENVIRONMENT THE WORKER WAS HANDED, by the runner's own order-time test: an order is refused
+    // there until the install can search, and this line said an order starts a run whatever the install held.
+    const cannot = missingRequirements(childProcessEnv(process.env, envs.worker), await runTables()).atOrder;
+    for (const line of orderingLines({ missing: whatIsMissing(cannot), install: invoke("install") })) say(line);
   } else {
     say("  Ordering a clearance from the portal puts the job in the queue and shows it there with its");
     say("  position. You started with --no-worker, so nothing is draining it: run");
@@ -2641,12 +2643,14 @@ if (isMain) {
   // commands; printing one of them unheaded is how a reader pastes the wrong one. The target is read
   // here and passed, because this module is pure by design and reads no environment of its own.
   const offered = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), demo: DEMO, ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
-  const connect = connectLinesNamingClaude(offered, resolveEngineProgram(claudeEngine()));
+  const claudeProgram = resolveEngineProgram(claudeEngine());
+  const connect = connectLinesNamingClaude(offered, claudeProgram);
   // "one line" IS DELETED RATHER THAN MADE CONDITIONAL. Under WSL two lines are printed, one per side,
   // and the count was never the point of the sentence — what it promises is no address and no sign-in,
   // which is true on both sides and on every other install.
   say("  Connect your assistant to this install — no address and no sign-in:");
   say("");
+  for (const line of connectPrerequisiteLines({ demo: DEMO, program: claudeProgram })) say(line);
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
   for (const line of connectScreen(connect)) say(line);
@@ -2725,6 +2729,18 @@ export function connectLinesNamingClaude(connect, program) {
 }
 
 /**
+ * What a demo says before its connect line when this machine has no Claude program. The line runs Claude Code,
+ * and printed alone it failed as "claude: command not found" on a machine without it; the owner's words
+ * (2026-11-06). A real install's setup offers the program, so it is not told this. `program` is what
+ * resolveEngineProgram answers for Claude. PURE.
+ */
+export function connectPrerequisiteLines({ demo = false, program = null } = {}) {
+  if (!demo || program?.resolved) return [];
+  return fitTo(96, "This needs Claude Code, and this machine does not have it. Install Claude Code, then run the line below.")
+    .map((l) => `  ${l}`);
+}
+
+/**
  * The lines under "Connect your assistant": each row, then the check line once, or under each row when the
  * rows' checks differ. PURE.
  */
@@ -2735,6 +2751,21 @@ export function connectScreen(connect) {
       ...(perRow ? [`      Check it:  ${v.verify}`] : []), ""])
     : [`    ${connect.command}`, ""];
   return perRow ? rows : [...rows, `  Check it:  ${connect.verify}`, ""];
+}
+
+/**
+ * What a terminal start says about ordering when it runs a worker. `missing` is what the install lacks for a
+ * search, in the phrases the portal uses (whatIsMissing), or "" when it lacks nothing. An install that cannot
+ * search has its orders refused, so it is told that, in the owner's words (2026-11-06), and not that an order
+ * starts a run.
+ */
+export function orderingLines({ missing = "", install = "clearotron install" } = {}) {
+  if (!missing) {
+    return ["  Ordering a clearance from the portal starts it. The portal prices the run and asks you to",
+      "  confirm before anything is spent — that confirmation is the moment money is committed."];
+  }
+  return fitTo(96, `Ordering a clearance from the portal is refused until this install can run a search: ${missing}. `
+    + `Run \`${install}\` in a terminal to set it up.`).map((l) => `  ${l}`);
 }
 
 /**

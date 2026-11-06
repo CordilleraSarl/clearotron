@@ -569,7 +569,7 @@
         },
         "a-demo-connection-stays-with-its-demo.test.mjs": {
           "tests": 7,
-          "asserts": 32,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
@@ -2812,8 +2812,8 @@
           "todos": 0
         },
         "an-install-that-cannot-search-refuses-the-order-at-review.test.mjs": {
-          "tests": 6,
-          "asserts": 22,
+          "tests": 9,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
@@ -3310,8 +3310,8 @@
           "todos": 0
         },
         "config-inventory.test.mjs": {
-          "tests": 18,
-          "asserts": 59,
+          "tests": 19,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -6269,7 +6269,13 @@
         },
         "setup-asks-which-ai-runs-your-searches.test.mjs": {
           "tests": 12,
-          "asserts": 58,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "setup-keeps-the-ai-you-picked-and-offers-a-way-on.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -6724,8 +6730,8 @@
           "todos": 0
         },
         "the-connect-line-names-the-claude-setup-installed.test.mjs": {
-          "tests": 4,
-          "asserts": 26,
+          "tests": 5,
+          "asserts": 30,
           "skips": 1,
           "todos": 0
         },
@@ -6953,7 +6959,7 @@
         },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
-          "asserts": 47,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -8691,8 +8697,8 @@
           "todos": 0
         },
         "plan.test.mjs": {
-          "tests": 28,
-          "asserts": 125,
+          "tests": 29,
+          "asserts": 129,
           "skips": 0,
           "todos": 0
         },
@@ -8847,7 +8853,7 @@
         },
         "api.test.ts": {
           "tests": 48,
-          "asserts": 192,
+          "asserts": 195,
           "skips": 0,
           "todos": 0
         },
@@ -8942,8 +8948,8 @@
           "todos": 0
         },
         "engineState.test.ts": {
-          "tests": 12,
-          "asserts": 50,
+          "tests": 13,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -8991,7 +8997,7 @@
         },
         "home.test.ts": {
           "tests": 56,
-          "asserts": 199,
+          "asserts": 200,
           "skips": 0,
           "todos": 0
         },
@@ -9056,8 +9062,8 @@
           "todos": 0
         },
         "newClearanceStructure.test.ts": {
-          "tests": 8,
-          "asserts": 63,
+          "tests": 9,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },

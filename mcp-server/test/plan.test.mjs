@@ -569,3 +569,19 @@ test("the two values this round closed are the ones that test bites on", () => {
   // …and a value that is legal stays legal, so the derivation is not just "everything is refused".
   assert.equal(planRun({ ...BASE, jurisdictions: ["United States"], deliveryRoute: "email" }).wouldRun, true);
 });
+
+test("plan_run in a demo tells the assistant a demo cannot start the search, and names no start tool", async () => {
+  // A demo withholds start_run, and its preview still told the assistant to call start_run once the requester
+  // confirmed. The demo's preview says, in the owner's words, that this is what would run on a real install.
+  const { demoMode } = await import("../demo-mode.mjs");
+  const order = { ...BASE, markName: "QUILLBRAE" };   // invented
+  const real = planRun(order);
+  assert.equal(real.wouldRun, true, JSON.stringify(real.blockers));
+  assert.match(real._note, /call start_run with the SAME arguments/, "the control: a real install still hands the confirmed request on");
+  demoMode.on = true;
+  try {
+    const demoPlan = planRun(order);
+    assert.equal(demoPlan._note, "NOTHING HAS BEEN STARTED and nothing has been charged. This is what would run on a real install. A demo cannot start it.");
+    assert.doesNotMatch(JSON.stringify(demoPlan._note), /start_run/, "a demo's preview names a tool the demo withholds");
+  } finally { demoMode.on = false; }
+});

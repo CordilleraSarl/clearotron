@@ -184,7 +184,7 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
             ) : null}
             {v.lastRun.capturedAt ? (
               <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
-                Last run recorded its configuration at <span className="mono">{v.lastRun.capturedAt}</span>.
+                This configuration was recorded at <span className="mono">{v.lastRun.capturedAt}</span>.
               </p>
             ) : null}
           </div>

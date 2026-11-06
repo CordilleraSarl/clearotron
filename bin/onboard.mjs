@@ -123,8 +123,8 @@ export const PAYS_WITH = Object.freeze({ subscription: "your subscription", "api
 export const proveQuestion = ({ product, billing }) =>
   `Prove ${product} on ${PAYS_WITH[billing]} now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
 /**
- * What setup says just before it asks to prove the engine. Answering no saves nothing and returns to the
- * engine menu, so the reader is told before answering that the AI is saved only once the turn works. On a
+ * What setup says just before it asks to prove the engine. Answering no saves nothing and asks whether to go
+ * on without an AI, so the reader is told before answering that the AI is saved only once the turn works. On a
  * subscription it also says what a turn costs when the program is not signed in yet, nothing, and that the
  * sign-in follows (signInHandOff); under a key or a cloud account there is no sign-in to follow.
  */
@@ -1115,6 +1115,16 @@ export function engineOptions(found = {}) {
     ...rows.map(({ id, name, state }) => ({ id, label: state ? `${name.padEnd(width)}   ${state}` : name })),
     { id: null, label: "None for now" },
   ];
+}
+
+/**
+ * The engine menu's default row: the AI the reader picked on an earlier pass, or row 0 on the first. A reader
+ * whose turn failed on one AI and who went back to the menu met row 0 under Enter, which is a change of AI they
+ * had not chosen. Remembering the pick saves nothing: the proof turn still decides what is written.
+ */
+export function engineMenuDefault(options, lastPick = null) {
+  const at = lastPick ? options.findIndex((o) => o.id === lastPick) : -1;
+  return at < 0 ? 0 : at;
 }
 
 // A COPY REFUSED AS THE VENDOR'S PLACEHOLDER, told apart by the resolver's own reason for refusing it
@@ -3901,6 +3911,7 @@ try {
   say("\n  Engine");
   say("  Clearotron runs each step of a search as a short, unattended session of an AI. One AI serves");
   say("  every search on this computer, so it is not chosen per search.");
+  let lastPick = null;   // the AI picked on the pass before this one (engineMenuDefault)
   engine: for (;;) {
     // ── THE STATE FIRST, THE QUESTIONS OFF IT ──────────────────────────────
     //
@@ -3916,8 +3927,10 @@ try {
     // only honest answer to it, and a guessed "signed in" that the turn then contradicts costs more than
     // no claim. Resolved once per pass, so a reader who mends something and comes back sees it mended.
     const found = engineMenuState();
-    const pick = await choose(ENGINE_QUESTION, engineOptions(found), 0, PAY_PREAMBLE);
+    const options = engineOptions(found);
+    const pick = await choose(ENGINE_QUESTION, options, engineMenuDefault(options, lastPick), PAY_PREAMBLE);
     if (!pick.id) { sayNoEngine(); break; }
+    lastPick = pick.id;
     const eng = ENGINE_BINARIES[pick.id];
 
     let bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
@@ -4094,9 +4107,16 @@ try {
     // saves nothing.
     for (const line of proofPreamble({ product: eng.product, billing: authPick.id })) info(line);
     if (!await confirm(proveQuestion({ product: eng.product, billing: authPick.id }), true)) {
+      // A WAY ON WITHOUT AN AI, BEFORE THE MENU. A declined proof went straight back to the menu, so a reader
+      // taking every default went round the same setup again. The question the no-program path already asks
+      // offers the way on; no returns to the menu, with this pick its default, and only that answer says so.
+      if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
       info("Not proven, so not written. Pick again — the last row configures no engine at all.");
       continue;
     }
+    // A TOKEN PASTED BELOW IS SAVED ONLY WITH THE TURN IT PROVED. It was written into the settings as it was
+    // pasted, so a reader whose turn still failed, and who then went on without an AI, had it saved unproved.
+    let pastedToken = null;
     for (;;) {
       say("  Running one turn…");
       // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
@@ -4106,6 +4126,7 @@ try {
         const served = servedLine(v);
         if (served) info(served);
         candidate.CLEAROTRON_AI = pick.id;
+        if (pastedToken !== null) candidate[eng.headless.tokenEnv] = pastedToken;
         // ALWAYS WRITTEN, and for the copy Clearotron installed it is the engine's default word: see
         // engineProgramSetting for why leaving it out was not enough.
         candidate[eng.env] = engineProgramSetting(eng, bin);
@@ -4148,10 +4169,11 @@ try {
       // else — and the wizard's own header tells them Enter is the safe key. Driven with Enter it went
       // 19 attempts, no cap and no escape, in a wizard whose header says everything here is skippable.
       //
-      // Enter now declines. The reader lands back on the engine menu, whose last row configures no
-      // engine at all, so the way out is the one that already exists rather than a second one invented
-      // here — and the line says what that costs before they take it.
+      // Enter now declines, and the question after it is the one the no-program path asks, whose Enter
+      // goes on with no AI: a reader taking every default no longer goes round the menu again. No returns
+      // to the engine menu with this AI its default, and that line says what going on without one costs.
       if (!await confirm("Fixed it? Run the turn again", false)) {
+        if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
         info("Not proven, so not written. Back to the engine menu — its last row configures no engine: "
           + "the demo and a replayed report still work, and a real clearance refuses by name until one is set.");
         continue engine;
@@ -4175,7 +4197,7 @@ try {
         const tok = answer.value ?? (answer.yes
           ? await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." }) : null);
         if (tok !== null) {
-          candidate[eng.headless.tokenEnv] = tok;
+          pastedToken = tok;
           authEnv[eng.headless.tokenEnv] = tok;   // the re-probe below must prove the sign-in WITH it
           info(`${eng.headless.tokenEnv} captured — the turn below proves it before anything is written.`);
         }

@@ -52,10 +52,12 @@ const LONG_RESET = 'npx clearotron@0.3.0-beta.5 passphrase --reset --base $HOME/
 const BLUR_KEY = 'cordillera-blur-names'
 
 // The deployment the board draws: a register and the research key set, the open-web key not, no case-law
-// sign-in, the engine on a subscription. The values are inert fixture words and never leave this process:
-// the inventory records names and states, never a value.
+// sign-in, Claude chosen as the AI and paid by subscription. An AI is named, not left to the code's default: an
+// install with none chosen draws its Engine row as not set. The values are inert fixture words and never leave
+// this process: the inventory records names and states, never a value.
 const credsDir = mkdtempSync(join(process.env.TMPDIR || '/tmp', 'settings-creds-'))
 const deployment = {
+  CLEAROTRON_AI: 'anthropic-agent',
   CLEAROTRON_DATABASE: 'corsearch', CORSEARCH_SESSION_KEY: 'fixture-not-a-key', PERPLEXITY_API_KEY: 'fixture-not-a-key',
   OAUTH_BRIDGE_CREDS_DIR: credsDir, PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '',
 }

@@ -273,3 +273,17 @@ test("every research and web adapter carries its reader-terms pair — absentMea
     }
   }
 });
+
+test("the engine says whether any AI is chosen, by the order wall's own test", async () => {
+  // With no AI chosen the inventory names the code's default, and the Installation settings page drew that default
+  // as a configured engine while every search was refused at the order. `selected` is the order wall's question:
+  // the ENGINE_ENV row of run-requirements.mjs, which is present when the setting is set once trimmed.
+  const { missingRequirements } = await import("../run-requirements.mjs");
+  const { runTables } = await import("../order-tables.mjs");
+  const tables = await runTables();
+  for (const value of [undefined, "", "   ", "anthropic-agent", "openai-agent"]) {
+    const env = value === undefined ? {} : { CLEAROTRON_AI: value };
+    const refusedForWantOfAnAi = missingRequirements(env, tables).atOrder.some((r) => r.name === "CLEAROTRON_AI");
+    assert.equal(engineInventory(env).selected, !refusedForWantOfAnAi, `CLEAROTRON_AI=${JSON.stringify(value)}`);
+  }
+});
