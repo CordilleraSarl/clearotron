@@ -6263,7 +6263,13 @@
         },
         "setup-asks-which-ai-runs-your-searches.test.mjs": {
           "tests": 12,
-          "asserts": 58,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "setup-keeps-the-ai-you-picked-and-offers-a-way-on.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -6947,7 +6953,7 @@
         },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
-          "asserts": 47,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },

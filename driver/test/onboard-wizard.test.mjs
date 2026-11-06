@@ -628,7 +628,7 @@ test("the line printed with the engine question names every way to pay that the 
   }
   // And it is what the wizard says, with the engine question, under its rows.
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
-  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, engineOptions\(found\), 0, PAY_PREAMBLE\);/);
+  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick\), PAY_PREAMBLE\);/);
 });
 
 test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {
