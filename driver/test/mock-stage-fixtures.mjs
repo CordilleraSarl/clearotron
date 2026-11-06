@@ -2605,11 +2605,15 @@ export function applyStageWrites(msg, argv) {
     const band = process.env.MOCK_KO_BAND || ladder[ladder.length - 2] || ladder[0];   // second-lowest by default
     const chunk = {
       // MOCK_KO_GROUP_CONTEXT: the first group narrows the batch's scope. MOCK_KO_LATER_CAVEAT: a later group sends a batch-wide caveat.
+      // MOCK_KO_FIRST_FRAMEWORK / MOCK_KO_LATER_FRAMEWORK: the first group's, or a later group's, framework echo differs from the frozen one.
       ...(Number(boundChunk) === 0 ? {
-        framework: { source: fwKey, ladder },
+        framework: { source: fwKey, ladder, ...JSON.parse(process.env.MOCK_KO_FIRST_FRAMEWORK || "{}") },
         batch: { productContext: process.env.MOCK_KO_GROUP_CONTEXT || "mock consumer product line",
           standardCaveats: ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."] },
-      } : process.env.MOCK_KO_LATER_CAVEAT ? { batch: { standardCaveats: [process.env.MOCK_KO_LATER_CAVEAT] } } : {}),
+      } : {
+        ...(process.env.MOCK_KO_LATER_CAVEAT ? { batch: { standardCaveats: [process.env.MOCK_KO_LATER_CAVEAT] } } : {}),
+        ...(process.env.MOCK_KO_LATER_FRAMEWORK ? { framework: { source: fwKey, ladder, ...JSON.parse(process.env.MOCK_KO_LATER_FRAMEWORK) } } : {}),
+      }),
       // EVERY chunk narrates its own marks — code composes the batch executive summary from these
       chunkSummary: `Based on the knockout search results, ${rows.join(", ")} present${rows.length === 1 ? "s" : ""} no obvious blockers in this chunk; see per-mark rows.`,
       marks: rows.map((n) => {

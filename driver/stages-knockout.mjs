@@ -495,7 +495,7 @@ export const KO_STAGES = {
       `SEND ONLY WHAT YOU ARE CORRECTING IF YOU CALL AGAIN. A second call MERGES into the first: marks are merged BY NAME, so a mark you omit keeps the rating you already gave it. What you DO send for a mark replaces that mark's whole record, so send a corrected mark complete rather than as a fragment.`,
       chunkNo === 0
         ? `As the FIRST chunk you also send \`batch\` (productContext, standardCaveats) and \`framework\`.`
-        : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\`, and in \`batch.standardCaveats\` only a qualification that holds for the whole batch; the framework came from chunk 1.`,
+        : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\`, and in \`batch.standardCaveats\` only a qualification that holds for the whole batch. Use the supplied frozen framework.`,
       chunkTotal > 1
         ? `This batch is rated in ${chunkTotal} groups side by side, and code joins the groups' summaries in order. Open your \`chunkSummary\` with a line for these names, not for the whole batch: the other groups' ratings are not in front of you.`
         : "",

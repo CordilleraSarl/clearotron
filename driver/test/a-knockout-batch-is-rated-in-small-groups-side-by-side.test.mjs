@@ -32,12 +32,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 const { driverDir } = await import("../../shared/driver-dir.mjs");
-const { knockoutInner } = await import("../pipeline-knockout.mjs");
+const { knockoutInner, frameworkEchoFault } = await import("../pipeline-knockout.mjs");
 const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths } = await import("../stages-knockout.mjs");
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "NOVAPULSE", "IRONWHISK", "CLUVENDRA", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY"];
-const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_FAIL_STAGE"];
+const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_KO_FIRST_FRAMEWORK", "MOCK_KO_LATER_FRAMEWORK", "MOCK_FAIL_STAGE"];
 
 /** One knockout of these names through the lane, on the mock engine. What the run left, whether or not it delivered. */
 async function knockout(codename, names, env = {}, executors = {}) {
@@ -81,7 +81,7 @@ test("a group is told it is one of several, and may carry a caveat for the whole
   const message = (chunkNo, chunkTotal) => KO_STAGES["knockout-assess"].message({ K, job: {}, chunkNo, chunkMarks: [{ name: "QUILLBRAE" }], chunkTotal,
     framework: { bands: [{ label: "High" }, { label: "Low" }] }, frameworkPath: null, probeNote: "" });
   assert.match(message(1, 3), /This batch is rated in 3 groups side by side, and code joins the groups' summaries in order\. Open your `chunkSummary` with a line for these names, not for the whole batch/);
-  assert.match(message(1, 3), /As a CONTINUATION chunk you send `marks` and `chunkSummary`, and in `batch\.standardCaveats` only a qualification that holds for the whole batch/);
+  assert.match(message(1, 3), /As a CONTINUATION chunk you send `marks` and `chunkSummary`, and in `batch\.standardCaveats` only a qualification that holds for the whole batch\. Use the supplied frozen framework\./);
   assert.match(message(0, 3), /As the FIRST chunk you also send `batch`/);
   assert.doesNotMatch(message(0, 1), /groups side by side/, "a batch rated in one turn is told nothing about groups");
 });
@@ -148,4 +148,29 @@ test("the recheck reads the defects and what their repairs could affect, and edi
   assert.match(recheck, /\| 1 \| band \| QUILLBRAE \| not answered \|/, "an unanswered defect is in the second look's input");
   assert.match(recheck, /There is no further correction after this one/);
   assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /Recheck every material defect/, "the first look is not told it is a recheck");
+});
+
+test("the batch's framework is the frozen one, and a group that echoes another stops composition", async () => {
+  const frozen = { source: "house-triage", ladder: ["Very High", "High", "Medium", "Manageable", "Low"] };
+  assert.equal(frameworkEchoFault(undefined, frozen), null, "a group need not echo it");
+  assert.equal(frameworkEchoFault({ source: "House-Triage", ladder: frozen.ladder.map((label) => ({ label })) }, frozen), null, "a difference in shape is not a different framework");
+  assert.match(String(frameworkEchoFault({ source: "another-framework", ladder: frozen.ladder }, frozen)), /names the framework "another-framework"/);
+  assert.match(String(frameworkEchoFault({ ladder: ["High", "Low"] }, frozen)), /not the frozen framework's/);
+  // The first group's echo is checked like any other: it is not the source of the batch's framework.
+  for (const [label, knob, group, why] of [
+    ["first-other-name", { MOCK_KO_FIRST_FRAMEWORK: JSON.stringify({ source: "another-framework" }) }, 1, /names the framework "another-framework"/],
+    ["first-other-ladder", { MOCK_KO_FIRST_FRAMEWORK: JSON.stringify({ ladder: ["Severe", "Mild"] }) }, 1, /not the frozen framework's/],
+    ["later-other-name", { MOCK_KO_LATER_FRAMEWORK: JSON.stringify({ source: "another-framework" }) }, 2, /names the framework "another-framework"/],
+    ["later-other-ladder", { MOCK_KO_LATER_FRAMEWORK: JSON.stringify({ ladder: ["Severe", "Mild"] }) }, 2, /not the frozen framework's/],
+  ]) {
+    const r = await knockout(label, NAMES.slice(0, 4), knob);
+    assert.ok(r.thrown || r.res?.ok === false, `${label}: a batch with a group rated on another framework is not delivered`);
+    const said = String(r.thrown?.message ?? r.res?.reason ?? JSON.stringify(r.res));
+    assert.match(said, new RegExp(`knockout_compose_framework: group ${group} `), `${label}: ${said}`);
+    assert.match(said, why, `${label}: ${said}`);
+  }
+  const fine = await knockout("frozen-framework", NAMES.slice(0, 4));
+  assert.equal(fine.res?.ok, true, `the knockout did not deliver: ${fine.thrown?.message ?? JSON.stringify(fine.res)}`);
+  const frozenOnDisk = fine.json(driverDir(fine.dir, "framework.json"));
+  assert.deepEqual(fine.findings.framework, { source: frozenOnDisk.framework_key, ladder: frozenOnDisk.bands.map((b) => b.label) }, "the composed framework is the frozen one");
 });

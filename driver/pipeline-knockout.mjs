@@ -577,6 +577,20 @@ export function resolveSweepExecutor(opts) {   // exported for its test, like re
 // A group's failure, the first by group order, unless one carries a rate limit's reset: that one decides when to try again.
 const firstFailure = (failures) => (failures.find((f) => f.e instanceof StageFailure && f.e.resetsAt) ?? [...failures].sort((a, b) => a.c - b.c)[0]).e;
 
+/**
+ * Why a group's framework echo does not name the frozen framework, or null. The two are compared as values, the framework's key and its
+ * ladder of band labels, so a difference in shape is not read as a different framework. No echo is no fault. PURE.
+ */
+export function frameworkEchoFault(echo, frozen) {
+  if (echo == null) return null;
+  const words = (xs) => (Array.isArray(xs) ? xs.map((x) => String(typeof x === "string" ? x : x?.label ?? "").trim().toLowerCase()) : null);
+  if (echo.source != null && String(echo.source).trim().toLowerCase() !== String(frozen.source ?? "").trim().toLowerCase())
+    return `names the framework "${echo.source}", not the frozen "${frozen.source}"`;
+  if (echo.ladder != null && JSON.stringify(words(echo.ladder)) !== JSON.stringify(words(frozen.ladder)))
+    return `was rated on a ladder that is not the frozen framework's`;
+  return null;
+}
+
 // AT MOST THREE MODEL TURNS AT ONCE, for the rating groups and for their corrections (design, 2026-11-05).
 const KO_CONCURRENT_TURNS = 3;
 
@@ -1225,7 +1239,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
     const composeRecord = () => {
       // cardOrder records how this run's page lists a name's cards, so a delivered report re-renders as it was delivered.
-      const merged = { schema_version: 1, framework: null, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
+      const frozenFramework = { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) };
+      const merged = { schema_version: 1, framework: frozenFramework, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
       const summaries = [], batches = [];
       for (let c = 0; c < chunks.length; c++) {
         // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
@@ -1233,10 +1248,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
         const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
         const part = JSON.parse(readFileSync(chunkPath, "utf8"));
-        if (c === 0) merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) };
-        // EVERY GROUP RATES ON THE FROZEN LADDER, or nothing is composed: a group rated on another is not part of this batch.
-        else if (part.framework && JSON.stringify(part.framework.ladder ?? null) !== JSON.stringify(merged.framework.ladder ?? null))
-          throw new Error(`knockout_compose_framework: group ${c + 1} was rated on a different ladder from group 1`);
+        // THE FRAMEWORK IS THE FROZEN ONE, never a group's answer. A group's echo must name the same framework and ladder, or nothing
+        // is composed: a group rated on another is not part of this batch.
+        const echo = frameworkEchoFault(part.framework, frozenFramework);
+        if (echo) throw new Error(`knockout_compose_framework: group ${c + 1} ${echo}`);
         if (part.batch) batches.push(part.batch);
         if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
         merged.marks.push(...(part.marks ?? []));
