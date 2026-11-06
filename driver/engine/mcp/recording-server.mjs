@@ -1420,8 +1420,7 @@ serve({
         declined: {
           type: "array",
           description:
-            "One row per flagged line you are LEAVING ALONE, with the reason. A line you neither " +
-            "rewrite nor decline cannot be told afterwards from a line nobody read.",
+            "If no change is needed, record that once; do not explain every unchanged line.",
           items: {
             type: "object", additionalProperties: false, required: ["at", "why"],
             properties: {
