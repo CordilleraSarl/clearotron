@@ -448,8 +448,8 @@
           "todos": 0
         },
         "a-coverage-row-not-added-or-a-check-that-threw-is-in-the-audit-workbook.test.mjs": {
-          "tests": 8,
-          "asserts": 25,
+          "tests": 10,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
