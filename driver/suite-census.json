@@ -4900,8 +4900,8 @@
           "todos": 0
         },
         "onboard-wizard.test.mjs": {
-          "tests": 77,
-          "asserts": 295,
+          "tests": 78,
+          "asserts": 302,
           "skips": 4,
           "todos": 0
         },
@@ -6910,8 +6910,8 @@
           "todos": 0
         },
         "the-end-of-setup-agrees-with-what-it-left-unset.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -6947,7 +6947,7 @@
         },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
-          "asserts": 45,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -7900,8 +7900,8 @@
           "todos": 0
         },
         "the-terminal-mark-is-the-svgs-geometry.test.mjs": {
-          "tests": 13,
-          "asserts": 38,
+          "tests": 14,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
