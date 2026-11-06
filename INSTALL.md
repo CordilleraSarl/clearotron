@@ -82,7 +82,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
   | `CLEAROTRON_AI` | Program | Signed-in laptop | A machine you cannot complete a sign-in on |
   |---|---|---|---|
-  | `anthropic-agent` (default) | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
+  | `anthropic-agent` | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
   | `openai-agent` | `codex` | `login` on the program setup installed (doctor prints its path), or `codex login` if the machine has its own | `login --device-auth` on the same program — prints a code you complete on another device |
 
   **The right-hand column is about where you can complete a sign-in, not about whether the machine has a
@@ -186,7 +186,7 @@ mkdir ~/app && cd ~/app
 npm init -y
 npm install /path/to/clearotron-<version>.tgz
 npx clearotron install         # the wizard
-clearotron doctor              # reads; writes nothing, calls nobody
+npx clearotron doctor          # reads; writes nothing, calls nobody
 ```
 
 `npx` works from `~/app` because npm links a **dependency's** `bin` into the consuming project — the
@@ -299,18 +299,22 @@ it lives in two places under `~/.local`:
 ~/.local/bin/clearotron
 ```
 
+Installed from a packaged tarball, it is in the folder §2 had you create, `~/app`: delete that folder.
+
 **The reasoning program, if setup installed it.** Setup puts Claude Code or the Codex CLI in one folder,
 `~/.local/share/clearotron/engines`, or where `CLEAROTRON_ENGINES_DIR` points. Delete the folder to
 remove it.
 
 **What the reasoning program keeps for itself.** Claude Code keeps its sign-in and settings in
-`~/.claude` and `~/.claude.json`, and setup's engine check creates them if they were not there. The
-Codex CLI keeps its sign-in in `~/.codex`. They belong to that program, not to Clearotron: remove them
+`~/.claude` and `~/.claude.json`, and setup's engine check creates them if they were not there.
+Claude Code also keeps a cache in `~/.cache/claude-cli-nodejs`.
+The Codex CLI keeps its sign-in in `~/.codex`. They belong to that program, not to Clearotron: remove them
 only if nothing else on the machine uses it.
 
 **npm's copy, if you ran `npx`.** `npx clearotron` keeps the package it downloaded in npm's cache, under
 `~/.npm/_npx`, beside anything else you have run with `npx`. Deleting `~/.npm/_npx` removes all of them;
 npm downloads again the next time it is asked.
+Any `npm install` also keeps what it downloaded in npm's cache, `~/.npm/_cacache`; `npm cache clean --force` empties it.
 
 **The settings, and the keys.** `~/.config/clearotron/.env` holds this install's signing secrets, so
 deleting it invalidates every key it ever issued. Beside it: `~/.config/clearotron/token-denylist`, the
@@ -400,8 +404,8 @@ and now there is a single name.
 
 Variables not in this table are internal tunables. They keep their names.
 
-**Two paths and one provider are the whole required set.** `CLEAROTRON_DATABASE` picks the register
-(§1); `CLEAROTRON_REPORTS_DIR` says where finished reports are published; `CLEAROTRON_WORK_DIR` says where
+**Two paths, one register and one AI are the whole required set.** `CLEAROTRON_DATABASE` picks the register and `CLEAROTRON_AI` the AI (§1);
+`CLEAROTRON_REPORTS_DIR` says where finished reports are published; `CLEAROTRON_WORK_DIR` says where
 runs happen. The pool has **no default at all** — unset, the engine refuses and names the variable
 rather than choosing a directory on your behalf, because the wrong choice writes a report into an
 archive somebody else owns. The workspace root defaults to `$HOME/trademark/workspace`, which is also
@@ -995,7 +999,7 @@ any running program that started before your checkout last moved. **It does not 
 supervisor owns a service is a property of your deployment, not of this checkout — so restarting is
 yours to do, and now yours to know about.
 
-### Ports, and two warnings you will see
+### Ports
 
 The portal is on 18802, the engine door on 18790 and the client door on 18811, all loopback, and all
 three are **fixed defaults for every install on the host** rather than per-install values. Each has its
@@ -1007,16 +1011,6 @@ n+2 unless their own variables are set.
 when `CF_ACCESS_TEAM` or an `*_OIDC_ISSUER` setting says a proxy or a sign-in provider sits in front,
 because whatever is in front is still addressed to that number. The refusal names the port and the
 variable to change. Any other port in use moves to the next free number, and `start` prints where it went.
-
-Two lines on a fresh install look worse than they are:
-
-- *"skills overlay unset — company risk frameworks will resolve to this repo's demo fixtures."* On a
-  demo install they **are** the demo fixtures, and the warning is correct to fire: it exists so that a
-  real deployment never shows a synthetic framework as a company's own. It goes quiet once
-  `CLEAROTRON_CUSTOMERS_DIR` and `CLEAROTRON_INSTRUCTIONS_DIR` point at your own config store (§4).
-- *"saved searches ON — store=…"* names a directory under `~/trademark/`, not your repository. Editing a
-  **company profile**, however, still commits into this checkout until `PROFILE_REPO_ROOT` names a
-  config store of your own. Point it at one before you edit a profile you intend to keep.
 
 `driver/dev-portal.mjs` is **not** this. It is a loopback pool browser for people working on the engine,
 its own header says never to expose it, and nothing here starts it.
