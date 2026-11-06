@@ -122,6 +122,13 @@ test('409 from an install that cannot run a search keeps the sentence and carrie
   assert.equal(refused.kind === 'gate' ? refused.detail?.code : null, 'not_configured')
 })
 
+test('/me says whether the install can run a search, and an older server reads as able', async () => {
+  const unable = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true }, canSearch: false }, () => api.me())
+  assert.equal(isOk(unable) ? unable.value.canSearch : null, false)
+  const older = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true } }, () => api.me())
+  assert.equal(isOk(older) ? older.value.canSearch : null, true, 'a server that says nothing was read as unable to search')
+})
+
 test('409 with neither spelling still says something, and says it once', async () => {
   // The fallback is the last resort, not the first. A body carrying no refusal at all must not render
   // empty — an empty gate message is a dialog with a title and nothing in it.

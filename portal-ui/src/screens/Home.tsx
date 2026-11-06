@@ -184,7 +184,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       <InFlightBand
         breakdown={inFlightBreakdown(rows)}
         note={rows.length === 0
-          ? `Nothing running right now.${canRun(ctx.me) ? ' Start one with New clearance.' : ''}`
+          ? `Nothing running right now.${canRun(ctx.me) && ctx.me.canSearch !== false ? ' Start one with New clearance.' : ''}`
           : slotNote(null, ctx.me.concurrentRuns)}
       />
 

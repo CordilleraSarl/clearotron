@@ -332,6 +332,12 @@ export type Me = {
    */
   readonly engineProgramDisputed: boolean | null
   /**
+   * Whether this install can run a search at all, by the runner's own order-time test. False only when the server
+   * says so: an older server sends nothing, and the screens then read as they did. Home leaves out its invite to
+   * start one when it is false, because the order would be refused at the review.
+   */
+  readonly canSearch?: boolean
+  /**
    * HOW THIS INSTALL ARRIVED, so a screen can name the setup command this reader can actually type.
    *
    *   'packaged'  installed as a package — `npx clearotron install`
@@ -1919,6 +1925,7 @@ export const api = {
       // reader who has one — the defect this field exists to end, arriving by a different route.
       engineProgramDisputed:
         b['engineProgramDisputed'] === true ? true : b['engineProgramDisputed'] === false ? false : null,
+      canSearch: b['canSearch'] !== false,
       // Same closed set, same reason as engineMode above. This value chooses which command a reader is
       // told to type, so an unrecognised string must never reach the screen — it lands as null and the
       // screen names both routes instead.
