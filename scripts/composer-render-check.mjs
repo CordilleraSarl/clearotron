@@ -1358,6 +1358,31 @@ if (shotDir) {
   meEngine = {}
 }
 
+// ── THE FORM AT A PHONE'S WIDTH, MEASURED ─────────────────────────────────────────────────────────────
+//
+// 390 is the narrow end of the phones the report was fitted to, and this file drew pictures there but asserted
+// nothing: a filled form ran 583px wide and scrolled sideways. The footer bled 12px past both edges once the
+// screen's gutter narrowed to 18px, and its action row held its full width. Measured on the filled form, where
+// the line beside the review button is longest, without screenshots, so it holds on every run.
+let phoneDrawn = { ok: false, error: 'not measured' }
+{
+  usageNow = { ...usageNow, ...PLENTY }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 900, deviceScaleFactor: 1, mobile: true })
+  await evalIn(`document.documentElement.removeAttribute('data-theme'); location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))
+  phoneDrawn = (await evalIn(`(async () => { ${EVIDENCE_HELPERS} try { await ready(); await described(true); window.scrollTo(0, 0); return { ok: true }; } catch (e) { return { ok: false, error: String(e && e.message || e) }; } })()`)).result?.result?.value ?? { ok: false, error: 'evaluate returned nothing' }
+  await new Promise((r) => setTimeout(r, 400))
+  const phone = (await evalIn(`(() => {
+    const d = document.documentElement, f = document.querySelector('.composer-footer'), h = document.querySelector('.composer-footer .footer-hint');
+    const fr = f ? f.getBoundingClientRect() : null, hr = h ? h.getBoundingClientRect() : null;
+    return { overflow: d.scrollWidth - d.clientWidth, viewport: d.clientWidth,
+      footerLeft: fr ? Math.round(fr.left) : null, footerRight: fr ? Math.round(fr.right) : null,
+      hintRight: hr ? Math.round(hr.right) : null, hintText: h ? h.innerText.trim() : null };
+  })()`)).result?.result?.value ?? {}
+  await cdp('Emulation.clearDeviceMetricsOverride', {})
+  out.phone = phone
+}
+
 // A picture of the state the driver left it in. Not a test — evidence a human can look at, which is the
 // one thing a measurement cannot be.
 if (shotAt) {
@@ -1732,6 +1757,14 @@ if (inherited.fatal) {
     `a Global preliminary search stamped geography ${JSON.stringify(wide?.geography?.mode ?? null)} — that search accepts no narrowing and the door refuses "account-default" on it by name`)
   }
 }
+
+// The form at a phone's width, measured above while the browser was up.
+ok(phoneDrawn.ok, `the filled form could not be drawn at 390px: ${phoneDrawn.error}`)
+ok(out.phone.overflow <= 0, `at 390px the filled form scrolls sideways by ${out.phone.overflow}px`)
+ok(out.phone.footerLeft >= 0 && out.phone.footerRight <= out.phone.viewport,
+  `at 390px the footer runs from ${out.phone.footerLeft}px to ${out.phone.footerRight}px, outside the ${out.phone.viewport}px it has`)
+ok(out.phone.hintRight !== null && out.phone.hintRight <= out.phone.footerRight,
+  `at 390px the line beside the review button (${JSON.stringify(out.phone.hintText)}) ends at ${out.phone.hintRight}px, past its footer's ${out.phone.footerRight}px`)
 
 for (const e of evidence) ok(e.ok, `evidence state ${e.state} could not be reached: ${e.error} — on screen: ${JSON.stringify((e.body || '').slice(0, 300))}`)
 

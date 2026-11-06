@@ -1856,7 +1856,7 @@ function Footer({
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 'none', flexWrap: 'wrap' }}>
+      <div className="composer-actions">
         {canSave && !saveOpen ? (
           <button type="button" className="btn-ghost" onClick={onSaveOpen}>Save as template</button>
         ) : null}

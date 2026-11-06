@@ -2505,6 +2505,35 @@ details[open] > .fold-summary .fold-chev {
   flex-wrap: wrap;
 }
 
+/* THE BLEED FOLLOWS THE GUTTER. The footer's negative margin cancels `.screen`'s side padding, which is 30px wide and
+   18px below 900px (the `.screen, .topbar` rule in the max-width: 899px block). Left at 30px there, the footer ran
+   12px past both edges of a phone and pushed the page sideways. Measured 2026-11-06 at 390px. */
+@media (max-width: 899px) {
+  .composer-footer {
+    margin-left: -18px;
+    margin-right: -18px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+/* The footer's actions: saving a template, and the review with its line beside it. They keep their width beside the
+   figures on a desk, and below 900px they take a line of their own and wrap inside it. Held at full width there, the
+   row and the line beside the button ran past the footer and made a filled form 583px wide on a 390px phone. */
+.composer-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  flex-wrap: wrap;
+}
+@media (max-width: 899px) {
+  .composer-actions {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}
+
 :root[data-theme='dark'] .composer-footer {
   box-shadow: 0 -10px 30px -14px rgba(0, 0, 0, 0.75);
 }
