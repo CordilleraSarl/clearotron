@@ -2806,8 +2806,8 @@
           "todos": 0
         },
         "an-install-that-cannot-search-refuses-the-order-at-review.test.mjs": {
-          "tests": 6,
-          "asserts": 22,
+          "tests": 8,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -3304,8 +3304,8 @@
           "todos": 0
         },
         "config-inventory.test.mjs": {
-          "tests": 18,
-          "asserts": 59,
+          "tests": 19,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -8847,7 +8847,7 @@
         },
         "api.test.ts": {
           "tests": 48,
-          "asserts": 192,
+          "asserts": 195,
           "skips": 0,
           "todos": 0
         },
@@ -8942,8 +8942,8 @@
           "todos": 0
         },
         "engineState.test.ts": {
-          "tests": 12,
-          "asserts": 50,
+          "tests": 13,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -8991,7 +8991,7 @@
         },
         "home.test.ts": {
           "tests": 56,
-          "asserts": 199,
+          "asserts": 200,
           "skips": 0,
           "todos": 0
         },
@@ -9056,8 +9056,8 @@
           "todos": 0
         },
         "newClearanceStructure.test.ts": {
-          "tests": 8,
-          "asserts": 63,
+          "tests": 9,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },

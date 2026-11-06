@@ -42,6 +42,7 @@ import {
   recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps, inFlightBreakdown, expectation,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
+import { Ticked } from '../components/Ticked.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -187,6 +188,11 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
           ? `Nothing running right now.${canRun(ctx.me) && ctx.me.canSearch !== false ? ' Start one with New clearance.' : ''}`
           : slotNote(null, ctx.me.concurrentRuns)}
       />
+      {/* WHAT STANDS BETWEEN THIS INSTALL AND A SEARCH, said before anyone opens New clearance: the review's own
+          refusal for this reader, from /me. Only for a reader who could start one, beside the invite it replaces. */}
+      {canRun(ctx.me) && ctx.me.canSearch === false && ctx.me.searchRefusal
+        ? <p className="notice" role="status" style={{ margin: '0 0 18px', fontSize: 13 }}><Ticked text={ctx.me.searchRefusal} /></p>
+        : null}
 
       {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because the
           line is NAVIGATION — it separates "your dashboard" from "working on one company" — rather than

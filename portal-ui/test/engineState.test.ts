@@ -420,3 +420,23 @@ test('an older service, which sends no cloud and no reason, draws the row as bef
     assert.deepEqual(await decodedRow(older(wire)), before(e['billing'], e['id'], e['vendor']), s.name)
   }
 })
+
+test('no AI chosen: the Engine row shows the selection as unset, red, and names nothing about the code\'s default', () => {
+  // With no AI chosen the server reports the code's default as the engine, and the row drew it as Anthropic, on a
+  // subscription, with a green dot, while every search was refused at the order for want of an AI.
+  const unset = engineRow({ ...ANTHROPIC, selected: false })
+  assert.equal(unset.ok, false, 'an install with no AI chosen draws a green Engine row')
+  assert.equal(unset.name, 'Not set')
+  assert.equal(unset.mono, '', "the code's default is shown as the chosen engine")
+  assert.equal(unset.state, 'Missing')
+  assert.deepEqual(unset.faults, ['No search engine is attached to this install.'],
+    'the one fault is the search screen\'s own words for this state')
+  // Nothing about the default nobody chose: not its missing program, not how it would pay.
+  const unsetAndBroken = engineRowFaults({ ...ANTHROPIC, selected: false, binaryPresent: false, billing: { apiBilled: true, missing: ['ANTHROPIC_API_KEY'] } })
+  assert.deepEqual(unsetAndBroken, ['No search engine is attached to this install.'])
+  // CONTROL: a chosen engine, or a capture from an older build that says nothing, reads as it did.
+  assert.equal(engineRow({ ...ANTHROPIC, selected: true }).name, ANTHROPIC.vendor ?? ANTHROPIC.id)
+  assert.equal(engineRow(ANTHROPIC).ok, true, 'a capture that does not say whether an AI is chosen turned the row red')
+  assert.equal(engineNotice({ programDisputed: false }).headline, 'No search engine is attached to this install.',
+    'the row and the search screen no longer share their words for an install with no engine')
+})

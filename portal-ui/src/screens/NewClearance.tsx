@@ -70,6 +70,7 @@ import { sortSavedSearches, displayLabel } from '../contract/savedSearches.ts'
 import type { BriefRead, ReadTarget } from '../contract/composeRead.ts'
 import { resolveRead, applyRead, appliedNotes, defaultNotes, unsureNotes } from '../contract/composeRead.ts'
 import { Icon } from '../components/Icon.tsx'
+import { Ticked } from '../components/Ticked.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved, unsavedChanges } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -1501,7 +1502,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           <div className="notice" style={{ borderColor: 'var(--tone-high)', margin: 0 }}>
             <b>{problem.title}</b>
             <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
-              {problem.lines.map((l, i) => <li key={i} style={{ marginBottom: 3 }}>{l}</li>)}
+              {problem.lines.map((l, i) => <li key={i} style={{ marginBottom: 3 }}><Ticked text={l} /></li>)}
             </ul>
           </div>
         ) : null}
@@ -1557,6 +1558,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         // menu asks: Manage alone would link a manager of one organisation to a dead end.
         // Null is the honest shape for "there is nowhere to send this reader", not a dead button.
         onSettings={seesEverything(ctx.me) ? () => ctx.go('/portal/admin/config') : null}
+        // AN INSTALL THAT CANNOT RUN A SEARCH SAYS SO BEFORE THE BRIEF IS SENT, by the runner's own test (/me). The
+        // brief can still be written; the review it would be refused at is not offered.
+        searchRefusal={ctx.me.canSearch === false ? ctx.me.searchRefusal ?? null : null}
         saveOpen={saveOpen}
         saveName={saveName}
         saveText={saveText}
@@ -1756,7 +1760,7 @@ function NameWall({
  */
 function Footer({
   startedFrom, tier, detail, uses, duration, runs, ready, busy, demoMode, setupRoute,
-  programDisputed, onSettings,
+  programDisputed, onSettings, searchRefusal,
   saveOpen, saveName, saveText, saveNote, saveDone, editing, canSave, blockedBy,
   onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview, onSeeSaved,
 }: {
@@ -1797,6 +1801,8 @@ function Footer({
   readonly programDisputed: boolean | null
   /** Open the page that shows what is and is not ready, or null when this reader cannot open it. */
   readonly onSettings: (() => void) | null
+  /** The refusal this reader's review would get, when the install cannot run a search; null when it can. */
+  readonly searchRefusal: string | null
   /**
    * THE REASON THE PRIMARY ACTION IS NOT AVAILABLE, in one line, or null when it is available.
    *
@@ -1937,6 +1943,20 @@ function Footer({
               </div>
             )
           })()
+        ) : searchRefusal ? (
+          // NO DEAD BUTTON HERE EITHER. The review would be refused with this sentence, so the sentence takes the
+          // button's place, and the person who can open the settings page is offered it, as in demo mode.
+          <div className="footer-demo-note" role="status" style={{ fontSize: 12.5, lineHeight: 1.45 }}>
+            <Ticked text={searchRefusal} />
+            {onSettings ? (
+              <>
+                {' '}
+                <button type="button" className="link-btn" onClick={onSettings}>
+                  See what this install has
+                </button>
+              </>
+            ) : null}
+          </div>
         ) : (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             {/* THE VERB NAMES THE STEP IT OPENS, AND THE LINE BESIDE IT SAYS WHAT COMES AFTER. This said
@@ -2291,7 +2311,7 @@ function ReviewDialog({
             <div className="notice" style={{ borderColor: 'var(--tone-high)', margin: '14px 0 0' }}>
               <b>{failure.title}</b>
               <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)', fontSize: 12.5 }}>
-                {failure.lines.map((l, i) => <li key={i} style={{ marginBottom: 3 }}>{l}</li>)}
+                {failure.lines.map((l, i) => <li key={i} style={{ marginBottom: 3 }}><Ticked text={l} /></li>)}
               </ul>
               <p style={{ margin: '8px 0 0', fontSize: 12.5, color: 'var(--text-muted)' }}>
                 Nothing was started and nothing was used from your allowance.

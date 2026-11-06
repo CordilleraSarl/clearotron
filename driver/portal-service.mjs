@@ -1183,6 +1183,11 @@ export function makeConnectorKeyRevoker({ env = process.env, home = null } = {})
   };
 }
 
+// WHICH REFUSAL A PERSON IS SHOWN when this install cannot run a search: the person who sees everything, the one the
+// Installation settings page is for and so the one who runs the install, is shown what is missing and the command
+// that sets it; everyone else is shown the client sentence, which names neither.
+const refusalFor = (principal, refusal) => (seesEverything(principal) && refusal.installer) || refusal.client;
+
 export function makePortalService({
   poolRoot, workspaceRoot, recipesDir = undefined, secret,
   grants = null,
@@ -1672,6 +1677,7 @@ export function makePortalService({
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
+        const searchRefusal = demo ? null : await orderRefusal();
         // THE HOUSE MARKETPLACES, offered as suggestions wherever a company's marketplaces are edited. A new
         // company starts with none (the owner's ruling of 2026-09-23) and somebody picks; these are the
         // Generic default's own list, read from the store so an install that changed it offers its own.
@@ -1694,10 +1700,12 @@ export function makePortalService({
           // or the general advice when nothing could be read. Only `engineMode: "demo"` can make this
           // anything but false; see `engineProgramDisputed`.
           engineProgramDisputed: await engineProgramDisputed(meEngineMode),
-          // WHETHER THIS INSTALL CAN RUN A SEARCH AT ALL, by the runner's own order-time test (`orderRefusal`). Home leaves
-          // out its invite to start one when it cannot, because the order would be refused at the review. A demo walks its
-          // own ordering flow, so it reads as able.
-          canSearch: demo ? true : !(await orderRefusal()),
+          // WHETHER THIS INSTALL CAN RUN A SEARCH AT ALL, by the runner's own order-time test (`orderRefusal`), and when
+          // it cannot, the refusal the review would give this person: Home shows it in place of its invite, and New
+          // clearance shows it and holds its start, so nobody fills in a search the install would refuse. A demo walks
+          // its own ordering flow, so it reads as able.
+          canSearch: !searchRefusal,
+          ...(searchRefusal ? { searchRefusal: refusalFor(principal, searchRefusal) } : {}),
           // HOW THIS INSTALL ARRIVED, so a screen can name the setup command the reader can actually
           // type. `npm run setup` and `npx clearotron install` are the same wizard and each one is
           // unrunnable on the other route; the no-engine notice named one of them and was wrong for
@@ -1950,8 +1958,9 @@ export function makePortalService({
       // asked nothing: it said "queued", the runner's refusal reached only its terminal and a sidecar in the
       // queue, and the order then vanished from every page, which is the outcome the queue scan's own rule
       // above says belongs at submission. So the review and the start both ask the runner's question, of the
-      // runner's tables, and nothing is queued. The sentence is the client one the runner already writes: it
-      // names no setting, which a browser must never be shown. A demo walks its own flow and is not asked.
+      // runner's tables, and nothing is queued. Neither sentence names a setting, which a browser must never be
+      // shown: the client one the runner already writes, or what is missing and the command that sets it, for the
+      // person who runs the install (refusalFor). A demo walks its own flow and is not asked.
       // `code` lets the screen give the box its own heading rather than the edited-review one, and the audit row is
       // the operator's record of the refusal: the order doors are not admin writes, so nothing files one for them.
       const configurationRefusal = async (door, account) => {
@@ -1959,7 +1968,7 @@ export function makePortalService({
         const refusal = await orderRefusal();
         if (!refusal) return null;
         audit({ event: door === "plan" ? "plan" : "trigger", by: principal.email, account, ok: false, refused: "not_configured", missing: refusal.names });
-        return { status: 409, json: { ok: false, errors: [refusal.client], code: "not_configured" } };
+        return { status: 409, json: { ok: false, errors: [refusalFor(principal, refusal)], code: "not_configured" } };
       };
 
       // /portal/api/run/plan — the confirmation gate (no spend)
