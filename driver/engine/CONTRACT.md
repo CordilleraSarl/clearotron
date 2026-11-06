@@ -1,7 +1,7 @@
 # Engine contract — the engine seam
 
 Two engine adapters are implemented: `anthropic-agent` (`claude -p`) and `openai-agent` (`codex exec`).
-`anthropic-agent` is the default; `CLEAROTRON_AI` selects the other.
+`CLEAROTRON_AI` selects one; unset, no engine is chosen and every search is refused.
 
 The seam is an explicit **registry**, not a hardcode: `selectEngine()` resolves `CLEAROTRON_AI` against
 the adapters `registerEngine()` holds, and an unknown value fails loud rather than running the wrong

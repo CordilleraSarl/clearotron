@@ -54,7 +54,7 @@ flowchart TB
         PIPE["pipeline.mjs<br/>stage sequence · gates · clamps · recovery"]
         STG["stages.mjs<br/>per-stage table: tier · timeout · output · validator · skills"]
         GWM["gateway.mjs — runStage()<br/>retry ladder · file-truth gate · fail taxonomy"]
-        ENG["engine seam (CLEAROTRON_AI)<br/>anthropic-agent (default) | openai-agent"]
+        ENG["engine seam (CLEAROTRON_AI)<br/>anthropic-agent | openai-agent"]
         SKL["skills/ — stage methodology (doctrine)"]
         PROF["profiles/ — per-company bundles"]
         PUB["publish/ — report · audit workbook · pool"]
