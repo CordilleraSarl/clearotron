@@ -11,6 +11,7 @@
 //   - `--probe-engine` spent a turn on that program and called the install ready;
 //   - a machine with only Codex was told no `claude` was on its PATH, and that nothing could be probed.
 // Now the section says no AI is chosen and that the machine is in demo mode, and it starts no program at all.
+// Its way out of demo names no one AI's program, and under `--probe-engine` it says why nothing was probed.
 // With an AI chosen, it reads that AI, as it did.
 //
 // DRIVEN AS A READER MEETS IT: the real command, in a home of its own, on a PATH holding nothing but a
@@ -32,6 +33,10 @@ const DOCTOR_ROOT = doctorRepoRoot();
 // A program this stand-in answers `--version` with: the engine's own floor, so no floor line is printed.
 const versionOf = (engine) => ENGINE_BINARIES[engine].floor;
 const NO_AI = "CLEAROTRON_AI is not set, so no AI is chosen, and a search is refused until one is.";
+// The owner's words for the way out of demo with no AI chosen, and for the probe it did not run. Each
+// command in them is the setup command as this machine reaches it.
+const LEAVE_DEMO_NO_AI = /To leave demo: run `[^`]+`\. It asks which AI to use, offers to install that AI's program if this machine has none, asks how it is paid for, and proves it with one turn; if the program is not signed in, it names the command that signs it in\./;
+const NOT_PROBED_NO_AI = /not probed — no AI is chosen\. `[^`]+` asks which AI to use\./;
 const SKIP = process.platform === "win32" && "the stand-ins are shell scripts, and Windows starts none";
 
 /**
@@ -93,7 +98,12 @@ test("with no AI chosen and Claude's program on the machine, doctor ticks no bil
       assert.doesNotMatch(out, /The engine program is installed/, `${what} sent the reader to prove an AI nobody chose:\n${out}`);
       assert.ok(section.includes(NO_AI), `${what} no longer says no AI is chosen:\n${section}`);
       assert.match(section, /MODE: demo — everything works except starting a NEW search\./, `${what} named no mode:\n${section}`);
+      assert.match(section, LEAVE_DEMO_NO_AI, `${what}'s way out of demo is not the one for no AI chosen:\n${section}`);
+      assert.doesNotMatch(section, /Anthropic's CLI/, `${what}'s way out of demo named the default AI's program:\n${section}`);
     }
+    // Asked to probe, it says why it did not; not asked, it says nothing of a probe.
+    assert.match(engineSection(probed), NOT_PROBED_NO_AI, engineSection(probed));
+    assert.doesNotMatch(engineSection(plain), /not probed/, engineSection(plain));
     // THE WITNESS: the program itself was never started, not even to say its version.
     assert.deepEqual(m.started(), [], "doctor started the program of an AI nobody chose");
     // Nothing was spent, so the closing line still says nothing was written.
@@ -109,6 +119,8 @@ test("on a machine with only Codex and no AI chosen, doctor names no `claude`; w
     const section = engineSection(out);
     assert.doesNotMatch(section, /`claude`/, `a machine with no AI chosen was told about a program it never chose:\n${section}`);
     assert.doesNotMatch(section, /not probed — there is no usable binary to probe/, `it was told its Codex is not a usable program:\n${section}`);
+    assert.doesNotMatch(section, /Anthropic's CLI/, `a machine with only Codex was offered Claude's program:\n${section}`);
+    assert.match(section, NOT_PROBED_NO_AI, section);
     assert.doesNotMatch(section, /billing:/, section);
     assert.deepEqual(none.started(), [], "doctor started a program with no AI chosen");
     // THE CONTROL, so the arms above can fail: with Codex chosen, the section names Codex's program, says how

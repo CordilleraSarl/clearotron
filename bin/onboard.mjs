@@ -74,7 +74,7 @@ import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that
 import { foreignPageHint } from "../shared/invocation.mjs";
 import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
-import { relocationPlan, channelPackage } from "../shared/permanent-install.mjs";   // — and the program out of npx's cache
+import { relocationPlan, channelPackage, ownVersion, permanentPrefix } from "../shared/permanent-install.mjs";   // — and the program out of npx's cache
 import { isWsl } from "../shared/wsl.mjs";   // — one answer to "is this WSL", shared with the connect lines
 import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight where the meaning is
 import { bracketAsciiCells, BRAND } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
@@ -1031,11 +1031,18 @@ const isExec = (p) => { try { accessSync(p, constants.X_OK); return statSync(p).
  * and the portal reports what the engine saw then. No sign-in command is named here: no copy can run in
  * demo mode, so none can be named, and setup names the one that signs in the copy it proves. `command` is
  * the setup command as the reader can type it from here.
+ *
+ * WITH NO AI CHOSEN, `engSpec` is null and the first line names no one AI's program: setup asks which AI
+ * to use before it offers to install anything, so naming the code's default AI's vendor described a
+ * program the reader may never pick.
  */
 export function leaveDemoAdvice(engSpec, { platform = process.platform, command = reachableCommand("install"),
   startCommand = reachableCommand("start") } = {}) {
-  const first = `To leave demo: run \`${command}\`. It offers to install ${engSpec.vendor}'s CLI if this machine has none, `
-    + "asks how it is paid for, and proves it with one turn; if the CLI is not signed in, it names the command that signs it in.";
+  const first = engSpec
+    ? `To leave demo: run \`${command}\`. It offers to install ${engSpec.vendor}'s CLI if this machine has none, `
+      + "asks how it is paid for, and proves it with one turn; if the CLI is not signed in, it names the command that signs it in."
+    : `To leave demo: run \`${command}\`. It asks which AI to use, offers to install that AI's program if this machine has none, `
+      + "asks how it is paid for, and proves it with one turn; if the program is not signed in, it names the command that signs it in.";
   // WINDOWS HAS NO BACKGROUND FORM, so the second line there names the one restart it has: the window.
   if (platform === "win32") {
     return [first, "If Clearotron is already running, close its window and start it again: it reads the settings setup writes when it starts."];
@@ -1561,6 +1568,21 @@ export function readOwnProcesses(repo, { table = processTable() } = {}) {
 // The closing line of a check whose engine probe ran a test turn: the turn's AI program writes its own files
 // under ~/.claude and ~/.cache, so "Nothing was written" was true of this command and not of the turn.
 const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test turn keeps its own files.";
+/**
+ * What setup says when it is cancelled, after "setup: ". It said "Nothing was written." every time, and by
+ * then it may have installed its own copy under the reader's home (`copy`, from npx), the AI's program into
+ * the engines folder (`engine`), or both, and a test turn may have left the AI program's own files
+ * (`turnRan`). The settings file is only ever written at the end, so that part stays true, and the line
+ * says what does stay. "Nothing was written." is kept for the cancel where it is still true.
+ */
+export function cancelledLine({ copy = null, engine = null, turnRan = false } = {}) {
+  if (!copy && !engine) return `cancelled. ${turnRan ? TURN_KEPT_ITS_FILES : "Nothing was written."}`;
+  const stays = copy && engine
+    ? `clearotron ${copy.version} stays installed in ${copy.prefix}, and ${engine.vendor}'s CLI in ${engine.dir}.`
+    : copy ? `clearotron ${copy.version} stays installed in ${copy.prefix}.`
+      : `${engine.vendor}'s CLI stays installed in ${engine.dir}.`;
+  return `cancelled. No settings were written. ${stays}${turnRan ? " The AI program's test turn keeps its own files." : ""}`;
+}
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
   // Whether the engine probe's turn started the AI program (TURN_KEPT_ITS_FILES); one refused first did not.
@@ -2079,9 +2101,11 @@ export async function runCheck() {
     else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
     // AND NOTHING BELOW IT IS READ OFF THE DEFAULT (engineChosen, above the opening): no program, no payment
     // and no turn, which would all describe an AI nobody chose. The machine is in demo mode, and the way out
-    // is the demo's own advice, which names the default AI's vendor.
+    // is the demo's own advice, in its form that names no one AI's program.
     info(demoModeLine());
-    for (const line of leaveDemoAdvice(engSpec)) info(line);
+    for (const line of leaveDemoAdvice(null)) info(line);
+    // ASKED TO PROBE, it says why it did not, where it used to print nothing at all.
+    if (PROBE_ENGINE) info(`not probed — no AI is chosen. \`${invoke("install")}\` asks which AI to use.`);
   } else {
     ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
 
@@ -4005,10 +4029,17 @@ const choose = async (q, options, def = 0, after = []) => {
 
 const candidate = {};
 let aborted = null;
+// WHAT SETUP HAS ALREADY PUT ON THE MACHINE, for the line a cancel prints (cancelledLine). Run from npx, the
+// copy this process runs from was installed by the process that started it, under the same prefix.
+const installedCopy = process.env.CLEAROTRON_RELOCATED === "1" ? { version: ownVersion(), prefix: permanentPrefix() } : null;
+let installedEngine = null;
+let setupTurnRan = false;
 try {
   say("\n  Trademark clearance engine — setup\n");
   say("  One question at a time. Enter takes the default in brackets.");
-  say("  Nothing is written until each credential you give has been checked, except a paid register key: checking it would cost you, so it is written on your word.\n");
+  // "No setting", not "Nothing": by the end of a cancelled setup its own copy, the AI's program and a test
+  // turn's files may be on the machine (cancelledLine), and only the settings wait for the checks.
+  say("  No setting is written until each credential you give has been checked, except a paid register key: checking it would cost you, so it is written on your word.\n");
 
   // ── BEFORE YOU START, derived from what the product declares it needs ──────
   //
@@ -4124,6 +4155,7 @@ try {
         if (r.error) problem(`could not run it: ${r.error.message}`);
         else if (r.status !== 0) warn(`that command exited ${r.status ?? "on a signal"} — checking anyway, since its exit code is not what settles this.`);
         bin = resolveEngineBin(eng.fallback, { engine: pick.id });
+        if (bin.source === "installed") installedEngine = { vendor: eng.vendor, dir };
         if (bin.executable && !bin.relative) { if (bin.source === "installed") ok(`installed: ${bin.path}`); }
         else warn(cannotRunLine(eng, bin, ""));
         // RESOLVED WITH THE ENGINE'S DEFAULT WORD, NOT THE SETTING IN FORCE. The line above the offer promised
@@ -4266,6 +4298,8 @@ try {
       say("  Running one turn…");
       // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
       const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: settingsInForce() }));
+      // A turn refused before it started the program left no files of the program's own (runCheck's runTurn).
+      if (v.ok || v.basis !== "config") setupTurnRan = true;
       if (v.ok) {
         ok(`${eng.product} completed a turn on ${PAYS_WITH[authPick.id]} — binary, credential, billing mode and model access all work.`);
         const served = servedLine(v);
@@ -4364,8 +4398,9 @@ try {
 
   // 4 ── register provider
   say("\n  Register provider");
-  say("  This decides which register gets searched, and which vendor gets billed. There is no default in");
-  say("  the engine — it refuses to guess.");
+  // "(default)" below is the answer Enter picks, so the line says what the engine does with none: it refuses.
+  say("  This decides which register gets searched, and which vendor gets billed. Every search refuses");
+  say("  until one is set.");
   // THE LAST ROW IS NOT A REGISTER, as on the AI question, and with the same words. Leaving the register
   // unset was reachable only by picking a vendor and skipping its credential, so a reader who meant "none
   // yet" had to pretend to choose one. Choosing it takes the branch a skipped credential reaches below.
@@ -4978,10 +5013,11 @@ try {
 } catch (e) {
   if (!aborted) {
     muted = false;
-    // Ctrl-D / a closed stdin lands here. It is not a crash and must not read like one — and nothing has
-    // been written at any point before the single atomic rename at the end.
-    const msg = /Ctrl\+D|closed|aborted/i.test(String(e?.message ?? e))
-      ? "cancelled. Nothing was written."
+    // Ctrl-C, Ctrl-D or a closed stdin lands here. It is not a crash and must not read like one. No setting
+    // has been written before the single atomic rename at the end, but setup's own copy, the AI's program
+    // and a test turn's files may already be on the machine, and the line names each one that is.
+    const msg = /Ctrl\+[CD]|closed|aborted/i.test(String(e?.message ?? e))
+      ? cancelledLine({ copy: installedCopy, engine: installedEngine, turnRan: setupTurnRan })
       : String(e?.message ?? e);
     console.error(`\nsetup: ${msg}\n`);
     rl.close();
