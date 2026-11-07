@@ -147,6 +147,13 @@ function run(args, env = {}) {
   }
 }
 
+/**
+ * The arms about Claude's program choose Claude. Doctor reads an AI's program, its billing and its turn only for
+ * the AI that is chosen: with none chosen, the default is nobody's choice and every search is refused until
+ * one is (doctor-reads-only-the-ai-that-is-chosen.test.mjs).
+ */
+const CLAUDE_CHOSEN = Object.freeze({ CLEAROTRON_AI: "anthropic-agent" });
+
 /** Every tracked file's path + mtime + size, so "it wrote nothing" is an assertion and not a hope. */
 function treeStamp(root) {
   const stamp = {};
@@ -178,11 +185,11 @@ test("--check on an unconfigured machine exits 0 and changes NOTHING on disk", (
 test("--check separates an ABSENCE from a MISCONFIGURATION", () => {
   // No `claude` and nothing set is a fresh machine: reported, exit 0. CLEAROTRON_CLAUDE_PATH naming something
   // wrong is a configuration that fails at run time, and setup is the cheap place to learn it.
-  const absent = run(["--check"]);
+  const absent = run(["--check"], CLAUDE_CHOSEN);
   assert.equal(absent.code, 0, absent.out);
   assert.match(absent.out, /no `claude` on PATH/, absent.out);
 
-  const wrong = run(["--check"], { CLEAROTRON_CLAUDE_PATH: "./claude" });
+  const wrong = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: "./claude" });
   assert.equal(wrong.code, 1, wrong.out);
   assert.match(wrong.out, /RELATIVE|not an executable file/, wrong.out);
 });
@@ -192,7 +199,7 @@ test("--check refuses a CLEAROTRON_CLAUDE_PATH that is relative, naming the run-
   // DIRECTORY, so a relative binary resolves against a directory that did not exist at setup time.
   const dir = mkdtempSync(join(tmpdir(), "onboard-bin-"));
   writeFileSync(join(dir, "claude"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
-  const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: "bin/../claude", HOME: dir, USERPROFILE: dir });
+  const r = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: "bin/../claude", HOME: dir, USERPROFILE: dir });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /run directory/, r.out);
   rmSync(dir, { recursive: true, force: true });
@@ -698,7 +705,7 @@ test("--check does NOT spend a turn unless it is asked to", () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-probe-"));
   const log = join(dir, "calls.jsonl");
   try {
-    const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
+    const r = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
     assert.equal(r.code, 0, r.out);
     assert.equal(existsSync(log), false, "a --check that dials a provider is a check that can fail for reasons that are not about this machine");
     // CONTROL for the closing line below: with no turn spent, nothing outside this command could have written either.
@@ -714,7 +721,7 @@ test("--check --probe-engine proves the engine with one turn, and still writes n
   const before = treeStamp(join(REPO, "bin"));
   const beforeEnv = existsSync(join(CLI_ROOT, ".env"));
   try {
-    const r = run(["--check", "--probe-engine"], { CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
+    const r = run(["--check", "--probe-engine"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
     assert.equal(r.code, 0, r.out);
     assert.match(r.out, /completed a turn/, r.out);
     assert.equal(existsSync(log), true, "the engine really was invoked");
@@ -738,7 +745,7 @@ test("the probe reports a signed-out engine as signed out, not as 'cannot run'",
   const dir = mkdtempSync(join(tmpdir(), "onboard-mute-"));
   const mute = muteProgram(dir);
   try {
-    const r = run(["--check", "--probe-engine"], { CLEAROTRON_CLAUDE_PATH: mute });
+    const r = run(["--check", "--probe-engine"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: mute });
     assert.equal(r.code, 1, r.out);
     assert.match(r.out, /exited before it produced anything/, r.out);
     assert.match(r.out, /signed-out shape/, "it names the mode rather than shrugging at 'cannot run'");
@@ -1113,24 +1120,30 @@ test("the wizard's register ladder and the preflight refusal print the SAME orde
 
 test("--check names the MODE on a machine with no engine, and does not send the reader to probe nothing", () => {
   const home = mkdtempSync(join(tmpdir(), "onboard-mode-"));
-  const r = run(["--check"], { HOME: home, USERPROFILE: home });
-  assert.equal(r.code, 0, r.out);
+  // Two machines with no engine program: one with Claude chosen, and one with no AI chosen, which says no
+  // AI is chosen and nothing about any program (doctor-reads-only-the-ai-that-is-chosen.test.mjs).
+  const chosen = run(["--check"], { ...CLAUDE_CHOSEN, HOME: home, USERPROFILE: home });
+  const none = run(["--check"], { HOME: home, USERPROFILE: home });
+  for (const r of [chosen, none]) {
+    assert.equal(r.code, 0, r.out);
 
-  assert.match(r.out, /MODE: demo/, `--check no longer names the mode:\n${r.out}`);
-  assert.match(r.out, /everything works except starting a NEW search/,
-    "the demo line stopped saying what DOES work, which is the half a reader is deciding on");
-  assert.match(r.out, /To leave demo: run `[^`]*clearotron install`/, "nothing tells the reader how to leave demo mode");
+    assert.match(r.out, /MODE: demo/, `--check no longer names the mode:\n${r.out}`);
+    assert.match(r.out, /everything works except starting a NEW search/,
+      "the demo line stopped saying what DOES work, which is the half a reader is deciding on");
+    assert.match(r.out, /To leave demo: run `[^`]*clearotron install`/, "nothing tells the reader how to leave demo mode");
+    assert.doesNotMatch(r.out, /add --probe-engine to spend one cheap turn/,
+      "the engine-present advice is being printed on a box with no engine");
+
+    // And the absence framing this issue was filed about is gone from the line that carried it.
+    assert.doesNotMatch(r.out, /install it for a real run/,
+      "the old absence framing is back — it now duplicates the MODE line, in worse words");
+  }
 
   // Advice that cannot pay off is noise. With nothing to spawn, --probe-engine answers "there is no
   // usable binary to probe" — so offering it here spends a reader's round trip to be told what they
-  // were just told.
-  assert.match(r.out, /nothing to probe in demo mode/, `demo mode is still advertising the probe:\n${r.out}`);
-  assert.doesNotMatch(r.out, /add --probe-engine to spend one cheap turn/,
-    "the engine-present advice is being printed on a box with no engine");
-
-  // And the absence framing this issue was filed about is gone from the line that carried it.
-  assert.doesNotMatch(r.out, /install it for a real run/,
-    "the old absence framing is back — it now duplicates the MODE line, in worse words");
+  // were just told. With no AI chosen there is no program to ask about at all, so nothing is said of one.
+  assert.match(chosen.out, /nothing to probe in demo mode/, `demo mode is still advertising the probe:\n${chosen.out}`);
+  assert.doesNotMatch(none.out, /nothing to probe in demo mode/, `a machine with no AI chosen was told about a program:\n${none.out}`);
 
   rmSync(home, { recursive: true, force: true });
 });
@@ -1646,7 +1659,7 @@ test("--check names the copy Clearotron installed and its version, and offers no
   const { install } = ENGINE_BINARIES["anthropic-agent"];
   const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n");
   try {
-    const r = run(["--check"], { CLEAROTRON_ENGINES_DIR: root });
+    const r = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_ENGINES_DIR: root });
     assert.equal(r.code, 0, r.out);
     assert.ok(r.out.includes(`${program} — the copy Clearotron installed, version 9.9.9`), r.out);
     // The install is offered by setup, and --check sends a reader with no copy there. The npm command
@@ -1656,7 +1669,7 @@ test("--check names the copy Clearotron installed and its version, and offers no
     assert.ok(!r.out.includes(install), `a copy was found and the reader was still told to install one:\n${r.out}`);
     // THE CONTROL, so the assertion above can fail: with nothing installed, --check says so, and it
     // does send the reader to setup's install.
-    const none = run(["--check"]);
+    const none = run(["--check"], CLAUDE_CHOSEN);
     assert.match(none.out, /Clearotron has not installed one/, none.out);
     assert.match(none.out, offersInstall,
       `the control never offers the install, so its absence above proves nothing:\n${none.out}`);
@@ -1670,7 +1683,7 @@ test("--check refuses the placeholder the Claude package leaves when its install
   // `npm install --ignore-scripts` leaves a file that passes an execute-bit check and fails every stage.
   const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
   try {
-    const r = run(["--check"], { CLEAROTRON_ENGINES_DIR: root });
+    const r = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_ENGINES_DIR: root });
     assert.equal(r.code, 1, r.out);
     assert.ok(r.out.includes(`${program} is the placeholder`), r.out);
     assert.match(r.out, /Reinstall without --ignore-scripts/, r.out);
@@ -1753,7 +1766,7 @@ test("--check names the placeholder when the setting points at it, not a permiss
   // it names is the vendor's placeholder: executable, and unable to run a stage.
   const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
   try {
-    const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: program });
+    const r = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: program });
     assert.equal(r.code, 1, r.out);
     assert.ok(r.out.includes(`${program} is the placeholder`), r.out);
     assert.match(r.out, /Reinstall without --ignore-scripts/, r.out);
