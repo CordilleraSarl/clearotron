@@ -230,6 +230,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   const [savedDraft, setSavedDraft] = useState<string | null>(null)
   /** The finished example a demo order opened. Like a submitted run, it leaves nothing on the form to lose. */
   const [landed, setLanded] = useState<string | null>(null)
+  /** The draft as the screen filled it on a form nobody had touched, serialised (see the preselection below). */
+  const [autoDraft, setAutoDraft] = useState<string | null>(null)
 
   // WHERE A SAVE LEAVES FOR, AND IT LEAVES AFTER THE RENDER THAT MAKES THIS PAGE CLEAN. The unsaved guard
   // reads its flag through a ref written during render and asks at the moment of navigation, so a `go`
@@ -252,8 +254,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       empty: JSON.stringify(EMPTY),
       saved: savedDraft,
       submitted: submitted != null || landed != null,
+      untouched: autoDraft,
     }),
-    [draft, submitted, savedDraft, landed],
+    [draft, submitted, savedDraft, landed, autoDraft],
   )
   useUnsaved(composerDirty)
 
@@ -452,7 +455,14 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     if (draft.pick.product === recommendation.product.key) return
     // Through `chooseProduct`, like every other product change, so nothing is left set-but-hidden. It
     // cannot take a place away here: the recommendation is read off these same places.
-    edit({ pick: chooseProduct(draft.pick, recommendation.product) })
+    const pick = chooseProduct(draft.pick, recommendation.product)
+    // ON A FORM NOBODY HAS TOUCHED THIS IS THE SCREEN'S WORK, NOT THE READER'S. A company with places of its
+    // own is recommended a search before anything is typed, and the unsaved guard counted that write as a
+    // change: leaving an untouched New clearance asked "Leave this page?". The form as preselected is its
+    // untouched state, until the reader changes it.
+    const now = JSON.stringify(draft)
+    setAutoDraft(now === JSON.stringify(EMPTY) || now === autoDraft ? JSON.stringify({ ...draft, pick }) : null)
+    edit({ pick })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recommendation?.product.key, pickedByHand, draft.savedSearch, editingSlug])
 
