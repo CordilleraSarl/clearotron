@@ -99,6 +99,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-brief-is-read-only-by-an-ai-that-is-chosen.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 3,
+          "todos": 0
+        },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
           "tests": 13,
           "asserts": 32,

@@ -37,8 +37,9 @@
 // replaces — today's lanes are simply skipped or billed elsewhere on codex — and it is a real gap, so
 // `truncationObservable` rides every result and a reader can tell which kind of `ok` they are holding.
 
-import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, engineAdapterSpecifier } from "../driver.config.mjs";
+import { ENGINE_BINARIES, engineAdapterSpecifier } from "../driver.config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
+import { whatIsMissing } from "../run-requirements.mjs";   // — the order-time gate's words for an AI nobody has chosen
 
 /** The driver's tier vocabulary, not a wire model id (engine/CONTRACT.md §3) — the cheap rung on both. */
 export const JX_TIER = "haiku";
@@ -132,7 +133,14 @@ export async function makeJxTurnRunner({
   // Names the lane in the one message a caller shows a human when the configuration refuses.
   lane = "the jx lanes",
 } = {}) {
-  const id = String(env.CLEAROTRON_AI || DEFAULT_ENGINE_ID).trim().toLowerCase();
+  // NO AI CHOSEN IS NOT THE DEFAULT AI. With CLEAROTRON_AI unset this door resolved the code's default, so an
+  // install with no AI chosen got a turn runner on that AI's program, billed to whatever it was signed in to:
+  // the portal booted "brief reading ON — engine=anthropic-agent", and Describe-it would have spent a turn
+  // there (measured on a fresh install of 0.5.1-beta.0, 2026-11-07). A search with no AI chosen is refused at
+  // order time, before a lane could ask; the portal's reader asks at boot. So the door refuses here, in the
+  // order-time gate's own words, and reads the setting as that gate reads it: blank is not chosen.
+  if (!String(env.CLEAROTRON_AI ?? "").trim()) return { error: whatIsMissing([{ about: "ai" }]) };
+  const id = String(env.CLEAROTRON_AI).trim().toLowerCase();
   if (!ENGINE_BINARIES[id]) return { error: `CLEAROTRON_AI=${id} is not an engine this driver ships` };
 
   let auth;
