@@ -125,8 +125,10 @@ test("the portal and the runner read one set of order tables, and the running po
   const { runTables: runnerTables } = await import("../runner.mjs");
   assert.equal(runnerTables, runTables, "the runner's intake wall reads a different tables loader from the portal's");
   const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
-  assert.match(src, /orderRefusal: async \(\) => orderTimeRefusal\(process\.env, await runTables\(\)\)/,
-    "the bootstrap no longer hands the running portal the runner's order-time question");
+  assert.match(src, /orderRefusal: async \(\) => portalOrderRefusal\(\{ tables: await runTables\(\) \}\)/,
+    "the bootstrap no longer hands the running portal its own refusal path");
+  assert.match(src, /env = process\.env, tables = \{\}[\s\S]{0,200}return orderTimeRefusal\(env, tables, \{ remedyFor:/,
+    "the portal's refusal path no longer asks the runner's order-time question of the environment it runs with");
 });
 
 test("a terminal start says an order is refused until the install can search, and what it lacks", async () => {

@@ -121,7 +121,7 @@ import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
-import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
+import { SERVER_INSTALL_SET, SERVER_UNITS, BACKGROUND_RETIRED, aBackgroundStartRefreshes, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
@@ -161,10 +161,8 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 /** Where `render-units.mjs --apply` installs, and therefore where "this box is a server" is visible. */
 export const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
-/** The shipped units that make this box a server. A door unit alone is enough; so is the drain. */
-export const SERVER_UNITS = Object.freeze([
-  "clearotron-portal.service", "clearotron-mcp-face.service", "prelim-driver.service",
-]);
+/** The shipped units that make this box a server, from the one module that lists units (shared/server-units.mjs). */
+export { SERVER_UNITS };
 /**
  * Which of the shipped units are installed on this box.
  *
@@ -740,25 +738,9 @@ const unitTypeOf = (u) => {
     return (readFileSync(join(REPO, "driver", "systemd", u), "utf8").match(/^Type=(\w+)/m)?.[1] ?? "simple").toLowerCase();
   } catch { return "simple"; }
 };
-// ── UNITS THIS FLAG ONCE INSTALLED AND NOW RETIRES ─────────────────────────────
-//
-// A box that ran `--background` before the retirement HAS these three installed and enabled. They must
-// stay MANAGED, or the carve below reads them as foreign, concludes the box is a real server, and the
-// flag refuses on exactly the boxes it previously worked on — "making the flag unrunnable exactly once
-// it has worked", which is the failure its own comment records being found by driving it twice.
-//
-// AND THEY MUST BE DISARMED, not merely unpinned. The worker drains continuously; leaving the timer
-// armed puts a second claimant on the queue. The claim itself is atomic — `claimAndPrep` in runner.mjs renames
-// `<id>.json` to the lock path and only one racer wins — so this is not double-execution. What it does
-// cost is the admission cap: counts are serial per queue while queues drain concurrently, so two
-// claimers can overshoot a per-account cap by a bounded one per queue. A bounded overshoot is not a
-// reason to leave a retired unit running when disarming it is one call.
-// EMPTY, AND KEPT RATHER THAN DELETED. The retired path-watcher/timer units it named are gone from the
-// tree, so naming them here would describe files this repo does not ship — which is exactly what the
-// "every retired unit is a unit this repo actually ships" check refuses. The export stays because the
-// next retirement wants somewhere to go, and an empty list is a statement that nothing is currently
-// retired-but-shipped.
-export const BACKGROUND_RETIRED = Object.freeze([]);
+// The units this flag once installed and now retires: kept MANAGED, and disarmed below. The list, and why it
+// is kept although empty, are in shared/server-units.mjs, beside the rule that reads it (aBackgroundStartRefreshes).
+export { BACKGROUND_RETIRED };
 
 export const BACKGROUND_EXCLUDED = Object.freeze({
   // ── `clearotron-client-mcp.service` LEFT THIS TABLE ON 2026-09-03, AND SAYING SO IS THE POINT ────
@@ -1115,10 +1097,10 @@ if (isMain) {
   // reads the box as a server and refuses — making the flag unrunnable exactly once it has worked.
   // The carve is narrow on purpose: every installed unit must be one this flag manages (or the client
   // door `clearotron connect` manages). A box carrying anything else — the deploy timer, the outbox
-  // lane — is a real server, and the refusal below is still the right answer for it.
-  const managed = new Set([...BACKGROUND_UNITS, ...BACKGROUND_RETIRED, CLIENT_DOOR_UNIT]);
-  const foreign = installed.filter((u) => !managed.has(u));
-  const backgroundRefresh = wantBackground && installed.length > 0 && foreign.length === 0;
+  // lane — is a real server, and the refusal below is still the right answer for it. The rule is
+  // aBackgroundStartRefreshes (shared/server-units.mjs), which the portal's refusal asks too. The client door
+  // is one of BACKGROUND_UNITS, and the detector never names it.
+  const backgroundRefresh = wantBackground && aBackgroundStartRefreshes(installed);
   if (installed.length && !backgroundRefresh)
     fatal(`This box has the services installed — ${installed.join(", ")} in ${UNIT_DIR}.\n`
       + "  Its configuration is those units' EnvironmentFile, not this checkout's .env, and they are\n"
