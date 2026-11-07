@@ -2720,8 +2720,7 @@ if (isMain) {
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
   for (const line of connectScreen(connect)) say(line);
-  // ANOTHER ASSISTANT, IN THE OWNER'S WORDS (2026-11-06): the line above is Claude Code's, and the same command the client
-  // door names, without its key route, asks which assistant and hands that one its own form, bound to this demo.
+  // The owner's words, 2026-11-06.
   if (DEMO) { say(`  Another assistant? Run \`${demoConnectCommand({ prefix: invocationPrefix(), base: paths.base })}\` in a second terminal and pick it.`); say(""); }
   // ── WHERE TO TYPE THE THINGS JUST PRINTED ( — F31) ───────────────────────
   //
