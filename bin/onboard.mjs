@@ -2103,16 +2103,18 @@ export async function runCheck() {
     // run?" listing this very setting (measured on a fresh install of a beta, 2026-11-04). Asked of the
     // services' own reading (servicesRead), as that section asks it: on a machine with units, their file
     // may hold the value this command's file does not, and then no search is refused over it.
-    if (!servicesRead("CLEAROTRON_AI")) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
+    const noAiChosen = !servicesRead("CLEAROTRON_AI");
+    if (noAiChosen) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
       + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
     else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
     // AND NOTHING BELOW IT IS READ OFF THE DEFAULT (engineChosen, above the opening): no program, no payment
     // and no turn, which would all describe an AI nobody chose. The machine is in demo mode, and the way out
-    // is the demo's own advice, in its form that names no one AI's program.
+    // is the demo's own advice. With no AI chosen it names no one AI's program; where the services hold an
+    // AI this command's file does not, it keeps the words it had.
     info(demoModeLine());
-    for (const line of leaveDemoAdvice(null)) info(line);
-    // ASKED TO PROBE, it says why it did not, where it used to print nothing at all.
-    if (PROBE_ENGINE) info(`not probed — no AI is chosen. \`${invoke("install")}\` asks which AI to use.`);
+    for (const line of leaveDemoAdvice(noAiChosen ? null : engSpec)) info(line);
+    // ASKED TO PROBE with no AI chosen, it says why it did not, where it used to print nothing at all.
+    if (PROBE_ENGINE && noAiChosen) info(`not probed — no AI is chosen. \`${invoke("install")}\` asks which AI to use.`);
   } else {
     ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
 
