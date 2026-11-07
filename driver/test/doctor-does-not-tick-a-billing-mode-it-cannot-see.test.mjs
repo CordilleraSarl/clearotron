@@ -18,6 +18,10 @@
 // DRIVEN AS A READER MEETS IT: the real verb, in an environment with no engine on PATH and no settings
 // file, reading the line off stdout. Asserting on `billingOf` alone would not have caught this, because
 // `billingOf` was answering correctly — it is the marker its answer was printed under that was wrong.
+//
+// AN AI IS CHOSEN in that environment, by its one setting: with none chosen, doctor reads no AI's billing at
+// all, because every search is refused until one is chosen and the default is nobody's choice
+// (doctor-reads-only-the-ai-that-is-chosen.test.mjs). The last arm here holds that half.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -28,21 +32,21 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
-/** `clearotron doctor` on a machine with nothing: no engine on PATH, no settings file. */
-function doctorOnABareMachine() {
+/** `clearotron doctor` on a machine with nothing: no engine on PATH, no settings file, and `chosen` as its AI. */
+function doctorOnABareMachine(chosen = {}) {
   const home = mkdtempSync(join(tmpdir(), "doctor-bare-"));
   try {
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"], {
       encoding: "utf8",
       // env -i: the engine binaries are found on PATH, so a PATH carrying this box's own tools would
       // resolve one and the case under test would never arise.
-      env: { PATH: `${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },
+      env: { PATH: `${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1", ...chosen },
     });
     return `${r.stdout ?? ""}${r.stderr ?? ""}`;
   } finally { rmSync(home, { recursive: true, force: true }); }
 }
 
-const OUT = doctorOnABareMachine();
+const OUT = doctorOnABareMachine({ CLEAROTRON_AI: "anthropic-agent" });
 const billingLine = () => OUT.split("\n").find((l) => /billing:/.test(l)) ?? "";
 
 test("the run this arm reads is the one it means to read", () => {
@@ -76,4 +80,14 @@ test("the rest of the bare run still reads honestly", () => {
   // than the defect.
   assert.match(OUT, /Nothing was written/, "the run no longer says it changed nothing");
   assert.doesNotMatch(OUT, /✓ billing/, "some other billing line is still ticked");
+});
+
+test("with no AI chosen there is no billing line at all, and the line that says none is chosen instead", () => {
+  // Not a tick and not information: the default's billing describes an AI nobody chose, and every search is
+  // refused until one is. The Engine section's first line already says so, in the words it has said it in.
+  const none = doctorOnABareMachine();
+  assert.ok(none.length > 200, `doctor said almost nothing, so nothing below reads it:\n${none.slice(0, 400)}`);
+  assert.doesNotMatch(none, /billing:/, `doctor described the billing of an AI nobody chose:\n${none}`);
+  assert.match(none, /CLEAROTRON_AI is not set, so no AI is chosen, and a search is refused until one is\./, none);
+  assert.match(none, /Nothing was written/, "the run no longer says it changed nothing");
 });
