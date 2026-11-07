@@ -47,11 +47,11 @@ const WALL = "CORAL FREEZE screens at Medium on this sweep. ".repeat(30);
 
 // ── The writer: the dictation and the doctrine order structure, and no longer order its opposite ──────
 
-test("the dispatch orders structure on both summaries, and the superseded wording is gone", () => {
-  const d = read("driver/stages-knockout.mjs");
-  assert.match(d, /GIVE IT STRUCTURE A READER CAN SCAN/,
+test("the manual orders structure on both summaries, and the superseded wording is gone", () => {
+  const d = read("driver/stages-knockout.mjs") + read("driver/skills/knockout-assess/SKILL.md");
+  assert.match(d, /Structure it so it can be scanned/,
     "the per-mark assessment is no longer ordered as an unstructured paragraph");
-  assert.match(d, /STRUCTURE IT: a short opening line/,
+  assert.match(d, /\*\*Structure it:\*\* a short opening line/,
     "the cross-mark chunkSummary is no longer ordered as an unstructured paragraph");
   // THE PLANT. This is the exact clause that produced the 2,875-character block, and an arm that cannot
   // fail on it is measuring that a sentence exists rather than that the instruction changed.
@@ -101,6 +101,7 @@ test("no copy of the opening-read instruction the model is handed asks what to d
   for (const f of ["driver/skills/knockout-assess/SKILL.md", "driver/stages-knockout.mjs", "driver/engine/mcp/recording-server.mjs"]) {
     const s = read(f);
     assert.doesNotMatch(s, /what (?:a reader should |to )?do with (?:that|it)\b/i, `${f} asks again for what to do with the name`);
+    if (f.includes("stages-knockout")) continue;   // the opening read's instruction is the manual's now, and the message points there
     assert.match(s, /what drives the rating\./, `${f} no longer carries the opening-read instruction this arm reads — find where it moved`);
   }
 });

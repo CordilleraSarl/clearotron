@@ -128,6 +128,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
     markName: "IRONWHISK",
     marks: [{ name: "IRONWHISK", classes: [8, 21] }, { name: "CLUVENDRA", classes: [8] }, { name: "SUNDAY ROAST CLUB", classes: [21, 35] }],
     classes: [8, 21, 35], goods: "kitchen tools; household utensils",
+    rawRequest: "An invented message asking about three names for kitchen tools.",
     // — THE JOB SAYS IT READS FIXTURES, and this is the arm that proves the whole
     // route: a field on a queued manifest reaching the counts lane through the runner, the pipeline and
     // the executor chain. It was `CLEAROTRON_KNOCKOUT_COUNT_FIXTURES` pinned into this process's environment,
@@ -165,6 +166,15 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   const rd = runDirs[0];
   assert.ok(/[\\/]archive[\\/]/.test(rd), "the delivered run was archived");
   assert.ok(existsSync(join(rd, ".delivered")), ".delivered sentinel");
+  // THE CLIENT'S OWN REQUEST REACHES BOTH MODEL STAGES, in what each was really sent, and it is on file where they are sent.
+  assert.equal(readFileSync(join(rd, "inbound-request.txt"), "utf8"), "An invented message asking about three names for kitchen tools.");
+  const sentTo = (stage) => {
+    const f = readdirSync(driverDir(rd)).find((n) => n.startsWith(stage) && n.endsWith(".dispatch.txt"));
+    assert.ok(f, `no dispatch on record for ${stage}`);
+    return readFileSync(driverDir(rd, f), "utf8");
+  };
+  assert.match(sentTo("knockout-frame"), /The VERBATIM inbound request is archived at \S*inbound-request\.txt\. Read it before you frame/);
+  assert.match(sentTo("knockout-assess"), /THE CLIENT'S OWN REQUEST, VERBATIM: \S*inbound-request\.txt\. Read it before you rate/);
 
   // frozen identity + framework: knockout level, house-triage fallback ladder
   const sp = JSON.parse(readFileSync(driverDir(rd, "search-policy.json"), "utf8"));

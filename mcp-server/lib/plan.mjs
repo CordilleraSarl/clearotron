@@ -35,6 +35,7 @@ import { gateResolvedRequest } from "../../driver/door-gates.mjs";   // the reso
 import { quoteForJob } from "../../driver/run-quote.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";
 import { config } from "./driver.mjs";
+import { demoServing } from "../demo-mode.mjs";   // — a demo's preview names no tool it withholds
 import { buildJob, resolveScopedProfileKey } from "./ops.mjs";
 import { BRAND } from "../../shared/brand.mjs";   // — the operator name in the allowance note, from the tenant seam
 import { bindingLayersFor } from "../../driver/binding-layers.mjs";   // — what BINDS a territory; never what a provider returns
@@ -364,7 +365,11 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
     wouldRun: blocking.length === 0,
     // Named plainly: this is a description, and confirming is a separate act.
     _note: blocking.length === 0
-      ? "NOTHING HAS BEEN STARTED and nothing has been charged. This is what would run. Show it to the requester, and call start_run with the SAME arguments only once they have confirmed it."
+      // A DEMO HAS NO TOOL THAT STARTS A SEARCH, so its preview does not tell the assistant to call one (the owner's
+      // words, 2026-11-06). A real install keeps the sentence that hands the confirmed request to start_run.
+      ? (demoServing()
+        ? "NOTHING HAS BEEN STARTED and nothing has been charged. This is what would run on a real install. A demo cannot start it."
+        : "NOTHING HAS BEEN STARTED and nothing has been charged. This is what would run. Show it to the requester, and call start_run with the SAME arguments only once they have confirmed it.")
       : "NOTHING HAS BEEN STARTED. This request cannot run as stated — the blockers below are questions to put back to the requester, not failures to retry.",
     blockers: blocking,
     warnings: [...(v.warnings ?? []), ...gates.warnings, ...(quotaWarning ? [quotaWarning] : []),

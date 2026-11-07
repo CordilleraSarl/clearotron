@@ -52,10 +52,12 @@ const LONG_RESET = 'npx clearotron@0.3.0-beta.5 passphrase --reset --base $HOME/
 const BLUR_KEY = 'cordillera-blur-names'
 
 // The deployment the board draws: a register and the research key set, the open-web key not, no case-law
-// sign-in, the engine on a subscription. The values are inert fixture words and never leave this process:
-// the inventory records names and states, never a value.
+// sign-in, Claude chosen as the AI and paid by subscription. An AI is named, not left to the code's default: an
+// install with none chosen draws its Engine row as not set. The values are inert fixture words and never leave
+// this process: the inventory records names and states, never a value.
 const credsDir = mkdtempSync(join(process.env.TMPDIR || '/tmp', 'settings-creds-'))
 const deployment = {
+  CLEAROTRON_AI: 'anthropic-agent',
   CLEAROTRON_DATABASE: 'corsearch', CORSEARCH_SESSION_KEY: 'fixture-not-a-key', PERPLEXITY_API_KEY: 'fixture-not-a-key',
   OAUTH_BRIDGE_CREDS_DIR: credsDir, PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '',
 }
@@ -381,7 +383,7 @@ const signInProbe = `(() => {
 const out = {}
 const SPEC = {
   signInName: "Through your organisation's sign-in service",
-  categories: ['Trademark register', 'Common-law and marketplace research', 'Open-web search', 'Case law and oppositions'],
+  categories: ['Trademark register', 'Common-law and marketplace research', 'Chinese marketplace search', 'Case law and oppositions'],
   caseLawGap: 'Until these are set up, a Full country search still runs and its report discloses the case-law gap instead of reporting no adverse case law.',
   adminLine: 'To change the address, the permissions or the companies on it, contact your Clearotron administrator.',
   blurLine: 'On the top bar. It covers every mark and company on screen, and an open report whole. It stays as you left it on this computer.',

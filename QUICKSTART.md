@@ -12,7 +12,11 @@ of its own and calls nothing on your behalf.
 |---|---|---|
 | A reasoning program | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`). Setup installs it if the machine has none. Sign in with the program setup installed (doctor prints its path), or with `claude` or `codex login` if the machine has its own |
 | A register | Sets what the search reaches, and what it costs | [Signa](https://signa.so) — one key, self-serve, US + EU + WIPO and ten more offices |
-| Web research | Covers the open web and the marketplaces | [Perplexity](https://www.perplexity.ai) |
+| Web research | Covers the open web and the marketplaces. The three clearance searches need it; a Knockout search runs without it | [Perplexity](https://www.perplexity.ai) |
+
+Only the native-language investigation of China, Hong Kong, Taiwan or Macau uses a fourth,
+[SerpAPI](https://serpapi.com): it searches the Chinese marketplaces through Baidu. Without its key,
+`SERPAPI_API_KEY`, those marketplaces come back as a disclosed gap.
 
 The register is the one with a real choice in it. EUIPO and a local USPTO index cost nothing and
 reach one office each; Signa is the recommended paid route and the fastest to a real clearance.
@@ -35,6 +39,9 @@ clearotron doctor --probe-engine
 `install` puts the program under `~/.local` and needs no root, and every command after it here uses the
 `clearotron` it installed. If `~/.local/bin` is not on your `PATH` yet, type `~/.local/bin/clearotron`. Installing with npm's own global form
 instead is covered in [INSTALL.md](INSTALL.md) §2.
+
+That installs the stable release. For the newest beta, run `npx clearotron@beta install` instead;
+[docs/RELEASES.md](docs/RELEASES.md) says what each one promises.
 
 `doctor` is the one to read. It checks that the reasoning program is there, on `PATH` or as the copy
 setup installed; that it is signed in, by running a turn rather than by finding the executable; and
@@ -66,13 +73,14 @@ prove the install works. Delete that line and the territories decide instead —
 you a full country search, the deepest of the four, with case law on. Narrowing the scope orders
 **more** work, not less.
 
-**A knockout search takes 5 to 10 minutes. The other three take 1.5 to 2.5 hours.** Every finished
+**Clearotron quotes 5 to 10 minutes for a knockout search, and 1.5 to 2.5 hours for the other three.** Every finished
 stage stays on disk, so a run survives interruption and a resume re-runs only what is missing.
 
 ## Then
 
 - See it before you buy anything: `npx clearotron demo` replays a finished clearance with no account, no
-  key and no network.
-- The four searches, and what each reaches: [README.md](README.md).
+  key and no network. `npx clearotron@beta demo` replays the beta's.
+- What the four searches are, and what each promises:
+  [docs/architecture/01-product-overview.md](docs/architecture/01-product-overview.md#what-it-does).
 - Everything else — configuration, the config store, the portal, access control:
   [INSTALL.md](INSTALL.md).

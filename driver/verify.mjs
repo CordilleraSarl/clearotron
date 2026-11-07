@@ -952,6 +952,11 @@ export function parsePositions(line) {
 // names none, the whole document is read as before. The fallback cannot reopen this defect, because it
 // only applies to documents that have no section structure to get wrong.
 export const CORRECTIONS_SECTION_RE = /\bcorrections?\b/i;
+// THE TOOL'S OWN `## Flags` HEADING COMES FIRST. A recheck's rewrite keeps it and adds sections around it: "## Re-check of prior
+// flags" names no corrections, so each answered flag read as an open one, and "## Corrections verified" took the allowlist from
+// the real flags. Measured on 342 saved reviews, 2026-11-05: 21 change; 169 rows go, none typed, each answering an earlier flag or
+// under a heading such as "surfaced not flagged"; 26 come back, all typed. A review with no such heading reads as it did.
+const FLAGS_SECTION_RE = /^#{1,6}\s+flags\s*:?\s*$/i;
 
 // Kept, and now only reachable on the headless path below. It is no longer the mechanism — it is the
 // last line of defence for a document that names no corrections section at all, where the plan audit is
@@ -1008,13 +1013,9 @@ export const opensWithKind = (content) => /^\[kind:/i.test(String(content ?? "")
  * PURE.
  */
 export function correctionsSection(reviewMd) {
-  const rest = String(reviewMd ?? "").split("\n").slice(1);
-  for (const raw of rest) {
-    const ln = raw.trim();
-    if (!SECTION_HEADING_RE.test(ln)) continue;
-    if (CORRECTIONS_SECTION_RE.test(ln)) return { named: true, heading: ln.replace(/^#+\s*/, "").trim() };
-  }
-  return { named: false, heading: null };
+  const rest = String(reviewMd ?? "").split("\n").slice(1).map((l) => l.trim());
+  const found = rest.find((ln) => FLAGS_SECTION_RE.test(ln)) ?? rest.find((ln) => SECTION_HEADING_RE.test(ln) && CORRECTIONS_SECTION_RE.test(ln));
+  return found ? { named: true, heading: found.replace(/^#+\s*/, "").trim() } : { named: false, heading: null };
 }
 
 export function parseCorrections(reviewMd) {
@@ -1023,7 +1024,7 @@ export function parseCorrections(reviewMd) {
 
   const { named, heading } = correctionsSection(reviewMd);
   const isHeading = (ln) => SECTION_HEADING_RE.test(ln);
-  void heading;
+  const opensTheSection = /^flags\s*:?\s*$/i.test(String(heading ?? "")) ? (ln) => FLAGS_SECTION_RE.test(ln) : (ln) => CORRECTIONS_SECTION_RE.test(ln);
 
   const candidates = [];
   let excluded = !named ? false : true;    // allowlist mode starts CLOSED — nothing counts until the section opens
@@ -1032,7 +1033,7 @@ export function parseCorrections(reviewMd) {
     const ln = raw.trim();
     if (isHeading(ln)) {
       excluded = named
-        ? !CORRECTIONS_SECTION_RE.test(ln)              // allowlist: only the corrections section is read
+        ? !opensTheSection(ln)                          // allowlist: only the corrections section is read
         : NOT_A_CORRECTIONS_SECTION_RE.test(ln);        // headless: the old walk, minus the plan audit
       sawEnumeratedFlag = false;           // the body rule below is per section
     }

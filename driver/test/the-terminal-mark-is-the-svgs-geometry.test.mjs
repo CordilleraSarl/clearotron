@@ -16,6 +16,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { bracketAsciiCells, BRACKET_RECTS, BRACKET_BLOCK, BRACKET_VIEWBOX } from "../../shared/brand.mjs";
 import { banner, styleFor, MARK_GLYPHS } from "../../shared/tty-style.mjs";
+import { readFileSync } from "node:fs";
 
 const TTY = { isTTY: true };
 const PIPE = { isTTY: false };
@@ -180,6 +181,30 @@ test("the mark is the first thing dropped when the box would not fit the pane", 
 
   // And a caller with no terminal to ask is never degraded on the strength of a missing number.
   assert.equal(framed(undefined).join("\n"), framed(Infinity).join("\n"), "an absent width dropped the mark");
+});
+
+test("the setup banner's own subtitle wraps inside a narrow pane rather than folding the frame", () => {
+  // Read from setup's source, so the arm follows the words that ship. They name the one answer setup cannot skip,
+  // which made the plain box 75 columns; in a 60-column pane the frame itself would fold, as the mark once did.
+  const SRC = readFileSync(new URL("../../bin/onboard.mjs", import.meta.url), "utf8");
+  const subtitle = SRC.match(/banner\(\{ title: "Clearotron setup", subtitle: "([^"]+)"/)?.[1];
+  assert.ok(subtitle, "setup's banner call is not where this arm reads it");
+  for (const stream of [TTY, PIPE]) {
+    for (const columns of [Infinity, 80, 74, 60, 40]) {
+      const lines = banner({ title: "Clearotron setup", subtitle, style: styleFor({ stream, env: {} }), mark: bracketAsciiCells(), columns })
+        .split("\n").map((l) => l.replace(ESC, ""));
+      const widths = lines.map((l) => [...l].length);
+      assert.equal(new Set(widths).size, 1, `not a rectangle at ${columns} columns, isTTY=${stream.isTTY}: ${widths.join(", ")}`);
+      assert.ok(widths[0] <= columns, `${widths[0]} columns drawn in a ${columns}-column pane`);
+      // Every word, once and in order: the wrap moves words between lines and drops none.
+      const said = lines.slice(1, -1).map((l) => l.replace(/^│|│$/g, "").replace(/[^\x20-\x7e]/g, " ").trim())
+        .filter(Boolean).join(" ").replace(/\s+/g, " ");
+      assert.ok(said.includes(subtitle), `the words do not read in order at ${columns} columns: ${said}`);
+    }
+  }
+  // CONTROL: a pane wide enough for the plain box keeps the subtitle on one line, as before.
+  const plain = banner({ title: "Clearotron setup", subtitle, style: styleFor({ stream: PIPE, env: {} }), columns: 80 }).split("\n");
+  assert.equal(plain.length, 4, "a subtitle that fits was wrapped");
 });
 
 test("the mark's block is coloured differently from a refusal", () => {

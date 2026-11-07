@@ -59,14 +59,14 @@
 // CHECK membership. Derive identity FROM the marks and the membership guard becomes the decision: a seat
 // that rates the wrong marks no longer fails a check — it writes to a different chunk file and passes.
 // That is the guard and the thing it guards collapsing into each other.
-import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 // THE VALIDATOR'S OWN PREDICATE, imported rather than restated. Two spellings of one closed set is how
 // the call and the stage come to disagree about what is legal, which is the defect this check closes.
-import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS } from "./verify-knockout.mjs";
+import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS, heldCitationsOnly, classGroupsDefect, frozenLadder, validators } from "./verify-knockout.mjs";
 // A FINDING'S KEYS, likewise: the validator's one list, so a key the call records is a key the stage accepts.
 import { KNOCKOUT_FINDING_KEYS } from "./findings-model.mjs";
 
@@ -139,7 +139,7 @@ const DECLARED = Object.freeze({
   batch: ["productContext", "standardCaveats"],
   marks: [
     "ref", "name", "classesSearched", "beltAndBraces", "contextFraming", "rating", "ratingQualifier",
-    "classesDriving", "bullets", "purpleNotes", "registerEstimate", "parodyNote", "crowdedField",
+    "classesDriving", "classGroups", "bullets", "purpleNotes", "registerEstimate", "parodyNote", "crowdedField",
     "findings", "negatives", "degraded",
     // the typed read — required by the validator, absent from the doctrine's own shape block
     "basis", "factors", "counterFactors", "mitigation", "assessment",
@@ -168,6 +168,7 @@ const DECLARED = Object.freeze({
   // and records the framework's inputs, as a finding does (verify-knockout.mjs checkRegisterReadInputs).
   "marks.registerReads": ["recordId", "read", "band", "inputs"],
   "marks.setAside": ["url", "ground"],
+  "marks.classGroups": ["band", "ratingQualifier", "classes"],
   "marks.negatives": ["term", "source", "note"],
 });
 
@@ -369,6 +370,20 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
   const verdict = acceptKnockoutAssess(call, { boundOrdinal });
   if (!verdict.ok)
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };
+  // Answered in the turn, not after it: the ladder is the run's, so this check cannot sit in the pure verdict above.
+  const groupsDefect = verdict.model.marks.map((m) => classGroupsDefect(m, frozenLadder(dir))).find(Boolean);
+  if (groupsDefect)
+    return { written: null, refused: groupsDefect, captured: closeCapture({ ok: false, refused: groupsDefect }), capture_failed: captureFailed };
+  // The check that reads the run's citations. What it refuses is left out and named, and the rest of the call is kept, so the model
+  // hears it in the turn and has no chunk to send again (verify-knockout.mjs). The stored call is cleaned too, so a later
+  // call that merges onto it does not bring a refused row back.
+  const kept = verdict.model.marks.map((m) => heldCitationsOnly(dir, m));
+  const notKept = kept.flatMap((k) => k.notKept);
+  const defects = kept.flatMap((k) => k.sourceDefects);
+  if (notKept.length) {
+    verdict.model.marks = kept.map((k) => k.mark);
+    call.marks = (Array.isArray(call.marks) ? call.marks : []).map((m) => heldCitationsOnly(dir, m).mark);
+  }
 
   const at = knockoutAssessChunkFile(dir, chunkNo);
   try {
@@ -377,19 +392,54 @@ export function recordKnockoutAssess(runDir, received, { boundOrdinal = null, no
     // The shared envelope, so every transport writes the same shape. The chunk is not restated in it —
     // it is the directory this file sits in.
     writeFileSync(paths.accepted, acceptedEnvelope(call, now()));
+    writeSourceDefects(dir, chunkNo, verdict.model, defects);
   } catch (e) {
     return { written: null, refused: null, write_failed: String(e?.message ?? e).slice(0, 200),
       captured: closeCapture({ ok: false, write_failed: true }), capture_failed: captureFailed };
   }
+
+  // THE STAGE'S OWN CHECK, HEARD WHILE THE MODEL CAN STILL ANSWER IT. A call can pass here and be refused when the turn ends, and that
+  // costs the whole attempt: measured 2026-11-05 at 62k generated tokens, on findings left with no citation after their sources went.
+  let stillRefused = null;
+  try { const stage = validators.knockoutAssessChunk(at, JSON.stringify(verdict.model)); if (!stage.ok) stillRefused = stage.reason; } catch { stillRefused = null; }
 
   return {
     written: at,
     refused: null,
     chunk: chunkNo,
     marks: verdict.model.marks.length,
-    captured: closeCapture({ ok: true }),
+    ...(stillRefused ? { still_refused: stillRefused } : {}),
+    ...(notKept.length ? { not_kept: notKept } : {}),
+    captured: closeCapture({ ok: true, ...(notKept.length ? { not_kept: notKept } : {}) }),
     capture_failed: captureFailed,
   };
+}
+
+const sourceDefectsPath = (runDir, chunkNo) => join(knockoutAssessCallPaths(String(runDir ?? ""), chunkNo).dir, "source-defects.json");
+
+/**
+ * The findings of this chunk whose source was left out. A row is `answered` once the finding comes back with its claim amended or new
+ * held support, or goes, for the check to read against the problem. An unchanged resend answers nothing, and an open row goes to the
+ * correction. A row never leaves on its own account: the claim may survive a finding dropped or renamed, and only an accepted read settles it.
+ */
+export function knockoutAssessSourceDefects(runDir, chunkNo) {
+  try { return JSON.parse(readFileSync(sourceDefectsPath(runDir, chunkNo), "utf8")); } catch { return []; }
+}
+
+// CODE DOES NOT JUDGE THE CLAIM. It reads whether the finding changed, and leaves whether that answers the problem to the check.
+function writeSourceDefects(runDir, chunkNo, chunk, defects) {
+  const key = (d) => JSON.stringify([nameKey(d?.mark), nameKey(d?.name), nameKey(d?.owner)]);
+  const current = new Map((chunk?.marks ?? []).flatMap((m) => (m?.findings ?? []).map((f) => [key({ mark: m?.name, name: f?.name, owner: f?.owner }), f])));
+  const stored = knockoutAssessSourceDefects(runDir, chunkNo).flatMap((d) => {
+    const f = current.get(key(d));
+    if (!f) return [{ ...d, state: "answered", removed: true }];
+    const amended = f.net !== d.was?.net || f.basis !== d.was?.basis || (f.evidence ?? []).some((u) => !(d.was?.evidence ?? []).includes(u)) || (f.weighedFilings ?? []).some((id) => !(d.was?.weighed ?? []).includes(id));
+    return [{ ...d, state: amended ? "answered" : "open" }];
+  });
+  // A source cited again and left out again is this call's row, whatever became of the claim.
+  const again = new Set(defects.map((d) => JSON.stringify([key(d), d.cited])));
+  const open = [...stored.filter((d) => !again.has(JSON.stringify([key(d), d.cited]))), ...defects.map((d) => ({ ...d, state: "open" }))];
+  if (open.length || existsSync(sourceDefectsPath(runDir, chunkNo))) writeFileSync(sourceDefectsPath(runDir, chunkNo), JSON.stringify(open, null, 2) + "\n");
 }
 
 /** Was this chunk written through the typed transport? The ruled discriminator. */

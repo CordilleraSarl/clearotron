@@ -17,7 +17,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths as stagePaths } from "../stages.mjs";
-import { assembleReportMd } from "../pipeline.mjs";
+import { assembleReportMd, buildReviewerOpenPointsSection } from "../pipeline.mjs";
+import { recordRefutation } from "../narrative-refutation-record.mjs";
+import { shaOf } from "../stage-freshness.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "../reviewer-open-points.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 
@@ -226,5 +228,49 @@ test("a point that hardened the verdict prints after its correction changed what
     writeFileSync(driverDir(dir, "post-repair-corrections.json"), JSON.stringify({ rows: [row] }) + "\n");
     assembleReportMd(P, doc.findings, [1, 2, 3]);
     assert.ok(!(readdirOpenPoints(dir) ?? "").includes(POINT), "a closed point of a review that hardened nothing still prints");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── THE EARLIER REVIEW'S POINTS, WHEN THE RECHECK AFTER THE CORRECTION SAVED NONE ───────────────────────────────────
+// The review in place is then the one from before the correction, and the record says so under its own heading, naming
+// that review by its file, for as long as those bytes stand. A review saved over them, by a later pass or by a recheck
+// that read, takes the heading away: the record is as before.
+const EARLIER_HEADING = "#### Earlier review \u2014 correction not rechecked";   // an em dash, as approved
+const SOURCE = "*(`senior-eye-review.md`)*";   // the review the points come from, as a value
+test("the earlier review's heading stands while that review is in place after the unread recheck, and goes once another is saved over it", () => {
+  const { dir, P, doc } = assembledRun();
+  try {
+    const EARLIER = "An invented ground the review before the correction raised about ODRAVEL.";
+    const LATER = "An invented ground a later review raised about MARVETTE.";
+    const applied = JSON.parse(readFileSync(P.correctionsApplied, "utf8")).rows;
+    assert.ok(recordRefutation(dir, { verdict: "BLOCKING", flags: [{ kind: "fact", text: EARLIER }] }).written, "premise: the first review was saved");
+    const reviewSha = shaOf(P.seniorEyeReview);   // the review the recheck found
+    const recheck = (status) => writeFileSync(driverDir(dir, "corrective-recheck.json"), JSON.stringify({ status, entryVerdict: "BLOCKING",
+      verdict: "BLOCKING", seq0: 2, seq: status === "read" ? 2 : null, reviewSha }) + "\n");
+    recheck("unread");
+    assembleReportMd(P, doc.findings, [1, 2, 3]);
+    // Today's section, with the heading and the review's file between its own heading and the lead, and nothing else.
+    const today = buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied);
+    const [head, ...rest] = today.split("\n\n");
+    assert.equal(readdirOpenPoints(dir), [head, EARLIER_HEADING, SOURCE, ...rest].join("\n\n") + "\n");
+    assert.ok(today.includes(EARLIER), "premise: the earlier review's ground prints");
+    // A REVIEW SAVED SINCE THE RECHECK BEGAN: its points are not the earlier review's, so nothing names them so.
+    assert.ok(recordRefutation(dir, { verdict: "BLOCKING", flags: [{ kind: "fact", text: LATER }] }).written, "premise: a later review was saved");
+    assembleReportMd(P, doc.findings, [1, 2, 3]);
+    const later = `${buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied)}\n`;
+    assert.ok(later.includes(LATER), "premise: the later review's ground prints");
+    assert.equal(readdirOpenPoints(dir), later, "a review saved after the recheck began is named as the earlier one");
+    // …and the recheck that saved it reads `read`: the same record, today's.
+    recheck("read");
+    assembleReportMd(P, doc.findings, [1, 2, 3]);
+    assert.equal(readdirOpenPoints(dir), later, "the heading outlived a recheck that saved a review");
+    // A refusal that cites nothing, which the tool no longer takes but an older review on disk can be, takes the heading
+    // the same way: the section's other return.
+    const bare = buildReviewerOpenPointsSection("BLOCKING\n", [], { earlier: { review: "senior-eye-review.md", inPlace: true } });
+    assert.ok(bare.startsWith(`### Reviewer's open questions\n\n${EARLIER_HEADING}\n\n${SOURCE}\n\n`
+      + "**The independent reviewer did not sign this report off, and cited no specific defect.**"), bare);
+    // …unless that refusal is a later review's, which stays in place while the earlier one is kept beside it.
+    assert.ok(!buildReviewerOpenPointsSection("BLOCKING\n", [], { earlier: { review: "_driver/review-before-repair.md", inPlace: false } })
+      .includes(EARLIER_HEADING), "a later review's refusal was named as the earlier review's");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

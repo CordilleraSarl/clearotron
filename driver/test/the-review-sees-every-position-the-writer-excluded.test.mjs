@@ -269,7 +269,7 @@ test("the recheck is told to read each named position's decision, beside the exc
     assert.ok(text.indexOf(`(${id})`) > ref, `${id} is not listed for reference`);
     assert.equal(text.split(`(${id})`).length - 1, 1, `${id} is listed more than once`);
   }
-  assert.ok(text.includes("verify (no existing finding is named) and the narrative passages"), "the recheck's empty finding list is not design's wording");
+  assert.ok(text.includes("Named findings in /run/findings.json: (no existing finding is named). Review those findings"), "the recheck's empty finding list is not design's wording");
 });
 
 // ── WHAT AN EXCLUSION RESTS ON, AND WHAT DEPENDS ON A CHANGE (design, 2026-10-30) ───────────────────────────────────

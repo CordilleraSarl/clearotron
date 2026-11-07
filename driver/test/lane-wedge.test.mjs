@@ -7,7 +7,7 @@
 // failures never do). The chain-retry wrapper itself (stage() in pipeline.mjs) is a thin bounded loop over these.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isLaneWedge, classifyWedge, followupHardWallStop } from "../gateway.mjs";
+import { isLaneWedge, classifyWedge, warmHardWallStop } from "../gateway.mjs";
 import { isFallbackEligible } from "../pipeline.mjs";
 
 test("isLaneWedge: the REAL incident signature — a hard-kill 'timeout' with NULL usage — is a wedge", () => {
@@ -44,26 +44,28 @@ test("classifyWedge: a STALL kill (0-token) stays a lane_wedge; a HARD-WALL kill
   assert.equal(classifyWedge("invalid_file:x", null, { hardWall: true }), "invalid_file:x"); // content fail untouched
 });
 
-test("#5b followupHardWallStop: a FOLLOWUP hard-wall timeout stops after ONE attempt; a fresh one / a stall does NOT", () => {
-  // the live bug: `warm` is ALWAYS false on a timeout chain (warmEligible excludes timeout), so the old
-  // `warm && hardWall` break was dead → a hard-wall followup burned TWO attempts (~2.5× the wall). The thread
-  // is `followup`.
-  assert.equal(followupHardWallStop({ fail: "timeout", followup: true, signals: { hardWall: true } }), true, "followup + hard wall → stop after one");
-  assert.equal(followupHardWallStop({ fail: "timeout", warm: true, signals: { hardWall: true } }), true, "a warm content-retry hard-wall also stops");
-  // negatives — each must keep the normal one-extended-shot retry:
-  assert.equal(followupHardWallStop({ fail: "timeout", followup: false, signals: { hardWall: true } }), false, "a FRESH stage gets its extended retry");
-  assert.equal(followupHardWallStop({ fail: "timeout", followup: true, signals: { stalled: true } }), false, "a transient STALL is not stopped here (can clear)");
-  assert.equal(followupHardWallStop({ fail: "timeout", followup: true, signals: undefined }), false, "no hard-wall signal → not stopped");
-  assert.equal(followupHardWallStop({ fail: "lane_wedge", followup: true, signals: { hardWall: true } }), false, "only a `timeout` fail qualifies");
-  assert.equal(followupHardWallStop({ fail: "invalid_file:x", followup: true, signals: { hardWall: true } }), false, "a content fail is never a hard-wall stop");
+test("#5b warmHardWallStop: a WARM hard-wall timeout stops after ONE attempt; a followup, a fresh one and a stall do NOT", () => {
+  // A warm attempt is the one rung that resumes a session, and it can itself time out: at the hard wall it stops.
+  assert.equal(warmHardWallStop({ fail: "timeout", warm: true, signals: { hardWall: true } }), true, "warm + hard wall → stop after one");
+  // A FOLLOWUP IS A FRESH SESSION: a new stage() call, attempt 1, no resumeRef (stages-followup.test.mjs pins that no
+  // engine resumes by key). At its hard wall it takes the one extended retry any fresh dispatch takes. Until 2026-11-05
+  // this rule stopped it too, on the premise that it resumed a loaded session.
+  assert.equal(warmHardWallStop({ fail: "timeout", followup: true, signals: { hardWall: true } }), false, "a followup at the hard wall gets its extended retry");
+  // negatives — each must keep the normal retry:
+  assert.equal(warmHardWallStop({ fail: "timeout", signals: { hardWall: true } }), false, "a FRESH stage gets its extended retry");
+  assert.equal(warmHardWallStop({ fail: "timeout", warm: true, signals: { stalled: true } }), false, "a transient STALL is not stopped here (can clear)");
+  assert.equal(warmHardWallStop({ fail: "timeout", warm: true, signals: undefined }), false, "no hard-wall signal → not stopped");
+  assert.equal(warmHardWallStop({ fail: "lane_wedge", warm: true, signals: { hardWall: true } }), false, "only a `timeout` fail qualifies");
+  assert.equal(warmHardWallStop({ fail: "invalid_file:x", warm: true, signals: { hardWall: true } }), false, "a content fail is never a hard-wall stop");
 });
 
-test("lane_wedge IS cross-provider-fallback-eligible (the chain cascades providers on a wedge)", () => {
+
+test("lane_wedge is transient infrastructure, which a caller may re-run on the same model", () => {
   assert.equal(isFallbackEligible("lane_wedge"), true);
   assert.equal(isFallbackEligible("timeout"), true);
 });
 
-test("content failures still never cascade (the quality-floor guardrail is intact)", () => {
+test("content failures are never re-run as infrastructure (the quality-floor guardrail is intact)", () => {
   assert.equal(isFallbackEligible("invalid_file:x/narrative.md:finding_registration_invalid"), false);
   assert.equal(isFallbackEligible("missing_file:x"), false);
   assert.equal(isFallbackEligible(null), false);

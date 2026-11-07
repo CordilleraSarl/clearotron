@@ -87,7 +87,7 @@ test("INSTALL.md's ingress advice comes AFTER what the surface serves, not befor
 
 // ── — the ports are named where a reader CHOOSES them ───────────────────────────────────────
 //
-// A documented install on a box already running this product FATALs at §6, and the section explaining
+// A documented install on a box already running this product FATALs at §5, and the section explaining
 // why was ~150 lines later under a heading about a different subject. The error text itself is good —
 // it names the port, the variable and why it will not self-heal — which is why this is an ordering fix
 // and not a rewrite.
@@ -96,16 +96,16 @@ test("the port variables are named BEFORE the first `clearotron start`, not only
   // The installed launcher's form: after install, every documented command runs through the
   // `clearotron` the install placed, not a fresh `npx` that may resolve another channel.
   const firstStart = s.indexOf("\nclearotron start\n```");
-  assert.ok(firstStart > 0, "the first bare start command must exist in §6");
+  assert.ok(firstStart > 0, "the first bare start command must exist in §5");
   const before = s.slice(0, firstStart);
   for (const name of ["PORTAL_SERVICE_PORT", "TRADEMARK_MCP_HTTP_PORT"]) {
     assert.ok(before.includes(name),
       `${name} is named only after the command that fails without it — a reader choosing ports must meet `
       + "them where the choice is made");
   }
-  assert.match(before, /fixed defaults shared by every checkout/i,
+  assert.match(before, /fixed defaults shared\s+by every install/i,
     "and the reason must be stated: these are host-wide fixed defaults, not per-install values, which is "
-    + "why a second checkout collides");
+    + "why a second install collides");
 });
 
 // ── — a remedy that exists wherever the harness runs ────────────────────────────────────────

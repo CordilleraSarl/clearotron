@@ -30,9 +30,13 @@ const STAGE_OF = {
 // replacement reaches the refutation prompt through `ctx.profileSelection`, asserted at the end of this
 // file — because "converted" and "quietly unwired" look identical from here, and only one is fine.
 const CONVERTED_TO_DRIVER_SELECTION = new Set(["profileRungDirective"]);
+// — `proseRungDirective` was RETIRED from the synthesis dispatch (design, 2026-11-06): its rules for per-finding write-ups
+// contradicted the synthesis call, which records sections only. It is meant to reach no prompt, and the arm at the end of this
+// file asserts that the synthesis prompt carries none of it, on every product.
+const RETIRED = new Set(["proseRungDirective"]);
 const RUNG_NAMES = Object.keys(stages)
   .filter((n) => /RungDirective$/.test(n) && typeof stages[n] === "function")
-  .filter((n) => !CONVERTED_TO_DRIVER_SELECTION.has(n));
+  .filter((n) => !CONVERTED_TO_DRIVER_SELECTION.has(n) && !RETIRED.has(n));
 
 // A ctx generous enough for any builder: every path resolves, every list is empty rather than absent.
 const paths = new Proxy({}, { get: (_t, k) => (typeof k === "string" ? `<${k}>` : undefined) });
@@ -113,4 +117,15 @@ test("the DRIVER'S PROFILE LIST reaches the refutation prompt, and one-country's
     + "for no change in what is asked");
   assert.equal(STAGES["narrative-refutation"].message(baseCtx()).includes("GROUNDED PROFILES —"), false,
     "a ctx with no selection at all emitted an instruction");
+});
+
+test("the synthesis prompt carries no depth-of-writing rules on any product — the retired rung reaches nothing", () => {
+  // The synthesis call records sections only, and its own message says per-finding write-ups are not a field. Rules for those
+  // write-ups contradicted it in the same prompt, so they left it. CONTROL: the placement inquiry's rung still reaches its prompt.
+  for (const product of [ONE_COUNTRY, ...GRADED]) {
+    const synthesis = build("synthesis", product);
+    assert.doesNotMatch(synthesis, /DEPTH OF WRITING|prose write-up/, `the synthesis prompt on ${product} still carries the retired rung`);
+    assert.ok(!synthesis.includes(stages.proseRungDirective(depthFor({ product })) || "\u0000"), `${product}: the retired rung's text reached synthesis`);
+  }
+  assert.match(build("placement-inquiry", GRADED[0]), /DEPTH OF WRITING/, "the control: the placement inquiry's rung no longer reaches its prompt");
 });

@@ -19,6 +19,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { globalBinDirFrom } from "./invocation.mjs";
+import { chdirPrefix } from "./os-advice.mjs";
 
 /** The root of THIS install — `<root>/shared/permanent-install.mjs` is this file. */
 export const INSTALL_DIR = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -152,6 +153,19 @@ export function packagedUpdate({ installDir = INSTALL_DIR, version = ownVersion(
     prefix, installed: version, ...target,
     npmArgs: ["install", "--global", "--prefix", prefix, "--no-fund", "--no-audit", `clearotron@${target.spec}`],
   };
+}
+
+/**
+ * The npm command a reader runs to update a package install `packagedUpdate` cannot name: Windows, npx's
+ * cache or a project's own `node_modules`. On the channel the install came from, so a beta stays a beta,
+ * and in the project's folder for a project install, because a global install would leave that copy behind.
+ */
+export function packagedUpdateCommand({ installDir = INSTALL_DIR, version = ownVersion(installDir), exists = existsSync, platform = process.platform } = {}) {
+  const spec = `clearotron@${channelOf(version)}`;
+  const owner = dirname(dirname(installDir));
+  return !inNpxCache(installDir) && exists(join(owner, "package.json"))
+    ? `${chdirPrefix(owner, { platform })}npm install ${spec}`
+    : `npm install -g ${spec}`;
 }
 
 /**

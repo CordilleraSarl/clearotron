@@ -21,6 +21,17 @@ if (!floor.ok) {
   process.exit(1);
 }
 
+// A DEMO'S CONNECTION STAYS WITH THAT DEMO (shared/demo-connection.mjs), and a demo that is gone refuses here, in one
+// plain line, before the server could read anything else on this machine.
+if (process.env.CLEAROTRON_DEMO === "1") {
+  const { bindDemoConnection } = await import("../shared/demo-connection.mjs");
+  const gone = bindDemoConnection();
+  if (gone) {
+    console.error(`clearotron: ${gone}`);
+    process.exit(1);
+  }
+}
+
 // THE SERVER STARTS AS THE ENTRY IT WOULD HAVE BEEN. It starts its stdio transport, and reads the
 // install's settings, only when it is the process's entry file, so the entry is handed over first.
 process.argv[1] = fileURLToPath(new URL("./server.mjs", import.meta.url));

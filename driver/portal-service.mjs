@@ -49,6 +49,7 @@ import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVers
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
 import { doorKind } from "../shared/mcp-challenge.mjs";   // — one reading of what a connector asks for, shared with doctor
+import { claudeNamer } from "./engine/probe.mjs";   // names the copy setup installed, which is not on PATH
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 
 /**
@@ -150,6 +151,8 @@ import { resolveEffectiveScope } from "./effective-scope.mjs";
 import { quoteForJob } from "./run-quote.mjs";
 import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor, registerLabelFor, caseLawReadyFor } from "./flag-snapshot.mjs";
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
+import { orderTimeRefusal } from "./run-requirements.mjs";   // the runner's own test for "can this install run a search"
+import { runTables } from "./order-tables.mjs";               // …asked of the runner's own tables, so the two cannot disagree
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
@@ -1180,6 +1183,11 @@ export function makeConnectorKeyRevoker({ env = process.env, home = null } = {})
   };
 }
 
+// WHICH REFUSAL A PERSON IS SHOWN when this install cannot run a search: the person who sees everything, the one the
+// Installation settings page is for and so the one who runs the install, is shown what is missing and the command
+// that sets it; everyone else is shown the client sentence, which names neither.
+const refusalFor = (principal, refusal) => (seesEverything(principal) && refusal.installer) || refusal.client;
+
 export function makePortalService({
   poolRoot, workspaceRoot, recipesDir = undefined, secret,
   grants = null,
@@ -1237,6 +1245,10 @@ export function makePortalService({
   // bootstrap below is the only place that reads the environment for it, and `bin/start.mjs` is the
   // only thing that sets it.
   demo = false,
+  // — CAN THIS INSTALL RUN A SEARCH? The runner's own question (`orderTimeRefusal`, asked of order-tables.mjs),
+  // injected for the reason `demo` is: the bootstrap below is the only place that reads the environment for it,
+  // and a fixture can drive both answers. The default refuses nothing, which is every fixture that does not ask.
+  orderRefusal = async () => null,
   audit = () => {},
   // The audit log's PATH, for the one surface that reads it back rather than writing to it
   // (/portal/admin/observed). Separate from `audit` above because that is a sink and this is a source,
@@ -1665,6 +1677,7 @@ export function makePortalService({
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
+        const searchRefusal = demo ? null : await orderRefusal();
         // THE HOUSE MARKETPLACES, offered as suggestions wherever a company's marketplaces are edited. A new
         // company starts with none (the owner's ruling of 2026-09-23) and somebody picks; these are the
         // Generic default's own list, read from the store so an install that changed it offers its own.
@@ -1687,6 +1700,12 @@ export function makePortalService({
           // or the general advice when nothing could be read. Only `engineMode: "demo"` can make this
           // anything but false; see `engineProgramDisputed`.
           engineProgramDisputed: await engineProgramDisputed(meEngineMode),
+          // WHETHER THIS INSTALL CAN RUN A SEARCH AT ALL, by the runner's own order-time test (`orderRefusal`), and when
+          // it cannot, the refusal the review would give this person: Home shows it in place of its invite, and New
+          // clearance shows it and holds its start, so nobody fills in a search the install would refuse. A demo walks
+          // its own ordering flow, so it reads as able.
+          canSearch: !searchRefusal,
+          ...(searchRefusal ? { searchRefusal: refusalFor(principal, searchRefusal) } : {}),
           // HOW THIS INSTALL ARRIVED, so a screen can name the setup command the reader can actually
           // type. `npm run setup` and `npx clearotron install` are the same wizard and each one is
           // unrunnable on the other route; the no-engine notice named one of them and was wrong for
@@ -1933,12 +1952,33 @@ export function makePortalService({
         return { status: 429, json: { ok: false, errors: [allowanceExhaustedLine(limit, BRAND.name)] } };
       };
 
+      // ── AN INSTALL THAT CANNOT SEARCH REFUSES HERE, WHERE THE PERSON IS ─────────────────────────
+      //
+      // The runner asks this at intake and refuses the order there (runner.mjs, `orderTimeRefusal`). The portal
+      // asked nothing: it said "queued", the runner's refusal reached only its terminal and a sidecar in the
+      // queue, and the order then vanished from every page, which is the outcome the queue scan's own rule
+      // above says belongs at submission. So the review and the start both ask the runner's question, of the
+      // runner's tables, and nothing is queued. Neither sentence names a setting, which a browser must never be
+      // shown: the client one the runner already writes, or what is missing and the command that sets it, for the
+      // person who runs the install (refusalFor). A demo walks its own flow and is not asked.
+      // `code` lets the screen give the box its own heading rather than the edited-review one, and the audit row is
+      // the operator's record of the refusal: the order doors are not admin writes, so nothing files one for them.
+      const configurationRefusal = async (door, account) => {
+        if (demo) return null;
+        const refusal = await orderRefusal();
+        if (!refusal) return null;
+        audit({ event: door === "plan" ? "plan" : "trigger", by: principal.email, account, ok: false, refused: "not_configured", missing: refusal.names });
+        return { status: 409, json: { ok: false, errors: [refusalFor(principal, refusal)], code: "not_configured" } };
+      };
+
       // /portal/api/run/plan — the confirmation gate (no spend)
       if (parts[1] === "api" && parts[2] === "run" && parts[3] === "plan" && method === "POST") {
         const tenant = body.tenant ?? query.tenant ?? null;
         const account = assertPrincipal(principal, { account: body.account ?? query.account ?? null, tenant, run: true });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         const job = jobFor({ principal, account, tenant, body });
+        const notConfigured = await configurationRefusal("plan", account);
+        if (notConfigured) return notConfigured;
         const gates = planGates(job);
         if (gates.fail) return gates.fail;
         const overQuota = await quotaRefusal(account, job.tenant ?? null);
@@ -1990,6 +2030,8 @@ export function makePortalService({
         const account = assertPrincipal(principal, { account: body.account ?? null, tenant: body.tenant ?? null, run: true });
         if (!account) return { status: 400, json: { error: "name an account" } };
         const job = jobFor({ principal, account, tenant: body.tenant ?? null, body });
+        const notConfigured = await configurationRefusal("trigger", account);   // asked again: the install may have changed since the review
+        if (notConfigured) return notConfigured;
         const gates = planGates(job);   // re-gated: the token is necessary, never sufficient
         if (gates.fail) return gates.fail;
         // re-checked for the same reason the gates are: a token minted while the account still had
@@ -2556,7 +2598,7 @@ async function connectorDoorKind(url) {
         // Windows-side one. Nothing draws this field today; it is on the wire, and a field that answers
         // differently from the rows is a trap for whoever draws it next.
         const stdio = seesEverything(principal)
-          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })
+          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget(), demo: isDemo(process.env) })
           : null;
 
         // ── THE PAGE IS HANDED ANSWERS, NOT FACTS TO REASON FROM ─────────────
@@ -2581,9 +2623,11 @@ async function connectorDoorKind(url) {
         const offers = connectOffers({
           stdioRoutes: stdio
             ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) =>
-                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })]))
+                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget(), demo: isDemo(process.env) })]))
             : {},
           wsl: isWsl(),
+          nameClaude: claudeNamer(),
+          demo: isDemo(process.env),
           // ONE ADDRESS, and it is the publicly reachable one ( §5). The
           // `localAddress` and `clientDoorStanding` inputs are gone with the axis that read them: no
           // surface serves a loopback address to anybody, and the door's running-or-not stopped being
@@ -4865,11 +4909,12 @@ const PORT = PORT_CHOICE.port;
   // drift. This asks the same function and prints what it says.
   if (laneWired) {
     try {
-      const { triggerLaneVerdict, HOSTED } = await import("../shared/trigger-lane.mjs");
+      const { triggerLaneVerdict, HOSTED, BOOT_PROBE_HEADER } = await import("../shared/trigger-lane.mjs");
       let probe = null;
       try {
+        // NAMED AS THE PROBE, so the door does not log this expected 401 as a rejection on every start.
         const res = await fetch(new URL("/mcp", MCP_URL), { method: "GET", redirect: "manual",
-          signal: AbortSignal.timeout(2500) });
+          headers: { [BOOT_PROBE_HEADER]: "1" }, signal: AbortSignal.timeout(2500) });
         // THE BODY IS READ BECAUSE THE HEADER DOES NOT SEPARATE THE TWO DOORS. A proxy-fronted door and
         // a key door both refuse with 401 and no `www-authenticate`; each names the credential it wants
         // in the body, and that is the only thing on the wire that tells them apart. Bounded and
@@ -4909,7 +4954,7 @@ const PORT = PORT_CHOICE.port;
           + "that key is honoured behind such a door is not readable from here — it is the shape that took "
           + "the Start button down once, silently, while every other check passed. Submit one clearance "
           + "after any change to the door's auth mode, and read the door's own `auth ON` line.");
-      } else log(`trigger lane: the engine door answered ${probe?.status ?? "?"} and takes an access key.`);
+      } else log("trigger lane: the engine door takes an access key, and this portal holds one.");
     } catch (e) {
       // The probe is a diagnostic. It must never be the reason a portal does not come up.
       log(`trigger lane: could not check whether the engine door accepts this portal (${e.message}) — not a verdict either way.`);
@@ -5238,6 +5283,14 @@ const PORT = PORT_CHOICE.port;
     // on one box is the mix the owner's "one LLM provider only ever, API or auth, no mix" ruling ended.
     // Going through `runTurn` means the reader is on whatever the engine is already authenticated as,
     // so it works on a subscription box, works on a codex box, and adds no credential.
+    //
+    // NOT IN A DEMO. The reader is a model turn on whatever engine this machine is signed in to, so in a
+    // demo it was the one button that spent on the visitor's own account. The composer shows the note it
+    // shows wherever reading is off, and the form is filled in by hand.
+    if (isDemo(process.env)) {
+      log("brief reading OFF — this is the demo, and the demo makes no model call.");
+      return null;
+    }
     try {
       const { makeJxTurnRunner } = await import("./engine/jx-turn.mjs");
       const { makeComposeReader } = await import("./compose-read.mjs");
@@ -5280,7 +5333,9 @@ const PORT = PORT_CHOICE.port;
     // only thing that sets it, and it sets it explicitly rather than passing the operator's inherited
     // environment through, so a stray `.env` can neither put a live install into demo mode nor take a
     // demo out of one. Anything but the literal "1" is not a demo.
-    demo: isDemo(process.env) });   // — one name, shared with the MCP door
+    demo: isDemo(process.env),   // — one name, shared with the MCP door
+    // The runner's own order-time test, asked of the runner's own tables: the portal refuses what the runner would.
+    orderRefusal: async () => orderTimeRefusal(process.env, await runTables()) });
   const { RateLimiter } = await import("../mcp-server/lib/ratelimit.mjs");
   const limiter = new RateLimiter({ perMinute: Number(process.env.PORTAL_RATE_PER_MIN || 120) });
   const { createServer } = await import("node:http");
@@ -5346,6 +5401,7 @@ const PORT = PORT_CHOICE.port;
       // branch is the wiring mistake the arm plants for, and it would not be visible in the output.
       for (const line of firstRunCredentialLines({
         handoff, credentialPath, email: LOCAL_USER, resetCommand,
+        handedDown: Boolean(String(process.env.PORTAL_LOCAL_PASSPHRASE ?? "").trim()),
         passphrase: handoff.printPassphrase ? established.passphrase : null,
       })) log(line);
       record = readLocalCredential(credentialPath);

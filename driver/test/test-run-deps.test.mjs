@@ -101,7 +101,7 @@ test("a workspace ROOT with no node_modules is refused too — 'declares no depe
 
     mkdirSync(join(root, "node_modules"), { recursive: true });
     const installed = runIn(root, ["node", "-e", "console.log('THE COMMAND RAN')"]);
-    assert.equal(installed.status, 0, "…and stop refusing once the install is there");
+    assert.equal(installed.status, 0, `…and stop refusing once the install is there\n${installed.stdout}\n${installed.stderr}`);
     assert.match(installed.stdout, /THE COMMAND RAN/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

@@ -64,7 +64,7 @@ jobs:
       - name: The publisher, at its pinned version and checksum
         if: steps.plan.outputs.count != '0'
         run: |
-          curl -fsSL -o mcp-publisher.tar.gz \
+          curl -fsSL --retry 5 --retry-delay 10 -o mcp-publisher.tar.gz \
             "https://github.com/modelcontextprotocol/registry/releases/download/v${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
           echo "${MCP_PUBLISHER_SHA256}  mcp-publisher.tar.gz" | sha256sum -c -
           tar -xzf mcp-publisher.tar.gz mcp-publisher

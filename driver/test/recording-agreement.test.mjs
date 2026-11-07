@@ -250,6 +250,11 @@ function unionFor(stage, artifacts) {
   for (const f of coldFails) {
     union.push({ surface: `cold-corrective:${f}`, kind: INSTRUCTION, phase: REPAIR, text: correctiveMessage("BASE", 2, f, files) });
   }
+  // A STAGE WITH A SECOND ARTIFACT IS REPAIRED ON THAT ONE TOO: the fresh read of a corrected knockout record is the review's own
+  // stage under its own file, and its retry has to name the tool for that file as well.
+  for (const a of artifacts.filter((x) => !files.includes(x))) {
+    union.push({ surface: `cold-corrective:missing_file:${a}`, kind: INSTRUCTION, phase: REPAIR, text: correctiveMessage("BASE", 2, "missing_file", [a]) });
+  }
   // THE BESPOKE COMPOSERS, DERIVED. `stage: "*"` is walked for EVERY stage on purpose: those composers
   // compute their stage at the call site (`redo(label, …)` is keyed on the ARTIFACT so conversions
   // inherit it), so pinning them to one stage would leave the tool-vs-edit branch — the branch that

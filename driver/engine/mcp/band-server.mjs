@@ -24,7 +24,7 @@ import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, withoutPlacementOrders } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
-import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, rawGoodsCarried, untaggedIsEnglish, rowGoods } from "../../record-goods.mjs";
+import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, recordAsServed, untaggedIsEnglish, rowGoods } from "../../record-goods.mjs";
 import { recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, goodsFromLabel, registerPageLabel } from "../../goods-evidence.mjs";
 import { savedStatusPages } from "../../saved-register-pages.mjs";
 import { DEFAULT_LEDGER_PATH } from "../../provider-usage.mjs";
@@ -460,26 +460,6 @@ function bandLookup(params = {}) {
   logRead("band_lookup", params, { ok: true, matched, returned: hits.length, crowds: crowds.length, ...(byteCapped ? { byte_capped: byteCapped } : {}),
     served: hits.map((h) => h.record_id).filter(Boolean) });
   return out;
-}
-
-// A RECORD'S GOODS ARE SERVED ONCE. A Clarivate record carries the register's raw goods list beside the
-// normalised goods the provider maps from it item for item (record-goods.mjs `rawGoodsCarried`), so every goods
-// statement was read twice. On a crowded test run, 2026-10-13, one synthesis attempt read 10.79 MB of record
-// text in 549 calls; served this way, the same records come to 6.04 MB in 398. Where the normalised goods carry
-// the raw list, the record is served without that list, in the file's own layout and field order, and anything
-// else in the raw goods block stays; where they do not, or the text is not a record, it is served as it
-// stands. The file on disk is never touched, and the reading audit says how much was left out.
-function recordAsServed(text) {
-  let body;
-  try { body = JSON.parse(text); } catch { return { text, audit: {} }; }
-  if (!rawGoodsCarried(body)) return { text, audit: {} };
-  const goods = { ...body._raw.goodsServices };
-  delete goods.intClassDescriptions;
-  const raw = { ...body._raw, goodsServices: goods };
-  if (!Object.keys(goods).length) delete raw.goodsServices;
-  const indent = /^\{\n( +)"/.exec(text)?.[1]?.length ?? 0;
-  const served = JSON.stringify({ ...body, _raw: raw }, null, indent) + (text.endsWith("\n") ? "\n" : "");
-  return { text: served, audit: { raw_goods_left_out: text.length - served.length } };
 }
 
 function bandRecord(params = {}) {

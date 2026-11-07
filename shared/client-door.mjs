@@ -153,9 +153,9 @@ export function keyPurposeLine({ email, brand, reset }) {
  * in one step, so nobody issues a key by hand (owner, 2026-09-19). A demo keeps its own secret and guest
  * list in its folder, which is why the folder is named.
  */
-export function demoConnectCommand({ prefix = "", base }) {
+export function demoConnectCommand({ prefix = "", base, where = null }) {
   const q = (d) => (/\s/.test(d) ? `"${d}"` : d);
-  return `${prefix}clearotron connect --base ${q(base)}`;
+  return `${prefix}clearotron connect --base ${q(base)}${where ? ` --where ${where}` : ""}`;
 }
 
 export function keyIssueCommand({ prefix = "", demo = false, user = null, base = null, defaultBase = null } = {}) {
@@ -177,8 +177,8 @@ export function keyIssueCommand({ prefix = "", demo = false, user = null, base =
 export function ensureDenylistFile(path, io) {
   if (io.exists(path)) {
     // PRESENT IS NOT THE SAME AS READABLE, and only one of the two makes revocation work. A list the
-    // door cannot open is the exact state `isRevoked` turns into "not revoked" — the same landmine as an
-    // absent one, wearing a passing existence check. Read it here, where the door is still startable.
+    // door cannot open makes `isRevoked` refuse every key, so every assistant stops, behind a passing
+    // existence check. Read it here, where the door is still startable.
     if (io.read) io.read(path);
     return { path, created: false };
   }
@@ -316,10 +316,13 @@ export function describeDoorState(door, {
       return { level: "info",
         text: "a process holds the client door's port, and nothing here shows it is this install's door." };
     }
+    // WHAT EACH COMMAND DOES, AND NO VERDICT ON THE INSTALL. This said `start` writes both and that an
+    // installed machine missing them had not finished installing, which a newcomer read right after setup,
+    // before their first start (measured on a fresh install of a beta, 2026-11-04). A foreground `start`
+    // writes neither: it runs the door as its own child. Only `--background` places the unit and the setting.
     return { level: "info",
-      text: `the client door is not set up here — ${missing}. \`${startCmd}\` writes both. Since the `
-        + "2026-09-03 ruling an install places them, so on an installed box this means the install did "
-        + "not finish" };
+      text: `the client door is not set up here — ${missing}. \`${startCmd}\` starts it, `
+        + `and \`${startCmd} --background\` sets up both.` };
   }
   if (door.active === null) {
     // THE PROBE STILL COUNTS HERE. Not asking systemd is not the same as knowing nothing: if the port
@@ -1094,7 +1097,7 @@ export function clientDoorReachability({ url = null, probe = null } = {}) {
   // a reader to skim the arm that catches a broken one.
   if (!raw) {
     return { state: "unset",
-      message: "no client connector address is published, so the Use-your-AI page and a report's Ask-AI "
+      message: "no client connector address is published, so the Connect your AI page and a report's Ask AI "
         + "control will say this deployment is not set up. That is correct for a local install." };
   }
   let parsed;

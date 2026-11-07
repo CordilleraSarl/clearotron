@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { otherDoor, verifyToken } from "../../shared/scope.mjs";
 import { demoTokenSecretPath } from "../../shared/client-door.mjs";
 import { INSTALL_CREDENTIAL_FILE } from "../portal-local-auth.mjs";
+import { stdioConnectFor } from "../../shared/stdio-connect.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CONNECT = join(ROOT, "bin", "connect.mjs");
@@ -56,14 +57,16 @@ const record = (home, rec) => {
   writeFileSync(join(dir, `${rec.pid}.json`), JSON.stringify(rec));
 };
 
-test("connect --base finds the demo running from that folder and mints a key its door accepts", () => {
+const RUNNING = (base) => ({ pid: process.pid, demo: true, base, url: "http://127.0.0.1:12340/portal", host: "127.0.0.1", ports: { portal: 12340, mcp: 12341, client: 12342 } });
+
+test("connect --base --where elsewhere finds the demo running from that folder and mints a key its door accepts", () => {
   withDemo(({ home, base, run }) => {
     const secret = "a-demo-secret-for-this-test-only";
     writeFileSync(demoTokenSecretPath(base), secret);
     writeFileSync(join(base, INSTALL_CREDENTIAL_FILE), JSON.stringify({ email: "demo@localhost" }));
     // This test's own pid stands for the running demo: alive, which is all the reader asks.
-    record(home, { pid: process.pid, demo: true, base, url: "http://127.0.0.1:12340/portal", host: "127.0.0.1", ports: { portal: 12340, mcp: 12341, client: 12342 } });
-    const r = run(["--base", base]);
+    record(home, RUNNING(base));
+    const r = run(["--base", base, "--where", "elsewhere"]);
     assert.equal(r.status, 0, r.stdout + r.stderr);
     assert.match(r.stdout, /This key lets an AI assistant act as demo@localhost through Clearotron's client door\. It is not a portal sign-in; the portal uses the passphrase \(/,
       "the key's purpose, in the approved words, comes first");
@@ -89,4 +92,60 @@ test("with no demo running from that folder it says so, names how to start one, 
     assert.match(r.stdout, /What would change it: start it with `.*clearotron demo --base .*trademark-demo`/);
     assert.doesNotMatch(r.stdout, /Key:/);
   });
+});
+
+// ── EACH ASSISTANT ITS OWN FORM, BOUND TO THE DEMO (design, 2026-11-05; the owner's words, 2026-11-06) ──
+//
+// The demo's start names Claude Code's line, and "Another assistant? Run <connect> in a second terminal and pick it." for the
+// rest. Each row's own form comes back, under the demo's own server name and with the demo's folders and flag, so a real
+// install's connection beside it is untouched; no key is minted and nothing is written.
+test("connect --base hands the assistant picked its own form, bound to the demo, and mints and writes nothing", () => {
+  withDemo(({ home, base, run }) => {
+    record(home, RUNNING(base));
+    // Each row's shape, and the form the one composer writes for it, bound to this demo.
+    const shapes = { codex: "codex-toml", chatgpt: "codex-toml", "claude-code": "claude-cli", claude: "desktop-json", other: "generic-json" };
+    for (const [id, shape] of Object.entries(shapes)) {
+      const r = run(["--base", base, "--client", id]);
+      assert.equal(r.status, 0, `${id}: ${r.stdout}${r.stderr}`);
+      const form = stdioConnectFor(shape, { workDir: join(base, "workspace"), reportsDir: join(base, "pool"), demo: true });
+      for (const line of form.text.split("\n"))
+        assert.ok(r.stdout.includes(line), `${id}: the demo's ${shape} form is not printed whole; missing: ${line}`);
+      // THE FORM CARRIES THE DEMO'S FOLDERS AS ITS OWN FORMAT ENCODES THEM: the composer above was handed them, and a TOML or
+      // JSON form escapes a Windows path's backslashes, so the raw path is not in the output there.
+      assert.match(r.stdout, /CLEAROTRON_DEMO/, `${id}: the form does not carry the demo flag`);
+      assert.doesNotMatch(r.stdout, /trademark-artifacts(?!-demo)/, `${id}: the form names a real install's connection`);
+      assert.doesNotMatch(r.stdout, /Key:|Address:/, `${id}: a key route was taken for an assistant on this machine`);
+    }
+    assert.ok(!existsSync(join(home, ".config", "systemd")), "connecting to a demo wrote a unit");
+    assert.ok(!existsSync(join(home, ".config", "clearotron", ".env")), "connecting to a demo wrote settings");
+    assert.ok(!existsSync(demoTokenSecretPath(base)), "a secret was made for a route that needs no key");
+  });
+});
+
+test("connect --base with no assistant named asks which, refuses without a terminal, and lists without asking", () => {
+  withDemo(({ home, base, run }) => {
+    record(home, RUNNING(base));
+    const r = run(["--base", base]);
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+    assert.match(r.stdout, /Which assistant do you want to use\?/);
+    assert.match(r.stderr, /stdin is not a terminal/);
+    assert.doesNotMatch(r.stdout, /Key:/);
+    const listed = run(["--base", base, "--list"]);
+    assert.equal(listed.status, 0, listed.stderr);
+    assert.match(listed.stdout, /^ {2}codex {12}Codex$/m);
+    assert.doesNotMatch(listed.stdout, /Which assistant/);
+    const unknown = run(["--base", base, "--client", "no-such-app"]);
+    assert.equal(unknown.status, 2);
+    assert.match(unknown.stderr, /no such assistant "no-such-app"/);
+  });
+});
+
+test("the demo's start names the key route for its client door and the command that connects another assistant", () => {
+  const src = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
+  const screen = src.indexOf("for (const line of connectScreen(connect)) say(line);");
+  const another = src.indexOf("Another assistant? Run \\`${demoConnectCommand({ prefix: invocationPrefix(), base: paths.base })}\\` in a second terminal and pick it.");
+  assert.ok(screen > 0 && another > screen, "the line for another assistant is not printed after Claude Code's connect line");
+  assert.match(src.slice(screen, another + 20), /if \(DEMO\) \{ say\(`  Another assistant\?/, "the line is printed outside a demo");
+  const help = readFileSync(CONNECT, "utf8");
+  assert.match(help, /--base <dir> {6}a running demo's folder: connect your assistant to that demo\. With"\);\n\s*say\(" {22}--where elsewhere, mint a key for its client door, and print both"\);/);
 });

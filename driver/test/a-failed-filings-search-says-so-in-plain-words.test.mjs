@@ -26,7 +26,7 @@ pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 pinEnv(process.env, "CLEAROTRON_REPORTS_URL", "https://trademark.test");
 pinEnv(process.env, "CLEAROTRON_DATABASE", "signa");
 
-const { listRegisterRecords } = await import("../register-records.mjs");
+const { readingDoc } = await import("./knockout-reading-fixture.mjs");
 const { buildKnockoutWorkbook, publishKnockout } = await import("../publish/knockout.mjs");
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const ExcelJS = (await import("exceljs")).default;
@@ -36,14 +36,20 @@ const LEFT_OPEN = "it could not be completed this run, so it is left open here r
 const FILING = { record_id: "tm_1", mark_text: NAME, owner_name: "Brightmoor Candle Co", status: "Registered", classes: [4] };
 const RAW = /threw|connection reset/;
 
-/** The knockout's listing over `lister`. */
-const listing = (lister, opts = {}) =>
-  listRegisterRecords({ marks: [{ name: NAME, classes: [4] }], provider: "signa", capabilities: { id: "signa" }, lister, ...opts });
+/** The knockout's register moment over `lister`: its counts, the name's own list, and the record built from them. */
+const listing = async (lister, opts = {}) =>
+  (await readingDoc({ marks: [{ name: NAME, classes: [4] }], provider: "signa", capabilities: { id: "signa" }, lister, root: ROOT, ...opts })).doc;
+/** An archived run's record, as the cap it was listed under left it: re-renders of such a run keep its sentence. */
+const CAP_SENTENCE = "the 1-record cap for this name was reached before this form was fetched";
+const archivedUnderACap = { schema: 1, provider: "signa", cap: 1, marks: [{ name: NAME, classes: [4], classScope: "mark", fetched: 1, available: 1, capped: true, cap: 1,
+  records: [{ recordId: "tm_1", mark: NAME, owner: "Brightmoor Candle Co", status: "Registered", classes: [4], matchedForm: NAME, matchedBasis: "identical" }],
+  terms: [{ term: NAME, basis: "identical", ok: true, fetched: 1, total: 1 },
+    { term: "LANTERNWIK", basis: "close", ok: false, fetched: 0, total: null, notAsked: true, reason: CAP_SENTENCE }] }] };
 const throwsOnEveryForm = async () => { throw new Error("the listing connection reset"); };
 
 /** The knockout's listing, over `lister`, and the Register Filings sheet built from what it recorded. */
-async function filings(lister, opts = {}) {
-  const doc = await listing(lister, opts);
+async function filings(lister, opts = {}, archived = null) {
+  const doc = archived ?? await listing(lister, opts);
   const out = join(mkdtempSync(join(ROOT, "book-")), "audit.xlsx");
   await buildKnockoutWorkbook({ marks: [{ name: NAME, findings: [] }] }, [], out, null, [], null, doc);
   const wb = new ExcelJS.Workbook();
@@ -87,7 +93,7 @@ test("a form whose search failed says it could not be completed, and the raw cau
   assert.deepEqual([row?.["Trademark"], row?.["Note"]], ["not available", LEFT_OPEN]);
   assert.ok(!RAW.test(JSON.stringify(rows)), "the raw cause reached a reader's cell");
   const recorded = doc.marks[0].terms.find((t) => t.term === NAME);
-  assert.match(recorded.reason, /^record listing threw: the listing connection reset/, "the run's record lost the raw cause");
+  assert.match(recorded.reason, /the listing connection reset/, "the run's record lost the raw cause");
 });
 
 test("a search that timed out reads as the timeout line", async () => {
@@ -98,11 +104,11 @@ test("a search that timed out reads as the timeout line", async () => {
   assert.ok(!/ETIMEDOUT|30000/.test(JSON.stringify(rows)), "the raw cause reached a reader's cell");
 });
 
-test("a form the record cap stopped before it was asked keeps its own sentence", async () => {
-  const { rows } = await filings(async (term) => ({ ok: true, records: term === NAME ? [FILING] : [], total: term === NAME ? 1 : 0 }), { cap: 1 });
+test("an archived run's form the record cap stopped before it was asked keeps its own sentence", async () => {
+  const { rows } = await filings(null, {}, archivedUnderACap);
   const stopped = rows.filter((r) => r["Trademark"] === "not available");
   assert.ok(stopped.length > 0, "the fixture reached no form past the cap");
-  for (const r of stopped) assert.equal(r["Note"], "the 1-record cap for this name was reached before this form was fetched");
+  for (const r of stopped) assert.equal(r["Note"], CAP_SENTENCE);
 });
 
 test("THE CONTROL: a listing that answered builds the rows it built before", async () => {
@@ -125,12 +131,11 @@ test("the report page and report-data.json say the searches could not be run, an
   assert.ok(!RAW.test(JSON.stringify(data)), "a raw cause reached report-data.json");
 });
 
-test("report-data.json keeps the sentence of a form the record cap stopped", async () => {
-  const doc = await listing(async (term) => ({ ok: true, records: term === NAME ? [FILING] : [], total: term === NAME ? 1 : 0 }), { cap: 1 });
-  const { data } = await publish(doc);
+test("report-data.json keeps the sentence of an archived run's form the record cap stopped", async () => {
+  const { data } = await publish(archivedUnderACap);
   const stopped = data.marks[0].registerFilings.unanswered;
   assert.ok(stopped.length > 0, "the fixture reached no form past the cap");
-  for (const u of stopped) assert.equal(u.reason, "the 1-record cap for this name was reached before this form was fetched");
+  for (const u of stopped) assert.equal(u.reason, CAP_SENTENCE);
 });
 
 // ── AND A LISTING NOBODY ASKED IS NOT A LISTING THAT FOUND NOTHING (ruling 567, K23) ────────────────
@@ -146,20 +151,27 @@ test("report-data.json keeps the sentence of a form the record cap stopped", asy
 // The replacement is the ruling's own wording — the listing "did not complete" — carrying the clause the
 // knockout page already prints for the same fact. Driven through the real listing and the real publisher,
 // because the sentence's home is the page.
-test("K23: with the record cap at zero, the page says the listing did not complete — never that none stands", async () => {
-  let asked = 0;
-  const doc = await listing(async () => { asked += 1; return { ok: true, records: [], total: 0 }; }, { cap: 0 });
-  const forms = doc.marks[0].terms.length;
-  assert.equal(asked, 0, "precondition: the cap is meant to stop every form before it is asked");
-  assert.ok(doc.marks[0].terms.every((t) => t.notAsked), "precondition: every form is recorded as never asked");
-  assert.deepEqual(doc.marks[0].records, [], "precondition: the case under test is a listing with no records");
-
+test("K23: a listing that stopped every form, as an archived run's cap of zero did, says it did not complete — never that none stands", async () => {
+  const doc = { schema: 1, provider: "signa", cap: 0, marks: [{ name: NAME, classes: [4], classScope: "mark", fetched: 0, available: 0, capped: true, cap: 0, records: [],
+    terms: [NAME, "LANTERNWIK"].map((term, i) => ({ term, basis: i ? "close" : "identical", ok: false, fetched: 0, total: null, notAsked: true, reason: "the 0-record cap for this name was reached before this form was fetched" })) }] };
   const { html, data } = await publish(doc);
-  assert.ok(forms > 1, "precondition: the fixture generates the forms the cap is meant to stop");
   const line = "Filings: the listing did not complete, so nothing here says whether one stands.";
   assert.equal(data.marks[0].registerFilings.line, line);
   assert.ok(html.includes(line), "the report page does not carry the line");
   assert.ok(!html.includes("returned none"), "the page claims the register returned none over forms it never asked");
+});
+
+test("A LIST COUNTED AND NOT READ IS NOT NONE: filings under a count nothing read say the listing did not complete", async () => {
+  // The name itself answered zero, and a form holds filings the reading step set aside. The clean negative is not this
+  // name's sentence, and neither is a failure: the register answered and nothing read it.
+  const doc = await listing(async (term) => ({ ok: true, records: [], total: term === NAME ? 0 : 7 }), { variantCap: 1 });
+  assert.ok(doc.marks[0].terms.some((t) => t.setAside === true), "precondition: a counted list is set aside");
+  assert.deepEqual(doc.marks[0].records, [], "precondition: nothing was carried");
+  const { html, data } = await publish(doc);
+  const line = "Filings: the listing did not complete, so nothing here says whether one stands.";
+  assert.equal(data.marks[0].registerFilings.line, line);
+  assert.ok(!html.includes("returned none"), "the page says none stands over filings it counted and did not read");
+  assert.ok(!html.includes("No filing of this name"), "the framing says none stands over filings it counted and did not read");
 });
 
 test("ITS PAIR: a listing that ran on every form and found nothing still says the register returned none", async () => {

@@ -24,7 +24,8 @@ import assert from "node:assert/strict";
 
 import { reachableRegions, unavailableOffices } from "../register-availability.mjs";
 import { countPreflight, countRegisterHits, countLine } from "../register-count.mjs";
-import { listRegisterRecords, recordsLine } from "../register-records.mjs";
+import { recordsLine } from "../register-records.mjs";
+import { readingDoc } from "./knockout-reading-fixture.mjs";
 
 // The free tier's shape, as capabilities.js composes it: covers EU+US, no regionsRequired.
 const FREE_TIER = {
@@ -206,7 +207,7 @@ test("a fully wired count renders exactly the line it rendered before", async ()
 
 test("the record lane narrows too, and its empty listing is not reported as a clean negative", async () => {
   const seen = [];
-  const doc = await listRegisterRecords({
+  const { doc } = await readingDoc({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["EU", "US"],
     provider: "free-tier", capabilities: FREE_TIER,
     lister: async (_term, { regions }) => {
@@ -227,7 +228,7 @@ test("the record lane narrows too, and its empty listing is not reported as a cl
 });
 
 test("a fully wired listing renders exactly the line it rendered before", async () => {
-  const doc = await listRegisterRecords({
+  const { doc } = await readingDoc({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["EU", "US"],
     provider: "free-tier", capabilities: FREE_TIER,
     lister: async () => ({ ok: true, records: [], total: 0 }),

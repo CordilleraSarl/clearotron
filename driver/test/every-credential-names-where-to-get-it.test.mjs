@@ -63,7 +63,7 @@ test("a source whose site this build does NOT know says so, and invents nothing"
   assert.ok(ldh, "legaldatahunter is no longer a bridge; this arm needs repointing");
   assert.doesNotMatch(ldh.remedy, URL_RE, `a URL appeared for a source this repository records no site for:\n${ldh.remedy}`);
   assert.match(ldh.remedy, /records no site/i, "the row does not say the site is unknown; it just omits it");
-  assert.match(ldh.remedy, /ask whoever provisioned the bridge/i, "the reader is not told who to ask instead of searching");
+  assert.match(ldh.remedy, /^Optional, and not set up\./, "the reader is not told the source is optional instead of searching");
 });
 
 test("that absence is a MEASUREMENT of this tree, not a habit — it holds only while it is true", (ctx) => {

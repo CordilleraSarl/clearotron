@@ -464,12 +464,10 @@ test("doctor reports a cloud-billed machine whose services lack the switch, and 
     const b = doctor(holding);
     assert.match(willRun(b), /nothing a search is refused for at order time is missing from the units' environment/,
       `a switch the services hold was reported missing:\n${willRun(b)}`);
-    // AND ITS BILLING LINE SAYS HOW THE SERVICES PAY. Doctor's shell holds nothing, so its own reading is the
-    // subscription; the services pay Azure, and doctor printed only the first. Its own configuration sets
-    // no billing word, so this is information and not a caution.
-    assert.match(b, /billing: subscription/, "the floor: doctor's own configuration reads as the subscription");
-    assert.match(b, /· the services pay as the units' environment says — billing: cloud — charged per use to your Microsoft Azure account \(Foundry\)/,
+    // AND ITS BILLING LINE SAYS HOW THE SERVICES PAY, and nothing about doctor's own shell, which holds nothing.
+    assert.match(b, /billing: cloud — charged per use to your Microsoft Azure account \(Foundry\)/,
       `doctor does not say how the services pay:\n${b.replaceAll(SECRET, "…")}`);
+    assert.doesNotMatch(b, /billing: subscription/, "doctor's own shell was reported as the billing of a machine whose services pay Azure");
     for (const out of [a, b]) assert.ok(!out.includes(SECRET), "doctor printed a secret's value");
   } finally { for (const h of [lacking, holding]) rmSync(h, { recursive: true, force: true }); }
 });
@@ -505,20 +503,17 @@ test("doctor judges the services by their own file, never by a setting in doctor
       assert.ok(!out.includes(SECRET), `${label}: doctor printed a secret's value`);
     } finally { rmSync(home, { recursive: true, force: true }); }
   }
-  // HOW THE SERVICES PAY, said as a caution only where doctor's own configuration sets a billing word that
-  // differs. With none set, doctor's reading is the default and says nothing against the services', so it is
-  // information: an api-key install run from a bare shell is not warned about its own billing.
+  // HOW THE SERVICES PAY, whatever doctor's shell says, and one line for it.
   const apiKey = unitsHome({ ...UNITS_BASE, CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: SECRET });
   const foundry = unitsHome({ ...UNITS_BASE, CLEAROTRON_AI_BILLING: "cloud", ...CLOUDS.foundry });
   const pasted = unitsHome({ ...UNITS_BASE, CLEAROTRON_AI_BILLING: SECRET });
   try {
     const bare = doctor(apiKey);
-    assert.doesNotMatch(bare, /! the services read how they pay/, `a bare shell's doctor warns about the services' billing:\n${bare.replaceAll(SECRET, "…")}`);
-    assert.match(bare, /· the services pay as the units' environment says — billing: api-key — charged per token against ANTHROPIC_API_KEY/,
-      "doctor no longer says how the services pay");
+    assert.match(bare, /billing: api-key — charged per token against ANTHROPIC_API_KEY/, "doctor no longer says how the services pay");
     const said = doctor(foundry, { CLEAROTRON_AI_BILLING: "subscription" });
-    assert.match(said, /! the services read how they pay from the units' environment, and it says otherwise — billing: cloud — charged per use to your Microsoft Azure account \(Foundry\)/,
-      "doctor's own configuration says subscription and the services pay Azure, and doctor does not warn");
+    assert.match(said, /billing: cloud — charged per use to your Microsoft Azure account \(Foundry\)/,
+      "doctor's shell says subscription and the services pay Azure, and doctor does not say the second");
+    assert.doesNotMatch(said, /billing: subscription/, "a billing word in doctor's shell was reported as the services'");
     // A KEY PASTED INTO THE BILLING WORD, in the services' file and in doctor's shell: every line about it
     // names the setting and never the value.
     const leak = doctor(pasted, { CLEAROTRON_AI_BILLING: SECRET });

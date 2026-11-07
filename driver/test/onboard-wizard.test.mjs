@@ -2,7 +2,8 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // bin/onboard.mjs — `clearotron install` and `clearotron doctor` (still `npm run setup` too).
 //
-// The wizard's promise is that nothing is persisted until it has been checked against the real service.
+// The wizard's promise is that nothing is persisted until it has been checked against the real service, except a
+// paid register key, which is written on the reader's word because checking it would cost them.
 // These tests hold the parts of that promise a machine can hold offline: the check writes nothing, an
 // absence and a misconfiguration are told apart, the provider preflight cannot be fooled by whatever the
 // operator's shell happens to have set, and the door the EUIPO credential is validated through refuses a
@@ -627,7 +628,7 @@ test("the line printed with the engine question names every way to pay that the 
   }
   // And it is what the wizard says, with the engine question, under its rows.
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
-  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, engineOptions\(found\), 0, PAY_PREAMBLE\);/);
+  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick\), PAY_PREAMBLE\);/);
 });
 
 test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {
@@ -690,6 +691,8 @@ test("--check names an engine id the driver does not ship, and does not invent a
 // the engine suite already spawns — so the assertion "it did/did not dial anything" is made from the
 // mock's own call log rather than from a live CLI.
 const MOCK_CLAUDE = join(REPO, "driver", "test", "mock-claude.mjs");
+// The closing line of a check whose probe started the AI program, in the approved words.
+const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test turn keeps its own files.";
 
 test("--check does NOT spend a turn unless it is asked to", () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-probe-"));
@@ -698,6 +701,9 @@ test("--check does NOT spend a turn unless it is asked to", () => {
     const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
     assert.equal(r.code, 0, r.out);
     assert.equal(existsSync(log), false, "a --check that dials a provider is a check that can fail for reasons that are not about this machine");
+    // CONTROL for the closing line below: with no turn spent, nothing outside this command could have written either.
+    assert.match(r.out, /Nothing was written\./, r.out);
+    assert.ok(!r.out.includes(TURN_KEPT_ITS_FILES), "a check that ran no turn speaks of the turn's files");
     assert.match(r.out, /--probe-engine/, "…and it says the check it did NOT make, rather than implying the engine is fine");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
@@ -717,6 +723,12 @@ test("--check --probe-engine proves the engine with one turn, and still writes n
       "the cheapest rung of both tier tables, built by the adapter's own buildClaudeArgs");
     assert.deepEqual(treeStamp(join(REPO, "bin")), before, "bin/ untouched");
     assert.equal(existsSync(join(CLI_ROOT, ".env")), beforeEnv, "no .env conjured");
+    // THE TURN'S PROGRAM KEEPS ITS OWN FILES, under ~/.claude and ~/.cache, so the closing line no longer says
+    // nothing was written: it says what this command wrote, and what the turn's program keeps.
+    // This install has no register, so the check closes on the line for an unfinished install; both of the endings
+    // without a problem count end the same way.
+    assert.ok(r.out.includes(`Nothing is MISconfigured — fix those and nothing else here needs changing. ${TURN_KEPT_ITS_FILES}`), r.out);
+    assert.doesNotMatch(r.out, /Nothing was written/, "the closing line says nothing was written after a turn that started the AI program");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -731,6 +743,21 @@ test("the probe reports a signed-out engine as signed out, not as 'cannot run'",
     assert.match(r.out, /exited before it produced anything/, r.out);
     assert.match(r.out, /signed-out shape/, "it names the mode rather than shrugging at 'cannot run'");
     assert.match(r.out, /run `claude` once/, "…and the next thing the reader does");
+    // A program that started and failed still ran, so the problem count's closing line says so too.
+    assert.ok(r.out.includes(`problem(s). ${TURN_KEPT_ITS_FILES}`), r.out);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a probe refused before the AI program starts keeps the line that nothing was written", () => {
+  // The Codex adapter refuses a subscription turn with no sign-in file before it starts anything, so no program
+  // ran and nothing outside this command could have written. The mock is named all the same, so nothing real
+  // could start if that ever changed.
+  const dir = mkdtempSync(join(tmpdir(), "onboard-refused-"));
+  try {
+    const r = run(["--check", "--probe-engine"], { CLEAROTRON_AI: "openai-agent", CLEAROTRON_AI_BILLING: "subscription", CODEX_API_KEY: "",
+      CLEAROTRON_OPENAI_AUTH_FILE: join(dir, "no-sign-in-here", "auth.json"), CLEAROTRON_CODEX_PATH: join(REPO, "driver", "test", "mock-codex.mjs") });
+    assert.match(r.out, /Nothing was written/, r.out);
+    assert.ok(!r.out.includes(TURN_KEPT_ITS_FILES), `a turn that never started is said to keep files: ${r.out}`);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -1243,7 +1270,7 @@ test("each engine's install offer states its measured size and how to remove it"
     // obligation to re-measure lives; this keeps the other one pinned, which the derivation would
     // otherwise have quietly dropped.
     if (eng === ENGINE_BINARIES["openai-agent"])
-      assert.equal(eng.installMB, 424, "the openai install size moved; re-measure it and say so here");   // 0.159.0, measured 2026-10-09
+      assert.equal(eng.installMB, 436, "the openai install size moved; re-measure it and say so here");   // 0.166.0, measured 2026-11-05
     assert.ok(Number.isInteger(eng.installMB) && eng.installMB > 0,
       `${id} carries no measured install size beside its package, so the offer cannot say what it takes`);
   }
@@ -1482,7 +1509,7 @@ test("every prompt in the setup sequence states what Enter does", () => {
   const headings = [
     "Where this install keeps its data",
     "The link in delivery notifications",
-    "The address clients' assistants reach this install at",
+    "Optional: the public connector address",
     "Where this install keeps its own configuration",
   ];
   const lines = src.split("\n");
@@ -1508,13 +1535,13 @@ test("setup says it finished, and says what state it left the box in", () => {
   assert.match(src, /Setup finished\./,
     "the wizard handed the reader a next command and never said it had finished — a reader who has "
     + "skipped answers, which the header invites, cannot otherwise tell what they ended up with");
-  assert.match(src, /What this box has now:/, "and the state has to be stated, not implied by silence");
+  assert.match(src, /What this install has now:/, "and the state has to be stated, not implied by silence");
 
   // EVERY SKIPPABLE ANSWER APPEARS. A summary that lists only what was SET tells a reader nothing about
   // what they skipped, which is the half they cannot reconstruct.
   for (const k of ["CLEAROTRON_DATABASE", "PERPLEXITY_API_KEY", "CLEAROTRON_REPORTS_DIR",
                    "CLEAROTRON_CUSTOMERS_DIR", "CLEAROTRON_REPORTS_URL", "CLEAROTRON_CLIENT_MCP_URL"]) {
-    const at = src.indexOf("What this box has now:");
+    const at = src.indexOf("What this install has now:");
     assert.ok(src.slice(at, at + 1600).includes(k),
       `${k} is skippable and does not appear in the closing summary — the answers a reader skipped are `
       + "exactly the ones they cannot reconstruct");
@@ -1593,7 +1620,7 @@ test("unset is the supported mode and it passes, which is why setup no longer wr
   // sign — which would be this defect traded for a quieter one.
   assert.match(src, /CLEAROTRON_INSTRUCTIONS_DIR stays unset/,
     "the closing note must say the name is unset and what to do when they do want an overlay");
-  assert.match(src, /COMMIT it/, "including that an uncommitted store is the state that cannot be identified");
+  assert.match(src, /A run cannot identify an uncommitted folder/, "including that an uncommitted store is the state that cannot be identified");
 });
 
 // ── THE COPY INSTALLED WITH CLEAROTRON, WHERE A READER MEETS IT ──────────────────────────────────────

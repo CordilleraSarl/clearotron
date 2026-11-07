@@ -818,7 +818,9 @@ export const anthropicAgentEngine = {
         if (periodStart === null || openAsks.length === 0) return;
         const k = periodKey() || "?";
         const spent = Math.max(0, now - periodStart);
-        if (spent > 0) {
+        // A period seen across two chunks is measured even when the clock reads it as 0 ms, as a coarse clock can:
+        // its ask is named with what the clock gave. Crediting only a positive wait dropped it, unmeasured and undeclared.
+        if (spent > 0 || periodChunk !== chunkSeq) {
           toolWaitMs += spent;
           toolWaitByTool[k] = (toolWaitByTool[k] ?? 0) + spent;
         }
@@ -1170,7 +1172,7 @@ export const anthropicAgentEngine = {
         // A3 overflow is likewise a hard failure (resultEvent is null → already caught here; kept explicit).
         const failed = overflow || killed || !resultEvent || resultEvent.is_error || resultEvent.subtype !== "success";
         // stall → make isTimeout fire (killed) AND carry the stall stderr signature the classifier reads, so the
-        // taxonomy is identical; a 0-token stall then classifies as lane_wedge and the chain cascades.
+        // taxonomy is identical; a 0-token stall then classifies as lane_wedge, which stage()'s lane-wedge retry takes.
         // overflow → carry a clear signature (killed stays false so it is a plain nonzero_exit, NOT a timeout/wedge).
         const stderrOut = overflow
           ? (stderr + `\nanthropic-agent output overflow: stdout/stderr exceeded ${maxBuffer} chars — killed the tree and failed the turn (truncated tail never parsed)`)

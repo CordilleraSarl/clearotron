@@ -28,15 +28,17 @@ machine: no gateway, no platform, and nothing about the names you are clearing r
 npx clearotron demo
 ```
 
-That fetches the published package — it will ask once before downloading — then replays finished
+That fetches the published package — npx asks before it downloads it — then replays finished
 clearances into a local portal and prints the portal's address and the passphrase to sign in with. Open
-the address in your browser. No sign-up, no credentials, no network calls to us.
+the address in your browser. No sign-up, no credentials, no network calls to us. The demo opens three
+ports, 18860, 18861 and 18862; `npx clearotron demo --port <n>` opens n, n+1 and n+2 instead.
 
 The demo runs for as long as that window stays open, and removes everything it made when you close it —
-nothing of it is left on the machine, and running it again later starts clean. If you want to keep the
-sample reports after closing the window, run `npx clearotron demo --keep`; it prints the one command
-that removes the folder when you are done with it. `npx clearotron demo --once` publishes the reports and
-exits, and keeps the folder the same way.
+only npm's own copy of the package stays, in its cache, and running it again later starts clean. If you
+want to keep the sample reports after closing the window, run `npx clearotron demo --keep`; it prints the
+one command that removes the folder when you are done with it. `npx clearotron demo --once` publishes the
+reports and exits, and keeps the folder the same way. A demo started over a folder either of those left
+keeps it too, and says how to remove it.
 
 **Then install it.**
 
@@ -62,6 +64,9 @@ something worth testing:
 ```bash
 npx clearotron@beta install
 ```
+
+The same form shows the beta's demo, `npx clearotron@beta demo`; plain `npx clearotron demo` shows the
+stable's.
 
 What each channel promises, and when a stable is cut: [docs/RELEASES.md](docs/RELEASES.md). If you are not
 sure, the first command is the one you want.
@@ -110,7 +115,7 @@ clearotron run --job my-job.json
 
 - **A reasoning CLI does the thinking.** Every stage runs as a headless turn of the [Claude CLI](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`); setup installs it if the machine has none. `CLEAROTRON_AI_BILLING` chooses what pays: your signed-in subscription, an API key, or your own Google, Microsoft or Amazon cloud account. Whichever pays, the CLI is what runs — there is no path that calls the model directly.
 - **One register credential sets coverage and cost.** `CLEAROTRON_DATABASE` has no default — a run refuses rather than picking a vendor for you. EUIPO and a local USPTO index cost nothing; Clarivate, Signa and Corsearch are subscriptions. [The six, and what each reaches](providers/README.md).
-- **One research key.** `PERPLEXITY_API_KEY` covers the open web and the marketplaces. A clearance refuses without it at the door, before a register stage has spent.
+- **One research key, and one more for Chinese marketplaces.** `PERPLEXITY_API_KEY` covers the open web and the marketplaces. The three clearance searches refuse without it at the door, before a register stage has spent. A Knockout search runs without it and states on the report that the open-web half did not run. Only the native-language investigation of China, Hong Kong, Taiwan or Macau uses `SERPAPI_API_KEY`: it searches the Chinese marketplaces through Baidu. Without it, those marketplaces come back as a disclosed gap.
 - **A run takes hours, and survives interruption.** Every finished stage stays on disk; a resume re-runs only what is missing, and a run parked on a provider cap continues by itself.
 - **A finished run is queryable.** An MCP server lets Claude, ChatGPT or your editor read and question
   any completed run in plain language: a trusted local **stdio** face, and an authenticated

@@ -795,11 +795,11 @@ test("an unset box and an unrecognised one are refused, and refused DIFFERENTLY"
   } finally { rmSync(unset, { recursive: true, force: true }); }
 
   // `clearotron start --background` installs these same units with the local door and writes no name, so a
-  // newcomer's machine is warned too, and must not be handed the names either.
+  // newcomer's machine is told too, and must not be handed the names either.
   const background = installedHome("PORTAL_AUTH_MODE=local\nPORTAL_MCP_URL=http://127.0.0.1:18790\n");
   try {
     const out = doctor(background).out;
-    assert.match(out, /no CLEAROTRON_BOX in the units' environment/, "installed units are warned whatever door they run");
+    assert.match(out, /no CLEAROTRON_BOX in the units' environment/, "installed units are told whatever door they run");
     assert.doesNotMatch(out, /\bprod\b|\bpreprod\b/, "and no line names a deployment this build was made for");
   } finally { rmSync(background, { recursive: true, force: true }); }
 
@@ -893,4 +893,45 @@ test("units whose environment cannot be read withhold the access log's location 
   chmodSync(join(home, ".env"), 0o600);
   assert.match(r.out, /could not determine whether TRADEMARK_MCP_AUDIT_LOG is set/,
     `doctor should report a could-not-look for the access log. Output:\n${r.out}`);
+});
+
+// ── THE ENGINE SECTION DESCRIBES THE SERVICES, ON A MACHINE THAT RUNS THEM ───────────────────────────────
+
+/** The Engine section of doctor's output, up to the next heading. */
+const engineSection = (out) => (out.split("\n  Engine\n")[1] ?? "").split(/\n\n  [A-Z]/)[0];
+
+test("a shell that chose another AI says nothing about the services: the section names theirs", () => {
+  const home = installedHome(`${GOOD_ENV}CLEAROTRON_AI=openai-agent\n`);
+  try {
+    const engine = engineSection(doctor(home, { CLEAROTRON_AI: "anthropic-agent" }).out);
+    assert.match(engine, /openai-agent \(the units' environment\)/, `the section does not name the AI the services run:\n${engine}`);
+    assert.doesNotMatch(engine, /anthropic-agent/, `the shell's AI was reported about the services:\n${engine}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("the services' program setting is the one judged, whatever the shell's says", () => {
+  const home = installedHome(`${GOOD_ENV}CLEAROTRON_AI=anthropic-agent\nCLEAROTRON_CLAUDE_PATH=/nonexistent/the-units-program\n`);
+  try {
+    const engine = engineSection(doctor(home, { CLEAROTRON_CLAUDE_PATH: join(NODE_BIN, "node") }).out);
+    assert.match(engine, /\/nonexistent\/the-units-program/, `the program the services would run is not the one judged:\n${engine}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("units whose settings cannot be read leave the section unknown, and the shell's choice is not offered in their place", () => {
+  const home = installedHome(GOOD_ENV);
+  try {
+    const unitDir = join(home, ".config", "systemd", "user");
+    for (const u of UNITS) writeFileSync(join(unitDir, u), "[Service]\nEnvironmentFile=/nonexistent/settings.env\nExecStart=/bin/true\n");
+    const engine = engineSection(doctor(home, { CLEAROTRON_AI: "openai-agent" }).out);
+    assert.match(engine, /could not be read, so which AI the services run is not judged here/, `the unknown state is not said:\n${engine}`);
+    assert.doesNotMatch(engine, /openai-agent|billing:/, `the shell's values answered for the services:\n${engine}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("THE CONTROL: with no units, the section reads this command's configuration, as the services would", () => {
+  const home = mkdtempSync(join(tmpdir(), "f34-no-units-"));
+  try {
+    const engine = engineSection(doctor(home, { CLEAROTRON_AI: "openai-agent" }).out);
+    assert.match(engine, /openai-agent \(environment\)/, `a machine with no units reports its own configuration:\n${engine}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
 });

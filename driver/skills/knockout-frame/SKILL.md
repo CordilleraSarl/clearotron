@@ -29,6 +29,7 @@ on every place you name for it (task 2d), and keeps what each search returned, w
    and that pair moves a band. A `contextFraming` that repeats `batch.productContext` back gives the
    rater nothing to reason with, and the per-name detail the requester supplied is then lost for the
    rest of the run: nothing downstream re-reads the raw instructions.
+   Where the request does not state what a name is for, say so here and write what you infer as a possibility ("possibly a game title"), never as what the client intends.
 2c. **`inUseAs` — how a name could already be in use off the register, in this client's field.** One
    phrase that completes "Is this name already in use as …?", naming the kinds of use a name collides
    with in this field: a character, a place, a title or an achievement inside a game, show, film or book
@@ -56,6 +57,7 @@ on every place you name for it (task 2d), and keeps what each search returned, w
    them. Add the forms a buyer would type or a seller would list: the words joined or split, a hyphen, a
    common misspelling, a transliteration a market uses. Each spelling is searched on every place in
    task 2d.
+2f. **`alternatives` — where the request gives one item in more than one spelling or word order ("LAKE MOON / MOON LAKE"), list each form as written.** `name` stays verbatim. Each form is searched on its own and stays tied to this row. Leave it out where the request gives one form. A slash does not make alternatives by itself, and two separate items stay two rows.
 
 3. **Added classes** per mark: add a class only for the client's own goods, never for what a competitor
    might hold, with one sentence saying why. Every addition is marked "belt-and-braces" in
@@ -87,7 +89,7 @@ on every place you name for it (task 2d), and keeps what each search returned, w
                "contextFraming": "<what THIS name is for — see task 2b>",
                "useKind": "<one to three words: this name's kind of use — see task 2c>",
                "places": ["web", "<host>", "..."],
-               "spellings": ["<the name>", "<another form>"], "priorKnowledge": null,
+               "spellings": ["<the name>", "<another form>"], "alternatives": ["<task 2f, or leave out>"], "priorKnowledge": null,
                "priority": 1 } ] }
 ```
 

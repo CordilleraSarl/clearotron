@@ -404,12 +404,12 @@ test("the probe finds the copy that runs the way the adapter does, and names the
 
 // The Codex adapter's refusal of a subscription with no sign-in, in the shape it throws before it starts
 // anything. The test below holds the adapter's own source to that shape.
-const CODEX_SIGNED_OUT = "CLEAROTRON_AI_BILLING=subscription but no auth.json at /srv/example/.codex/auth.json — run `codex login` "
-  + "(or set CLEAROTRON_OPENAI_AUTH_FILE — NOT an aliased name, and deliberately left as it is), or use CLEAROTRON_AI_BILLING=api-key + CODEX_API_KEY.";
+const CODEX_SIGNED_OUT = "Codex has no sign-in on this machine (/srv/example/.codex/auth.json does not exist): run `codex login`, "
+  + "or set CLEAROTRON_OPENAI_AUTH_FILE to the file it wrote. To pay per use instead, set CLEAROTRON_AI_BILLING=api-key and CODEX_API_KEY.";
 
 test("a signed-out Codex refusal the adapter throws names the copy setup installed", async () => {
   const src = readFileSync(new URL("../engine/openai-agent.mjs", import.meta.url), "utf8");
-  assert.match(src, /no auth\.json at \$\{af\} — run \\`codex login\\`/, "the adapter no longer throws the refusal this test stands in for");
+  assert.match(src, /Codex has no sign-in on this machine \(\$\{af\} does not exist\): run \\`codex login\\`/, "the adapter no longer throws the refusal this test stands in for");
   const thrown = new Error(CODEX_SIGNED_OUT);
   const installed = { source: "installed", path: "/opt/engines/node_modules/@openai/codex/bin/codex.js" };
   const v = classifyProbe({ engine: "openai-agent", error: thrown, program: installed });

@@ -33,7 +33,8 @@ import { fileURLToPath } from "node:url";
 
 import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
-import { demoMode } from "./demo-mode.mjs";
+import { demoServing } from "./demo-mode.mjs";
+import { DEMO_SWAPS, demoText, demoGuidance } from "./lib/demo-texts.mjs";   // — a demo names no tool it withholds
 import { PRODUCTS } from "../driver/products.mjs";
 
 // The offering writes its own schema prose. A hand-typed "up to 20 names" beside a wall that refuses at
@@ -200,7 +201,7 @@ function runSummary(run) {
   // field is what made the list unanswerable in the first place.
   const facts = runProfileFacts(run);
   return {
-    ...(demoMode.on ? { demo: DEMO_LABEL } : {}),
+    ...(demoServing() ? { demo: DEMO_LABEL } : {}),
     runId: run.runId, slug: run.slug, codename: run.codename, date: run.date, agent: run.agent,
     client: facts.known
       ? { key: facts.account, name: facts.clientName }
@@ -819,6 +820,12 @@ const CLIENT_TOOL_TEXT = {
  * principal get the client cut where one exists; ops and staff get the operator text unchanged.
  * Descriptions only — name, inputSchema and everything the gate reads pass through untouched.
  */
+/** A tool's description as a demo's assistant reads it: the owner's demo words where a real install's send it to a withheld tool. */
+export function inDemo(def, kind) {
+  const key = `${def.name}:${kind === "user" || kind === "account" ? "client" : "ops"}`;
+  return DEMO_SWAPS[key] ? { ...def, description: demoText(key, def.description) } : def;
+}
+
 export function describeForAudience(def, kind) {
   if (kind !== "user" && kind !== "account") return def;
   const text = CLIENT_TOOL_TEXT[def.name];
@@ -841,8 +848,9 @@ export function withAnnotations(def) {
 }
 
 export function attachHandlers(server, { scope = { kind: "ops", runId: null }, local = true } = {}) {
-  const allow = visibleTools({ kind: scope.kind, local });
-  const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => withAnnotations(describeForAudience(d, scope.kind)));
+  const demo = demoServing();
+  const allow = visibleTools({ kind: scope.kind, local, demo });
+  const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => withAnnotations(demo ? inDemo(describeForAudience(d, scope.kind), scope.kind) : describeForAudience(d, scope.kind)));
   server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: toolDefs }));
 
   // Prompts are guidance, like the pack: offered to the two client audiences, empty for everyone else.
@@ -1119,7 +1127,7 @@ export function makeServer({ scope = null, local = null, readonly = false } = {}
     { name: NS, version: productIdentity().version ?? "unknown" },   // the package's own version, the one server_info reports
     // `prompts` is declared for every kind; promptsFor() returns [] for the audiences that get none, so
     // an ops client sees an empty list rather than a protocol error on a capability we did not announce.
-    { capabilities: { tools: {}, resources: {}, prompts: {} }, instructions: instructionsFor(eff) },
+    { capabilities: { tools: {}, resources: {}, prompts: {} }, instructions: demoServing() ? demoGuidance(instructionsFor(eff)) : instructionsFor(eff) },
   );
   attachHandlers(server, { scope: eff, local: isLocal });
   return server;

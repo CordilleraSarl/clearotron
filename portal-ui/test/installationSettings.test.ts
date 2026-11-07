@@ -124,7 +124,7 @@ test('Providers: four categories, each named once as a heading and never on a ro
   const { view } = await servedPage()
   const cats = providerCategories(view.providers ?? [])
   assert.deepEqual(cats.map((c) => c.label),
-    ['Trademark register', 'Common-law and marketplace research', 'Open-web search', 'Case law and oppositions'])
+    ['Trademark register', 'Common-law and marketplace research', 'Chinese marketplace search', 'Case law and oppositions'])
   for (const c of cats) {
     for (const r of c.rows) {
       assert.ok(![r.name, r.mono ?? '', r.note ?? ''].some((s) => s.includes(c.label)), `"${c.label}" is repeated on the row ${r.name}`)

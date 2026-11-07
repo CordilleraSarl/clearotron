@@ -32,7 +32,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
-import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, planExactOrWidth, planPhoneticOrWidth, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
+import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, planExactOrWidth, planPhoneticOrWidth, fingerprint, exactOperatorEntries, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { OUTSTANDING_REASON, runDriverDirOf } from "../../../providers/_shared/follow-up-searches.mjs";
 import { pathInRun } from "../../../shared/inside-run.mjs";   // the band path is served only inside this run
@@ -123,7 +123,8 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     const splitOf = names.length > 1 && names.length <= PLAN_MAX_OR_WIDTH
       ? fingerprint({ axis, predicate: String(p?.predicate ?? "default"), names: [...names].sort(), i }) : null;
     const byName = splitOf ? splitBatch(p, names, capabilities) : [p ?? {}];
-    return byName.flatMap((q) => {
+    // An exact phrase this register cannot state takes its own entry, on its words in order (exactOperatorEntries).
+    return byName.flatMap((b) => exactOperatorEntries(b, capabilities) ?? [b]).flatMap((q) => {
       const words = perWord && Array.isArray(q?.goods_words) ? q.goods_words.map((w) => String(w ?? "").trim()).filter(Boolean) : [];
       return words.length > 1
         ? words.map((w, k) => ({ p: { ...q, goods_words: [w] }, i, slot: `${i}:${k}`, splitOf }))
@@ -321,6 +322,7 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     const entry = {
       qid, axis, predicate: askedPredicate,
       ...(substituted ? { contains_substituted: substituted } : {}),
+      ...(p.exact_substituted ? { exact_substituted: p.exact_substituted } : {}),
       ...(terms ? { terms } : { term }),
       ...(romanizedTerms ? { romanizedTerms } : {}),
       ...(owner ? { owner } : {}),

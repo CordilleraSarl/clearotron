@@ -320,7 +320,7 @@ export function unendedSignature(artifact) {
  * ROUND-2 FIX (review problem 5) — the followup receipt that must SURVIVE a re-derive.
  * `deriveRecallReconciliation` replaces the artifact file wholesale on every pass; the attempt
  * counter lives in that file, so without this carry-forward the counter reset to 0 on every read and
- * RECALL_FOLLOWUP_MAX never engaged (an unbounded warm digest turn per pass, on a 2,596-record band).
+ * RECALL_FOLLOWUP_MAX never engaged (an unbounded digest followup turn per pass, on a 2,596-record band).
  * Returns the keys to merge over the fresh artifact: the prior receipt is kept only while the
  * unended set is UNCHANGED — a different set is genuinely new work and gets a fresh budget. PURE.
  */
@@ -331,7 +331,7 @@ export function carryRecallFollowup(priorArtifact, freshArtifact) {
 }
 
 /**
- * The warm-followup text for an unended reconciliation — dictates the three ending forms verbatim,
+ * The followup text for an unended reconciliation — dictates the three ending forms verbatim,
  * with the CURRENT code-computed residual count for the crowd row (so the declared count can never
  * drift below the census). The counts and the unit here come from the SAME artifact reconcileRecall
  * produced, so what the digest is told to declare and what the gate re-computes are one number

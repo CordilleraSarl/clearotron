@@ -551,8 +551,13 @@ test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row
   // AND THE EMPTY BAND SAYS WHAT TO DO — but only to somebody who may do it. `slotNote` describes a cap
   // on concurrent runs, which is a sentence about nothing when nothing is running.
   assert.match(home, /Nothing running right now\./)
-  assert.match(home, /canRun\(ctx\.me\) \? ' Start one with New clearance\.' : ''/,
-    'a person who may not start a clearance is told to start one')
+  // AND ONLY ON AN INSTALL THAT CAN RUN ONE: an order there is refused at the review, so the invite would send a
+  // reader to a refusal.
+  assert.match(home, /canRun\(ctx\.me\) && ctx\.me\.canSearch !== false \? ' Start one with New clearance\.' : ''/,
+    'a person who may not start a clearance, or an install that cannot run one, is told to start one')
+  // In the invite's place, what stands between the install and a search: the review's own refusal for this reader.
+  assert.match(home, /\{canRun\(ctx\.me\) && ctx\.me\.canSearch === false && ctx\.me\.searchRefusal\n\s*\? <p className="notice" role="status"[^>]*><Ticked text=\{ctx\.me\.searchRefusal\} \/><\/p>/,
+    'Home no longer says why a search cannot start, or says it to a reader who could not start one')
 })
 
 test('THERE IS NO ROLE SPLIT ON THIS PAGE', () => {

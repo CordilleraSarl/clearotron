@@ -72,7 +72,7 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // CALL: the seat's grant carries no Write, so a ladder handing it the write form would order a
   // hand-write it cannot perform, on a stage whose failure is deliberately quiet.
   ["knockout-review.json", { tool: "record_knockout_review", what: "your rewrites of the lines a reader sees first",
-    refusals: (runDir) => knockoutReviewRefusalsFor(runDir) }],
+    refusals: (runDir) => knockoutReviewRefusalsFor(runDir) }], ["knockout-register.json", { tool: "record_knockout_register_read", what: "what you carried forward, set aside and did not ask", refusals: (runDir) => knockoutRegisterRefusalsFor(runDir) }],
   [BLIND_FRAME_MODEL_FILE, { tool: "record_blind_frame", what: "the threat model" }],
   [SKEPTIC_FLAGS_FILE, { tool: "record_skeptic", what: "your flags and escalation decisions" }],
   ["senior-eye-review.md", { tool: "record_narrative_refutation", what: "your verdict and typed flags" }],
@@ -201,6 +201,8 @@ export const TOOL_WRITTEN_PATTERNS = Object.freeze([
     what: "this chunk's rated assessment",
     sample: basename(knockoutAssessChunkFile("", 0)),
   }),
+  Object.freeze({ re: KNOCKOUT_CORRECTION_RE, tool: "record_knockout_correction", what: "your answer to each defect, and what you repaired", sample: basename(knockoutCorrectionFile("", 0)) }),
+  Object.freeze({ re: KNOCKOUT_RECHECK_RE, tool: "record_knockout_review", what: "your second look at the corrected record", sample: basename(knockoutReviewFile("", 1)) }),
 ]);
 
 /**
@@ -234,11 +236,11 @@ export { everyToolCallRefused };
 import { unitRefusalsFor } from "./register-unit-record.mjs";
 // The chunk artifact's name shape, IMPORTED from the module that constructs the path — never restated
 // here. See TOOL_WRITTEN_PATTERNS below for why this table reads a pattern instead of owning one.
-import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
+import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-assess-record.mjs"; import { KNOCKOUT_CORRECTION_RE, knockoutCorrectionFile } from "./knockout-correction-record.mjs";
 // The frame transport's refusal reader, so a missing plan or note can be told apart from a stage that
 // never called its tool — the distinction, which its sibling stage still lacks.
-import { frameRefusalsFor } from "./knockout-frame-record.mjs";
-import { knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
+import { frameRefusalsFor } from "./knockout-frame-record.mjs"; import { knockoutRegisterRefusalsFor } from "./knockout-register-record.mjs";
+import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.
@@ -460,18 +462,18 @@ export function tokensPerSec(usage, wall) {
   return Math.round((out / w) * 100) / 100;
 }
 
-// #5b — stop a warm/followup resume after ONE attempt when it ran to the HARD WALL. A followup (escalation,
-// envelope close, frame-reopen "enumerate to exhaustion" sweep) resumes an already-loaded session; if it
-// SIGKILLed at the full timeout+60 wall (signals.hardWall, NOT a 0-token stall), the same work re-issued at a
-// 1.5× extension just burns another full wall — so break and let the caller record the coverage-limited
-// deferral. The signal is `followup` (or a `warm` content-retry): NOTE `warm` ALONE never fires here on a
-// timeout — warmEligible() excludes `timeout`, so `warm` is always false on a timeout chain. That is exactly
-// the dead-code bug this predicate fixes: before threading `followup`, a hard-wall followup burned TWO attempts
-// (~2.5× the wall) instead of ONE (~1×). A STALL (no hardWall) is NOT stopped here — it keeps the normal
-// one-extended-shot retry, since a transient stall can clear. PURE + exported for test (the live hard-wall path
-// needs a 60s wall-clock kill, untestable in the offline suite — this predicate IS the policy under test).
-export function followupHardWallStop({ fail, warm, followup, signals }) {
-  return fail === "timeout" && (Boolean(warm) || Boolean(followup)) && Boolean(signals?.hardWall);
+// #5b — stop a WARM attempt after ONE try when it ran to the HARD WALL. The warm patch is the one rung that resumes
+// a session: it is passed the session that just produced a content failure. If that resumed turn was SIGKILLed at
+// the full timeout+60 wall (signals.hardWall, NOT a 0-token stall), break and let the caller record the
+// coverage-limited deferral. A warm attempt can itself time out; warmEligible() only stops the attempt AFTER a
+// timeout from being warm. A FOLLOWUP IS NOT STOPPED HERE. It is a new stage() call, attempt 1, with no resumeRef,
+// so it is a fresh session with its own wall. This rule used to stop it too, on the premise that it resumed an
+// already-loaded session, and that premise was false; it now gets the one extended retry any fresh dispatch gets.
+// Measured 2026-11-05 over saved runs: no follow-up attempt and no warm attempt had timed out, so neither form of
+// the rule had decided a run. A STALL (no hardWall) is NOT stopped here: it keeps its one retry at the same budget,
+// since a transient stall can clear. PURE + exported for test: the live path needs a wall-clock kill.
+export function warmHardWallStop({ fail, warm, signals }) {
+  return fail === "timeout" && Boolean(warm) && Boolean(signals?.hardWall);
 }
 
 // D3 — Anthropic overload (HTTP 529 / overloaded_error). Through claude -p a 529 surfaces as a FAILED
@@ -479,8 +481,8 @@ export function followupHardWallStop({ fail, warm, followup, signals }) {
 // generically it looked like `nonzero_exit_1` and the ladder re-attempted INSTANTLY, hammering an API
 // that just said "go away" (and burning the retry budget in seconds — the 04:30 restart-window shape).
 // Detect it and reclassify to `status_overloaded`, the token the normalized --json envelope already
-// produces for the same condition: FALLBACK_ELIGIBLE routes it to the chain's model cascade,
-// TRANSIENT_RE routes an exhausted chain to the recovery park (.postponed + escalating backoff) — the
+// produces for the same condition: the stage fails on its one model (there is no model cascade), and
+// TRANSIENT_RE routes that failure to the recovery park (.postponed + escalating backoff) — the
 // existing machinery owns the re-attempt; runStage breaks its own ladder on it (mirrors lane_wedge).
 // The 529 match is deliberately ANCHORED (api error / http prefix, or overload vocabulary within the
 // same line) so a stray "529" in ordinary output never misroutes a real content failure. PURE + exported.
@@ -883,9 +885,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     validate,
     maxRetries = config.maxRetries,
     runDir,
-    followup = false,   // #5b: this run is a warm-resume / followup (escalation, envelope close, frame-reopen
-                        // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
-                        // an already-over-budget resume; the caller records the coverage-limited deferral).
+    followup = false,   // the caller's word that this dispatch is a followup: a FRESH session (attempt 1, no
+                        // resumeRef), journalled on every row beside `warm`. At its hard wall it takes the same
+                        // one extended retry as any fresh dispatch (warmHardWallStop stops only a warm attempt).
     excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
     // THE CORRECTION THIS DISPATCH IS, when it is one: `{positions}`, the excluded positions its flags name. Its save may
     // add a finding for them, and its retries say so (`patchRows`); every other dispatch carries none.
@@ -1608,18 +1610,18 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // a wedge is a `timeout` fail that breaks the ladder immediately, so no later attempt exists to judge.
     if (killClass) killSeen = true;
     // Lane-wedge reclassification (see isLaneWedge): a 0-token timeout is a saturated command lane, not a slow
-    // model. Becoming `lane_wedge` makes the retry policy skip the wasteful extended shot; the chain (pipeline.mjs)
-    // cascades providers on it and retries the whole chain if EVERY provider wedges (a shared lane is not
-    // provider-specific). teal-bastion 2026-06-15.
+    // model. Becoming `lane_wedge` makes the retry policy skip the wasteful extended shot; stage() (pipeline.mjs)
+    // waits for the lane to clear and dispatches the stage again on its one model (a shared lane is not
+    // model-specific). teal-bastion 2026-06-15.
     // See classifyWedge: a 0-token timeout is a saturated-lane wedge UNLESS it's a hard-wall over-budget kill.
     fail = classifyWedge(fail, usage, turn.signals);
     // D3: an Anthropic 529/overload hides inside the generic transport tokens (nonzero_exit_1 through
     // claude -p) — reclassify to status_overloaded so it stops the same-model ladder below and rides the
-    // chain cascade / recovery park instead. Only the transport shapes are eligible: a timeout/wedge has
+    // recovery park instead. Only the transport shapes are eligible: a timeout/wedge has
     // its own policy, and a content failure must never be laundered into a transient by a stray match.
     if (fail && /^(nonzero_exit_|status_error$|unparseable_json$)/.test(fail) && isOverloaded({ json, stdout: turn.stdout, stderr })) fail = "status_overloaded";
     // Rate-limit / session-cap (429): the standalone engine maps EVERY tier to the one Claude subscription, so
-    // the fallback cascade is futile — classify distinctly (NOT in FALLBACK_ELIGIBLE) and carry resetsAt so the
+    // a re-run on any tier is futile — classify distinctly (NOT in FALLBACK_ELIGIBLE) and carry resetsAt so the
     // pipeline POSTPONES the run to resetsAt instead of failing it. (Overrides the nonzero_exit_1 a 429 shows as.)
     // Guarded on `fail`: a turn whose finished, validated artifact was just accepted (the exit-1 rescue above)
     // stays accepted — the NEXT stage's first turn hits the same cap at 0 tokens spent and postpones cleanly.
@@ -1950,8 +1952,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     }
 
     // sessionKey = the key that actually SUCCEEDED (attempt 1 = base key; a retry = `${base}-rerunN`). Callers
-    // that re-run a stage as a follow-up must resume THIS key, not the base key — else they resume a failed
-    // attempt's empty/partial session and lose the warm cache (winning-key hardening).
+    // that re-run a stage as a follow-up pass THIS key, so the follow-up's records sit beside the attempt that
+    // won (winning-key hardening). No engine resumes by key: resumeRef is the only continuity a turn has.
     if (!fail) return { ok: true, json, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(json), sessionKey: key, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
     attemptFails.push(fail);
     lastFail = fail;
@@ -1969,7 +1971,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // repeat-signature terminal) owns what happens next, with proper accounting — that lane's single
     // fresh sample replaces the blind third attempt this used to buy. Scoped to the content classes
     // (missing_file / invalid_file / max_tokens_no_output — same stage, same validator string); every
-    // transport class keeps its own policy (timeout's single extended shot, the chain cascade, the
+    // transport class keeps its own policy (timeout's single extended shot, and the
     // wedge/overload breaks above and below).
     //
     // BUILD 2 — A4's PREMISE FAILS ON EXACTLY ONE ATTEMPT, AND IT IS THE ONE IT USUALLY FIRES ON.
@@ -2139,8 +2141,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     }
 
     // Lane-wedge: the turn never got a command lane (0 tokens). The extended ×1.5 shot can't help (it produced
-    // nothing), and switching models can't fix a SHARED lane — so stop here and let the chain cascade fast. The
-    // chain-level lane-wedge retry (stage() in pipeline.mjs) waits for the lane to clear and retries the chain.
+    // nothing), and another attempt on a SHARED lane cannot help — so stop here and hand it on fast. The
+    // lane-wedge retry in stage() (pipeline.mjs) waits for the lane to clear and dispatches the stage again.
     if (fail === "lane_wedge") break;
     //: a model mismatch is a CONFIGURATION fault, not a transient. The next attempt sends the same
     // argv to the same provider and gets the same substitution, so retrying only buys the wrong model
@@ -2166,8 +2168,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     }
     // D3: overload (529 / status_overloaded) — stop the ladder here: an in-ladder re-attempt hammers an
     // API that just said it is overloaded, seconds apart, on the SAME model. Breaking hands the failure
-    // to the existing machinery: the chain cascades models (FALLBACK_ELIGIBLE) and an exhausted chain
-    // parks the run for recovery with escalating backoff (TRANSIENT_RE → .postponed).
+    // to the existing machinery: the stage fails on its one model (there is no model cascade), and that
+    // failure parks the run for recovery with escalating backoff (TRANSIENT_RE → .postponed).
     if (fail === "status_overloaded") break;
     // Rate-limit: do NOT retry (every retry hits the same capped subscription) and do NOT fall back — return
     // immediately so the pipeline can postpone + auto-resume after the window. resetsAt rides the result.
@@ -2175,13 +2177,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // Timeout-aware retry: a genuinely over-budget/hung stage will just re-time-out on an identical
     // attempt (the v14 delivery burned 3 × 600s). Give it exactly ONE longer shot, then stop.
     if (fail === "timeout") {
-      // A warm-resume / followup (frame-reopen sweep, escalation, envelope close) that ran to its HARD WALL
-      // won't fit a 1.5× extension — break after this one attempt and let the caller record the coverage-limited
-      // DEFERRAL (which the gate clamps CLEAR→CONDITIONAL). See followupHardWallStop: the live signal is
-      // `followup` (threaded from stageOnce), NOT `warm` — `warm` is always false on a timeout chain, which is
-      // why this was dead code before the thread (a hard-wall followup burned ~2.5× the wall instead of ~1×).
-      if (followupHardWallStop({ fail, warm, followup, signals: turn.signals })) {
-        note(`[${name}] warm/followup hit the hard wall — breaking (a 1.5× extension won't fit; recording the deferral)`);
+      // A WARM attempt, the one rung that resumes a session, that ran to its HARD WALL breaks after this attempt,
+      // and the caller records the coverage-limited DEFERRAL (which the gate clamps CLEAR→CONDITIONAL). A
+      // FOLLOWUP is a fresh session and is not stopped here: it takes the one extended retry below, as any fresh
+      // dispatch does. Until 2026-11-05 a followup stopped here too, on the false premise that it resumed a loaded
+      // session. See warmHardWallStop.
+      if (warmHardWallStop({ fail, warm, signals: turn.signals })) {
+        note(`[${name}] warm attempt hit the hard wall — breaking (recording the deferral)`);
         break;
       }
       if (timeoutRetriesUsed >= 1) {

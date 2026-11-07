@@ -60,7 +60,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // a pull cannot update an untracked bundle
-import { packagedUpdate } from "../shared/permanent-install.mjs";   // — a packaged install updates at its own prefix
+import { packagedUpdate, packagedUpdateCommand } from "../shared/permanent-install.mjs";   // — a packaged install updates at its own prefix
 import { installShim, inspectShim, shimPath } from "../shared/verb-shim.mjs";   // — npm's link replaces the launcher
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -130,8 +130,9 @@ function atRisk(entries) {
     });
 }
 
-function reportRefusal(risky) {
-  say("\n  UPDATE REFUSED — this install keeps its configuration inside the checkout.\n");
+export function reportRefusal(risky, { checkout = isGitCheckout() } = {}) {
+  const folder = checkout ? "the checkout" : "the install's own folder";
+  say(`\n  UPDATE REFUSED — this install keeps its configuration inside ${folder}.\n`);
   for (const e of risky) {
     say(`  ${e.name}=${e.value}  (${e.from})`);
     say(`    ${e.what} live here, inside ${resolve(REPO)}.`);
@@ -151,8 +152,8 @@ function reportRefusal(risky) {
     }
     say("");
   }
-  say("  Move them out of the checkout, then update. Nothing here has been changed.\n");
-  say("  For each variable above, choose a directory outside the checkout and move its contents:");
+  say(`  Move them out of ${folder}, then update. Nothing here has been changed.\n`);
+  say(`  For each variable above, choose a directory outside ${folder} and move its contents:`);
   say("");
   say("      mkdir -p <somewhere-outside>");
   say("      mv <the-path-above> <somewhere-outside>/");
@@ -223,13 +224,23 @@ function runInCheckout(cmd, args) {
  * The usage text, printed for --help. Kept next to the parser rather than derived from this file's
  * header comment: the header is developer-facing, and the reader who types --help is not.
  */
+export function updateUsage({ checkout = isGitCheckout(), P = invocationPrefix() } = {}) {
+  const head = [`\n  ${P}clearotron update — bring this install up to date.\n`];
+  const help = `    ${P}clearotron update --help    this text. Changes nothing.\n`;
+  if (checkout) return [...head,
+    `    ${P}clearotron update           pull, reinstall, and report what moved`, help,
+    "  It runs `git pull --ff-only` then `npm ci`, and REFUSES before touching anything if this",
+    "  install keeps its configuration store inside the checkout.\n"];
+  return [...head,
+    `    ${P}clearotron update           install the newest version`, help,
+    "  On a package install on Linux or macOS it installs the newest stable, or for a beta install the",
+    "  newest beta or stable, whichever is later; on Windows it names the npm command to run instead.",
+    "  It refuses over a configuration store kept inside the install's own folder, and it refuses while",
+    "  a run is queued or in flight.\n"];
+}
+
 function usage() {
-  const P = invocationPrefix();
-  say(`\n  ${P}clearotron update — bring this install up to date.\n`);
-  say(`    ${P}clearotron update           pull, reinstall, and report what moved`);
-  say(`    ${P}clearotron update --help    this text. Changes nothing.\n`);
-  say("  It runs `git pull --ff-only` then `npm ci`, and REFUSES before touching anything if this");
-  say("  install keeps its configuration store inside the checkout.\n");
+  for (const line of updateUsage()) say(line);
 }
 
 /**
@@ -291,7 +302,7 @@ export async function update(argv = process.argv.slice(2)) {
       console.error("\n  This install is not a git checkout, so there is nothing to pull.");
       console.error("  It was installed from a package rather than cloned, which is the ordinary way.");
       console.error("\n  Update it the way it was installed:\n");
-      console.error("      npm install -g clearotron@latest\n");
+      console.error(`      ${packagedUpdateCommand()}\n`);
       console.error("  Nothing was touched.");
       return 4;
     }
@@ -317,7 +328,9 @@ export async function update(argv = process.argv.slice(2)) {
     for (const q of holds.queued) console.error(`    queued   ${q.id}`);
     for (const c of holds.claimed) console.error(`    claimed  ${c.id}  pid ${c.pid ?? "unknown"}`);
     for (const sl of holds.slots) console.error(`    slot     ${sl.file}  pid ${sl.pid}`);
-    console.error("\n  `npm ci` rebuilds node_modules under whatever is running. Nothing was touched.");
+    console.error(packaged
+      ? "\n  An update replaces the program's files under whatever is running. Nothing was touched."
+      : "\n  `npm ci` rebuilds node_modules under whatever is running. Nothing was touched.");
     console.error("  Wait for the queue to empty, or clear it, and run this again.\n");
     return 4;
   }

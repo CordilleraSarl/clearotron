@@ -131,7 +131,7 @@ test("the knockout's whole steps: the last word of each is its state at delivery
     { event: "knockout-register-records-failed", cause: "x" }, { event: "knockout-register-records", marks: 2 },
     { event: "knockout-owner-checks-failed", cause: "x" }, { event: "knockout-owner-checks", owners: 1, answered: 1, unanswered: 0 },
     { event: "knockout-review", outcome: "nothing-flagged" });
-  assert.deepEqual(knockoutStepFailures(dir), { listing: null, ownerChecks: null, review: null });
+  assert.deepEqual(knockoutStepFailures(dir), { listing: null, ownerChecks: null, reading: null, review: null });
   // A listing refused for a reason the sidecar states is not a failure here: its own row already says why.
   log(dir, { event: "knockout-register-records-refused", reason: "this register lists no filings" });
   assert.equal(knockoutStepFailures(dir).listing, null);

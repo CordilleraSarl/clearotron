@@ -3,21 +3,22 @@
 [QUICKSTART.md](QUICKSTART.md) gets one search running in three commands. This is everything else.
 
 Two documents in one file, and most readers need only the first. The engine needs no agent gateway — the
-reasoning stages' only external LLM dependency is a coding CLI: the Claude CLI (the default) or the codex
+reasoning stages' only external LLM dependency is a coding CLI: the Claude CLI or the codex
 CLI. Two other lanes call model APIs of their own: web research (`PERPLEXITY_API_KEY`, required for the
 three clearance searches — §1; a Knockout search runs without it and discloses the half it skipped).
 The native-script candidate lane no longer asks for a key of its own: it runs on
 whichever program the run already chose, so there is nothing extra to set up for it.
 
 **To install it and run one clearance, read §1 → §5 and stop.** That is prerequisites, install,
-configuration, the free-register route if you want it, the config-store model, and a headless run. Nothing
-after §5 is needed to produce a report.
+configuration, the free-register route if you want it, the config-store model, the free demo, and the
+portal, where you order your first paid search. Nothing after §5 is needed to produce a report.
 
 | | Sections | For |
 |---|---|---|
-| **Installing** | §1 Prerequisites · §2 Install · §3 Configuration · §3a Free register route · §3b Paying through a cloud account · §4 Config store · §5 Run a clearance | Anyone |
-| **Operating** | §6 Start the product · §7 The MCP server · §8 Access control and isolation | Running it as a service for other people |
-| **Reference** | §9 What an integrator supplies · §10 Licence | — |
+| **Installing** | §1 Prerequisites · §2 Install · §3 Configuration · §3a Free register route · §3b Paying through a cloud account · §4 Config store · §5 Start the product | Anyone |
+| **Without the portal** | §6 Run a clearance | Anyone who orders from a job file |
+| **Operating** | §7 The MCP server · §8 Access control and isolation | Running it as a service for other people |
+| **Reference** | §9 What an integrator supplies · §10 Licence · §11 From the repository | — |
 
 Before §3, decide which register you are using — it is the first real choice and the fastest route is
 **Signa**, one self-serve key. The ladder and what each tier can search:
@@ -57,7 +58,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
   On WSL, a program on the Windows side can hold a port that WSL reports as free, and the browser reaches
   it first. VS Code's Remote-SSH port forwarding is the common case. If the page that opens is not this
-  install's sign-in, run the same command again with `--port 28802`, or any free number.
+  install's sign-in, run the same command again with `--port 28802`. It opens that number and the next
+  two, so any number works whose next two are free as well.
 
   A *hosted* deployment runs the product as systemd user units, so it needs Linux —
   [driver/systemd/README.md](driver/systemd/README.md).
@@ -81,7 +83,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
   | `CLEAROTRON_AI` | Program | Signed-in laptop | A machine you cannot complete a sign-in on |
   |---|---|---|---|
-  | `anthropic-agent` (default) | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
+  | `anthropic-agent` | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
   | `openai-agent` | `codex` | `login` on the program setup installed (doctor prints its path), or `codex login` if the machine has its own | `login --device-auth` on the same program — prints a code you complete on another device |
 
   **The right-hand column is about where you can complete a sign-in, not about whether the machine has a
@@ -112,7 +114,9 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 - **A register credential**, and **`PERPLEXITY_API_KEY`**. Both are required for a real run and both
   fail closed at preflight — before a stage has spent, never at the grid after. The one exception is a
   Knockout search, which runs keyless: it returns register filing counts and states on the report that
-  the open-web half did not run.
+  the open-web half did not run. Only the native-language investigation of China, Hong Kong, Taiwan or
+  Macau uses `SERPAPI_API_KEY`: it searches the Chinese marketplaces through Baidu. Without it, those
+  marketplaces come back as a disclosed gap.
 
   Which register you pick is the first real decision, and the tiers are not equally easy to reach.
   [providers/README.md](providers/README.md) is the canonical ladder and
@@ -150,27 +154,10 @@ with `sudo`; install under your home instead: `npm install -g clearotron --prefi
 **Upgrade production to stables only.** What each channel promises and how often one is cut:
 **[docs/RELEASES.md](docs/RELEASES.md)**.
 
-The rest of this section is about the two ways a package reaches you, which is a separate question from
-which version it is.
+A clone of the repository is the working tree, not a way to install the product. It is for
+contributors, and §11 covers it.
 
-There are two routes in, and they are not variations on one another. **If you were sent a `.tgz` file,
-you want the second one** — the first assumes access to the repository, which someone installing the package does not have.
-
-### From the repository
-
-**This is the development tree, and it is for contributors.** If you want to run a clearance, take one
-of the two routes above instead. A clone is not a smaller version of the package — it carries the
-fixtures and sample companies the project develops against, and those load as real records. They
-are not yours and they are not in the package, which excludes them deliberately.
-
-```
-git clone <this-repo> && cd <repo>
-npm install            # installs all workspaces
-npm test               # offline, fixture-backed suites — no network, no gateway, no spend
-```
-
-`npm test` belongs to **this** route only. It runs our test files, and those do not travel in a package
-— see *From a packaged tarball* below, which never asks you to run it.
+The rest of this section is for a reader who was sent a `.tgz` file.
 
 ### From a packaged tarball
 
@@ -183,101 +170,17 @@ mkdir ~/app && cd ~/app
 npm init -y
 npm install /path/to/clearotron-<version>.tgz
 npx clearotron install         # the wizard
-clearotron doctor              # reads; writes nothing, calls nobody
+npx clearotron doctor          # reads; writes nothing, calls nobody
 ```
 
 `npx` works from `~/app` because npm links a **dependency's** `bin` into the consuming project — the
-same mechanism the note below explains, arriving here from the other side. **You do not need to `cd`
+same mechanism §11 explains, arriving here from the other side. **You do not need to `cd`
 into `node_modules`**, and you should not: that directory belongs to your package manager, and anything
 you write inside it can be replaced by the next `npm install`.
 
 **Do not run `npm test` on this route.** Our test files are excluded from the package deliberately, so
 there is nothing for it to run; what you get is a refusal, and the refusal's advice is written for
 somebody working in a checkout. Nothing is wrong with your install.
-
-### Cutting a package (maintainers)
-
-Skip this unless you are the one producing the `.tgz`.
-
-**`npm pack` alone is not the command.** The repository manifest carries
-`overrides: { "buffers": "$buffers" }`, which resolves only inside the checkout; a consumer installing that
-tarball dies with `Unable to resolve reference $buffers` before a single file is written. Five consecutive
-releases went out that way. **The published manifest has to be sealed** — that key stripped from the
-tarball, the repository's own manifest left untouched. Which route does it depends on the tree you are on:
-
-- **A tree that carries `cut/`**: `node scripts/pack-publishable.mjs`. It packs, strips, reconciles against
-  the withheld-file list and scans the packed tree in one step.
-- **A public checkout**, which is what the release workflow runs on: `npm pack`, then
-  `node scripts/release-artifact-seal.mjs --tarball <path>`. `pack-publishable.mjs` refuses here — it needs
-  `cut/packed-artifact.mjs`, which a public tree does not carry, and exits 2 rather than packing something
-  nobody checked.
-
-Either way, prove it before publishing it:
-
-    node scripts/release-install-check.mjs --tarball <path>
-
-That installs the artefact as a dependency of a throwaway project, which is the only shape this failure
-exists in. Installing at the root of a checkout and `npm install --dry-run` both exit 0 on a tarball that
-refuses for every real user.
-
-Two further constraints, both of which stop a package being cut from just anywhere:
-
-- **The de-identification scan needs a full clone.** It refuses a shallow one (exit 2 — a check that could
-  not look, not a pass) because it walks history it cannot see.
-- **It also needs its table**, passed with `--blocklist` (or `CLEAROTRON_IDENTIFIER_BLOCKLIST`), and
-  that table lives in the private config store rather than in this repository. Without it the scan
-  exits 2 rather than arming a weaker rule set quietly.
-
-Both refusals are correct and neither is a workaround to route around.
-
-This repository *is* the `clearotron` package, and npm links a package's `bin` into
-`node_modules/.bin` only for its **dependencies** — never for the package itself. So after `npm install`
-succeeds there is no `clearotron` on your `PATH` and none in `node_modules/.bin`; a bare `clearotron`
-would be `command not found` with nothing having failed.
-
-**`npx` resolves the local package by walking up from the current directory, so it works from the
-project root and any subdirectory of it — and nowhere else.** From your home directory the same line
-gets you npm's `could not determine executable to run`, which names no product and suggests no fix.
-That is why this document tells you to `cd` in first, and why every command below assumes you are still
-there. On the repository route "the project" is the checkout; on the packaged route it is the directory
-you ran `npm init` in — and on that route `clearotron` IS a dependency, so `npx` finds it in
-`node_modules/.bin` exactly as the paragraph above describes.
-
-**`clearotron install` (§3) puts the short form on your `PATH`**, and every command after it in this
-document uses that form. Use it rather than a fresh `npx clearotron`: `npx` resolves whichever version npm
-picks at that moment — the stable, unless you name a channel — and does not hand over to the copy the
-install placed. You can stop typing `npx` after it:
-it writes a small shim to `~/.local/bin/clearotron` pointing at this checkout. That directory needs no
-root — `npm link` would want npm's global prefix, which on a default install is `/usr` and refuses
-without it. Most login profiles add `~/.local/bin` to `PATH` only if it already existed when the shell
-started, so in the terminal that ran the install you may need `export PATH="$HOME/.local/bin:$PATH"`
-once; a new login shell picks it up by itself. The install prints which of the two you are in, and the
-product's own advice follows suit — `clearotron doctor` names the form that works from where you are
-standing, whichever that is.
-
-`npm test` is the fast tier, **on the repository route**. `npm run test:full` adds the files that drive
-the orchestrator end to end and is what CI runs before a merge; [CONTRIBUTING.md](CONTRIBUTING.md) draws
-the line between them. Either way nothing is contacted and nothing is billed — the suite says so before
-it starts. Neither runs on a packaged install: the test files are not in the package.
-
-The engine itself has no build step. The **portal UI does** — `portal-ui/` is React + Vite — but its
-built bundle (`portal-ui/dist/`) is **not committed to git**: it travels in the published package and
-CI builds it, so a tarball install is already runnable while a clone needs one build first. You also
-need to build after changing something under `portal-ui/src`:
-
-```
-npm run tokens         # regenerate the design tokens from shared/brand.mjs, if colours changed
-npm run build:ui       # build portal-ui/dist — the portal serves this, not the sources
-```
-
-**`portal-ui/dist` is build output.** The portal serves that bundle rather than the sources, so run the
-build after cloning if the directory is not there, and again whenever you change anything under
-`portal-ui/src`. Until the bundle exists the UI answers with a 503 that says exactly this, and the API
-keeps working throughout.
-
-`npm test` exercises the driver and MCP server against recorded fixtures; it never calls a model or a
-provider, so it is safe to run on any machine that has the repository. "Safe anywhere" is about spend,
-not about where it will run — on a packaged tree it refuses, as above.
 
 ## 2a. Removing it
 
@@ -288,13 +191,30 @@ Read the list before you delete anything: one of these directories holds your re
 background services, `clearotron stop` stops them and removes their unit files. `clearotron status` says
 which of the two you have.
 
-**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`
-(which is also what a demo run from `npx` leaves behind), it lives in two places under `~/.local`:
+**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`,
+it lives in two places under `~/.local`:
 
 ```
 ~/.local/lib/node_modules/clearotron
 ~/.local/bin/clearotron
 ```
+
+Installed from a packaged tarball, it is in the folder §2 had you create, `~/app`: delete that folder.
+
+**The reasoning program, if setup installed it.** Setup puts Claude Code or the Codex CLI in one folder,
+`~/.local/share/clearotron/engines`, or where `CLEAROTRON_ENGINES_DIR` points. Delete the folder to
+remove it.
+
+**What the reasoning program keeps for itself.** Claude Code keeps its sign-in and settings in
+`~/.claude` and `~/.claude.json`, and setup's engine check creates them if they were not there.
+Claude Code also keeps a cache in `~/.cache/claude-cli-nodejs`.
+The Codex CLI keeps its sign-in in `~/.codex`. They belong to that program, not to Clearotron: remove them
+only if nothing else on the machine uses it.
+
+**npm's copy, if you ran `npx`.** `npx clearotron` keeps the package it downloaded in npm's cache, under
+`~/.npm/_npx`, beside anything else you have run with `npx`. Deleting `~/.npm/_npx` removes all of them;
+npm downloads again the next time it is asked.
+Any `npm install` also keeps what it downloaded in npm's cache, `~/.npm/_cacache`; `npm cache clean --force` empties it.
 
 **The settings, and the keys.** `~/.config/clearotron/.env` holds this install's signing secrets, so
 deleting it invalidates every key it ever issued. Beside it: `~/.config/clearotron/token-denylist`, the
@@ -384,8 +304,8 @@ and now there is a single name.
 
 Variables not in this table are internal tunables. They keep their names.
 
-**Two paths and one provider are the whole required set.** `CLEAROTRON_DATABASE` picks the register
-(§1); `CLEAROTRON_REPORTS_DIR` says where finished reports are published; `CLEAROTRON_WORK_DIR` says where
+**Two paths, one register and one AI are the whole required set.** `CLEAROTRON_DATABASE` picks the register and `CLEAROTRON_AI` the AI (§1);
+`CLEAROTRON_REPORTS_DIR` says where finished reports are published; `CLEAROTRON_WORK_DIR` says where
 runs happen. The pool has **no default at all** — unset, the engine refuses and names the variable
 rather than choosing a directory on your behalf, because the wrong choice writes a report into an
 archive somebody else owns. The workspace root defaults to `$HOME/trademark/workspace`, which is also
@@ -431,26 +351,28 @@ CLEAROTRON_BRAND_PRODUCT=Trademark clearance   # what the deliverable is called
 # CLEAROTRON_ADMINISTRATOR_CONTACT=it@your-firm.example
 
 # ── Register provider (choose ONE) ─────────────────────────────────────
-CLEAROTRON_DATABASE=clarivate       # REQUIRED — corsearch | clarivate | signa | euipo | uspto-local | free-tier
+CLEAROTRON_DATABASE=signa                # REQUIRED — signa | free-tier | euipo | uspto-local | corsearch | clarivate
                                          # No default: unset, a run refuses.
-CLARIVATE_API_KEY=...                    # the credential for the provider named above
-# CLARIVATE_API_BASE=...                  # optional; defaults to the adapter's base
-# CORSEARCH_SESSION_KEY=...
-# SIGNA_API_KEY=...
+SIGNA_API_KEY=...                        # the credential for the provider named above
 # SIGNA_BASE_URL=...                      # optional; defaults to the adapter's base
 # CORSEARCH_SESSION_KEY=...               # …or an enterprise vendor, via a sales agreement
-# CLARIVATE_API_KEY=... / CLARIVATE_API_BASE=...
+# CLARIVATE_API_KEY=...
+# CLARIVATE_API_BASE=...                  # optional; defaults to the adapter's base
 # USPTO_LOCAL_DB=/var/lib/trademark/uspto/us.db   # no vendor account — see §3a below
 
 # ── …or the FREE EU register, as the provider (no subscription) ────────
 # CLEAROTRON_DATABASE=euipo
 # EUIPO_CLIENT_ID=... / EUIPO_CLIENT_SECRET=...
-EUIPO_ENVIRONMENT=production              # REQUIRED with euipo — sandbox | production are SEPARATE
+# EUIPO_ENVIRONMENT=production            # REQUIRED with euipo — sandbox | production are SEPARATE
                                           # deployments over different corpora. There is no default:
                                           # unset, the adapter refuses by name.
 
-# ── Web research — REQUIRED for all four products (see §1) ─────────────
+# ── Web research — REQUIRED for the three clearance searches (see §1) ──
+#    A Knockout search runs without it and states on the report that the open-web half did not run.
 PERPLEXITY_API_KEY=...
+
+# ── Chinese marketplaces — only the native-language investigation of China, Hong Kong, Taiwan or Macau
+# SERPAPI_API_KEY=...                     # without it, those marketplaces come back as a disclosed gap
 
 # ── Optional data sources ──────────────────────────────────────────────
 # Case law has NO token variable. Access is free and immediate, and setup is a one-time OAuth login
@@ -483,7 +405,9 @@ the packets are being written and are waiting for an integrator to consume them.
 
 `uspto-local` searches a copy of the United States register that you build on your own disk from
 USPTO's public bulk data. No vendor, no invoice, and no extra software — Node 22 ships the database
-engine it uses.
+engine it uses. The download does need a free USPTO.gov account, which asks for ID.me identity
+verification, and the API key from it in `USPTO_API_KEY`; nothing is billed.
+`clearotron sync --from-file <archive>` builds from an archive you already have, with no key.
 
 **The bill is time and disk, not money.** From one complete build read end to end on 2026-08-11 (767
 files, backfile and dailies): **41.5 GB** downloaded, **~9 hours** to ingest at 4.6 GB/h, **20 GB** of
@@ -677,145 +601,12 @@ becomes an incident on a real deployment rather than a bundled one:
 
 Copy or author the companies, context packs and project overlays you want; assume you inherit none.
 
-## 5. Run a headless clearance report
+## 5. Start the product on this machine
 
-1. Make sure `CLEAROTRON_AI` names the engine you want (`anthropic-agent` or `openai-agent`), its CLI is
-   authenticated, and your active register provider's credential is set. `clearotron doctor
-   --probe-engine` answers all three, and the engine half of it by actually running a turn — an
-   executable on `PATH` that is signed out passes every other check and fails at the first stage.
+This is the product: a portal you sign in to, order a clearance from, and read the report in.
 
-2. Write a **job file**. The required fields are an `id`, a `forwarder` handle, at least one mark
-   **name**, and either classes or a goods description — a company profile can supply the last one.
-   `msgId` is optional: it threads the reply into the original email, and a job without one is warned,
-   not refused. A minimal neutral example:
-
-   ```json
-   {
-     "id": "job-2026-0001",
-     "msgId": "<intake-2026-0001@example.com>",
-     "forwarder": "alex",
-     "forwarderEmail": "alex@example.com",
-     "forwarderDomain": "example.com",
-     "marks": [{ "ref": "TM-0001", "name": "IRONWHISK", "classes": [9, 42] }],
-     "goods": "cloud software for weather analytics",
-     "jurisdictions": ["US"],
-     "product": "knockout-search"
-   }
-   ```
-
-   **`product` names which of the four searches you are ordering, and the example names it on purpose.**
-   It orders a **Knockout search over one territory** — the cheapest of the four and the fastest way to
-   prove the install works end to end. It is not the product you would order for a real matter; it is the
-   one that answers "does this run at all" in minutes rather than hours. Change it when you have a matter.
-
-   | product | case law | native language |
-   |---|---|---|
-   | `knockout-search` | no | not offered |
-   | `global-preliminary-search` | no | not offered |
-   | `multi-country-focus-search` | no | offered |
-   | `full-country-search` | **yes** | **automatic** |
-
-   **Omit it and the territories decide — in a direction that will surprise you.** No `jurisdictions`
-   gives you `global-preliminary-search`; two or more give `multi-country-focus-search`; and naming
-   **exactly one country** gives `full-country-search`, the deepest of the four, which turns case law on
-   and runs the native-language investigation automatically.
-
-   **That is why the example above names `product` even though it lists one territory.** Delete the
-   `product` line and this job — one country — becomes a `full-country-search`: the deepest of the four,
-   case law on, native-language investigation running, hours instead of minutes. Narrowing the scope to
-   make a first run smaller orders **more** work, not less, and naming `product` is what stops the scope
-   deciding for you. An unknown value is a clarify, never a silent substitute.
-
-
-3. Run the pipeline:
-
-   ```
-   clearotron run --job job.json
-   ```
-
-   **The example above is sized in minutes; a real clearance is sized in hours.**
-   The engine sizes a knockout search at 5 to 10 minutes — which is what this job orders — and a clearance
-   at up to 2.5 hours.
-   The example run in `demo/` took 2 h 35 m, and it is a clearance, not a knockout. A
-   single stage of a clearance can legitimately run 45 minutes — let it finish.
-   [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
-
-   This run sends the matter off the machine — the mark, its classes, the goods wording, and the
-   company's context reach a reasoning provider and Perplexity, and the mark and its variants reach your
-   register. Before the first live matter, read
-   [what leaves the machine](docs/architecture/09-security-and-data.md#what-leaves-the-machine).
-
-The driver resolves the profile, runs the reasoning stages as headless CLI turns, gates delivery on
-its internal refutation verdict, and then:
-
-- **publishes** the report (HTML + Markdown) and an Excel audit into `CLEAROTRON_REPORTS_DIR`; and
-- writes **`_driver/delivery.json`** in the run directory — a self-contained handoff packet:
-
-  ```
-  { runId, agent, forwarder, forwarderEmail, msgId, conversationId, subject, emailBodyHtml, url,
-    verdict, markName, whatsappTo, whatsappText }
-  ```
-
-  This packet **is the delivery contract**: an integrator's channel wiring reads it and sends the report
-  by email/chat. The engine never sends messages itself — the report is already published regardless.
-  Failures, intake rejections, duplicate skips and late-bind acks ride the same outbox seam as
-  self-contained event packets — the full catalog + the integrator loop is
-  [docs/DELIVERY.md](docs/DELIVERY.md); intake (the enqueue CLI, the job JSON, queue lifecycle,
-  dedup) is [docs/INTAKE.md](docs/INTAKE.md).
-
-### How long a run takes
-
-Hours, not minutes.
-
-**One measured run.** The sample in `demo/` took **2 h 35 m** from `startedAt` to
-`deliveredAt` (`run/status.json`) — one mark, two classes, one register, 214 register calls, 37 model
-dispatches. That is 1.29× the 2 hours the run quoted itself.
-
-**What the engine quotes.** A knockout search is sized at 5 to 10 minutes. A clearance starts at 1.5 hours
-and runs to 2.5 hours — one range for every clearance, whichever lanes it carries
-(`driver/effort-model.mjs`). The quote used to add half an hour each for the case-law reading, the
-native-language lane and a single-territory deep-dive; the delivered walls refuted that, so the adders
-were removed.
-
-**What the stages declare.** Every stage carries a timeout — the longest is 45 minutes, and the 16
-together sum to 5.6 hours (`driver/stages.mjs`). Fan-out members run in parallel and a retry adds to
-the wall, so the sum sizes the stages rather than the run.
-
-What moves the wall is the fan-out: how many search axes the register plan compiles, whether the
-marketplace sweep splits in half, how many findings need cards, and how many registers the product
-sweeps. Every run records its own quote against its actual wall in `status.json`. A stage still going
-after half an hour is not hung — the longest stage timeout is 45 minutes, and the engine hard-kills
-anything that overruns its own.
-
-### If a run stops before it delivers
-
-A clearance run takes hours, so it will sometimes stop part-way: you close the lid, the machine reboots,
-or the model provider caps you mid-run. **Nothing is lost.** Every finished stage stays on disk and a
-resume re-runs only what is missing or invalid.
-
-The command that continues a run is printed whenever a run ends badly — copy the line it gives you:
-
-```
-node /path/to/driver/pipeline.mjs --job /path/to/job.json --resume <codename>
-```
-
-A run stopped by a **provider rate limit** or parked for **automatic recovery** does not need you at all
-— it resumes on its own as soon as its window passes, provided something is watching for it. On a server
-that is the systemd units in `driver/systemd/`. Everywhere else, run the watcher yourself:
-
-```
-clearotron run-queue --watch
-```
-
-That polls every 90 seconds for queued jobs and for parked runs whose window has elapsed, and it resumes
-them. It also notices when the machine has been asleep, so a cap that lifted overnight is picked up when
-you open the laptop rather than at the next scheduled poll. Leave it running alongside your work; `Ctrl-C`
-stops it, and anything still parked waits for the next time you start it.
-
-## 6. Start the product on this machine
-
-Everything above runs the engine from a job file. This is the product: a portal you sign in to, order a
-clearance from, and read the report in.
+See it before you buy anything: `npx clearotron demo` replays finished clearances with no account, no
+key, and no network. `npx clearotron@beta demo` replays the beta's.
 
 **Plain `clearotron start` runs in the foreground and stops when this terminal closes** — Ctrl-C, a
 dropped SSH session, a shut laptop lid ending the session: the portal goes with it. That is the right
@@ -830,24 +621,27 @@ clearotron stop                   # stop it and give the box back — plain `sta
 `--background` never touches the assistant connector: `clearotron connect` opens that door
 and `clearotron disconnect` closes it, separately and on purpose.
 
-**If anything else on this host already runs this product, set its ports first.** The portal (18802)
-and the engine door (18790) are **fixed defaults shared by every checkout on a machine**, so a second
-instance collides with the first and `start` refuses rather than quietly moving. Give it its own pair
+**If anything else on this host already runs this product, set its ports first.** `start` opens three:
+the portal (18802), the engine door (18790) and the client door (18811). They are **fixed defaults shared
+by every install on a machine**, so a second instance meets the first one's ports. Give it its own three
 before the first start:
 
 ```
-PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 clearotron start
+PORTAL_SERVICE_PORT=18820 TRADEMARK_MCP_HTTP_PORT=18821 CLIENT_MCP_HTTP_PORT=18822 clearotron start
 ```
 
-A test instance beside a live one needs more than two ports — §8, *Two instances on one machine*, is the
-whole boundary. On a host running nothing else, ignore this and carry on:
+`clearotron start --port 18820` opens the same three: 18820, 18821 and 18822.
+
+A test instance beside a live one needs more than its own ports — §8, *Two instances on one machine*, is
+the whole boundary. On a host running nothing else, ignore this and carry on:
 
 ```
 clearotron start
 ```
 
-One command. It starts the portal and the engine door the portal's Start button calls, waits until both
-answer, and prints one address to open. `Ctrl-C` stops both. The second run asks nothing.
+One command. It starts the portal, the engine door the portal's Start button calls, the client door an
+assistant connects to, and the worker that runs what you order. It waits until the portal and the engine
+door answer, and prints one address to open. `Ctrl-C` stops all of them. The second run asks nothing.
 
 **This is not `npx clearotron demo`, and the two are not interchangeable.**
 
@@ -856,7 +650,7 @@ answer, and prints one address to open. `Ctrl-C` stops both. The second run asks
 | what it is | a finished report, replayed | the running product |
 | credentials | none | whatever a real run needs (§3) |
 | model calls | none | yes, once you order a clearance |
-| what you can do | read | sign in, configure, order, read |
+| what you can do | sign in and read; an order opens the finished example for that search | sign in, configure, order, read |
 
 Use the demo to see what this system produces. Use `clearotron start` to run it.
 
@@ -936,14 +730,16 @@ A queued job whose worker is not running says so on the portal rather than sitti
 identity edge (§8 for what separates one instance from another); this command touches none of them and
 is not a way to set them up.
 
-**And it does not keep this install up to date.** Nothing here pulls; your checkout stays on the commit
-you cloned until you run `npx clearotron update`, which fast-forwards and reinstalls dependencies. It
-refuses over a configuration store kept inside the checkout, and it refuses while a run is queued or in
-flight — `npm ci` rebuilds `node_modules` under whatever is running, and a clearance assembled from
-halves of two builds does not fail, it answers wrongly.
+**And it does not keep this install up to date.** `clearotron update` does. On a package install on
+Linux or macOS it installs the newest stable, or for a beta install the newest beta or stable, whichever
+is later; on Windows it names the npm command to run instead. In a git checkout it fast-forwards the
+checkout and reinstalls dependencies. Either way it refuses over a
+configuration store kept inside the install's own folder, and it refuses while a run is queued or in
+flight — an update replaces the program's files under whatever is running, and a clearance assembled
+from halves of two builds does not fail, it answers wrongly.
 
-**To make that automatic**, this repository ships a unit and an hourly timer that run exactly that
-command, with the same two refusals. They are generic — the checkout path comes from your
+**To make that automatic in a git checkout**, this repository ships a unit and an hourly timer that run
+exactly that command, with the same two refusals. They are generic — the checkout path comes from your
 `EnvironmentFile` — and they neither start nor stop a queue drainer:
 
 ```
@@ -964,27 +760,162 @@ any running program that started before your checkout last moved. **It does not 
 supervisor owns a service is a property of your deployment, not of this checkout — so restarting is
 yours to do, and now yours to know about.
 
-### Ports, and two warnings you will see
+### Ports
 
-The portal is on 18802 and the engine door on 18790, both loopback, and both are **fixed defaults for
-every checkout on the host** rather than per-install values. They move separately: the portal with
-`clearotron start --port <n>` or `PORTAL_SERVICE_PORT=<n>`, the engine door with
-`TRADEMARK_MCP_HTTP_PORT=<n>`. A port already in use produces a sentence saying which port and which
-variable to change, before anything starts — it will not quietly pick another, because whatever sits in
-front of it is still addressed to the old one.
+The portal is on 18802, the engine door on 18790 and the client door on 18811, all loopback, and all
+three are **fixed defaults for every install on the host** rather than per-install values. Each has its
+own variable: `PORTAL_SERVICE_PORT`, `TRADEMARK_MCP_HTTP_PORT` and `CLIENT_MCP_HTTP_PORT`.
+`clearotron start --port <n>` puts the portal on n, and the engine door and the client door on n+1 and
+n+2 unless their own variables are set.
 
-Two lines on a fresh install look worse than they are:
-
-- *"skills overlay unset — company risk frameworks will resolve to this repo's demo fixtures."* On a
-  demo install they **are** the demo fixtures, and the warning is correct to fire: it exists so that a
-  real deployment never shows a synthetic framework as a company's own. It goes quiet once
-  `CLEAROTRON_CUSTOMERS_DIR` and `CLEAROTRON_INSTRUCTIONS_DIR` point at your own config store (§4).
-- *"saved searches ON — store=…"* names a directory under `~/trademark/`, not your repository. Editing a
-  **company profile**, however, still commits into this checkout until `PROFILE_REPO_ROOT` names a
-  config store of your own. Point it at one before you edit a profile you intend to keep.
+`start` checks every port before anything starts. A port in use is refused when you set its variable, or
+when `CF_ACCESS_TEAM` or an `*_OIDC_ISSUER` setting says a proxy or a sign-in provider sits in front,
+because whatever is in front is still addressed to that number. The refusal names the port and the
+variable to change. Any other port in use moves to the next free number, and `start` prints where it went.
 
 `driver/dev-portal.mjs` is **not** this. It is a loopback pool browser for people working on the engine,
 its own header says never to expose it, and nothing here starts it.
+
+## 6. Run a headless clearance report
+
+1. Make sure `CLEAROTRON_AI` names the engine you want (`anthropic-agent` or `openai-agent`), its CLI is
+   authenticated, and your active register provider's credential is set. `clearotron doctor
+   --probe-engine` answers all three, and the engine half of it by actually running a turn — an
+   executable on `PATH` that is signed out passes every other check and fails at the first stage.
+
+2. Write a **job file**. The required fields are an `id`, a `forwarder` handle, at least one mark
+   **name**, and either classes or a goods description — a company profile can supply the last one.
+   `msgId` is optional: it threads the reply into the original email, and a job without one is warned,
+   not refused. A minimal neutral example:
+
+   ```json
+   {
+     "id": "job-2026-0001",
+     "msgId": "<intake-2026-0001@example.com>",
+     "forwarder": "alex",
+     "forwarderEmail": "alex@example.com",
+     "forwarderDomain": "example.com",
+     "marks": [{ "ref": "TM-0001", "name": "IRONWHISK", "classes": [9, 42] }],
+     "goods": "cloud software for weather analytics",
+     "jurisdictions": ["US"],
+     "product": "knockout-search"
+   }
+   ```
+
+   **`product` names which of the four searches you are ordering, and the example names it on purpose.**
+   It orders a **Knockout search over one territory** — the cheapest of the four and the fastest way to
+   prove the install works end to end. It is not the product you would order for a real matter; it is the
+   one that answers "does this run at all" in minutes rather than hours. Change it when you have a matter.
+
+   | product | case law | native language |
+   |---|---|---|
+   | `knockout-search` | no | not offered |
+   | `global-preliminary-search` | no | not offered |
+   | `multi-country-focus-search` | no | offered |
+   | `full-country-search` | **yes** | **automatic** |
+
+   **Omit it and the territories decide — in a direction that will surprise you.** No `jurisdictions`
+   gives you `global-preliminary-search`; two or more give `multi-country-focus-search`; and naming
+   **exactly one country** gives `full-country-search`, the deepest of the four, which turns case law on
+   and runs the native-language investigation automatically.
+
+   **That is why the example above names `product` even though it lists one territory.** Delete the
+   `product` line and this job — one country — becomes a `full-country-search`: the deepest of the four,
+   case law on, native-language investigation running, hours instead of minutes. Narrowing the scope to
+   make a first run smaller orders **more** work, not less, and naming `product` is what stops the scope
+   deciding for you. An unknown value is a clarify, never a silent substitute.
+
+
+3. Run the pipeline:
+
+   ```
+   clearotron run --job job.json
+   ```
+
+   **The example above is sized in minutes; a real clearance is sized in hours.**
+   The engine sizes a knockout search at 5 to 10 minutes — which is what this job orders — and a clearance
+   at up to 2.5 hours.
+   The three clearances in `demo/` took 64 to 74 minutes each, and its knockout search 4 minutes. A
+   single stage of a clearance can legitimately run 45 minutes — let it finish.
+   [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
+
+   This run sends the matter off the machine — the mark, its classes, the goods wording, and the
+   company's context reach a reasoning provider and Perplexity, and the mark and its variants reach your
+   register. Before the first live matter, read
+   [what leaves the machine](docs/architecture/09-security-and-data.md#what-leaves-the-machine).
+
+The driver resolves the profile, runs the reasoning stages as headless CLI turns, gates delivery on
+its internal refutation verdict, and then:
+
+- **publishes** the report (HTML + Markdown) and an Excel audit into `CLEAROTRON_REPORTS_DIR`; and
+- writes **`_driver/delivery.json`** in the run directory — a self-contained handoff packet:
+
+  ```
+  { runId, agent, forwarder, forwarderEmail, msgId, conversationId, subject, emailBodyHtml, url,
+    verdict, markName, whatsappTo, whatsappText }
+  ```
+
+  This packet **is the delivery contract**: an integrator's channel wiring reads it and sends the report
+  by email/chat. The engine never sends messages itself — the report is already published regardless.
+  Failures, intake rejections, duplicate skips and late-bind acks ride the same outbox seam as
+  self-contained event packets — the full catalog + the integrator loop is
+  [docs/DELIVERY.md](docs/DELIVERY.md); intake (the enqueue CLI, the job JSON, queue lifecycle,
+  dedup) is [docs/INTAKE.md](docs/INTAKE.md).
+
+### How long a run takes
+
+Minutes for a knockout search, an hour or more for a clearance.
+
+**Four measured runs.** Each sample in `demo/` records its own wall, from `startedAt` to `deliveredAt`
+in `run/status.json`. The three clearances took **64 to 74 minutes** each, quicker than the quote
+below; the knockout search took **4 minutes**.
+
+**What the engine quotes.** A knockout search is sized at 5 to 10 minutes. A clearance starts at 1.5 hours
+and runs to 2.5 hours — one range for every clearance, whichever lanes it carries
+(`driver/effort-model.mjs`). The quote used to add half an hour each for the case-law reading, the
+native-language lane and a single-territory deep-dive; the delivered walls refuted that, so the adders
+were removed.
+
+**What the stages declare.** Every stage carries a timeout — the longest is 45 minutes, and the 16
+together sum to 5.6 hours (`driver/stages.mjs`). Fan-out members run in parallel and a retry adds to
+the wall, so the sum sizes the stages rather than the run.
+
+What moves the wall is the fan-out: how many search axes the register plan compiles, whether the
+marketplace sweep splits in half, how many findings need cards, and how many registers the product
+sweeps. Every run records its own quote against its actual wall in `status.json`. A stage still going
+after half an hour is not hung — the longest stage timeout is 45 minutes, and the engine hard-kills
+anything that overruns its own.
+
+### If a run stops before it delivers
+
+A clearance run takes hours, so it will sometimes stop part-way: you close the lid, the machine reboots,
+or the model provider caps you mid-run. **Nothing is lost.** Every finished stage stays on disk and a
+resume re-runs only what is missing or invalid.
+
+The command that continues a run is printed whenever a run ends badly — copy the line it gives you:
+
+```
+clearotron run --job /path/to/job.json --resume <codename>
+```
+
+The job file can be left out:
+
+```
+clearotron run --resume <codename>
+```
+
+A run stopped by a **provider rate limit** or parked for **automatic recovery** does not need you at all
+— it resumes on its own as soon as its window passes, provided something is watching for it. On a server
+that is the systemd units in `driver/systemd/`. Everywhere else, run the watcher yourself:
+
+```
+clearotron run-queue --watch
+```
+
+That polls every 90 seconds for queued jobs and for parked runs whose window has elapsed, and it resumes
+them. It also notices when the machine has been asleep, so a cap that lifted overnight is picked up when
+you open the laptop rather than at the next scheduled poll. Leave it running alongside your work; `Ctrl-C`
+stops it, and anything still parked waits for the next time you start it.
 
 ## 7. Run the MCP interrogation server
 
@@ -994,10 +925,10 @@ set:
 - **stdio (local, full tools):**
 
   ```
-  node mcp-server/server.mjs
+  clearotron mcp
   ```
 
-  Register it as a stdio MCP server in your desktop/CLI AI app (Claude Desktop/Code, Cursor, …). It
+  In a git checkout, `node mcp-server/server.mjs` starts the same server. Register it as a stdio MCP server in your desktop/CLI AI app (Claude Desktop/Code, Cursor, …). It
   serves the read tools (list/read/trace/search/telemetry/coverage) plus a gated, single-step "what-if"
   that re-runs one stage in a sandbox.
 
@@ -1007,7 +938,8 @@ set:
   node mcp-server/http-server.mjs
   ```
 
-  A Streamable-HTTP surface a remote user adds to their chat app by URL.
+  That path is relative to a git checkout. On a package install it is relative to the package's folder,
+  `~/.local/lib/node_modules/clearotron` when `clearotron install` placed it. A Streamable-HTTP surface a remote user adds to their chat app by URL.
 
   **What it serves depends on who is asking, and one half of it spends money.** A caller the edge
   identifies gets the **read** tools (list/read/trace/search/telemetry/coverage) — no spend, no shell.
@@ -1162,7 +1094,7 @@ bills Claude through an API key or a cloud account, never a Claude subscription,
 require.
 
 **The guest list.** `CLEAROTRON_ACCESS_FILE` turns account scoping on for **every face at once** — the
-portal, the MCP read face, and the client connector. `clearotron start` (§6) writes one into its
+portal, the MCP read face, and the client connector. `clearotron start` (§5) writes one into its
 state directory the first time it runs: you, with access to everything, your organisation if setup was
 told its name, and nobody else yet.
 [examples/grants.example.json](examples/grants.example.json) is a runnable guest list over the demo
@@ -1312,7 +1244,7 @@ that fails at boot, which reads as a broken install rather than as a port alread
 Set all seven. Nothing else separates them.
 
 A deployment that once ran the service twice for a different reason — one door needing a key and the
-other a proxy identity — no longer has to; see *One process, two doors* in §9. That is an
+other a proxy identity — no longer has to; see *One process, two doors* in §7. That is an
 authentication arrangement and has nothing to do with this one. The seven above are still all required.
 
 ## 9. What the integrator supplies
@@ -1380,3 +1312,103 @@ answer on any of them:
 
 The licence covers the code and grants no rights in the names or marks — see `TRADEMARKS.md` for
 running a deployment under your own brand.
+
+## 11. From the repository
+
+**This is the development tree, and it is for contributors.** If you want to run a clearance, install the
+package as §2 shows instead. A clone is not a smaller version of the package — it carries the
+fixtures and sample companies the project develops against, and those load as real records. They
+are not yours and they are not in the package, which excludes them deliberately.
+
+```
+git clone <this-repo> && cd <repo>
+npm install            # installs all workspaces
+npm test               # offline, fixture-backed suites — no network, no gateway, no spend
+```
+
+`npm test` belongs to **this** route only. It runs our test files, and those do not travel in a package
+— see *From a packaged tarball* in §2, which never asks you to run it.
+
+This repository *is* the `clearotron` package, and npm links a package's `bin` into
+`node_modules/.bin` only for its **dependencies** — never for the package itself. So after `npm install`
+succeeds there is no `clearotron` on your `PATH` and none in `node_modules/.bin`; a bare `clearotron`
+would be `command not found` with nothing having failed.
+
+**`npx` resolves the local package by walking up from the current directory, so it works from the
+project root and any subdirectory of it — and nowhere else.** From your home directory the same line
+gets you npm's `could not determine executable to run`, which names no product and suggests no fix.
+That is why this document tells you to `cd` in first, and why every command below assumes you are still
+there. On the repository route "the project" is the checkout; on the packaged route it is the directory
+you ran `npm init` in — and on that route `clearotron` IS a dependency, so `npx` finds it in
+`node_modules/.bin` exactly as the paragraph above describes.
+
+**`clearotron install` (§3) puts the short form on your `PATH`**, and every command after it in this
+document uses that form. Use it rather than a fresh `npx clearotron`: `npx` resolves whichever version npm
+picks at that moment — the stable, unless you name a channel — and does not hand over to the copy the
+install placed. You can stop typing `npx` after it:
+it writes a small shim to `~/.local/bin/clearotron` pointing at this checkout. That directory needs no
+root — `npm link` would want npm's global prefix, which on a default install is `/usr` and refuses
+without it. Most login profiles add `~/.local/bin` to `PATH` only if it already existed when the shell
+started, so in the terminal that ran the install you may need `export PATH="$HOME/.local/bin:$PATH"`
+once; a new login shell picks it up by itself. The install prints which of the two you are in, and the
+product's own advice follows suit — `clearotron doctor` names the form that works from where you are
+standing, whichever that is.
+
+`npm test` is the fast tier, **on the repository route**. `npm run test:full` adds the files that drive
+the orchestrator end to end and is what CI runs before a merge; [CONTRIBUTING.md](CONTRIBUTING.md) draws
+the line between them. Either way nothing is contacted and nothing is billed — the suite says so before
+it starts. Neither runs on a packaged install: the test files are not in the package.
+
+The engine itself has no build step. The **portal UI does** — `portal-ui/` is React + Vite — but its
+built bundle (`portal-ui/dist/`) is **not committed to git**: it travels in the published package and
+CI builds it, so a tarball install is already runnable while a clone needs one build first. You also
+need to build after changing something under `portal-ui/src`:
+
+```
+npm run tokens         # regenerate the design tokens from shared/brand.mjs, if colours changed
+npm run build:ui       # build portal-ui/dist — the portal serves this, not the sources
+```
+
+**`portal-ui/dist` is build output.** The portal serves that bundle rather than the sources, so run the
+build after cloning if the directory is not there, and again whenever you change anything under
+`portal-ui/src`. Until the bundle exists the UI answers with a 503 that says exactly this, and the API
+keeps working throughout.
+
+`npm test` exercises the driver and MCP server against recorded fixtures; it never calls a model or a
+provider, so it is safe to run on any machine that has the repository. "Safe anywhere" is about spend,
+not about where it will run — on a packaged tree it refuses, as above.
+
+### Cutting a package (maintainers)
+
+Skip this unless you are the one producing the `.tgz`.
+
+**`npm pack` alone is not the command.** The repository manifest carries
+`overrides: { "buffers": "$buffers" }`, which resolves only inside the checkout; a consumer installing that
+tarball dies with `Unable to resolve reference $buffers` before a single file is written. Five consecutive
+releases went out that way. **The published manifest has to be sealed** — that key stripped from the
+tarball, the repository's own manifest left untouched. Which route does it depends on the tree you are on:
+
+- **A tree that carries `cut/`**: `node scripts/pack-publishable.mjs`. It packs, strips, reconciles against
+  the withheld-file list and scans the packed tree in one step.
+- **A public checkout**, which is what the release workflow runs on: `npm pack`, then
+  `node scripts/release-artifact-seal.mjs --tarball <path>`. `pack-publishable.mjs` refuses here — it needs
+  `cut/packed-artifact.mjs`, which a public tree does not carry, and exits 2 rather than packing something
+  nobody checked.
+
+Either way, prove it before publishing it:
+
+    node scripts/release-install-check.mjs --tarball <path>
+
+That installs the artefact as a dependency of a throwaway project, which is the only shape this failure
+exists in. Installing at the root of a checkout and `npm install --dry-run` both exit 0 on a tarball that
+refuses for every real user.
+
+Two further constraints, both of which stop a package being cut from just anywhere:
+
+- **The de-identification scan needs a full clone.** It refuses a shallow one (exit 2 — a check that could
+  not look, not a pass) because it walks history it cannot see.
+- **It also needs its table**, passed with `--blocklist` (or `CLEAROTRON_IDENTIFIER_BLOCKLIST`), and
+  that table lives in the private config store rather than in this repository. Without it the scan
+  exits 2 rather than arming a weaker rule set quietly.
+
+Both refusals are correct and neither is a workaround to route around.

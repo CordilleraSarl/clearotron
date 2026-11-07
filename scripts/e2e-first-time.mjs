@@ -76,10 +76,11 @@ export const COUNTED_EVENTS = {
   "post-repair-correction-unrecoverable": FAILED, "post-repair-state-not-kept": FAILED,
   "digest-flush-timeout": FAILED, "document-coverage-render-failed": FAILED, "doubts-failed": FAILED,
   "evidence-claim-invariant": { kind: FAILED, when: (e) => e.ok === false || Number(e.violations) > 0 },
+  "coverage-row-not-added": FAILED, "verdict-floor-failed": FAILED,
   "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "declination-goods-states-failed": FAILED, "review-exclusions-write-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
   "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
-  "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-sweep-outage": FAILED,
+  "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-register-read-failed": FAILED, "knockout-sweep-outage": FAILED,
   "machine-qc-failed": FAILED, "named-band-invalid": FAILED, "owner-screen-failed": FAILED, "placement-carry-failed": FAILED,
   "plan-qids-provider-hard-error-deferred": FAILED, "predelivery-lint-failed": FAILED, "probe-over-cap-unreadable": FAILED,
   "profile-mismatch-probe-failed": FAILED, "recall-reconciliation-failed": FAILED,
@@ -109,8 +110,8 @@ export const COUNTED_EVENTS = {
   // A workbook that failed to build is recorded only here.
   "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
-  "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "applied" && Number(e.applied) > 0 },
-    { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
+  "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "corrected" || (e.outcome === "applied" && Number(e.applied) > 0) },
+    { kind: FAILED, when: (e) => !["applied", "corrected", "nothing-flagged"].includes(e.outcome) }],
   "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
   // a finding still saying its goods are cut or unread after the delivery repair was given their complete statements
@@ -180,7 +181,7 @@ export const NOT_COUNTED_EVENTS = {
     "common-law-candidates", "common-law-merged", "common-law-path", "common-law-supp-folded", 
     "commonlaw-channels-added", "connotation-receipts", 
     "corrective-worklist-source", "coverage-form-written", "coverage-judgment", "coverage-judgment-rows",
-    "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-rendered", "crowd-context", "crowd-context-skips",
+    "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-rendered", "coverage-rows-pass", "crowd-context", "crowd-context-skips",
     "customer-late-bind", "customer-late-bind-ack", "depth-ladder", "digest-batch-brief",
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
@@ -193,7 +194,7 @@ export const NOT_COUNTED_EVENTS = {
     "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
     "knockout-published", "knockout-receipts", 
-    "knockout-register-records",
+    "knockout-register-records", "knockout-register-read",
     // The run's own span against the ten-minute target, written at delivery because that is the first
     // point at which the run's span is known. Same class as the sweep's line below: a RECORD, never a
     // failure. `overBar: null` on it means the span could not be measured, which is a gap in the record
@@ -221,7 +222,7 @@ export const NOT_COUNTED_EVENTS = {
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean", "screen-gate-evidence",
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
-    "turnaround-reconciliation", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-frontmatter",
+    "turnaround-reconciliation", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-floors-pass", "verdict-frontmatter",
     "verdict-recomputed-steps-withdrawn", "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
@@ -244,7 +245,7 @@ export const NOT_COUNTED_EVENTS = {
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
     "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
-    "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3", "verdict-recheck-unread",
+    "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3", "verdict-recheck-file-save-refused", "verdict-recheck-unread",
   ],
   "read from its own record: the stage records, the dispatch records and the tool-call log": [
     "answer-part", "attempt", "stage", "settled", "started",

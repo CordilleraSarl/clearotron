@@ -26,13 +26,15 @@ const PLAN_AUDIT = [
   "Nothing else carries forward.",
 ];
 
-test("the cause: a heading-shaped audit line naming corrections hides the flags from the parse", () => {
+// The parse no longer loses the flags to such a line: a review's own `## Flags` section is where they are read. The bold
+// below is still owed, because the line still ends the audit for the permissive count.
+test("the cause: a heading-shaped audit line ends the audit, so the count reads its list lines as cited defects", () => {
   const verbatim = ["CONDITIONAL", "", "## Flags", "",
     `1. [kind: fact] [on: 3] ${FLAGS[0].text}`, "", `2. [kind: fact] [on: 4] ${FLAGS[1].text}`, "",
     "## PLAN-EXECUTION CHECK", "", ...PLAN_AUDIT, ""].join("\n");
   const kinds = parseCorrectionKinds(verbatim);
-  assert.equal(kinds.section, "CORRECTION REVIEW SCOPE", "the audit line is taken for the corrections section");
-  assert.equal(kinds.counts.fact, 0, "so the two typed flags above it are not read: the refusal said 0 where the call typed 2");
+  assert.equal(kinds.section, "Flags", "the audit line is not taken for the corrections section");
+  assert.equal(kinds.counts.fact, 2, "so the two typed flags above it are read, as the call typed them");
   assert.equal(countCitedDefects(verbatim), 3, "and the audit's list line after a heading-shaped line is counted as a cited defect");
 });
 

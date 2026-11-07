@@ -26,16 +26,21 @@
 // re-send the other twenty, and a partial payload that DELETED the rest is the failure that rule exists
 // to stop.
 //
-// `declined[]` — merged the same way, by address. A seat that read a flag and judged the word to be the
-// subject rather than the profession's shorthand says so here. This is not decoration: the pass is
-// handed evidence and never a verdict, so "I looked and it is fine" and "I did not look" must be
-// different states in the artifact, or the residue cannot be read afterwards.
+// `declined[]` — merged the same way, by address. A clean read is recorded here once: one row saying the
+// lines stand. A seat may also say why it left a flagged line alone, and is not asked to: a line it leaves
+// alone owes no row. "I looked and it is fine" and "I did not look" stay different states in the
+// artifact because an empty call is refused below, not because every line carries a row.
 //
-// AND THE PASS DECIDES NOTHING.
+// `material[]` — REPLACED when present, KEPT when absent. It is the pass's whole answer to whether the
+// client is being told the right thing, so half of one is not a thing.
 //
-// No band, no finding, no count and no record moves. The only thing a rewrite may change is the prose
-// of a default-visible line. The acceptor enforces that by construction: the address grammar cannot
-// express a band, an ordinal reassignment or a new finding, so there is no payload that reaches them.
+// AND THE PASS CHANGES NO RATING. A material defect is named by mark and finding, with what it rests on, and
+// goes to the step that can reason a band (knockout-correction-record.mjs). The only thing a rewrite may
+// change is the prose of a default-visible line. The acceptor enforces that by construction: the address
+// grammar cannot express a band, an ordinal reassignment or a new finding, so no rewrite reaches them.
+//
+// A SECOND PASS READS THE CORRECTED RECORD. Dispatched fresh after a correction, it has its own artifact and
+// its own accepted call, bound by the ordinal in its label, so nothing the first pass sent carries into it.
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";
@@ -46,6 +51,7 @@ import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned 
 // THE HINT'S fold, and it is imported rather than rebuilt — see nearestAddress. It is a comparison key
 // for saying WHICH line was probably meant; it never decides whether an address resolves.
 import { queryKey } from "./connotation-search.mjs";
+import { PERMITTED_SOURCES, registerRecordIdsHeld, urlHeldFor } from "./verify-knockout.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -58,7 +64,8 @@ const SCHEMA_VERSION = 1;
  * and the artifact would say the seat rewrote a line it did not.
  */
 const DECLARED = {
-  "": ["schema_version", "first_question", "rewrites", "declined"],
+  "": ["schema_version", "first_question", "material", "rewrites", "declined"],
+  material: ["kind", "mark", "finding", "problem", "rests_on"],
   rewrites: ["at", "text", "why"],
   "rewrites.at": ["field", "mark", "index", "ordinal"],
   declined: ["at", "why"],
@@ -103,9 +110,12 @@ export const ADDRESSABLE = Object.freeze({
   "findings.net": Object.freeze(["mark", "ordinal"]),
 });
 
-/** One file per call, refusals included, beside the other transports' capture directories. */
-export function knockoutReviewCallPaths(runDir) {
-  const dir = driverDir(runDir, "knockout-review-calls");
+/** What a material defect can be, and whether it has to name the evidence it rests on. */
+export const MATERIAL_KINDS = Object.freeze({ band: false, missing: true, exclusion: true, scope: false, contradiction: false });
+
+/** One file per call, refusals included, beside the other transports' capture directories. A later pass keeps its own. */
+export function knockoutReviewCallPaths(runDir, pass = 0) {
+  const dir = pass ? driverDir(runDir, join("knockout-review-calls", `pass-${Number(pass)}`)) : driverDir(runDir, "knockout-review-calls");
   return { dir, accepted: join(dir, "accepted.json"), refusals: join(dir, "refusals.jsonl") };
 }
 
@@ -122,9 +132,10 @@ export function knockoutReviewCallPaths(runDir) {
  * The CALL captures stay under `_driver/`: those are the driver's record of what arrived, not a seat's
  * output, and nothing dispatches against them.
  */
-export function knockoutReviewFile(runDir) {
-  return join(String(runDir ?? ""), "knockout-review.json");
+export function knockoutReviewFile(runDir, pass = 0) {
+  return join(String(runDir ?? ""), pass ? `knockout-review-${Number(pass)}.json` : "knockout-review.json");
 }
+export const KNOCKOUT_RECHECK_RE = /^knockout-review-\d+\.json$/;
 
 /**
  * The address as one string, for joining and for saying which address was refused.
@@ -209,6 +220,17 @@ export function acceptKnockoutReview(call) {
   const firstQuestion = typeof call?.first_question === "string" && call.first_question.trim() ? call.first_question : undefined;
   if (rewrites !== undefined && !Array.isArray(rewrites)) return { ok: false, reason: "rewrites must be an array" };
   if (declined !== undefined && !Array.isArray(declined)) return { ok: false, reason: "declined must be an array" };
+  const material = call?.material;
+  if (material !== undefined && !Array.isArray(material)) return { ok: false, reason: "material must be an array" };
+  for (const m of material ?? []) {
+    if (!Object.hasOwn(MATERIAL_KINDS, m?.kind)) return { ok: false, reason: `a material row's kind is one of ${Object.keys(MATERIAL_KINDS).join(", ")}` };
+    if (typeof m?.mark !== "string" || !m.mark.trim()) return { ok: false, reason: "a material row names the mark it is about, verbatim" };
+    if (m.finding !== undefined && !Number.isInteger(m.finding)) return { ok: false, reason: `the material row on "${m.mark}": finding is the finding's ordinal` };
+    if (typeof m?.problem !== "string" || !m.problem.trim()) return { ok: false, reason: `the material row on "${m.mark}" says nothing about what is wrong` };
+    const rests = m.rests_on;
+    if (rests !== undefined && (!Array.isArray(rests) || rests.some((r) => typeof r !== "string" || !r.trim()))) return { ok: false, reason: `the material row on "${m.mark}": rests_on is a list of held recordIds, question qids, and URLs` };
+    if (MATERIAL_KINDS[m.kind] && !rests?.length) return { ok: false, reason: `the ${m.kind} row on "${m.mark}" names no evidence: send the recordIds, question qids, or URLs it rests on in rests_on` };
+  }
   const seen = new Set();
   for (const r of rewrites ?? []) {
     const fault = addressFault(r?.at);
@@ -228,10 +250,10 @@ export function acceptKnockoutReview(call) {
   }
   // An empty call and a stage that never ran leave the same artifact behind, and they are different
   // findings: one says the seat read the lines and had nothing to change, the other says nothing looked.
-  if (!(rewrites ?? []).length && !(declined ?? []).length)
-    return { ok: false, reason: "send at least one rewrite or one declined row — an empty call cannot be told from a stage that never ran" };
+  if (!(rewrites ?? []).length && !(declined ?? []).length && !(material ?? []).length)
+    return { ok: false, reason: "send at least one material, rewrite or declined row — an empty call cannot be told from a stage that never ran" };
   return { ok: true, model: { schema_version: SCHEMA_VERSION, ...(firstQuestion !== undefined ? { first_question: firstQuestion } : {}),
-    rewrites: rewrites ?? [], declined: declined ?? [] } };
+    material: material ?? [], rewrites: rewrites ?? [], declined: declined ?? [] } };
 }
 
 /** Merge a repair turn onto what was already accepted, BY ADDRESS. See the header for the per-key rule. */
@@ -243,7 +265,7 @@ export function mergeKnockoutReviewCall(was, now) {
     return [...byAddr.values()];
   };
   if (!was) return { ...now };
-  return { ...was, ...now, rewrites: merge("rewrites"), declined: merge("declined") };
+  return { ...was, ...now, material: now?.material ?? was.material, rewrites: merge("rewrites"), declined: merge("declined") };
 }
 
 /**
@@ -393,7 +415,16 @@ export function validateKnockoutReviewFile(file, text) {
   let merged;
   try { merged = JSON.parse(readFileSync(findingsFile, "utf8")); }
   catch (e) { return { ok: false, reason: `the merged record will not parse, so no address could be checked: ${e.message}` }; }
+  const fault = joinFault(doc, merged, runDir);
+  return fault ? { ok: false, reason: fault } : { ok: true };
+}
 
+/**
+ * THE JOIN AGAINST THE RUN'S RECORD: why this answer cannot stand, or null. It runs at the recording call as well as at the stage's end,
+ * so a bad address or reference is refused while the seat can still repair it in its turn. Heard only at the end, it cost a whole
+ * attempt each time: on a saved batch, 2026-11-05, two refusals of one reference spent 430 s and 50,000 generated tokens on one stage.
+ */
+function joinFault(doc, merged, runDir) {
   const knownAts = knockoutVisibleProse(merged).map((v) => v.at);
   const known = new Set(knownAts.map((a) => addressKey(a)));
   const owned = new Set(knockoutVisibleProse(merged).filter((v) => v.at?.engineOwned).map((v) => addressKey(v.at)));
@@ -404,13 +435,43 @@ export function validateKnockoutReviewFile(file, text) {
   };
   for (const r of doc.rewrites ?? []) {
     const key = addressKey(r.at);
-    if (owned.has(key)) return { ok: false, reason: `the rewrite for ${r.at.field} names a caveat the engine wrote, not a seat — it is not offered and cannot be changed` };
-    if (!known.has(key)) return { ok: false, reason: `the rewrite for ${r.at.field}${r.at.mark ? ` on "${r.at.mark}"` : ""} names no line on this record${hint(r.at)}` };
+    if (owned.has(key)) return `the rewrite for ${r.at.field} names a caveat the engine wrote, not a seat — it is not offered and cannot be changed`;
+    if (!known.has(key)) return `the rewrite for ${r.at.field}${r.at.mark ? ` on "${r.at.mark}"` : ""} names no line on this record${hint(r.at)}`;
   }
   for (const d of doc.declined ?? []) {
-    if (!known.has(addressKey(d.at))) return { ok: false, reason: `the declined row for ${d.at.field}${d.at.mark ? ` on "${d.at.mark}"` : ""} names no line on this record${hint(d.at)}` };
+    if (!known.has(addressKey(d.at))) return `the declined row for ${d.at.field}${d.at.mark ? ` on "${d.at.mark}"` : ""} names no line on this record${hint(d.at)}`;
   }
-  return { ok: true };
+  for (const m of doc.material ?? []) {
+    const fault = materialFault(m, merged, runDir);
+    if (fault) return fault;
+  }
+  return null;
+}
+
+/** Why a material row cannot be joined to what this run holds, or null. Whether the defect is real is the reader's judgment. */
+function materialFault(m, merged, runDir) {
+  const mark = (merged?.marks ?? []).find((r) => String(r?.name ?? "") === m.mark);
+  if (!mark) return `the material row names "${m.mark}", which is not a name on this record. Copy it verbatim.`;
+  if (m.finding !== undefined && !(mark.findings ?? []).some((f) => f?.ordinal === m.finding)) return `the material row on "${m.mark}" names finding ${m.finding}, which it does not hold.`;
+  // WHAT THE RUN HOLDS, not what it holds under this name: a filing, a recorded research payload or an owner check may bear on more than
+  // one name. A question the run asked is held too, by its qid. Anything else is refused, in words about those sources and not the run.
+  const records = registerRecordIdsHeld(runDir);
+  let questions = new Set();
+  try { questions = new Set((JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8")).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
+  const urlHeld = urlHeldFor(runDir);
+  const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !questions.has(r) && !urlHeld(r));
+  return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which is not traceable to ${PERMITTED_SOURCES}, or a question this run asked. Copy a recordId, question qid, or URL from what this run holds.` : null;
+}
+
+/**
+ * The rewrites of a first pass that still have a line to land on after a correction: those on a name no defect named, and the
+ * standing caveats. A corrected name is renumbered and reworded, and the batch summary with it, so the second pass reads those
+ * afresh. PURE.
+ */
+export function rewritesThatSurvive(review, correctedNames) {
+  const corrected = new Set([...correctedNames].map((n) => String(n ?? "").trim().toLowerCase()));
+  const stands = (r) => r?.at?.field === "batch.standardCaveats" || (r?.at?.mark != null && !corrected.has(String(r.at.mark).trim().toLowerCase()));
+  return { ...review, rewrites: (review?.rewrites ?? []).filter(stands) };
 }
 
 /**
@@ -489,9 +550,10 @@ export function applyKnockoutReview(merged, review) {
   return { doc, receipt: { applied: applied.length, unresolved, refused, declined: (review?.declined ?? []).length } };
 }
 
-export function recordKnockoutReview(runDir, received, { now = () => new Date().toISOString() } = {}) {
+export function recordKnockoutReview(runDir, received, { boundOrdinal = null, now = () => new Date().toISOString() } = {}) {
   const dir = String(runDir ?? "");
-  const paths = knockoutReviewCallPaths(dir);
+  const pass = Number(boundOrdinal) || 0;
+  const paths = knockoutReviewCallPaths(dir, pass);
   const nameFor = (seq) => join(paths.dir, `call-${String(seq).padStart(3, "0")}.json`);
   const cap = captureCall({ nameFor, params: received, now });
   const captureFailed = cap.failed;
@@ -518,7 +580,15 @@ export function recordKnockoutReview(runDir, received, { now = () => new Date().
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };
   }
 
-  const file = knockoutReviewFile(dir);
+  // Where the record is on disk the seat hears the join now, in its turn. Where it is not, the stage's own check says it could not look.
+  const held = (() => { try { return JSON.parse(readFileSync(join(dir, "knockout-findings.json"), "utf8")); } catch { return null; } })();
+  const fault = held ? joinFault(verdict.model, held, dir) : null;
+  if (fault) {
+    journal(fault);
+    return { written: null, refused: fault, captured: closeCapture({ ok: false, refused: fault }), capture_failed: captureFailed };
+  }
+
+  const file = knockoutReviewFile(dir, pass);
   try {
     writeFileSync(file, JSON.stringify(verdict.model, null, 2) + "\n");
     writeFileSync(paths.accepted, acceptedEnvelope(call, now()));
@@ -530,6 +600,7 @@ export function recordKnockoutReview(runDir, received, { now = () => new Date().
   return {
     written: file,
     refused: null,
+    material: verdict.model.material.length,
     rewrites: verdict.model.rewrites.length,
     declined: verdict.model.declined.length,
     captured: closeCapture({ ok: true }),

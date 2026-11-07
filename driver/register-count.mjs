@@ -302,7 +302,7 @@ function cellSettled(cell, predicate, forms = null) {
 export async function countRegisterHits({
   marks, classes = null, jurisdictions = null, provider, capabilities,
   counter, concurrency = 3, ledgerPath = null, prior = null, now = () => new Date(),
-  variantCap = VARIANT_CAP, unreachable = [], listed = null,
+  variantCap = VARIANT_CAP, unreachable = [], joinForms = false,
 }) {
   const { regions: coveredRegions, deferred, worldwide } = resolveRegions(jurisdictions, capabilities);
   // — the office split the plan lane does at compile, done here, because this lane compiles no
@@ -319,7 +319,6 @@ export async function countRegisterHits({
     ? { counted: regions, uncounted: dropped.map((d) => ({ office: d.office, memberId: d.memberId, missing: [...(d.missing ?? [])] })) }
     : null;
   const priorByName = new Map((prior?.marks ?? []).map((m) => [String(m.name), m]));
-  const answeredByListing = listingAnswers(listed, { regions });
   const batchClasses = (Array.isArray(classes) ? classes : []).filter((n) => Number.isInteger(n));
 
   const rows = await runBatched(marks ?? [], concurrency, async (m) => {
@@ -328,25 +327,10 @@ export async function countRegisterHits({
     const scoped = own.length ? own : batchClasses;
     const reused = priorByName.get(name);
     const variants = variantForms(name, { cap: variantCap });
-    // The listing's answers for THIS mark, used only when it was asked over the same classes — see
-    // listingAnswers for why a different scope is a different question.
-    const listedForMark = answeredByListing?.get(name.toLowerCase()) ?? null;
-    const fromListing = listedForMark && sameScope(listedForMark.classes, scoped.length ? scoped : null) ? listedForMark.terms : null;
-
     // ONE PROBE = ONE PROVIDER CALL = ONE LEDGER LINE. Extracted so the aggregate predicate below bills,
     // records and degrades through exactly the same path as the two simple ones — a second copy of this
     // for the variant loop is how the two would come to disagree about what a failure means.
     const probe = async (term, p, { form = null } = {}) => {
-      // ANSWERED BY THE LISTING, and not asked again. The listing ran this exact question — the
-      // provider's exact predicate, this term, these classes, these territories — and its answer carried
-      // the register's total. No call is made, so no receipt line is written; the cell says where its
-      // figure came from.
-      const listedAnswer = p.matchMode === "exact" ? fromListing?.get(String(term).trim().toUpperCase()) : null;
-      if (listedAnswer) {
-        return listedAnswer.approximate === true
-          ? { total: null, approximate: true, floor: listedAnswer.floor ?? null, source: "listing" }
-          : { total: listedAnswer.total, source: "listing" };
-      }
       const started = Date.now();
       let r;
       try { r = await counter(term, p, { classes: scoped, regions }); }
@@ -377,7 +361,7 @@ export async function countRegisterHits({
             // THE BILLABLE UNIT IS THE FORM, so the form is on the line. A close-variation row costs N
             // calls, not one, and the receipts ledger is where that multiplier is read off — a single
             // aggregate line would report one call and understate the bill by a factor of N.
-            ...(form ? { term, variant_form: form } : {}),
+            ...(form ? { term: Array.isArray(term) ? form : term, variant_form: form } : {}),
             classes: scoped, regions, provider, probe: r?.probe ?? null,
             ok, total: ok ? r.total : null, took_ms: Date.now() - started,
             // An approximation is recorded as what it is. It billed and it answered, so a receipt
@@ -425,6 +409,15 @@ export async function countRegisterHits({
       // provider returns transient failures, a transient failure nulls the whole close column, and the
       // product silently loses the number it was rebuilt to add. Peak in-flight is unchanged from the
       // two-predicate lane; only the wall-clock of the count step grows.
+      // ONE QUESTION FOR THE WHOLE SET, on a register that answers a joined exact question with one count. A filing has
+      // one spelling, so the joined total is the sum the per-form questions would add up to, for one call instead of up
+      // to twelve. The forms stay listed beside it; only the per-form split is not asked for.
+      if (joinForms && variants.forms.length > 1) {
+        const joined = await probe(variants.forms.map((f) => f.form), p, { form: variants.forms.map((f) => f.form).join(" | ") });
+        const forms = variants.forms.map((f) => ({ form: f.form, rules: [...f.rules] }));
+        return { ...joined, forms, joined: true, generated: variants.generated, truncated: variants.truncated,
+          counted: Number.isFinite(joined.total) ? forms.length : 0 };
+      }
       const results = await runBatched(variants.forms, 1, async (f) => ({
         form: f.form, rules: [...f.rules], ...(await probe(f.form, p, { form: f.form })),
       }));
@@ -508,46 +501,6 @@ export async function countRegisterHits({
     },
     marks: rows,
   };
-}
-
-/**
- * The listing's answers, by mark and by term, for the count lane to take instead of asking again.
- *
- * WHY A LISTING CAN ANSWER A COUNT. The identical and close columns are the provider's exact predicate
- * over a term, and the knockout's listing (register-records.mjs) asks that same predicate over the same
- * terms. On a provider whose search answer carries the register's own total, the listing therefore
- * already holds the count, and asking again is a second bill for a figure in hand.
- *
- * ONLY THE SAME QUESTION. A term is taken only when the listing answered it (asked, answered, with a
- * total or a disclosed approximation), and only when the territories match here and the classes match
- * per mark (the caller checks those with `sameScope`). A term the listing did not reach — the cap, a
- * failure — is counted by the count lane as it always was. `containing` is never answered here: the
- * listing never asks it. Terms are keyed upper-case, because register-variants.mjs asks them upper-case
- * and name predicates are case-insensitive on every wired provider.
- *
- * Null when there is no listing: the caller passes one only on a register that declares
- * `listingAnswersCount` (pipeline-knockout.mjs). PURE.
- */
-export function listingAnswers(listed, { regions = [] } = {}) {
-  if (!listed || !Array.isArray(listed.marks)) return null;
-  if (!sameScope(listed.scope?.regions ?? null, regions.length ? regions : null)) return null;
-  const byMark = new Map();
-  for (const m of listed.marks) {
-    const terms = new Map();
-    for (const t of Array.isArray(m?.terms) ? m.terms : []) {
-      if (t?.ok !== true || t.notAsked) continue;
-      if (!Number.isFinite(t.total) && t.approximate !== true) continue;
-      terms.set(String(t.term ?? "").trim().toUpperCase(), t);
-    }
-    byMark.set(String(m?.name ?? "").trim().toLowerCase(), { classes: Array.isArray(m?.classes) ? m.classes : null, terms });
-  }
-  return byMark;
-}
-
-/** Two scopes are the same question when they list the same values in the same order, or are both unset. */
-export function sameScope(a, b) {
-  const norm = (v) => (Array.isArray(v) && v.length ? v.map(String) : null);
-  return JSON.stringify(norm(a)) === JSON.stringify(norm(b));
 }
 
 /** How many marks got at least ONE number. Zero of them means the product did not happen. */
@@ -704,7 +657,7 @@ export function variantFormsLine(entry) {
   // place that can say which. Keyed off the cell's own total, so the sentence and the column can never
   // disagree about whether there is a figure.
   if (Number.isFinite(cell.total)) return `Close variations counted${truncated}: ${forms}.`;
-  const missed = cell.forms.filter((f) => !Number.isFinite(f.total));
+  const missed = cell.joined ? (Number.isFinite(cell.total) ? [] : cell.forms) : cell.forms.filter((f) => !Number.isFinite(f.total));
   // The missing forms are NAMED only when naming them adds something. On a capability gap every form
   // misses, and repeating the list it has just printed makes the one sentence a reader has to parse
   // twice as long and no more informative.

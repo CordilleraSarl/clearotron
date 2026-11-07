@@ -21,12 +21,14 @@
 //
 // ── ONE PROCESS OR SEVERAL? SEVERAL, AND THIS IS THE LIST ────────────────────────────────────────────
 //
-// This file is a SUPERVISOR. It starts two child processes and nothing else:
+// This file is a SUPERVISOR. It starts four child processes and nothing else:
 //
-//   driver/portal-service.mjs     the product: the UI, the API, the sign-in, the config surface.
-//   mcp-server/http-server.mjs    the engine door the portal's Start button calls over real MCP.
+//   driver/portal-service.mjs        the product: the UI, the API, the sign-in, the config surface.
+//   mcp-server/http-server.mjs       the engine door the portal's Start button calls over real MCP.
+//   mcp-server/http-server-client.mjs  the client door an assistant connects to. Not fatal if it exits.
+//   driver/runner.mjs --watch        the worker that runs what is ordered, unless --no-worker.
 //
-// FOUR services and one process were the alternative, and the reason it is two is not taste. The portal
+// MORE SERVICES WERE THE ALTERNATIVE, and the reason there are not is not taste. The portal
 // ALREADY constructs profile-service and recipe-service in-process (portal-service.mjs — "profile-service
 // is constructed IN-PROCESS rather than called over HTTP"), running the same routers, the same
 // validators and the same git-commit path with the portal's own verified identity as the author. So two
@@ -38,7 +40,7 @@
 // stays a separate process for the reason the hosted deployment keeps it one: it pulls the MCP
 // Streamable-HTTP transport (undici) that nothing else in the portal needs.
 //
-// A CRASH IS REPORTED, NEVER ABSORBED. If either child exits while this command is running, that is
+// A CRASH IS REPORTED, NEVER ABSORBED. If a fatal child exits while this command is running, that is
 // named on stderr — which one, and with what code — and everything else is stopped. A supervisor that
 // let one child die and left the other serving would turn a dead trigger lane into a red panel in the
 // browser, which is the shape of failure this whole command exists to remove.
@@ -84,7 +86,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
 // the driver must not point at `bin/`.
-import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
+import { runRequiredNames, missingRequirements, whatIsMissing, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
 import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
 import { spawnsDetached, killWindowsTreesNow } from "../driver/engine/engine-spawn.mjs";   // Windows has no process group to stop
@@ -113,7 +115,8 @@ export async function runTables() {
 }
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal, storeCommitEnv } from "../shared/store-in-repo.mjs";   //
-import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
+import { stdioConnectOffer, WSL_ROW_HEADINGS } from "../shared/stdio-connect.mjs";
+import { namingProgram } from "../driver/engine/probe.mjs";   // the bare `claude` rewritten to the copy setup installed
 import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
@@ -125,7 +128,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, demoTokenSecretPath, keyIssueCommand, demoConnectCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
-import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, unlinkSync, writeFileSync, appendFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke, reachableCommand, foreignPageHint } from "../shared/invocation.mjs";   // — the banner names the verb
 // RE-EXPORTED, NOT RE-DECLARED. The sentence moved to a module that imports nothing of ours, because
@@ -403,6 +406,45 @@ export function clientDoorDownLines({ host, port, exited }) {
     `  Client door  NOT RUNNING on ${host}:${port} — ${exited ? "its output above says why" : "it did not answer within 30s"}. The portal and`,
     "               the engine door are unaffected; a client assistant cannot connect until it is up.",
   ];
+}
+
+/**
+ * THE LINES A HEALTHY DEMO'S SERVICES PRINT AS THEY COME UP, measured on a fresh demo (2026-11-06), each as its service tags it.
+ * Only these go to the startup file alone. A FILTER THAT LISTS WHAT TO SHOW WOULD HIDE A FAILURE IT DID NOT FORESEE: a door that
+ * cannot read its roster, or a sign-in that is unavailable, says so in a line with no FATAL or WARNING in it. So the list is of
+ * what may be filed, and every other line stays on the screen as well. A new routine line shows until it is added here; the
+ * fresh-demo test names it. ABOVE THE MAIN BLOCK, which reads them before any line below it has run.
+ */
+export const DEMO_ROUTINE_LINES = [
+  /^auth ON — /,
+  /^key path: none configured /,
+  /^roster: \d+ customer\(s\) from /,
+  /^This is `clearotron demo`: /,
+  /^listening on http:\/\//,
+  /^audit log: /,
+  /^trigger lane: the engine door takes an access key, and this portal holds one\.$/,
+  /^trigger lane: ops token sub=/,
+  /^settings surface ON — /,
+  /^saved searches ON — /,
+  /^brief reading OFF — this is the demo/,
+  /^local sign-in: no credential at /,
+  /^ {2}Its passphrase is in the box printed below;/,
+  /^API-KEY door — /,
+  /^client ACCOUNT access ON — /,
+  /^stopping — issued keys SURVIVE this stop/,
+];
+
+/**
+ * Whether a demo service's line belongs on the screen as well as in the startup file. A line with no service tag (the rest of
+ * a refusal, a stack trace) or with an alarm in it always shows; a tagged routine line does not; a blank line does not. PURE.
+ */
+export const DEMO_ALARM = /⚠|\bWARN(?:ING)?\b|\bFATAL\b|\bERROR\b|\bMISSING\b/;
+export function demoLineOnScreen(line) {
+  const s = String(line ?? "");
+  if (!s.trim()) return false;
+  if (DEMO_ALARM.test(s)) return true;
+  const tagged = /^\[[\w-]+\] (.*)$/.exec(s);
+  return !(tagged && DEMO_ROUTINE_LINES.some((re) => re.test(tagged[1])));
 }
 
 export function resolvePorts(env = {}) {
@@ -706,7 +748,7 @@ const unitTypeOf = (u) => {
 // it has worked", which is the failure its own comment records being found by driving it twice.
 //
 // AND THEY MUST BE DISARMED, not merely unpinned. The worker drains continuously; leaving the timer
-// armed puts a second claimant on the queue. The claim itself is atomic — `runner.mjs:714` renames
+// armed puts a second claimant on the queue. The claim itself is atomic — `claimAndPrep` in runner.mjs renames
 // `<id>.json` to the lock path and only one racer wins — so this is not double-execution. What it does
 // cost is the admission cap: counts are serial per queue while queues drain concurrently, so two
 // claimers can overshoot a per-account cap by a bounded one per queue. A bounded overshoot is not a
@@ -1023,7 +1065,12 @@ if (isMain) {
   // Declining the worker is a real posture, not a debug switch: someone who wants the old separation —
   // order here, drain deliberately over there — keeps it with this flag, and the closing block tells them
   // exactly how to drain when they do.
-  const wantWorker = !argv.includes("--no-worker");
+  //
+  // NOT IN A DEMO. A demo's orders resolve to reports it already has and never reach the queue, so a
+  // worker there drains nothing the portal puts in it. What it would drain is a job an assistant queued
+  // through the connect line this command prints, and it would run that job on whatever engine this
+  // machine is signed in to: a real clearance, paid for, started from the demo.
+  const wantWorker = !argv.includes("--no-worker") && !argv.includes("--demo");
   const wantBackground = argv.includes("--background");
   // ON WINDOWS THERE IS NO BACKGROUND FORM: it is systemd units. Answered here, before anything is written
   // or systemctl is called, in the owner's sentence and nothing else, so no `start:` prefix either.
@@ -1386,12 +1433,12 @@ if (isMain) {
     //
     // Three conditions, and each is a different reason:
     //   · the address is genuinely taken — anything else is not this case;
-    //   · the reader did not state this port, so no one is addressed to it. An explicitly set port is
-    //     a stated address and is refused exactly as before;
+    //   · the reader did not state this port, so no one is addressed to it. A port set by its variable or
+    //     by `--port` is a stated address and is refused exactly as before;
     //   · nothing fronts these doors, so nothing outside resolves to the old number.
     // With any of those false the refusal below fires unchanged, which is the whole of the previous
     // behaviour kept intact underneath this.
-    if (code === "EADDRINUSE" && key && !fronted.length && !String(process.env[portVar] ?? "").trim()) {
+    if (code === "EADDRINUSE" && key && !fronted.length && !portFlag && !String(process.env[portVar] ?? "").trim()) {
       const next = await nextFreePort(port, async (p) => (await probe(p)) === null, { claimed: claimedPorts });
       // NULL IS NOT A FALLBACK. Nothing free in range means the reader is told the truth about the
       // port they asked for, rather than sent to one this could not prove was free either.
@@ -1562,8 +1609,8 @@ if (isMain) {
       // revocation list is a door that cannot be revoked from, and starting it anyway is the failure
       // this whole finding is about — the run must not continue "successfully" into that state.
       fatal(`could not use the revocation list at ${denylist} (${String(e?.message ?? e)}).\n`
-        + "  The client door reads this file on every key check and treats an unreadable one as \"not revoked\",\n"
-        + "  so starting without it would make every revocation silently ineffective.");
+        + "  The client door reads this file on every key check. Without it, this install cannot check whether\n"
+        + "  keys have been revoked, so it would refuse all of them.");
     }
   }
 
@@ -2234,6 +2281,15 @@ if (isMain) {
   const children = [];
   let stopping = false;
 
+  // THE DEMO'S STARTUP FILE, in the demo's own folder, so removing the demo removes it. Every service line is written to it; the
+  // screen keeps every line but a healthy start's routine ones (`demoLineOnScreen`), and a service that stops answering has its
+  // last lines put on the screen before the sentence that points at them, so nothing that explains a failure stays only in the file.
+  const DEMO_STARTUP_LOG = DEMO ? join(paths.base, "startup.log") : null;
+  const fileDemoLine = (line) => {
+    try { appendFileSync(DEMO_STARTUP_LOG, `${line}\n`); } catch { process.stderr.write(`${line}\n`); return; }
+    if (demoLineOnScreen(line)) process.stderr.write(`${line}\n`);
+  };
+  const showFiledTail = (rec) => { if (DEMO) for (const line of rec.tail) process.stderr.write(`${line}\n`); };
   const start = (name, script, env, { args = [], fatal = true, clientDoor = false } = {}) => {
     const child = spawn(process.execPath, [join(REPO, script), ...args], {
       cwd: REPO,
@@ -2254,7 +2310,10 @@ if (isMain) {
       // stderr holds the whole of it — and leaving it alone keeps the child's terminal detection and any
       // progress rendering intact. Piping a stream costs the child its TTY, so only the stream that has to
       // be read is piped.
-      stdio: ["ignore", "inherit", "pipe"],
+      // A DEMO FILES ITS SERVICES' ROUTINE LINES (owner's words, 2026-11-06): its first screen is the progress, the sign-in, the
+      // connect line and how to stop, and a reader met nineteen developer lines above the passphrase box. Both streams are read,
+      // every line goes to the startup file, and any line but a healthy start's routine ones still reaches the screen.
+      stdio: ["ignore", DEMO ? "pipe" : "inherit", "pipe"],
       env: childProcessEnv(process.env, env),
     });
     // The last lines of that child's stderr, forwarded on as they arrive so nothing is delayed or
@@ -2269,12 +2328,22 @@ if (isMain) {
     const keep = (line) => { if (line.trim()) tail.push(line); while (tail.length > 12) tail.shift(); };
     child.stderr?.setEncoding("utf8");
     child.stderr?.on("data", (chunk) => {
-      process.stderr.write(chunk);
+      if (!DEMO) process.stderr.write(chunk);
       const parts = (pending + String(chunk)).split("\n");
       pending = parts.pop() ?? "";
-      for (const line of parts) keep(line);
+      for (const line of parts) { keep(line); if (DEMO) fileDemoLine(line); }
     });
-    child.stderr?.on("end", () => { keep(pending); pending = ""; });
+    child.stderr?.on("end", () => { keep(pending); if (DEMO && pending) fileDemoLine(pending); pending = ""; });
+    if (DEMO) {
+      let out = "";
+      child.stdout?.setEncoding("utf8");
+      child.stdout?.on("data", (chunk) => {
+        const parts = (out + String(chunk)).split("\n");
+        out = parts.pop() ?? "";
+        for (const line of parts) fileDemoLine(line);
+      });
+      child.stdout?.on("end", () => { if (out) fileDemoLine(out); out = ""; });
+    }
     const rec = { name, script, child, alive: true, tail };
     children.push(rec);
     child.on("exit", (code, signal) => {
@@ -2332,7 +2401,7 @@ if (isMain) {
     if (DEMO && !READER_BASE && !DEMO_KEEP) {
       try {
         rmSync(paths.base, { recursive: true, force: true });
-        say(`\n  The demo removed everything it created: ${paths.base} is gone, and nothing of it is left on this machine.`);
+        say(`\n  The demo removed everything it created: ${paths.base} is gone.`);
       } catch (e) {
         // A FAILED CLEANUP IS SAID, NOT SWALLOWED. The promise this prints is the one thing a reader
         // cannot check for themselves once the window closes.
@@ -2346,6 +2415,10 @@ if (isMain) {
 
   // Ctrl-C, and whatever a terminal or a parent supervisor sends. Both land on the same teardown, and
   // the `stopping` flag is what stops an orderly stop being reported as a crash.
+  // A THROW BELOW WOULD END THIS PROCESS WITH ITS DOORS STILL UP: each child is in its own process group, so
+  // nothing else stops them. Everything that can go wrong from here goes through the same teardown.
+  for (const event of ["uncaughtException", "unhandledRejection"])
+    process.on(event, (e) => { err(`\nstart: ${String(e?.stack ?? e?.message ?? e)}\n`); void shutdown(1); });
   process.on("SIGINT", () => { void shutdown(0); });
   process.on("SIGTERM", () => { void shutdown(0); });
   for (const sig of windowCloseSignals()) process.on(sig, () => { void shutdown(0); });
@@ -2360,11 +2433,16 @@ if (isMain) {
     }
   };
 
+  if (DEMO) {
+    // THIS START'S LINES ONLY: a folder the reader named keeps its file between demos, and the line below points at this one.
+    try { writeFileSync(DEMO_STARTUP_LOG, ""); } catch { /* each line then shows on the screen instead */ }
+    say(`  Startup details are in \`${DEMO_STARTUP_LOG}\`.`);
+  }
   // The face first: the portal reads its trigger key's posture at boot and logs what the lane is capped
   // to, so having the far end already listening keeps that line honest rather than optimistic.
   const mcp = start("the engine door", "mcp-server/http-server.mjs", envs.mcp);
   if (!await healthy(`http://${HOST}:${ports.mcp}/healthz`, mcp)) {
-    if (mcp.alive) { err(`\nstart: the engine door did not answer on ${HOST}:${ports.mcp} within 30s — its output above says why.\n`); await shutdown(1); }
+    if (mcp.alive) { showFiledTail(mcp); err(`\nstart: the engine door did not answer on ${HOST}:${ports.mcp} within 30s — its output above says why.\n`); await shutdown(1); }
     await new Promise(() => {});   // its exit handler is already tearing down
   }
 
@@ -2421,7 +2499,7 @@ if (isMain) {
   const portal = start("the portal", "driver/portal-service.mjs",
     mintedPassphrase ? { ...envs.portal, PORTAL_LOCAL_PASSPHRASE: mintedPassphrase } : envs.portal);
   if (!await healthy(`http://${HOST}:${ports.portal}/portal/health`, portal)) {
-    if (portal.alive) { err(`\nstart: the portal did not answer on ${HOST}:${ports.portal} within 30s — its output above says why.\n`); await shutdown(1); }
+    if (portal.alive) { showFiledTail(portal); err(`\nstart: the portal did not answer on ${HOST}:${ports.portal} within 30s — its output above says why.\n`); await shutdown(1); }
     await new Promise(() => {});
   }
 
@@ -2515,7 +2593,7 @@ if (isMain) {
     if (adoptedClientDoor)
       say(`               Already running as ${CLIENT_DOOR_UNIT}; this start kept it, so existing keys still work.`);
     else
-      say(`               It refuses every caller until a key is issued: ${DEMO ? demoConnectCommand({ prefix: invocationPrefix(), base: paths.base }) : keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
+      say(`               It refuses every caller until a key is issued: ${DEMO ? demoConnectCommand({ prefix: invocationPrefix(), base: paths.base, where: "elsewhere" }) : keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
   } else {
     // A door that exited printed why; one still up when the wait ran out printed nothing, and is not sent there.
     for (const line of clientDoorDownLines({ host: HOST, port: ports.client, exited: clientDoor?.child?.exitCode !== null })) say(line);
@@ -2596,13 +2674,20 @@ if (isMain) {
     for (const line of laterStartLines({ user, reset, credentialPath: credentialNow, source: signIn?.source ?? "install", record })) say(line);
   }
   say("");
-  if (worker) {
-    say("  Ordering a clearance from the portal starts it. The portal prices the run and asks you to");
-    say("  confirm before anything is spent — that confirmation is the moment money is committed.");
+  // A DEMO STARTS NOTHING, so it is not told that confirming commits money: it runs no worker, and the
+  // portal resolves every order to a report it already has (driver/portal-service.mjs, `if (demo)`).
+  if (DEMO) {
+    say("  Ordering a clearance from the portal opens the finished example for that search: every search");
+    say("  here resolves to a report that already exists. Nothing is started and nothing is charged.");
+  } else if (worker) {
+    // ASKED OF THE ENVIRONMENT THE WORKER WAS HANDED, by the runner's own order-time test: an order is refused
+    // there until the install can search, and this line said an order starts a run whatever the install held.
+    const cannot = missingRequirements(childProcessEnv(process.env, envs.worker), await runTables()).atOrder;
+    for (const line of orderingLines({ missing: whatIsMissing(cannot), install: invoke("install") })) say(line);
   } else {
     say("  Ordering a clearance from the portal puts the job in the queue and shows it there with its");
     say("  position. You started with --no-worker, so nothing is draining it: run");
-    say("    node driver/runner.mjs --watch");
+    say(`    ${invoke("run-queue")} --watch`);
     say("  in another terminal when you want the queued work done.");
   }
   say("");
@@ -2623,22 +2708,20 @@ if (isMain) {
   // install inside WSL can be reached from Windows and from inside the distribution, by two different
   // commands; printing one of them unheaded is how a reader pastes the wrong one. The target is read
   // here and passed, because this module is pure by design and reads no environment of its own.
-  const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
+  const offered = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), demo: DEMO, ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
+  const claudeProgram = resolveEngineProgram(claudeEngine());
+  const connect = connectLinesNamingClaude(offered, claudeProgram);
   // "one line" IS DELETED RATHER THAN MADE CONDITIONAL. Under WSL two lines are printed, one per side,
   // and the count was never the point of the sentence — what it promises is no address and no sign-in,
   // which is true on both sides and on every other install.
   say("  Connect your assistant to this install — no address and no sign-in:");
   say("");
+  for (const line of connectPrerequisiteLines({ demo: DEMO, program: claudeProgram })) say(line);
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
-  if (connect.variants) {
-    for (const v of connect.variants) { say(`    ${v.heading}`); say(`      ${v.text}`); if (v.hint) say(`      ${v.hint}`); say(""); }
-  } else {
-    say(`    ${connect.command}`);
-    say("");
-  }
-  say(`  Check it:  ${connect.verify}`);
-  say("");
+  for (const line of connectScreen(connect)) say(line);
+  // The owner's words, 2026-11-06.
+  if (DEMO) { say(`  Another assistant? Run \`${demoConnectCommand({ prefix: invocationPrefix(), base: paths.base })}\` in a second terminal and pick it.`); say(""); }
   // ── WHERE TO TYPE THE THINGS JUST PRINTED ( — F31) ───────────────────────
   //
   // This block prints commands and then HOLDS THE TERMINAL in the foreground, so not one of them can be
@@ -2686,6 +2769,71 @@ if (isMain) {
 export function demoBaseIsTheReaders({ baseGiven = false, ownBase = false, base = "", demoDefault = "" } = {}) {
   if (!baseGiven) return false;                                          // start chose it: the demo's own
   return !(ownBase && base && demoDefault && base === demoDefault);      // handed over, and it IS the default
+}
+
+/**
+ * The engine whose program is the `claude` the connect lines run. A function, not a constant: the command
+ * body above runs while this module is still loading, before a constant declared down here exists.
+ */
+function claudeEngine() { return Object.keys(ENGINE_BINARIES).find((k) => ENGINE_BINARIES[k].fallback === "claude"); }
+
+/**
+ * The connect lines, naming the Claude program setup installed when that is the copy this machine runs.
+ *
+ * Setup installs Claude into its own engines folder, which is not on PATH, and the lines said `claude mcp
+ * add …` and `claude mcp list`: a command the reader's shell does not have (measured on a published beta,
+ * after setup had installed it). `namingProgram` is the rewrite setup's own sign-in line uses, and it
+ * changes nothing for a copy on PATH. UNDER WSL ONLY THE ROW RUN INSIDE LINUX is rewritten: the Windows
+ * row runs Windows' own `claude`. The check line is said per row there when the two differ (`verify` on each).
+ * `program` is what resolveEngineProgram answers ({ source, resolved }). PURE.
+ */
+export function connectLinesNamingClaude(connect, program) {
+  const spec = ENGINE_BINARIES[claudeEngine()];
+  const name = (text) => namingProgram(text, spec, { source: program?.source ?? null, path: program?.resolved ?? null });
+  if (connect.variants) return { ...connect,
+    variants: connect.variants.map((v) => (v.heading === WSL_ROW_HEADINGS.insideWsl
+      ? { ...v, text: name(v.text), verify: name(connect.verify) } : { ...v, verify: connect.verify })) };
+  return { ...connect, command: name(connect.command), verify: name(connect.verify) };
+}
+
+/**
+ * What a demo says before its connect line when this machine has no Claude program. The line runs Claude Code,
+ * and printed alone it failed as "claude: command not found" on a machine without it; the owner's words
+ * (2026-11-06). A real install's setup offers the program, so it is not told this. `program` is what
+ * resolveEngineProgram answers for Claude. PURE.
+ */
+export function connectPrerequisiteLines({ demo = false, program = null } = {}) {
+  if (!demo || program?.resolved) return [];
+  return fitTo(96, "This needs Claude Code, and this machine does not have it. Install Claude Code, then run the line below.")
+    .map((l) => `  ${l}`);
+}
+
+/**
+ * The lines under "Connect your assistant": each row, then the check line once, or under each row when the
+ * rows' checks differ. PURE.
+ */
+export function connectScreen(connect) {
+  const perRow = Boolean(connect.variants?.some((v) => v.verify && v.verify !== connect.verify));
+  const rows = connect.variants
+    ? connect.variants.flatMap((v) => [`    ${v.heading}`, `      ${v.text}`, ...(v.hint ? [`      ${v.hint}`] : []),
+      ...(perRow ? [`      Check it:  ${v.verify}`] : []), ""])
+    : [`    ${connect.command}`, ""];
+  return perRow ? rows : [...rows, `  Check it:  ${connect.verify}`, ""];
+}
+
+/**
+ * What a terminal start says about ordering when it runs a worker. `missing` is what the install lacks for a
+ * search, in the phrases the portal uses (whatIsMissing), or "" when it lacks nothing. An install that cannot
+ * search has its orders refused, so it is told that, in the owner's words (2026-11-06), and not that an order
+ * starts a run.
+ */
+export function orderingLines({ missing = "", install = "clearotron install" } = {}) {
+  if (!missing) {
+    return ["  Ordering a clearance from the portal starts it. The portal prices the run and asks you to",
+      "  confirm before anything is spent — that confirmation is the moment money is committed."];
+  }
+  return fitTo(96, `Ordering a clearance from the portal is refused until this install can run a search: ${missing}. `
+    + `Run \`${install}\` in a terminal to set it up.`).map((l) => `  ${l}`);
 }
 
 /**

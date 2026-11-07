@@ -118,8 +118,22 @@ import { probeCliVersion } from "../driver/engine/cli-version.mjs";   // the eng
 // use. "Its cheapest model" is true of either engine and brands neither.
 export const probingLine = (engineId) =>
   `Probing ${engineId} with one turn on its cheapest model (this SPENDS; ${PROBE_TIMEOUT_SEC}s ceiling)…`;
-export const proveQuestion = ({ engineId, lane }) =>
-  `Prove ${engineId} on the ${lane} lane now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
+/** How each answer to the pay question is said afterwards, keyed by the billing word that answer's id is. */
+export const PAYS_WITH = Object.freeze({ subscription: "your subscription", "api-key": "your API key", cloud: "your cloud account" });
+export const proveQuestion = ({ product, billing }) =>
+  `Prove ${product} on ${PAYS_WITH[billing]} now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
+/**
+ * What setup says just before it asks to prove the engine. Answering no saves nothing and asks whether to go
+ * on without an AI, so the reader is told before answering that the AI is saved only once the turn works. On a
+ * subscription it also says what a turn costs when the program is not signed in yet, nothing, and that the
+ * sign-in follows (signInHandOff); under a key or a cloud account there is no sign-in to follow.
+ */
+export const proofPreamble = ({ product, billing }) => [
+  "A file that exists is not an engine that works — so setup tries one before writing anything.",
+  `It takes a few seconds, and setup saves ${product} as your AI only once this turn works.`,
+  ...(billing === "subscription"
+    ? [`If ${product} is not signed in yet, the turn costs nothing, and setup then shows how to sign in.`] : []),
+];
 
 // HOW CLAUDE IS PAID FOR, IN THE OWNER'S WORDS (2026-09-14): one question, three answers, the third a cloud
 // account. Codex keeps the question it had: a cloud account bills Claude only, and the resolver refuses
@@ -229,7 +243,7 @@ export const cloudAccount = (cloud) =>
 export const servedLine = (v) => (v?.served || v?.provider)
   ? `served by ${v.served ?? "a model the program did not name"}${v.provider ? `; the program names its provider "${v.provider}"` : ""}.`
   : null;
-import { runRequiredNames, missingRequirements, billingRefusalWords, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
+import { runRequiredNames, missingRequirements, billingRefusalWords, whatIsMissing, cannotSearchYet, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 // one synopsis reader for every verb that prints one.
@@ -393,6 +407,7 @@ const prose = (...parts) => { for (const l of wrapProse(parts.join(" "), proseWi
  *
  * @param {Record<string,string>} candidate what setup collected — always wins
  * @param {Record<string,string>} existing  the file as it stands
+ * @param {{ packaged?: boolean }} [how]     whether this is a package install, for the header's command
  */
 /**
  * ── IS THE PORTAL BUNDLE THE ONE ITS SOURCES WOULD BUILD? — ─────────────────
@@ -511,12 +526,53 @@ export function configurationLostToUpgrade({
   return dirs.every((d) => exists(d)) ? { base, dirs, installDir } : null;
 }
 
-export function composeEnvBody(candidate, existing = {}) {
+/**
+ * Why setup keeps a reader's configuration outside the program's own files, said for how the program was
+ * installed. A checkout takes updates with `git pull`; a package has no git, and an update replaces it whole.
+ */
+export const configOutsideWhy = (packaged) => (packaged
+  ? "Your customers and any instructions you override live here, outside the installed package, so an "
+    + "update can replace the package without touching them."
+  : "Your customers and any instructions you override live here, outside the checkout — which is what "
+    + "lets you take updates with `git pull` instead of merging into files you never meant to own.");
+/** What setup says when the folder a reader named sits inside the program's own files, said the same way. */
+export const configInsideRefusal = (packaged, path, repo) => (packaged
+  ? [`${path} is INSIDE the installed package (${repo}).`,
+    "An update replaces the package and everything in it. Choose a path outside the installed package."]
+  : [`${path} is INSIDE the checkout (${repo}).`,
+    "Everything you write there becomes a local modification to our files: `git pull` conflicts,",
+    "and `git status` that is never clean. Choose a path outside the checkout."]);
+/**
+ * What setup says about custom instructions in the configuration step, for the configuration folder `cfg`:
+ * none are set, and how to add one later. Setup writes no CLEAROTRON_INSTRUCTIONS_DIR; the reason is beside
+ * the line that prints this.
+ */
+export const customInstructionsNone = (cfg) => "Custom instructions: none, so CLEAROTRON_INSTRUCTIONS_DIR stays unset "
+  + "and the product's own instruction files are used. To override one later, put your copy in "
+  + `${join(cfg, "skills")}, commit it in ${cfg}, and set CLEAROTRON_INSTRUCTIONS_DIR to that folder. `
+  + "A run cannot identify an uncommitted folder, and says so rather than guessing.";
+/** What setup says about the configuration folder it leaves empty: an empty one is a working install. */
+export const EMPTY_CONFIG_FOLDER = "Left empty, and an empty folder is a working install: searches use the "
+  + "product's own instruction files and its Generic defaults, each until you add your own. Your own customers "
+  + "are added here; the demo's sample customers never appear among them.";
+/** The line setup prints once it has created the configuration folder `cfg` and the folder beneath it. */
+export const configFoldersMade = (cfg) => `configuration directories created under ${cfg} (empty: the product's `
+  + "own instruction files and its Generic defaults apply, each until you add your own)";
+/** What setup says at its last check when no register is chosen: what it skips, what follows, and what to do. */
+export const REGISTER_CHECK_SKIPPED =
+  "Skipping the register credential check: no register is chosen. Every search refuses until one is set. Re-run setup when you have a credential.";
+/** What setup says when the register's credentials pass that check: the register, and the settings it checked. */
+export const registerCheckPassed = (register, settings) =>
+  `the register credential check passed for "${register}" — checked ${settings}`;
+
+export function composeEnvBody(candidate, existing = {}, { packaged = PACKAGED } = {}) {
   // Setup's own answers win: the reader just typed them, and this run is the newer statement.
   const carried = Object.entries(existing).filter(([k]) => !(k in candidate));
   return [
-    "# Written by `npm run setup`. Environment variables always win over this file.",
-    "# It holds credentials: keep it at mode 600, and out of git (.gitignore already covers it).",
+    // NAMED FOR HOW THE PROGRAM WAS INSTALLED: a package has no npm scripts. And no .gitignore is claimed,
+    // because the file is written to the reader's own settings folder (envLocalPath), outside the program.
+    `# Written by \`${packaged ? "clearotron install" : "npm run setup"}\`. Environment variables always win over this file.`,
+    "# It holds credentials: keep it at mode 600, and out of git.",
     "",
     // — VALIDATE under the names the engine reads, WRITE the names an installer should now see.
     // Without this a fresh `npm run setup` emits a .env full of deprecated spellings and the very next
@@ -827,6 +883,34 @@ export { ON_A_WINDOWS_DRIVE };
 export { namingProgram };
 
 /**
+ * What setup shows under a failed proof turn as its evidence: the engine's own last words, or that it said
+ * none, and how the verdict was read. A turn refused before the program started (basis "config": a billing
+ * setting, a missing sign-in file, an engine this driver does not ship) has no output to show and nothing
+ * read from it, so it shows neither; the verdict above it names what is missing.
+ */
+export function proofEvidence(v) {
+  if (v.basis === "config") return [];
+  return [
+    v.detail ? `engine said: ${v.detail}` : "engine said: nothing — it produced no output on either stream before it stopped.",
+    ...(v.basis ? [v.basis === "text-match"
+      ? "(setup's reading of the words above, not a status the program reported)"
+      : `(that reading is ${v.basis})`] : []),
+  ];
+}
+
+/**
+ * A failed proof turn's first line, as setup prints it: the probe's verdict with the AI named the way setup's
+ * own questions name it (`product`: "Claude" or "Codex"), not by its setting's value, `anthropic-agent` or
+ * `openai-agent`. Only that word changes, whichever way the turn failed. The probe keeps its own words for
+ * `doctor --probe-engine` and for a run's check before it starts, which both report the setting. PURE.
+ */
+export function proofFailureLine(v, product) {
+  const id = String(v?.engine ?? "");
+  const headline = String(v?.headline ?? "");
+  return probeFailureText({ ...v, headline: id && product ? headline.replace(id, () => product) : headline });
+}
+
+/**
  * What setup says after a failed proof turn about the step it cannot take for the reader, by how the turn
  * is paid for (`billing`, the billing word). On a subscription that is the sign-in, naming the copy that runs,
  * and the route for a machine with no browser; `captureToken` says whether that route's token is offered for
@@ -838,7 +922,12 @@ export function signInHandOff(eng, bin, billing) {
   if (billing === "cloud") return { lines: ["if you fixed the cloud's sign-in on this machine, answer yes below; to change the answers "
     + "above, answer no and pick the engine again."], captureToken: false };
   if (billing === "api-key") return { lines: ["to give a different key, answer no below and pick the engine again."], captureToken: false };
-  const lines = [`if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes below.`];
+  // SETUP IS STILL WAITING IN THIS TERMINAL, so the commands are run in a second one. Said of the commands,
+  // not as "sign in": these lines follow every failed turn, a spent quota as much as a sign-out. And the yes
+  // it asks for is the retry's, named. On Claude a token question follows the retry, and it wants a no after a
+  // browser sign-in.
+  const lines = ["setup waits in this terminal, so run the commands below in a second one:",
+    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "Run the turn again".`];
   // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made on
   // any machine, so its command keeps the bare word, and this machine's copy is named beside it.
   if (eng.headless) {
@@ -1062,6 +1151,16 @@ export function engineOptions(found = {}) {
     ...rows.map(({ id, name, state }) => ({ id, label: state ? `${name.padEnd(width)}   ${state}` : name })),
     { id: null, label: "None for now" },
   ];
+}
+
+/**
+ * The engine menu's default row: the AI the reader picked on an earlier pass, or row 0 on the first. A reader
+ * whose turn failed on one AI and who went back to the menu met row 0 under Enter, which is a change of AI they
+ * had not chosen. Remembering the pick saves nothing: the proof turn still decides what is written.
+ */
+export function engineMenuDefault(options, lastPick = null) {
+  const at = lastPick ? options.findIndex((o) => o.id === lastPick) : -1;
+  return at < 0 ? 0 : at;
 }
 
 // A COPY REFUSED AS THE VENDOR'S PLACEHOLDER, told apart by the resolver's own reason for refusing it
@@ -1459,9 +1558,13 @@ export function readOwnProcesses(repo, { table = processTable() } = {}) {
     .map((p) => ({ pid: p.pid, startedAt: p.startedAt, cmd: p.cmd.slice(0, 120) }));
 }
 
+// The closing line of a check whose engine probe ran a test turn: the turn's AI program writes its own files
+// under ~/.claude and ~/.cache, so "Nothing was written" was true of this command and not of the turn.
+const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test turn keeps its own files.";
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
-  say(`  repo: ${REPO}`);
+  // Whether the engine probe's turn started the AI program (TURN_KEPT_ITS_FILES); one refused first did not.
+  let probeTurnRan = false;
 
   // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
   //
@@ -1486,172 +1589,8 @@ export async function runCheck() {
         home: homedir() })
     : null;
 
-  // — CURRENT, not just configured. Printed before anything else because a stale deployment
-  // makes every line below it a report about the wrong build.
-  say("\n  Deployment");
-  const cur = deploymentCurrency();
-  if (cur.state === "current") ok(`up to date with ${cur.upstream} as of the last fetch`);
-  else if (cur.state === "behind") {
-    problem(`${cur.behind} commit(s) behind ${cur.upstream} as of the last fetch — run \`${invoke("update")}\``);
-  } else if (cur.state === "no-upstream") info("this branch tracks no remote, so there is nothing to be behind");
-  // SAYS IT WAS TOLD. A reader must be able to see the assumption in the output rather than infer it
-  // from a silence — a doctor that quietly answers a question it was handed is the shape this whole
-  // surface exists to refuse.
-  else if (cur.state === "pinned") info("pinned checkout (CLEAROTRON_DOCTOR_ASSUME_PINNED), so there is nothing to be behind");
-  else if (cur.state === "not-a-checkout") {
-    // A PACKAGED INSTALL CAN STILL NAME ITS CODE. `not-a-checkout` is the permanent
-    // state of every registry install, and "this run's code cannot be named" is not something a customer
-    // install should say forever. `prepack` stamps the commit into `build-info.json` and it ships, so the
-    // commit is readable here — but it is read from a FILE THE ARCHIVE CARRIES, not from a live checkout,
-    // and those are not the same evidence. The line says which one it had, because a reader who cannot
-    // tell them apart cannot tell a stamped archive from a verified tree.
-    const packed = packagedBuild();
-    if (packed) info(`packaged install of ${packed.commit.slice(0, 8)} (v${packed.version}), named from the `
-      + "archive's own build-info.json rather than from a checkout — currency is not a question this can answer");
-    else info("not a git checkout, so currency is not a question this can answer");
-  }
-  else warn(`could not tell whether this deployment is current: ${cur.detail}`);
-  if (cur.state !== "not-a-checkout" && cur.state !== "no-upstream" && cur.state !== "pinned") {
-    info("this does not fetch — the count is against the last fetch, not against the remote right now");
-  }
-
-  // ── WHICH BOX THIS IS, NAMED OUT LOUD ───────────────────────────────────────────────────────────
-  //
-  // `CLEAROTRON_BOX` is how a deployment names itself; `shared/deployment-box.mjs` says it is never
-  // inferred from the account, the checkout or the port, because all three correlate with the answer
-  // and none of them IS the answer. But nothing here printed it, so an unset or misspelled value left
-  // doctor exiting 0 and ending "Nothing wrong with what is configured" — the one check that would
-  // catch a deployment lying about itself was the one check that did not report.
-  //
-  // FOUR STATES, NOT THREE. Set, unset and unrecognised are the three the requirement names. The
-  // fourth is a hosted box whose unit environment COULD NOT BE READ, and calling that "unset" would
-  // claim the file says nothing when it was never read — absence reported as a finding, in the section
-  // whose entire job is to make the box visible. `couldNotDetermine` already exists for exactly this
-  // and is what the token and URL checks below use.
-  //
-  // THE VALUE COMES FROM THE FILE THE UNITS LOAD, never from this command's shell, and the two can
-  // disagree: an operator with CLEAROTRON_BOX exported in their own environment would otherwise read
-  // their own shell back and call it the deployment's identity. The shell is reported only when it
-  // CONTRADICTS the file, because that disagreement is itself a finding.
-  //
-  // The allowlist is imported rather than re-typed. Two inline copies agree on the day they are
-  // written and drift afterwards, which is the reason that module exists at all.
-  const boxSource = hosted ? "the units' environment" : "your environment file";
-  const boxFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
-  if (hosted && unitEnv?.known !== true) {
-    warn(couldNotDetermine("CLEAROTRON_BOX", unitEnv));
-  } else {
-    const raw = (boxFileEnv?.CLEAROTRON_BOX ?? "").trim();
-    // THE ACCEPTED NAMES ARE NEVER PRINTED. They are the names of the deployments this build was made for,
-    // and the line offered them to a newcomer to name their own machine after (measured on a fresh install
-    // of a beta, 2026-11-03). An install without units says nothing of an unset name: nothing there reads
-    // it. Installed units are warned, because the services read it, and `start --background` installs the
-    // same units a hosted deployment runs, from the same renderer, so nothing here can tell the two apart.
-    if (!raw) {
-      // AN ABSENCE IS NOT A MISCONFIGURATION, and this command already separates the two — a machine
-      // nobody has configured yet has no box, legitimately, and `--check` on one exits 0 by contract.
-      // Reported at `!` so it is visible rather than silent, which is the whole requirement; raising it
-      // to `✗` made every unconfigured machine fail its own acceptance arm, and said "fault" about a
-      // state that is the normal beginning of an install.
-      if (hosted) warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
-        + "can be read as a statement about a particular box");
-    } else if (!DEPLOYMENT_BOXES.includes(raw)) {
-      problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows. `
-        + `An unrecognised name reads as NO box everywhere it is `
-        + "consulted, which is quieter than a wrong one and just as wrong");
-    } else {
-      ok(`this box names itself "${raw}", from ${boxSource}`);
-      const shell = (process.env.CLEAROTRON_BOX ?? "").trim();
-      if (shell && shell !== raw) {
-        warn(`your shell says CLEAROTRON_BOX="${shell}", which disagrees with ${boxSource}. The running `
-          + "service goes by the file; your own commands go by the shell, so the two would report "
-          + "different boxes for the same machine");
-      }
-    }
-  }
-
-  // ── THE TWO FILES MAY DISAGREE ABOUT THE DOOR ────────────────────────────────
-  //
-  // They are disjoint by design and are SUPPOSED to differ about paths, ports and secrets. What must
-  // never differ is the door: a box whose two files name different auth modes, or different audiences,
-  // has a sign-in pointing at the wrong tenant depending on which process answered — and that fails as a
-  // SUCCESSFUL LOGIN rather than as an error, which is why it is said here rather than left to whoever
-  // compares the files by eye.
-  const diverged = (() => {
-    try {
-      return doorDivergence({
-        repoText: readFileSync(READ_ENV_PATH(), "utf8"),
-        homeText: readFileSync(join(homedir(), ".env"), "utf8"),
-      });
-    } catch { return []; }   // one file absent is the ordinary case and says nothing
-  })();
-  for (const d of diverged)
-    warn(`${d.key} differs between ${ENV_PATH} (${d.checkout}) and ${join(homedir(), ".env")} `
-      + `(${d.units}). Those two files configure different processes, and the second is what the `
-      + "services run with — so the door a caller meets depends on which one answered.");
-  // — a current checkout is not a current deployment. Reported separately because it is a
-  // separate fact, and because "up to date" beside a service running last week's code is a lie of
-  // omission rather than a wrong number.
-  const running = programsOnAnOlderTree();
-  if (running.state === "older-tree") {
-    warn(`${running.programs.length} running program(s) started before this checkout last moved — they are `
-      + "executing the previous tree until restarted:");
-    for (const pr of running.programs.slice(0, 6)) say(`      pid ${pr.pid}  ${pr.cmd}`);
-    if (running.programs.length > 6) say(`      … and ${running.programs.length - 6} more`);
-    say("      Restart whatever supervises them; this command does not, because which supervisor owns");
-    say("      them is a property of your deployment and not of this checkout.");
-  } else if (running.state === "unknown") {
-    // A PACKAGED INSTALL HAS NO TREE TO BE BEHIND. npm replaces the whole package on an update, so this
-    // question belongs to a checkout, and on a package it is a `!` nothing can ever clear.
-    if (PACKAGED) info("running programs against a checkout's tree: not applicable to a packaged install");
-    else warn(`could not tell whether running programs are on the current tree: ${running.detail}`);
-  }
-
-  // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE ──────────────────────────────
-  //
-  // The block above asks whether a process predates this checkout's last move. This asks whether it is
-  // executing a DIFFERENT checkout entirely, which is what `clearotron connect` used to cause silently
-  // by writing CLEAROTRON_CHECKOUT_DIR from whatever tree it was run in. Such a process keeps serving
-  // until it restarts and then cannot start at all — and deleting the tree it runs from does the same,
-  // irrecoverably. Both surface at the next reboot, long after the cause.
-  const userUnitDir = join(homedir(), ".config", "systemd", "user");
-  const entrypoints = (() => {
-    try {
-      return readdirSync(userUnitDir).filter((f) => f.startsWith("clearotron-") && f.endsWith(".service"))
-        .map((f) => entrypointOf(readFileSync(join(userUnitDir, f), "utf8")).rel).filter(Boolean);
-    } catch { return []; }
-  })();
-  const configuredTree = (() => {
-    // THE FILE THE UNITS LOAD, not this checkout — the whole point is that the two can disagree.
-    try { return parseEnvFile(readFileSync(join(homedir(), ".env"), "utf8")).CLEAROTRON_CHECKOUT_DIR ?? ""; }
-    catch { return ""; }
-  })();
-  const elsewhere = programsFromAnotherCheckout({ table: processTable(), checkoutDir: configuredTree, entrypoints });
-  if (elsewhere.state === "elsewhere") {
-    warn(`${elsewhere.programs.length} running program(s) are executing a DIFFERENT checkout than the one `
-      + `this install names (${configuredTree}). These are this account's own programs — another `
-      + `account's install is not read and is never advised on. They keep working until they restart and then cannot `
-      + "start at all; deleting the tree they run from has the same effect and no restart recovers it:");
-    for (const pr of elsewhere.programs.slice(0, 6)) say(`      pid ${pr.pid}  ${pr.tree}`);
-    if (elsewhere.programs.length > 6) say(`      … and ${elsewhere.programs.length - 6} more`);
-    say("      Either point the install back at the tree they run from, or restart them onto this one.");
-  } else if (elsewhere.state === "unknown") {
-    if (PACKAGED && !configuredTree) info("running programs on a different checkout: not applicable to a packaged install");
-    else warn(`could not tell whether running programs are on a different checkout: ${elsewhere.detail}`);
-  } else if (elsewhere.state === "unplaced") {
-    // PRINTED, because the alternative is silence that reads as a clean answer. Nothing here was placed
-    // on a tree, which is not the same as everything being on the right one, and the reader is the only
-    // one who can tell which of the two it is.
-    say(`      running programs on a different checkout: ${elsewhere.detail}.`);
-  }
-
-  say("\n  Node");
-  const nodeV = nodeFloorVerdict();
-  if (nodeV.ok) ok(`node ${nodeV.current}`);
-  else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer; node:sqlite is not a built-in module before then`);
-
-  // Read the file up here rather than at the `.env` heading below: the engine section is the first that
-  // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
+  // Read the file up here rather than at the `.env` heading below: the opening is the first that needs
+  // `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
   // is not applying — see readEnvFile's header.
   // `fileEnv` is read at the top of runCheck now — the Deployment section needs it to name the box on a
   // box that runs no units, and a `const` used above its declaration is a dead-zone crash, not a
@@ -1753,33 +1692,386 @@ export async function runCheck() {
   const servicesRead = (k) => (!hosted ? effectiveForService(k)
     : serviceFileEnv && present(serviceFileEnv[k]) ? { v: serviceFileEnv[k], from: serviceEnvLabel, name: k } : null);
 
+  // ON A MACHINE WITH UNITS THIS SECTION DESCRIBES THE SERVICES: which AI, which program, how they pay. They read their
+  // own file and search their own PATH (servicesRead, above), so a shell that chose another AI says nothing about them,
+  // and a file that cannot be read is a failure to look, never a reason to answer from this shell. With no units, the
+  // services are the children of `clearotron start`, and this command's configuration is theirs.
+  const engineRead = (k, names = [k]) => (hosted ? servicesRead(k) : effective(k, names));
+  /** The environment a stage's program would see: `keys` as engineRead reads them, and on a machine with units, the units' PATH and none of this shell's values for those keys. */
+  const engineEnvOf = (keys = []) => {
+    const env = { ...process.env };
+    const unitsPath = hosted ? unitValue(unitEnv, "PATH").value : null;
+    if (unitsPath) env.PATH = unitsPath;
+    for (const k of keys) {
+      if (hosted) delete env[k];
+      const e = engineRead(k);
+      if (e) env[k] = e.v;
+    }
+    return env;
+  };
+  const engSel = engineRead("CLEAROTRON_AI");
+  const engineId = String(engSel?.v ?? DEFAULT_ENGINE_ID).trim().toLowerCase();
+  const engSpec = ENGINE_BINARIES[engineId];
+
+  // ONE READER FOR THE REGISTER AND THE RESEARCH KEY, the services' own. Only a machine with units has a
+  // second environment to read; with no units, the services are started from this command's own file, and
+  // `effective` has always read and labelled exactly that.
+  const serviceValue = hosted ? effectiveForService : effective;
+
+  // ── WHAT THE OPENING NEEDS FROM THE ENGINE SECTION, READ BEFORE IT ─────────────────────────────────
+  //
+  // The opening says whether the engine program resolves (the sign-in line) and, under --probe-engine,
+  // runs the turn on the copy that resolves. Both are read here, once, and the Engine section still
+  // prints every line about them. `engineJudged` is that section's own condition: it judges nothing when
+  // the units' environment cannot be read, or when CLEAROTRON_AI names no engine this driver ships.
+  const engineJudged = serviceKnown && !(engSel && !engSpec);
+  // — through `effective`, so the engine binary is found under whichever spelling is set. Read
+  // literally, this reported a configured binary as missing on any install the wizard had written.
+  const binEff = engineJudged ? engineRead(engSpec.env, [engSpec.env]) : null;
+  // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
+  // `claude` is not a configuration that can be wrong: it asks PATH, then the copy Clearotron installed.
+  const binSet = engineJudged && !!binEff && String(binEff.v).trim() !== engSpec.fallback;
+  const binSetting = engineJudged ? (binEff?.v || engSpec.fallback) : null;
+  const bin = engineJudged ? resolveEngineBin(binSetting, { engine: engineId, env: engineEnvOf() }) : null;
+  // How the mode is read, and why its environment is normalised first, is the Engine section's note
+  // WHICH MODE THIS INSTALL IS IN.
+  const invEnv = engineJudged
+    ? engineEnvOf(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((x) => [x.env, x.authEnv, x.apiKeyEnv])].filter(Boolean))
+    : null;
+  const installMode = engineJudged ? engineMode(engineInventory(invEnv)) : null;
+  // THE COMMAND THE READER CAN TYPE FROM HERE, as the demo line names its own. A bare `clearotron` is not
+  // on PATH for an install run from npx, and now that the engine program comes with the install this is
+  // the line most installs see first. The opening prints it when it leads and the Engine section prints
+  // it otherwise; null where that section would print the demo lines instead.
+  const signInLine = engineJudged && installMode !== ENGINE_MODES.DEMO
+    ? "The engine program is installed. Whether it is signed in cannot be read from disk: run "
+      + `\`${reachableCommand("doctor --probe-engine")}\` to find out.`
+    : null;
+
+  // ONE TURN, WHEREVER IT RUNS. The engine as a RUN would see it (engineEnvOf). Only the engine-selection
+  // keys — the probe must bill exactly the way this machine bills and moves no other variable. The auth
+  // variables ride this list for the same reason CLEAROTRON_AI does: without them the probe bills the way
+  // the AMBIENT environment says rather than the way this .env says, and "proven" would name a way of
+  // paying that no run takes.
+  //
+  // THE CREDENTIALS RIDE IT TOO, and did not. This was a second copy of the list `applyEngineEnv`
+  // applies, and it had dropped the API key and the headless token — so a token kept only in this
+  // install's .env never reached the probe, which then reported the engine signed out while the same
+  // token exported into the shell proved it. `engineEnvKeys` is the probe's own list: the copy that is
+  // filled is now the copy that is applied.
+  const runTurn = async () => {
+    const v = await probeEngineTurn({ env: engineEnvOf(engineEnvKeys()) });
+    probeTurnRan = v.ok || v.basis !== "config";
+    return v;
+  };
+  /** What a turn's verdict prints, wherever the turn ran. */
+  const sayTurn = (v) => {
+    if (v.ok) {
+      ok(`${engineId} completed a turn — binary, credential and model access all work`);
+      const served = servedLine(v);
+      if (served) info(served);
+      // The ONLY route to READY. Everything else in this block reads the filesystem, and a signed-out
+      // CLI passes every filesystem test there is — which is why this line is here and not above.
+      ok("MODE: engine ready — proven by the turn just spent, not inferred from a file being executable.");
+    }
+    else {
+      problem(probeFailureText(v));
+      if (v.detail) info(`engine said: ${v.detail}`);
+    }
+  };
+
+  // ── WILL A SEARCH RUN? — THE ORDER-TIME GATE'S OWN QUESTION, OF THE ENVIRONMENT A RUN WILL HAVE ──
+  //
+  // Every section reads one requirement from YOUR shell and this command's .env. A search is refused by
+  // a different reader: `orderTimeRefusal`, at order time, against the runner's environment — a
+  // background unit's, on a machine that has them. So this command could pass an install the run then
+  // refused: it found `claude` on this shell's PATH while the unit, which has no such PATH, was refused
+  // for an engine path it had never been given. Asking the gate's own authority of the units' environment
+  // is what makes an install this command passes one that can run. `blocking`, not `problem`: an install
+  // that is not configured yet is unfinished rather than broken, and the exit status keeps that contract.
+  //
+  // ASKED ONCE, BEFORE ANYTHING ELSE IS PRINTED, because the opening is its answer. `atOrder` is null
+  // when the units' environment could not be read; sayWillASearchRun prints the section wherever it goes.
+  const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
+  const atOrder = (() => {
+    if (!serviceKnown) return null;
+    // UNTIL NOTHING NEW IS NAMED: which names a run needs depends on values read in the pass before. The
+    // register and the engine name their credentials, their program and the billing word; a billing word of
+    // `cloud` names the cloud switches and the gateway address; a switch found becomes the blocking row, and
+    // the cloud's other settings are named only where the view already holds them. Two passes stopped before
+    // the billing word was read, so a machine that pays through a cloud account was checked as a subscription
+    // one and its missing switch went unreported. It stops at the first pass that finds no new value: the names
+    // asked for depend only on the values found, so the next pass would ask for the names this one just read.
+    const view = {};
+    // Read as the services read it (servicesRead): a value in this shell never reaches a unit.
+    const fill = (names) => { for (const n of names) { const e = servicesRead(n); if (e) view[n] = e.v; } };
+    fill([REGISTER_ENV, ENGINE_ENV]);
+    let before;
+    do { before = Object.keys(view).length; fill(runRequiredNames(view, tables)); } while (Object.keys(view).length > before);
+    // AND THE PATH THE SERVICES SEARCH, so the engine's program is looked for where a run looks for it.
+    // The view held the settings and no PATH, so a `claude` on the services' PATH, with no path setting and
+    // no copy installed by setup, was reported as a search refused while the run found it and ran. On a
+    // machine with units that PATH is the units' own (every unit sets it, with `%h` for the home, which the
+    // unit reader expands); never this shell's, which the units do not inherit. With no units, the
+    // services are the children of `clearotron start`, which inherit the PATH of the shell it runs in.
+    const servicesPath = hosted ? unitValue(unitEnv, "PATH").value : process.env.PATH;
+    if (servicesPath) view.PATH = servicesPath;
+    return missingRequirements(view, tables).atOrder;
+  })();
+  const sayWillASearchRun = () => {
+    say("\n  Will a search run?");
+    if (!serviceKnown) {
+      info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
+    } else if (atOrder.length) {
+      blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);
+      for (const r of atOrder) info(`  ${r.name} — ${r.why}`);
+    } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
+  };
+  const sayResearch = () => {
+    say("\n  Research provider");
+    // The same reader as the register, for the same reason: this is a key the services use.
+    const px = serviceKnown ? serviceValue("PERPLEXITY_API_KEY") : null;
+    if (!serviceKnown) info("the units' environment could not be read, so whether the services hold PERPLEXITY_API_KEY is not judged here — a failure to look, not a finding");
+    else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
+    else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
+  };
+
+  // ── THE OPENING: WHETHER A SEARCH CAN RUN, WHAT STOPS IT, AND THE NEXT ACTION ─────────────────────
+  //
+  // A newcomer reads this command from the top, and the top was its path and its build: the answer to
+  // "can this install search" sat halfway down, a screen away from the command that changes it (measured
+  // on a packaged install, 2026-11-06: line 52 of 100). So the answer comes first, and every section
+  // below keeps every line it had.
+  //
+  // ON A MACHINE WITH NO UNITS WHOSE SEARCH IS REFUSED, the opening is the refusal the portal gives the
+  // person who runs the install, from the same composer (cannotSearchYet), with the command as it is
+  // typed from here. A machine with units is not told that: its services read `~/.env`, which setup does
+  // not write, so running setup alone would not reach them. A refusal with no words for what is missing
+  // has no such sentence, and opens as every other state does.
+  //
+  // EVERY OTHER STATE OPENS WITH "Will a search run?" ITSELF, then the sign-in line when the program
+  // resolves, or, under --probe-engine on an install that can search, the turn that answers it. The turn
+  // is announced before it spends anything, and above the heading: a line that starts a section would end
+  // "Will a search run?" for any reader that splits this output at its headings.
+  //
+  // "Research provider" comes second in every state: it is the one setting that stops three of the four
+  // searches and that the order-time answer does not cover.
+  const missingWords = serviceKnown && atOrder.length ? whatIsMissing(atOrder) : "";
+  const leadIsTheRefusal = !hosted && missingWords !== "";
+  const turnLeads = PROBE_ENGINE && serviceKnown && atOrder.length === 0 && engineJudged && bin.executable && !bin.relative;
+  const signInLineLeads = !leadIsTheRefusal && !PROBE_ENGINE && signInLine !== null;
+  // ONE LINE, AS EVERY LINE BELOW IS, and the terminal wraps it. Wrapped here at spaces, it broke the command
+  // apart wherever the install's path made a long word: `cd <path> && npx clearotron install` on three lines.
+  if (leadIsTheRefusal) say(`  ${cannotSearchYet(missingWords, invoke("install"))}`);
+  else {
+    let turn = null;
+    if (turnLeads) {
+      say(`  ${probingLine(engineId)}`);
+      turn = await runTurn();
+    }
+    sayWillASearchRun();
+    if (signInLineLeads) info(signInLine);
+    if (turn) sayTurn(turn);
+  }
+  sayResearch();
+
+  // The path this command runs from, with the build it names below it.
+  say(`\n  repo: ${REPO}`);
+
+  // — CURRENT, not just configured. Printed first among the sections about this install's build,
+  // because a stale deployment makes every line below it a report about the wrong build. The opening
+  // and the research key come before it, because a newcomer's first question is whether a search runs.
+  say("\n  Deployment");
+  const cur = deploymentCurrency();
+  if (cur.state === "current") ok(`up to date with ${cur.upstream} as of the last fetch`);
+  else if (cur.state === "behind") {
+    problem(`${cur.behind} commit(s) behind ${cur.upstream} as of the last fetch — run \`${invoke("update")}\``);
+  } else if (cur.state === "no-upstream") info("this branch tracks no remote, so there is nothing to be behind");
+  // SAYS IT WAS TOLD. A reader must be able to see the assumption in the output rather than infer it
+  // from a silence — a doctor that quietly answers a question it was handed is the shape this whole
+  // surface exists to refuse.
+  else if (cur.state === "pinned") info("pinned checkout (CLEAROTRON_DOCTOR_ASSUME_PINNED), so there is nothing to be behind");
+  else if (cur.state === "not-a-checkout") {
+    // A PACKAGED INSTALL CAN STILL NAME ITS CODE. `not-a-checkout` is the permanent
+    // state of every registry install, and "this run's code cannot be named" is not something a customer
+    // install should say forever. `prepack` stamps the commit into `build-info.json` and it ships, so the
+    // commit is readable here — but it is read from a FILE THE ARCHIVE CARRIES, not from a live checkout,
+    // and those are not the same evidence. The line says which one it had, because a reader who cannot
+    // tell them apart cannot tell a stamped archive from a verified tree.
+    const packed = packagedBuild();
+    if (packed) info(`packaged install of ${packed.commit.slice(0, 8)} (v${packed.version}), named from the `
+      + "archive's own build-info.json rather than from a checkout — currency is not a question this can answer");
+    else info("not a git checkout, so currency is not a question this can answer");
+  }
+  else warn(`could not tell whether this deployment is current: ${cur.detail}`);
+  if (cur.state !== "not-a-checkout" && cur.state !== "no-upstream" && cur.state !== "pinned") {
+    info("this does not fetch — the count is against the last fetch, not against the remote right now");
+  }
+
+  // ── WHICH BOX THIS IS, NAMED OUT LOUD ───────────────────────────────────────────────────────────
+  //
+  // `CLEAROTRON_BOX` is how a deployment names itself; `shared/deployment-box.mjs` says it is never
+  // inferred from the account, the checkout or the port, because all three correlate with the answer
+  // and none of them IS the answer. But nothing here printed it, so an unset or misspelled value left
+  // doctor exiting 0 and ending "Nothing wrong with what is configured" — the one check that would
+  // catch a deployment lying about itself was the one check that did not report.
+  //
+  // FOUR STATES, NOT THREE. Set, unset and unrecognised are the three the requirement names. The
+  // fourth is a hosted box whose unit environment COULD NOT BE READ, and calling that "unset" would
+  // claim the file says nothing when it was never read — absence reported as a finding, in the section
+  // whose entire job is to make the box visible. `couldNotDetermine` already exists for exactly this
+  // and is what the token and URL checks below use.
+  //
+  // THE VALUE COMES FROM THE FILE THE UNITS LOAD, never from this command's shell, and the two can
+  // disagree: an operator with CLEAROTRON_BOX exported in their own environment would otherwise read
+  // their own shell back and call it the deployment's identity. The shell is reported only when it
+  // CONTRADICTS the file, because that disagreement is itself a finding.
+  //
+  // The allowlist is imported rather than re-typed. Two inline copies agree on the day they are
+  // written and drift afterwards, which is the reason that module exists at all.
+  const boxSource = hosted ? "the units' environment" : "your environment file";
+  const boxFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
+  if (hosted && unitEnv?.known !== true) {
+    warn(couldNotDetermine("CLEAROTRON_BOX", unitEnv));
+  } else {
+    const raw = (boxFileEnv?.CLEAROTRON_BOX ?? "").trim();
+    // THE ACCEPTED NAMES ARE NEVER PRINTED. They are the names of the deployments this build was made for,
+    // and the line offered them to a newcomer to name their own machine after (measured on a fresh install
+    // of a beta, 2026-11-03). An install without units says nothing of an unset name: nothing there reads
+    // it. Installed units are told, because the services read it, and `start --background` installs the
+    // same units a hosted deployment runs, from the same renderer, so nothing here can tell the two apart.
+    if (!raw) {
+      // AN ABSENCE IS NOT A MISCONFIGURATION, and this command already separates the two — a machine
+      // nobody has configured yet has no name, legitimately, and `--check` on one exits 0 by contract.
+      // Reported so it is visible rather than silent, which is the whole requirement. At `·`, in plain
+      // words, because the reader most likely to see it is a newcomer after `start --background`, who
+      // has nothing to set: a `!` there said the rest of the report could not be trusted and gave them
+      // nothing to do (measured on a fresh install of a beta, 2026-11-04). Raising it to `✗` made every
+      // unconfigured machine fail its own acceptance arm.
+      if (hosted) info(`no CLEAROTRON_BOX in ${boxSource}. Only Clearotron's own servers set it, to name `
+        + "themselves; an install of your own leaves it unset");
+    } else if (!DEPLOYMENT_BOXES.includes(raw)) {
+      problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows. `
+        + `An unrecognised name reads as NO box everywhere it is `
+        + "consulted, which is quieter than a wrong one and just as wrong");
+    } else {
+      ok(`this box names itself "${raw}", from ${boxSource}`);
+      const shell = (process.env.CLEAROTRON_BOX ?? "").trim();
+      if (shell && shell !== raw) {
+        warn(`your shell says CLEAROTRON_BOX="${shell}", which disagrees with ${boxSource}. The running `
+          + "service goes by the file; your own commands go by the shell, so the two would report "
+          + "different boxes for the same machine");
+      }
+    }
+  }
+
+  // ── THE TWO FILES MAY DISAGREE ABOUT THE DOOR ────────────────────────────────
+  //
+  // They are disjoint by design and are SUPPOSED to differ about paths, ports and secrets. What must
+  // never differ is the door: a box whose two files name different auth modes, or different audiences,
+  // has a sign-in pointing at the wrong tenant depending on which process answered — and that fails as a
+  // SUCCESSFUL LOGIN rather than as an error, which is why it is said here rather than left to whoever
+  // compares the files by eye.
+  const diverged = (() => {
+    try {
+      return doorDivergence({
+        repoText: readFileSync(READ_ENV_PATH(), "utf8"),
+        homeText: readFileSync(join(homedir(), ".env"), "utf8"),
+      });
+    } catch { return []; }   // one file absent is the ordinary case and says nothing
+  })();
+  for (const d of diverged)
+    warn(`${d.key} differs between ${ENV_PATH} (${d.checkout}) and ${join(homedir(), ".env")} `
+      + `(${d.units}). Those two files configure different processes, and the second is what the `
+      + "services run with — so the door a caller meets depends on which one answered.");
+  // — a current checkout is not a current deployment. Reported separately because it is a
+  // separate fact, and because "up to date" beside a service running last week's code is a lie of
+  // omission rather than a wrong number.
+  const running = programsOnAnOlderTree();
+  if (running.state === "older-tree") {
+    warn(`${running.programs.length} running program(s) started before this checkout last moved — they are `
+      + "executing the previous tree until restarted:");
+    for (const pr of running.programs.slice(0, 6)) say(`      pid ${pr.pid}  ${pr.cmd}`);
+    if (running.programs.length > 6) say(`      … and ${running.programs.length - 6} more`);
+    say("      Restart whatever supervises them; this command does not, because which supervisor owns");
+    say("      them is a property of your deployment and not of this checkout.");
+  } else if (running.state === "unknown") {
+    // A PACKAGED INSTALL HAS NO TREE TO BE BEHIND. npm replaces the whole package on an update, so this
+    // question belongs to a checkout, and on a package it is a `!` nothing can ever clear.
+    if (PACKAGED) info("running programs against a checkout's tree: not applicable to a packaged install");
+    else warn(`could not tell whether running programs are on the current tree: ${running.detail}`);
+  }
+
+  // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE ──────────────────────────────
+  //
+  // The block above asks whether a process predates this checkout's last move. This asks whether it is
+  // executing a DIFFERENT checkout entirely, which is what `clearotron connect` used to cause silently
+  // by writing CLEAROTRON_CHECKOUT_DIR from whatever tree it was run in. Such a process keeps serving
+  // until it restarts and then cannot start at all — and deleting the tree it runs from does the same,
+  // irrecoverably. Both surface at the next reboot, long after the cause.
+  const userUnitDir = join(homedir(), ".config", "systemd", "user");
+  const entrypoints = (() => {
+    try {
+      return readdirSync(userUnitDir).filter((f) => f.startsWith("clearotron-") && f.endsWith(".service"))
+        .map((f) => entrypointOf(readFileSync(join(userUnitDir, f), "utf8")).rel).filter(Boolean);
+    } catch { return []; }
+  })();
+  const configuredTree = (() => {
+    // THE FILE THE UNITS LOAD, not this checkout — the whole point is that the two can disagree.
+    try { return parseEnvFile(readFileSync(join(homedir(), ".env"), "utf8")).CLEAROTRON_CHECKOUT_DIR ?? ""; }
+    catch { return ""; }
+  })();
+  const elsewhere = programsFromAnotherCheckout({ table: processTable(), checkoutDir: configuredTree, entrypoints });
+  if (elsewhere.state === "elsewhere") {
+    warn(`${elsewhere.programs.length} running program(s) are executing a DIFFERENT checkout than the one `
+      + `this install names (${configuredTree}). These are this account's own programs — another `
+      + `account's install is not read and is never advised on. They keep working until they restart and then cannot `
+      + "start at all; deleting the tree they run from has the same effect and no restart recovers it:");
+    for (const pr of elsewhere.programs.slice(0, 6)) say(`      pid ${pr.pid}  ${pr.tree}`);
+    if (elsewhere.programs.length > 6) say(`      … and ${elsewhere.programs.length - 6} more`);
+    say("      Either point the install back at the tree they run from, or restart them onto this one.");
+  } else if (elsewhere.state === "unknown") {
+    if (PACKAGED && !configuredTree) info("running programs on a different checkout: not applicable to a packaged install");
+    else warn(`could not tell whether running programs are on a different checkout: ${elsewhere.detail}`);
+  } else if (elsewhere.state === "unplaced") {
+    // PRINTED, because the alternative is silence that reads as a clean answer. Nothing here was placed
+    // on a tree, which is not the same as everything being on the right one, and the reader is the only
+    // one who can tell which of the two it is.
+    say(`      running programs on a different checkout: ${elsewhere.detail}.`);
+  }
+
+  say("\n  Node");
+  const nodeV = nodeFloorVerdict();
+  if (nodeV.ok) ok(`node ${nodeV.current}`);
+  else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer; node:sqlite is not a built-in module before then`);
+
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
   // reason. Which engine is configured comes first now, and the binary is checked through THAT engine's
   // variable.
-  const engSel = effective("CLEAROTRON_AI");
-  const engineId = String(engSel?.v ?? DEFAULT_ENGINE_ID).trim().toLowerCase();
-  const engSpec = ENGINE_BINARIES[engineId];
-  if (engSel && !engSpec) {
+  if (!serviceKnown) {
+    info("the units' environment could not be read, so which AI the services run is not judged here — a failure to look, not a finding");
+  } else if (engSel && !engSpec) {
     problem(`CLEAROTRON_AI="${engSel.v}" (${engSel.from}) is not an engine this driver ships — one of: `
       + `${Object.keys(ENGINE_BINARIES).join(", ")}. The run refuses on this by itself (gateway.selectEngine); `
       + "nothing can be checked here until it names an adapter.");
   } else {
     if (engSel) ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
-    else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this box`);
+    // WHAT THE ORDER-TIME CHECK SAYS, NOT WHAT THE CODE FALLS BACK TO. Every search is refused while the
+    // services lack this (run-requirements.mjs, `runRequirements`, the engine row), whatever the default
+    // below checks. Naming that default here read as "nothing to do", a few lines above "Will a search
+    // run?" listing this very setting (measured on a fresh install of a beta, 2026-11-04). Asked of the
+    // services' own reading (servicesRead), as that section asks it: on a machine with units, their file
+    // may hold the value this command's file does not, and then no search is refused over it.
+    else if (serviceKnown && !servicesRead("CLEAROTRON_AI")) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
+      + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
+    else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
 
     // The line between an ABSENCE and a MISCONFIGURATION. Nothing set and no binary on PATH is a fresh
     // machine — reported, not failed. A variable that names something wrong is a configuration that
-    // will fail at run time, and this is the cheap place to learn it.
-    // — through `effective`, so the engine binary is found under whichever spelling is set. Read
-    // literally, this reported a configured binary as missing on any install the wizard had written.
-    const binEff = effective(engSpec.env, [engSpec.env]);
-    // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
-    // `claude` is not a configuration that can be wrong: it asks PATH, then the copy Clearotron installed.
-    const binSet = !!binEff && String(binEff.v).trim() !== engSpec.fallback;
-    const binSetting = binEff?.v || engSpec.fallback;
-    const bin = resolveEngineBin(binSetting, { engine: engineId });
+    // will fail at run time, and this is the cheap place to learn it. The program (`bin`) is resolved above
+    // the opening, which needs it; this section still says everything about it.
     // WHICH COPY, AND ITS VERSION, because the machine's own install and the one Clearotron installed
     // are both legitimate and behave differently: the first updates itself, the second moves with
     // `clearotron update`. The version comes from the copy's own package.json when npm installed it.
@@ -1864,13 +2156,8 @@ export async function runCheck() {
     // `env[spec.env]` — the CURRENT spelling only — and this file is deliberately not a CLI entry, so
     // the alias layer has not run here. Handed raw process.env it would miss a binary configured
     // under the legacy name and report DEMO on a box that has an engine.
-    const invEnv = { ...process.env };
-    for (const k of ["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((x) => [x.env, x.authEnv, x.apiKeyEnv])]) {
-      if (!k) continue;
-      const e = effective(k, [k]);
-      if (e) invEnv[k] = e.v;
-    }
-    const installMode = engineMode(engineInventory(invEnv));
+    //
+    // `invEnv` and `installMode` are read that way above the opening, which needs the mode for its sign-in line.
     if (installMode === ENGINE_MODES.DEMO) {
       info("MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
         + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`);
@@ -1883,13 +2170,7 @@ export async function runCheck() {
       // restart a service — neither of which can change the answer, because the refusal is about the
       // platform rather than the binary. Naming WSL2 is the only instruction that ends this state.
       for (const line of leaveDemoAdvice(engSpec)) info(line);
-    } else {
-      // THE COMMAND THE READER CAN TYPE FROM HERE, as the demo line above names its own. A bare
-      // `clearotron` is not on PATH for an install run from npx, and now that the engine program comes
-      // with the install this is the line most installs see first.
-      info("The engine program is installed. Whether it is signed in cannot be read from disk: run "
-        + `\`${reachableCommand("doctor --probe-engine")}\` to find out.`);
-    }
+    } else if (!signInLineLeads) info(signInLine);   // printed here unless the opening carries it
 
     // AND WHETHER THE ENGINE AGREES, which is a different question from the one above and the reason an
     // outside user gave up on this product. This command reads its OWN environment; the portal's New
@@ -1940,11 +2221,7 @@ export async function runCheck() {
       // see it, with the .env's values overlaid for the keys an engine spawn is made of. The cloud's names
       // are on it, because with the billing word read from the file and a cloud's switch left to the shell,
       // a cloud file that runs would read as refused.
-      const envForResolve = { ...process.env };
-      for (const k of engineEnvKeys()) {
-        const e = effective(k);
-        if (e) envForResolve[k] = e.v;
-      }
+      const envForResolve = engineEnvOf(engineEnvKeys());
       const billingOf = (eng, env) => {
         try {
           const auth = resolveAuthMode({ engineName: eng, env });
@@ -1966,28 +2243,6 @@ export async function runCheck() {
       // was the only line claiming a verdict it had not reached.
       const engineResolved = !!(bin?.path && bin.executable && !bin.relative);
       (engineResolved || here.say === problem ? here.say : info)(here.text);
-      // AND AS THE SERVICES READ IT, when this machine runs them and that reading differs. The line above is
-      // this command's configuration; the services read their own file, and a start never replaces a line
-      // in it. So a machine whose services pay through a cloud account printed "billing: subscription" here,
-      // two sections above "Will a search run?" reading the services' file. Both are said when they differ.
-      // Read as the services read it (servicesRead), never through this shell.
-      //
-      // A CAUTION ONLY WHEN THIS COMMAND SAYS OTHERWISE. With no billing word in this command's configuration,
-      // the line above is the default and contradicts nothing, and a working api-key or cloud install whose
-      // billing lives in the services' file alone was cautioned on every run from a bare shell. Then it is
-      // information. Never a problem: the services' refusal, if there is one, is reported under that section.
-      if (hosted && serviceKnown) {
-        const envForService = {};
-        for (const k of engineEnvKeys()) {
-          const e = servicesRead(k);
-          if (e) envForService[k] = e.v;
-        }
-        const svc = billingOf(String(envForService.CLEAROTRON_AI ?? DEFAULT_ENGINE_ID).trim().toLowerCase(), envForService);
-        if (svc.text !== here.text) {
-          if (effective(engSpec?.authEnv ?? "CLEAROTRON_AI_BILLING")) warn(`the services read how they pay from ${serviceEnvLabel}, and it says otherwise — ${svc.text}`);
-          else info(`the services pay as ${serviceEnvLabel} says — ${svc.text}`);
-        }
-      }
     } catch (e) {
       problem(String(e?.message ?? e));
     }
@@ -2004,37 +2259,10 @@ export async function runCheck() {
       info("whether it is SIGNED IN is not checked here — add --probe-engine to spend one cheap turn proving it");
     } else if (!bin.executable || bin.relative) {
       info("not probed — there is no usable binary to probe. Fix the line above first.");
-    } else {
+    } else if (!turnLeads) {
+      // The turn runs here unless it ran for the opening; runTurn and sayTurn are the same either way.
       say(`\n  ${probingLine(engineId)}`);
-      // The engine as a RUN would see it: environment first, .env behind it. Only the engine-selection
-      // keys — the probe must bill exactly the way this box bills and moves no other variable.
-      const probeEnv = { ...process.env };
-      // The auth variables ride this list for the same reason CLEAROTRON_AI does: without them the
-      // probe bills the way the AMBIENT environment says rather than the way this .env says, and
-      // "proven" would name a lane no run takes.
-      //
-      // THE CREDENTIALS RIDE IT TOO, and did not. This was a second copy of the list `applyEngineEnv`
-      // applies, and it had dropped the API key and the headless token — so a token kept only in this
-      // install's .env never reached the probe, which then reported the engine signed out while the same
-      // token exported into the shell proved it. `engineEnvKeys` is the probe's own list: the copy that is
-      // filled is now the copy that is applied.
-      for (const k of engineEnvKeys()) {
-        const e = effective(k);
-        if (e) probeEnv[k] = e.v;
-      }
-      const v = await probeEngineTurn({ env: probeEnv });
-      if (v.ok) {
-        ok(`${engineId} completed a turn — binary, credential and model access all work`);
-        const served = servedLine(v);
-        if (served) info(served);
-        // The ONLY route to READY. Everything else in this block reads the filesystem, and a signed-out
-        // CLI passes every filesystem test there is — which is why this line is here and not above.
-        ok("MODE: engine ready — proven by the turn just spent, not inferred from a file being executable.");
-      }
-      else {
-        problem(probeFailureText(v));
-        if (v.detail) info(`engine said: ${v.detail}`);
-      }
+      sayTurn(await runTurn());
     }
   }
 
@@ -2368,8 +2596,20 @@ export async function runCheck() {
             + (w.branch ? `whose branch ${w.branch} tracks no remote branch` : "which is not on a branch")
             + " — nothing carries them off this machine unless someone pushes them by name");
         } else if (w.state === "not-a-repository") {
-          warn(`${storeDir} is not inside a git repository, so a save through the portal is refused rather than `
-            + "recorded until it is");
+          // NOT MADE YET IS NOT A REFUSAL. With no units, `start` makes its configuration directory a git
+          // repository the first time it runs (bin/start.mjs, the `git init` of `paths.configStore`), and
+          // setup's default puts the store inside it. Before then this warned a newcomer that saves were
+          // refused (measured on a fresh install of a beta, 2026-11-04). "The first time" is start's own
+          // test, no grants file and no repository yet; a store anywhere else is never made one by start.
+          const handed = hosted ? null : startPaths({ env: { ...(serviceFileEnv ?? {}), ...process.env } });
+          if (handed && isInsideCheckout(storeDir, handed.configStore)
+              && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
+            info(`saves to ${storeDir} are recorded from the first \`${invoke("start")}\`, which makes `
+              + `${handed.configStore} a git repository`);
+          } else {
+            warn(`${storeDir} is not inside a git repository, so a save through the portal is refused rather than `
+              + "recorded until it is");
+          }
         } else {
           info(`could not ask git where saves to ${storeDir} go (${w.why}) — a failure to look, not a finding`);
         }
@@ -2481,10 +2721,8 @@ export async function runCheck() {
   // no register was selected, one screen above "nothing a search is refused for is missing from the units'
   // environment": one install, two answers, and the fix it named was already set. effectiveForService is
   // the reader that check asks, so the two lines cannot disagree; where it cannot read the units, this
-  // says it could not look rather than reporting the register absent.
-  // Only a HOSTED box has a second environment to read; with no units, the services are started from
-  // this command's own file, and `effective` has always read and labelled exactly that.
-  const serviceValue = hosted ? effectiveForService : effective;
+  // says it could not look rather than reporting the register absent. That reader is `serviceValue`, above
+  // the opening, which shares it with the research section.
   const prov = serviceKnown ? serviceValue("CLEAROTRON_DATABASE") : null;
   if (!serviceKnown) {
     info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
@@ -2501,7 +2739,7 @@ export async function runCheck() {
   if (!prov) {
     blocking(`no register is selected — CLEAROTRON_DATABASE is not set and there is NO default, so every search refuses until one is`);
     info(`  set it to one of: ${PROVIDERS.map((p) => p.id).join(", ")} — any one of them is enough, and none needs another`);
-    info(`  re-run \`${invoke("install")}\`, or set it on the Installation settings page`);
+    info(`  re-run \`${invoke("install")}\` to set it`);
   }
   else {
     const spec = PROVIDERS.find((p) => p.id === prov.v);
@@ -2527,12 +2765,7 @@ export async function runCheck() {
     }
   }
 
-  say("\n  Research provider");
-  // The same reader as the register, for the same reason: this is a key the services use.
-  const px = serviceKnown ? serviceValue("PERPLEXITY_API_KEY") : null;
-  if (!serviceKnown) info("the units' environment could not be read, so whether the services hold PERPLEXITY_API_KEY is not judged here — a failure to look, not a finding");
-  else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
-  else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
+  // "Research provider" is printed second, right after the opening (sayResearch).
 
   // ── — THE LANES A PRODUCT DECLARES IT NEEDS, BEFORE A REPORT NAMES THEM ──
   //
@@ -2549,47 +2782,10 @@ export async function runCheck() {
   // doctor that hangs on a box with no route — so this reports ENROLMENT, and says plainly that a
   // source which is enrolled can still fail at run time. The owner's own report says `CONNECTION_CLOSED`
   // on exactly that case.
-  // ── WILL A SEARCH RUN? — THE ORDER-TIME GATE'S OWN QUESTION, OF THE ENVIRONMENT A RUN WILL HAVE ──
   //
-  // Every section above reads one requirement from YOUR shell and this command's .env. A search is
-  // refused by a different reader: `orderTimeRefusal`, at order time, against the runner's environment —
-  // a background unit's, on a box that has them. So this command could pass an install the run then
-  // refused: it found `claude` on this shell's PATH while the unit, which has no such PATH, was refused
-  // for an engine path it had never been given. Asking the gate's own authority of the units' environment
-  // is what makes an install this command passes one that can run. `blocking`, not `problem`: an install
-  // that is not configured yet is unfinished rather than broken, and the exit status keeps that contract.
-  say("\n  Will a search run?");
-  if (!serviceKnown) {
-    info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
-  } else {
-    const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
-    // UNTIL NOTHING NEW IS NAMED: which names a run needs depends on values read in the pass before. The
-    // register and the engine name their credentials, their program and the billing word; a billing word of
-    // `cloud` names the cloud switches and the gateway address; a switch found becomes the blocking row, and
-    // the cloud's other settings are named only where the view already holds them. Two passes stopped before
-    // the billing word was read, so a machine that pays through a cloud account was checked as a subscription
-    // one and its missing switch went unreported. It stops at the first pass that finds no new value: the names
-    // asked for depend only on the values found, so the next pass would ask for the names this one just read.
-    const view = {};
-    // Read as the services read it (servicesRead): a value in this shell never reaches a unit.
-    const fill = (names) => { for (const n of names) { const e = servicesRead(n); if (e) view[n] = e.v; } };
-    fill([REGISTER_ENV, ENGINE_ENV]);
-    let before;
-    do { before = Object.keys(view).length; fill(runRequiredNames(view, tables)); } while (Object.keys(view).length > before);
-    // AND THE PATH THE SERVICES SEARCH, so the engine's program is looked for where a run looks for it.
-    // The view held the settings and no PATH, so a `claude` on the services' PATH, with no path setting and
-    // no copy installed by setup, was reported as a search refused while the run found it and ran. On a
-    // machine with units that PATH is the units' own (every unit sets it, with `%h` for the home, which the
-    // unit reader expands); never this shell's, which the units do not inherit. With no units, the
-    // services are the children of `clearotron start`, which inherit the PATH of the shell it runs in.
-    const servicesPath = hosted ? unitValue(unitEnv, "PATH").value : process.env.PATH;
-    if (servicesPath) view.PATH = servicesPath;
-    const { atOrder } = missingRequirements(view, tables);
-    if (atOrder.length) {
-      blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);
-      for (const r of atOrder) info(`  ${r.name} — ${r.why}`);
-    } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
-  }
+  // "Will a search run?" keeps this place when the opening was the refusal's own sentence, which says the
+  // same thing without the names; in every other state it is the opening (sayWillASearchRun).
+  if (leadIsTheRefusal) sayWillASearchRun();
 
   say("\n  Case law and other capabilities");
   {
@@ -3189,22 +3385,37 @@ export async function runCheck() {
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
 
   say("\n  Client connector");
-  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` treats an unreadable
-  // denylist as "not revoked", so a named-but-absent file makes every revocation silently ineffective:
-  // measured on a default install, a revoked key completed a full handshake with nothing logged. Nothing
-  // surfaced that state anywhere, which is why it survived to be found by hand.
+  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` used to read an unreadable denylist as
+  // "not revoked", so a named-but-absent file made every revocation silently ineffective: measured on a
+  // default install, a revoked key completed a full handshake with nothing logged. It now refuses every
+  // key (shared/scope.mjs), and this is where the reader learns why.
   {
     const { defaultDenylistPath } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
-    const dl = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v || defaultDenylistPath(homedir());
+    const named = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v;
+    const dl = named || defaultDenylistPath(homedir());
     try {
       const n = readFileSync(dl, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).length;
       ok(`revocation list readable at ${dl} — ${n} revoked key id(s)`);
     } catch (e) {
-      // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
-      // no other surface that would tell them: the door answers 200 either way.
-      blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
-        + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
-        + `Run \`${invoke("start")}\` — it creates the list.`);
+      // THE DEFAULT LIST, NOT WRITTEN YET, IS NOTHING REVOKED. That is the key check's own rule
+      // (shared/scope.mjs, `isRevoked`): every revocation creates the file it writes to, so its absence is
+      // the proof. With no units the first `start` creates it, and before then this warned a newcomer that
+      // revoking would silently do nothing (measured on a fresh install of a beta, 2026-11-04). "Before
+      // then" is start's own first-run test, as for the store above: no grants file and no repository yet.
+      // Once start has run it hands its door this path BY NAME, and a named list the key check cannot read
+      // refuses every key; so does a list the settings name, or one on a machine with units. Those are
+      // still the fault below.
+      const handed = hosted ? null : startPaths({ env: { ...(serviceFileEnv ?? {}), ...process.env } });
+      if (!named && handed && e?.code === "ENOENT"
+          && !existsSync(handed.grants) && !existsSync(join(handed.configStore, ".git"))) {
+        info(`no revocation list yet at ${dl}: no key has been revoked. The first \`${invoke("start")}\` creates it.`);
+      } else {
+        // NOT `warn`. The door refuses every key while its list cannot be read, so every assistant connected
+        // to it stops, and this sentence is the door's own (mcp-server/lib/http-handler.mjs).
+        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — this install cannot `
+          + "check whether keys have been revoked, so it is refusing all of them. "
+          + `Run \`${invoke("start")}\` — it creates the list.`);
+      }
     }
   }
   // ── IS THIS DOOR'S ACCESS LOG BEING WRITTEN, AND WHERE? ───────────────────────────────────────────
@@ -3573,17 +3784,17 @@ export async function runCheck() {
     // different actions from the reader — edit a file versus fix a credential — and a single number
     // covering both sends them to the wrong one.
     if (inert.length) parts.push(`${inert.length} setting(s) being ignored`);
-    say(`  ${parts.join(" and ")}. Nothing was written — this command only reads.\n`);
+    say(`  ${parts.join(" and ")}. ${probeTurnRan ? TURN_KEPT_ITS_FILES : "Nothing was written — this command only reads."}\n`);
     return 1;
   }
   // The exit status stays 0: an unfinished install is not a broken one, and `--check` separates an
   // absence from a misconfiguration. What changed is that the closing line no longer says nothing is
   // wrong while something that stops the product stands above it.
   if (blockers.length) {
-    say("  Nothing is MISconfigured — fix those and nothing else here needs changing. Nothing was written.\n");
+    say(`  Nothing is MISconfigured — fix those and nothing else here needs changing. ${probeTurnRan ? TURN_KEPT_ITS_FILES : "Nothing was written."}\n`);
     return 0;
   }
-  say("  Nothing wrong with what is configured. Nothing was written.\n");
+  say(`  Nothing wrong with what is configured. ${probeTurnRan ? TURN_KEPT_ITS_FILES : "Nothing was written."}\n`);
   return 0;
 }
 
@@ -3773,7 +3984,7 @@ let aborted = null;
 try {
   say("\n  Trademark clearance engine — setup\n");
   say("  One question at a time. Enter takes the default in brackets.");
-  say("  Nothing is written until every credential you give has been checked against the real service.\n");
+  say("  Nothing is written until each credential you give has been checked, except a paid register key: checking it would cost you, so it is written on your word.\n");
 
   // ── BEFORE YOU START, derived from what the product declares it needs ──────
   //
@@ -3781,13 +3992,13 @@ try {
   // what to prepare by failing the question — the owner's own first run, in his words. The list below
   // is DERIVED: the engines from ENGINE_BINARIES, the search vendors from the same adapter tables the
   // prompts loop over, each wearing its own table row's where-to-get line. A hand-kept copy here would
-  // be the SERPAPI defect again, one screen earlier. Everything is skippable; the list says so.
+  // be the SERPAPI defect again, one screen earlier. Everything but the organisation's name is skippable.
   // THE BANNER — once, on entry, named (ruling 2026-08-31). Not on every
   // command: a banner every verb prints is how a product becomes tiresome to use twice. It sits here
   // rather than at the top of main() so that `--check`, which writes nothing and is run repeatedly,
   // does not wear it either.
   say("");
-  say(banner({ title: "Clearotron setup", subtitle: "one pass, and everything here is skippable", style,
+  say(banner({ title: "Clearotron setup", subtitle: "one pass, and everything here but your organisation's name is skippable", style,
                mark: bracketAsciiCells(), columns: process.stdout.columns }));
   say("");
   say(`  ${style.bold("Before you start")} — what this setup can take, so nothing here surprises you:`);
@@ -3821,6 +4032,7 @@ try {
   say("\n  Engine");
   say("  Clearotron runs each step of a search as a short, unattended session of an AI. One AI serves");
   say("  every search on this computer, so it is not chosen per search.");
+  let lastPick = null;   // the AI picked on the pass before this one (engineMenuDefault)
   engine: for (;;) {
     // ── THE STATE FIRST, THE QUESTIONS OFF IT ──────────────────────────────
     //
@@ -3836,8 +4048,10 @@ try {
     // only honest answer to it, and a guessed "signed in" that the turn then contradicts costs more than
     // no claim. Resolved once per pass, so a reader who mends something and comes back sees it mended.
     const found = engineMenuState();
-    const pick = await choose(ENGINE_QUESTION, engineOptions(found), 0, PAY_PREAMBLE);
+    const options = engineOptions(found);
+    const pick = await choose(ENGINE_QUESTION, options, engineMenuDefault(options, lastPick), PAY_PREAMBLE);
     if (!pick.id) { sayNoEngine(); break; }
+    lastPick = pick.id;
     const eng = ENGINE_BINARIES[pick.id];
 
     let bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
@@ -3974,7 +4188,7 @@ try {
     if (authPick.id === "api-key") {
       if (ambientKeyPresent) {
         apiKey = process.env[eng.apiKeyEnv];
-        info(`${eng.apiKeyEnv} is already in your environment — adopting it, so the .env this writes matches the lane you just proved.`);
+        info(`${eng.apiKeyEnv} is already in your environment — adopting it, so the .env this writes carries the key the test turn uses.`);
       } else {
         apiKey = await askValue(`${eng.apiKeyEnv}:`, { secret: true });
       }
@@ -4010,23 +4224,30 @@ try {
     //
     // THE CHECK IS UNCHANGED AND THE REFUSAL IS UNCHANGED. He valued both, and the issue puts them out
     // of scope explicitly — what was wrong was the sentence around them, so only the sentence moved.
-    // ONE LINE, saying the two things a reader needs to decide with: this costs a moment now, and
-    // skipping it costs an hour later.
-    info("A file that exists is not an engine that works — so setup tries one before writing anything.");
-    info("It takes a few seconds here. Skipped, a broken engine surfaces an hour into a real search.");
-    if (!await confirm(proveQuestion({ engineId: pick.id, lane: authPick.id }), true)) {
+    // proofPreamble says what a reader needs to decide with: what the turn costs, and that answering no
+    // saves nothing.
+    for (const line of proofPreamble({ product: eng.product, billing: authPick.id })) info(line);
+    if (!await confirm(proveQuestion({ product: eng.product, billing: authPick.id }), true)) {
+      // A WAY ON WITHOUT AN AI, BEFORE THE MENU. A declined proof went straight back to the menu, so a reader
+      // taking every default went round the same setup again. The question the no-program path already asks
+      // offers the way on; no returns to the menu, with this pick its default, and only that answer says so.
+      if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
       info("Not proven, so not written. Pick again — the last row configures no engine at all.");
       continue;
     }
+    // A TOKEN PASTED BELOW IS SAVED ONLY WITH THE TURN IT PROVED. It was written into the settings as it was
+    // pasted, so a reader whose turn still failed, and who then went on without an AI, had it saved unproved.
+    let pastedToken = null;
     for (;;) {
       say("  Running one turn…");
       // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
       const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: settingsInForce() }));
       if (v.ok) {
-        ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
+        ok(`${eng.product} completed a turn on ${PAYS_WITH[authPick.id]} — binary, credential, billing mode and model access all work.`);
         const served = servedLine(v);
         if (served) info(served);
         candidate.CLEAROTRON_AI = pick.id;
+        if (pastedToken !== null) candidate[eng.headless.tokenEnv] = pastedToken;
         // ALWAYS WRITTEN, and for the copy Clearotron installed it is the engine's default word: see
         // engineProgramSetting for why leaving it out was not enough.
         candidate[eng.env] = engineProgramSetting(eng, bin);
@@ -4036,14 +4257,14 @@ try {
         const cloudLines = Object.entries(cloudEnv ?? {}).filter(([k]) => k !== eng.authEnv);
         for (const [k, val] of cloudLines) candidate[k] = val;
         info(`CLEAROTRON_AI=${pick.id}`);
-        info(`${eng.authEnv}=${authPick.id} — the lane the turn above actually ran on.`);
+        info(`${eng.authEnv}=${authPick.id} — how the turn above was paid for.`);
         if (apiKey) info(`${eng.apiKeyEnv}=… — adopted, so a run bills the way you just proved.`);
         for (const [k, val] of cloudLines) info(shownSetting(k, val));
         if (bin.source === "installed") info(`${eng.env}=${eng.fallback} — the engine's default: this machine's own \`${eng.fallback}\` once it has one, and the copy Clearotron installed until then.`);
         else info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
         break engine;
       }
-      problem(probeFailureText(v));
+      problem(proofFailureLine(v, eng.product));
       // ── THE ENGINE'S OWN LAST LINES, UNDER EVERY VERDICT, ON BOTH LANES ──────────────────────────
       //
       // This used to be `if (v.detail)`, so a verdict carrying no detail printed a headline and nothing
@@ -4054,10 +4275,9 @@ try {
       //
       // SAY WHICH IT IS, INCLUDING WHEN THERE IS NOTHING. "The engine printed nothing" is itself the
       // diagnosis on a binary that died before it opened its mouth, and printing no line at all leaves
-      // a reader unable to tell that from a wizard that decided not to show them.
-      if (v.detail) info(`engine said: ${v.detail}`);
-      else info("engine said: nothing — it produced no output on either stream before it stopped.");
-      if (v.basis) info(`(that reading is ${v.basis === "text-match" ? "matched out of the text above, not a signal from the provider" : v.basis})`);
+      // a reader unable to tell that from a wizard that decided not to show them. A program refused before it
+      // started said nothing because it never ran, so proofEvidence shows no line for it.
+      for (const line of proofEvidence(v)) info(line);
       // — THE HAND-OFF. Signing in is the one step of this sequence nobody here can perform for
       // someone, so the wizard names the command, waits, and re-probes rather than ending at a
       // description of what is wrong. The text comes from ENGINE_BINARIES so the two adapters cannot
@@ -4065,6 +4285,20 @@ try {
       // subscription's step, and on a cloud or under a key the verdict above has named what to check.
       const handOff = signInHandOff(eng, bin, authPick.id);
       for (const line of handOff.lines) info(line);
+      // — found in review, and the same trap closed one prompt over. The default
+      // was YES, so Enter re-ran a probe that CANNOT succeed until the reader has signed in somewhere
+      // else — and the wizard's own header tells them Enter is the safe key. Driven with Enter it went
+      // 19 attempts, no cap and no escape, in a wizard whose header says everything here is skippable.
+      //
+      // Enter now declines, and the question after it is the one the no-program path asks, whose Enter
+      // goes on with no AI: a reader taking every default no longer goes round the menu again. No returns
+      // to the engine menu with this AI its default, and that line says what going on without one costs.
+      if (!await confirm("Fixed it? Run the turn again", false)) {
+        if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
+        info("Not proven, so not written. Back to the engine menu — its last row configures no engine: "
+          + "the demo and a replayed report still work, and a real clearance refuses by name until one is set.");
+        continue engine;
+      }
       // ── THE HEADLESS ENDING ────────────────────────────────────────────────
       //
       // On a box with no browser the interactive sign-in cannot complete, and the documented route had
@@ -4074,29 +4308,20 @@ try {
       // stream layout is not ours to guess at, and a paste works whatever it prints where. Codex's
       // headless ending writes its own auth file and there is nothing to capture — the command is
       // named, and the re-probe is the proof either way.
+      //
+      // ASKED AFTER THE RETRY'S YES, NOT BEFORE IT. The hand-off above asks for that yes by name, and a reader
+      // who had signed in in the browser met this question first, which wants a no from them. The turn has not
+      // run again yet, so a token pasted here is still the one it proves.
       if (handOff.captureToken) {
         // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
         const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });
         const tok = answer.value ?? (answer.yes
           ? await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." }) : null);
         if (tok !== null) {
-          candidate[eng.headless.tokenEnv] = tok;
+          pastedToken = tok;
           authEnv[eng.headless.tokenEnv] = tok;   // the re-probe below must prove the sign-in WITH it
           info(`${eng.headless.tokenEnv} captured — the turn below proves it before anything is written.`);
         }
-      }
-      // — found in review, and the same trap closed one prompt over. The default
-      // was YES, so Enter re-ran a probe that CANNOT succeed until the reader has signed in somewhere
-      // else — and the wizard's own header tells them Enter is the safe key. Driven with Enter it went
-      // 19 attempts, no cap and no escape, in a wizard whose header says everything here is skippable.
-      //
-      // Enter now declines. The reader lands back on the engine menu, whose last row configures no
-      // engine at all, so the way out is the one that already exists rather than a second one invented
-      // here — and the line says what that costs before they take it.
-      if (!await confirm("Fixed it? Run the turn again", false)) {
-        info("Not proven, so not written. Back to the engine menu — its last row configures no engine: "
-          + "the demo and a replayed report still work, and a real clearance refuses by name until one is set.");
-        continue engine;
       }
     }
   }
@@ -4170,7 +4395,7 @@ try {
     say("");
     info("No register is selected, and nothing register-related will be written.");
     info(`Every search refuses until one is set — \`${invoke("doctor")}\` says so on every run, and the`);
-    info("  Installation settings page says it too. Re-run setup, or set it there, when you have a credential.");
+    info("  Installation settings page says it too. Re-run setup when you have a credential.");
   }
   for (const k of registerSelected ? (spec.optionalCredentials ?? []) : []) {
     if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
@@ -4241,7 +4466,7 @@ try {
   // table row carries. A live check runs where one exists, keyed on the credential's name.
   say("\n  Search credentials");
   const liveChecks = { PERPLEXITY_API_KEY: validatePerplexity };
-  for (const [tableLabel, table] of [["research", RESEARCH_PROVIDERS], ["the open-web and marketplace grid", SERP_PROVIDERS]]) {
+  for (const [tableLabel, table] of [["research", RESEARCH_PROVIDERS], ["the Chinese marketplace search", SERP_PROVIDERS]]) {
     for (const adapter of Object.values(table)) {
       const name = adapter.credEnv;
       say("");
@@ -4369,18 +4594,16 @@ try {
   // consequence at the end. Its explanation of WHY an assistant reaches the box from a vendor's cloud is
   // genuinely useful and is a document, not a prompt — it lives in mcp-server/CONNECT.md, and the prompt
   // carries one line and a pointer.
-  say("\n  The address clients' assistants reach this install at");
+  say("\n  Optional: the public connector address");
   prose("An assistant connects from its maker's servers, not from your machine, so this has to be an",
         "address on the public internet, over https.");
-  prose("No default — it is your hostname. Skip it and this stays a local install: everything works",
-        "here, and the Use-your-AI page says so rather than handing out an address that fails.");
+  prose("No default — it is your hostname. Skip it and this stays a local install: everything works here, and the Connect your AI page says so rather than handing out an address that fails.");
   prose("The usual shape, and why: mcp-server/CONNECT.md.");
   const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
   for (;;) {
     const clientUrl = await askValue("Public connector address:", {
       skippable: true,
-      skipped: "CLEAROTRON_CLIENT_MCP_URL left unset — the Use-your-AI page and a report's Ask-AI control will "
-        + "show their empty state, which is correct for a local install",
+      skipped: "CLEAROTRON_CLIENT_MCP_URL left unset — the Connect your AI page and a report's Ask AI control will show their empty state, which is correct for a local install",
     });
     if (clientUrl === null) break;
     const trimmed = clientUrl.trim();
@@ -4418,8 +4641,7 @@ try {
   // making a decision about where their customer data lives without being told they had made it.
   const cfgDefault = join(base, "config");
   say("\n  Where this install keeps its own configuration");
-  prose("Your customers and any instructions you override live here, outside the checkout — which is what",
-        "lets you take updates with `git pull` instead of merging into files you never meant to own.");
+  prose(configOutsideWhy(PACKAGED));
   prose(`Enter accepts ${cfgDefault}, and your customers are written there.`);
   const cfg = await askValue("Configuration directory:", { def: cfgDefault });
 
@@ -4428,9 +4650,9 @@ try {
   // `<repo>-notes` is not mistaken for a path inside `<repo>`.
   const cfgAbs = resolve(cfg);
   if (isInsideCheckout(cfg, REPO)) {
-    problem(`${cfgAbs} is INSIDE the checkout (${resolve(REPO)}).`);
-    say("  Everything you write there becomes a local modification to our files: `git pull` conflicts,");
-    say("  and `git status` that is never clean. Choose a path outside the checkout.");
+    const [inside, ...why] = configInsideRefusal(PACKAGED, cfgAbs, resolve(REPO));
+    problem(inside);
+    for (const line of why) say(`  ${line}`);
     aborted = "config-inside-checkout";
     throw new Error("config-inside-checkout");
   }
@@ -4466,10 +4688,7 @@ try {
   //
   // Note for whoever adds an overlay later: it needs this name set, which is why the line below says so
   // rather than leaving a reader to discover that files they dropped in are being ignored.
-  info(`doctrine: this install overrides nothing, so CLEAROTRON_INSTRUCTIONS_DIR stays unset and the `
-    + `product's own files are used. To override an instruction file later, put it in ${join(cfg, "skills")}, `
-    + `COMMIT it in ${cfg}, and set CLEAROTRON_INSTRUCTIONS_DIR to that directory — an uncommitted store `
-    + "cannot be identified, and a run says so rather than guessing.");
+  info(customInstructionsNone(cfg));
 
   // DELIBERATELY NOT SEEDED, and this reverses what the issue asked for. Copying the house `generic.json`
   // in would make the store a working install — but since an EMPTY store already is one: profiles
@@ -4480,9 +4699,7 @@ try {
   // PRECISELY what shows through, because the last wording said "bundled customers" and the loader
   // says otherwise: the demo roster never layers into a deployment (a typo'd key must not resolve to
   // our fixtures), generic.json falls through BY NAME, and doctrine resolves file-by-file.
-  say("  Left empty. The bundled instructions show through file-by-file, and generic.json — the universal");
-  say("  fallback — falls through by name, so an empty store is a working install. Your own customers");
-  say("  are added here by name; the bundled demo customers never show through into your roster.");
+  prose(EMPTY_CONFIG_FOLDER);
 
   // 7c ── YOUR ORGANISATION, AND WHO SIGNS IN
   //
@@ -4512,9 +4729,9 @@ try {
   // silently passed over. A reader who is told a preflight ran and passed, when it never ran, learns
   // to trust a line that means nothing.
   if (registerSelected) {
-    say("\n  Running the driver's own credential preflight over these values…");
+    say("\n  Running the register credential check over these values…");
     const pf = await preflightCandidate(candidate);
-    if (pf.ok) ok(`preflight passed for provider "${pf.result.provider}" — checked ${pf.result.checked.join(" + ")}`);
+    if (pf.ok) ok(registerCheckPassed(pf.result.provider, pf.result.checked.join(" + ")));
     else {
       problem(pf.error);
       say("\n  Nothing has been written.");
@@ -4522,9 +4739,8 @@ try {
       throw new Error("preflight");
     }
   } else {
-    say("\n  Skipping the driver's credential preflight: it checks the register provider's credentials,");
-    say("  and no register is selected. The run door still refuses by name until one is — that guard is");
-    say("  untouched, and this is only setup declining to fail an install it was told to allow.");
+    say("");
+    prose(REGISTER_CHECK_SKIPPED);
   }
 
   // 9 ── write, atomically
@@ -4558,7 +4774,7 @@ try {
   // portal reads an empty folder the same way: it overrides nothing. It is here so that the place an
   // override goes exists, and so the line below is true of both folders it describes.
   mkdirSync(join(cfg, "skills"), { recursive: true });
-  ok(`configuration directories created under ${cfg} (empty — the bundled instructions and the generic fallback show through; customers are yours to add)`);
+  ok(configFoldersMade(cfg));
 
   // 9a ── PUT THE VERB ON THIS OPERATOR'S PATH
   //
@@ -4625,23 +4841,29 @@ try {
   // and asserts which command LEADS; a command named here would lead instead, and the guard that has
   // twice caught this screen regressing would start reporting the wrong thing.
   const stateLine = (label, value, absent) => `${value ? "set" : "not set"} — ${label}: ${value || absent}`;
-  say(`\n  ${style.bold("Setup finished.")} Nothing here needs running again.\n`);
-  say("  What this box has now:");
+  // The AI by the name the engine question gives it; none unless one passed its proof turn.
+  const aiChosen = ENGINE_BINARIES[candidate.CLEAROTRON_AI]?.product ?? "";
+  // "NOTHING HERE NEEDS RUNNING AGAIN" ONLY WITH AN AI AND A REGISTER CHOSEN. Without either, setup
+  // has already told the reader to run it again (NO_AI_CHOSEN, and the warning under a missing register).
+  say(`\n  ${style.bold("Setup finished.")}${aiChosen && registerSelected ? " Nothing here needs running again." : ""}\n`);
+  say("  What this install has now:");
   for (const line of [
     // THE ONE PLACE THE ADDRESS IS SHOWN (ruling, 2026-09-10): setup no longer asks for it.
     stateLine("signs in as", candidate.PORTAL_LOCAL_USER, "the local account"),
+    stateLine("AI", aiChosen, "none chosen; the demo works without one, and a real search needs one"),
     stateLine("register", candidate.CLEAROTRON_DATABASE, "no register, so every search refuses until one is chosen"),
     stateLine("web research", present(candidate.PERPLEXITY_API_KEY) ? "a key" : "", "a clearance stops before it starts, and names the missing key; a knockout search runs and discloses the half it skipped"),
     stateLine("data directory", candidate.CLEAROTRON_REPORTS_DIR, "unset"),
     stateLine("configuration store", candidate.CLEAROTRON_CUSTOMERS_DIR, "the bundled demo roster"),
     stateLine("notification links", candidate.CLEAROTRON_REPORTS_URL, "notifications carry no link into the report"),
-    stateLine("client connector", candidate.CLEAROTRON_CLIENT_MCP_URL, "local install; the Use-your-AI page shows its empty state"),
+    stateLine("client connector", candidate.CLEAROTRON_CLIENT_MCP_URL, "local install; the Connect your AI page shows its empty state"),
   ]) say(`    ${line}`);
 
   say(`\n  ${style.bold("Start here:")}\n`);
   say(`    ${invocationPrefix()}clearotron start\n`);
-  say("      Starts the portal and the engine door and prints one address to open in your browser. That");
-  say("      address is the product: you order a clearance from it and read the report there.\n");
+  say("      Starts the portal, the engine door, the client door and the worker, and prints one address to");
+  say("      open in your browser. That address is the product: you order a clearance from it and read the");
+  say("      report there.\n");
   // THE ONE SENTENCE A READER NEEDS BEFORE THEY OPEN THAT ADDRESS, and setup was the only one of the
   // three commands that never said it. A port can be free where the product runs and taken where the
   // BROWSER runs — a forwarding listener outside this environment answers 127.0.0.1 first — and the
@@ -4651,8 +4873,12 @@ try {
   // use, with no number, so the three commands cannot drift into three answers.
   for (const line of foreignPageHint("start")) say(`      ${line}`);
   say("");
-  say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
-  say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
+  // A FIRST REAL CLEARANCE IS SUGGESTED ONLY WHERE ONE CAN RUN. With no register chosen, the line suggesting
+  // `run` sat a few lines above the warning that `run` will refuse at its door.
+  if (registerSelected) {
+    say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
+    say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
+  } else say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls.`)}`);
   // THE OLD WAY IS A CHECKOUT'S. A package has no npm scripts where its reader stands.
   if (!PACKAGED) say(`  ${style.dim("Each still works the old way too — `npm start`, `node driver/pipeline.mjs`.")}`);
   say("");
@@ -4710,7 +4936,7 @@ try {
     if (needs.length && !enrollable.some((r) => r.configured)) {
       say("\n  Case law");
       say(`  ${needs.join(" and ")} reasons against case law and oppositions. No case-law source is`);
-      say("  enrolled on this box, so that search will run and its report will state the gap rather than");
+      say("  enrolled on this install, so that search will run and its report will state the gap rather than");
       say("  telling you what the courts have decided. Nothing here can set it up: it is a one-time OAuth");
       say("  sign-in, described in providers/oauth-mcp-bridge/README.md, and every other search is");
       say(`  unaffected. \`${invocationPrefix()}clearotron doctor\` reports it at any time.\n`);
@@ -4722,7 +4948,7 @@ try {
     say(`    \`${invocationPrefix()}clearotron demo\` and \`${invocationPrefix()}clearotron start\` work now. A real`);
     say("    clearance needs one register — any one is enough, and none requires another:");
     say(`      ${PROVIDERS.map((p) => p.id).join(", ")}`);
-    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`, or on the Installation settings page.`);
+    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`.`);
     say(`    \`${invocationPrefix()}clearotron doctor\` says which state this install is in, at any time.\n`);
   }
 } catch (e) {

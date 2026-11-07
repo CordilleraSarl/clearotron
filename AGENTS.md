@@ -110,7 +110,7 @@ Read https://clearotron.ai/try/ (or https://clearotron.ai/llms.txt) and explain 
 | `install` | configure this install — one question at a time, nothing written until each answer checks out |
 | `doctor` | report what this machine is configured for. Writes nothing, calls nobody |
 | `demo` | replay a finished example clearance and serve it. No keys, no model, no account |
-| `start` | start the product — the portal and the engine door — and print one address to open |
+| `start` | start the product — the portal, the engine door, the client door and the worker — and print one address to open |
 | `stop` | stop the background product and give the box back — connect's door is not touched |
 | `status` | is the product up, and on which ports. Reads; changes nothing |
 | `connect` | connect the assistant you already use — pick it by name and get the one thing it needs |
@@ -157,8 +157,8 @@ npx clearotron sync              # in this clone: 41.5 GB download and ~9 hours 
 The MCP server `.mcp.json` starts serves `start_run`, `stop_run`, `feed_context`, `plan_run` and
 `what_if_run` to the assistant connected to it, ungated: through it, an assistant can spend as `run-queue` does.
 
-In this clone, `npx clearotron start` itself is safe — it starts the portal and the engine door and deliberately does
-**not** drain the queue. The spend happens when someone orders a clearance and the queue is run.
+In this clone, `npx clearotron start` itself spends nothing — it starts the portal, the engine door, the client door
+and the worker. The spend happens when someone orders a clearance, which the worker then runs.
 
 | Lane | What you need | Notes |
 |---|---|---|

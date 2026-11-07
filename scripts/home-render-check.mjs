@@ -177,7 +177,7 @@ const STATES = {
     runs: [run({ runId: 'sp', mark: 'GLASSWING', state: 'running', step: 'Register sweeps', stepN: 3, stepTotal: 9, startedAt: ago(22), stopRequestedAt: new Date(now - 30_000).toISOString() }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 0,
     expectExpect: '',
-    expectStopNote: 'Stopping — letting Register sweeps finish. No report will be produced. Completed work stays readable through Ask AI.',
+    expectStopNote: 'Stopping when the current step finishes. No report will be produced. Completed work stays readable through Ask AI.',
   },
   quiet: { runs: FINISHED, expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0 },
   new: { runs: [], expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0, expectFirstRun: true },
@@ -736,9 +736,11 @@ for (const [name, spec] of Object.entries(STATES)) {
           `${name}/${theme}: the primary button and "Leave it running" sit side by side, primary first — read ${JSON.stringify(opened.buttons)}`)
         say(/A stopped search cannot be restarted and produces no report\. It stays in Clearances, marked stopped\. Its finished steps stay readable through Ask AI\./.test(opened.text),
           `${name}/${theme}: the stop dialog states the facts of a stop`)
-        say(/Register sweeps finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
-          && /Register sweeps is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
-          `${name}/${theme}: both options name the step in progress`)
+        // THE STEP IS NAMED ONCE, AS A LABEL, and the two choices say "this step" (the owner's words, 2026-11-06).
+        say(/Current step: Register sweeps/.test(opened.text)
+          && /This step finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
+          && /This step is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
+          `${name}/${theme}: the dialog names the step in progress once, and both options say "this step"`)
         say(!/allowance/i.test(opened.text), `${name}/${theme}: the stop dialog says nothing about the allowance`)
         if (shotDir) await tallShot(`home-stop-dialog-after-step-${theme}.png`)
         const now = await evalIn(`(async () => {

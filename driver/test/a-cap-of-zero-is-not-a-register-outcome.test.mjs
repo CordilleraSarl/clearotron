@@ -2,8 +2,8 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // a-cap-of-zero-is-not-a-register-outcome.test.mjs — report-data carries the cap beside the flag.
 //
-// `listRegisterRecords` folds a cap of zero, a negative and a NaN into the same `markCap = 0`, which
-// fetches nothing and marks the listing capped. report-data then emitted `capped: true` and never the cap
+// The listing a run recorded before the cap was retired folded a cap of zero, a negative and a NaN into one
+// `markCap = 0`, which fetched nothing and marked it capped. report-data then emitted `capped: true` and never the cap
 // itself, so a consumer could not tell a listing TRUNCATED at fifty — a register outcome — from one a cap
 // of zero stopped before it began, which is a configuration. Both read as "the listing was capped".
 //

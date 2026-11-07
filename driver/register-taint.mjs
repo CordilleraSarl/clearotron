@@ -11,7 +11,7 @@
 // attempt?
 //
 // THE RULE (bandPassTaint): rows are scanned in order. A SUPERSEDING success is a fresh full pass
-// (not a followup — an escalation/envelope followup RESUMES the prior session and PATCHES its output,
+// (not a followup — an escalation/envelope followup PATCHES the prior pass's output in a fresh session,
 // so it can never launder a tainted base). tainted ⟺ a kill-class row sits BOTH after the FIRST
 // superseding success (a kill that mutated a band that had already passed validation — the incident
 // class) AND after the PREVIOUS superseding success (the region feeding the current band; an older
@@ -36,7 +36,7 @@
 //
 // Legacy rows (pre-taint-chain runs, incl. copper-lattice) lack `followup`/`killed`/`signals`; the
 // fail/code discriminators still classify them, and followup detection falls back to key-reuse (a
-// followup resumes a key that already succeeded — a fresh pass never does).
+// followup re-uses a key that already succeeded — a fresh pass never does).
 //
 // PURE over pre-read lines (repo doctrine: tests offline); readRegisterTaint is the one IO wrapper.
 // Missing/unreadable jsonl ⇒ untainted — legacy runs and replay stay no-op safe.

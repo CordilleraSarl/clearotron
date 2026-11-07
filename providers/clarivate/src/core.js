@@ -40,6 +40,7 @@ import {
 } from "../../_shared/screen.mjs";
 import { makeEnumerate, ENUMERATE_NAMES_CHUNK_DEFAULT, parseToolText } from "../../_shared/enumerate.mjs";
 import { makeCountProbe } from "../../_shared/count.mjs";
+import { answerFromHeldList } from "./wider-list.js";
 import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
@@ -2045,6 +2046,9 @@ const __executePlan = makeExecutePlan({
   // scope, already translated to office codes at compile time); with no plan regions either, the
   // provider still fails loud rather than sweeping something that was never asked for.
   buildEntryQuery: makeRegionRequiredBuildEntryQuery(substituteRomanizedNames),
+  // An exact phrase asked as its words in order reads the run's answers first (wider-list.js).
+  answerFromHeld: (query, held, entry) => answerFromHeldList({ want: buildSearchRequest(query), literal: entry.term, markField: MARK_FIELD,
+    held: held.flatMap((h) => { try { return [{ qid: h.block.qid, block: h.block, body: buildSearchRequest(h.query) }]; } catch { return []; } }) }),
   // predicateParams → the WILDCARD predicate is Clarivate-shaped, and inheriting the shared default
   // here would silently mis-serve a slice this provider CAN execute.
   //

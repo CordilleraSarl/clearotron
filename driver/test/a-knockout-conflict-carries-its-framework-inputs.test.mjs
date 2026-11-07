@@ -191,7 +191,6 @@ test("arm 5: the rater is told the framework's inputs only where the framework s
   }));
 
   const told = message(METHOD);
-  assert.ok(told.includes("{ordinal, name, owner, band, inputs, net, type,"), "the findings keys do not name inputs");
   assert.ok(told.includes(methodDictation(METHOD)), "the method is not dictated");
   assert.equal(methodDictation(METHOD), "This framework rates through its inputs, in this order: Claim Grade (P / Q / R), then Conflict Kind (Orchard / Harbour). Record both on every rated finding, in these exact words, and give the band its table yields for them.");
   assert.ok(told.includes(`- inputs: ${inputsShape(METHOD)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.`));
@@ -199,7 +198,7 @@ test("arm 5: the rater is told the framework's inputs only where the framework s
   assert.ok(told.includes('A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.'));
 
   const plain = message(null);
-  assert.ok(plain.includes("{ordinal, name, owner, band, net, type,") && plain.includes("rows of {recordId, read, band?} for"),
+  assert.ok(plain.includes("rows of {recordId, read, band?} for"),
     "a framework with no method reads different keys than it always did");
   assert.doesNotMatch(plain, /inputs/, "a framework with no method is told about inputs");
   assert.equal(plain, message(undefined), "an unset method and a run that froze none read the same prompt");

@@ -52,9 +52,9 @@ const STRIP = Object.freeze([
   ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
 ]);
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
-import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
+import { recordBasisOf, readByJudgment, noneCarriedForward, NONE_CARRIED_FORWARD, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
-import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
+import { knockoutFindingViews, splitKnockoutNotes, KNOCKOUT_CARD_ORDER } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { demoBannerHtml, servedModelsLine } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // — the export menu's shell and behaviour, shared with the clearance template   // — the SAME banner the clearance template renders, not a second wording
@@ -391,16 +391,24 @@ function batchTitle(marks) {
 // UNNUMBERED straight under the hero. Counts + per-name reads merge into ONE numbered section named
 // like the clearance spine ("On-field conflicts" — counts are the D2 form of "who is in the way"),
 // and "Scope & method" takes the clearance Scope name. Same names, same order, fewer rows.
+// A NAME'S BAND COLUMN: its one band and classes, or where the evidence divides them, a band and its classes per
+// group, in the order the merged gate left them, highest first. The same chip and the same line either way, so no
+// words are added. A mark with no groups, which is every archived run, keeps its markup byte for byte.
+function bandColumn(m, framework) {
+  const chip = (band, qualifier, classes) => `<span class="ko-band" style="background:var(${bandStop(framework, band)})">${esc(band ?? '—')}</span>
+        ${qualifierHtml(qualifier)}
+        ${classes?.length ? `<p class="ko-classes">Classes ${esc(classes.join(', '))}</p>` : ''}`;
+  if (!Array.isArray(m.classGroups) || !m.classGroups.length) return chip(m.rating, m.ratingQualifier, m.classesSearched);
+  return m.classGroups.map((g) => chip(g.band, g.ratingQualifier, g.classes)).join('\n        ');
+}
+
 function glanceSection(marks, framework, registerCounts) {
   const rows = marks.map((m) => {
-    const stop = bandStop(framework, m.rating);
     const counted = registerCounts ? countLine(countsForMark(registerCounts, m.name)) : null;
     return `<div class="ko-row">
       <div>
         <p class="ko-name">${esc(m.name)}</p>
-        <span class="ko-band" style="background:var(${stop})">${esc(m.rating ?? '—')}</span>
-        ${qualifierHtml(m.ratingQualifier)}
-        ${m.classesSearched?.length ? `<p class="ko-classes">Classes ${esc(m.classesSearched.join(', '))}</p>` : ''}
+        ${bandColumn(m, framework)}
       </div>
       <div>
         ${counted ? `<p class="ko-count">${esc(counted)}</p>` : ''}
@@ -752,7 +760,7 @@ function filingsSection(marks, registerRecords) {
     const more = e.records.length > shown.length
       ? ` Showing ${shown.length} of ${e.records.length}, most material first — the filings this`
         + ` assessment weighed before the rest, then live filings before dead,`
-        + ` in the searched classes before outside them, the name itself before its close variations.`
+        + ` in the searched classes before outside them, the name itself before ${readByJudgment(registerRecords) ? 'other searches' : 'its close variations'}.`
         + ` The full list is in the audit workbook's Register Filings sheet.`
       : ' The same rows are in the audit workbook\'s Register Filings sheet, most material first.';
     return `<div class="ko-filings">
@@ -761,7 +769,7 @@ function filingsSection(marks, registerRecords) {
       <p class="ko-basis">${esc(line ?? '')}${esc(more)}</p>
     </div>`;
   }).join('');
-  return `<div class="panel ko-glance">${blocks}<p class="ko-basis">${esc(RECORD_BASIS)}${officeLinkNote(registerRecords)}</p></div>`;
+  return `<div class="panel ko-glance">${blocks}<p class="ko-basis">${esc(recordBasisOf(registerRecords))}${officeLinkNote(registerRecords)}</p></div>`;
 }
 
 // Once, under the filings: what a linked number opens and, per office, why the rest are cited by number.
@@ -1071,8 +1079,9 @@ function registerStatement(r, provider) {
     ? `class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}`
     : 'classes not stated on the record';
   // A close-variation card says WHICH near-form matched, because the name at the head of the sentence is
-  // then not the name the client asked about and a reader must not have to guess which it is.
-  const via = r.matchedBasis === 'close' && r.matchedForm ? ` Found under the close variation ${r.matchedForm}.` : '';
+  // then not the name the client asked about and a reader must not have to guess which it is. A filing the reading
+  // step found names its question, and that question may be a wider search, which is no close variation.
+  const via = r.matchedBasis === 'close' && r.matchedForm ? (r.question ? ` Found by a search on ${r.matchedForm}.` : ` Found under the close variation ${r.matchedForm}.`) : '';
   return `${lead} ${owner}, ${cls}.${via}`;
 }
 
@@ -1480,7 +1489,7 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
     const classWhere = classes.length ? ` in class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : '';
     const one = cards.length === 1;
     const refs = cards.map((c) => c.ref).join(', ');
-    return `${one ? 'A filing' : `${cards.length} filings`} of this name or a close variation of it `
+    return `${one ? 'A filing' : `${cards.length} filings`} of this name or ${readByJudgment(registerRecords) ? 'a name near it' : 'a close variation of it'} `
       + `stand${one ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`;
   }
   const records = entry.records ?? [];
@@ -1492,9 +1501,10 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
     // term was asked and answered, and none was left unanswered. Anything else is a listing that did not
     // finish, which this page already has the sentence for.
     const terms = entry.terms ?? [];
-    const ranAndAnswered = terms.length > 0 && terms.every((t) => t.ok);
+    const ranAndAnswered = terms.length > 0 && terms.every((t) => t.ok && !t.setAside);
     return ranAndAnswered
       ? `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`
+      : noneCarriedForward(entry) ? NONE_CARRIED_FORWARD
       : 'The filings listing for this name did not complete, so nothing here says whether one stands.';
   }
   return `${records.length} filing${records.length === 1 ? ' is' : 's are'} listed for this name below; `
@@ -1673,14 +1683,14 @@ function readBlock(m, framework) {
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null } = {}) {
   const cards = marks.map((m, markIndex) => {
-    const stop = bandStop(framework, m.rating);
     const bullets = readBlock(m, framework);
-    // — the promoted register filings, in the SAME list as the common-law conflicts. They render
-    // after the typed findings and that position is not a rank: a card with no band already sorts last
-    // under compareKnockoutBlockingPower, so appending them is the ladder's own rule applied to a row
-    // that has no rung, not a new one invented for the register.
+    // — the promoted register filings, in the SAME list as the common-law conflicts. A name's filing evidence
+    // leads and its web use follows, the order a lawyer's report takes: first the findings that weigh a filing,
+    // then the filing cards, then the findings resting on use alone. Each keeps its own order, so the
+    // position says which evidence this is, and the band inside each says how much it blocks. A run recorded
+    // before this order keeps the one it was delivered with: its findings, then its filing cards.
     const reg = registerCardViews(m, framework, registerRecords);
     const drawn = registerCardsOnPage(reg.cards, m, framework);
     const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks, frameworkMethod)).join('');
@@ -1696,12 +1706,16 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // were all typed fell to the fallback below: "No adverse signals recorded for this name on this
     // screen." A MARK WITH CONFLICTS RENDERED AS A CLEAN MARK, on the client-facing document, with
     // nothing anywhere saying so. findings-model.mjs's view reads both shapes and drops nothing.
-    const finds = knockoutFindingViews(m, { manifest: framework }).map((v) => findingBlock(v, framework, markIndex, frameworkMethod)).join('');
+    const views = knockoutFindingViews(m, { manifest: framework });
+    const weighsAFiling = (v) => Array.isArray(v?.weighedFilings) && v.weighedFilings.length > 0;
+    const findsOf = (list) => list.map((v) => findingBlock(v, framework, markIndex, frameworkMethod)).join('');
     // — THE REGISTER CARDS ARE INSIDE `body`, and that is the fall-through guard. A mark whose only
     // conflict is a filing on the register used to reach the sentence below and be published as clean.
     // The guard is deliberately TIGHT: a listed filing that is dead or out of the counted classes does
     // not suppress it, because for that mark the sentence is true and the filings section says so.
-    const body = [bullets, finds, regBlocks, overflow].filter(Boolean).join('');
+    const body = (cardOrder === KNOCKOUT_CARD_ORDER
+      ? [bullets, findsOf(views.filter(weighsAFiling)), regBlocks, overflow, findsOf(views.filter((v) => !weighsAFiling(v)))]
+      : [bullets, findsOf(views), regBlocks, overflow]).filter(Boolean).join('');
     // A BAND WITH NO LADDER NAMED IS A NUMBER WITH NO SCALE. The framework's name rides the rating card,
     // and that card is only built for a mark with a structured read — an archived run whose marks carry
     // bullets and nothing else draws no card, and its band chips were then shown with no statement
@@ -1717,9 +1731,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     return `<div class="ko-row">
       <div>
         <p class="ko-name">${esc(m.name)}</p>
-        <span class="ko-band" style="background:var(${stop})">${esc(m.rating ?? '—')}</span>
-        ${qualifierHtml(m.ratingQualifier)}
-        ${m.classesSearched?.length ? `<p class="ko-classes">Classes ${esc(m.classesSearched.join(', '))}</p>` : ''}
+        ${bandColumn(m, framework)}
       </div>
       <div>
         ${body || '<p class="ko-bul">No adverse signals recorded for this name on this screen.</p>'}
@@ -1816,7 +1828,7 @@ const CAVEAT_LEAD = 'This screen also carries the following limits:';
  * had forgotten asserted it was the one product it provably was not.
  */
 export function renderKnockoutHtml(findings, framework, {
-  runId, overall, issued = null, auditFile = null, probeRan = false, registerCounts = null,
+  runId, overall, issued = null, searched = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
   // — was the filings sidecar PRESENT but unreadable? Defaults to false, so every existing caller — the
   // unit fixtures and both render-check scripts, none of which pass one — renders exactly as it did. It
@@ -1921,12 +1933,12 @@ export function renderKnockoutHtml(findings, framework, {
   // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
   // could; that is why there isn't one.
   const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder });
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
   const requestNotes = marks.flatMap((m) => splitKnockoutNotes(m).request);
-  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, issued, registerCounts);
+  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, searched, registerCounts);
   const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
   // and never as an empty table. A knockout with no sidecar publishes exactly the counts-only document.
@@ -2146,6 +2158,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
         contextFraming: m.contextFraming ?? null,
         classesSearched: m.classesSearched ?? [],
         classesDriving: m.classesDriving ?? [],
+        ...(Array.isArray(m.classGroups) && m.classGroups.length ? { classGroups: m.classGroups } : {}),
         degraded: Boolean(m.degraded),
         points: m.bullets ?? [],
         // ── THE ASSESSMENT THE RUN ALREADY WROTE ──────────────────────────────────────────────────
@@ -2295,7 +2308,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
       };
     }),
     registerCountBasis: registerCounts ? COUNT_BASIS : null,
-    registerFilingsBasis: registerRecords && !registerRecords.unavailable ? RECORD_BASIS : null,
+    registerFilingsBasis: registerRecords && !registerRecords.unavailable ? recordBasisOf(registerRecords) : null,
     registerProvider: registerCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? null) : null,
   };
 }

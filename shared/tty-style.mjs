@@ -110,6 +110,17 @@ function paintRow(cells, style) {
   return out;
 }
 
+// Greedy wrap at spaces into lines no wider than `width`; a word wider than that keeps a line of its own.
+function wrapWords(text, width) {
+  const out = [];
+  for (const word of text.split(" ")) {
+    const last = out.length ? out[out.length - 1] : null;
+    if (last !== null && last.length + 1 + word.length <= width) out[out.length - 1] = `${last} ${word}`;
+    else out.push(word);
+  }
+  return out;
+}
+
 /**
  * The entry banner. ONCE, on entry, named — not on every command (the ruling says so, and a banner on
  * every verb is how a product becomes tiresome to use twice).
@@ -124,11 +135,7 @@ function paintRow(cells, style) {
  * Sizing it from the title alone is how a mark wider than the title overflows the frame it is in.
  */
 export function banner({ title, subtitle = "", style = styleFor(), mark = null, gutter = 3, columns = Infinity } = {}) {
-  const text = [
-    { text: style.bold(title), width: title.length },
-    ...(subtitle ? [{ text: style.dim(subtitle), width: subtitle.length }] : []),
-  ];
-  const words = Math.max(...text.map((t) => t.width));
+  let words = Math.max(title.length, subtitle.length);
   // The mark is the first thing to go when it does not fit. A box that wraps is worse than a box with
   // no logo in it — the owner asked to SEE the mark, and a 65-column frame folded into a 60-column pane
   // shows him neither the mark nor the sentence. `columns` defaults to Infinity so a caller that has no
@@ -137,6 +144,15 @@ export function banner({ title, subtitle = "", style = styleFor(), mark = null, 
   let cells = mark ?? [];
   let markWidth = cells.length ? Math.max(...cells.map((r) => r.length)) : 0;
   if (markWidth && markWidth + gutter + words + 4 > columns) { cells = []; markWidth = 0; }
+  // THEN THE SUBTITLE WRAPS, at a space, when the box is still wider than the pane without the mark. The setup
+  // banner's subtitle names the one answer that cannot be skipped, which made its plain box 75 columns, and a
+  // 60-column pane would fold that box as it once folded the mark.
+  const subtitleLines = !subtitle ? [] : words + 4 > columns ? wrapWords(subtitle, Math.max(title.length, columns - 4)) : [subtitle];
+  const text = [
+    { text: style.bold(title), width: title.length },
+    ...subtitleLines.map((l) => ({ text: style.dim(l), width: l.length })),
+  ];
+  words = Math.max(...text.map((t) => t.width));
   const pad = markWidth ? markWidth + gutter : 0;
   const inner = pad + words;
   const line = "─".repeat(inner + 2);

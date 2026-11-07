@@ -35,7 +35,7 @@ import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
@@ -45,7 +45,7 @@ import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./derived-state.mjs";   // the register picture a dispatch was handed, so a replay can be checked against it
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
-import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
+import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, settleRecheckSave, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
@@ -232,6 +232,7 @@ import { RunCancelled, isCancelled, assertNotCancelledBeforePublish } from "./ca
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { CLIENT_ACTION, assessmentNotCompletedNote } from "../shared/client-failure-note.mjs";   // — the action, worded once; this surface names the mark itself
 import { stopReason } from "../shared/stop-reason.mjs";   // — one builder, four cancel sites
+import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 
 // Fix-1 (deterministic common-law closure): the lanes that dictate a supplementary grid SPEC (the driver
 // writes the spec, the plugin writes the ledger, the driver folds it in code). One tag per lane so
@@ -417,8 +418,8 @@ export function isFallbackEligible(fail) {   // @internal
 
 // A5 strike predicate — is this run.jsonl stage-row failure a CONTENT verdict (counts toward the
 // invalid-artifact strike cap) rather than infra weather (breaks the streak)? isFallbackEligible alone
-// is NOT enough: it matches only the model-fallback token set, but the trail also carries transient
-// shapes that never enter the fallback chain — `rate_limited` (the subscription 5h cap), bare
+// is NOT enough: it matches only the transient-infrastructure token set, but the trail also carries
+// transient shapes that set does not match — `rate_limited` (the subscription 5h cap), bare
 // `unparseable_json`, and prose transport causes from code-side units ("… direct execution failed:
 // HTTP 502 …"). repairs.mjs's own doctrine says those are sampling noise, not a content verdict — so
 // anything classifyFailureReason calls transient breaks the streak too. Exported so the strike tests
@@ -3058,7 +3059,7 @@ function quarantineCoverageLedger(ctx, failReason, trigger) {
 
 // ── — THE SAVE-ONLY FOLLOWUP IS GONE, BECAUSE NOTHING ASKS THE MODEL TO SAVE ANYTHING ─────────
 //
-// `ensureCoverageLedgerSaved` dispatched a warm followup that DICTATED the machine ledger's JSON schema
+// `ensureCoverageLedgerSaved` dispatched a followup that DICTATED the machine ledger's JSON schema
 // by hand — "a JSON ARRAY, one object per prose Coverage-ledger table row, keys EXACTLY {axis, scope,
 // status, reason}…" — a fourth copy of a contract that lives in coverage-ledger.parseCoverageLedgerJson.
 // The artifact it asked for is now derived by the driver from the coverage form, so a missing JSON can
@@ -3088,7 +3089,7 @@ function noteCoverageLedgerAbsent(ctx, trigger) {
 //
 // Artifact: _driver/recall-reconciliation.json (the gate-visible discrepancy list; crowd memberships
 // counted on the delivered surface, enumerated only here). Event: `recall-reconciliation` on every
-// derivation — unended:0 is ASSERTED, never absent. Enforcement: unended ⇒ ONE warm followup on the
+// derivation — unended:0 is ASSERTED, never absent. Enforcement: unended ⇒ ONE followup on the
 // winning digest session dictating the three ending forms (at most RECALL_FOLLOWUP_MAX attempts per
 // unended-set signature, so a park/resume gets a fresh attempt without ever looping); what remains
 // unended after that ships NAMED from the pre-verdict floor, through the terminal guards' deliver-and-clamp (the
@@ -4290,7 +4291,7 @@ async function enforceRecallReconciliation(ctx, r, trigger) {
   const P = ctx.paths;
   let artifact = deriveRecallReconciliation(ctx, trigger);
   if (!artifact?.computable || !artifact.totals.unended) return;
-  // one warm followup per unended-set signature, bounded across resumes (RECALL_FOLLOWUP_MAX):
+  // one followup per unended-set signature, bounded across resumes (RECALL_FOLLOWUP_MAX):
   // the receipt rides the artifact file itself, so a crash between followup and re-derive re-arms
   // at most one extra attempt — bounded either way by the recovery ladder's identical-signature stop.
   // The receipt now SURVIVES the re-derive (carryRecallFollowup inside writeArtifact) — before that
@@ -5365,7 +5366,7 @@ async function stageOnce(name, ctx, opts = {}) {
   //
   // The task order is deliberately NOT restored: `def.message(ctx)` stays out, because re-commissioning
   // the stage fights the followup's own "do NOT redo it". freshMessage (doc-44 — a standalone message on a
-  // fresh session that STILL goes through the fallback chain, unlike followup which is single-model) gets
+  // fresh session, dispatched as any fresh stage is: its one model, with the gateway's own retries) gets
   // the same composition for the same reason: it is equally a session with nothing in it.
   //
   // The declared inputs are filtered to what is ON DISK here, not in stages.mjs — that module is a pure
@@ -5448,8 +5449,8 @@ async function stageOnce(name, ctx, opts = {}) {
     message,
     model,
     thinking,
-    // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
-    // the canonical base key. (A followup with a stale base key would resume a failed attempt — see runStage.)
+    // opts.sessionKey names the key a prior run won on (winning-key hardening), so a followup's records sit
+    // beside it; else the canonical base key. No engine resumes by key (A-1): a followup is fresh either way.
     sessionKey: opts.sessionKey ?? stageSessionKey(ctx, name, keyAxis),
     timeoutSec: derivedLimit.sec ?? def.timeoutSec,
     derivedLimit,               // recorded on every attempt row: the size it was derived from, and the number
@@ -5473,8 +5474,8 @@ async function stageOnce(name, ctx, opts = {}) {
     ...(patch == null && typeof def.refreshCtx === "function"
       ? { refreshMessage: () => def.message(messageCtxFor(name, def.refreshCtx(ctx))) + (opts.extra ? `\n\n${opts.extra}` : "") }
       : {}),
-    // #5b: a followup is a warm session resume — tell runStage so a hard-wall timeout breaks after ONE attempt
-    // (an already-over-budget resume can't fit the 1.5× extension; this restores ~1× the wall, was ~2.5×).
+    // The caller's word that this is a followup: a FRESH session (A-1), journalled on every attempt row. At its
+    // hard wall it takes the same one extended retry as any dispatch (gateway.mjs warmHardWallStop).
     followup: opts.followup != null,
     // copper-lattice re-route: a supplemental-lane register unit never sees register_enumerate — its
     // judgment additions ride register_propose_supplemental (contract-gated so frozen pre-flag resumes
@@ -5727,8 +5728,8 @@ async function stage(name, ctx, opts = {}) {
 // rather than armed — see driver.config.mjs for the reasoning. The retry ladder is now the whole, honest
 // failure story: below it a stage FAILS, loudly, and the run parks or reports.
 //
-// followups (warm resume) and explicitly model-pinned calls still delegate straight to stageOnce, because
-// they carry their own model (the cache is model-specific and a resume must not move it).
+// followups and explicitly model-pinned calls still delegate straight to stageOnce, on their own model. The
+// reason given for followups was a resumed session's model-specific cache, which a fresh session does not have.
 async function stageWithChain(name, ctx, opts = {}) {
   if (opts.followup || opts.model) return stageOnce(name, ctx, opts);
   const [entry] = chainEntries(name, ctx.axis);
@@ -6144,22 +6145,19 @@ export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {   // @int
  * The architecture's delivery rule: the directive is composed ONCE per run and rides every dispatch of
  * that family — fresh, corrective, re-dispatch — with the inclusion asserted at the call site.
  *
- * WHY A WARM DISPATCH NEEDS IT AT ALL. A dispatch with no `sessionKey` is a fresh turn: the driver
+ * WHY A FOLLOWUP DISPATCH NEEDS IT AT ALL. A dispatch with no `sessionKey` is a fresh turn: the driver
  * rebuilds the whole message from `STAGES.<name>.message`, and the directive is in there. A dispatch
- * WITH a `sessionKey` resumes a session and sends only its followup — so it inherits nothing the
+ * WITH a `sessionKey` sends its followup in place of that message — so it inherits nothing the
  * message builder produces. That is not a theoretical gap: it is how the delivered narrative came from
  * a pass carrying no directive at all while the fresh pass carried one.
  *
  * Composed from the same function the fresh dispatch uses, so the two are the same string rather than
  * two texts that agree today.
  */
-export function stageCharter(stageName, depth, framework = null) {   // @internal
-  // THE BAND ORDER RIDES THE CHARTER, because rule 2 names the run's own band labels and a warm dispatch
-  // that composed them from nothing would send a DIFFERENT directive to the same seat — which is the
-  // whole failure this helper exists to prevent, reintroduced one argument down.
-  const directive = stageName === "synthesis" ? proseRungDirective(depth, framework?.bands ?? null)
-    : stageName === "placement-inquiry" ? inquiryRungDirective(depth)
-      : "";
+export function stageCharter(stageName, depth) {   // @internal
+  // SYNTHESIS CARRIES NO DEPTH RUNG ANY MORE: its per-finding write-up rules contradicted the synthesis call, which records
+  // sections only (design, 2026-11-06). The placement inquiry's rung still rides every dispatch of that stage.
+  const directive = stageName === "placement-inquiry" ? inquiryRungDirective(depth) : "";
   return directive ? `\n\n${directive}` : "";
 }
 
@@ -6889,7 +6887,7 @@ export function partitionDeliveryStale(staleStages) {   // @internal
 // entities actually reached findings.json (the file every client surface renders from). Deterministic:
 // proper-name candidates from the review ∩ the findings' marks/owner names = the named set; if the
 // file is byte-unchanged (or every named finding's object is) and no corrections marker landed, fire
-// ONE warm followup demanding the re-emit; a terminal miss NEVER withholds (never-withhold) — it logs,
+// ONE followup demanding the re-emit; a terminal miss NEVER withholds (never-withhold) — it logs,
 // flags the internal review bar, and closes the CLIENT export via _driver/corrections-state.json.
 export function snapshotFindingsForCorrections(P, runDir) {   // @internal
   let raw = null;
@@ -8432,7 +8430,7 @@ export function registerJurisdictions(job, profile) {   // @internal
 // (this is a delivery-quality pass, never a gate; a malformed findings.json is already handled upstream).
 // A6 — the intake-ask register. Parse the matter-frame's "### Intake asks" section into
 // machine rows, freeze them at _driver/intake-asks.json (temp+rename), and expose ctx.intakeAsks to
-// every downstream message builder. Section missing on a fresh run ⇒ ONE warm save-only followup
+// every downstream message builder. Section missing on a fresh run ⇒ ONE save-only followup
 // (the grid-ledger-followup posture), then proceed with [] + a logged note — never-kill, replay-safe
 // (archived runs simply have no sidecar and all consumers falsy-skip).
 export function parseIntakeAsks(matterContextMd) {   // @internal
@@ -8660,6 +8658,15 @@ export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, for
   return rows.filter((r) => r.area && r.note);
 }
 
+// A COVERAGE ROW THAT WAS NOT ADDED. Each adder below catches its own failure and the run goes on (ruled 2026-09-25:
+// deliver, and flag in the audit what still failed), so the row it exists to add is missing from the report and
+// the workbook. Its note is the run's own line; this event is what delivery reads (degraded-parts.mjs, coverageRows),
+// so the audit workbook names the part. It never throws from the catch that calls it.
+function coverageRowNotAdded(runDir, adder, e) {
+  try { runLog(runDir, { event: "coverage-row-not-added", adder, fail: String(e?.message || e).replace(/\s+/g, " ").slice(0, 200) }); }
+  catch { /* the note the caller wrote still stands */ }
+}
+
 export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
@@ -8686,6 +8693,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
     note(`[coverage-judgment] rows[] written from the ledger + the plan-execution receipt: ${rows.length} open slice(s)${discarded ? `; ${discarded} authored row(s) replaced` : ""}`);
   } catch (e) {
     note(`[coverage-judgment] rows[] stamp skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "coverage-judgment", e);
   }
 }
 
@@ -8731,6 +8739,7 @@ export function injectDeferralCoverage(P, runDir, note) {   // @internal — exp
     note(`[frame-reopen] injected ${added} deferral coverage row(s) — the reader sees every unclosed directive`);
   } catch (e) {
     note(`[frame-reopen] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "frame-reopen", e);
   }
 }
 
@@ -8939,6 +8948,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
     note(`[script-scope] injected the Stage-1.5 honesty coverage row for ${added.join(", ")} — in-scope territory on a run whose ${added.length === 1 ? "lane" : "lanes"} did not run (coverage-limited: a disclosed limit, never a verdict clamp)`);
   } catch (e) {
     note(`[script-scope] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "script-scope", e);
   }
 }
 
@@ -9015,6 +9025,7 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
     note(`[lane-depth] injected the depth-shortfall coverage row for ${added.join(", ")} — configured full, delivered less (coverage-limited: a disclosed limit, never a verdict clamp)`);
   } catch (e) {
     note(`[lane-depth] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "lane-depth", e);
   }
 }
 
@@ -9134,6 +9145,7 @@ export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @inte
     note(`[screen-gate] injected ${added} unexamined-drop coverage row(s) — the reader sees every mark the run could not examine`);
   } catch (e) {
     note(`[screen-gate] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "screen-gate", e);
   }
 }
 
@@ -9252,6 +9264,8 @@ const softNorm = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "")
 export const CODE_BUILT_SECTIONS = Object.freeze({   // @internal
   onlyYou: "### Only you can close these",
   reviewerOpenPoints: "### Reviewer's open questions",
+  // Under it, the points of the review that stood when the recheck after the correction saved none.
+  earlierReview: "#### Earlier review — correction not rechecked",
   askAnswers: "### Answers to your instructions",
   reasonedNegatives: "# Reasoned negatives",
 });
@@ -9476,7 +9490,23 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // impossible, and rendering nothing would ship a report whose body reads as reviewed while the reviewer
 // refused. Silence is the one thing the section exists to prevent. The wording is the sidecar's own,
 // already carried at the degenerate branch above — one sentence for one fact, in both places.
-export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {   // @internal
+//
+// ── THE EARLIER REVIEW'S POINTS SAY WHOSE THEY ARE (heading approved 2026-11-04) ──────────────────
+//
+// A recheck after the correction that saved no review leaves the review from before the correction in
+// place, and its verdict stands. Built from it with nothing said, the points read as the reviewer's view of
+// the corrected record, and nobody reviewed that record. So the caller passes `earlier` — the file holding
+// that review, and whether it is the one in place (earlierReviewNotRechecked) — and the section puts that
+// review's points under `CODE_BUILT_SECTIONS.earlierReview`, with that file as a value and no sentence added.
+//
+// THE HEADING GOES BY THE POINT, NOT BY THE SECTION. A review of a delivery-check repair can be read after that
+// recheck and print its points in the same record. It read only the repair, so the correction is still not
+// rechecked and the earlier review's points are still the earlier review's; its own points (`later`, from the
+// caller) stay above the heading. The lead is chosen by the verdict of the review in place, so it goes where that
+// review's points go: under the heading when that is the earlier review, above it when a later one hardened the
+// verdict. The points, their outcomes and the leads are untouched, nothing is dropped, and the section's own
+// heading stays first for every reader that keys on it. Without `earlier`, not a byte of the section changes.
+export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null, { earlier = null } = {}) {   // @internal
   const blocking = parseVerdict(reviewMd) === "BLOCKING";
   const cited = blocking ? parseCorrections(reviewMd) : [];
   const unfixed = (Array.isArray(appliedRows) ? appliedRows : []).filter((r) => r?.ground === true || unresolvedFlags([r]).length);
@@ -9492,6 +9522,10 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     seen.add(key);
     rows.push(r);
   }
+  // The earlier review's heading, then where its points come from, as a value: the review's file.
+  const fromEarlier = earlier
+    ? [CODE_BUILT_SECTIONS.earlierReview, "", ...(earlier.review ? [`*(\`${earlier.review}\`)*`, ""] : [])]
+    : [];
   if (!rows.length) {
     // Signed, and nothing left open: no section. This is the majority of runs and it is the whole
     // reason the emptiness is checked AFTER the union rather than by the verdict.
@@ -9499,6 +9533,7 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     return [
       "### Reviewer's open questions",
       "",
+      ...(earlier?.inPlace ? fromEarlier : []),
       "**The independent reviewer did not sign this report off, and cited no specific defect.** A "
       + "refusal without a named ground is not a finding you can act on — read the reviewer's own note "
       + "before relying on this report.",
@@ -9533,7 +9568,7 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     "section-unchanged": "the line this named was left as written",
     "line-removed": "the line this named was removed rather than corrected",
   };
-  const items = rows.map((r) => {
+  const item = (r) => {
     const bits = [];
     if (Array.isArray(r.ordinals) && r.ordinals.length) bits.push(`finding ${r.ordinals.join(", ")}`);
     // An outcome nobody has classified takes the unchecked wording, never the checked one — the same
@@ -9543,7 +9578,7 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     if (r.outcome) bits.push((r.ground === true ? null : QUALIFIER[r.outcome]) ?? "the run could not check whether this was addressed");
     const tail = bits.length ? ` *(${bits.join(" — ")})*` : "";
     return `- ${ADVISORY_TAG["client-fact"]} ${String(r.text).trim()}${tail}`;
-  });
+  };
   // Two leads for two different facts about the report in the reader's hands. Collapsing them into one
   // sentence would either tell a client the reviewer refused when it signed, or bury a refusal.
   const lead = blocking
@@ -9554,7 +9589,15 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
       + "closed.** Each was put back to the drafting pass; what the run could establish about each one "
       + "is noted against it. They are open questions for the reviewing lawyer's judgment — not "
       + "conditions for you to satisfy, and not steps that complete the work.";
-  return [CODE_BUILT_SECTIONS.reviewerOpenPoints, "", lead, "", items.join("\n")].join("\n");
+  // Whose each point is: what the review in place cites is that review's, a row of the first correction is the
+  // earlier review's flag, and a row the caller marks `later` is the later review's.
+  const isEarlier = (r) => Boolean(earlier) && r.later !== true && (earlier.inPlace === true || !cited.includes(r));
+  const earlierItems = rows.filter(isEarlier).map(item).join("\n");
+  const otherItems = rows.filter((r) => !isEarlier(r)).map(item).join("\n");
+  if (!earlierItems) return [CODE_BUILT_SECTIONS.reviewerOpenPoints, "", lead, "", otherItems].join("\n");
+  const others = otherItems ? [otherItems, ""] : [];
+  return [CODE_BUILT_SECTIONS.reviewerOpenPoints, "",
+    ...(earlier.inPlace ? [...others, ...fromEarlier, lead, ""] : [lead, "", ...others, ...fromEarlier]), earlierItems].join("\n");
 }
 
 // PR-9 — the code-built "Answers to your instructions" section, the only-you pattern one lane over:
@@ -9686,6 +9729,34 @@ export const CORRECTIONS_DELIVERED_FILE = "corrections-delivered.json";
 // Whether the recheck after the correction saved an accepted review (`read`) or not (`unread`, with why), with the
 // entry verdict and the verdict that stood. An unread recheck is a correction nobody verified.
 export const CORRECTIVE_RECHECK_FILE = "corrective-recheck.json";
+
+/**
+ * Where the review from before the correction stands when the recheck after it saved none, as `{review, inPlace}`: the
+ * file holding it, relative to the run, and whether that is the review in place. null when the recheck saved a review,
+ * when a review that read the corrected record has replaced it, or when the records cannot be read; each of those
+ * builds the open points as they were. Never throws.
+ *
+ * THE BYTES SAY WHICH REVIEW STANDS, NOT THE CALLS. The recheck's record keeps the sha of the review it found. Those
+ * bytes in place mean that review stands, whatever was accepted since: a narrowed review after a repair is accepted and
+ * the whole review then put back. Other bytes in place mean another review was saved over it, through the tool or by
+ * rewriting the file, and its points are its own. The one such review that did not read the corrected record is a
+ * narrowed review that hardened the verdict and stays in place: the earlier review is then the one kept beside it, and
+ * the correction's rows are still its flags. A record with no sha, from an earlier version, builds as it was.
+ */
+function earlierReviewNotRechecked(P) {
+  try {
+    const runDir = dirname(P.report);
+    const recheck = JSON.parse(readFileSync(driverDir(runDir, CORRECTIVE_RECHECK_FILE), "utf8"));
+    if (recheck?.status !== "unread" || !recheck.reviewSha) return null;
+    const named = (file) => relative(runDir, file).replace(/\\/g, "/");
+    const inPlace = shaOf(P.seniorEyeReview);
+    if (inPlace === recheck.reviewSha) return { review: named(P.seniorEyeReview), inPlace: true };
+    const narrowed = JSON.parse(readFileSync(driverDir(runDir, "post-repair-review.json"), "utf8"));
+    const kept = reviewBeforeRepairPath(runDir);
+    return narrowed?.status === "read" && narrowed.whole !== true && inPlace === shaOf(reviewAfterRepairPath(runDir)) && shaOf(kept) === recheck.reviewSha
+      ? { review: named(kept), inPlace: false } : null;
+  } catch { return null; }
+}
 
 /** Keep the basis at the corrective pass, from the two records the applied table was built from. Throws on a write failure; the caller is never-kill. */
 export function recordCorrectionsBasis(runDir, rows, preDoc, postDoc) {   // @internal
@@ -9838,7 +9909,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     try {
       const doc = JSON.parse(readFileSync(driverDir(dirname(P.report), "post-repair-corrections.json"), "utf8"));
       const after = doc?.rows;
-      if (Array.isArray(after) && after.length) applied = [...(applied ?? []), ...(doc.grounds === true ? after.map((r) => ({ ...r, ground: true })) : after)];
+      if (Array.isArray(after) && after.length) applied = [...(applied ?? []), ...after.map((r) => ({ ...r, later: true, ...(doc.grounds === true ? { ground: true } : {}) }))];
     } catch { /* no correction after a repair on this run */ }
     // …and a review after a repair that was read and never corrected: the run was parked before its one correction,
     // and nothing on a resume repeats it. Its points are not shown closed, so they print through the same rule.
@@ -9847,12 +9918,13 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
       const rec = JSON.parse(readFileSync(driverDir(runDir, "post-repair-review.json"), "utf8"));
       if (rec?.status === "read" && !existsSync(driverDir(runDir, "post-repair-corrections.json"))) {
         const rows = (Array.isArray(rec.points) ? rec.points : []).filter((x) => String(x?.text ?? "").trim())
-          .map((x) => ({ text: String(x.text), kind: x.kind ?? null, outcome: "not-checkable" }));
+          .map((x) => ({ text: String(x.text), kind: x.kind ?? null, outcome: "not-checkable", later: true }));
         if (rows.length) applied = [...(applied ?? []), ...rows];
       }
     } catch { /* no review after a repair on this run */ }
+    // …and where the recheck after the correction saved no review, the earlier review's points are named as its own.
     const openPoints = existsSync(P.seniorEyeReview)
-      ? buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied)
+      ? buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied, { earlier: earlierReviewNotRechecked(P) })
       : "";
     const record = driverDir(dirname(P.report), REVIEWER_OPEN_QUESTIONS_FILE);
     if (openPoints) {
@@ -10632,7 +10704,7 @@ async function pipelineInner(job, opts = {}) {
   };
   // The settlement flush: ONE warm re-digest carrying every queued segment (plus the frame-reopen
   // segment when that block fired), sectioned, ending with the standard FULL re-emission contract.
-  // Timeout ⇒ one fresh retry through the fallback chain (the legacy frame-reopen re-digest's own
+  // Timeout ⇒ one retry on a fresh session, on the same model (the legacy frame-reopen re-digest's own
   // recovery). A flush that still fails leaves its items PENDING (durable — the late flush or the next
   // resume's settlement gets one more chance) and the run continues on the prior digest: the funnel
   // never gates delivery. On success, items are receipted (markFlushed — they can never re-fire), the
@@ -10653,7 +10725,7 @@ async function pipelineInner(job, opts = {}) {
     const trigger = pass === "late" ? "late-flush" : "settlement-flush";
     let rd = await runDigest(ctx, { force: true, followup, sessionKey: ctx.digestKey, trigger });
     if (!rd.ok && /timeout/.test(String(rd.fail))) {
-      note(`digest-funnel: ${trigger} timed out — ONE fresh retry through the fallback chain`);
+      note(`digest-funnel: ${trigger} timed out — ONE retry on a fresh session, same model`);
       runLog(run.runDir, { event: "digest-flush-timeout", pass, fail: String(rd.fail).slice(0, 120) });
       rd = await runDigest(ctx, { force: true, trigger: `${trigger}-retry` });
     }
@@ -10769,7 +10841,7 @@ async function pipelineInner(job, opts = {}) {
       const bind = { customer: String(b.customer), exclusions: Array.isArray(b.exclusions) ? b.exclusions.map(String) : [] };
       // WS-B: a bound applicant that IS the profile customer activates the profile's exclusion seed —
       // union it into the reply's exclusions so EVERY downstream consumer (fold, digest-message
-      // block, warm-redigest followup) sees one combined set, not just the matter-frame line.
+      // block, re-digest followup) sees one combined set, not just the matter-frame line.
       if (applicantMatchesProfile(ctx.profile, bind.customer) && ctx.profile?.selfExclusionOwners?.length) {
         bind.exclusions = [...new Set([...bind.exclusions, ...ctx.profile.selfExclusionOwners])];
         ctx.exclusionSeed = ctx.profile.selfExclusionOwners;
@@ -11302,7 +11374,7 @@ async function pipelineInner(job, opts = {}) {
     // The common-law member's result, BY NAME. It was read as gatherResults[0] in four places, which was
     // only ever correct because the member is built first and always present — drop it for a register-only
     // run and [0] silently becomes a register unit, and the grid-ledger pass below would then send a
-    // "you are RESUMING your own common-law session" followup into it rather than skip (its guard is
+    // grid-ledger save followup addressed to the common-law session into it rather than skip (its guard is
     // gridVariants × !skipped × no-ledger, and gridVariants comes from the manifest either way).
     const clIndex = gather.findIndex((g) => g.name === "common-law");
     const clMember = () => (clIndex >= 0 ? gatherResults[clIndex] : null);
@@ -12066,7 +12138,7 @@ async function pipelineInner(job, opts = {}) {
           // record discloses: its recovery is spent, and its band is read as the last pass left it.
           const dispatched = disclosedAxes.has(a) ? null : await dispatchPlanQids(a, null, "taint-dispatch");
           if (dispatched) repairs.push(`taint-dispatch:${dispatched}`);
-          // T1 — ONE fresh in-loop re-run, pre-synthesis only (a fresh full pass, full fallback chain)
+          // T1 — ONE fresh in-loop re-run, pre-synthesis only (a fresh full pass on the stage's one model)
           // — held until the real result is in hand; see the push below the taint re-read.
           let taintRerunDispatch = null;
 // — ONE ceiling, named once and read by BOTH ends. A literal repeated at the record site is a
@@ -12335,8 +12407,8 @@ async function pipelineInner(job, opts = {}) {
     }
 
     // WS2 (B3) — the plan⇄band IDENTITY JOIN (plan mode only; legacy runs have no plan and skip).
-    // Every guard-active plan entry must own a band block carrying its qid. A missing qid gets ONE warm
-    // targeted followup on the owning axis's winning session dictating exactly the unexecuted entries;
+    // Every guard-active plan entry must own a band block carrying its qid. A missing qid gets ONE
+    // targeted followup on the owning axis's winning key dictating exactly the unexecuted entries;
     // whatever is still missing is a StageFailure — a clean can never ship over a slice the PLAN dictated
     // and nothing ran (the F2/F3 seam). The receipt (_driver/plan-execution.json, incl. the code-derived
     // coverage skeleton) is what the digest ledger gate and the refutation plan-audit read.
@@ -12549,7 +12621,7 @@ async function pipelineInner(job, opts = {}) {
     // Machine-receipts contract gate (post-mortem §1b): a FRESH common-law run under a dictated key list
     // must save the grid stdout JSON (the validator already exact-joins it when present). A resumed run
     // that skipped the stage is exempt (archived/pre-machine-receipts artifacts are legacy by design).
-    // One warm followup on the winning session asks for just the save; still missing ⇒ the run fails —
+    // One followup on the winning session asks for just the save; still missing ⇒ the run fails —
     // a new run silently on the legacy prose path would be the inference disease growing back.
     // A1 split: this lane is single-member only BY CONSTRUCTION — each half validator is ledger-or-fail
     // (its spec sidecar always dictates the grid), and mergeCommonLawArtifacts just wrote the canonical
@@ -12572,7 +12644,7 @@ async function pipelineInner(job, opts = {}) {
     // ── V4-4: coverage closure — a gap the machine can close itself never ships as a recommendation ──
     // At the point the run consumes the common-law findings on its way to synthesis (fresh, resumed, or
     // skipped — V4-1 semantics: this operates on the FILE, not on session events). Coverage-limited cells
-    // not exempted by a mechanical-error gap/ledger entry get ONE warm corrective followup on the stage's
+    // not exempted by a mechanical-error gap/ledger entry get ONE corrective followup on the stage's
     // winning session, dictating exactly the missing variant×platform cells (batched at the profile-
     // derived ceiling, the convention). Whatever survives ships as a GENUINE attempted-and-unreachable front-matter
     // note with a priced offer — never as a "commission a re-run" recommendation (the S&I line-154
@@ -12706,8 +12778,8 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "closure-partition", cells: closable.length,
               per_half: Object.fromEntries(GRID_HALVES.map((h) => [h, cellJobs[h].length])),
               unassigned: bal.unassigned.length });
-          // CONCURRENCY (2026-07-13): the two half followups run CONCURRENTLY on their OWN warm half-
-          // sessions (the same runBatched fan-out that dispatched the half gather members) — the halves are
+          // CONCURRENCY (2026-07-13): the two half followups run CONCURRENTLY on their OWN half keys,
+          // each a fresh session (the same runBatched fan-out that dispatched the half gather members) — the halves are
           // independent, so serializing them only doubled the closure wall.
           await runBatched(GRID_HALVES, config.gatherConcurrency, async (h) => {
             const cells = cellJobs[h];
@@ -12748,8 +12820,8 @@ async function pipelineInner(job, opts = {}) {
     // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
     // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
     // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act
-    // on the gaps: a targeted SUPPLEMENTAL SWEEP of the missing variant/field/source, then ONE warm
-    // re-digest — generalizing the screen-gate's warm-re-digest channel from commission (a drop without a
+    // on the gaps: a targeted SUPPLEMENTAL SWEEP of the missing variant/field/source, then ONE re-digest
+    // followup — generalizing the screen-gate's re-digest channel from commission (a drop without a
     // fetch) to OMISSION (a layer never scoped). Bounded exactly like escalation/envelope/coverage-closure:
     // an idempotency receipt (set-equality on the firing directives), ONE re-digest per pass, a byte-diff
     // guard, NO in-process re-diff, one-shot (CLEAROTRON_FRAME_REOPEN_MAX). Same digest-lock as escalation:
@@ -13339,13 +13411,13 @@ async function pipelineInner(job, opts = {}) {
               else note(`frame-reopen: ${a} unchanged after the supplemental sweep`);
             } else {
               regMechFail = r.fail; note(`frame-reopen: ${a} supplemental sweep failed mechanically (${r.fail})`);
-              // doc-44: a core coverage sweep must NOT be one-shot-then-abandon. On a TIMEOUT (the warm resume hit
-              // the hard wall — a dead session a re-resume can't revive), do ONE fresh, SCOPED re-sweep of the SAME
-              // near-form threats through the normal fallback chain (retries + BACKUP PROVIDER — a warm followup is
-              // single-model and can't cross-provider). Scoped (not the whole axis) + bounded detail-fetch so it
+              // doc-44: a core coverage sweep must NOT be one-shot-then-abandon. On a TIMEOUT (the followup used its
+              // own attempts, its extended retry included, and still hit the wall), do ONE fresh, SCOPED re-sweep of the SAME
+              // near-form threats on a fresh session: the stage's one model and the gateway's retries, as any fresh
+              // stage gets. There is no second model or provider. Scoped (not the whole axis) + bounded detail-fetch so it
               // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
               if (/timeout/.test(String(regMechFail))) {
-                note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
+                note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry on a fresh session (same model, the gateway's retries)`);
                 const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives,
                   supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
                 const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
@@ -13377,7 +13449,7 @@ async function pipelineInner(job, opts = {}) {
           // and surfaces the newly-enumerated conflicts as findings — this block runs BEFORE synthesis).
           // T1 (J2/G8): the re-digest honors the block's NON-FATAL contract — the old must here
           // killed a full run on a re-digest timeout AFTER the sweeps had already landed (the F5
-          // 48%-timeout class). One fresh retry through the fallback chain on a timeout; still failing ⇒
+          // 48%-timeout class). One retry on a fresh session, same model, on a timeout; still failing ⇒
           // the swept register directives are DEMOTED back to deferrals (open coverage row + the
           // CLEAR→CONDITIONAL clamp — "can't close → disclose") and the run continues on the prior digest.
           // CROWDED-FIELD FIX (teal-gantry, 2026-07-21) — RETIRED BY, and this is the whole win.
@@ -13836,8 +13908,8 @@ async function pipelineInner(job, opts = {}) {
         const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
           { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) }).held;
         followup += escalationHeldNote(escHeld);
-        // No opts.model → stays on this axis's original tier (axisTier: sonnet/haiku) so the resume is a warm
-        // cache hit. sessionKey: unitKey[a] resumes the EXACT key the unit won on. force bypasses idempotency.
+        // No opts.model → stays on this axis's original tier (axisTier: sonnet/haiku); the followup is a fresh
+        // session, so no cache rides on it. sessionKey: unitKey[a] names the EXACT key the unit won on. force bypasses idempotency.
         const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "escalation" });
         if (!r.ok) return { axis: a, changed: false, ok: false };
         const afterUnit = readFileSync(P.registerUnit(a), "utf8");
@@ -13881,7 +13953,7 @@ async function pipelineInner(job, opts = {}) {
     // Floor obligations = `deferred` Coverage-ledger rows (planned but never run — incl. material
     // jurisdictions the digest reconciliation found unsearched). `coverage-limited` rows are documented
     // accepted limits (Lever 4) — a re-run cannot close them, so they are not floors here. Close mechanics
-    // mirror the skeptic-escalation block above: warm followup on the owning unit's winning session,
+    // mirror the skeptic-escalation block above: a followup on the owning unit's winning key,
     // byte-diff guard, ONE re-digest for materially-changed axes. Same audit-spine lock: never re-fire
     // past synthesis. The decision (envelope arithmetic + choice) is always logged; whatever remains
     // unclosed at delivery is stated in the report with its MECHANICAL cause (front-matter, code-built).
@@ -14066,9 +14138,9 @@ async function pipelineInner(job, opts = {}) {
     // RECOVER-THEN-DISCLOSE (completes the Fix-3 escalation): the gate is correct and must never be silenced,
     // but the flagged marks are FETCHABLE — a high-conflict run (KINETIC) where the digest took the
     // name-inferred shortcut on a few marks should SELF-HEAL, not die. So on the first violation we do ONE
-    // warm followup re-digest that forces the worker to record_fetch the flagged URIs and re-decide on their
-    // REAL goods (mirrors the coverage-ledger recoverCoverageLedger / candidate-self warm-followup pattern,
-    // resuming the WINNING digest session so the worker keeps its screening context). Whatever is STILL
+    // followup re-digest that forces the worker to record_fetch the flagged URIs and re-decide on their
+    // REAL goods (mirrors the coverage-ledger recoverCoverageLedger / candidate-self followup pattern, on the
+    // WINNING digest key; a fresh session, so the message names the findings it re-decides). Whatever is STILL
     // violating after that one recovery pass is disclosed as unexamined + clamps the verdict (owner
     // decision 2026-07-22 — the terminal branch below); the gate never silently passes a drop.
     {
@@ -14507,7 +14579,7 @@ async function pipelineInner(job, opts = {}) {
     // the same wrong premise — and composeFollowup's own doc block records that a followup dispatch is
     // NOT a resumed session but a fresh attempt 1, so it holds nothing of its own.
     //
-    // The true reason the warm followups do not carry the blocks is simply that they pass no `extra`:
+    // The true reason the followups do not carry the blocks is simply that they pass no `extra`:
     // they are targeted corrections to work that exists, and their message is the correction. That is a
     // live choice, not a mechanism that forbids it — the corrective re-synthesis below could be given
     // the blocks by passing `extra`, and if a corrective pass is ever found rewriting a coverage claim
@@ -14543,7 +14615,7 @@ async function pipelineInner(job, opts = {}) {
     // doc 50 — the dictation demands schema_version 4 (band-rated under the framework in force).
     // The demand fires ONLY when synthesis actually RAN this turn: a skip-resumed stage (a parked run
     // whose prior v3 findings.json still validates on the legacy path) keeps its declared version —
-    // forcing a mid-run contract switch across the deploy boundary would burn a warm followup fighting
+    // forcing a mid-run contract switch across the deploy boundary would burn a followup fighting
     // the run's own frozen artifact. Logged loudly instead; that run's gates judge it as v3.
     if (declaredSv !== null && declaredSv < 4 && synth.skipped) {
       note(`[findings] schema_version ${declaredSv} retained on a resumed run (pre-doc-50 artifact) — v${declaredSv} gates apply; no re-emit demanded`);
@@ -14965,6 +15037,8 @@ async function pipelineInner(job, opts = {}) {
         : "";
       const recheckSeq0 = nextRefutationSeq(run.runDir);
       const reviewShaBefore = shaOf(P.seniorEyeReview);
+      let reviewBefore = null;
+      try { reviewBefore = readFileSync(P.seniorEyeReview, "utf8"); } catch { reviewBefore = null; }
       const rc = firstRef.key
         ? await stage("narrative-refutation", ctx, {
             force: true, sessionKey: firstRef.key, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck",
@@ -14983,23 +15057,31 @@ async function pipelineInner(job, opts = {}) {
       // a verification nobody made. Such a recheck is a failed one: the entry verdict stands, the record says the
       // correction was not verified, no receipt is written, and the earlier review stays in place as the earlier review.
       //
-      // TWO WAYS TO SAVE, BOTH COUNTED. The message above orders the review file rewritten, and a seat may do that or
-      // record the review through its tool; both are seen on test runs. So a save is an accepted tool call made since
-      // this dispatch began, or review bytes that differ from the ones before it. A byte-identical rewrite reads as no
-      // save, which costs only a cycle run again on a resume: the same bytes carry the same verdict.
-      const recheckCall = rc.ok ? readAcceptedReviewSince(run.runDir, recheckSeq0) : null;
-      const recheckRewrote = rc.ok && !recheckCall && shaOf(P.seniorEyeReview) !== reviewShaBefore && shaOf(P.seniorEyeReview) != null;
-      const recheckRead = recheckCall ? { by: "tool", seq: recheckCall.seq } : recheckRewrote ? { by: "file", seq: null } : null;
-      if (rc.ok && !recheckRead) {
-        runLog(run.runDir, { event: "verdict-recheck-unread", fail: "no-accepted-call", seq0: recheckSeq0, entryVerdict });
-        note(`[corrections] the recheck after the correction recorded no review — the correction is not verified, the entry verdict (${entryVerdict}) stands, and the review in place is the one from before the correction`);
+      // TWO WAYS TO SAVE, BOTH COUNTED, UNDER ONE SET OF RULES. The message above orders the review file rewritten, and a
+      // seat may do that or record the review through its tool; both are seen on test runs. So a save is an accepted tool
+      // call made since this dispatch began, or review bytes that differ from the ones before it and that the tool's rules
+      // would accept (settleRecheckSave). A refused rewrite gives way to the accepted call or to the earlier review, and
+      // reads as no save. A byte-identical rewrite reads as no save, which costs only a cycle run again on a resume: the
+      // same bytes carry the same verdict.
+      const recheckSave = settleRecheckSave(run.runDir, { before: reviewBefore, stageOk: rc.ok === true, seq0: recheckSeq0 });
+      if (recheckSave.restore != null) {
+        try { atomicWrite(P.seniorEyeReview, recheckSave.restore); }
+        catch (e) { note(`[corrections] the review could not be put back after the recheck (${String(e?.message ?? e).slice(0, 100)})`); }
       }
-      verdict = recheckRead ? (parseVerdict(readFileSync(P.seniorEyeReview, "utf8")) ?? entryVerdict) : entryVerdict;
+      if (recheckSave.refused) runLog(run.runDir, { event: "verdict-recheck-file-save-refused", refused: recheckSave.refused, seq0: recheckSeq0, entryVerdict });
+      const recheckRead = recheckSave.read;
+      if (rc.ok && !recheckRead) {
+        runLog(run.runDir, { event: "verdict-recheck-unread", fail: recheckSave.fail, seq0: recheckSeq0, entryVerdict });
+        note(`[corrections] the recheck after the correction recorded no review it could accept (${recheckSave.fail}) — the correction is not verified, the entry verdict (${entryVerdict}) stands, and the review in place is the one from before the correction`);
+      }
+      // What stands is what was decided, so a put-back that could not be written never reads a refused verdict back.
+      verdict = recheckRead ? (parseVerdict(recheckSave.restore ?? readFileSync(P.seniorEyeReview, "utf8")) ?? entryVerdict) : entryVerdict;
       correctiveRecheckOk = rc.ok === true && Boolean(recheckRead);
       try {
         atomicWrite(driverDir(run.runDir, CORRECTIVE_RECHECK_FILE), JSON.stringify({ ts: new Date().toISOString(),
           status: correctiveRecheckOk ? "read" : "unread", by: recheckRead?.by ?? null, entryVerdict, verdict, seq0: recheckSeq0, seq: recheckRead?.seq ?? null,
-          ...(correctiveRecheckOk ? {} : { fail: rc.ok ? "no-accepted-call" : String(rc.fail ?? "failed").slice(0, 160) }) }, null, 2) + "\n");
+          reviewSha: reviewShaBefore,   // the review this recheck found: earlierReviewNotRechecked tells it from any saved later
+          ...(correctiveRecheckOk ? {} : { fail: rc.ok ? recheckSave.fail : String(rc.fail ?? "failed").slice(0, 160) }) }, null, 2) + "\n");
       } catch (e) { note(`[corrections] the recheck's record could not be written (${String(e?.message ?? e).slice(0, 100)}) — the run log still holds the outcome`); }
       runLog(run.runDir, { event: "verdict-2", verdict, read: correctiveRecheckOk });
       writeRunStatus(ctx, signoffPatch(verdict));
@@ -15121,7 +15203,7 @@ async function pipelineInner(job, opts = {}) {
     // ── P2-A pre-verdict floor: the reconciliation's hard discrepancy list ─────────────────────────
     // screened-live dominant-element candidates ∖ endings is read here as it always was, and it no longer THROWS:
     // the owner's ruling of 2026-10-19 that a run is never held replaces the Round-2 rule that this one class never
-    // ships. The run first recovers what it can in-run (the digest seam's warm followups; placement assessing late
+    // ships. The run first recovers what it can in-run (the digest seam's followups; placement assessing late
     // evidence before the writer); whatever is still unended ships NAMED, through the terminal guards' deliver-and-clamp
     // (`clampOnTheRecallGate`, beside the floor duty's clamp below), never as a run that delivers nothing.
 
@@ -15418,6 +15500,8 @@ async function pipelineInner(job, opts = {}) {
     // stale BLOCKING to CLEAR — that outcome must pass the SAME deliver-conditional floor, never
     // bypass it because the clamp already ran once.
     const applyCoverageFloor = () => {
+    // Each entry is the floors' state, so delivery reads only a floor that threw since the last of these.
+    runLog(run.runDir, { event: "verdict-floors-pass" });
     // review fix: the machinery arm below must judge the verdict AS IT ENTERED the floor —
     // when the legalActions arm clamps CLEAR→CONDITIONAL first, the machinery gaps (coverage, frame,
     // screen-gate, senior, registerGap) must still be computed and APPENDED, or a run
@@ -15540,7 +15624,12 @@ async function pipelineInner(job, opts = {}) {
         // the dedup and deliver CLEAR — the precise defect this issue is about.
         if (clReason && verdict === "CLEAR") { verdict = "CONDITIONAL"; writeRunStatus(ctx, signoffPatch(verdict)); }
       }
-    } catch (e) { note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
+    } catch (e) {
+      note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`);
+      // Nothing else would clamp this: the audit workbook names it (degraded-parts.mjs, checks).
+      try { runLog(run.runDir, { event: "verdict-floor-failed", floor: "common-law", fail: String(e?.message ?? e).slice(0, 200) }); }
+      catch { /* the note above still stands */ }
+    }
     if (entryVerdict === "CLEAR") {
       const frameGap = ctx.frameReopenGap === true;
       let frameDeferrals = [];
@@ -15865,7 +15954,7 @@ async function pipelineInner(job, opts = {}) {
     if (verdict === "BLOCKING") {
       // Repair-first A5 (2026-07-05): the reviewer verdict is documented noisy (the U1 comment above —
       // "flips on byte-identical input"), so before the terminal the gate refuses a DEGENERATE artifact:
-      // a carried BLOCKING whose own file no longer says BLOCKING (the copper-spire shape — a failed warm
+      // a carried BLOCKING whose own file no longer says BLOCKING (the copper-spire shape — a failed
       // re-check silently kept the stale entry verdict while the review on disk said CLEAR), or a
       // BLOCKING citing ZERO defects (nothing exists for the corrective ladder to fix). ONE forced-fresh
       // re-ask demands the verdict + file-anchored defects. A REASONED blocking is never re-rolled —
@@ -15960,6 +16049,9 @@ async function pipelineInner(job, opts = {}) {
     // THE SEAM'S WRITES ARE ONE CLOSURE, so they can run again: a synthesis save after this point rewrites
     // findings.json from the seat's own call, and every write below went with it (`stage()` re-runs them).
     const seamWrites = async () => {
+    // A pass follows each rewrite of findings.json and adds the rows below again, so delivery reads only the adders
+    // that failed since the last of these.
+    runLog(run.runDir, { event: "coverage-rows-pass" });
     injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
@@ -17159,7 +17251,7 @@ async function pipelineInner(job, opts = {}) {
         if (shellFixable.length && rov) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
         // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
         // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
-        // narrative that broke the rules is the run shipping the defect with a note attached. ONE warm
+        // narrative that broke the rules is the run shipping the defect with a note attached. ONE followup
         // pass, named violations; a second overrun ships and the lint row is the record.
         //
         // A FAULT IN A LINE COMPOSED FROM THE RECORD (a finding's own sentence, a short entry, a grouped line) is the
@@ -19489,7 +19581,7 @@ export function retiredFlagRefusal(argv) {   // @internal
 // the warning string, which was true of all three entries and would have become false of the fourth —
 // a line that dates every retirement to the first one is worse than a line with no date at all.
 const RETIRED_ENV = {
-  CLEAROTRON_KNOCKOUT_MODE: ["2026-07-27", "knockout availability is a property of the BUILD and the wired provider (search-policy.mjs BUILT)"],
+  CLEAROTRON_KNOCKOUT_MODE: ["2026-07-27", "knockout availability is a property of the BUILD and the wired provider (search-policy.mjs BUILT)"], CLEAROTRON_KNOCKOUT_RECORD_CAP: ["2026-11-05", "a knockout reads the lists its reading step selects, in full; there is no record cap"],
   CLEAROTRON_JX_LANES: ["2026-07-27", "the jx lane decision is frozen into the run's search policy; the per-lane CLEAROTRON_NATIVE_LANGUAGE_<XX> switches are still live"],
   CLEAROTRON_RECIPES_MODE: ["2026-07-27", "a saved search is honoured wherever it resolves"],
 
@@ -19542,16 +19634,17 @@ export function retiredEnvWarnings(env = process.env) {
 //
 // Pure and exported so every branch is testable with no run, no run dir and no spend.
 //
-// ABSOLUTE PATHS on purpose: this line is read hours later, possibly from a different directory, and a
-// relative path that silently resolves somewhere else would be a worse answer than no line at all.
-export function resumeCommand({ script, jobPath, codename, agent = null }) {   // @internal
+// THE PRODUCT'S OWN VERB, in the form that reaches this install from any directory, and an ABSOLUTE job path:
+// this line is read hours later, possibly from a different directory, and a relative path that silently
+// resolves somewhere else would be a worse answer than no line at all.
+export function resumeCommand({ jobPath, codename, agent = null, command = reachableCommand }) {   // @internal
   // THE IDENTITY IS THE CODENAME, NOT THE JOB PATH, and requiring both is what made this print nothing
   // on the failures that most needed it. A resume rebuilds the job from the run's own status when no
   // `--job` is given, so a command without one is valid — and it is the only valid one by the time a
   // failure has made a resume necessary, because the queue entry carrying the job is long consumed.
   // Requiring a path here meant every such failure was told "nothing to resume", which was false.
-  if (!script || !codename) return null;
-  return `node ${script}${jobPath ? ` --job ${jobPath}` : ""}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
+  if (!codename) return null;
+  return `${command("run")}${jobPath ? ` --job ${jobPath}` : ""}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
 }
 
 // The stderr lines a non-clean exit owes its reader, as an array (empty = say nothing further).
@@ -19568,12 +19661,12 @@ export function resumeCommand({ script, jobPath, codename, agent = null }) {   /
 // And where NO identity exists yet (the door preflights: tier sanity, engine binary, register credential,
 // an unresolvable resume codename), the honest line says there is nothing to resume rather than printing a
 // command with a hole in it.
-export function resumeAdvice({ result = null, error = null, signal = null, script = null, jobPath = null, agent = null, codename = null, experiment = false, noResume = false } = {}) {   // @internal
+export function resumeAdvice({ result = null, error = null, signal = null, jobPath = null, agent = null, codename = null, experiment = false, noResume = false, command = reachableCommand } = {}) {   // @internal
   if (result?.ok) return [];
   if (experiment) return [];
   if (noResume || error?.noResume) return [];
   if (result?.cancelled) return [`stopped at ${result.failedStage ?? "an early stage"} because you asked — terminal. Nothing was delivered and nothing resumes; start a new run when you want one.`];
-  const cmd = resumeCommand({ script, jobPath, codename, agent });
+  const cmd = resumeCommand({ jobPath, codename, agent, command });
   // No identity yet: the door preflights and the unresolvable-codename guard all fire before a run dir
   // exists, and a signal can arrive there too. Say there is nothing to resume rather than print a command
   // with a hole in it — and do not point at an "error above" when a signal is what happened.
@@ -19582,10 +19675,10 @@ export function resumeAdvice({ result = null, error = null, signal = null, scrip
     : "nothing to resume: this stopped before the run had an identity, so no work was started and none was lost. Fix the error above and run the same command again."];
   // A park is NOT a failure, and the difference is the reader's whole decision: wait, or act. Both park
   // kinds resume themselves wherever something re-invokes the runner — the systemd units on a server, or
-  // `runner.mjs --watch` on a machine that has none — so the line says that first and offers the manual
+  // `clearotron run-queue --watch` on a machine that has none — so the line says that first and offers the manual
   // command second. On a laptop with neither, the manual command is the only path, which is exactly why
   // it is printed rather than left to be looked up.
-  const watching = script ? `node ${join(dirname(script), "runner.mjs")} --watch` : "node driver/runner.mjs --watch";
+  const watching = `${command("run-queue")} --watch`;
   const lines = [];
   if (result?.postponed && result.recovery) {
     lines.push(`parked for automatic recovery${result.resetsAt ? ` until ${result.resetsAt}` : ""} — nothing failed terminally and every finished stage is kept.`);
@@ -19745,11 +19838,10 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger, research: a.research, orderRecovery }
     : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? { explicitJob: true } : { jobRebuiltFromStatus: true }), records: a.records };
-  const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
   // in the exit advice would reintroduce it one layer along.
-  const advise = (o) => { for (const line of resumeAdvice({ script, jobPath: a.job ? resolve(a.job) : null, agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
+  const advise = (o) => { for (const line of resumeAdvice({ jobPath: a.job ? resolve(a.job) : null, agent: a.agent ?? null, experiment: Boolean(a.experiment), ...o })) console.error(line); };
 
   // ── the laptop case: a closed lid, a shutdown, a ^C ────────────────────────────────────────────────
   // Until now this CLI had NO signal handler: node's default die-now killed the process mid-stage, the run
@@ -19922,6 +20014,7 @@ export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — e
     runLog(runDir, { event: "meaning-gap-coverage", added });
   } catch (e) {
     note(`[common-law] meaning-gap coverage skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "meaning-gap", e);
   }
 }
 

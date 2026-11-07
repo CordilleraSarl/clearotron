@@ -158,7 +158,7 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 
 ### 5.2 Engine & models — T3
 
-`CLEAROTRON_AI` (anthropic-agent | openai-agent; default anthropic-agent), `CLEAROTRON_AI_BILLING`
+`CLEAROTRON_AI` (anthropic-agent | openai-agent), `CLEAROTRON_AI_BILLING`
 (subscription|api-key|cloud; cloud is Claude only), `CLEAROTRON_CODEX_PATH`,
 `CLEAROTRON_OPENAI_AUTH_FILE`, `CLEAROTRON_OPENAI_MODEL_JUDGMENT` / `CLEAROTRON_OPENAI_MODEL_SWEEP` /
 `CLEAROTRON_OPENAI_MODEL_CHEAP` (gpt-6.1-sol / gpt-6.1-terra / gpt-6-luna),

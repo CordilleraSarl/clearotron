@@ -73,9 +73,12 @@ test("every warm PLACEMENT-INQUIRY dispatch carries it too — the family rule h
 });
 
 test("the charter IS the fresh dispatch's directive — one string, not two that agree today", () => {
-  assert.equal(stageCharter("synthesis", depth(WORLDWIDE)).trim(), proseRungDirective(depth(WORLDWIDE)).trim());
   assert.equal(stageCharter("placement-inquiry", depth(WORLDWIDE)).trim(), inquiryRungDirective(depth(WORLDWIDE)).trim());
-  assert.ok(stageCharter("synthesis", depth(WORLDWIDE)).length > 100, "the fixture composed nothing to compare");
+  assert.ok(stageCharter("placement-inquiry", depth(WORLDWIDE)).length > 100, "the fixture composed nothing to compare");
+  // SYNTHESIS CARRIES NONE (design, 2026-11-06): the retired prose rung's rules for per-finding write-ups contradicted the
+  // synthesis call, which records sections only. Its warm dispatches still append the charter, which now adds nothing.
+  assert.equal(stageCharter("synthesis", depth(WORLDWIDE)), "", "a synthesis dispatch still carries the retired prose rung");
+  assert.ok(!stageCharter("synthesis", depth(WORLDWIDE)).includes(proseRungDirective(depth(WORLDWIDE))) || !proseRungDirective(depth(WORLDWIDE)));
 });
 
 test("the UNGRADED product adds nothing, and an unknown stage adds nothing", () => {
@@ -172,7 +175,8 @@ test("the charter is safe at a site whose stage is only known at run time", () =
   for (const notGraded of ["common-law", "register-unit", "common-law-half", "report-card", "narrative-refutation"])
     assert.equal(stageCharter(notGraded, depth(WORLDWIDE)), "",
       `${notGraded} is not a charter-bearing stage, so appending the charter must be a no-op there`);
-  // CONTROL — and it is NOT a no-op where it counts, or the loop above proves nothing.
-  assert.ok(stageCharter("synthesis", depth(WORLDWIDE)).length > 100,
-    "the charter is empty for synthesis too, so the arm above cannot tell a no-op from a broken composer");
+  // CONTROL — and it is NOT a no-op where it counts, or the loop above proves nothing. Synthesis carries no rung since the prose
+  // rung retired, so the control is the placement inquiry's.
+  assert.ok(stageCharter("placement-inquiry", depth(WORLDWIDE)).length > 100,
+    "the charter is empty for the placement inquiry too, so the arm above cannot tell a no-op from a broken composer");
 });

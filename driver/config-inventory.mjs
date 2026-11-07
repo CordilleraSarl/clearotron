@@ -130,7 +130,11 @@ export function engineInventory(env = process.env) {
   // `vendor`, NOT `label`. The label in that table is the mechanism — "each stage runs as a headless
   // `claude -p` turn" — which is exactly the back-end detail took off this page. The id travels
   // beside it because it is what an operator types into an environment file.
-  return { id, vendor: spec?.vendor ?? null, known: Boolean(spec), billing, binaryPresent };
+  // WHETHER ANY AI IS CHOSEN, by the order wall's own test (run-requirements.mjs, the ENGINE_ENV row: set, once
+  // trimmed). With none chosen, `id` above is the code's default, which nobody saved, and every search is refused
+  // at the order; the page drew that default as a configured, green engine.
+  const selected = String(env.CLEAROTRON_AI ?? "").trim() !== "";
+  return { id, vendor: spec?.vendor ?? null, known: Boolean(spec), billing, binaryPresent, selected };
 }
 
 /**
@@ -279,7 +283,7 @@ export function providerInventory(env = process.env) {
 
   for (const [group, label, table] of [
     ["research", "Common-law and marketplace research", RESEARCH_PROVIDERS],
-    ["web", "Open-web search", SERP_PROVIDERS],
+    ["web", "Chinese marketplace search", SERP_PROVIDERS],
   ]) {
     // Looped rather than named, so a second research or search adapter appears here the day it is
     // wired instead of the day somebody remembers this file.
@@ -341,9 +345,9 @@ const CASELAW_LABELS = Object.freeze({
  * this repository — not as a URL, not as a bare domain, in any of the eleven places the source is named
  * (measured 2026-09-05). Writing a plausible one here would be worse than the silence it replaces: the
  * reader would follow it, and an invented domain in a shipping document is a defect nobody can see. So
- * the row says what is true — this build does not record where to enrol — and the remedy sends them to
- * whoever provisioned the bridge instead of to a search engine. That is a finding to raise, not a blank
- * to fill in.
+ * the row says what is true — this build does not record where to enrol — and the remedy says the
+ * source is optional rather than sending them to a search engine. That is a finding to raise, not a
+ * blank to fill in.
  */
 const CASELAW_SITES = Object.freeze({
   courtlistener: "https://www.courtlistener.com/",
@@ -477,14 +481,19 @@ export function caseLawInventory(env = process.env) {
         ? `Could not be checked: ${credential.why}. The file is ${tokenFile}. This is not a report that `
           + `the source is missing and not that it works — fix the permissions or the disk error and `
           + `run this again.`
-        : `Not set up. It is a one-time OAuth sign-in rather than a variable to set: `
-          + (CASELAW_SITES[id]
-              ? `create an account at ${CASELAW_SITES[id]}, then follow `
-              : `this build records no site to create an account at — ask whoever provisioned the `
-                + `bridge for it rather than searching, then follow `)
+        : CASELAW_SITES[id]
+        ? `Not set up. It is a one-time OAuth sign-in rather than a variable to set: `
+          + `create an account at ${CASELAW_SITES[id]}, then follow `
           + `providers/oauth-mcp-bridge/README.md, which ends by writing ${tokenFile}. Until then a `
           + `Full country search still runs, and its report discloses the case-law gap instead of `
-          + `reporting no adverse case law.`,
+          + `reporting no adverse case law.`
+        // NOBODY TO ASK, SO SAY WHAT IS TRUE INSTEAD: the source is optional. This sent the reader to
+        // "whoever provisioned the bridge", and an install of one's own has nobody in that role (measured on
+        // a fresh install of a beta, 2026-11-04). Without it a Full country search runs and discloses the gap.
+        : `Optional, and not set up. This build records no site to create an account at. A Full country `
+          + `search runs without it, and its report discloses the case-law gap instead of reporting no `
+          + `adverse case law. With an account, follow providers/oauth-mcp-bridge/README.md, which ends by `
+          + `writing ${tokenFile}.`,
     };
   });
 

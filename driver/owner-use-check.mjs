@@ -83,7 +83,10 @@ export function ownersOwedACheck(recordsDoc, { cap = OWNER_CHECK_CAP } = {}) {
     // stage. The scope therefore comes from `entry.classes`, which register-records.mjs sets to the
     // classes it actually searched. Passing the entry's own classes as the mark's keeps the predicate
     // reading the same scope it reads at publish time instead of silently widening to every record.
-    const promoted = promotableRecords(entry, { classesSearched: entry?.classes ?? [] });
+    // THE READING STEP NAMES THE FILINGS WHOSE OWNER MERITS A SEARCH, where it finished: judgment, not the first few owners
+    // of what would be promoted. A run whose step did not finish keeps the bounded rule below.
+    const named = Array.isArray(entry?.reading?.ownerChecks) ? new Set(entry.reading.ownerChecks.map(String)) : null;
+    const promoted = named ? (entry?.records ?? []).filter((r) => named.has(String(r?.recordId ?? ""))) : promotableRecords(entry, { classesSearched: entry?.classes ?? [] });
     const byOwner = new Map();
     for (const r of promoted) {
       const owner = String(r?.owner ?? "").trim();
@@ -97,7 +100,7 @@ export function ownersOwedACheck(recordsDoc, { cap = OWNER_CHECK_CAP } = {}) {
       for (const c of (Array.isArray(r.classes) ? r.classes : [])) if (Number.isFinite(Number(c))) g.classes.add(Number(c));
       byOwner.set(key, g);
     }
-    for (const g of [...byOwner.values()].slice(0, cap)) {
+    for (const g of named ? [...byOwner.values()] : [...byOwner.values()].slice(0, cap)) {
       out.push({ mark: g.mark, owner: g.owner, recordIds: g.recordIds.filter(Boolean), classes: [...g.classes].sort((a, b) => a - b) });
     }
   }

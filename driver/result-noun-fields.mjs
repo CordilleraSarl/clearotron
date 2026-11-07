@@ -59,9 +59,13 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
     why: "the repair verdict the same row tests with `ok: outcome === \"repaired\"`; judged, not dispatched" },
   { file: "driver/gateway.mjs", noun: "settled", sites: 2, atWriteSite: 2, verdict: "result",
     why: "counts read off the coverage/placement unions" },
-  { file: "driver/pipeline-knockout.mjs", noun: "recovered", sites: 1, atWriteSite: 1, verdict: "result",
+  { file: "driver/pipeline-knockout.mjs", noun: "recovered", sites: 2, atWriteSite: 1, verdict: "result",
     why: "written after the chunk files were actually removed" },
-  { file: "driver/pipeline-knockout.mjs", noun: "outcome", sites: 3, atWriteSite: 3, verdict: "result",
+  { file: "driver/knockout-correction-record.mjs", noun: "outcome", sites: 5, atWriteSite: 0, verdict: "out-of-scope",
+    why: "the model's answer to a defect, `changed` or `stands`, and the driver's own reading of a defect beside it, both read back and never returned by a call being logged" },
+  { file: "driver/engine/mcp/recording-server.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope",
+    why: "a tool schema's description of the field a defect's answer carries" },
+  { file: "driver/pipeline-knockout.mjs", noun: "outcome", sites: 4, atWriteSite: 4, verdict: "result",
     why: "the reviewing pass's own verdict on itself, read at each writing site: `nothing-flagged` when "
       + "the record had no line a reader meets first, `applied` after the rewrite passed the merged gate and was "
       + "written, and the `keep()` forms after the artifact or the gate refused it. Every one is a fact "

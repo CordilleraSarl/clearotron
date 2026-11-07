@@ -6,7 +6,7 @@
 // ladder hammered an overloaded API seconds apart on the same model. These pin: (a) retryBackoffMs
 // (env knob, default 20s, attempt 1 never waits), (b) the backoff actually elapsing between attempts,
 // (c) isOverloaded's anchored matching, (d) the runStage routing — status_overloaded stops the ladder
-// after ONE attempt and stays on the existing fallback (chain cascade) + recovery-park machinery.
+// after ONE attempt and stays on the existing transient-failure + recovery-park machinery.
 import { test, beforeEach, after } from "node:test";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 import assert from "node:assert/strict";
@@ -146,7 +146,7 @@ test("anthropic-agent 529 → fail 'status_overloaded' after ONE attempt (no in-
   assert.equal(r.ok, false);
   assert.equal(r.fail, "status_overloaded", "reclassified out of the generic nonzero_exit_1");
   assert.notEqual(r.fail, "rate_limited", "distinct from the 429 postpone path (no resetsAt conflation)");
-  assert.equal(r.attempts, 1, "the ladder breaks — the chain cascade / recovery park owns the re-attempt");
+  assert.equal(r.attempts, 1, "the ladder breaks — the recovery park owns the re-attempt");
   assert.deepEqual(r.attemptFails, ["status_overloaded"], "the taint chain sees the classified token");
 });
 
@@ -162,9 +162,9 @@ test("raw transport 529 (stderr, nonzero exit, no JSON) → reclassified and bro
   assert.equal(r.attempts, 1);
 });
 
-test("status_overloaded routes to the EXISTING machinery: fallback-eligible (chain cascade) + transient (recovery park)", () => {
-  assert.equal(isFallbackEligible("status_overloaded"), true, "the chain cascades models on it");
-  assert.equal(TRANSIENT_RE.test("status_overloaded"), true, "an exhausted chain parks .postponed with escalating backoff");
+test("status_overloaded routes to the EXISTING machinery: transient infrastructure, then the recovery park", () => {
+  assert.equal(isFallbackEligible("status_overloaded"), true, "an overload is transient infrastructure, which a caller may re-run");
+  assert.equal(TRANSIENT_RE.test("status_overloaded"), true, "a failed stage parks .postponed with escalating backoff");
 });
 
 test("a CONTENT failure mentioning overload vocabulary is never laundered into status_overloaded", async () => {

@@ -93,21 +93,29 @@ test("what 'no engine' means is said in ONE place, so the two routes cannot drif
     `the no-engine wording appears ${hits} times; the menu's last row and the loop's escape must both `
     + "route through sayNoEngine(), or one of them will be reworded alone");
   assert.match(src, /const sayNoEngine = \(\) => \{/, "…and that one place is a named helper");
-  // TWO ROUTES, and the count is kept exact rather than relaxed to "at least". A third, the native-Windows
-  // refusal at the top of the engine step, went when native Windows began to run searches. A route that
-  // re-worded the sentence locally is exactly what this counts.
+  // FOUR ROUTES, and the count is kept exact rather than relaxed to "at least". A third, the native-Windows
+  // refusal at the top of the engine step, went when native Windows began to run searches; a declined proof
+  // and a declined retry joined the menu's last row and the no-program escape when both began to offer the
+  // way on (design's ruling, 2026-11-06). A route that re-worded the sentence locally is exactly what this counts.
   const calls = src.split("sayNoEngine()").length - 1;
-  assert.equal(calls, 2, `sayNoEngine() is called ${calls} time(s); every route out must use it — `
-    + "the menu's last row and the loop's escape");
+  assert.equal(calls, 4, `sayNoEngine() is called ${calls} time(s); every route out must use it — `
+    + "the menu's last row, the no-program escape, a declined proof and a declined retry");
 });
 
 test("the fix did NOT move which engine Enter selects", () => {
   // The other way to end the loop is to default the menu onto the no-engine row. That also moves the
   // default on a box carrying the SECOND binary and not the first — a different vendor, and a proof
   // turn spent on it, chosen by a reader who pressed Enter. Not this defect's to decide.
-  assert.match(src, /choose\(ENGINE_QUESTION, engineOptions\(found\), 0, PAY_PREAMBLE\)/,
-    "the engine menu's default index must stay a literal 0 — `onboard-wizard.test.mjs` fixes row 0 "
+  //
+  // RE-AIMED, NOT DELETED. On a later pass Enter now takes the AI the reader picked on the pass before (design's
+  // ruling, 2026-11-05): going back to the menu after a failed turn must not change the AI under Enter. The first
+  // pass is still row 0, and the default is never a row the reader did not pick.
+  assert.match(src, /choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick\), PAY_PREAMBLE\)/,
+    "the engine menu's default is no longer the reader's own earlier pick, or row 0");
+  assert.match(src, /let lastPick = null;/, "the first pass no longer starts from row 0 — `onboard-wizard.test.mjs` fixes row 0 "
     + "as the production engine for the same reason");
+  assert.deepEqual([...src.matchAll(/lastPick = ([^;\n]+);/g)].map((m) => m[1]), ["null", "pick.id"],
+    "the menu's default is set from something other than the reader's own pick");
 });
 
 
@@ -154,6 +162,10 @@ test("doctor names the no-register state, and does not fail the install for bein
     "…and what it costs, or the reader learns the state without learning the consequence");
   assert.match(out, /any one of them is enough, and none needs another/,
     "one register per install — a reader must not think they need a second");
+  // The Installation settings page shows a setting's state and cannot change one, so the route doctor names is the
+  // one that sets it.
+  assert.match(out, /re-run `[^`]*install` to set it\n/, out);
+  assert.doesNotMatch(out, /Installation settings page/, "doctor sends the reader to set the register on a page that cannot set it");
   assert.equal(rc, 0,
     "an install that deliberately selected no register is UNFINISHED, not broken: `problem` here would "
     + "fail doctor on a posture setup was told to allow");
@@ -212,17 +224,18 @@ test("abandoning a register discards the credentials THIS step collected, and on
 });
 
 test("the wizard's own preflight is SKIPPED, not failed, when there is no provider to check", () => {
-  const i = src.indexOf("Running the driver's own credential preflight");
-  assert.notEqual(i, -1, "anchor missing: the preflight step — re-aim this arm");
+  const i = src.indexOf("Running the register credential check over these values…");
+  assert.notEqual(i, -1, "anchor missing: the register credential check — re-aim this test");
   const before = src.slice(Math.max(0, i - 400), i);
   assert.match(before, /if \(registerSelected\) \{/,
     "this step checks the register provider and nothing else, so with none selected it has nothing to "
     + "check — and it used to abort setup on its last step with 'Nothing has been written'");
-  assert.match(src, /Skipping the driver's credential preflight/,
+  assert.match(src, /Skipping the register credential check: no register is chosen\./,
     "and it must SAY it was skipped: a reader told a preflight passed, when it never ran, learns to "
     + "trust a line that means nothing");
-  assert.match(src, /The run door still refuses by name until one is/,
-    "…and that the run-door guard is untouched, which is the thing a reviewer will want to know");
+  assert.match(src, /Every search refuses until one is set\./,
+    "…and that every search is still refused until a register is set, which is the thing a reviewer will want to know");
+  assert.match(src, /prose\(REGISTER_CHECK_SKIPPED\);/, "…and the wizard prints that sentence");
 });
 
 test("the closing screen does not recommend a command that will refuse", () => {

@@ -16,7 +16,7 @@ import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
 import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
-import { RECORD_BASIS, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
+import { RECORD_BASIS, noneCarriedForward, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, knockoutReportData } from './render-knockout.mjs';
@@ -157,6 +157,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // cell `—`. A run with none of them builds the workbook it built before.
   const partRow = (name, reason) => ({ 'Mark': '—', 'Search Term': '—', 'Source / Context': name,
     'Result Summary': `FAILED — ${plainDeferralReason(reason)}`, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
+  if (degraded.reading) trailRows.push(partRow(PART_NAMES.register, degraded.reading.reason));
   if (degraded.review) trailRows.push(partRow(RULED_WORDS.plainLanguageReview, degraded.review.reason));
   if (degraded.machineChecks) trailRows.push(partRow(PART_NAMES.machineChecks, degraded.machineChecks.reason));
   if (degraded.aboutThisRequest) trailRows.push(partRow(PART_NAMES.aboutThisRequest, degraded.aboutThisRequest.reason));
@@ -211,6 +212,10 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // registers hold), which never belonged beside a counted figure on a client-facing page.
   // Additive and conditional: a run with no working notes produces the same workbook it always did.
   const noteRows = [];
+  // WHAT THE LOOK AT THE CORRECTED RECORD STILL FOUND, for the reviewing lawyer, in its own words. Not on the client's report.
+  // Where the run could not close it, the note says why, so the lawyer can tell a repair that failed from a look that did not run.
+  const OPEN_BECAUSE = { 'not-corrected': 'Not corrected in this run: ', 'not-rechecked': 'Corrected, but not read again: ', 'not-answered': 'Not answered: ' };
+  for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': 'Internal note', 'Note': `${OPEN_BECAUSE[p.state] ?? ''}${p.problem}` });
   for (const m of findings.marks ?? []) {
     for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': 'Internal note', 'Note': n });
     if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': 'Register estimate (model)', 'Note': m.registerEstimate });
@@ -265,6 +270,10 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   const linkDropped = (mark, r) => dropped.has(`${mark}\u0000${r?.recordId ?? null}`);
   if (registerRecords) {
     const recordRows = [];
+    // The cell says which question found the filing: `default` is the register's containing search. An owner search is no
+    // question about the name, so it gets no word here. An archived listing names no predicate, so it reads as it did.
+    const basisCell = (basis, predicate) => (predicate === 'default' ? 'containing search' : predicate === 'phonetic' ? 'sound-alike search'
+      : predicate === 'owner' ? '—' : basis === 'close' ? 'close variation' : 'identical');
     for (const m of findings.marks ?? []) {
       const e = recordsForMark(registerRecords, m.name);
       if (!e) {
@@ -281,7 +290,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           // WHICH QUESTION FOUND IT, on every row. A filing on the name and a filing on a generated
           // variant are different facts, and a sheet that fuses them is a sheet that overstates.
           'Matched form': r.matchedForm ?? '—',
-          'Basis': r.matchedBasis === 'close' ? 'close variation' : 'identical',
+          'Basis': r.foundUnder ? '—' : basisCell(r.matchedBasis, (e.terms ?? []).find((t) => t.qid != null && t.qid === r.question)?.predicate),
           'Trademark': r.mark ?? '—', 'Owner': r.owner ?? '—', 'Status': r.status ?? '—',
           'Classes': (r.classes ?? []).join(', ') || '—', 'Territory': r.territory ?? '—',
           'Filed': r.applicationDate ?? '—', 'Registered': r.registrationDate ?? '—',
@@ -296,15 +305,24 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       for (const t of e.terms ?? []) {
         if (t.ok) continue;
         recordRows.push({
-          'Mark': m.name, 'Matched form': t.term, 'Basis': t.basis === 'close' ? 'close variation' : 'identical',
+          'Mark': m.name, 'Matched form': t.term, 'Basis': basisCell(t.basis, t.predicate),
           'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—',
           'Filed': '—', 'Registered': '—', 'Record': '—',
           'Note': !t.reason ? 'the search did not run' : t.notAsked ? t.reason : plainCause(t.reason),
         });
       }
-      if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
+      // An added class's question that has no answer is on the sheet as what it is, with the reason where one was given.
+      for (const t of e.terms ?? []) {
+        if (!t.unresolved) continue;
         recordRows.push({
-          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': 'none found',
+          'Mark': m.name, 'Matched form': t.term, 'Basis': 'identical', 'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': (t.classes ?? []).join(', ') || '—', 'Territory': '—',
+          'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': t.reason ?? 'the search did not run',
+        });
+      }
+      if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
+        // A count above zero that nothing read is not none: the register holds filings under it.
+        recordRows.push({
+          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': noneCarriedForward(e) ? 'none carried forward' : (e.terms ?? []).some((t) => t.setAside) ? 'not available' : 'none found',
           'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—',
           'Record': '—', 'Note': recordsLine(e) ?? '',
         });
@@ -379,10 +397,15 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
   // fallback exists precisely so this line is never blank.
   const firstCaveat = (findings.batch?.standardCaveats ?? []).map((c) => String(c ?? "").trim()).find(Boolean);
   const caveat = `<p style="${FONT}"><i>${esc(firstCaveat || 'Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.')}</i></p>`;
+  // One band and the classes behind it, or where the evidence divides them, each group's band and classes.
+  const oneBand = (band, qualifier, classes) => `<b style="color:${bandTier(framework, band).txt ?? 'black'}">${esc(band)}${qualifier ? ` (${esc(qualifier)})` : ''}</b>${classes?.length ? ` — Classes ${esc(classes.join(', '))}` : ''}`;
+  const bandLine = (m) => (Array.isArray(m.classGroups) && m.classGroups.length
+    ? m.classGroups.map((g) => oneBand(g.band, g.ratingQualifier, g.classes)).join('; ')
+    : oneBand(m.rating, m.ratingQualifier, m.classesDriving));
   const lines = (findings.marks ?? []).map((m) => {
     const counted = registerCounts ? countLine(countsForMark(registerCounts, m.name)) : null;
     const href = n > 1 ? urlByMark.get(m.name) ?? null : null;
-    return `<li><b>${esc(m.name)}</b>: <b style="color:${bandTier(framework, m.rating).txt ?? 'black'}">${esc(m.rating)}${m.ratingQualifier ? ` (${esc(m.ratingQualifier)})` : ''}</b>${m.classesDriving?.length ? ` — Classes ${esc(m.classesDriving.join(', '))}` : ''}${counted ? ` — ${esc(counted)}` : ''}${m.degraded ? ' — <i>manual verification recommended (automated research unavailable)</i>' : ''}${href ? ` — <a href="${esc(href)}">open this report</a>` : ''}</li>`;
+    return `<li><b>${esc(m.name)}</b>: ${bandLine(m)}${counted ? ` — ${esc(counted)}` : ''}${m.degraded ? ' — <i>manual verification recommended (automated research unavailable)</i>' : ''}${href ? ` — <a href="${esc(href)}">open this report</a>` : ''}</li>`;
   }).join('');
   // A10, extended to this lane 2026-07-31 — the surviving machine-check flags reach the reviewing
   // lawyer WITH the report, in the projection's own words, or they reach nobody. The gate stays a gate:
@@ -456,14 +479,10 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       note(`knockout working record: ${name} is not in the run directory, so the delivered report has no engine text to be checked against`);
     }
   }
-  const issued = (() => {
-    try {
-      const d = new Date();
-      const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Zurich', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
-      const time = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Zurich', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
-      return `${date} · ${time}`;
-    } catch { return null; }
-  })();
+  // WHAT THE RECORD SAYS, NOT THE CLOCK (report-dates.mjs): a republish is neither a new search nor a new issue.
+  const dates = reportDates({ runDir, poolRunDir });
+  const issued = zurichStamp(dates.issuedAt);
+  const searched = zurichStamp(dates.searchedAt);
 
   // the SWEEP ledger → the audit trail. Named apart from the URL-receipts check above on purpose: one
   // is the record of what the driver called, the other is the check that the findings cite what it held.
@@ -602,10 +621,11 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     && existsSync(join(runDir, 'research', `${kebab(name)}.md`))
     && !sweepReceipts.some((r) => r?.mark === name && !r.question))
     .map((mark) => ({ mark, preset: koPreset }));
+  const openPoints = (() => { try { return JSON.parse(readFileSync(driverDir(runDir, 'knockout-corrections.json'), 'utf8')).open ?? []; } catch { return []; } })();
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
   await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
-    listing: registerRecords ? null : steps.listing, review: steps.review, machineChecks: machineChecksFailed,
-    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept,
+    listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
+    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept, openPoints,
   });
   grpRead(join(poolRunDir, auditFile), 0o640);
 
@@ -709,7 +729,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     };
     const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
-      runId, overall: markBand, issued, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
+      runId, overall: markBand, issued, searched, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
       // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
       // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
       registerRecordsUnreadable,
@@ -800,7 +820,8 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // the clearance publisher reads it. Absent on a company's batch and on one filed before
     // organisations existed.
     organisation: (() => { try { const f = JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
-    issuedAt: (() => { try { const prev = JSON.parse(readFileSync(join(poolRunDir, 'meta.json'), 'utf8')); return prev?.issuedAt ?? new Date().toISOString(); } catch { return new Date().toISOString(); } })(),
+    issuedAt: dates.issuedAt,
+    renderedAt: dates.renderedAt,
     kind: 'knockout-batch',
     marks: (findings.marks ?? []).map((m) => ({ name: m.name, band: m.rating })),
     searchLevel: searchPolicy?.level ?? 'knockout',
@@ -829,7 +850,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // read it. The one `.run` reader in the tree parses report.html front matter and uses it as a DATE
     // fallback, so had this field ever been joined to that one it would have printed a product name where
     // a date belongs. The product is `meta.product`, written from the run's own frozen policy.
-    overall: overall ?? '', badge: bandBadge(framework, overall), date: new Date().toISOString().slice(0, 10),
+    overall: overall ?? '', badge: bandBadge(framework, overall), date: dates.issuedAt.slice(0, 10),
     auditFile, statement,
     framework: framework ? { key: framework.framework_key, title: framework.title, custom: framework.framework_key !== 'house-triage', bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : undefined,
     // Present ⇒ this run has a report-data.json beside its report. The portal reads this to tell a run it
@@ -924,4 +945,5 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 // The office's own page for each listed filing (office-record-links.mjs). Kept down here, below every
 // line the rest of the tree cites by number.
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
+import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';

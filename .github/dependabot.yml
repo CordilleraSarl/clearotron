@@ -12,14 +12,19 @@
 #
 # ONE ENTRY PER WORKSPACE, plus the root. npm workspaces do not hoist the manifests — each has its own
 # package.json — and a single root entry would leave three of them unwatched while looking complete.
-# The list mirrors `package.json`'s `workspaces` array; if that array grows, this file has to grow with
-# it, and the guard in driver/test/public-repo-furniture.test.mjs is what says so out loud.
+# The list mirrors `package.json`'s `workspaces` array; if that array grows, this file has to grow with it.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
     open-pull-requests-limit: 2
+    # UNDICI STAYS ON 7, so its majors are not proposed. Undici 8 declares Node >=22.19 and throws on import on 22.13
+    # and 22.14 (measured 2026-11-05), and this package promises 22.13 (`engines` in package.json). Raising that
+    # floor is the decision that lifts this, and production-dependencies.test.mjs refuses a bump made without it.
+    ignore:
+      - dependency-name: undici
+        update-types: ["version-update:semver-major"]
     groups:
       # PATCH AND MINOR TOGETHER, MAJORS APART FROM THEM — that separation is the point: a major can
       # change behaviour this engine's answers depend on, and batching one with nine patch bumps hides
@@ -39,6 +44,12 @@ updates:
     directory: /driver
     schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
     open-pull-requests-limit: 2
+    # UNDICI STAYS ON 7, so its majors are not proposed. Undici 8 declares Node >=22.19 and throws on import on 22.13
+    # and 22.14 (measured 2026-11-05), and this package promises 22.13 (`engines` in package.json). Raising that
+    # floor is the decision that lifts this, and production-dependencies.test.mjs refuses a bump made without it.
+    ignore:
+      - dependency-name: undici
+        update-types: ["version-update:semver-major"]
     groups:
       driver-minor-and-patch:
         update-types: [minor, patch]

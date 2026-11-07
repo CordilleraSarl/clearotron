@@ -45,6 +45,22 @@ const textOf = (v) => (typeof v === "string" ? v
   : Array.isArray(v) ? v.map(textOf).filter(Boolean).join("; ")
   : v && typeof v === "object" ? textOf(v.text ?? v.terms ?? v.description ?? "") : "");
 
+// A PROVIDER'S WORDS FOR NO GOODS ARE NOT GOODS. A record can carry a statement whose whole text is a provider's marker: "No
+// goods available", or "No greek supported" in the Greek slot of an EU record beside the real statements. Read as goods, the
+// first made a record with nothing listed read as complete, and its words were tested against the client's as a statement that
+// missed them. Measured 2026-11-05 on 142,151 distinct saved records: 965 descriptions and 387 translations of the first, on
+// offices across the world and in several languages; 20,848 of "No greek supported" on Greek-tagged statements and 18,894 of
+// "No bulgarian supported" on Bulgarian-tagged ones, all EU records. So the first is matched whole wherever it stands, and the
+// second only on the slot of the language it names. A shape seen a handful of times ("not listed", "-") or as a translation of
+// held wording ("no list", "not specified") is not treated as a marker: this rule describes provider boilerplate, and does not
+// decide what counts as plausible goods. The record itself stays as it is.
+const LANGUAGE_SLOT_MARKERS = Object.freeze({ el: "no greek supported", bg: "no bulgarian supported" });
+/** Is this whole statement a provider's marker for no goods? `language` is the statement's own tag. PURE. */
+export function isNoGoodsMarker(text, language = null) {
+  const t = String(text ?? "").trim().replace(/^[-–—\s]+/, "").replace(/[.\s]+$/, "").toLowerCase();
+  return t === "no goods available" || (t !== "" && t === LANGUAGE_SLOT_MARKERS[String(language ?? "").trim().toLowerCase()]);
+}
+
 /**
  * The goods of one official record body: [{classes, text}], one entry per class statement, or [] when the body
  * carries none. PURE. Each provider's shape, as its own code writes it:
@@ -62,19 +78,24 @@ export function recordGoods(body, { english = true } = {}) {
   const out = [];
   // `en: false` marks a statement with no English the engine can use: its words cannot be tested against the
   // client's English goods words, so it is unknown to the goods test, never a mismatch.
-  const push = (classes, text, original = null, en = true) => {
+  const push = (classes, text, original = null, en = true, extra = null) => {
     const t = String(text ?? "").trim(), o = String(original ?? "").trim();
-    if (t) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, ...(o && o !== t ? { alt: o } : {}), ...(en ? {} : { en: false }) });
+    if (t && !isNoGoodsMarker(t)) out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, ...(o && o !== t ? { alt: o } : {}), ...(en ? {} : { en: false }), ...extra });
   };
   const tagged = (lang) => String(lang ?? "").trim() !== "";
   if (Array.isArray(b.goodsServices)) {
     for (const g of b.goodsServices) {
       // English as written; untagged, English only on an English-language register; else the translation,
       // tagged English, or untagged on such a register; else the original, unread.
-      if (isEnglish(g?.language)) push(g?.classes, textOf(g?.description), null, true);
-      else if (!tagged(g?.language) && !g?.translation) push(g?.classes, textOf(g?.description), null, english);
-      else if (g?.translation && (isEnglish(g?.translation_language) || (!tagged(g?.translation_language) && english))) push(g?.classes, textOf(g.translation), textOf(g?.description), true);
-      else push(g?.classes, textOf(g?.description ?? g?.translation), null, false);
+      // A marker where a statement or its translation should be is no wording. A translation that is one gives way to
+      // the held original, which says what language it is in, because the engine cannot test it against English words.
+      const description = isNoGoodsMarker(textOf(g?.description), g?.language) ? "" : textOf(g?.description);
+      const translationMarked = isNoGoodsMarker(textOf(g?.translation), g?.translation_language);
+      const translation = translationMarked ? null : g?.translation;
+      if (isEnglish(g?.language)) push(g?.classes, description, null, true);
+      else if (!tagged(g?.language) && !translation) push(g?.classes, description, null, english);
+      else if (translation && (isEnglish(g?.translation_language) || (!tagged(g?.translation_language) && english))) push(g?.classes, textOf(translation), description, true);
+      else push(g?.classes, description || textOf(translation), null, false, translationMarked && description && tagged(g?.language) ? { language: String(g.language).trim() } : null);
     }
   }
   if (out.length === 0 && Array.isArray(b?._raw?.classifications)) {
@@ -124,12 +145,12 @@ export function recordGoods(body, { english = true } = {}) {
 export function recordGoodsProvenance(body) {
   const b = Array.isArray(body) ? body[0] : body;
   if (!b || typeof b !== "object") return { operation: "undocumented", field: "none" };
-  const said = (v) => String(textOf(v) ?? "").trim() !== "";
+  const said = (v, language = null) => { const t = String(textOf(v) ?? "").trim(); return t !== "" && !isNoGoodsMarker(t, language); };
   if (Array.isArray(b.goodsServices))
-    return { operation: "record-text", field: b.goodsServices.some((g) => said(g?.description) || said(g?.translation)) ? "listed" : "empty" };
+    return { operation: "record-text", field: b.goodsServices.some((g) => said(g?.description, g?.language) || said(g?.translation, g?.translation_language)) ? "listed" : "empty" };
   if (Array.isArray(b?._raw?.classifications))
     return { operation: "retrieve", field: b._raw.classifications.some((c) => said(c?.goods_services_text)) ? "listed" : "empty" };
-  if (typeof b.goodsAndServices === "string") return { operation: "bulk-register", field: b.goodsAndServices.trim() ? "listed" : "empty" };
+  if (typeof b.goodsAndServices === "string") return { operation: "bulk-register", field: said(b.goodsAndServices) ? "listed" : "empty" };
   if (b.goodsAndServices != null) return { operation: "undocumented", field: recordGoods(b).length ? "listed" : "empty" };
   return { operation: "undocumented", field: "none" };
 }
@@ -162,6 +183,26 @@ export function rawGoodsCarried(body) {
       && same(d.cmComputerTranslationIntGoodsLanguageCode, n.translation_language)
       && same(d.cmComputerTranslationIntGoodsServicesDescription, n.translation);
   });
+}
+
+// A RECORD'S GOODS ARE SERVED ONCE. A Clarivate record carries the register's raw goods list beside the
+// normalised goods the provider maps from it item for item (record-goods.mjs `rawGoodsCarried`), so every goods
+// statement was read twice. On a crowded test run, 2026-10-13, one synthesis attempt read 10.79 MB of record
+// text in 549 calls; served this way, the same records come to 6.04 MB in 398. Where the normalised goods carry
+// the raw list, the record is served without that list, in the file's own layout and field order, and anything
+// else in the raw goods block stays; where they do not, or the text is not a record, it is served as it
+// stands. The file on disk is never touched, and the reading audit says how much was left out.
+export function recordAsServed(text) {
+  let body;
+  try { body = JSON.parse(text); } catch { return { text, audit: {} }; }
+  if (!rawGoodsCarried(body)) return { text, audit: {} };
+  const goods = { ...body._raw.goodsServices };
+  delete goods.intClassDescriptions;
+  const raw = { ...body._raw, goodsServices: goods };
+  if (!Object.keys(goods).length) delete raw.goodsServices;
+  const indent = /^\{\n( +)"/.exec(text)?.[1]?.length ?? 0;
+  const served = JSON.stringify({ ...body, _raw: raw }, null, indent) + (text.endsWith("\n") ? "\n" : "");
+  return { text: served, audit: { raw_goods_left_out: text.length - served.length } };
 }
 
 /**

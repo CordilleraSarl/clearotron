@@ -39,7 +39,7 @@ import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
+import { parseVerdict, countCitedDefects, parseCorrections, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
 
@@ -359,6 +359,92 @@ export function readAcceptedReviewSince(runDir, seq0) {
     return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null };
   }
   return null;
+}
+
+// ── A REVIEW SAVED BY REWRITING THE FILE MEETS THE RULES THE TYPED ROUTE KEEPS ─────────────────────────────────────────
+//
+// A seat may save a review through the tool or by rewriting the file, and the recheck's message orders the rewrite. The
+// file's validator asks for a verdict line and, on a receipt run, the audit's words somewhere in the file, so a review
+// the tool refuses could be written into the file instead and read as the review of the corrected record: a BLOCKING
+// that names nothing, or a flag on a position the writer's list does not give. Changed bytes show a review is fresh. They
+// do not show it can be accepted.
+//
+// SO THE FILE IS READ BACK INTO THE VALUES THE TOOL TAKES, through the shipped parsers, and refused with the tool's own
+// tokens. FORMATTING IS NOT WHAT IS REFUSED: a legacy line with no kind token still reads as `fact` (the validator's
+// contract), and a flag with no `[on:]` stays undeclared. A BLOCKING is counted by the permissive walk the verdict gate
+// uses, because refusing here discards a review. The check is one read of the file and sends nothing back to the seat.
+
+/**
+ * The plan audit's lines in a review file. It opens at a line naming the check that is not itself a flag, because a flag
+ * that mentions the check audits nothing, and runs to the next heading at its own level or above that names the flags or
+ * the corrections. Any other heading stays in: saved reviews write their audits under headings of their own, and refusing
+ * a real audit over one is the worse mistake. Words after the name on its own line count: "PLAN-EXECUTION CHECK: every
+ * slice ran" is an audit. PURE.
+ */
+export function planAuditLines(reviewMd) {
+  const lines = String(reviewMd ?? "").split("\n").slice(1).map((l) => l.trim());
+  const at = lines.findIndex((l) => /PLAN-EXECUTION CHECK/i.test(l) && correctionFlagContent(l) == null);
+  if (at < 0) return [];
+  const own = lines[at].replace(/^.*?PLAN-EXECUTION CHECK/i, "").replace(/^[^\p{L}\p{N}]+/u, "");
+  const levelOf = (l) => /^(#{1,6})\s/.exec(l)?.[1].length ?? 6;   // a line of capitals has no level of its own
+  const end = lines.findIndex((l, i) => i > at && SECTION_HEADING_RE.test(l) && /\b(?:flags?|flagged|corrections?)\b/i.test(l) && levelOf(l) <= levelOf(lines[at]));
+  return [own, ...lines.slice(at + 1, end < 0 ? undefined : end)].filter((l) => l && !/^(?:#{1,6}\s+)?\W*PLAN-EXECUTION CHECK\W*$/i.test(l));
+}
+
+/**
+ * The typed values of a review saved as a file, as `{ok: true, verdict, flags, planAudit}`, or `{ok: false, reason}` with
+ * the token the tool refuses the same review with. `receiptPresent` and `positionsListed` are the driver's reads, as for
+ * acceptRefutation. PURE.
+ */
+export function acceptReviewFile(content, { receiptPresent = false, positionsListed = null } = {}) {
+  const text = String(content ?? "");
+  const verdict = parseVerdict(text);
+  if (!REVIEW_VERDICTS.includes(verdict)) return { ok: false, reason: `refutation_verdict_invalid:${String(verdict).slice(0, 40)}` };
+  if (verdict === "BLOCKING" && countCitedDefects(text) === 0) return { ok: false, reason: "refutation_blocking_without_flags" };
+  const flags = parseCorrections(text);
+  for (let i = 0; i < flags.length; i++) {
+    if (!String(flags[i].text ?? "").trim()) return { ok: false, reason: `refutation_flag_text_empty:${i}` };
+    if ((flags[i].ordinals ?? []).some((n) => n < 1)) return { ok: false, reason: `refutation_flag_on_invalid:${i}` };
+    const unknown = (flags[i].positions ?? []).find((p) => !positionsListed?.get(String(normalizeRecordUri(p) ?? "")));
+    if (unknown != null) return { ok: false, reason: `refutation_flag_position_unlisted:${i}:${String(unknown).slice(0, 80)}` };
+  }
+  const planAudit = planAuditLines(text);
+  if (receiptPresent && !planAudit.length) return { ok: false, reason: "refutation_plan_audit_missing" };
+  return { ok: true, verdict, flags, planAudit };
+}
+
+/**
+ * WHAT A RECHECK'S DISPATCH SAVED, whichever way it saved it, and what must stand in the file afterwards. `before` is the
+ * review's text when the dispatch began, and `seq0` its first call number. Returns `{read, fail, refused, restore}`:
+ *   read     `{by, seq}` when a review was saved that can be accepted, otherwise null
+ *   fail     why nothing was read, on a stage that ended ok: `no-accepted-call`, or `file-save-refused:<token>`
+ *   refused  the token of a direct save that was refused, whether or not a typed save stands in its place
+ *   restore  the text the caller writes to the file, or null to leave it
+ *
+ * ONE DECISION, ONE READ OF THE FILE, AND NO RETRY. A refused direct save gives way to the dispatch's last accepted typed
+ * call if there is one, and otherwise to the earlier review, so a verdict is never read from refused bytes and those bytes
+ * do not stay in place of an accepted review. A stage that failed reads nothing, and whatever it left gives way to the
+ * earlier review, whose verdict stands. Never throws on a file it cannot read: an absent review gives way the same way.
+ */
+export function settleRecheckSave(runDir, { before = null, stageOk = false, seq0 = 0 } = {}) {
+  const dir0 = String(runDir ?? "");
+  let now = null;
+  try { now = readFileSync(join(dir0, REVIEW_FILE), "utf8"); } catch { now = null; }
+  const earlierBack = before != null && now !== before ? before : null;
+  if (!stageOk) return { read: null, fail: null, refused: null, restore: earlierBack };
+  const rules = { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0) };
+  const call = readAcceptedReviewSince(dir0, seq0);
+  const typed = call ? acceptRefutation({ verdict: call.verdict, flags: call.flags, plan_audit: call.planAudit }, rules) : null;
+  const saved = typed?.ok ? typed.content : null;
+  const byTool = saved != null ? { by: "tool", seq: call.seq } : null;
+  if (saved != null && now === saved) return { read: byTool, fail: null, refused: null, restore: null };
+  if (now == null || now === before) {
+    return byTool ? { read: byTool, fail: null, refused: null, restore: saved } : { read: null, fail: "no-accepted-call", refused: null, restore: earlierBack };
+  }
+  const file = acceptReviewFile(now, rules);
+  if (file.ok) return { read: { by: "file", seq: null }, fail: null, refused: null, restore: null };
+  if (byTool) return { read: byTool, fail: null, refused: file.reason, restore: saved };
+  return { read: null, fail: `file-save-refused:${file.reason}`, refused: file.reason, restore: earlierBack };
 }
 
 /** Read back what was written — the verdict view of the stored file, through the one parse. */

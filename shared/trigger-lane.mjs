@@ -49,6 +49,13 @@ export const HOSTED = "hosted";
 export const SUPERVISED = "supervised";
 
 /**
+ * The header the portal's boot probe carries, so the engine door can tell its expected 401 from a caller
+ * that came without a key. It changes nothing the door answers: the probe reads the refusal's body to
+ * classify the door, so that body is the same either way. Only the door's log line differs.
+ */
+export const BOOT_PROBE_HEADER = "x-trademark-boot-probe";
+
+/**
  * @param {object} a
  * @param {string|null}  a.url      PORTAL_MCP_URL as the portal will read it — an ORIGIN, never .../mcp
  * @param {boolean}      a.hasToken whether an ops token is present. Presence only; never its value.

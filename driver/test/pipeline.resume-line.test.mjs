@@ -22,21 +22,27 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
 const { resumeAdvice, resumeCommand, jobFromStatus, resumeJobRefusal } = await import("../pipeline.mjs");
 
-const SCRIPT = "/srv/app/driver/pipeline.mjs";
 const JOB = "/srv/jobs/acme.json";   // neutral root: forbids naming an operator's home anywhere executable
-const advise = (o) => resumeAdvice({ script: SCRIPT, jobPath: JOB, ...o });
+const VERB = (verb) => `clearotron ${verb}`;   // how the reader reaches this install is `invocation.mjs`'s to answer
+const advise = (o) => resumeAdvice({ jobPath: JOB, command: VERB, ...o });
 const text = (o) => advise(o).join("\n");
 
-test("the command is absolute, names the codename, and carries --agent only when one was given", () => {
-  // Absolute because it is read hours later, possibly from another directory; a relative path that
-  // resolved somewhere else would be a worse answer than none.
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: "tealkeystone" }),
-    `node ${SCRIPT} --job ${JOB} --resume tealkeystone`);
+test("the command is the product's verb, names the codename, and carries --agent only when one was given", () => {
+  // The job path is absolute because the line is read hours later, possibly from another directory; a
+  // relative path that resolved somewhere else would be a worse answer than none.
+  assert.equal(resumeCommand({ jobPath: JOB, codename: "tealkeystone", command: VERB }),
+    `clearotron run --job ${JOB} --resume tealkeystone`);
   // --agent roots the run dir in that agent's workspace, so a resume without it looks in the wrong studio
   // and reports no live run dir.
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: "tealkeystone", agent: "alex" }),
-    `node ${SCRIPT} --job ${JOB} --agent alex --resume tealkeystone`);
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: null }), null);
+  assert.equal(resumeCommand({ jobPath: JOB, codename: "tealkeystone", agent: "alex", command: VERB }),
+    `clearotron run --job ${JOB} --agent alex --resume tealkeystone`);
+  assert.equal(resumeCommand({ jobPath: JOB, codename: null, command: VERB }), null);
+});
+
+test("with no command handed in, the line names the form that reaches this install, and no file of it", () => {
+  const line = resumeCommand({ jobPath: null, codename: "tealkeystone" });
+  assert.match(line, /clearotron run --resume tealkeystone$/, line);
+  assert.doesNotMatch(line, /pipeline\.mjs|^node /, `a reader on an npm install has no such path to type: ${line}`);
 });
 
 test("a clean run says nothing", () => {
@@ -55,7 +61,8 @@ test("RATE-LIMIT PARK — says it did not fail, what it waits on, and that it re
   assert.match(out, /2026-08-12T18:00:00Z/);
   assert.match(out, /nothing failed/);
   assert.match(out, /not the authority/);        // the sentinel's own resolvedBy sentence, not a second story
-  assert.match(out, /runner\.mjs --watch/);      // the loop that resumes it where there is no systemd
+  assert.match(out, /clearotron run-queue --watch/);      // the loop that resumes it where there is no systemd
+  assert.doesNotMatch(out, /runner\.mjs/, "a reader on an npm install has no such path to type");
   assert.match(out, /--resume tealkeystone/);
 });
 
@@ -185,20 +192,20 @@ test("the CLI installs its signal handlers in the mainline block only", async ()
 // who found out was the person trying to repair the run.
 
 test("a resume command is valid without a job file, because the codename is the identity", () => {
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: "tealkeystone" }),
-    `node ${SCRIPT} --resume tealkeystone`,
+  assert.equal(resumeCommand({ jobPath: null, codename: "tealkeystone", command: VERB }),
+    "clearotron run --resume tealkeystone",
     "no command was offered for a run whose job file is gone — which is every failed run");
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: "tealkeystone", agent: "alex" }),
-    `node ${SCRIPT} --agent alex --resume tealkeystone`);
+  assert.equal(resumeCommand({ jobPath: null, codename: "tealkeystone", agent: "alex", command: VERB }),
+    "clearotron run --agent alex --resume tealkeystone");
   // The path still rides when there IS one: a caller holding the job should keep naming it.
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: JOB, codename: "tealkeystone" }),
-    `node ${SCRIPT} --job ${JOB} --resume tealkeystone`);
+  assert.equal(resumeCommand({ jobPath: JOB, codename: "tealkeystone", command: VERB }),
+    `clearotron run --job ${JOB} --resume tealkeystone`);
   // And no codename is still nothing to resume — the identity is what was missing, not the path.
-  assert.equal(resumeCommand({ script: SCRIPT, jobPath: null, codename: null }), null);
+  assert.equal(resumeCommand({ jobPath: null, codename: null, command: VERB }), null);
 });
 
 test("a failure with no job path still prints a command rather than 'nothing to resume'", () => {
-  const said = resumeAdvice({ script: SCRIPT, jobPath: null, codename: "tealkeystone",
+  const said = resumeAdvice({ jobPath: null, command: VERB, codename: "tealkeystone",
     result: { ok: false, failedStage: "synthesis" } }).join("\n");
   assert.doesNotMatch(said, /nothing to resume/,
     "a failed run with no job file was told it had no identity, when its codename is its identity");

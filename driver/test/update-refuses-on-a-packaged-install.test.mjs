@@ -16,7 +16,8 @@ import { mkdtempSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { isGitCheckout, enginesToRefresh } from "../../bin/update.mjs";
+import { isGitCheckout, enginesToRefresh, reportRefusal, updateUsage } from "../../bin/update.mjs";
+import { packagedUpdateCommand } from "../../shared/permanent-install.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { packagedBuild } from "../../bin/onboard.mjs";
@@ -105,9 +106,50 @@ test("the verb ASKS before it pulls, and names the packaged remedy", () => {
   assert.ok(guard > 0, "the verb must consult the checkout test at all");
   assert.ok(pull > 0, "the pull must still be there — if this fails the anchor moved and so did the proof");
   assert.ok(guard < pull, "the checkout test must run BEFORE the pull, or the git error still lands first");
-  assert.match(src, /npm install -g clearotron@latest/,
+  assert.match(src, /packagedUpdateCommand\(\)/,
     "the refusal must name how a packaged install IS updated — a refusal that only says no leaves the "
     + "operator exactly as stuck as the git error did");
+  assert.doesNotMatch(src, /npm install -g clearotron@latest/, "a beta install would be pointed at the stable");
+});
+
+test("the refusal names the channel the install came from, and a project install's own folder", () => {
+  const under = (installDir, version, hasOwner = false) =>
+    packagedUpdateCommand({ installDir, version, exists: () => hasOwner, platform: "linux" });
+  assert.equal(under("C:/npm/node_modules/clearotron", "0.5.0"), "npm install -g clearotron@latest");
+  assert.equal(under("C:/npm/node_modules/clearotron", "0.5.1-beta.2"), "npm install -g clearotron@beta", "a beta stays a beta");
+  assert.equal(under("/srv/shop/node_modules/clearotron", "0.5.1-beta.2", true), "cd /srv/shop && npm install clearotron@beta",
+    "a global install would leave a project's own copy behind");
+  assert.equal(under("/opt/npm-cache/_npx/ab12/node_modules/clearotron", "0.5.0", true), "npm install -g clearotron@latest",
+    "npx's cache holds a package.json of its own, and that folder is not a project");
+});
+
+test("--help describes the install it runs on", () => {
+  const packaged = updateUsage({ checkout: false, P: "" }).join("\n");
+  assert.doesNotMatch(packaged, /git pull|npm ci|checkout/, `a package install has neither:\n${packaged}`);
+  assert.ok(packaged.replace(/\s+/g, " ").includes("On a package install on Linux or macOS it installs the newest stable, or for a beta "
+    + "install the newest beta or stable, whichever is later; on Windows it names the npm command to run instead."));
+  const checkout = updateUsage({ checkout: true, P: "" }).join("\n");
+  assert.match(checkout, /git pull --ff-only/, "the control: a checkout keeps its own description");
+  assert.match(checkout, /inside the checkout/);
+});
+
+test("the live-run refusal names npm ci on a checkout only", () => {
+  const src = readFileSync(join(ROOT, "bin", "update.mjs"), "utf8");
+  assert.match(src, /packaged\s*\? "[^"]*An update replaces the program's files under whatever is running/,
+    "a package install runs no npm ci, so that is not why it refuses");
+});
+
+test("the configuration refusal says the install's own folder on a package install", (t) => {
+  const lines = [];
+  t.mock.method(console, "log", (s = "") => lines.push(s));
+  const risky = [{ name: "PROFILE_REPO_ROOT", value: "/x/config", from: ".env", what: "the portal's profile editor", files: [], readable: true, exists: true }];
+  reportRefusal(risky, { checkout: false });
+  const packaged = lines.join("\n");
+  assert.match(packaged, /inside the install's own folder/);
+  assert.doesNotMatch(packaged, /checkout/, `a package install is no checkout:\n${packaged}`);
+  lines.length = 0;
+  reportRefusal(risky, { checkout: true });
+  assert.match(lines.join("\n"), /inside the checkout/, "the control: a checkout keeps its word");
 });
 
 // ── — a packaged install can NAME the code it ran ──────────────────────────────

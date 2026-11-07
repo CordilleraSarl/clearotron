@@ -106,6 +106,29 @@ test("the allowlist keys on the WORD, because reviews write the heading five way
     assert.ok(!CORRECTIONS_SECTION_RE.test(h), `"${h}" is not a corrections heading`);
 });
 
+test("a review's own Flags section is where its flags are: answered flags beside it read as nothing", () => {
+  const FLAGS = ["1. [kind: fact] [on: 1] An invented open point.", "2. [kind: rating] [on: 2] Another invented open point."];
+  const ANSWERED = ["- The invented first flag was answered.", "- The invented second flag was answered."];
+  const AUDIT = ["## PLAN-EXECUTION CHECK", "", "- Audited the invented receipt."];
+  for (const heading of ["## Prior flags rechecked", "## Re-check of the prior flags", "## Corrections verified", "## What moved"]) {
+    for (const md of [
+      ["CONDITIONAL", "", "## Flags", "", ...FLAGS, "", heading, "", ...ANSWERED, "", ...AUDIT],
+      ["CONDITIONAL", "", heading, "", ...ANSWERED, "", "## Flags", "", ...FLAGS, "", ...AUDIT],
+    ].map((l) => l.join("\n"))) {
+      const rows = parseCorrections(md);
+      assert.deepEqual(rows.map((r) => [r.kind, r.ordinals, r.text]), [["fact", [1], "An invented open point."], ["rating", [2], "Another invented open point."]], md);
+      assert.deepEqual(correctionsSection(md), { named: true, heading: "Flags" }, md);
+    }
+  }
+  // Only that heading: a section whose name merely holds the word is not it, and a review with none reads as it did.
+  const noneOfIt = ["CONDITIONAL", "", "## Skeptic flags and reopen deferrals", "", "- An invented bullet.", "", ...AUDIT].join("\n");
+  assert.deepEqual(correctionsSection(noneOfIt), { named: false, heading: null });
+  assert.equal(parseCorrections(noneOfIt).length, 1);
+  const wordRule = ["CONDITIONAL", "", "## Flagged corrections", "", "- An invented correction.", "", "## Other", "", "- An invented note."].join("\n");
+  assert.deepEqual(correctionsSection(wordRule), { named: true, heading: "Flagged corrections" });
+  assert.deepEqual(parseCorrections(wordRule).map((r) => r.text), ["An invented correction."]);
+});
+
 test("a document that names NO corrections section still yields its corrections", () => {
   // That fixture is exactly this, and the writes them under `## Corrections`. The allowlist must not
   // turn a headless review into a silent zero — the fallback applies only where there is no section

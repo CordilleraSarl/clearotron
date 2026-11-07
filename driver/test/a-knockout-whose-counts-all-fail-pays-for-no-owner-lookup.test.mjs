@@ -76,15 +76,11 @@ async function knockout(codename, { countsLand }) {
   return { res, failure, order, dir: res?.runDir ?? dir };
 }
 
-test("the fixture's register lists first, so the order below is the one a listing-first register takes", () => {
-  assert.equal(capabilitiesFor("signa").listingAnswersCount, true);
-});
-
 test("a batch where not one count lands stops at the gate without paying for an owner lookup", async () => {
   const { res, failure, order, dir } = await knockout("counts-fail", { countsLand: false });
   assert.ok(failure || res?.ok === false, `the batch should have stopped at the count gate: ${JSON.stringify(res)}`);
   assert.match(String(failure?.message ?? res?.reason ?? ""), /no register count could be taken/);
-  assert.ok(order.some((o) => o.startsWith("list:")), `the listing ran first, as this register does: ${order.join(" → ")}`);
+  assert.ok(!order.some((o) => o.startsWith("list:")), `nothing is read before a count lands: ${order.join(" → ")}`);
   assert.ok(order.some((o) => o.startsWith("count:")), "the counts were asked");
   assert.equal(order.filter((o) => o === "owner-lookup").length, 0, `no owner lookup was paid for: ${order.join(" → ")}`);
   assert.equal(existsSync(driverDir(dir, "run.jsonl")), true, "the stopped run's folder is the one read below");

@@ -72,7 +72,7 @@ export const SUMMARY = {
   install: "configure this install — one question at a time, nothing written until each answer checks out",
   doctor:  "report what this machine is configured for. Writes nothing, calls nobody",
   demo:    "replay a finished example clearance and serve it. No keys, no model, no account",
-  start:   "start the product — the portal and the engine door — and print one address to open",
+  start:   "start the product — the portal, the engine door, the client door and the worker — and print one address to open",
   stop:    "stop the background product and give the box back — connect's door is not touched",
   status:  "is the product up, and on which ports. Reads; changes nothing",
   connect: "connect the assistant you already use — pick it by name and get the one thing it needs",

@@ -953,7 +953,7 @@ export const openaiAgentEngine = {
       if (mode === "subscription") {
         const af = authFilePath(process.env);
         if (!existsSync(af))
-          throw new Error(`CLEAROTRON_AI_BILLING=subscription but no auth.json at ${af} — run \`codex login\` (or set CLEAROTRON_OPENAI_AUTH_FILE — NOT an aliased name, and deliberately left as it is), or use CLEAROTRON_AI_BILLING=api-key + CODEX_API_KEY.`);
+          throw new Error(`Codex has no sign-in on this machine (${af} does not exist): run \`codex login\`, or set CLEAROTRON_OPENAI_AUTH_FILE to the file it wrote. To pay per use instead, set CLEAROTRON_AI_BILLING=api-key and CODEX_API_KEY.`);
         // The REAL path, so a master that is itself a link is written where its login actually lives.
         authMaster = realpathSync(af);
         seeded = seedAuth(authMaster, codexHome);
@@ -1014,6 +1014,8 @@ export const openaiAgentEngine = {
       if (!ev.model) ev.model = readServedModel(codexHome, spawnedAtMs);
       // A turn cut off before turn.completed: what it spent, from the same rollout (readRolloutUsage).
       if (!ev.usage) { ev.usage = readRolloutUsage(codexHome, spawnedAtMs); ev.usageFromRollout = ev.usage != null; }
+      // A resumed turn's turn.completed states its thread's running total, earlier turns included. Its own share is in the same rollout; where that cannot be read the total stands, overstated and never understated.
+      else if (resumeRef) ev.usage = readRolloutUsage(codexHome, spawnedAtMs) ?? ev.usage;
       return settleTuple({ r, ev, resumeRef });
     } finally {
       // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the

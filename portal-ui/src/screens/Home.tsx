@@ -42,6 +42,7 @@ import {
   recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps, inFlightBreakdown, expectation,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
+import { Ticked } from '../components/Ticked.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -184,9 +185,14 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       <InFlightBand
         breakdown={inFlightBreakdown(rows)}
         note={rows.length === 0
-          ? `Nothing running right now.${canRun(ctx.me) ? ' Start one with New clearance.' : ''}`
+          ? `Nothing running right now.${canRun(ctx.me) && ctx.me.canSearch !== false ? ' Start one with New clearance.' : ''}`
           : slotNote(null, ctx.me.concurrentRuns)}
       />
+      {/* WHAT STANDS BETWEEN THIS INSTALL AND A SEARCH, said before anyone opens New clearance: the review's own
+          refusal for this reader, from /me. Only for a reader who could start one, beside the invite it replaces. */}
+      {canRun(ctx.me) && ctx.me.canSearch === false && ctx.me.searchRefusal
+        ? <p className="notice" role="status" style={{ margin: '0 0 18px', fontSize: 13 }}><Ticked text={ctx.me.searchRefusal} /></p>
+        : null}
 
       {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because the
           line is NAVIGATION — it separates "your dashboard" from "working on one company" — rather than
@@ -595,9 +601,11 @@ function Card({
                 answered. */}
             {took?.note
               ? took.note
+              // THE STEP IS NAMED ON THE CARD, ABOVE THIS LINE, so the sentence says "the current step" rather than putting a step's
+              // name into it: the names read as labels, not as the subject of a sentence (the owner's words, 2026-11-06).
               : (<>
-                  Stopping — letting {run.step ? `${run.step}` : 'the step in flight'} finish. No report
-                  will be produced. Completed work stays readable through Ask AI.
+                  Stopping when the current step finishes. No report will be produced. Completed work stays readable
+                  through Ask AI.
                 </>)}
           </div>
         ) : null}
@@ -680,7 +688,6 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
     return () => window.removeEventListener('keydown', on)
   }, [onCancel])
 
-  const stepName = step ?? 'The step in flight'
   const label = mode === 'boundary' ? 'Stop after this step' : 'Stop now'
 
   return (
@@ -690,6 +697,9 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
           <span className="modal-rule" aria-hidden />
           <span className="eyebrow" style={{ color: 'var(--accent-quiet)' }}>Stop this clearance</span>
           <h2 style={{ margin: '7px 0 3px', fontSize: 19, fontWeight: 700, color: 'var(--text-strong)' }} data-anon="mark">{name}</h2>
+          {/* THE STEP, NAMED ONCE, AS A LABEL, and the two choices below say "this step" (the owner's words, 2026-11-06). Left out
+              when the step is not known, rather than naming a placeholder. */}
+          {step ? <p style={{ margin: '0 0 6px', fontSize: 12.5, color: 'var(--text-muted)' }}>Current step: {step}</p> : null}
           {/* THE PROMISE IS WITHDRAWN WHEN IT CANNOT BE KEPT. A run that has committed to publishing is
               past its last stoppable point, and this line used to tell the reader the opposite -- a
               report was published a hundred seconds after somebody was told nothing would be. The
@@ -709,7 +719,7 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
           <label className={`stop-choice-opt${mode === 'boundary' ? ' selected' : ''}`}>
             <input type="radio" name="stop-mode" checked={mode === 'boundary'} onChange={() => setMode('boundary')} />
             <b>Stop after this step</b>
-            <span>{stepName} finishes first, so its work is kept. There is no reliable completion estimate for this step.</span>
+            <span>This step finishes first, so its work is kept. There is no reliable completion estimate for this step.</span>
           </label>
           <label className={`stop-choice-opt stop-choice-now${mode === 'immediate' ? ' selected' : ''}`}>
             <input type="radio" name="stop-mode" checked={mode === 'immediate'} onChange={() => setMode('immediate')} />
@@ -720,7 +730,7 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
                 sentence is the fallback, so the reader is offered the mode without being sold a result.
                 (Above the label, not between it and its text: an arm reads the two as adjacent.) */}
             <b>Stop now</b>
-            <span>{stepName} is cut off and its work is lost. Everything recorded before it is kept. If it will
+            <span>This step is cut off and its work is lost. Everything recorded before it is kept. If it will
               not take the stop, the run stops at the next step instead.</span>
           </label>
         </div>
