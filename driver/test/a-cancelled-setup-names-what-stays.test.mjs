@@ -33,14 +33,14 @@ const SKIP = (process.platform === "win32" && "a terminal is driven through Pyth
   || (spawnSync("python3", ["--version"]).status !== 0 && "python3 is not on this machine, and it drives the terminal");
 
 test("the cancel line names what setup left, in the owner's words", () => {
-  const copy = { version: "0.5.1-beta.1", prefix: "/home/r/.local" };
-  const engine = { vendor: "Anthropic", dir: "/home/r/.local/share/clearotron/engines" };
+  const copy = { version: "0.5.1-beta.1", prefix: "/srv/reader/.local" };
+  const engine = { vendor: "Anthropic", dir: "/srv/reader/.local/share/clearotron/engines" };
   assert.equal(cancelledLine({}), "cancelled. Nothing was written.");
   assert.equal(cancelledLine({ turnRan: true }), "cancelled. Clearotron wrote nothing; the AI program's test turn keeps its own files.");
-  assert.equal(cancelledLine({ copy }), "cancelled. No settings were written. clearotron 0.5.1-beta.1 stays installed in /home/r/.local.");
-  assert.equal(cancelledLine({ engine }), "cancelled. No settings were written. Anthropic's CLI stays installed in /home/r/.local/share/clearotron/engines.");
-  assert.equal(cancelledLine({ copy, engine }), "cancelled. No settings were written. clearotron 0.5.1-beta.1 stays installed in /home/r/.local, and Anthropic's CLI in /home/r/.local/share/clearotron/engines.");
-  assert.equal(cancelledLine({ copy, engine, turnRan: true }), "cancelled. No settings were written. clearotron 0.5.1-beta.1 stays installed in /home/r/.local, and Anthropic's CLI in /home/r/.local/share/clearotron/engines. The AI program's test turn keeps its own files.");
+  assert.equal(cancelledLine({ copy }), "cancelled. No settings were written. clearotron 0.5.1-beta.1 stays installed in /srv/reader/.local.");
+  assert.equal(cancelledLine({ engine }), "cancelled. No settings were written. Anthropic's CLI stays installed in /srv/reader/.local/share/clearotron/engines.");
+  assert.equal(cancelledLine({ copy, engine }), "cancelled. No settings were written. clearotron 0.5.1-beta.1 stays installed in /srv/reader/.local, and Anthropic's CLI in /srv/reader/.local/share/clearotron/engines.");
+  assert.equal(cancelledLine({ copy, engine, turnRan: true }), "cancelled. No settings were written. clearotron 0.5.1-beta.1 stays installed in /srv/reader/.local, and Anthropic's CLI in /srv/reader/.local/share/clearotron/engines. The AI program's test turn keeps its own files.");
 });
 
 // The terminal: spawn the command on a pty, wait for each pattern in what it printed since the last one, send
