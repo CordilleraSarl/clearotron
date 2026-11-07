@@ -121,7 +121,7 @@ import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
-import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
+import { SERVER_INSTALL_SET, SERVER_UNITS, BACKGROUND_RETIRED, aBackgroundStartRefreshes, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
@@ -161,10 +161,8 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 /** Where `render-units.mjs --apply` installs, and therefore where "this box is a server" is visible. */
 export const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
-/** The shipped units that make this box a server. A door unit alone is enough; so is the drain. */
-export const SERVER_UNITS = Object.freeze([
-  "clearotron-portal.service", "clearotron-mcp-face.service", "prelim-driver.service",
-]);
+/** The shipped units that make this box a server, from the one module that lists units (shared/server-units.mjs). */
+export { SERVER_UNITS };
 /**
  * Which of the shipped units are installed on this box.
  *
@@ -740,25 +738,9 @@ const unitTypeOf = (u) => {
     return (readFileSync(join(REPO, "driver", "systemd", u), "utf8").match(/^Type=(\w+)/m)?.[1] ?? "simple").toLowerCase();
   } catch { return "simple"; }
 };
-// ── UNITS THIS FLAG ONCE INSTALLED AND NOW RETIRES ─────────────────────────────
-//
-// A box that ran `--background` before the retirement HAS these three installed and enabled. They must
-// stay MANAGED, or the carve below reads them as foreign, concludes the box is a real server, and the
-// flag refuses on exactly the boxes it previously worked on — "making the flag unrunnable exactly once
-// it has worked", which is the failure its own comment records being found by driving it twice.
-//
-// AND THEY MUST BE DISARMED, not merely unpinned. The worker drains continuously; leaving the timer
-// armed puts a second claimant on the queue. The claim itself is atomic — `claimAndPrep` in runner.mjs renames
-// `<id>.json` to the lock path and only one racer wins — so this is not double-execution. What it does
-// cost is the admission cap: counts are serial per queue while queues drain concurrently, so two
-// claimers can overshoot a per-account cap by a bounded one per queue. A bounded overshoot is not a
-// reason to leave a retired unit running when disarming it is one call.
-// EMPTY, AND KEPT RATHER THAN DELETED. The retired path-watcher/timer units it named are gone from the
-// tree, so naming them here would describe files this repo does not ship — which is exactly what the
-// "every retired unit is a unit this repo actually ships" check refuses. The export stays because the
-// next retirement wants somewhere to go, and an empty list is a statement that nothing is currently
-// retired-but-shipped.
-export const BACKGROUND_RETIRED = Object.freeze([]);
+// The units this flag once installed and now retires: kept MANAGED, and disarmed below. The list, and why it
+// is kept although empty, are in shared/server-units.mjs, beside the rule that reads it (aBackgroundStartRefreshes).
+export { BACKGROUND_RETIRED };
 
 export const BACKGROUND_EXCLUDED = Object.freeze({
   // ── `clearotron-client-mcp.service` LEFT THIS TABLE ON 2026-09-03, AND SAYING SO IS THE POINT ────
@@ -1115,10 +1097,10 @@ if (isMain) {
   // reads the box as a server and refuses — making the flag unrunnable exactly once it has worked.
   // The carve is narrow on purpose: every installed unit must be one this flag manages (or the client
   // door `clearotron connect` manages). A box carrying anything else — the deploy timer, the outbox
-  // lane — is a real server, and the refusal below is still the right answer for it.
-  const managed = new Set([...BACKGROUND_UNITS, ...BACKGROUND_RETIRED, CLIENT_DOOR_UNIT]);
-  const foreign = installed.filter((u) => !managed.has(u));
-  const backgroundRefresh = wantBackground && installed.length > 0 && foreign.length === 0;
+  // lane — is a real server, and the refusal below is still the right answer for it. The rule is
+  // aBackgroundStartRefreshes (shared/server-units.mjs), which the portal's refusal asks too. The client door
+  // is one of BACKGROUND_UNITS, and the detector never names it.
+  const backgroundRefresh = wantBackground && aBackgroundStartRefreshes(installed);
   if (installed.length && !backgroundRefresh)
     fatal(`This box has the services installed — ${installed.join(", ")} in ${UNIT_DIR}.\n`
       + "  Its configuration is those units' EnvironmentFile, not this checkout's .env, and they are\n"
@@ -2496,8 +2478,11 @@ if (isMain) {
   // Structurally excluded rather than filtered: the union cannot carry a key the object never had.
   const mintedPassphrase = credentialExisted ? null : newPassphrase();
 
+  // THE FILE THIS COMMAND READ GOES TO THE PORTAL TOO, as it goes to the worker: the portal's refusal of an order
+  // names it as what to reload (driver/how-it-runs.mjs, the `start` state). No file read, no flag.
   const portal = start("the portal", "driver/portal-service.mjs",
-    mintedPassphrase ? { ...envs.portal, PORTAL_LOCAL_PASSPHRASE: mintedPassphrase } : envs.portal);
+    mintedPassphrase ? { ...envs.portal, PORTAL_LOCAL_PASSPHRASE: mintedPassphrase } : envs.portal,
+    { args: envFileRead() ? [`--start-env-file=${envFileRead()}`] : [] });
   if (!await healthy(`http://${HOST}:${ports.portal}/portal/health`, portal)) {
     if (portal.alive) { showFiledTail(portal); err(`\nstart: the portal did not answer on ${HOST}:${ports.portal} within 30s — its output above says why.\n`); await shutdown(1); }
     await new Promise(() => {});
@@ -2613,7 +2598,9 @@ if (isMain) {
   try {
     const forget = recordRunning({ pid: process.pid, demo: DEMO, base: paths.base, url: envs.url, host: HOST,
       ports: { portal: ports.portal, mcp: ports.mcp, client: doorRunning ? ports.client : null },
-      startedAt: new Date().toISOString() });
+      // The settings file this start read, or null when it read none: doctor tells a reader to run it again
+      // after setup only when setup writes what it reads.
+      envFile: envFileRead(), startedAt: new Date().toISOString() });
     process.on("exit", forget);
   } catch (e) {
     say(`  (\`status\` will not see this start: its record could not be written — ${String(e?.message ?? e)})`);
@@ -2687,7 +2674,7 @@ if (isMain) {
     // ASKED OF THE ENVIRONMENT THE WORKER WAS HANDED, by the runner's own order-time test: an order is refused
     // there until the install can search, and this line said an order starts a run whatever the install held.
     const cannot = missingRequirements(childProcessEnv(process.env, envs.worker), await runTables()).atOrder;
-    for (const line of orderingLines({ missing: whatIsMissing(cannot), install: invoke("install") })) say(line);
+    for (const line of orderingLines({ missing: whatIsMissing(cannot), install: invoke("install"), doctor: invoke("doctor"), file: envFileRead() })) say(line);
   } else {
     say("  Ordering a clearance from the portal puts the job in the queue and shows it there with its");
     say("  position. You started with --no-worker, so nothing is draining it: run");
@@ -2828,16 +2815,24 @@ export function connectScreen(connect) {
 /**
  * What a terminal start says about ordering when it runs a worker. `missing` is what the install lacks for a
  * search, in the phrases the portal uses (whatIsMissing), or "" when it lacks nothing. An install that cannot
- * search has its orders refused, so it is told that, in the owner's words (2026-11-06), and not that an order
- * starts a run.
+ * search has its orders refused, so it is told that, in the owner's words, and not that an order starts a run.
+ *
+ * AND HOW TO RELOAD THIS COMMAND (2026-11-07). It reads its settings once, when it starts, so after setup it must
+ * be run again. `file` is the settings file it read, or would have on a fresh install (envFileRead()); null when
+ * it read none, because it was told not to or a service manager started it. Then setup does not reach it, and
+ * the reader sets each setting in the environment it runs in. `install` and `doctor` are the commands as the
+ * reader types them. PURE.
  */
-export function orderingLines({ missing = "", install = "clearotron install" } = {}) {
+export function orderingLines({ missing = "", install = "clearotron install", doctor = "clearotron doctor", file = null } = {}) {
   if (!missing) {
     return ["  Ordering a clearance from the portal starts it. The portal prices the run and asks you to",
       "  confirm before anything is spent — that confirmation is the moment money is committed."];
   }
-  return fitTo(96, `Ordering a clearance from the portal is refused until this install can run a search: ${missing}. `
-    + `Run \`${install}\` in a terminal to set it up.`).map((l) => `  ${l}`);
+  const head = `Ordering a clearance from the portal is refused until this install can run a search: ${missing}.`;
+  const reload = file
+    ? `Run \`${install}\` in a terminal to set it up, then stop this command with Ctrl-C and run it again: it reads the settings setup writes when it starts.`
+    : `This command read no environment file of its own: set each missing setting in the environment it runs in, then stop it and run it again. \`${doctor}\` names each setting.`;
+  return fitTo(96, `${head} ${reload}`).map((l) => `  ${l}`);
 }
 
 /**

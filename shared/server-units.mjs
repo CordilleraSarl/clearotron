@@ -45,7 +45,7 @@
 //
 // ── ONE AUTHORITY, TWO CALLERS ───────────────────────────────────────────────────────────────────────
 //
-// NOT TO BE CONFUSED WITH `SERVER_UNITS` IN bin/start.mjs, which is one word away and answers a
+// NOT TO BE CONFUSED WITH `SERVER_UNITS` below, which is one word away and answers a
 // different question: which units, IF PRESENT, mean this box is already a server. That one is a
 // DETECTOR — it exists so `clearotron start` can refuse to run a second portal beside a deployed one —
 // and it deliberately still names a retired unit, because a box carrying the old posture is just as
@@ -94,6 +94,42 @@ export const SERVER_INSTALL_SET = Object.freeze([
 // and emptying it states that no unit is currently in that class, which is a claim a reader can check.
 // Deleting the export would make the next such unit an unnamed absence instead.
 export const ON_DEMAND_UNITS = Object.freeze([]);
+
+/**
+ * The DETECTOR: the shipped units that, if present, make this box a server. A door unit alone is enough; so
+ * is the drain. It answers a different question from SERVER_INSTALL_SET above (see ONE AUTHORITY, TWO
+ * CALLERS), and that is why it is a separate list. It lived in `bin/start.mjs`, which still exports it; it is
+ * here so the portal can ask the same question without importing a command.
+ */
+export const SERVER_UNITS = Object.freeze([
+  "clearotron-portal.service", "clearotron-mcp-face.service", "prelim-driver.service",
+]);
+
+// ── UNITS `start --background` ONCE INSTALLED AND NOW RETIRES ─────────────────────────────
+//
+// A box that ran `--background` before the retirement HAS these installed and enabled. They must stay
+// MANAGED, or a background start reads them as foreign, concludes the box is a real server, and refuses on
+// exactly the boxes it previously worked on — "making the flag unrunnable exactly once it has worked".
+//
+// AND THEY MUST BE DISARMED, not merely unpinned: `bin/start.mjs` disables each one it finds.
+//
+// EMPTY, AND KEPT RATHER THAN DELETED. The retired path-watcher/timer units it named are gone from the
+// tree, so naming them here would describe files this repo does not ship — which is exactly what the
+// "every retired unit is a unit this repo actually ships" check refuses. The export stays because the
+// next retirement wants somewhere to go, and an empty list is a statement that nothing is currently
+// retired-but-shipped. It lived in `bin/start.mjs`, which still exports it.
+export const BACKGROUND_RETIRED = Object.freeze([]);
+
+/**
+ * Whether `clearotron start --background` would REFRESH the units installed here rather than refuse: some
+ * server unit is installed, and every one of them is a unit it manages. `installed` is the DETECTOR's answer
+ * (SERVER_UNITS present). One rule for `bin/start.mjs`, which acts on it, and for the portal's refusal, which
+ * tells an operator to run that command only where it would work. PURE.
+ */
+export function aBackgroundStartRefreshes(installed) {
+  const managed = new Set([...SERVER_INSTALL_SET, ...BACKGROUND_RETIRED]);
+  return installed.length > 0 && installed.every((u) => managed.has(u));
+}
 
 /**
  * Which of the installed units a `--background` REFRESH must restart.
