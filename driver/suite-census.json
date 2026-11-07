@@ -1125,6 +1125,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-rating-repair-sends-only-what-changed.test.mjs": {
+          "tests": 7,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-reads-the-clients-own-request.test.mjs": {
           "tests": 4,
           "asserts": 24,

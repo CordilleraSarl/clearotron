@@ -1199,16 +1199,17 @@ serve({
       "Hand back THIS CHUNK's rated assessment as VALUES. The driver serializes knockout-assess-<n>.json, " +
       "so you never format JSON and never write the file. WHICH CHUNK IS NOT YOURS TO SAY — the driver " +
       "bound it when it dispatched you, and there is no parameter for it. Rate every mark assigned to " +
-      "this chunk and no others. A repair turn may send only the marks it is correcting: the driver " +
-      "merges them onto what it already accepted BY MARK NAME, so the marks you omit survive rather " +
-      "than being deleted — but a mark you DO send replaces its stored row key by key, so send that " +
-      "mark whole.",
+      "this chunk and no others. " +
+      // The repair contract, in the dispatch's approved words: the recorder merges field by field (knockout-assess-record.mjs).
+      "On the first call, send the complete assessment. Once the tool has confirmed a written record for this chunk, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the chunk summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.",
     inputSchema: {
       type: "object",
       // `schema_version` is accepted and ignored: the driver writes its own. Declared so a seat that
       // sends it is not refused for a field nobody reads — the narrow-refusal rule preserve-merge.mjs
       // states, after the strict form killed a stage over exactly that.
-      required: ["chunkSummary", "marks"],
+      // ONLY THE MARKS ARE REQUIRED OF A CALL, and only the name of a mark: a correction sends what changed. Completeness is the
+      // recorder's check on the assembled record, so a first call that leaves a field out is refused there and writes nothing.
+      required: ["marks"],
       additionalProperties: false,
       properties: {
         schema_version: { type: "integer", description: "Accepted and ignored — the driver stamps its own." },
@@ -1237,10 +1238,10 @@ serve({
         },
         marks: {
           type: "array", minItems: 1,
-          description: "One row per mark assigned to THIS chunk — no invention, no neighbour-chunk overrun, no omission.",
+          description: "One row per mark assigned to THIS chunk — no invention, no neighbour-chunk overrun.",
           items: {
             type: "object", additionalProperties: false,
-            required: ["name", "rating", "bullets", "basis", "factors", "counterFactors", "mitigation"],
+            required: ["name"],
             properties: {
               ref: { type: ["string", "null"] },
               name: { type: "string", description: "The mark, VERBATIM as the plan names it — the join key for everything downstream." },
@@ -1251,7 +1252,7 @@ serve({
               basis: { type: "string", description: "ONE sentence: why this band, for this name, in these classes. The report renders it as the lead line — a paragraph in bullets cannot fill it." },
               factors: { type: "array", minItems: 2, maxItems: 4, items: { type: "string" }, description: "2–4 one-line load-bearing observations behind the band." },
               counterFactors: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" }, description: "1–3 one-line statements of what holds this name at this band rather than the next, either way." },
-              mitigation: { type: "string", description: "May be \"\" when nothing would move the band — but SEND THE KEY, so a considered \"none\" is not confusable with an omission." },
+              mitigation: { type: "string", description: "May be \"\" when nothing would move the band — but SEND THE KEY on the first call, so a considered \"none\" is not confusable with an omission." },
               assessment: { type: "string", description: "The opening paragraph a reader of THIS MARK'S own report sees first: what the name is, what the landscape looks like, what drives the rating." },
               contextFraming: { type: "string" },
               registerEstimate: { type: "string" },

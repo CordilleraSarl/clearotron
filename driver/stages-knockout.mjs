@@ -500,7 +500,10 @@ export const KO_STAGES = {
       `EVERY conflicting name is a typed findings[] record. A named conflict belongs in findings[], not in bullets — write it once.`,
       `The manual sets out each mark's record: its \`findings[]\`, its opening read in \`assessment\`, its typed read, and the chunk's \`chunkSummary\`, which code joins into the batch summary, so a mark missing from it is missing from the report.`,
       `HAND YOUR RATINGS BACK BY CALLING \`record_knockout_assess\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none — the driver writes this chunk itself from what you send, and nothing you write by hand is read. You are not told which chunk number to send and there is no field for it: the driver bound that when it dispatched you.`,
-      `SEND ONLY WHAT YOU ARE CORRECTING IF YOU CALL AGAIN. A second call MERGES into the first: marks are merged BY NAME, so a mark you omit keeps the rating you already gave it. What you DO send for a mark replaces that mark's whole record, so send a corrected mark complete rather than as a fragment.`,
+      // A REPAIR SENDS ONLY WHAT CHANGED (design, 2026-11-06). The recorder merges a correction onto the written record field by field
+      // and validates the assembled record, so re-sending a whole name to fix one sentence was output the contract asked for and the
+      // merge never needed. A refused first call writes nothing, so it is no base: a partial first call is still refused.
+      `On the first call, send the complete assessment. Once the tool has confirmed a written record for this chunk, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the chunk summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.`,
       chunkNo === 0
         ? `As the FIRST chunk you also send \`batch\` (productContext, standardCaveats) and \`framework\`.`
         : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\` only — batch and framework came from chunk 1.`,
