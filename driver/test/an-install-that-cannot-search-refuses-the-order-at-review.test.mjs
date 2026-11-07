@@ -127,8 +127,8 @@ test("the portal and the runner read one set of order tables, and the running po
   const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
   assert.match(src, /orderRefusal: async \(\) => portalOrderRefusal\(\{ tables: await runTables\(\) \}\)/,
     "the bootstrap no longer hands the running portal its own refusal path");
-  assert.match(src, /env = process\.env, tables = \{\}[\s\S]{0,200}return orderTimeRefusal\(env, tables, \{ remedyFor:/,
-    "the portal's refusal path no longer asks the runner's order-time question of the environment it runs with");
+  assert.match(src, /env = process\.env, tables = \{\}[\s\S]{0,300}return orderTimeRefusal\(env, tables, \{\s*howFor: \(missing\) => howItRuns\(/,
+    "the portal's refusal path no longer asks the runner's order-time question of the environment it runs with, and how it runs");
 });
 
 test("a terminal start says an order is refused until the install can search, and what it lacks", async () => {
@@ -137,12 +137,13 @@ test("a terminal start says an order is refused until the install can search, an
   // environment its worker is handed, and says the owner's sentence with the portal's phrases.
   const { orderingLines } = await import("../../bin/start.mjs");
   const { missing } = await UNCONFIGURED();
-  const said = orderingLines({ missing, install: "clearotron install" }).map((l) => l.trim()).join(" ");
+  const said = orderingLines({ missing, install: "clearotron install", file: "/srv/op/.config/clearotron/.env" }).map((l) => l.trim()).join(" ");
   assert.equal(said, "Ordering a clearance from the portal is refused until this install can run a search: "
-    + "no AI is chosen and no register is chosen. Run `clearotron install` in a terminal to set it up.");
+    + "no AI is chosen and no register is chosen. Run `clearotron install` in a terminal to set it up, then stop this command "
+    + "with Ctrl-C and run it again: it reads the settings setup writes when it starts.");
   // CONTROL: an install that can search keeps today's words, which promise a priced run.
   assert.match(orderingLines({ missing: "" }).join(" "), /Ordering a clearance from the portal starts it\./);
   const src = readFileSync(new URL("../../bin/start.mjs", import.meta.url), "utf8");
-  assert.match(src, /const cannot = missingRequirements\(childProcessEnv\(process\.env, envs\.worker\), await runTables\(\)\)\.atOrder;\n\s*for \(const line of orderingLines\(\{ missing: whatIsMissing\(cannot\), install: invoke\("install"\) \}\)\) say\(line\);/,
+  assert.match(src, /const cannot = missingRequirements\(childProcessEnv\(process\.env, envs\.worker\), await runTables\(\)\)\.atOrder;\n\s*for \(const line of orderingLines\(\{ missing: whatIsMissing\(cannot\), install: invoke\("install"\), doctor: invoke\("doctor"\), file: envFileRead\(\) \}\)\) say\(line\);/,
     "the terminal start no longer asks the runner's question of the worker's own environment");
 });

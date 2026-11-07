@@ -2478,8 +2478,11 @@ if (isMain) {
   // Structurally excluded rather than filtered: the union cannot carry a key the object never had.
   const mintedPassphrase = credentialExisted ? null : newPassphrase();
 
+  // THE FILE THIS COMMAND READ GOES TO THE PORTAL TOO, as it goes to the worker: the portal's refusal of an order
+  // names it as what to reload (driver/how-it-runs.mjs, the `start` state). No file read, no flag.
   const portal = start("the portal", "driver/portal-service.mjs",
-    mintedPassphrase ? { ...envs.portal, PORTAL_LOCAL_PASSPHRASE: mintedPassphrase } : envs.portal);
+    mintedPassphrase ? { ...envs.portal, PORTAL_LOCAL_PASSPHRASE: mintedPassphrase } : envs.portal,
+    { args: envFileRead() ? [`--start-env-file=${envFileRead()}`] : [] });
   if (!await healthy(`http://${HOST}:${ports.portal}/portal/health`, portal)) {
     if (portal.alive) { showFiledTail(portal); err(`\nstart: the portal did not answer on ${HOST}:${ports.portal} within 30s — its output above says why.\n`); await shutdown(1); }
     await new Promise(() => {});
@@ -2591,7 +2594,9 @@ if (isMain) {
   try {
     const forget = recordRunning({ pid: process.pid, demo: DEMO, base: paths.base, url: envs.url, host: HOST,
       ports: { portal: ports.portal, mcp: ports.mcp, client: doorRunning ? ports.client : null },
-      startedAt: new Date().toISOString() });
+      // The settings file this start read, or null when it read none: doctor tells a reader to run it again
+      // after setup only when setup writes what it reads.
+      envFile: envFileRead(), startedAt: new Date().toISOString() });
     process.on("exit", forget);
   } catch (e) {
     say(`  (\`status\` will not see this start: its record could not be written — ${String(e?.message ?? e)})`);
@@ -2665,7 +2670,7 @@ if (isMain) {
     // ASKED OF THE ENVIRONMENT THE WORKER WAS HANDED, by the runner's own order-time test: an order is refused
     // there until the install can search, and this line said an order starts a run whatever the install held.
     const cannot = missingRequirements(childProcessEnv(process.env, envs.worker), await runTables()).atOrder;
-    for (const line of orderingLines({ missing: whatIsMissing(cannot), install: invoke("install") })) say(line);
+    for (const line of orderingLines({ missing: whatIsMissing(cannot), install: invoke("install"), doctor: invoke("doctor"), file: envFileRead() })) say(line);
   } else {
     say("  Ordering a clearance from the portal puts the job in the queue and shows it there with its");
     say("  position. You started with --no-worker, so nothing is draining it: run");
@@ -2806,16 +2811,24 @@ export function connectScreen(connect) {
 /**
  * What a terminal start says about ordering when it runs a worker. `missing` is what the install lacks for a
  * search, in the phrases the portal uses (whatIsMissing), or "" when it lacks nothing. An install that cannot
- * search has its orders refused, so it is told that, in the owner's words (2026-11-06), and not that an order
- * starts a run.
+ * search has its orders refused, so it is told that, in the owner's words, and not that an order starts a run.
+ *
+ * AND HOW TO RELOAD THIS COMMAND (2026-11-07). It reads its settings once, when it starts, so after setup it must
+ * be run again. `file` is the settings file it read, or would have on a fresh install (envFileRead()); null when
+ * it read none, because it was told not to or a service manager started it. Then setup does not reach it, and
+ * the reader sets each setting in the environment it runs in. `install` and `doctor` are the commands as the
+ * reader types them. PURE.
  */
-export function orderingLines({ missing = "", install = "clearotron install" } = {}) {
+export function orderingLines({ missing = "", install = "clearotron install", doctor = "clearotron doctor", file = null } = {}) {
   if (!missing) {
     return ["  Ordering a clearance from the portal starts it. The portal prices the run and asks you to",
       "  confirm before anything is spent — that confirmation is the moment money is committed."];
   }
-  return fitTo(96, `Ordering a clearance from the portal is refused until this install can run a search: ${missing}. `
-    + `Run \`${install}\` in a terminal to set it up.`).map((l) => `  ${l}`);
+  const head = `Ordering a clearance from the portal is refused until this install can run a search: ${missing}.`;
+  const reload = file
+    ? `Run \`${install}\` in a terminal to set it up, then stop this command with Ctrl-C and run it again: it reads the settings setup writes when it starts.`
+    : `This command read no environment file of its own: set each missing setting in the environment it runs in, then stop it and run it again. \`${doctor}\` names each setting.`;
+  return fitTo(96, `${head} ${reload}`).map((l) => `  ${l}`);
 }
 
 /**

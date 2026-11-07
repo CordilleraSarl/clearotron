@@ -28,9 +28,9 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES, withFoldedGoods } from "./queue-markers.mjs";
 import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
-import { orderTimeRefusal, START_ENV_FILE_FLAG, startEnvFileOf } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
+import { orderTimeRefusal, START_ENV_FILE_FLAG } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
 import { runTables } from "./order-tables.mjs";   // the tables the portal's order door reads too, so the two cannot disagree
-import { unitEnvPath, envFileRead } from "../shared/env-local.mjs";   // the file the units read, named by its one author
+import { howItRuns } from "./how-it-runs.mjs";   // how this runner runs, for the remedy its refusal names
 import { fileURLToPath } from "node:url";
 import { config, preflightDeploymentUrls } from "./driver.config.mjs";
 import { deriveSlug, todayISO, mintFreshCodename } from "./phase0.mjs";
@@ -869,7 +869,9 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   }
   // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
   {
-    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath(), readFile: envFileRead(), startFile: startEnvFileOf(process.argv) });
+    // The remedy names the configuration THIS runner uses and how it is reloaded: its unit's, the file the
+    // foreground start that launched it read, or its own (driver/how-it-runs.mjs).
+    const refusal = orderTimeRefusal(process.env, await runTables(), { howFor: (missing) => howItRuns({ missing }) });
     if (refusal) {
       note(`[runner] ${base} REFUSED at order time — this install is not configured to run a search: ${refusal.names.join(", ")}`);
       await failAtIntake(procPath, qdir, base, agentId, job,

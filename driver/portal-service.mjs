@@ -153,7 +153,7 @@ import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { orderTimeRefusal } from "./run-requirements.mjs";   // the runner's own test for "can this install run a search"
 import { runTables } from "./order-tables.mjs";               // …asked of the runner's own tables, so the two cannot disagree
-import { backgroundServices } from "../shared/services-remedy.mjs";   // …and the remedy, for how this machine runs the product
+import { howItRuns } from "./how-it-runs.mjs";   // …and the remedy, for how this portal runs
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
@@ -1190,17 +1190,14 @@ export function makeConnectorKeyRevoker({ env = process.env, home = null } = {})
 const refusalFor = (principal, refusal) => (seesEverything(principal) && refusal.installer) || refusal.client;
 
 /**
- * The portal's own question about an order: the runner's (`orderTimeRefusal`), with the remedy its operator is
- * shown read from how this machine runs the product. Background services, when any is installed, read their
- * own file, and the remedy names it (backgroundServices). Otherwise this portal runs under a foreground
- * `clearotron start`, which refuses to run beside installed units (bin/start.mjs) and must be run again to
- * read what setup writes. `home` and `repoRoot` are parameters so a test can plant a machine of its own.
+ * The portal's own question about an order: the runner's (`orderTimeRefusal`), with the remedy the person who runs
+ * the install is shown read from how THIS portal runs (driver/how-it-runs.mjs): the configuration it actually uses,
+ * and how it is reloaded. Every input is a parameter, so a test plants a machine, an environment, a command line
+ * and a cgroup of its own; each one left out is this process's own.
  */
-export function portalOrderRefusal({ env = process.env, tables = {}, home = homedir(), repoRoot = INSTALL_ROOT } = {}) {
-  return orderTimeRefusal(env, tables, { remedyFor: (missing) => {
-    const services = backgroundServices(missing, { home, repoRoot });
-    return services ? { services } : { startRunning: true };
-  } });
+export function portalOrderRefusal({ env = process.env, tables = {}, argv, home = homedir(), repoRoot = INSTALL_ROOT, cgroup, readFile, exists, read, template } = {}) {
+  return orderTimeRefusal(env, tables, {
+    howFor: (missing) => howItRuns({ missing, env, argv, home, repoRoot, cgroup, readFile, exists, read, template }) });
 }
 
 export function makePortalService({

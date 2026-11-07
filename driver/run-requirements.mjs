@@ -369,32 +369,50 @@ export function whatIsMissing(rows = []) {
 }
 
 /**
- * The refusal the person who runs the install is shown, up to its closing sentence, in the owner's words
- * (2026-11-06 and 2026-11-07): what the install lacks for a search (`missing`, as whatIsMissing words it), and
- * the whole remedy for how this machine runs the product. `install` is the setup command as the reader types
- * it: the portal names `clearotron install`, and `doctor` names it as it runs from where doctor ran. One
- * composer, so the portal's sentence and doctor's opening cannot drift apart. PURE.
+ * What the person who runs the install is told to do, for how the refusing process runs (the owner's words,
+ * 2026-11-07). `how` is driver/how-it-runs.mjs's answer. The portal and the run's refusal say the same remedy;
+ * `it` names the refusing process where the remedy speaks of it ("the portal", "this runner"), and `install` is
+ * the setup command as the reader types it. Null when `how` names no state. PURE.
  *
- * `services` is the background services this machine runs (shared/services-remedy.mjs, `backgroundServices`),
- * or null. They read their own file, which setup does not write, and a background start adds a line that file
- * lacks and never replaces one. So where setup and that start are the whole remedy (`addsAll`), the reader is
- * sent to them; otherwise to set each setting in both files and restart the services.
- *
- * Without services, `startRunning` says a foreground `clearotron start` is running. It reads the settings
- * once, when it starts, so it must be run again after setup. With nothing running, setup is the remedy.
+ * LAUNCHER UNITS, NO LINE YET: setup writes the install's settings and `clearotron start --background` adds what
+ * the services' file lacks, then restarts them. Anywhere else that route is not the whole remedy. A background
+ * start keeps a line already in the file, an empty one included, and it does not manage units it did not write.
+ * There the reader sets each setting where the process reads it and restarts it, by the restart this machine
+ * has: `systemctl --user` for the product's own user units, nothing named for a service this cannot see.
  */
-export function cannotSearchYet(missing, install = "clearotron install", { services = null, startRunning = false } = {}) {
+export function remedyFor(how, { it = "the portal", install = "clearotron install" } = {}) {
+  switch (how?.kind) {
+    case "launcher":
+      return how.noLineYet
+        ? `Its background services read their settings from ${how.file}. Run \`${install}\` in a terminal to set it up, then \`clearotron start --background\`: it adds the missing lines to that file and restarts the services.`
+        : `Its background services read their settings from ${how.file}. \`clearotron start --background\` only adds a setting that file has no line for; it never replaces one. Set each missing setting in that file and in ${how.launcherFile ?? "the environment you run `clearotron start --background` in"}, then restart the services: \`systemctl --user restart ${how.units.join(" ")}\`.`;
+    case "units":
+      return `Its background services read their settings from ${how.file}. Set each missing setting in that file, then restart the services: \`systemctl --user restart ${how.units.join(" ")}\`.`;
+    case "service":
+      return "Its services take their settings from the service manager that runs them. Set each missing setting there, then restart the services.";
+    case "start":
+      return `Run \`${install}\` in a terminal to set it up, then stop \`clearotron start\` with Ctrl-C and run it again: it reads the settings setup writes when it starts.`;
+    case "hand":
+      return `Set each missing setting in ${how.file ? `${how.file}, which ${it} reads when it starts` : `the environment ${it} runs in`}, then start ${it} again.`;
+    default:
+      return null;
+  }
+}
+
+/** Whether the remedy has the reader set settings by hand: then the portal, which never names one, points at doctor. */
+const setsByHand = (how) => Boolean(how?.kind) && !(how.kind === "start" || (how.kind === "launcher" && how.noLineYet));
+
+/**
+ * The refusal the person who runs the install is shown, up to its closing sentence: what the install lacks for a
+ * search (`missing`, as whatIsMissing words it), and the remedy for how the refusing process runs (`how`, see
+ * remedyFor). With no `how`, the words for a machine nothing is known about: run setup. `install` is the setup
+ * command as the reader types it: the portal names `clearotron install`, and `doctor` names it as it runs from
+ * where doctor ran. One composer, so the portal's sentence and doctor's opening cannot drift apart. PURE.
+ */
+export function cannotSearchYet(missing, install = "clearotron install", how = null) {
   const head = `This install cannot run a search yet: ${missing}.`;
-  if (services && services.addsAll) {
-    return `${head} Its background services read their settings from ${services.file}. Run \`${install}\` in a terminal to set it up, then \`clearotron start --background\`: it adds the missing lines to that file and restarts the services.`;
-  }
-  if (services) {
-    return `${head} Its background services read their settings from ${services.file}. \`clearotron start --background\` only adds a setting that file has no line for; it never replaces one. Set each missing setting in that file and in ${services.installFile}, then restart the services: \`systemctl --user restart ${services.units.join(" ")}\`. \`clearotron doctor\` names each setting.`;
-  }
-  if (startRunning) {
-    return `${head} Run \`${install}\` in a terminal to set it up, then stop \`clearotron start\` with Ctrl-C and run it again: it reads the settings setup writes when it starts.`;
-  }
-  return `${head} Run \`${install}\` in a terminal to set it up.`;
+  const remedy = remedyFor(how, { install });
+  return remedy ? `${head} ${remedy}` : `${head} Run \`${install}\` in a terminal to set it up.`;
 }
 
 /**
@@ -410,54 +428,36 @@ export function cannotSearchYet(missing, install = "clearotron install", { servi
  *
  * Returns null when nothing blocks, so a caller cannot mistake "configured" for "could not look".
  *
- * `remedyFor` is how the caller knows this machine runs the product: given the missing rows, it answers
- * cannotSearchYet's options (`services`, `startRunning`). The portal passes one (portalOrderRefusal). Without
- * it the person who runs the install is told only to run setup, the words for a machine nothing is known about.
+ * `howFor` is how the caller runs: given the missing rows, it answers driver/how-it-runs.mjs's `howItRuns`. The
+ * portal passes one (portalOrderRefusal) and so does the runner (runner.mjs), each for its own process, so the
+ * remedy names the configuration that process actually uses and how to reload it. Without one, the operator is
+ * pointed at setup and the units' file, and the person who runs the install at setup: the words for a process
+ * nothing is known about.
  */
-export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFile = null, startFile = null, remedyFor = null } = {}) {
+export function orderTimeRefusal(env = {}, tables = {}, { howFor = null } = {}) {
   const missing = missingRequirements(env, tables).atOrder;
   if (!missing.length) return null;
   const names = missing.map((r) => r.name);
   const gap = whatIsMissing(missing);
-  // EVERY FILE THAT REACHES THIS RUN, EACH NAMED BY WHAT READS IT — the rule `bin/start.mjs` already
-  // follows, for the reason it gives: two copies of this sentence is how one of them comes to name a file
-  // the reader cannot use. This copy named only `envFile`, the file background units read. A runner
-  // started from a terminal on a box with no units reads the install's own file instead, so its operator
-  // was told to create a file nothing on that box reads — and the one actually read went unnamed.
-  // `readFile` is the file THIS process loaded at start; it is null under a unit, where the unit's own
-  // EnvironmentFile is the only configuration and `envFile` alone is the true answer.
-  //
-  // AND A RUNNER THAT `clearotron start` STARTED READ NO FILE EITHER. The supervisor read the install's own
-  // file and handed its values down with CLEAROTRON_NO_ENV_FILE=1, so `readFile` is null there exactly as
-  // it is under a unit, and this sentence named the units' file: on a box with no units, a file that does
-  // not exist, while the file the values came from went unnamed. Measured on a fresh install, 2026-09-10.
-  // `startFile` is the file that supervisor read. It reaches the runner as a command-line flag that a unit's
-  // fixed ExecStart never carries, so it is set exactly when `clearotron start` is the parent.
-  const cmd = "`clearotron install` in a terminal, which writes them for you";
-  const both = readFile && envFile && readFile !== envFile;
-  const one = readFile || envFile;
-  const where = both
-    ? ` Set them in either of these — both reach a run:\n      ${readFile} — the file this runner read when it started\n`
-      + `      ${envFile} — the file background units read\n  then restart, or run ${cmd}.`
-    : !readFile && startFile
-      ? ` Set them in ${startFile} — the file \`clearotron start\` read when it started this runner — then restart it, or run ${cmd}.`
-    : one
-      ? ` Set them in ${one} and restart, or run ${cmd}.`
-      : " Run `clearotron install` in a terminal to configure them, or set them in the file this install's units read.";
+  const how = howFor ? howFor(missing) : null;
+  const forOperator = remedyFor(how, { it: "this runner" })
+    ?? "Run `clearotron install` in a terminal to configure them, or set them in the file this install's units read.";
   return {
     names,
     missing: gap,
     operator: `this installation cannot run a search yet — it is installed but not configured:\n`
       + missing.map((r) => `    ${r.name} — ${r.why}`).join("\n")
-      + `\n\n  Nothing has been searched and nothing has been spent.${where}`,
+      + `\n\n  Nothing has been searched and nothing has been spent. ${forOperator}`,
     // ONE SENTENCE, NO NAMES, AND NO PROMISE. "Contact" rather than "we have been notified": this
     // product has no outbox on a box in this state, so a notice would be the F41 lie one level up.
     client: CLIENT_REFUSAL,
-    // THE PERSON WHO RUNS THE INSTALL is shown what is missing and the command that sets it, in the owner's words
-    // (2026-11-06). The portal shows this to a person who sees everything, the one its Installation settings
-    // page is for, and the client sentence to everyone else. A gap with no phrase keeps the client sentence.
+    // THE PERSON WHO RUNS THE INSTALL is shown what is missing and what to do, in the owner's words. The portal shows
+    // this to a person who sees everything, the one its Installation settings page is for, and the client sentence
+    // to everyone else. A gap with no phrase keeps the client sentence. The browser is never shown a setting's
+    // name, so where the remedy has the reader set settings by hand, it points at doctor, which names them.
     installer: gap
-      ? `${cannotSearchYet(gap, "clearotron install", remedyFor ? remedyFor(missing) : {})} Nothing has been searched and nothing has been charged.`
+      ? `${cannotSearchYet(gap, "clearotron install", how)}${setsByHand(how) ? " `clearotron doctor` names each setting." : ""} `
+        + "Nothing has been searched and nothing has been charged."
       : CLIENT_REFUSAL,
   };
 }
@@ -465,12 +465,12 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
 const CLIENT_REFUSAL = "This installation is not configured to run searches yet. Nothing has been searched and "
   + "nothing has been charged. Please contact whoever administers it.";
 
-// THE ENV FILE `clearotron start` READ, when it started this runner: the one file a refusal can honestly
-// name for a runner that read none itself (`startFile` above). A command-line flag rather than a variable,
-// for two reasons. A unit's ExecStart is fixed at `--watch` and never carries it, so a runner holding it
-// was started by that command. And a variable read by product code belongs in the environment catalogue,
-// which describes settings an operator makes, and this is not one. `bin/start.mjs` puts it on the
-// worker's command line, and `driver/runner.mjs` reads it off its own.
+// THE ENV FILE `clearotron start` READ, when it started this process: the file the settings of a process that
+// read none itself came from, and the sign that a foreground start is what must be run again to reload them
+// (driver/how-it-runs.mjs, the `start` state). A command-line flag rather than a variable, for two reasons. A
+// unit's ExecStart is fixed and never carries it, so a process holding it was started by that command. And a
+// variable read by product code belongs in the environment catalogue, which describes settings an operator
+// makes, and this is not one. `bin/start.mjs` puts it on the worker's and the portal's command lines.
 export const START_ENV_FILE_FLAG = "--start-env-file=";
 
 /** The path `argv` carries in `--start-env-file=<path>`, or null when it carries none or an empty one. PURE. */

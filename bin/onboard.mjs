@@ -1863,12 +1863,13 @@ export async function runCheck() {
   // ONE LINE, AS EVERY LINE BELOW IS, and the terminal wraps it. Wrapped here at spaces, it broke the command
   // apart wherever the install's path made a long word: `cd <path> && npx clearotron install` on three lines.
   //
-  // AND IT SAYS TO RUN `start` AGAIN ONLY WHILE ONE RUNS. A foreground `clearotron start` reads the settings when
-  // it starts, so after setup it must be run again; with none running, setup is the whole remedy. A demo's
-  // start reads no install's settings, so it does not count. The record is the one `clearotron status` reads.
+  // AND IT SAYS TO RUN `start` AGAIN ONLY WHILE ONE RUNS THAT SETUP REACHES. A foreground `clearotron start` reads
+  // its settings file when it starts, so after setup it must be run again; with none running, setup is the whole
+  // remedy. A demo's start reads no install's settings, and a start whose record names no settings file read
+  // none, so setup does not reach either. The record is the one `clearotron status` reads; `start` writes `envFile`.
   const { readRunning } = await import(pathToFileURL(join(REPO, "shared", "running-start.mjs")).href);
-  const startRunning = leadIsTheRefusal && readRunning().some((r) => !r.demo);
-  if (leadIsTheRefusal) say(`  ${cannotSearchYet(missingWords, invoke("install"), { startRunning })}`);
+  const startRunning = leadIsTheRefusal && readRunning().some((r) => !r.demo && typeof r.envFile === "string" && r.envFile !== "");
+  if (leadIsTheRefusal) say(`  ${cannotSearchYet(missingWords, invoke("install"), startRunning ? { kind: "start" } : null)}`);
   else {
     let turn = null;
     if (turnLeads) {
