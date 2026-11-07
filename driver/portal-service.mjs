@@ -46,6 +46,7 @@ import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStor
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
 import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
+import { channelOf, ownVersion } from "../shared/permanent-install.mjs";   // — which release channel this install came from
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
 import { doorKind } from "../shared/mcp-challenge.mjs";   // — one reading of what a connector asks for, shared with doctor
@@ -187,6 +188,8 @@ import { deploymentBox } from "../shared/deployment-box.mjs";   // — the box n
 import { stageNow } from "./progress.mjs";   // the stage a live run is in now, for the card and the row
 // A run in one of these has finished; its step is the one its terminal write set, not the stage it last entered.
 const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
+// This install's release channel, `beta` or `latest`, read once off its own version. /me carries it.
+const INSTALL_CHANNEL = channelOf(ownVersion());
 
 // The offering the portal menus build from — product-rows.mjs's row, unchanged.
 //
@@ -1676,7 +1679,14 @@ export function makePortalService({
         // must leave the button alone rather than infer demo from an absent file.
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
-        const meEngineMode = flagView(poolRoot).engineMode;
+        //
+        // A DEMO ANSWERS NULL. No order in a demo reaches an engine: the run route below resolves each one
+        // to the finished example for the search picked (`if (demo)`), which is what the demo's banner
+        // promises. The demo's snapshot still describes the machine, so on a machine with no engine program
+        // this read "demo", and New clearance drew the no-engine notice where Review search belongs: the
+        // one flow the demo exists to show could not be started. Null leaves the button alone, as it does
+        // on a fresh install, and the configuration page still reads the snapshot for itself.
+        const meEngineMode = demo ? null : flagView(poolRoot).engineMode;
         const searchRefusal = demo ? null : await orderRefusal();
         // THE HOUSE MARKETPLACES, offered as suggestions wherever a company's marketplaces are edited. A new
         // company starts with none (the owner's ruling of 2026-09-23) and somebody picks; these are the
@@ -1712,6 +1722,10 @@ export function makePortalService({
           // half its readers. A WORD, never a command line and never a prefix: `invocationForm` can
           // answer with this machine's absolute path, and this value is rendered in a browser.
           setupRoute: installRoute(),
+          // WHICH RELEASE CHANNEL THIS INSTALL CAME FROM, read off its own version as `update` reads it, so the
+          // setup command a screen names fetches this channel. `npx clearotron install` fetches the stable, and
+          // the stable's setup then moves itself into ~/.local over a beta. A WORD, like the route above.
+          channel: INSTALL_CHANNEL,
           // THE COMMAND THAT FILES AN ORGANISATION, for the screen that cannot create a company without one.
           // `browserCommand`'s rule: no path on this machine, and from npx's cache the published version
           // rather than a bare name that reader does not have.

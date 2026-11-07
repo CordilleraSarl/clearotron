@@ -19,7 +19,7 @@ import { readFileSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
-  engineRowFaults, engineNotice, engineRow, billingRefusalSentence, type EngineFacts, type BillingRefusal,
+  engineRowFaults, engineNotice, engineRow, billingRefusalSentence, setupPackage, type EngineFacts, type BillingRefusal,
 } from '../src/contract/engineState.ts'
 import { api } from '../src/contract/api.ts'
 
@@ -439,4 +439,15 @@ test('no AI chosen: the Engine row shows the selection as unset, red, and names 
   assert.equal(engineRow(ANTHROPIC).ok, true, 'a capture that does not say whether an AI is chosen turned the row red')
   assert.equal(engineNotice({ programDisputed: false }).headline, 'No search engine is attached to this install.',
     'the row and the search screen no longer share their words for an install with no engine')
+})
+
+test('a beta install\'s setup command fetches the beta', () => {
+  // The bare name fetches the stable: npx runs a global copy only from npm's own global directory, and on an
+  // install moved into ~/.local the stable's setup then moves itself over the beta. Measured on the
+  // published beta's demo, where the notice named `npx clearotron install`.
+  assert.equal(setupPackage('beta'), 'clearotron@beta')
+  // THE CONTROL: the stable, and a service that does not say, keep the command exactly as it read.
+  assert.equal(setupPackage('latest'), 'clearotron')
+  assert.equal(setupPackage(null), 'clearotron')
+  assert.equal(setupPackage(undefined), 'clearotron')
 })

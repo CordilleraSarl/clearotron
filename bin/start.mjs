@@ -2562,10 +2562,14 @@ if (isMain) {
   const clientDoorAnswered = clientDoor ? await healthy(`http://${HOST}:${ports.client}/healthz`, clientDoor) : false;
 
   // ── 6. one URL ─────────────────────────────────────────────────────────────────────────────────────
+  //
+  // THE HINT IS SAID ONCE. A first start frames the address again below, with the passphrase, and that
+  // frame carries the hint for the reader who acts on the frame alone. Printed here as well, the same two
+  // lines appeared twice in one screen of output, a dozen lines apart.
 
   say("");
   say(`  Open   ${envs.url}`);
-  for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`         ${line}`);
+  if (!mintedPassphrase) for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`         ${line}`);
   say("");
   // ── TWO DOORS, TWO AUDIENCES, BOTH NAMED ( — F26) ─────────────────────────
   //

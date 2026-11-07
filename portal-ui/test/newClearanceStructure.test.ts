@@ -307,8 +307,12 @@ test('the no-engine notice names a command THIS reader can run', () => {
   // `npm run setup` exists only for somebody working in a copy of the source. A reader who installed
   // the package has no npm scripts at all, so the single fix the notice offered was a command that does
   // not exist on their machine — and the notice had no way to tell which of the two they were.
-  assert.match(flat(src), /<SetupCommand route=\{setupRoute\} \/>/,
+  assert.match(flat(src), /<SetupCommand route=\{setupRoute\} channel=\{channel\} \/>/,
     'the notice went back to a hard-coded command')
+  // A BETA'S PACKAGE COMMAND NAMES ITS CHANNEL. The bare name fetches the stable, whose setup then moves
+  // itself over the beta, so on a beta the package route names `clearotron@beta` (setupPackage).
+  assert.match(flat(src), /route === 'packaged' && channel === 'beta'\) return <><code>npx \{setupPackage\(channel\)\} install<\/code>/,
+    'a beta install is handed the command that fetches the stable')
   assert.match(flat(src), /route === 'packaged'/, 'the package route has no command')
   assert.match(flat(src), /route === 'checkout'/, 'the source-checkout route has no command')
   assert.match(flat(src), /npx clearotron install/)
@@ -335,4 +339,18 @@ test('an install that cannot run a search says so in place of the review button,
   assert.match(branch, /\{onSettings \? \(/, 'the settings link is offered to a reader who cannot open the page')
   // And a refusal line names its command as code, in both lists a refusal can land in.
   assert.equal(SRC.split('<Ticked text={l} />').length - 1, 2, 'a refusal line no longer draws its command as code')
+})
+
+test('a demo order opens its report without asking whether to throw the order away', () => {
+  // Measured in a browser on the published beta's demo, 2026-11-07: Start search was answered with
+  // "Leave this page? You have changes here that have not been saved", because the landing navigated while
+  // the form still held the order it had just placed, and Cancel kept the visitor off the report.
+  const src = code(SRC)
+  const at = src.indexOf('if (r.value.landedOn) {')
+  assert.ok(at > 0, 'the demo landing is gone, so this reads nothing')
+  const branch = src.slice(at, src.indexOf('return', at))
+  assert.doesNotMatch(branch, /ctx\.go\(/, 'a demo landing navigates before the form is clean')
+  assert.match(branch, /setLanded\(r\.value\.landedOn\)/, 'a demo landing does not mark the order placed')
+  assert.match(branch, /setLeaveTo\(`\/portal\/result\//, 'a demo landing does not leave after the render that makes the form clean')
+  assert.match(flat(src), /submitted: submitted != null \|\| landed != null,/, 'the unsaved guard does not stand down for a landed order')
 })

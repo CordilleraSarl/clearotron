@@ -16,7 +16,7 @@
 // merged back in. A silent restore would leave the user believing they removed something they did not.
 
 import { useEffect, useMemo, useState } from 'react'
-import { api, isOk, notCommitted, saveFailureText } from '../contract/api.ts'
+import { api, companyRead, isOk, notCommitted, saveFailureText } from '../contract/api.ts'
 import type { ProjectDetail, ProjectSummary } from '../contract/api.ts'
 import { projectFields, fieldInput, boxValue, isSet, applyField, stripCodeOwned, revokedPlatforms, choiceLabel, fieldNotices } from '../contract/profileFields.ts'
 import { FieldNotices } from '../components/FieldNotices.tsx'
@@ -53,7 +53,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   const [confirming, setConfirming] = useState<string | null>(null)
   const [rowProblem, setRowProblem] = useState<string | null>(null)
 
-  const { result, reload } = useLoad(() => api.projects(account), [account])
+  const { result, reload } = useLoad(() => companyRead(needsOwner, () => api.projects(account)), [account, needsOwner])
   const projects: readonly ProjectSummary[] = result?.kind === 'ok' ? result.value : []
 
   // Same rule as Profile: a multi-account client's ownerless read answers pickAccount, and that is

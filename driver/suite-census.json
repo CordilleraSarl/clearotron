@@ -5272,8 +5272,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 133,
-          "asserts": 718,
+          "tests": 135,
+          "asserts": 729,
           "skips": 1,
           "todos": 0
         },
@@ -6881,7 +6881,7 @@
         },
         "the-demo-reads-no-brief-and-drains-no-queue.test.mjs": {
           "tests": 1,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -8893,6 +8893,12 @@
     "portal-ui": {
       "ext": "ts",
       "perFile": {
+        "aScreenAwaitingACompanyAsksNothing.test.ts": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "about.test.ts": {
           "tests": 3,
           "asserts": 13,
@@ -8906,8 +8912,8 @@
           "todos": 0
         },
         "api.test.ts": {
-          "tests": 48,
-          "asserts": 195,
+          "tests": 49,
+          "asserts": 199,
           "skips": 0,
           "todos": 0
         },
@@ -9002,8 +9008,8 @@
           "todos": 0
         },
         "engineState.test.ts": {
-          "tests": 13,
-          "asserts": 59,
+          "tests": 14,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -9116,8 +9122,8 @@
           "todos": 0
         },
         "newClearanceStructure.test.ts": {
-          "tests": 9,
-          "asserts": 69,
+          "tests": 10,
+          "asserts": 75,
           "skips": 0,
           "todos": 0
         },
@@ -9182,8 +9188,8 @@
           "todos": 0
         },
         "profileFields.test.ts": {
-          "tests": 55,
-          "asserts": 178,
+          "tests": 56,
+          "asserts": 186,
           "skips": 0,
           "todos": 0
         },
@@ -9206,8 +9212,8 @@
           "todos": 0
         },
         "recommendSearch.test.ts": {
-          "tests": 6,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

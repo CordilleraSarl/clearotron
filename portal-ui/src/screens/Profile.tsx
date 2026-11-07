@@ -13,9 +13,9 @@
 // one. See contract/profileFields.ts — the reasoning is there and the behaviour is pinned by tests.
 
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { api, notCommitted } from '../contract/api.ts'
+import { api, companyRead, notCommitted } from '../contract/api.ts'
 import type { ProfileConfig } from '../contract/api.ts'
-import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, applyField, stripCodeOwned, visibleReadOnlyFields, depthChoices, groupTag } from '../contract/profileFields.ts'
+import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, applyField, stripCodeOwned, visibleReadOnlyFields, depthChoices, groupTag, readOnlyValue } from '../contract/profileFields.ts'
 import { Field, FieldTag } from '../components/ProfileField.tsx'
 import type { FieldSpec } from '../contract/profileFields.ts'
 import { checkThenSave } from '../contract/checkThenSave.ts'
@@ -37,13 +37,13 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   const account = ctx.owner
   const needsOwner = ctx.me.allAccounts && account === null
 
-  const { result, reload } = useLoad(() => api.profile(account), [account])
+  const { result, reload } = useLoad(() => companyRead(needsOwner, () => api.profile(account)), [account, needsOwner])
   const loaded: ProfileConfig | null = result?.kind === 'ok' ? result.value : null
 
   // The search-depth menu, from the engine's own registry rather than a list copied into the bundle.
   // A second call on this screen, but a one-shot load rather than a poll, so it costs one request
   // against the 120/min per-email budget and not a stream of them.
-  const { result: searchesResult } = useLoad(() => api.searches(account), [account])
+  const { result: searchesResult } = useLoad(() => companyRead(needsOwner, () => api.searches(account)), [account, needsOwner])
   const productChoices: readonly { value: string; label: string }[] | null =
     searchesResult == null
       ? null                                     // still loading — not the same as "there are none"
@@ -58,7 +58,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   // and its stale answer stayed off the screen only because the page draws nothing until the draft is
   // seeded — in the same effect pass that clears that answer. One request on a one-shot load is cheaper
   // than depending on that.
-  const { result: templatesResult } = useLoad(() => api.savedSearches(account), [account])
+  const { result: templatesResult } = useLoad(() => companyRead(needsOwner, () => api.savedSearches(account)), [account, needsOwner])
   // Nothing is said about a row until both reads have answered, so it never flashes a count of searches
   // it has not had the chance to name.
   const permitted = loaded == null || templatesResult == null || searchesResult == null
@@ -585,7 +585,7 @@ function FrameworkBlock({
         <div className="fw-rows">
           {examples ? <Row label="Worked examples" value="Used when rating this company" /> : null}
           {entries.map((k) => (
-            <Row key={k} label={LABELS[k] ?? k} value={k === 'allowedRecipes' ? permitted : render(readOnly[k])} />
+            <Row key={k} label={LABELS[k] ?? k} value={k === 'allowedRecipes' ? permitted : readOnlyValue(readOnly[k])} />
           ))}
         </div>
       ) : null}
@@ -608,15 +608,6 @@ const LABELS: Record<string, string> = {
   allowedRecipes: 'Permitted searches',
   jxPolicy: 'Jurisdiction policy',
   runCaps: 'Run limits',
-}
-
-const render = (v: unknown): string => {
-  if (v == null) return '—'
-  if (Array.isArray(v)) return v.length ? v.map(String).join(', ') : '—'
-  if (typeof v === 'object') {
-    return Object.entries(v as Record<string, unknown>).map(([k, val]) => `${k}: ${String(val)}`).join(' · ')
-  }
-  return String(v)
 }
 
 function Row({ label, value }: { readonly label: string; readonly value: string }) {
