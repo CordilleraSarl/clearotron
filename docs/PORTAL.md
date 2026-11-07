@@ -100,9 +100,9 @@ and handed every caller the same synthetic address. **Both switches are deleted*
 `PORTAL_DEV_EMAIL`. Local mode replaces them with a real sign-in.
 
 **Use `clearotron start`.** It is the documented way to run this product on one machine
-([INSTALL.md](../INSTALL.md) §6) and it assembles everything below for you: the portal, the MCP face the Start button
+([INSTALL.md](../INSTALL.md) §5) and it assembles everything below for you: the portal, the MCP face the Start button
 calls, a minted ops key, the grants file, the saved-search store and the data-plane paths — one command,
-one URL, `Ctrl-C` stops both processes. Nothing here needs an `*_AUTH_DISABLED` variable, and the
+one URL, `Ctrl-C` stops everything it started. Nothing here needs an `*_AUTH_DISABLED` variable, and the
 launcher sets the MCP face's pair to `0` so it cannot inherit one.
 
 What that command starts, for anyone who needs to drive the portal on its own:

@@ -114,7 +114,7 @@ test("INSTALL.md's isolation boundary names the ports", () => {
   // PORTS were not on the list. A second instance with all four set still crash-loops on the shared
   // door port, and the symptom is a unit failing at boot rather than a port already in use.
   const install = readFileSync(join(ROOT, "INSTALL.md"), "utf8");
-  // A UNIQUE ANCHOR, ASSERTED TO BE ONE. The bare phrase appears TWICE — §6 cross-references this
+  // A UNIQUE ANCHOR, ASSERTED TO BE ONE. The bare phrase appears TWICE — §5 cross-references this
   // section in italics — and anchoring on it made the window span half the document, including the
   // Ports section, which names two of these variables for a different reason. The arm then passed
   // through a plant that deleted them from the boundary itself. Same defect as the release-workflow

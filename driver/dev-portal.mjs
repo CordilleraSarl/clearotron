@@ -3,7 +3,7 @@
 // dev-portal.mjs — the DEV-INSTANCE UI portal (docs/E2E.md Tier 1).
 //
 // THIS IS NOT THE PRODUCT, AND IT IS NOT HOW YOU START IT. If you arrived here looking for the way to
-// run this system on one machine, the answer is `npm start` (bin/start.mjs, INSTALL.md §6): the real
+// run this system on one machine, the answer is `npm start` (bin/start.mjs, INSTALL.md §5): the real
 // portal with a real sign-in, and a Start button that works. This file is a loopback pool browser and
 // dev cockpit for people working ON the engine — its name is accurate and its security note below is
 // meant literally.
