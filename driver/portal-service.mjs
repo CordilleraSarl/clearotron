@@ -35,7 +35,7 @@
 import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* translation before any module-top
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
-import { hostname as osHostname } from "node:os";   // — the address a refusal page names when nothing else identifies this instance
+import { hostname as osHostname, homedir } from "node:os";   // — the address a refusal page names when nothing else identifies this instance
 
 // The port this service listens on when nobody says otherwise. Declared here rather than at the
 // listener, because the refusal page names the address too and it is composed on IMPORT-side code: the
@@ -153,6 +153,7 @@ import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { orderTimeRefusal } from "./run-requirements.mjs";   // the runner's own test for "can this install run a search"
 import { runTables } from "./order-tables.mjs";               // …asked of the runner's own tables, so the two cannot disagree
+import { backgroundServices } from "../shared/services-remedy.mjs";   // …and the remedy, for how this machine runs the product
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
@@ -1187,6 +1188,20 @@ export function makeConnectorKeyRevoker({ env = process.env, home = null } = {})
 // Installation settings page is for and so the one who runs the install, is shown what is missing and the command
 // that sets it; everyone else is shown the client sentence, which names neither.
 const refusalFor = (principal, refusal) => (seesEverything(principal) && refusal.installer) || refusal.client;
+
+/**
+ * The portal's own question about an order: the runner's (`orderTimeRefusal`), with the remedy its operator is
+ * shown read from how this machine runs the product. Background services, when any is installed, read their
+ * own file, and the remedy names it (backgroundServices). Otherwise this portal runs under a foreground
+ * `clearotron start`, which refuses to run beside installed units (bin/start.mjs) and must be run again to
+ * read what setup writes. `home` and `repoRoot` are parameters so a test can plant a machine of its own.
+ */
+export function portalOrderRefusal({ env = process.env, tables = {}, home = homedir(), repoRoot = INSTALL_ROOT } = {}) {
+  return orderTimeRefusal(env, tables, { remedyFor: (missing) => {
+    const services = backgroundServices(missing, { home, repoRoot });
+    return services ? { services } : { startRunning: true };
+  } });
+}
 
 export function makePortalService({
   poolRoot, workspaceRoot, recipesDir = undefined, secret,
@@ -5335,7 +5350,7 @@ const PORT = PORT_CHOICE.port;
     // demo out of one. Anything but the literal "1" is not a demo.
     demo: isDemo(process.env),   // — one name, shared with the MCP door
     // The runner's own order-time test, asked of the runner's own tables: the portal refuses what the runner would.
-    orderRefusal: async () => orderTimeRefusal(process.env, await runTables()) });
+    orderRefusal: async () => portalOrderRefusal({ tables: await runTables() }) });
   const { RateLimiter } = await import("../mcp-server/lib/ratelimit.mjs");
   const limiter = new RateLimiter({ perMinute: Number(process.env.PORTAL_RATE_PER_MIN || 120) });
   const { createServer } = await import("node:http");

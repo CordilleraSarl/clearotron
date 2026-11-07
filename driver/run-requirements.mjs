@@ -369,14 +369,32 @@ export function whatIsMissing(rows = []) {
 }
 
 /**
- * The first two sentences of the refusal the person who runs the install is shown, in the owner's words
- * (2026-11-06): what the install lacks for a search (`missing`, as whatIsMissing words it) and the command
- * that sets it up. `install` is that command as the reader types it: the portal names `clearotron install`,
- * and `doctor` names it as it runs from where doctor ran. One composer, so the portal's sentence and
- * doctor's opening cannot drift apart. PURE.
+ * The refusal the person who runs the install is shown, up to its closing sentence, in the owner's words
+ * (2026-11-06 and 2026-11-07): what the install lacks for a search (`missing`, as whatIsMissing words it), and
+ * the whole remedy for how this machine runs the product. `install` is the setup command as the reader types
+ * it: the portal names `clearotron install`, and `doctor` names it as it runs from where doctor ran. One
+ * composer, so the portal's sentence and doctor's opening cannot drift apart. PURE.
+ *
+ * `services` is the background services this machine runs (shared/services-remedy.mjs, `backgroundServices`),
+ * or null. They read their own file, which setup does not write, and a background start adds a line that file
+ * lacks and never replaces one. So where setup and that start are the whole remedy (`addsAll`), the reader is
+ * sent to them; otherwise to set each setting in both files and restart the services.
+ *
+ * Without services, `startRunning` says a foreground `clearotron start` is running. It reads the settings
+ * once, when it starts, so it must be run again after setup. With nothing running, setup is the remedy.
  */
-export function cannotSearchYet(missing, install = "clearotron install") {
-  return `This install cannot run a search yet: ${missing}. Run \`${install}\` in a terminal to set it up.`;
+export function cannotSearchYet(missing, install = "clearotron install", { services = null, startRunning = false } = {}) {
+  const head = `This install cannot run a search yet: ${missing}.`;
+  if (services && services.addsAll) {
+    return `${head} Its background services read their settings from ${services.file}. Run \`${install}\` in a terminal to set it up, then \`clearotron start --background\`: it adds the missing lines to that file and restarts the services.`;
+  }
+  if (services) {
+    return `${head} Its background services read their settings from ${services.file}. \`clearotron start --background\` only adds a setting that file has no line for; it never replaces one. Set each missing setting in that file and in ${services.installFile}, then restart the services: \`systemctl --user restart ${services.units.join(" ")}\`. \`clearotron doctor\` names each setting.`;
+  }
+  if (startRunning) {
+    return `${head} Run \`${install}\` in a terminal to set it up, then stop \`clearotron start\` with Ctrl-C and run it again: it reads the settings setup writes when it starts.`;
+  }
+  return `${head} Run \`${install}\` in a terminal to set it up.`;
 }
 
 /**
@@ -391,8 +409,12 @@ export function cannotSearchYet(missing, install = "clearotron install") {
  * says anybody has been notified — which is the sentence F41 delivered while nobody had been.
  *
  * Returns null when nothing blocks, so a caller cannot mistake "configured" for "could not look".
+ *
+ * `remedyFor` is how the caller knows this machine runs the product: given the missing rows, it answers
+ * cannotSearchYet's options (`services`, `startRunning`). The portal passes one (portalOrderRefusal). Without
+ * it the person who runs the install is told only to run setup, the words for a machine nothing is known about.
  */
-export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFile = null, startFile = null } = {}) {
+export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFile = null, startFile = null, remedyFor = null } = {}) {
   const missing = missingRequirements(env, tables).atOrder;
   if (!missing.length) return null;
   const names = missing.map((r) => r.name);
@@ -434,7 +456,9 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
     // THE PERSON WHO RUNS THE INSTALL is shown what is missing and the command that sets it, in the owner's words
     // (2026-11-06). The portal shows this to a person who sees everything, the one its Installation settings
     // page is for, and the client sentence to everyone else. A gap with no phrase keeps the client sentence.
-    installer: gap ? `${cannotSearchYet(gap)} Nothing has been searched and nothing has been charged.` : CLIENT_REFUSAL,
+    installer: gap
+      ? `${cannotSearchYet(gap, "clearotron install", remedyFor ? remedyFor(missing) : {})} Nothing has been searched and nothing has been charged.`
+      : CLIENT_REFUSAL,
   };
 }
 
