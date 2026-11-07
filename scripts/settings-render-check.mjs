@@ -71,7 +71,7 @@ const adminConfig = {
 }
 const about = productIdentity()
 
-const state = { contact: CONTACT, reset: null }
+const state = { contact: CONTACT, reset: null, programMissing: false }
 // THE PAGE'S OWN LOADS, COUNTED. A screen that asks the server twice paints exactly like one that asks once,
 // and each request spends the person's rate budget, so the only instrument that sees a double load is a count.
 const loads = []
@@ -88,7 +88,9 @@ const server = createServer((req, res) => {
       access: [{ kind: 'everything' }], organisations: [{ key: 'northwind', name: 'Northwind Group' }],
       accountNames: { northwind: 'Northwind Foods' }, brand: 'Northwind Group', administratorContact: state.contact })
   }
-  if (path === '/portal/admin/config' && !wantsPage) return json(adminConfig)
+  if (path === '/portal/admin/config' && !wantsPage) {
+    return json(state.programMissing ? { ...adminConfig, engine: { ...adminConfig.engine, binaryPresent: false } } : adminConfig)
+  }
   if (path === '/portal/api/about') return json(about)
   if (path === '/portal/admin/roster' && !wantsPage) return json({ customers: [{ key: 'northwind', name: 'Northwind Foods' }] })
   // THE PEOPLE SCREEN'S OWN DATA. Rows with real-length values on purpose: the defect this screen was
@@ -452,6 +454,24 @@ for (const theme of ['light', 'dark']) {
     ok(asked('/portal/admin/config') === 1 && asked('/portal/api/about') === 1,
       `one visit asks for the settings once and for the source address once (saw ${JSON.stringify(loads)})`)
   }
+
+  // ── Installation settings, the engine program missing
+  // The Engine row's fault names the program and the setup command in backticks, as a terminal prints them. Drawn
+  // as text, the reader saw the backticks; each pair is now code, and no backtick is left on the row.
+  console.log('\nInstallation settings, engine program missing:')
+  state.programMissing = true
+  if (await open('/portal/admin/config', "document.querySelectorAll('.cfg-row').length >= 9", 'Installation settings drew its rows with the program missing')) {
+    await setTheme(theme)
+    const row = (await evalIn(`(() => {
+      const note = [...document.querySelectorAll('.cfg-note.bad')].find((p) => /cannot be found or run/.test(p.textContent));
+      return note ? { text: note.textContent, code: [...note.querySelectorAll('code')].map((c) => c.textContent) } : null;
+    })()`)) ?? null
+    ok(row !== null, 'the Engine row says its program cannot be found or run')
+    ok(row && !row.text.includes('\u0060'), `the Engine row shows no backtick (saw ${JSON.stringify(row?.text)})`)
+    ok(row && same(row.code, ['claude', 'npx clearotron install']), `the program and the setup command are drawn as code (saw ${JSON.stringify(row?.code)})`)
+    await capture(`installation-settings-program-missing-${theme}`)
+  }
+  state.programMissing = false
 
   // ── Preferences, contact set and unset
   for (const [label, contact] of [['contact-set', CONTACT], ['contact-unset', null]]) {
