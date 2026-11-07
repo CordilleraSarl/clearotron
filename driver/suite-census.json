@@ -321,6 +321,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-command-printed-on-a-beta-fetches-the-beta.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-common-law-coverage-status-is-read-as-data.test.mjs": {
           "tests": 14,
           "asserts": 50,
@@ -5284,8 +5290,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 135,
-          "asserts": 729,
+          "tests": 136,
+          "asserts": 732,
           "skips": 1,
           "todos": 0
         },
@@ -8727,8 +8733,8 @@
           "todos": 0
         },
         "list-runs-says-when-nothing-is-configured.test.mjs": {
-          "tests": 2,
-          "asserts": 6,
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -9020,8 +9026,8 @@
           "todos": 0
         },
         "engineState.test.ts": {
-          "tests": 14,
-          "asserts": 63,
+          "tests": 15,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },

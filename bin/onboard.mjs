@@ -74,7 +74,7 @@ import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that
 import { foreignPageHint } from "../shared/invocation.mjs";
 import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
-import { relocationPlan } from "../shared/permanent-install.mjs";   // — and the program out of npx's cache
+import { relocationPlan, channelPackage } from "../shared/permanent-install.mjs";   // — and the program out of npx's cache
 import { isWsl } from "../shared/wsl.mjs";   // — one answer to "is this WSL", shared with the connect lines
 import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight where the meaning is
 import { bracketAsciiCells, BRAND } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
@@ -3823,6 +3823,17 @@ export async function runCheck() {
 // back. Exported so the test drives the options this file uses; above the call below, which reads it.
 export const SETUP_READLINE = Object.freeze({ terminal: true, historySize: 0 });
 
+/**
+ * What setup says when it cannot move out of npx's cache, and the install that lasts, ON THIS CHANNEL.
+ * `npm install -g clearotron` installs the stable, so on a beta it named the other channel.
+ */
+export function stuckInNpxCacheNote(skip, pkg = channelPackage()) {
+  return [
+    `\n  Note: this is running from npm's temporary npx cache and cannot be moved out of it here (${skip}).`,
+    `  It will stop working when npm cleans that cache. \`npm install -g ${pkg}\` installs it permanently.\n`,
+  ];
+}
+
 if (!isEntrypoint(import.meta.url)) {
   // imported, not run — do nothing else
 } else {
@@ -3876,10 +3887,7 @@ if (move && !move.skip && process.env.CLEAROTRON_RELOCATED !== "1") {
   const moved = spawnSync(process.execPath, [move.entry, "install", ...process.argv.slice(2)], { stdio: "inherit", env });
   process.exit(moved.status ?? 1);
 }
-if (move?.skip) {
-  console.error(`\n  Note: this is running from npm's temporary npx cache and cannot be moved out of it here (${move.skip}).`);
-  console.error("  It will stop working when npm cleans that cache. `npm install -g clearotron` installs it permanently.\n");
-}
+if (move?.skip) for (const line of stuckInNpxCacheNote(move.skip)) console.error(line);
 
 // A credential typed at a prompt is echoed by the terminal and then sits in scrollback, in tmux history,
 // in whatever the reader pastes into a bug report. So the echo is muted while a secret is being typed:

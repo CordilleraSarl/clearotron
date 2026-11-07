@@ -451,3 +451,21 @@ test('a beta install\'s setup command fetches the beta', () => {
   assert.equal(setupPackage(null), 'clearotron')
   assert.equal(setupPackage(undefined), 'clearotron')
 })
+
+test('a beta install\'s Engine row names the setup command that fetches the beta', () => {
+  // The row named `npx clearotron install` on every install, and on a beta that fetches the stable.
+  const missing: EngineFacts = { ...ANTHROPIC, binaryPresent: false }
+  const beta = engineRowFaults(missing, { channel: 'beta' }).join(' ')
+  assert.ok(beta.includes('Run the setup wizard, `npx clearotron@beta install`: it offers to install the program'), beta)
+  // THE CONTROL: the stable, and a service that does not say, keep the row exactly as it read.
+  for (const channel of ['latest', null, undefined] as const) {
+    const one = engineRowFaults(missing, { channel }).join(' ')
+    assert.ok(one.includes('Run the setup wizard, `npx clearotron install`: it offers to install the program'), `${channel}: ${one}`)
+  }
+  assert.ok(engineRow(missing, { channel: 'beta' }).faults.join(' ').includes('`npx clearotron@beta install`'),
+    'the whole row drops the channel on the way to its faults')
+  // AND THE CONFIGURATION SCREEN HANDS IT THE CHANNEL /me CARRIES.
+  const src = readFileSync(new URL('../src/screens/GlobalConfig.tsx', import.meta.url), 'utf8')
+  assert.match(src, /channel=\{ctx\.me\.channel \?\? null\}/, 'the screen does not pass the install\'s channel to the row')
+  assert.match(src, /engineRow\(engine, \{ programDisputed, channel \}\)/, 'the row is drawn without the channel')
+})

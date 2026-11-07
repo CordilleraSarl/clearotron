@@ -9,6 +9,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { DRIVER_DIR, driverDir } from "../../shared/driver-dir.mjs";   //
+import { channelPackage } from "../../shared/permanent-install.mjs";   // — the check a reader is sent to, on this install's channel
 import { config, paths, reportIdentityFor } from "./driver.mjs";
 
 // Mirror of progress.mjs SKIP_DIRS — the high-churn leaf dirs that never hold a run-level status.json.
@@ -58,16 +59,20 @@ export function tierFromRecord(runDir) {
   } catch { return null; }
 }
 
+// THE CHECK BOTH SENTENCES SEND A READER TO, ON THIS INSTALL'S CHANNEL. `npx clearotron doctor` fetches the
+// stable, which on a beta reads the beta's install with the other channel's code.
+const DOCTOR = `\`npx ${channelPackage()} doctor\``;
+
 export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet, workReadError = null }) {
   // A work folder that was named and is not there, or cannot be read, is said, never listed as empty.
   if (workSet && workReadError) {
     return `no searches can be read here: CLEAROTRON_WORK_DIR is ${workRoot}, which `
       + (workReadError === "ENOENT" ? "does not exist. " : `cannot be read (${workReadError}). `)
-      + "`npx clearotron doctor` prints where an install keeps them.";
+      + `${DOCTOR} prints where an install keeps them.`;
   }
   if (workSet || workExists || poolSet) return null;
   return `no searches can be read here: CLEAROTRON_WORK_DIR is unset and ${workRoot} does not exist, `
-    + "and CLEAROTRON_REPORTS_DIR is unset. Set them to the install's directories — `npx clearotron doctor` "
+    + `and CLEAROTRON_REPORTS_DIR is unset. Set them to the install's directories — ${DOCTOR} `
     + "prints where an install keeps them, and mcp-server/CONNECT.md says how to connect this server.";
 }
 

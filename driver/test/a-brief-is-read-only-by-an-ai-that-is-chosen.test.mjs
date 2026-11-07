@@ -26,12 +26,14 @@ import { fileURLToPath } from "node:url";
 import { makeJxTurnRunner } from "../engine/jx-turn.mjs";
 import { whatIsMissing } from "../run-requirements.mjs";
 import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
+import { channelPackage } from "../../shared/permanent-install.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
 const NO_AI = "no AI is chosen";
+// THE DOCTOR ON THIS INSTALL'S CHANNEL: `npx clearotron doctor` on the stable, `npx clearotron@beta doctor` on a beta.
 const OFF_LINE = "[portal-service] brief reading OFF — no AI is chosen. Describe-it stays disabled; "
-  + "`npx clearotron doctor` reports the engine's auth state.";
+  + `\`npx ${channelPackage()} doctor\` reports the engine's auth state.`;
 const SKIP = process.platform === "win32" && "the stand-ins are shell scripts, and Windows starts none";
 
 /** A `claude` in `dir` that logs each start and then answers as mock-claude.mjs, which is signed in. */

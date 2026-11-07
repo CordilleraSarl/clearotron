@@ -2683,6 +2683,18 @@ test("/portal/api/me names the release channel this install came from, so a beta
   assert.ok(["beta", "latest"].includes(me.channel), `the channel is a word no screen knows: ${JSON.stringify(me.channel)}`);
 });
 
+test("the brief reader's off line sends the operator to the doctor on this install's channel", async () => {
+  // `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code.
+  const { channelPackage } = await import("../../shared/permanent-install.mjs");
+  const { briefReadingOffLine } = await import("../portal-service.mjs");
+  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron@beta"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron@beta doctor` reports the engine's auth state.");
+  // THE CONTROL: on the stable the line is the one that shipped.
+  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron doctor` reports the engine's auth state.");
+  assert.ok(briefReadingOffLine("x").includes(`\`npx ${channelPackage()} doctor\``), "the line names a package other than this install's");
+});
+
 test("an unreadable profile store costs a name, never the door", async () => {
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",

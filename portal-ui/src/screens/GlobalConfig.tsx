@@ -52,7 +52,6 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 const TITLE = 'Installation settings'
 
 export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
-  void ctx
   const { result } = useLoad(() => api.adminConfig(), [])
   // The repository the server names, for the setup guides. Never a literal: this portal may be a fork.
   const { result: about } = useLoad(() => api.about(), [])
@@ -110,6 +109,7 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
                    clearance replaced its start button with "no search engine is attached". Green on the
                    page an operator checks first is what made that contradiction cost a user. */
                 programDisputed={(v.lastRun?.disagrees ?? []).some((d) => d.what === 'engine program')}
+                channel={ctx.me.channel ?? null}
               />
             ) : (
               <NotRecorded what="which engine is running" source={v.source} />
@@ -241,8 +241,13 @@ const NotServed = () => (
 //
 // One call site, spread whole, so the row is covered by construction rather than by this file agreeing
 // with another one. `engineState.test.ts` holds both the relation and this call site.
-function Engine({ engine, programDisputed = false }: { readonly engine: EngineState; readonly programDisputed?: boolean }) {
-  return <Row {...engineRow(engine, { programDisputed })} />
+function Engine({ engine, programDisputed = false, channel = null }: {
+  readonly engine: EngineState
+  readonly programDisputed?: boolean
+  /** The release channel this install came from, so the row's setup command fetches it. */
+  readonly channel?: 'beta' | 'latest' | null
+}) {
+  return <Row {...engineRow(engine, { programDisputed, channel })} />
 }
 
 /**

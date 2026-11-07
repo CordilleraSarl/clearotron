@@ -46,7 +46,7 @@ import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStor
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
 import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
-import { channelOf, ownVersion } from "../shared/permanent-install.mjs";   // — which release channel this install came from
+import { channelOf, channelPackage, ownVersion } from "../shared/permanent-install.mjs";   // — which release channel this install came from
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
 import { doorKind } from "../shared/mcp-challenge.mjs";   // — one reading of what a connector asks for, shared with doctor
@@ -190,6 +190,14 @@ import { stageNow } from "./progress.mjs";   // the stage a live run is in now, 
 const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
 // This install's release channel, `beta` or `latest`, read once off its own version. /me carries it.
 const INSTALL_CHANNEL = channelOf(ownVersion());
+
+/**
+ * The operator's line when the brief reader cannot be built: why, and the check to run, ON THIS CHANNEL.
+ * `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code.
+ */
+export function briefReadingOffLine(reason, pkg = channelPackage()) {
+  return `brief reading OFF — ${reason}. Describe-it stays disabled; \`npx ${pkg} doctor\` reports the engine's auth state.`;
+}
 
 // The offering the portal menus build from — product-rows.mjs's row, unchanged.
 //
@@ -5317,7 +5325,7 @@ const PORT = PORT_CHOICE.port;
       if (runner?.error) {
         // NAMES THE CONDITION, on the operator's surface. The client-facing note stays client-facing;
         // this is the line whose absence made a billing posture look like a forgotten switch.
-        log(`brief reading OFF — ${runner.error}. Describe-it stays disabled; \`npx clearotron doctor\` reports the engine's auth state.`);
+        log(briefReadingOffLine(runner.error));
         return null;
       }
       log(`brief reading ON — engine=${runner.engine} billing=${runner.authMode} model=${model}`);

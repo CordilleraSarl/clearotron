@@ -76,15 +76,14 @@ export type EngineFacts = {
   readonly selected?: boolean
 }
 
-/** The setup wizard as this reader can run it. Both spellings when the service did not say which. */
-// ONE COMMAND FOR EVERY READER. This page cannot know how its reader installed, and `npm run setup` exists
-// only in a source checkout, so the row names the command every install can run. The search screen's
-// notice is the one place that picks by route (one-name-per-command.test.mjs names it).
-const SETUP_COMMAND = '`npx clearotron install`'
+// THE ROW'S SETUP COMMAND IS ONE FOR EVERY READER. This page cannot know how its reader installed, and
+// `npm run setup` exists only in a source checkout, so the row names the command every install can run:
+// `npx <package> install`, with the package on this install's channel (setupPackage, below). The search
+// screen's notice is the one place that picks by route (one-name-per-command.test.mjs names it).
 
 /**
- * The package the search screen's setup command fetches on this install's channel: `clearotron@beta` on a
- * beta, and `clearotron` on the stable or when the service did not say, which is the command as it read.
+ * The package a setup command fetches on this install's channel: `clearotron@beta` on a beta, and
+ * `clearotron` on the stable or when the service did not say, which is the command as it read.
  *
  * ON A BETA THE BARE NAME FETCHES THE STABLE. npx runs a global copy only from npm's own global directory,
  * so on an install moved into ~/.local `npx clearotron install` fetches `latest`, and the stable's setup
@@ -174,7 +173,11 @@ export function billingRefusalSentence(r: BillingRefusal): string {
  */
 export function engineRowFaults(
   engine: EngineFacts,
-  { programDisputed = false }: { readonly programDisputed?: boolean } = {},
+  { programDisputed = false, channel = null }: {
+    readonly programDisputed?: boolean
+    /** This install's release channel, from /me, so the setup command fetches it. */
+    readonly channel?: 'beta' | 'latest' | null
+  } = {},
 ): readonly string[] {
   const reason = engine.billing.reason ?? null
   // NO AI CHOSEN IS THE ONE FAULT, in the search screen's own words. Every other fault would be about the code's
@@ -206,7 +209,7 @@ export function engineRowFaults(
       ? []
       : engine.program
         ? [`The engine program \`${engine.program}\` cannot be found or run on this machine. `
-           + `Run the setup wizard, ${SETUP_COMMAND}: it offers to install the program `
+           + `Run the setup wizard, \`npx ${setupPackage(channel)} install\`: it offers to install the program `
            + 'and proves it with one turn. '
            + "Then restart Clearotron's services, which look for the program when they start."]
         : ['The engine program cannot be found or run on this machine.']),
@@ -303,7 +306,10 @@ export function engineNotice({ programDisputed }: { readonly programDisputed: bo
  */
 export function engineRow(
   engine: EngineFacts,
-  { programDisputed = false }: { readonly programDisputed?: boolean } = {},
+  { programDisputed = false, channel = null }: {
+    readonly programDisputed?: boolean
+    readonly channel?: 'beta' | 'latest' | null
+  } = {},
 ): {
   readonly ok: boolean
   readonly name: string
@@ -311,7 +317,7 @@ export function engineRow(
   readonly state: string
   readonly faults: readonly string[]
 } {
-  const faults = engineRowFaults(engine, { programDisputed })
+  const faults = engineRowFaults(engine, { programDisputed, channel })
   // THE UNSET SELECTION, SHOWN AS UNSET: not the default's name, not its id, and not what would pay for it.
   if (engine.selected === false) return { ok: false, name: 'Not set', mono: '', state: 'Missing', faults }
   return {
