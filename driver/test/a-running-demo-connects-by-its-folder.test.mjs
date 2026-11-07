@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { otherDoor, verifyToken } from "../../shared/scope.mjs";
 import { demoTokenSecretPath } from "../../shared/client-door.mjs";
 import { INSTALL_CREDENTIAL_FILE } from "../portal-local-auth.mjs";
+import { stdioConnectFor } from "../../shared/stdio-connect.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CONNECT = join(ROOT, "bin", "connect.mjs");
@@ -101,12 +102,14 @@ test("with no demo running from that folder it says so, names how to start one, 
 test("connect --base hands the assistant picked its own form, bound to the demo, and mints and writes nothing", () => {
   withDemo(({ home, base, run }) => {
     record(home, RUNNING(base));
-    const forms = { codex: /\[mcp_servers\.trademark-artifacts-demo\]/, chatgpt: /\[mcp_servers\.trademark-artifacts-demo\]/,
-      "claude-code": /claude mcp add trademark-artifacts-demo --scope user/, claude: /"trademark-artifacts-demo": \{/, other: /"CLEAROTRON_DEMO": "1"/ };
-    for (const [id, form] of Object.entries(forms)) {
+    // Each row's shape, and the form the one composer writes for it, bound to this demo.
+    const shapes = { codex: "codex-toml", chatgpt: "codex-toml", "claude-code": "claude-cli", claude: "desktop-json", other: "generic-json" };
+    for (const [id, shape] of Object.entries(shapes)) {
       const r = run(["--base", base, "--client", id]);
       assert.equal(r.status, 0, `${id}: ${r.stdout}${r.stderr}`);
-      assert.match(r.stdout, form, `${id}: the row's own form is not printed`);
+      const form = stdioConnectFor(shape, { workDir: join(base, "workspace"), reportsDir: join(base, "pool"), demo: true });
+      for (const line of form.text.split("\n"))
+        assert.ok(r.stdout.includes(line), `${id}: the demo's ${shape} form is not printed whole; missing: ${line}`);
       assert.ok(r.stdout.includes(join(base, "workspace")) && r.stdout.includes(join(base, "pool")), `${id}: the form is not bound to the demo's folders`);
       assert.match(r.stdout, /CLEAROTRON_DEMO/, `${id}: the form does not carry the demo flag`);
       assert.doesNotMatch(r.stdout, /trademark-artifacts(?!-demo)/, `${id}: the form names a real install's connection`);
