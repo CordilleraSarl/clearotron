@@ -99,6 +99,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-brief-is-read-only-by-an-ai-that-is-chosen.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 3,
+          "todos": 0
+        },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
           "tests": 13,
           "asserts": 32,
@@ -3814,8 +3820,8 @@
           "todos": 0
         },
         "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
-          "tests": 5,
-          "asserts": 8,
+          "tests": 6,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -3829,6 +3835,12 @@
           "tests": 5,
           "asserts": 29,
           "skips": 0,
+          "todos": 0
+        },
+        "doctor-reads-only-the-ai-that-is-chosen.test.mjs": {
+          "tests": 2,
+          "asserts": 17,
+          "skips": 2,
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
@@ -4937,7 +4949,7 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 78,
-          "asserts": 302,
+          "asserts": 303,
           "skips": 4,
           "todos": 0
         },
