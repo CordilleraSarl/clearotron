@@ -80,6 +80,7 @@ stage stays on disk, so a run survives interruption and a resume re-runs only wh
 
 - See it before you buy anything: `npx clearotron demo` replays a finished clearance with no account, no
   key and no network. `npx clearotron@beta demo` replays the beta's.
-- The four searches, and what each reaches: [README.md](README.md).
+- What the four searches are, and what each promises:
+  [docs/architecture/01-product-overview.md](docs/architecture/01-product-overview.md#what-it-does).
 - Everything else — configuration, the config store, the portal, access control:
   [INSTALL.md](INSTALL.md).

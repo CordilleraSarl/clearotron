@@ -542,6 +542,28 @@ export const configInsideRefusal = (packaged, path, repo) => (packaged
   : [`${path} is INSIDE the checkout (${repo}).`,
     "Everything you write there becomes a local modification to our files: `git pull` conflicts,",
     "and `git status` that is never clean. Choose a path outside the checkout."]);
+/**
+ * What setup says about custom instructions in the configuration step, for the configuration folder `cfg`:
+ * none are set, and how to add one later. Setup writes no CLEAROTRON_INSTRUCTIONS_DIR; the reason is beside
+ * the line that prints this.
+ */
+export const customInstructionsNone = (cfg) => "Custom instructions: none, so CLEAROTRON_INSTRUCTIONS_DIR stays unset "
+  + "and the product's own instruction files are used. To override one later, put your copy in "
+  + `${join(cfg, "skills")}, commit it in ${cfg}, and set CLEAROTRON_INSTRUCTIONS_DIR to that folder. `
+  + "A run cannot identify an uncommitted folder, and says so rather than guessing.";
+/** What setup says about the configuration folder it leaves empty: an empty one is a working install. */
+export const EMPTY_CONFIG_FOLDER = "Left empty, and an empty folder is a working install: searches use the "
+  + "product's own instruction files and its Generic defaults, each until you add your own. Your own customers "
+  + "are added here; the demo's sample customers never appear among them.";
+/** The line setup prints once it has created the configuration folder `cfg` and the folder beneath it. */
+export const configFoldersMade = (cfg) => `configuration directories created under ${cfg} (empty: the product's `
+  + "own instruction files and its Generic defaults apply, each until you add your own)";
+/** What setup says at its last check when no register is chosen: what it skips, what follows, and what to do. */
+export const REGISTER_CHECK_SKIPPED =
+  "Skipping the register credential check: no register is chosen. Every search refuses until one is set. Re-run setup when you have a credential.";
+/** What setup says when the register's credentials pass that check: the register, and the settings it checked. */
+export const registerCheckPassed = (register, settings) =>
+  `the register credential check passed for "${register}" — checked ${settings}`;
 
 export function composeEnvBody(candidate, existing = {}, { packaged = PACKAGED } = {}) {
   // Setup's own answers win: the reader just typed them, and this run is the newer statement.
@@ -870,8 +892,22 @@ export function proofEvidence(v) {
   if (v.basis === "config") return [];
   return [
     v.detail ? `engine said: ${v.detail}` : "engine said: nothing — it produced no output on either stream before it stopped.",
-    ...(v.basis ? [`(that reading is ${v.basis === "text-match" ? "matched out of the text above, not a signal from the provider" : v.basis})`] : []),
+    ...(v.basis ? [v.basis === "text-match"
+      ? "(setup's reading of the words above, not a status the program reported)"
+      : `(that reading is ${v.basis})`] : []),
   ];
+}
+
+/**
+ * A failed proof turn's first line, as setup prints it: the probe's verdict with the AI named the way setup's
+ * own questions name it (`product`: "Claude" or "Codex"), not by its setting's value, `anthropic-agent` or
+ * `openai-agent`. Only that word changes, whichever way the turn failed. The probe keeps its own words for
+ * `doctor --probe-engine` and for a run's check before it starts, which both report the setting. PURE.
+ */
+export function proofFailureLine(v, product) {
+  const id = String(v?.engine ?? "");
+  const headline = String(v?.headline ?? "");
+  return probeFailureText({ ...v, headline: id && product ? headline.replace(id, () => product) : headline });
 }
 
 /**
@@ -4234,7 +4270,7 @@ try {
         else info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
         break engine;
       }
-      problem(probeFailureText(v));
+      problem(proofFailureLine(v, eng.product));
       // ── THE ENGINE'S OWN LAST LINES, UNDER EVERY VERDICT, ON BOTH LANES ──────────────────────────
       //
       // This used to be `if (v.detail)`, so a verdict carrying no detail printed a headline and nothing
@@ -4564,18 +4600,16 @@ try {
   // consequence at the end. Its explanation of WHY an assistant reaches the box from a vendor's cloud is
   // genuinely useful and is a document, not a prompt — it lives in mcp-server/CONNECT.md, and the prompt
   // carries one line and a pointer.
-  say("\n  The address clients' assistants reach this install at");
+  say("\n  Optional: the public connector address");
   prose("An assistant connects from its maker's servers, not from your machine, so this has to be an",
         "address on the public internet, over https.");
-  prose("No default — it is your hostname. Skip it and this stays a local install: everything works",
-        "here, and the Use-your-AI page says so rather than handing out an address that fails.");
+  prose("No default — it is your hostname. Skip it and this stays a local install: everything works here, and the Connect your AI page says so rather than handing out an address that fails.");
   prose("The usual shape, and why: mcp-server/CONNECT.md.");
   const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
   for (;;) {
     const clientUrl = await askValue("Public connector address:", {
       skippable: true,
-      skipped: "CLEAROTRON_CLIENT_MCP_URL left unset — the Use-your-AI page and a report's Ask-AI control will "
-        + "show their empty state, which is correct for a local install",
+      skipped: "CLEAROTRON_CLIENT_MCP_URL left unset — the Connect your AI page and a report's Ask AI control will show their empty state, which is correct for a local install",
     });
     if (clientUrl === null) break;
     const trimmed = clientUrl.trim();
@@ -4660,10 +4694,7 @@ try {
   //
   // Note for whoever adds an overlay later: it needs this name set, which is why the line below says so
   // rather than leaving a reader to discover that files they dropped in are being ignored.
-  info(`doctrine: this install overrides nothing, so CLEAROTRON_INSTRUCTIONS_DIR stays unset and the `
-    + `product's own files are used. To override an instruction file later, put it in ${join(cfg, "skills")}, `
-    + `COMMIT it in ${cfg}, and set CLEAROTRON_INSTRUCTIONS_DIR to that directory — an uncommitted store `
-    + "cannot be identified, and a run says so rather than guessing.");
+  info(customInstructionsNone(cfg));
 
   // DELIBERATELY NOT SEEDED, and this reverses what the issue asked for. Copying the house `generic.json`
   // in would make the store a working install — but since an EMPTY store already is one: profiles
@@ -4674,9 +4705,7 @@ try {
   // PRECISELY what shows through, because the last wording said "bundled customers" and the loader
   // says otherwise: the demo roster never layers into a deployment (a typo'd key must not resolve to
   // our fixtures), generic.json falls through BY NAME, and doctrine resolves file-by-file.
-  say("  Left empty. The bundled instructions show through file-by-file, and generic.json — the universal");
-  say("  fallback — falls through by name, so an empty store is a working install. Your own customers");
-  say("  are added here by name; the bundled demo customers never show through into your roster.");
+  prose(EMPTY_CONFIG_FOLDER);
 
   // 7c ── YOUR ORGANISATION, AND WHO SIGNS IN
   //
@@ -4706,9 +4735,9 @@ try {
   // silently passed over. A reader who is told a preflight ran and passed, when it never ran, learns
   // to trust a line that means nothing.
   if (registerSelected) {
-    say("\n  Running the driver's own credential preflight over these values…");
+    say("\n  Running the register credential check over these values…");
     const pf = await preflightCandidate(candidate);
-    if (pf.ok) ok(`preflight passed for provider "${pf.result.provider}" — checked ${pf.result.checked.join(" + ")}`);
+    if (pf.ok) ok(registerCheckPassed(pf.result.provider, pf.result.checked.join(" + ")));
     else {
       problem(pf.error);
       say("\n  Nothing has been written.");
@@ -4716,9 +4745,8 @@ try {
       throw new Error("preflight");
     }
   } else {
-    say("\n  Skipping the driver's credential preflight: it checks the register provider's credentials,");
-    say("  and no register is selected. The run door still refuses by name until one is — that guard is");
-    say("  untouched, and this is only setup declining to fail an install it was told to allow.");
+    say("");
+    prose(REGISTER_CHECK_SKIPPED);
   }
 
   // 9 ── write, atomically
@@ -4752,7 +4780,7 @@ try {
   // portal reads an empty folder the same way: it overrides nothing. It is here so that the place an
   // override goes exists, and so the line below is true of both folders it describes.
   mkdirSync(join(cfg, "skills"), { recursive: true });
-  ok(`configuration directories created under ${cfg} (empty — the bundled instructions and the generic fallback show through; customers are yours to add)`);
+  ok(configFoldersMade(cfg));
 
   // 9a ── PUT THE VERB ON THIS OPERATOR'S PATH
   //
@@ -4834,7 +4862,7 @@ try {
     stateLine("data directory", candidate.CLEAROTRON_REPORTS_DIR, "unset"),
     stateLine("configuration store", candidate.CLEAROTRON_CUSTOMERS_DIR, "the bundled demo roster"),
     stateLine("notification links", candidate.CLEAROTRON_REPORTS_URL, "notifications carry no link into the report"),
-    stateLine("client connector", candidate.CLEAROTRON_CLIENT_MCP_URL, "local install; the Use-your-AI page shows its empty state"),
+    stateLine("client connector", candidate.CLEAROTRON_CLIENT_MCP_URL, "local install; the Connect your AI page shows its empty state"),
   ]) say(`    ${line}`);
 
   say(`\n  ${style.bold("Start here:")}\n`);

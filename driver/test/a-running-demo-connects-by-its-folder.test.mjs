@@ -110,7 +110,8 @@ test("connect --base hands the assistant picked its own form, bound to the demo,
       const form = stdioConnectFor(shape, { workDir: join(base, "workspace"), reportsDir: join(base, "pool"), demo: true });
       for (const line of form.text.split("\n"))
         assert.ok(r.stdout.includes(line), `${id}: the demo's ${shape} form is not printed whole; missing: ${line}`);
-      assert.ok(r.stdout.includes(join(base, "workspace")) && r.stdout.includes(join(base, "pool")), `${id}: the form is not bound to the demo's folders`);
+      // THE FORM CARRIES THE DEMO'S FOLDERS AS ITS OWN FORMAT ENCODES THEM: the composer above was handed them, and a TOML or
+      // JSON form escapes a Windows path's backslashes, so the raw path is not in the output there.
       assert.match(r.stdout, /CLEAROTRON_DEMO/, `${id}: the form does not carry the demo flag`);
       assert.doesNotMatch(r.stdout, /trademark-artifacts(?!-demo)/, `${id}: the form names a real install's connection`);
       assert.doesNotMatch(r.stdout, /Key:|Address:/, `${id}: a key route was taken for an assistant on this machine`);

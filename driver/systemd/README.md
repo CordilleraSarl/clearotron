@@ -22,8 +22,8 @@ one restarts on failure ten seconds later.
 
 These are for a **server, not a laptop**. On a workstation `clearotron start` runs the same product in the foreground,
 and `clearotron start --background` installs these four units as your own user services ([`INSTALL.md`
-§6](../../INSTALL.md)). `node driver/runner.mjs --watch` is what to run by hand if you started with `--no-worker`
-(`INSTALL.md` §5): one foreground process that polls for queued jobs and for parked runs whose window has elapsed.
+§5](../../INSTALL.md)). `node driver/runner.mjs --watch` is what to run by hand if you started with `--no-worker`
+(`INSTALL.md` §6): one foreground process that polls for queued jobs and for parked runs whose window has elapsed.
 
 The packaged install runs no outbox watcher. An assistant that couriers delivered reports wakes itself
 ([`../../docs/DELIVERY.md`](../../docs/DELIVERY.md)); `driver/deliver-trigger.sh` is one agent platform's reference
