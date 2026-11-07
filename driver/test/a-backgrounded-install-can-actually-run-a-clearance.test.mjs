@@ -125,7 +125,8 @@ test("only what START ITSELF WRITES may refuse a start, and the pool is the whol
 });
 
 test("the order-time refusal speaks two vocabularies, and only one of them may reach a browser", () => {
-  const r = orderTimeRefusal(AS_FOUND, T, { envFile: "/srv/example/.env" });
+  // A worker under the product's own user units, whose file is the one to edit.
+  const r = orderTimeRefusal(AS_FOUND, T, { howFor: () => ({ kind: "units", file: "/srv/example/.env", units: ["clearotron-worker.service"] }) });
   assert.ok(r, "an unconfigured box produced no refusal at all");
   // THE OPERATOR'S: names, reasons, and the file to edit — they can act on all three.
   for (const n of r.names) assert.match(r.operator, new RegExp(n), `${n} is missing from the operator refusal`);

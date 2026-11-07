@@ -2837,7 +2837,7 @@
         },
         "an-install-that-cannot-search-refuses-the-order-at-review.test.mjs": {
           "tests": 9,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -7621,6 +7621,12 @@
           "tests": 7,
           "asserts": 25,
           "skips": 4,
+          "todos": 0
+        },
+        "the-refusal-names-the-whole-remedy.test.mjs": {
+          "tests": 12,
+          "asserts": 41,
+          "skips": 0,
           "todos": 0
         },
         "the-register-claims-check-reads-the-records-the-run-holds.test.mjs": {

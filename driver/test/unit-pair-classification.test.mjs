@@ -177,6 +177,11 @@
 //   · `writeSourceDefects` in knockout-assess-record.mjs chooses a row's `state` in the SAME expression, off the claim the row kept and
 //                               the finding the call just accepted, and chooses it again at every accepted call. The first look reads it
 //                               after the last of them, before any correction writes. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `howItRuns` in how-it-runs.mjs mints `noLineYet` in the SAME object literal as the services' `file` it qualifies, off
+//                               the one read of that file and the one `missing` list the refusal hands it. It only selects
+//                               WORDING: the refusal composer reads it in the same call to choose between two remedies, and
+//                               nothing keeps it. The background start the first remedy sends the reader to reads the file
+//                               again for itself. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
 //   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
@@ -265,6 +270,7 @@ const RULED = new Map([
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
   ["knockout-register-read.mjs", 4],
   ["knockout-assess-record.mjs", 2],
+  ["how-it-runs.mjs", 1],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");

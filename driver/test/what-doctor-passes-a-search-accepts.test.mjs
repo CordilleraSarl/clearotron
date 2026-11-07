@@ -31,7 +31,8 @@ import { fileURLToPath } from "node:url";
 // A namespace import, not a named one: a named import of an export a tree does not have fails the WHOLE
 // file before any arm runs, and every other arm here would then read as red for a reason it never tested.
 import * as probe from "../engine/probe.mjs";
-import { orderTimeRefusal, startEnvFileOf, runRequirements } from "../run-requirements.mjs";
+import { orderTimeRefusal, startEnvFileOf, runRequirements, REGISTER_ENV } from "../run-requirements.mjs";
+import { SERVER_INSTALL_SET } from "../../shared/server-units.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } from "../driver.config.mjs";
 
@@ -167,27 +168,42 @@ test("the list the probe is filled from carries every credential every engine de
 const UNIT = "/srv/example/.env";
 const OWN = "/srv/example/.config/clearotron/.env";
 
-test("a runner that read its own file names it, and the unit file, each by what reads it", () => {
-  const r = orderTimeRefusal({}, TABLES, { envFile: UNIT, readFile: OWN });
+// The refusal names the configuration THIS runner uses (driver/how-it-runs.mjs), not every file on the machine.
+test("a runner started by hand names the file it reads, and not the units' file, which reaches nothing on it", () => {
+  const r = orderTimeRefusal({}, TABLES, { howFor: () => ({ kind: "hand", file: OWN }) });
   assert.ok(r, "an empty environment must be refused");
-  assert.match(r.operator, /either of these — both reach a run/);
-  assert.ok(r.operator.includes(`${OWN} — the file this runner read when it started`), r.operator);
-  assert.ok(r.operator.includes(`${UNIT} — the file background units read`), r.operator);
-  assert.ok(r.operator.indexOf(OWN) < r.operator.indexOf(UNIT), "the file this runner actually read comes first");
+  assert.ok(r.operator.includes(`Set each missing setting in ${OWN}, which this runner reads when it starts, then start this runner again.`), r.operator);
+  assert.ok(!r.operator.includes(UNIT), "the units' file reaches nothing on this runner, so it must not be offered");
 });
 
-test("one file is named once: under a unit, or when the two are the same file", () => {
-  const unitOnly = orderTimeRefusal({}, TABLES, { envFile: UNIT });
-  assert.ok(unitOnly.operator.includes(`Set them in ${UNIT} and restart`), "a unit's own EnvironmentFile is the whole answer");
-  assert.doesNotMatch(unitOnly.operator, /either of these/);
-  const same = orderTimeRefusal({}, TABLES, { envFile: UNIT, readFile: UNIT });
-  assert.doesNotMatch(same.operator, /either of these/, "the same file is not offered twice as a choice");
+test("one file is named once: a unit's own, with its restart; the services' file when the install's settings resolve to it; and with nothing known, the wizard", async () => {
+  const unitOnly = orderTimeRefusal({}, TABLES, { howFor: () => ({ kind: "units", file: UNIT, units: ["clearotron-worker.service"] }) });
+  assert.equal(unitOnly.operator.split(UNIT).length - 1, 1, "a unit's own EnvironmentFile is named once, as the whole answer");
+  assert.ok(unitOnly.operator.includes("then restart the services: `systemctl --user restart clearotron-worker.service`."), unitOnly.operator);
+  // An install whose folder is the home, on the older layout with no settings file of its own, resolves its
+  // settings file to `~/.env`, which is the services' file. That file is named once, and the second place a
+  // setting lives is the environment the background start runs in. Planted: the launcher's units, as
+  // `clearotron start --background` writes them, and a services' file with an empty line it keeps.
+  const home = mkdtempSync(join(tmpdir(), "one-file-once-"));
+  try {
+    const unitDir = join(home, ".config", "systemd", "user");
+    mkdirSync(unitDir, { recursive: true });
+    const template = (u) => readFileSync(join(ROOT, "driver", "systemd", u), "utf8");
+    for (const u of SERVER_INSTALL_SET) writeFileSync(join(unitDir, u), template(u));
+    writeFileSync(join(home, ".env"), `${REGISTER_ENV}=\n`);
+    // Imported softly, so a tree without the reader fails on the refusal's words rather than on a missing module.
+    const { howItRuns = () => null } = await import("../how-it-runs.mjs").catch(() => ({}));
+    const same = orderTimeRefusal({}, TABLES, { howFor: (missing) => howItRuns({ missing, env: { INVOCATION_ID: "x" }, home, repoRoot: home,
+      template, cgroup: () => "0::/user.slice/user-1000.slice/user@1000.service/app.slice/clearotron-worker.service\n" }) }).operator;
+    assert.equal(same.split(join(home, ".env")).length - 1, 1, `the services' file is offered twice, or not at all: ${same}`);
+    assert.ok(same.includes("Set each missing setting in that file and in the environment you run `clearotron start --background` in,"), same);
+  } finally { rmSync(home, { recursive: true, force: true }); }
   const neither = orderTimeRefusal({}, TABLES, {});
-  assert.match(neither.operator, /clearotron install/, "with no file to name, the wizard is named");
+  assert.match(neither.operator, /clearotron install/, "with nothing known, the wizard is named");
 });
 
 test("what the refusal already did well survives: every name, no spend, and no variable to a client", () => {
-  const r = orderTimeRefusal({}, TABLES, { envFile: UNIT, readFile: OWN });
+  const r = orderTimeRefusal({}, TABLES, { howFor: () => ({ kind: "hand", file: OWN }) });
   for (const n of r.names) assert.ok(r.operator.includes(n), `${n} is refused for and not named to the operator`);
   assert.match(r.operator, /Nothing has been searched and nothing has been spent/);
   assert.ok(!r.client.includes(UNIT) && !r.client.includes(OWN), "a client is shown no file");
@@ -280,15 +296,19 @@ test("`clearotron start` and the runner hand the engine resolver to the requirem
 
 import { childEnv as composeChildEnv, installPaths as layoutOf } from "../../bin/start.mjs";
 
-test("a runner that `clearotron start` started names the file start read, and only that one", () => {
+test("a runner that `clearotron start` started is told to run setup and that start again, and no units' file", async () => {
   const unit = "/srv/op/.env", started = "/srv/op/.config/clearotron/.env";
-  const r = orderTimeRefusal({}, TABLES, { envFile: unit, readFile: null, startFile: started });
-  assert.ok(r.operator.includes(`Set them in ${started} — the file \`clearotron start\` read when it started this runner`),
-    "the refusal must name the file this runner's values came from");
+  // Imported softly, so a tree without the reader fails on the refusal's words rather than on a missing module.
+  const { howItRuns = () => null } = await import("../how-it-runs.mjs").catch(() => ({}));
+  const flag = ["node", "runner.mjs", "--watch", `--start-env-file=${started}`];
+  const how = howItRuns({ env: {}, argv: flag, home: "/srv/op", readFile: () => null, cgroup: () => "" });
+  const r = orderTimeRefusal({}, TABLES, { howFor: () => how });
+  assert.ok(r.operator.includes("then stop `clearotron start` with Ctrl-C and run it again: it reads the settings setup writes when it starts."),
+    "the refusal must say which process to reload, and why setup reaches it");
   assert.ok(!r.operator.includes(unit), "the units' file reaches nothing on this runner, so it must not be offered");
-  // The other two shapes keep their answers: a runner that read its own file names both, a unit's names its own.
-  assert.match(orderTimeRefusal({}, TABLES, { envFile: unit, readFile: started, startFile: started }).operator, /either of these — both reach a run/);
-  assert.ok(orderTimeRefusal({}, TABLES, { envFile: unit }).operator.includes(`Set them in ${unit} and restart`));
+  assert.deepEqual(how, { kind: "start" }, "start's flag is how a runner knows a foreground start launched it");
+  // Under systemd the runner reads its unit's configuration, whatever its command line carries.
+  assert.notEqual(howItRuns({ env: { INVOCATION_ID: "x" }, argv: flag, home: "/srv/op", cgroup: () => "" })?.kind, "start");
 });
 
 test("start hands its file to the worker as a flag no unit carries, and the runner passes it on", () => {
@@ -303,8 +323,10 @@ test("start hands its file to the worker as a flag no unit carries, and the runn
   const envs = composeChildEnv({ ports: { portal: 18802, mcp: 18790 }, paths: layoutOf("/srv/op/trademark"), user: "op@localhost",
     portalSecret: "p", tokenSecret: "t", opsToken: "o", localWorker: true });
   assert.ok(!/start-env-file|START_ENV_FILE/.test(JSON.stringify(envs)), "the handoff leaked into the composition the units' file is written from");
-  assert.match(readFileSync(join(ROOT, "driver", "runner.mjs"), "utf8"), /startFile: startEnvFileOf\(process\.argv\)/,
-    "and the runner must hand the refusal what its own command line carries");
+  assert.match(readFileSync(join(ROOT, "driver", "runner.mjs"), "utf8"), /howFor: \(missing\) => howItRuns\(\{ missing \}\)/,
+    "and the runner must ask how it runs");
+  assert.match(readFileSync(join(ROOT, "driver", "how-it-runs.mjs"), "utf8"), /argv = process\.argv[\s\S]*if \(startEnvFileOf\(argv\)\) return \{ kind: "start" \}/,
+    "…which reads what its own command line carries");
 });
 
 test("the runner accepts start's flag and still refuses an argument it does not know", () => {

@@ -140,6 +140,25 @@ function applyUnit(unitText, readEnvFile, home) {
 }
 
 /**
+ * The files a unit's `EnvironmentFile=` lines name, resolved as `applyUnit` resolves them (`%h` is `home`, and a
+ * leading `-` only marks the file optional), in the order listed. Null when a path cannot be resolved: then what
+ * the unit reads is not known, and naming one of its files would be a guess. PURE.
+ */
+export function environmentFilesOf(unitText, home) {
+  const out = [];
+  for (const raw of String(unitText ?? "").split("\n")) {
+    const file = /^EnvironmentFile=(.*)$/.exec(raw.trim());
+    if (!file) continue;
+    let spec = file[1].trim();
+    if (spec.startsWith(OPTIONAL)) spec = spec.slice(1);
+    const resolved = expandSpecifiers(spec, home);
+    if (resolved.unresolved !== undefined) return null;
+    out.push(resolved.path);
+  }
+  return out;
+}
+
+/**
  * The environment the units actually run with.
  *
  * @param {object} a
