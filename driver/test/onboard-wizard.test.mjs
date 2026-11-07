@@ -1509,7 +1509,7 @@ test("every prompt in the setup sequence states what Enter does", () => {
   const headings = [
     "Where this install keeps its data",
     "The link in delivery notifications",
-    "The address clients' assistants reach this install at",
+    "Optional: the public connector address",
     "Where this install keeps its own configuration",
   ];
   const lines = src.split("\n");
@@ -1620,7 +1620,7 @@ test("unset is the supported mode and it passes, which is why setup no longer wr
   // sign — which would be this defect traded for a quieter one.
   assert.match(src, /CLEAROTRON_INSTRUCTIONS_DIR stays unset/,
     "the closing note must say the name is unset and what to do when they do want an overlay");
-  assert.match(src, /COMMIT it/, "including that an uncommitted store is the state that cannot be identified");
+  assert.match(src, /A run cannot identify an uncommitted folder/, "including that an uncommitted store is the state that cannot be identified");
 });
 
 // ── THE COPY INSTALLED WITH CLEAROTRON, WHERE A READER MEETS IT ──────────────────────────────────────
