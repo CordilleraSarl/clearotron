@@ -1202,6 +1202,22 @@ const ownerless = (await evalIn(`(async () => {
 ownerless.asked = gets.slice(ownerlessFrom)
   .filter((g) => /^\/portal\/api\/(?:searches|usage|config\/profile|config\/projects|config\/searches)(?:\?|$)/.test(g))
   .filter((g) => !/[?&]account=/.test(g))
+// AND A CLIENT WHO HOLDS TWO COMPANIES, not every one. Their access is a list, and the picker is theirs too:
+// the same reads, asked with no company named, would be refused the same way.
+meEngine = { accounts: ['coastline', 'harbourline'], accountNames: { coastline: 'Coastline', harbourline: 'Harbourline' },
+  permissions: { run: true, manage: false } }
+const clientFrom = gets.length
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1200))
+const twoCompanies = (await evalIn(`(async () => {
+  const t0 = Date.now();
+  while (Date.now() - t0 < 8000 && !/Pick a company to run this clearance on/.test(document.body.innerText)) await new Promise((r) => setTimeout(r, 60));
+  await new Promise((r) => setTimeout(r, 600));
+  return { choose: /Pick a company to run this clearance on|COMPANY\\s+Choose a company/.test(document.body.innerText) };
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+twoCompanies.asked = gets.slice(clientFrom)
+  .filter((g) => /^\/portal\/api\/(?:searches|usage|config\/profile|config\/projects|config\/searches)(?:\?|$)/.test(g))
+  .filter((g) => !/[?&]account=/.test(g))
 meEngine = {}
 rosterNow = null
 
@@ -1809,6 +1825,10 @@ ok(!leaving.untouched.fatal && leaving.untouched.asked?.length === 0 && leaving.
   `leaving an untouched New clearance asked, or did not leave — ${JSON.stringify(leaving.untouched)}`)
 ok(!leaving.typed.fatal && JSON.stringify(leaving.typed.asked) === '["Leave this page?"]' && leaving.typed.at === '/portal/new',
   `leaving with a name typed did not ask "Leave this page?", or left anyway when told to stay — ${JSON.stringify(leaving.typed)}`)
+// AND A CLIENT HOLDING TWO COMPANIES, with neither picked, is asked to choose and asks the server nothing.
+ok(!twoCompanies.fatal && twoCompanies.choose, `the composer did not ask a client holding two companies to choose one — ${JSON.stringify(twoCompanies)}`)
+ok(!twoCompanies.fatal && twoCompanies.asked.length === 0,
+  `the composer sent company reads with no company named for a client holding two, each one a 400 from the real portal: ${JSON.stringify(twoCompanies.asked)}`)
 // A DEMO ORDER OPENS ITS REPORT, AND ASKS NOTHING ON THE WAY.
 ok(!landing.fatal && landing.landed === '/portal/result/demo-multi',
   `a demo order did not open the run it landed on — ${JSON.stringify(landing)}`)

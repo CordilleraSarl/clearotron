@@ -52,7 +52,7 @@ import type {
   Plan, Result, Searches, SavedSearchDetail, ProjectSummary, ProjectDetail, ProfileConfig, Usage,
   ReadCapability, Product,
 } from '../contract/api.ts'
-import { api, companyRead, isOk, operatorName, notCommitted } from '../contract/api.ts'
+import { api, companyRead, mustPickCompany, isOk, operatorName, notCommitted } from '../contract/api.ts'
 import { engineNotice, setupPackage } from '../contract/engineState.ts'
 import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
@@ -151,7 +151,7 @@ const EMPTY: Draft = {
 export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // Who this is FOR. A staff member must say; a single-account client has it resolved server-side.
   const account = ctx.owner
-  const needsOwner = ctx.me.allAccounts && account === null
+  const needsOwner = mustPickCompany(ctx.me, account)
 
   // `reload` is wired to a retry button below. A composer that cannot fetch its own depth menu has
   // nothing to poll for and nothing to recover on its own, so the user needs a way to ask again.

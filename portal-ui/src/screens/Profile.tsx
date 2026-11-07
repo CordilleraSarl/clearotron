@@ -13,7 +13,7 @@
 // one. See contract/profileFields.ts — the reasoning is there and the behaviour is pinned by tests.
 
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { api, companyRead, notCommitted } from '../contract/api.ts'
+import { api, companyRead, mustPickCompany, notCommitted } from '../contract/api.ts'
 import type { ProfileConfig } from '../contract/api.ts'
 import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, applyField, stripCodeOwned, visibleReadOnlyFields, depthChoices, groupTag, readOnlyValue, jxPolicyValue } from '../contract/profileFields.ts'
 import { Field, FieldTag } from '../components/ProfileField.tsx'
@@ -35,7 +35,7 @@ type Saved = { readonly at: number; readonly sha: string | null }
 
 export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   const account = ctx.owner
-  const needsOwner = ctx.me.allAccounts && account === null
+  const needsOwner = mustPickCompany(ctx.me, account)
 
   const { result, reload } = useLoad(() => companyRead(needsOwner, () => api.profile(account)), [account, needsOwner])
   const loaded: ProfileConfig | null = result?.kind === 'ok' ? result.value : null

@@ -111,6 +111,18 @@ export const companyRead = <T>(needsOwner: boolean, read: () => Promise<Result<T
   needsOwner ? Promise.resolve({ kind: 'pickAccount' }) : read()
 
 /**
+ * Whether a company read has to wait for the reader to pick the company — the `needsOwner` above.
+ *
+ * The server answers a read that names no company only for a login holding exactly one: it resolves that one
+ * (`assertPrincipal` in driver/portal-access.mjs). Every other login gets the 400. Asked of `allAccounts`
+ * alone, this missed a client who holds several companies: New clearance, Profile, Projects and Search
+ * templates still sent their reads with none named, and each was refused.
+ */
+export function mustPickCompany(me: { readonly allAccounts: boolean; readonly accounts: readonly string[] }, owner: string | null): boolean {
+  return owner === null && (me.allAccounts || me.accounts.length !== 1)
+}
+
+/**
  * — WHY A SAVE DID NOT SAVE, in words the person who clicked can act on.
  *
  * Three call sites on the Clearances screen discarded the whole result and alerted a fixed sentence:
