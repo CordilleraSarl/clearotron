@@ -224,17 +224,18 @@ test("abandoning a register discards the credentials THIS step collected, and on
 });
 
 test("the wizard's own preflight is SKIPPED, not failed, when there is no provider to check", () => {
-  const i = src.indexOf("Running the driver's own credential preflight");
-  assert.notEqual(i, -1, "anchor missing: the preflight step — re-aim this arm");
+  const i = src.indexOf("Running the register credential check over these values…");
+  assert.notEqual(i, -1, "anchor missing: the register credential check — re-aim this test");
   const before = src.slice(Math.max(0, i - 400), i);
   assert.match(before, /if \(registerSelected\) \{/,
     "this step checks the register provider and nothing else, so with none selected it has nothing to "
     + "check — and it used to abort setup on its last step with 'Nothing has been written'");
-  assert.match(src, /Skipping the driver's credential preflight/,
+  assert.match(src, /Skipping the register credential check: no register is chosen\./,
     "and it must SAY it was skipped: a reader told a preflight passed, when it never ran, learns to "
     + "trust a line that means nothing");
-  assert.match(src, /The run door still refuses by name until one is/,
-    "…and that the run-door guard is untouched, which is the thing a reviewer will want to know");
+  assert.match(src, /Every search refuses until one is set\./,
+    "…and that every search is still refused until a register is set, which is the thing a reviewer will want to know");
+  assert.match(src, /prose\(REGISTER_CHECK_SKIPPED\);/, "…and the wizard prints that sentence");
 });
 
 test("the closing screen does not recommend a command that will refuse", () => {

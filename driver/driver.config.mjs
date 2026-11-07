@@ -2148,7 +2148,7 @@ export const ENGINE_BINARIES = {
     module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",
     signIn: "run `codex login`",
     authEnv: "CLEAROTRON_AI_BILLING", apiKeyEnv: "CODEX_API_KEY",
-    subscriptionHow: "sign in once with `codex login` — the adapter reads ~/.codex/auth.json and refuses before spending if it is absent",
+    subscriptionHow: "sign in once with `codex login`",
     // — codex's headless ending writes its own ~/.codex/auth.json; there is no
     // token to capture into an env file, and inventing one would be a route nobody has driven.
     headless: { cmd: "codex login --device-auth", tokenEnv: null },
