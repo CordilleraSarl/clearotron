@@ -2593,7 +2593,7 @@ if (isMain) {
     if (adoptedClientDoor)
       say(`               Already running as ${CLIENT_DOOR_UNIT}; this start kept it, so existing keys still work.`);
     else
-      say(`               It refuses every caller until a key is issued: ${DEMO ? demoConnectCommand({ prefix: invocationPrefix(), base: paths.base }) : keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
+      say(`               It refuses every caller until a key is issued: ${DEMO ? demoConnectCommand({ prefix: invocationPrefix(), base: paths.base, where: "elsewhere" }) : keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
   } else {
     // A door that exited printed why; one still up when the wait ran out printed nothing, and is not sent there.
     for (const line of clientDoorDownLines({ host: HOST, port: ports.client, exited: clientDoor?.child?.exitCode !== null })) say(line);
@@ -2720,6 +2720,8 @@ if (isMain) {
   // THE HEADINGS COME WITH THE PAIR, from the composer. Nothing is written here: the page prints these
   // same two words above these same two commands, and a second author is how the two surfaces drift.
   for (const line of connectScreen(connect)) say(line);
+  // The owner's words, 2026-11-06.
+  if (DEMO) { say(`  Another assistant? Run \`${demoConnectCommand({ prefix: invocationPrefix(), base: paths.base })}\` in a second terminal and pick it.`); say(""); }
   // ── WHERE TO TYPE THE THINGS JUST PRINTED ( — F31) ───────────────────────
   //
   // This block prints commands and then HOLDS THE TERMINAL in the foreground, so not one of them can be

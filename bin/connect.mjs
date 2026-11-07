@@ -51,6 +51,8 @@ import { claudeNamer } from "../driver/engine/probe.mjs";   // names the copy se
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { defaultDenylistPath, clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT, demoTokenSecretPath, keyPurposeLine, demoConnectCommand } from "../shared/client-door.mjs";
 import { readRunning } from "../shared/running-start.mjs";
+import { installPaths } from "./start.mjs";   // — one owner for a demo's layout, as `key` reads it
+import { demoProgramPlan } from "../shared/permanent-install.mjs";
 import { readLocalCredential, passphraseResetCommand, INSTALL_CREDENTIAL_FILE } from "../driver/portal-local-auth.mjs";
 import { invocationPrefix } from "../shared/invocation.mjs";
 import { BRAND } from "../shared/brand.mjs";
@@ -661,6 +663,41 @@ function printSteps(offer, key) {
 }
 
 /**
+ * What a demo has to offer an assistant on this machine: every stdio shape, resolved once against the demo's own folders and
+ * flag. The program is the demo's own copy where it has one, as the demo's start names it; otherwise the one running this.
+ */
+function demoHave(at) {
+  const paths = installPaths(at);
+  const plan = demoProgramPlan({ base: at });
+  const program = plan?.current ? { installRoot: plan.root } : {};
+  return {
+    stdioRoutes: Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) =>
+      [shape, stdioConnectFor(shape, { ...program, workDir: paths.workspace, reportsDir: paths.pool, wsl: wslTarget(), demo: true })])),
+    wsl: isWsl(),
+    nameClaude: claudeNamer(),
+    demo: true,
+  };
+}
+
+/** THE QUESTION, IN THE READER'S WORDS: which assistant they want to use, the one thing they know for certain. */
+async function askWhichAssistant() {
+  say("");
+  say("  Which assistant do you want to use?");
+  say("");
+  CONNECT_CLIENTS.forEach((c, n) => say(`    ${n + 1}) ${c.name}`));
+  say("");
+  requireInteractive({ verb: "connect" });
+  const rl = createInterface({ input: stdin, output: stdout });
+  let chosen = null;
+  try {
+    const answer = (await rl.question(`  1-${CONNECT_CLIENTS.length}: `)).trim();
+    chosen = CONNECT_CLIENTS[Number(answer) - 1] ?? clientById(answer);
+  } finally { rl.close(); }
+  if (!chosen) { console.error("connect: not one of the listed assistants."); process.exit(2); }
+  return chosen;
+}
+
+/**
  * ── A RUNNING DEMO, NAMED BY ITS FOLDER (owner, 2026-09-19) ─────────────────────────────────────────
  *
  * The demo is how a newcomer meets the product, and the next thing they ask an assistant is to connect.
@@ -673,17 +710,30 @@ function printSteps(offer, key) {
  * The address route's steps are not printed. They are written for a door behind a sign-in service,
  * reached over the web, and a demo's door is on this machine and takes the key instead.
  */
-async function connectDemo({ base, dryRun, clientName = null, running = readRunning() } = {}) {
+async function connectDemo({ base, dryRun, client = null, route = null, running = readRunning(), ask = askWhichAssistant } = {}) {
   const at = resolve(base);
   const prefix = invocationPrefix();
-  say("");
-  if (clientName) { say(`  ${clientName}`); say(""); }
   const demo = running.find((r) => r.demo && resolve(String(r.base ?? "")) === at);
   if (!demo) {
+    say("");
     say(`  Not available here — no demo is running from ${at}.`);
     say(`  What would change it: start it with \`${prefix}clearotron demo --base ${/\s/.test(at) ? `"${at}"` : at}\`, then run this again.`);
     return 1;
   }
+  // ── EACH ASSISTANT ITS OWN FORM, BOUND TO THE DEMO (design, 2026-11-05) ─────────────────────────────
+  //
+  // The demo's start names Claude Code's line only, so a reader with another assistant had nothing to run.
+  // This asks which assistant, as the plain command does, and hands it the form its row already has, bound
+  // to the demo: its own program, work folder, reports folder and demo flag, under the demo's own server
+  // name, so a real install's connection beside it is left as it is. The key route above is `--where
+  // elsewhere`, which the demo's client-door line names.
+  if (route !== "public-http") {
+    const chosen = client ?? await ask();
+    const have = demoHave(at);
+    return await render(whatItNeeds(chosen, have, "disk"), have, { dryRun, running: { env: {}, known: false } });
+  }
+  say("");
+  if (client) { say(`  ${client.name}`); say(""); }
   if (!demo.ports?.client) {
     say(`  Not available here — the demo running from ${at} has no client door open.`);
     say("  What would change it: stop the demo and start it again; its output says why the door did not start.");
@@ -733,7 +783,8 @@ async function main() {
     say("                      internet, with a key made for you now");
     say("    --list            the assistants this build knows");
     say("    --dry-run         say what would change, change nothing");
-    say("    --base <dir>      a running demo's folder: mint a key for its client door, and print both");
+    say("    --base <dir>      a running demo's folder: connect your assistant to that demo. With");
+    say("                      --where elsewhere, mint a key for its client door, and print both");
     say("    --allow-checkout-move");
     say("                      write this checkout's path even though services are running from");
     say("                      another one. Every unit's ExecStart follows that value, so the ones");
@@ -749,19 +800,26 @@ async function main() {
     process.exit(2);
   }
   const dryRun = argv.includes("--dry-run");
-  const b = argv.indexOf("--base");
-  if (b >= 0) {
-    const base = argv[b + 1];
-    if (!base || base.startsWith("--")) { console.error("connect: --base needs the demo's folder."); process.exit(2); }
-    const c = argv.indexOf("--client");
-    return await connectDemo({ base, dryRun, clientName: c >= 0 ? clientById(argv[c + 1])?.name ?? null : null });
-  }
   const w = argv.indexOf("--where");
   if (w >= 0 && !Object.hasOwn(WHERE_FLAG, argv[w + 1] ?? "")) {
     console.error(`connect: --where takes one of: ${Object.keys(WHERE_FLAG).join(", ")}`);
     process.exit(2);
   }
   let route = w >= 0 ? WHERE_FLAG[argv[w + 1]] : null;
+  const b = argv.indexOf("--base");
+  if (b >= 0) {
+    const base = argv[b + 1];
+    if (!base || base.startsWith("--")) { console.error("connect: --base needs the demo's folder."); process.exit(2); }
+    // `--list` NEEDS NO ANSWER, as the refusal for a missing terminal says, so it is answered here too.
+    if (argv.includes("--list")) { for (const x of CONNECT_CLIENTS) say(`  ${x.id.padEnd(16)} ${x.name}`); return 0; }
+    const c = argv.indexOf("--client");
+    const named = c >= 0 ? clientById(argv[c + 1]) : null;
+    if (c >= 0 && !named) {
+      console.error(`connect: no such assistant "${argv[c + 1]}". One of: ${CONNECT_CLIENTS.map((x) => x.id).join(", ")}`);
+      process.exit(2);
+    }
+    return await connectDemo({ base, dryRun, client: named, route });
+  }
   // F40 — reason about the RUNNING product from the units' own environment, not this CLI's env file.
   const running = runningEnv();
   const have = deploymentHas(running.env);
@@ -789,20 +847,8 @@ async function main() {
   }
 
   if (!chosen) {
-    // THE QUESTION, IN THE READER'S WORDS. Not "which transport", not "is this deployment hosted" —
-    // which assistant they want to use, which is the only thing they know for certain.
-    say("");
-    say("  Which assistant do you want to use?");
-    say("");
-    CONNECT_CLIENTS.forEach((c, n) => say(`    ${n + 1}) ${c.name}`));
-    say("");
-    requireInteractive({ verb: "connect" });
-    const rl = createInterface({ input: stdin, output: stdout });
-    try {
-      const answer = (await rl.question(`  1-${CONNECT_CLIENTS.length}: `)).trim();
-      chosen = CONNECT_CLIENTS[Number(answer) - 1] ?? clientById(answer);
-    } finally { rl.close(); }
-    if (!chosen) { console.error("connect: not one of the listed assistants."); process.exit(2); }
+    // Not "which transport", not "is this deployment hosted": which assistant (askWhichAssistant).
+    chosen = await askWhichAssistant();
     // THE SECOND QUESTION, ASKED ONLY WHEN IT HAS TWO ANSWERS — the page's own, in the terminal's words.
     // Where only one route is served here, asking would offer a choice whose other half cannot work.
     const both = ["disk", "public-http"].filter((r) => whatItNeeds(chosen, have, r)?.served);
