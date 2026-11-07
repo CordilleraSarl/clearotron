@@ -272,7 +272,7 @@ Copy it, point `CLEAROTRON_ACCESS_FILE` at your copy, sign in as one of its addr
 exactly that organisation's companies. Then delete it and write your own — it names nobody real, which also
 means it grants nothing you have.
 
-`clearotron start` (§6) writes an empty roster (`{"tenants": {}}`) into its state directory: your own staff
+`clearotron start` (§5) writes an empty roster (`{"tenants": {}}`) into its state directory: your own staff
 address is admitted, nobody else is enrolled, and enforcement is already on.
 
 ### Ops tokens — a credential for the verbs that spend
