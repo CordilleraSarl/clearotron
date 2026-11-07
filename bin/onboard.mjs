@@ -1725,20 +1725,28 @@ export async function runCheck() {
   // prints every line about them. `engineJudged` is that section's own condition: it judges nothing when
   // the units' environment cannot be read, or when CLEAROTRON_AI names no engine this driver ships.
   const engineJudged = serviceKnown && !(engSel && !engSpec);
+  // WITH NO AI CHOSEN THERE IS NO ENGINE TO JUDGE. `engineId` falls back to the code's default, and the
+  // default is not a choice: every search is refused until one is made (run-requirements.mjs, the engine row
+  // of `runRequirements`). Everything this section read off that default described an AI nobody chose: a
+  // machine with only Codex was told no `claude` was on its PATH, a ticked billing line named the default's
+  // subscription, and --probe-engine spent a turn proving the default and called the install ready. Measured
+  // on a fresh install of 0.5.1-beta.0, 2026-11-07. So the program, the probe and the billing are read
+  // only for an AI that is chosen, and a machine with none is in demo mode: nothing it has chosen can run.
+  const engineChosen = engineJudged && !!engSel;
   // — through `effective`, so the engine binary is found under whichever spelling is set. Read
   // literally, this reported a configured binary as missing on any install the wizard had written.
-  const binEff = engineJudged ? engineRead(engSpec.env, [engSpec.env]) : null;
+  const binEff = engineChosen ? engineRead(engSpec.env, [engSpec.env]) : null;
   // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
   // `claude` is not a configuration that can be wrong: it asks PATH, then the copy Clearotron installed.
-  const binSet = engineJudged && !!binEff && String(binEff.v).trim() !== engSpec.fallback;
-  const binSetting = engineJudged ? (binEff?.v || engSpec.fallback) : null;
-  const bin = engineJudged ? resolveEngineBin(binSetting, { engine: engineId, env: engineEnvOf() }) : null;
+  const binSet = engineChosen && !!binEff && String(binEff.v).trim() !== engSpec.fallback;
+  const binSetting = engineChosen ? (binEff?.v || engSpec.fallback) : null;
+  const bin = engineChosen ? resolveEngineBin(binSetting, { engine: engineId, env: engineEnvOf() }) : null;
   // How the mode is read, and why its environment is normalised first, is the Engine section's note
   // WHICH MODE THIS INSTALL IS IN.
-  const invEnv = engineJudged
+  const invEnv = engineChosen
     ? engineEnvOf(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((x) => [x.env, x.authEnv, x.apiKeyEnv])].filter(Boolean))
     : null;
-  const installMode = engineJudged ? engineMode(engineInventory(invEnv)) : null;
+  const installMode = !engineJudged ? null : engineChosen ? engineMode(engineInventory(invEnv)) : ENGINE_MODES.DEMO;
   // THE COMMAND THE READER CAN TYPE FROM HERE, as the demo line names its own. A bare `clearotron` is not
   // on PATH for an install run from npx, and now that the engine program comes with the install this is
   // the line most installs see first. The opening prints it when it leads and the Engine section prints
@@ -1858,7 +1866,7 @@ export async function runCheck() {
   // searches and that the order-time answer does not cover.
   const missingWords = serviceKnown && atOrder.length ? whatIsMissing(atOrder) : "";
   const leadIsTheRefusal = !hosted && missingWords !== "";
-  const turnLeads = PROBE_ENGINE && serviceKnown && atOrder.length === 0 && engineJudged && bin.executable && !bin.relative;
+  const turnLeads = PROBE_ENGINE && serviceKnown && atOrder.length === 0 && engineChosen && bin.executable && !bin.relative;
   const signInLineLeads = !leadIsTheRefusal && !PROBE_ENGINE && signInLine !== null;
   // ONE LINE, AS EVERY LINE BELOW IS, and the terminal wraps it. Wrapped here at spaces, it broke the command
   // apart wherever the install's path made a long word: `cd <path> && npx clearotron install` on three lines.
@@ -2057,23 +2065,32 @@ export async function runCheck() {
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
   // reason. Which engine is configured comes first now, and the binary is checked through THAT engine's
   // variable.
+  // The mode of a machine that cannot start a search, said by both branches below that reach it.
+  const demoModeLine = () => "MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
+    + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`;
   if (!serviceKnown) {
     info("the units' environment could not be read, so which AI the services run is not judged here — a failure to look, not a finding");
   } else if (engSel && !engSpec) {
     problem(`CLEAROTRON_AI="${engSel.v}" (${engSel.from}) is not an engine this driver ships — one of: `
       + `${Object.keys(ENGINE_BINARIES).join(", ")}. The run refuses on this by itself (gateway.selectEngine); `
       + "nothing can be checked here until it names an adapter.");
-  } else {
-    if (engSel) ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
+  } else if (!engSel) {
     // WHAT THE ORDER-TIME CHECK SAYS, NOT WHAT THE CODE FALLS BACK TO. Every search is refused while the
     // services lack this (run-requirements.mjs, `runRequirements`, the engine row), whatever the default
     // below checks. Naming that default here read as "nothing to do", a few lines above "Will a search
     // run?" listing this very setting (measured on a fresh install of a beta, 2026-11-04). Asked of the
     // services' own reading (servicesRead), as that section asks it: on a machine with units, their file
     // may hold the value this command's file does not, and then no search is refused over it.
-    else if (serviceKnown && !servicesRead("CLEAROTRON_AI")) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
+    if (!servicesRead("CLEAROTRON_AI")) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
       + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
     else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
+    // AND NOTHING BELOW IT IS READ OFF THE DEFAULT (engineChosen, above the opening): no program, no payment
+    // and no turn, which would all describe an AI nobody chose. The machine is in demo mode, and the way out
+    // is the demo's own advice, which names the default AI's vendor.
+    info(demoModeLine());
+    for (const line of leaveDemoAdvice(engSpec)) info(line);
+  } else {
+    ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
 
     // The line between an ABSENCE and a MISCONFIGURATION. Nothing set and no binary on PATH is a fresh
     // machine — reported, not failed. A variable that names something wrong is a configuration that
@@ -2166,8 +2183,7 @@ export async function runCheck() {
     //
     // `invEnv` and `installMode` are read that way above the opening, which needs the mode for its sign-in line.
     if (installMode === ENGINE_MODES.DEMO) {
-      info("MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
-        + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`);
+      info(demoModeLine());
       // NAMES THE COMMAND, AND THE RESTART. The settings page says both now, and a doctor that named
       // the program but not how to install it — or that left out the restart, which is what actually
       // unsticks a reader who has just installed it — would be the third opinion this issue exists to
