@@ -516,6 +516,23 @@ test('setupRoute decodes to one of the two routes, and EVERYTHING else is null',
   }
 })
 
+test('the release channel decodes to beta or latest, and EVERYTHING else is null', async () => {
+  // This word becomes part of the setup command a beta install's screen prints, so it gets the closed set
+  // setupRoute gets above. Null is what an older portal-service sends, and the command then reads as it did.
+  const me = (wire: unknown) => withFetch(
+    200, { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'], channel: wire }, () => api.me())
+  for (const good of ['beta', 'latest'] as const) {
+    const r = await me(good)
+    assert.ok(isOk(r))
+    if (isOk(r)) assert.equal(r.value.channel, good)
+  }
+  for (const wire of [undefined, null, '', 'BETA', 'next', 'beta && rm', 42, {}]) {
+    const r = await me(wire)
+    assert.ok(isOk(r))
+    if (isOk(r)) assert.equal(r.value.channel, null, `channel ${JSON.stringify(wire)} decoded to a word a command would carry`)
+  }
+})
+
 test('the administrator contact decodes to a mail or web href, and everything else is null', async () => {
   // Preferences puts this value in an `href`. The server admits only a mail or web address; this is the
   // second check, at the hop, so a value from an older or a misbehaving server cannot become a link that

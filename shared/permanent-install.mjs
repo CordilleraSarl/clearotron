@@ -56,6 +56,16 @@ export function channelOf(version) {
 }
 
 /**
+ * The package a printed command names, on the channel this version came from: `clearotron@beta` on a beta,
+ * and the bare `clearotron` on the stable, so a stable's commands read exactly as they always have. The bare
+ * name fetches `latest`, so on a beta `npx clearotron …` runs the stable's code against the beta's install.
+ */
+export function channelPackage(version = ownVersion()) {
+  const channel = channelOf(version);
+  return channel === "latest" ? "clearotron" : `clearotron@${channel}`;
+}
+
+/**
  * What `install` does first when it runs from npx. PURE given its inputs.
  *
  * `null` when there is nothing to move, because this install is not in npx's cache. Otherwise a plan, or

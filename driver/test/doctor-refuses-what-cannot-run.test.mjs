@@ -156,7 +156,8 @@ test("a present bundle is reported present, and does not manufacture a problem",
 test("THE CONTROL: a real misconfiguration still exits 1, so the two states did not collapse into one", () => {
   // Without this, everything above is satisfied by a doctor that exits 0 unconditionally — which would
   // be a worse product than the one this file was opened to fix, and would look exactly like a pass.
-  const { status, out } = doctor({ env: { CLEAROTRON_CLAUDE_PATH: "./claude" } });
+  // Claude chosen: doctor reads an AI's program only for the AI that is chosen.
+  const { status, out } = doctor({ env: { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: "./claude" } });
   assert.equal(status, 1,
     "a relative CLEAROTRON_CLAUDE_PATH is something SET WRONGLY, not something absent, and setup is the "
     + "cheap place to learn it");

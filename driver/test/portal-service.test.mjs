@@ -2637,6 +2637,64 @@ test("/portal/api/me: the program on the box and absent from the engine's readin
     "the program is on this box and the capture says it is not — the one state whose remedy is a restart");
 });
 
+test("/portal/api/me in a demo keeps New clearance's Review button on a machine with no engine program", async () => {
+  // A DEMO'S ORDERS REACH NO ENGINE. Each one opens the finished example for the search picked, which is
+  // what the demo's banner says, so a machine with no engine program is the demo's ordinary machine. Its
+  // snapshot says so, and /me passed that on as the no-engine state: New clearance drew the notice that
+  // sends a reader to the setup wizard, in the place of Review search, on a published beta's demo.
+  const w = world({ demo: true });
+  const NOTHING = { id: "anthropic-agent", known: true, binaryPresent: false };
+  captureWith(w.poolRoot, NOTHING);
+  const me = await withLiveProgram(false, async () => (await w.service.route("GET", "/portal/api/me", CLIENT)).json);
+  assert.notEqual(me.engineMode, "demo", "a demo told its visitor no search engine is attached, and took Review search away");
+  assert.equal(me.engineMode, null, "a demo states no engine mode: its orders never reach one");
+  assert.equal(me.engineProgramDisputed, false, "a demo was given a remedy for an engine it does not use");
+  assert.equal(me.canSearch, true, "a demo walks its own ordering flow and reads as able");
+
+  // AND THE BUTTON STILL OPENS THE DEMO'S OWN FLOW: a plan, then an order that lands on a finished report.
+  mkdirSync(join(w.poolRoot, "demo-multi"), { recursive: true });
+  writeFileSync(join(w.poolRoot, "demo-multi", "meta.json"), JSON.stringify({
+    runId: "demo-multi", customerKey: "demo-brand-owner", title: "VENQORI", kind: "clearance", overall: "LOW",
+    date: "2026-08-11", searchLevel: "multi-country-focus-search", clientGate: { released: true } }));
+  writeFileSync(join(w.poolRoot, "demo-multi", "report.html"), "<title>VENQORI</title>ok");
+  const body = { marks: [{ name: "IRONWHISK" }], classes: [8], goods: "kitchen tools",
+    product: "multi-country-focus-search", jurisdictions: ["European Union", "United States"],
+    forwarder: "f", profileKey: "zephyr", forwarderEmail: "f@example.test" };
+  const plan = await w.service.route("POST", "/portal/api/run/plan", CLIENT, body, {});
+  assert.equal(plan.status, 200, `the demo's review was refused: ${JSON.stringify(plan.json)}`);
+  const run = await w.service.route("POST", "/portal/api/run", CLIENT, { ...body, confirmationToken: plan.json.confirmationToken }, {});
+  assert.equal(run.status, 200, JSON.stringify(run.json));
+  assert.equal(run.json.landedOn, "demo-multi", "the order did not open the finished example");
+  assert.deepEqual(w.triggers, [], "a demo order reached the trigger seam");
+
+  // THE CONTROL: the same snapshot outside a demo is still the no-engine state the notice exists for.
+  const live = await meWith(NOTHING, false);
+  assert.equal(live.engineMode, "demo", "an install with no engine program no longer says so");
+});
+
+test("/portal/api/me names the release channel this install came from, so a beta's setup command fetches the beta", async () => {
+  // The no-engine notice named `npx clearotron install` on every install, and on a beta that fetches the
+  // stable, whose setup then moves itself into ~/.local over the beta. The screen picks the command by this
+  // word, which is read off the install's own version the way `update` reads it.
+  const { channelOf, ownVersion } = await import("../../shared/permanent-install.mjs");
+  const { service } = world();
+  const me = (await service.route("GET", "/portal/api/me", CLIENT)).json;
+  assert.equal(me.channel, channelOf(ownVersion()), "/me does not carry the install's channel");
+  assert.ok(["beta", "latest"].includes(me.channel), `the channel is a word no screen knows: ${JSON.stringify(me.channel)}`);
+});
+
+test("the brief reader's off line sends the operator to the doctor on this install's channel", async () => {
+  // `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code.
+  const { channelPackage } = await import("../../shared/permanent-install.mjs");
+  const { briefReadingOffLine } = await import("../portal-service.mjs");
+  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron@beta"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron@beta doctor` reports the engine's auth state.");
+  // THE CONTROL: on the stable the line is the one that shipped.
+  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron doctor` reports the engine's auth state.");
+  assert.ok(briefReadingOffLine("x").includes(`\`npx ${channelPackage()} doctor\``), "the line names a package other than this install's");
+});
+
 test("an unreadable profile store costs a name, never the door", async () => {
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",

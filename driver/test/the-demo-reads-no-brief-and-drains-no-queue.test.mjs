@@ -93,6 +93,11 @@ test("a demo boots with its brief reader off and no worker, and does not say an 
     assert.ok(!existsSync(join(locks, HEARTBEAT_FILE)), "a worker is draining the demo's queue");
     assert.match(said, /Nothing is started and nothing is charged/, "the demo did not say what ordering in it does");
     assert.doesNotMatch(said, /the moment money is committed/, "the demo told its visitor that ordering commits money");
+
+    // THE WRONG-PAGE HINT IS SAID ONCE. A first start frames the address with its passphrase, and the frame
+    // carries the hint; the Open line above it printed the same two lines as well.
+    assert.equal((said.match(/not this install's sign-in/g) ?? []).length, 1,
+      `the demo printed the wrong-page hint more than once, or not at all:\n${safe(said).slice(-3000)}`);
   } finally {
     await stop(run);
     rmSync(home, { recursive: true, force: true });

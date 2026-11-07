@@ -455,10 +455,26 @@ export function chooseProduct(d: Draft, product: Product | null): Draft {
 
 // ── which search fits what was entered ──────────────────────────────────────────────────────────────
 
+/**
+ * What kind of place this is, given as the picker names it or as the code a company's own list holds.
+ *
+ * A COMPANY'S TERRITORIES ARE STORED AS CODES ("EU", "US", "UK"), and the recommendation reads them when the
+ * draft names none. `tierOf` knows the picker's names only, so for the demo company's EU, US and JP it
+ * counted no region and no country: the reason read "because you named" and stopped, and a company holding
+ * one country was recommended the search that needs two. Read through the engine's code, as
+ * `reachesTerritory` reads the same list. `tierOf` itself is left to the names, which every other caller
+ * is given.
+ */
+const TIER_OF_CODE: Readonly<Record<string, Tier>> = Object.freeze(Object.fromEntries([
+  ...OFFERED.regions.map((t) => [t.code, 'region'] as const),
+  ...OFFERED.countries.map((t) => [t.code, 'country'] as const),
+]))
+const tierOfPlace = (place: string): Tier | null => tierOf(place) ?? TIER_OF_CODE[territoryKeyOf(place)] ?? null
+
 export type Recommendation = {
   /** The search that fits, off the offering the server sent. */
   readonly product: Product
-  /** Why, as the row prints it: "because you named a region and a country". */
+  /** Why, as the row prints it: "because you named a region and a country", or "because the company searches a region". */
   readonly reason: string
 }
 
@@ -481,12 +497,17 @@ export type Recommendation = {
  * recommend is the worldwide one, and selecting that removes the Where picker from the form the reader
  * is still filling in, one field above the place they were about to name.
  *
+ * THE COMPANY'S OWN PLACES ARE NOT THE READER'S. When the draft names none, the form reads the company's
+ * territories, and "because you named a region and 2 countries" told a reader who typed nothing that they
+ * had. `own` says the places are the company's, and the reason then says so.
+ *
  * @param products the offering, as the server sent it
  * @param names how many names are on the form
  * @param territories the places named, in the composer's own vocabulary
+ * @param own true when `territories` are the company's own, read because the draft names none
  */
 export function recommendSearch(
-  products: readonly Product[], names: number, territories: readonly string[],
+  products: readonly Product[], names: number, territories: readonly string[], { own = false }: { own?: boolean } = {},
 ): Recommendation | null {
   if (territories.length === 0 && names <= 1) return null
   const live = products.filter((p) => p.available)
@@ -494,8 +515,11 @@ export function recommendSearch(
     const widest = live.filter((p) => p.maxNames > 1).sort((a, b) => b.maxNames - a.maxNames)[0]
     return widest ? { product: widest, reason: `because you entered ${names} names` } : null
   }
-  const regions = territories.filter((t) => tierOf(t) === 'region').length
-  const countries = territories.filter((t) => tierOf(t) === 'country').length
+  const regions = territories.filter((t) => tierOfPlace(t) === 'region').length
+  const countries = territories.filter((t) => tierOfPlace(t) === 'country').length
+  // A PLACE THIS VOCABULARY CANNOT TELL IS NEITHER, and a recommendation made from nothing it could read
+  // would be a guess with a reason that names nothing.
+  if (!regions && !countries) return null
   const geography = territories.length === 1 && countries === 1 ? 'exactly one country' : 'a region, or two or more countries'
   const product = live.find((p) => p.pipeline !== 'knockout' && p.geography === geography)
   if (!product) return null
@@ -504,7 +528,7 @@ export function recommendSearch(
     regions ? some(regions, 'region', 'regions') : '',
     countries ? some(countries, 'country', 'countries') : '',
   ].filter(Boolean)
-  return { product, reason: `because you named ${named.join(' and ')}` }
+  return { product, reason: own ? `because the company searches ${named.join(' and ')}` : `because you named ${named.join(' and ')}` }
 }
 
 /**

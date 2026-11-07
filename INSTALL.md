@@ -147,9 +147,11 @@ testing, or while a stable is being prepared; it built and the suite passed, and
 register through it.
 
 **npm's global form works too**, where npm's global directory is yours to write:
-`npm install -g clearotron`, then `npx clearotron install`. On a Linux Node from the distribution or
+`npm install -g clearotron`, then `npx clearotron install`. For the beta,
+`npm install -g clearotron@beta`, then `clearotron install`. On a Linux Node from the distribution or
 NodeSource that directory is `/usr`, owned by root, and npm refuses with `EACCES`. Do not answer that
-with `sudo`; install under your home instead: `npm install -g clearotron --prefix ~/.local`.
+with `sudo`; install under your home instead: `npm install -g clearotron --prefix ~/.local`, or
+`npm install -g clearotron@beta --prefix ~/.local` for the beta, then `~/.local/bin/clearotron install`.
 
 **Upgrade production to stables only.** What each channel promises and how often one is cut:
 **[docs/RELEASES.md](docs/RELEASES.md)**.
@@ -191,15 +193,19 @@ Read the list before you delete anything: one of these directories holds your re
 background services, `clearotron stop` stops them and removes their unit files. `clearotron status` says
 which of the two you have.
 
-**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`,
-it lives in two places under `~/.local`:
+**The program.** Installed by `clearotron install`, or with
+`npm install -g clearotron --prefix ~/.local`, it lives in two places under `~/.local`:
 
 ```
 ~/.local/lib/node_modules/clearotron
 ~/.local/bin/clearotron
 ```
 
-Installed from a packaged tarball, it is in the folder §2 had you create, `~/app`: delete that folder.
+`npm rm -g --prefix ~/.local clearotron` removes both. Without the prefix, npm looks in its own global
+directory, finds nothing, and prints "up to date". Installed with `npm install -g clearotron` and no
+prefix, `npm rm -g clearotron` removes the program. Installed from a packaged tarball, it is in the
+folder §2 had you create, `~/app`: delete that folder. On those two routes setup also put the
+`clearotron` command in `~/.local/bin/clearotron`: delete that file too.
 
 **The reasoning program, if setup installed it.** Setup puts Claude Code or the Codex CLI in one folder,
 `~/.local/share/clearotron/engines`, or where `CLEAROTRON_ENGINES_DIR` points. Delete the folder to
@@ -263,6 +269,11 @@ adds only what the file lacks and never replaces a line, and names any setting o
 configuration differ; to change one, change it in both. It is not the
 same file as `~/.config/clearotron/.env`, which configures the product when you run it yourself. Delete
 both, or you leave a file of credentials in your home for services that no longer exist.
+
+**Codex's working folders, on a Codex install.** Clearotron runs each Codex turn in a folder of its own
+under `~/.cache/clearotron/codex-homes` (under `$XDG_CACHE_HOME` when that is set, and
+`%LOCALAPPDATA%\clearotron` on Windows). A turn's folder goes when the turn ends; the folder that holds
+them stays. Delete `~/.cache/clearotron` to remove it.
 
 Nothing else on the machine is ours: no system-wide files, no services outside your own user, and nothing
 in `/etc`, `/usr` or `/var`.
@@ -968,7 +979,7 @@ set:
 
 The client connector is the door a company's assistant talks to, and it
 is **part of the product** rather than something a deployment invents. A reader who reaches the
-Use-your-AI page and finds Connect buttons that do nothing has been failed by the install, not by
+Connect your AI page and finds Connect buttons that do nothing has been failed by the install, not by
 their own integration work.
 
 **Two shapes, and the line between them is what your assistant can do — not where it runs.** Ruling
@@ -997,9 +1008,9 @@ So an install behind `ssh -L` or an editor's port forward serves shape 1 perfect
 shape 2 at all, however the reader reaches the portal. `clearotron connect` says so plainly rather
 than printing an address that will be rejected.
 
-**The address is set once, at install.** `npx clearotron install` asks for it — *"the address companies'
-assistants reach this install at"* — and writes `CLEAROTRON_CLIENT_MCP_URL`, which is the single value the
-Use-your-AI page, a report's Ask-your-AI control and `doctor` all read. Leave it empty on a local
+**The address is set once, at install.** `npx clearotron install` asks for it — *"Optional: the public connector
+address"* — and writes `CLEAROTRON_CLIENT_MCP_URL`, which is the single value the
+Connect your AI page, a report's Ask AI control and `doctor` all read. Leave it empty on a local
 install: every one of those surfaces then shows its honest empty state, which is correct for a machine
 with no public address. Changing it later is editing that one setting and restarting.
 
@@ -1342,7 +1353,7 @@ there. On the repository route "the project" is the checkout; on the packaged ro
 you ran `npm init` in — and on that route `clearotron` IS a dependency, so `npx` finds it in
 `node_modules/.bin` exactly as the paragraph above describes.
 
-**`clearotron install` (§3) puts the short form on your `PATH`**, and every command after it in this
+**`clearotron install` (§2) puts the short form on your `PATH`**, and every command after it in this
 document uses that form. Use it rather than a fresh `npx clearotron`: `npx` resolves whichever version npm
 picks at that moment — the stable, unless you name a channel — and does not hand over to the copy the
 install placed. You can stop typing `npx` after it:

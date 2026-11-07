@@ -73,8 +73,18 @@ test("with no register chosen, the ending suggests the demo and no first real cl
 
 test("setup's opening promises only what it does", () => {
   // A paid register key is written on the reader's word, unchecked: checking it would cost them. And the
-  // organisation's name cannot be skipped.
-  assert.ok(SRC.includes("Nothing is written until each credential you give has been checked, except a paid register key: checking it would cost you, so it is written on your word."));
+  // organisation's name cannot be skipped. "No setting", since a cancel can leave programs setup installed.
+  assert.ok(SRC.includes("No setting is written until each credential you give has been checked, except a paid register key: checking it would cost you, so it is written on your word."));
+  assert.ok(!SRC.includes("Nothing is written until each credential"), "the opening claims nothing is written again");
   assert.ok(SRC.includes('subtitle: "one pass, and everything here but your organisation\'s name is skippable"'));
   assert.ok(!SRC.includes("every credential you give has been checked against the real service"), "the old promise is back");
+});
+
+test("the register question does not deny the default its menu shows", () => {
+  // "(default)" on the menu is the answer Enter picks, and the line above it said "There is no default in
+  // the engine — it refuses to guess." It now says what the engine does with no register, in the owner's
+  // words, on the two lines setup prints.
+  assert.ok(SRC.includes('say("  This decides which register gets searched, and which vendor gets billed. Every search refuses");\n  say("  until one is set.");'),
+    "the register question's opening is not the approved one");
+  assert.ok(!SRC.includes("There is no default in"), "the register question denies its own default again");
 });

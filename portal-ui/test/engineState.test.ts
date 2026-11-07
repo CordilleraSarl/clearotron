@@ -19,7 +19,7 @@ import { readFileSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
-  engineRowFaults, engineNotice, engineRow, billingRefusalSentence, type EngineFacts, type BillingRefusal,
+  engineRowFaults, engineNotice, engineRow, billingRefusalSentence, setupPackage, type EngineFacts, type BillingRefusal,
 } from '../src/contract/engineState.ts'
 import { api } from '../src/contract/api.ts'
 
@@ -439,4 +439,33 @@ test('no AI chosen: the Engine row shows the selection as unset, red, and names 
   assert.equal(engineRow(ANTHROPIC).ok, true, 'a capture that does not say whether an AI is chosen turned the row red')
   assert.equal(engineNotice({ programDisputed: false }).headline, 'No search engine is attached to this install.',
     'the row and the search screen no longer share their words for an install with no engine')
+})
+
+test('a beta install\'s setup command fetches the beta', () => {
+  // The bare name fetches the stable: npx runs a global copy only from npm's own global directory, and on an
+  // install moved into ~/.local the stable's setup then moves itself over the beta. Measured on the
+  // published beta's demo, where the notice named `npx clearotron install`.
+  assert.equal(setupPackage('beta'), 'clearotron@beta')
+  // THE CONTROL: the stable, and a service that does not say, keep the command exactly as it read.
+  assert.equal(setupPackage('latest'), 'clearotron')
+  assert.equal(setupPackage(null), 'clearotron')
+  assert.equal(setupPackage(undefined), 'clearotron')
+})
+
+test('a beta install\'s Engine row names the setup command that fetches the beta', () => {
+  // The row named `npx clearotron install` on every install, and on a beta that fetches the stable.
+  const missing: EngineFacts = { ...ANTHROPIC, binaryPresent: false }
+  const beta = engineRowFaults(missing, { channel: 'beta' }).join(' ')
+  assert.ok(beta.includes('Run the setup wizard, `npx clearotron@beta install`: it offers to install the program'), beta)
+  // THE CONTROL: the stable, and a service that does not say, keep the row exactly as it read.
+  for (const channel of ['latest', null, undefined] as const) {
+    const one = engineRowFaults(missing, { channel }).join(' ')
+    assert.ok(one.includes('Run the setup wizard, `npx clearotron install`: it offers to install the program'), `${channel}: ${one}`)
+  }
+  assert.ok(engineRow(missing, { channel: 'beta' }).faults.join(' ').includes('`npx clearotron@beta install`'),
+    'the whole row drops the channel on the way to its faults')
+  // AND THE CONFIGURATION SCREEN HANDS IT THE CHANNEL /me CARRIES.
+  const src = readFileSync(new URL('../src/screens/GlobalConfig.tsx', import.meta.url), 'utf8')
+  assert.match(src, /channel=\{ctx\.me\.channel \?\? null\}/, 'the screen does not pass the install\'s channel to the row')
+  assert.match(src, /engineRow\(engine, \{ programDisputed, channel \}\)/, 'the row is drawn without the channel')
 })

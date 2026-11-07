@@ -35,7 +35,7 @@
 import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* translation before any module-top
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
-import { hostname as osHostname } from "node:os";   // — the address a refusal page names when nothing else identifies this instance
+import { hostname as osHostname, homedir } from "node:os";   // — the address a refusal page names when nothing else identifies this instance
 
 // The port this service listens on when nobody says otherwise. Declared here rather than at the
 // listener, because the refusal page names the address too and it is composed on IMPORT-side code: the
@@ -46,6 +46,7 @@ import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStor
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
 import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
+import { channelOf, channelPackage, ownVersion } from "../shared/permanent-install.mjs";   // — which release channel this install came from
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
 import { doorKind } from "../shared/mcp-challenge.mjs";   // — one reading of what a connector asks for, shared with doctor
@@ -153,6 +154,7 @@ import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { orderTimeRefusal } from "./run-requirements.mjs";   // the runner's own test for "can this install run a search"
 import { runTables } from "./order-tables.mjs";               // …asked of the runner's own tables, so the two cannot disagree
+import { howItRuns } from "./how-it-runs.mjs";   // …and the remedy, for how this portal runs
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
@@ -187,6 +189,16 @@ import { deploymentBox } from "../shared/deployment-box.mjs";   // — the box n
 import { stageNow } from "./progress.mjs";   // the stage a live run is in now, for the card and the row
 // A run in one of these has finished; its step is the one its terminal write set, not the stage it last entered.
 const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
+// This install's release channel, `beta` or `latest`, read once off its own version. /me carries it.
+const INSTALL_CHANNEL = channelOf(ownVersion());
+
+/**
+ * The operator's line when the brief reader cannot be built: why, and the check to run, ON THIS CHANNEL.
+ * `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code.
+ */
+export function briefReadingOffLine(reason, pkg = channelPackage()) {
+  return `brief reading OFF — ${reason}. Describe-it stays disabled; \`npx ${pkg} doctor\` reports the engine's auth state.`;
+}
 
 // The offering the portal menus build from — product-rows.mjs's row, unchanged.
 //
@@ -1188,6 +1200,17 @@ export function makeConnectorKeyRevoker({ env = process.env, home = null } = {})
 // that sets it; everyone else is shown the client sentence, which names neither.
 const refusalFor = (principal, refusal) => (seesEverything(principal) && refusal.installer) || refusal.client;
 
+/**
+ * The portal's own question about an order: the runner's (`orderTimeRefusal`), with the remedy the person who runs
+ * the install is shown read from how THIS portal runs (driver/how-it-runs.mjs): the configuration it actually uses,
+ * and how it is reloaded. Every input is a parameter, so a test plants a machine, an environment, a command line
+ * and a cgroup of its own; each one left out is this process's own.
+ */
+export function portalOrderRefusal({ env = process.env, tables = {}, argv, home = homedir(), repoRoot = INSTALL_ROOT, cgroup, readFile, exists, read, template } = {}) {
+  return orderTimeRefusal(env, tables, {
+    howFor: (missing) => howItRuns({ missing, env, argv, home, repoRoot, cgroup, readFile, exists, read, template }) });
+}
+
 export function makePortalService({
   poolRoot, workspaceRoot, recipesDir = undefined, secret,
   grants = null,
@@ -1676,7 +1699,14 @@ export function makePortalService({
         // must leave the button alone rather than infer demo from an absent file.
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
-        const meEngineMode = flagView(poolRoot).engineMode;
+        //
+        // A DEMO ANSWERS NULL. No order in a demo reaches an engine: the run route below resolves each one
+        // to the finished example for the search picked (`if (demo)`), which is what the demo's banner
+        // promises. The demo's snapshot still describes the machine, so on a machine with no engine program
+        // this read "demo", and New clearance drew the no-engine notice where Review search belongs: the
+        // one flow the demo exists to show could not be started. Null leaves the button alone, as it does
+        // on a fresh install, and the configuration page still reads the snapshot for itself.
+        const meEngineMode = demo ? null : flagView(poolRoot).engineMode;
         const searchRefusal = demo ? null : await orderRefusal();
         // THE HOUSE MARKETPLACES, offered as suggestions wherever a company's marketplaces are edited. A new
         // company starts with none (the owner's ruling of 2026-09-23) and somebody picks; these are the
@@ -1712,6 +1742,10 @@ export function makePortalService({
           // half its readers. A WORD, never a command line and never a prefix: `invocationForm` can
           // answer with this machine's absolute path, and this value is rendered in a browser.
           setupRoute: installRoute(),
+          // WHICH RELEASE CHANNEL THIS INSTALL CAME FROM, read off its own version as `update` reads it, so the
+          // setup command a screen names fetches this channel. `npx clearotron install` fetches the stable, and
+          // the stable's setup then moves itself into ~/.local over a beta. A WORD, like the route above.
+          channel: INSTALL_CHANNEL,
           // THE COMMAND THAT FILES AN ORGANISATION, for the screen that cannot create a company without one.
           // `browserCommand`'s rule: no path on this machine, and from npx's cache the published version
           // rather than a bare name that reader does not have.
@@ -5303,7 +5337,7 @@ const PORT = PORT_CHOICE.port;
       if (runner?.error) {
         // NAMES THE CONDITION, on the operator's surface. The client-facing note stays client-facing;
         // this is the line whose absence made a billing posture look like a forgotten switch.
-        log(`brief reading OFF — ${runner.error}. Describe-it stays disabled; \`npx clearotron doctor\` reports the engine's auth state.`);
+        log(briefReadingOffLine(runner.error));
         return null;
       }
       log(`brief reading ON — engine=${runner.engine} billing=${runner.authMode} model=${model}`);
@@ -5335,7 +5369,7 @@ const PORT = PORT_CHOICE.port;
     // demo out of one. Anything but the literal "1" is not a demo.
     demo: isDemo(process.env),   // — one name, shared with the MCP door
     // The runner's own order-time test, asked of the runner's own tables: the portal refuses what the runner would.
-    orderRefusal: async () => orderTimeRefusal(process.env, await runTables()) });
+    orderRefusal: async () => portalOrderRefusal({ tables: await runTables() }) });
   const { RateLimiter } = await import("../mcp-server/lib/ratelimit.mjs");
   const limiter = new RateLimiter({ perMinute: Number(process.env.PORTAL_RATE_PER_MIN || 120) });
   const { createServer } = await import("node:http");

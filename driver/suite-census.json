@@ -99,6 +99,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-brief-is-read-only-by-an-ai-that-is-chosen.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 3,
+          "todos": 0
+        },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
           "tests": 13,
           "asserts": 32,
@@ -121,6 +127,12 @@
           "tests": 14,
           "asserts": 29,
           "skips": 0,
+          "todos": 0
+        },
+        "a-cancelled-setup-names-what-stays.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 5,
           "todos": 0
         },
         "a-cap-of-zero-is-not-a-register-outcome.test.mjs": {
@@ -313,6 +325,12 @@
           "tests": 3,
           "asserts": 14,
           "skips": 1,
+          "todos": 0
+        },
+        "a-command-printed-on-a-beta-fetches-the-beta.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
           "todos": 0
         },
         "a-common-law-coverage-status-is-read-as-data.test.mjs": {
@@ -2837,7 +2855,7 @@
         },
         "an-install-that-cannot-search-refuses-the-order-at-review.test.mjs": {
           "tests": 9,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -3814,8 +3832,8 @@
           "todos": 0
         },
         "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
-          "tests": 5,
-          "asserts": 8,
+          "tests": 6,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -3829,6 +3847,12 @@
           "tests": 5,
           "asserts": 29,
           "skips": 0,
+          "todos": 0
+        },
+        "doctor-reads-only-the-ai-that-is-chosen.test.mjs": {
+          "tests": 2,
+          "asserts": 23,
+          "skips": 2,
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
@@ -4937,7 +4961,7 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 78,
-          "asserts": 302,
+          "asserts": 303,
           "skips": 4,
           "todos": 0
         },
@@ -5272,8 +5296,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 133,
-          "asserts": 718,
+          "tests": 136,
+          "asserts": 732,
           "skips": 1,
           "todos": 0
         },
@@ -6881,7 +6905,7 @@
         },
         "the-demo-reads-no-brief-and-drains-no-queue.test.mjs": {
           "tests": 1,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -6958,8 +6982,8 @@
           "todos": 0
         },
         "the-end-of-setup-agrees-with-what-it-left-unset.test.mjs": {
-          "tests": 7,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -7621,6 +7645,12 @@
           "tests": 7,
           "asserts": 25,
           "skips": 4,
+          "todos": 0
+        },
+        "the-refusal-names-the-whole-remedy.test.mjs": {
+          "tests": 12,
+          "asserts": 41,
+          "skips": 0,
           "todos": 0
         },
         "the-register-claims-check-reads-the-records-the-run-holds.test.mjs": {
@@ -8715,8 +8745,8 @@
           "todos": 0
         },
         "list-runs-says-when-nothing-is-configured.test.mjs": {
-          "tests": 2,
-          "asserts": 6,
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -8893,6 +8923,12 @@
     "portal-ui": {
       "ext": "ts",
       "perFile": {
+        "aScreenAwaitingACompanyAsksNothing.test.ts": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "about.test.ts": {
           "tests": 3,
           "asserts": 13,
@@ -8906,8 +8942,8 @@
           "todos": 0
         },
         "api.test.ts": {
-          "tests": 48,
-          "asserts": 195,
+          "tests": 49,
+          "asserts": 199,
           "skips": 0,
           "todos": 0
         },
@@ -9002,8 +9038,8 @@
           "todos": 0
         },
         "engineState.test.ts": {
-          "tests": 13,
-          "asserts": 59,
+          "tests": 15,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },
@@ -9116,8 +9152,8 @@
           "todos": 0
         },
         "newClearanceStructure.test.ts": {
-          "tests": 9,
-          "asserts": 69,
+          "tests": 10,
+          "asserts": 75,
           "skips": 0,
           "todos": 0
         },
@@ -9182,8 +9218,8 @@
           "todos": 0
         },
         "profileFields.test.ts": {
-          "tests": 55,
-          "asserts": 178,
+          "tests": 57,
+          "asserts": 190,
           "skips": 0,
           "todos": 0
         },
@@ -9206,8 +9242,8 @@
           "todos": 0
         },
         "recommendSearch.test.ts": {
-          "tests": 6,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },

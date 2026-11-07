@@ -52,8 +52,8 @@ import type {
   Plan, Result, Searches, SavedSearchDetail, ProjectSummary, ProjectDetail, ProfileConfig, Usage,
   ReadCapability, Product,
 } from '../contract/api.ts'
-import { api, isOk, operatorName, notCommitted } from '../contract/api.ts'
-import { engineNotice } from '../contract/engineState.ts'
+import { api, companyRead, isOk, operatorName, notCommitted } from '../contract/api.ts'
+import { engineNotice, setupPackage } from '../contract/engineState.ts'
 import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
@@ -155,12 +155,12 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
 
   // `reload` is wired to a retry button below. A composer that cannot fetch its own depth menu has
   // nothing to poll for and nothing to recover on its own, so the user needs a way to ask again.
-  const { result: searches, reload: retrySearches } = useLoad(() => api.searches(account), [account])
+  const { result: searches, reload: retrySearches } = useLoad(() => companyRead(needsOwner, () => api.searches(account)), [account, needsOwner])
   // The company's own defaults, for the context card and the effort model. A failure here is
   // survivable — the card falls back to plain words — so it never gates the form.
-  const { result: profileRes } = useLoad(() => api.profile(account), [account])
-  const { result: projectsRes } = useLoad(() => api.projects(account), [account])
-  const { result: usageRes } = useLoad(() => api.usage(account), [account])
+  const { result: profileRes } = useLoad(() => companyRead(needsOwner, () => api.profile(account)), [account, needsOwner])
+  const { result: projectsRes } = useLoad(() => companyRead(needsOwner, () => api.projects(account)), [account, needsOwner])
+  const { result: usageRes } = useLoad(() => companyRead(needsOwner, () => api.usage(account)), [account, needsOwner])
 
   const levels = searches?.kind === 'ok' ? searches.value.products : []
   // §B — the depth ladder, derived from the payload's own effort figures rather
@@ -228,6 +228,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
    * both halves of what they reported.
    */
   const [savedDraft, setSavedDraft] = useState<string | null>(null)
+  /** The finished example a demo order opened. Like a submitted run, it leaves nothing on the form to lose. */
+  const [landed, setLanded] = useState<string | null>(null)
 
   // WHERE A SAVE LEAVES FOR, AND IT LEAVES AFTER THE RENDER THAT MAKES THIS PAGE CLEAN. The unsaved guard
   // reads its flag through a ref written during render and asks at the moment of navigation, so a `go`
@@ -249,9 +251,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       current: JSON.stringify(draft),
       empty: JSON.stringify(EMPTY),
       saved: savedDraft,
-      submitted: submitted != null,
+      submitted: submitted != null || landed != null,
     }),
-    [draft, submitted, savedDraft],
+    [draft, submitted, savedDraft, landed],
   )
   useUnsaved(composerDirty)
 
@@ -440,7 +442,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // showing four countries recommended nothing and preselected nothing, because the four were never the
   // reader's own.
   const recommendation = useMemo(
-    () => recommendSearch(levels, names.length, draft.pick.territories.length ? draft.pick.territories : own.territories),
+    () => (draft.pick.territories.length
+      ? recommendSearch(levels, names.length, draft.pick.territories)
+      : recommendSearch(levels, names.length, own.territories, { own: true })),
     [levels, names.length, draft.pick.territories, own.territories],
   )
   useEffect(() => {
@@ -485,8 +489,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // A BRIEF THAT NAMES NO SEARCH gets the one that fits what it filled in — the same one the rows
       // tag — applied in this same write, so the receipt's Search line says which, and why. Never over
       // a search the reader chose, and never over a template, which carries its own.
-      const fits = recommendSearch(levels, parseNames(after.names).length,
-        after.draft.territories.length ? after.draft.territories : own.territories)
+      const fits = after.draft.territories.length
+        ? recommendSearch(levels, parseNames(after.names).length, after.draft.territories)
+        : recommendSearch(levels, parseNames(after.names).length, own.territories, { own: true })
       if (read.product == null && !pickedByHand && !d.savedSearch && fits) {
         after = { ...after, draft: chooseProduct(after.draft, fits.product) }
       }
@@ -623,10 +628,15 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // AND IT MUST NOT SAY THE RUN IS NEW. `Submitted` is the "your clearance has started" panel; going
       // there and then to the report would tell the visitor a run began that never did. Straight to the
       // report, which is dated as it is and says on its own face that it is an example.
+      //
+      // AND IT LEAVES AFTER THE RENDER THAT MAKES THIS PAGE CLEAN, as a save does (`leaveTo`). A `go` here
+      // asked the unsaved guard while the form still held the order it had just placed, so a demo answered
+      // its own Start search with "Leave this page?", and Cancel kept the visitor off the report.
       if (r.value.landedOn) {
         setPlan(null)
         setRunFailure(null)
-        ctx.go(`/portal/result/${encodeURIComponent(r.value.landedOn)}`)
+        setLanded(r.value.landedOn)
+        setLeaveTo(`/portal/result/${encodeURIComponent(r.value.landedOn)}`)
         return
       }
       setSubmitted(r.value.id)
@@ -1552,6 +1562,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         // from a working install because a file is missing.
         demoMode={ctx.me.engineMode === 'demo'}
         setupRoute={ctx.me.setupRoute}
+        channel={ctx.me.channel ?? null}
         programDisputed={ctx.me.engineProgramDisputed}
         // ONE CLICK TO THE PAGE THAT EXPLAINS IT, and only for a reader who can open it. Global
         // config is served only to someone who sees everything, so this asks the fact the avatar
@@ -1759,7 +1770,7 @@ function NameWall({
  * user cannot tell what they picked, which is the gap this line closes.
  */
 function Footer({
-  startedFrom, tier, detail, uses, duration, runs, ready, busy, demoMode, setupRoute,
+  startedFrom, tier, detail, uses, duration, runs, ready, busy, demoMode, setupRoute, channel,
   programDisputed, onSettings, searchRefusal,
   saveOpen, saveName, saveText, saveNote, saveDone, editing, canSave, blockedBy,
   onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview, onSeeSaved,
@@ -1790,6 +1801,8 @@ function Footer({
    * and a reader who cannot run the one command they are given has been told nothing.
    */
   readonly setupRoute: 'packaged' | 'checkout' | null
+  /** The release channel this install came from, so a beta's setup command fetches the beta. Null: the server did not say. */
+  readonly channel: 'beta' | 'latest' | null
   /**
    * WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — and therefore which of two
    * remedies this notice gives. They are not interchangeable: telling someone to install a program
@@ -1930,7 +1943,7 @@ function Footer({
               <div className="footer-demo-note" role="status" style={{ fontSize: 12.5, lineHeight: 1.45 }}>
                 <strong>{n.headline}</strong>{' '}
                 {n.before}
-                {n.namesSetupCommand ? <>{' '}<SetupCommand route={setupRoute} /></> : null}
+                {n.namesSetupCommand ? <>{' '}<SetupCommand route={setupRoute} channel={channel} /></> : null}
                 {n.after ? <>{' '}{n.after}</> : null}
                 {onSettings ? (
                   <>
@@ -1992,7 +2005,10 @@ function Footer({
  * the field leaves this genuinely unknown, and a reader who is told which of two commands applies to
  * them can act; a reader given the wrong one cannot, and has no way to tell that is what happened.
  */
-function SetupCommand({ route }: { readonly route: 'packaged' | 'checkout' | null }) {
+function SetupCommand({ route, channel }: { readonly route: 'packaged' | 'checkout' | null; readonly channel: 'beta' | 'latest' | null }) {
+  // A BETA'S SETUP FETCHES THE BETA. The bare name fetches the stable, whose setup then moves itself over
+  // the beta (setupPackage says why). A source checkout runs its own scripts, so its command has no channel.
+  if (route === 'packaged' && channel === 'beta') return <><code>npx {setupPackage(channel)} install</code>.</>
   if (route === 'packaged') return <><code>npx clearotron install</code>.</>
   if (route === 'checkout') return <><code>npm run setup</code>.</>
   return (

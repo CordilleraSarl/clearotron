@@ -144,11 +144,22 @@ const posted = []
  */
 let meEngine = {}
 
+/**
+ * The roster RIGHT NOW, for the pass whose reader sees every company and has picked none: two companies,
+ * so the shell selects neither. Null serves the constant route above. Mutable for the reason `meEngine` is.
+ */
+let rosterNow = null
+/** Every GET the page sends to the API, path and query, so a pass can assert what was asked. */
+const gets = []
+/** The finished run a demo order lands on, or null for an ordinary start. Mutable for the reason `meEngine` is. */
+let runLanding = null
+
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json' }
 
 const server = createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost')
   const path = url.pathname
+  if (req.method === 'GET' && path.startsWith('/portal/api/')) gets.push(`${path}${url.search}`)
 
   // The brief reader. Answers a fixed read so the check can assert what lands in the FORM — the whole
   // point of the feature is that its output is ordinary editable fields, and a string test on the
@@ -218,7 +229,7 @@ const server = createServer((req, res) => {
       // so the review dialog drawn from it is the dialog for the search on the form, not a fixed one.
       const row = productRows().find((r) => r.key === body.product) ?? null
       res.end(JSON.stringify(path === '/portal/api/run'
-        ? { id: 'demo-run' }
+        ? (runLanding ? { ok: true, queued: false, id: runLanding, landedOn: runLanding, landedProduct: body.product ?? null } : { id: 'demo-run' })
         : {
             name: row?.name ?? 'Depth 4', stageLabel: row?.name ?? 'Depth 4', marks: 1, confirmationToken: 'tok', warnings: [],
             caveat: 'Ratings reflect our common law assessment.',
@@ -252,6 +263,11 @@ const server = createServer((req, res) => {
       ...(registerReach === undefined ? {} : { territories: registerReach }),
       ...(registerLabelNow ? { registerLabel: registerLabelNow } : {}),
     }))
+    return
+  }
+  if (base === '/portal/admin/roster' && rosterNow) {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify(rosterNow))
     return
   }
   if (ROUTES[base] !== undefined) {
@@ -1107,6 +1123,12 @@ const NOTICE_STATES = [
     me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: false, permissions: { run: true, manage: false } },
     says: /install a reasoning CLI/, alsoSays: /npx clearotron install/, andSays: /restart the service/i,
     link: false },
+  // A BETA'S COMMAND FETCHES THE BETA. The bare name fetches the stable, whose setup then moves itself over
+  // the beta, which is what the notice handed every beta install until it was told the channel.
+  { name: 'no engine program, packaged beta install, client',
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: false, channel: 'beta', permissions: { run: true, manage: false } },
+    says: /install a reasoning CLI/, alsoSays: /npx clearotron@beta install/, andSays: /restart the service/i,
+    link: false },
   // "Staff" is a reader who sees everything, said the way /me says it (`accounts: "*"`): Global config is
   // served to them and to no one else, so the link is offered on that fact and not on Manage.
   { name: 'no engine program, source checkout, staff',
@@ -1161,6 +1183,27 @@ for (const st of NOTICE_STATES) {
 // INSTEAD of the start button. It costs nothing here and it is invisible from there: the screen paints,
 // the rows paint, the form fills in, and only the button the reader would press is missing.
 meEngine = {}
+
+// ── no company picked yet ───────────────────────────────────────────────────────────────────────────
+// A reader who sees every company, on an install with two, has picked neither: the composer draws the
+// company picker. Every company read it sent in that state was refused with a 400, four of them on a
+// published beta's demo. What this pass measures is what the page ASKED, not what it drew.
+meEngine = { accounts: '*', permissions: { run: true, manage: true } }
+rosterNow = { customers: [{ key: 'coastline', name: 'Coastline' }, { key: 'harbourline', name: 'Harbourline' }] }
+const ownerlessFrom = gets.length
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1200))
+const ownerless = (await evalIn(`(async () => {
+  const t0 = Date.now();
+  while (Date.now() - t0 < 8000 && !/Pick a company to run this clearance on/.test(document.body.innerText)) await new Promise((r) => setTimeout(r, 60));
+  await new Promise((r) => setTimeout(r, 600));
+  return { gate: /Pick a company to run this clearance on/.test(document.body.innerText) };
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+ownerless.asked = gets.slice(ownerlessFrom)
+  .filter((g) => /^\/portal\/api\/(?:searches|usage|config\/profile|config\/projects|config\/searches)(?:\?|$)/.test(g))
+  .filter((g) => !/[?&]account=/.test(g))
+meEngine = {}
+rosterNow = null
 
 // ── phase three: the evidence, one picture per state the design draws ───────────────────────────────
 //
@@ -1299,7 +1342,9 @@ const savedCodes = (await evalIn(`(async () => {
     // The same arrival is the one that drew the name sentence twice: a search preselected from the
     // company's territories, so the form is no longer untouched, and the panel repeated the footer.
     nameSentence: (document.body.innerText.match(/Add the name you want cleared, in Names above\\./g) || []).length,
-    leftPanel: /One thing left to fill in|A couple of things left to fill in/.test(document.body.innerText) };
+    leftPanel: /One thing left to fill in|A couple of things left to fill in/.test(document.body.innerText),
+    // The reason beside the recommended search, read off the company's own codes.
+    reason: (document.querySelector('.pick-row-reason') || {}).innerText || null };
 })()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 // THE FOOTER SAYS WHAT THE WHERE PANEL SAYS, on the form as it was reported: a company holding US, EU and
 // UK, on Signa, nothing entered. With a Global preliminary search picked the panel read "Worldwide,
@@ -1325,6 +1370,36 @@ const footerAgrees = (await evalIn(`(async () => {
 profileTerritories = []
 registerReach = undefined
 registerLabelNow = null
+
+// ── a demo order lands on its report ────────────────────────────────────────────────────────────────
+// The order route answers a demo with the finished run it resolved to, and the composer opens it. It used
+// to navigate while the form still held the order, so the unsaved guard asked "Leave this page?" about an
+// order that had just gone through. The page's own confirm is counted rather than answered by the browser.
+runLanding = 'demo-multi'
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1400))
+const landing = (await evalIn(`(async () => {
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const settle = async (pred, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (pred()) return true; await sleep(60); } return false; };
+  const byText = (sel, re) => [...document.querySelectorAll(sel)].find((e) => re.test((e.innerText || e.textContent || '').trim()));
+  const asked = [];
+  window.confirm = (m) => { asked.push(String(m).split('\\n')[0]); return true; };
+  const box = () => document.querySelector('textarea[aria-label="Names to clear"]');
+  if (!await settle(() => box(), 8000)) return { fatal: 'the form never painted' };
+  Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(box(), 'BRAVOLINE');
+  box().dispatchEvent(new Event('input', { bubbles: true }));
+  const pick = [...document.querySelectorAll('.pick-row')].find((r) => /Knockout search/.test(r.innerText || ''));
+  const hit = pick && pick.querySelector('.pick-row-hit'); if (hit) hit.click();
+  const review = () => { const b = byText('button', /Review search/); return b && !b.disabled ? b : null; };
+  if (!await settle(() => review(), 8000)) return { fatal: 'Review search never became pressable' };
+  review().click();
+  if (!await settle(() => byText('button', /^Start search$/), 8000)) return { fatal: 'the review never offered Start search' };
+  byText('button', /^Start search$/).click();
+  const arrived = await settle(() => location.pathname.startsWith('/portal/result/'), 8000);
+  await sleep(300);
+  return { landed: location.pathname, arrived, asked };
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+runLanding = null
 const evidence = []
 if (shotDir) {
   // A named company and a named operator, so each line reads the way a reader meets it.
@@ -1689,6 +1764,21 @@ ok(!savedCodes.fatal && savedCodes.nameSentence === 1 && !savedCodes.leftPanel,
   `a form nobody has typed in says "Add the name" ${savedCodes.nameSentence} time(s), with the panel ${savedCodes.leftPanel ? 'drawn' : 'absent'} — the board draws the footer line once and no panel`)
 ok(!savedCodes.fatal && savedCodes.deferred.length === 0 && savedCodes.notAvailable.length === 0,
   `a company territory the register covers is drawn as not available — ${JSON.stringify(savedCodes)}`)
+// THE REASON COUNTS THE COMPANY'S CODES. Read by name only, US, EU and UK were neither regions nor
+// countries, and the reason read "because you named" with nothing after it. They are the company's, not
+// the reader's, so the reason says the company searches them.
+ok(!savedCodes.fatal && savedCodes.reason === 'because the company searches a region and 2 countries',
+  `the recommended search over the company's US, EU and UK gives the reason ${JSON.stringify(savedCodes.reason)}`)
+// A COMPANY NOT PICKED YET IS NOT ASKED ABOUT. A floor first: without the picker on screen this pass
+// measured some other state, and an empty list of requests would be a pass over nothing.
+ok(!ownerless.fatal && ownerless.gate, `the composer did not draw the company picker for a reader with no company picked — ${JSON.stringify(ownerless)}`)
+ok(!ownerless.fatal && ownerless.asked.length === 0,
+  `the composer sent company reads with no company named, each one a 400 from the real portal: ${JSON.stringify(ownerless.asked)}`)
+// A DEMO ORDER OPENS ITS REPORT, AND ASKS NOTHING ON THE WAY.
+ok(!landing.fatal && landing.landed === '/portal/result/demo-multi',
+  `a demo order did not open the run it landed on — ${JSON.stringify(landing)}`)
+ok(!landing.fatal && Array.isArray(landing.asked) && landing.asked.length === 0,
+  `a demo order asked before opening its report: ${JSON.stringify(landing.asked)}`)
 ok(!footerAgrees.fatal && footerAgrees.pickedGlobal && footerAgrees.whereLine === 'Worldwide, searched on Signa',
   `with a Global preliminary search picked, the Where panel does not read "Worldwide, searched on Signa" — ${JSON.stringify(footerAgrees)}`)
 ok(!footerAgrees.fatal && footerAgrees.whereLine && footerAgrees.globalFooter.includes(footerAgrees.whereLine)

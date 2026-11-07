@@ -13,6 +13,8 @@ import {
   parseLines, parseNumbers, toInput, applyField, mergePlatforms, revokedPlatforms, stripCodeOwned,
   PATH_FIELDS, visibleReadOnlyFields, fieldInput, isSet, rootKey,
   fieldNotices, rejectedNumbers, chosenEntries, toggleEntry, CLEARED_LABEL, fieldTag, groupTag, depthChoices,
+  readOnlyValue,
+  jxPolicyValue,
 } from '../src/contract/profileFields.ts'
 import type { Product } from '../src/contract/api.ts'
 
@@ -704,4 +706,32 @@ test('THE CONTROL — a clean input on every armed field stays silent', () => {
     ['matchDomains', 'example.com']] as const) {
     assert.deepEqual(fieldNotices(spec(key), clean), [], `${key} must say nothing about a valid entry`)
   }
+})
+
+test('a read-only row prints an object inside an object by its entries, never as [object Object]', () => {
+  // The demo company's own jurisdiction policy, as its profile stores it. The row read
+  // "laneDepth: [object Object]", which states a setting exists and hides what it is set to.
+  const demo = { laneDepth: { ja: 'full', ko: 'candidates' } }
+  assert.equal(readOnlyValue(demo), 'laneDepth: ja: full, ko: candidates')
+  assert.doesNotMatch(readOnlyValue(demo), /\[object Object\]/)
+  // The outer entries keep " · " between them, so the inner ", " cannot be read as a new setting.
+  assert.equal(readOnlyValue({ laneDepth: { zh: 'full', ja: 'candidates' }, providerStance: 'default' }),
+    'laneDepth: zh: full, ja: candidates · providerStance: default')
+
+  // THE CONTROL: the shapes that already printed well print exactly as they did.
+  assert.equal(readOnlyValue({ dailyRuns: 12, maxQueued: 2 }), 'dailyRuns: 12 · maxQueued: 2')
+  assert.equal(readOnlyValue(['knockout-search', 'full-country-search']), 'knockout-search, full-country-search')
+  assert.equal(readOnlyValue('skills/clearance-search/risk-framework-demo.md'), 'skills/clearance-search/risk-framework-demo.md')
+  assert.equal(readOnlyValue(null), '—')
+  assert.equal(readOnlyValue([]), '—')
+})
+
+test('the jurisdiction policy row names each lane by its language, in the owner\'s words', () => {
+  // The demo company's policy printed "laneDepth: ja: full, ko: candidates": a setting's name and two codes.
+  assert.equal(jxPolicyValue({ laneDepth: { ja: 'full', ko: 'candidates' } }), 'Japanese: full · Korean: candidates')
+  // A lane with no name here keeps its code, and the policy's other entries print as they did.
+  assert.equal(jxPolicyValue({ laneDepth: { zh: 'off', ja: 'full' }, providerStance: 'azure-only' }),
+    'zh: off · Japanese: full · providerStance: azure-only')
+  assert.equal(jxPolicyValue({ providerStance: 'default' }), 'providerStance: default')
+  assert.equal(jxPolicyValue(null), '—')
 })

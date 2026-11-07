@@ -72,3 +72,27 @@ test('a search this deployment cannot run is never recommended', () => {
   assert.equal(recommendSearch(off, 1, ['European Union', 'Switzerland']), null,
     'recommending a search whose row says it is not available here would preselect a dead control')
 })
+
+test('a company\'s own territories are read as the codes its store holds', () => {
+  // The demo company holds EU, US and JP, and the form reads them when the reader names none. Read by
+  // name only, none of the three was a region or a country, and the reason read "because you named" and
+  // stopped there. They are the company's places, not the reader's, so the reason says the company searches
+  // them, in the owner's words.
+  const reason = (t: string[]) => recommendSearch(PRODUCTS, 0, t, { own: true })?.reason
+  assert.equal(reason(['EU', 'US', 'JP']), 'because the company searches a region and 2 countries')
+  assert.equal(reason(['US', 'EU', 'UK']), 'because the company searches a region and 2 countries', 'UK is the engine\'s GB, a country')
+  assert.equal(reason(['US']), 'because the company searches a country')
+  // The same places typed by the reader are still what they named.
+  assert.equal(recommendSearch(PRODUCTS, 0, ['EU', 'US', 'JP'])?.reason, 'because you named a region and 2 countries')
+
+  // AND THE SEARCH ITSELF, by the engine's rule. One country stored as its code was recommended the
+  // multi-country search, which the engine would not resolve those places to.
+  for (const territories of [['US'], ['FR'], ['UK'], ['EU'], ['EU', 'US', 'JP'], ['US', 'EU', 'UK']]) {
+    const engine = productFor({ pipeline: 'clearance', territories })
+    const browser = recommendSearch(PRODUCTS, 0, territories)?.product.key ?? null
+    assert.equal(browser, engine, `${JSON.stringify(territories)}: the form recommends ${browser}, the engine resolves ${engine}`)
+  }
+
+  // A place this vocabulary cannot read recommends nothing, rather than a search whose reason names nothing.
+  assert.equal(recommendSearch(PRODUCTS, 0, ['Bavaria']), null)
+})

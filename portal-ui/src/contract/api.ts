@@ -98,6 +98,19 @@ export type StopOutcome = {
 export const isOk = <T>(r: Result<T>): r is { kind: 'ok'; value: T } => r.kind === 'ok'
 
 /**
+ * A company's read, for a screen whose reader has still to pick the company: answered here, and not sent.
+ *
+ * A person who sees every company and has picked none sends no account, and every company route answers
+ * that with a 400 ("name an account"), which the decoder reads as `pickAccount`. The screens that draw the
+ * company picker in that state sent their reads first all the same: New clearance sent four, Profile
+ * three, and each was a 400 in the browser's network log behind a page that had already said what
+ * to do. The answer the server would give is given here instead, so nothing is asked that cannot be
+ * answered. Home and Clearances already decide their allowance read this way.
+ */
+export const companyRead = <T>(needsOwner: boolean, read: () => Promise<Result<T>>): Promise<Result<T>> =>
+  needsOwner ? Promise.resolve({ kind: 'pickAccount' }) : read()
+
+/**
  * — WHY A SAVE DID NOT SAVE, in words the person who clicked can act on.
  *
  * Three call sites on the Clearances screen discarded the whole result and alerted a fixed sentence:
@@ -311,6 +324,8 @@ export type Me = {
    *                      reporting. Treated exactly as unproven by every caller: leave the button
    *                      alone. Rendering null as demo would tell a first-time visitor their install
    *                      is limited when what happened is that nobody wrote a snapshot yet.
+   *                      `clearotron demo` sends null too: its orders open finished examples and
+   *                      reach no engine, so the engine program decides nothing there.
    *
    * There is no 'engine-ready' here on purpose. That value exists, and only a completed probe turn
    * produces it; the portal never spends one, so it must never imply it.
@@ -358,6 +373,17 @@ export type Me = {
    * can answer with the server's own absolute path, and this value is rendered in a browser.
    */
   readonly setupRoute: 'packaged' | 'checkout' | null
+  /**
+   * WHICH RELEASE CHANNEL THIS INSTALL CAME FROM, so a setup command names it: `npx clearotron install`
+   * fetches the stable, and the stable's setup then moves itself into ~/.local over a beta.
+   *
+   *   'beta'    a beta — the setup command is `npx clearotron@beta install`
+   *   'latest'  a stable — the command as it always read
+   *   null      THIS CANNOT ANSWER — an older portal-service. The command as it always read.
+   *
+   * Optional, because a screen built before it treats every install as `latest`.
+   */
+  readonly channel?: 'beta' | 'latest' | null
   /**
    * WHO OPERATES THIS DEPLOYMENT — the `CLEAROTRON_BRAND_NAME` seam, read, never restated.
    *
@@ -1942,6 +1968,8 @@ export const api = {
       // told to type, so an unrecognised string must never reach the screen — it lands as null and the
       // screen names both routes instead.
       setupRoute: b['setupRoute'] === 'packaged' ? 'packaged' : b['setupRoute'] === 'checkout' ? 'checkout' : null,
+      // The same closed set again, and for the same reason: this word becomes part of a command a reader types.
+      channel: b['channel'] === 'beta' ? 'beta' : b['channel'] === 'latest' ? 'latest' : null,
       brand: typeof b['brand'] === 'string' ? b['brand'] : '',
       // A LINK OR NULL, and only a mail or web address is a link. The server already refuses anything
       // else; this is the second check at the one place a value becomes an `href`.
