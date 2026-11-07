@@ -968,7 +968,7 @@ set:
 
 The client connector is the door a company's assistant talks to, and it
 is **part of the product** rather than something a deployment invents. A reader who reaches the
-Use-your-AI page and finds Connect buttons that do nothing has been failed by the install, not by
+Connect your AI page and finds Connect buttons that do nothing has been failed by the install, not by
 their own integration work.
 
 **Two shapes, and the line between them is what your assistant can do — not where it runs.** Ruling
@@ -997,9 +997,9 @@ So an install behind `ssh -L` or an editor's port forward serves shape 1 perfect
 shape 2 at all, however the reader reaches the portal. `clearotron connect` says so plainly rather
 than printing an address that will be rejected.
 
-**The address is set once, at install.** `npx clearotron install` asks for it — *"the address companies'
-assistants reach this install at"* — and writes `CLEAROTRON_CLIENT_MCP_URL`, which is the single value the
-Use-your-AI page, a report's Ask-your-AI control and `doctor` all read. Leave it empty on a local
+**The address is set once, at install.** `npx clearotron install` asks for it — *"Optional: the public connector
+address"* — and writes `CLEAROTRON_CLIENT_MCP_URL`, which is the single value the
+Connect your AI page, a report's Ask AI control and `doctor` all read. Leave it empty on a local
 install: every one of those surfaces then shows its honest empty state, which is correct for a machine
 with no public address. Changing it later is editing that one setting and restarting.
 

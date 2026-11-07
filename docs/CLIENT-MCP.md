@@ -229,7 +229,7 @@ template, and a placeholder that looks configured is worse than unset.**
 4. At your edge: confirm the client hostname resolves to that port and that the **client** Access app
    fronts it — not the staff one. Enrol the addresses of each company's people on that app's policy.
 5. `CLEAROTRON_CLIENT_MCP_URL` must be set for the portal process too, or `/portal/api/mcp-access` answers
-   `{url:null}` and the Use-your-AI screen correctly shows its empty state.
+   `{url:null}` and the Connect your AI page correctly shows its empty state.
 
 The client connector address is served **live**: `/portal/api/mcp-access` reads `CLEAROTRON_CLIENT_MCP_URL`
 at request time, so a change reaches every screen that shows it on the next load — no re-render involved. The
