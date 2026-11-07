@@ -39,10 +39,10 @@ test("bin/README.md names every child start.mjs runs, and how many there are", (
 test("the install guide names every process start runs, and Ctrl-C stops them all", () => {
   const text = read("INSTALL.md");
   const at = text.indexOf("One command. It starts ");
-  assert.notEqual(at, -1, "INSTALL.md §6 no longer says what one `clearotron start` runs");
+  assert.notEqual(at, -1, "INSTALL.md §5 no longer says what one `clearotron start` runs");
   const paragraph = flat(text.slice(at, text.indexOf("\n\n", at)));
-  for (const c of CHILDREN) assert.ok(paragraph.includes(c.name), `INSTALL.md §6 does not say start runs ${c.name}`);
-  assert.doesNotMatch(paragraph, /stops both/, "INSTALL.md §6 says Ctrl-C stops two processes");
+  for (const c of CHILDREN) assert.ok(paragraph.includes(c.name), `INSTALL.md §5 does not say start runs ${c.name}`);
+  assert.doesNotMatch(paragraph, /stops both/, "INSTALL.md §5 says Ctrl-C stops two processes");
 });
 
 test("the verb list, setup's closing screen and the contributor's guide name every process start runs", async () => {

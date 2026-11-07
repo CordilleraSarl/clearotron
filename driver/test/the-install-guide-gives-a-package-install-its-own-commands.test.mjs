@@ -35,7 +35,7 @@ test("the commands the guide gives a package install are verbs the installed com
     "the pipeline no longer accepts --resume without --job");
   assert.doesNotMatch(INSTALL, /node \/path\/to\/driver\/pipeline\.mjs/, "the resume line a stopped run prints is the product's verb, and no longer a path");
   assert.ok(INSTALL.includes("``` clearotron run --resume <codename> ```"),
-    "§5 gives no package-install form of the resume command");
+    "§6 gives no package-install form of the resume command");
   assert.match(INSTALL, /``` clearotron mcp ``` In a git checkout, `node mcp-server\/server\.mjs` starts the same server\./,
     "§7 gives a checkout's command as the way to start the local MCP server");
 });
@@ -51,7 +51,7 @@ test("the update sentence is what update does on each channel, and names the ins
   assert.ok(INSTALL.includes("`clearotron update` does. On a package install on Linux or macOS it installs the newest stable, or for a "
     + "beta install the newest beta or stable, whichever is later; on Windows it names the npm command to run instead. In a git "
     + "checkout it fast-forwards the checkout"),
-  "§6 does not say what `clearotron update` does on a package install and in a checkout");
+  "§5 does not say what `clearotron update` does on a package install and in a checkout");
   assert.doesNotMatch(INSTALL, /`npx clearotron update`/, "the guide sends a package install to `npx clearotron update`, which fetches the stable");
   assert.doesNotMatch(INSTALL, /your checkout stays on the commit you cloned/, "the guide tells every reader they cloned");
   assert.ok(INSTALL.includes("**To make that automatic in a git checkout**"), "the timer unit is not marked as a checkout's");

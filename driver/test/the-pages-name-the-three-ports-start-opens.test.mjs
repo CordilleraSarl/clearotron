@@ -25,8 +25,8 @@ const VARS = { portal: "PORTAL_SERVICE_PORT", mcp: "TRADEMARK_MCP_HTTP_PORT", cl
 
 function startSection() {
   const text = read("INSTALL.md");
-  const from = text.indexOf("## 6. ");
-  assert.notEqual(from, -1, "INSTALL.md has no §6");
+  const from = text.indexOf("## 5. ");
+  assert.notEqual(from, -1, "INSTALL.md has no §5");
   return text.slice(from, text.indexOf("\n## ", from + 1));
 }
 
@@ -35,23 +35,23 @@ test("start's section names each door's default port beside its variable", () =>
   assert.deepEqual(Object.keys(defaults).sort(), Object.keys(VARS).sort(), "start resolves a door this arm has no variable for");
   const section = flat(startSection());
   for (const [door, name] of Object.entries(VARS)) {
-    assert.ok(section.includes(name), `§6 does not name ${name}`);
-    assert.ok(section.includes(String(defaults[door])), `§6 does not give ${name}'s default, ${defaults[door]}`);
+    assert.ok(section.includes(name), `§5 does not name ${name}`);
+    assert.ok(section.includes(String(defaults[door])), `§5 does not give ${name}'s default, ${defaults[door]}`);
   }
-  assert.doesNotMatch(section, /They move separately/, "§6 says the doors move separately; --port moves all three");
+  assert.doesNotMatch(section, /They move separately/, "§5 says the doors move separately; --port moves all three");
   assert.doesNotMatch(section, /refuses rather than quietly moving|it will not quietly pick another/,
-    "§6 says a port in use is always refused; a port nobody set moves to the next free one");
+    "§5 says a port in use is always refused; a port nobody set moves to the next free one");
 });
 
 test("the second-instance advice sets all three doors, to the numbers --port would give them", () => {
   const section = startSection();
   const m = /^PORTAL_SERVICE_PORT=(\d+) TRADEMARK_MCP_HTTP_PORT=(\d+) CLIENT_MCP_HTTP_PORT=(\d+) clearotron start$/m.exec(section);
-  assert.ok(m, "§6's second-instance command does not set all three ports");
+  assert.ok(m, "§5's second-instance command does not set all three ports");
   const moved = portsForFlag(m[1], resolvePorts({}), {});
   assert.deepEqual([moved.portal, moved.mcp, moved.client].map(String), m.slice(1, 4),
     "the three variables are not the numbers `--port` gives the same portal port");
   assert.ok(flat(section).includes(`\`clearotron start --port ${m[1]}\` opens the same three: ${moved.portal}, ${moved.mcp} and ${moved.client}.`),
-    "§6 does not say --port opens the same three");
+    "§5 does not say --port opens the same three");
   assert.match(flat(section), /`clearotron start --port <n>` puts the portal on n, and the engine door and the client door on n\+1 and n\+2/);
 });
 
