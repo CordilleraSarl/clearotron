@@ -129,6 +129,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-cancelled-setup-names-what-stays.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 5,
+          "todos": 0
+        },
         "a-cap-of-zero-is-not-a-register-outcome.test.mjs": {
           "tests": 3,
           "asserts": 6,
@@ -3845,7 +3851,7 @@
         },
         "doctor-reads-only-the-ai-that-is-chosen.test.mjs": {
           "tests": 2,
-          "asserts": 17,
+          "asserts": 23,
           "skips": 2,
           "todos": 0
         },
@@ -6976,8 +6982,8 @@
           "todos": 0
         },
         "the-end-of-setup-agrees-with-what-it-left-unset.test.mjs": {
-          "tests": 7,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -9212,8 +9218,8 @@
           "todos": 0
         },
         "profileFields.test.ts": {
-          "tests": 56,
-          "asserts": 186,
+          "tests": 57,
+          "asserts": 190,
           "skips": 0,
           "todos": 0
         },
@@ -9237,7 +9243,7 @@
         },
         "recommendSearch.test.ts": {
           "tests": 7,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
