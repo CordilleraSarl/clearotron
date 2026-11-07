@@ -13,6 +13,7 @@ import {
   parseLines, parseNumbers, toInput, applyField, mergePlatforms, revokedPlatforms, stripCodeOwned,
   PATH_FIELDS, visibleReadOnlyFields, fieldInput, isSet, rootKey,
   fieldNotices, rejectedNumbers, chosenEntries, toggleEntry, CLEARED_LABEL, fieldTag, groupTag, depthChoices,
+  readOnlyValue,
 } from '../src/contract/profileFields.ts'
 import type { Product } from '../src/contract/api.ts'
 
@@ -704,4 +705,22 @@ test('THE CONTROL — a clean input on every armed field stays silent', () => {
     ['matchDomains', 'example.com']] as const) {
     assert.deepEqual(fieldNotices(spec(key), clean), [], `${key} must say nothing about a valid entry`)
   }
+})
+
+test('a read-only row prints an object inside an object by its entries, never as [object Object]', () => {
+  // The demo company's own jurisdiction policy, as its profile stores it. The row read
+  // "laneDepth: [object Object]", which states a setting exists and hides what it is set to.
+  const demo = { laneDepth: { ja: 'full', ko: 'candidates' } }
+  assert.equal(readOnlyValue(demo), 'laneDepth: ja: full, ko: candidates')
+  assert.doesNotMatch(readOnlyValue(demo), /\[object Object\]/)
+  // The outer entries keep " · " between them, so the inner ", " cannot be read as a new setting.
+  assert.equal(readOnlyValue({ laneDepth: { zh: 'full', ja: 'candidates' }, providerStance: 'default' }),
+    'laneDepth: zh: full, ja: candidates · providerStance: default')
+
+  // THE CONTROL: the shapes that already printed well print exactly as they did.
+  assert.equal(readOnlyValue({ dailyRuns: 12, maxQueued: 2 }), 'dailyRuns: 12 · maxQueued: 2')
+  assert.equal(readOnlyValue(['knockout-search', 'full-country-search']), 'knockout-search, full-country-search')
+  assert.equal(readOnlyValue('skills/clearance-search/risk-framework-demo.md'), 'skills/clearance-search/risk-framework-demo.md')
+  assert.equal(readOnlyValue(null), '—')
+  assert.equal(readOnlyValue([]), '—')
 })

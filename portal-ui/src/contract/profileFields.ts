@@ -48,6 +48,32 @@ export function visibleReadOnlyFields(
   return CODE_OWNED.filter((k) => readOnly[k] !== undefined && (everything || !PATH_FIELDS.has(k)))
 }
 
+/** A value inside a read-only value: a list's items, or an object's entries, joined with ", ". */
+const innerValue = (v: unknown): string => {
+  if (Array.isArray(v)) return v.map(innerValue).join(', ')
+  if (v !== null && typeof v === 'object') {
+    return Object.entries(v as Record<string, unknown>).map(([k, x]) => `${k}: ${innerValue(x)}`).join(', ')
+  }
+  return String(v)
+}
+
+/**
+ * A read-only value as its row prints it: a list as "a, b", an object as "key: value · key: value".
+ *
+ * AN OBJECT INSIDE THE OBJECT PRINTS ITS ENTRIES. The jurisdiction policy keeps its lane depths that way,
+ * `{ laneDepth: { ja: 'full', ko: 'candidates' } }`, and the row printed "laneDepth: [object Object]" on the
+ * demo company's own profile. The inner entries join with ", ", as a list does, so the " · " between the
+ * outer entries still tells them apart.
+ */
+export function readOnlyValue(v: unknown): string {
+  if (v == null) return '—'
+  if (Array.isArray(v)) return v.length ? v.map(innerValue).join(', ') : '—'
+  if (typeof v === 'object') {
+    return Object.entries(v as Record<string, unknown>).map(([k, val]) => `${k}: ${innerValue(val)}`).join(' · ')
+  }
+  return String(v)
+}
+
 /**
  * How each editable field is rendered and parsed. Anything not listed round-trips untouched.
  *

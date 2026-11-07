@@ -455,6 +455,22 @@ export function chooseProduct(d: Draft, product: Product | null): Draft {
 
 // ── which search fits what was entered ──────────────────────────────────────────────────────────────
 
+/**
+ * What kind of place this is, given as the picker names it or as the code a company's own list holds.
+ *
+ * A COMPANY'S TERRITORIES ARE STORED AS CODES ("EU", "US", "UK"), and the recommendation reads them when the
+ * draft names none. `tierOf` knows the picker's names only, so for the demo company's EU, US and JP it
+ * counted no region and no country: the reason read "because you named" and stopped, and a company holding
+ * one country was recommended the search that needs two. Read through the engine's code, as
+ * `reachesTerritory` reads the same list. `tierOf` itself is left to the names, which every other caller
+ * is given.
+ */
+const TIER_OF_CODE: Readonly<Record<string, Tier>> = Object.freeze(Object.fromEntries([
+  ...OFFERED.regions.map((t) => [t.code, 'region'] as const),
+  ...OFFERED.countries.map((t) => [t.code, 'country'] as const),
+]))
+const tierOfPlace = (place: string): Tier | null => tierOf(place) ?? TIER_OF_CODE[territoryKeyOf(place)] ?? null
+
 export type Recommendation = {
   /** The search that fits, off the offering the server sent. */
   readonly product: Product
@@ -494,8 +510,11 @@ export function recommendSearch(
     const widest = live.filter((p) => p.maxNames > 1).sort((a, b) => b.maxNames - a.maxNames)[0]
     return widest ? { product: widest, reason: `because you entered ${names} names` } : null
   }
-  const regions = territories.filter((t) => tierOf(t) === 'region').length
-  const countries = territories.filter((t) => tierOf(t) === 'country').length
+  const regions = territories.filter((t) => tierOfPlace(t) === 'region').length
+  const countries = territories.filter((t) => tierOfPlace(t) === 'country').length
+  // A PLACE THIS VOCABULARY CANNOT TELL IS NEITHER, and a recommendation made from nothing it could read
+  // would be a guess with a reason that names nothing.
+  if (!regions && !countries) return null
   const geography = territories.length === 1 && countries === 1 ? 'exactly one country' : 'a region, or two or more countries'
   const product = live.find((p) => p.pipeline !== 'knockout' && p.geography === geography)
   if (!product) return null

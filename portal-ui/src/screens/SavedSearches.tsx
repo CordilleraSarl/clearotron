@@ -36,7 +36,7 @@
 
 import { useState } from 'react'
 import type { Product, SavedSearchRow } from '../contract/api.ts'
-import { api, isOk, notCommitted } from '../contract/api.ts'
+import { api, companyRead, isOk, notCommitted } from '../contract/api.ts'
 import { statusFor, isUsable, displayLabel, versionLabel, sortSavedSearches } from '../contract/savedSearches.ts'
 import type { SavedSearchStatus } from '../contract/savedSearches.ts'
 import { draftFromSaved } from '../contract/composerProduct.ts'
@@ -55,11 +55,11 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   const account = ctx.owner
   const needsOwner = ctx.me.allAccounts && account === null
 
-  const { result, reload } = useLoad(() => api.savedSearches(account), [account])
+  const { result, reload } = useLoad(() => companyRead(needsOwner, () => api.savedSearches(account)), [account, needsOwner])
   // The OFFERING, for the "Builds on" column. A separate call because it is a different question — what
   // this deployment offers, as against what this company has saved — and a refusal of one must not
   // blank the other.
-  const { result: menu } = useLoad(() => api.searches(account), [account])
+  const { result: menu } = useLoad(() => companyRead(needsOwner, () => api.searches(account)), [account, needsOwner])
   const levels: readonly Product[] = menu?.kind === 'ok' ? menu.value.products : []
 
   const [busy, setBusy] = useState<string | null>(null)

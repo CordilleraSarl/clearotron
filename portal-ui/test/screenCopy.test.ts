@@ -1019,7 +1019,9 @@ test('the demo landing is decided by the server, and never claims a run started'
   const untilElse = landed.slice(0, landed.indexOf('setSubmitted'))
   assert.ok(untilElse.length > 20 && untilElse.length < 400, 'the landing branch slice has broken, not the tree')
   assert.doesNotMatch(untilElse, /setSubmitted/, 'a demo order reports itself as a started clearance')
-  assert.match(untilElse, /ctx\.go\(`\/portal\/result\//, 'the landing does not open the report it resolved to')
+  // THROUGH `leaveTo`, after the render that makes the form clean. A `ctx.go` here asked the unsaved guard
+  // while the form still held the order, and the demo answered its own Start search with "Leave this page?".
+  assert.match(untilElse, /setLeaveTo\(`\/portal\/result\//, 'the landing does not open the report it resolved to')
 })
 
 // ── THE FIRST HOUR: four things an outside user met, and what each one now says ──────────────────────

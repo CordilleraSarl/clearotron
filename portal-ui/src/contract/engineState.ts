@@ -82,6 +82,17 @@ export type EngineFacts = {
 // notice is the one place that picks by route (one-name-per-command.test.mjs names it).
 const SETUP_COMMAND = '`npx clearotron install`'
 
+/**
+ * The package the search screen's setup command fetches on this install's channel: `clearotron@beta` on a
+ * beta, and `clearotron` on the stable or when the service did not say, which is the command as it read.
+ *
+ * ON A BETA THE BARE NAME FETCHES THE STABLE. npx runs a global copy only from npm's own global directory,
+ * so on an install moved into ~/.local `npx clearotron install` fetches `latest`, and the stable's setup
+ * then moves itself into ~/.local over the beta.
+ */
+export const setupPackage = (channel: 'beta' | 'latest' | null | undefined): string =>
+  channel === 'beta' ? 'clearotron@beta' : 'clearotron'
+
 // The search screen's headline for an install with no engine, and the Engine row's fault when no AI is chosen.
 const NO_ENGINE = 'No search engine is attached to this install.'
 
