@@ -6321,6 +6321,12 @@
           "skips": 0,
           "todos": 0
         },
+        "setup-speaks-the-readers-words.test.mjs": {
+          "tests": 11,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "shipped-brand-is-the-product.test.mjs": {
           "tests": 7,
           "asserts": 24,
@@ -6983,7 +6989,7 @@
         },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
-          "asserts": 49,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },

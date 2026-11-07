@@ -102,6 +102,6 @@ test("a program refused before it started shows no engine output, and the refusa
   const silent = classifyProbe({ engine: "anthropic-agent", tuple: { code: 1, stdout: "", stderr: "", json: {}, signals: { noStreamEvents: true } } });
   assert.match(proofEvidence(silent)[0], /^engine said: nothing/);
   // Setup prints these, and only these, as the evidence.
-  assert.match(SRC, /problem\(probeFailureText\(v\)\);[\s\S]{0,1600}for \(const line of proofEvidence\(v\)\) info\(line\);/);
+  assert.match(SRC, /problem\(proofFailureLine\(v, eng\.product\)\);[\s\S]{0,1600}for \(const line of proofEvidence\(v\)\) info\(line\);/);
   assert.doesNotMatch(SRC, /info\("engine said: nothing/, "a second copy of the evidence lines prints beside the function");
 });

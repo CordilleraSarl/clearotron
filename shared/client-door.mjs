@@ -1097,7 +1097,7 @@ export function clientDoorReachability({ url = null, probe = null } = {}) {
   // a reader to skim the arm that catches a broken one.
   if (!raw) {
     return { state: "unset",
-      message: "no client connector address is published, so the Use-your-AI page and a report's Ask-AI "
+      message: "no client connector address is published, so the Connect your AI page and a report's Ask AI "
         + "control will say this deployment is not set up. That is correct for a local install." };
   }
   let parsed;
