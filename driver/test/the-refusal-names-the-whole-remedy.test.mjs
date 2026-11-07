@@ -91,6 +91,10 @@ async function reviewed(home, principal, { env = {}, argv = [], cgroup = "", rea
 const shown = async (home, process) => (await reviewed(home, OPERATOR, process)).errors[0];
 const restart = (units) => `\`systemctl --user restart ${units.join(" ")}\``;
 const servicesRead = (home) => `Its background services read their settings from ${join(home, ".env")}.`;
+// UNITS THE LAUNCHER DID NOT WRITE ARE READ FOR THE FILE THEY NAME, `EnvironmentFile=%h/.env`, which expands as systemd
+// expands it: the home, then `/.env`. That is the only form a machine with systemd meets. `join` puts a backslash
+// there on Windows, which has no systemd and still runs this drive over planted units.
+const unitsRead = (home) => `Its background services read their settings from ${home}/.env.`;
 
 test("launcher units with no line yet for what is missing are sent to setup and a background start", async () => {
   for (const servicesFile of [null, "# kept by the operator\nPORTAL_LOCAL_USER=staff\n"]) {
@@ -119,7 +123,7 @@ test("an existing empty line, which a background start keeps, sends the reader t
 });
 
 test("product units that are not the launcher's get their own file and restart, and never the setup route", async () => {
-  const own = (home, units) => `${HEAD} ${servicesRead(home)} Set each missing setting in that file, then restart the services: `
+  const own = (home, units) => `${HEAD} ${unitsRead(home)} Set each missing setting in that file, then restart the services: `
     + `${restart(units)}. ${DOCTOR} ${CHARGED}`;
   // One unit edited by hand: a background start would overwrite it, so it is not offered.
   const edited = machine({ units: { ...LAUNCHER_UNITS(), "clearotron-portal.service": `${TEMPLATE("clearotron-portal.service")}# edited here\n` } });
