@@ -442,7 +442,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // showing four countries recommended nothing and preselected nothing, because the four were never the
   // reader's own.
   const recommendation = useMemo(
-    () => recommendSearch(levels, names.length, draft.pick.territories.length ? draft.pick.territories : own.territories),
+    () => (draft.pick.territories.length
+      ? recommendSearch(levels, names.length, draft.pick.territories)
+      : recommendSearch(levels, names.length, own.territories, { own: true })),
     [levels, names.length, draft.pick.territories, own.territories],
   )
   useEffect(() => {
@@ -487,8 +489,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // A BRIEF THAT NAMES NO SEARCH gets the one that fits what it filled in — the same one the rows
       // tag — applied in this same write, so the receipt's Search line says which, and why. Never over
       // a search the reader chose, and never over a template, which carries its own.
-      const fits = recommendSearch(levels, parseNames(after.names).length,
-        after.draft.territories.length ? after.draft.territories : own.territories)
+      const fits = after.draft.territories.length
+        ? recommendSearch(levels, parseNames(after.names).length, after.draft.territories)
+        : recommendSearch(levels, parseNames(after.names).length, own.territories, { own: true })
       if (read.product == null && !pickedByHand && !d.savedSearch && fits) {
         after = { ...after, draft: chooseProduct(after.draft, fits.product) }
       }

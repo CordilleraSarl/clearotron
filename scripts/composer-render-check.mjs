@@ -1765,8 +1765,9 @@ ok(!savedCodes.fatal && savedCodes.nameSentence === 1 && !savedCodes.leftPanel,
 ok(!savedCodes.fatal && savedCodes.deferred.length === 0 && savedCodes.notAvailable.length === 0,
   `a company territory the register covers is drawn as not available — ${JSON.stringify(savedCodes)}`)
 // THE REASON COUNTS THE COMPANY'S CODES. Read by name only, US, EU and UK were neither regions nor
-// countries, and the reason read "because you named" with nothing after it.
-ok(!savedCodes.fatal && savedCodes.reason === 'because you named a region and 2 countries',
+// countries, and the reason read "because you named" with nothing after it. They are the company's, not
+// the reader's, so the reason says the company searches them.
+ok(!savedCodes.fatal && savedCodes.reason === 'because the company searches a region and 2 countries',
   `the recommended search over the company's US, EU and UK gives the reason ${JSON.stringify(savedCodes.reason)}`)
 // A COMPANY NOT PICKED YET IS NOT ASKED ABOUT. A floor first: without the picker on screen this pass
 // measured some other state, and an empty list of requests would be a pass over nothing.

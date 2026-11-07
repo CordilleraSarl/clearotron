@@ -74,6 +74,26 @@ export function readOnlyValue(v: unknown): string {
   return String(v)
 }
 
+/** The language each jurisdiction lane reads, as the policy row names it. */
+const LANE_NAMES: Readonly<Record<string, string>> = Object.freeze({ ja: 'Japanese', ko: 'Korean' })
+
+/**
+ * The jurisdiction policy as its row prints it: each lane by its language, "Japanese: full · Korean: candidates".
+ *
+ * The row printed what the profile stores, "laneDepth: ja: full, ko: candidates": a setting's name and two
+ * codes a reader of the profile has no reason to know. Each lane now prints as its language and its depth.
+ * A lane with no name here prints its code, and the policy's other entries print as any read-only value does.
+ */
+export function jxPolicyValue(v: unknown): string {
+  if (v == null || typeof v !== 'object' || Array.isArray(v)) return readOnlyValue(v)
+  const { laneDepth, ...rest } = v as Record<string, unknown>
+  const lanes = laneDepth != null && typeof laneDepth === 'object' && !Array.isArray(laneDepth)
+    ? Object.entries(laneDepth as Record<string, unknown>).map(([lane, depth]) => `${LANE_NAMES[lane] ?? lane}: ${innerValue(depth)}`)
+    : laneDepth === undefined ? [] : [`laneDepth: ${innerValue(laneDepth)}`]
+  const parts = [...lanes, ...(Object.keys(rest).length ? [readOnlyValue(rest)] : [])]
+  return parts.length ? parts.join(' · ') : readOnlyValue(v)
+}
+
 /**
  * How each editable field is rendered and parsed. Anything not listed round-trips untouched.
  *

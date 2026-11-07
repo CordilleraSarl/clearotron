@@ -474,7 +474,7 @@ const tierOfPlace = (place: string): Tier | null => tierOf(place) ?? TIER_OF_COD
 export type Recommendation = {
   /** The search that fits, off the offering the server sent. */
   readonly product: Product
-  /** Why, as the row prints it: "because you named a region and a country". */
+  /** Why, as the row prints it: "because you named a region and a country", or "because the company searches a region". */
   readonly reason: string
 }
 
@@ -497,12 +497,17 @@ export type Recommendation = {
  * recommend is the worldwide one, and selecting that removes the Where picker from the form the reader
  * is still filling in, one field above the place they were about to name.
  *
+ * THE COMPANY'S OWN PLACES ARE NOT THE READER'S. When the draft names none, the form reads the company's
+ * territories, and "because you named a region and 2 countries" told a reader who typed nothing that they
+ * had. `own` says the places are the company's, and the reason then says so.
+ *
  * @param products the offering, as the server sent it
  * @param names how many names are on the form
  * @param territories the places named, in the composer's own vocabulary
+ * @param own true when `territories` are the company's own, read because the draft names none
  */
 export function recommendSearch(
-  products: readonly Product[], names: number, territories: readonly string[],
+  products: readonly Product[], names: number, territories: readonly string[], { own = false }: { own?: boolean } = {},
 ): Recommendation | null {
   if (territories.length === 0 && names <= 1) return null
   const live = products.filter((p) => p.available)
@@ -523,7 +528,7 @@ export function recommendSearch(
     regions ? some(regions, 'region', 'regions') : '',
     countries ? some(countries, 'country', 'countries') : '',
   ].filter(Boolean)
-  return { product, reason: `because you named ${named.join(' and ')}` }
+  return { product, reason: own ? `because the company searches ${named.join(' and ')}` : `because you named ${named.join(' and ')}` }
 }
 
 /**

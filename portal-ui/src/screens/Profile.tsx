@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api, companyRead, notCommitted } from '../contract/api.ts'
 import type { ProfileConfig } from '../contract/api.ts'
-import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, applyField, stripCodeOwned, visibleReadOnlyFields, depthChoices, groupTag, readOnlyValue } from '../contract/profileFields.ts'
+import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, applyField, stripCodeOwned, visibleReadOnlyFields, depthChoices, groupTag, readOnlyValue, jxPolicyValue } from '../contract/profileFields.ts'
 import { Field, FieldTag } from '../components/ProfileField.tsx'
 import type { FieldSpec } from '../contract/profileFields.ts'
 import { checkThenSave } from '../contract/checkThenSave.ts'
@@ -585,7 +585,7 @@ function FrameworkBlock({
         <div className="fw-rows">
           {examples ? <Row label="Worked examples" value="Used when rating this company" /> : null}
           {entries.map((k) => (
-            <Row key={k} label={LABELS[k] ?? k} value={k === 'allowedRecipes' ? permitted : readOnlyValue(readOnly[k])} />
+            <Row key={k} label={LABELS[k] ?? k} value={k === 'allowedRecipes' ? permitted : k === 'jxPolicy' ? jxPolicyValue(readOnly[k]) : readOnlyValue(readOnly[k])} />
           ))}
         </div>
       ) : null}

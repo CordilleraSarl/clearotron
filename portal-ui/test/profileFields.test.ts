@@ -14,6 +14,7 @@ import {
   PATH_FIELDS, visibleReadOnlyFields, fieldInput, isSet, rootKey,
   fieldNotices, rejectedNumbers, chosenEntries, toggleEntry, CLEARED_LABEL, fieldTag, groupTag, depthChoices,
   readOnlyValue,
+  jxPolicyValue,
 } from '../src/contract/profileFields.ts'
 import type { Product } from '../src/contract/api.ts'
 
@@ -723,4 +724,14 @@ test('a read-only row prints an object inside an object by its entries, never as
   assert.equal(readOnlyValue('skills/clearance-search/risk-framework-demo.md'), 'skills/clearance-search/risk-framework-demo.md')
   assert.equal(readOnlyValue(null), '—')
   assert.equal(readOnlyValue([]), '—')
+})
+
+test('the jurisdiction policy row names each lane by its language, in the owner\'s words', () => {
+  // The demo company's policy printed "laneDepth: ja: full, ko: candidates": a setting's name and two codes.
+  assert.equal(jxPolicyValue({ laneDepth: { ja: 'full', ko: 'candidates' } }), 'Japanese: full · Korean: candidates')
+  // A lane with no name here keeps its code, and the policy's other entries print as they did.
+  assert.equal(jxPolicyValue({ laneDepth: { zh: 'off', ja: 'full' }, providerStance: 'azure-only' }),
+    'zh: off · Japanese: full · providerStance: azure-only')
+  assert.equal(jxPolicyValue({ providerStance: 'default' }), 'providerStance: default')
+  assert.equal(jxPolicyValue(null), '—')
 })
