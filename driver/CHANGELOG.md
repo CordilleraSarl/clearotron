@@ -1,5 +1,19 @@
 # clearotron-driver
 
+## 0.5.1-beta.1
+
+### Patch Changes
+
+- Fixed: On a beta, the setup and check commands the portal names now install and run the beta, not the stable release.
+- Fixed: With no AI chosen, the portal no longer offers to read a brief with an AI nobody chose, and `clearotron start` says why it is off.
+- Fixed: Cancelling setup now says what it had already installed, instead of saying nothing was written.
+- Fixed: With no AI chosen, `clearotron doctor` no longer reports the program, billing or sign-in of an AI nobody chose, and `--probe-engine` spends no turn.
+- Fixed: In the demo, New clearance offers Review search again, and an order opens the finished example without asking whether to leave the page.
+- Fixed: The install guide now gives the beta's global install, a removal command that removes the program, and the folder Codex's turns leave behind.
+- Fixed: When an install cannot search yet, the portal, `clearotron start` and the run's log now say where the missing settings go and what to restart.
+- Fixed: Setup's register question no longer says there is no default beside the answer Enter picks.
+- Fixed: The portal no longer shows "[object Object]" on a company's profile, sends requests that fail before a company is picked, or prints its address hint twice.
+
 ## 0.5.1-beta.0
 
 ### Patch Changes
