@@ -45,7 +45,7 @@ test("the guide's figures are the samples' own, and the clearances are quicker t
   const ko = whole(knockouts[0].minutes);
   const count = spell(clearances.length);
   assert.ok(INSTALL.includes(`The ${count} clearances in \`demo/\` took ${low} to ${high} minutes each, and its knockout search ${ko} minutes.`),
-    `§5 does not give the samples' walls: ${count} clearances at ${low} to ${high} minutes, a knockout at ${ko}`);
+    `§6 does not give the samples' walls: ${count} clearances at ${low} to ${high} minutes, a knockout at ${ko}`);
   const all = spell(SAMPLES.length);
   assert.ok(INSTALL.includes(`**${all[0].toUpperCase()}${all.slice(1)} measured runs.**`), `How long a run takes does not count ${all} measured runs`);
   assert.ok(INSTALL.includes(`The ${count} clearances took **${low} to ${high} minutes** each, quicker than the quote below; the knockout search took **${ko} minutes**.`),
