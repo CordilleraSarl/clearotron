@@ -1575,13 +1575,21 @@ const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test tur
  * (`turnRan`). The settings file is only ever written at the end, so that part stays true, and the line
  * says what does stay. "Nothing was written." is kept for the cancel where it is still true.
  */
-export function cancelledLine({ copy = null, engine = null, turnRan = false } = {}) {
-  if (!copy && !engine) return `cancelled. ${turnRan ? TURN_KEPT_ITS_FILES : "Nothing was written."}`;
+export function cancelledLine(left = {}) {
+  return `cancelled. ${whatSetupLeft(left) ?? "Nothing was written."}`;
+}
+
+/**
+ * What setup has already put on the machine when it stops early, or null when that is nothing. A cancel says it,
+ * and so do the two refusals after the engine step, which said "Nothing has been written." whatever had run.
+ */
+export function whatSetupLeft({ copy = null, engine = null, turnRan = false } = {}) {
+  if (!copy && !engine) return turnRan ? TURN_KEPT_ITS_FILES : null;
   const stays = copy && engine
     ? `clearotron ${copy.version} stays installed in ${copy.prefix}, and ${engine.vendor}'s CLI in ${engine.dir}.`
     : copy ? `clearotron ${copy.version} stays installed in ${copy.prefix}.`
       : `${engine.vendor}'s CLI stays installed in ${engine.dir}.`;
-  return `cancelled. No settings were written. ${stays}${turnRan ? " The AI program's test turn keeps its own files." : ""}`;
+  return `No settings were written. ${stays}${turnRan ? " The AI program's test turn keeps its own files." : ""}`;
 }
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
@@ -4043,6 +4051,7 @@ let aborted = null;
 const installedCopy = process.env.CLEAROTRON_RELOCATED === "1" ? { version: ownVersion(), prefix: permanentPrefix() } : null;
 let installedEngine = null;
 let setupTurnRan = false;
+const leftSoFar = () => ({ copy: installedCopy, engine: installedEngine, turnRan: setupTurnRan });
 try {
   say("\n  Trademark clearance engine — setup\n");
   say("  One question at a time. Enter takes the default in brackets.");
@@ -4293,12 +4302,23 @@ try {
     // saves nothing.
     for (const line of proofPreamble({ product: eng.product, billing: authPick.id })) info(line);
     if (!await confirm(proveQuestion({ product: eng.product, billing: authPick.id }), true)) {
+      // A SUBSCRIPTION STILL NEEDS ITS SIGN-IN, whether or not the reader wanted the turn: a decline used to end
+      // with no sign-in command at all, though the guide says setup shows one. These are the lines a failed turn
+      // prints, in the same words, and the question they name by its words follows them, default no. Under a key
+      // or a cloud account there is no sign-in to show.
+      let provedAfterAll = false;
+      if (authPick.id === "subscription") {
+        for (const line of signInHandOff(eng, bin, authPick.id).lines) info(line);
+        provedAfterAll = await confirm("Fixed it? Run the turn again", false);
+      }
       // A WAY ON WITHOUT AN AI, BEFORE THE MENU. A declined proof went straight back to the menu, so a reader
       // taking every default went round the same setup again. The question the no-program path already asks
       // offers the way on; no returns to the menu, with this pick its default, and only that answer says so.
-      if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
-      info("Not proven, so not written. Pick again — the last row configures no engine at all.");
-      continue;
+      if (!provedAfterAll) {
+        if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
+        info("Not proven, so not written. Pick again — the last row configures no engine at all.");
+        continue;
+      }
     }
     // A TOKEN PASTED BELOW IS SAVED ONLY WITH THE TURN IT PROVED. It was written into the settings as it was
     // pasted, so a reader whose turn still failed, and who then went on without an AI, had it saved unproved.
@@ -4498,7 +4518,7 @@ try {
     if (v.ok) ok("EUIPO issued a token — the credential works.");
     else {
       problem(`EUIPO refused: ${v.error}`);
-      say("\n  Nothing has been written. Re-run setup with a working credential.");
+      say(`\n  ${whatSetupLeft(leftSoFar()) ?? "Nothing has been written."} Re-run setup with a working credential.`);
       aborted = "euipo";
       throw new Error("euipo");
     }
@@ -4802,7 +4822,7 @@ try {
     if (pf.ok) ok(registerCheckPassed(pf.result.provider, pf.result.checked.join(" + ")));
     else {
       problem(pf.error);
-      say("\n  Nothing has been written.");
+      say(`\n  ${whatSetupLeft(leftSoFar()) ?? "Nothing has been written."}`);
       aborted = "preflight";
       throw new Error("preflight");
     }
@@ -5026,7 +5046,7 @@ try {
     // has been written before the single atomic rename at the end, but setup's own copy, the AI's program
     // and a test turn's files may already be on the machine, and the line names each one that is.
     const msg = /Ctrl\+[CD]|closed|aborted/i.test(String(e?.message ?? e))
-      ? cancelledLine({ copy: installedCopy, engine: installedEngine, turnRan: setupTurnRan })
+      ? cancelledLine(leftSoFar())
       : String(e?.message ?? e);
     console.error(`\nsetup: ${msg}\n`);
     rl.close();
