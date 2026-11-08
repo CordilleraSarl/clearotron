@@ -300,10 +300,18 @@ test("what the step sets aside the rating step may cite: its ids join the run's 
   assert.deepEqual([...registerRecordIdsFor(dir, "MOSSVALE")], ["z"]);
 });
 
-test("the owners searched are those the step named, with no cap; a run whose step did not finish keeps the bounded rule", () => {
+test("the owners searched are those the step named, at most three per name; a run whose step did not finish keeps the bounded rule", () => {
   const records = ["Alder", "Birch", "Cedar", "Damson", "Elm"].map((o, i) => ({ recordId: `r${i}`, owner: `${o} Ltd`, status: "Registered", classes: [9] }));
   const named = ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { ownerChecks: ["r0", "r3", "r4"] } }] });
-  assert.deepEqual(named.map((o) => o.owner), ["Alder Ltd", "Damson Ltd", "Elm Ltd"], "judgment names them, in any number");
+  assert.deepEqual(named.map((o) => o.owner), ["Alder Ltd", "Damson Ltd", "Elm Ltd"], "judgment names them");
+  // THE CAP HOLDS ON JUDGMENT TOO (owner's ruling, 2026-11-08): five owners named, three searched, in record order.
+  const all = ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { ownerChecks: ["r4", "r3", "r2", "r1", "r0"] } }] });
+  assert.deepEqual(all.map((o) => o.owner), ["Alder Ltd", "Birch Ltd", "Cedar Ltd"], "more than three owners named, and more than three searched");
+  // Per name, not per run: a second name's owners are its own three.
+  const two = ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { ownerChecks: ["r0", "r1", "r2", "r3"] } },
+    { name: "MOSSVALE", classes: [9], records, reading: { ownerChecks: ["r0", "r1", "r2", "r3"] } }] });
+  assert.deepEqual(two.map((o) => `${o.mark}:${o.owner}`), [`${NAME}:Alder Ltd`, `${NAME}:Birch Ltd`, `${NAME}:Cedar Ltd`,
+    "MOSSVALE:Alder Ltd", "MOSSVALE:Birch Ltd", "MOSSVALE:Cedar Ltd"], "the cap is per name");
   assert.deepEqual(ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { ownerChecks: [] } }] }), [], "the step named none, so none is searched");
   assert.equal(ownersOwedACheck({ marks: [{ name: NAME, classes: [9], records, reading: { notFinished: true } }] }).length, 3, "no reading record: the promoted filings, bounded");
 });
