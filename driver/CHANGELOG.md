@@ -1,5 +1,11 @@
 # clearotron-driver
 
+## 0.5.1-beta.2
+
+### Patch Changes
+
+- Fixed: A Knockout again checks the web use of at most three owners per name, instead of every owner it marks.
+
 ## 0.5.1-beta.1
 
 ### Patch Changes
