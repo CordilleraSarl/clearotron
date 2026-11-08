@@ -5,7 +5,7 @@
       "args": [
         "${CLAUDE_PLUGIN_ROOT}/scripts/npx.mjs",
         "-y",
-        "clearotron@0.5.0",
+        "clearotron@0.5.1",
         "mcp"
       ]
     }

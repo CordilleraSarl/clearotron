@@ -1,5 +1,92 @@
 # clearotron-driver
 
+## 0.5.1
+
+### Patch Changes
+
+- Fixed: On a beta, the setup and check commands the portal names now install and run the beta, not the stable release.
+- Fixed: The README and the quickstart now give the beta's own install and demo commands, and the README no longer says `npx` asks only once before downloading.
+- Fixed: With no AI chosen, the portal no longer offers to read a brief with an AI nobody chose, and `clearotron start` says why it is off.
+- Fixed: Cancelling setup now says what it had already installed, instead of saying nothing was written.
+- Fixed: For the Legal Data Hunter case-law source, `clearotron doctor` no longer says to ask whoever provisioned it; it says the source is optional and a Full country search runs without it.
+- Fixed: Before the first `clearotron start`, `clearotron doctor` no longer says the install did not finish; it says `clearotron start` starts the client connector and `clearotron start --background` sets it up as a service.
+- Fixed: When a report's correction fixes a wrong statement about what was searched, it now keeps the true results that shared that passage.
+- Fixed: An assistant connected to a demo can read and explain its sample reports and can no longer start work. The connection has its own name, uses only that demo's folder, and stops working when the folder is gone.
+- New: A demo now names the command that connects an assistant other than Claude Code. Run it in a second terminal and pick the assistant.
+- Fixed: A demo started after `demo --once` or `demo --keep` now keeps the folder and reports those left, and says how to remove it, instead of deleting them when it closes.
+- Fixed: In a demo, the free preview no longer tells a connected assistant to start the search, which a demo cannot do.
+  
+  Fixed: On a machine without Claude Code, the demo now says so before its connect line, which needs it.
+- Fixed: In a demo, the descriptions and guidance a connected assistant reads no longer tell it to start a search, which a demo cannot do.
+- Fixed: A demo's first screen no longer lists its services' startup details. They go to a file in the demo's folder, which the screen names. Warnings and failures still show.
+- Fixed: A Knockout again checks the web use of at most three owners per name, instead of every owner it marks.
+- Fixed: A knockout search now reads the client's own request and the goods of each filing it fetched when it rates a name.
+- Fixed: A Knockout search now reads the register the way a clearance does, instead of taking an equal share of 100 filings in the register's order. It looks at each name's counts and reads each list it selects in full. It narrows a crowd by the client's goods, classes and markets. It chooses near spellings, wider searches and sound-alike searches from what it read. An independent check can now send a material defect back to the rating step, and reads the corrected record again. The report lists a name's filings before its web use, and can give different risk bands to different groups of classes where the evidence divides.
+- Fixed: A Knockout started before a register is chosen now stops at once and names the setting it needs, instead of waiting to retry on its own.
+- Fixed: Setup no longer tells an install from npm to take updates with `git pull`, and the settings file it writes names the command that wrote it.
+- Fixed: A port chosen with `clearotron start --port` is now refused when it is busy, as a port set by its variable is, instead of being moved.
+- Fixed: A report now prints the search and issue dates from its own record. Republishing a report, or opening a demo's example, no longer shows today as the day it was searched or issued.
+- Fixed: A running search's second and third steps now read "Searching registers and common law" and "Investigating and exploring findings".
+- Fixed: A `clearotron start` that fails after starting its doors now stops them, instead of leaving them running.
+- Fixed: A run that stops now prints a `clearotron run` command to resume it, and one that waits names `clearotron run-queue --watch`, in place of a `node` path.
+- Fixed: A name containing AND, OR or NOT is now searched on Clarivate instead of being set aside, by searching its words in order.
+- Fixed: After `clearotron start --background`, `clearotron doctor` no longer warns about an unset deployment name; it says that only Clearotron's own servers set one.
+- Fixed: Right after setup, `clearotron doctor` no longer warns that the key revocation list cannot be read or that portal saves are refused; it says the first `clearotron start` sets both up.
+- Fixed: On a machine with background services, `clearotron doctor` now reports the AI, the program and the billing those services use, not what your shell happens to set.
+- Fixed: `clearotron doctor` now opens with whether a search can run and what stops one. Before, that answer came about halfway down its output.
+- Fixed: With no AI chosen, `clearotron doctor` no longer reports the program, billing or sign-in of an AI nobody chose, and `--probe-engine` spends no turn.
+- Fixed: `clearotron doctor` and `clearotron start` now say that a revocation list the client door cannot read makes it refuse every key; they said the opposite.
+- Fixed: Setup and `doctor` no longer tell you to set a register on the Installation settings page, which shows each setting but cannot change one. They tell you to re-run setup.
+  
+  Fixed: Setup's opening now says that a paid register key is written on your word, because checking it would cost you. It also says that your organisation's name is the one answer you cannot skip. With no register chosen, setup's closing lines no longer suggest a first real clearance that would be refused.
+  
+  Fixed: After `doctor --probe-engine` runs a test turn, its last line no longer says that nothing was written: the AI program keeps its own files from that turn.
+- Fixed: Setup's figure for the disk space the AI's program takes now matches what it installs.
+- Fixed: After a declined or failed test turn, setup now asks whether to go on without an AI. If you go back to the AI question instead, the AI you picked is the default.
+- Fixed: Setup's messages now name the AI as Claude or Codex, and the portal's pages by the names the portal uses, instead of the program's internal names.
+- Fixed: On an npm install, setup's refusal of a configuration folder inside the program no longer speaks of a checkout and `git pull`.
+- Fixed: Setup and the portal's settings list now say what the SerpAPI key is for: the Chinese marketplace search.
+- Fixed: Before its test turn, setup now says the AI is saved only once the turn works, and that the turn costs nothing while the AI is not signed in.
+  
+  Fixed: Setup's sign-in steps now say to use a second terminal and which question to answer yes to, and a missing Codex sign-in is reported in plain words.
+- Fixed: Setup's test turn now names your AI and says how the turn is paid for, in the words of the question before it.
+- Fixed: `clearotron --help` and setup's closing screen now name the four processes `clearotron start` runs.
+- Fixed: `clearotron start` no longer says that ordering starts a search when the install cannot run one yet. It says what is missing and the command that sets it up.
+- Fixed: The audit workbook now lists a part as not completed when the run could not add a coverage row. It does the same when the run could not finish a machine check, or its check of the official records behind the cards. Before, the report shipped without that part and nothing said so.
+- Fixed: When setup installed Claude itself, the line `clearotron start` prints to connect an assistant now names that copy by its full path, so the command is found.
+- Fixed: The portal's connect page and `clearotron connect` now name the Claude program setup installed, so the command they give runs on a machine with no other copy.
+- Fixed: Installing with `npx` no longer ends with a false warning that a different `clearotron` comes earlier on the PATH.
+- Fixed: The demo no longer reads a pasted brief with the AI engine and no longer runs queued searches, so its portal makes no paid call; its closing lines no longer say an order commits money.
+- Fixed: In the demo, New clearance offers Review search again, and an order opens the finished example without asking whether to leave the page.
+- Fixed: Setup's closing summary now names the AI, and when no AI or register is chosen it no longer says that nothing needs running again.
+- Fixed: With no AI chosen, `clearotron doctor` no longer names a default AI; it says a search is refused until one is chosen, as its search check already did.
+- Fixed: The install guide now says, where it offers the free US register, that downloading it needs a free USPTO.gov account with ID.me identity verification.
+- Fixed: The install guide now gives an npm install its own commands to update, resume a run and connect an assistant, and marks the steps meant only for the source code.
+- Fixed: The install guide now gives the beta's global install, a removal command that removes the program, and the folder Codex's turns leave behind.
+- Fixed: The install guide's removal list now names the folder a tarball install creates, npm's download cache and Claude Code's own cache.
+  
+  Fixed: The install guide now lists an AI among the settings a search requires, and no longer calls one AI the default.
+- Fixed: The install guide now takes a new reader from install and setup through the free demo to the portal, where they order their first search.
+- Fixed: The install guide now gives how long the sample runs in the demo took, about an hour for each clearance, instead of a figure from an older sample.
+- Fixed: The install guide now says that `clearotron start` runs the portal, the engine door, the client door and the worker, and that Ctrl-C stops all of them.
+- Fixed: The install guide now names all three ports `clearotron start` opens, says that `--port` moves all three, and says when a port in use is moved rather than refused; the README says which ports the demo opens.
+- Fixed: The install guide now says a demo can be signed in to and ordered from, and the README says what a demo leaves: npm's own copy of the package, and any folder `--once` or `--keep` kept.
+- Fixed: The README, the quickstart and the install guide now say what the SerpAPI key is for: it searches Chinese marketplaces for the native-language investigation of China, Hong Kong, Taiwan or Macau.
+- Fixed: The README, the quickstart and the install guide now agree that a Knockout search runs without a Perplexity key, and that the three clearance searches need one.
+- Fixed: Starting Clearotron or the demo no longer logs the portal's own check of the engine connection as a rejected request.
+- Fixed: On a first start in a terminal, the log no longer says the passphrase is not printed just above the box that prints it.
+- Fixed: An install that cannot run a search yet now says so on Home and on New clearance, before a search is filled in. The person who runs the install is told what is missing and the command that sets it up.
+  
+  Fixed: The Installation settings page now shows an AI that was never chosen as not set, instead of showing the default as configured.
+- Fixed: The quickstart's link to the four searches now leads to a page that describes them.
+- Fixed: When an install cannot search yet, the portal, `clearotron start` and the run's log now say where the missing settings go and what to restart.
+- Fixed: Setup's register question no longer says there is no default beside the answer Enter picks.
+- Fixed: The install guide's removal list now names the folder setup installs the AI program into, the files that program keeps for itself, and the copy `npx` keeps; it no longer says the demo leaves the program behind.
+- Fixed: The install guide's sample settings now select Signa, the register the guide recommends, and list each register's key once.
+- Fixed: While a search stops, its card and the stop dialog no longer put the step's name inside a sentence. The dialog names the current step on a line of its own.
+- Fixed: The portal no longer shows "[object Object]" on a company's profile, sends requests that fail before a company is picked, or prints its address hint twice.
+- Fixed: On an npm install, `clearotron update` now says what it does there and no longer speaks of `git pull` and `npm ci`. Where it names an npm command, a beta install stays on the beta.
+
 ## 0.5.1-beta.2
 
 ### Patch Changes
