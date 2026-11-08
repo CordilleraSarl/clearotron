@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.5.1-beta.2
+
+### Fixed
+
+- A Knockout again checks the web use of at most three owners per name, instead of every owner it marks.
+
 ## 0.5.1-beta.1
 
 ### Fixed
