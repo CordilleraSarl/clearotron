@@ -213,7 +213,7 @@ surface for non-staff readers on this engine:
   (`customer/<key>/index.html`) links `report.html` (`publish/index.mjs`) with no split language.
 - **One preparation chokepoint.** What a non-staff reader receives is prepared by the portal's
   `readReport()` (`driver/portal-report.mjs`, `staff:false`), which removes the reader-visible
-  deltas — `[internal]` review tails, the internal band/reviewer shorthand, the staff Ask-your-AI
+  deltas — `[internal]` review tails, the internal band/reviewer shorthand, the staff Ask AI
   connector — in one place, rather than at render time into a second document.
 
 **A surface for non-staff readers must read through `readReport()`, never open a report by path.** That is
