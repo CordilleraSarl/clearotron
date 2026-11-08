@@ -209,6 +209,24 @@ test("a filing this run owed no check prints no source line at all", () => {
   assert.doesNotMatch(other, /Use-check source:/, "and the join is by recordId, not by position");
 });
 
+// THE CAP AND THE PAGE AGREE (owner's ruling, 2026-11-08: at most three owner checks per name, on judgment too). An owner the
+// reading step named past the third is not searched, and nothing a client reads says anything about a check for it.
+test("an owner named past the third is not searched, and the report prints no use-check line for it", () => {
+  const owners = ["Alder", "Birch", "Cedar", "Damson"];
+  const records = owners.map((o) => rec({ recordId: `R-${o.toUpperCase()}`, owner: `${o} GmbH` }));
+  const registerRecords = doc(records, { reading: { ownerChecks: records.map((r) => r.recordId) } });
+  const owed = ownersOwedACheck(registerRecords);
+  assert.deepEqual(owed.map((o) => o.owner), ["Alder GmbH", "Birch GmbH", "Cedar GmbH"], "four owners named, and not three searched");
+  const checks = owed.map((o) => ({ ...CHECK, owner: o.owner, recordIds: o.recordIds,
+    source: `https://${o.owner.split(" ")[0].toLowerCase()}.example/about` }));
+  const out = renderKnockoutHtml(findingsDoc(), FW, { runId: "tmp1-fixture", overall: "Manageable", registerRecords, ownerChecks: checks });
+  // THE FLOOR: the page does print the use-check lines it has, so their absence below is about the fourth owner.
+  assert.match(out, /alder\.example\/about/, "the report printed no use-check line at all, so this arm measures nothing");
+  assert.doesNotMatch(out, /damson\.example/, "a check nobody ran reached the page");
+  assert.doesNotMatch(out, /Use check unavailable/, "the owner not searched reads as a lookup that failed");
+  assert.ok((out.match(/Use-check source:/g) ?? []).length <= 3, "more use-check lines than owners searched");
+});
+
 test("report-data carries the source, in the same three states as the card", () => {
   const withCheck = knockoutReportData(findingsDoc(), FW, {
     runId: "r", overall: "Manageable", identity: {}, registerCounts: null,
