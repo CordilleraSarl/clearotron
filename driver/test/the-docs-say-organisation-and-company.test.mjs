@@ -346,6 +346,13 @@ const EXCEPTIONS = [
     files: /^AGENTS\.md$/,
     reason: "the `grant`, `brandowner`, `framework` and `project` lines of `--help`, copied verbatim into the verb table",
   },
+  {
+    // COPIED, NOT WRITTEN. The 0.5.1 release record is the product owner's own wording, approved word for
+    // word on 2026-11-08. An approved sentence is not reworded to pass this check: the check admits it here.
+    phrases: [/\bthe\s+client's\s+goods\b/gi],
+    files: /^docs\/releases\/0\.5\.1\.md$/,
+    reason: "the Knockout line of the 0.5.1 release record, in the wording the product owner approved word for word",
+  },
 ];
 
 /**
