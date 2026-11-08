@@ -130,8 +130,8 @@
           "todos": 0
         },
         "a-cancelled-setup-names-what-stays.test.mjs": {
-          "tests": 6,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 19,
           "skips": 5,
           "todos": 0
         },
@@ -559,6 +559,12 @@
           "tests": 4,
           "asserts": 7,
           "skips": 0,
+          "todos": 0
+        },
+        "a-declined-proof-still-shows-how-to-sign-in.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 2,
           "todos": 0
         },
         "a-deduped-read-must-exist-on-the-card.test.mjs": {
