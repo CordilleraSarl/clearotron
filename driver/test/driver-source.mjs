@@ -14,10 +14,13 @@ const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 // Where the phases carved out of a file live, in the order they are read after it.
 const CARVED_FROM = { "pipeline.mjs": "steps" };
+// A single module a file's definitions moved to whole, read after it the same way.
+const MOVED_TO = { "stages.mjs": ["run-record.mjs"] };
 
 /** The source of a file under driver/, named from there, with whatever has been carved out of it appended. Throws on a file that is not there. */
 export function driverSource(file) {
   const dir = CARVED_FROM[file] ? join(DRIVER, CARVED_FROM[file]) : null;
   const carved = dir && existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".mjs")).sort().map((f) => join(dir, f)) : [];
-  return [join(DRIVER, file), ...carved].map((p) => readFileSync(p, "utf8")).join("\n");
+  const moved = (MOVED_TO[file] ?? []).map((f) => join(DRIVER, f));
+  return [join(DRIVER, file), ...carved, ...moved].map((p) => readFileSync(p, "utf8")).join("\n");
 }

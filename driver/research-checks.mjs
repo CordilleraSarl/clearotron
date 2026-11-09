@@ -15,9 +15,9 @@ import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { isUseCheckNoResult } from "./findings-model.mjs";
 import { questionKey, sameStageSession } from "./research-answers.mjs";
-import { readJson } from "./run-record.mjs";
+import { RESEARCH_CHECKS_FILE, readJson } from "./run-record.mjs";
 
-export const RESEARCH_CHECKS_FILE = "research-checks.md";
+export { RESEARCH_CHECKS_FILE };
 
 // The reviewer's instruction (design, 2026-10-28), word for word. Model-facing: it changes only as model-facing wording does.
 export const REVIEW_RESEARCH_CHECK = "Check a claimed research result against the relevant saved answer and its completion record. "
