@@ -272,6 +272,14 @@ The driver composes the link from the register's record host and the `uri`; you 
 - The record-findings **URL column carries the COMPOSED full URL** (that provider's base host + `uri`), so
   the driver's verbatim pass-through renders a working link. Every downstream surface (Excel,
   narrative/report) MUST compose the **same** URL from the same `uri` — no per-surface link sets, no drift.
+- **If the provider doc says it publishes no per-record page, compose nothing.** Leave the `uri` as it is
+  and cite the office register in the text. A link to a register this run did not search is worse than no
+  link: it is a dead link wearing a citation's clothes.
+  - **THE FIELD AND THE VALUE, because "compose nothing" does not name either:**
+    **`source.resolved_link` is `""`** — the empty string. NOT the `uri`, not a fragment, not another vendor's host. "Leave the `uri` as it is" means do not MODIFY the record's own `uri` field; it does NOT mean carry that path into the link field.
+    Carrying `/mark/<cc>/<number>` into `resolved_link` is the reading that costs a whole synthesis
+    attempt: the validator refuses it (`finding_record_url_not_a_link`) and the refusal is the only
+    place this value was ever written down.
 
 > **The host is NOT optional and NOT guessable.** `trademark.example.com` is the clearance-**page** pool
 > URL, not a provider record host — do not reuse it here. Neither is another vendor's host: this rule read
