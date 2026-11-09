@@ -4000,7 +4000,7 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
       //    "verdict failed (non-fatal)" — the sentence a malformed artifact would also produce. A reader
       //    seeing it has no way to tell "the ratchet ran and could not judge" from "the ratchet has never
       //    run". Ten pool traversals, ten failures, zero successes, and nobody could see it.
-      // 2. IT REPORTED ONLY TO STDERR. `note()` is stderr-only (log.mjs:61). Nothing reached run.jsonl,
+      // 2. IT REPORTED ONLY TO STDERR. `note()` is stderr-only (log.mjs:62). Nothing reached run.jsonl,
       //    the run dir, or any audited artifact — so no consumer we have could ever have noticed.
       //
       // ReferenceError is the ONLY hard discriminator, and the narrowness is deliberate. TypeError is

@@ -80,7 +80,7 @@ test("the walk reached the ratchet rather than short-circuiting before it", () =
 // the classification cannot drift without a reader noticing.
 
 test("the repaired catch reports DURABLY — a stderr-only report is what bought #914 two months", () => {
-  // note() writes to stderr (log.mjs:61). Nothing that reads artifacts can see it. The catch must put a
+  // note() writes to stderr (log.mjs:62). Nothing that reads artifacts can see it. The catch must put a
   // row in run.jsonl whichever branch it takes, or the next non-fatal failure is equally invisible.
   //
   // RE-ANCHORED ON PROSE, AND A MISSING ANCHOR REFUSES. This located the catch by a heading opening
