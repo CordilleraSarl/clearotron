@@ -60,7 +60,7 @@ test("the pipeline stores a null clause per appended ground, and the statement i
   const src = driverSource("pipeline.mjs");
   assert.match(src, /const clausesOut = blockingGrounds\.length\s*\n\s*\? \[\.\.\.orderedClauses, \.\.\.blockingGrounds\.map\(\(\) => null\)\]/,
     "the grounds no longer carry an explicit null clause");
-  assert.match(src, /riskStatement\(\{ tier: derived\.tier, verdict, reasons: reasonsOut, clauses: clausesOut,/);
+  assert.match(src, /riskStatement\(\{ tier: derived\.tier, verdict: runState\.verdict, reasons: reasonsOut, clauses: clausesOut,/);
   assert.match(src, /reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,/, "the sidecar is written from the same array");
 });
 
