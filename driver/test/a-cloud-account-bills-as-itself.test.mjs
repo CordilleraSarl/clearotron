@@ -44,7 +44,8 @@ const { runStage } = await import("../gateway.mjs");
 const { makeJxTurnRunner } = await import("../engine/jx-turn.mjs");
 const { jxBillingStamp } = await import("../jx-lanes.mjs");
 const { runJxTurn } = await import("../../providers/jx/src/turn-envelope.mjs");
-const { engineInventory, cloudName } = await import("../config-inventory.mjs");
+const { engineInventory } = await import("../config-inventory.mjs");
+const { cloudName } = await import("../engine/auth.mjs");
 const { probeEngineTurn, classifyProbe } = await import("../engine/probe.mjs");
 
 const MOCK = join(dirname(fileURLToPath(import.meta.url)), "mock-claude.mjs");

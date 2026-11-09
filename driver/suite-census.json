@@ -8487,6 +8487,12 @@
           "skips": 0,
           "todos": 0
         },
+        "what-an-engine-stamp-means.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 15,
           "asserts": 49,

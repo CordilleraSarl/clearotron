@@ -2,6 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // attempt-rows.mjs — what one row of a run's attempt log says: whether it is a provider attempt, and which model served it.
 import { resolveModel } from "./driver.config.mjs";
+import { engineStamp } from "./engine/stamps.mjs";
 
 /**
  * WHICH MODEL ACTUALLY SERVED THE TURN — the key `byModel` buckets under.
@@ -37,8 +38,9 @@ export function modelKey(rec) {
   // `anthropic/claude-haiku` — the split ruled on and accepted with recording the tier. It used to fall
   // to the branch below and key as `anthropic/unstamped:<id>`, a name for a missing stamp on a row that
   // carries one. An OpenAI one keys as its served id, which is what an openai-agent stage row carries.
-  if (!engine || engine === "anthropic-agent" || engine === "anthropic") return resolveModel(rec.model);
-  if (engine === "openai") return rec.model;
+  const { catalog } = engineStamp(engine);
+  if (!engine || catalog === "tier") return resolveModel(rec.model);
+  if (catalog === "served") return rec.model;
 
   // Any OTHER engine with no stamp. The tier is not a model id and this catalog is not that engine's,
   // so there is no honest id to key under. Name the gap instead: the tokens still account (dropping

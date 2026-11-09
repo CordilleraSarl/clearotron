@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { modelKey } from "../attempt-rows.mjs";
-import { vendorOf } from "../run-economics.mjs";
+import { vendorOf } from "../engine/stamps.mjs";
 import { driverDir } from "../run-record.mjs";
 import { servedModels } from "../tokens.mjs";
 

@@ -23,7 +23,7 @@
 
 /**
  * Why every search is refused over how this machine is set to pay, as the driver classifies it
- * (`billingRefusalReason` in driver/config-inventory.mjs, which lists the kinds). Names only: settings,
+ * (`billingRefusalReason` in driver/engine/auth.mjs, which lists the kinds). Names only: settings,
  * and clouds by the name a reader knows them by. Never the value of a setting.
  *
  * `kind` IS A STRING, NOT A UNION, ON PURPOSE. A kind this build does not know is a refusal all the same,
