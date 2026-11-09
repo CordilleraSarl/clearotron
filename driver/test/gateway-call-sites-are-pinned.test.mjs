@@ -81,20 +81,22 @@ test("the stderr digest is applied AT THE RECORD, not merely available as a help
 
 // ── 2. THE LADDER'S CODEX HOME IS PASSED, AND IS THE SAME ONE ACROSS ATTEMPTS ───────────────────────
 
-// THE STUB IS REGISTERED UNDER THE REAL ENGINE'S NAME, and that is load-bearing rather than lazy.
-// `runStage` creates the stage home only when `selectEngine().name === "openai-agent"` — anthropic
-// resolves `--resume` against an ambient store nothing wipes and needs none of this. So a stub under any
-// other name is handed `null` correctly, and an arm built on one would assert a property the code never
-// claims. `registerEngine` keys by name and node:test gives each file its own process, so the
+// THE STUB CARRIES THE REAL ENGINE'S STAGE-HOME HOOKS, and that is load-bearing rather than lazy.
+// `runStage` creates the stage home only for an engine that offers `makeStageHome` — anthropic
+// resolves `--resume` against an ambient store nothing wipes and needs none of this. So a stub without
+// the engine's stage-home hooks is handed `null` correctly, and an arm built on one would assert a property the
+// code never claims. `registerEngine` keys by name and node:test gives each file its own process, so the
 // substitution cannot reach another test.
 const CODEX = "openai-agent";
+const { openaiAgentEngine: { makeStageHome, releaseStageHome } } = await import("../engine/openai-agent.mjs");
+const stageHome = { makeStageHome, releaseStageHome };
 
 test("every dispatch in one ladder receives the SAME codexHome, and it is not empty", async () => {
   // The property is not "a home was passed" but "one home per LADDER". A per-turn home is exactly what
   // removed, and a fresh directory on each attempt would satisfy a mere presence check while
   // failing every warm resume — the defect wearing the fix's clothes.
   const seen = [];
-  GW.registerEngine({ name: CODEX,
+  GW.registerEngine({ name: CODEX, ...stageHome,
     async runTurn(opts) {
       seen.push(opts?.codexHome ?? null);
       return { code: 1, killed: false, wall: 0.2, stdout: "", stderr: "boom", laneWaitMs: 0,
@@ -120,7 +122,7 @@ test("the recording engine's homes are real, distinct paths per ladder — the a
   // global home shared across ladders (which explicitly rejected: concurrent stages would overwrite
   // one another's config.toml).
   const homes = [];
-  GW.registerEngine({ name: CODEX,
+  GW.registerEngine({ name: CODEX, ...stageHome,
     async runTurn(opts) {
       homes.push(opts?.codexHome ?? null);
       return { code: 1, killed: false, wall: 0.1, stdout: "", stderr: "boom", laneWaitMs: 0,
@@ -167,7 +169,7 @@ async function runWithFormRepair(tag, onTurn) {
   const runDir = freshRun(tag);
   const out = join(runDir, "frame-diff.md");
   const seen = { homes: [], turns: 0 };
-  GW.registerEngine({ name: CODEX,
+  GW.registerEngine({ name: CODEX, ...stageHome,
     async runTurn(opts) {
       seen.turns++; seen.homes.push(opts?.codexHome ?? null);
       writeFileSync(out, `attempt ${seen.turns}\n`);

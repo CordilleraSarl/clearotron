@@ -911,6 +911,9 @@ function errResult(t0, e, resumeRef) {
 
 export const openaiAgentEngine = {
   name: "openai-agent",
+  // A home that lasts for one stage, so its repair turns can resume the session. An engine with no such need omits both.
+  makeStageHome: (stage) => makeCodexHome(`stage-${String(stage).replace(/[^a-z0-9-]/gi, "_")}-`),
+  releaseStageHome: releaseCodexHome,
   // — WHAT THIS ENGINE GUARANTEES ABOUT SEAT WRITES: NOTHING, and the record now says so.
   // The boundary is a `claude -p` PreToolUse hook and codex has no PreToolUse — an absence by
   // construction, not a misconfiguration. The stage's permission profile grants the whole run folder,
