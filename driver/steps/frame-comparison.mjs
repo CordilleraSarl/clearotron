@@ -92,7 +92,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
       // stageOnce's attempt loop, which is a change to the stage contract, not to this branch.
       if (/framediff_directive_undispatchable/.test(String(fd.fail ?? ""))) {
         try {
-          const rp = driverDir(run.runDir, "frame-reopen.json");
+          const rp = P.frameReopenReceipt;
           const prior = existsSync(rp) ? readJson(rp) : {};
           // EVERY firing directive, not only the offenders: when this stage fails, `parsed` stays
           // null and the whole reopen block below is skipped, so a firing directive that WAS
@@ -257,7 +257,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
         }
       } catch (e) { note(`jurisdiction-scope check skipped (non-fatal): ${String(e.message).slice(0, 80)}`); }
 
-      const reopenReceiptPath = driverDir(run.runDir, "frame-reopen.json");
+      const reopenReceiptPath = P.frameReopenReceipt;
       const priorReceipt = existsSync(reopenReceiptPath) ? readJson(reopenReceiptPath) : null;
       const already = alreadyAttemptedReopen(priorReceipt, firing);
       const reopenDisabled = process.env.CLEAROTRON_FRAME_REOPEN === "0" || Number(process.env.CLEAROTRON_FRAME_REOPEN_MAX ?? 1) < 1;

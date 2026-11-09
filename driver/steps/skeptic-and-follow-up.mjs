@@ -220,7 +220,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
     // session; failed = those whose register-unit stage returned !r.ok (never ran to a result). The
     // documented-coverage-limit skips (escalate − escalateGated) are accepted limits, never "failed".
     try {
-      atomicWrite(driverDir(run.runDir, "escalation-state.json"), JSON.stringify({   // B5 — the client-gate reads this: never truncated
+      atomicWrite(P.escalationState, JSON.stringify({   // B5 — the client-gate reads this: never truncated
         ts: new Date().toISOString(),
         requested: escalateGated,
         completed: escResults.filter((e) => e.ok).map((e) => e.axis),
@@ -360,7 +360,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         //     no structured remedy to correct the query with — an honest disclosure is the close.
         const verifyEnvelopeClosure = () => {
           try {
-            const tp = driverDir(run.runDir, "register-taint.json");
+            const tp = P.registerTaint;
             if (existsSync(tp)) {
               const rec = readJson(tp);
               let touched = false;
@@ -397,7 +397,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         // class as a failed escalation — "the main search didn't finish". It lands in the SAME sink
         // the client-gate preflight reads (additive; a prose note alone let it ship finished-looking).
         try {
-          const p = driverDir(run.runDir, "escalation-state.json");
+          const p = P.escalationState;
           const cur = existsSync(p) ? readJson(p) : { requested: [], completed: [] };
           const failed = [...new Set([...(cur.failed ?? []), ...closeFails.map((e) => `envelope:${e.axis}`)])];
           atomicWrite(p, JSON.stringify({ ...cur, ts: new Date().toISOString(), failed }, null, 2) + "\n");   // B5 — the client-gate reads this: never truncated
@@ -545,7 +545,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         fetcher: (uri) => fetcher(uri, { agentId: agent, sessionKey: `${runPrefix}screen-gate-refetch`, recordLog: runRecordLogPath(run.runDir) }),
         log: (row) => runLog(run.runDir, { pass, ...row }),
       });
-      const sidecar = driverDir(run.runDir, "screen-gate-unresolved.json");
+      const sidecar = P.screenGateUnresolved;
       if (leftover.length) {
         note(`screen-gate (post-flush): ${leftover.length} drop row(s) still lack a fetch receipt after one code-fetch repair round — flagged (bounded; never a loop)`);
         // Re-stamp the disclosure to the CURRENT leftover set — the flush may have corrected some
@@ -667,7 +667,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
             cause_source: v.uri ? "driver-fetch-reported-ok" : "no-uri",
           };
         });
-        atomicWrite(driverDir(run.runDir, "screen-gate-unresolved.json"),
+        atomicWrite(P.screenGateUnresolved,
           JSON.stringify({ ts: new Date().toISOString(), unresolved: ctx.screenGateUnresolved }, null, 2) + "\n");
         runLog(run.runDir, { event: "screen-gate-unresolved", count: violations.length, uris: violations.map((v) => v.uri),
           action: "disclose-clamp", failures: [...fetchFailures.entries()].map(([uri, cause]) => ({ uri, cause })) });
@@ -675,11 +675,11 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
       } else {
         // Recovered — and a PRIOR pass's disclosure sidecar (a crash-resume where the record now
         // fetches or the re-decide landed) must go with it: a healed gap must not keep clamping.
-        rmSync(driverDir(run.runDir, "screen-gate-unresolved.json"), { force: true });
+        rmSync(P.screenGateUnresolved, { force: true });
         runLog(run.runDir, { event: "screen-gate-clean", recovered: true });
       }
     } else {
-      rmSync(driverDir(run.runDir, "screen-gate-unresolved.json"), { force: true });   // same healed-gap cleanup as the recovered branch
+      rmSync(P.screenGateUnresolved, { force: true });   // same healed-gap cleanup as the recovered branch
       // — THE ZERO NAMES ITS OWN CAUSE. This branch fired on the CI red where screen-gate minted
       // no digest work: the gate found no violations, logged that it was clean, and said nothing about
       // WHY — so "the findings file was not there" and "the findings are fine" left identical records.
@@ -789,8 +789,8 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
       // Own files under _driver/ (crowd-context-plan/-band.json) so the frozen register plan and the
       // axis bands are never written; blocks come back qid-stamped exactly like every executor band.
       const ccExecutor = async (entries) => {
-        const ccPlanPath = driverDir(run.runDir, "crowd-context-plan.json");
-        const ccBandPath = driverDir(run.runDir, "crowd-context-band.json");
+        const ccPlanPath = P.crowdContextPlan;
+        const ccBandPath = P.crowdContextBand;
         atomicWrite(ccPlanPath, JSON.stringify({
           schema_version: 1,
           purpose: "crowd-context evidence queries — driver-minted, standalone; never part of the frozen register plan",
