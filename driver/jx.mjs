@@ -14,7 +14,6 @@
 // zero new wiring. What they carry is the ROMANISATION, not the characters — see jxPlanEntries.
 import { readFileSync, writeFileSync, renameSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { decideJxLanes, candidateRefusal, canonicalTerm, romanizationSpellings, LANGUAGE_LANES, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { cnipaSubgroupsForClasses, cnipaEditionLabel } from "./jx-subclass.mjs";   // — replaces the hand-written seed table
 import { kebab } from "./search-policy.mjs";
@@ -86,7 +85,7 @@ export const JX_SLICES = [
 ];
 
 import { laneArmed } from "./driver.config.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 /**
  * Derive the run's slice statement from durable state. PURE — no clock, no fs; `sidecar` is the parsed
