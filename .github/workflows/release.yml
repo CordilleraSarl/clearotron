@@ -839,6 +839,21 @@ jobs:
           CLEAROTRON_CUT_REF: origin/main
         run: node scripts/release-cut-decision.mjs
 
+      # THE COPY A PUBLISH RESTORES. A cache entry nobody reads for seven days is evicted and publishes are further
+      # apart than that, so this job, which runs on the schedule, is what keeps it. It never holds up the decision.
+      - name: Keep the secret scanner
+        continue-on-error: true
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gitleaks-cache
+          key: gitleaks-${{ env.GITLEAKS_VERSION }}-linux-x64
+
+      - name: Fill the kept copy when it is empty
+        continue-on-error: true
+        env:
+          GITLEAKS_CACHE_DIR: ${{ runner.temp }}/gitleaks-cache
+        run: node scripts/secret-scanner-fetch.mjs
+
   # ── FINISH A RELEASE NPM WAS STILL VALIDATING ──────────────────────────────────────────────────────
   #
   # npm accepts a publish before it serves it, and the publish job's wait for the registry is bounded.
@@ -1359,13 +1374,19 @@ jobs:
         # for the wrong reason teaches its reader to ignore the right one.
         run: node scripts/no-test-account-reaches-the-package.mjs "${{ steps.what.outputs.tarball }}"
 
+      # A KEPT COPY, SO A PUBLISH DOES NOT HANG ON GITHUB'S RELEASE FILES. The download stays as the fallback.
+      - name: Restore the kept secret scanner
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gitleaks-cache
+          key: gitleaks-${{ env.GITLEAKS_VERSION }}-linux-x64
+
       - name: No secret leaves in the packed bytes
+        env:
+          GITLEAKS_CACHE_DIR: ${{ runner.temp }}/gitleaks-cache
         run: |
           set -euo pipefail
-          curl -sSfL --retry 5 --retry-delay 10 -o gitleaks.tgz \
-            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
-          tar -xzf gitleaks.tgz gitleaks
+          node scripts/secret-scanner-fetch.mjs
           mkdir -p packed
           tar -xzf "${{ steps.what.outputs.tarball }}" -C packed
           COUNT=$(find packed -type f | wc -l)
@@ -1868,13 +1889,19 @@ jobs:
         # for the wrong reason teaches its reader to ignore the right one.
         run: node scripts/no-test-account-reaches-the-package.mjs "${{ steps.what.outputs.tarball }}"
 
+      # A KEPT COPY, SO A PUBLISH DOES NOT HANG ON GITHUB'S RELEASE FILES. The download stays as the fallback.
+      - name: Restore the kept secret scanner
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gitleaks-cache
+          key: gitleaks-${{ env.GITLEAKS_VERSION }}-linux-x64
+
       - name: No secret leaves in the packed bytes
+        env:
+          GITLEAKS_CACHE_DIR: ${{ runner.temp }}/gitleaks-cache
         run: |
           set -euo pipefail
-          curl -sSfL --retry 5 --retry-delay 10 -o gitleaks.tgz \
-            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
-          tar -xzf gitleaks.tgz gitleaks
+          node scripts/secret-scanner-fetch.mjs
           mkdir -p packed
           tar -xzf "${{ steps.what.outputs.tarball }}" -C packed
           COUNT=$(find packed -type f | wc -l)
