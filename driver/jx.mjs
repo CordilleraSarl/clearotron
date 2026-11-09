@@ -86,7 +86,7 @@ export const JX_SLICES = [
 ];
 
 import { laneArmed } from "./driver.config.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 /**
  * Derive the run's slice statement from durable state. PURE — no clock, no fs; `sidecar` is the parsed
@@ -263,7 +263,7 @@ const flag = (name) => ["1", "true", "yes", "on"].includes(String(process.env[na
 // ── The frozen lane decision: minted once (cold), read verbatim forever (a resume NEVER re-decides —
 // the freezeProfile doctrine). Plain-clearotron runs never reach this (the caller gates on the component).
 export function attachJxLanes(ctx) {
-  const sidecarPath = driverDir(ctx.run.runDir, "jx-lanes.json");
+  const sidecarPath = paths(ctx.run.runDir).jxLanes;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — cold start */ }
   if (raw != null) {
@@ -374,7 +374,7 @@ export function jxPlanEntries({ lane, laneDecision, candidates, inScopeClasses, 
  */
 export function stateJxSlices(runDir, { env = process.env, note = () => {}, runLog = () => {} } = {}) {
   try {
-    const sidecarPath = driverDir(runDir, "jx-lanes.json");
+    const sidecarPath = paths(runDir).jxLanes;
     // ABSENT AND UNPARSEABLE ARE NOT THE SAME FACT, and the first cut printed one sentence for both.
     // A run with no jx lane has no sidecar, and that is normal — saying "NOT writing one" there reads as
     // a withheld action. A sidecar that EXISTS and does not parse is a real defect in a driver-written
@@ -389,7 +389,7 @@ export function stateJxSlices(runDir, { env = process.env, note = () => {}, runL
     try { units = readJson(driverDir(runDir, "jx", "units.json")); } catch { /* no retrieval slices ran — absence is read below, never as a pass */ }
     const causes = {};
     try {
-      for (const line of readFileSync(driverDir(runDir, "run.jsonl"), "utf8").split("\n")) {
+      for (const line of readFileSync(paths(runDir).run, "utf8").split("\n")) {
         if (!line.includes("-skipped")) continue;
         let row; try { row = JSON.parse(line); } catch { continue; }
         if (row?.event === "jx-serp-grid-skipped" && row.cause) causes["serp-grid"] = row.cause;
@@ -435,7 +435,7 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
     const laneKeys = Object.keys(lanes).filter((l) => LANGUAGE_LANES[l] && laneArmed(l));   // — the shared reader
     if (!laneKeys.length) return { folded: 0, cause: minted ? "no lanes in scope (jurisdictions/policy)" : "frozen decision has no lanes" };
 
-    const receiptPath = driverDir(run.runDir, "jx-lanes.json");
+    const receiptPath = paths(run.runDir).jxLanes;
     const prior = ctx.jxLanes;
     // an empty class scope can only fold entries parseRegisterPlan would REJECT on the next resume
     // (register_plan_classes_missing — the run bricks). Degrade the whole fold instead (review 2026-07-18).
@@ -498,7 +498,7 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
     const repairedFold = repairReceipt();
 
     const { exec, source } = resolveJxExecutor(opts);
-    const ledgerPath = driverDir(run.runDir, "jx-completions.jsonl");
+    const ledgerPath = paths(run.runDir).jxCompletions;
     const markName = job.markName ?? job.name;
     const productContext = String(job.goods ?? ctx.profile?.industry ?? "").slice(0, 300);
     // — spread the PRIOR fold FIRST. `executes`/`slices` are minted at delivery, after this
