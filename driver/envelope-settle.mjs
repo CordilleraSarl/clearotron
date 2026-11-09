@@ -34,10 +34,11 @@
 // that envelopeDecision prices belong to the late, ledger-level arm, which is untouched and still runs.
 // Deliberately, therefore, nothing here reads job.deadline — and no string it produces mentions time.
 
-import { existsSync, readFileSync, writeFileSync, renameSync } from "node:fs";
+import { existsSync, writeFileSync, renameSync } from "node:fs";
 import { isCapabilityGapReason } from "./coverage-ledger.mjs";
 import { fullyDeferredAxes } from "./register-plan.mjs";
 import { readPartNotCompleted } from "./parts-not-completed.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const SETTLE_SCHEMA_VERSION = 1;
 
@@ -83,7 +84,7 @@ export function partitionReceiptDeferrals(plan, receipt, { sticky = new Set() } 
 export function readEnvelopeDecision(P) {
   try {
     const p = P?.envelopeDecision;
-    return p && existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null;
+    return p && existsSync(p) ? readJson(p) : null;
   } catch { return null; }   // unreadable ⇒ treated as absent ⇒ re-settled ⇒ overwritten
 }
 
