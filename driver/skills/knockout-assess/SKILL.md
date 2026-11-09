@@ -294,12 +294,7 @@ A recorded owner check linked to a held filing is held evidence. You may cite a 
   actually used. The report derives the finding's source labelling from this, so list one only if you
   reasoned from it.
 
-**Both are optional, and omitting them is always safe.** A filing with no row keeps its card's standing
-line, which describes the card and claims nothing about the rating. So:
-
-> **Never invent a read to fill a row, and never write "not weighed" as a read.** A filing you did not
-> weigh simply gets no row. A row written to look complete would tell the reader the rating turned, or
-> did not turn, on a filing you never reasoned from.
+Omit these fields when their information does not apply. When a finding's reasoning uses a held filing, record its ID in `weighedFilings`. When you weigh a filing without making it a finding, record the read in `registerReads`. Never invent a read or citation to fill a field.
 
 ## Saying what you put down (`setAside`)
 
