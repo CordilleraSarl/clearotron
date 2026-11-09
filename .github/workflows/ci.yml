@@ -416,16 +416,20 @@ jobs:
       # and truncated a match that straddled a boundary: a 40-character credential was missed ENTIRELY
       # and the scan reported clean. That pin cannot move back quietly — an arm in the driver suite
       # fails on 8.18.4 and passes on 8.30.1, and its name says which.
+      - name: Restore the kept secret scanner
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gitleaks-cache
+          key: gitleaks-8.30.1-linux-x64
+
       - name: No secret is in the tree or in the built bundle
         env:
           GITLEAKS_VERSION: '8.30.1'
           GITLEAKS_SHA256: '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb'
+          GITLEAKS_CACHE_DIR: ${{ runner.temp }}/gitleaks-cache
         run: |
           set -euo pipefail
-          curl -sSfL --retry 5 --retry-delay 10 -o gitleaks.tgz \
-            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
-          tar -xzf gitleaks.tgz gitleaks
+          node scripts/secret-scanner-fetch.mjs
           ./gitleaks version
 
           # A SCAN OVER NOTHING EXITS 0. That is the shape in which a failed checkout or an unbuilt

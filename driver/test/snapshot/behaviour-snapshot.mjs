@@ -274,7 +274,7 @@ function changedModules(from, to, coverage) {
   let cur = null, line = 0;
   for (const l of out.split("\n")) {
     const header = l.match(/^\+\+\+ b\/(.+)$/);
-    if (header) { cur = /(^|\/)test\//.test(header[1]) ? null : header[1]; if (cur) modules.set(cur, { file: cur, changed: 0, notRun: [] }); continue; }
+    if (header) { cur = /(^|\/)test\/|suite-census\.json$/.test(header[1]) ? null : header[1]; if (cur) modules.set(cur, { file: cur, changed: 0, notRun: [] }); continue; }
     const hunk = l.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
     if (hunk) { line = Number(hunk[1]); continue; }
     if (!cur || !l.startsWith("+") || l.startsWith("+++")) continue;

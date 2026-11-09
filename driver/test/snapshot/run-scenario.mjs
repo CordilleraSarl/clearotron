@@ -5,10 +5,11 @@
 // programs it starts import driver modules that would otherwise count as lines the driver ran.
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 delete process.env.NODE_V8_COVERAGE;
 const spec = JSON.parse(readFileSync(process.argv[2], "utf8"));
-const { pipeline } = await import(join(spec.driver, "pipeline.mjs"));
+const { pipeline } = await import(pathToFileURL(join(spec.driver, "pipeline.mjs")).href);
 let result;
 try { result = await pipeline(spec.job, spec.opts ?? {}); }
 catch (e) { result = { ok: false, threw: String(e?.message ?? e) }; }
