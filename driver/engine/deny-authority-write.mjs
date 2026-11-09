@@ -45,7 +45,7 @@
 
 import { readFileSync, appendFileSync } from "node:fs";
 
-import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { paths } from "../run-record.mjs";   //
 import { denyReason } from "../authority-trees.mjs";
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   //
 
@@ -136,7 +136,7 @@ const deny = (reason) => {
 // journal lands, because a boundary that depends on a successful write is not one.
 function journal(runDir, row) {
   if (!runDir) return;
-  try { appendFileSync(driverDir(runDir, "authority-denials.jsonl"), JSON.stringify(row) + "\n"); } catch { /* the deny still stands */ }
+  try { appendFileSync(paths(runDir).authorityDenials, JSON.stringify(row) + "\n"); } catch { /* the deny still stands */ }
 }
 
 function main() {

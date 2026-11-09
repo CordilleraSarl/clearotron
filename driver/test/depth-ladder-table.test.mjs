@@ -45,8 +45,6 @@ const VOCAB = {
   // (doubt-selection.mjs), and no row names one until the owner rules the cut for THIS stage. The ruled
   // tiers on the table belong to the placement-inquiry trace row.
   doubtClosure: ["every-doubt", "headline-candidate", "headline-candidate+sheet-2"],
-  envelopeRounds: ["as-today", "one"],
-  coverageClosureRounds: ["as-today", "one"],
 };
 
 /**
@@ -62,8 +60,6 @@ const ONE_COUNTRY_TODAY = Object.freeze({
   groundedProfiles: "every-finding",
   doubtClosure: "every-doubt",
   recallFollowupMax: 2,
-  envelopeRounds: "as-today",
-  coverageClosureRounds: "as-today",
 });
 
 test("the one-country row is TODAY'S behaviour, value by value — this is the byte-identical guard", () => {
@@ -158,15 +154,11 @@ test("the ladder grades the graded products and NOT product 1", () => {
 
 /**
  * WHICH ROWS ARE LIVE. A depth row that nothing reads is not a setting — it is a claim about behaviour
- * that no code makes true, and it reads exactly like a live one from the table. Three rows are declared
- * and not consumed, each for a stated reason, and this arm is what keeps that list honest: wire one
+ * that no code makes true, and it reads exactly like a live one from the table. A row declared and not
+ * consumed is listed here with its reason, and this arm is what keeps that list honest: wire one
  * without moving it here and the arm reds, leave one wired-but-unlisted and it reds the other way.
  */
-const DECLARED_ONLY = {
-  envelopeRounds: "the envelope already runs ONE round per run; the spec's 'not to exhaustion' has a second "
-    + "reading (cap the axes closed WITHIN the round) that re-opens the V4-4 failure — awaiting a ruling",
-  coverageClosureRounds: "coverage closure already runs exactly ONE warm followup, idempotent across resumes",
-};
+const DECLARED_ONLY = {};
 
 test("every depth row is either CONSUMED by the driver or listed as declared-only, with a reason", () => {
   const sources = ["pipeline.mjs", "stages.mjs"].map((f) => driverSource(f)).join("\n");
