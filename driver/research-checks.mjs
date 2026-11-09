@@ -15,6 +15,7 @@ import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { isUseCheckNoResult } from "./findings-model.mjs";
 import { questionKey, sameStageSession } from "./research-answers.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const RESEARCH_CHECKS_FILE = "research-checks.md";
 
@@ -71,7 +72,7 @@ export function researchChecksText(findings, held, asked) {
  */
 export function writeResearchChecks(runDir, { findingsAt, held = null, sessionKey = null } = {}) {
   try {
-    const doc = JSON.parse(readFileSync(findingsAt, "utf8"));
+    const doc = readJson(findingsAt);
     const own = (s) => sameStageSession(s, sessionKey);
     const asked = rows(driverDir(runDir, "reading-log.jsonl"))
       .filter((r) => r?.tool === "perplexity_research" && own(r.session) && !r.args?.grid && typeof r.args?.task === "string" && r.args.task.trim())
