@@ -437,7 +437,7 @@ export const REPAIR_COMPOSERS = [
       // round's text by construction. A real run died here: the reviewer read them, found its own
       // blocked assertions still present, and returned BLOCKING — two steps before the stage that would
       // have rebuilt them. Blocking on that staleness is unwinnable, so say plainly that it is expected.
-      `Judge ONLY ${narrative} and ${findings}. The report and the client summary are GENERATED FROM the narrative by stages that run after this gate, so on disk they still carry the previous round's text — that is expected and is NOT evidence a correction failed to land. Do not read them as the deliverable and do not block on them.`,
+      `Judge ONLY ${narrative} and ${findings}. The report is GENERATED FROM the narrative by stages that run after this gate, so on disk it still carries the previous round's text — that is expected and is NOT evidence a correction failed to land. Do not read it as the deliverable and do not block on it.`,
       // The writer's exclusions a recheck reads: the ones that changed and the ones its flags named, then the others for reference.
       ...writerExclusionLines(writerExclusions),
       appliedTable,
@@ -569,8 +569,8 @@ export const REPAIR_COMPOSERS = [
       // THE WRITER'S RATING LINE ALLOWS A GOODS REASSESSMENT. Read beside a check that hands newly available goods
       // text, "never re-derive" overrode the repair it sits in; the writer's branch says which check does what.
       toolWritten?.tool === "record_synthesis"
-        ? `Where a check identifies a mismatch in a copied risk tier or Level/Composite label, copy the quoted finding value exactly. Where a check supplies newly available goods text, reassess only the affected finding on that text; change its rating only if the evidence requires it.`
-        : `Risk tiers and Level/Composite labels are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
+        ? `Where a check identifies a mismatch in a copied risk tier, copy the quoted finding value exactly. Where a check supplies newly available goods text, reassess only the affected finding on that text; change its rating only if the evidence requires it.`
+        : `Risk tiers are COPIED from the findings values quoted in the check — never re-derive or re-word them.`,
       toolWritten?.tool === "record_synthesis"
         ? `Fix ONLY what the checks name, and the answers that depend on those changes; change nothing else.`
         : `Fix ONLY what the checks name; change nothing else.`,
