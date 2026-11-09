@@ -32,6 +32,7 @@ import { dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { consolidateFindings, remapActionOrdinals, remapFourAnswersOrdinals, parseFindingsJson } from "./findings-model.mjs";
 import { parseFrameworkManifest } from "./framework.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const FOLD_FILE = "fold.json";
 export const UNFOLDED_FILE = "findings-unfolded.json";
@@ -63,7 +64,7 @@ export function foldRecord(doc, manifest = null) {
 
 /** The fold state of a run, or null before any seam. Never throws. */
 export function readFold(runDir) {
-  try { return JSON.parse(readFileSync(driverDir(String(runDir ?? ""), FOLD_FILE), "utf8")); } catch { return null; }
+  try { return readJson(driverDir(String(runDir ?? ""), FOLD_FILE)); } catch { return null; }
 }
 
 function writeFold(runDir, { seamPassed, map = null, merges = [], error = null }) {
