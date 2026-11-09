@@ -28,8 +28,7 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 export const RESEARCH_ANSWERS_FILE = "research-answers.jsonl";
 
