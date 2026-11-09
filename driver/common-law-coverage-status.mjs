@@ -29,6 +29,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
+import { readJson } from "./run-record.mjs";
 
 /**
  * The three statuses a common-law coverage ledger row may carry, as data and as prose alike. Not the
@@ -47,7 +48,7 @@ export const findingsPathForSpec = (spec) =>
 
 const readStatuses = (file) => {
   let doc;
-  try { doc = JSON.parse(readFileSync(file, "utf8")); } catch { return null; }
+  try { doc = readJson(file); } catch { return null; }
   const rows = doc?.coverage_status;
   return rows && typeof rows === "object" && !Array.isArray(rows) ? rows : null;
 };
@@ -128,7 +129,7 @@ export function recordStatusesFromFindings(findingsPath, { half = null, now = ()
   if (!findingsPath) return null;
   const file = coverageStatusPath(findingsPath);
   let existing = null;
-  try { existing = JSON.parse(readFileSync(file, "utf8")); } catch { existing = null; }
+  try { existing = readJson(file); } catch { existing = null; }
   if (existing && existing.source !== "findings") return null;   // the seat recorded its own statuses
   let text;
   try { text = readFileSync(String(findingsPath), "utf8"); } catch { return null; }
