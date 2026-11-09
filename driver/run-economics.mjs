@@ -108,7 +108,7 @@ import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
 import { isAttemptRow, modelKey } from "./tokens.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
@@ -365,7 +365,7 @@ function readRows(path) {
 // recomputed weeks later reads the same number the requester was shown. The knockout lane computes no
 // quote at all and legitimately has no row.
 function readQuote(runDir) {
-  const rows = readRows(driverDir(runDir, "run.jsonl"));
+  const rows = readRows(paths(runDir).run);
   if (!rows) return null;
   for (let i = rows.length - 1; i >= 0; i--) if (rows[i]?.event === "quote") {
     const { event, ts, ...q } = rows[i];
@@ -622,7 +622,7 @@ export function stampRunEconomics(runDir, phase, { now = Date.now() } = {}) {   
   if (!runDir) return null;
   try {
     const econ = runEconomics(runDir, { now });
-    try { writeFileSync(driverDir(runDir, "economics.json"), JSON.stringify({ phase, ...econ }, null, 2) + "\n"); }
+    try { writeFileSync(paths(runDir).economics, JSON.stringify({ phase, ...econ }, null, 2) + "\n"); }
     catch { /* best-effort */ }
     const summary = {
       phase,
