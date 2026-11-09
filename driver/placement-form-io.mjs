@@ -26,8 +26,7 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 import { PLACEMENT_FORM_NAME, placementFormSidecarName, parsePlacementForm, renderPlacementsJson } from "./placement-form.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { atomicWrite } from "./progress.mjs";
-import { readJsonOrNull } from "./run-record.mjs";
+import { atomicWrite, readJsonOrNull } from "./run-record.mjs";
 
 export { PLACEMENT_FORM_NAME };
 
