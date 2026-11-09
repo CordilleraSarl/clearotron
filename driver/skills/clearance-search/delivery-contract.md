@@ -1,105 +1,19 @@
 # Delivery contract — `report.md` + `audit.md`
 
-**`report.md`** (the curated client report) is rendered in TWO isolated parts and **assembled by the driver**
-(it is no longer one LLM pass over every card — that cross-contaminated cards):
-- **`report-overview`** writes the cross-finding SHELL: the front-matter + `# Actions` + an OPTIONAL
-  `# Methodology` (a short plain-English scope note, or nothing — never a telemetry block) — and **no cards,
-  no `# Marks` heading**. It does **not** author a `# Coverage` section: coverage renders deterministically
-  from the typed `coverage[]` states in `findings.json`, and genuine gaps surface as plain OPEN ITEMS in the
-  `# Actions` buckets (see *Coverage = open items, not a telemetry panel* below).
-- **`report-card`** writes ONE `## <owner> — <MARK>` card, in isolation, from **that finding's own machine
-  record only** (it sees no other finding — so a card can never carry another finding's body/owner/dates/link).
-
-The driver concatenates the shell + the cards (ordered by rated severity — the framework band — then ordinal) under a `# Marks` heading
-into `report.md`, then the deterministic audit builder writes **`audit.md`** (the full audit record). Deterministic code then
-renders these into a self-contained HTML report + a styled Excel workbook and publishes them. The combined
-`report.md` shape below is the ASSEMBLED result — `report-overview` owns everything down to `# Marks`, and each
-`## ` card is one `report-card`.
-
-**Write markdown only. Do NOT build any Excel, compose HTML, or send email — later steps do that.**
-Both files are forgiving markdown (labelled `- key: value` blocks): a malformed line is skipped, never
-breaks the file. Long single-line values are fine; no escaping needed.
+The driver assembles `report.md` from typed values. `report-overview` sends the caption and the shell's values; `report-card` sends one finding's `full_detail` entries. The driver orders the cards.
 
 ---
 
 ## `report.md` — the curated client report
 
-**The shell half of this skeleton is gone (conversion 4).** The front-matter block, `# Actions`
-and `# Methodology` are no longer dictated to anyone: the `report-overview` stage sends the caption, the
-checks and the notes as typed values, and the driver renders every line of the shell. Nine of the ten
-front-matter keys were driver facts a seat retyped, and three of those the driver stamped over
-afterwards — this file annotated its own three fields as driver-replaced while still asking for them. It
-also taught a `### Only you can close these` section that the stage's own dispatch forbade and that the
-driver overwrote at assembly: three documents, three answers, now settled by there being no field for it.
-
-`report-card`'s half stood here until conversion 5 owned it — the split was per-stage on purpose, so
-that reverting conversion 4 could not drag report-card's skeleton out with it.
-
-**Conversion 5 then took it.** The card's line shapes are no longer
-dictated to anyone: the card seat sends its `### Full detail` items as typed values through its own
-recording tool, and the driver renders every bullet, every optional bold lead-in, the internal-note
-marker in the position the render splits on, and the final Source line — which it composes from the
-finding's own record rather than asking a seat to build a URL out of a provider host table this stage is
-never even given. The card's FRAME (the head, `- ord:`, `- group:`, `- source:`, `- net:`, `- open:`) was
-already the driver's from the 2026-08-16 frame conversion, and the entries above described it for a
-reader rather than ordering anyone to type it.
-
-**What did NOT move, and must not be finished by a later reader:** the card's PROSE. Ruling S2
-(2026-08-13) re-scoped the proposal rather than adopting it — the mechanical fields move now, and whether the
-analysis itself should be rendered is decided by EVIDENCE, one matter built both ways and read side by
-side. The transport carries the seat's sentences; it does not write them.
-
-So this document no longer carries a `report.md` skeleton at all. What a card must SAY is in
+What a card must SAY is in
 `report-prose.md` and the risk framework; what it must LOOK like is code's.
-
-*(These notes deliberately do NOT name any record tool. This file is served to `report-overview` as well
-as `report-card`, and the agreement guard reads served text as doctrine: a tool named here reads as
-an order to every seat that reads the file, including the ones whose grant does not carry it. The same
-note tripped that guard in conversion 4 and again in conversion 5 — describe the mechanism, name no
-tools.)*
-
 
 **Curation:** The finding's disposition chooses the report band a card renders in; it never recomputes the finding's rating. Mirror the run's actual data. Rating vocabulary is the band words
 of the framework in force (`risk-framework.md` house default, or the profile-selected
 `risk-framework-<customer>.md`); synthesis discipline follows `synthesis-rules.md`.
 
-**Placement's record — `placements.json` + the rulings tail (B2, 2026-07-31).** `placement-inquiry` writes
-its four tier sections as a structured sibling of `placement-recommendations.md`: `placements.json`, one
-entry per placed candidate, `{mark, owner, jurisdiction, records[], tier, reason}` with `tier` exactly one of
-`headline-candidate` / `sheet-2` / `watchlist-annex` / `out-of-scope-filtered`. When it is present it is the
-**authoritative per-candidate tier record**, and `reason` is placement's own short paragraph — the candidate
-characterisation, the decisive placement ground, any Stage-2 mitigant flag. Every consumer, this one
-included, **adopts or counters each placement BY ENGAGING ITS REASON**: a departure quotes the reason it
-contradicts and says why it does not hold; it is never a silent re-tier, and a caption or an `# Actions`
-emphasis that quietly reverses placement's call without engaging its reason is a delivery defect. The md
-keeps the **rulings tail** (band reconciliation, disagreements, coverage rulings, open questions) as prose —
-it travels verbatim and is adjudicated the same way: adopt each ruling or counter-reason it, never silently
-drop one. A run minted before this contract carries no `placements.json`; the md's tier sections are then the
-record, read the same way.
-
-**Banding by disposition (placement only — never the rating).** Each finding in `findings.json` carries an
-OPTIONAL `disposition` (set by `synthesis`), one of: `adversarial` | `coexistence-partner` | `distinguished` |
-`off-field`. It chooses the report **band** a card renders in — it **never** recomputes the finding's rating
-(its `band` under the framework in force):
-`adversarial` → band 1 (the on-field conflicts that drive the verdict); `coexistence-partner` / `distinguished`
-→ band 2 (notable but manageable); `off-field` → band 3 (commercial awareness). So a mid-band
-`coexistence-partner` (e.g. a documented-coexistence partner) renders in band 2, NOT band 1, while an
-identically-rated `adversarial` (a bare near-identical mark the owner would block) leads band 1. **Back-compat:** when `disposition`
-is ABSENT on every finding (a legacy / archived `findings.json`), placement falls back to the composite split
-(on-field = composite ≥ 3, secondary = composite ≤ 2) and renders byte-identically to before.
-
-**Ruled out (doc-52).** An OPTIONAL `ruled_out: true` (+ short plain `ruled_out_reason`) marks an `off-field`
-finding that shares **no word or sound** with the applicant's mark — a concept/genre neighbour, a same-theme
-name under a different word (e.g. `UNTAMED` surfacing against `OPEN COUNTRY`). It leaves the conflict
-bands + the landscape for a quiet, collapsed **"Also considered — ruled out"** list; it is never surfaced as a
-conflict. Never set it on anything sharing a word/sound with the mark (that is a real conflict, however weak).
-When the flag is absent, the render falls back to the same signal (an `off-field` register finding whose mark
-shares no word with ours), so the routing still holds on runs authored before the flag existed.
-
-**Plain coverage.** `coverage[]` `area` + `note` are read by a lawyer and the client — write them in plain
-English, never internal engine idioms ("slice", "crossed into the band", "null class/owner/status",
-"unadjudicable", "enumerated-empty", telemetry counts). The render also sanitises these as a backstop, but the
-authored text should already be plain.
+**Banding by disposition (placement only — never the rating).** Each finding's `disposition` sets where the driver places it: adversarial among the conflicts, coexistence-partner and distinguished under notable but manageable, off-field as awareness. It never changes the band.
 
 **Distil for the reviewing lawyer (the one reader).** Lead with the decision: `overall_caption` is at most 3 sentences of plain legal English.
 `# Actions` lists the open external checks — both surface above the fold.

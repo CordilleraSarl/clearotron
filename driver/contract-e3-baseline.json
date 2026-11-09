@@ -184,12 +184,12 @@
     },
     "skills/clearance-search/delivery-contract.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 1
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
     }
   },
   "totals": {
     "stages": 43,
-    "files": 62
+    "files": 60
   }
 }
