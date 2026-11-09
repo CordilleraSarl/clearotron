@@ -6,13 +6,12 @@
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
-import { driverDir } from "../../shared/driver-dir.mjs";
 import { heldForNothingToSend, splitDeferredByCloseability } from "../coverage-ledger.mjs";
 import { CROWD_CONTEXT_AXIS, buildCrowdContext } from "../crowd-context.mjs";
 import { pendingItems, runPostFlushGateRepair } from "../digest-queue.mjs";
 import { config } from "../driver.config.mjs";
 import { note, outputMeta, runLog } from "../log.mjs";
-import { atomicWrite } from "../progress.mjs";
+import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { fullyDeferredAxes, undoneSearchesNote } from "../register-plan.mjs";
 import { registerCapabilities } from "../register-unreachable.mjs";
 import { assembleRunRecords, recordBodyHasContent } from "../registry-fidelity.mjs";
@@ -363,7 +362,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
           try {
             const tp = driverDir(run.runDir, "register-taint.json");
             if (existsSync(tp)) {
-              const rec = JSON.parse(readFileSync(tp, "utf8"));
+              const rec = readJson(tp);
               let touched = false;
               for (const a of closedChanged) {
                 if (rec?.axes?.[a]?.status === "active") {
@@ -399,7 +398,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         // the client-gate preflight reads (additive; a prose note alone let it ship finished-looking).
         try {
           const p = driverDir(run.runDir, "escalation-state.json");
-          const cur = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { requested: [], completed: [] };
+          const cur = existsSync(p) ? readJson(p) : { requested: [], completed: [] };
           const failed = [...new Set([...(cur.failed ?? []), ...closeFails.map((e) => `envelope:${e.axis}`)])];
           atomicWrite(p, JSON.stringify({ ...cur, ts: new Date().toISOString(), failed }, null, 2) + "\n");   // B5 — the client-gate reads this: never truncated
         } catch (e) { note(`escalation-state append failed (non-fatal): ${e.message}`); }
@@ -489,7 +488,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         // The run's enumerated material: which slices (`_query`) produced records, and how many.
         let byQuery = new Map(), totalEnumerated = 0;
         try {
-          const band = JSON.parse(readFileSync(P.registerNamedBand, "utf8"));
+          const band = readJson(P.registerNamedBand);
           for (const r of (band?.enumerated ?? [])) {
             const q = String(r?._query ?? "").toLowerCase();
             byQuery.set(q, (byQuery.get(q) ?? 0) + 1);
@@ -780,7 +779,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
     // re-bought — re-running would re-spend provider calls and churn synthesis's input fingerprint.
     if (existsSync(P.crowdContext)) {
       try {
-        const prior = JSON.parse(readFileSync(P.crowdContext, "utf8"));
+        const prior = readJson(P.crowdContext);
         ctx.crowdContext = { slices: (prior.slices ?? []).length };
         runLog(run.runDir, { event: "crowd-context", reused: true, slices: ctx.crowdContext.slices, output: outputMeta(P.crowdContext) });
       } catch { /* unreadable prior artifact — rebuild below */ }
@@ -800,7 +799,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         const r = await planExec({ planPath: ccPlanPath, axis: CROWD_CONTEXT_AXIS, outputPath: ccBandPath },
           { agentId: ctx.agent, sessionKey: `clearance-${run.slug}-${run.codename}-crowd-context`, recordLog: runRecordLogPath(run.runDir) });
         if (!r?.ok) throw new Error(String(r?.cause ?? "crowd-context plan execution failed").slice(0, 200));
-        const blocks = JSON.parse(readFileSync(ccBandPath, "utf8"));
+        const blocks = readJson(ccBandPath);
         return Array.isArray(blocks) ? blocks : [];
       };
       const cc = await buildCrowdContext({
@@ -820,7 +819,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         // PR-8 — re-derive the band shape now that crowd-context exists: its crowds[] rows carry the
         // crowd_context_slice join (compose with the artifact, never change it), and synthesis reads
         // the shape. The band itself is unchanged — this only re-projects it with the new evidence.
-        try { deriveBandShape(ctx, JSON.parse(readFileSync(P.registerNamedBand, "utf8"))); }
+        try { deriveBandShape(ctx, readJson(P.registerNamedBand)); }
         catch { /* no merged band on this path (legacy/register-gap) — the pre-existing shape stands */ }
       }
     }
