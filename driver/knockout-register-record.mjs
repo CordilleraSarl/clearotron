@@ -17,10 +17,9 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 
 import { captureCall, stampVerdict } from "./call-capture.mjs";
-import { DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { refuseUndeclared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { addedClassQuestions, carriedIds, formQid, formsOfName, knockoutBandBlocks, knockoutProposals, namesAddedClass, openingQid, questionsOwed } from "./knockout-register-read.mjs";
-import { paths as runPaths, readJsonOrNull } from "./run-record.mjs";
+import { DRIVER_DIR, paths as runPaths, readJsonOrNull } from "./run-record.mjs";
 
 const TOKEN = "knockoutregisterread";
 const SCHEMA_VERSION = 1;
