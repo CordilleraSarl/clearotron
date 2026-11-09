@@ -54,6 +54,7 @@ function scenarios() {
     out.push({ id: `failed-stage.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT }, reaches: (r) => r.terminal?.state === "recovering" });
     out.push({ id: `knockout-failed.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_FAIL_STAGE: "KNOCKOUT SEARCH batch" }, reaches: (r) => r.terminal?.state === "failed" });
     out.push({ id: `resumed.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT, CLEAROTRON_RECOVERY_MAX: "1" }, resume: true, reaches: (r) => r.terminal?.ok === true && moreThanOne("synthesis")(r) });
+    out.push({ id: `stale-repair.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT, CLEAROTRON_RECOVERY_MAX: "1" }, resume: true, tamperBeforeResume: "matter-context.md", reaches: (r) => r.terminal?.ok === true && moreThanOne("skeptic")(r) });
     out.push({ id: `parked.${engine}`, engine, job: full, env: engine === "codex" ? { MOCK_CODEX_RATELIMIT: "1", MOCK_CODEX_RATELIMIT_MATCH: AT_THE_SPLIT } : { MOCK_CLAUDE_RATELIMIT: "4102444800", MOCK_CLAUDE_RATELIMIT_MATCH: AT_THE_SPLIT }, reaches: (r) => r.terminal?.state === "postponed" });
     out.push({ id: `cancelled.${engine}`, engine, job: full, cancel: true, reaches: (r) => r.terminal?.state === "cancelled" });
   }
@@ -197,7 +198,7 @@ function runOne(spec, out) {
     const callLog = join(root, "calls.jsonl"), netLog = join(root, "network.log"), covDir = join(out, "coverage", spec.id), resultFile = join(root, "result.json");
     mkdirSync(covDir, { recursive: true });
     const specFile = join(root, "spec.json");
-    writeFileSync(specFile, JSON.stringify({ job: spec.job, opts: spec.opts ?? {}, resultFile, driver: join(REPO, "driver"), resume: Boolean(spec.resume), cancel: Boolean(spec.cancel) }));
+    writeFileSync(specFile, JSON.stringify({ job: spec.job, opts: spec.opts ?? {}, resultFile, driver: join(REPO, "driver"), resume: Boolean(spec.resume), tamperBeforeResume: spec.tamperBeforeResume ?? null, cancel: Boolean(spec.cancel) }));
     chmodSync(join(TEST(), "mock-claude.mjs"), 0o755); chmodSync(join(TEST(), "mock-codex.mjs"), 0o755);
     const t0 = Date.now();
     execFile(process.execPath, [join(HERE, "run-scenario.mjs"), specFile], { env: childEnv(spec, root, netLog, callLog, covDir), cwd: root, timeout: 600_000, maxBuffer: 256 * 1024 * 1024 }, (err, stdout, stderr) => {
