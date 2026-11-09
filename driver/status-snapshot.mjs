@@ -21,6 +21,7 @@ import { config } from "./driver.config.mjs";
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — resolve without the throw a diagnostic surface must not take
 import { enumerateRuns as enumerateRunsDefault } from "../mcp-server/lib/runs.mjs";
 import { readActivity as readActivityDefault } from "./run-activity.mjs";
+import { readJson } from "./run-record.mjs";
 
 // kill-0 liveness, matching slot-lock.mjs: EPERM proves the pid exists (another user), only ESRCH is death.
 function pidAlive(pid) {
@@ -51,7 +52,7 @@ function agentOfQueue(qdir) {
 // raw, fall back to a legacy inline manifest value. A malformed manifest never throws (the job still lists).
 function readJob(qdir, file) {
   const base = file.slice(0, -".json".length);
-  let j = {}; try { j = JSON.parse(readFileSync(join(qdir, file), "utf8")); } catch { /* list it anyway */ }
+  let j = {}; try { j = readJson(join(qdir, file)); } catch { /* list it anyway */ }
   let markName = j.markName || null;
   try { const mp = join(qdir, `${base}.markName.md`); if (existsSync(mp)) markName = readFileSync(mp, "utf8").trim() || markName; } catch { /* sidecar optional */ }
   let enqueuedAt = null; try { enqueuedAt = statSync(join(qdir, file)).mtime.toISOString(); } catch { /* race */ }
