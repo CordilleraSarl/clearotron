@@ -28,6 +28,7 @@ import { existsSync, readFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
 import { atomicWrite } from "./progress.mjs";
+import { readJsonOrNull } from "./run-record.mjs";
 
 export const ACCEPTED_ORDER_FILE = "accepted-order.json";
 export const ORDER_AMENDMENTS_FILE = "order-amendments.jsonl";
@@ -44,12 +45,11 @@ export function orderSnapshot(job) {
   try { return JSON.parse(JSON.stringify(job)); } catch { return null; }
 }
 
-const readJson = (file) => { try { return existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : null; } catch { return null; } };
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 /** The order this run was accepted on, or null when the run holds none (an older run, or an unreadable file). */
 export function readAcceptedOrder(runDir) {
-  const rec = readJson(driverDir(String(runDir ?? ""), ACCEPTED_ORDER_FILE));
+  const rec = readJsonOrNull(driverDir(String(runDir ?? ""), ACCEPTED_ORDER_FILE));
   return rec?.order && typeof rec.order === "object" ? rec.order : null;
 }
 
@@ -84,7 +84,7 @@ export function retainAcceptedOrder(runDir, order, { explicit = false, rebuilt =
 export function retainedQueueOrder(queueDir, id) {
   if (!queueDir || !id || /[\\/]/.test(String(id))) return null;
   for (const end of [".done", ".failed"]) {
-    const order = readJson(join(queueDir, `${id}${end}`));
+    const order = readJsonOrNull(join(queueDir, `${id}${end}`));
     if (order && typeof order === "object" && order.id === id) return order;
   }
   return null;
