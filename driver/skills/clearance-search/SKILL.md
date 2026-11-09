@@ -31,7 +31,7 @@ This workflow is run by the **deterministic driver** (`driver/`): an intake path
 
 Companion files (this skill):
 - [phase2-execution.md](phase2-execution.md) — Phase 2 methodology (variants → gather → Touchpoint 2 placement → digest → skeptic review → cross-pollination → synthesis → Touchpoint 3 narrative refutation → case-law grounding)
-- [template-formatting.md](template-formatting.md) — HTML/CSS spec for the report
+- [template-formatting.md](../../../docs/architecture/retired-manuals/template-formatting.md) — HTML/CSS spec for the report
 - [risk-framework.md](risk-framework.md) — the house-default band ladder (Very High · High · Moderate · Manageable), each band stated as Legal position, Practical position and Potential consequences
 - [synthesis-rules.md](synthesis-rules.md) — how to combine common-law + register findings into a single risk assessment (carries the default-to-senior-lawyer-judgment posture)
 - [worked-examples.md](worked-examples.md) — the analytical depth target
@@ -191,7 +191,7 @@ On every invocation, before Phase 1:
    descriptor — which today carries only the P&C header flag. `email` no longer selects a body: every
    customer gets the same cover note (`{ email: "summary" }`), and a stored `"table"` folds to it.
    There is no per-customer body left to select and no template to pick: one file remains
-   ([templates/email/generic.md](templates/email/generic.md)) and it is a RECORD of the retired
+   ([templates/email/generic.md](../../../docs/architecture/retired-manuals/email-generic.md)) and it is a RECORD of the retired
    per-customer body, not an instruction. What the profile still decides is the P&C flag, and it
    decides it through the bound profile, never `*@domain`.
 5. **Phase 3 archives this run** on successful delivery: the dated subdir is moved to `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/`. A run that delivered but failed to archive is a workflow violation — Phase 3 (see [Phase 3](#phase-3--delivery--must-pattern)) handles the move.
@@ -200,7 +200,7 @@ On every invocation, before Phase 1:
 
 Extract the fields from the Trademark Search Request Form and derive the slug. **Phase 1 produces no client-facing prose** — it is field extraction and run-dir setup, and nothing else.
 
-The report body is authored in Phase 2 synthesis against [delivery-contract.md](delivery-contract.md); the email that carries it is composed in CODE at Phase 3 (`composeEmailHtml`), one cover note for every customer. A body drafted here reaches no reader — the notify seat is a courier that sends the driver's file verbatim. ([template-formatting.md](template-formatting.md) survives as the KNOCKOUT RENDERER'S formatting reference — see its header; it is not a drafting instruction to this seat.)
+The report body is authored in Phase 2 synthesis against [delivery-contract.md](delivery-contract.md); the email that carries it is composed in CODE at Phase 3 (`composeEmailHtml`), one cover note for every customer. A body drafted here reaches no reader — the notify seat is a courier that sends the driver's file verbatim. ([template-formatting.md](../../../docs/architecture/retired-manuals/template-formatting.md) survives as the KNOCKOUT RENDERER'S formatting reference — see its header; it is not a drafting instruction to this seat.)
 
 **Slug derivation.** The slug for the run-dir is `tmp<n>-<kebab-mark-name>` — e.g. `tmp2201-project-novapulse`, `tmp8642-glowvault`. The TMP number from the request form's *Reference No.* field is the firm's unique identifier and guarantees uniqueness; the kebab mark name keeps the slug human-readable. Lowercase, ASCII letters / digits / hyphens only. Multi-mark requests: use one slug for the request (typically the first mark); if per-mark separation is needed inside the run, use a `marks/<mark-kebab>/` subdir within the dated dir.
 
@@ -328,7 +328,7 @@ be audited without touching the engine.
 
 ## Checklist — before sending
 
-- [ ] Phase 1 HTML template is complete and formatted per [template-formatting.md](template-formatting.md)
+- [ ] Phase 1 HTML template is complete and formatted per [template-formatting.md](../../../docs/architecture/retired-manuals/template-formatting.md)
 - [ ] Variant manifest produced by `clearance-variants` and validated
 - [ ] `clearance-common-law` produced its findings file with every dictated platform covered
 - [ ] `clearance-register` produced its findings file with funnel pattern executed
