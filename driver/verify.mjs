@@ -9,7 +9,6 @@
 
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { findReceiptViolations, findGridLedgerViolations, findUnranDictatedCells, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
 import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs"; import { lastAcceptedOverview, acceptReportOverview, readReportIdentity } from "./report-overview-record.mjs";
@@ -43,7 +42,7 @@ import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
 import { parseVariantManifestModel, variantRomanizationGaps, variantCompletenessGaps, variantTermShapeGaps } from "./variant-manifest-model.mjs";
 import { digestAccountingGap } from "./register-digest-record.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 // ── WS-B: the run-scoped profile sidecar ────────────────────────────────────────────────────────────
 // _driver/profile.json carries the run's frozen customer values (floor, platform list) for these
