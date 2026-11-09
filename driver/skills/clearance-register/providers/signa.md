@@ -148,25 +148,6 @@ it; no search on this register can close it, so it is not escalated, and it is n
 the keystone doctrine in `../SKILL.md` → *Coverage ledger*: a could-not-reach gap is **`deferred`**,
 open and disclosed, never `coverage-limited` (a searched-but-unexhausted DATA limit a re-run cannot close).
 
-**A territory search reaches every register that binds the territory — national, regional and Madrid.**
-The executor sends `filters.jurisdictions` with `territory_match: "protection"`, not `filters.offices`, so a
-French slice returns the EU trade marks and the Madrid designations that block use in France alongside the
-French national marks. On the same term:
-
-| what the executor sends | national | regional | Madrid |
-|---|---|---|---|
-| `filters.offices: ["inpi-fr"]` (the shape this doc used to describe) | yes | **none** | **none** |
-| `filters.jurisdictions: ["FR"]`, `territory_match: "protection"` | yes | yes | yes |
-
-It is ONE call, not three. A territory under no regional register — Switzerland — gains no regional rows either
-way and still reaches its Madrid layer, which is what shows `protection` adds a LAYER rather than just more
-rows.
-
-**So do not disclose an office-scoped shortfall here; there is not one.** This paragraph described the
-earlier behaviour and outlived it: the executor changed and the doctrine did not, which is the same skew
-that left the grant at two tools while the server served four. The residual gap is the office set above —
-a territory OUTSIDE the thirteen, which gets the `deferred` row the previous paragraph specifies.
-
 ## Record base host
 
 **None — this provider publishes no per-record public page.**
