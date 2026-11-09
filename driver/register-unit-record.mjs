@@ -34,6 +34,7 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
+import { readJson } from "./run-record.mjs";
 
 /**
  * THE REPAIR TAIL FOR THIS STAGE'S BESPOKE FOLLOWUPS — one implementation, used by all of them.
@@ -113,7 +114,7 @@ export function bandAccount(band) {
 
 /** Read and account for this axis's band, or null when it cannot be read. */
 export function readBandAccount(runDir, axis) {
-  try { return bandAccount(JSON.parse(readFileSync(unitPaths(runDir, axis).band, "utf8"))); }
+  try { return bandAccount(readJson(unitPaths(runDir, axis).band)); }
   catch { return null; }
 }
 
