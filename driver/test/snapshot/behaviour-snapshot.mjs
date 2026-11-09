@@ -40,11 +40,20 @@ const KNOCKOUT = {
   product: "knockout-search", markName: "IRONWHISK", classes: [8, 21], goods: "kitchen tools; household utensils", rawRequest: "An invented message asking about two names for kitchen tools.",
   marks: [{ name: "IRONWHISK", classes: [8, 21] }, { name: "CLUVENDRA", classes: [8] }],
 };
+const AT_THE_SPLIT = "joint synthesis narrative";
+const KO_DEFECT = JSON.stringify([{ kind: "contradiction", mark: "IRONWHISK", finding: 1, problem: "The first conflict is rated below what its own evidence shows." }]);
 function scenarios() {
   const out = [];
   for (const engine of Object.keys(ENGINES)) {
     for (const [p, patch] of Object.entries(PRODUCTS)) out.push({ id: `${p}.${engine}`, engine, job: { ...JOB, ...patch } });
     out.push({ id: `knockout.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true });
+    const full = { ...JOB, ...PRODUCTS["full-country"] };
+    out.push({ id: `correction.${engine}`, engine, job: full, env: { MOCK_VERDICT_DEFECTS: "- the summary says the phonetic axis ran; the receipt shows it never did" } });
+    out.push({ id: `knockout-correction.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_KO_MATERIAL: KO_DEFECT } });
+    out.push({ id: `failed-stage.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT } });
+    out.push({ id: `resumed.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT, CLEAROTRON_RECOVERY_MAX: "1" }, resume: true });
+    out.push({ id: `parked.${engine}`, engine, job: full, env: engine === "codex" ? { MOCK_CODEX_RATELIMIT: "1", MOCK_CODEX_RATELIMIT_MATCH: AT_THE_SPLIT } : { MOCK_CLAUDE_RATELIMIT: "4102444800", MOCK_CLAUDE_RATELIMIT_MATCH: AT_THE_SPLIT } });
+    out.push({ id: `cancelled.${engine}`, engine, job: full, cancel: true });
   }
   return out;
 }
@@ -111,7 +120,7 @@ function normaliser(root, result) {
 
 function record(spec, root, result, callLog, netLog, out) {
   const norm = normaliser(root, result);
-  const rec = { id: spec.id, engine: spec.engine, terminal: { ok: result.ok ?? null, failedStage: result.failedStage ?? null, terminalKind: result.terminalKind ?? null, threw: result.threw ? norm(result.threw) : null } };
+  const rec = { id: spec.id, engine: spec.engine, terminal: { ok: result.ok ?? null, failedStage: result.failedStage ?? null, terminalKind: result.terminalKind ?? null, state: result.state ?? null, threw: result.threw ? norm(result.threw) : null } };
   rec.network = existsSync(netLog) ? [...new Set(readFileSync(netLog, "utf8").trim().split("\n"))].sort() : [];
   if (!result.runDir) return rec;
   const run = join(result.runDir, "_driver");
@@ -120,9 +129,13 @@ function record(spec, root, result, callLog, netLog, out) {
   const dispatches = new Map();
   for (const f of readdirSync(run)) if (f.endsWith(".dispatch.txt")) dispatches.set(promptKey(norm(readFileSync(join(run, f), "utf8"))), f.replace(/\.dispatch\.txt$/, ""));
   const calls = existsSync(callLog) ? readFileSync(callLog, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)) : [];
-  rec.turns = Object.fromEntries(calls.map((c, i) => {
+  const seen = new Map();
+  rec.turns = Object.fromEntries(calls.map((c) => {
     const prompt = norm(c.prompt ?? "");
-    const label = dispatches.get(promptKey(prompt)) ?? `unlabelled.${sha(prompt)}`;
+    const first = dispatches.get(promptKey(prompt)) ?? `unlabelled.${sha(prompt)}`;
+    // A resumed run can send the same turn twice, and only the first would survive under one key.
+    seen.set(first, (seen.get(first) ?? 0) + 1);
+    const label = seen.get(first) === 1 ? first : `${first}#${seen.get(first)}`;
     const detail = join(out, "detail", spec.id);
     mkdirSync(detail, { recursive: true });
     writeFileSync(join(detail, `${label.replace(/[^\w.-]/g, "_")}.prompt.txt`), prompt);
@@ -176,10 +189,11 @@ function runOne(spec, out) {
     const root = mkdtempSync(join(tmpdir(), "behaviour-snapshot-"));
     for (const d of ["home", "tmp"]) mkdirSync(join(root, d), { recursive: true });
     if (spec.knockout) seedKnockout(spec, root);
+    if (spec.cancel) spec.env = { ...(spec.env ?? {}), MOCK_BARRIER_FILE: join(root, "release-barrier") };
     const callLog = join(root, "calls.jsonl"), netLog = join(root, "network.log"), covDir = join(out, "coverage", spec.id), resultFile = join(root, "result.json");
     mkdirSync(covDir, { recursive: true });
     const specFile = join(root, "spec.json");
-    writeFileSync(specFile, JSON.stringify({ job: spec.job, opts: spec.opts ?? {}, resultFile, driver: join(REPO, "driver") }));
+    writeFileSync(specFile, JSON.stringify({ job: spec.job, opts: spec.opts ?? {}, resultFile, driver: join(REPO, "driver"), resume: Boolean(spec.resume), cancel: Boolean(spec.cancel) }));
     chmodSync(join(TEST(), "mock-claude.mjs"), 0o755); chmodSync(join(TEST(), "mock-codex.mjs"), 0o755);
     const t0 = Date.now();
     execFile(process.execPath, [join(HERE, "run-scenario.mjs"), specFile], { env: childEnv(spec, root, netLog, callLog, covDir), cwd: root, timeout: 600_000, maxBuffer: 256 * 1024 * 1024 }, (err, stdout, stderr) => {
@@ -229,7 +243,7 @@ async function main(argv) {
 }
 
 /** Scenarios this tool does not drive yet, printed on every comparison so that their absence is read. */
-export const SCENARIO_GAPS = ["a correction pass", "a resumed run", "a parked run", "a cancelled run", "a failed stage"];
+export const SCENARIO_GAPS = ["real-shaped data: every scenario runs on the mocks' invented fixtures"];
 
 // Neutral area labels. Which session or person holds an area is kept outside the repository.
 const OWNERS = [
