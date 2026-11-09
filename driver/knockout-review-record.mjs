@@ -52,6 +52,7 @@ import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned 
 // for saying WHICH line was probably meant; it never decides whether an address resolves.
 import { queryKey } from "./connotation-search.mjs";
 import { PERMITTED_SOURCES, registerRecordIdsHeld, urlHeldFor } from "./verify-knockout.mjs";
+import { readJson } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -413,7 +414,7 @@ export function validateKnockoutReviewFile(file, text) {
     return { ok: false, reason: `the merged record is not on disk at ${findingsFile}, so no address could be checked` };
   }
   let merged;
-  try { merged = JSON.parse(readFileSync(findingsFile, "utf8")); }
+  try { merged = readJson(findingsFile); }
   catch (e) { return { ok: false, reason: `the merged record will not parse, so no address could be checked: ${e.message}` }; }
   const fault = joinFault(doc, merged, runDir);
   return fault ? { ok: false, reason: fault } : { ok: true };
@@ -457,7 +458,7 @@ function materialFault(m, merged, runDir) {
   // one name. A question the run asked is held too, by its qid. Anything else is refused, in words about those sources and not the run.
   const records = registerRecordIdsHeld(runDir);
   let questions = new Set();
-  try { questions = new Set((JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8")).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
+  try { questions = new Set((readJson(driverDir(runDir, "register-records.json")).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
   const urlHeld = urlHeldFor(runDir);
   const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !questions.has(r) && !urlHeld(r));
   return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which is not traceable to ${PERMITTED_SOURCES}, or a question this run asked. Copy a recordId, question qid, or URL from what this run holds.` : null;
@@ -581,7 +582,7 @@ export function recordKnockoutReview(runDir, received, { boundOrdinal = null, no
   }
 
   // Where the record is on disk the seat hears the join now, in its turn. Where it is not, the stage's own check says it could not look.
-  const held = (() => { try { return JSON.parse(readFileSync(join(dir, "knockout-findings.json"), "utf8")); } catch { return null; } })();
+  const held = (() => { try { return readJson(join(dir, "knockout-findings.json")); } catch { return null; } })();
   const fault = held ? joinFault(verdict.model, held, dir) : null;
   if (fault) {
     journal(fault);
