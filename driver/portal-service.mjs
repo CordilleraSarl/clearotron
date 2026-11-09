@@ -187,6 +187,7 @@ import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — the box names itself; one rule
 import { stageNow } from "./progress.mjs";   // the stage a live run is in now, for the card and the row
+import { readJson } from "./run-record.mjs";
 // A run in one of these has finished; its step is the one its terminal write set, not the stage it last entered.
 const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
 // This install's release channel, `beta` or `latest`, read once off its own version. /me carries it.
@@ -346,7 +347,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       const metaPath = join(poolRoot, name, "meta.json");
       if (!existsSync(metaPath)) continue;
       try {
-        const meta = JSON.parse(readFileSync(metaPath, "utf8"));
+        const meta = readJson(metaPath);
         const owner = meta.customerKey || "generic";
         if (!mine(owner, meta.organisation ?? null)) continue;
         // Tagged by runId — the same key pool-admin writes, which is the pool DIRECTORY name. Checking
@@ -466,8 +467,8 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   // live runs: status.json + the frozen profile sidecar (freezeProfile writes `profileKey`)
   const readRun = (dir) => {
     try {
-      const s = JSON.parse(readFileSync(join(dir, "status.json"), "utf8"));
-      const p = JSON.parse(readFileSync(driverDir(dir, "profile.json"), "utf8"));
+      const s = readJson(join(dir, "status.json"));
+      const p = readJson(driverDir(dir, "profile.json"));
       const owner = p.profileKey ?? p.key ?? "generic";
       if (!mine(owner, p.organisation ?? null)) return;
       if (s.state === "delivered") return;   // the pool row is the delivered face
@@ -488,7 +489,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       // search-policy sidecar carries the stage. Both are read here so a run does not change identity
       // when it crosses from live to delivered: same mark, same stage, same thread.
       let sp = null;
-      try { sp = JSON.parse(readFileSync(driverDir(dir, "search-policy.json"), "utf8")); } catch { /* legacy/early run */ }
+      try { sp = readJson(driverDir(dir, "search-policy.json")); } catch { /* legacy/early run */ }
       // A PAUSE IS NOT A RUN. The engine writes `postponed` (a rate-limit park, auto-resuming at
       // `resetsAt`) and `recovering` (an auto-retry backing off), and the portal contract knows neither
       // — its coercion treats anything unrecognised as `running`. So a run parked for five hours showed
@@ -636,7 +637,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
     const ordered = orderedQueueFiles(dir, files.filter((f) => f.endsWith(".json") && !f.startsWith(".")));
     for (const [laneIdx, f] of ordered.entries()) {
       try {
-        const j = JSON.parse(readFileSync(join(dir, f), "utf8"));
+        const j = readJson(join(dir, f));
         const owner = j.profileKey ?? "generic";
         if (!mine(owner, j.tenant ?? null)) continue;
         // ALL the names, spelled the way the run's own status.json and its delivered meta.json spell
@@ -812,7 +813,7 @@ export function scanAllRuns({ poolRoot, workspaceRoot, queueDirs = [] }) {
  */
 export function resolveRunAccount({ poolRoot, workspaceRoot, queueDirs = [], runId }) {
   try {
-    const meta = JSON.parse(readFileSync(join(poolRoot, runId, "meta.json"), "utf8"));
+    const meta = readJson(join(poolRoot, runId, "meta.json"));
     return { account: meta.customerKey || "generic", state: "delivered" };
   } catch { /* not published — which is the whole case this function exists for */ }
   // BOTH DIRECTIONS of the retired filter, because the way BACK from retirement has to resolve a run
@@ -2291,7 +2292,7 @@ export function makePortalService({
         if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes(".."))
           return { status: 404, json: { error: "not_found" } };
         const dir = join(poolRoot, runId);
-        let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
+        let meta; try { meta = readJson(join(dir, "meta.json")); } catch { return { status: 404, json: { error: "not_found" } }; }
         const owner = meta.customerKey || "generic";
         if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
         // ANSWERED FOR EVERY RUN THAT HAS ONE, grouped or not. A gate to grouped runs only stood here
@@ -2935,7 +2936,7 @@ async function connectorDoorKind(url) {
         if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes(".."))
           return { status: 404, json: { error: "not_found" } };
         const dir = join(poolRoot, runId);
-        let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
+        let meta; try { meta = readJson(join(dir, "meta.json")); } catch { return { status: 404, json: { error: "not_found" } }; }
         const owner = meta.customerKey || "generic";
         if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
         // NOT staff-only any more. This route used to 404 a client on role alone — "the workbook is the
@@ -2971,7 +2972,7 @@ async function connectorDoorKind(url) {
         if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes(".."))
           return { status: 404, json: { error: "not_found" } };
         const dir = join(poolRoot, runId);
-        let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
+        let meta; try { meta = readJson(join(dir, "meta.json")); } catch { return { status: 404, json: { error: "not_found" } }; }
         const owner = meta.customerKey || "generic";
         // Foreign is 404, never 403, and a Generic run is its organisation's — the same question the connector asks (LEAK-#9 alignment).
         if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
@@ -3040,7 +3041,7 @@ async function connectorDoorKind(url) {
         if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes(".."))
           return { status: 404, json: { error: "not_found" } };
         const dir = join(poolRoot, runId);
-        let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
+        let meta; try { meta = readJson(join(dir, "meta.json")); } catch { return { status: 404, json: { error: "not_found" } }; }
         // Ownership, exactly as GET /portal/report/<id> checks it — foreign is 404, never 403, and
         // a Generic run is its organisation's. A reader who cannot READ the report cannot flag it either.
         const owner = meta.customerKey || "generic";
@@ -3072,7 +3073,7 @@ async function connectorDoorKind(url) {
         const markIndex = Number.isInteger(body?.markIndex) && body.markIndex >= 0 ? body.markIndex : null;
         let found = null, searchedMark = null, foundLane = null, engineCommitOf = meta.engineCommit ?? null;
         try {
-          const data = JSON.parse(readFileSync(join(dir, "report-data.json"), "utf8"));
+          const data = readJson(join(dir, "report-data.json"));
           engineCommitOf = data.engineCommit ?? engineCommitOf;
           if (ordinal != null) {
             if (Array.isArray(data.findings)) {
@@ -3112,7 +3113,7 @@ async function connectorDoorKind(url) {
         let disposition = null;
         if (foundLane === "clearance") {
           try {
-            const fj = JSON.parse(readFileSync(join(dir, "findings.json"), "utf8"));
+            const fj = readJson(join(dir, "findings.json"));
             const rec = (Array.isArray(fj?.findings) ? fj.findings : []).find((f) => f?.ordinal === ordinal) ?? null;
             if (rec && String(rec.mark ?? "") === String(found.mark ?? "")) disposition = rec.disposition ?? null;
           } catch { /* no findings.json in the run dir: the finding still locates, its posture does not */ }
@@ -3255,7 +3256,7 @@ async function connectorDoorKind(url) {
                 return { status: 400, json: { error: "unknown run" } };
               }
               try {
-                const meta = JSON.parse(readFileSync(join(poolRoot, runId, "meta.json"), "utf8"));
+                const meta = readJson(join(poolRoot, runId, "meta.json"));
                 owners.add(meta.customerKey || "generic");
               } catch { return { status: 400, json: { error: "unknown run" } }; }
             }
