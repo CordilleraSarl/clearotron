@@ -198,7 +198,7 @@ export const TOOL_GROUP_EDGES = {
 // positions, the scope, what the band tools served and the goods evidence, under the era stamp that says a form is
 // required. An arm without them was told of no set-aside at all.
 const placementSetAsideReads = (P) => [
-  { path: paths(P.runDir).placementFormForm, kind: "driver-side", why: "standingPlacementDecisions reads placement's set-asides from the form's driver copy" },
+  { path: paths(P.runDir).placementFormAccumulator, kind: "driver-side", why: "standingPlacementDecisions reads placement's set-asides from the form's driver copy" },
   { path: paths(P.runDir).stageContracts, kind: "driver-side", why: "the era stamp that says this run's placement records a form; without it a missing form reads as none set aside" },
   { path: P.placementModel, kind: "driver-side", why: "the placed records a set-aside is checked against (placedUriRows)" },
   { path: P.bandShape, kind: "driver-side", why: "readPlacementFormInput: the floors and groups a set-aside is judged against" },
@@ -424,7 +424,7 @@ export const CONTEXT_DERIVATIONS = [
       { path: P.planExecution, why: "digestSummaryCounts and digestAuditRows both tabulate the plan-execution receipt" },
       { path: P.registerFindings, why: "digestAuditRows returns EMPTY without it — the audit rows would silently vanish from the sandboxed sidecar" },
       { path: P.coverageEnum, why: "coverageFormStamp — whether this run requires a coverage form at all, which decides whether the audit rows read one" },
-      { path: paths(P.runDir).registerCoverageFormForm, why: "readCoverageForm — the accumulator digestAuditRows reads when the stamp says a form is required" },
+      { path: paths(P.runDir).registerCoverageFormAccumulator, why: "readCoverageForm — the accumulator digestAuditRows reads when the stamp says a form is required" },
     ],
   },
 ];
@@ -441,7 +441,7 @@ export const CONTEXT_DERIVATIONS = [
 const waitingFamilyJudgmentReads = (P) => [
   ...REGISTER_AXES.map((a) => ({ path: withheldFamiliesPath(P.runDir, a),
     why: "planAuditExtra reads the reading turn's record of the families it chose not to ask (readWithheldFamilies)" })),
-  { path: paths(P.runDir).registerCoverageFormForm, why: "planAuditExtra counts a family whose form row is settled withheld-by-judgment as withheld" },
+  { path: paths(P.runDir).registerCoverageFormAccumulator, why: "planAuditExtra counts a family whose form row is settled withheld-by-judgment as withheld" },
   { path: P.coverageEnum, why: "the stamp that names the coverage form planAuditExtra reads" },
 ];
 
@@ -454,7 +454,7 @@ export const DISPATCH_EXTRAS = [
       // ride record_coverage), so an arm dispatched without it is not measuring its variable — it is
       // measuring the absence of the rows the stage's whole coverage contract now runs through. The
       // same file is on VALIDATOR_SIDECARS, because it is also the copy the gate judges.
-      { path: paths(P.runDir).registerCoverageFormForm, why: "the accumulator coverageFormBrief enumerates into the dispatch (typed transport)" },
+      { path: paths(P.runDir).registerCoverageFormAccumulator, why: "the accumulator coverageFormBrief enumerates into the dispatch (typed transport)" },
       { path: P.coverageEnum, why: "the era stamp that says a coverage form is required on this run" },
       { path: P.planExecution, why: "the coverage form's skeleton + per-qid deferral reasons (was the A8 deferred-axis hint)" },
       { path: P.registerPlan, why: "the coverage form's unit labels and open-block join come from the frozen plan" },
