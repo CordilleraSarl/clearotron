@@ -10,6 +10,8 @@
 // WHAT STANDS, STANDS BY CONSTRUCTION. A call may touch only the names a defect concerns, and a name no defect concerns cannot
 // drift, nor its block in the summary, because no field reaches them. Inside an affected name the repair reaches what it needs,
 // and says which defect each moved finding serves. A call sends only what changes, and its rows merge onto the chunk the run holds.
+// ONE STATEMENT, WHEREVER IT PRINTS. A finding is copied onto each name it bears on, so a line a defect names on one name can stand
+// on another that no defect names. A call may correct that same finding there (design, 2026-11-09), and nothing else on that name.
 //
 // THE CHUNK IS THE RECORD, so a corrected batch composes as a rated one does, through the same steps and the same gate, and
 // a resumed run reads the correction back rather than losing it. An accepted repair stands when later work fails: only a change
@@ -91,7 +93,19 @@ export function chunkScope(work, chunkNo, base) {
     }
     byMark.set(key, row);
   }
-  return { defects, byMark };
+  return { defects, byMark, namedFindings: defects.flatMap((d) => (d.names ? [d.names] : [])) };
+}
+
+const isNamedFinding = (f, named) => (named ?? []).some((n) => sameFinding(f, n));
+
+/** Whether a call's row on a name no defect concerns only corrects findings a defect names, each still that finding. PURE. */
+function onlyNamedFindings(row, mark, scope) {
+  const { name: _name, findings, ...others } = row ?? {};
+  if (Object.keys(others).length || !Array.isArray(findings) || !findings.length) return false;
+  return findings.every((f) => {
+    const was = (mark?.findings ?? []).find((x) => x?.ordinal === f?.ordinal);
+    return was && isNamedFinding(was, scope.namedFindings) && sameFinding(f, was);
+  });
 }
 
 /** One name's block in a chunk summary: its `## NAME` sub-header to the next. Null where it has none. PURE. */
@@ -127,8 +141,9 @@ export function applyCorrectionCall({ held, call, scope }) {
   const moved = [];
   for (const row of Array.isArray(call?.marks) ? call.marks : []) {
     const name = String(row?.name ?? "");
-    if (!scope.byMark.has(nameKey(name))) return refuse(`scope:${name}: no material defect concerns this name. Leave it as it stands.`);
     const i = marks.findIndex((m) => nameKey(m?.name) === nameKey(name));
+    const concerned = scope.byMark.has(nameKey(name));
+    if (!concerned && !(i >= 0 && onlyNamedFindings(row, marks[i], scope))) return refuse(`scope:${name}: no material defect concerns this name. Leave it as it stands.`);
     if (i < 0) return refuse(`scope:${name}: this name is not in the chunk you were handed.`);
     const { findings: _findings, remove_findings: _removed, ...fields } = row;
     const next = { ...marks[i], ...fields };
@@ -144,7 +159,7 @@ export function applyCorrectionCall({ held, call, scope }) {
       if (call.chunkSummary === undefined) return refuse(`dependent:${name}: the rating moved from ${marks[i].rating} to ${next.rating}, and chunkSummary still reads for the old band. Send it as it now reads.`);
     }
     marks[i] = next;
-    moved.push(name);
+    if (concerned) moved.push(name);
   }
   const chunkSummary = call?.chunkSummary ?? held?.chunkSummary;
   for (const m of marks) {
@@ -326,16 +341,19 @@ export function correctionOutcomes(work, after, answers = new Map()) {
 }
 
 /**
- * What moved under a name no defect concerns, or an empty answer: its record, or its block in the batch summary. A call cannot reach
- * these, so a row here is a fault between the chunk and the record, and the caller keeps the rated record. PURE.
+ * What moved under a name no defect concerns, or an empty answer: its record, apart from a finding a defect names, or its block in
+ * the batch summary. A call cannot reach these, so a row here is a fault between the chunk and the record, and the caller keeps the
+ * rated record. PURE.
  */
 export function movedOutsideScope(work, after) {
   const concerned = new Set((work?.defects ?? []).map((d) => nameKey(d.mark)));
+  const named = (work?.defects ?? []).flatMap((d) => (d.names ? [d.names] : []));
+  const rest = (m) => (m ? JSON.stringify({ ...m, findings: (m.findings ?? []).filter((f) => !isNamedFinding(f, named)).map(withoutOrdinal) }) : null);
   const marks = [], blocks = [];
   for (const was of work?.rated?.marks ?? []) {
     if (concerned.has(nameKey(was?.name))) continue;
     const now = (after?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(was?.name)) ?? null;
-    if (JSON.stringify(was) !== JSON.stringify(now)) marks.push(was.name);
+    if (rest(was) !== rest(now)) marks.push(was.name);
     if (summaryBlock(work.rated?.batch?.executiveSummary, was.name) !== summaryBlock(after?.batch?.executiveSummary, was.name)) blocks.push(was.name);
   }
   return { marks, blocks };

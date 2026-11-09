@@ -337,6 +337,42 @@ test("a call reaches only the names a defect concerns, and their summary blocks 
   assert.equal(apply(onOne, { chunkSummary: `A new opening line.\n\n## ${NAME}\nRated Medium, for a new reason.\n\n## ${SIBLING}\nRated Low.` }).ok, true, "the opening line and the name's own block may move");
 });
 
+// One owner's finding copied onto both names, as a filing or a lead bearing on each is.
+const sharedChunk = () => {
+  const base = rated();
+  base.marks[1].findings = [finding(1, "ONE"), finding(2, "THREE", "Low")];
+  return base;
+};
+const onShared = [{ kind: "contradiction", mark: NAME, finding: 1, problem: "p", rests_on: ["x"] }];
+const applyShared = (call) => {
+  const base = sharedChunk();
+  return applyCorrectionCall({ held: base, call, scope: chunkScope(correctionWork({ rated: base, material: onShared, chunks: [[NAME, SIBLING]] }), 0, base) });
+};
+
+test("a line a defect names may be corrected on every name it prints on, and nothing else on that name", () => {
+  const fixed = { ...finding(1, "ONE"), note: "corrected" };
+  const ok = applyShared({ marks: [{ name: NAME, findings: [fixed] }, { name: SIBLING, findings: [fixed] }] });
+  assert.equal(ok.ok, true, ok.reason);
+  assert.deepEqual([ok.chunk.marks[0].findings[0].note, ok.chunk.marks[1].findings[0].note], ["corrected", "corrected"]);
+  assert.deepEqual(ok.chunk.marks[1].findings[1], finding(2, "THREE", "Low"), "the other finding on that name stands");
+  for (const [what, row] of [
+    ["another finding on that name", { name: SIBLING, findings: [{ ...finding(2, "THREE", "Low"), note: "x" }] }],
+    ["a field of the name itself", { name: SIBLING, findings: [fixed], basis: "new" }],
+    ["its rating", { name: SIBLING, rating: "High", findings: [fixed] }],
+    ["a removal", { name: SIBLING, findings: [fixed], remove_findings: [2] }],
+    ["a different finding under the same number", { name: SIBLING, findings: [{ ...finding(1, "OTHER") }] }],
+  ]) assert.match(applyShared({ marks: [row] }).reason, /no material defect concerns this name/, what);
+});
+
+test("a named finding corrected on another name is not a change outside the round, and anything else there still is", () => {
+  const base = sharedChunk();
+  const w = correctionWork({ rated: { ...base, batch: {} }, material: onShared, chunks: [[NAME, SIBLING]] });
+  const after = (sibling) => ({ marks: [base.marks[0], sibling], batch: {} });
+  assert.deepEqual(movedOutsideScope(w, after({ ...base.marks[1], findings: [{ ...finding(1, "ONE"), note: "corrected" }, finding(2, "THREE", "Low")] })).marks, []);
+  assert.deepEqual(movedOutsideScope(w, after({ ...base.marks[1], basis: "drifted" })).marks, [SIBLING]);
+  assert.deepEqual(movedOutsideScope(w, after({ ...base.marks[1], findings: [finding(1, "ONE"), { ...finding(2, "THREE", "Low"), note: "drifted" }] })).marks, [SIBLING]);
+});
+
 test("a repair reaches what it needs inside its own name, and every finding it moves is accounted for", () => {
   const scopeDefect = [{ kind: "scope", mark: NAME, problem: "The request asks about class 35, and neither finding reads for it." }];
   const base = rated();
