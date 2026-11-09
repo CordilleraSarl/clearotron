@@ -34,9 +34,6 @@
 /** A line that opens a block rather than continuing prose: any ATX heading, or a `-`/`*` bullet. */
 export const SUMMARY_BLOCK_LINE = /^[ \t]*(?:#{1,6}[ \t]|[-*][ \t])/m;
 
-/** An H1 inside a summary — never a block, always a defect. See the header. */
-export const SUMMARY_SECTION_BREAK = /^[ \t]*#[ \t]+\S/m;
-
 /**
  * Parse ONE chunk (a run of lines between blank lines) into typed blocks. PURE.
  *

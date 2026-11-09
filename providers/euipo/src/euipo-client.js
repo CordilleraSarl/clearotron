@@ -48,7 +48,6 @@ export const ENV = {
 //
 // This list was surfaced to the model as a tool-schema enum until, so a model could pick a value
 // the schema advertised and get a 400 back. The neutral server now offers `queryableStatuses`.
-export const MARK_FEATURES = ["WORD", "FIGURATIVE", "SHAPE_3D", "COLOUR", "SOUND", "HOLOGRAM", "OLFACTORY", "POSITION", "PATTERN", "MOTION", "MULTIMEDIA", "OTHER"];
 export const STATUSES = ["RECEIVED", "UNDER_EXAMINATION", "APPLICATION_PUBLISHED", "REGISTRATION_PENDING", "REGISTERED", "WITHDRAWN", "REFUSED", "OPPOSITION_PENDING", "APPEALED", "CANCELLATION_PENDING", "CANCELLED", "SURRENDERED", "EXPIRED", "APPEALABLE", "START_OF_OPPOSITION_PERIOD", "ACCEPTANCE_PENDING", "ACCEPTED", "REMOVED_FROM_REGISTER"];
 
 // In-memory token cache, keyed by clientId. Cleared on process restart.

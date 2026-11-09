@@ -336,7 +336,6 @@ function containsWordRun(a, b) {
 //
 // An entry in a gold set's `register` array is a REGISTERED RIGHT by construction of the array it sits
 // in — no per-entry flag is needed and no gold set is edited. What was missing is entirely candidate-side.
-export const EVIDENCE_CLASSES = ["register", "common-law", "case-law", "unknown"];
 
 /**
  * Fold a run finding's own typed source into the class the scorer reasons about.

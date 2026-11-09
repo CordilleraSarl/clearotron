@@ -44,7 +44,7 @@ import { withheldFamiliesPath } from "./withheld-families.mjs";
 import { toolGroupsForStage } from "./engine/mcp/gather-config.mjs";
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP } from "./register-digest-record.mjs";
 
-/**
+/*
  * The five ways an artifact reaches a stage. A declaration can express the first one; production uses
  * all five, and a rig that models only the first replays a pipeline that does not exist.
  *
@@ -54,7 +54,6 @@ import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_
  *   conditional      — the prompt names it only on some runs (a job field decides).
  *   driver-side      — the DRIVER reads it and turns it into a prompt block or a ctx field.
  */
-export const EDGE_KINDS = ["agent-reads-file", "tool-mediated", "passed-inline", "conditional", "driver-side"];
 
 const bareStage = (label) => String(label).replace(/:.*$/, "");
 
