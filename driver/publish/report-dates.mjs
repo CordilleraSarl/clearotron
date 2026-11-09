@@ -12,16 +12,15 @@
 // THE ISSUE DATE IS THE FIRST ONE: what the pool's meta.json kept, or the delivery the run recorded when the pool
 // holds no copy (a demo, or a run republished into an empty pool), and the clock only when neither exists, which is
 // a first publish. `renderedAt` is this publish, recorded apart from both.
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { readJsonOrNull } from "../run-record.mjs";
 
-const readJson = (file) => { try { return JSON.parse(readFileSync(file, "utf8")); } catch { return null; } };
 const instant = (value) => (typeof value === "string" && !Number.isNaN(Date.parse(value)) ? value : null);
 
 /** `{searchedAt, issuedAt, renderedAt}` as ISO strings. `searchedAt` is null when the run records no start. */
 export function reportDates({ runDir, poolRunDir, now = new Date() }) {
-  const status = readJson(join(runDir, "status.json"));
-  const kept = readJson(join(poolRunDir, "meta.json"));
+  const status = readJsonOrNull(join(runDir, "status.json"));
+  const kept = readJsonOrNull(join(poolRunDir, "meta.json"));
   return {
     searchedAt: instant(status?.startedAt),
     issuedAt: instant(kept?.issuedAt) ?? instant(status?.deliveredAt) ?? now.toISOString(),
