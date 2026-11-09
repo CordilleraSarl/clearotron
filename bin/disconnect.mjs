@@ -62,7 +62,7 @@ import { defaultDenylistPath, disablePlan, revokeEveryonePlan, applyDisablePlan,
 import { loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
-import { atomicWrite } from "../driver/progress.mjs";
+import { atomicWrite } from "../driver/run-record.mjs";
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const ENV_PATH = join(homedir(), ".env");

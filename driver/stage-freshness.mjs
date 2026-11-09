@@ -49,6 +49,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { join, basename } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { readJson } from "./run-record.mjs";
 
 const STAMP_DIR = "stage-inputs";
 const sha12 = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 12);
@@ -121,7 +122,7 @@ export function writeStamp(runDir, label, inputPaths, { project = null } = {}) {
 }
 
 export function readStamp(runDir, label) {
-  try { return JSON.parse(readFileSync(stampPath(runDir, label), "utf8")); } catch { return null; }
+  try { return readJson(stampPath(runDir, label)); } catch { return null; }
 }
 
 /** Is this stage's output stale with respect to its declared inputs' current bytes? Never throws. */
@@ -145,7 +146,7 @@ export function restamp(runDir, absPath, { project = null } = {}) {
       if (!f.endsWith(".json")) continue;
       const p = join(dir, f);
       let doc;
-      try { doc = JSON.parse(readFileSync(p, "utf8")); } catch { continue; }
+      try { doc = readJson(p); } catch { continue; }
       let hit = false;
       // — a mutator accounts for the PROJECTION too. Refreshing only the whole-file sha would leave
       // a stale projection that no recompute could settle — the mirror of the defect restamp exists for.
@@ -198,7 +199,7 @@ export function restampStage(runDir, label, absPath, { project = null } = {}) {
   try {
     const p = stampPath(runDir, label);
     if (!existsSync(p)) return miss;
-    const doc = JSON.parse(readFileSync(p, "utf8"));
+    const doc = readJson(p);
     const sha = shaOf(absPath);
     let matched = false, changed = false;
     for (const e of doc?.inputs ?? []) {
@@ -276,7 +277,7 @@ export function reconcileStamps(runDir, inputsFor, exclude = null, { project = n
       if (!f.endsWith(".json")) continue;
       const p = join(dir, f);
       let doc;
-      try { doc = JSON.parse(readFileSync(p, "utf8")); } catch { continue; }
+      try { doc = readJson(p); } catch { continue; }
       if (!doc?.label) continue;
       // An exclude entry may be a full label OR a bare stage name — a bare name excludes every
       // axis-qualified stamp of that stage ("register-digest" covers "register-digest:primary-sweep").

@@ -27,15 +27,13 @@ test("the legacy grid takes the terms the task message's GRID KEYS names", () =>
   assert.ok(!prompts.includes("every variant from the manifest's Variants table"), "the grid prompt still takes every variant");
 });
 
-test("the field search runs once, for the mark, where the frame names a field outside the customer's own", () => {
-  assert.ok(manual.includes("- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's "
-    + "industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is "
-    + "also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). "
+test("the field search is a targeted follow-up where the frame names a field outside the customer's own", () => {
+  assert.ok(manual.includes("- **Field-scoped general search** — the grid has no cell for a field outside the customer's own (the profile's "
+    + "industry — e.g. a collaboration or goods outside it). A search scoped to those goods is made only as a targeted follow-up, under the "
+    + "rule above, when its answer could change what you tell the client. "
     + "Scope to the specific goods the brief instructs — not a fixed per-field platform list"));
-  assert.ok(manual.includes("- **Field-scoped general-web cell (when the frame names a field outside the customer's own):** one extra cell "
-    + "for the mark combined with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza collab, a "
-    + "`\"<mark> pizza\"` cell."));
-  assert.ok(prompts.includes("Where the frame names a field outside the customer's own, run one general-web search of the mark combined with"));
+  assert.ok(!manual.includes("Field-scoped general-web cell"), "the web manual still dictates a cell the grid does not build");
+  assert.ok(!prompts.includes("web-field:"), "the grid prompt still dictates a cell the grid does not build");
   for (const gone of ["the matter goes outside the customer's core field", "is also mandatory", "one extra cell per term", "`\"<term> pizza\"` cells"])
     assert.ok(!manual.includes(gone), `the web manual still says "${gone}"`);
   for (const gone of ["the matter goes outside the customer's core field", "for each search term run one general-web search of the term"])

@@ -37,6 +37,7 @@ import { runLint, clientSummaryShape } from "./predelivery-lint.mjs"; import { e
 import { config } from "./driver.config.mjs";
 import { GRID_HALVES } from "./common-law-receipts.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
+import { readJson } from "./run-record.mjs";
 
 // Artifact filename → verify.mjs validator key. notify receipts are trivial and skipped.
 const FILE_CHECKS = {
@@ -105,14 +106,14 @@ function recordsFor(runDir, reportMd) {
   if (!isDir(dir)) return map;
   for (const uri of new Set((reportMd.match(URI_RE) ?? []).map((u) => u.toLowerCase()))) {
     const file = join(dir, uri.replace(/^\/mark\//, "").replace(/[^a-z0-9]+/gi, "-") + ".json");
-    try { map.set(uri, JSON.parse(readFileSync(file, "utf8"))); } catch { /* unfetched/missing → lint flags it */ }
+    try { map.set(uri, readJson(file)); } catch { /* unfetched/missing → lint flags it */ }
   }
   return map;
 }
 
 function searchedNamesFor(runDir) {
   try {
-    const st = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
+    const st = readJson(join(runDir, "status.json"));
     return [...new Set([st.markName, ...((st.marks ?? []).map((m) => m?.name))].filter(Boolean))];
   } catch { return []; }
 }
@@ -177,12 +178,12 @@ export function replayRun(runDir) {
       // mirror it from the archived sidecar or post-WS-B runs flip live-vs-replay (pre-WS-B runs
       // have no sidecar → empty extras, verdicts unchanged).
       let extraPlatformNames = [];
-      try { extraPlatformNames = JSON.parse(readFileSync(driverDir(runDir, "profile.json"), "utf8")).platforms ?? []; }
+      try { extraPlatformNames = readJson(driverDir(runDir, "profile.json")).platforms ?? []; }
       catch { /* legacy run */ }
       const narrativeMd = existsSync(join(runDir, "narrative.md")) ? readFileSync(join(runDir, "narrative.md"), "utf8") : ""; // R.1: narrative plumbing
       // wp50/wi2 — mirror the live lint's verdict-sidecar read (pre-49 runs have none → check skipped).
       let verdictDoc = null;
-      try { verdictDoc = JSON.parse(readFileSync(driverDir(runDir, "verdict.json"), "utf8")); } catch { /* legacy run */ }
+      try { verdictDoc = readJson(driverDir(runDir, "verdict.json")); } catch { /* legacy run */ }
       const lint = runLint({
         reportMd, clientSummaryMd: csMd, narrativeMd,
         recordsByUri: recordsFor(runDir, reportMd + "\n" + csMd),
@@ -249,7 +250,7 @@ function main() {
     return;
   }
   let prev;
-  try { prev = JSON.parse(readFileSync(snapshotPath, "utf8")).runs; }
+  try { prev = readJson(snapshotPath).runs; }
   catch {
     console.error(`no snapshot at ${snapshotPath} — run with --update first (on the BASE code state)`);
     process.exit(1);

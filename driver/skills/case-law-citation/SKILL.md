@@ -45,7 +45,7 @@ Pick the adapter by jurisdiction; read that adapter for its query vocabulary bef
 
 A case-law pass covers **exactly one territory** — it runs only on a Full country search, which is a
 single-country product, and the doors refuse `caseLaw` over anything wider. So there is no
-multi-jurisdiction case to handle here: one run, one jurisdiction, one adapter.
+multi-jurisdiction case to handle here: one run, one jurisdiction. Use the adapter the table below names for what you are grounding.
 
 | Finding jurisdiction | Source | Adapter |
 |---|---|---|

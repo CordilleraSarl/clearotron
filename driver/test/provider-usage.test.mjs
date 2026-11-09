@@ -9,6 +9,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { tallyRegisterCalls, KINDS } from "../provider-usage.mjs";
+import { registerMounts } from "./register-mounts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -236,8 +237,8 @@ test("KINDS covers every kind the MCP servers stamp — the list cannot silently
   assert.ok(servers.length >= 3, `expected the MCP server sources at ${mcpDir}; found ${servers.length} — the scrape is looking in the wrong place`);
 
   const stamped = new Map();   // kind → the files that stamp it
-  for (const f of servers) {
-    const src = readFileSync(join(mcpDir, f), "utf8");
+  for (const f of [...servers.map((s) => join(mcpDir, s)), ...registerMounts().map((m) => m.path)]) {
+    const src = readFileSync(f, "utf8");
     for (const m of src.matchAll(/\btctx\(\s*["']([a-z_]+)["']/g))
       stamped.set(m[1], [...(stamped.get(m[1]) ?? []), f]);
   }

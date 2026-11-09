@@ -79,7 +79,7 @@ so there is **no partial-delivery fallback**:
 
 - Internet-based marketplace searches (Google, Amazon, social media, industry platforms)
 - **The dictated platforms** — The grid spec names the stores; the tool runs them. Key rows by the term and platform on the candidates it returns. A gaming profile is one example of such a list — Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io — illustrative only; never substitute the example for the dictated list
-- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
+- **Field-scoped general search** — the grid has no cell for a field outside the customer's own (the profile's industry — e.g. a collaboration or goods outside it). A search scoped to those goods is made only as a targeted follow-up, under the rule above, when its answer could change what you tell the client. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
 - Domain name presence
 - Social media presence and commercial use
 - Industry press and trade publications
@@ -400,10 +400,6 @@ filling in:
 
 - The terms your task message's GRID KEYS names (the program's SEARCH TERMS array)
 - Every store domain in the task message's PLATFORMS block + the general-web cell (never a remembered list)
-- **Field-scoped general-web cell (when the frame names a field outside the customer's own):** one extra cell for the mark
-  combined with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza
-  collab, a `"<mark> pizza"` cell. Scope to the specific goods, not a fixed per-field platform list
-  (staff-lawyer redline, Project NOVA PULSE).
 - The meaning questions the frame wrote, as the grid spec carries them.
 
 The tool returns the program's stdout JSON (`cells` + `extras` + `gaps`) and the program code as an
@@ -489,7 +485,6 @@ Assemble common-law-findings.md at the path your task message names, per the for
 - [ ] Famous-mark check judged for every flagged element from its general-web results (or "None" documented)
 - [ ] Post-search 5-question checklist run; any "no/unsure" gaps closed via follow-up calls
 - [ ] Every DICTATED platform appears in the audit trail
-- [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the frame names a field outside the customer's own)
 - [ ] Every finding has a URL (or is in Open verification flags)
 - [ ] Findings categorised: consumer-confusion / commercial-awareness / competitor-intel / PR-risk
 - [ ] **Every game-title finding in Consumer-confusion-risks has both `developer_of_record` and `publisher_of_record` columns populated** — with the extracted value when known, or the literal string `not extracted` when uncertain. Never confabulated.

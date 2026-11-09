@@ -34,7 +34,7 @@
 // BETA POSTURE: runs delivered under the old numbering KEEP it — an archived run re-renders through
 // RETIRED_POLICIES below, which still carries "Depth 4" for the level it was sold as.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
@@ -43,6 +43,7 @@ import { PRODUCT_IDS, productSpec, productFor, maxNamesFor, productName, checkPr
 // own static graph to compose-read + territory-tiers for exactly this reason (see its header).
 import { registerCoverageCause, offerableTerritories } from "./register-coverage.mjs";
 import { PROMPT_TERRITORIES } from "./compose-read.mjs";   // — the names a reader can choose from, which is the universe the disclosure counts against
+import { readJson } from "./run-record.mjs";
 
 // ── The closed product registry ──────────────────────────────────────────────────────────────────────
 //
@@ -1115,7 +1116,7 @@ export function loadRecipes({ dir = process.env.CLEAROTRON_RECIPES_DIR || null, 
     try { files = readdirSync(join(dir, customer)).filter((f) => f.endsWith(".json")); } catch (e) { if (!absent(e)) throw e; continue; }
     for (const f of files) {
       const slug = f.replace(/\.json$/, "");
-      const r = JSON.parse(readFileSync(join(dir, customer, f), "utf8"));   // parse error = loud (config bug)
+      const r = readJson(join(dir, customer, f));   // parse error = loud (config bug)
       // A RETIRED extra is dropped here, not refused. Refusing to SAVE one is right — that is the door
       // where somebody is asking for a behaviour that no longer exists. Refusing to LOAD one would be a
       // different and much worse thing: a key that has never done anything would take out every run that

@@ -25,8 +25,9 @@
 // derives from run metadata — so a run id is the only stable handle the two sides already agree on. The
 // UI folds run→family up into mark→family when it groups.
 
-import { readFileSync, writeFileSync, renameSync } from "node:fs";
+import { writeFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
+import { readJson } from "./run-record.mjs";
 
 const FILE = "family-tags.json";
 
@@ -55,7 +56,7 @@ const okRunId = (v) => typeof v === "string" && /^[A-Za-z0-9][A-Za-z0-9._-]{0,18
 
 export function readFamilies(poolRoot) {
   try {
-    const raw = JSON.parse(readFileSync(join(poolRoot, FILE), "utf8"));
+    const raw = readJson(join(poolRoot, FILE));
     // Shape-checked rather than trusted. This file is hand-editable by design — it is how staff would fix
     // a mis-grouping without the UI — so a malformed one must degrade to "no families" rather than take
     // the list down with it.

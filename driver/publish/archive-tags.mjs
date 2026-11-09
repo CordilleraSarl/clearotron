@@ -10,8 +10,9 @@
 // needs six lines of sidecar reading on a request path and nothing else in that graph, and importing a
 // renderer to get them is the coupling that makes a service slow to boot for reasons nobody can see.
 // Kept re-exported from publish/index.mjs so existing importers are untouched.
-import { readFileSync, writeFileSync, renameSync, chmodSync, unlinkSync } from 'node:fs';
+import { writeFileSync, renameSync, chmodSync, unlinkSync } from "node:fs";
 import { join } from 'node:path';
+import { readJson } from "../run-record.mjs";
 
 export const ARCHIVE_TAGS_FILE = 'archive-tags.json';
 
@@ -19,7 +20,7 @@ export const ARCHIVE_TAGS_FILE = 'archive-tags.json';
  *  file is optional by design, and a pool that has never had a run archived has no reason to carry it. */
 export function readArchivedSet(poolDir) {
   try {
-    const j = JSON.parse(readFileSync(join(poolDir, ARCHIVE_TAGS_FILE), 'utf8'));
+    const j = readJson(join(poolDir, ARCHIVE_TAGS_FILE));
     return new Set(Array.isArray(j?.archived) ? j.archived.map(String) : []);
   } catch { return new Set(); }
 }

@@ -43,6 +43,7 @@ import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
 import { parseVariantManifestModel, variantRomanizationGaps, variantCompletenessGaps, variantTermShapeGaps } from "./variant-manifest-model.mjs";
 import { digestAccountingGap } from "./register-digest-record.mjs";
+import { readJson } from "./run-record.mjs";
 
 // ── WS-B: the run-scoped profile sidecar ────────────────────────────────────────────────────────────
 // _driver/profile.json carries the run's frozen customer values (floor, platform list) for these
@@ -55,7 +56,7 @@ function readRunProfile(p) {
   for (const dir of [dirname(p), dirname(dirname(p))]) {
     const f = driverDir(dir, "profile.json");
     if (!existsSync(f)) continue;
-    try { return { profile: JSON.parse(readFileSync(f, "utf8")), invalid: false }; }
+    try { return { profile: readJson(f), invalid: false }; }
     catch { return { profile: null, invalid: true }; }
   }
   return { profile: null, invalid: false };
@@ -92,7 +93,7 @@ function readGridSpec(p) {
     const f = driverDir(dir, "grid-spec.json");
     if (!existsSync(f)) continue;
     try {
-      const spec = JSON.parse(readFileSync(f, "utf8"));
+      const spec = readJson(f);
       // — a spec is well-formed when it dictates SOME work, not when it dictates CELLS. The
       // meaning seat carries `terms: []` and the whole meaning sweep, and reading that as malformed
       // would fail the one seat whose entire dispatch is the meaning work.
@@ -118,7 +119,7 @@ function readGridSpecHalf(p, half) {
     const f = driverDir(dir, `grid-spec.half-${half}.json`);
     if (!existsSync(f)) continue;
     try {
-      const spec = JSON.parse(readFileSync(f, "utf8"));
+      const spec = readJson(f);
       // — a spec is well-formed when it dictates SOME work, not when it dictates CELLS. The
       // meaning seat carries `terms: []` and the whole meaning sweep, and reading that as malformed
       // would fail the one seat whose entire dispatch is the meaning work.
@@ -1752,12 +1753,12 @@ export const validators = {
     // romanisation-floor read in variantManifest below).
     const contractsMarker = driverDir(dirname(String(p ?? "")), "stage-contracts.json");
     if (existsSync(contractsMarker)) {
-      try { meaningMinted = Boolean(JSON.parse(readFileSync(contractsMarker, "utf8"))?.["matter-frame"]?.meaningAngles); }
+      try { meaningMinted = Boolean(readJson(contractsMarker)?.["matter-frame"]?.meaningAngles); }
       catch { return fail("stagecontracts_invalid"); }
     }
     if (meaningMinted && !MEANING_ANGLES_RE.test(c)) return fail("meaning_angles_missing");
     let scope = null;
-    try { scope = JSON.parse(readFileSync(driverDir(dirname(String(p ?? "")), "instructed-scope.json"), "utf8")); }
+    try { scope = readJson(driverDir(dirname(String(p ?? "")), "instructed-scope.json")); }
     catch { return base; }   // no receipt = legacy run — replay never flips
     const squash = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
     const hay = squash(c);
@@ -1821,7 +1822,7 @@ export const validators = {
       let contract = null;
       const marker = driverDir(dir, "stage-contracts.json");
       if (existsSync(marker)) {
-        try { contract = variantsStageContract(JSON.parse(readFileSync(marker, "utf8"))); }   // either name: see variantsStageContract
+        try { contract = variantsStageContract(readJson(marker)); }   // either name: see variantsStageContract
         catch { return fail("stagecontracts_invalid"); }
       }
       if (!contract?.romanization && !contract?.completeness && !contract?.term_shape) return sib;
@@ -1844,7 +1845,7 @@ export const validators = {
         // (a legacy or replayed run) ⇒ no jurisdictions ⇒ the per-script arm cannot fire and the
         // category floor stands exactly as before, so archived verdicts do not flip.
         let jurisdictions = [];
-        try { jurisdictions = JSON.parse(readFileSync(driverDir(dir, "instructed-scope.json"), "utf8"))?.jurisdictions ?? []; }
+        try { jurisdictions = readJson(driverDir(dir, "instructed-scope.json"))?.jurisdictions ?? []; }
         catch { /* no frozen scope on this run — category floor only */ }
         const gaps = variantCompletenessGaps(model, { jurisdictions: Array.isArray(jurisdictions) ? jurisdictions : [jurisdictions] });
         if (gaps.length)
@@ -1907,7 +1908,7 @@ export const validators = {
     if (bandName.endsWith("-band.json") && !existsSync(join(dirname(String(p ?? "")), bandName))
       && existsSync(driverDir(join(dirname(String(p ?? "")), ".."), "instructed-scope.json"))) {
       try {
-        const plan = JSON.parse(readFileSync(driverDir(join(dirname(String(p ?? "")), ".."), "register-plan.json"), "utf8"));
+        const plan = readJson(driverDir(join(dirname(String(p ?? "")), ".."), "register-plan.json"));
         const axis = basename(String(p ?? "")).replace(/\.md$/i, "");
         if ((plan?.entries ?? []).some((e) => e?.axis === axis)) {
           // — SAME EVIDENCE, TWO CAUSES, and this is where the wrong one used to be picked.
@@ -1949,10 +1950,10 @@ export const validators = {
       // replay verdicts and legacy resumes never flip; only runs whose plan was attached by new code
       // (exactly those receiving the new stage message + enumerate exclusion) are enforced.
       try {
-        const plan = JSON.parse(readFileSync(driverDir(join(dirname(String(p ?? "")), ".."), "register-plan.json"), "utf8"));
+        const plan = readJson(driverDir(join(dirname(String(p ?? "")), ".."), "register-plan.json"));
         const axis = basename(String(p ?? "")).replace(/\.md$/i, "");
         if (plan?.contract?.supplemental_lane && (plan.entries ?? []).some((e) => e?.axis === axis)) {
-          const blocks = JSON.parse(readFileSync(join(dirname(String(p ?? "")), bandName), "utf8"));
+          const blocks = readJson(join(dirname(String(p ?? "")), bandName));
           const unplanned = (Array.isArray(blocks) ? blocks : []).filter((b) => b && typeof b === "object" && !b.qid);
           if (unplanned.length)
             return fail(`band_block_unplanned:${abbrev(unplanned.map((b) => abbrev(String(b.query ?? "un-labelled"), 40)).join(","), 140)}`);
@@ -2050,7 +2051,7 @@ export const validators = {
     // floor on exactly the runs the floor governs. Fail closed, with a name.
     if (existsSync(marker)) {
       try {
-        const m = JSON.parse(readFileSync(marker, "utf8"))?.["placement-inquiry"];
+        const m = readJson(marker)?.["placement-inquiry"];
         structured = Boolean(m?.structuredPlacements);
         formEra = m?.placementForm === 1;
       } catch { return fail("stagecontracts_invalid"); }
@@ -2268,7 +2269,7 @@ export const validators = {
           const bands = {};
           for (const s of (exec.skeleton ?? [])) {
             try {
-              const parsed = JSON.parse(readFileSync(join(dirname(p), "register-units", `${s.axis}-band.json`), "utf8"));
+              const parsed = readJson(join(dirname(p), "register-units", `${s.axis}-band.json`));
               bands[s.axis] = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.blocks) ? parsed.blocks : []);
             } catch { /* band unreadable — parse defects are the unit validator's */ }
           }
@@ -2485,7 +2486,7 @@ export const validators = {
     let contract = null;
     const marker = driverDir(dir, "stage-contracts.json");
     if (existsSync(marker)) {
-      try { contract = JSON.parse(readFileSync(marker, "utf8"))?.["case-law"] ?? null; }
+      try { contract = readJson(marker)?.["case-law"] ?? null; }
       catch { return fail("stagecontracts_invalid"); }
     }
     if (!contract?.citations) return base;
@@ -2601,7 +2602,7 @@ function checkClientSummaryJoin(p, c) {
   const fw = v4 ? readRunFramework(p) : { manifest: null, invalid: false };
   if (v4 && fw.invalid) return fail("framework_manifest_unreadable: _driver/framework.json is corrupt");
   if (v4 && !fw.manifest) return fail("framework_manifest_missing_for_v4: cannot judge client band words without the frozen framework");
-  try { verdictDoc = JSON.parse(readFileSync(driverDir(dirname(p), "verdict.json"), "utf8")); } catch { /* optional */ }
+  try { verdictDoc = readJson(driverDir(dirname(p), "verdict.json")); } catch { /* optional */ }
   const blocks = [...String(c ?? "").matchAll(/^##\s+([^\n]+)\n([\s\S]*?)(?=^##\s|\s*$)/gm)];
   for (const [, head, body] of blocks) {
     const risk = body.match(/^-\s*risk:\s*([A-Za-z –-]+)$/m)?.[1]?.trim();
@@ -2628,7 +2629,7 @@ function checkClientSummaryJoin(p, c) {
   // report un-signable (VIBRANTE dropped on a group mislabel). Gated on the sidecar existing, which only
   // fresh runs write — archived runs and replay never flip. Failures ride the stage's corrective ladder.
   try {
-    const scope = JSON.parse(readFileSync(driverDir(dirname(p), "client-summary-scope.json"), "utf8"));
+    const scope = readJson(driverDir(dirname(p), "client-summary-scope.json"));
     const blockOrds = new Set(blocks.map(([, , body]) => parseBlockOrd(body)).filter((o) => o != null));
     for (const s of scope?.rated ?? []) {
       if (!blockOrds.has(s.ord))
@@ -2676,7 +2677,7 @@ const short = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
 // before this arm existed, and this must not change it.
 function placementAccountArmed(dir) {
   try {
-    return JSON.parse(readFileSync(driverDir(dir, "stage-contracts.json"), "utf8"))?.["placement-inquiry"]?.placementAccount === 1;
+    return readJson(driverDir(dir, "stage-contracts.json"))?.["placement-inquiry"]?.placementAccount === 1;
   } catch { return false; }
 }
 function placementAccountVerdict(dir) {
@@ -2740,14 +2741,14 @@ function placementAccountVerdict(dir) {
 // ARMED ON ITS OWN STAMP KEY (`placementSaidBack: 1`), so an archived run replays to the verdict it was minted under.
 function placementSaidBackArmed(dir) {
   try {
-    return JSON.parse(readFileSync(driverDir(dir, "stage-contracts.json"), "utf8"))?.["placement-inquiry"]?.placementSaidBack === 1;
+    return readJson(driverDir(dir, "stage-contracts.json"))?.["placement-inquiry"]?.placementSaidBack === 1;
   } catch { return false; }
 }
 const capped = (items) => `${items.slice(0, 8).join("; ")}${items.length > 8 ? "; …" : ""}`;
 /** The band's floors. A shape that cannot be read holds none, and the rule reads as before. */
 function shapeFloors(dir) {
   try {
-    const floors = JSON.parse(readFileSync(driverDir(dir, "band-shape.json"), "utf8"))?.floors?.in_class_identical_or_near;
+    const floors = readJson(driverDir(dir, "band-shape.json"))?.floors?.in_class_identical_or_near;
     return Array.isArray(floors) ? floors : [];
   } catch { return []; }
 }

@@ -3,7 +3,7 @@
 // run-scenario.mjs <spec.json> — one scenario in a process of its own, because driver.config reads the
 // environment at import. The coverage variable is cleared at once: this process is measured, and the mock
 // programs it starts import driver modules that would otherwise count as lines the driver ran.
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -27,6 +27,8 @@ try {
   if (spec.resume) {
     // The fault clears and the same run is asked for again by name, as a resume does.
     delete process.env.MOCK_FAIL_STAGE;
+    // A stage that already passed read this file, so the resume has to find that stage stale and redo it.
+    if (spec.tamperBeforeResume) appendFileSync(join(String(result.runDir), spec.tamperBeforeResume), "\nchanged between the two attempts\n");
     const codename = String(result.runDir).split(/[\\/]/).pop().split("-").slice(3).join("-");
     result = await pipeline(spec.job, { ...(spec.opts ?? {}), codename });
   }

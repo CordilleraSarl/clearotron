@@ -6,11 +6,12 @@
 // importing it, so the MCP stays a pure additive consumer (no edit to the shared driver file the parallel
 // skill work may also touch). Keep SKIP_DIRS in sync with progress.mjs if that walk ever changes.
 
-import { readdirSync, readFileSync, existsSync } from "node:fs";
+import { readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { DRIVER_DIR, driverDir } from "../../shared/driver-dir.mjs";   //
 import { channelPackage } from "../../shared/permanent-install.mjs";   // — the check a reader is sent to, on this install's channel
 import { config, paths, reportIdentityFor } from "./driver.mjs";
+import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
 
 // Mirror of progress.mjs SKIP_DIRS — the high-churn leaf dirs that never hold a run-level status.json.
 const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments"]);
@@ -53,7 +54,7 @@ export const bandWord = (v) => {
 export function tierFromRecord(runDir) {
   if (!runDir) return null;
   try {
-    const v = JSON.parse(readFileSync(driverDir(runDir, "verdict.json"), "utf8"));
+    const v = readJson(driverDir(runDir, "verdict.json"));
     const t = String(v?.tier ?? "").trim();
     return t || null;
   } catch { return null; }
@@ -90,12 +91,11 @@ export function studioRoots() {
   return out;
 }
 
-function readJson(p) { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } }
 
 // Build a Run summary from a status.json path. runDir = its parent; location from the path (archive vs live).
 function runFromStatusFile(statusFile, agent) {
   const runDir = statusFile.slice(0, -"/status.json".length);
-  const s = readJson(statusFile);
+  const s = readJsonOrNull(statusFile);
   if (!s || !s.slug || !s.codename) return null; // a torn/partial status.json is skipped, never thrown
   return {
     runId: s.runId ?? `${s.slug}-${s.date}-${s.codename}`,
@@ -221,7 +221,7 @@ export function readReportData(run) {
   let names = [];
   try { names = readdirSync(dir).filter((n) => /^report-data(-.+)?\.json$/.test(n)).sort(); } catch { return []; }
   const out = [];
-  for (const n of names) { const d = readJson(join(dir, n)); if (d && typeof d === "object") out.push(d); }
+  for (const n of names) { const d = readJsonOrNull(join(dir, n)); if (d && typeof d === "object") out.push(d); }
   return out;
 }
 
@@ -240,7 +240,7 @@ export function readReportData(run) {
 // render-knockout.mjs).
 export function productIdentityFor(run, docs = null) {
   try {
-    const pol = JSON.parse(readFileSync(driverDir(run.runDir, "search-policy.json"), "utf8"));
+    const pol = readJson(driverDir(run.runDir, "search-policy.json"));
     const id = reportIdentityFor(pol).identity;
     if (id) return id;
   } catch { /* no frozen sidecar on this run — fall through to the published level id */ }
@@ -261,7 +261,7 @@ export function productIdentityFor(run, docs = null) {
 // full-grant sessions.
 export function runAccountKey(run) {
   try {
-    const p = JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"));
+    const p = readJson(driverDir(run.runDir, "profile.json"));
     return p.profileKey ?? p.key ?? null;
   } catch { return null; }
 }
@@ -280,7 +280,7 @@ export function runAccountKey(run) {
 // `known: false` says the engine cannot tell, which is a different sentence and an actionable one.
 export function runProfileFacts(run) {
   try {
-    const p = JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"));
+    const p = readJson(driverDir(run.runDir, "profile.json"));
     const key = p.profileKey ?? p.key ?? null;
     return {
       known: true,
@@ -299,7 +299,7 @@ export function runProfileFacts(run) {
 // visible only to a full-grant session.
 export function runOrganisation(run) {
   try {
-    const p = JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"));
+    const p = readJson(driverDir(run.runDir, "profile.json"));
     return typeof p.organisation === "string" && p.organisation ? p.organisation : null;
   } catch { return null; }
 }

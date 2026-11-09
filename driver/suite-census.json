@@ -71,7 +71,7 @@
         },
         "a-behaviour-snapshot-reports-a-changed-prompt-and-a-reordered-stage.test.mjs": {
           "tests": 6,
-          "asserts": 12,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -6042,6 +6042,12 @@
         "run-quote.test.mjs": {
           "tests": 14,
           "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-record.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

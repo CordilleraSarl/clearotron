@@ -50,7 +50,10 @@ test("a line is run only when a range with a positive count covers a character o
 test("every area label is neutral, and an unlisted file says so", () => {
   assert.equal(owner("driver/pipeline.mjs"), "pipeline");
   assert.equal(owner("driver/skills/knockout-frame/SKILL.md"), "engine and instructions");
+  assert.equal(owner("driver/steps/correction.mjs"), "pipeline");
   assert.equal(owner("driver/publish/index.mjs"), "record and report");
+  assert.equal(owner("driver/run-record.mjs"), "record and report");
+  assert.equal(owner("driver/progress.mjs"), "record and report");
   assert.equal(owner(".github/workflows/ci.yml"), "release");
   assert.equal(owner("driver/some-new-module.mjs"), "unassigned");
   assert.ok(SCENARIO_GAPS.length > 0, "a scenario not driven stays on the list a comparison prints");

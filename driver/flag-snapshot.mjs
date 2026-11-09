@@ -41,10 +41,11 @@
 // than being unable to ask. Failing closed here would mean a file-read error takes the whole portal
 // down — trading a rare wrong-greyed-out option for a total outage.
 
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { BUILT } from "./search-policy.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
+import { readJson } from "./run-record.mjs";
 
 /**
  * How a flag's absence is felt by a user. This field is what stops the staff screen lying.
@@ -386,7 +387,7 @@ export function readFlagSnapshot(poolRoot) {
     // The file's pre-rename name is read when the new one is not there yet, so an upgraded install does
     // not read as "no snapshot" until its first write under the new name.
     const legacy = join(poolRoot, "_state", "prelim-flag-snapshot.json");
-    const raw = JSON.parse(readFileSync(existsSync(snapshotPath(poolRoot)) || !existsSync(legacy) ? snapshotPath(poolRoot) : legacy, "utf8"));
+    const raw = readJson(existsSync(snapshotPath(poolRoot)) || !existsSync(legacy) ? snapshotPath(poolRoot) : legacy);
     if (!raw || typeof raw !== "object" || typeof raw.flags !== "object") return null;
     return raw;
   } catch {

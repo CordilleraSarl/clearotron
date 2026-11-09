@@ -40,6 +40,7 @@ import { connotationObligations, obligationRows, parsePrRiskResults, parseDispos
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { validateDispositionCall, callAnswer, addressableRows, evidenceSatisfiable, MAX_ROWS_PER_CALL } from "./disposition-call.mjs";
 import { PARK_AFTER_REFUSALS, parkedIds, refusalCountsBy } from "./refusal-bound.mjs";   //
+import { readJson } from "./run-record.mjs";
 
 const CALLS_DIR = "disposition-calls";
 
@@ -65,7 +66,7 @@ export function obligationsSidecarPath(outputPath) {
  */
 export function toldRowIds(outputPath) {
   try {
-    const told = JSON.parse(readFileSync(obligationsSidecarPath(outputPath), "utf8"))?.rowsTold;
+    const told = readJson(obligationsSidecarPath(outputPath))?.rowsTold;
     return Array.isArray(told) && told.length ? told.map((x) => String(x ?? "").trim()) : null;
   } catch { return null; }
 }
