@@ -31,7 +31,7 @@
 // enforces record_uri ∈ the inlined slice (else the item demotes to a lead); severity_hint is a
 // triage hint and NEVER sets a band — Claude stays the sole rating authority.
 
-import { readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
@@ -40,6 +40,7 @@ import { abbrev } from "./repair-contract.mjs";
 import { kebab } from "./search-policy.mjs";
 import { SERP_PROVIDERS, JX_PROVIDERS, laneArmed } from "./driver.config.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const MAX_UNIT_ATTEMPTS = 3;      // degraded-unit retries across resumes (repairable, never terminal)
 export const SERP_TERM_CAP = 12;         // terms per grid — 12 × 7 cells = 84 paid calls, the hard ceiling
@@ -62,7 +63,7 @@ const atomic = (path, obj) => { writeFileSync(`${path}.tmp`, JSON.stringify(obj,
 
 // ── Per-unit resume state (the jx.mjs fold state machine, per unit key like "serp-grid:zh") ─────────
 function readUnits(runDir) {
-  try { return JSON.parse(readFileSync(unitsPath(runDir), "utf8")); } catch { return { schema: 1, units: {} }; }
+  try { return readJson(unitsPath(runDir)); } catch { return { schema: 1, units: {} }; }
 }
 function writeUnit(runDir, key, record) {
   mkdirSync(jxDir(runDir), { recursive: true });
@@ -160,7 +161,7 @@ export function resolveSerpExecutor(opts, { mark, lane }) {
       exec: async ({ term, platform }) => {
         try {
           if (!table) {
-            const parsed = JSON.parse(readFileSync(join(fixDir, `${kebab(mark)}.${lane}.serp.json`), "utf8"));
+            const parsed = readJson(join(fixDir, `${kebab(mark)}.${lane}.serp.json`));
             table = {};
             for (const c of parsed?.cells ?? []) table[`${canonicalTerm(c.term)}|${c.platform}`] = Array.isArray(c.hits) ? c.hits : [];
             dflt = Array.isArray(parsed?.default?.hits) ? parsed.default.hits : undefined;
@@ -183,7 +184,7 @@ export function resolveJudge(opts, { mark, lane }) {
       source: `fixtures:${fixDir}`,
       exec: async ({ hits }) => {
         try {
-          const parsed = JSON.parse(readFileSync(join(fixDir, `${kebab(mark)}.${lane}.judge.json`), "utf8"));
+          const parsed = readJson(join(fixDir, `${kebab(mark)}.${lane}.judge.json`));
           const byId = new Map((parsed?.judgments ?? []).map((j) => [j.id, j]));
           return { ok: true, judgments: hits.map((h) => byId.get(h.id)).filter(Boolean), tookMs: 0 };
         } catch (e) { return { ok: false, cause: `judge fixture missing/corrupt: ${abbrev(String(e.message), 120)}` }; }
@@ -201,7 +202,7 @@ export function resolveNativeread(opts, { mark, lane }) {
       source: `fixtures:${fixDir}`,
       exec: async () => {
         try {
-          const parsed = JSON.parse(readFileSync(join(fixDir, `${kebab(mark)}.${lane}.read.json`), "utf8"));
+          const parsed = readJson(join(fixDir, `${kebab(mark)}.${lane}.read.json`));
           return { ok: true, items: Array.isArray(parsed?.items) ? parsed.items : [], tookMs: 0 };
         } catch (e) { return { ok: false, cause: `nativeread fixture missing/corrupt: ${abbrev(String(e.message), 120)}` }; }
       },
@@ -244,7 +245,7 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
     // Dictation — frozen on first write (a resume re-USES the spec; re-dictating after a variant regen
     // would re-key the join and re-bill settled cells).
     let spec = null;
-    try { spec = JSON.parse(readFileSync(specPath, "utf8")); } catch { /* cold — dictate below */ }
+    try { spec = readJson(specPath); } catch { /* cold — dictate below */ }
     if (!spec && foldRetryable(ctx, lane))
       return { ran: false, cause: "slice-1 fold degraded but retryable — deferring grid dictation to a resume (the candidates are the lane's point; no attempt burned)" };
     if (!spec) {
@@ -520,7 +521,7 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
     try { registerSliceText = readFileSync(join(run.runDir, "register-units", "transliteration-numeric.md"), "utf8"); } catch { /* unit may not exist */ }
     const fold = ctx.jxLanes?.fold?.lanes?.[lane] ?? {};
     let gridFindings = [];
-    try { gridFindings = JSON.parse(readFileSync(join(jxDir(run.runDir), `${lane}-grid-findings.json`), "utf8"))?.findings ?? []; } catch { /* grid unit may be off */ }
+    try { gridFindings = readJson(join(jxDir(run.runDir), `${lane}-grid-findings.json`))?.findings ?? []; } catch { /* grid unit may be off */ }
     const { payload, uris, sections, gridRowsDropped } = buildNativereadPayload({
       registerSliceText, candidates: fold.accepted ?? [], cnipaSubgroups: fold.cnipaSubgroups ?? [], gridFindings });
     if (!sections) return { ran: false, cause: "no zh evidence to read (no register slice, candidates or grid findings)" };
@@ -587,7 +588,7 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
 export function jxAimForSynthesis(runDir) {
   if (!laneEnvOn("zh")) return null;
   try {
-    const a = JSON.parse(readFileSync(join(jxDir(runDir), "aim-attention.json"), "utf8"));
+    const a = readJson(join(jxDir(runDir), "aim-attention.json"));
     const n = (a?.items ?? []).length;
     return n ? { count: n } : null;
   } catch { return null; }
