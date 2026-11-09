@@ -36,9 +36,8 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyHasContent } from "./registry-fidelity.mjs";
 import { recordGoodsProvenance } from "./record-goods.mjs";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 export const GOODS_EVIDENCE_SCHEMA_VERSION = 1;
 export const GOODS_EVIDENCE_FILE = "goods-evidence.json";
