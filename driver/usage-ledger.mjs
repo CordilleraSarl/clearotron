@@ -21,6 +21,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { isLiveQueueMarker } from "./queue-markers.mjs";   // the wall's live-state vocabulary, not a fourth copy
+import { readJson } from "./run-record.mjs";
 
 // The daily allowance a brand owner gets when its profile names no runCaps. THE ONE DECLARATION, here in
 // the leaf because a request path must not pull the runner (and its queue/dispatch machinery) in;
@@ -134,7 +135,7 @@ export function accountUsage({ queueDirs, account, organisation = null, now = Da
     // which the old inline regex here missed (isLiveQueueMarker is the one definition;).
     try {
       for (const f of readdirSync(qdir).filter(isLiveQueueMarker)) {
-        try { const j = JSON.parse(readFileSync(join(qdir, f), "utf8")); if (inLane(j.profileKey, j.tenant)) queued++; }
+        try { const j = readJson(join(qdir, f)); if (inLane(j.profileKey, j.tenant)) queued++; }
         catch { /* mid-rename — skip */ }
       }
     } catch { /* no queue dir */ }
