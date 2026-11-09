@@ -22,7 +22,6 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync } from "node:fs";
 import { join, dirname, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
-import { ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
@@ -552,7 +551,7 @@ import { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive } from "./
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { beat } from "./worker-heartbeat.mjs";   // — is anything draining this install
 import { BRAND } from "../shared/brand.mjs";   // — the operator name in the allowance note, from the tenant seam
-import { paths, readJson } from "./run-record.mjs";
+import { ensureDriverDir, paths, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
 export { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive };
 
 // — a queue running WITHOUT the birth stamp says so, once, out loud. Where no stamp can be read
