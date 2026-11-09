@@ -151,7 +151,7 @@ Many CN provider records use Chinese-language status strings. These need normali
 
 ### Path A — Trust provider translation (verify what it covers)
 
-If the provider exposes a translation flag on its record-fetch tool (e.g., `translate=true` on `<provider>_record_fetch`), trust it for the fields it covers. Each [providers/<name>.md](providers/) documents whether the flag exists and what fields it translates.
+If the provider exposes a translation flag on its record-fetch tool (e.g., `translate=true` on `register_record_fetch`), trust it for the fields it covers. Each [providers/<name>.md](providers/) documents whether the flag exists and what fields it translates.
 
 **For Corsearch**, `translate=true` translates some fields (notably `listOfGoodsAndServices` text in CN/JP records) but does **NOT** translate `corsearchStatusCode` strings — so status must be read from the code, never the translated text.
 
@@ -262,10 +262,7 @@ This list is NOT exhaustive — providers evolve their enum values. Treat any un
 
 ### Record-URL contract
 
-The `uri` (a `/mark/<cc>/<number>` path = the Corsearch `record_id`) is the canonical record identity, but it
-is a **relative path fragment** with no base address — it is **not clickable as-is**, and nothing downstream
-composes it (the driver's `audit-from-spine.mjs` / `xlsx.mjs` / `render.mjs` pass the URL value through
-verbatim; the delivery contract renders source chips with a placeholder `(#)` href). So:
+The driver composes the link from the register's record host and the `uri`; you state no URL. So:
 
 - The **full clickable record URL** = **the active provider's record base host** + the `uri` path. The host
   is a provider fact and it lives in that provider's own doc: **`providers/<name>.md`, "Record base host"**.
@@ -292,10 +289,3 @@ verbatim; the delivery contract renders source chips with a placeholder `(#)` hr
 > **This is gated.** `parseFindingsJson` refuses a finding whose `registration.uri` or register
 > `source.resolved_link` names a host the active provider does not declare
 > (`finding_record_url_foreign_host`), and the reason names the host it wanted.
-
-## Open question for the reviewing lawyer
-
-Confirm during historical-case review:
-- Is the invalid-but-keep-if-identical threshold right? Should it extend to "near-identical" (one-letter diff)?
-- For Chinese statuses, do you want `translate=true` always (slower but cleaner) or only when ambiguous (faster but more flagging)?
-- Are there Madrid-designation edge cases the aggregation rule misses?

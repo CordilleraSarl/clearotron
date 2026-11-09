@@ -27,35 +27,31 @@ Inherits the orchestrator's tier when invoked inline. No `sessions_spawn` — th
 
 ## Inputs you receive
 
-- `matter-context.md` from `matter-frame` at `studio/clearance-search/<slug>/<date>/matter-context.md` (the strategic foundation — read it once, reference it throughout)
+- `matter-context.md` from `matter-frame` at the path your task message names (the strategic foundation — read it once, reference it throughout)
 - **The named band** — read through the **band tools** (every call lands in the run's reading audit; never slice band files with shell). `band_shape` first: the deterministic shape of the merged band — totals, mechanical similarity tiers, **THE FLOORS** (every live in-class identical/near-identical record, each marked on its line in the band — **every floor gets a fate on the form: placed by record id, or set aside by name with `on` set to status, territory, goods or mark; only a crowd's row of a thousand records or more in (b) covers a floor.** Discussing a floor in your prose is NOT accounting for it: the form is what the driver can check, and a floor with no fate on it is recorded as unanswered whatever the prose says. This is the one duty with no cap — see **Length target**, which bounds the general band and not this), census, owner concentrations, crowd descriptors, blind spots. A large shape is served in parts, each naming the next call. Then `band_lookup` / `band_record` for the records your inquiry needs. This is the funnel's real output, lifted across the firewall:
   - **enumerated records** — every named record the funnel paged to completion, each carrying `record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict` (+ `_query` provenance). Nothing was pre-sampled, so your gate is the *only* gate. Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's goods, tell the client it is crowded, and do not write up the rest. Count each group the shape lists on its own, and apply this to each by its own count. Where the shape shows (a) by its first page, page every line of it with `band_lookup`'s `group` filter before its row: reading a line is not writing it up. A crowd of a thousand or more outside (a) stands on its first page read and the count. The shape lists the band in this order: (a) identical or near-identical to the mark or one of its forms, for the client's goods; (b) the same, in the ordered classes; (c) the same family as the mark, for the client's goods; (d) every other live mark in the ordered classes, for the client's goods; then the rest. The ordered classes are the instructed ones and any class the frame added. Inside each group the lines run first by the client's goods on a live record in the ordered classes, then by live records in those classes, then by goods words, then by the client's markets. In a group of a few hundred, every line is read: the near ones get the full inquiry and a row; every other line is either carried or left to the group's row with the reason, except a floor, which is placed or set aside by name.
   - **`incomplete` crowd descriptors** — a query the funnel could NOT enumerate (genuinely too large, provider cap, budget): `query, total_hits, fetched, reason`. These are NOT findings and NOT clean negatives — they are signals you must rule on (cleared / material-gap; see "Crowd-descriptor materiality" below). They ride along on matching lookups too, so a counted-only zone can never read as a clean.
   - The unit's compact prose digest (`register-units/<axis>.md`) still exists for the audit trail. **The band shape, the band's summary, is the material you judge from; open a record only where the judgment needs it.** Before you set a line aside by name on its goods, read its goods in `band_record`, unless its goods words already show the ground on goods established as complete. Missing words in cut goods, or in goods whose completeness is unknown, do not establish that the goods are unrelated.
-- The common-law-findings file at `studio/clearance-search/<slug>/<date>/common-law-findings.md` (common-law candidate inventory)
+- The common-law-findings file at the path your task message names (common-law candidate inventory)
 - Any prior `placement-recommendations.md` from earlier rounds (for re-runs after a skeptic-flagged re-spawn)
 
 ## Output
 
-TWO files.
+Write placement-recommendations.md and fill the placement form the dispatch names; the driver renders placements.json.
 
-**1. The markdown file** `studio/clearance-search/<slug>/<date>/placement-recommendations.md`. Use these section headings, in this order: **Band reconciliation** (the expectation-vs-band check), the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** (the per-crowd-descriptor cleared/material-gap rulings that feed synthesis `coverage_judgment`), and **Open questions for the client / reviewer** (genuine open judgment that ships).
+**1. The markdown file**, at the path your task message names. Use these section headings, in this order: **Band reconciliation** (the expectation-vs-band check), the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** (the per-crowd-descriptor cleared/material-gap rulings that feed synthesis `coverage_judgment`), and **Open questions for the client / reviewer** (genuine open judgment that ships).
 
 **Section anchor — copy it verbatim.** Directly under the FIRST of the four placement-tier headings,
 emit this line exactly as written, on its own line:
 
     <!-- clearotron:section=placement-tiers -->
 
-It is how the validator finds your tier sections. Without it the validator falls back to guessing your
-heading wording, and a set of tier headings that never happens to use the words "tier", "placement",
-"sheet" or "level" is rejected for a document you wrote correctly — the failure that killed three runs
-on the common-law layer before its anchors landed. It is an HTML comment, so it renders as nothing and
-no reader ever sees it.
+It is how the validator finds your tier sections.
 
 **Word the headings however reads best.** The anchor is the contract; the heading text is yours. The
 order above is still the order to write them in, but you will not be failed for choosing other words.
 
-**2. The structured mirror** `studio/clearance-search/<slug>/<date>/placements.json` — the four tier sections as data: `{"schema_version":1,"placements":[...]}`, ONE object per placed candidate, keys EXACTLY `{"mark","owner","jurisdiction","records","tier","reason"}` plus the optional `"borderline"`:
+**2. The structured mirror** `placements.json`, at the path your task message names — the four tier sections as data: `{"schema_version":1,"placements":[...]}`, ONE object per placed candidate, keys EXACTLY `{"mark","owner","jurisdiction","records","tier","reason"}` plus the optional `"borderline"`:
 
 - `mark` / `owner` — verbatim as in your md entry (downstream joins on mark + owner + jurisdiction)
 - `jurisdiction` — the office/territory; `""` where none applies
@@ -202,10 +198,8 @@ The inquiry above is primary. The patterns below describe how the inquiry's answ
 
 ## Length target
 
-Per-candidate entry: 4-8 lines. Total file: scales with candidate count. For a typical Tier-1 worldwide matter with 15-25 candidates, expect ~1500-3000 words.
+Per-candidate entry: 4-8 lines. Total file: scales with candidate count. For a typical matter with 15-25 candidates, expect ~1500-3000 words.
 
 ## Failure fallback
-
-If `matter-context.md` is missing or empty (matter-frame failed or was skipped), produce a minimal `placement-recommendations.md` that names the gap ("matter-context absent — placements made on candidate class-match alone with low confidence") and proceeds with whatever signal the band carries. Surface the gap to the digest worker so synthesis can decide whether to re-spawn matter-frame.
 
 If a band artifact is **missing or unreadable** (the shape reports an axis absent, or the band tools error because the band was never merged), that axis's complete band did not reach you — treat it as a **coverage failure, not an empty result**: write a `material-gap:` line in `### Coverage rulings & open questions` naming the absent axis ("named band for <axis> absent — search output did not cross; cannot judge this axis") → the run ships CONDITIONAL. Do NOT place candidates from that axis on the prose digest alone and do NOT call the axis clean; an absent band is the firewall failing, which is exactly the miss this design removes. (The driver's fresh-run fan-in gate also hard-fails a missing band, so this is the belt-and-braces read.)
