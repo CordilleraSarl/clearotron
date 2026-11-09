@@ -23,6 +23,7 @@ import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { citedFindingNumbers } from "./finding-citations.mjs";   // the findings a ground cites, recorded with it
 import { idSetHash, priorCallWithIdSet, listGeneration } from "./call-repeat.mjs";   //
 import { PARK_AFTER_REFUSALS, parkedIds, refusalCountsBy } from "./refusal-bound.mjs";   //
+import { readJson } from "./run-record.mjs";
 
 const CALLS_DIR = "declination-calls";
 export const DECLINATION_LEDGER_NAME = "declinations.json";
@@ -84,7 +85,7 @@ export function callsSoFar(runDir) {
 export function readDeclinations(runDir) {
   const { ledger } = declinationCallPaths(runDir, 0);
   try {
-    const raw = JSON.parse(readFileSync(ledger, "utf8"));
+    const raw = readJson(ledger);
     const byUri = new Map();
     const byPage = new Map();   // a page the web notes marked, keyed by its normalised address
     for (const d of Array.isArray(raw?.declinations) ? raw.declinations : []) {
