@@ -5,13 +5,13 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
-import { driverDir } from "../../shared/driver-dir.mjs";
 import { buildCorrectionsApplied, correctionsAppliedTable, scopeDrift } from "../corrections-feedforward.mjs";
 import { evidenceClaimTable, evidenceClaimViolations } from "../evidence-claim-invariant.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { nextRefutationSeq, settleRecheckSave } from "../narrative-refutation-record.mjs";
-import { atomicWrite, signoffPatch, writeRunStatus } from "../progress.mjs";
+import { signoffPatch, writeRunStatus } from "../progress.mjs";
+import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { modelRecordPath } from "../record-fold.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { shaOf } from "../stage-freshness.mjs";
@@ -41,7 +41,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
   let correctiveRecheckOk = false;
   if (correctiveEntryVerdict === "CONDITIONAL" || correctiveEntryVerdict === "BLOCKING") {
     let cycleReceipt = null;
-    try { cycleReceipt = JSON.parse(readFileSync(correctiveCyclePath, "utf8")); } catch { /* no receipt — the cycle runs */ }
+    try { cycleReceipt = readJson(correctiveCyclePath); } catch { /* no receipt — the cycle runs */ }
     correctiveCycleSettled = correctiveCycleSettledDecision(cycleReceipt, correctiveCycleShas());
     if (correctiveCycleSettled) {
       runLog(run.runDir, { event: "corrective-cycle-settled", verdict, receiptTs: cycleReceipt?.ts ?? null });
@@ -155,7 +155,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
       // the seat that can judge it.
       try {
         let demotions = [];
-        try { demotions = JSON.parse(readFileSync(P.basisDerivation, "utf8"))?.rows ?? []; }
+        try { demotions = readJson(P.basisDerivation)?.rows ?? []; }
         catch { /* no derivation record — stated below, never inferred as "clean" */ }
         const ec = evidenceClaimViolations({ before: preDoc?.findings, after: postDoc?.findings, demotions });
         evidenceViolations = ec.violations;
