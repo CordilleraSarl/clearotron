@@ -27,6 +27,7 @@ import { PLACEMENT_FORM_NAME, placementFormSidecarName, parsePlacementForm, rend
 import { parsePlacementsJson } from "./placement-model.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { atomicWrite } from "./progress.mjs";
+import { readJsonOrNull } from "./run-record.mjs";
 
 export { PLACEMENT_FORM_NAME };
 
@@ -35,14 +36,13 @@ export function placementFormPaths(runDir, formName = PLACEMENT_FORM_NAME) {
   return { seat: join(runDir, formName), sidecar: driverDir(runDir, placementFormSidecarName(formName)) };
 }
 
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 
 /**
  * The era stamp, read. `required` is true only when a driver carrying this code stamped it, so every
  * archived run answers false and the whole form arm stays off for all of them.
  */
 export function placementFormStamp(runDir) {
-  const m = readJson(driverDir(runDir, "stage-contracts.json"));
+  const m = readJsonOrNull(driverDir(runDir, "stage-contracts.json"));
   return { required: m?.["placement-inquiry"]?.placementForm === 1 };
 }
 
@@ -53,9 +53,9 @@ export function placementFormStamp(runDir) {
  * and a form that reported them alike would read an absence as a pass.
  */
 export function readPlacementFormInput(runDir) {
-  const shape = readJson(driverDir(runDir, "band-shape.json"));
-  const pos = readJson(driverDir(runDir, "register-positions.json"));
-  const scope = readJson(driverDir(runDir, "instructed-scope.json"));
+  const shape = readJsonOrNull(driverDir(runDir, "band-shape.json"));
+  const pos = readJsonOrNull(driverDir(runDir, "register-positions.json"));
+  const scope = readJsonOrNull(driverDir(runDir, "instructed-scope.json"));
   const input = {
     floors: Array.isArray(shape?.floors?.in_class_identical_or_near) ? shape.floors.in_class_identical_or_near : null,
     positions: Array.isArray(pos?.positions) ? pos.positions : null,
@@ -76,7 +76,7 @@ export function readPlacementFormInput(runDir) {
 
 /** canonical uri → the state goods-evidence.mjs recorded for that record's goods; null with no record. */
 export function readGoodsStates(runDir) {
-  const doc = readJson(driverDir(runDir, "goods-evidence.json"));
+  const doc = readJsonOrNull(driverDir(runDir, "goods-evidence.json"));
   if (!Array.isArray(doc?.records)) return null;
   const out = new Map();
   for (const r of doc.records) { const k = normalizeRecordUri(r?.uri); if (k && typeof r?.state === "string") out.set(k, r.state); }
