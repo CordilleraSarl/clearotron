@@ -6,7 +6,6 @@
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
-import { driverDir } from "../../shared/driver-dir.mjs";
 import { recordSpan } from "../attributed-span.mjs";
 import { recordStatusesFromFindings } from "../common-law-coverage-status.mjs";
 import { GRID_HALVES, GRID_SEATS, MEANING_SEAT, balanceClosureCells, findCoverageLimitedCells, findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions, findSimilarListingSignals, mergeCommonLawFindings, mergeGrids, partitionClosableCells } from "../common-law-receipts.mjs";
@@ -21,8 +20,8 @@ import { note, runLog } from "../log.mjs";
 import { findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks } from "../named-band.mjs";
 import { readPartNotCompleted } from "../parts-not-completed.mjs";
 import { gridBatchFor } from "../profiles.mjs";
-import { atomicWrite } from "../progress.mjs";
 import { countLaneCalls } from "../provider-usage.mjs";
+import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { foldSupplementalEntries, isProviderHardErrorReason, joinPlanToBands, mintSupplementalQid, partitionFoldDirectives, romanizedTermsFromPlan, screenThenCap } from "../register-plan.mjs";
 import { readRegisterTaint } from "../register-taint.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
@@ -201,8 +200,8 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     const h = MEANING_SEAT;
     let short = [];
     try {
-      const spec = JSON.parse(readFileSync(P.gridSpecHalf(h), "utf8"));
-      const halfLedger = JSON.parse(readFileSync(P.commonLawGridHalf(h), "utf8"));
+      const spec = readJson(P.gridSpecHalf(h));
+      const halfLedger = readJson(P.commonLawGridHalf(h));
       short = findDroppedConnotationQueries(spec, halfLedger);
       if (short.length) {
         runLog(run.runDir, { event: "connotation-reissue", half: h, count: short.length });
@@ -270,10 +269,10 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     // writes these files — never an agent — so a parse here is defensive, not a live failure mode.
     const readHalfLedger = (h) => {
       const batches = [];
-      try { batches.push(JSON.parse(readFileSync(P.commonLawGridHalf(h), "utf8"))); } catch { /* main missing/corrupt → its cells re-derive as gaps */ }
+      try { batches.push(readJson(P.commonLawGridHalf(h))); } catch { /* main missing/corrupt → its cells re-derive as gaps */ }
       for (const tag of CL_SUPP_TAGS) {
         const sp = P.commonLawGridSupp(h, tag);
-        if (existsSync(sp)) { try { batches.push(JSON.parse(readFileSync(sp, "utf8"))); } catch { /* a corrupt supp sibling contributes nothing; its cells stay gaps */ } }
+        if (existsSync(sp)) { try { batches.push(readJson(sp)); } catch { /* a corrupt supp sibling contributes nothing; its cells stay gaps */ } }
       }
       return batches.length ? batches : null;
     };
@@ -283,7 +282,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     // gate that can actually see a missing meaning receipt.
     const halfErrors = Object.fromEntries(GRID_HALVES.filter((h) => clHalves[h].quarantined)
       .map((h) => [h, `half-${h} gather member did not complete: ${String(clHalves[h].fail).slice(0, 120)}`]));
-    const fullSpec = JSON.parse(readFileSync(ctx.gridSpecPath, "utf8"));
+    const fullSpec = readJson(ctx.gridSpecPath);
     // — three seats, two merges. mergeGrids returns the same {cells, extras, gaps} shape its
     // batchesOf() accepts, so the meaning seat folds in by chaining rather than by widening a signature
     // the guards are written against. It contributes no cells and no gaps — only its
@@ -514,8 +513,8 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       clConnotationReissueSpent = true;
       let missing = [];
       try {
-        const spec = JSON.parse(readFileSync(P.gridSpecHalf(MEANING_SEAT), "utf8"));
-        const merged = JSON.parse(readFileSync(P.commonLawGrid, "utf8"));
+        const spec = readJson(P.gridSpecHalf(MEANING_SEAT));
+        const merged = readJson(P.commonLawGrid);
         missing = findDroppedConnotationQueries(spec, merged);
         if (missing.length) {
           runLog(run.runDir, { event: "connotation-reissue", count: missing.length });
@@ -529,7 +528,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
           if (r?.ok && r.rows?.length) {
             // Append into the half's OWN ledger, so the ordinary re-merge picks them up and nothing
             // downstream needs to know this call happened.
-            const half = JSON.parse(readFileSync(P.commonLawGridHalf(MEANING_SEAT), "utf8"));
+            const half = readJson(P.commonLawGridHalf(MEANING_SEAT));
             half.extras = half.extras ?? {};
             half.extras.pr_risk = [...(Array.isArray(half.extras.pr_risk) ? half.extras.pr_risk : []), ...r.rows];
             atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify(half, null, 2) + "\n");
@@ -630,7 +629,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   // (planExec itself is resolved once, above the gather — the code-side saturation-probe unit shares it.)
   const repairLedger = ctx.repairLedger ?? (ctx.repairLedger = createRepairLedger(run.runDir, { log: (o) => runLog(run.runDir, o) }));
   const repairEpoch = (() => {
-    const att = (() => { try { return Number(JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")).recoveryAttempts) || 0; } catch { return 0; } })();
+    const att = (() => { try { return Number(readJson(join(run.runDir, "status.json")).recoveryAttempts) || 0; } catch { return 0; } })();
     return `${ctx.registerPlan?.plan_version ?? 0}:${att}`;
   })();
   const fanInRepairs = [];
@@ -764,7 +763,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       const laneKey = `clearance-${run.slug}-${run.codename}-register-unit-${a}`;
       // A slice taken out of the band, or one the provider could not express, is a deferred block that made no call.
       const qidBlocks = (() => {
-        try { const b = JSON.parse(readFileSync(P.registerBand(a), "utf8")); return Array.isArray(b) ? b.filter((x) => x && typeof x === "object" && x.qid && !(x.error === true && x.deferred === true)) : []; }
+        try { const b = readJson(P.registerBand(a)); return Array.isArray(b) ? b.filter((x) => x && typeof x === "object" && x.qid && !(x.error === true && x.deferred === true)) : []; }
         catch { return []; /* parse defects are the stage validator's problem, not this gate's */ }
       })();
       const bandHasQids = qidBlocks.length > 0;
@@ -830,7 +829,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     const taint0 = readRegisterTaint(run.runDir, axes);
     const taintedNow = axes.filter((a) => taint0[a]?.tainted);
     if (taintedNow.length) {
-      const recoveryAttempts = (() => { try { return Number(JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")).recoveryAttempts) || 0; } catch { return 0; } })();
+      const recoveryAttempts = (() => { try { return Number(readJson(join(run.runDir, "status.json")).recoveryAttempts) || 0; } catch { return 0; } })();
       // The axes whose recovery is spent: the searches record lists them, and each is read as it stands and disclosed.
       const disclosedAxes = new Set(Array.isArray(searchesOpen?.disclosed_axes) ? searchesOpen.disclosed_axes : []);
       const axesRec = {};
@@ -899,7 +898,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         };
       }
       try {
-        const tp = driverDir(run.runDir, "register-taint.json");
+        const tp = P.registerTaint;
         writeFileSync(`${tp}.tmp`, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), axes: axesRec }, null, 2) + "\n");
         renameSync(`${tp}.tmp`, tp);
       } catch (e) { note(`register-taint receipt write failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
@@ -914,8 +913,8 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         // export is withheld until the search is re-run to closure (the same class as a failed escalation/envelope),
         // the internal report ships CONDITIONAL via the ledger relabel + registerGap clamp.
         try {
-          const escPath = driverDir(run.runDir, "escalation-state.json");
-          let esc = {}; try { esc = JSON.parse(readFileSync(escPath, "utf8")); } catch { /* fresh */ }
+          const escPath = P.escalationState;
+          let esc = {}; try { esc = readJson(escPath); } catch { /* fresh */ }
           const failed = Array.isArray(esc.failed) ? esc.failed : [];
           for (const a of toDisclose) if (!failed.includes(`taint:${a}`)) failed.push(`taint:${a}`);
           atomicWrite(escPath, JSON.stringify({ ...esc, ts: new Date().toISOString(), failed }, null, 2) + "\n");   // B5 — the client-gate reads this: never truncated
@@ -924,8 +923,8 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         // client-gate withhold) but the digest validator stays quiet — a locked narrative is never
         // forced into a rewrite loop (see register-taint.mjs status contract).
         try {
-          const tp = driverDir(run.runDir, "register-taint.json");
-          const rec = JSON.parse(readFileSync(tp, "utf8"));
+          const tp = P.registerTaint;
+          const rec = readJson(tp);
           for (const a of toDisclose) if (rec?.axes?.[a]) rec.axes[a] = { ...rec.axes[a], status: "disclosed" };
           writeFileSync(`${tp}.tmp`, JSON.stringify(rec, null, 2) + "\n"); renameSync(`${tp}.tmp`, tp);
         } catch (e) { note(`register-taint receipt disclose update failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
@@ -988,8 +987,8 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   // a logged skip. Receipt: _driver/register-xcheck.json (the demotion tripwire's substrate).
   if (ctx.registerPlan) {
     try {
-      const receiptPath = driverDir(run.runDir, "register-xcheck.json");
-      const prior = existsSync(receiptPath) ? JSON.parse(readFileSync(receiptPath, "utf8")) : null;
+      const receiptPath = P.registerXcheck;
+      const prior = existsSync(receiptPath) ? readJson(receiptPath) : null;
       const signals = findSimilarListingSignals(readFileSync(P.commonLaw, "utf8"));
       const ranked = [
         ...signals.filter((s) => s.owner && s.url),
@@ -1180,7 +1179,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     // what Phase A ran. Re-join only when no clean receipt exists for this version (fresh runs)
     // or the plan grew (extension bumps plan_version → the new entries must execute + re-join).
     let priorReceipt = null;
-    try { priorReceipt = JSON.parse(readFileSync(P.planExecution, "utf8")); } catch { /* none yet */ }
+    try { priorReceipt = readJson(P.planExecution); } catch { /* none yet */ }
     if (priorReceipt && priorReceipt.plan_version === ctx.registerPlan.plan_version
         && Array.isArray(priorReceipt.missing) && priorReceipt.missing.length === 0) {
       ctx.planExecution = priorReceipt;
@@ -1388,7 +1387,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         if (om.denied.length) note(`common-law candidates: ${om.denied.length} hit cell(s) received by a "No results" row (advisory census — relevance is the model's judgment; the honest form is "No similar listings (N candidates reviewed)")`);
       }
     } catch (e) { note(`common-law candidate census skipped (${String(e?.message ?? e).slice(0, 80)}) — never-kill`); }
-    const closureReceiptPath = driverDir(run.runDir, "coverage-closure.json");
+    const closureReceiptPath = P.coverageClosure;
     const cellsOf = () => {
       const txt = readFileSync(P.commonLaw, "utf8");
       let cells;
@@ -1403,7 +1402,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     // A CHANNEL THE FRAME-DIFF NAMED IS NOT FOLDED IN HERE. It is disclosed as an open row, never swept (the
     // frame-reopen above defers it as a channel never swept), so this pass closes grid cells and nothing else.
     // The signature keeps its second slot, empty, so a receipt written for the same cells still matches.
-    const priorReceipt = existsSync(closureReceiptPath) ? JSON.parse(readFileSync(closureReceiptPath, "utf8")) : null;
+    const priorReceipt = existsSync(closureReceiptPath) ? readJson(closureReceiptPath) : null;
     const closureSig = JSON.stringify([closable.map(cellKey).sort(), []]);
     const alreadyAttempted = priorReceipt && (priorReceipt.sig === closureSig ||
       // back-compat: a pre-doc-35 receipt keyed only on the cell set
@@ -1457,8 +1456,8 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
           const specPath = ctx.gridSpecPath || P.gridSpec;   // — the declared path, not a second literal
           if (existsSync(suppSpec.output_path) && existsSync(P.commonLawGrid) && existsSync(specPath)) {
             try {
-              const fullSpec = JSON.parse(readFileSync(specPath, "utf8"));
-              const merged = mergeGrids(JSON.parse(readFileSync(P.commonLawGrid, "utf8")), JSON.parse(readFileSync(suppSpec.output_path, "utf8")), { spec: fullSpec });
+              const fullSpec = readJson(specPath);
+              const merged = mergeGrids(readJson(P.commonLawGrid), readJson(suppSpec.output_path), { spec: fullSpec });
               atomicWrite(P.commonLawGrid, JSON.stringify(merged, null, 2) + "\n");   // B5 — the canonical ledger is never seen torn
               runLog(run.runDir, { event: "common-law-supp-folded", lane: "coverage-closure", cells: merged.cells.length, gaps: merged.gaps.length });
             } catch (e) { note(`coverage closure: supplementary fold skipped (${String(e.message).slice(0, 80)}) — closable cells stay disclosed gaps`); }
