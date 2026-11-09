@@ -876,7 +876,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         // travels as `repairs:` on a StageFailure, so a reader of that packet saw `outcome: "ok"` for an
         // axis still tainted. The same shape found on `repair-attempted.outcome`.
         //
-        // `outcome` KEEPS ITS MEANING rather than being renamed: `repairs.mjs:131` documents
+        // `outcome` KEEPS ITS MEANING rather than being renamed: `repairs.mjs` documents
         // `axisOutcome` as "the AXIS's repair-attempt outcome", and `fanInMissingEvidence` uses it to say
         // what a repair HIT when a slice landed nothing of its own. That reading is correct and consumed
         // correctly; renaming would churn a documented vocabulary across two producers, a map and a

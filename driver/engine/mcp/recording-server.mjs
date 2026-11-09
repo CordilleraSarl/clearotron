@@ -1445,8 +1445,8 @@ serve({
     schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
       "Hand back your repair of the defects you were given, as VALUES, sending only what changes. The driver merges it onto " +
-      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name no defect concerns, " +
-      "a moved finding no answer accounts for, and a rating that moves without its dependent answers. A repair turn may send " +
+      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name no defect concerns, except a finding a defect names that also stands on that name. " +
+      "It refuses a moved finding no answer accounts for, and a rating that moves without its dependent answers. A repair turn may send " +
       "only what it corrects, and what it has repaired is kept.",
     inputSchema: {
       type: "object",
