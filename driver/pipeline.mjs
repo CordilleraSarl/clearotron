@@ -15992,7 +15992,7 @@ async function pipelineInner(job, opts = {}) {
         const rr = await stage("narrative-refutation", ctx, {
           force: true, trigger: "degenerate-reask",
           extra: lines(
-            `Write your review with the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line.`,
+            `Record the review again with \`record_narrative_refutation\`: the verdict (CLEAR / CONDITIONAL / BLOCKING) and any flags that still stand.`,
             `If your verdict is BLOCKING: cite at least one concrete, file-anchored defect per blocking reason (name the file and the exact claim). A BLOCKING with no cited defects is invalid output.`,
             planAuditExtra(ctx) || "",
           ),
