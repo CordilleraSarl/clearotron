@@ -3,19 +3,7 @@
 
 # Firm-wide reasoning discipline
 
-**This file is the ONE copy.** Every section here was MOVED out of `synthesis-rules.md` — not copied —
-because more than one lane needs it and a second transcription is exactly the drift that let the
-knockout lane rate under a retired rulebook while this discipline sat in a file it never read.
-
-Read by the clearance lane (`synthesis`) and the knockout lane (`knockout-assess`). What belongs here is
-reasoning that is true under EVERY framework and in every lane. What does not belong here is anything
-that names an artifact only one lane produces — that stays in the lane's own doctrine. The heading in
-`synthesis-rules.md` used to make the "applies under every framework" claim with nothing keeping the
-clearance lane's own material out of it; the boundary has a file of its own now.
-
-**This file names no tool.** A tool named in a shared skill document is ORDERED for every reader and
-GRANTED to none, and the agreement guard then fires on whichever innocent stage also reads it. Tool
-orders belong in a stage's own dispatch.
+Reasoning true under every framework and lane.
 
 ## Risk calibration adjustments (vs the v2 common-law-only framework)
 
@@ -70,7 +58,7 @@ Note: revocability does NOT automatically change the band. It is a mitigating fa
 
 Total worldwide filing count is NOT a risk factor. Risk is assessed per owner/mark combination, not aggregated across all filings.
 
-If 27 identical filings exist across 27 unrelated owners, each is assessed independently — the count does not raise the composite. Document the volume as context in the narrative methodology note: "[N] exact-match filings found across [M] unique owners — each assessed independently; volume not used as a risk multiplier."
+If 27 identical filings exist across 27 unrelated owners, each is assessed independently — the count does not raise the composite. Document the volume as context in `coverage.read`: "[N] exact-match filings found across [M] unique owners — each assessed independently; volume not used as a risk multiplier."
 
 High filing volume in a field is evidence of crowding (see *Crowded field analysis* under Firm-wide reasoning discipline below), which if anything reduces the enforcement power of any individual holder — it is a neutral-to-mitigating signal, not an elevation signal.
 
@@ -232,9 +220,7 @@ the band.
 ### Enforcer profiling — mandatory for findings rated medium risk or higher
 
 Assess: Is this a portfolio brand? TTAB/UDRP history? Institutional vs individual filer? "No large brands
-or assertive enforcers" is a practical factor the staff lawyer weights heavily. *(`courtlistener__search` covers US
-federal courts incl. CAFC trademark-appeal opinions — NOT raw TTAB proceedings. For TTAB direct
-(oppositions, cancellations, ex parte), source is TTABVUE — separate integration, not yet wired.)* The Step 3.5 query (`phase2-execution.md`) asks for
+or assertive enforcers" is a practical factor the staff lawyer weights heavily. The Step 3.5 query (`phase2-execution.md`) asks for
 the owner's enforcement record; what it finds is a lead, cited inline, never a verified authority.
 
 Profiling informs the **business / practical read only — it never raises the legal read** (the read is the
