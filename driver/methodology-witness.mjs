@@ -32,6 +32,7 @@ import { readFileSync, writeFileSync, existsSync, renameSync } from "node:fs";
 import { basename, win32 } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { sepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
+import { readJson } from "./run-record.mjs";
 
 export const WITNESS_FILE = "methodology-read.json";
 
@@ -68,7 +69,7 @@ export function witnessStageMethodology(runDir, stage, message, resolveSkill, { 
 
     const path = driverDir(runDir, WITNESS_FILE);
     let doc = { schema: 1, stages: {} };
-    if (existsSync(path)) { try { doc = JSON.parse(readFileSync(path, "utf8")) || doc; } catch { /* unreadable ⇒ start clean */ } }
+    if (existsSync(path)) { try { doc = readJson(path) || doc; } catch { /* unreadable ⇒ start clean */ } }
     doc.stages ||= {};
 
     const seen = [];
