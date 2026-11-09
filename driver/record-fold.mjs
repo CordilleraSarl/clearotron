@@ -32,7 +32,7 @@ import { dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { consolidateFindings, remapActionOrdinals, remapFourAnswersOrdinals, parseFindingsJson } from "./findings-model.mjs";
 import { parseFrameworkManifest } from "./framework.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const FOLD_FILE = "fold.json";
 export const UNFOLDED_FILE = "findings-unfolded.json";
@@ -139,7 +139,7 @@ export function foldFindingsFile(runDir, findingsPath, manifest, { seam = false 
 /** The fold an accepted save makes, with the run's frozen framework manifest. Never throws. */
 export function foldAfterSave(runDir, findingsPath) {
   let manifest = null;
-  try { manifest = parseFrameworkManifest(readFileSync(driverDir(String(runDir ?? ""), "framework.json"), "utf8")); }
+  try { manifest = parseFrameworkManifest(readFileSync(paths(String(runDir ?? "")).framework, "utf8")); }
   catch { manifest = null; }   // a run with no frozen manifest folds as the seam does for it
   return foldFindingsFile(runDir, findingsPath, manifest);
 }
