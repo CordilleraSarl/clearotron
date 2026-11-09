@@ -4,6 +4,7 @@
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
+import { runIntake } from "./steps/intake.mjs";
 import { runPlacementAndDigest } from "./steps/placement-and-digest.mjs";
 import { runRegisterSweep } from "./steps/register-sweep.mjs";
 import { runSynthesis } from "./steps/synthesis.mjs";
@@ -185,7 +186,7 @@ import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKe
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal, citingModelOrdinal, FOLD_FILE } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
 import { locateReportFaults, reportPartsOf, overviewCitationFault, writersCitationFaults } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
-import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, findSimilarListingSignals, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, openChannelRows } from "./common-law-receipts.mjs";
+import { parseManifestVariants, findCoverageLimitedCells, findSimilarListingSignals, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, openChannelRows } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
@@ -11246,74 +11247,8 @@ async function pipelineInner(job, opts = {}) {
   }
 
   try {
-    // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
-    must(await stage("matter-frame", ctx), "matter-frame");
-    await deriveIntakeAsks(ctx);   // A6: freeze the intake-ask register (one save-only followup if the section is missing)
-    must(await stage("clearance-variants", ctx), "clearance-variants");
-    deriveScopeLedgerJson(ctx);   // frame-omission design: code-derive scope-ledger.json from the validated prose (never-kill)
-    deriveFormNeighbourhood(ctx); // mechanical FORM band: code-derive form-neighbourhood.json from the manifest's distinctive element(s) — the model-free form floor the register funnel searches (never-kill)
-    await verifyAndRecordHouseElement(ctx, opts);   // ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
-    attachRegisterPlan(ctx);      // WS2 (B3): compile/freeze/reuse the deterministic register plan (flag-gated; frozen plan wins on resume; never-kill on mint)
-
-    // Phase 2b slice 1 — the jx candidate fold (the native-language investigation): native-script
-    // register candidates for the
-    // frozen policy's jxLanes component, folded run-local onto the transliteration-numeric axis so the
-    // unit spawn (axis-from-plan below), coverage skeleton, taint chain and clean gates inherit with
-    // zero new wiring. Lazy import (a plain clearotron never loads jx machinery — byte-identical off);
-    // never-kill inside runJxCandidateFold (a degraded lane logs + receipts, the Latin plan stands).
-    if (ctx.searchPolicy?.components?.jxLanes && ctx.registerPlan) {
-      const { runJxCandidateFold } = await import("./jx.mjs");
-      const jxr = await runJxCandidateFold(ctx, job, opts,
-        { runLog: (d, row) => runLog(d, row), note, inScopeClasses: inScopeClassList(job, ctx.profile).map(String) });
-      if (jxr.cause && !jxr.folded) runLog(run.runDir, { event: "jx-candidate-fold-skipped", cause: jxr.cause });
-    }
-
-    const manifestForAxes = readFileSync(P.variantManifest, "utf8");
-    const axes = decideAxes(manifestForAxes);
-    // WS2 (B3) — in plan mode the PLAN is the search authority: any axis it carries entries
-    // for must spawn, or its qids would read as unexecuted at fan-in for a unit that never existed.
-    if (ctx.registerPlan) for (const a of new Set(ctx.registerPlan.entries.map((e) => e.axis))) {
-      if (!axes.includes(a)) { axes.push(a); runLog(run.runDir, { event: "axis-from-plan", axis: a }); }
-    }
-    // Grid key dictation + batching (2026-06-12, Ember Guard truncation): the common-law message hands
-    // the worker the EXACT matrix keys the receipts gate will demand (dictate, don't infer — kills the
-    // key-mismatch class) and a batch plan sized under the measured-safe grid (~105 cells/call): the
-    // 224-cell single call truncated mid-matrix and correctly hard-failed three times.
-    ctx.gridVariants = parseManifestVariants(manifestForAxes);
-    // — ZERO VARIANTS IS AN ANSWER OR A FAILURE, AND THE DIFFERENCE DECIDES A DELIVERED CLEARANCE.
-    // Zero here silently disarms the split at the guard below (`ctx.gridVariants?.length`), the run takes
-    // the legacy spec-less path, and it delivers CLEAN over a dictated meaning sweep that never ran. That
-    // is what happened on 2026-08-15: 84 variants written, 0 reachable, clean delivery.
-    //
-    // The parser cannot tell "this matter has no variants" from "I could not find the table" — but this
-    // caller can, because the audit reports what it SAW. Loud, and deterministic: the manifest is on disk
-    // and a re-sample re-derives the identical failure, so the ladder has nothing to offer it.
-    {
-      const why = variantsParseFailure(manifestForAxes);
-      if (why) throw new StageFailure("variants", why, undefined, { failClass: "deterministic" });
-    }
-    ctx.axes = axes;
-    // Register-only (2026-07-21): the clearance shape with its unregistered-use half removed. ONE
-    // predicate, read from the FROZEN policy, joined by everything below — the grid spec, the gather
-    // fan-out, the three grid-assuming recovery passes, the stage prompts and the risk statement's
-    // basis. An archived run whose frozen policy predates the component reads as grid-ran, unchanged.
-    const runCommonLaw = !ctx.registerOnly;   // derived once at policy freeze, so a resume carries it too
-    if (!runCommonLaw) runLog(run.runDir, { event: "register-only", commonLawGrid: false });
-    runLog(run.runDir, { event: "axes", axes });
-    note(`gather axes: ${axes.join(", ")}${runCommonLaw ? " + common-law" : " (register only — no common-law / marketplace grid)"}`);
-
-    deriveGridSpec(ctx);   // — the grid contract is a NAMED derivation the --experiment rig replays
-
-    // Phase 4 slice 2 — the zh SERP platform grid. item 8 removed the CLEAROTRON_JX_SERP_GRID arm;
-    // the condition that remains is the one the run already discloses, the product carrying jxLanes.
-    // Never-kill inside runJxSerpGrid; runs pre-gather so its findings exist for the nativeread unit,
-    // and the unit itself still refuses on a killed lane, an absent lane decision or no SERP capability
-    // — each with a cause that reaches the slice statement.
-    if (ctx.searchPolicy?.components?.jxLanes) {
-      const { runJxSerpGrid } = await import("./jx-units.mjs");
-      const sg = await runJxSerpGrid(ctx, job, opts, { runLog: (d, row) => runLog(d, row), note });
-      if (sg.cause && !sg.ran) runLog(run.runDir, { event: "jx-serp-grid-skipped", cause: sg.cause });
-    }
+    // The matter frame, its variants and the plan (steps/intake.mjs).
+    const { axes, runCommonLaw } = await runIntake({ P, ctx, job, opts, run }, { StageFailure, attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, inScopeClassList, must, stage, verifyAndRecordHouseElement });
 
     // The register and unregistered-use searches and their fan-in (steps/register-sweep.mjs).
     const { planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, StageFailure, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, isFallbackEligible, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt });
