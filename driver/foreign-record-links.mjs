@@ -15,7 +15,7 @@
 // Blanking is blankForeignRecordLinks (findings-model.mjs): a register link becomes "", the value that
 // already means "this register publishes no page for the record".
 import { writeFileSync } from "node:fs";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { driverDir } from "./run-record.mjs";
 import { blankForeignRecordLinks } from "./findings-model.mjs";
 import { activeRecordOrigins } from "./record-origins.mjs";
 import { runLog } from "./log.mjs";
