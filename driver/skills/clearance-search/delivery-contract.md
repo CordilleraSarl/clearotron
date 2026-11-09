@@ -26,8 +26,7 @@ This is distillation by *removal and relocation* — do not add length to hit it
 become a `- ` list (**inside card bodies too**), never an inline `(a)…(b)…(c)` run; verdict-first; numbers over
 superlatives, no intensifiers or GPT-isms; say each caveat once. **Depth-on-click, not length-on-screen:** the
 card head + the typed `net` are always visible; everything heavier goes to `### Full
-detail`. The highest-risk card must be the **clearest**, never the longest. State the "preliminary assessment"
-posture once (in `overall_caption`), never per-card.
+detail`. The highest-risk card must be the **clearest**, never the longest.
 
 **Order inside a card, and inside the report.** Verdict first, then what was looked for and not found,
 then what was found — at every scale. In `### Full detail`, send the Risk assessment entry first.

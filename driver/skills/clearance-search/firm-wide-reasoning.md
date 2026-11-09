@@ -15,7 +15,7 @@ The risk-framework calibration rules originated in a common-law-only context. Wi
 
 **v3 (register included):** when register analysis ran AND surfaced live filings related to the finding, the assessment is no longer "pending overlay" — it's confirmed. Use the caveat only when:
 
-1. Register skipped (e.g., provider failed mid-run) — in which case fall back to v2 wording: "Ratings reflect our common-law assessment only — register layer unavailable this run."
+1. Register skipped (e.g., provider failed mid-run) — in which case fall back to v2 wording: "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."
 2. Register completed but no live filings surfaced for the finding's entity — note: "Register search returned no live filings for [entity] in target classes; rating reflects common-law evidence only." **Only sayable when that entity's material jurisdictions are `confirmed-clean` in the coverage ledger.**
 3. Register completed and surfaced live filings — drop the caveat entirely. Synthesis cites the register evidence directly.
 4. Register ran but the entity's material jurisdictions are `deferred` / `coverage-limited` in the ledger — do NOT say "no live filings." Caveat per the Coverage-honesty rule: "Register coverage for [entity] in [jurisdiction] was [deferred/limited] this run — not a clean negative" (the verdict carries it). doc-35: do NOT append "[scope] sweep recommended" — a search-reachable gap is closed or an internal note, never a client commission-a-sweep caveat.
@@ -24,14 +24,14 @@ The risk-framework calibration rules originated in a common-law-only context. Wi
 
 **v2 (common-law only):** *"Register Risk Estimate (purple bullet, mandatory for Composite 2+). Estimate whether register filings are likely based on how common/commercial the phrase is."*
 
-**v3 (register included):** estimation becomes confirmation when register actually ran. Replace the purple bullet with one of three states:
+**v3 (register included):** estimation becomes confirmation when register actually ran. Replace the purple bullet with one of four states:
 
 | State | Wording |
 |---|---|
 | Register ran, found filings | "Register search surfaced [N] live filings related to this entity (see Findings #X, #Y)." |
 | Register ran, no filings (material jurisdictions `confirmed-clean`) | "Register search returned no live filings for [entity] in target classes — common-law-only basis." |
 | Register ran, but material jurisdictions `deferred` / `coverage-limited` | "Register coverage for [entity] in [jurisdiction(s)] was [deferred/limited] — not confirmed clean" (the verdict carries it; no "sweep recommended" caveat — closed in the run or an internal note). |
-| Register skipped | Original v2 estimation language: "Register filings likely based on commercial visibility — the staff lawyer to confirm." |
+| Register skipped | Original v2 estimation language: "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction." |
 
 ### Stealth-filer recalibration
 
@@ -318,10 +318,8 @@ PR and reputational risks are NOT trademark risks but **must be surfaced wheneve
 rated conflict**. The staff lawyer wants visibility on these — do not omit them.
 
 They must be:
-- Flagged in a separate section of the narrative (don't bury inside a trademark-risk paragraph)
+- Carry a loaded reading in the `mark_assessment.connotation` field, which prints as the Connotation & meaning line; keep it unrated; where the sweep was clean, say so there once.
 - NOT rated on the framework's bands
-- Labeled as "PR / Reputational risk" clearly
-- Documented even if clean: "No negative connotations identified" is a useful data point
 
 The scope is the run's OWN dictated meaning sweep — the matter frame's `Meaning angles:` (cultural origin
 and communities the word evokes, charged history of the term or its imagery, category-specific controversy
