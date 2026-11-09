@@ -18,7 +18,7 @@ const load = (rel) => import(pathToFileURL(join(spec.driver, rel)).href);
 const { republishRun } = await load("publish/report-registry.mjs");
 const meta = JSON.parse(readFileSync(spec.metaFile, "utf8"));
 const url = "https://reports.example.test";
-const published = await republishRun({ runId: meta.runId, meta, pool: spec.pool, poolUrl: url, runDir: spec.runDir, skipRegen: true });
+const published = await republishRun({ runId: meta.runId, meta, pool: spec.pool, poolUrl: url, runDir: spec.runDir });
 
 const profileFile = join(spec.runDir, "_driver", "profile.json");
 const delivery = existsSync(profileFile) ? JSON.parse(readFileSync(profileFile, "utf8"))?.delivery : undefined;
