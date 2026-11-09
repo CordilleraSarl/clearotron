@@ -1451,7 +1451,7 @@
         },
         "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
           "tests": 5,
-          "asserts": 9,
+          "asserts": 11,
           "skips": 5,
           "todos": 0
         },
@@ -2653,6 +2653,12 @@
           "tests": 3,
           "asserts": 4,
           "skips": 5,
+          "todos": 0
+        },
+        "a-workbook-is-compared-by-its-contents.test.mjs": {
+          "tests": 3,
+          "asserts": 3,
+          "skips": 0,
           "todos": 0
         },
         "a-worldwide-order-is-never-framed-as-the-account-defaults.test.mjs": {
@@ -8478,6 +8484,12 @@
         "what-a-run-retrieved-under-each-crowd-is-recorded-and-nothing-more.test.mjs": {
           "tests": 7,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "what-an-engine-stamp-means.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },

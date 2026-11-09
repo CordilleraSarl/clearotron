@@ -50,7 +50,8 @@ import { driverDir, labelOfDriverFile } from "./run-record.mjs";   //
 import { resolveModel, modelFamily } from "./driver.config.mjs";
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
-import { stampRunEconomics, isCodeSide, vendorOf } from "./run-economics.mjs";
+import { stampRunEconomics, isCodeSide } from "./run-economics.mjs";
+import { engineStamp, vendorOf } from "./engine/stamps.mjs";
 import { isAttemptRow, modelKey } from "./attempt-rows.mjs";
 
 export { isAttemptRow, modelKey };
@@ -257,7 +258,7 @@ function claudeModelId(id) {
  * it asked for instead, which is what the company deployed under that name.
  *
  * WHOSE TURN IT WAS IS THE VENDOR'S QUESTION, answered by the one closed table of engines (vendorOf in
- * run-economics.mjs), not by a list kept here. An OpenAI turn's id is listed as reported: a Codex id is the
+ * engine/stamps.mjs), not by a list kept here. An OpenAI turn's id is listed as reported: a Codex id is the
  * model's own name. An Anthropic turn under any engine name is mapped as above; a second list of Claude
  * engines here printed a deployment name, as reported, for every engine it left out. An engine the table
  * does not name is left off: printing its id would make a vendor claim nobody can check.
@@ -283,7 +284,7 @@ function servedName(rec, id) {
   // names first. modelFamily reads opus, sonnet and haiku, and requestedTier adds fable, for the report
   // alone. A tier neither can place returns null and the id is left off: listing nothing is honest, and
   // listing the name is the leak this prevents.
-  const asked = engine === "anthropic" ? JX_TIER : rec.model;
+  const asked = engineStamp(engine).nativeLanguage ? JX_TIER : rec.model;
   const tier = requestedTier(claudeModelId(asked) ?? asked);
   return CLAUDE_TIERS.has(tier) ? tier[0].toUpperCase() + tier.slice(1) : null;
 }
