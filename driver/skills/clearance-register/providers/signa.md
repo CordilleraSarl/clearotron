@@ -97,7 +97,7 @@ Signa's nested record; the full upstream record is under `_raw`):
 `filingRoute` is what lets a finding say which register a right sits on. Use it rather than inferring the
 route from the office code.
 
-## Coverage — Signa's live office set (13) + the disclosure rule
+## Coverage — Signa's live office set (15) + the disclosure rule
 
 Derived from `GET /v1/offices` and committed as a snapshot (`providers/signa/src/offices.generated.js`), so
 a change in what we claim to search arrives as a reviewable diff:
@@ -117,8 +117,10 @@ a change in what we claim to search arrives as a reviewable diff:
 | Sweden | `prv` | SE |
 | Spain OEPM | `es` | ES |
 | Mexico IMPI | `mx` | MX |
+| Brazil INPI | `br` | BR |
+| Italy UIBM | `it` | IT |
 
-**Each of the thirteen is searched as a TERRITORY, not as one register.** The adapter sends
+**Each of the fifteen is searched as a TERRITORY, not as one register.** The adapter sends
 `filters.jurisdictions` + `territory_match: "protection"` — every right with effect there, whatever
 register it sits on — rather than `filters.offices`, which searches the national register alone. The
 difference is not a margin. On the same term:
@@ -138,7 +140,7 @@ force there, and a finding may sit on any layer of it.
 
 **NOT covered: China (CNIPA), Germany, Japan, Korea, Benelux, and other nationals.** The territory
 expansion above does not change this and must not be read as widening it: `SIGNA_OFFICE_KEYS` maps only
-these thirteen, an unmapped region abandons the translation, and a territory the vendor does not index is
+these fifteen, an unmapped region abandons the translation, and a territory the vendor does not index is
 not reachable by asking the question a different way. A Madrid designation of Germany is found only when
 Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, give
 that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — disclose

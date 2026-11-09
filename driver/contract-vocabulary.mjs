@@ -489,7 +489,7 @@ export const INNER_CODES = Object.freeze([
   { code: "cite_absent", mints: ["driver/connotation-search.mjs:2149"], rollsUpTo: ["connotation_cite_absent"],
     why: "#592, as token_absent. PROGRESS_TOKENS declared in repairs.mjs: `row-level only — never a top-level token`." },
   { code: "no_ruling", mints: ["driver/connotation-search.mjs:2156"], rollsUpTo: ["connotation_no_ruling"],
-    why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token at repairs.mjs:309 and in stages.mjs's E1 rows, always namespaced." },
+    why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token in PROGRESS_TOKENS in repairs.mjs and in stages.mjs's E1 rows, always namespaced." },
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
