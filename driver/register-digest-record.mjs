@@ -46,7 +46,6 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 
 export const FINDINGS_FILE = "register-findings.md";
 const SCHEMA_VERSION = 1;
@@ -62,7 +61,7 @@ const SCHEMA_VERSION = 1;
  */
 import { applyFates } from "./hit-list.mjs";   // — the digest marks the list
 import { formKey } from "../providers/_shared/script-form.mjs";   // — the one fold for "is this the same form of the mark"
-import { paths as runPaths, readJson } from "./run-record.mjs";
+import { driverDir, paths as runPaths, readJson } from "./run-record.mjs";
 
 export const FACTS_FILE = "register-digest-facts.json";
 /** — the slim hit list the digest marks; a projection of the merged band. */
