@@ -94,28 +94,7 @@ row on goods/services (brand-json lacks G&S) — those are decided on the record
 
 When a kept conflict's owner holds several registrations of the same mark, identify the senior live leg (earliest filing, registered before pending), read it with `band_record` if held, and cite its uri; if it is not held, say so.
 
-**Relevance-gate drops (provenance — floor-critical).** A candidate that PASSED the status filter but the
-relevance gate (Step 2) dropped as genuinely field-irrelevant is recorded the SAME way — one row per drop in
-THIS table, in the column shape the deterministic audit builder parses — so it reaches the published
-`# Negative Results` (the internal/senior-facing workbook's defensibility record of what was considered and
-ruled out). Do **not** put these under a separate "audit-only" heading: a heading `buildAuditMd` does not parse
-never leaves the spine, so the drop vanishes from the delivered audit. An **in-scope-live** off-field drop
-(verdict `surface:in-scope-live` / `surface:all-class`) must rest on the official record's goods, read with
-`band_record`, never a batch-row guess. This tool reads evidence already held; it does not fetch. If the required
-record is missing or unavailable, leave the gap explicit. The driver applies the existing fetch-and-recheck
-recovery; an unresolved gap remains disclosed. Carry
-the **`screen_verdict`, `class`, and `status`** into Notes so the gate can identify the row.
-
-**ONE ROW PER RECORD — the row is the unit of DISMISSAL, so it is one record (floor-critical).** A drop row
-names **exactly one** record URI, and its reason is a decision about *that* record's fetched goods. Never
-group several records under one row and one shared rationale, however alike they look: a rationale that is
-true of a group is not a decision about any of its members, and the gate then polices a batch on one member.
-(Live failure: a 14-record row dismissed as "Cl.35/41 retail/advertising/education services, no Cl.9/42
-software, no AI-customer overlap" — false for two of its members, which recited AI-integration advisory
-services in an instructed class.) The acceptance gate now reads **every** URI in a row and holds each to the
-fetch requirement separately, and a goods/field drop row with **no** URI is itself a violation — an unnamed
-drop can be neither examined nor audited. Batching stays correct for *retrieval* (`register_batch_screen`,
-enumeration, `_query` attribution); it is only forbidden as a unit of dismissal.
+A field-irrelevance drop is a `negative_rows` entry with ground `off-field`, one uri per entry, decided on the record's goods read with `band_record`.
 
 One entry, one record, one reason. A `drop_reason` is the judgment alone — the uri, verdict, class and
 status are rendered beside it: `dropped — off-field (relevance gate): DUSK-only hit; the
