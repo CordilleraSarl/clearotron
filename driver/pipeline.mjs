@@ -11000,10 +11000,10 @@ async function pipelineInner(job, opts = {}) {
       throw Object.assign(new StageFailure("narrative-refutation", firstRef.fail
         ? `${firstRef.fail} — the refutation ladder exhausted retries and fallback on it`
         : "failed after retries + fallback (the ladder recorded no condition)"), { notCompletedPart: "review" });
-    let verdict = firstRef.verdict;   // null where the review was not completed: no sign-off, the band alone
-    runLog(run.runDir, { event: "verdict", verdict });
-    writeRunStatus(ctx, signoffPatch(verdict));
-    note(`refutation verdict: ${verdict}`);
+    const runState = { verdict: firstRef.verdict };   // null where the review was not completed: no sign-off, the band alone
+    runLog(run.runDir, { event: "verdict", verdict: runState.verdict });
+    writeRunStatus(ctx, signoffPatch(runState.verdict));
+    note(`refutation verdict: ${runState.verdict}`);
     // qw/typed-correction-kinds — TELEMETRY ONLY (data first; the corrective-skip decision is a
     // separate owner-gated build): partition the review's flagged-correction lines by their
     // self-declared [kind: …] tokens (verify.parseCorrectionKinds — closed enum, author-declared,
@@ -11030,18 +11030,18 @@ async function pipelineInner(job, opts = {}) {
     // inference a reader has to make by comparing two other numbers.
     try {
       const ck = parseCorrectionKinds(readFileSync(P.seniorEyeReview, "utf8"));
-      runLog(run.runDir, { event: "correction-kinds", ok: true, kindChannelOk: ck.ok !== false, verdict,
+      runLog(run.runDir, { event: "correction-kinds", ok: true, kindChannelOk: ck.ok !== false, verdict: runState.verdict,
         counts: ck.counts, untyped: ck.untyped, total: ck.total, ...(ck.why ? { kindChannelWhy: ck.why } : {}) });
     } catch (e) {
       // The key rides BOTH arms: written only on success, its absence on a failed row would read as
       // "the channel was fine", which is precisely the inference this issue exists to stop.
-      try { runLog(run.runDir, { event: "correction-kinds", ok: false, kindChannelOk: false, verdict, error: String(e?.message ?? e).slice(0, 160) }); }
+      try { runLog(run.runDir, { event: "correction-kinds", ok: false, kindChannelOk: false, verdict: runState.verdict, error: String(e?.message ?? e).slice(0, 160) }); }
       catch { /* telemetry best-effort — never-kill */ }
     }
 
     // The correction after the review and the recheck of it (steps/correction-cycle.mjs).
-    const correctionCycle = await runCorrectionCycle({ ctx, run, P, verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, asPartNotCompleted, correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, correctionsExtra, correctiveCycleSettledDecision, enforceCorrectionsReachFindings, must, planAuditExtra, prepareDeclinationSpec, recordCorrectionsBasis, recordSynthesisSeam, removalRepairedRow, repairUnnamedRemovals, restoredFindingsTable, rollbackCorrectivePass, snapshotFindingsForCorrections, stage, writerExclusionBlock });
-    verdict = correctionCycle.verdict;
+    const correctionCycle = await runCorrectionCycle({ ctx, run, P, verdict: runState.verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, asPartNotCompleted, correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, correctionsExtra, correctiveCycleSettledDecision, enforceCorrectionsReachFindings, must, planAuditExtra, prepareDeclinationSpec, recordCorrectionsBasis, recordSynthesisSeam, removalRepairedRow, repairUnnamedRemovals, restoredFindingsTable, rollbackCorrectivePass, snapshotFindingsForCorrections, stage, writerExclusionBlock });
+    runState.verdict = correctionCycle.verdict;
     const { correctiveEntryVerdict, correctiveCycleSettled, correctiveRecheckOk } = correctionCycle;
 
     // U1 — coverage-honesty floor (Appendix A tripwire #2). The reviewer verdict is empirically noisy
@@ -11165,7 +11165,7 @@ async function pipelineInner(job, opts = {}) {
     // NOTHING NEW IS BUILT HERE. `clampReasons`/`clampClauses`/`clampKinds` and the CLEAR→CONDITIONAL
     // clamp already run twenty lines below this point for the coverage floor; these declarations simply
     // move ABOVE the two checks so both can reach them. The conversion is a routing change.
-    let clampReasons = [];                                       // A2/D1 — persisted below
+    runState.clampReasons = [];                                       // A2/D1 — persisted below
     let clampClauses = [];
     let clampKinds = {};
     // — which clause texts came from a TERMINAL GUARD. The lede question: a guard's
@@ -11176,8 +11176,8 @@ async function pipelineInner(job, opts = {}) {
     // THE ACCEPTED ASSESSMENT: the result the review reached, before any guard or floor clamped it. It moves with the
     // review alone (the degenerate re-ask, a late review that is harsher), and a gap a guard judged again finds closed is
     // withdrawn against it (ruled 2026-10-19).
-    let assessed = verdict;
-    let restoredClear = false;   // a closed gap took this run back to CLEAR, so a later writer's judgment meets the floor again
+    runState.assessed = runState.verdict;
+    runState.restoredClear = false;   // a closed gap took this run back to CLEAR, so a later writer's judgment meets the floor again
     // THE REASONS THE RECORD'S OWN ACTIONS PUT IN THE LIST, by the floor's legal-actions arm, so the list can follow the
     // record when a repair in the delivery check rewrites, withdraws or adds a step (conditionsFollowingTheRecord).
     let recordConditionReasons = new Set();
@@ -11187,7 +11187,7 @@ async function pipelineInner(job, opts = {}) {
     let stepsRaisedTheResult = false;
     let stepsUnreadable = false;
     let stepsWithdrawnAt = null;
-    let correctionRejectedAt = null;
+    runState.correctionRejectedAt = null;
     const DROPPED_CONDITIONS_REASON = "a forward legal step this opinion named could not be recorded, so the conditions listed here are incomplete";
 
     /**
@@ -11208,21 +11208,21 @@ async function pipelineInner(job, opts = {}) {
     const deliverAndClamp = ({ event, defect, reason, clause, detail = {}, again = false, statedElsewhere = false }) => {
       // A GUARD JUDGED AGAIN in this run says nothing new when its judgment is unchanged, and otherwise replaces its
       // earlier clause of the same kind, so a record is never counted twice and no count stands from an earlier pass.
-      if (again && clampReasons.includes(String(reason ?? "").trim())) return;
+      if (again && runState.clampReasons.includes(String(reason ?? "").trim())) return;
       if (again) replaceClauses(String(defect ?? "").split(":")[0]);
       // — reason and clause are SEPARATE inputs now: the run record and the ops note keep
       // the token sentence; the clause list (which riskStatement renders into the client's Verdict row)
       // receives only the reader's sentence. terminalClampDecision refuses a fused clause by shape.
-      const d = terminalClampDecision({ verdict, defect, reason, clause, detail });
+      const d = terminalClampDecision({ verdict: runState.verdict, defect, reason, clause, detail });
       runLog(run.runDir, { event, ...d.record });
       note(d.reason);
       // A gap stated in another entry's sentence keeps its reason for the run record, and its clause is that sentence's.
       const stored = statedElsewhere ? null : d.clause;
-      if (!clampReasons.includes(d.reason)) { clampClauses.push(stored); clampReasons.push(d.reason); guardClauses.add(stored); }
+      if (!runState.clampReasons.includes(d.reason)) { clampClauses.push(stored); runState.clampReasons.push(d.reason); guardClauses.add(stored); }
       if (d.clamped) {
-        runLog(run.runDir, { event: "terminal-guard-clamp", defect: d.record.defect, from: verdict, to: d.verdict });
-        verdict = d.verdict;
-        writeRunStatus(ctx, signoffPatch(verdict));
+        runLog(run.runDir, { event: "terminal-guard-clamp", defect: d.record.defect, from: runState.verdict, to: d.verdict });
+        runState.verdict = d.verdict;
+        writeRunStatus(ctx, signoffPatch(runState.verdict));
       }
     };
 
@@ -11230,9 +11230,9 @@ async function pipelineInner(job, opts = {}) {
     // re-run, withdraws its earlier clause of the same kind before it states the current one, so a record is never
     // counted twice and a count never stands from an earlier judgment. Returns how many entries it withdrew.
     const replaceClauses = (token, { event = "guard-clause-replaced" } = {}) => {
-      const w = withdrawByToken(clampReasons, clampClauses, guardClauses, token);
+      const w = withdrawByToken(runState.clampReasons, clampClauses, guardClauses, token);
       if (!w.withdrawn) return 0;
-      clampReasons = w.reasons;
+      runState.clampReasons = w.reasons;
       clampClauses = w.clauses;
       runLog(run.runDir, { event, token, withdrawn: w.withdrawn });
       return w.withdrawn;
@@ -11244,13 +11244,13 @@ async function pipelineInner(job, opts = {}) {
     // A gap whose account is absent, unreadable or not computable is not closed: its clause stands.
     const withdrawClosedGap = (token) => {
       if (!replaceClauses(token, { event: "guard-gap-closed" })) return;
-      const now = verdictWithoutTheClosedGap({ verdict, assessed, reasons: clampReasons });
-      if (now === verdict) return;
-      runLog(run.runDir, { event: "verdict-recomputed-gap-closed", token, from: verdict, to: now });
-      note(`the ${token.split("_")[0]} gap this run named is closed, and nothing else conditions the result — ${verdict} goes back to ${now}, the result the review reached`);
-      verdict = now;
-      restoredClear = now === "CLEAR";
-      writeRunStatus(ctx, signoffPatch(verdict));
+      const now = verdictWithoutTheClosedGap({ verdict: runState.verdict, assessed: runState.assessed, reasons: runState.clampReasons });
+      if (now === runState.verdict) return;
+      runLog(run.runDir, { event: "verdict-recomputed-gap-closed", token, from: runState.verdict, to: now });
+      note(`the ${token.split("_")[0]} gap this run named is closed, and nothing else conditions the result — ${runState.verdict} goes back to ${now}, the result the review reached`);
+      runState.verdict = now;
+      runState.restoredClear = now === "CLEAR";
+      writeRunStatus(ctx, signoffPatch(runState.verdict));
       applyCoverageFloor();   // the floor any CLEAR meets: the opinion's forward actions, the coverage gaps
     };
 
@@ -11449,7 +11449,7 @@ async function pipelineInner(job, opts = {}) {
     // when the legalActions arm clamps CLEAR→CONDITIONAL first, the machinery gaps (coverage, frame,
     // screen-gate, senior, registerGap) must still be computed and APPENDED, or a run
     // with both a condition action and an unfinished register slice would disclose only the condition.
-    const entryVerdict = verdict;
+    const entryVerdict = runState.verdict;
     // spec 64 — the legalActions arm: the opinion's OWN typed condition actions (findings.json
     // actions[], CONDITION_KINDS) are a verdict input, independent of the machinery clamps below.
     // This is the CLEAR-despite-"consent before filing" fix (copper-causeway / ashen-gantry): the
@@ -11461,23 +11461,23 @@ async function pipelineInner(job, opts = {}) {
     // here is noted loudly and rides on (never-kill) — the predelivery verdict-actions-coherence
     // lint re-reads the same data independently and is the second net.
     try {
-      if (verdict === "CLEAR" || verdict === "CONDITIONAL") {
+      if (runState.verdict === "CLEAR" || runState.verdict === "CONDITIONAL") {
         const fdoc = existsSync(P.findings) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null;
         const { conditions, conditionClauses } = deriveActionConditions(fdoc?.actions, fdoc?.findings);
         if (conditions.length) {
-          const fresh = conditions.filter((c) => !clampReasons.includes(c));
+          const fresh = conditions.filter((c) => !runState.clampReasons.includes(c));
           clampKinds.legalActions = true;
           // pairwise push — clampClauses stays index-aligned with clampReasons across re-entries
           // (the degenerate re-ask re-runs this floor; dedup is by the reason TEXT for both).
           for (const c of fresh) clampClauses.push(conditionClauses[conditions.indexOf(c)] ?? c);
-          clampReasons.push(...fresh);
+          runState.clampReasons.push(...fresh);
           for (const c of fresh) recordConditionReasons.add(c);
-          if (verdict === "CLEAR") {
+          if (runState.verdict === "CLEAR") {
             runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
             note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
-            verdict = "CONDITIONAL";
+            runState.verdict = "CONDITIONAL";
             stepsRaisedTheResult = true;
-            writeRunStatus(ctx, signoffPatch(verdict));
+            writeRunStatus(ctx, signoffPatch(runState.verdict));
           } else if (fresh.length) {
             runLog(run.runDir, { event: "verdict-conditions-recorded", legalActions: fresh.length });
           }
@@ -11502,10 +11502,10 @@ async function pipelineInner(job, opts = {}) {
         // block both call it again — so the reason, the clause and the telemetry are guarded by the
         // reason's own presence. An event emitted on every re-entry would inflate any count keyed on
         // it, which is how a log line stops being a measurement.
-        if (droppedConditions.length && !clampReasons.includes(droppedReason)) {
+        if (droppedConditions.length && !runState.clampReasons.includes(droppedReason)) {
           clampKinds.actionsDropped = true;
           clampClauses.push(droppedReason);
-          clampReasons.push(droppedReason);
+          runState.clampReasons.push(droppedReason);
           recordConditionReasons.add(droppedReason);
           runLog(run.runDir, { event: "verdict-conditions-dropped", n: droppedConditions.length,
             ids: droppedConditions.map((q) => q.id), kinds: droppedConditions.map((q) => q.kind),
@@ -11514,10 +11514,10 @@ async function pipelineInner(job, opts = {}) {
         }
         // The CLAMP is outside that guard on purpose: a re-ask can flip a clamped verdict back to CLEAR,
         // and it must meet this floor again with the reason already recorded.
-        if (droppedConditions.length && verdict === "CLEAR") {
+        if (droppedConditions.length && runState.verdict === "CLEAR") {
           runLog(run.runDir, { event: "coverage-floor-clamp", cause: "dropped-actions", from: "CLEAR", to: "CONDITIONAL", actionsDropped: droppedConditions.length });
-          verdict = "CONDITIONAL";
-          writeRunStatus(ctx, signoffPatch(verdict));
+          runState.verdict = "CONDITIONAL";
+          writeRunStatus(ctx, signoffPatch(runState.verdict));
         }
       }
     } catch (e) { note(`legal-actions floor skipped (${String(e.message).slice(0, 80)}) — never-kill; the predelivery coherence lint is the second net`); }
@@ -11544,7 +11544,7 @@ async function pipelineInner(job, opts = {}) {
     // documented rollback and is NOT a failure; the defect is the silence, so this records and clamps
     // rather than throwing.
     try {
-      if (verdict === "CLEAR" || verdict === "CONDITIONAL") {
+      if (runState.verdict === "CLEAR" || runState.verdict === "CONDITIONAL") {
         let rec = null;
         try { rec = JSON.parse(readFileSync(P.commonLawPath, "utf8")); }
         catch { /* legacy run — the record predates, or this pass never reached the gather */ }
@@ -11554,9 +11554,9 @@ async function pipelineInner(job, opts = {}) {
         // RECORD ONCE. This floor is re-entered (the degenerate re-ask, the lint repair and the
         // post-consolidation delivery block all call it again), so the reason guards itself by presence
         // — an event emitted per re-entry stops being a measurement.
-        if (clReason && !clampReasons.includes(clReason)) {
+        if (clReason && !runState.clampReasons.includes(clReason)) {
           clampKinds.commonLawDowngrade = true;
-          clampClauses.push(clReason); clampReasons.push(clReason);   // machinery reasons ARE factual open-states — clause == reason
+          clampClauses.push(clReason); runState.clampReasons.push(clReason);   // machinery reasons ARE factual open-states — clause == reason
           runLog(run.runDir, { event: "common-law-downgrade-clamp", reason: down.reason,
             gridVariants: down.spec_inputs.gridVariants, profilePlatforms: down.spec_inputs.profilePlatforms });
           note(`deliver-conditional floor: ${clReason} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap.`);
@@ -11565,7 +11565,7 @@ async function pipelineInner(job, opts = {}) {
         // re-ask can flip a clamped verdict back to CLEAR, and it must meet this floor again with the
         // reason ALREADY recorded. Folding these two into one guard would let the second pass skip on
         // the dedup and deliver CLEAR — the precise defect this issue is about.
-        if (clReason && verdict === "CLEAR") { verdict = "CONDITIONAL"; writeRunStatus(ctx, signoffPatch(verdict)); }
+        if (clReason && runState.verdict === "CLEAR") { runState.verdict = "CONDITIONAL"; writeRunStatus(ctx, signoffPatch(runState.verdict)); }
       }
     } catch (e) {
       note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`);
@@ -11649,16 +11649,16 @@ async function pipelineInner(job, opts = {}) {
         }).filter(([, v]) => Boolean(v)).map(([k]) => k);
         runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length } : undefined });
         note(`deliver-conditional floor: ${reasons.join("; ")} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap (never withheld, never halted).`);
-        verdict = "CONDITIONAL";
+        runState.verdict = "CONDITIONAL";
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,
         // and this callable runs more than once (degenerate re-ask, lint repair, post-consolidation).
-        const freshMachinery = reasons.filter((r) => !clampReasons.includes(r));
+        const freshMachinery = reasons.filter((r) => !runState.clampReasons.includes(r));
         clampClauses.push(...freshMachinery.map((r) => (clauseOf.has(r) ? clauseOf.get(r) : r)));   // the clause is the reason less any engine token; null = the run record's alone
-        clampReasons.push(...freshMachinery);
+        runState.clampReasons.push(...freshMachinery);
         // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
         // report bound line and the client conditions row (merged — legalActions survives).
         clampKinds = { ...clampKinds, coverage: coverageInsufficient || undefined, frame: frameResidual || undefined, screenGate: screenGateGap || undefined, seniorRight: seniorGap || undefined, registerGap: registerGap || undefined };
-        writeRunStatus(ctx, signoffPatch(verdict));
+        writeRunStatus(ctx, signoffPatch(runState.verdict));
       }
     }
     };
@@ -11684,13 +11684,13 @@ async function pipelineInner(job, opts = {}) {
       // while the findings carry live condition actions is the exact incoherence the derivation
       // exists to prevent. Fail loud (StageFailure at the call sites) — never write the contradiction.
       const actionConditions = deriveActionConditions(actionsArr, findingsArr).conditions;
-      if (verdict === "CLEAR" && actionConditions.length)
+      if (runState.verdict === "CLEAR" && actionConditions.length)
         throw new Error(`verdict CLEAR with ${actionConditions.length} live condition action(s) — applyCoverageFloor must re-derive before the sidecar writes`);
       // — AND THE SAME INVARIANT OVER THE ONES THAT WERE DROPPED. This check read the SURVIVING
       // actions, so it was blind to a quarantined condition in exactly the way the floor above was —
       // two independent guards, one blind spot, because both consumed the same lossy parse. A guard
       // that fails the way the thing it guards fails is not a second net.
-      if (verdict === "CLEAR" && actionsDropped.length)
+      if (runState.verdict === "CLEAR" && actionsDropped.length)
         throw new Error(`verdict CLEAR with ${actionsDropped.length} DROPPED condition action(s) (${actionsDropped.map((q) => `${q.kind ?? "kind-unreadable"}#${q.id ?? "?"}`).join(", ")}) — a condition nobody can read is still a condition; applyCoverageFloor must clamp before the sidecar writes`);
       // — A BLOCKING VERDICT CARRIES ITS GROUNDS, OR THIS WRITE REFUSES.
       //
@@ -11723,7 +11723,7 @@ async function pipelineInner(job, opts = {}) {
       // through its own fix. On every non-BLOCKING verdict these are pass-throughs.
       let blockingGrounds = [];
       let reviewerCited = false;
-      if (verdict === "BLOCKING") {
+      if (runState.verdict === "BLOCKING") {
         let cited = [];
         try { cited = parseCorrections(readFileSync(P.seniorEyeReview, "utf8")).map((r) => r.text).filter(Boolean); }
         catch { /* unreadable or absent review — the fallback ground below is the honest record of that */ }
@@ -11731,12 +11731,12 @@ async function pipelineInner(job, opts = {}) {
         blockingGrounds = (reviewerCited
           ? cited.slice(0, 12).map((t) => t.slice(0, 300))
           : ["the reviewer refused to sign and cited no file-anchored defect — a degenerate review, recorded as the ground rather than left as an empty array"]
-        ).filter((g) => !clampReasons.includes(g));
+        ).filter((g) => !runState.clampReasons.includes(g));
       }
       // — the lede is the opinion's, by decision: orderClausesForLede (terminal-clamp.mjs)
       // sorts guard clauses after the opinion's condition clauses, reasons reordered in step. The
       // rationale lives on the function so the arms can DRIVE it rather than pin this call site's text.
-      const { clauses: orderedClauses, reasons: orderedReasons } = orderClausesForLede(clampClauses, clampReasons, guardClauses);
+      const { clauses: orderedClauses, reasons: orderedReasons } = orderClausesForLede(clampClauses, runState.clampReasons, guardClauses);
       const reasonsOut = blockingGrounds.length ? [...orderedReasons, ...blockingGrounds] : orderedReasons;
       // — AND EACH APPENDED GROUND CARRIES AN EXPLICIT NULL CLAUSE, which is what puts it in the
       // run record ALONE. The block above says "no client surface moves", and that was true of the
@@ -11749,16 +11749,16 @@ async function pipelineInner(job, opts = {}) {
       const clausesOut = blockingGrounds.length
         ? [...orderedClauses, ...blockingGrounds.map(() => null)]
         : orderedClauses;
-      const kindsOut = verdict === "BLOCKING" ? { ...clampKinds, reviewerCited } : clampKinds;
+      const kindsOut = runState.verdict === "BLOCKING" ? { ...clampKinds, reviewerCited } : clampKinds;
       // The invariant itself, stated over the value that is WRITTEN rather than over the branch that fills
       // it — a guard that only holds while the code above is remembered is not a guard. Unreachable today
       // by construction, which is the intended shape: a BLOCKING with an empty reasons array is
       // structurally impossible, and any future path that reintroduces one dies here instead of shipping.
-      if (verdict === "BLOCKING" && !reasonsOut.length)
+      if (runState.verdict === "BLOCKING" && !reasonsOut.length)
         throw new Error("verdict BLOCKING with no reasons — a blocking decision without its grounds; verdict.json is the artifact whose whole purpose is carrying them");
       // doc 50 — a v4 record derives off the run's FROZEN framework (band words); deriveDisplayVerdict
       // fail-louds if banded findings arrive with no manifest (never silently badge a rated matter LOW).
-      const derived = deriveDisplayVerdict({ verdict, reasons: reasonsOut, kinds: kindsOut, findings: findingsArr,
+      const derived = deriveDisplayVerdict({ verdict: runState.verdict, reasons: reasonsOut, kinds: kindsOut, findings: findingsArr,
         manifest: sv >= 4 ? ctx.framework : null });
       // spec 64 — THE one risk statement: composed ONCE here (band word + stance clause from the same
       // sidecar fields), consumed verbatim by every surface (index / status / report hero / email /
@@ -11766,11 +11766,11 @@ async function pipelineInner(job, opts = {}) {
       // CONDITIONAL statement reads "<Tier> — conditional on: <factual open-state> (and N more)." —
       // clampClauses carries the fact-voice clauses; the structured `stance` field is what every
       // consumer keys on (never the statement's wording — the magic-string coupling is retired).
-      const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: clausesOut,
+      const statement = riskStatement({ tier: derived.tier, verdict: runState.verdict, reasons: reasonsOut, clauses: clausesOut,
         basis: isRegisterOnly(ctx.searchPolicy) ? "register-only" : null });
-      return { derived, statement, doc: { ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,
+      return { derived, statement, doc: { ts: new Date().toISOString(), verdict: runState.verdict, reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,
         tier: derived.tier, badge: derived.badge, gaugeIndex: derived.gaugeIndex, maxComposite: derived.maxComposite,
-        band: derived.band ?? null, statement, stance: verdictStance(verdict) } };
+        band: derived.band ?? null, statement, stance: verdictStance(runState.verdict) } };
     };
     // The label, composed above and written here. Composing is apart so the delivery check can show the stages it re-runs
     // the label it could not yet save.
@@ -11792,27 +11792,27 @@ async function pipelineInner(job, opts = {}) {
     // fails is tried again. One that still fails is owed: the stages the check re-runs are shown the label as composed,
     // and the save is made once more before anything is published, so no surface is built from the label settled
     // before the clamp. Returns whether it is saved.
-    let labelOwed = null;
-    let rankingBeforeRepeat = null;   // where each record stood before the delivery check repeated placement
+    runState.labelOwed = null;
+    runState.rankingBeforeRepeat = null;   // where each record stood before the delivery check repeated placement
     const saveTheLabel = (why) => {
       const saved = saveWithRetries(() => writeVerdictSidecar());
       if (saved.ok) {
         if (saved.attempts > 1) runLog(run.runDir, { event: "verdict-write-retried", why, attempts: saved.attempts });
-        try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
+        try { runState.displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
         return true;
       }
-      labelOwed = labelOwed ?? why;
+      runState.labelOwed = runState.labelOwed ?? why;
       runLog(run.runDir, { event: "verdict-write-deferred", why, attempts: saved.attempts, fail: String(saved.error?.message ?? saved.error).slice(0, 160) });
       note(`delivery: the label could not be saved ${why} (${String(saved.error?.message ?? saved.error).slice(0, 100)}) — it is saved again before the report is published`);
-      try { displayVerdict = composeVerdictSidecar().doc; } catch { /* composed again when it is saved */ }
+      try { runState.displayVerdict = composeVerdictSidecar().doc; } catch { /* composed again when it is saved */ }
       return false;
     };
     // THE LABEL OWED IS SAVED before anything is published from it, and the report's own label follows it. Only a run
     // directory that refuses every save of it ends the run, and then nothing the run writes can be published.
     const saveTheOwedLabel = () => {
-      if (!labelOwed) return;
-      const owed = labelOwed;
-      labelOwed = null;
+      if (!runState.labelOwed) return;
+      const owed = runState.labelOwed;
+      runState.labelOwed = null;
       if (!saveTheLabel(`${owed}, saved again before delivery`))
         throw new StageFailure("verdict", `the run directory refused every save of the result's label (${owed}) — no surface can be published with it`);
       applyVerdictFrontMatter();
@@ -11824,7 +11824,7 @@ async function pipelineInner(job, opts = {}) {
     // states no step of its own, so only a list already stating the record's steps follows it. The caller saves the
     // label. Returns whether the list, its kinds or the result changed.
     const followTheRecordsActions = (why) => {
-      if (verdict === "BLOCKING" && !recordConditionReasons.size) return false;
+      if (runState.verdict === "BLOCKING" && !recordConditionReasons.size) return false;
       let raw = null, fdoc = null;
       try { if (existsSync(P.findings)) { raw = readFileSync(P.findings, "utf8"); fdoc = parseFindingsJsonLenient(raw); } }
       catch { fdoc = null; }
@@ -11833,10 +11833,10 @@ async function pipelineInner(job, opts = {}) {
       const now = conditions.map((c) => ({ reason: c, clause: conditionClauses[conditions.indexOf(c)] ?? c }));
       const dropped = quarantinedConditionRows(fdoc.actionsQuarantined).length > 0;
       if (dropped && recordConditionReasons.has(DROPPED_CONDITIONS_REASON)) now.push({ reason: DROPPED_CONDITIONS_REASON, clause: DROPPED_CONDITIONS_REASON });
-      const state = () => JSON.stringify([clampReasons, clampClauses, Boolean(clampKinds.legalActions), Boolean(clampKinds.actionsDropped)]);
-      const stood = state(), was = verdict;
-      const f = conditionsFollowingTheRecord({ reasons: clampReasons, clauses: clampClauses, fromRecord: recordConditionReasons, now });
-      clampReasons = f.reasons;
+      const state = () => JSON.stringify([runState.clampReasons, clampClauses, Boolean(clampKinds.legalActions), Boolean(clampKinds.actionsDropped)]);
+      const stood = state(), was = runState.verdict;
+      const f = conditionsFollowingTheRecord({ reasons: runState.clampReasons, clauses: clampClauses, fromRecord: recordConditionReasons, now });
+      runState.clampReasons = f.reasons;
       clampClauses = f.clauses;
       recordConditionReasons = f.held;
       if (!conditions.length) delete clampKinds.legalActions;
@@ -11846,12 +11846,12 @@ async function pipelineInner(job, opts = {}) {
       if (f.held.size || conditions.length || dropped) stepsWithdrawnAt = null;
       else if (f.withdrawn.length) stepsWithdrawnAt = actionsRegisterListed(raw) ? new Date().toISOString() : null;
       // The floor runs again only where the repaired steps reach it, as the coherence repair runs it.
-      if (state() !== stood || (verdict === "CLEAR" && (conditions.length || dropped))) applyCoverageFloor();
+      if (state() !== stood || (runState.verdict === "CLEAR" && (conditions.length || dropped))) applyCoverageFloor();
       restoreTheReviewsClear();
-      if (state() === stood && verdict === was) return false;
+      if (state() === stood && runState.verdict === was) return false;
       runLog(run.runDir, { event: "verdict-conditions-followed", why, withdrawn: f.withdrawn.length, added: f.added.length,
-        restated: f.restated.length, conditions: recordConditionReasons.size, from: was, to: verdict });
-      note(`the conditions follow the record ${why} (${f.withdrawn.length} withdrawn, ${f.added.length} added, ${f.restated.length} restated${verdict === was ? "" : `; ${was} → ${verdict}`})`);
+        restated: f.restated.length, conditions: recordConditionReasons.size, from: was, to: runState.verdict });
+      note(`the conditions follow the record ${why} (${f.withdrawn.length} withdrawn, ${f.added.length} added, ${f.restated.length} restated${runState.verdict === was ? "" : `; ${was} → ${runState.verdict}`})`);
       return true;
     };
     // A CORRECTION THAT WITHDREW EVERY STEP THAT ALONE MADE THE RESULT CONDITIONAL gives the review's CLEAR back, once the
@@ -11860,18 +11860,18 @@ async function pipelineInner(job, opts = {}) {
     const restoreTheReviewsClear = () => {
       let review = null;
       try { review = JSON.parse(readFileSync(postRepairRecordPath(run.runDir), "utf8")); } catch { review = null; }
-      const now = verdictWhenTheStepsAreWithdrawn({ verdict, assessed, reasons: clampReasons, raisedBySteps: stepsRaisedTheResult,
+      const now = verdictWhenTheStepsAreWithdrawn({ verdict: runState.verdict, assessed: runState.assessed, reasons: runState.clampReasons, raisedBySteps: stepsRaisedTheResult,
         stepsUnreadable, withdrawnAt: stepsWithdrawnAt, reviewReadAt: review?.status === "read" ? review.ts : null,
-        reviewUnread: review?.status === "unread", correctionRejectedAt,
+        reviewUnread: review?.status === "unread", correctionRejectedAt: runState.correctionRejectedAt,
         // The correction of the first review owed a recheck the cycle did not get accepted: the assessment is not verified.
         recheckUnaccepted: (correctiveEntryVerdict === "CONDITIONAL" || correctiveEntryVerdict === "BLOCKING") && !correctiveCycleSettled && !correctiveRecheckOk });
-      if (now === verdict) return false;
-      runLog(run.runDir, { event: "verdict-recomputed-steps-withdrawn", from: verdict, to: now, withdrawnAt: stepsWithdrawnAt, reviewReadAt: review?.ts ?? null });
-      note(`every forward legal step that made the result conditional was withdrawn, the review of that change was read, and nothing else conditions the result — ${verdict} goes back to ${now}, the result the review reached`);
-      verdict = now;
-      restoredClear = now === "CLEAR";
+      if (now === runState.verdict) return false;
+      runLog(run.runDir, { event: "verdict-recomputed-steps-withdrawn", from: runState.verdict, to: now, withdrawnAt: stepsWithdrawnAt, reviewReadAt: review?.ts ?? null });
+      note(`every forward legal step that made the result conditional was withdrawn, the review of that change was read, and nothing else conditions the result — ${runState.verdict} goes back to ${now}, the result the review reached`);
+      runState.verdict = now;
+      runState.restoredClear = now === "CLEAR";
       stepsRaisedTheResult = false;
-      writeRunStatus(ctx, signoffPatch(verdict));
+      writeRunStatus(ctx, signoffPatch(runState.verdict));
       applyCoverageFloor();   // the floor any CLEAR meets
       return true;
     };
@@ -11894,7 +11894,7 @@ async function pipelineInner(job, opts = {}) {
     // The corrective ladder above is still the fix arm and still runs first. What changed is what happens
     // when it is exhausted: the reviewing lawyer gets the best draft the run could produce with its weak
     // spots named, instead of nothing.
-    if (verdict === "BLOCKING") {
+    if (runState.verdict === "BLOCKING") {
       // Repair-first A5 (2026-07-05): the reviewer verdict is documented noisy (the U1 comment above —
       // "flips on byte-identical input"), so before the terminal the gate refuses a DEGENERATE artifact:
       // a carried BLOCKING whose own file no longer says BLOCKING (the copper-spire shape — a failed
@@ -11938,24 +11938,24 @@ async function pipelineInner(job, opts = {}) {
         });
         reviewLedger.record("reviewer-degenerate-reask", run.codename, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: degenerateReaskMax });
         if (rr.ok) {
-          verdict = parseVerdict(readReview()) ?? "BLOCKING";
-          assessed = verdict;   // the re-asked review is the assessment now
-          runLog(run.runDir, { event: "verdict-3", verdict, trigger: "degenerate-reask" });
-          writeRunStatus(ctx, signoffPatch(verdict));
+          runState.verdict = parseVerdict(readReview()) ?? "BLOCKING";
+          runState.assessed = runState.verdict;   // the re-asked review is the assessment now
+          runLog(run.runDir, { event: "verdict-3", verdict: runState.verdict, trigger: "degenerate-reask" });
+          writeRunStatus(ctx, signoffPatch(runState.verdict));
           applyCoverageFloor();   // a re-asked CLEAR passes the same deliver-conditional floor
           // After the floor, which judges the verdict as it entered: its machinery arm records its gaps only on a CLEAR.
-          const standing = verdictWithConditionsStanding({ verdict, reasons: clampReasons });
-          if (standing !== verdict) {
-            runLog(run.runDir, { event: "terminal-guard-clamp", defect: `reasked_clear_over_standing_condition:${clampReasons.length}`, from: verdict, to: standing });
-            note(`verdict: the review asked again says ${verdict}, and ${clampReasons.length} condition(s) a guard recorded still stand — ${verdict} becomes ${standing} on them`);
-            verdict = standing;
-            writeRunStatus(ctx, signoffPatch(verdict));
+          const standing = verdictWithConditionsStanding({ verdict: runState.verdict, reasons: runState.clampReasons });
+          if (standing !== runState.verdict) {
+            runLog(run.runDir, { event: "terminal-guard-clamp", defect: `reasked_clear_over_standing_condition:${runState.clampReasons.length}`, from: runState.verdict, to: standing });
+            note(`verdict: the review asked again says ${runState.verdict}, and ${runState.clampReasons.length} condition(s) a guard recorded still stand — ${runState.verdict} becomes ${standing} on them`);
+            runState.verdict = standing;
+            writeRunStatus(ctx, signoffPatch(runState.verdict));
           }
           try { writeVerdictSidecar(); }
           catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
         }
       }
-      if (verdict === "BLOCKING") {
+      if (runState.verdict === "BLOCKING") {
         // ── T3a — THE RUN DELIVERS. Ruling 2026-08-26, verbatim: "Deliver always, with open
         // points printed. The refusal on a blocking review goes." ──────────────────────────────────
         //
@@ -12079,8 +12079,8 @@ async function pipelineInner(job, opts = {}) {
     // wp50/wi2 — the overview PROSE must speak the derived tier (VENZY: caption said "High risk" while
     // every code surface said VERY HIGH). Thread the just-refreshed sidecar into the stage prompt; the
     // deterministic backstop is predelivery-lint's overallTierChecks.
-    let displayVerdict = null;
-    try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* legacy — prompt line omitted */ }
+    runState.displayVerdict = null;
+    try { runState.displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* legacy — prompt line omitted */ }
     // ── CONVERSION 4 — THE DRIVER'S OWN FRONT-MATTER RECORD ──────────────────────────────────────
     //
     // Nine of report-overview.md's ten front-matter keys are values the driver already holds and used to
@@ -12100,7 +12100,7 @@ async function pipelineInner(job, opts = {}) {
     // own authority over them.
     try {
       ensureDriverDir(run.runDir);
-      writeFileSync(join(run.runDir, REPORT_IDENTITY_FILE), JSON.stringify(reportIdentityRecord(job, ctx, run.runDir, displayVerdict), null, 2) + "\n");
+      writeFileSync(join(run.runDir, REPORT_IDENTITY_FILE), JSON.stringify(reportIdentityRecord(job, ctx, run.runDir, runState.displayVerdict), null, 2) + "\n");
     } catch (e) { note(`report identity write failed (non-fatal — the shell renders the keys it has): ${e.message}`); }
     // THE REPORT OVERVIEW, WHERE IT COULD NOT BE COMPLETED (parts-not-completed.mjs). Its recovery was spent, so the report
     // delivers its rating and its cards without the overview's conclusion, and the workbook's shipped "Summary" row says
@@ -12109,11 +12109,11 @@ async function pipelineInner(job, opts = {}) {
     const overviewOpen = readPartNotCompleted(run.runDir, "overview");
     if (overviewOpen) {
       writeFileSync(P.reportOverview, renderReportOverview({ overall_caption: null, handling_note: null, actions: [], methodology: null },
-        reportIdentityRecord(job, ctx, run.runDir, displayVerdict)));
+        reportIdentityRecord(job, ctx, run.runDir, runState.displayVerdict)));
       runLog(run.runDir, { event: "overview-not-completed-delivery", stage: overviewOpen.stage ?? null });
     }
     const rov = overviewOpen ? null
-      : await asPartNotCompleted("overview", async () => must(await stage("report-overview", { ...ctx, displayVerdict }, {}), "report-overview"));   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
+      : await asPartNotCompleted("overview", async () => must(await stage("report-overview", { ...ctx, displayVerdict: runState.displayVerdict }, {}), "report-overview"));   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
     const findingsRead = readFindingsForReport(P);
     const findingsForCards = findingsRead.findings;
     //: a rejected findings.json is a defect, not an emptiness. Say so HERE, where the file was read,
@@ -12328,9 +12328,9 @@ async function pipelineInner(job, opts = {}) {
       runLog(run.runDir, { event: "core-artifact-restored", where, from: restored.from, duty: restored.duty, ...(lacks.length ? { correctionsLacked: lacks.length } : {}) });
       note(`core-artifact (${where}): ${failures.join("; ")} — the record is restored from the ${restored.from}, and the run delivers from it`);
       if (restored.duty === "relaxed") {
-        const was = verdict, stood = JSON.stringify(clampReasons);
+        const was = runState.verdict, stood = JSON.stringify(runState.clampReasons);
         clampOnTheWritersDuty({ again: true });
-        if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after the record was restored")) applyVerdictFrontMatter();
+        if ((JSON.stringify(runState.clampReasons) !== stood || runState.verdict !== was) && saveTheLabel("after the record was restored")) applyVerdictFrontMatter();
       }
       return restored;
     };
@@ -13050,13 +13050,13 @@ async function pipelineInner(job, opts = {}) {
       // RE-DERIVE (applyCoverageFloor + writeVerdictSidecar) and re-lint — never an LLM redo, and never
       // an edit to the actions. One attempt; a residual failure ships as the structural banner flag.
       if (lint.failures.some((f) => f.id === "verdict-actions-coherence" || f.id === "verdict-actions-stale" || f.id === "statement-tier" || f.id === "statement-unconditional" || f.id === "statement-stance" || f.id === "statement-conditional-form")) {
-        const beforeVerdict = verdict;
+        const beforeVerdict = runState.verdict;
         followTheRecordsActions("in the delivery check's re-derive");   // a stale step goes, as a missing one arrives
         applyCoverageFloor();
         try { writeVerdictSidecar(); }
         catch (e) { throw new StageFailure("verdict", `verdict sidecar re-derive failed (spec-64 coherence repair): ${String(e.message).slice(0, 120)}`); }
-        if (verdict !== beforeVerdict) writeRunStatus(ctx, signoffPatch(verdict));
-        runLog(run.runDir, { event: "verdict-rederive-repair", from: beforeVerdict, to: verdict });
+        if (runState.verdict !== beforeVerdict) writeRunStatus(ctx, signoffPatch(runState.verdict));
+        runLog(run.runDir, { event: "verdict-rederive-repair", from: beforeVerdict, to: runState.verdict });
         lint = lintNow();
       }
       const initialFailures = lint.failures;
@@ -13374,18 +13374,18 @@ async function pipelineInner(job, opts = {}) {
         // never adopted. Returns what it found, so the review after a repair can keep the review whose verdict
         // the run carries in senior-eye-review.md.
         const adoptLateReview = (reviewNow, stageLabel) => {
-          const { hardened, softened: reviewSays } = lateReviewAgainst(verdict, reviewNow);
+          const { hardened, softened: reviewSays } = lateReviewAgainst(runState.verdict, reviewNow);
           // A late review harsher than the assessment is a ground of its own: a gap closed later never lifts it.
           const says = parseVerdict(reviewNow);
-          if ((VERDICT_RANK[says] ?? -1) > (VERDICT_RANK[assessed] ?? -1)) assessed = says;
+          if ((VERDICT_RANK[says] ?? -1) > (VERDICT_RANK[runState.assessed] ?? -1)) runState.assessed = says;
           // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
           // tightens, so a re-review that comes back softer leaves the settled verdict in force while
           // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
           // design; recording nothing was the defect: a reader of the run found two answers and no
           // line saying which one governs (measured in testing, 2026-09-23: BLOCKING recorded, CONDITIONAL on disk).
           if (reviewSays) {
-            runLog(run.runDir, { event: "verdict-softening-not-adopted", was: verdict, reviewSays, stage: stageLabel });
-            note(`stale-repair: the reviewer now returns ${reviewSays}; the run keeps ${verdict}, because a late re-review may only harden the verdict — senior-eye-review.md now disagrees with verdict.json, and verdict.json governs`);
+            runLog(run.runDir, { event: "verdict-softening-not-adopted", was: runState.verdict, reviewSays, stage: stageLabel });
+            note(`stale-repair: the reviewer now returns ${reviewSays}; the run keeps ${runState.verdict}, because a late re-review may only harden the verdict — senior-eye-review.md now disagrees with verdict.json, and verdict.json governs`);
           }
           if (hardened) {
             // ── T3a — THE LATE VERDICT IS ADOPTED, NOT THROWN, AND ADOPTION IS THE WHOLE JOB ──
@@ -13416,10 +13416,10 @@ async function pipelineInner(job, opts = {}) {
             //
             // `verdictHardenedTo` still ratchets ONE WAY, so a review that SOFTENED during the
             // repair still cannot lift a clamp. This branch only ever tightens.
-            runLog(run.runDir, { event: "verdict-hardened-by-repair", was: verdict, now: hardened, stage: stageLabel, adopted: true });
+            runLog(run.runDir, { event: "verdict-hardened-by-repair", was: runState.verdict, now: hardened, stage: stageLabel, adopted: true });
             note(`stale-repair: the reviewer returned ${hardened} — adopting it as the run's verdict (the one settled earlier was decided against a review this repair has since rewritten) and rebuilding the label from it`);
-            verdict = hardened;
-            writeRunStatus(ctx, signoffPatch(verdict));
+            runState.verdict = hardened;
+            writeRunStatus(ctx, signoffPatch(runState.verdict));
             try { writeVerdictSidecar(); }
             catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
             reassemble = true;
@@ -13459,7 +13459,7 @@ async function pipelineInner(job, opts = {}) {
         for (const s2 of staleStages) {
           processedLabels.add(s2.label);
           if (s2.label === "report-overview") {
-            const r = await stage("report-overview", { ...ctx, displayVerdict }, { force: true, trigger: "stale-repair" });
+            const r = await stage("report-overview", { ...ctx, displayVerdict: runState.displayVerdict }, { force: true, trigger: "stale-repair" });
             if (r.ok) { staleRepaired.push(s2.label); reassemble = true; }
             else note(`stale-repair: report-overview re-emit failed (${r.fail}) — stays stale, the guard below decides`);
           } else if (s2.label === "narrative-refutation"
@@ -13485,7 +13485,7 @@ async function pipelineInner(job, opts = {}) {
               staleRepaired.push(s2.label);
               continue;
             }
-            const rerun = () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
+            const rerun = () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict: runState.displayVerdict });
             // THE STATE THIS REVIEW READS IS KEPT WHOLE before it runs, so a correction that fails after it has a trusted
             // state to come back to even where the record itself is lost meanwhile.
             retainStateBeforeReview(run.runDir, P);
@@ -13511,7 +13511,7 @@ async function pipelineInner(job, opts = {}) {
             if (review.rec.flags.length) {
               const pass = await runPostRepairCorrection(ctx, P, run, { rec: review.rec, items: review.items, points: review.points,
                 grounds: Boolean(hardened), whole: review.base?.whole === true, synthesisRef: { key: synthesisKey, model: synthesisModel, thinking: synthesisThinking } });
-              if (!pass.ok) correctionRejectedAt = new Date().toISOString();   // a rejected correction gives no result back
+              if (!pass.ok) runState.correctionRejectedAt = new Date().toISOString();   // a rejected correction gives no result back
               // NOTHING REVIEWS THE CORRECTION: the reviewer's stamp takes what it changed as accounted for, and so
               // does the first cycle's receipt, so a resume re-fires neither.
               settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
@@ -13519,7 +13519,7 @@ async function pipelineInner(job, opts = {}) {
                 const at = driverDir(run.runDir, "corrective-cycle.json");
                 let receipt = null;
                 try { receipt = JSON.parse(readFileSync(at, "utf8")); } catch { receipt = null; }
-                atomicWrite(at, JSON.stringify({ ...(receipt ?? { entryVerdict: verdict }), ts: new Date().toISOString(), verdict,
+                atomicWrite(at, JSON.stringify({ ...(receipt ?? { entryVerdict: runState.verdict }), ts: new Date().toISOString(), verdict: runState.verdict,
                   shas: { review: shaOf(P.seniorEyeReview), narrative: shaOf(P.narrative) }, settledBy: "post-repair-cycle" }, null, 2) + "\n");
               } catch (e) { note(`[post-repair] the cycle receipt could not be rewritten (${String(e?.message ?? e).slice(0, 100)}) — a resume may re-fire the first correction`); }
               // ITS CONSUMERS REBUILD FROM WHAT IT WROTE: re-read the findings, and queue the overview and any card it
@@ -13550,11 +13550,11 @@ async function pipelineInner(job, opts = {}) {
               // approved clause names what it leaves unaccounted, and a gap it closed withdraws its clause, as after the
               // writer's re-run in this loop; the label is saved again before anything is published.
               {
-                const was = verdict, stood = JSON.stringify(clampReasons);
+                const was = runState.verdict, stood = JSON.stringify(runState.clampReasons);
                 const judged = clampOnTheWritersDuty({ again: true });
-                if (restoredClear && verdict === "CLEAR") applyCoverageFloor();
-                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the correction after a post-repair review");
-                runLog(run.runDir, { event: "writer-duty-after-correction", was, now: verdict, rolledBack: Boolean(pass.rollback),
+                if (runState.restoredClear && runState.verdict === "CLEAR") applyCoverageFloor();
+                if (JSON.stringify(runState.clampReasons) !== stood || runState.verdict !== was) saveTheLabel("after the correction after a post-repair review");
+                runLog(run.runDir, { event: "writer-duty-after-correction", was, now: runState.verdict, rolledBack: Boolean(pass.rollback),
                   owed: judged.duty?.computable === true ? judged.duty.totals?.owed ?? null : null,
                   unaccounted: judged.duty?.computable === true ? judged.duty.unaccounted.length : null, recall: judged.recall });
               }
@@ -13567,8 +13567,8 @@ async function pipelineInner(job, opts = {}) {
             // repaired artifact rather than from the one that moved.
             const reviewSeq0 = s2.label === "narrative-refutation" ? nextRefutationSeq(run.runDir) : null;
             const staleBefore = s2.label === "placement-inquiry" || chain.has(s2.label) ? staleNow() : null;   // what was stale before this one
-            if (s2.label === "placement-inquiry" && !rankingBeforeRepeat) rankingBeforeRepeat = rankingNow(P);   // as the writer last read it
-            const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
+            if (s2.label === "placement-inquiry" && !runState.rankingBeforeRepeat) runState.rankingBeforeRepeat = rankingNow(P);   // as the writer last read it
+            const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict: runState.displayVerdict });
             // NOT A PASS: a reviewer that ends with no accepted call reads ok whenever the earlier review's file
             // stands, and its stamp is refreshed over the change it never read. The record says so, the run delivers,
             // and a resume for any other cause reviews the change whole.
@@ -13584,12 +13584,12 @@ async function pipelineInner(job, opts = {}) {
               // stages after it rebuild from it in this loop. The same rule is applied to that account, through the
               // same clamp, so the delivered verdict, its floor and its record describe one pass. It only tightens.
               if (s2.label === "placement-inquiry") {
-                const was = verdict, stood = JSON.stringify(clampReasons);
+                const was = runState.verdict, stood = JSON.stringify(runState.clampReasons);
                 clampOnTheFloorDuty({ again: true });
                 clampOnTheWritersDuty({ again: true });   // the recall gate leaves out the floor that now stands
                 // A save that fails here is tried again, then owed, never the end of the run: see saveTheLabel.
-                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the repeated placement pass");
-                runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
+                if (JSON.stringify(runState.clampReasons) !== stood || runState.verdict !== was) saveTheLabel("after the repeated placement pass");
+                runLog(run.runDir, { event: "floor-duty-after-repair", was, now: runState.verdict });
               }
               // A whole review that is read reviews the change an earlier unread one left: its record says so, and
               // its points stand under the late-review rule below, as any whole review's do. (The arm above has
@@ -13628,13 +13628,13 @@ async function pipelineInner(job, opts = {}) {
               // The label is saved again as the floor's is above, through saveTheLabel.
               if (s2.label === "synthesis") keepRankingReadByWriter(P);   // where each record stood as this writer read it
               if (s2.label === "synthesis" && chain.has(s2.label)) {
-                const was = verdict, stood = JSON.stringify(clampReasons);
+                const was = runState.verdict, stood = JSON.stringify(runState.clampReasons);
                 const judged = clampOnTheWritersDuty({ again: true });
                 // A CLEAR a closed gap gave back meets the floor again on what this writer now says: its forward actions
                 // are a ground of their own.
-                if (restoredClear && verdict === "CLEAR") applyCoverageFloor();
-                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the writer's re-run");
-                runLog(run.runDir, { event: "writer-duty-after-repair", was, now: verdict,
+                if (runState.restoredClear && runState.verdict === "CLEAR") applyCoverageFloor();
+                if (JSON.stringify(runState.clampReasons) !== stood || runState.verdict !== was) saveTheLabel("after the writer's re-run");
+                runLog(run.runDir, { event: "writer-duty-after-repair", was, now: runState.verdict,
                   owed: judged.duty?.computable === true ? judged.duty.totals?.owed ?? null : null,
                   unaccounted: judged.duty?.computable === true ? judged.duty.unaccounted.length : null, recall: judged.recall });
               }
@@ -13700,21 +13700,21 @@ async function pipelineInner(job, opts = {}) {
         const unassessed = repairFailed.has("placement-inquiry") ? lateRecordIds(P) : [];
         if (unassessed.length && staleStages.some((x) => x.label === "placement-inquiry")
           && staleStages.every((x) => x.label === "placement-inquiry" || chain.has(x.label))) {
-          const was = verdict, stood = JSON.stringify(clampReasons);
+          const was = runState.verdict, stood = JSON.stringify(runState.clampReasons);
           clampOnTheFloorDuty({ again: true });
           const judged = clampOnTheWritersDuty({ again: true });
-          if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after late records went unassessed")) applyVerdictFrontMatter();
-          runLog(run.runDir, { event: "late-evidence-unassessed-delivered", was, now: verdict, records: unassessed.length, ids: unassessed.slice(0, 20),
+          if ((JSON.stringify(runState.clampReasons) !== stood || runState.verdict !== was) && saveTheLabel("after late records went unassessed")) applyVerdictFrontMatter();
+          runLog(run.runDir, { event: "late-evidence-unassessed-delivered", was, now: runState.verdict, records: unassessed.length, ids: unassessed.slice(0, 20),
             stated: judged.recall, latePass: ctx.latePassFailed ?? null, repeat: repairFailed.get("placement-inquiry") });
           note(`late evidence: ${unassessed.length} record(s) reached the band after placement's last pass, and neither its pass for them nor the delivery check's repeat completed — the run delivers what the last accepted passes built, and the approved clauses state what is open`);
           staleStages = staleStages.filter((x) => x.label !== "placement-inquiry");
         }
         if (staleStages.length && staleStages.every((x) => chain.has(x.label))) {
-          const was = verdict, named = clampReasons.length, stood = JSON.stringify(clampReasons);
+          const was = runState.verdict, named = runState.clampReasons.length, stood = JSON.stringify(runState.clampReasons);
           clampOnTheWritersDuty({ again: true });
           // THE RECORDS RE-RANKED SINCE THE WRITER LAST WROTE, in the owner's words of 2026-10-19. The report states the
           // ranking the writer last read; the audit trail, written again after the repeat, states the one that stands.
-          const readByWriter = rankingFromJson(safeReadJson(rankingReadByWriterPath(P))) ?? rankingBeforeRepeat;
+          const readByWriter = rankingFromJson(safeReadJson(rankingReadByWriterPath(P))) ?? runState.rankingBeforeRepeat;
           if (readByWriter && staleStages.some((x) => x.label === "synthesis")) {
             const now = rankingNow(P), n = recordsReRanked(readByWriter, now);
             const m = Math.max(rankedRecords(readByWriter), rankedRecords(now), n);
@@ -13726,8 +13726,8 @@ async function pipelineInner(job, opts = {}) {
               clause: clauseForDefect("ranking_changed_unread", n, m),
             });
           }
-          if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
-          runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: verdict, named: clampReasons.length - named,
+          if ((JSON.stringify(runState.clampReasons) !== stood || runState.verdict !== was) && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
+          runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: runState.verdict, named: runState.clampReasons.length - named,
             stages: staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
           note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
           staleStages = [];
@@ -14069,7 +14069,7 @@ async function pipelineInner(job, opts = {}) {
     // about the document.
     // B — publish: DETERMINISTIC CODE → cannot hang. The durable deliverable: the report ships even if the audit
     // failed above (publishReport renders report.html regardless; the xlsx is best-effort inside it).
-    return await publishAndDeliver(verdict);
+    return await publishAndDeliver(runState.verdict);
   } catch (e) {
     // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
     // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
