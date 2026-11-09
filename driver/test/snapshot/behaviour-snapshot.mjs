@@ -254,9 +254,9 @@ export const SCENARIO_GAPS = ["real-shaped data: every scenario runs on the mock
 
 // Neutral area labels. Which session or person holds an area is kept outside the repository.
 const OWNERS = [
-  [/^driver\/(pipeline|stages)/, "pipeline"],
+  [/^driver\/(pipeline|stages|steps\/)/, "pipeline"],
   [/^driver\/(skills\/|engine\/|gateway|repair-composers)|^providers\//, "engine and instructions"],
-  [/^driver\/publish\/|^shared\//, "record and report"],
+  [/^driver\/(publish\/|run-record|progress)|^shared\//, "record and report"],
   [/^(\.github\/|scripts\/|package(-lock)?\.json$|\.changeset\/|bin\/)/, "release"],
 ];
 export const owner = (file) => OWNERS.find(([re]) => re.test(file))?.[1] ?? "unassigned";
