@@ -28,7 +28,7 @@ import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   // a 
 import { deferralCoverageRow } from "./deferral-row.mjs";
 import { PUBLISH_INPUTS, readStore } from "./publish/publish-inputs.mjs";
 import { readPartNotCompleted } from "./parts-not-completed.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 // The name each part is given: a label the report or the workbook already prints. Never a new phrase.
 export const PART_NAMES = {
@@ -197,7 +197,7 @@ function register(runDir, log) {
     (searches.disclosed_axes ?? []).length ? `the pass on ${searches.disclosed_axes.join(", ")} timed out, read as it stands with its clean claims open` : "",
   ].filter(Boolean).join("; ") + `: ${searches.reason ?? "no cause recorded"}` }, "the searches"]);
   let reopen = null;
-  try { reopen = readJson(driverDir(runDir, "frame-reopen.json")); } catch { reopen = null; }
+  try { reopen = readJson(paths(runDir).frameReopenReceipt); } catch { reopen = null; }
   if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)
     failed.push([{ fail: "the omission the blind frame comparison flagged was not closed by the reopen pass" }, "the dominant-element crowd"]);
   if (!failed.length) return null;
@@ -326,7 +326,7 @@ function coverageRows(runDir, log) {
 function evidenceStamps(runDir, log) {
   const threw = failedStep(log, "basis-derivation", "basis-derivation-failed");
   let record = null;
-  try { record = readJson(driverDir(runDir, "basis-derivation.json")); } catch { record = null; }
+  try { record = readJson(paths(runDir).basisDerivation); } catch { record = null; }
   const standing = threw ? 0 : Number(record?.unwritable) || 0;
   if (!threw && !standing) return null;
   return { part: "evidence-stamps", name: RULED_WORDS.officialRecords, reason: NOT_COMPLETED,
@@ -343,7 +343,7 @@ const CHECKS = [assessment, overview, courtDecisions, searchLog, register, local
  * already carries that input's failure. PURE apart from reading `runDir`.
  */
 export function degradedParts(runDir, opts = {}) {
-  const log = readJsonl(driverDir(runDir, "run.jsonl"));
+  const log = readJsonl(paths(runDir).run);
   return CHECKS.map((check) => check(runDir, log, opts)).filter(Boolean);
 }
 
@@ -483,7 +483,7 @@ const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-b
 
 /** Which of the knockout's whole steps ended failed, each with its raw cause for the run's record. */
 export function knockoutStepFailures(runDir) {
-  const log = readJsonl(driverDir(runDir, "run.jsonl"));
+  const log = readJsonl(paths(runDir).run);
   const listing = lastEvent(log, ["knockout-register-records", "knockout-register-records-refused", "knockout-register-records-failed"]);
   const owners = failedStep(log, "knockout-owner-checks", "knockout-owner-checks-failed");
   const review = lastEvent(log, ["knockout-review"]);
