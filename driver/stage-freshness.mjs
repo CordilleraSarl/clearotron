@@ -48,8 +48,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
-import { readJson } from "./run-record.mjs";
+import { driverDir, ensureDriverDir, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
 
 const STAMP_DIR = "stage-inputs";
 const sha12 = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 12);

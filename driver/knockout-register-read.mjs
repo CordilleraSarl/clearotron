@@ -27,7 +27,6 @@
 import { appendFileSync, mkdirSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-import { driverDir } from "../shared/driver-dir.mjs";
 import { kebab } from "./search-policy.mjs";
 import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";
@@ -35,7 +34,7 @@ import { RECORD_BASIS, fixtureLister, toRecord } from "./register-records.mjs";
 import { ENUMERATE_CEILING_DEFAULT } from "../providers/_shared/enumerate.mjs";
 export { writeFixtureMarker } from "./register-fixture-marker.mjs";
 import { withFilingGoods } from "./filing-goods.mjs";
-import { readJson } from "./run-record.mjs";
+import { driverDir, readJson } from "./run-record.mjs";
 
 export const QUESTION_PLAN_FILE = "register-plan.json";
 export const BAND_DIR = "register-units";

@@ -50,9 +50,8 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverRel } from "../shared/driver-dir.mjs";   //
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverRel, paths, readJson } from "./run-record.mjs";
 
 export const PROSE_FILE = "report-overview.md";
 const SCHEMA_VERSION = 1;

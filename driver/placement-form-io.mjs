@@ -22,11 +22,10 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { PLACEMENT_FORM_NAME, placementFormSidecarName, parsePlacementForm, renderPlacementsJson } from "./placement-form.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { atomicWrite, paths, readJsonOrNull } from "./run-record.mjs";
+import { atomicWrite, driverDir, paths, readJsonOrNull } from "./run-record.mjs";
 
 export { PLACEMENT_FORM_NAME };
 

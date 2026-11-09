@@ -17,7 +17,7 @@
 // have MORE rows per variant, never fewer).
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   // — one definition of where a run's _driver/ is
+import { driverDir } from "./run-record.mjs";   // — one definition of where a run's _driver/ is
 
 export const MIN_CELLS_PER_VARIANT = 7;
 

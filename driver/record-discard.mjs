@@ -53,7 +53,7 @@
 
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "./run-record.mjs";   //
 
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 

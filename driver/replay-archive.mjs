@@ -30,14 +30,13 @@ import "../shared/env-local.mjs";   // — FIRST: the CLEAROTRON_* translation m
                                      // would run too late — that was the repair that left this open.
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
-import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
 import { homedir } from "node:os";
 import { validators } from "./verify.mjs";
 import { runLint, clientSummaryShape } from "./predelivery-lint.mjs"; import { emailConditionsOfReport } from "./publish/email-conditions.mjs";   // what the cover email carries
 import { config } from "./driver.config.mjs";
 import { GRID_HALVES } from "./common-law-receipts.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { paths, readJson } from "./run-record.mjs";
+import { DRIVER_DIR, paths, readJson } from "./run-record.mjs";
 
 // Artifact filename → verify.mjs validator key. notify receipts are trivial and skipped.
 const FILE_CHECKS = {

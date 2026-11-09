@@ -72,8 +72,8 @@ const FROZEN_FILES = [
   { path: "_driver/register-plan.json", why: "publish/index.mjs:935 scopeBasis" },
   { path: "_driver/instructed-scope.json", why: "publish/index.mjs:937 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
-  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:173 lintSink" },
-  { path: "_driver/escalation-state.json", why: "publish/index.mjs:174 escSink" },
+  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },
+  { path: "_driver/escalation-state.json", why: "publish/index.mjs:173 escSink" },
   { path: "_driver/reasoning-integrity.json", why: "`integritySink` declared in index.mjs" },
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:175 correctionsSink" },
   { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
@@ -174,7 +174,7 @@ const SCRUB = [
 // hides the next real difference.
 const VOLATILE = [
   { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the issue stamp in the firm locale" },
-  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:669 asOf" },
+  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:668 asOf" },
 ];
 
 // ── REWRITES — what is CHANGED on the way out, as opposed to what is refused ───────────────────────

@@ -10,7 +10,6 @@
 // failure mode this lane's gates exist to refuse.
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
 import { kebab, kebabCollisions } from "./search-policy.mjs";
 import { validateKnockoutFindings } from "./findings-model.mjs";
 import { checkRatingInputs, readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
@@ -26,7 +25,7 @@ import { runLog } from "./log.mjs";   // — the empty-ladder observable; valida
 // this lane where a check can stop a delivery.
 import { permissionProseChecks } from "./predelivery-lint.mjs";
 import { SURVIVOR_BOUNDARY_RE, isEngineAppendedCaveat } from "./knockout-caveats.mjs";
-import { paths, readJson, readJsonOrNull } from "./run-record.mjs";
+import { DRIVER_DIR, driverDir, paths, readJson, readJsonOrNull } from "./run-record.mjs";
 
 const norm = (s) => String(s ?? "").trim();
 const nameKey = (s) => norm(s).toLowerCase().replace(/\s+/g, " ");

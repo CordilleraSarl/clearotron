@@ -36,14 +36,13 @@
 
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { REVIEW_EXCLUSIONS_FILE } from "./narrative-refutation-record.mjs";   // the exclusions the last review was shown   //
 
 import { STAGES, stageInputs, REGISTER_AXES } from "./stages.mjs";
 import { withheldFamiliesPath } from "./withheld-families.mjs";
 import { toolGroupsForStage } from "./engine/mcp/gather-config.mjs";
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP } from "./register-digest-record.mjs";
-import { paths } from "./run-record.mjs";
+import { driverDir, paths } from "./run-record.mjs";
 
 /*
  * The five ways an artifact reaches a stage. A declaration can express the first one; production uses

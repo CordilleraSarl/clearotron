@@ -43,7 +43,6 @@
 // its own accepted call, bound by the ordinal in its label, so nothing the first pass sent carries into it.
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { knockoutVisibleProse } from "./predelivery-lint.mjs";   // the walk is the authority on what a reader sees
@@ -52,7 +51,7 @@ import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned 
 // for saying WHICH line was probably meant; it never decides whether an address resolves.
 import { queryKey } from "./connotation-search.mjs";
 import { PERMITTED_SOURCES, registerRecordIdsHeld, urlHeldFor } from "./verify-knockout.mjs";
-import { paths as runPaths, readJson } from "./run-record.mjs";
+import { DRIVER_DIR, driverDir, paths as runPaths, readJson } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
 

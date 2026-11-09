@@ -62,14 +62,13 @@
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 // THE VALIDATOR'S OWN PREDICATE, imported rather than restated. Two spellings of one closed set is how
 // the call and the stage come to disagree about what is legal, which is the defect this check closes.
 import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS, heldCitationsOnly, classGroupsDefect, frozenLadder, validators } from "./verify-knockout.mjs";
 // A FINDING'S KEYS, likewise: the validator's one list, so a key the call records is a key the stage accepts.
 import { KNOCKOUT_FINDING_KEYS } from "./findings-model.mjs";
-import { readJson } from "./run-record.mjs";
+import { driverDir, readJson } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
 

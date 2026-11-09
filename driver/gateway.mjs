@@ -22,7 +22,7 @@ import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.m
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
-import { openaiAgentEngine, makeCodexHome, releaseCodexHome } from "./engine/openai-agent.mjs";
+import { openaiAgentEngine } from "./engine/openai-agent.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -850,8 +850,8 @@ export function syncPlacementForm(files) {
 export async function runStage(name, opts) {
   const engineForHome = selectEngine();
   let stageCodexHome = null;
-  if (engineForHome?.name === "openai-agent") {
-    try { stageCodexHome = makeCodexHome(`stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`); }
+  if (engineForHome?.makeStageHome) {
+    try { stageCodexHome = engineForHome.makeStageHome(name); }
     catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {
@@ -859,7 +859,7 @@ export async function runStage(name, opts) {
   } finally {
     // Deleted when the LADDER settles — every resume that needed it has happened by then. Best-effort:
     // a home we cannot remove must never turn a completed stage into a failure.
-    if (stageCodexHome) releaseCodexHome(stageCodexHome);
+    if (stageCodexHome) engineForHome.releaseStageHome(stageCodexHome);
   }
 }
 

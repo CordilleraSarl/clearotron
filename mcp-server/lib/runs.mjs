@@ -8,10 +8,9 @@
 
 import { readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { DRIVER_DIR } from "../../shared/driver-dir.mjs";   //
 import { channelPackage } from "../../shared/permanent-install.mjs";   // — the check a reader is sent to, on this install's channel
 import { config, paths, reportIdentityFor } from "./driver.mjs";
-import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
+import { DRIVER_DIR, readJson, readJsonOrNull } from "../../driver/run-record.mjs";
 
 // Mirror of progress.mjs SKIP_DIRS — the high-churn leaf dirs that never hold a run-level status.json.
 const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments"]);

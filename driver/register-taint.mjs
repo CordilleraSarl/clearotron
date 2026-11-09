@@ -43,8 +43,7 @@
 
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 
-import { driverDir } from "../shared/driver-dir.mjs";   //
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 export const TAINT_FAIL_RE = /^timeout$|^status_timeout$/;
 

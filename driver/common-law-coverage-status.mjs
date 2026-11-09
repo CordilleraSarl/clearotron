@@ -28,8 +28,7 @@
 // stages.mjs's paths() dictates, and a test holds the two equal.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
-import { readJson } from "./run-record.mjs";
+import { driverDir, readJson } from "./run-record.mjs";
 
 /**
  * The three statuses a common-law coverage ledger row may carry, as data and as prose alike. Not the

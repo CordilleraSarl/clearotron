@@ -31,8 +31,7 @@
 // `common-law-half:a` and `common-law-half:b` never collide.
 import { copyFileSync, existsSync, mkdirSync, renameSync, writeFileSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
-import { readJson } from "./run-record.mjs";
+import { driverDir, readJson } from "./run-record.mjs";
 
 const safe = (label) => String(label).replace(/[^\w.:-]/g, "_");
 
