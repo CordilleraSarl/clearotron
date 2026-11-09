@@ -35,6 +35,7 @@ import { parseCodexEvent } from "../engine/openai-agent.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
+import { registerMounts } from "./register-mounts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MOCK_CLAUDE = join(HERE, "mock-claude.mjs");
@@ -1049,11 +1050,10 @@ test("the probe's tool carries the register search tool's annotations, read from
   const probe = JSON.parse(probeToolConfig("probe-0badc0de").mcpConfig).mcpServers.probe;
   const [ping] = (await toolsOf(probe.command, probe.args, probe.env)).filter((t) => t.name === "ping");
   assert.ok(ping, "the probe server lists no ping");
-  const registers = readdirSync(MCP_DIR).filter((f) => f.endsWith("-server.mjs")
-    && readFileSync(join(MCP_DIR, f), "utf8").includes('"register_execute_plan"'));
+  const registers = registerMounts().filter((m) => readFileSync(m.path, "utf8").includes('"register_execute_plan"')).map((m) => m.provider);
   assert.ok(registers.length >= 1, `no register server in ${MCP_DIR} declares register_execute_plan, so nothing was compared`);
   for (const f of registers) {
-    const search = (await toolsOf(process.execPath, [join(MCP_DIR, f)])).find((t) => t.name === "register_execute_plan");
+    const search = (await toolsOf(process.execPath, [join(MCP_DIR, "register-server.mjs"), f])).find((t) => t.name === "register_execute_plan");
     assert.ok(search, `${f} does not list register_execute_plan`);
     assert.deepEqual(ping.annotations, search.annotations,
       `${f}'s register_execute_plan is declared ${JSON.stringify(search.annotations)} and the probe's tool ${JSON.stringify(ping.annotations)} — the probe no longer answers for the search`);

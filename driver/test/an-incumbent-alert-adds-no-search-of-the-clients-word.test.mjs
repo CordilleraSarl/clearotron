@@ -67,7 +67,7 @@ test("no manual or tool the engine reads asks for a competitor's or an enforcer'
   const read = (...rel) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", ...rel), "utf8");
   const recipes = read("skills", "clearance-register", "register-recipes.md");
   const digest = read("skills", "clearance-register", "digest.md");
-  const orchestrator = read("skills", "clearance-search", "SKILL.md");
+  const orchestrator = read("..", "docs", "architecture", "retired-manuals", "clearance-search-spine.md");
   const tools = read("engine", "mcp", "recording-server.mjs");
   assert.ok(recipes.includes("## Recipe 6 — Multi-word descriptive tagline") && digest.includes("### Step 4 —")
     && orchestrator.includes("**Competitor intelligence:**") && tools.includes("watchlist_owners"), "guard: each file was read");
