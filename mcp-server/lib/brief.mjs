@@ -28,9 +28,10 @@
 // printed no conflicts because a file was absent would read as a clean search — the worst answer this tool
 // can give. An absence is reported as an absence. Read-only.
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { parseReport } from "./driver.mjs";
 import { readReportData, productIdentityFor } from "./runs.mjs";
+import { readJson } from "../../driver/run-record.mjs";
 
 // Drop internal-only context (::p:: marker) and the leading risk-formula clause ("Level N Risk = … →").
 // APPLIED ONLY TO report.md-DERIVED TEXT (the archived-run fallback below). Strings out of report-data.json
@@ -185,7 +186,7 @@ export function buildBrief(run) {
       // line stays as the fallback for archived runs, whose findings carry no `net`.
       const netByOrd = new Map();
       try {
-        const doc = JSON.parse(readFileSync(P.findings, "utf8"));
+        const doc = readJson(P.findings);
         for (const f of (doc?.findings ?? [])) if (f?.net) netByOrd.set(String(f.ordinal), String(f.net));
       } catch { /* no findings.json on this run — the card line stands */ }
       for (const c of main)
