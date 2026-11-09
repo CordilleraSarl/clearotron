@@ -65,15 +65,15 @@ const FROZEN_FILES = [
   { path: "case-law-findings.md", why: "`clPath` declared in index.mjs, the case-law section" },
   { path: "common-law-grid.json", why: "`commonLawJoinedTerms` declared in index.mjs, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
-  { path: "_driver/receipts.json", why: "publish/index.mjs:780 fetchReceipts" },
-  { path: "_driver/senior-rights.json", why: "publish/index.mjs:806 seniorRights" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:771 fetchReceipts" },
+  { path: "_driver/senior-rights.json", why: "publish/index.mjs:797 seniorRights" },
   { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:935 scopeBasis" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:926 scopeBasis" },
   { path: "_driver/instructed-scope.json", why: "publish/index.mjs:937 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
-  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },
-  { path: "_driver/escalation-state.json", why: "publish/index.mjs:173 escSink" },
+  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:173 lintSink" },
+  { path: "_driver/escalation-state.json", why: "publish/index.mjs:174 escSink" },
   { path: "_driver/reasoning-integrity.json", why: "`integritySink` declared in index.mjs" },
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:175 correctionsSink" },
   { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
@@ -111,7 +111,7 @@ const KNOCKOUT_FILES = [
   { path: "_driver/search-policy.json", why: "report-registry.mjs:71 level + stage label" },
   { path: "_driver/profile.json", why: "report-registry.mjs:72 customer key and the delivery overlay" },
   { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
-  { path: "_driver/receipts.json", why: "publish/index.mjs:780 fetchReceipts" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:771 fetchReceipts" },
   // THE COUNT SIDECARS, AND THE PROOF IS WHAT FOUND THEM. Without register-counts.json the republished
   // meta carries `registerCounts: undefined` where the source carried the provider, the taken-at stamp
   // and the per-mark counts — so the workbook's Register column and every counted figure in the

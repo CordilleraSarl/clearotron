@@ -7,7 +7,8 @@
 //
 // This is deterministic Node — NOT an LLM turn — so it cannot hang/timeout. The driver calls it directly
 // (not via runStage). Run identity (runId/codename) comes from the driver's ctx.run; do NOT regenerate it.
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync, chmodSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodSync } from 'node:fs';
+import { grpRead, openPoolRun } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
@@ -496,7 +497,6 @@ export function regenIndex(poolDir) {
 }
 
 // Make a just-written path group-readable (Caddy serves via the caddy group; the pool dir is set-gid).
-const grpRead = (p, mode) => { try { chmodSync(p, mode); } catch { /* best-effort */ } };
 
 // D — the shared chrome stylesheet: the nav + toggle + floating-fab CSS written ONCE to <pool>/assets/chrome.css
 // so the INTERNAL report.html can <link> it (chromeHref) instead of inlining. A cosmetic nav/theme tweak then
@@ -666,16 +666,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const dates = reportDates({ runDir: runDir ?? dirname(reportMd), poolRunDir: join(poolRoot, runId) });
   const issued = zurichStamp(dates.issuedAt, { zone: true });
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
-  const poolRunDir = join(poolRoot, runId);
-  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });   // owner and group only; mkdir keeps the pool root's set-GID
-  // The run dir inherits the web-server group + the set-GID bit AUTOMATICALLY from the set-GID pool root
-  // (mode 2750, web-server group) — so files written inside take that group and the web server (Caddy in
-  // the reference deployment, mode 0640) can read them. Do NOT chmod this dir: the service account is not
-  // a member of the web-server group, and POSIX silently strips S_ISGID when a non-member sets it, leaving
-  // the dir 0750 → new files fall back to the service account's primary group → every report 403s. (An explicit
-  // `grpRead(poolRunDir, 0o2750)` here, added 2026-06-02, WAS that 403 bug; removed 2026-06-08.)
-  const writeRO = (name, data) => { const p = join(poolRunDir, name); writeFileSync(p, data); grpRead(p, 0o640); };
-  const copyRO = (src, name) => { const p = join(poolRunDir, name); copyFileSync(src, p); grpRead(p, 0o640); };
+  const { poolRunDir, writeRO, copyRO } = openPoolRun(poolRoot, runId);
 
   // T6 (H7): the POOL copy of report.md is written through the stripInternal choke point —
   // markers consumed, internal tails labelled "[internal]" — so no raw ::p:: token ever reaches a
@@ -1890,7 +1881,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
-import { RUN_DIR_MODE, driverDir, paths, readJson } from "../run-record.mjs";
+import { driverDir, paths, readJson } from "../run-record.mjs";
 function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);
