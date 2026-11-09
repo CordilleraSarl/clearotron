@@ -202,7 +202,7 @@ export function claudeModel(model) {
     // does not know, it says so and the turn fails loudly — which is the honest end of a bad pin.
     return /^claude-(?:[a-z]+-\d|\d)/.test(bare) ? bare : fam;
   }
-  throw new Error(`anthropic-agent: no claude model mapped for "${model}" — this engine runs claude only. Pass opus/sonnet/haiku/fable or a concrete claude-* id. (It used to substitute sonnet silently and log the alias you asked for: #238 corruption 3.)`);
+  throw new Error(`anthropic-agent: no claude model mapped for "${model}" — this engine runs claude only. Pass opus/sonnet/haiku/fable or a concrete claude-* id. (It used to substitute sonnet silently and log the alias you asked for.)`);
 }
 
 // ── thinking tier → `claude --effort` ────────────────────────────────────────────────────────────────
@@ -468,7 +468,7 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
   // and ships with it, so "missing" means a broken deploy, and a broken deploy that stops loudly beats one
   // that runs every clearance with no boundary and says nothing.
   try { statSync(hook); }
-  catch { throw new Error(`write_boundary_hook_missing:${hook} (the #595 deny-hook is not in this deployment; a missing hook command fails OPEN in the CLI, so the dispatch is refused rather than run unprotected)`); }
+  catch { throw new Error(`write_boundary_hook_missing:${hook} (the deny-hook is not in this deployment; a missing hook command fails OPEN in the CLI, so the dispatch is refused rather than run unprotected)`); }
   const payload = Buffer.from(JSON.stringify({ trees, runDir: runDir ?? null }), "utf8").toString("base64");
   return JSON.stringify({
     hooks: {

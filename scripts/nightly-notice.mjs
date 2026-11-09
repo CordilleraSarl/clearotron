@@ -143,7 +143,7 @@ export function noticeBody({ runUrl, sha, subject, failedJobs = [], lastGreenAt,
         + "in the repository was exercised. Read this as an infrastructure or billing failure until "
         + "something says otherwise — there is no code regression to look for yet."
       : "macOS falsifies three things a Linux-only pipeline cannot see — `node:sqlite`, executable "
-        + "resolution across PATH, and spawning a child with a modified environment (#777). A red here "
+        + "resolution across PATH, and spawning a child with a modified environment. A red here "
         + "is one of those, or it is the platform gate itself breaking; both need a person.",
     "",
     nothingRan

@@ -111,7 +111,7 @@ console.log(`    ${"route".padEnd(28)} ${"jobs".padStart(6)} ${"with an undeclar
 for (const [via, v] of Object.entries(census.byRoute).sort((a, b) => b[1].jobs - a[1].jobs))
   console.log(`    ${via.padEnd(28)} ${String(v.jobs).padStart(6)} ${String(v.withUndeclared).padStart(26)}`);
 console.log(`\n  A door-stamped job CANNOT carry one — its assembler dropped it before the manifest was written.`);
-console.log(`  So the rate that answers #1325 is over the unstamped route alone:\n`);
+console.log(`  So the rate to read is over the unstamped route alone:\n`);
 console.log(`    ${unstamped.withUndeclared} of ${unstamped.jobs} hand-written manifest(s) carry a field no door declares`
   + `${unstamped.jobs ? ` — ${Math.round((unstamped.withUndeclared / unstamped.jobs) * 100)}%` : ""}`);
 console.log(`    (${stampedJobs} further job(s) arrived through a door and are excluded, with their reason above)`);

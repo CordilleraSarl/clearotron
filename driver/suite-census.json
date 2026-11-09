@@ -1,6 +1,6 @@
 {
   "_README": [
-    "#1010 — THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
+    "THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
     "minting side cannot drift from the checking side and manufacture its own findings.",
     "",
     "Collection is a glob, so a test file that is DELETED or RENAMED out of it simply stops being",

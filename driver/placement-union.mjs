@@ -404,9 +404,3 @@ export function unionPlacementForm(prior, submitted, input, { covered = false } 
     floors_without_fate: [...unfated.values()].reduce((n, e) => n + e.floors.length, 0),
     ...(covered ? { covered_lines: Object.fromEntries([...coveredKeys].map(([g, keys]) => [g, [...keys].sort()])) } : {}) };
 }
-
-/** How many rows of an already-unioned form the render would still omit. PURE. */
-export function outstandingPlacementRows(form) {
-  const rows = Array.isArray(form) ? form : (form?.rows ?? []);
-  return rows.filter((r) => !rowIsSettled(r, r));
-}
