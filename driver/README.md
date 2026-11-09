@@ -72,6 +72,7 @@ kind of thing a module is before you open it.
 | `gateway.mjs` | `runStage()` — the engine-agnostic orchestration ladder: blocking call, output parse, file-truth gating, failure classification, bounded retries (fresh session key each), warm-resume. |
 | `stages.mjs` | The single per-stage table (agent/model-tier/thinking/timeout/skillReads/output/validator/message). Centralizes tiers (fixes the old cross-file drift). |
 | `pipeline.mjs` | The sequence: Phase-0 (code) → fan-out (batched) → fan-in barrier → placement → digest → skeptic+escalation → synthesis → (case-law) → refutation+verdict gate → publish+outbox → archive. CLI: `node pipeline.mjs --job <file.json>`. |
+| `steps/` | One module for each phase of a run, called in order from `pipeline.mjs`. This row is its front door, so it has no README of its own. |
 | `phase0.mjs` | Pure: slug, codename (re-rolled on run-dir collision), run-dir, customer template. |
 | `verify.mjs` | Structural file-truth validators + `parseVerdict` (the verdict gate). |
 | `runner.mjs` | Drains **every** queue (`config.queueDirs`) **concurrently across queues** (serial within one; per-queue failure isolation); per job: atomic claim (+ claimer-pid sidecar so a live claim is never re-claimed; an orphaned claim is re-claimed next activation), run, mark `.done`/`.failed` in the origin queue. |
