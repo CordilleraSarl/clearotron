@@ -46,7 +46,7 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
+import { driverDir, labelOfDriverFile } from "./run-record.mjs";   //
 import { resolveModel, modelFamily } from "./driver.config.mjs";
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
