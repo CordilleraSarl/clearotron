@@ -369,6 +369,14 @@ export function whatIsMissing(rows = []) {
 }
 
 /**
+ * The order-time rows a person is told to set. With no AI chosen, the program and payment rows are the default AI's,
+ * which nobody chose, for the reason `whatIsMissing` gives: choosing an AI is what settles them.
+ */
+export function rowsToName(rows = []) {
+  return rows.some((r) => r.about === "ai") ? rows.filter((r) => r.about !== "program" && r.about !== "payment") : rows;
+}
+
+/**
  * What the person who runs the install is told to do, for how the refusing process runs (the owner's words,
  * 2026-11-07). `how` is driver/how-it-runs.mjs's answer. The portal and the run's refusal say the same remedy;
  * `it` names the refusing process where the remedy speaks of it ("the portal", "this runner"), and `install` is

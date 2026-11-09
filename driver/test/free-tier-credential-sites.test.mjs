@@ -53,7 +53,7 @@ const ALLOWED = new Map([
   ["driver/driver.config.mjs",
     "the uspto-local ADAPTER's own guards (it is that provider's credEnv), plus free-tier's record/count "
     + "guards which check the EU pair only"],
-  ["driver/engine/mcp/uspto-local-server.mjs",
+  ["providers/uspto-local/src/mount.js",
     "the US-only provider's server: the index IS its credential, so requiring it is correct there"],
   ["driver/engine/mcp/codex-config.mjs", "an env passthrough list, not a gate"],
   ["driver/engine/mcp/gather-config.mjs", "a comment about which variable uspto-local fails on"],
@@ -64,7 +64,7 @@ const ALLOWED = new Map([
     + "the index this box is configured to search` — and refuses with a usage line when neither is "
     + "given. It gates nothing: it is a reporting tool that never runs inside a clearance"],
   ["bin/onboard.mjs", "the setup wizard, where it is declared OPTIONAL for free-tier"],
-  ["driver/engine/mcp/free-tier-server.mjs",
+  ["providers/free-tier/src/mount.js",
     "names the variable only in the refusal TEXT, to tell an operator it is NOT required. Listed here "
     + "rather than excluded, because the gate itself is pinned precisely by the next test — which reads "
     + "MISSING() alone, so re-adding the check would redden that even though this sweep stays green"],
@@ -112,7 +112,7 @@ test("nothing new gates on USPTO_LOCAL_DB without being listed here", () => {
 test("the free tier's MCP server does NOT require the US index", () => {
   // The site that was left behind. Asserted on the source rather than by booting the server, because
   // booting it needs a live stdio transport — and a test that cannot run is a test that does not.
-  const src = readFileSync(join(ROOT, "driver", "engine", "mcp", "free-tier-server.mjs"), "utf8");
+  const src = readFileSync(join(ROOT, "providers", "free-tier", "src", "mount.js"), "utf8");
   const missingFn = src.slice(src.indexOf("const MISSING = ()"), src.indexOf("const guard = "));
   assert.ok(missingFn.length > 0, "MISSING() not found — this census is measuring nothing");
   assert.match(missingFn, /EUIPO_CLIENT_ID/, "the EU pair is still required: no configured member at all is unconfigured, not degraded");

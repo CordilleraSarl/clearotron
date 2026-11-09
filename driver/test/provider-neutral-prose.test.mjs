@@ -12,7 +12,7 @@
 // but the one it names — the failure is silent (the agent improvises) and only shows up as a thin band.
 //
 // ALLOWED to carry vendor tokens:
-//   - engine/mcp/<provider>-server.mjs   — the per-provider glue; the vendor name legitimately lives here
+//   - providers/<id>/src/mount.js         — the per-provider glue; the vendor name legitimately lives here
 //   - skills/clearance-register/providers/  — the provider vocabulary docs, which exist to be provider-specific
 //   - providers/<id>/src/core.js          — provider cores (their error strings name the vendor, by design)
 //   - test fixtures asserting a provider CORE ERROR STRING (e.g. "ERROR: corsearch_search HTTP 414") —
@@ -37,7 +37,7 @@ const DRIVER = dirname(dirname(fileURLToPath(import.meta.url)));
 //     the qualifier entirely. Adding the hyphenated id there LOOKS like a completed edit and guards
 //     nothing at all. (The examples are not spelled out here: this test walks its own source, and
 //     writing one would make it an offender. Which is itself the proof that the bare id catches both.)
-//   * `uspto` in the file-name regex matches no file, because the server is `uspto-local-server.mjs`.
+//   * `uspto` names no provider folder, because the folder is `uspto-local`.
 //
 // So the token lists take the bare `uspto`, which catches both leak forms, and the file lists take
 // `uspto-local`. Keep them separate on purpose. Case matters: the env var
@@ -49,7 +49,6 @@ const ERROR_STRING_RE = /(ERROR:\s*)?\b(corsearch|clarivate|signa|uspto)_[a-z_]+
 
 const SKIP_DIRS = new Set(["node_modules", ".git", "fixtures"]);
 const isAllowedFile = (rel) =>
-  /^engine\/mcp\/(corsearch|clarivate|signa|uspto-local|euipo|free-tier)-server\.mjs$/.test(rel) ||
   rel.startsWith("skills/clearance-register/providers/");
 
 // The vacuity check sits on the WALK'S RESULT (`walked` below), not on each read —. An
@@ -82,7 +81,7 @@ test("no vendor tool tokens outside the provider glue and provider vocabulary do
     });
   }
   assert.deepEqual(offenders, [],
-    `Vendor register tool names must not appear outside engine/mcp/<provider>-server.mjs and ` +
+    `Vendor register tool names must not appear outside providers/<id>/src/mount.js and ` +
     `skills/clearance-register/providers/. Use the neutral register_* names — they resolve to whichever ` +
     `provider REGISTER_PROVIDER selects. Offenders:\n  ${offenders.join("\n  ")}`);
 });
@@ -137,17 +136,17 @@ test("every register server exposes the same neutral tool names", async () => {
   // adds free-tier; `euipo` was ALREADY missing here — 4 of the 5 providers were swept, so the
 // one whose server was rewritten wholesale by was the one this never checked.
 for (const provider of ["corsearch", "clarivate", "signa", "uspto-local", "euipo", "free-tier"]) {
-    const src = rf(join(DRIVER, "engine", "mcp", `${provider}-server.mjs`), "utf8");
+    const src = rf(join(DRIVER, "..", "providers", provider, "src", "mount.js"), "utf8");
     // the served tool names must all be register_*; no vendor-prefixed tool may be registered
     const names = [...src.matchAll(/^\s*name:\s*"([a-z_]+)",\s*$/gm)].map((m) => m[1]);
     const toolNames = names.filter((n) => n !== "register" || false);
     for (const n of toolNames) {
       assert.match(n, /^register(_[a-z_]+)?$/,
-        `${provider}-server.mjs registers "${n}" — every register tool must be register_*`);
+        `${provider}'s mount registers "${n}" — every register tool must be register_*`);
     }
-    assert.match(src, /name:\s*"register",\s*version/,
-      `${provider}-server.mjs must serve under the neutral MCP server name "register"`);
   }
+  assert.match(rf(join(DRIVER, "engine", "mcp", "register-server.mjs"), "utf8"), /name:\s*"register",\s*version/,
+    `the register server must serve under the neutral MCP server name "register"`);
 });
 
 test("tracker 2018 the walk refuses an empty corpus, and an empty leaf is not one", () => {

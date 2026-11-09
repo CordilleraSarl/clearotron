@@ -63,9 +63,9 @@ const run = promisify(execFile);
 const WITHHELD_ON_PURPOSE = Object.freeze({});
 
 /** The tool names a provider's server process actually advertises, over real MCP stdio. */
-async function advertised(script) {
+async function advertised({ script, args = [] }) {
   return await new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [join(MCP, script)], { stdio: ["pipe", "pipe", "pipe"] });
+    const child = spawn(process.execPath, [join(MCP, script), ...args], { stdio: ["pipe", "pipe", "pipe"] });
     let buf = "", out = null;
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve(out); };
     const timer = setTimeout(done, 8000);
@@ -102,7 +102,7 @@ test("every register provider GRANTS what its server ADVERTISES, or the gap is a
 
   const gaps = [];
   for (const p of providers) {
-    const serves = await advertised(REGISTER_SERVERS[p].script);
+    const serves = await advertised(REGISTER_SERVERS[p]);
     assert.ok(Array.isArray(serves) && serves.length > 0,
       `${p}: its server advertised no tools — the handshake broke, it did not find an empty server. `
       + "An absence here reads exactly like a provider that grants everything it serves.");
@@ -132,7 +132,7 @@ test("…and the withheld rows cannot rot in either direction", async () => {
   // short-circuits, because the loop above `continue`s on the grant before it ever reads the row.
   for (const [p, stated] of Object.entries(WITHHELD_ON_PURPOSE)) {
     assert.ok(REGISTER_SERVERS[p], `WITHHELD_ON_PURPOSE names "${p}", which is not a register provider — delete the row`);
-    const serves = new Set(await advertised(REGISTER_SERVERS[p].script));
+    const serves = new Set(await advertised(REGISTER_SERVERS[p]));
     const holds = new Set(await granted(p));
     for (const tool of Object.keys(stated)) {
       assert.ok(serves.has(tool), `${p}: ${tool} has a "withheld on purpose" row but the server no longer serves it — delete the row`);
@@ -228,7 +228,7 @@ test("PLANT: an EMPTY NAMED_BUT_UNSERVED still FIRES — the list shrank, the de
   const unwired = { ...REGISTER_SERVERS, signa: { ...REGISTER_SERVERS.signa,
     tools: REGISTER_SERVERS.signa.tools.filter((t) => t !== "register_propose_supplemental") } };
   const caught = unservedOrders(named, unwired, NAMED_BUT_UNSERVED);
-  assert.deepEqual(caught, ["signa: the driver's prose orders register_propose_supplemental and signa-server.mjs does not serve it"],
+  assert.deepEqual(caught, ["signa: the driver's prose orders register_propose_supplemental and register-server.mjs does not serve it"],
     "signa's grant lost the tool the driver's prose orders and the census said nothing");
 
   // …and it is the WIRING that silences it, not the arm being blind: same call, real table.

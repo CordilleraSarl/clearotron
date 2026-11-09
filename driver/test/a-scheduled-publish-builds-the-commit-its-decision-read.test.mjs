@@ -42,3 +42,22 @@ test("the publish job checks out the decided commit and refuses when it holds an
   assert.match(publish, /"\$\(git rev-parse HEAD\)" != "\$DECIDED_SHA"/);
   assert.match(publish, /"\$VERSION" != "\$DECIDED_VERSION"/);
 });
+
+test("the platform installs a scheduled stable waits on test the same commit it will publish", () => {
+  const read = (f) => readFileSync(join(ROOT, ".github", "workflows", f), "utf8");
+  const release = read("release.yml");
+  for (const job of ["macos", "windows", "windows-beta"]) {
+    const start = release.indexOf(`\n  ${job}:\n`);
+    const block = release.slice(start, release.indexOf("\n\n", start + 10));
+    assert.match(block, /ref: \$\{\{ needs\.pending\.outputs\.sha \}\}/, `${job} installs the event commit, not the decided one`);
+  }
+  const awaited = [...release.matchAll(/\n  ([a-z-]+):\n    name: [^\n]*\n    needs: \[awaited\]\n[\s\S]*?\n\n/g)].filter((m) => /workflows\/(macos|windows)\.yml/.test(m[0]));
+  assert.ok(awaited.length >= 2, "this arm could not find the awaited platform jobs");
+  for (const m of awaited) assert.match(m[0], /ref: \$\{\{ needs\.awaited\.outputs\.sha \}\}/, `${m[1]} installs the commit the run started on`);
+  for (const f of ["macos.yml", "windows.yml"]) {
+    const text = read(f);
+    assert.match(text, /workflow_call:\n    inputs:\n(.*\n)*?      ref:/, `${f} takes no commit`);
+    const checkouts = text.match(/uses: actions\/checkout@[^\n]*\n(?:\s+#[^\n]*\n)*\s+with:\n\s+ref: \$\{\{ inputs\.ref \|\| github\.sha \}\}/g) ?? [];
+    assert.equal(checkouts.length, text.match(/uses: actions\/checkout@/g).length, `a checkout in ${f} ignores the commit it was given`);
+  }
+});

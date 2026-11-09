@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // The Clarivate register adapter — pure logic + HTTP helpers + telemetry, with ZERO plugin-SDK or
 // TypeBox imports (node built-ins, global fetch and providers/_shared only). Everything this provider
-// does lives here: driver/engine/mcp/clarivate-server.mjs wraps the module as a standalone MCP server,
+// does lives here: src/mount.js wraps the module for the one register MCP server,
 // driver.config.mjs lazy-imports it for the in-process lanes, and the tests import it directly.
 //
 // PACKAGING NOTE: this core imports the shared ledger, screen primitives and enumerate kernel from

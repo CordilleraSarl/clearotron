@@ -267,7 +267,7 @@ test("no snapshot is not agreement — it is the one answer that fails", () => {
 });
 
 test("EUIPO_ENVIRONMENT unset reports the SERVER's default rather than the empty string", () => {
-  // euipo-server.mjs:11 defaults it to sandbox, so an unset variable means the server will use sandbox.
+  // the euipo mount defaults it to sandbox, so an unset variable means the server will use sandbox.
   // Reporting "" would make a reader think the posture is unknown when it is decided.
   const snap = buildFlagSnapshot({}, { capturedAt: POSTURE_AT });
   assert.equal(snap.euipo.environment, "sandbox");

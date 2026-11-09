@@ -124,8 +124,8 @@ test("judgment on a crowd narrows by the steps or records it with its count and 
   const skill = flat("skills/clearance-register/SKILL.md");
   const unit = flat("skills/clearance-register/unit.md");
   const recipes = flat("skills/clearance-register/register-recipes.md");
-  assert.ok(skill.includes("either **commands a narrower named enumeration** by the narrowing steps (which the funnel then runs) or **records the crowd with its count and moves on**."));
-  assert.ok(skill.includes("which commands a narrower named enumeration by the narrowing steps, or records it and moves on: a crowd with its count, a failed search as a gap."));
+  assert.ok(skill.includes("The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver."));
+  assert.ok(skill.includes("crosses to judgment. The unit narrows a crowd or records it with its count."));
   assert.ok(unit.includes("an incomplete result crosses the firewall as an incomplete block, and you decide on it by the narrowing steps: narrow it, or record it with its count and move on."));
   assert.ok(recipes.includes("That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it with its count and move on."));
   for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]])

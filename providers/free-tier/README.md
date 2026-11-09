@@ -35,7 +35,7 @@ instead would plan a query one source cannot run and call the result a clean.
   `USPTO_LOCAL_DB` is deliberately not required, so a box without the index still gets its EU
   coverage. `publicRecordOrigin` is `null` and `composedOf` carries the members, because the two
   halves have different public hosts.
-- `../../driver/engine/mcp/free-tier-server.mjs` — seven of the eight neutral `register_*` tools. The
+- `src/mount.js` — seven of the eight neutral `register_*` tools. The
   seat is not told there are two sources; it sees only the derived contract.
 - `../../driver/register-capabilities.mjs` and `../../driver/register-availability.mjs` — the latter
   joins `composedOf` to each member's credential declaration to decide reachable offices.

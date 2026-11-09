@@ -63,7 +63,6 @@ The tool takes these values, and the shape below is what it validates them again
 
 ```json
 {
-  "schema_version": 1,
   "dominant_element": "the spine, verbatim",
   "variants": [
     {"value": "VELTRI", "direction": "drop", "rationale": "drop the trailing N — VELTRIN→VELTRI"}

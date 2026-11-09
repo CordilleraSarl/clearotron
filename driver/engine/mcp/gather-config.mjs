@@ -55,14 +55,14 @@ const REGISTER_TOOLS = [
 // names exist" and the INTERSECTION for "what every provider grants", without re-introducing the
 // default deleted.
 export const REGISTER_SERVERS = {
-  corsearch: { script: "corsearch-server.mjs", tools: REGISTER_TOOLS },
+  corsearch: { script: "register-server.mjs", args: ["corsearch"], tools: REGISTER_TOOLS },
   // clarivate: 7 of the 8. `register_expand_phoneme` is ABSENT ON PURPOSE — the ranked-similarity
   // surface that would preview phoneme variants is not available on this provider (HTTP 403),
   // and doctrine 2 forbids stubbing it with something weaker. Phonetic SEARCH still works
   // (match_mode:"phonetic"); only the variant PREVIEW is unavailable. The gap is declared in
   // providers/clarivate/src/capabilities.js (phonemeExpansion:false) and pinned by
   // test/engine.gather.test.mjs, so it can never become a silent omission.
-  clarivate: { script: "clarivate-server.mjs", tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
+  clarivate: { script: "register-server.mjs", args: ["clarivate"], tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
   // signa: 5 of the 8, and the grant is what the server SERVES. It was 2 until and 4 until.
   // The 2 was set on 2026-07-21 by 7ef96c7c when signa really was the thin provider — and it never
   // moved again. The five
@@ -118,7 +118,7 @@ export const REGISTER_SERVERS = {
   //     " signa's core still carries NO figurative data" in driver/test/register-capabilities.test.mjs
   //     reds if a vienna/figurative field appears in providers/signa/src or if hasPublicRecordUrl goes
   //     true. If it reds, re-read this reason before you touch the test.
-  signa:     { script: "signa-server.mjs",
+  signa:     { script: "register-server.mjs", args: ["signa"],
     tools: ["register_search", "register_record_fetch", "register_enumerate", "register_execute_plan",
       "register_propose_supplemental"] },
   // euipo: 7 of the 8, the same count as clarivate and for the same missing tool.
@@ -132,7 +132,7 @@ export const REGISTER_SERVERS = {
   // only {imageFormat, viennaClasses} with no bytes and no URL, which reads like an empty field.
   // `GET /trademarks/{n}/image` answers 200 with real image bytes. The tool serves the Vienna
   // figurative-element codes — the comparable data — rather than the bytes.
-  euipo:     { script: "euipo-server.mjs",     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
+  euipo:     { script: "register-server.mjs", args: ["euipo"],     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
   // uspto-local: 6 of the 8, and the only provider here that is a FILE rather than an API — the guard
   // it fails on is USPTO_LOCAL_DB, not a key. Two tools are absent on purpose, neither stubbed:
   //   register_image_fetch    — the USPTO bulk product is text. It carries the drawing CODE (hence
@@ -142,7 +142,7 @@ export const REGISTER_SERVERS = {
   //     slice is stamped unsupported at compile time and disclosed as a deferred coverage row.
   // Both gaps are declared in providers/uspto-local/src/capabilities.js and the exact six are pinned by
   // test/engine.gather.test.mjs, so neither can become a silent omission.
-  "uspto-local": { script: "uspto-local-server.mjs",
+  "uspto-local": { script: "register-server.mjs", args: ["uspto-local"],
     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme" && t !== "register_image_fetch") },
   // free-tier: EUIPO + the local US index as ONE register — 7 of the 8. The surface is the UNION
   // of what its members can serve, not the intersection, because a tool one member serves is still a
@@ -153,7 +153,7 @@ export const REGISTER_SERVERS = {
   //   register_expand_phoneme — ABSENT, and here the intersection and the union agree: NEITHER member
   //     has a phonetic surface, so predicates.phonetic is null and a phonetic slice defers rather than
   //     degrading into a contains under the phonetic name.
-  "free-tier": { script: "free-tier-server.mjs",
+  "free-tier": { script: "register-server.mjs", args: ["free-tier"],
     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
 };
 
@@ -799,7 +799,7 @@ function registerEntry() {
   // with. requireRegisterProvider throws instead, with the same message the driver gives.
   const p = requireRegisterProvider();
   const entry = REGISTER_SERVERS[p];
-  if (!entry) throw new Error(`[gather-config] no MCP server built for REGISTER_PROVIDER="${p}" yet — wrap providers/${p}/src/core like corsearch-server.mjs (pure glue, exposing the register_* names), then add it to REGISTER_SERVERS.`);
+  if (!entry) throw new Error(`[gather-config] no MCP server built for REGISTER_PROVIDER="${p}" yet — wrap providers/${p}/src/core in a mount.js like corsearch's (pure glue, exposing the register_* names), then add it to REGISTER_SERVERS.`);
   return entry;
 }
 
@@ -979,7 +979,7 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
     }
   }
   const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups, correctionPositions });
-  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env };
+  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script), ...(localEntry(k).args ?? [])], env };
   // A FIXTURE RUN NEVER REACHES A LIVE REGISTER, and its job says so: the same key serves its canned answers.
   if (localKeys.has("register") && runDir && fixtureRecordsDir(runDir)) mcpServers.register.args = [join(MCP_DIR, "fixture-register-server.mjs")];
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at

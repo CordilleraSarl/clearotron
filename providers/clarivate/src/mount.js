@@ -1,7 +1,6 @@
-#!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Standalone MCP server wrapping the clarivate CORE (pure node+fetch) so a `claude -p` process can
+// The clarivate register's tools, as driver/engine/mcp/register-server.mjs mounts them, wrapping its CORE (pure node+fetch) so a `claude -p` process can
 // call the register-search tools off-gateway. Pure glue: the core owns all logic. Auth = CLARIVATE_API_KEY
 // (X-ApiKey header); base = CLARIVATE_API_BASE || the core's DEFAULT_BASE. Telemetry: the core writes
 // CLEAROTRON_REGISTER_CALL_LOG / CLEAROTRON_REGISTER_RECORD_LOG (the SHARED register ledger — one provider
@@ -28,14 +27,10 @@
 //      them against that capability flag, so flipping the contract without wiring a tool fails CI.
 // `match_mode: "phonetic"` on register_search / register_enumerate remains fully available; it is the
 // PREVIEW of the expansion that this provider cannot give, not phonetic search itself.
-import { serve } from "./stdio-server.mjs";
-import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
-import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
+import { sendUntilFromEnv } from "../../_shared/send-until.mjs";
 import {
   CAPABILITIES, doSearch, doRecordFetch, doImageFetch, doBatchScreen, doEnumerate, doExecutePlan, DEFAULT_BASE,
-} from "../../../providers/clarivate/src/core.js";
-import { proposeSupplemental } from "./supplemental.mjs";
-import { CLARIVATE_PROPOSE_TOOL } from "./clarivate-propose-tool.mjs";
+} from "./core.js";
 
 const API_KEY = process.env.CLARIVATE_API_KEY || "";
 const BASE = process.env.CLARIVATE_API_BASE || DEFAULT_BASE;
@@ -64,8 +59,8 @@ const QUERY_PROPS = {
   resolve_owner: { type: "boolean", description: "enumerate only: resolve an owner term to exact applicant names first (default true)" },
 };
 
-serve({
-  name: "register", version: "0.2.0", noteFor: crowdNoteFor,
+export const mount = ({ proposeSupplemental, CLARIVATE_PROPOSE_TOOL }) => ({
+  version: "0.2.0",
   tools: [
     {
       name: "register_search",

@@ -2105,8 +2105,13 @@ export function makePortalService({
           const { resolved } = resolveFor(job);
           const want = resolved && !resolved.clarify ? resolved.product : null;
           const row = productRow(want);
-          const finished = scanAccountRuns({ poolRoot, workspaceRoot, account, queueDirs: queueDirs() })
+          const deliveredFor = (scope) => scanAccountRuns({ poolRoot, workspaceRoot, account: scope, queueDirs: queueDirs() })
             .filter((x) => x.state === "delivered" && x.product === want);
+          let finished = deliveredFor(account);
+          // GENERIC HOLDS NO EXAMPLE OF ITS OWN. A demo's reports are filed under the company that carries them, and
+          // Generic is first on the picker and marked Default, so every search ordered from it was refused while the
+          // banner said each one opens a report. It looks across what this principal may open, which keeps the rule above.
+          if (!finished.length && account === "generic") finished = deliveredFor(principal.accounts === "*" ? null : principal.accounts);
           if (!finished.length) {
             audit({ event: "demo-order", by: principal.email, account, selector, product: want ?? null, landedOn: null });
             return { status: 409, json: { ok: false, errors: [

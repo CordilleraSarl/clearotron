@@ -60,10 +60,9 @@ are clean. The authoring rules and the empirical-verification checklist a new pr
 
 ## Where to start
 
-`clearance-search/SKILL.md` — the orchestrator's own skill, and the one file describing the whole workflow end to end.
-Then `clearance-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
+`clearance-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
 (`unit.md`, `digest.md`) and per-provider files (`providers/`). The other, `clearance-common-law`, is one spine plus
-`perplexity-prompts.md`, its two grid modes (deterministic `grid_spec_path` dispatch vs. the legacy authored
-program) being sections inside it — the per-mode split and `providers/` are register-only, not a shape every
+`perplexity-prompts.md` — the per-mode split and `providers/` are register-only, not a shape every
 execution skill shares. `clearance-search/phase2-execution.md` is methodology, not sequencing — the pipeline is
-sequenced in code, in `../stages.mjs` and `../pipeline.mjs`.
+sequenced in code, in `../stages.mjs` and `../pipeline.mjs`. The old orchestrator manual is kept as a record at
+[clearance-search-spine.md](../../docs/architecture/retired-manuals/clearance-search-spine.md); no stage reads it.
