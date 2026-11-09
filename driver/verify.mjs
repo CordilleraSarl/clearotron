@@ -43,7 +43,7 @@ import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
 import { parseVariantManifestModel, variantRomanizationGaps, variantCompletenessGaps, variantTermShapeGaps } from "./variant-manifest-model.mjs";
 import { digestAccountingGap } from "./register-digest-record.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 // ── WS-B: the run-scoped profile sidecar ────────────────────────────────────────────────────────────
 // _driver/profile.json carries the run's frozen customer values (floor, platform list) for these
@@ -54,7 +54,7 @@ import { readJson } from "./run-record.mjs";
 // a corrupt one is a code/filesystem bug that must surface loudly, never silently downgrade floors.
 function readRunProfile(p) {
   for (const dir of [dirname(p), dirname(dirname(p))]) {
-    const f = driverDir(dir, "profile.json");
+    const f = paths(dir).profile;
     if (!existsSync(f)) continue;
     try { return { profile: readJson(f), invalid: false }; }
     catch { return { profile: null, invalid: true }; }
@@ -70,7 +70,7 @@ function readRunProfile(p) {
 // corrupt one is a bug that must surface, never a silent downgrade to the wrong vocabulary).
 function readRunFramework(p) {
   for (const dir of [dirname(p), dirname(dirname(p))]) {
-    const f = driverDir(dir, "framework.json");
+    const f = paths(dir).framework;
     if (!existsSync(f)) continue; let manifest;
     try { manifest = parseFrameworkManifest(readFileSync(f, "utf8")); } catch { return { manifest: null, invalid: true }; }
     const m = readFrozenMethod(driverDir(dir, FROZEN_METHOD_FILE), manifest); return { manifest, method: m.method, methodInvalid: m.invalid ?? null, invalid: false };   // + the frozen method beside it (framework-method.mjs): null when none, `methodInvalid` when it does not read back
@@ -90,7 +90,7 @@ function readRunFramework(p) {
 // batch closes; the plan-execution reads got the same split).
 function readGridSpec(p) {
   for (const dir of [dirname(p), dirname(dirname(p))]) {
-    const f = driverDir(dir, "grid-spec.json");
+    const f = paths(dir).gridSpec;
     if (!existsSync(f)) continue;
     try {
       const spec = readJson(f);
@@ -1734,7 +1734,7 @@ export const validators = {
     // sentinel flipped real archived replay verdicts on 2026-07-31; that lesson is why this line exists.
     const recorded = matterFrameWasRecorded(dirname(String(p ?? "")));
     if (recorded) {
-      const scopeFile = driverDir(dirname(String(p ?? "")), "instructed-scope.json");
+      const scopeFile = paths(dirname(String(p ?? ""))).instructedScope;
       if (existsSync(scopeFile)) {
         // The stamp is a fixed heading the renderer always emits when it has a record to stamp from. Its
         // ABSENCE against a present intake record means the render ran without the values — the one way
@@ -1751,14 +1751,14 @@ export const validators = {
     // unparseable fails closed with a name (stagecontracts_invalid) — the marker is DRIVER-written, so
     // a corrupt one is a code/fs bug, never a waiver (post-merge audit 2 (c), same handling as the
     // romanisation-floor read in variantManifest below).
-    const contractsMarker = driverDir(dirname(String(p ?? "")), "stage-contracts.json");
+    const contractsMarker = paths(dirname(String(p ?? ""))).stageContracts;
     if (existsSync(contractsMarker)) {
       try { meaningMinted = Boolean(readJson(contractsMarker)?.["matter-frame"]?.meaningAngles); }
       catch { return fail("stagecontracts_invalid"); }
     }
     if (meaningMinted && !MEANING_ANGLES_RE.test(c)) return fail("meaning_angles_missing");
     let scope = null;
-    try { scope = readJson(driverDir(dirname(String(p ?? "")), "instructed-scope.json")); }
+    try { scope = readJson(paths(dirname(String(p ?? ""))).instructedScope); }
     catch { return base; }   // no receipt = legacy run — replay never flips
     const squash = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
     const hay = squash(c);
@@ -1820,7 +1820,7 @@ export const validators = {
       // driver-written sidecars (readRunProfile / readRunFramework / readGridSpec) says it must surface
       // with a name. One catch over both reads would waive BOTH floors on exactly the runs they govern.
       let contract = null;
-      const marker = driverDir(dir, "stage-contracts.json");
+      const marker = paths(dir).stageContracts;
       if (existsSync(marker)) {
         try { contract = variantsStageContract(readJson(marker)); }   // either name: see variantsStageContract
         catch { return fail("stagecontracts_invalid"); }
@@ -1845,7 +1845,7 @@ export const validators = {
         // (a legacy or replayed run) ⇒ no jurisdictions ⇒ the per-script arm cannot fire and the
         // category floor stands exactly as before, so archived verdicts do not flip.
         let jurisdictions = [];
-        try { jurisdictions = readJson(driverDir(dir, "instructed-scope.json"))?.jurisdictions ?? []; }
+        try { jurisdictions = readJson(paths(dir).instructedScope)?.jurisdictions ?? []; }
         catch { /* no frozen scope on this run — category floor only */ }
         const gaps = variantCompletenessGaps(model, { jurisdictions: Array.isArray(jurisdictions) ? jurisdictions : [jurisdictions] });
         if (gaps.length)
@@ -1865,7 +1865,7 @@ export const validators = {
     // D1 fail-closed (pre-existing, UNCHANGED): on a fresh run — the instructed-scope sentinel — the
     // structured sibling itself is REQUIRED; sentinel-era archives all carry the sibling, so this arm
     // never fires on replay.
-    if (existsSync(driverDir(dir, "instructed-scope.json"))) return fail("variantmodel_missing");
+    if (existsSync(paths(dir).instructedScope)) return fail("variantmodel_missing");
     return base;
   },
   // Property 1 (frame-omission design): the stage's ONE output is the structured model the frame-diff
@@ -1906,9 +1906,9 @@ export const validators = {
     // sentinel proves a FRESH run — legacy/archived replays lack it, so replay verdicts never flip;
     // a plan-less resume (no run-dir register-plan.json) keeps the lenient path too.
     if (bandName.endsWith("-band.json") && !existsSync(join(dirname(String(p ?? "")), bandName))
-      && existsSync(driverDir(join(dirname(String(p ?? "")), ".."), "instructed-scope.json"))) {
+      && existsSync(paths(join(dirname(String(p ?? "")), "..")).instructedScope)) {
       try {
-        const plan = readJson(driverDir(join(dirname(String(p ?? "")), ".."), "register-plan.json"));
+        const plan = readJson(paths(join(dirname(String(p ?? "")), "..")).registerPlan);
         const axis = basename(String(p ?? "")).replace(/\.md$/i, "");
         if ((plan?.entries ?? []).some((e) => e?.axis === axis)) {
           // — SAME EVIDENCE, TWO CAUSES, and this is where the wrong one used to be picked.
@@ -1950,7 +1950,7 @@ export const validators = {
       // replay verdicts and legacy resumes never flip; only runs whose plan was attached by new code
       // (exactly those receiving the new stage message + enumerate exclusion) are enforced.
       try {
-        const plan = readJson(driverDir(join(dirname(String(p ?? "")), ".."), "register-plan.json"));
+        const plan = readJson(paths(join(dirname(String(p ?? "")), "..")).registerPlan);
         const axis = basename(String(p ?? "")).replace(/\.md$/i, "");
         if (plan?.contract?.supplemental_lane && (plan.entries ?? []).some((e) => e?.axis === axis)) {
           const blocks = readJson(join(dirname(String(p ?? "")), bandName));
@@ -2043,7 +2043,7 @@ export const validators = {
     if (sib) return sib.ok && placementAccountArmed(dir) ? placementAccountVerdict(dir) : sib;   // placementAccount: see the block at the end of this file
     let structured = false;
     let formEra = false;
-    const marker = driverDir(dir, "stage-contracts.json");
+    const marker = paths(dir).stageContracts;
     // ABSENT marker = not minted under the B2 prompt — pre-B2 rules apply (every archive). PRESENT but
     // unparseable is a different fact (post-merge audit 2 (c), the convention set for the
     // variantManifest twin above): the marker is DRIVER-written (pipeline.mjs recordStageContract), so a
@@ -2210,7 +2210,7 @@ export const validators = {
     // never carry it and replay verdicts never flip — off-enum shapes ("N/A", "confirmed", "✅",
     // "not-searched (immaterial by design)") sit in 27 of 64 corpus register-findings.md files,
     // including July-2026 runs, so an unkeyed gate would mass-flip the replay harness to NO-GO.
-    if (existsSync(driverDir(dirname(p), "coverage-enum.json"))) {
+    if (existsSync(paths(dirname(p)).coverageEnum)) {
       const offEnum = parseCoverageLedgerFull(c).offEnum;
       if (offEnum.length)
         return fail(`coverage_status_offenum:${short(offEnum[0].status)} (axis ${offEnum[0].axis}${offEnum.length > 1 ? ` +${offEnum.length - 1} more` : ""} — the Status cell is EXACTLY one bare token of: ${COVERAGE_STATUSES.join(" / ")}; qualifiers move into reason)`);
@@ -2240,7 +2240,7 @@ export const validators = {
     // same tokens, byte-identical construction, because the replay corpus compares verdict STRINGS.
     // `unexecuted` and `skipped` never had a join, so findUnexecutedCleanClaims runs on BOTH paths.
     let planExecRaw = null;
-    try { planExecRaw = readFileSync(driverDir(dirname(p), "plan-execution.json"), "utf8"); } catch { /* no receipt — plan gate inactive (legacy/replay) */ }
+    try { planExecRaw = readFileSync(paths(dirname(p)).planExecution, "utf8"); } catch { /* no receipt — plan gate inactive (legacy/replay) */ }
     if (planExecRaw != null) {
       let exec = null;
       try { exec = JSON.parse(planExecRaw); } catch { /* falls through to the shape fail below */ }
@@ -2265,7 +2265,7 @@ export const validators = {
         // truth). Sanctioned crowds (count-kind, single-term saturated) never fire — crowd = dilution
         // stays judgment's call. Needs the run-dir plan + bands; either unreadable ⇒ inactive.
         try {
-          const plan = parseRegisterPlan(readFileSync(driverDir(dirname(p), "register-plan.json"), "utf8"));
+          const plan = parseRegisterPlan(readFileSync(paths(dirname(p)).registerPlan, "utf8"));
           const bands = {};
           for (const s of (exec.skeleton ?? [])) {
             try {
@@ -2404,7 +2404,7 @@ export const validators = {
     // Sidecar-gated (archived runs have no sidecar → never fires; replay-safe); the refutation stays
     // the semantic backstop — this is the deterministic floor.
     try {
-      const asksRaw = readFileSync(driverDir(dirname(p), "intake-asks.json"), "utf8");
+      const asksRaw = readFileSync(paths(dirname(p)).intakeAsks, "utf8");
       const asks = JSON.parse(asksRaw);
       if (Array.isArray(asks) && asks.length) {
         const sec = String(c ?? "").match(/^##\s*Answers to your instructions\s*\n([\s\S]*?)(?=^#{1,2}\s|$(?![\s\S]))/im)?.[1] ?? "";
@@ -2456,7 +2456,7 @@ export const validators = {
     // names marketplace/platform coverage AND recommends a re-run/further search as a next step.
     const cv = findCoverageRecommendations(c);
     if (cv.length) {
-      const receipt = existsSync(driverDir(dirname(p), "coverage-closure.json"));
+      const receipt = existsSync(paths(dirname(p)).coverageClosure);
       return fail(receipt
         ? `coverage_recommendation:${abbrev(cv[0], 100)}`
         : `coverage_gap_unexplained:${abbrev(cv[0], 100)}`);
@@ -2484,7 +2484,7 @@ export const validators = {
     if (!base.ok) return base;
     const dir = dirname(String(p ?? ""));
     let contract = null;
-    const marker = driverDir(dir, "stage-contracts.json");
+    const marker = paths(dir).stageContracts;
     if (existsSync(marker)) {
       try { contract = readJson(marker)?.["case-law"] ?? null; }
       catch { return fail("stagecontracts_invalid"); }
@@ -2519,7 +2519,7 @@ export const validators = {
     // as the registerFindings read — a receipt PRESENT but corrupt fails loud instead of silently
     // waiving the audit requirement (the sidecar is driver-written; a corrupt one is a bug).
     let planExecRaw = null;
-    try { planExecRaw = readFileSync(driverDir(dirname(String(p ?? "")), "plan-execution.json"), "utf8"); } catch { /* no receipt — audit not required */ }
+    try { planExecRaw = readFileSync(paths(dirname(String(p ?? ""))).planExecution, "utf8"); } catch { /* no receipt — audit not required */ }
     if (planExecRaw != null) {
       try { JSON.parse(planExecRaw); }
       catch { return fail("plan_execution_unreadable: _driver/plan-execution.json is corrupt (driver-written — this is a bug, not a model defect)"); }
@@ -2602,7 +2602,7 @@ function checkClientSummaryJoin(p, c) {
   const fw = v4 ? readRunFramework(p) : { manifest: null, invalid: false };
   if (v4 && fw.invalid) return fail("framework_manifest_unreadable: _driver/framework.json is corrupt");
   if (v4 && !fw.manifest) return fail("framework_manifest_missing_for_v4: cannot judge client band words without the frozen framework");
-  try { verdictDoc = readJson(driverDir(dirname(p), "verdict.json")); } catch { /* optional */ }
+  try { verdictDoc = readJson(paths(dirname(p)).verdict); } catch { /* optional */ }
   const blocks = [...String(c ?? "").matchAll(/^##\s+([^\n]+)\n([\s\S]*?)(?=^##\s|\s*$)/gm)];
   for (const [, head, body] of blocks) {
     const risk = body.match(/^-\s*risk:\s*([A-Za-z –-]+)$/m)?.[1]?.trim();
@@ -2629,7 +2629,7 @@ function checkClientSummaryJoin(p, c) {
   // report un-signable (VIBRANTE dropped on a group mislabel). Gated on the sidecar existing, which only
   // fresh runs write — archived runs and replay never flip. Failures ride the stage's corrective ladder.
   try {
-    const scope = readJson(driverDir(dirname(p), "client-summary-scope.json"));
+    const scope = readJson(paths(dirname(p)).clientSummaryScope);
     const blockOrds = new Set(blocks.map(([, , body]) => parseBlockOrd(body)).filter((o) => o != null));
     for (const s of scope?.rated ?? []) {
       if (!blockOrds.has(s.ord))
@@ -2677,7 +2677,7 @@ const short = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
 // before this arm existed, and this must not change it.
 function placementAccountArmed(dir) {
   try {
-    return readJson(driverDir(dir, "stage-contracts.json"))?.["placement-inquiry"]?.placementAccount === 1;
+    return readJson(paths(dir).stageContracts)?.["placement-inquiry"]?.placementAccount === 1;
   } catch { return false; }
 }
 function placementAccountVerdict(dir) {
@@ -2741,14 +2741,14 @@ function placementAccountVerdict(dir) {
 // ARMED ON ITS OWN STAMP KEY (`placementSaidBack: 1`), so an archived run replays to the verdict it was minted under.
 function placementSaidBackArmed(dir) {
   try {
-    return readJson(driverDir(dir, "stage-contracts.json"))?.["placement-inquiry"]?.placementSaidBack === 1;
+    return readJson(paths(dir).stageContracts)?.["placement-inquiry"]?.placementSaidBack === 1;
   } catch { return false; }
 }
 const capped = (items) => `${items.slice(0, 8).join("; ")}${items.length > 8 ? "; …" : ""}`;
 /** The band's floors. A shape that cannot be read holds none, and the rule reads as before. */
 function shapeFloors(dir) {
   try {
-    const floors = readJson(driverDir(dir, "band-shape.json"))?.floors?.in_class_identical_or_near;
+    const floors = readJson(paths(dir).bandShape)?.floors?.in_class_identical_or_near;
     return Array.isArray(floors) ? floors : [];
   } catch { return []; }
 }
