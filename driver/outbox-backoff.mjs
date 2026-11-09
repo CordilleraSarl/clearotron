@@ -29,9 +29,8 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, w
 import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { fileURLToPath } from "node:url";
 import { config } from "./driver.config.mjs";
-import { atomicWrite } from "./progress.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { readJson } from "./run-record.mjs";
+import { atomicWrite, readJson } from "./run-record.mjs";
 
 // Tunables (env-overridable for tests; production uses the defaults). Delay for the Nth consecutive
 // failure = min(base·2^(N−1), cap); past maxRetries the verdict is "giveup": the shell clears the
