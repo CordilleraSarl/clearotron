@@ -310,7 +310,7 @@ export const E3_BACKLOG = [
   {
     stage: "placement-inquiry",
     kind: "exactly-these-keys",
-    where: "driver/skills/placement-inquiry/SKILL.md:58-66",
+    where: "driver/skills/placement-inquiry/SKILL.md:54-62",
     surface: "skill-file",
     evidence: "**2. The structured mirror** `…/placements.json` … `{\"schema_version\":1,\"placements\":[...]}`, ONE object per placed candidate, keys EXACTLY `{\"mark\",\"owner\",\"jurisdiction\",\"records\",\"tier\",\"reason\"}` plus the optional `\"borderline\"` … `tier` — EXACTLY one of `headline-candidate` / `sheet-2` / `watch",
     reparsedBy: "driver/placement-model.mjs. AND IT IS STALE: #562 made placements.json driver-rendered, and placement-inquiry's message in stages.mjs says \"DO NOT WRITE placements.json (the driver renders it from this form)\" — the skill file the stage is ordered to \"read and follow exactly\" dictates the key set of a file the message forbids it to write. Two contracts in one dispatch",
@@ -319,7 +319,7 @@ export const E3_BACKLOG = [
   {
     stage: "placement-inquiry",
     kind: "dictated-line-shape",
-    where: "driver/skills/placement-inquiry/SKILL.md:42",
+    where: "driver/skills/placement-inquiry/SKILL.md:38",
     surface: "skill-file",
     evidence: "Use these section headings, in this order: **Band reconciliation** …, the four placement tiers (**Headline candidates**, **Sheet 2 / register watch**, **Watchlist annex**, **Out-of-scope / filtered**), **Disagreements / flags surfaced to downstream**, **Coverage rulings & open questions** …, and **O",
     reparsedBy: "driver/pipeline.mjs — the PLACEMENT RULINGS TAIL block handed to register-digest is lifted from these named sections (register-digest's message in stages.mjs references it); driver/skills/clearance-register/digest.md:342-352 re-parses the Disagreements section into its own table",
