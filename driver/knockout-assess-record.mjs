@@ -59,7 +59,7 @@
 // CHECK membership. Derive identity FROM the marks and the membership guard becomes the decision: a seat
 // that rates the wrong marks no longer fails a check — it writes to a different chunk file and passes.
 // That is the guard and the thing it guards collapsing into each other.
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
@@ -69,6 +69,7 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS, heldCitationsOnly, classGroupsDefect, frozenLadder, validators } from "./verify-knockout.mjs";
 // A FINDING'S KEYS, likewise: the validator's one list, so a key the call records is a key the stage accepts.
 import { KNOCKOUT_FINDING_KEYS } from "./findings-model.mjs";
+import { readJson } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -423,7 +424,7 @@ const sourceDefectsPath = (runDir, chunkNo) => join(knockoutAssessCallPaths(Stri
  * correction. A row never leaves on its own account: the claim may survive a finding dropped or renamed, and only an accepted read settles it.
  */
 export function knockoutAssessSourceDefects(runDir, chunkNo) {
-  try { return JSON.parse(readFileSync(sourceDefectsPath(runDir, chunkNo), "utf8")); } catch { return []; }
+  try { return readJson(sourceDefectsPath(runDir, chunkNo)); } catch { return []; }
 }
 
 // CODE DOES NOT JUDGE THE CLAIM. It reads whether the finding changed, and leaves whether that answers the problem to the check.
