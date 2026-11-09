@@ -5326,8 +5326,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 136,
-          "asserts": 732,
+          "tests": 137,
+          "asserts": 738,
           "skips": 1,
           "todos": 0
         },
@@ -8496,6 +8496,12 @@
         "whatif-queue.test.mjs": {
           "tests": 13,
           "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "with-no-ai-chosen-doctor-asks-for-no-programs-path.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
