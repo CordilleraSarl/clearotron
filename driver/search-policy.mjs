@@ -229,8 +229,6 @@ export const PRODUCT_POLICIES = {
       // Pinned with the same provenance in the-doubt-carries-its-placement-tier.test.mjs (RULED_CUTS).
       doubtClosure: "headline-candidate",
       recallFollowupMax: 1,
-      envelopeRounds: "one",               // one closing round, not to exhaustion
-      coverageClosureRounds: "one",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
     web: { questionPreset: "medium", resultsPerCell: 15 },
@@ -281,8 +279,6 @@ export const PRODUCT_POLICIES = {
       // ruling to the most expensive product is not mine to do. Raised as a question rather than
       // assumed —.
       recallFollowupMax: 2,
-      envelopeRounds: "as-today",
-      coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
     web: { questionPreset: "high", resultsPerCell: 20 },
@@ -303,8 +299,6 @@ export const PRODUCT_POLICIES = {
       groundedProfiles: "every-finding",
       doubtClosure: "every-doubt",
       recallFollowupMax: 2,                // RECALL_FOLLOWUP_MAX
-      envelopeRounds: "as-today",
-      coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: true, commonLawGrid: true },
     web: { questionPreset: "xhigh", resultsPerCell: 25 },
