@@ -29,6 +29,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync
 import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const RESEARCH_ANSWERS_FILE = "research-answers.jsonl";
 
@@ -194,7 +195,7 @@ export const researchReplayOn = (runDir) => Boolean(runDir) && existsSync(driver
 /** The answers file a replay answers from, as its marker names it, or null: then it answers nothing. IMPURE. */
 export function replayAnswersFrom(runDir) {
   try {
-    const from = JSON.parse(readFileSync(driverDir(runDir, RESEARCH_REPLAY_FILE), "utf8"))?.answersFrom;
+    const from = readJson(driverDir(runDir, RESEARCH_REPLAY_FILE))?.answersFrom;
     return typeof from === "string" && from.trim() ? from : null;
   } catch { return null; }
 }
