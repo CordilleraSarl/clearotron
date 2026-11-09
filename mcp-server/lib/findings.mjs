@@ -9,6 +9,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { parseAudit, parseReport, parseBlocks, parseFront, parseSections, buildAuditMd, placementAuditRows } from "./driver.mjs";
+import { readJson } from "../../driver/run-record.mjs";
 
 // id-stamp the three block lists so callers (get_finding / trace) can address a single record.
 function idStamp(lists) {
@@ -26,7 +27,7 @@ function idStamp(lists) {
 function readRunFindings(P) {
   try {
     if (!P?.findings || !existsSync(P.findings)) return null;
-    const j = JSON.parse(readFileSync(P.findings, "utf8"));
+    const j = readJson(P.findings);
     if (Array.isArray(j)) return j;
     return Array.isArray(j?.findings) ? j.findings : null;
   } catch { return null; }
