@@ -87,7 +87,7 @@
 // mark generates 3–8. `CLEAROTRON_KNOCKOUT_VARIANT_CAP` lowers it per deployment; nothing raises it above
 // the code cap, because the ceiling is a spend guarantee and a knob that can lift it is not one.
 
-import { existsSync, readFileSync, appendFileSync } from "node:fs";
+import { appendFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { kebab } from "./search-policy.mjs"; import { moreThan } from "../shared/register-floor.mjs";
@@ -96,6 +96,7 @@ import { reachableRegions } from "./register-availability.mjs";   // — pure; t
 import { variantForms, VARIANT_RULES, VARIANT_CAP } from "./register-variants.mjs";
 import { isCapabilityGap } from "../providers/_shared/execute-plan.mjs";
 import { plainDeferralReason, plainCause } from "./deferral-row.mjs";   // — the reader's line for a count left open
+import { readJson } from "./run-record.mjs";
 
 /** The three questions, in report order. `matchMode` is the provider-neutral predicate name.
  *
@@ -245,7 +246,7 @@ async function runBatched(items, limit, fn) {
 function fixtureCounter(dir) {
   return async (mark, predicate) => {
     let doc;
-    try { doc = JSON.parse(readFileSync(join(dir, `${kebab(mark)}.json`), "utf8")); }
+    try { doc = readJson(join(dir, `${kebab(mark)}.json`)); }
     catch (e) { return { ok: false, total: null, reason: `count fixture missing for ${kebab(mark)}: ${e.message}` }; }
     // THE KEY IS THE QUESTION ASKED, NOT THE COLUMN IT FEEDS. A variant probe asks the provider's
     // EXACT predicate about a generated form, so its fixture is that form's own file under `identical`
