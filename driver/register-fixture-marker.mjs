@@ -3,8 +3,9 @@
 //
 // register-fixture-marker.mjs — whether this run's register answers come from a fixture directory. From the job, never
 // the environment: it is a fact about the run, and every tool server a stage spawns reads it here.
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const REGISTER_FIXTURE_MARKER = "register-fixtures.json";
 
@@ -18,5 +19,5 @@ export function writeFixtureMarker(runDir, records) {
 export function fixtureRecordsDir(runDir) {
   const p = driverDir(runDir, REGISTER_FIXTURE_MARKER);
   if (!existsSync(p)) return null;
-  try { return JSON.parse(readFileSync(p, "utf8"))?.records ?? null; } catch { return null; }
+  try { return readJson(p)?.records ?? null; } catch { return null; }
 }
