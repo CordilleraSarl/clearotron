@@ -23,11 +23,10 @@ import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 
 import { captureCall, stampVerdict } from "./call-capture.mjs";
-import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";
 import { acceptedEnvelope } from "./preserve-merge.mjs";
 import { acceptKnockoutAssess, knockoutAssessCallPaths, knockoutAssessChunkFile, refuseUndeclared } from "./knockout-assess-record.mjs";
 import { validators as koValidators } from "./verify-knockout.mjs";
-import { paths, readJsonOrNull } from "./run-record.mjs";
+import { DRIVER_DIR, driverDir, paths, readJsonOrNull } from "./run-record.mjs";
 
 const TOKEN = "knockoutcorrection";
 const SCHEMA_VERSION = 1;
