@@ -20,7 +20,7 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "../providers/_shared/plan-guards.mjs";
 import { entryQuestionKey } from "./register-plan.mjs";
 import { seatBannedTokens } from "./coverage-form.mjs";
-import { readJsonOrNull } from "./run-record.mjs";
+import { paths, readJsonOrNull } from "./run-record.mjs";
 
 export const WITHHELD_REASON_MAX = 600;
 const FILE_RE = /^withheld-families-(.+)\.json$/;
@@ -111,7 +111,7 @@ export function waitingFamiliesOn(plan, axis, supplementals = [], released = new
  * what it refused, and never throws.
  */
 export function recordWithheldFamilies(runDir, { axis, families } = {}) {
-  const plan = readJsonOrNull(driverDir(runDir, "register-plan.json"));
+  const plan = readJsonOrNull(paths(runDir).registerPlan);
   if (!plan || !Array.isArray(plan.entries)) return { refused: "no frozen register plan in this run — there are no waiting families to record against" };
   if (!Array.isArray(families) || !families.length) return { refused: "families must list at least one { qids, reason }" };
   const supp = readJsonOrNull(join(runDir, "register-units", `${axis}-supplemental-plan.json`));
@@ -166,7 +166,7 @@ export function recordWithheldFamilies(runDir, { axis, families } = {}) {
  * refused, and never throws.
  */
 export function recordReleasedFamilies(runDir, { axis, families } = {}) {
-  const plan = readJsonOrNull(driverDir(runDir, "register-plan.json"));
+  const plan = readJsonOrNull(paths(runDir).registerPlan);
   if (!plan || !Array.isArray(plan.entries)) return { refused: "no frozen register plan in this run — there are no waiting families to record against" };
   if (!Array.isArray(families) || !families.length) return { refused: "families must list at least one { qids, reason }" };
   const supp = readJsonOrNull(join(runDir, "register-units", `${axis}-supplemental-plan.json`));
