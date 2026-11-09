@@ -477,6 +477,17 @@ test("nativeread payload caps the grid section with a receipted drop count; grou
   assert.ok(uris.has("https://item.taobao.com/item/79"), "an omitted row's url still grounds — it WAS fetched");
 });
 
+test("nativeread payload keeps use and listing rows past the cap ahead of the rest, and the cap and the grid's order within a class stand", () => {
+  const row = (classification, i) => ({ classification, title: `${classification}-${i}`, url: `https://item.taobao.com/item/${classification}/${i}`, term: "诺瓦", platform: "taobao.com" });
+  const many = [...Array.from({ length: 70 }, (_, i) => row("unrelated", i)), row("listing-candidate", 0), row("unjudged", 0), row("use-evidence", 0), row("use-evidence", 1), row("news-editorial", 0)];
+  const { payload, uris, gridRowsDropped } = units.buildNativereadPayload({ registerSliceText: "", candidates: [], cnipaSubgroups: [], gridFindings: many });
+  const titles = [...payload.matchAll(/^- \[[^\]]+\] "([^"]+)"/gm)].map((m) => m[1]);
+  assert.deepEqual(titles.slice(0, 5), ["use-evidence-0", "use-evidence-1", "listing-candidate-0", "unjudged-0", "unrelated-0"]);
+  assert.equal(titles.length, units.NATIVEREAD_GRID_ROWS_CAP, "the cap moved");
+  assert.equal(gridRowsDropped, many.length - units.NATIVEREAD_GRID_ROWS_CAP);
+  assert.ok(uris.has("https://item.taobao.com/item/news-editorial/0"), "a row past the cap still grounds");
+});
+
 test("nativeread DEFERS while an armed serp grid is retryable-degraded; proceeds when the grid never wrote a record (structural skip)", async () => {
   await withEnv({ CLEAROTRON_JX_LANES: "1", CLEAROTRON_JX_NATIVEREAD: "1", CLEAROTRON_JX_SERP_GRID: "1" }, async () => {
     const ctx = mkCtx();

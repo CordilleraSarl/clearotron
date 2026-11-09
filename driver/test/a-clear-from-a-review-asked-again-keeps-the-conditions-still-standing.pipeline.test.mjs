@@ -109,6 +109,10 @@ for (const engine of Object.keys(ENGINES)) {
     const run = await runPipeline(engine, { guard: true });
     assert.ok(run.events.some((e) => e.event === "floor-duty-undischarged"), "guard: the floor's guard never fired");
     assert.ok(run.events.some((e) => e.event === "reviewer-degenerate"), "guard: the review was never asked again");
+    const reask = readdirSync(driverDir(run.res.runDir)).filter((f) => f.startsWith("narrative-refutation.attempt") && f.includes(".dispatch.txt"))
+      .map((f) => readFileSync(driverDir(run.res.runDir, f), "utf8")).find((m) => m.includes("A BLOCKING with no cited defects is invalid output"));
+    assert.ok(reask?.includes("Record the review again with `record_narrative_refutation`: the verdict (CLEAR / CONDITIONAL / BLOCKING) and any flags that still stand."), "the seat was not told to record through its tool");
+    assert.ok(!reask.includes("Write your review"), "the seat was told to write a file it has no tool for");
     assert.equal(run.events.find((e) => e.event === "verdict-3" && e.trigger === "degenerate-reask")?.verdict, "CLEAR", "guard: the review asked again did not say CLEAR");
     const clause = clauseForDefect("floor_duty_undischarged", 1, run.duty.totals.floors);
     assert.equal(run.res.ok, true, JSON.stringify({ fail: run.res.fail, stage: run.res.failedStage }));

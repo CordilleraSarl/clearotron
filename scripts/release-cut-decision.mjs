@@ -71,7 +71,8 @@ export function cutRef(env = process.env) {
 }
 
 function main() {
-  const version = versionAtHead({ ref: cutRef() });
+  const ref = cutRef();
+  const version = versionAtHead({ ref });
   const tags = tagsHere();
   // A CHECKOUT WITH NO TAGS AT ALL CANNOT ANSWER THIS. Every version would read as never released, and
   // the pipeline would publish on every push. `fetch-depth: 0` brings tags; if it ever stops, this
@@ -85,7 +86,11 @@ function main() {
   const { cut } = cutDecision({ version, tags });
   console.log(cut ? `v${version} has no tag — this push cut it.` : `v${version} is already released — nothing to publish.`);
   const out = process.env.GITHUB_OUTPUT;
-  if (out) appendFileSync(out, `version=${version}\ncut=${cut}\n`);
+  // THE COMMIT THE ANSWER IS ABOUT. A job that then builds something names this, or it builds whatever its event
+  // commit happened to be: a scheduled run queued before a version commit asks about main and would pack the tree
+  // from before it. Measured 2026-11-08, when a scheduled run tried to publish the previous version again.
+  const sha = execFileSync("git", ["rev-parse", `${ref}^{commit}`], { encoding: "utf8" }).trim();
+  if (out) appendFileSync(out, `version=${version}\ncut=${cut}\nsha=${sha}\n`);
 }
 
 if (isEntrypoint(import.meta.url)) main();
