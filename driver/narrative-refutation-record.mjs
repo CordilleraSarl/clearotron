@@ -37,10 +37,9 @@
 import { writeFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parseVerdict, countCitedDefects, parseCorrections, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
 
