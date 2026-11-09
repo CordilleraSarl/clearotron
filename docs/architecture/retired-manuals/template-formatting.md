@@ -4,9 +4,8 @@
 > you trust a line.**
 >
 > **LIVE — [Formatting specifications](#formatting-specifications) onward (fonts, colours, table
-> styling, spacing, alignment, CSS classes).** This is the FORMATTING REFERENCE that
-> `driver/publish/render-knockout.mjs` follows byte-faithfully — `border:solid windowtext 1pt`,
-> `padding:0cm 5.4pt`, Calibri 11pt. It is a description of what the renderer emits, addressed to
+> styling, spacing, alignment, CSS classes).** This file records the retired Word template. The renderer does not follow it.
+> It is a description of what the renderer emits, addressed to
 > whoever maintains the renderer. **Changing a value here changes nothing on its own; the renderer is
 > the thing that emits.** Never edit a value here without moving the renderer in the same change, or
 > the two silently disagree and this file starts lying.

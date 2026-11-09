@@ -1,7 +1,6 @@
-#!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Standalone MCP server wrapping the EUIPO CORE under the NEUTRAL `register_*` names, so a `claude -p`
+// The EUIPO register's tools, as driver/engine/mcp/register-server.mjs mounts them, wrapping its CORE under the NEUTRAL `register_*` names, so a `claude -p`
 // process can call the EU register as the active register provider. Pure glue: the core owns all logic.
 //
 // ── THIS FILE REPLACED A SIDE-TOOL SERVER, AND THE DIFFERENCE IS THE POINT ────────────────────────
@@ -27,15 +26,11 @@
 //   record's `markImage` carries only `{imageFormat, viennaClasses}` — no bytes, no URL. But
 //   `GET /trademarks/{n}/image` answers 200 with real image bytes. The tool returns metadata + the
 //   Vienna figurative-element codes rather than the bytes; see the core for why.
-import { serve } from "./stdio-server.mjs";
-import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
-import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
+import { sendUntilFromEnv } from "../../_shared/send-until.mjs";
 import {
   CAPABILITIES, CRED_ENV, doSearch, doRecordFetch, doBatchScreen, doImageFetch,
   doEnumerate, doExecutePlan,
-} from "../../../providers/euipo/src/core.js";
-import { proposeSupplemental } from "./supplemental.mjs";
-import { narrowingFields } from "./proposal-fields.mjs";
+} from "./core.js";
 
 // The core resolves credentials from the environment; AUTH stays an object so a future knob (a pinned
 // environment, a second subscription) does not change every call site.
@@ -82,8 +77,8 @@ const QUERY_PROPS = {
   regions: { type: "array", items: { type: "string" }, description: "territory codes. This source holds the EU register only (EUTM + IRs designating the EU); anything else is REFUSED as a deferred gap, never filtered away so the search runs EU-wide regardless." },
 };
 
-serve({
-  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
+export const mount = ({ proposeSupplemental, narrowingFields }) => ({
+  version: "0.1.0",
   tools: [
     {
       name: "register_search",

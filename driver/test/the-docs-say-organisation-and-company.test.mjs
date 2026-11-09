@@ -48,6 +48,7 @@ const EXCLUDED = {
   "CHANGELOG.md": "generated from release notes, and history is not rewritten",
   "docs/architecture/retired-manuals/email-generic.md": "the record of a retired manual, kept as it was written",
   "docs/architecture/retired-manuals/template-formatting.md": "the record of a retired manual, kept as it was written",
+  "docs/architecture/retired-manuals/clearance-search-spine.md": "the record of a retired manual, kept as it was written",
 };
 const inCorpus = (f) => (f === "README.md" || ROOT_DOCS.includes(f) || /^docs\/.+\.md$/.test(f))
   && !Object.hasOwn(EXCLUDED, f);

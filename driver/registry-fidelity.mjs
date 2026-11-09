@@ -331,7 +331,7 @@ export function assembleRunRecords(runDir, runPrefix,
       // family this program keeps finding. So the driver writes it, beside the provider it already
       // writes, from the same kind of read.
       //
-      // UNSET WRITES null, NEVER "sandbox". euipo-server.mjs makes the same choice at the other end and
+      // UNSET WRITES null, NEVER "sandbox". the euipo mount makes the same choice at the other end and
       // says why: a default here would reinstate the silent wrong-corpus read the field exists to
       // prevent. null says "this run did not record it", which is a fact; "sandbox" would be a claim.
       // A live EUIPO call cannot reach this state anyway — core.js refuses to run with the variable

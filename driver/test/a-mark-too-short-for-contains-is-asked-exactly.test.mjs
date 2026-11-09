@@ -195,8 +195,8 @@ test("every register's propose tool hands the minting its own capabilities, so t
   // passed no capabilities would leave the floor unread, and every arm above would still pass.
   const here = dirOf(fromUrl(import.meta.url));
   for (const id of ["signa", "clarivate", "corsearch"]) {
-    const src = readSrc(joinPath(here, "..", "engine", "mcp", `${id}-server.mjs`), "utf8");
-    assert.match(src, /proposeSupplemental\([\s\S]{0,300}capabilities: CAPABILITIES/, `${id}-server does not pass its capabilities`);
+    const src = readSrc(joinPath(here, "..", "..", "providers", id, "src", "mount.js"), "utf8");
+    assert.match(src, /proposeSupplemental\([\s\S]{0,300}capabilities: CAPABILITIES/, `${id} does not pass its capabilities`);
   }
 });
 

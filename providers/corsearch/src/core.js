@@ -439,7 +439,7 @@ export async function doExpandPhoneme(sessionKey, params, tctx) {
 // sign-off (the GATE) — so it is inert today.
 
 // The pure screening primitives now live in providers/_shared/screen.mjs (one implementation for every
-// provider); they are RE-EXPORTED here unchanged so every existing importer — engine/mcp/corsearch-server.mjs,
+// provider); they are RE-EXPORTED here unchanged so every existing importer — src/mount.js,
 // register-plan.mjs, the driver — keeps resolving them from this module with identical semantics.
 // classifyStatus carries brand-json's vocabulary (Valid/Pending/GracePeriod live; Invalid/Expired dead;
 // anything else AMBIGUOUS → never auto-drop). BATCH_SCREEN_CHUNK = 100 matches the brand-json page size.

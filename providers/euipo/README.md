@@ -22,7 +22,7 @@ nothing downstream can mistake one for the other. Set `production` explicitly.
 - `../../driver/driver.config.mjs` — the `euipo` provider entry, which lazily imports `src/core.js`
   for `recordFetch`, `countHits`, `listRecords` and `executePlan`. `credEnv` is `EUIPO_CLIENT_ID`
   with `EUIPO_CLIENT_SECRET` in `credEnvAlso`, so preflight checks the whole pair.
-- `../../driver/engine/mcp/euipo-server.mjs` — the model-facing surface, under the neutral
+- `src/mount.js` — the model-facing surface, under the neutral
   `register_*` names. `register_expand_phoneme` is absent on purpose: the planner stamps a phonetic
   slice `unsupported` and it is disclosed as a deferred coverage row.
 - `../../driver/register-capabilities.mjs` — imports `src/capabilities.js` statically at module load,

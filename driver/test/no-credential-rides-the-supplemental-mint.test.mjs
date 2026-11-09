@@ -22,13 +22,16 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const MCP = join(HERE, "driver", "engine", "mcp");
-const servers = () => readdirSync(MCP).filter((f) => f.endsWith("-server.mjs")).sort();
+const PROVIDER_ROOT = join(HERE, "providers");
+const mounts = () => readdirSync(PROVIDER_ROOT).filter((p) => existsSync(join(PROVIDER_ROOT, p, "src", "mount.js")))
+  .map((p) => `../../../providers/${p}/src/mount.js`);
+const servers = () => [...readdirSync(MCP).filter((f) => f.endsWith("-server.mjs")), ...mounts()].sort();
 const read = (f) => readFileSync(join(MCP, f), "utf8");
 
 /** Every `proposeSupplemental(` call in a server, with the argument text that follows it. */
@@ -154,10 +157,10 @@ test("the ONE provider the filing missed is covered by the discovered population
   // Named explicitly, because this is the case that refuted the issue's own premise and a future
   // reader deserves to find it by name rather than by re-deriving it. Not a hardcoded subject list —
   // the arms above scan the directory; this asserts the directory really does contain it.
-  assert.ok(servers().includes("corsearch-server.mjs"),
-    "corsearch-server.mjs is not in the scanned population — the provider whose credential actually "
+  assert.ok(servers().includes("../../../providers/corsearch/src/mount.js"),
+    "corsearch's mount is not in the scanned population — the provider whose credential actually "
     + "reached the wire is the one this guard is no longer watching");
-  const src = read("corsearch-server.mjs");
+  const src = read("../../../providers/corsearch/src/mount.js");
   assert.match(src, /executePlan: \(params, t\) => doExecutePlan\(COOKIE, params, t\)/,
     "corsearch no longer binds its executor in a closure, so the cookie is threaded through the kernel "
     + "again — the exact state #1644 was filed about, and the one the other five hid");

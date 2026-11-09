@@ -17,7 +17,7 @@ This is structured refutation, not approval. Your job is to find what's wrong, n
 
 ## When invoked
 
-Spawned between Step 4 synthesis (narrative composition) and Phase 3 delivery. Different session, clean context. Reads multiple inputs, writes one output. Phase 3 consumes the verdict — BLOCKING drives one corrective re-synthesis; the report is then **always delivered**, with any unresolved reviewer concerns surfaced to the reviewing lawyer as open questions (the driver never withholds — see `clearance-search` Phase 3).
+Spawned between Step 4 synthesis (narrative composition) and Phase 3 delivery. Different session, clean context. Reads multiple inputs, writes one output. A CONDITIONAL or BLOCKING verdict sends your flags to one targeted correction by the writer, then one recheck. The report is always delivered, with unresolved points kept in the run record for the reviewing lawyer.
 
 The orchestrator (`clearance-search`) spawns this worker at the equivalent step. Reusable by a future clearance-search at the equivalent step.
 
@@ -29,7 +29,7 @@ The driver dispatches this as a stage with its own context and a 900-second wall
 
 ## Inputs you receive
 
-- The orchestrator's narrative (the client-facing email body / report content, passed inline in the spawn task)
+- The narrative, at the path the dispatch names.
 - `matter-context.md` at `studio/clearance-search/<slug>/<date>/matter-context.md` (the strategic framing from `matter-frame`)
 - `register-findings.md` at `studio/clearance-search/<slug>/<date>/register-findings.md` (the digest output with the digest's own candidate ordering)
 - `common-law-findings.md` at `studio/clearance-search/<slug>/<date>/common-law-findings.md` (the common-law digest)
@@ -44,7 +44,7 @@ The driver dispatches this as a stage with its own context and a 900-second wall
 - **`flags`** — one entry per flag. Each carries `kind`, `text` (one line, naming the file and the exact claim), optionally `fix` (one line — the targeted edit that would settle it), and optionally `on` (the finding ordinals it is about; omit it for a flag about the document rather than a finding), and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them).
 - **`plan_audit`** — the PLAN-EXECUTION CHECK lines. Required when this run has a plan-execution receipt; **the driver reads whether it does**, so you cannot waive your own audit by omitting the field.
 
-You do **not** number your flags, and you do not format them. Render order is the numbering, so a number cannot disagree with the list it labels; the enumeration style is the driver's, so a flag the corrective ladder cannot parse cannot be written. That is the whole point of the call — the shapes this stage used to lose a flag to are unreachable from a typed value.
+You do **not** number your flags, and you do not format them. Render order is the numbering, so a number cannot disagree with the list it labels; the enumeration style is the driver's, so a flag the corrective ladder cannot parse cannot be written.
 
 **EVERY FLAG CARRIES ITS KIND**, as the `kind` field — exactly one of:
 
@@ -89,7 +89,7 @@ does not make the whole report open for revision.
 
 ### Verdict
 
-One of: **CLEAR** / **CONDITIONAL** / **BLOCKING** with a one-line explanation.
+One of: **CLEAR** / **CONDITIONAL** / **BLOCKING**.
 
 ### Headline sanity — re-derive the top risk independently (do NOT just ratify the upstream steps)
 
@@ -125,7 +125,7 @@ files. If the headline cannot be defended against them, it blocks.
 
 ### Tier-inversion checks
 
-For each candidate the narrative tiers as headline-candidate, or rates as Composite ≥4 / Level A-B:
+For each candidate the narrative tiers as headline-candidate, or rates in the framework's two highest bands:
 - Find the same candidate in `placements.json` (the structured tier mirror — mark + owner + jurisdiction; fall back to `placement-recommendations.md` on runs that predate it)
 - Compare: does the narrative's tier match `placement-inquiry`'s placement?
 - If the narrative promotes above `placement-inquiry`'s outcome without explicit "promotion defended" reasoning in either source or in the narrative itself, **FLAG as tier inversion**
@@ -174,9 +174,7 @@ For each named owner / attribution in the narrative ("developed by X", "owned by
 
 When the run executed a frozen register plan, the driver prepends a **"DETERMINISTIC PLAN-EXECUTION
 CHECK"** table: what the plan dictated versus what actually ran (executed / crowd-incomplete /
-missing / crowd-gated-skipped, per axis). Your review MUST contain a section titled exactly
-**"PLAN-EXECUTION CHECK"** (the validator requires it whenever the receipt exists) auditing the
-narrative against that table:
+missing / crowd-gated-skipped, per axis). Send your audit of the narrative against that table as `plan_audit` lines; the driver writes the section heading.
 
 - A **clean / no-conflict claim that rests on a slice listed as MISSING is a BLOCKING flag** — the
   search the claim needs never ran. Name the qid and the claim; the disposition is re-execution or
@@ -272,10 +270,10 @@ This is the check for what was *never searched* — the gap a narrative-vs-files
 
 - For every material jurisdiction named in `matter-context`: is it accounted for — by a ledger row, by a complete worldwide answer, or inside the count of a crowd the identical mark's narrowing left? If no question reached it at all, **FLAG (missing-coverage-row)** — the run cannot account for a jurisdiction it called material.
 - For every `deferred` or `coverage-limited` row: does the narrative anywhere convert it into a clean negative ("no conflicts in [X]", "clean worldwide", "no live filings")? If yes, **FLAG (coverage-overclaim)** — BLOCKING. This is the overconfident-negative failure on a *known* gap.
-- **Aggregate (whole-run) check.** The bullet above is per-row — it catches a *single* gap row dressed up as a clean negative. This one is the headline: if **any** coverage unit / axis in either ledger is `coverage-limited` or `deferred` AND the synthesis still declares a clean / `confirmed-clean` verdict **overall** (a headline like "CLEAR", "clean worldwide", "no conflicts"), that is a FAIL — **FLAG (coverage-overclaim, aggregate)**, BLOCKING. A clean *overall* verdict claims recall the run did not achieve; the headline must not outrun the weakest coverage unit. Even when no individual row was misrendered, the aggregate verdict cannot be cleaner than the ledger that backs it.
+- **Aggregate (whole-run) check.** Review whether `coverage_judgment.sufficient` and its reason are supported by the held evidence. A `coverage-limited` row alone does not make CLEAR wrong. Flag an unsupported sufficiency judgment or a gap represented as searched or clean. Material deferred register work and unresolved timeout-taint on a material axis still prevent CLEAR; other terminal checks still apply.
 - A `deferred` row on a material jurisdiction with NO corresponding narrative caveat is itself **BLOCKING** even when the narrative is merely silent — silence on a known gap reads to the client as clean.
 - Sanity-cross-check against the audit trail: a `confirmed-clean` row for a jurisdiction no search covered — neither its own question nor a complete answer over a wider scope that contains it — is itself suspect — **FLAG** it (a ledger should not be able to claim completion it didn't perform).
-- **Use-negative without a search.** For every Composite 3+ finding whose mitigant turns on the *absence* of use ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant): does the finding carry a `**Use-check source:**` line citing the marketplace query that produced that negative (a URL, or the honest "perplexity_research — no result")? If it asserts the use-negative with **no** such line — i.e. it inferred "no use" from the owner's profile rather than searching — **FLAG (use-negative-unsupported)** — BLOCKING. This is the overconfident-negative failure applied to the pivotal use question; an un-run check dressed as a clean negative is a defect. The driver checks the structured finding record. A required use-check source belongs in that record. An unknown use status does not require an invented source. The reviewer checks whether the available evidence supports the claim.
+- **Use-negative without a search.** For every finding whose mitigant turns on the absence of use, at any band ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant): does the finding carry a `**Use-check source:**` line citing the marketplace query that produced that negative (a URL, or the honest "perplexity_research — no result")? If it asserts the use-negative with **no** such line — i.e. it inferred "no use" from the owner's profile rather than searching — **FLAG (use-negative-unsupported)** — BLOCKING. This is the overconfident-negative failure applied to the pivotal use question; an un-run check dressed as a clean negative is a defect. The driver checks the structured finding record. A required use-check source belongs in that record. An unknown use status does not require an invented source. The reviewer checks whether the available evidence supports the claim.
 
 ### Optics-escalation checks
 
@@ -296,7 +294,7 @@ For each obvious neighbour missing from the manifest, **FLAG (missing-variant)**
 
 The PR / reputational section carries a search *receipt*, but a receipt is not a read. With fresh eyes, take the proposed mark **and its near-forms** and ask the question the run was meant to ask: **is the obvious meaning the whole story, or does the same word carry an odd / loaded / subcultural secondary reading the section glossed past?** (`mara` reads as "crowd" — and `Mara` is a street gang; the benign gloss does not clear the loaded reading.) A clean PR claim that stopped at the tidy gloss while a loaded secondary reading is plausible is exactly the kind of specific suspicion your one Fresh probe exists to confirm — spend it here (below) if this is the more worth-pulling thread. If the probe surfaces a real loaded meaning the run never addressed, **FLAG (meaning-read-shallow)** and treat it like an unsupported clean negative (material); if the probe comes back clean, the meaning read holds — note it and move on.
 
-**Confirm before you flag — bring in one input the run did not already consume.** Re-reading the same files the author read can only show they agree with themselves; it can never show you what the run missed. So when you suspect an obvious neighbour, a closer conflict on the applicant's *own* goods that the run did not carry, **or a loaded secondary meaning the PR section glossed past**, run **one scoped `perplexity_research` query** to confirm it *before* flagging — and **record that query and its result verbatim in this review** as a one-line `Fresh probe: <query> → <result or URL>`. This is the single place the review is required to introduce evidence the upstream units did not produce; cite it. One probe per review is enough — you are confirming a specific suspicion, not re-running the search.
+**Confirm before you flag — bring in one input the run did not already consume.** Re-reading the same files the author read can only show they agree with themselves; it can never show you what the run missed. So when you suspect an obvious neighbour, a closer conflict on the applicant's *own* goods that the run did not carry, **or a loaded secondary meaning the PR section glossed past**, run **one scoped `perplexity_research` query** to confirm it *before* flagging. Cite the probe's URL in the flag it supports. Send a no-result probe as a `plan_audit` line beginning `Fresh probe:`. This is the single place the review is required to introduce evidence the upstream units did not produce; cite it. One probe per review is enough — you are confirming a specific suspicion, not re-running the search.
 
 ### Verify-or-defer audit
 
@@ -402,7 +400,7 @@ forbids a word, and a word list would catch the brand and miss the next coinage.
 
 ## Verdict logic
 
-- **CLEAR**: zero flags, OR flags are minor (typos, formatting) and don't change tier or attribution.
+- **CLEAR**: nothing you want corrected. A flag on a CLEAR review is never applied; return CONDITIONAL to have a minor error put right.
 - **CONDITIONAL**: 1-3 flags, each fixable with a small narrative edit (correct an attribution to what the evidence supports, demote a tier, remove a sentence). List the edits. `demotion-unreceipted` on a finding that does not drive the verdict, and `response-band-incoherent`, are CONDITIONAL-class flags (the fix is the missing receipt / reconciliation line — or the band correction an unwritable receipt implies). `actions-unregistered`, `card-record-mismatch` and `plain-english` are CONDITIONAL-class too: the fix is registering / re-kinding the typed action, reconciling the card's sentence with the record (or stating the disagreement), or the plain-English rewording. `unowned-noun` is CONDITIONAL-class as well — the fix is the rewrite that describes the thing in words the reader owns, keeping every fact. NOTE: fixing your flags clears YOUR verdict, but the delivered disposition is then DERIVED from the corrected `actions[]` — a run whose opinion still names condition-kind actions ships CONDITIONAL by code even when your re-review is CLEAR; that derivation is correct, not a defect to flag.
 - **BLOCKING**: any of —
   - Headline-candidate promotion that contradicts `placement-inquiry` without defense reasoning
@@ -414,8 +412,8 @@ forbids a word, and a word list would catch the brand and miss the next coinage.
   - Overconfident negative on a known-gap area
   - `verify-or-defer` — urgency / a procedural deadline / a registry statistic asserted as fact with no verification basis in the source files (or an instrument the jurisdiction lacks)
   - `coverage-overclaim` — a `deferred`/`coverage-limited` ledger row rendered as a clean negative (or a `deferred` material jurisdiction the narrative is silent on)
-  - `coverage-overclaim` (aggregate) — a clean / `confirmed-clean` verdict declared **overall** ("CLEAR", "clean worldwide", "no conflicts") while any coverage unit / axis is `coverage-limited` or `deferred` — the headline outrunning the weakest coverage unit
-  - `use-negative-unsupported` — a Composite 3+ finding asserting a use-negative (non-use / "not in actual use" / "no marketplace use found" / "use unknown") with no `**Use-check source:**` line: the pivotal use question inferred from the owner's profile instead of searched
+  - `coverage-overclaim` (aggregate) — Review whether `coverage_judgment.sufficient` and its reason are supported by the held evidence. A `coverage-limited` row alone does not make CLEAR wrong. Flag an unsupported sufficiency judgment or a gap represented as searched or clean. Material deferred register work and unresolved timeout-taint on a material axis still prevent CLEAR; other terminal checks still apply.
+  - `use-negative-unsupported` — a finding, at any band, asserting a use-negative (non-use / "not in actual use" / "no marketplace use found" / "use unknown") with no `**Use-check source:**` line: the pivotal use question inferred from the owner's profile instead of searched
   - `missing-coverage-row` — a `matter-context` material jurisdiction no question reached at all
   - `missing-variant` on a **one-letter-off famous mark in the proposed mark's field** that the manifest never searched (the canonical recall miss)
   - Missing-named-owner on a senior-lawyer-required incumbent
@@ -436,4 +434,4 @@ Total flag count is NOT itself a blocking criterion. A run with many flags that 
 
 ## Failure fallback
 
-If the orchestrator's narrative is not provided in the spawn task, or any of the source files is missing, return a `senior-eye-review.md` with verdict = BLOCKING and the gap named. The orchestrator must either retry with complete inputs or proceed without delivery gating (and document the failure in the workflow audit summary).
+If a file the dispatch names cannot be read, raise a flag naming it and what could not be checked. On a register-only run the common-law file does not exist, and that is not a gap.

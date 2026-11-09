@@ -45,7 +45,7 @@ What it notably cannot do, each declared as data in `src/capabilities.js`:
   at module load; the planner takes it as a parameter and never imports a vendor.
 - [`../../driver/driver.config.mjs`](../../driver/driver.config.mjs) lazy-imports `src/core.js` for the
   in-process lanes under `credEnv: "CLARIVATE_API_KEY"`, selected by `CLEAROTRON_DATABASE=clarivate`.
-- [`../../driver/engine/mcp/clarivate-server.mjs`](../../driver/engine/mcp/clarivate-server.mjs) wraps the
+- [`src/mount.js`](src/mount.js) wraps the
   same core as a standalone MCP server, mounting seven of the eight neutral `register_*` tools — the
   missing one is the phoneme expansion above.
 - Paging, counting, screening and the ledger are the shared kernel in [`../_shared/`](../_shared/).
