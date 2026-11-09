@@ -27,7 +27,7 @@ import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";
 import { acceptedEnvelope } from "./preserve-merge.mjs";
 import { acceptKnockoutAssess, knockoutAssessCallPaths, knockoutAssessChunkFile, refuseUndeclared } from "./knockout-assess-record.mjs";
 import { validators as koValidators } from "./verify-knockout.mjs";
-import { readJsonOrNull } from "./run-record.mjs";
+import { paths, readJsonOrNull } from "./run-record.mjs";
 
 const TOKEN = "knockoutcorrection";
 const SCHEMA_VERSION = 1;
@@ -37,7 +37,7 @@ export const knockoutCorrectionFile = (runDir, chunkNo) => join(String(runDir ??
 export const KNOCKOUT_CORRECTION_RE = /^knockout-correction-\d+\.json$/;
 
 /** The driver's own account of the round: the record the check read, and each defect with its address. */
-export const correctionWorkPath = (runDir) => driverDir(runDir, "knockout-correction-work.json");
+export const correctionWorkPath = (runDir) => paths(runDir).knockoutCorrectionWork;
 const chunkBasePath = (runDir, chunkNo) => driverDir(runDir, `knockout-correction-base-${Number(chunkNo)}.json`);
 const correctionCallDir = (runDir, chunkNo) => driverDir(runDir, join("knockout-correction-calls", `chunk-${Number(chunkNo)}`));
 
