@@ -20,14 +20,15 @@
 // out there it can never match the `*.json` claim glob, checkRunCaps's `*.{json,processing,postponed}`
 // parse set, or prelim-driver.path's watch — and reordering must NOT wake the runner.
 
-import { readFileSync, writeFileSync, renameSync, mkdirSync, readdirSync } from "node:fs";
+import { writeFileSync, renameSync, mkdirSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
+import { readJson } from "./run-record.mjs";
 
 export function queueOrderPath(qdir) { return join(dirname(qdir), ".queue-order.json"); }
 
 export function readQueueOrder(qdir) {
   try {
-    const j = JSON.parse(readFileSync(queueOrderPath(qdir), "utf8"));
+    const j = readJson(queueOrderPath(qdir));
     return Array.isArray(j?.order) ? j.order.filter((s) => typeof s === "string" && s) : [];
   } catch { return []; }   // absent, unreadable or corrupt ⇒ assert nothing, fall through to enqueuedAt
 }
@@ -55,7 +56,7 @@ export function orderedQueueFiles(qdir, files) {
     const listed = rank.get(f.replace(/\.json$/, ""));
     if (listed !== undefined) return { f, tier: 0, pos: listed, at: "" };
     let at = "";
-    try { at = String(JSON.parse(readFileSync(join(qdir, f), "utf8")).enqueuedAt ?? ""); } catch { /* sorts by name */ }
+    try { at = String(readJson(join(qdir, f)).enqueuedAt ?? ""); } catch { /* sorts by name */ }
     return { f, tier: 1, pos: 0, at };
   });
   keyed.sort((a, b) => a.tier - b.tier || a.pos - b.pos || a.at.localeCompare(b.at) || a.f.localeCompare(b.f));
