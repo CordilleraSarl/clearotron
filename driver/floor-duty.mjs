@@ -35,7 +35,7 @@
 import { existsSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { entryUris } from "./placement-carry.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const FLOOR_DUTY_SCHEMA_VERSION = 1;
 
@@ -110,7 +110,7 @@ export function floorDutyBlocksSkip(runDir, stageName) {
   if (stageName !== FLOOR_DUTY_STAGE) return false;
   if (!floorDutyArmed(runDir)) return false;
   let artifact;
-  try { artifact = readJson(driverDir(String(runDir ?? ""), "floor-duty.json")); }
+  try { artifact = readJson(paths(String(runDir ?? "")).floorDuty); }
   catch { return false; }
   return Boolean(floorDutyBlock(artifact, { armed: true }));
 }
