@@ -392,9 +392,9 @@ test("audit: register_search has no split — every provider answers `results`",
     assert.match(src, /\n\s*results:/, `${p}: doSearch answers results[]`);
   }
   // And the driver reads exactly that name — the contract is only real if the consumer agrees.
-  const cfg = readFileSync(join(ROOT, "driver", "driver.config.mjs"), "utf8");
+  const cfg = readFileSync(join(ROOT, "providers", "_shared", "records-from-search.mjs"), "utf8");
   assert.match(cfg, /Array\.isArray\(parsed\?\.results\)/,
-    "driver.config.mjs reads `results` — if the providers ever renamed it this is where the zero appears");
+    "the record listing reads `results` — if the providers ever renamed it this is where the zero appears");
 });
 
 test("audit: register_enumerate's list name follows `state` — the split is inside the tool", async () => {

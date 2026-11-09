@@ -11,7 +11,7 @@
 // once. Driven through the real executor against a stand-in register that records every request. Every mark is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, renameSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readdirSync, writeFileSync, readFileSync, renameSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -116,7 +116,8 @@ test("a question that failed some other way is still sent again", async (t) => {
 
 test("the envelope close's dispatch, and only it, carries the driver's re-ask through every register's adapter", () => {
   const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-  const config = readFileSync(join(DRIVER, "driver.config.mjs"), "utf8");
+  const config = readdirSync(join(DRIVER, "..", "providers")).map((p) => join(DRIVER, "..", "providers", p, "src", "adapter.js"))
+    .filter((f) => existsSync(f)).map((f) => readFileSync(f, "utf8")).join("\n");
   const adapters = (config.match(/async executePlan\(\{ planPath, axis, outputPath, qids \}, \{[^}]*\}\)/g) ?? []);
   assert.ok(adapters.length >= 6, `guard: the registers' adapters were not found (${adapters.length})`);
   assert.ok(adapters.every((a) => a.includes("reaskTimedOut = false")), "an adapter does not take the re-ask");
