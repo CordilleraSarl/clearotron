@@ -16,8 +16,7 @@
 import { readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
 import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
-import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
-import { atomicWrite, readJson } from "./run-record.mjs";
+import { DRIVER_DIR, atomicWrite, readJson } from "./run-record.mjs";
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note } from "./log.mjs";
