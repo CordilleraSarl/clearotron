@@ -15,13 +15,14 @@
 // ordering, and renewal/expiry cycle arithmetic (renewals fall at year 10/20/… from registration — the
 // check that catches "registration 2013 … renewed 2025" from the document alone).
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
+import { writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 import { join } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
   from "../providers/_shared/ledger-path.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { USE_SOURCE_QUALITY } from "./findings-model.mjs";   // — the attested vocabulary; an unknown value falls back to the heuristic
+import { readJson } from "./run-record.mjs";
 
 // — `DEFAULT_RECORD_LOG` IS GONE, and it went because the question it answered no longer has one
 // answer. It was `ledgerPath("record")` frozen at import, in the DRIVER — a long-lived process running
@@ -216,7 +217,7 @@ export function readRecordArtifacts(runDir) {
   try { files = readdirSync(dir); } catch { return map; }
   for (const f of files.filter((x) => x.endsWith(".json")).sort()) {
     let body;
-    try { body = JSON.parse(readFileSync(join(dir, f), "utf8")); } catch { continue; }
+    try { body = readJson(join(dir, f)); } catch { continue; }
     if (!body || typeof body !== "object" || Array.isArray(body)) continue;
     const uri = typeof body._uri === "string" && body._uri
       ? body._uri.toLowerCase()
@@ -627,7 +628,7 @@ export function collectOppositionDeadlines(runDir) {
     if (node.record_id || (typeof node.uri === "string" && node.uri.startsWith("/mark/"))) fold(node);
     for (const v of Object.values(node)) walk(v);
   };
-  const tryWalk = (path) => { try { if (existsSync(path)) walk(JSON.parse(readFileSync(path, "utf8"))); } catch { /* skip unreadable */ } };
+  const tryWalk = (path) => { try { if (existsSync(path)) walk(readJson(path)); } catch { /* skip unreadable */ } };
   tryWalk(join(runDir, "register-named-band.json"));
   try {
     const unitDir = join(runDir, "register-units");
