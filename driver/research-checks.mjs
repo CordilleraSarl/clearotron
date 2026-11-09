@@ -12,10 +12,9 @@
 // experiment's copy of the review carries it (stages.mjs, the review's inputs).
 import { readFileSync, writeFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { isUseCheckNoResult } from "./findings-model.mjs";
 import { questionKey, sameStageSession } from "./research-answers.mjs";
-import { RESEARCH_CHECKS_FILE, readJson } from "./run-record.mjs";
+import { RESEARCH_CHECKS_FILE, paths, readJson } from "./run-record.mjs";
 
 export { RESEARCH_CHECKS_FILE };
 
@@ -74,7 +73,7 @@ export function writeResearchChecks(runDir, { findingsAt, held = null, sessionKe
   try {
     const doc = readJson(findingsAt);
     const own = (s) => sameStageSession(s, sessionKey);
-    const asked = rows(driverDir(runDir, "reading-log.jsonl"))
+    const asked = rows(paths(runDir).readingLog)
       .filter((r) => r?.tool === "perplexity_research" && own(r.session) && !r.args?.grid && typeof r.args?.task === "string" && r.args.task.trim())
       .map((r) => ({ question: r.args.task, ok: r.ok === true, error: r.error ?? null }));
     const at = join(runDir, RESEARCH_CHECKS_FILE);

@@ -17,10 +17,10 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 
 import { captureCall, stampVerdict } from "./call-capture.mjs";
-import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";
+import { DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { refuseUndeclared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { addedClassQuestions, carriedIds, formQid, formsOfName, knockoutBandBlocks, knockoutProposals, namesAddedClass, openingQid, questionsOwed } from "./knockout-register-read.mjs";
-import { readJsonOrNull } from "./run-record.mjs";
+import { paths as runPaths, readJsonOrNull } from "./run-record.mjs";
 
 const TOKEN = "knockoutregisterread";
 const SCHEMA_VERSION = 1;
@@ -38,7 +38,7 @@ export const knockoutRegisterFile = (runDir) => join(String(runDir ?? ""), "knoc
 
 /** One file per call, refusals included, beside the other transports' capture directories. */
 export function knockoutRegisterCallPaths(runDir) {
-  const dir = driverDir(runDir, "knockout-register-calls");
+  const dir = runPaths(runDir).knockoutRegisterCalls;
   return { dir, accepted: join(dir, "accepted.json"), refusals: join(dir, "refusals.jsonl") };
 }
 
@@ -131,12 +131,12 @@ function rowDefect(row, n, { counts, plan, runDir }) {
  * `standing` is the rows that hold whatever the verdict on the others.
  */
 export function checkKnockoutRegisterAgainstRun(model, runDir) {
-  const scope = readJsonOrNull(driverDir(runDir, "instructed-scope.json"));
+  const scope = readJsonOrNull(runPaths(runDir).instructedScope);
   const instructed = (Array.isArray(scope?.marks) ? scope.marks : []).map((n) => String(n));
   if (!instructed.length) return { ok: false, standing: [], reason: `${TOKEN}_scope: the run's instructed scope could not be read, so the names cannot be checked.` };
   const byName = new Map(model.marks.map((m) => [nameKey(m.name), m]));
   const known = new Set(instructed.map(nameKey));
-  const context = { counts: readJsonOrNull(driverDir(runDir, "register-counts.json")), plan: readJsonOrNull(join(runDir, "knockout-plan.json")), runDir };
+  const context = { counts: readJsonOrNull(runPaths(runDir).registerCounts), plan: readJsonOrNull(join(runDir, "knockout-plan.json")), runDir };
   const defects = model.marks.filter((m) => !known.has(nameKey(m.name))).map((m) => `${TOKEN}_names: "${m.name}" is not an instructed name. Names verbatim from the instructed scope.`);
   const missing = instructed.filter((n) => !byName.has(nameKey(n)));
   if (missing.length) defects.push(`${TOKEN}_names: no row for ${missing.map((n) => `"${n}"`).join(", ")}. Send one row per instructed name.`);
@@ -168,7 +168,7 @@ export function validateKnockoutRegisterFile(file, content) {
   if (!shape.ok) return shape;
   const dir = dirname(file);
   const runDir = basename(dir) === DRIVER_DIR ? dirname(dir) : dir;
-  if (!existsSync(driverDir(runDir, "instructed-scope.json"))) return { ok: false, reason: "the run's instructed scope is not on disk, so this record cannot be checked." };
+  if (!existsSync(runPaths(runDir).instructedScope)) return { ok: false, reason: "the run's instructed scope is not on disk, so this record cannot be checked." };
   return checkKnockoutRegisterAgainstRun(shape.model, runDir);
 }
 

@@ -26,7 +26,7 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 import { PLACEMENT_FORM_NAME, placementFormSidecarName, parsePlacementForm, renderPlacementsJson } from "./placement-form.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { atomicWrite, readJsonOrNull } from "./run-record.mjs";
+import { atomicWrite, paths, readJsonOrNull } from "./run-record.mjs";
 
 export { PLACEMENT_FORM_NAME };
 
@@ -41,7 +41,7 @@ export function placementFormPaths(runDir, formName = PLACEMENT_FORM_NAME) {
  * archived run answers false and the whole form arm stays off for all of them.
  */
 export function placementFormStamp(runDir) {
-  const m = readJsonOrNull(driverDir(runDir, "stage-contracts.json"));
+  const m = readJsonOrNull(paths(runDir).stageContracts);
   return { required: m?.["placement-inquiry"]?.placementForm === 1 };
 }
 
@@ -52,9 +52,9 @@ export function placementFormStamp(runDir) {
  * and a form that reported them alike would read an absence as a pass.
  */
 export function readPlacementFormInput(runDir) {
-  const shape = readJsonOrNull(driverDir(runDir, "band-shape.json"));
-  const pos = readJsonOrNull(driverDir(runDir, "register-positions.json"));
-  const scope = readJsonOrNull(driverDir(runDir, "instructed-scope.json"));
+  const shape = readJsonOrNull(paths(runDir).bandShape);
+  const pos = readJsonOrNull(paths(runDir).registerPositions);
+  const scope = readJsonOrNull(paths(runDir).instructedScope);
   const input = {
     floors: Array.isArray(shape?.floors?.in_class_identical_or_near) ? shape.floors.in_class_identical_or_near : null,
     positions: Array.isArray(pos?.positions) ? pos.positions : null,
@@ -75,7 +75,7 @@ export function readPlacementFormInput(runDir) {
 
 /** canonical uri → the state goods-evidence.mjs recorded for that record's goods; null with no record. */
 export function readGoodsStates(runDir) {
-  const doc = readJsonOrNull(driverDir(runDir, "goods-evidence.json"));
+  const doc = readJsonOrNull(paths(runDir).goodsEvidence);
   if (!Array.isArray(doc?.records)) return null;
   const out = new Map();
   for (const r of doc.records) { const k = normalizeRecordUri(r?.uri); if (k && typeof r?.state === "string") out.set(k, r.state); }
@@ -91,7 +91,7 @@ export function readServed(runDir) {
   const lines = new Set(), records = new Set(), partsRead = new Set();
   let groupParts = null;
   let text = "";
-  try { text = readFileSync(driverDir(runDir, "reading-log.jsonl"), "utf8"); } catch { text = ""; }
+  try { text = readFileSync(paths(runDir).readingLog, "utf8"); } catch { text = ""; }
   for (const row of text.split("\n")) {
     if (!row.trim()) continue;
     let e; try { e = JSON.parse(row); } catch { continue; }

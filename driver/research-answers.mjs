@@ -29,7 +29,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync
 import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const RESEARCH_ANSWERS_FILE = "research-answers.jsonl";
 
@@ -266,7 +266,7 @@ export function heldResearchAnswers(runDir, sessionKey = null) {
   for (const r of kept) if (own(r?.session) && typeof r.task === "string" && isResearchAnswer(r.text)) put(r.task, oneLine(r.text), "asked");
   // A replayed answer is the run's own, read from the copy of its answers the replay's marker names, outside the arm.
   const replayFrom = replayAnswersFrom(runDir);
-  for (const r of rows(driverDir(runDir, "reading-log.jsonl"))) {
+  for (const r of rows(paths(runDir).readingLog)) {
     if (r?.tool !== "perplexity_research" || r.ok !== true || !own(r.session) || r.args?.grid || typeof r.args?.task !== "string") continue;
     const text = (r.args.replay && replayFrom ? savedResearchAnswer(replayFrom, r.args.task)?.text : null)
       ?? kept.filter((x) => typeof x?.task === "string" && x.task.trim() === r.args.task.trim() && isResearchAnswer(x.text)).pop()?.text ?? null;

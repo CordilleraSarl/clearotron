@@ -22,7 +22,7 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync } from "node:fs";
 import { join, dirname, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
-import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
@@ -552,7 +552,7 @@ import { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive } from "./
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { beat } from "./worker-heartbeat.mjs";   // — is anything draining this install
 import { BRAND } from "../shared/brand.mjs";   // — the operator name in the allowance note, from the tenant seam
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 export { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive };
 
 // — a queue running WITHOUT the birth stamp says so, once, out loud. Where no stamp can be read
@@ -736,7 +736,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
     const owned = codename ? findRunDirFor({ codename, slug, studioRoot, archiveRoot }) : null;
     if (!owned) { preRunFailNotify(agentId, base, job, shortReason); return; }
     if (owned.kind === "archived" || existsSync(join(owned.dir, ".delivered"))) return;   // report already delivered
-    if (existsSync(driverDir(owned.dir, "failure.json"))) return;                   // already noticed
+    if (existsSync(paths(owned.dir).failure)) return;                   // already noticed
     const packet = buildFailurePacket({
       // canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — owned.dir's leaf IS
       // "<date>-<codename>", so the dated id is derivable even here (matches status.runId + rescan).
@@ -746,9 +746,9 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
     // same per-send invariant as the pipeline's failure path: a fresh notice supersedes an older .sent
     // and its per-channel receipts (B4 — stale receipts would make clearotron-deliver skip this notice)
     try { rmSync(join(owned.dir, ".sent"), { force: true }); } catch { /* none */ }
-    try { rmSync(driverDir(owned.dir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+    try { rmSync(paths(owned.dir).sendReceipts, { force: true }); } catch { /* none */ }
     ensureDriverDir(owned.dir);
-    writeFileSync(driverDir(owned.dir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+    writeFileSync(paths(owned.dir).failure, JSON.stringify(packet, null, 2) + "\n");
     // status flip mirrors the pipeline path (best-effort — packet + marker are the guaranteed lane)
     try {
       const sp = join(owned.dir, "status.json");
@@ -1833,9 +1833,9 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
               terminalKind: "exhausted", priorAttempts: reparks,
             });
             try { rmSync(join(o.runDir, ".sent"), { force: true }); } catch { /* none */ }
-            try { rmSync(driverDir(o.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+            try { rmSync(paths(o.runDir).sendReceipts, { force: true }); } catch { /* none */ }
             ensureDriverDir(o.runDir);
-            writeFileSync(driverDir(o.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+            writeFileSync(paths(o.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
             mkdirSync(config.outboxDir, { recursive: true });
             writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${o.agent}\n`);
           } catch { /* notice best-effort — .failed + status remain the record */ }
@@ -1881,7 +1881,7 @@ async function claimAndRun(jsonFile, qdir, agentId) {
  *  Exported for the test; returns what it did so callers can log it. */
 export function armUnannouncedDelivery(runDir, label = "") {
   try {
-    if (!existsSync(driverDir(runDir, "delivery.json"))) return "no-packet";
+    if (!existsSync(paths(runDir).delivery)) return "no-packet";
     if (existsSync(join(runDir, ".sent"))) return "already-sent";
     let status = {};
     try { status = readJson(join(runDir, "status.json")); } catch { /* absent/corrupt ⇒ treat as unarmed */ }
@@ -1902,7 +1902,7 @@ export function armUnannouncedDelivery(runDir, label = "") {
 
 export function runDirDelivered(dir) {
   if (existsSync(join(dir, ".delivered"))) return true;
-  if (existsSync(driverDir(dir, "delivery.json"))) return true;
+  if (existsSync(paths(dir).delivery)) return true;
   try { return readJson(join(dir, "status.json"))?.state === "delivered"; } catch { return false; }
 }
 
@@ -2086,9 +2086,9 @@ function reclaimOrphanedClaims(qdir, agentId) {
               priorAttempts: priorReclaims,
             });
             try { rmSync(join(owned.dir, ".sent"), { force: true }); } catch { /* none */ }
-            try { rmSync(driverDir(owned.dir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+            try { rmSync(paths(owned.dir).sendReceipts, { force: true }); } catch { /* none */ }
             ensureDriverDir(owned.dir);
-            writeFileSync(driverDir(owned.dir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+            writeFileSync(paths(owned.dir).failure, JSON.stringify(packet, null, 2) + "\n");
             mkdirSync(config.outboxDir, { recursive: true });
             writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agentId}\n`);
           } catch (e) { note(`[runner] ${base} reclaim-terminal bookkeeping failed (non-fatal — the queue marker still ends it): ${e?.message ?? e}`); }

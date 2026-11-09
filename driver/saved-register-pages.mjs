@@ -25,8 +25,7 @@
 // both import it.
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 // The research server's own name for a call's file: the time it was kept, with ":" and "." made "-", the server's
 // process id, and the number of the call.
@@ -102,7 +101,7 @@ export function statusPagesIn(result) {   // @internal — driven by its test
  */
 export function savedStatusPages(runDir) {
   if (!runDir) return () => new Map();
-  const dir = driverDir(runDir, "web-results");
+  const dir = paths(runDir).webResults;
   const read = new Map();
   return () => {
     let names = [];

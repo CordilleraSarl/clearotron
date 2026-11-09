@@ -28,14 +28,13 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { FATES } from "./hit-list.mjs";   // — THE fate set, imported, never re-declared
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { slugStability, groupByMark } from "./plan-stability.mjs";
 
 // doc 50: the composite table is imported (one source, legacy runs only); a v4 finding's canonical
 // word is its own `band` — telemetry compares against whichever the finding carries.
 import { CLIENT_TIER_BY_COMPOSITE as TIER_BY_COMPOSITE } from "./findings-model.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
-import { readJson, readJsonOrNull } from "./run-record.mjs";
+import { paths, readJson, readJsonOrNull } from "./run-record.mjs";
 const canonicalWord = (f) => f?.band != null ? String(f.band) : TIER_BY_COMPOSITE[f?.composite];
 const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const readText = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
@@ -69,7 +68,7 @@ function deferralSlice(directive) {
 }
 
 export function deferralsRendered(runDir) {
-  const rec = readJsonOrNull(driverDir(runDir, "frame-reopen.json"));
+  const rec = readJsonOrNull(paths(runDir).frameReopenReceipt);
   const defs = rec?.deferrals ?? [];
   if (!defs.length) return null;
   const report = norm(readText(join(runDir, "report.md")));
@@ -252,7 +251,7 @@ function pct(agg) { return agg.den ? Math.round((100 * agg.num) / agg.den) : nul
 // states the linted constraints in the drafting prompts; this is the before/after meter.
 export function lintFirstPassTax(runDir) {
   try {
-    const sink = readJson(driverDir(runDir, "predelivery-lint.json"));
+    const sink = readJson(paths(runDir).predeliveryLint);
     if (!Array.isArray(sink?.initialFailures)) return null;
     return { initialFailures: sink.initialFailures.length };
   } catch { return null; }
@@ -263,7 +262,7 @@ export function lintFirstPassTax(runDir) {
 // both covered, keyed on trigger). Read off the append-only run.jsonl spine, so it survives everything
 // including in-place overwrites. Returns null when the run never tripped (legacy runs by construction).
 export function documentGrowth(runDir) {
-  const raw = readText(driverDir(runDir, "run.jsonl"));
+  const raw = readText(paths(runDir).run);
   if (!raw) return null;
   const trips = [];
   for (const ln of raw.split("\n")) {

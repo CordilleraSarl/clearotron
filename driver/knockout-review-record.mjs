@@ -52,7 +52,7 @@ import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned 
 // for saying WHICH line was probably meant; it never decides whether an address resolves.
 import { queryKey } from "./connotation-search.mjs";
 import { PERMITTED_SOURCES, registerRecordIdsHeld, urlHeldFor } from "./verify-knockout.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths as runPaths, readJson } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -116,7 +116,7 @@ export const MATERIAL_KINDS = Object.freeze({ band: false, missing: true, exclus
 
 /** One file per call, refusals included, beside the other transports' capture directories. A later pass keeps its own. */
 export function knockoutReviewCallPaths(runDir, pass = 0) {
-  const dir = pass ? driverDir(runDir, join("knockout-review-calls", `pass-${Number(pass)}`)) : driverDir(runDir, "knockout-review-calls");
+  const dir = pass ? driverDir(runDir, join("knockout-review-calls", `pass-${Number(pass)}`)) : runPaths(runDir).knockoutReviewCalls;
   return { dir, accepted: join(dir, "accepted.json"), refusals: join(dir, "refusals.jsonl") };
 }
 
@@ -458,7 +458,7 @@ function materialFault(m, merged, runDir) {
   // one name. A question the run asked is held too, by its qid. Anything else is refused, in words about those sources and not the run.
   const records = registerRecordIdsHeld(runDir);
   let questions = new Set();
-  try { questions = new Set((readJson(driverDir(runDir, "register-records.json")).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
+  try { questions = new Set((readJson(runPaths(runDir).registerRecords).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
   const urlHeld = urlHeldFor(runDir);
   const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !questions.has(r) && !urlHeld(r));
   return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which is not traceable to ${PERMITTED_SOURCES}, or a question this run asked. Copy a recordId, question qid, or URL from what this run holds.` : null;

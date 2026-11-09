@@ -32,9 +32,8 @@
 import { writeFileSync, mkdirSync, readFileSync, appendFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 /**
  * THE REPAIR TAIL FOR THIS STAGE'S BESPOKE FOLLOWUPS — one implementation, used by all of them.
@@ -78,7 +77,7 @@ export function unitPaths(runDir, axis) {
  * writer per file, and an interleaved append from six units would be a journal nobody can attribute.
  */
 export function unitCallPaths(runDir, axis) {
-  const dir = driverDir(runDir, "register-unit-calls");
+  const dir = paths(runDir).registerUnitCalls;
   // PER AXIS, and the accepted base with it: the driver dispatches one seat per axis, so a base keyed
   // on the run would let one axis's repair inherit another axis's note.
   return { dir, payload: join(dir, `${axis}.json`), accepted: join(dir, `${axis}-accepted.json`), refusals: join(dir, `${axis}-refusals.jsonl`) };

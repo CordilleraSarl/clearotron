@@ -33,14 +33,13 @@
 
 import { readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { jxKey, MAX_LANE_ATTEMPTS } from "./jx.mjs";
 import { abbrev } from "./repair-contract.mjs";
 import { kebab } from "./search-policy.mjs";
 import { SERP_PROVIDERS, JX_PROVIDERS, laneArmed } from "./driver.config.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const MAX_UNIT_ATTEMPTS = 3;      // degraded-unit retries across resumes (repairable, never terminal)
 export const SERP_TERM_CAP = 12;         // terms per grid — 12 × 7 cells = 84 paid calls, the hard ceiling
@@ -57,7 +56,7 @@ const GAP_DEGRADE_FLOOR = 0.5;           // >50% gapped cells ⇒ the grid attem
 // what this executor did. They disagreed; the statement lost, and it shipped.
 const laneEnvOn = (lane) => laneArmed(lane);
 
-const jxDir = (runDir) => driverDir(runDir, "jx");
+const jxDir = (runDir) => paths(runDir).jx;
 const unitsPath = (runDir) => join(jxDir(runDir), "units.json");
 const atomic = (path, obj) => { writeFileSync(`${path}.tmp`, JSON.stringify(obj, null, 2) + "\n"); renameSync(`${path}.tmp`, path); };
 
@@ -142,7 +141,7 @@ function foldRetryable(ctx, lane) {
 // …and so does what the turn said about the model: the id it reported, or that it ran and named none —
 // see jxModelFields in jx-lanes.mjs.
 function ledgerRow(runDir, row) {
-  try { appendFileSync(driverDir(runDir, "jx-completions.jsonl"), JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
+  try { appendFileSync(paths(runDir).jxCompletions, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
 }
 
 const runPrefix = (run) => `clearance-${run?.slug ?? "run"}-${run?.codename ?? "local"}-`;

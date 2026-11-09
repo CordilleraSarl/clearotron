@@ -44,16 +44,15 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const MATTER_CONTEXT_FILE = "matter-context.md";
 const SCHEMA_VERSION = 1;
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function matterFrameCallPaths(runDir) {
-  const dir = driverDir(runDir, "matter-frame-calls");
+  const dir = paths(runDir).matterFrameCalls;
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json") };
 }
 
@@ -510,7 +509,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
 
 /** The driver's own intake record — the values the seat used to be asked to retype. IMPURE. */
 export function readInstructedScope(runDir) {
-  try { return readJson(driverDir(String(runDir ?? ""), "instructed-scope.json")); }
+  try { return readJson(paths(String(runDir ?? "")).instructedScope); }
   catch { return null; }   // legacy/replay run with no receipt — the section renders `none given`
 }
 

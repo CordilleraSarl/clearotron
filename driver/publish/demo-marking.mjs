@@ -40,8 +40,8 @@
 // demo. The refusal at the agreement door is what protects the other direction.
 
 import { readFileSync } from "node:fs";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { loadProfiles } from "../profiles.mjs";
+import { paths } from "../run-record.mjs";
 
 /**
  * BOTH SOURCES ARE INJECTABLE, and that is not test scaffolding for its own sake. This function's whole
@@ -61,7 +61,7 @@ export function resolveDemoData({
 } = {}) {
   let demoData = false;
   try {
-    const fp = runDir ? JSON.parse(readFile(driverDir(runDir, "profile.json"))) : null;
+    const fp = runDir ? JSON.parse(readFile(paths(runDir).profile)) : null;
     demoData = fp?.demoData === true;
   } catch { /* no frozen profile — pre-WS-B run, or a republish with no workspace */ }
   if (!demoData && customerKey) {

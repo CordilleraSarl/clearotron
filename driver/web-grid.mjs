@@ -22,9 +22,8 @@
 //
 // What the frame set aside goes to the audit workbook with its reason, beside the withheld searches, and
 // never to the report.
-import { driverDir } from "../shared/driver-dir.mjs";
 import { lastAcceptedMatterFrame } from "./matter-frame-record.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 const str = (v) => String(v ?? "").trim();
 const key = (v) => str(v).toLowerCase();
@@ -58,7 +57,7 @@ export function frameWebChoiceFor(runDir) {
  * that was never asked, and only the second may keep the old full grid.
  */
 export function frameAskedForWebGrid(runDir) {
-  try { return Boolean(readJson(driverDir(runDir, "stage-contracts.json"))?.["matter-frame"]?.webGrid); }
+  try { return Boolean(readJson(paths(runDir).stageContracts)?.["matter-frame"]?.webGrid); }
   catch { return false; }
 }
 
@@ -142,7 +141,7 @@ export function closureBlocksOf(cells) {
  */
 export function frameSetAsideRows(runDir) {
   try {
-    const spec = readJson(driverDir(runDir, "grid-spec.json"));
+    const spec = readJson(paths(runDir).gridSpec);
     return (Array.isArray(spec?.set_aside) ? spec.set_aside : [])
       .filter((x) => str(x?.store) && str(x?.reason))
       .map((x) => ({ area: str(x.store), state: "not-searched", note: str(x.reason), done: "", left: str(x.reason) }));

@@ -36,8 +36,8 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { REGISTER_AXES } from "./coverage-ledger.mjs";
+import { paths } from "./run-record.mjs";
 
 export const FLAGS_FILE = "skeptic-flags.md";
 
@@ -56,7 +56,7 @@ export function escalatedAxes(flagsText, axes) {
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function skepticCallPaths(runDir) {
-  const dir = driverDir(runDir, "skeptic-calls");
+  const dir = paths(runDir).skepticCalls;
   return { dir, payload: join(dir, "call-001.json") };
 }
 

@@ -488,7 +488,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // is the record of what the driver called, the other is the check that the findings cite what it held.
   let sweepReceipts = [];
   try {
-    sweepReceipts = readFileSync(driverDir(runDir, 'knockout-sweep.jsonl'), 'utf8').split('\n').filter(Boolean)
+    sweepReceipts = readFileSync(paths(runDir).knockoutSweep, 'utf8').split('\n').filter(Boolean)
       .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   } catch { /* fixture/degenerate runs may have none */ }
 
@@ -506,27 +506,27 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // here so the decision has something to key on when it is made.
   let registerCountsUnreadable = false;
   if (!registerCounts) {
-    try { registerCounts = readJson(driverDir(runDir, 'register-counts.json')); }
-    catch { registerCounts = null; registerCountsUnreadable = existsSync(driverDir(runDir, 'register-counts.json')); }
+    try { registerCounts = readJson(paths(runDir).registerCounts); }
+    catch { registerCounts = null; registerCountsUnreadable = existsSync(paths(runDir).registerCounts); }
   }
   // part 5 — the filings sidecar, read the same way and for the same reason: the publisher renders
   // what the driver measured and wrote, and a republish of an archived run picks up the same file. An
   // absent sidecar publishes exactly the counts-only knockout, with no filings section anywhere.
   let registerRecords = null, registerRecordsUnreadable = false;
-  try { registerRecords = readJson(driverDir(runDir, 'register-records.json')); }
-  catch { registerRecords = null; registerRecordsUnreadable = existsSync(driverDir(runDir, 'register-records.json')); }
+  try { registerRecords = readJson(paths(runDir).registerRecords); }
+  catch { registerRecords = null; registerRecordsUnreadable = existsSync(paths(runDir).registerRecords); }
   // The owner lookups this run made, read the same tolerant way as the records above:
   // an archived run that predates the lane has no file, and its cards then render exactly as they were
   // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
   let ownerChecks = [];
-  try { ownerChecks = readJson(driverDir(runDir, 'owner-checks.json')).checks ?? []; }
+  try { ownerChecks = readJson(paths(runDir).ownerChecks).checks ?? []; }
   catch { ownerChecks = []; }
   // The request the run was given, read the same tolerant way as the sidecars above and for the same
   // reason (A.1). It is what "About this request" states; a run archived before the
   // sidecar existed has none, and its page renders exactly as it was delivered.
   let instructedScope = null, scopeUnreadable = false;
-  try { instructedScope = readJson(driverDir(runDir, 'instructed-scope.json')); }
-  catch { instructedScope = null; scopeUnreadable = existsSync(driverDir(runDir, 'instructed-scope.json')); }
+  try { instructedScope = readJson(paths(runDir).instructedScope); }
+  catch { instructedScope = null; scopeUnreadable = existsSync(paths(runDir).instructedScope); }
   // The run's frozen method, where its framework states one (framework-method.mjs): the report card and
   // the workbook's band cell show the framework's inputs beside the band. A run that froze none — every
   // run before the method existed among them — renders the band alone, as it was delivered.
@@ -583,7 +583,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     qcFlags = deliveryFlagLines(lint.failures.filter((c) => c.surface === 'report'));
     try {
       ensureDriverDir(runDir);
-      writeFileSync(driverDir(runDir, 'predelivery-lint.json'), JSON.stringify({
+      writeFileSync(paths(runDir).predeliveryLint, JSON.stringify({
         ts: new Date().toISOString(),
         lane: 'knockout',
         checks: lint.checks, failures: lint.failures.map((f) => f.id),
@@ -616,12 +616,12 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // A first web question whose answer is on disk and whose trail entry is not. Only the first question is
   // read: a second question's missing entry cannot be told from one that got no answer. A run with no
   // trail file at all was delivered before the trail existed, and republishes as it was delivered.
-  const keptATrail = existsSync(driverDir(runDir, 'knockout-sweep.jsonl'));
+  const keptATrail = existsSync(paths(runDir).knockoutSweep);
   const recordsNotKept = (keptATrail ? (plan?.marks ?? []) : []).map((m) => String(m?.name ?? '')).filter((name) => name
     && existsSync(join(runDir, 'research', `${kebab(name)}.md`))
     && !sweepReceipts.some((r) => r?.mark === name && !r.question))
     .map((mark) => ({ mark, preset: koPreset }));
-  const openPoints = (() => { try { return readJson(driverDir(runDir, 'knockout-corrections.json')).open ?? []; } catch { return []; } })();
+  const openPoints = (() => { try { return readJson(paths(runDir).knockoutCorrections).open ?? []; } catch { return []; } })();
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
   await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
     listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
@@ -819,7 +819,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as
     // the clearance publisher reads it. Absent on a company's batch and on one filed before
     // organisations existed.
-    organisation: (() => { try { const f = readJson(driverDir(runDir, 'profile.json')); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
+    organisation: (() => { try { const f = readJson(paths(runDir).profile); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
     issuedAt: dates.issuedAt,
     renderedAt: dates.renderedAt,
     kind: 'knockout-batch',
@@ -947,4 +947,4 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
-import { readJson } from "../run-record.mjs";
+import { paths, readJson } from "../run-record.mjs";

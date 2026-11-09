@@ -31,8 +31,9 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync, renameSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";   // the subtree name from its one definition, never a literal
+import { DRIVER_DIR } from "../shared/driver-dir.mjs";   // the subtree name from its one definition, never a literal
 import { composeMemo } from "./whatif-memo.mjs";
+import { paths as runPaths } from "./run-record.mjs";
 
 export const SKILL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "skills");
 
@@ -124,7 +125,7 @@ export function splitMemoFootprint(moved = []) {
 
 /** The profile key the PARENT rated under — read from its frozen sidecar, never re-resolved. */
 export function parentRatedUnder(runDir, { read = readFileSync } = {}) {
-  try { return JSON.parse(read(driverDir(runDir, "profile.json"), "utf8"))?.profileKey ?? null; }
+  try { return JSON.parse(read(runPaths(runDir).profile, "utf8"))?.profileKey ?? null; }
   catch { return null; }
 }
 

@@ -23,7 +23,7 @@ import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
-import { readJson } from "../../driver/run-record.mjs";
+import { paths, readJson } from "../../driver/run-record.mjs";
 
 // Queue resolution (mirrors the enqueue CLI, docs/INTAKE.md): with NO explicit agent, a
 // headless deployment's CLEAROTRON_QUEUE_DIR wins; otherwise the default agent's workspace queue. An
@@ -624,8 +624,8 @@ export function markSent(args = {}) {
   if (!args.runId) throw new Error("mark_sent: runId is required");
   const run = resolveRun(String(args.runId));
   if (!run) throw new Error(`mark_sent: run "${args.runId}" not found`);
-  const deliveryPath = driverDir(run.runDir, "delivery.json");
-  const failurePath = driverDir(run.runDir, "failure.json");
+  const deliveryPath = paths(run.runDir).delivery;
+  const failurePath = paths(run.runDir).failure;
   const packetPath = existsSync(deliveryPath) ? deliveryPath : failurePath;
   if (!existsSync(packetPath))
     throw new Error(`mark_sent: run "${run.runId}" has no delivery or failure packet — nothing was pending a send`);

@@ -17,13 +17,12 @@
 // what the run simply does not hold.
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { foldDiacritics } from "./form-neighbourhood.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
 import { savedStatusPages, savedPageStatement, usSerialOf } from "./saved-register-pages.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 /**
  * The registers whose language is English (ruled 2026-10-12): there, a goods statement with no language tag
@@ -219,7 +218,7 @@ export function bandGoodsIndex(runDir) {
     const goods = recordGoods(body, { english: untaggedIsEnglish(key) });
     if (goods.length) index.set(key, goods);
   };
-  const ledger = driverDir(runDir, "register-record-bodies.jsonl");
+  const ledger = paths(runDir).registerRecordBodies;
   if (existsSync(ledger)) {
     let text = "";
     try { text = readFileSync(ledger, "utf8"); } catch { text = ""; }
