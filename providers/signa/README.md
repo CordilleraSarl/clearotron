@@ -35,7 +35,7 @@ past `OWNER_SCOPED_WINDOW` (400 rows). Approximate totals saturate at 10000 and 
 
 - [`../../driver/register-capabilities.mjs`](../../driver/register-capabilities.mjs) imports `CAPABILITIES`
   at module load — the contract is pure (no node imports, no vendor HTTP) so that stays free.
-- [`../../driver/driver.config.mjs`](../../driver/driver.config.mjs) lazy-imports `src/core.js` for the
+- [`src/adapter.js`](src/adapter.js) lazy-imports `src/core.js` for the
   in-process lanes under `credEnv: "SIGNA_API_KEY"`, selected by `CLEAROTRON_DATABASE=signa`.
 - [`src/mount.js`](src/mount.js) wraps the same
   core as a standalone MCP server, mounting four tools under the neutral names `register_search`,
