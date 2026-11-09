@@ -20,6 +20,7 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { addedClassQuestions, carriedIds, formQid, formsOfName, knockoutBandBlocks, knockoutProposals, namesAddedClass, openingQid, questionsOwed } from "./knockout-register-read.mjs";
+import { readJsonOrNull } from "./run-record.mjs";
 
 const TOKEN = "knockoutregisterread";
 const SCHEMA_VERSION = 1;
@@ -85,7 +86,6 @@ export function acceptKnockoutRegister(call) {
   return { ok: true, model: { schema_version: SCHEMA_VERSION, marks } };
 }
 
-const readJson = (path) => { try { return JSON.parse(readFileSync(path, "utf8")); } catch { return null; } };
 
 /** Why one name's row cannot stand against what this run holds, or null. The record says what the step decided; this checks only that it adds up. */
 function rowDefect(row, n, { counts, plan, runDir }) {
@@ -131,12 +131,12 @@ function rowDefect(row, n, { counts, plan, runDir }) {
  * `standing` is the rows that hold whatever the verdict on the others.
  */
 export function checkKnockoutRegisterAgainstRun(model, runDir) {
-  const scope = readJson(driverDir(runDir, "instructed-scope.json"));
+  const scope = readJsonOrNull(driverDir(runDir, "instructed-scope.json"));
   const instructed = (Array.isArray(scope?.marks) ? scope.marks : []).map((n) => String(n));
   if (!instructed.length) return { ok: false, standing: [], reason: `${TOKEN}_scope: the run's instructed scope could not be read, so the names cannot be checked.` };
   const byName = new Map(model.marks.map((m) => [nameKey(m.name), m]));
   const known = new Set(instructed.map(nameKey));
-  const context = { counts: readJson(driverDir(runDir, "register-counts.json")), plan: readJson(join(runDir, "knockout-plan.json")), runDir };
+  const context = { counts: readJsonOrNull(driverDir(runDir, "register-counts.json")), plan: readJsonOrNull(join(runDir, "knockout-plan.json")), runDir };
   const defects = model.marks.filter((m) => !known.has(nameKey(m.name))).map((m) => `${TOKEN}_names: "${m.name}" is not an instructed name. Names verbatim from the instructed scope.`);
   const missing = instructed.filter((n) => !byName.has(nameKey(n)));
   if (missing.length) defects.push(`${TOKEN}_names: no row for ${missing.map((n) => `"${n}"`).join(", ")}. Send one row per instructed name.`);
