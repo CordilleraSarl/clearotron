@@ -75,7 +75,7 @@ function hostsFor(cfg, where) {
       `[euipo] ${where}: EUIPO_ENVIRONMENT is not set and there is NO default. It selects which EU `
       + "corpus this call searches, and the two are not interchangeable: `production` is the register; "
       + "`sandbox` is a frozen snapshot plus synthetic rows. Resolve the config through core.js's "
-      + "resolveConfig, which refuses the same way (#1149 item 2, ADR-0001).",
+      + "resolveConfig, which refuses the same way (ADR-0001).",
     );
   }
   if (!ENV[environment]) {

@@ -240,7 +240,7 @@ export function buildFlagSnapshot(env, { capturedAt, registerProvider = null, re
  */
 export const PRODUCTION_POSTURE = {
   source: "production unit environment, read 2026-08-04 with owner authorisation; the flag half "
-    + "retired 2026-08-20 when #1149 item 8 deleted every switch it named",
+    + "retired 2026-08-20 when every switch it named was deleted",
   // The three it named are gone — deleted BECAUSE production ran them on while the source shipped them
   // off, which is the delta this block existed to expose. There is nothing left to differ about, and
   // saying that in an empty object beats leaving three names that no code reads.
@@ -262,7 +262,7 @@ export function postureDelta(snapshot, expected = PRODUCTION_POSTURE) {
   if (!Object.keys(expected.flags ?? {}).length) {
     rows.push({ what: "flags", here: Object.keys(snapshot.flags ?? {}).length, production: 0,
       effect: "no flag is declared on either side — the flag half of this comparison checked nothing, "
-        + "which is not the same as finding no difference (#1149 item 8 deleted all four)" });
+        + "which is not the same as finding no difference (all four were deleted)" });
   }
   for (const [name, want] of Object.entries(expected.flags ?? {})) {
     const here = snapshot.flags?.[name]?.on === true;

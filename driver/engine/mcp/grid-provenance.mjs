@@ -28,7 +28,7 @@ export function gridProvenancePath(outputPath) {
  */
 export function gridProvenanceRecord({ ran, present, requested, model = null }) {
   return {
-    _what: "#1846 — which provider served common-law-grid.json, written beside it because the ledger itself is saved verbatim.",
+    _what: "which provider served common-law-grid.json, written beside it because the ledger itself is saved verbatim.",
     provider: "perplexity",
     surface: "agent API, sandbox tool",
     tool: "perplexity_research",

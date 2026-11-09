@@ -1861,7 +1861,7 @@ export function readJxLanes(doc) {
         const v = doc.fold?.depth?.[name];
         if (!v || typeof v !== "object") {
           return { recorded: false, asked: d.depth ?? null, ran: null, shortfall: null,
-            why: "the run did not state what depth this lane actually got (no fold.depth) — a pre-#893 artifact, "
+            why: "the run did not state what depth this lane actually got (no fold.depth) — an earlier artifact, "
               + "or a run that never reached the delivery statement. Whether the ask was met CANNOT be established" };
         }
         return { recorded: true, asked: v.asked ?? null, ran: v.ran ?? null,
@@ -1889,7 +1889,7 @@ export function readJxLanes(doc) {
     statement: typeof doc.fold?.executes === "string" ? doc.fold.executes : null,
     slices: doc.fold?.slices ?? null,
     statementWhy: typeof doc.fold?.executes === "string" ? null
-      : "the run did not state which jx slices it executed (no fold.executes) — a pre-#552 artifact, or a fold that never ran",
+      : "the run did not state which jx slices it executed (no fold.executes) — an earlier artifact, or a fold that never ran",
   };
 }
 

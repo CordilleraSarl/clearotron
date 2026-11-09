@@ -42,7 +42,7 @@ import { NAMES_IN_FORCE } from "./names-in-force.mjs";
 // can rot alone.
 export const RETIRED_NEW_SPELLINGS = Object.freeze({
   CLEAROTRON_DELIVERY:
-    "delivery is one behaviour and not a setting since #1014 — every requester-facing event is a "
+    "delivery is one behaviour and not a setting — every requester-facing event is a "
     + "self-contained outbox packet (docs/DELIVERY.md). If this was set to `stage`, nothing is sending "
     + "your notices: the packets are being written and are waiting for an integrator to consume them.",
 });

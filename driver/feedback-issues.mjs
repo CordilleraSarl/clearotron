@@ -118,7 +118,7 @@ export function issueForFlag(flag) {
     `| Flag record | \`${flag?.id ?? "—"}.json\` in the feedback store |`,
     ``,
     `---`,
-    `_Minted from a report flag (#260/#264). Nothing here is triaged: no status label, no rating, and no_`,
+    `_Minted from a report flag. Nothing here is triaged: no status label, no rating, and no_`,
     `_reading of what the lawyer meant. A human decides what this becomes._`,
   ].join("\n");
 
