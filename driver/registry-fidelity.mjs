@@ -17,12 +17,12 @@
 
 import { writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 import { join } from "node:path";
-import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
   from "../providers/_shared/ledger-path.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { USE_SOURCE_QUALITY } from "./findings-model.mjs";   // — the attested vocabulary; an unknown value falls back to the heuristic
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 // — `DEFAULT_RECORD_LOG` IS GONE, and it went because the question it answered no longer has one
 // answer. It was `ledgerPath("record")` frozen at import, in the DRIVER — a long-lived process running
@@ -357,7 +357,7 @@ export function assembleRunRecords(runDir, runPrefix,
         };
       });
       ensureDriverDir(runDir);
-      writeFileSync(driverDir(runDir, "receipts.json"), JSON.stringify({ schema_version: 1, receipts: rows }, null, 2) + "\n");
+      writeFileSync(paths(runDir).receipts, JSON.stringify({ schema_version: 1, receipts: rows }, null, 2) + "\n");
     }
   } catch { /* best-effort — the records map above remains the gate substrate */ }
   // That legacy-name notice is REPLACED, not deleted. That one told an operator which of four
