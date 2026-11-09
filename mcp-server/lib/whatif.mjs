@@ -28,7 +28,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 // static import here costs the read-only surface nothing and buys the one thing three copies of this
 // question could not give: the same answer at the door and at the worker.
 import { whatIfRefusal } from "../../driver/whatif-queue.mjs";
-import { readJson } from "../../driver/run-record.mjs";
+import { paths, readJson } from "../../driver/run-record.mjs";
 
 // ── — THE NOTE SAYS WHAT IS TRUE, AND IT IS THE STRONGER SENTENCE ────────
 //
@@ -294,7 +294,7 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   // resolveProfile THROWS `profile_key_unknown` on a named key it cannot find, so a what-if against a
   // store that no longer holds the customer now refuses instead of substituting one.
   const canonicalProfileKey = (() => {
-    try { return readJson(driverDir(run.runDir, "profile.json"))?.profileKey ?? null; }
+    try { return readJson(paths(run.runDir).profile)?.profileKey ?? null; }
     catch { return null; }
   })();
   if (canonicalProfileKey) job.profileKey = canonicalProfileKey;
