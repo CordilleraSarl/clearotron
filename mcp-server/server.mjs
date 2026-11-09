@@ -28,7 +28,6 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { existsSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
 import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
@@ -93,7 +92,7 @@ import { instructionsFor } from "./lib/instructions.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
-import { readJson } from "../driver/run-record.mjs";
+import { driverDir, readJson } from "../driver/run-record.mjs";
 
 const NS = "trademark-artifacts";
 const log = (...a) => process.stderr.write(`[${NS}] ${a.join(" ")}\n`);
