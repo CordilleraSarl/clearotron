@@ -108,6 +108,7 @@ import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
 import { isAttemptRow, modelKey } from "./tokens.mjs";
+import { readJson } from "./run-record.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
@@ -374,7 +375,7 @@ function readQuote(runDir) {
 }
 
 function readStatus(runDir) {
-  try { return JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")) ?? null; }
+  try { return readJson(join(runDir, "status.json")) ?? null; }
   catch { return null; }
 }
 
