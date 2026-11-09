@@ -12,7 +12,7 @@ import { join, dirname, basename, resolve, relative } from "node:path";   // res
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
-import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect, gapPositivelyClosed, verdictWithoutTheClosedGap, verdictWhenTheStepsAreWithdrawn, jointUnaccounted } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
+import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect, gapPositivelyClosed, verdictWithoutTheClosedGap, verdictWithConditionsStanding, verdictWhenTheStepsAreWithdrawn, jointUnaccounted } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
 import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
@@ -16000,6 +16000,14 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "verdict-3", verdict, trigger: "degenerate-reask" });
           writeRunStatus(ctx, signoffPatch(verdict));
           applyCoverageFloor();   // a re-asked CLEAR passes the same deliver-conditional floor
+          // After the floor, which judges the verdict as it entered: its machinery arm records its gaps only on a CLEAR.
+          const standing = verdictWithConditionsStanding({ verdict, reasons: clampReasons });
+          if (standing !== verdict) {
+            runLog(run.runDir, { event: "terminal-guard-clamp", defect: `reasked_clear_over_standing_condition:${clampReasons.length}`, from: verdict, to: standing });
+            note(`verdict: the review asked again says ${verdict}, and ${clampReasons.length} condition(s) a guard recorded still stand — ${verdict} becomes ${standing} on them`);
+            verdict = standing;
+            writeRunStatus(ctx, signoffPatch(verdict));
+          }
           try { writeVerdictSidecar(); }
           catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
         }
