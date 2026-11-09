@@ -30,7 +30,7 @@ const P = { registerPlan: "/run/_driver/register-plan.json", registerBand: (a) =
 
 test("every register tool server's register_execute_plan declares qids, and says what leaving it out does", () => {
   for (const srv of REGISTER_SERVERS) {
-    const src = readFileSync(join(MCP, `${srv}-server.mjs`), "utf8");
+    const src = readFileSync(join(MCP, "..", "..", "..", "providers", srv, "src", "mount.js"), "utf8");
     const at = src.indexOf('name: "register_execute_plan"');
     assert.ok(at >= 0, `${srv}: the tool is where this test looks for it`);
     const block = src.slice(at, src.indexOf("handler:", at));
