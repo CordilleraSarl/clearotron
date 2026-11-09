@@ -315,7 +315,7 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 | Slogan | family-patterns (`X * Y`, `* YOUR Y`, `X YOUR *`), verb-swap (replace lead verb with adjacent verbs in same semantic field), preposition swap (YOUR → THE/A/MY/OUR), slang spellings, co-brand wildcards (`* [SLOGAN]`, `[SLOGAN] *`), phrase-substitution (full morphological variants) |
 | Acronym / initialism | letter-collision (the acronym itself), expansion-form (search the expanded phrase), ambiguity-check (other meanings of the same letters) |
 | Device-led | dominant verbal-element variants (if any); image search handled separately in register via image fetch |
-| Famous-element-masked | (modifier) per-element famous-mark Perplexity query; standard variants for the mark's primary archetype |
+| Famous-element-masked | (modifier) Flag elements for the famous-mark check; the common-law grid searches them on the general web, and the common-law step judges the results. Standard variants for the mark's primary archetype |
 
 **Modifier categories** (when applicable):
 
@@ -369,7 +369,7 @@ The phonetic axis catches *sound-alikes*. This axis catches *look-alikes* — an
 - **glyph swaps** (symbol-for-letter, distinct from sound-led leet): `FENR1Q`, `F3NRIQ`, `FENRI@`
 - **adjacent-key transposition:** `FNERIQ`, `FENIRQ`
 
-**Wire neighbours into the famous-mark check:** every neighbour that is a real word or a plausible brand goes into the per-element famous-mark Perplexity call (see *Famous-mark Perplexity calls needed*). If it resolves to a famous / in-field mark, carry it as a **must-search** variant with the `rationale` naming the owner (e.g. "SONIC — Sega's famous mark, one letter from the anchor").
+**Wire neighbours into the famous-mark check:** Flag elements for the famous-mark check; the common-law grid searches them on the general web, and the common-law step judges the results. If a neighbour that is a real word or a plausible brand resolves to a famous / in-field mark, carry it as a **must-search** variant with the `rationale` naming the owner (e.g. "SONIC — Sega's famous mark, one letter from the anchor").
 
 **Bounds:** generate **liberally but capped at ~6–10 neighbour strings**, prioritised by "would a consumer or a squatter plausibly use this, or is it a known mark" — drop only **implausible strings** (not a form a real look-alike could take), never a plausible one for being noisy. **Distinctive-anchor marks only:** for a *saturated common-word* element the look-alike axis is low-value on **collision-plausibility** grounds — a look-alike of a common word is itself another common word with no distinctive owner to confuse (NOT because the result would be crowded) — so drop it on that ground and name it in the ledger. Send at least one visual variant on every mark; the floor refuses a manifest without one. These are `match_mode: default` register sweeps (and direct common-law searches); they ride the existing `primary-sweep` register unit, not a new axis.
 
@@ -447,7 +447,7 @@ Used by `clearance-search` to flag cross-mark risks in synthesis.
 | exact-phrase | quoted search string | `match_mode: exact` |
 | exact-element | quoted search string | `match_mode: default` |
 | plural-root | element search | `match_mode: default` on root form |
-| phonetic | Perplexity sound-alike search | `match_mode: phonetic` (+ `register_expand_phoneme` if available) |
+| phonetic | Perplexity sound-alike search | `match_mode: phonetic` (+ `<provider>_expand_phoneme` if available) |
 | numeric-substitution | direct platform search for substituted form | `match_mode: default` on substituted form |
 | visual-substitution (typographic neighbour) | direct platform search for the neighbour string | `match_mode: default` on the neighbour string |
 | foreign-transliteration | Perplexity search on transliterated form (platforms supporting non-Latin) | `match_mode: default` on transliterated form |
@@ -471,6 +471,6 @@ Downstream skills do NOT generate their own variants — the manifest is authori
 - [ ] Foreign transliterations generated, one per market the frame names whose buyers read a non-Latin script
 - [ ] Every row of category transliteration needs human confirmation on a hit; there is no column to tick.
 - [ ] Watchlists populated (with client-exclusion applied)
-- [ ] Famous-mark Perplexity calls flagged (or "None")
+- [ ] Flag elements for the famous-mark check; the common-law grid searches them on the general web, and the common-law step judges the results.
 - [ ] Cross-mark themes captured (multi-mark only)
 - [ ] Manifest handed back by calling the `record_clearance_variants` tool, and the tool accepted it

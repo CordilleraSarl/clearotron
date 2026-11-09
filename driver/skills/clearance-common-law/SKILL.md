@@ -36,8 +36,8 @@ the fixed finding taxonomy. The creative variant/strategy work is already done u
 
 ## Tool call budget
 
-One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client,
-and a famous-mark query when the manifest flags one.
+One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client.
+The grid already searches each flagged element on the general web; judge its results.
 
 Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier.
 
