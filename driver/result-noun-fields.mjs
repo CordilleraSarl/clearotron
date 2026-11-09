@@ -19,9 +19,9 @@
 //
 // `atWriteSite` is how many of a pair's sites sit inside a call that actually writes one of those two
 // artifact families — `runLog`/`stageLog`/`log`/`appendLine`/`recordSpan`, or `writeFileSync`/
-// `atomicWrite` against a `driverDir()` path or a `P.<key>` built with `driverRel()`. A pair with zero is
-// REPORTED, never dropped: it is a result noun in a module that writes these artifacts, and the reason it
-// is out of scope is a fact worth stating rather than a filter nobody can see.
+// `atomicWrite` against a `driverDir()` path, or a `P.<key>` or `paths(run).<key>` built with `driverRel()`.
+// A pair with zero is REPORTED, never dropped: it is a result noun in a module that writes these artifacts,
+// and the reason it is out of scope is a fact worth stating rather than a filter nobody can see.
 //
 // ── WHAT THIS CANNOT SEE, SO THE NUMBER IS NOT READ AS COVERAGE ─────────────────────────────────────
 //

@@ -76,7 +76,7 @@ function derive() {
   for (const f of tracked) {
     if (/(^|\/)tests?\//.test(f) || f.startsWith("node_modules/")) continue;
     let src; try { src = readFileSync(join(ROOT, f), "utf8"); } catch { continue; }
-    if (!/driverDir\(|run\.jsonl|atomicWrite\(/.test(src)) continue;
+    if (!/driverDir\(|\bpaths\(|run\.jsonl|atomicWrite\(/.test(src)) continue;
     let ast; try { ast = acorn.parse(src, { ecmaVersion: "latest", sourceType: "module", locations: true }); } catch { continue; }
     for (const t of nounSites(ast)) bump(f, t.split("@")[0]).sites.add(t);
     walk(ast, (n) => {
@@ -88,7 +88,8 @@ function derive() {
         const first = n.arguments[0];
         if (!first) return;
         const viaDriverDir = JSON.stringify(first).includes('"name":"driverDir"');
-        const pKey = first.type === "MemberExpression" && first.object?.name === "P" ? first.property?.name : null;
+        const viaPaths = first.object?.name === "P" || (first.object?.type === "CallExpression" && first.object.callee?.name === "paths");
+        const pKey = first.type === "MemberExpression" && viaPaths ? first.property?.name : null;
         if (viaDriverDir || (pKey && driverKeys.has(pKey))) args = n.arguments.slice(1);
       }
       if (!args) return;
