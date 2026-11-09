@@ -23,6 +23,7 @@ import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+import { readJson } from "../../driver/run-record.mjs";
 
 // Queue resolution (mirrors the enqueue CLI, docs/INTAKE.md): with NO explicit agent, a
 // headless deployment's CLEAROTRON_QUEUE_DIR wins; otherwise the default agent's workspace queue. An
@@ -326,7 +327,7 @@ export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {
     const scopedOut = (file) => {
       if (!Array.isArray(scope?.accounts)) return false;
       let jobAccount = null;
-      try { jobAccount = JSON.parse(readFileSync(file, "utf8")).profileKey ?? "generic"; } catch { jobAccount = null; }
+      try { jobAccount = readJson(file).profileKey ?? "generic"; } catch { jobAccount = null; }
       try { assertAccountAccess(scope, jobAccount, `queued job "${args.id}"`); return false; } catch { return true; }
     };
     if (existsSync(f)) {
@@ -435,7 +436,7 @@ export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {
       let wrote = false;
       try {
         const sp = join(run.runDir, "status.json");
-        const s = JSON.parse(readFileSync(sp, "utf8"));
+        const s = readJson(sp);
         // BOTH due-clock keys are cleared (A4 split: resetsAt = rate-limit cap, recoveryResumesAt =
         // recovery backoff) — a cancelled recovery-parked run must not keep a stale resume clock.
         // — the sidecar written just below already carried `via`/`by`; status.json nulled it, so a
@@ -462,7 +463,7 @@ export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {
     if (!alreadyStopping) {
       try {
         const sp = join(run.runDir, "status.json");
-        const s = JSON.parse(readFileSync(sp, "utf8"));
+        const s = readJson(sp);
         s.stopRequestedAt = rec?.ts ?? new Date().toISOString();
         s.updatedAt = new Date().toISOString();
         writeFileSync(sp, JSON.stringify(s, null, 2) + "\n");
@@ -523,7 +524,7 @@ export function getDeliveryPacket(args = {}) {
   if (!args.runId) throw new Error("get_delivery_packet: runId is required");
   const run = resolveRun(String(args.runId));
   if (!run) throw new Error(`get_delivery_packet: run "${args.runId}" not found`);
-  const read = (n) => { try { return JSON.parse(readFileSync(driverDir(run.runDir, n), "utf8")); } catch { return null; } };
+  const read = (n) => { try { return readJson(driverDir(run.runDir, n)); } catch { return null; } };
   const delivery = read("delivery.json");
   const failure = read("failure.json");
   if (!delivery && !failure)
@@ -645,7 +646,7 @@ export function markSent(args = {}) {
   // already applies when it decides a marker is already queued (charter P1 §3): one settle clears every
   // name that delivery could have been minted under. Best-effort per form; a missing one is a no-op.
   const clearMarker = () => {
-    const packet = (() => { try { return JSON.parse(readFileSync(packetPath, "utf8")); } catch { return {}; } })();
+    const packet = (() => { try { return readJson(packetPath); } catch { return {}; } })();
     const sanitize = (s) => String(s).replace(/[^A-Za-z0-9._-]/g, "_");   // rescanOwedRuns' own marker-name gate
     // The three OBSERVED ids are not the whole set: rescanOwedRuns DERIVES the legacy
     // `<slug>-<codename>` form (outbox-backoff.mjs), and a marker minted under that name is named by
@@ -702,7 +703,7 @@ export function markSent(args = {}) {
   let statusFlipped = true;
   try {
     const sp = join(run.runDir, "status.json");
-    const status = JSON.parse(readFileSync(sp, "utf8"));
+    const status = readJson(sp);
     status.sendPending = false;
     writeFileSync(`${sp}.tmp`, JSON.stringify(status, null, 2) + "\n");
     renameSync(`${sp}.tmp`, sp);
