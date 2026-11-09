@@ -21,6 +21,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { workbookEntryText, zipEntries } from "./workbook-entries.mjs";
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 let REPO = resolve(HERE, "..", "..", "..");
 const TEST = () => join(REPO, "driver", "test");
@@ -170,10 +172,12 @@ function tools(call, norm) {
 }
 function fileHash(f, norm) {
   const buf = readFileSync(f);
-  // A workbook is a zip whose entries carry the moment it was written, so its bytes and its size move on every run.
+  // A workbook is a zip whose entries carry the moment it was written, so its bytes and its size move on every run; its
+  // contents are compared entry by entry.
+  if (f.endsWith(".xlsx")) return sha(zipEntries(buf).map(([n, b]) => `${n}\0${norm(workbookEntryText(n, b))}`).join("\0"));
   // A report lists the models it was served in the order concurrent stages finished. Each turn's own model is
   // compared in its record, so the list's order carries nothing the comparison needs.
-  return /\.(xlsx|png|jpg|pdf|zip|gz)$/.test(f) ? "binary" : sha(norm(buf.toString("utf8")).replace(/\b(?:claude|gpt)-[a-z0-9.-]+/g, "<MODEL>"));
+  return /\.(png|jpg|pdf|zip|gz)$/.test(f) ? "binary" : sha(norm(buf.toString("utf8")).replace(/\b(?:claude|gpt)-[a-z0-9.-]+/g, "<MODEL>"));
 }
 const VOLATILE = /(^|[\\/])(streams|[^\\/]*\.jsonl|economics\.json|[^\\/]*\.attempt\d+[^\\/]*\.stdout)($|[\\/])/;
 const stableOutput = (f) => !VOLATILE.test(f);
