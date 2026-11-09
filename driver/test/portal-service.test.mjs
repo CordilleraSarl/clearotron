@@ -2672,6 +2672,30 @@ test("/portal/api/me in a demo keeps New clearance's Review button on a machine 
   assert.equal(live.engineMode, "demo", "an install with no engine program no longer says so");
 });
 
+test("a demo order placed under Generic opens the finished example of that search, from what the visitor may open", async () => {
+  const w = world({ demo: true });
+  mkdirSync(join(w.poolRoot, "demo-multi"), { recursive: true });
+  writeFileSync(join(w.poolRoot, "demo-multi", "meta.json"), JSON.stringify({
+    runId: "demo-multi", customerKey: "demo-brand-owner", title: "VENQORI", kind: "clearance", overall: "LOW",
+    date: "2026-08-11", searchLevel: "multi-country-focus-search", clientGate: { released: true } }));
+  writeFileSync(join(w.poolRoot, "demo-multi", "report.html"), "<title>VENQORI</title>ok");
+  const body = { marks: [{ name: "IRONWHISK" }], classes: [8], goods: "kitchen tools",
+    product: "multi-country-focus-search", jurisdictions: ["European Union", "United States"], forwarder: "f", forwarderEmail: "f@example.test", account: "generic" };
+  const plan = await w.service.route("POST", "/portal/api/run/plan", STAFF, body, {});
+  assert.equal(plan.status, 200, JSON.stringify(plan.json));
+  const run = await w.service.route("POST", "/portal/api/run", STAFF, { ...body, confirmationToken: plan.json.confirmationToken }, {});
+  assert.equal(run.status, 200, JSON.stringify(run.json));
+  assert.equal(run.json.landedOn, "demo-multi");
+  assert.deepEqual(w.triggers, [], "a demo order reached the trigger seam");
+
+  // THE PRODUCT STILL DECIDES: a search the demo has no example of is refused, not answered with another search's report.
+  const none = { ...body, product: "full-country-search", jurisdictions: ["United States"] };
+  const plan2 = await w.service.route("POST", "/portal/api/run/plan", STAFF, none, {});
+  assert.equal(plan2.status, 200, JSON.stringify(plan2.json));
+  const refused = await w.service.route("POST", "/portal/api/run", STAFF, { ...none, confirmationToken: plan2.json.confirmationToken }, {});
+  assert.equal(refused.status, 409, JSON.stringify(refused.json));
+});
+
 test("/portal/api/me names the release channel this install came from, so a beta's setup command fetches the beta", async () => {
   // The no-engine notice named `npx clearotron install` on every install, and on a beta that fetches the
   // stable, whose setup then moves itself into ~/.local over the beta. The screen picks the command by this
