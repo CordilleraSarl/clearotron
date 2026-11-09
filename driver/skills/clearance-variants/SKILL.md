@@ -447,7 +447,7 @@ Used by `clearance-search` to flag cross-mark risks in synthesis.
 | exact-phrase | quoted search string | `match_mode: exact` |
 | exact-element | quoted search string | `match_mode: default` |
 | plural-root | element search | `match_mode: default` on root form |
-| phonetic | Perplexity sound-alike search | `match_mode: phonetic` (+ `<provider>_expand_phoneme` if available) |
+| phonetic | Perplexity sound-alike search | `match_mode: phonetic` (+ the provider's phoneme expansion if available) |
 | numeric-substitution | direct platform search for substituted form | `match_mode: default` on substituted form |
 | visual-substitution (typographic neighbour) | direct platform search for the neighbour string | `match_mode: default` on the neighbour string |
 | foreign-transliteration | Perplexity search on transliterated form (platforms supporting non-Latin) | `match_mode: default` on transliterated form |
