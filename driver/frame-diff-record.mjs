@@ -49,10 +49,10 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { parseFrameDiff } from "./frame-diff-model.mjs";
 import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { dominantElementFromManifest } from "./scope-ledger.mjs";
+import { paths } from "./run-record.mjs";
 
 export const MODEL_FILE = "frame-diff.json";
 export const PROSE_FILE = "frame-diff.md";
@@ -100,7 +100,7 @@ export function boundDominantElement(runDir) {
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function frameDiffCallPaths(runDir) {
-  const dir = driverDir(runDir, "frame-diff-calls");
+  const dir = paths(runDir).frameDiffCalls;
   return { dir, payload: join(dir, "call-001.json") };
 }
 
