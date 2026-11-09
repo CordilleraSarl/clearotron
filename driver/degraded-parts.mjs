@@ -24,11 +24,10 @@
 // are PRODUCTION, into anything that imports it.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   // a card's label carries a colon, which Windows writes %3A
 import { deferralCoverageRow } from "./deferral-row.mjs";
 import { PUBLISH_INPUTS, readStore } from "./publish/publish-inputs.mjs";
 import { readPartNotCompleted } from "./parts-not-completed.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, labelOfDriverFile, paths, readJson } from "./run-record.mjs";   // a card's label carries a colon, which Windows writes %3A
 
 // The name each part is given: a label the report or the workbook already prints. Never a new phrase.
 export const PART_NAMES = {
