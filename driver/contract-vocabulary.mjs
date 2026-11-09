@@ -341,7 +341,7 @@ export const ARM1_EXEMPTIONS = [
  * STAGE-UNREACHABLE VALIDATORS — not exemptions, a SCOPE statement.
  *
  * verify.mjs wires four validators no STAGES entry reaches: findings, report, audit,
- * clientSummary. They are NOT dead code — replay-archive.mjs:128 replayRun and check() in mcp-server/lib/coverage.mjs
+ * clientSummary. They are NOT dead code — replay-archive.mjs:130 replayRun and check() in mcp-server/lib/coverage.mjs
  * index validators[key] dynamically and the MCP server declares `audit` required — but no stage dispatches
  * them, so their tokens are unaccountable BY CONSTRUCTION with respect to a stage partition. The
  * client-summary STAGE was deleted 2026-08-01 (no line to cite: the stage is gone) and its validator outlived it.
@@ -431,7 +431,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   {
     prefix: "framework_",
     site: "driver/framework.mjs, driver/framework-method.mjs",
-    reason: "parseFrameworkManifest's throws never reach a stage: verify.mjs:70 readRunFramework wraps the call and returns {invalid:true}, and verify.mjs:1180 checkFindingsSibling emits its OWN token (framework_manifest_unreadable) instead. The family is unreachable by construction. parseFrameworkMethod's `framework_method_*` throws take the same road: readFrozenMethod wraps the parse and returns {invalid}, and checkFindingsSibling emits its own `framework_method_unreadable`.",
+    reason: "parseFrameworkManifest's throws never reach a stage: verify.mjs:70 readRunFramework wraps the call and returns {invalid:true}, and verify.mjs:1197 checkFindingsSibling emits its OWN token (framework_manifest_unreadable) instead. The family is unreachable by construction. parseFrameworkMethod's `framework_method_*` throws take the same road: readFrozenMethod wraps the parse and returns {invalid}, and checkFindingsSibling emits its own `framework_method_unreadable`.",
   },
   {
     prefix: "register_plan_",
@@ -489,7 +489,7 @@ export const INNER_CODES = Object.freeze([
   { code: "cite_absent", mints: ["driver/connotation-search.mjs:2149"], rollsUpTo: ["connotation_cite_absent"],
     why: "#592, as token_absent. PROGRESS_TOKENS declared in repairs.mjs: `row-level only — never a top-level token`." },
   { code: "no_ruling", mints: ["driver/connotation-search.mjs:2156"], rollsUpTo: ["connotation_no_ruling"],
-    why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token at repairs.mjs:308 and in stages.mjs's E1 rows, always namespaced." },
+    why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token at repairs.mjs:309 and in stages.mjs's E1 rows, always namespaced." },
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
