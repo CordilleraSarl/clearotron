@@ -590,24 +590,6 @@ export const E3_BACKLOG = [
   // this commit for the same reason.
   {
     stage: "synthesis",
-    kind: "dictated-line-shape",
-    where: "driver/stages.mjs:2958 (restated at driver/skills/clearance-search/synthesis-rules.md)",
-    surface: "stage-message",
-    evidence: "END that finding's actual-use line with a literal \"- **Use-check source:** <result URL | \"perplexity_research — no result\">\" line",
-    reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal in correctionHint() in gateway.mjs",
-    removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
-  },
-  {
-    stage: "synthesis",
-    kind: "dictated-line-shape",
-    where: "driver/stages.mjs:2971 (restated at driver/skills/clearance-search/synthesis-rules.md)",
-    surface: "stage-message",
-    evidence: "END that finding's reasoning with a literal \"- **Own-rights source:** <record URI(s) | \"no applicant-owned registrations in the searched register material\">\" line",
-    reparsedBy: "driver/own-rights.mjs, in its header — \"This module only requires the 'Own-rights source:' line to exist\"; repair hint in correctionHint() in gateway.mjs (the `own_rights_missing` branch; re-verified 2026-08-29 — the old :1736 predated this branch and pointed into the A4 repeat-signature block)",
-    removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
-  },
-  {
-    stage: "synthesis",
     kind: "exactly-these-keys",
     where: "driver/stages.mjs:3173",
     surface: "stage-message",
@@ -893,7 +875,8 @@ export const E3_SURFACE_CENSUS = Object.freeze({
   // with the dictation it described — the seat writes no output, so there is no first line.
   // 31 -> 30 at conversion 10: the synthesis narrative's "## Answers to your instructions" row goes the
   // same way — the answers are typed entries on the findings record and the driver renders both surfaces.
-  "stage-message": 30,
+  // 30 -> 28: the use-check and own-rights rows are deleted with their dictation; the writer records them as fields.
+  "stage-message": 28,
   "tool-response": 1,
   "skill-file": 15,
   "driver-written-form": 0,

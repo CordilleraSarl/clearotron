@@ -25,9 +25,9 @@ test("attempt >1 after a content failure → appends a CORRECTION naming the rea
   assert.match(mm, /CORRECTION:/);
 });
 
-test("reason-aware hint: a use_check_missing failure tells synthesis to add the Use-check source line", () => {
+test("reason-aware hint: a use_check_missing failure tells synthesis to record the use-check source", () => {
   const m = correctiveMessage("Synthesize.", 2, "invalid_file:run/narrative.md:use_check_missing:Finding 1 — Myrkur", "/x/clearance-search/run/narrative.md");
-  assert.match(m, /Use-check source:/);
+  assert.match(m, /`use_check\.source`/);
   assert.match(m, /perplexity_research/);
   assert.match(m, /use_check_missing/);            // the raw reason still rides in
   // a register-digest STRUCTURAL failure gets the sections hint instead. emits `findings-heading`
@@ -200,7 +200,7 @@ test("A6: max_tokens_no_output wrapping a content fail → the correction names 
   // a wrapped invalid_file keeps its reason-aware hint too
   const v = correctiveMessage(BASE, 2, "max_tokens_no_output:invalid_file:run/narrative.md:use_check_missing:F1", "/x/clearance-search/run/narrative.md");
   assert.match(v, /maximum output-token ceiling/);
-  assert.match(v, /Use-check source:/, "the content hint derivation reads the INNER fail");
+  assert.match(v, /`use_check\.source`/, "the content hint derivation reads the INNER fail");
 });
 
 test("A6: the BARE max_tokens_no_output fault (transport-shaped turn) still gets a correction naming the fix", () => {
