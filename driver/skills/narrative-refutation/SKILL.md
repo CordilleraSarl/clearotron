@@ -23,8 +23,6 @@ The orchestrator (`clearance-search`) spawns this worker at the equivalent step.
 
 ## Model
 
-`opus` at high thinking effort, per `driver/stages.mjs` — the same tier as the other judgment stages, because this is the adversarial-independence safety gate. There is no fallback rung: the stage resolves one model, like every other opus stage. A silent stall is aborted by the engine's per-stage stall watchdog, not waited out.
-
 The driver dispatches this as a stage with its own context and a 900-second wall, so the isolation is structural rather than something you arrange. **You write no file.** Your review is a `record_narrative_refutation` call and the driver renders the document from it — you hold no `Write` or `Edit` tool for it, and nothing you write by hand is read.
 
 ## Inputs you receive
@@ -67,8 +65,7 @@ You do **not** number your flags, and you do not format them. Render order is th
 
 One kind per flag, the dominant one. This is machine-read: the driver counts your flags by kind, so a
 flag with no token is counted as `fact` whether or not it is one, and a page of untyped flags reports as
-a page of factual errors. **The token is how the count stays true**, and the count is what tells the next
-round whether your objections can be carried forward as data instead of re-read as prose.
+a page of factual errors.
 
 **Identify what each flag is about** — the `on` field, an array of ordinals. Same rule
 as `kind`: you send the values, the driver renders the token. The rendered forms, so you recognise them

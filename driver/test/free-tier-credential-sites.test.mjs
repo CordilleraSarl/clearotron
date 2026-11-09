@@ -50,9 +50,8 @@ const walk = (dir, out = []) => {
  * written down before it is added.
  */
 const ALLOWED = new Map([
-  ["driver/driver.config.mjs",
-    "the uspto-local ADAPTER's own guards (it is that provider's credEnv), plus free-tier's record/count "
-    + "guards which check the EU pair only"],
+  ["providers/uspto-local/src/adapter.js", "the uspto-local adapter's own guards (it is that provider's credEnv)"],
+  ["providers/free-tier/src/adapter.js", "free-tier's record/count guards, which check the EU pair only"],
   ["providers/uspto-local/src/mount.js",
     "the US-only provider's server: the index IS its credential, so requiring it is correct there"],
   ["driver/engine/mcp/codex-config.mjs", "an env passthrough list, not a gate"],

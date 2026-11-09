@@ -31,7 +31,7 @@ instead would plan a query one source cannot run and call the result a clean.
 
 ## What reads it
 
-- `../../driver/driver.config.mjs` — the `free-tier` entry. `credEnv` is the EU pair only:
+- `src/adapter.js` — the `free-tier` entry. `credEnv` is the EU pair only:
   `USPTO_LOCAL_DB` is deliberately not required, so a box without the index still gets its EU
   coverage. `publicRecordOrigin` is `null` and `composedOf` carries the members, because the two
   halves have different public hosts.

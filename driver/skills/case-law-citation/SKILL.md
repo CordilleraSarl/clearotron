@@ -19,18 +19,9 @@ arranges or can lose. Nothing here spawns a session; sequencing, fan-in and retr
 The identical skill is also valid **inline** in ad-hoc chat when a conflict / confusability / enforcer
 question arises outside a clearotron run.
 
-**Reads** — from the dispatch message (plain markdown, not JSON), for each finding to ground:
-- the proposed mark and the conflicting mark / owner / entity,
-- the jurisdiction(s) and Nice class(es) in scope,
-- the specific question — e.g. *"is this owner a known aggressive enforcer? is there precedent on
-  confusability of X vs Y for these goods?"*
+**Reads** — the narrative named in the dispatch and the rated findings it lists. You select the watchlist or enforcer claims to ground and frame each question.
 
-**Writes** — optionally, a `case-law-findings-<slug>-<date>.md` file in the workspace (mirrors how the
-register / common-law workers hand back).
-
-**Returns to the caller** — the **final session message** (markdown): the grounded profile per finding
-(see [Output](#output--grounded-profile)), plus the file path if one was written. Keep raw fetched
-documents in this session — do not paste them into the final message (that defeats the isolation).
+**Writes** — the grounded profiles to the file the dispatch names, and the retrieval record it describes. Return only the path and a 2-3 line summary.
 
 Companion files (one level deep — read the one you need):
 - [sources/courtlistener.md](sources/courtlistener.md) — US federal opinions incl. CAFC; `courtlistener__*` tools.
@@ -41,23 +32,6 @@ Companion files (one level deep — read the one you need):
 Still-future adapter (drops in here with no change to this file): `sources/euipo.md` (EUIPO
 Boards-of-Appeal decisions — no API wired here today). EUIPO *register* lookups are a different layer
 (`clearance-register`), not this skill.
-
-## Trigger
-
-Called by `clearance-search` after synthesis flags the risk-relevant findings (Step 4.5). Also triggers in
-chat when the user raises a trademark conflict, likelihood-of-confusion, or enforcement-history question.
-Gated and optional: if this skill is absent, clearotron skips Step 4.5 and delivers normally.
-
-## Model
-
-**Sonnet, eval-gated** when spawned from the `clearance-search` Step 4.5 seam. The work is extraction
-from documents fetched **this session** — the fetch-before-cite discipline (cite only what you
-fetched; read the holding from the fetched text; refuse to invent when sources are empty), not model
-recall, is what keeps citations honest. That makes it a Sonnet-tier task **provided** Sonnet reliably
-follows the discipline. This is the highest-stakes hallucination surface in the workflow, so trust is
-gated on this skill's own evals (jurisdiction routing, fetch-before-cite, refusal-to-fabricate): if
-Sonnet fails any, or a run cites/holds anything unfetched, escalate to **Opus**. Ad-hoc inline use in
-chat may run on whatever the session is already on.
 
 ## Scope — light and targeted
 
