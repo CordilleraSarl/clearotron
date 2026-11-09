@@ -10,6 +10,7 @@ import { caseLawInventory } from "../config-inventory.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { readPartNotCompleted } from "../parts-not-completed.mjs";
+import { readJson } from "../run-record.mjs";
 import { assembleRunRecords, extractEnforcerSignals } from "../registry-fidelity.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { readFileSync, renameSync, writeFileSync } from "node:fs";
@@ -214,7 +215,7 @@ export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }, he
   runLog(run.runDir, {
     event: "case-law-decision", run: caseLaw.run, requested: caseLaw.requested, detected: caseLaw.detected,
     eligible: caseLaw.eligible, product: caseLaw.product, trigger: caseLaw.trigger, declined: caseLaw.declined,
-    jurisdictions: (() => { try { return JSON.parse(readFileSync(P.instructedScope, "utf8"))?.jurisdictions ?? null; } catch { return null; } })(),
+    jurisdictions: (() => { try { return readJson(P.instructedScope)?.jurisdictions ?? null; } catch { return null; } })(),
   });
   if (caseLaw.declined)
     note(`[case-law] the draft narrative turns on "${caseLaw.trigger}", and a ${caseLaw.product ?? "run with no resolved product"} does not carry the case-law reading — recorded, not run`);
