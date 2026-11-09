@@ -56,6 +56,7 @@ function scenarios() {
     out.push({ id: `failed-stage.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT }, reaches: (r) => r.terminal?.state === "recovering" });
     out.push({ id: `knockout-failed.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_FAIL_STAGE: "KNOCKOUT SEARCH batch" }, reaches: (r) => r.terminal?.state === "failed" });
     out.push({ id: `resumed.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT, CLEAROTRON_RECOVERY_MAX: "1" }, resume: true, reaches: (r) => r.terminal?.ok === true && moreThanOne("synthesis")(r) });
+    out.push({ id: `repair-before-delivery.${engine}`, engine, job: JOB, env: { MOCK_FINDINGS_N: "3", MOCK_FINDINGS_TWIN: "2", MOCK_NARRATIVE_OVER_CAP: "1" }, reaches: (r) => r.terminal?.ok === true && moreThanOne("synthesis")(r) && moreThanOne("report-overview")(r) });
     out.push({ id: `resume-after-a-changed-input.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT, CLEAROTRON_RECOVERY_MAX: "1" }, resume: true, tamperBeforeResume: "matter-context.md", reaches: (r) => r.terminal?.ok === true && moreThanOne("skeptic")(r) });
     out.push({ id: `parked.${engine}`, engine, job: full, env: engine === "codex" ? { MOCK_CODEX_RATELIMIT: "1", MOCK_CODEX_RATELIMIT_MATCH: AT_THE_SPLIT } : { MOCK_CLAUDE_RATELIMIT: "4102444800", MOCK_CLAUDE_RATELIMIT_MATCH: AT_THE_SPLIT }, reaches: (r) => r.terminal?.state === "postponed" });
     out.push({ id: `cancelled.${engine}`, engine, job: full, cancel: true, reaches: (r) => r.terminal?.state === "cancelled" });
@@ -255,7 +256,7 @@ async function main(argv) {
 }
 
 /** Scenarios this tool does not drive yet, printed on every comparison so that their absence is read. */
-export const SCENARIO_GAPS = ["real-shaped data: every scenario runs on the mocks' invented fixtures", "the repair before delivery of a stage whose input changed after it passed"];
+export const SCENARIO_GAPS = ["real-shaped data: every scenario runs on the mocks' invented fixtures"];
 
 // Neutral area labels. Which session or person holds an area is kept outside the repository.
 const OWNERS = [
