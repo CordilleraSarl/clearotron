@@ -21,7 +21,7 @@ import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
+import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
@@ -239,39 +239,8 @@ export function mapUsage(u) {
   return { input, output, cacheRead, cacheWrite, total: input + output + cacheRead + cacheWrite };
 }
 
-// The Write-tool discipline the stages assume but claude -p doesn't infer from "write your output to <path>".
-// Byte-identical with engine/common.mjs's copy (this module deliberately imports nothing but node built-ins);
-// engine.common.test.mjs asserts the two never drift. See that copy's header for the repair exception's why.
-export const WRITE_DISCIPLINE =
-  "OUTPUT DISCIPLINE — read carefully: when the task instructs you to write output to an absolute file path, " +
-  "you MUST create that file by CALLING THE WRITE TOOL with that exact path and the full content. Output you " +
-  "place only in your text reply is DISCARDED and the task is scored as FAILED. Do the actual work, write every " +
-  "required file via the Write tool (overwrite if it exists), and only THEN reply — with just the path(s) you " +
-  "wrote and a 2-3 line summary. Never claim a file is written unless you invoked the Write tool to write it. " +
-  "EXCEPTION — REPAIRS: when the task instructs you to FIX or CORRECT an EXISTING file, use the Edit tool and " +
-  "change only what the correction names — a file corrected with the Edit tool counts as written. Rewriting a " +
-  "whole file to fix a few lines risks degrading content that already passed. If the file does not exist, the " +
-  "rule above stands: create it in full with the Write tool.";
-
-// The shared stage prompts reference skills by the convention `skills/foo/SKILL.md` — a workspace agent
-// resolves these against its workspace cwd, but `claude -p` (cwd = a neutral tmpdir, to avoid loading the
-// repo CLAUDE.md) resolves them against /tmp → missing_file (the 2026-06-16 matter-frame blocker). Rewrite
-// every `skills/…md` token to an ABSOLUTE path under the configured compute-skills tree (`config.skillsDir`,
-// default <driverDir>/skills as of the Phase-3 skills move; was <workspaceDir>/skills before). The refs keep
-// their `skills/` prefix, so we join them onto the PARENT of skillsDir — i.e. join(dirname(skillsDir),
-// "skills/foo.md"). Engine-localized: the caller's original message is NEVER mutated. The
-// negative lookbehind on [\w/.] makes the rewrite IDEMPOTENT — an already-absolute path that contains
-// `skills/` (the rewritten form, or a corrective/warm re-wrap of an absolutized message) is preceded by
-// `/` and so is never double-prefixed.
-const SKILL_REF = /(?<![\w/.])skills\/[A-Za-z0-9._/-]+\.md/g;
-// `resolve` (optional) maps a `skills/...` ref to the file that should actually be read — the layered
-// overlay-over-base lookup (driver.config.resolveSkillPath). Without it the legacy single-dir behaviour
-// stands, so this stays a pure function over its inputs and every existing caller/test is unaffected.
-export function absolutizeSkillRefs(message, skillsDir, resolve = null) {
-  if (!message || (!skillsDir && !resolve)) return message;
-  const base = skillsDir ? dirname(skillsDir) : null;   // skillsDir ends in /skills; refs carry their own `skills/` prefix
-  return message.replace(SKILL_REF, (m) => (resolve ? resolve(m) : join(base, m)));
-}
+// The Write-tool discipline and the skill-reference rewrite are shared with the Codex adapter: engine/common.mjs.
+export { WRITE_DISCIPLINE, absolutizeSkillRefs };
 
 // Returns { args, input }: `args` is the flag list with `-p` as a BARE flag (no positional prompt), and
 // `input` is the absolutized prompt to write to the child's STDIN. The prompt is NOT an argv element:
