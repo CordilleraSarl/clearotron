@@ -27,8 +27,7 @@
 import { existsSync, readFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
-import { atomicWrite } from "./progress.mjs";
-import { readJsonOrNull } from "./run-record.mjs";
+import { atomicWrite, readJsonOrNull } from "./run-record.mjs";
 
 export const ACCEPTED_ORDER_FILE = "accepted-order.json";
 export const ORDER_AMENDMENTS_FILE = "order-amendments.jsonl";
