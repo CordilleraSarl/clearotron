@@ -454,7 +454,7 @@ export function depthFor(policy) {
   // Reading only `product` meant ctx.searchPolicy resolved to `default-ungraded` on EVERY run: the whole
   // ladder ran at one-country depth, every rung returned "", and nothing anywhere failed. Both names are
   // accepted because both shapes reach this function — the frozen policy and a bare {product} selector.
-  const key = String(policy?.level ?? policy?.product ?? "").trim();
+  const key = productKeyOf(policy);
   const row = PRODUCT_POLICIES[key]?.depth;
   if (row) return Object.freeze({ ...row, source: key });
   // A product this build KNOWS but does not grade is not the same thing as one it does not recognise.
@@ -463,6 +463,11 @@ export function depthFor(policy) {
   const known = Object.prototype.hasOwnProperty.call(PRODUCT_POLICIES, key);
   return Object.freeze({ ...PRODUCT_POLICIES["full-country-search"].depth,
     source: known ? `ungraded:${key}` : "default-ungraded" });
+}
+
+/** The product a policy names: `level` on a run's frozen policy, `product` on a bare selector. "" when neither. */
+export function productKeyOf(policy) {
+  return String(policy?.level ?? policy?.product ?? "").trim();
 }
 
 export function isRegisterOnly(policy) {
