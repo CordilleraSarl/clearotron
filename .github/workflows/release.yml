@@ -790,6 +790,7 @@ jobs:
     outputs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
+      sha: ${{ steps.cut.outputs.sha }}
     steps:
       # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` ──────────────────────────────────────
       #
@@ -1142,8 +1143,11 @@ jobs:
       id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
       security-events: read   # the code-scanning verdict a stable is published over
     steps:
+      # THE COMMIT THE DECISION READ. A scheduled run's event commit is the one it was queued on, and `pending`
+      # asks about main as it is now, so the two differ whenever a version commit lands while the run waits.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ needs.pending.outputs.sha || github.sha }}
           fetch-depth: 0
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -1184,9 +1188,25 @@ jobs:
       #    repository, which is the one thing this design forbids. One publish, one tag.
       - name: What is being published, and whether this run may publish it
         id: what
+        env:
+          DECIDED_CUT: ${{ needs.pending.outputs.cut }}
+          DECIDED_SHA: ${{ needs.pending.outputs.sha }}
+          DECIDED_VERSION: ${{ needs.pending.outputs.version }}
         run: |
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
+          # A SCHEDULED PUBLISH BUILDS THE COMMIT ITS DECISION READ, or nothing. The checkout above names that
+          # commit; an absent or different one here means the two ends are not talking about one tree.
+          if [ "$DECIDED_CUT" = "true" ]; then
+            if [ -z "$DECIDED_SHA" ] || [ "$(git rev-parse HEAD)" != "$DECIDED_SHA" ]; then
+              echo "::error::The decision named commit \"$DECIDED_SHA\" and this job checked out $(git rev-parse HEAD). That is a failure to LOOK, so nothing publishes."
+              exit 2
+            fi
+            if [ "$VERSION" != "$DECIDED_VERSION" ]; then
+              echo "::error::The decision was about $DECIDED_VERSION and this commit is $VERSION."
+              exit 2
+            fi
+          fi
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" = "rehearse" ]; then
             # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
             # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
