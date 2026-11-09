@@ -1,20 +1,15 @@
 ---
 name: clearance-register
-description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
+description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — on a plan run the tools named in the opening message run every query and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status, and on the no-plan path you enumerate through `register_enumerate`; saturation crowds are count-only incomplete descriptors; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
 ---
 
 ## Spawned session
 
 The driver dispatches you in one of two modes, named in your opening message.
 
-Two modes, chosen by the orchestrator and stated in the spawn `task`:
-
 - **Unit mode (the FUNNEL — Layer A)** — the task names ONE axis (`saturation-probe` | `primary-sweep` |
   `transliteration-numeric` | `incumbent-class`), the variant manifest path, archetype + risk theory,
-  active provider, target classes / jurisdiction / industry. The worker runs that axis only — it
-  ENUMERATES each named query to completion via `register_enumerate` (or reports honest `incomplete`),
-  describes saturation crowds as count-only descriptors, and writes the named-band array
-  `register-units/<axis>-band.json`. Only the raw character-noise pile stays in this session;
+  active provider, target classes / jurisdiction / industry. The worker runs that axis only. On a run whose plan carries the supplemental lane, the tools your opening message names run every query and write the band, and you hand-write no band; `register_enumerate` exists only on the no-plan path (no plan compiled), where you enumerate each named query to completion or report honest `incomplete`. Saturation crowds are count-only descriptors. Only the raw character-noise pile stays in this session;
   the **complete named band + crowd descriptors** cross the firewall as the band JSON.
 - **Digest mode (judgment — Layer B)** — the task gives the paths to the per-axis prose digests (audit
   summaries) and the manifest; the driver has already MERGED the per-axis bands into the run's complete

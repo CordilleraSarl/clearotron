@@ -53,7 +53,7 @@ const EXPECTED = [
 // vendor added Spain and Mexico before the 2026-11-02 sync. Until an address is checked, their records
 // take the register's own link where it gives one, and are otherwise cited by number under the sentence
 // for an office the table does not hold. Saying they publish no page would be false: both offices do.
-const AWAITING_AN_ADDRESS = ["es", "mx"];
+const AWAITING_AN_ADDRESS = ["br", "es", "it", "mx"];
 
 test("the table speaks for exactly the offices the vendor lists as live, less those awaiting an address", () => {
   const live = SIGNA_OFFICE_SNAPSHOT.offices.filter((o) => o.status === "live").map((o) => o.jurisdiction.toLowerCase()).sort();

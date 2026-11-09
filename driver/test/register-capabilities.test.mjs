@@ -324,9 +324,9 @@ test("resolveRegions translates then coverage-checks, and defers what the provid
   // signa adds no EU or Madrid register, and that is the point of reading the contract rather than
   // appending a code: its offices declare all three layers `returns` (territory_match: "protection"
   // makes ONE France query return the EU and Madrid rights protecting France). What it adds is the EU
-  // members' own registers it covers, Spain, France and Sweden; the others are disclosed, not claimed.
+  // members' own registers it covers, Spain, France, Italy and Sweden; the others are disclosed, not claimed.
   const r2 = resolveRegions(["US", "EU", "JP"], capabilitiesFor("signa"));
-  assert.deepEqual(r2.regions, ["uspto", "euipo", "es", "inpi-fr", "prv"]);
+  assert.deepEqual(r2.regions, ["uspto", "euipo", "es", "inpi-fr", "it", "prv"]);
   assert.equal(r2.deferred.length, 1);
   assert.equal(r2.deferred[0].jurisdiction, "JP");
   assert.match(r2.deferred[0].reason, /not covered by the active register provider \(signa\)/);
@@ -616,18 +616,18 @@ test("signa's plan now compiles with NO deferred predicate at all — the thin p
 
 test("a jurisdiction outside the provider's coverage becomes a deferred row, never a dropped filter", () => {
   const caps = capabilitiesFor("signa");
-  const plan = compile(caps, { job: { ...JOB, jurisdictions: ["US", "JP", "BR"] } });
+  const plan = compile(caps, { job: { ...JOB, jurisdictions: ["US", "JP", "KR"] } });
   assert.deepEqual(plan.regions, ["uspto"], "the covered offices are translated into the provider's vocabulary");
-  // JP and BR are DEFERRED, so they contribute no binding layers — a territory the provider cannot
+  // JP and KR are DEFERRED, so they contribute no binding layers — a territory the provider cannot
   // reach must not quietly hand the plan a register list it never asked for.
-  assert.deepEqual(plan.deferred_coverage.map((d) => d.jurisdiction), ["JP", "BR"]);
+  assert.deepEqual(plan.deferred_coverage.map((d) => d.jurisdiction), ["JP", "KR"]);
   for (const d of plan.deferred_coverage) assert.match(d.reason, /not covered by the active register provider \(signa\)/);
   // …and entries still RUN for the covered office (a partial coverage gap does not kill the plan)
   assert.ok(plan.entries.some((e) => e.unsupported === undefined));
 
   // every jurisdiction uncovered ⇒ EVERY entry is unsupported. An empty regions filter would sweep the
   // WORLD instead of the matter's scope — the opposite of what was asked, and it would answer "clean".
-  const none = compile(caps, { job: { ...JOB, jurisdictions: ["JP", "BR"] } });
+  const none = compile(caps, { job: { ...JOB, jurisdictions: ["JP", "KR"] } });
   assert.deepEqual(none.regions, []);
   assert.ok(none.entries.every((e) => e.unsupported === true));
   assert.ok(none.entries.every((e) => /not covered by the active register provider/.test(e.unsupported_reason)));

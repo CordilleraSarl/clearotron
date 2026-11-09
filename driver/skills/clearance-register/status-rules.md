@@ -264,15 +264,8 @@ This list is NOT exhaustive — providers evolve their enum values. Treat any un
 
 The driver composes the link from the register's record host and the `uri`; you state no URL. So:
 
-- The **full clickable record URL** = **the active provider's record base host** + the `uri` path. The host
-  is a provider fact and it lives in that provider's own doc: **`providers/<name>.md`, "Record base host"**.
-  Read it there for the register you are actually searching. This file is loaded on every register run
-  whatever the provider, so it states the CONTRACT and never a host.
-- **Do NOT invent a new field** — compose the URL from `uri`. There is exactly one URL per record.
-- The record-findings **URL column carries the COMPOSED full URL** (that provider's base host + `uri`), so
-  the driver's verbatim pass-through renders a working link. Every downstream surface (Excel,
-  narrative/report) MUST compose the **same** URL from the same `uri` — no per-surface link sets, no drift.
-- **If the provider doc says it publishes no per-record page, compose nothing.** Leave the `uri` as it is
+- **Do NOT invent a new field.**
+- **If the provider doc says it publishes no per-record page, the driver composes nothing, and neither do you.** Leave the `uri` as it is
   and cite the office register in the text. A link to a register this run did not search is worse than no
   link: it is a dead link wearing a citation's clothes.
   - **THE FIELD AND THE VALUE, because "compose nothing" does not name either:**
