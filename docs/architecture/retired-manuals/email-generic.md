@@ -7,7 +7,7 @@
 >
 > This file is kept as the record of the per-customer body that used to exist, so a reader tracing why
 > the delivery shape changed can see what it replaced. **The live spec for the cover note is
-> Deliverable 1 in [SKILL.md](../../SKILL.md); the confidentiality marking is `confPosture` in
+> Deliverable 1 in [SKILL.md](../../../driver/skills/clearance-search/SKILL.md); the confidentiality marking is `confPosture` in
 > `shared/brand.mjs` and nowhere else.**
 
 The default client-facing email format. Used when the forwarded request resolved to any client without a per-customer template (e.g. demo customers, internal test runs, new clients). Tight bullets, no customer-specific framing.

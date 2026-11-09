@@ -44,7 +44,11 @@ const WORD = new RegExp(`\\b(?:${WORDS.join("|")})(?:s|'s|s'|’s)?\\b`, "gi");
  * written here rather than left to the absence of a pattern that happens not to match it.
  */
 const ROOT_DOCS = ["CONTRIBUTING.md", "SECURITY.md", "AGENTS.md", "INSTALL.md"];
-const EXCLUDED = { "CHANGELOG.md": "generated from release notes, and history is not rewritten" };
+const EXCLUDED = {
+  "CHANGELOG.md": "generated from release notes, and history is not rewritten",
+  "docs/architecture/retired-manuals/email-generic.md": "the record of a retired manual, kept as it was written",
+  "docs/architecture/retired-manuals/template-formatting.md": "the record of a retired manual, kept as it was written",
+};
 const inCorpus = (f) => (f === "README.md" || ROOT_DOCS.includes(f) || /^docs\/.+\.md$/.test(f))
   && !Object.hasOwn(EXCLUDED, f);
 
