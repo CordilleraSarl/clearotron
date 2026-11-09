@@ -105,7 +105,7 @@ Two classes of gap are **not** escalation triggers:
   such a slice as clean, that IS a flag; it is never an escalation.
 
 Escalate only genuinely closeable gaps (a `deferred` row the table lists as CLOSEABLE, or a new concern on a
-`confirmed-clean` row). The driver enforces both skips too, but keep the `ESCALATE:` list clean.
+`confirmed-clean` row). The driver enforces both skips too, but keep the `escalations` list clean.
 
 **A saturated everyday-word translation IS recoverable — narrow it to the field by class (replaces the old
 re-run-the-specific-concept-rendering move).** When a unit digest records `translit-too-generic` (the
@@ -117,9 +117,9 @@ predicate, **never** goods-vocabulary words ANDed into the search text) and enum
 is the carve-out from the rule just above: a meaning slice left `coverage-limited` **without the class-scoped
 enumeration attempt** is NOT an accepted structural limit — it is exactly the closeable gap to escalate; only a
 slice that WAS class-scoped and enumerated, then ran into a documented limit, is the accepted `coverage-limited`
-that does not re-trigger.) Do **NOT** swap the everyday word for a narrower / more specific rendering. Emit
-`ESCALATE: transliteration-numeric — risk: coverage-gap — saturated meaning token not class-scoped; re-run
-class-scoped enumeration (token × in-scope nice-class × region)`.
+that does not re-trigger.) Do **NOT** swap the everyday word for a narrower / more specific rendering. Send an
+`escalations` entry with axis `transliteration-numeric` and the reason: saturated meaning token not class-scoped; re-run
+class-scoped enumeration (token × in-scope nice-class × region). The driver decides whether the gap can be closed; a gap it does not close stays disclosed.
 `translit-underretrieved` is a context note; escalate only where the table lists a gap that can still be searched. (Do
 NOT escalate when a translation is genuinely distinctive and merely found little — that is a complete axis, not a
 gap.)
@@ -164,8 +164,8 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   distinctiveness read (spectrum + deceptive/offensive, or "plainly distinctive"), and is it carried
   into the deliverable?
 
-The skeptic **surfaces flags only and recommends re-runs** via its `ESCALATE:` lines — it does not re-run anything
-itself. **The driver decides** (in code) off those lines: a flag that a worker *shortcut the process* (missed an
+The skeptic **surfaces flags only and recommends re-runs** via its `escalations` entries — it does not re-run anything
+itself. **The driver decides** (in code) off those entries: a flag that a worker *shortcut the process* (missed an
 axis with no reason, under-probed a high-value category, mis-calibrated risk) → a flagged unit gets a fresh turn with the skeptic's concerns and its own band, and defends its finding or runs only the missing sub-query. **A `deferred`
 coverage-ledger row the table lists as CLOSEABLE is exactly this kind of documented-reason gap** — the owning
 unit resumes and runs the missing question. A deferral the table marks NOT CLOSEABLE is not re-run. This is the

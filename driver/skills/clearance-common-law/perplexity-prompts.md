@@ -36,8 +36,6 @@ PLATFORMS block (dictated per customer — copy that list verbatim; a gaming pro
 ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com",
 "apps.microsoft.com", "itch.io"]), plus one unrestricted general-web search per term
 (platform name "web").
-Where the frame names a field outside the customer's own, run one general-web search of the mark combined with
-"[COLLABORATED GOODS, e.g. pizza]" (platform name "web-field:[goods]").
 
 For EVERY (term, platform) cell run a web search and record up to the number the grid spec states (results_per_cell) of returned candidate listings —
 record what the search returns, do NOT filter or judge similarity in code.
