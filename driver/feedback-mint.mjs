@@ -14,9 +14,10 @@
 // duplicate issue is a nuisance a human closes in ten seconds, and a lost flag is lawyer feedback nobody
 // knows was given.
 
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { issueForFlag } from "./feedback-issues.mjs";
+import { readJson } from "./run-record.mjs";
 
 /** A flag that has not yet become an issue. */
 export const isPending = (flag) => !!flag && !flag.issue;
@@ -43,7 +44,7 @@ export async function mintPending({ dir, createIssue, log = () => {}, now = () =
     const path = join(dir, name);
     let flag;
     // A half-written or hand-edited file is not a reason to stop draining the other seventy-four.
-    try { flag = JSON.parse(readFileSync(path, "utf8")); }
+    try { flag = readJson(path); }
     catch { log(`skip ${name}: not readable as JSON`); skipped++; continue; }
     if (!isPending(flag)) { skipped++; continue; }
 
