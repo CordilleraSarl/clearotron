@@ -86,6 +86,7 @@ export const JX_SLICES = [
 ];
 
 import { laneArmed } from "./driver.config.mjs";
+import { readJson } from "./run-record.mjs";
 
 /**
  * Derive the run's slice statement from durable state. PURE — no clock, no fs; `sidecar` is the parsed
@@ -385,7 +386,7 @@ export function stateJxSlices(runDir, { env = process.env, note = () => {}, runL
     try { sidecar = JSON.parse(raw); }
     catch (e) { note(`jx slice statement: _driver/jx-lanes.json EXISTS and does not parse (${String(e?.message ?? e).slice(0, 80)}) — NOT writing one; the lane decision is frozen and is not this writer's to re-derive`); return { stated: false, reason: "unparseable" }; }
     let units = null;
-    try { units = JSON.parse(readFileSync(driverDir(runDir, "jx", "units.json"), "utf8")); } catch { /* no retrieval slices ran — absence is read below, never as a pass */ }
+    try { units = readJson(driverDir(runDir, "jx", "units.json")); } catch { /* no retrieval slices ran — absence is read below, never as a pass */ }
     const causes = {};
     try {
       for (const line of readFileSync(driverDir(runDir, "run.jsonl"), "utf8").split("\n")) {
