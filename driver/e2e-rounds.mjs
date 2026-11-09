@@ -37,8 +37,7 @@
 
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, copyFileSync } from "node:fs";
 import { join } from "node:path";
-import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
-import { readJsonOrNull } from "./run-record.mjs";
+import { DRIVER_DIR, readJsonOrNull } from "./run-record.mjs";
 
 export const RECEIPT_VERSION = 2;
 
