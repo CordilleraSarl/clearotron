@@ -825,7 +825,8 @@ export function synthesisFindings(runDir = null, msg = "") {
   const text = synthesisFindingsInner(runDir, badFinding, actionsAbsent, { actionBroken, askAnswerBad });
   // MOCK_LINT_REPAIR_ACTIONS — the writer's delivery-check repair edits the record's forward legal steps, as a repair
   // that withdraws findings or restates a step does: "rewrite" restates action 1's open-state clause, "drop" removes
-  // action 1, "add" adds a step where the record had none. Keyed on the repair message, so every earlier save carries
+  // action 1, "add" adds a step where the record had none. MOCK_ACTION_CITES=<ordinals> sets what MOCK_ACTIONS=condition's step
+  // cites. Keyed on the repair message, so every earlier save carries
   // the steps as MOCK_ACTIONS wrote them.
   if (!process.env.MOCK_LINT_REPAIR_ACTIONS || !WRITER_LINT_REPAIR.test(msg)) return text;
   const doc = JSON.parse(text);
@@ -836,6 +837,8 @@ export function synthesisFindings(runDir = null, msg = "") {
   if (!Array.isArray(doc.actions) || !doc.actions.length) return text;
   if (process.env.MOCK_LINT_REPAIR_ACTIONS === "rewrite") doc.actions[0] = { ...doc.actions[0], condition: "Consent from Mystery Owner LLC to the filing in the US is not yet in hand." };
   if (process.env.MOCK_LINT_REPAIR_ACTIONS === "drop") doc.actions = doc.actions.slice(1).map((a, i) => ({ ...a, id: i + 1 }));
+  // "uncite" — the step stands on what survives: the withdrawn finding's number comes off it and nothing else changes.
+  if (process.env.MOCK_LINT_REPAIR_ACTIONS === "uncite") doc.actions = doc.actions.map((a) => ({ ...a, ordinals: a.ordinals.filter((o) => String(o) !== String(process.env.MOCK_RECORD_WITHDRAWS)) }));
   return JSON.stringify(doc);
 }
 function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent = false, { actionBroken = false, askAnswerBad = false } = {}) {
@@ -979,7 +982,8 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
       : {}),
     ...(actionsAbsent ? {} : {
       actions: process.env.MOCK_ACTIONS === "condition"
-        ? [{ id: 1, kind: "consent", text: "Obtain consent from Mystery Owner LLC before filing in the US.", ordinals: [1] }]
+        ? [{ id: 1, kind: "consent", text: "Obtain consent from Mystery Owner LLC before filing in the US.",
+            ordinals: process.env.MOCK_ACTION_CITES ? process.env.MOCK_ACTION_CITES.split(",").map(Number) : [1] }]
         // — the SAME condition action with one unknown key, HEALED only by the repair turn that
         // names the actions register. Before that leg existed this shape exhausted the stage: the lane
         // admitted the failure and had no material to describe it with. The knob heals on the repair
