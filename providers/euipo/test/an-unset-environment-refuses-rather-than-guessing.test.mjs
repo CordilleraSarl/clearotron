@@ -30,7 +30,7 @@ test("getAccessToken with NO environment refuses by name, before any network cal
   try {
     await assert.rejects(() => getAccessToken({ ...CREDS }), (e) => {
       assert.match(e.message, /EUIPO_ENVIRONMENT is not set and there is NO default/);
-      assert.match(e.message, /#1149 item 2, ADR-0001/);
+      assert.match(e.message, /ADR-0001/);
       return true;
     });
   } finally { globalThis.fetch = prev; }

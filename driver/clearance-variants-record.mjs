@@ -341,12 +341,6 @@ export function recordClearanceVariants(runDir, received, { now = () => new Date
   };
 }
 
-/** The typed scope-ledger rows, for the driver's own serialisation. PURE — no re-parse of the table. */
-export function recordedScopeRows(received) {
-  const v = acceptClearanceVariants(received);
-  return v.ok ? v.scopeRows : [];
-}
-
 /**
  * This run's scope-ledger rows AS RECORDED, or `null` when the manifest did not come through the tool.
  *

@@ -32,7 +32,7 @@ test("measured:true with NO provenance is named, not passed over", () => {
   assert.match(line, /NOTHING says where the figure came from/,
     "this is the exact shape #1091 filed — a confident number with nothing behind it — and silence here "
     + "is the scenario file's silence repeated by the tool that reads it");
-  assert.match(line, /#1091/);
+  assert.match(line, /Re-measure, or drop the flag/);
 });
 
 test("an UNMEASURED scenario says nothing — the flag is what makes silence a defect", () => {

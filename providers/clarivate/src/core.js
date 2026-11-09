@@ -1589,19 +1589,6 @@ export async function resolveCompany(apiKey, base, { companyName, regions }, tct
   return { ok: true, companies, reason: null };
 }
 
-export async function doResolveCompany(apiKey, base, params, tctx) {
-  const companyName = params?.company_name ?? params?.owner ?? null;
-  const out = await resolveCompany(apiKey, base, { companyName, regions: params?.regions }, tctx);
-  if (!out.ok) return { type: "text", text: `ERROR: clarivate_resolve_company — ${out.reason}` };
-  const threshold = Number.isFinite(Number(params?.min_confidence)) ? Number(params.min_confidence) : OWNER_RESOLUTION_MIN_CONFIDENCE;
-  return { type: "text", text: JSON.stringify({
-    company_name: companyName,
-    min_confidence: threshold,
-    accepted: out.companies.filter((c) => (c.confidence ?? 0) >= threshold).map((c) => c.applicant_name),
-    companies: out.companies,
-  }, null, 2) };
-}
-
 /**
  * Expand an owner sweep's terms with the resolved exact applicant names. ADDITIVE by construction:
  * the caller's own terms are always kept, so this can only widen. Returns the params to sweep plus a

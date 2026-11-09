@@ -112,7 +112,7 @@ export function resolveConfig(auth) {
       + "run searches, and the two are not interchangeable: `production` is the register; `sandbox` is a "
       + "frozen snapshot plus synthetic rows, so a clearance against it reports on marks that do not "
       + "exist. Set EUIPO_ENVIRONMENT=production for a real clearance, or =sandbox deliberately for a "
-      + "test. This refuses rather than choosing for you (#1149 item 2, ADR-0001).",
+      + "test. This refuses rather than choosing for you (ADR-0001).",
     );
   }
   if (!ENV[environment]) {

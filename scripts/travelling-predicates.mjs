@@ -76,7 +76,7 @@ import { trackedFiles } from "../shared/tracked-files.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 /** Named once so the test can report the SAME guard in its skip reason. */
-export const GUARD = "#1100 travelling-predicate candidates";
+export const GUARD = "travelling-predicate candidates";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 

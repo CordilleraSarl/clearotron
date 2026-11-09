@@ -46,12 +46,12 @@
  */
 export function nonEmpty(set, what) {
   if (set == null) {
-    throw new Error(`#1010 VACUOUS: ${what} is NULL — the set could not be built at all, so the `
+    throw new Error(`VACUOUS: ${what} is NULL — the set could not be built at all, so the `
       + "assertions below would execute ZERO times and this test would pass without checking anything.");
   }
   const n = typeof set.length === "number" ? set.length : (typeof set.size === "number" ? set.size : [...set].length);
   if (n === 0) {
-    throw new Error(`#1010 VACUOUS: ${what} is EMPTY, so the assertions below would execute ZERO times `
+    throw new Error(`VACUOUS: ${what} is EMPTY, so the assertions below would execute ZERO times `
       + "and this test would pass without checking anything. If empty is the PASSING state here because "
       + "the set is violations rather than corpus, do not wrap it — declare it in EMPTY_IS_THE_PASS.");
   }

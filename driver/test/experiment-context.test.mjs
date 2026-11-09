@@ -20,7 +20,8 @@ import { mkdtempSync, chmodSync, readFileSync, writeFileSync, mkdirSync, rmSync,
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join, dirname, basename, sep } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { driverDir } from "../../shared/driver-dir.mjs";
+import { paths as runRecordPaths } from "../run-record.mjs";   //
 import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 import { toolGroupsForStage } from "../engine/mcp/gather-config.mjs";   // conversion 11 — the grant the tool-group edge is keyed on
@@ -722,16 +723,16 @@ function driverFileUses(src) {
   };
   const found = [];
   lines.forEach((line, i) => {
-    for (const m of line.matchAll(/driverDir\([^,()]+,\s*([A-Za-z_]+|"[^"]+")\s*\)/g)) {
+    for (const m of line.matchAll(/driverDir\([^,()]+,\s*([A-Za-z_]+|"[^"]+")\s*\)|\bpaths\((?:[^()]|\([^()]*\))*\)\.([A-Za-z]+)/g)) {
       const tok = m[1];
-      const name = tok.startsWith('"') ? tok.slice(1, -1) : consts.get(tok);
+      const name = m[2] ? basename(runRecordPaths("/run")[m[2]] ?? "") : tok.startsWith('"') ? tok.slice(1, -1) : consts.get(tok);
       if (!name) continue;
       // The handle the rest of the file uses: a path function (`const f = () => driverDir(…)`, or one
       // whose body returns it), a local name, or the expression itself where it is used inline.
       // A block body counts only where this line RETURNS the path: an arrow that merely reads the file
       // inside its own body (an initialiser, say) hands its callers a value, not a path.
       const fnHead = (line.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>/)
-        ?? (/\breturn\b[^;]*driverDir\(/.test(line)
+        ?? (/\breturn\b[^;]*(?:driverDir|paths)\(/.test(line)
           ? lines.slice(Math.max(0, i - 4), i).reverse().map((l) => l.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>\s*\{/)).find(Boolean)
           : null));
       let uses;

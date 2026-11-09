@@ -61,7 +61,6 @@ export const ANSWER_MEMORY_PROVIDERS = Object.freeze({
   signa: Object.freeze({ env: "CLEAROTRON_SIGNA_ANSWER_MEMORY", defaultMode: "on" }),
   clarivate: Object.freeze({ env: "CLEAROTRON_CLARIVATE_ANSWER_MEMORY", defaultMode: "on" }),
 });
-export const ANSWER_MEMORY_SWITCH = ANSWER_MEMORY_PROVIDERS.signa.env;
 export const ANSWER_MEMORY_DIR = "register-answers";
 export const ANSWER_WATCH_LOG = "register-answer-watch.jsonl";
 const ATTEMPT_FILE = "attempt.json";

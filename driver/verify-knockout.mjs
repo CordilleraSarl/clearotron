@@ -11,7 +11,7 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
-import { kebab, kebabCollisions, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
+import { kebab, kebabCollisions } from "./search-policy.mjs";
 import { validateKnockoutFindings } from "./findings-model.mjs";
 import { checkRatingInputs, readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { normalizeBand } from "./framework.mjs";
@@ -25,6 +25,7 @@ import { runLog } from "./log.mjs";   // — the empty-ladder observable; valida
 // the delivery surfaces as flags; nothing about the gate below moved, and this file is the only place on
 // this lane where a check can stop a delivery.
 import { permissionProseChecks } from "./predelivery-lint.mjs";
+import { SURVIVOR_BOUNDARY_RE, isEngineAppendedCaveat } from "./knockout-caveats.mjs";
 import { readJson, readJsonOrNull } from "./run-record.mjs";
 
 const norm = (s) => String(s ?? "").trim();
@@ -849,22 +850,7 @@ export function registerSurfacedFilings(recordsPath, { read = readFileSync } = {
  * `pipeline-knockout.mjs` re-exports `SURVIVOR_BOUNDARY_RE` so its existing importers are untouched; the
  * import direction is producer -> verifier, and it cannot be the other way without a cycle.
  */
-export const SURVIVOR_BOUNDARY_RE = /not knocked out at this screen's depth/i;
-
-/**
- * Is this caveat the ENGINE'S OWN WORDS rather than the rater's?
- *
- * The engine appends two, both stated in code because the assessing model cannot see the facts behind
- * them: the survivor boundary, and the capability-skipped note. Neither is something "the rater
- * supplied", and telling them apart is the whole of — the standing-caveat lint asked
- * "did the rater supply caveats?" of an array the engine had already written into, so from the moment
- * the survivor sentence was appended the answer was always yes and the check could never fire again.
- */
-export function isEngineAppendedCaveat(text) {
-  const t = String(text ?? "");
-  if (SURVIVOR_BOUNDARY_RE.test(t)) return true;
-  return Object.values(CAPABILITY_SKIPPED_NOTE).some((note) => t.trim() === String(note).trim());
-}
+export { SURVIVOR_BOUNDARY_RE, isEngineAppendedCaveat };
 
 /**
  * What the RATER actually supplied: non-blank, and none of the engine's own sentences.

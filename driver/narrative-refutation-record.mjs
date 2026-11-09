@@ -447,17 +447,3 @@ export function settleRecheckSave(runDir, { before = null, stageOk = false, seq0
   if (byTool) return { read: byTool, fail: null, refused: file.reason, restore: saved };
   return { read: null, fail: `file-save-refused:${file.reason}`, refused: file.reason, restore: earlierBack };
 }
-
-/** Read back what was written — the verdict view of the stored file, through the one parse. */
-export function readRecordedVerdict(runDir) {
-  try { return parseVerdict(readFileSync(join(String(runDir ?? ""), REVIEW_FILE), "utf8")); }
-  catch { return null; }
-}
-
-/** The flag lines as the corrective ladder sees them — through the shipped selector, not a local one. */
-export function readRecordedFlagLines(runDir) {
-  try {
-    return readFileSync(join(String(runDir ?? ""), REVIEW_FILE), "utf8")
-      .split("\n").map((l) => correctionFlagContent(l)).filter(Boolean);
-  } catch { return null; }
-}

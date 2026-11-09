@@ -229,8 +229,6 @@ export const PRODUCT_POLICIES = {
       // Pinned with the same provenance in the-doubt-carries-its-placement-tier.test.mjs (RULED_CUTS).
       doubtClosure: "headline-candidate",
       recallFollowupMax: 1,
-      envelopeRounds: "one",               // one closing round, not to exhaustion
-      coverageClosureRounds: "one",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
     web: { questionPreset: "medium", resultsPerCell: 15 },
@@ -281,8 +279,6 @@ export const PRODUCT_POLICIES = {
       // ruling to the most expensive product is not mine to do. Raised as a question rather than
       // assumed —.
       recallFollowupMax: 2,
-      envelopeRounds: "as-today",
-      coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
     web: { questionPreset: "high", resultsPerCell: 20 },
@@ -303,8 +299,6 @@ export const PRODUCT_POLICIES = {
       groundedProfiles: "every-finding",
       doubtClosure: "every-doubt",
       recallFollowupMax: 2,                // RECALL_FOLLOWUP_MAX
-      envelopeRounds: "as-today",
-      coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: true, commonLawGrid: true },
     web: { questionPreset: "xhigh", resultsPerCell: 25 },
@@ -460,7 +454,7 @@ export function depthFor(policy) {
   // Reading only `product` meant ctx.searchPolicy resolved to `default-ungraded` on EVERY run: the whole
   // ladder ran at one-country depth, every rung returned "", and nothing anywhere failed. Both names are
   // accepted because both shapes reach this function — the frozen policy and a bare {product} selector.
-  const key = String(policy?.level ?? policy?.product ?? "").trim();
+  const key = productKeyOf(policy);
   const row = PRODUCT_POLICIES[key]?.depth;
   if (row) return Object.freeze({ ...row, source: key });
   // A product this build KNOWS but does not grade is not the same thing as one it does not recognise.
@@ -469,6 +463,11 @@ export function depthFor(policy) {
   const known = Object.prototype.hasOwnProperty.call(PRODUCT_POLICIES, key);
   return Object.freeze({ ...PRODUCT_POLICIES["full-country-search"].depth,
     source: known ? `ungraded:${key}` : "default-ungraded" });
+}
+
+/** The product a policy names: `level` on a run's frozen policy, `product` on a bare selector. "" when neither. */
+export function productKeyOf(policy) {
+  return String(policy?.level ?? policy?.product ?? "").trim();
 }
 
 export function isRegisterOnly(policy) {

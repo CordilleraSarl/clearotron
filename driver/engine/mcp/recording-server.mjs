@@ -58,7 +58,7 @@ import { recordClosures } from "../../doubt-closure-tool.mjs";
 import { MAX_CLOSURES_PER_CALL, CLOSURE_KINDS } from "../../doubt-closure-call.mjs";
 import { readFileSync, existsSync } from "node:fs"; import { FROZEN_METHOD_FILE } from "../../framework-method.mjs";
 import { join } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { driverDir, readJson } from "../../run-record.mjs";   //
 import { VARIANT_CATEGORIES } from "../../variant-manifest-model.mjs";
 import { DIFF_LAYERS, DIFF_SEVERITIES } from "../../frame-diff-model.mjs";
 import { REGISTER_AXES } from "../../coverage-ledger.mjs";
@@ -207,7 +207,7 @@ const CLOSURE_SPEC = "doubt-closure-spec.json";
  * file disagreeing is the whole failure this transport exists to remove.
  */
 function loadClosureSpec(runDir) {
-  const spec = JSON.parse(readFileSync(driverDir(runDir, CLOSURE_SPEC), "utf8"));
+  const spec = readJson(driverDir(runDir, CLOSURE_SPEC));
   const allowedFiles = Array.isArray(spec?.allowedFiles) ? spec.allowedFiles : [];
   const fileTexts = {};
   for (const name of allowedFiles) {

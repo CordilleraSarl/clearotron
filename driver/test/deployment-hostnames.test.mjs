@@ -228,11 +228,11 @@ test("#2018 #1010 still fires when the walk genuinely finds nothing", () => {
   const tmp = mkdtempSync(join(tmpdir(), "b2018-empty-"));
   try {
     mkdirSync(join(tmp, "a", "b"), { recursive: true });
-    assert.throws(() => guardedFiles([tmp]), /#1010 VACUOUS/,
+    assert.throws(() => guardedFiles([tmp]), /VACUOUS/,
       "a walk that descended a whole tree and found no file reported a corpus instead of refusing");
-    assert.throws(() => guardedFiles([join(tmp, "not-here")]), /#1010 VACUOUS/,
+    assert.throws(() => guardedFiles([join(tmp, "not-here")]), /VACUOUS/,
       "a root that is not on disk is not a corpus either");
-    assert.throws(() => guardedFiles([]), /#1010 VACUOUS/, "no roots at all is not a corpus");
+    assert.throws(() => guardedFiles([]), /VACUOUS/, "no roots at all is not a corpus");
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

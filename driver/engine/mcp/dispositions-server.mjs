@@ -49,7 +49,6 @@
 // makes and the only one that matters for a grant review. `validateGridSpec` is imported from the
 // perplexity core for the same reason it always was: the spec is that core's format, and re-deriving a
 // validator here would be a second opinion about one file's shape.
-import { readFileSync } from "node:fs";
 import { serve } from "./stdio-server.mjs";
 import { validateGridSpec } from "../../../providers/perplexity/src/core.js";
 import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
@@ -61,6 +60,7 @@ import { MAX_ROWS_PER_CALL } from "../../disposition-call.mjs";
 // own module and its own file, never a row in the disposition form — see record_coverage_status below.
 import { recordCoverageStatus, COMMON_LAW_COVERAGE_STATUSES } from "../../common-law-coverage-status.mjs";
 import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
+import { readJson } from "../../run-record.mjs";
 
 // ── B — THE TYPED DISPOSITION TRANSPORT ─────────────────────────────────────────────────────────────
 //
@@ -82,7 +82,7 @@ function specFrom(params) {
   if (runDir && !insideRun(runDir, grid_spec_path))
     return { error: "ERROR: grid_spec_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you." };
   let spec;
-  try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
+  try { spec = validateGridSpec(readJson(grid_spec_path)); }
   catch (err) { return { error: `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.` }; }
   if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
     return { error: `ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}` };
