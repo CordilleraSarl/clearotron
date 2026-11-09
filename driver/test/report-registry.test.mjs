@@ -163,7 +163,7 @@ test("republishRun hands the frozen delivery overlay to the knockout publisher, 
     "both publishReport and publishKnockout receive delivery: prof?.delivery");
   // And it is the frozen sidecar that supplies it — never a re-resolve against today's profiles/, which
   // would re-render an archived run under a posture its customer holds NOW rather than the one it shipped.
-  assert.match(src, /const prof = readJsonOr\(driverDir\(runDir, 'profile\.json'\)\)/,
+  assert.match(src, /const prof = readJsonOrNull\(driverDir\(runDir, 'profile\.json'\)\)/,
     "the overlay comes off the run's own frozen profile");
   // — the old hand-built spelling must not come back; this assertion is the only thing pinning
   // that the sidecar is read from the run rather than re-resolved.

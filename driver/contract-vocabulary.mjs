@@ -560,6 +560,8 @@ export const COVERED_SOURCES = [
   "verify.mjs", "gateway.mjs",
   "common-law-receipts.mjs", "connotation-search.mjs",
   "disposition-union.mjs", "record-origins.mjs",
+  // The door to a run's files. It mints no token today; reading it means a parser added there is seen.
+  "run-record.mjs",
   // B — verify.mjs reaches the typed transport's audit and its path resolver, so the tripwire reads both.
   // `disposition-call-audit.mjs` is where the four transport reasons live as literals; without it here
   // that family could grow a fifth member no vocabulary row covers, and nothing would notice.
