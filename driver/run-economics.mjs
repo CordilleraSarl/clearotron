@@ -102,13 +102,12 @@
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
 import { isAttemptRow, modelKey } from "./attempt-rows.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, labelOfDriverFile, paths, readJson } from "./run-record.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
