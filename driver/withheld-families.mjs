@@ -16,11 +16,10 @@
 // would lose each other's calls. The axis is bound by the server, never taken from the payload.
 import { writeFileSync, renameSync, readdirSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "../providers/_shared/plan-guards.mjs";
 import { entryQuestionKey } from "./register-plan.mjs";
 import { seatBannedTokens } from "./coverage-form.mjs";
-import { paths, readJsonOrNull } from "./run-record.mjs";
+import { driverDir, paths, readJsonOrNull } from "./run-record.mjs";
 
 export const WITHHELD_REASON_MAX = 600;
 const FILE_RE = /^withheld-families-(.+)\.json$/;
