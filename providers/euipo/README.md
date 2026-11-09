@@ -19,7 +19,7 @@ nothing downstream can mistake one for the other. Set `production` explicitly.
 
 ## What reads it
 
-- `../../driver/driver.config.mjs` — the `euipo` provider entry, which lazily imports `src/core.js`
+- `src/adapter.js` — the `euipo` provider entry, which lazily imports `src/core.js`
   for `recordFetch`, `countHits`, `listRecords` and `executePlan`. `credEnv` is `EUIPO_CLIENT_ID`
   with `EUIPO_CLIENT_SECRET` in `credEnvAlso`, so preflight checks the whole pair.
 - `src/mount.js` — the model-facing surface, under the neutral

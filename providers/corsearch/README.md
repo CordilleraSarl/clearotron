@@ -39,7 +39,7 @@ What it notably cannot do, each declared as data in `src/capabilities.js`:
 
 - [`../../driver/register-capabilities.mjs`](../../driver/register-capabilities.mjs) imports `CAPABILITIES`
   at module load; the planner takes it as a parameter and never imports a vendor.
-- [`../../driver/driver.config.mjs`](../../driver/driver.config.mjs) lazy-imports `src/core.js` for the
+- [`src/adapter.js`](src/adapter.js) lazy-imports `src/core.js` for the
   in-process lanes under `credEnv: "CORSEARCH_SESSION_KEY"`, selected by
   `CLEAROTRON_DATABASE=corsearch`.
 - [`src/mount.js`](src/mount.js) wraps the
