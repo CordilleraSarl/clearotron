@@ -14,12 +14,13 @@
 //
 // One file per axis, because the reading turn fans out one seat per axis and two seats writing one file
 // would lose each other's calls. The axis is bound by the server, never taken from the payload.
-import { readFileSync, writeFileSync, renameSync, existsSync, readdirSync, mkdirSync } from "node:fs";
+import { writeFileSync, renameSync, readdirSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "../providers/_shared/plan-guards.mjs";
 import { entryQuestionKey } from "./register-plan.mjs";
 import { seatBannedTokens } from "./coverage-form.mjs";
+import { readJsonOrNull } from "./run-record.mjs";
 
 export const WITHHELD_REASON_MAX = 600;
 const FILE_RE = /^withheld-families-(.+)\.json$/;
@@ -30,7 +31,6 @@ export const withheldFamiliesPath = (runDir, axis) => driverDir(runDir, `withhel
 export const releasedFamiliesPath = (runDir, axis) => driverDir(runDir, releasedFamiliesFile(axis));
 const RELEASED_RE = /^released-families-(.+)\.json$/;
 
-const readJson = (p) => { try { return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; } };
 
 /** Every axis's record, merged: `{ [qid]: { axis, reason } }`. An unreadable file contributes nothing. */
 export function readWithheldFamilies(runDir) {
@@ -40,7 +40,7 @@ export function readWithheldFamilies(runDir) {
   for (const name of names) {
     const m = FILE_RE.exec(name);
     if (!m) continue;
-    const doc = readJson(driverDir(runDir, name));
+    const doc = readJsonOrNull(driverDir(runDir, name));
     for (const [qid, v] of Object.entries(doc?.families ?? {})) {
       const reason = String(v?.reason ?? "").trim();
       if (qid && reason) out[qid] = { axis: String(doc?.axis ?? m[1]), reason };
@@ -57,7 +57,7 @@ export function readReleasedFamilies(runDir) {
   for (const name of names) {
     const m = RELEASED_RE.exec(name);
     if (!m) continue;
-    const doc = readJson(driverDir(runDir, name));
+    const doc = readJsonOrNull(driverDir(runDir, name));
     for (const [qid, v] of Object.entries(doc?.families ?? {})) {
       const reason = String(v?.reason ?? "").trim();
       if (qid && reason) out[qid] = { axis: String(doc?.axis ?? m[1]), reason };
@@ -111,15 +111,15 @@ export function waitingFamiliesOn(plan, axis, supplementals = [], released = new
  * what it refused, and never throws.
  */
 export function recordWithheldFamilies(runDir, { axis, families } = {}) {
-  const plan = readJson(driverDir(runDir, "register-plan.json"));
+  const plan = readJsonOrNull(driverDir(runDir, "register-plan.json"));
   if (!plan || !Array.isArray(plan.entries)) return { refused: "no frozen register plan in this run — there are no waiting families to record against" };
   if (!Array.isArray(families) || !families.length) return { refused: "families must list at least one { qids, reason }" };
-  const supp = readJson(join(runDir, "register-units", `${axis}-supplemental-plan.json`));
-  const released = new Set(Object.keys(readJson(releasedFamiliesPath(runDir, axis))?.families ?? {}));
+  const supp = readJsonOrNull(join(runDir, "register-units", `${axis}-supplemental-plan.json`));
+  const released = new Set(Object.keys(readJsonOrNull(releasedFamiliesPath(runDir, axis))?.families ?? {}));
   const { waiting, unasked } = waitingFamiliesOn(plan, axis, Array.isArray(supp?.entries) ? supp.entries : [], released);
   const waitingQids = new Set(waiting.map((e) => e.qid));
   const path = withheldFamiliesPath(runDir, axis);
-  const doc = readJson(path) ?? { axis, families: {} };
+  const doc = readJsonOrNull(path) ?? { axis, families: {} };
   const recorded = [], rejected = [];
   for (const item of families) {
     const qids = (Array.isArray(item?.qids) ? item.qids : [item?.qids ?? item?.qid]).map((q) => String(q ?? "").trim()).filter(Boolean);
@@ -143,7 +143,7 @@ export function recordWithheldFamilies(runDir, { axis, families } = {}) {
       renameSync(tmp, path);
       // A withholding replaces a release of the same family: one decision per family, the latest.
       const rPath = releasedFamiliesPath(runDir, axis);
-      const r = readJson(rPath);
+      const r = readJsonOrNull(rPath);
       if (r?.families && recorded.some((q) => q in r.families)) {
         for (const q of recorded) delete r.families[q];
         const rTmp = `${rPath}.${process.pid}.tmp`;
@@ -166,12 +166,12 @@ export function recordWithheldFamilies(runDir, { axis, families } = {}) {
  * refused, and never throws.
  */
 export function recordReleasedFamilies(runDir, { axis, families } = {}) {
-  const plan = readJson(driverDir(runDir, "register-plan.json"));
+  const plan = readJsonOrNull(driverDir(runDir, "register-plan.json"));
   if (!plan || !Array.isArray(plan.entries)) return { refused: "no frozen register plan in this run — there are no waiting families to record against" };
   if (!Array.isArray(families) || !families.length) return { refused: "families must list at least one { qids, reason }" };
-  const supp = readJson(join(runDir, "register-units", `${axis}-supplemental-plan.json`));
+  const supp = readJsonOrNull(join(runDir, "register-units", `${axis}-supplemental-plan.json`));
   const path = releasedFamiliesPath(runDir, axis);
-  const doc = readJson(path) ?? { axis, families: {} };
+  const doc = readJsonOrNull(path) ?? { axis, families: {} };
   const { waiting } = waitingFamiliesOn(plan, axis, Array.isArray(supp?.entries) ? supp.entries : []);
   const waitingQids = new Set(waiting.map((e) => e.qid));
   const recorded = [], rejected = [];
@@ -197,7 +197,7 @@ export function recordReleasedFamilies(runDir, { axis, families } = {}) {
       renameSync(tmp, path);
       // A release replaces a withholding of the same family: one decision per family, the latest.
       const wPath = withheldFamiliesPath(runDir, axis);
-      const w = readJson(wPath);
+      const w = readJsonOrNull(wPath);
       if (w?.families && recorded.some((q) => q in w.families)) {
         for (const q of recorded) delete w.families[q];
         const wTmp = `${wPath}.${process.pid}.tmp`;
@@ -206,7 +206,7 @@ export function recordReleasedFamilies(runDir, { axis, families } = {}) {
       }
     } catch (e) { return { write_failed: String(e?.message ?? e).slice(0, 200) }; }
   }
-  const withheldNow = readJson(withheldFamiliesPath(runDir, axis))?.families ?? {};
+  const withheldNow = readJsonOrNull(withheldFamiliesPath(runDir, axis))?.families ?? {};
   const { unasked } = waitingFamiliesOn(plan, axis, Array.isArray(supp?.entries) ? supp.entries : [], new Set(Object.keys(doc.families)));
   const still = unasked.filter((e) => !withheldNow[e.qid]).map((e) => e.qid);
   return { axis, recorded, rejected, still_to_judge: still, waiting: waiting.length };
