@@ -40,7 +40,7 @@ import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parseVerdict, countCitedDefects, parseCorrections, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
 
@@ -49,7 +49,7 @@ export const REVIEW_VERDICTS = ["CLEAR", "CONDITIONAL", "BLOCKING"];
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function refutationCallPaths(runDir) {
-  const dir = driverDir(runDir, "refutation-calls");
+  const dir = paths(runDir).refutationCalls;
   return { dir, payload: join(dir, "call-001.json") };
 }
 
@@ -71,7 +71,7 @@ export function listedExclusionPositions(runDir) {
 
 /** Whether this run has a plan-execution receipt, which is what makes the audit section mandatory. */
 export function planReceiptPresent(runDir) {
-  try { return existsSync(driverDir(String(runDir ?? ""), "plan-execution.json")); }
+  try { return existsSync(paths(String(runDir ?? "")).planExecution); }
   catch { return false; }
 }
 
