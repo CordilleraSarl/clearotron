@@ -131,7 +131,7 @@ test("the writer's stage keeps the copy, and the delivery check reads it", () =>
     "the stage dispatch does not read the evidence before it dispatches");
   assert.match(src, /sweepStrayArtifacts\(ctx, name\);\n      keepGoodsEvidenceAsWritten\(ctx, r, writersEvidence\);\n      await afterLateSynthesisSave\(name, ctx, r\);\n      return r;/,
     "the stage dispatch does not keep the copy once it returns");
-  assert.match(src, /const writersEvidence = goodsEvidenceForTheWriter\("synthesis", ctx\);\n    const synth = await asPartNotCompleted\("assessment", async \(\) =>\n      quarantineSynth\(await stage\("synthesis"[^\n]*\n    keepGoodsEvidenceAsWritten\(ctx, synth, writersEvidence\);/,
+  assert.match(src, /const writersEvidence = goodsEvidenceForTheWriter\("synthesis", ctx\);\n\s*const synth = await asPartNotCompleted\("assessment", async \(\) =>\n\s*  quarantineSynth\(await stage\("synthesis"[^\n]*\n\s*keepGoodsEvidenceAsWritten\(ctx, synth, writersEvidence\);/,
     "the writer's first pass does not keep the copy where its record comes from the salvage after a failed dispatch");
   assert.match(src, /goodsEvidence: readGoodsEvidenceAsWritten\(run\.runDir\) \?\? readGoodsEvidence\(run\.runDir\), goodsHanded: readGoodsHanded\(run\.runDir\),/,
     "the delivery check is not given the evidence as the writer had it");
