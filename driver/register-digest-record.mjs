@@ -62,7 +62,7 @@ const SCHEMA_VERSION = 1;
  */
 import { applyFates } from "./hit-list.mjs";   // — the digest marks the list
 import { formKey } from "../providers/_shared/script-form.mjs";   // — the one fold for "is this the same form of the mark"
-import { readJson } from "./run-record.mjs";
+import { paths as runPaths, readJson } from "./run-record.mjs";
 
 export const FACTS_FILE = "register-digest-facts.json";
 /** — the slim hit list the digest marks; a projection of the merged band. */
@@ -310,7 +310,7 @@ export const DIGEST_SECTIONS = Object.freeze({
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function registerDigestCallPaths(runDir) {
-  const dir = driverDir(runDir, "register-digest-calls");
+  const dir = runPaths(runDir).registerDigestCalls;
   return { dir, payload: join(dir, "call-001.json"), refusals: join(dir, "refusals.jsonl"), model: join(dir, "model.json") };
 }
 
