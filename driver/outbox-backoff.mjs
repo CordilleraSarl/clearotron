@@ -31,6 +31,7 @@ import { fileURLToPath } from "node:url";
 import { config } from "./driver.config.mjs";
 import { atomicWrite } from "./progress.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
+import { readJson } from "./run-record.mjs";
 
 // Tunables (env-overridable for tests; production uses the defaults). Delay for the Nth consecutive
 // failure = min(base·2^(N−1), cap); past maxRetries the verdict is "giveup": the shell clears the
@@ -58,7 +59,7 @@ const sidecarPath = (agent) => join(backoffDir(), `${agent}.json`);
 const quarantineDir = () => join(config.outboxDir, "quarantine");
 
 function readSidecar(agent) {
-  try { return JSON.parse(readFileSync(sidecarPath(agent), "utf8")); }
+  try { return readJson(sidecarPath(agent)); }
   catch { return null; }   // absent or torn — reads as "no backoff in force" (fail toward retrying)
 }
 
@@ -233,7 +234,7 @@ function* eachRunDir() {
 function runIsSent(runId) {
   for (const runDir of eachRunDir()) {
     let status = null;
-    try { status = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")); } catch { continue; }
+    try { status = readJson(join(runDir, "status.json")); } catch { continue; }
     const dated = String(status?.runId ?? basename(runDir));
     const legacy = status?.slug && status?.codename ? `${status.slug}-${status.codename}` : null;
     if (runId === dated || (legacy && runId === legacy)) return existsSync(join(runDir, ".sent"));
@@ -346,7 +347,7 @@ export function rescanOwedRuns() {
   for (const runDir of runDirs) {
     if (existsSync(join(runDir, ".sent"))) continue;   // settled — cheap short-circuit before the JSON read
     let status = null;
-    try { status = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")); } catch { continue; }
+    try { status = readJson(join(runDir, "status.json")); } catch { continue; }
     if (!owedANotification(status)) continue;
     const agent = String(status.agent ?? "");
     if (!/^[A-Za-z0-9_-]+$/.test(agent)) continue;     // marker's first line feeds the agent CLI — same shape gate as the shell
