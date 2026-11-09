@@ -107,6 +107,7 @@ import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
 import { isAttemptRow, modelKey } from "./attempt-rows.mjs";
+import { vendorOf } from "./engine/stamps.mjs";
 import { driverDir, labelOfDriverFile, paths, readJson } from "./run-record.mjs";
 
 /**
@@ -232,26 +233,7 @@ function foldBilling(bucketMap, rec, cls) {
 // what was stamped; `vendors` carries who was billed; `mixedVendors` flags the second, which is the one
 // the owner rules on.
 //
-// A CLOSED TABLE, NOT A PREFIX RULE. `anthropic-*` → anthropic is shorter and would silently adopt any
-// future engine whose name began that way, which is how a vendor claim becomes a guess. An engine this
-// table does not know is reported BY NAME and blocks the single-vendor claim, because "I do not know who
-// billed this" and "one vendor" are different answers and only one of them is safe to print.
-//
-// THE NATIVE-LANGUAGE ROWS STAMP THE VENDOR ITSELF. jxBillingStamp (jx-lanes.mjs) writes as the row's
-// engine the provider the engine door resolved, `anthropic` or `openai` (engine/auth.mjs), so those two
-// names are engines this table must place. Without them an Anthropic-only run with a native-language turn
-// named `anthropic` as an engine that bills to no vendor, in the same sentence that named anthropic as its
-// one vendor. Two exact names, still a closed table.
-export const ENGINE_VENDORS = Object.freeze({
-  "anthropic-agent": "anthropic",
-  "anthropic-direct": "anthropic",
-  "anthropic-completions": "anthropic",
-  "openai-agent": "openai",
-  "anthropic": "anthropic",
-  "openai": "openai",
-});
-/** The vendor an engine bills to, or null when the table does not name one. */
-export const vendorOf = (engine) => ENGINE_VENDORS[String(engine ?? "")] ?? null;
+// THE ENGINE-TO-VENDOR TABLE is `vendorOf` in engine/stamps.mjs, with what else each stamp means.
 
 // ── WHAT THE RUN CANNOT SAY ABOUT ITSELF ──────────────────────────────────────────────────
 //

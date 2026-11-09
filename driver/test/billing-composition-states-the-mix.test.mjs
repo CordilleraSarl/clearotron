@@ -17,7 +17,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { billingComposition, vendorOf } from "../run-economics.mjs";
+import { billingComposition } from "../run-economics.mjs";
+import { vendorOf } from "../engine/stamps.mjs";
 
 const bucket = (engine, authMode, model, dispatches) => ({ engine, authMode, model, dispatches });
 
