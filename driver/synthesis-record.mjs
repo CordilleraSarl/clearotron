@@ -59,6 +59,7 @@ import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam i
 import { SAVED_FINDINGS_FILE } from "./saved-findings-block.mjs";   // the file a later attempt is handed the saved findings in
 import { runLog } from "./log.mjs";   // what the transport read a call as goes to the run's record, never to the model's answer
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
+import { readJson } from "./run-record.mjs";
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
 
@@ -494,7 +495,7 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
 export function lastAcceptedCall(runDir) {
   try {
     const { accepted } = synthesisCallPaths(String(runDir ?? ""));
-    return JSON.parse(readFileSync(accepted, "utf8"))?.params ?? null;
+    return readJson(accepted)?.params ?? null;
   } catch { return null; }
 }
 
@@ -960,14 +961,14 @@ function frozenMethodFor(dir0, manifest) {
 export function driverReadsFor(runDir) {
   const dir0 = String(runDir ?? "");
   const read = (name) => {
-    try { return JSON.parse(readFileSync(driverDir(dir0, name), "utf8")); }
+    try { return readJson(driverDir(dir0, name)); }
     catch { return null; }
   };
   // The digest's coverage ledger sits in the RUN ROOT, not under `_driver/` — it is the WS-A machine
   // contract the digest publishes, and the writer is one of its readers.
   const readLedger = (d) => {
     try {
-      const doc = JSON.parse(readFileSync(join(d, "register-coverage-ledger.json"), "utf8"));
+      const doc = readJson(join(d, "register-coverage-ledger.json"));
       return Array.isArray(doc) ? doc : (Array.isArray(doc?.rows) ? doc.rows : null);
     } catch { return null; }
   };
