@@ -407,7 +407,7 @@ export function regenIndex(poolDir) {
     // Normalize customerKey ONCE at the read boundary so every consumer (rows' data-client, byCustomer,
     // clientList, siteNav) sees the same canonical key — historical metas predate the field and used to
     // land as data-client="" rows no filter option could ever match.
-    .map(d => { const m = JSON.parse(readFileSync(join(poolDir, d.name, 'meta.json'), 'utf8')); m.customerKey = m.customerKey || 'generic'; return m; })
+    .map(d => { const m = readJson(join(poolDir, d.name, 'meta.json')); m.customerKey = m.customerKey || 'generic'; return m; })
     .sort(runOrder);
 
   // Staff all-runs index — every run, links report.html + audit (employees keep full access).
@@ -779,7 +779,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the currently-configured one (a re-published archive keeps its own register). Legacy runs: null ⇒
   // render keeps the resolved_link inference and prints no receipt lines (byte-identical output).
   let fetchReceipts = null;
-  try { const rj = JSON.parse(readFileSync(driverDir(runDir, 'receipts.json'), 'utf8')); if (Array.isArray(rj?.receipts) && rj.receipts.length) fetchReceipts = rj.receipts; } catch { /* legacy run */ }
+  try { const rj = readJson(driverDir(runDir, 'receipts.json')); if (Array.isArray(rj?.receipts) && rj.receipts.length) fetchReceipts = rj.receipts; } catch { /* legacy run */ }
   const runProviderConf = fetchReceipts ? PROVIDERS[String(fetchReceipts[0]?.provider ?? '').toLowerCase()] : null;
   const recordOrigin = runProviderConf?.hasPublicRecordUrl ? (runProviderConf.publicRecordOrigin ?? null) : null;
   const providerLabel = runProviderConf?.label ?? null;
@@ -805,12 +805,12 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // WP-receipts W3/W4 — the senior-right sidecar: the render code-adds the plain-English open item on
   // any verdict-driving card whose senior right went unverified. Absent on legacy runs → no lines.
   let seniorRights = null;
-  if (!assessmentNotCompleted) try { const sr = JSON.parse(readFileSync(driverDir(runDir, 'senior-rights.json'), 'utf8')); if (Array.isArray(sr?.rows)) seniorRights = sr.rows; } catch { /* legacy run */ }
+  if (!assessmentNotCompleted) try { const sr = readJson(driverDir(runDir, 'senior-rights.json')); if (Array.isArray(sr?.rows)) seniorRights = sr.rows; } catch { /* legacy run */ }
   // D1 — the code-carried verdict + clamp reasons/kinds (A2 sidecar): the report bound line
   // distinguishes a machinery/coverage-clamped CONDITIONAL from a genuine legal read (which lives in
   // the narrative, never in a status line). Best-effort; legacy runs have no sidecar.
   let verdictInfo = null;
-  if (!assessmentNotCompleted) try { verdictInfo = JSON.parse(readFileSync(driverDir(runDir, 'verdict.json'), 'utf8')); } catch { /* legacy */ }
+  if (!assessmentNotCompleted) try { verdictInfo = readJson(driverDir(runDir, 'verdict.json')); } catch { /* legacy */ }
   // Every surface below reads the statement from here, so its count of further conditions is made true here, to
   // the list the client reads (terminal-clamp.mjs clientStatement). The stored record is not touched.
   if (typeof verdictInfo?.statement === 'string') verdictInfo = { ...verdictInfo, statement: clientStatement(verdictInfo) };
@@ -947,7 +947,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // cannot say — an archived or legacy run — and it must not be confused with a plan that named nothing.
   let planTerritories = null;
   try {
-    const plan = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'register-plan.json'), 'utf8'));
+    const plan = readJson(driverDir(runDir ?? dirname(reportMd), 'register-plan.json'));
     if (plan?.scope_basis === 'worldwide') scopeBasis = 'worldwide';
     searchedJurisdictions = [...new Set((plan?.entries ?? []).flatMap((e) => Array.isArray(e.regions) ? e.regions : []))];
     if (!searchedJurisdictions.length && Array.isArray(plan?.regions)) searchedJurisdictions = [...new Set(plan.regions)];
@@ -957,7 +957,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   } catch { /* no plan sidecar — try the instructed scope */ }
   if (!searchedJurisdictions.length) {
     try {
-      const scope = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'instructed-scope.json'), 'utf8'));
+      const scope = readJson(driverDir(runDir ?? dirname(reportMd), 'instructed-scope.json'));
       if (Array.isArray(scope?.jurisdictions)) searchedJurisdictions = scope.jurisdictions;
       else if (typeof scope?.jurisdictions === 'string') searchedJurisdictions = scope.jurisdictions.split(/[,·;\s]+/).filter(Boolean);
     } catch { /* legacy run — render falls back */ }
@@ -989,7 +989,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   let enforcerSignals = [];
   try {
     const esPath = driverDir(runDir ?? dirname(reportMd), 'enforcer-signals.json');
-    if (existsSync(esPath)) { const es = JSON.parse(readFileSync(esPath, 'utf8')); if (Array.isArray(es)) enforcerSignals = es; }
+    if (existsSync(esPath)) { const es = readJson(esPath); if (Array.isArray(es)) enforcerSignals = es; }
   } catch { /* absent — no telemetry lines */ }
   const officeLinks = officeLinksFor(findings, recordsByUri, runOrigins); bindFindingsToRecords(findings, recordsByUri);
   // 404-card caveat (2026-07-22): the V4-2 closure pass persisted every cited record its targeted
@@ -999,7 +999,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // (archived/legacy runs) means no stamp, byte-identical legacy render.
   let recordFetchFailures = null;
   try {
-    const sink = JSON.parse(readFileSync(driverDir(dirname(reportMd), 'predelivery-lint.json'), 'utf8'));
+    const sink = readJson(driverDir(dirname(reportMd), 'predelivery-lint.json'));
     if (Array.isArray(sink?.artifactSet?.recordFetchFailures)) recordFetchFailures = sink.artifactSet.recordFetchFailures;
   } catch { /* legacy run — no failure list */ }
   // A4 — derive per-meter evidence status by machine join (verified needs a receipt; a
@@ -1047,7 +1047,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     evidenceDemotions: evidenceFlags.map(String),
     findingsStale,
     escalationFailed: Array.isArray(escSink?.failed) ? escSink.failed : [],
-    machineLedgerNote: (() => { try { return JSON.parse(readFileSync(join(runDir ?? dirname(reportMd), 'status.json'), 'utf8'))?.machineLedgerNote ?? null; } catch { return null; } })(),
+    machineLedgerNote: (() => { try { return readJson(join(runDir ?? dirname(reportMd), 'status.json'))?.machineLedgerNote ?? null; } catch { return null; } })(),
   };
 
   // Machine QC (the evaluateClientGate checks — arithmetic, record fidelity, stale corrections). The
@@ -1089,7 +1089,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // The frozen product shape. Read HERE rather than at the meta.json write below, because the Summary's
   // jurisdiction line is composed before that point and must not claim a surface this run never touched.
   let searchPolicy = null;
-  try { searchPolicy = runDir ? JSON.parse(readFileSync(driverDir(runDir, 'search-policy.json'), 'utf8')) : null; } catch { /* legacy run */ }
+  try { searchPolicy = runDir ? readJson(driverDir(runDir, 'search-policy.json')) : null; } catch { /* legacy run */ }
   // A run whose frozen policy predates the component reads as grid-ran — archived reports never change.
   // THE ENGINE'S PREDICATE, not a copy of it. This line used to re-implement isRegisterOnly by
   // hand without importing it, so the predicate whose own doc comment calls it "the ONE predicate every
@@ -1103,7 +1103,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the frozen profile, which is the list the run actually searched; absent (a legacy run) reads as picked.
   let noMarketplacesPicked = false;
   try {
-    const frozenProfile = runDir ? JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')) : null;
+    const frozenProfile = runDir ? readJson(driverDir(runDir, 'profile.json')) : null;
     noMarketplacesPicked = Array.isArray(frozenProfile?.platforms) && frozenProfile.platforms.length === 0;
   } catch { /* no frozen profile — a legacy run keeps its wording */ }
 
@@ -1120,7 +1120,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // grid ⇒ the workbook falls back to the pure token-join. Never a guessed finding number.
   let commonLawJoinedTerms = null;
   try {
-    const grid = JSON.parse(readFileSync(join(runDir ?? dirname(reportMd), 'common-law-grid.json'), 'utf8'));
+    const grid = readJson(join(runDir ?? dirname(reportMd), 'common-law-grid.json'));
     const links = new Set(findings.map(f => f.source?.resolved_link).filter(Boolean));
     commonLawJoinedTerms = new Set();
     for (const c of (grid.cells || [])) for (const cand of (c.candidates || [])) if (cand?.url && links.has(cand.url)) commonLawJoinedTerms.add(String(c.term).toUpperCase());
@@ -1138,7 +1138,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // byte-identically to before — which is the proof obligation for touching the frozen renderer at all.
   let stageLabel, depthNote, productName;
   try {
-    const pol = JSON.parse(readFileSync(driverDir(runDir, 'search-policy.json'), 'utf8'));
+    const pol = readJson(driverDir(runDir, 'search-policy.json'));
     stageLabel = reportIdentityFor(pol).stageLabel ?? undefined;
     // — THE PRODUCT NAME THE DOCUMENT PRINTS. `.identity`, never `.banner`: banner leads with
     // `stageLabel`, which on a retired row is "Depth 4" and on a level the registry has forgotten is
@@ -1232,10 +1232,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   try {
     const jxSidecar = driverDir(runDir ?? dirname(reportMd), 'jx-lanes.json');
     if (existsSync(jxSidecar)) {
-      const sidecar = JSON.parse(readFileSync(jxSidecar, 'utf8'));
+      const sidecar = readJson(jxSidecar);
       const { laneDepthOfRun } = await import('../jx.mjs');
       let units = null;
-      try { units = JSON.parse(readFileSync(driverDir(runDir ?? dirname(reportMd), 'jx/units.json'), 'utf8')); } catch { /* the statement handles an absent units file */ }
+      try { units = readJson(driverDir(runDir ?? dirname(reportMd), 'jx/units.json')); } catch { /* the statement handles an absent units file */ }
       // THE RUN ALREADY ANSWERED THIS, AND THE STAMPED ANSWER IS THE ONE THAT COUNTS.
       //
       // `deriveJxSliceStatement` writes `fold.depth` at delivery, from the run's OWN environment, for the
@@ -1257,7 +1257,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     const runBase = runDir ?? dirname(reportMd);
     const recDir = join(runBase, '_records');
     const rdText = (p2) => { try { return readFileSync(p2, 'utf8'); } catch { return ''; } };
-    const rdJson = (p2) => { try { return JSON.parse(readFileSync(p2, 'utf8')); } catch { return null; } };
+    const rdJson = (p2) => { try { return readJson(p2); } catch { return null; } };
     searchDepth = searchDepthRecord({
       auditMd: (auditMd && existsSync(auditMd)) ? rdText(auditMd) : '',
       recordIndex: recordsByUri ?? {},
@@ -1319,7 +1319,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // one name" possible for delivered runs at all. Legacy runs published before this get it on republish
   // (pool-admin doRepublish sources the same workspace), and until then consumers fall back to title.
   let markName = null;
-  try { markName = runDir ? (JSON.parse(readFileSync(join(runDir, 'status.json'), 'utf8')).markName ?? null) : null; } catch { /* no status sidecar */ }
+  try { markName = runDir ? (readJson(join(runDir, 'status.json')).markName ?? null) : null; } catch { /* no status sidecar */ }
   // WHICH PROJECT THIS RAN UNDER, carried into the pool — the same move as markName above, and for the
   // same reason: the fact exists on the way IN and was lost on the way out.
   //
@@ -1335,7 +1335,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   let project = null;
   let organisation = null;
   try {
-    const frozen = runDir ? JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')) : null;
+    const frozen = runDir ? readJson(driverDir(runDir, 'profile.json')) : null;
     if (frozen?.projectKey) project = { key: String(frozen.projectKey), name: String(frozen.projectName ?? frozen.projectKey) };
     if (typeof frozen?.organisation === 'string' && frozen.organisation) organisation = frozen.organisation;
   } catch { /* no frozen profile — pre-WS-B run, or a republish with no workspace */ }
@@ -1891,6 +1891,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
+import { readJson } from "../run-record.mjs";
 function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);
@@ -1932,7 +1933,7 @@ export function releasedFamilyRows(runDir) {
   try {
     const released = readReleasedFamilies(runDir);
     let entries = [];
-    try { entries = JSON.parse(readFileSync(driverDir(runDir, 'register-plan.json'), 'utf8'))?.entries ?? []; } catch { /* no frozen plan */ }
+    try { entries = readJson(driverDir(runDir, 'register-plan.json'))?.entries ?? []; } catch { /* no frozen plan */ }
     const byQid = new Map((Array.isArray(entries) ? entries : []).map((e) => [e?.qid, e]));
     return Object.entries(released).map(([qid, r]) => ({ area: coverageUnitLabel(unitLabel(r.axis, byQid.get(qid))), state: 'note', note: String(r.reason), done: String(r.reason), left: '' }));
   } catch { return []; }
@@ -1954,7 +1955,7 @@ export function setAsideRows(runDir, { findings = null } = {}) {
   try {
     const d = readDeclinations(runDir);
     if (!d.present) return [];
-    const read = (f) => { try { return JSON.parse(readFileSync(driverDir(runDir, f), 'utf8')); } catch { return null; } };
+    const read = (f) => { try { return readJson(driverDir(runDir, f)); } catch { return null; } };
     let delivered = findings;
     if (!Array.isArray(delivered)) {
       try { delivered = parseFindingsJsonLenient(readFileSync(join(runDir, 'findings.json'), 'utf8')).findings ?? []; } catch { delivered = []; }
