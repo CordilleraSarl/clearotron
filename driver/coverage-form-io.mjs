@@ -27,13 +27,12 @@
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { COVERAGE_STATUSES, COVERAGE_FORM_NAME, REGISTER_AXES } from "./coverage-ledger.mjs";
 import { coverageFormSidecarName, parseCoverageForm } from "./coverage-form.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 import { readWithheldFamilies, splitWaitingFamilies } from "./withheld-families.mjs";
 import { slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // the slices the searches record took out of the band
-import { paths, readJsonOrNull } from "./run-record.mjs";
+import { driverDir, paths, readJsonOrNull } from "./run-record.mjs";
 
 export { COVERAGE_FORM_NAME };
 
