@@ -39,6 +39,7 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 // findings-model.mjs, which owns the record-URL contract; a second copy here would drift and the two
 // would then disagree about the same value while both reporting themselves clean.
 import { isDeadRecordLink } from "./findings-model.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const CARDS_DIR = "report-cards";
 const SCHEMA_VERSION = 1;
@@ -96,7 +97,7 @@ export function findingForOrdinal(runDir, ordinal) {
  */
 export function findingsDocFor(runDir, ordinal) {
   let doc;
-  try { doc = JSON.parse(readFileSync(join(String(runDir ?? ""), "findings.json"), "utf8")); }
+  try { doc = readJson(join(String(runDir ?? ""), "findings.json")); }
   catch { return { readable: false, finding: null }; }
   if (!doc || typeof doc !== "object") return { readable: false, finding: null };
   return { readable: true, finding: (doc.findings ?? []).find((f) => String(f?.ordinal) === String(ordinal)) ?? null };
